@@ -188,7 +188,7 @@ function CreateReportUnitContentConfigTable() {
 				var columns=[
 						{data:'checked',type:'checkbox'},
 						{data:'id'},
-						{data:'title'},
+						{data:'showTitle'},
 					 	{data:'unit'},
 					 	{data:'dataSource'},
 					 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.maxValue, loginUserLanguageResource.minValue,loginUserLanguageResource.avgValue,loginUserLanguageResource.newestValue,loginUserLanguageResource.oldestValue,loginUserLanguageResource.dailyTotalValue]},
@@ -198,14 +198,16 @@ function CreateReportUnitContentConfigTable() {
 						{data:'reportCurveConf'},
 						{data:'code'},
 						{data:'dataType'},
-						{data:'remark'}
+						{data:'remark'},
+						{data:'bitIndex'},
+						{data:'title'}
 						];
 				if(reportType==0){
 					colHeaders=['',loginUserLanguageResource.idx,loginUserLanguageResource.dataColumn,loginUserLanguageResource.unit,loginUserLanguageResource.dataSource,loginUserLanguageResource.totalType,loginUserLanguageResource.showLevel,loginUserLanguageResource.prec,loginUserLanguageResource.reportCurve,'','','',''];
 					columns=[
 							{data:'checked',type:'checkbox'},
 							{data:'id'},
-							{data:'title'},
+							{data:'showTitle'},
 						 	{data:'unit'},
 						 	{data:'dataSource'},
 						 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.maxValue, loginUserLanguageResource.minValue,loginUserLanguageResource.avgValue,loginUserLanguageResource.newestValue,loginUserLanguageResource.oldestValue,loginUserLanguageResource.dailyTotalValue]},
@@ -215,14 +217,16 @@ function CreateReportUnitContentConfigTable() {
 							{data:'reportCurveConf'},
 							{data:'code'},
 							{data:'dataType'},
-							{data:'remark'}
+							{data:'remark'},
+							{data:'bitIndex'},
+							{data:'title'}
 							];
 				}else if(reportType==1){
 					colHeaders=['',loginUserLanguageResource.idx,loginUserLanguageResource.dataColumn,loginUserLanguageResource.unit,loginUserLanguageResource.dataSource,loginUserLanguageResource.totalType,loginUserLanguageResource.showLevel,loginUserLanguageResource.prec,loginUserLanguageResource.sumSign,loginUserLanguageResource.averageSign,loginUserLanguageResource.reportCurve,loginUserLanguageResource.curveStatType,'','','',''];
 					columns=[
 							{data:'checked',type:'checkbox'},
 							{data:'id'},
-							{data:'title'},
+							{data:'showTitle'},
 						 	{data:'unit'},
 						 	{data:'dataSource'},
 						 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.maxValue, loginUserLanguageResource.minValue,loginUserLanguageResource.avgValue,loginUserLanguageResource.newestValue,loginUserLanguageResource.oldestValue,loginUserLanguageResource.dailyTotalValue]},
@@ -235,14 +239,16 @@ function CreateReportUnitContentConfigTable() {
 							{data:'reportCurveConf'},
 							{data:'code'},
 							{data:'dataType'},
-							{data:'remark'}
+							{data:'remark'},
+							{data:'bitIndex'},
+							{data:'title'}
 							];
 				}else if(reportType==2){
 					colHeaders=['',loginUserLanguageResource.idx,loginUserLanguageResource.dataColumn,loginUserLanguageResource.unit,loginUserLanguageResource.dataSource,loginUserLanguageResource.totalType,loginUserLanguageResource.showLevel,loginUserLanguageResource.prec,loginUserLanguageResource.reportCurve,'','','',''];
 					columns=[
 							{data:'checked',type:'checkbox'},
 							{data:'id'},
-							{data:'title'},
+							{data:'showTitle'},
 						 	{data:'unit'},
 						 	{data:'dataSource'},
 						 	{data:'totalType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.maxValue, loginUserLanguageResource.minValue,loginUserLanguageResource.avgValue,loginUserLanguageResource.newestValue,loginUserLanguageResource.oldestValue,loginUserLanguageResource.dailyTotalValue]},
@@ -252,23 +258,25 @@ function CreateReportUnitContentConfigTable() {
 							{data:'reportCurveConf'},
 							{data:'code'},
 							{data:'dataType'},
-							{data:'remark'}
+							{data:'remark'},
+							{data:'bitIndex'},
+							{data:'title'}
 							];
 				}
 				
 				reportUnitContentConfigHandsontableHelper.colHeaders=colHeaders;
 				reportUnitContentConfigHandsontableHelper.columns=columns;
 				
-				reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12];
+				reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
 		        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
 		        if(reportType==0){
-		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12];
+		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
 			        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
 		        }else if(reportType==1){
-		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[12,13,14,15];
+		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[12,13,14,15,16,17];
 		        	reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,100,60,60,40,40,100,85];
 		        }else if(reportType==2){
-		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12];
+		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
 			        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
 		        }
 				
@@ -276,6 +284,15 @@ function CreateReportUnitContentConfigTable() {
 			}else{
 				reportUnitContentConfigHandsontableHelper.hot.loadData(result.totalRoot);
 			}
+			
+			for(var i=0;i<result.totalRoot.length;i++){
+				if(result.totalRoot[i].checked){
+					reportUnitContentConfigHandsontableHelper.hot.selectRows(i);
+					break;
+				}
+			}
+			
+			
 		},
 		failure:function(){
 			Ext.getCmp("ReportUnitContentConfigPanel_Id").getEl().unmask();
@@ -347,6 +364,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                outsideClickDeselects:false,
 	                contextMenu: {
 	                    items: {
 	                        "copy": {
@@ -367,11 +385,6 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                    var readOnlyStartCol=1;
 	                    var readOnlyEndCol=4;
 	                    
-	                    var curveShowCol=8;
-	                    if(reportType==1){
-	                    	curveShowCol=10;
-	                    }
-	                    
 	                    if(protocolConfigModuleEditFlag==1){
 	                    	var reportUnitTreeSelectedRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
 		                	if(reportUnitTreeSelectedRow!=''){
@@ -379,27 +392,25 @@ var ReportUnitContentConfigHandsontableHelper = {
 		                		if(selectedItem.data.classes==0){
 		                			cellProperties.readOnly = true;
 		                		}else{
-		                			if(reportUnitContentConfigHandsontableHelper!=null && reportUnitContentConfigHandsontableHelper.hot!=undefined){
-		                				var rowData=reportUnitContentConfigHandsontableHelper.hot.getDataAtRow(visualRowIndex);
-		                				if(rowData[0]){
-		                					if (visualColIndex >=readOnlyStartCol && visualColIndex<=readOnlyEndCol) {
-				    							cellProperties.readOnly = true;
-				    		                }else{
-				    		                	cellProperties.readOnly = false;
-				    		                }
-		                				}else{
-		                					if (visualColIndex >=1) {
-				    							cellProperties.readOnly = true;
-				    		                }
-		                				}
-		                			}
+		                			var checked=this.instance.getDataAtRowProp(row,'checked');
+		                			if(checked){
+	                					if (visualColIndex >=readOnlyStartCol && visualColIndex<=readOnlyEndCol) {
+			    							cellProperties.readOnly = true;
+			    		                }else{
+			    		                	cellProperties.readOnly = false;
+			    		                }
+	                				}else{
+	                					if (visualColIndex >=1) {
+			    							cellProperties.readOnly = true;
+			    		                }
+	                				}
 		                		}
 		                	}
 	                    }else{
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    
-	                    if(visualColIndex==curveShowCol){
+	                    if(prop=='reportCurveConfShowValue'){
 		                	cellProperties.renderer = reportUnitContentConfigHandsontableHelper.addCurveBg;
 		                }else{
 		                	if(reportUnitContentConfigHandsontableHelper.columns[visualColIndex].type!='dropdown' 
@@ -570,105 +581,107 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                            var rowdata = reportUnitContentConfigHandsontableHelper.hot.getDataAtRow(index);
 	                            
 	                            
-	                            
+	                            reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(row,'title');
 	                            if (oldValue != newValue) {
 	                            	if(col=='checked'){
 	                            		if(newValue){//选中
 	                            			if(reportType==0){
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,rowdata[2]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,rowdata[3]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,rowdata[4]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,rowdata[5]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,rowdata[6]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,rowdata[7]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,rowdata[8]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,rowdata[9]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,rowdata[11]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,rowdata[10]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,rowdata[12]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemName',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'title'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'unit',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'unit'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataSource',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'dataSource'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'totalType',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'totalType'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'showLevel',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'showLevel'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'prec',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'prec'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConfShowValue',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'reportCurveConfShowValue'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'reportCurveConf'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataType',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'dataType'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemCode',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'code'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'remark',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'remark'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemBitIndex',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataChange',1);
 	                            			}else if(reportType==1){
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,rowdata[2]);//名称
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,rowdata[3]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,rowdata[4]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,rowdata[5]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,rowdata[6]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,rowdata[7]);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemName',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index));//名称
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'unit',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'unit'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataSource',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'dataSource'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'totalType',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'totalType'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'showLevel',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'showLevel'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'prec',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'prec'));
 			                            		
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,9,rowdata[8]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,10,rowdata[9]);
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'sumSign',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'sumSign'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'averageSign',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'averageSign'));
 			                            		
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,rowdata[10]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,rowdata[12]);
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConfShowValue',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'reportCurveConfShowValue'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'reportCurveConf'));
 			                            		
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,13,rowdata[11]);
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'curveStatType',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'curveStatType'));
 			                            		
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,rowdata[14]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,rowdata[13]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,rowdata[15]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataType',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'dataType'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemCode',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'code'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'remark',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'remark'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemBitIndex',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataChange',1);
 	                            			}else if(reportType==2){
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,rowdata[2]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,rowdata[3]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,rowdata[4]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,rowdata[5]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,rowdata[6]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,rowdata[7]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,rowdata[8]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,rowdata[9]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,rowdata[11]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,rowdata[10]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,rowdata[12]);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemName',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'title'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'unit',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'unit'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataSource',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'dataSource'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'totalType',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'totalType'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'showLevel',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'showLevel'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'prec',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'prec'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConfShowValue',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'reportCurveConfShowValue'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'reportCurveConf'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataType',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'dataType'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemCode',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'code'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'remark',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'remark'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemBitIndex',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex'));
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataChange',1);
 	                            			}
 	                            			
 	                            		}else{//反选清空
 	                            			if(reportType==0){
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemName','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'unit','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataSource','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'totalType','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'showLevel','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'prec','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConfShowValue','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataType','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemCode','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'remark','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemBitIndex','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataChange',1);
                             				}else if(reportType==1){
-                            					reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,'');//名称
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,'');
-			                            		
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,9,false);
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,10,false);
-			                            		
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,'');
-			                            		
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,13,'');
-			                            		
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,'');
-			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemName','');//名称
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'unit','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataSource','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'totalType','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'showLevel','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'prec','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'sumSign','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'averageSign','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConfShowValue','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'curveStatType','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataType','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemCode','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'remark','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemBitIndex','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataChange',1);
                             				}else if(reportType==2){
-                            					reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,2,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,3,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,4,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,'');
-    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+    		                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemName','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'unit','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataSource','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'totalType','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'showLevel','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'prec','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConfShowValue','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataType','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemCode','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'remark','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemBitIndex','');
+			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataChange',1);
                             				}
 	                            			
 	                            		}
@@ -683,7 +696,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                            				}else if(reportType==2){
 	                            					colIndex=5;
 	                            				}
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,5,rowdata[colIndex]);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'totalType',rowdata[colIndex]);
 	    	                            	}else if(col=='showLevel'){
 	                            				var colIndex=6;
 	                            				if(reportType==0){
@@ -693,7 +706,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                            				}else if(reportType==2){
 	                            					colIndex=6;
 	                            				}
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,6,rowdata[colIndex]);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'showLevel',rowdata[colIndex]);
 	    	                            	}else if(col=='prec'){
 	                            				var colIndex=7;
 	                            				if(reportType==0){
@@ -703,16 +716,16 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                            				}else if(reportType==2){
 	                            					colIndex=7;
 	                            				}
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,8,rowdata[colIndex]);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'prec',rowdata[colIndex]);
 	    	                            	}else if(col=='sumSign'){
 	    	                            		if(reportType==1){
 	    	                            			var colIndex=8;
-	    	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,9,rowdata[colIndex]);
+	    	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'sumSign',rowdata[colIndex]);
 	    	                            		}
 	    	                            	}else if(col=='averageSign'){
 	    	                            		if(reportType==1){
 	    	                            			var colIndex=9;
-	    	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,10,rowdata[colIndex]);
+	    	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'averageSign',rowdata[colIndex]);
 	    	                            		}
 	    	                            	}else if(col=='reportCurveConfShowValue'){
 	                            				var colIndex=8;
@@ -723,11 +736,11 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                            				}else if(reportType==2){
 	                            					colIndex=8;
 	                            				}
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,11,rowdata[colIndex]);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConfShowValue',rowdata[colIndex]);
 	    	                            	}else if(col=='curveStatType'){
 	    	                            		if(reportType==1){
 	    	                            			var colIndex=11;
-	    	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,13,rowdata[colIndex]);
+	    	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'curveStatType',rowdata[colIndex]);
 	    	                            		}
 	    	                            	}else if(col=='reportCurveConf'){
 	                            				var colIndex=9;
@@ -738,7 +751,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                            				}else if(reportType==2){
 	                            					colIndex=9;
 	                            				}
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,12,rowdata[colIndex]);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf',rowdata[colIndex]);
 	    	                            	}else if(col=='dataType'){
 	                            				var colIndex=11;
 	                            				if(reportType==0){
@@ -748,7 +761,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                            				}else if(reportType==2){
 	                            					colIndex=11;
 	                            				}
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,14,rowdata[colIndex]);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataType',rowdata[colIndex]);
 	    	                            	}else if(col=='code'){
 	                            				var colIndex=10;
 	                            				if(reportType==0){
@@ -758,7 +771,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                            				}else if(reportType==2){
 	                            					colIndex=10;
 	                            				}
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,15,rowdata[colIndex]);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemCode',rowdata[colIndex]);
 	    	                            	}else if(col=='remark'){
 	                            				var colIndex=12;
 	                            				if(reportType==0){
@@ -768,10 +781,19 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                            				}else if(reportType==2){
 	                            					colIndex=12;
 	                            				}
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,16,rowdata[colIndex]);
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'remark',rowdata[colIndex]);
+	    	                            	}else if(col=='bitIndex'){
+	                            				var colIndex=13;
+	                            				if(reportType==0){
+	                            					colIndex=13;
+	                            				}else if(reportType==1){
+	                            					colIndex=16;
+	                            				}else if(reportType==2){
+	                            					colIndex=13;
+	                            				}
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemBitIndex',rowdata[colIndex]);
 	    	                            	}
-	                            			
-	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtCell(row,17,1);
+	                            			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataChange',1);
 	                            		}
 	                            	}
 	                            }
@@ -833,7 +855,8 @@ function CreateReportUnitContentConfigColInfoTable(){
 						{data:'dataType'},
 						{data:'itemCode'},
 						{data:'remark'},
-						{data:'dataChange'}
+						{data:'dataChange'},
+						{data:'itemBitIndex'}
 						];
 				
 				reportUnitContentConfigColInfoHandsontableHelper.colHeaders=colHeaders;
@@ -843,6 +866,10 @@ function CreateReportUnitContentConfigColInfoTable(){
 			}else{
 				reportUnitContentConfigColInfoHandsontableHelper.hot.loadData(result.totalRoot);
 			}
+			
+			
+//			reportUnitContentConfigColInfoHandsontableHelper.hot.selectCell(row,'itemName');
+			reportUnitContentConfigColInfoHandsontableHelper.hot.selectRows(parseInt(row));
 		},
 		failure:function(){
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
@@ -919,6 +946,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	        				|| !isEquals(rowdata[12],rawData.reportCurveConf )
 	        				|| !isEquals(rowdata[14],rawData.dataType )
 	        				|| !isEquals(rowdata[15],rawData.itemCode )
+	        				|| !isEquals(rowdata[18],rawData.itemBitIndex )
 	        				){
 	        			dataChange=true;
 	        		}
@@ -934,6 +962,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	        				|| !isEquals(rowdata[13],rawData.curveStatType )
 	        				|| !isEquals(rowdata[14],rawData.dataType )
 	        				|| !isEquals(rowdata[15],rawData.itemCode )
+	        				|| !isEquals(rowdata[18],rawData.itemBitIndex )
 	        				){
 	        			dataChange=true;
 	        		}
@@ -946,6 +975,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	        				|| !isEquals(rowdata[12],rawData.reportCurveConf )
 	        				|| !isEquals(rowdata[14],rawData.dataType )
 	        				|| !isEquals(rowdata[15],rawData.itemCode )
+	        				|| !isEquals(rowdata[18],rawData.itemBitIndex )
 	        				){
 	        			dataChange=true;
 	        		}
@@ -961,7 +991,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],
+	                    columns: [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -978,6 +1008,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                outsideClickDeselects:false,
 	                contextMenu: {
 	                    items: {
 	                        "copy": {
@@ -997,12 +1028,8 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 		                	cellProperties.renderer = reportUnitContentConfigColInfoHandsontableHelper.addCurveBg;
 		                }else if(visualColIndex==2){
 	                    	if(reportUnitContentConfigColInfoHandsontableHelper.hot!=undefined && reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtCell!=undefined){
-//	                    		var dataChange=reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtCell(visualRowIndex,17);
-	                    		
 	                    		var dataChange=reportUnitContentConfigColInfoHandsontableHelper.rowDataChange(visualRowIndex);
-	                    		
 	                    		var rowdata = reportUnitContentConfigColInfoHandsontableHelper.hot.getDataAtRow(visualRowIndex);
-	                    		
 	                    		if(dataChange){
 	                    			cellProperties.renderer=reportUnitContentConfigColInfoHandsontableHelper.addDataChangeBg;
 	                    		}else{

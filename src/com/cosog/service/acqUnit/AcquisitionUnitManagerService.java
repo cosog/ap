@@ -2921,6 +2921,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			List<String> itemsList=new ArrayList<String>();
 			List<String> itemsCodeList=new ArrayList<String>();
+			List<String> itemsBitIndexList=new ArrayList<String>();
 			List<String> itemsSortList=new ArrayList<String>();
 			List<String> itemsShowLevelList=new ArrayList<String>();
 			
@@ -2942,7 +2943,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if("1".equalsIgnoreCase(classes)){
 				String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
 						+ " decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"',''),"
-						+ " t.dataSource,t.dataType "
+						+ " t.dataSource,t.dataType,"
+						+ " t.bitindex "
 						+ " from tbl_report_items2unit_conf t "
 						+ " where t.sort>0 "
 						+ " and t.unitid="+unitId+" "
@@ -2966,6 +2968,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 					itemsList.add(itemName);
 					itemsCodeList.add(itemCode);
+					itemsBitIndexList.add((obj[12]+"").replace("null", ""));
 					itemsSortList.add(obj[2]+"");
 					itemsShowLevelList.add(obj[3]+"");
 					
@@ -3008,6 +3011,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				String itemName="";
 				String itemCode="";
+				String itemBitIndex="";
 				
 				String unit="";
 				String dataSource="";
@@ -3035,6 +3039,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==index){
 						itemName=itemsList.get(k);
 						itemCode=itemsCodeList.get(k);
+						itemBitIndex=itemsBitIndexList.get(k);
 						
 						sort=itemsSortList.get(k);
 						showLevel=itemsShowLevelList.get(k);
@@ -3107,6 +3112,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"curveStatType\":\""+curveStatType+"\","
 						+ "\"dataType\":\""+dataType+"\","
 						+ "\"itemCode\":\""+itemCode+"\","
+						+ "\"itemBitIndex\":\""+itemBitIndex+"\","
 						+ "\"remark\":\"\","
 						+ "\"action\":\""+action+"\","
 						+ "\"dataChange\":0"
@@ -3129,6 +3135,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"curveStatType\":\""+curveStatType+"\","
 						+ "\"dataType\":\""+dataType+"\","
 						+ "\"itemCode\":\""+itemCode+"\","
+						+ "\"itemBitIndex\":\""+itemBitIndex+"\","
 						+ "\"remark\":\"\","
 						+ "\"action\":\""+action+"\","
 						+ "\"dataChange\":0"
@@ -3421,13 +3428,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportUnitContentConfigItemsData(String unitId,String calculateType,String reportType,int sort,String language){
+	public String getReportUnitContentConfigItemsData(String unitId,String calculateType,String reportType,int sort,User user,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		
+		int languageValue=user!=null?user.getLanguage():0;
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		String[] deviceTypeIdArr=user.getDeviceTypeIds().split(",");
+		
 		
 		List<CalItem> totalItemList=null;
 		try{
@@ -3474,6 +3486,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<String> itemsList=new ArrayList<String>();
 		List<String> itemsCodeList=new ArrayList<String>();
+		List<String> itemsBitIndexList=new ArrayList<String>();
+		List<String> itemsCodeAndBitIndexList=new ArrayList<String>();
 		List<String> itemsSortList=new ArrayList<String>();
 		List<String> itemsPrecList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
@@ -3488,7 +3502,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsTotalTypeList=new ArrayList<String>();
 		if(sort>0 && StringManagerUtils.stringToInteger(unitId)>0){
 			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
-					+ " decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"','') "
+					+ " decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"',''),"
+					+ " t.bitindex"
 					+ " from tbl_report_items2unit_conf t "
 					+ " where t.unitid="+unitId+" "
 					+ " and t.reportType="+reportType
@@ -3499,6 +3514,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				Object[] obj=(Object[])list.get(i);
 				itemsList.add(obj[0]+"");
 				itemsCodeList.add(obj[1]+"");
+				itemsBitIndexList.add((obj[10]+"").replace("null", ""));
+				itemsCodeAndBitIndexList.add( (obj[1]+"_"+obj[10]+"").replace("null", "") );
 				itemsSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
 				
@@ -3590,6 +3607,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				result_json.append("{\"checked\":"+checked+","
 						+ "\"id\":"+(index)+","
 						+ "\"title\":\""+calItem.getName()+"\","
+						+ "\"showTitle\":\""+calItem.getName()+"\","
 						+ "\"unit\":\""+calItem.getUnit()+"\","
 						+ "\"totalType\":\""+totalType+"\","
 						+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\","
@@ -3603,6 +3621,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"curveStatType\":\""+curveStatType+"\","
 						+ "\"dataType\":"+calItem.getDataType()+","
 						+ "\"code\":\""+calItem.getCode()+"\","
+						+ "\"bitIndex\":\"\","
 						+ "\"remark\":\""+calItem.getRemark()+"\""
 						+ "},");
 				index++;
@@ -3610,102 +3629,304 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 		}
 		
-		Iterator<Map.Entry<String, DataMapping>> iterator = loadProtocolMappingColumnByTitleMap.entrySet().iterator();
-		while (iterator.hasNext()) {
-		    Map.Entry<String, DataMapping> entry = iterator.next();
-		    DataMapping dataMappingColumn = entry.getValue();
-		    
-		    boolean checked=false;
-			String sortStr="";
-			String showLevel="";
-			String prec="";
-			
-			boolean sumSign=false;
-			boolean averageSign=false;
-			
-			String reportCurveConf="\"\"";
-			String reportCurveConfShowValue="";
-			
-			String curveStatType="";
-			
-			String totalType="";
-
-			checked=StringManagerUtils.existOrNot(itemsCodeList, dataMappingColumn.getMappingColumn(),false);
-			if(checked){
-				for(int k=0;k<itemsList.size();k++){
-					if(itemsCodeList.get(k).equalsIgnoreCase(dataMappingColumn.getMappingColumn())){
-						sortStr=itemsSortList.get(k);
-						showLevel=itemsShowLevelList.get(k);
-						prec=itemsPrecList.get(k);
-						totalType=itemsTotalTypeList.get(k);
-						if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
-							if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
-								sumSign=true;
-							}else{
-								sumSign=false;
+		Map<String,DataMapping> addItemMappingColumnByTitleMap=new HashMap<>();
+		for(ModbusProtocolConfig.Protocol protocol:modbusProtocolConfig.getProtocol()){
+			if(StringManagerUtils.existOrNot(deviceTypeIdArr, protocol.getDeviceType()+"") && languageValue==protocol.getLanguage()){
+				for(ModbusProtocolConfig.Items item:protocol.getItems()){
+					DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(item.getTitle());
+					if(dataMapping!=null && !addItemMappingColumnByTitleMap.containsKey(dataMapping.getMappingColumn())){
+						addItemMappingColumnByTitleMap.put(dataMapping.getMappingColumn(), dataMapping);
+						boolean checked=false;
+						String sortStr="";
+						String showLevel="";
+						String prec="";
+						
+						boolean sumSign=false;
+						boolean averageSign=false;
+						
+						String reportCurveConf="\"\"";
+						String reportCurveConfShowValue="";
+						
+						String curveStatType="";
+						
+						String totalType="";
+						
+						if(item.getResolutionMode()==0){
+							if(item.getMeaning()!=null){
+								for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:item.getMeaning()){
+									checked=false;
+									sortStr="";
+									showLevel="";
+									prec="";
+									
+									sumSign=false;
+									averageSign=false;
+									
+									reportCurveConf="\"\"";
+									reportCurveConfShowValue="";
+									
+									curveStatType="";
+									
+									totalType="";
+									
+									checked=StringManagerUtils.existOrNot(itemsCodeAndBitIndexList, dataMapping.getMappingColumn()+"_"+itemsMeaning.getValue(),false);
+									if(checked){
+										for(int k=0;k<itemsList.size();k++){
+											if(itemsCodeList.get(k).equalsIgnoreCase(dataMapping.getMappingColumn()) && StringManagerUtils.stringToInteger(itemsBitIndexList.get(k))==itemsMeaning.getValue()){
+												sortStr=itemsSortList.get(k);
+												showLevel=itemsShowLevelList.get(k);
+												prec=itemsPrecList.get(k);
+												totalType=itemsTotalTypeList.get(k);
+												if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
+													if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
+														sumSign=true;
+													}else{
+														sumSign=false;
+													}
+												}
+												
+												if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
+													if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
+														averageSign=true;
+													}else{
+														averageSign=false;
+													}
+												}
+												
+												reportCurveConf=reportCurveConfList.get(k);
+												
+												CurveConf reportCurveConfObj=null;
+												if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
+													type = new TypeToken<CurveConf>() {}.getType();
+													reportCurveConfObj=gson.fromJson(reportCurveConf, type);
+												}
+												
+												if(reportCurveConfObj!=null){
+													reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
+												}
+												
+												
+												String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
+												if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
+													if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
+														curveStatType=languageResourceMap.get("curveStatType_sum");
+													}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
+														curveStatType=languageResourceMap.get("curveStatType_avg");
+													}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
+														curveStatType=languageResourceMap.get("curveStatType_max");
+													}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
+														curveStatType=languageResourceMap.get("curveStatType_min");
+													}
+												}
+												break;
+											}
+										}
+									}
+									
+									result_json.append("{\"checked\":"+checked+","
+											+ "\"id\":"+(index)+","
+											+ "\"title\":\""+dataMapping.getName()+"\","
+//											+ "\"showTitle\":\""+(protocol.getName()+"/"+item.getTitle()+"/"+itemsMeaning.getMeaning())+"\","
+											+ "\"showTitle\":\""+(item.getTitle()+"/"+itemsMeaning.getMeaning())+"\","
+											+ "\"unit\":\"\","
+											+ "\"totalType\":\""+totalType+"\","
+											+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
+											+ "\"showLevel\":\""+showLevel+"\","
+											+ "\"sort\":\""+sortStr+"\","
+											+ "\"prec\":\""+prec+"\","
+											+ "\"sumSign\":"+sumSign+","
+											+ "\"averageSign\":"+averageSign+","
+											+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+											+ "\"reportCurveConf\":"+reportCurveConf+","
+											+ "\"curveStatType\":\""+curveStatType+"\","
+											+ "\"dataType\":2,"
+											+ "\"code\":\""+dataMapping.getMappingColumn()+"\","
+											+ "\"bitIndex\":\""+itemsMeaning.getValue()+"\","
+											+ "\"remark\":\"\""
+											+ "},");
+									index++;
+								}
 							}
-						}
-						
-						if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
-							if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
-								averageSign=true;
-							}else{
-								averageSign=false;
+						}else{
+							checked=StringManagerUtils.existOrNot(itemsCodeList, dataMapping.getMappingColumn(),false);
+							
+							if(checked){
+								for(int k=0;k<itemsList.size();k++){
+									if(itemsCodeList.get(k).equalsIgnoreCase(dataMapping.getMappingColumn())){
+										sortStr=itemsSortList.get(k);
+										showLevel=itemsShowLevelList.get(k);
+										prec=itemsPrecList.get(k);
+										totalType=itemsTotalTypeList.get(k);
+										if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
+											if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
+												sumSign=true;
+											}else{
+												sumSign=false;
+											}
+										}
+										
+										if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
+											if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
+												averageSign=true;
+											}else{
+												averageSign=false;
+											}
+										}
+										
+										reportCurveConf=reportCurveConfList.get(k);
+										
+										CurveConf reportCurveConfObj=null;
+										if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
+											type = new TypeToken<CurveConf>() {}.getType();
+											reportCurveConfObj=gson.fromJson(reportCurveConf, type);
+										}
+										
+										if(reportCurveConfObj!=null){
+											reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
+										}
+										
+										
+										String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
+										if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
+											if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
+												curveStatType=languageResourceMap.get("curveStatType_sum");
+											}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
+												curveStatType=languageResourceMap.get("curveStatType_avg");
+											}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
+												curveStatType=languageResourceMap.get("curveStatType_max");
+											}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
+												curveStatType=languageResourceMap.get("curveStatType_min");
+											}
+										}
+										break;
+									}
+								}
 							}
+							
+							result_json.append("{\"checked\":"+checked+","
+									+ "\"id\":"+(index)+","
+									+ "\"title\":\""+dataMapping.getName()+"\","
+//									+ "\"showTitle\":\""+(protocol.getName()+"/"+item.getTitle())+"\","
+									+ "\"showTitle\":\""+dataMapping.getName()+"\","
+									+ "\"unit\":\"\","
+									+ "\"totalType\":\""+totalType+"\","
+									+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
+									+ "\"showLevel\":\""+showLevel+"\","
+									+ "\"sort\":\""+sortStr+"\","
+									+ "\"prec\":\""+prec+"\","
+									+ "\"sumSign\":"+sumSign+","
+									+ "\"averageSign\":"+averageSign+","
+									+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+									+ "\"reportCurveConf\":"+reportCurveConf+","
+									+ "\"curveStatType\":\""+curveStatType+"\","
+									+ "\"dataType\":2,"
+									+ "\"code\":\""+dataMapping.getMappingColumn()+"\","
+									+ "\"bitIndex\":\"\","
+									+ "\"remark\":\"\""
+									+ "},");
+							index++;
 						}
 						
-						reportCurveConf=reportCurveConfList.get(k);
-						
-						CurveConf reportCurveConfObj=null;
-						if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
-							type = new TypeToken<CurveConf>() {}.getType();
-							reportCurveConfObj=gson.fromJson(reportCurveConf, type);
-						}
-						
-						if(reportCurveConfObj!=null){
-							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
-						}
-						
-						
-						String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
-						if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
-							if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
-								curveStatType=languageResourceMap.get("curveStatType_sum");
-							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
-								curveStatType=languageResourceMap.get("curveStatType_avg");
-							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
-								curveStatType=languageResourceMap.get("curveStatType_max");
-							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
-								curveStatType=languageResourceMap.get("curveStatType_min");
-							}
-						}
-						break;
 					}
 				}
 			}
-		    
-		    
-		    
-			result_json.append("{\"checked\":"+checked+","
-					+ "\"id\":"+(index)+","
-					+ "\"title\":\""+dataMappingColumn.getName()+"\","
-					+ "\"unit\":\"\","
-					+ "\"totalType\":\""+totalType+"\","
-					+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
-					+ "\"showLevel\":\""+showLevel+"\","
-					+ "\"sort\":\""+sortStr+"\","
-					+ "\"prec\":\""+prec+"\","
-					+ "\"sumSign\":"+sumSign+","
-					+ "\"averageSign\":"+averageSign+","
-					+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
-					+ "\"reportCurveConf\":"+reportCurveConf+","
-					+ "\"curveStatType\":\""+curveStatType+"\","
-					+ "\"dataType\":2,"
-					+ "\"code\":\""+dataMappingColumn.getMappingColumn()+"\","
-					+ "\"remark\":\"\""
-					+ "},");
-			index++;
 		}
+//		Iterator<Map.Entry<String, DataMapping>> iterator = loadProtocolMappingColumnByTitleMap.entrySet().iterator();
+//		while (iterator.hasNext()) {
+//		    Map.Entry<String, DataMapping> entry = iterator.next();
+//		    DataMapping dataMappingColumn = entry.getValue();
+//		    
+//		    boolean checked=false;
+//			String sortStr="";
+//			String showLevel="";
+//			String prec="";
+//			
+//			boolean sumSign=false;
+//			boolean averageSign=false;
+//			
+//			String reportCurveConf="\"\"";
+//			String reportCurveConfShowValue="";
+//			
+//			String curveStatType="";
+//			
+//			String totalType="";
+//
+//			checked=StringManagerUtils.existOrNot(itemsCodeList, dataMappingColumn.getMappingColumn(),false);
+//			if(checked){
+//				for(int k=0;k<itemsList.size();k++){
+//					if(itemsCodeList.get(k).equalsIgnoreCase(dataMappingColumn.getMappingColumn())){
+//						sortStr=itemsSortList.get(k);
+//						showLevel=itemsShowLevelList.get(k);
+//						prec=itemsPrecList.get(k);
+//						totalType=itemsTotalTypeList.get(k);
+//						if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
+//							if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
+//								sumSign=true;
+//							}else{
+//								sumSign=false;
+//							}
+//						}
+//						
+//						if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
+//							if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
+//								averageSign=true;
+//							}else{
+//								averageSign=false;
+//							}
+//						}
+//						
+//						reportCurveConf=reportCurveConfList.get(k);
+//						
+//						CurveConf reportCurveConfObj=null;
+//						if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
+//							type = new TypeToken<CurveConf>() {}.getType();
+//							reportCurveConfObj=gson.fromJson(reportCurveConf, type);
+//						}
+//						
+//						if(reportCurveConfObj!=null){
+//							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
+//						}
+//						
+//						
+//						String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
+//						if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
+//							if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
+//								curveStatType=languageResourceMap.get("curveStatType_sum");
+//							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
+//								curveStatType=languageResourceMap.get("curveStatType_avg");
+//							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
+//								curveStatType=languageResourceMap.get("curveStatType_max");
+//							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
+//								curveStatType=languageResourceMap.get("curveStatType_min");
+//							}
+//						}
+//						break;
+//					}
+//				}
+//			}
+//		    
+//		    
+//		    
+//			result_json.append("{\"checked\":"+checked+","
+//					+ "\"id\":"+(index)+","
+//					+ "\"title\":\""+dataMappingColumn.getName()+"\","
+//					+ "\"unit\":\"\","
+//					+ "\"totalType\":\""+totalType+"\","
+//					+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","
+//					+ "\"showLevel\":\""+showLevel+"\","
+//					+ "\"sort\":\""+sortStr+"\","
+//					+ "\"prec\":\""+prec+"\","
+//					+ "\"sumSign\":"+sumSign+","
+//					+ "\"averageSign\":"+averageSign+","
+//					+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+//					+ "\"reportCurveConf\":"+reportCurveConf+","
+//					+ "\"curveStatType\":\""+curveStatType+"\","
+//					+ "\"dataType\":2,"
+//					+ "\"code\":\""+dataMappingColumn.getMappingColumn()+"\","
+//					+ "\"remark\":\"\""
+//					+ "},");
+//			index++;
+//		}
 		
 		
 		if(result_json.toString().endsWith(",")){
@@ -6556,6 +6777,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String setValueSql="select t.runvalue,t.stopvalue,t.runcondition,t.stopcondition"
 				+ " from tbl_runstatusconfig t "
 				+ " where t.protocol='"+protocolCode+"' and t.itemmappingcolumn='"+itemColumn+"' ";
+		if(StringManagerUtils.stringToInteger(resolutionMode)==0){
+			setValueSql+=" and t.bitindex="+bitIndex;
+		}
 		List<?> list=this.findCallSql(setValueSql);
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);

@@ -1718,7 +1718,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = "";
 		int sort=(StringManagerUtils.isNum(row) && StringManagerUtils.isNumber(row) && StringManagerUtils.stringToInteger(row)>=0)?(StringManagerUtils.stringToInteger(row)+1):0;
-		json = acquisitionUnitItemManagerService.getReportUnitContentConfigItemsData(unitId,calculateType,reportType,sort,language);
+		json = acquisitionUnitItemManagerService.getReportUnitContentConfigItemsData(unitId,calculateType,reportType,sort,user,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

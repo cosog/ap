@@ -374,7 +374,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"checked\":"+checked+","
 									+ "\"id\":"+(index)+","
 									+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
-									+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())+"\","
+									+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+(StringManagerUtils.isNotNull(protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())?protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning():(languageResourceMap.get("bit")+protocolConfig.getItems().get(j).getMeaning().get(k).getValue())))+"\","
 									+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
 									+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
 									+ "\"highLowByte\":\""+protocolConfig.getItems().get(j).getHighLowByte()+"\","
@@ -468,11 +468,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolItemMeaningConfigData(String protocolCode,String itemAddr,String highLowByte,String language){
+	public String getProtocolItemMeaningConfigData(String protocolCode,String itemAddr,String highLowByte,String resolutionModeStr,String quantityStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer totalRoot = new StringBuffer();
 		Gson gson = new Gson();
-		int resolutionMode=2;
+		int resolutionMode=StringManagerUtils.stringToInteger(resolutionModeStr);
+		int quantity=StringManagerUtils.stringToInteger(quantityStr);
 		String title="";
 		totalRoot.append("[");
 		int totolCount=0;
@@ -483,9 +484,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(int j=0;j<protocolConfig.getItems().size();j++){
 				if(protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)
 						&& protocolConfig.getItems().get(j).getHighLowByte().equalsIgnoreCase(highLowByte)){
-					resolutionMode=protocolConfig.getItems().get(j).getResolutionMode();
+//					resolutionMode=protocolConfig.getItems().get(j).getResolutionMode();
 					title=protocolConfig.getItems().get(j).getTitle();
-					int quantity=protocolConfig.getItems().get(j).getQuantity();
+//					int quantity=protocolConfig.getItems().get(j).getQuantity();
 					if(protocolConfig.getItems().get(j).getMeaning()!=null&&protocolConfig.getItems().get(j).getMeaning().size()>0){
 						Collections.sort(protocolConfig.getItems().get(j).getMeaning());
 					}
@@ -587,12 +588,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										status0=protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0();
 										status1=protocolConfig.getItems().get(j).getMeaning().get(k).getStatus1();
 										
-										if(!StringManagerUtils.isNotNull(status0)){
-											status0=languageResourceMap.get("switchingCloseValue");
-										}
-										if(!StringManagerUtils.isNotNull(status1)){
-											status1=languageResourceMap.get("switchingOpenValue");
-										}
+//										if(!StringManagerUtils.isNotNull(status0)){
+//											status0=languageResourceMap.get("switchingCloseValue");
+//										}
+//										if(!StringManagerUtils.isNotNull(status1)){
+//											status1=languageResourceMap.get("switchingOpenValue");
+//										}
 										break;
 									}
 								}
@@ -1669,7 +1670,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"checked\":"+checked+","
 												+ "\"id\":"+(index)+","
 												+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
-												+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())+"\","
+												+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+(StringManagerUtils.isNotNull(protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())?protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning():(languageResourceMap.get("bit")+protocolConfig.getItems().get(j).getMeaning().get(k).getValue())))+"\","
 												
 												
 												+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
@@ -2460,7 +2461,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												+ "\"checked\":"+checked+","
 												+ "\"id\":"+(index)+","
 												+ "\"title\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
-												+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+  protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())+"\","
+												+ "\"showTitle\":\""+(protocolConfig.getItems().get(j).getTitle()+"/"+(StringManagerUtils.isNotNull(protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning())?protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning():(languageResourceMap.get("bit")+protocolConfig.getItems().get(j).getMeaning().get(k).getValue())))+"\","
 												+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
 												+ "\"highLowByte\":\""+protocolConfig.getItems().get(j).getHighLowByte()+"\","
 												+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
@@ -3727,7 +3728,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											+ "\"id\":"+(index)+","
 											+ "\"title\":\""+dataMapping.getName()+"\","
 //											+ "\"showTitle\":\""+(protocol.getName()+"/"+item.getTitle()+"/"+itemsMeaning.getMeaning())+"\","
-											+ "\"showTitle\":\""+(item.getTitle()+"/"+itemsMeaning.getMeaning())+"\","
+											+ "\"showTitle\":\""+(item.getTitle()+"/"+(StringManagerUtils.isNotNull(itemsMeaning.getMeaning())?itemsMeaning.getMeaning():(languageResourceMap.get("bit")+itemsMeaning.getValue())))+"\","
 											+ "\"unit\":\"\","
 											+ "\"totalType\":\""+totalType+"\","
 											+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","0", language)+"\","

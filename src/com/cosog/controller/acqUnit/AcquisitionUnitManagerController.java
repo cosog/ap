@@ -1293,6 +1293,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
 		String highLowByte = ParamUtils.getParameter(request, "highLowByte");
+		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
+		String quantity = ParamUtils.getParameter(request, "quantity");
 		String json = "";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1302,7 +1304,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		json = acquisitionUnitItemManagerService.getProtocolItemMeaningConfigData(protocolCode,itemAddr,highLowByte,language);
+		json = acquisitionUnitItemManagerService.getProtocolItemMeaningConfigData(protocolCode,itemAddr,highLowByte,resolutionMode,quantity,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

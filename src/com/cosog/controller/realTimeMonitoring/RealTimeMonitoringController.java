@@ -511,14 +511,20 @@ public class RealTimeMonitoringController extends BaseController {
 					}
 				}
 			}else{
-				if(quantity==1){
-					writeValue=StringManagerUtils.objectToString(controlValue, dataType)+"";
-				}else if(quantity>1){
-					String [] writeValueArr=controlValue.split(",");
-					for(int i=0;i<writeValueArr.length;i++){
-						writeValue+=StringManagerUtils.objectToString(writeValueArr[i], dataType)+"";
-						if(i!=writeValueArr.length-1){
-							writeValue+=",";
+				if(resolutionMode==0){
+					int readValue=0;
+					int w=StringManagerUtils.editIntDataBit(readValue,StringManagerUtils.stringToInteger(bitIndex),(byte)StringManagerUtils.stringToInteger(controlValue)); 
+					writeValue=w+"";
+				}else{
+					if(quantity==1){
+						writeValue=StringManagerUtils.objectToString(controlValue, dataType)+"";
+					}else if(quantity>1){
+						String [] writeValueArr=controlValue.split(",");
+						for(int i=0;i<writeValueArr.length;i++){
+							writeValue+=StringManagerUtils.objectToString(writeValueArr[i], dataType)+"";
+							if(i!=writeValueArr.length-1){
+								writeValue+=",";
+							}
 						}
 					}
 				}
@@ -537,53 +543,63 @@ public class RealTimeMonitoringController extends BaseController {
 						+ "\"Addr\":"+addr+""
 						+ "}";
 				
-				//开关量控制
+				
 				String responseStr="";
-				if(resolutionMode==0){
-					//先读取寄存器值
-					responseStr=StringManagerUtils.sendPostMethod(url, readJson,"utf-8",0,0);
-					
-//					responseStr="{\"ResultStatus\":1,\"Value\":[5]}";
-					
-					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送读地址命令:"+readJson+";返回数据:"+responseStr);
-					type = new TypeToken<AcqAddrData>() {}.getType();
-					AcqAddrData acqAddrData=gson.fromJson(responseStr, type);
-					int readResult=acqAddrData.getResultStatus();
-					if(readResult==1 
-							&& acqAddrData.getValue()!=null 
-							&& (acqAddrData.getValue().size()==1)   
-							){//读取成功后，再写地址
-						String readValueStr=acqAddrData.getValue().get(0).toString();
-						if(StringManagerUtils.isNotNull(readValueStr) && StringManagerUtils.isInteger(readValueStr) && StringManagerUtils.isInteger(controlValue)){
-							int readValue=StringManagerUtils.stringToInteger(readValueStr);
-							int w=StringManagerUtils.editIntDataBit(readValue,StringManagerUtils.stringToInteger(bitIndex),(byte)StringManagerUtils.stringToInteger(controlValue));
-							ctrlJson="{"
-									+ "\""+IDOrIPPortKey+"\":\""+IDOrIPPort+"\","
-									+ "\"Slave\":"+Slave+","
-									+ "\"Addr\":"+addr+","
-									+ "\"Value\":["+w+"]"
-									+ "}";
-							
-							responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-							System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
-							if(StringManagerUtils.isNotNull(responseStr)){
-								type = new TypeToken<ResultStatusData>() {}.getType();
-								ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
-								result=resultStatusData.getResultStatus();
-							}
-							realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
-						}
-					}
-				}else{
-					responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
-					if(StringManagerUtils.isNotNull(responseStr)){
-						type = new TypeToken<ResultStatusData>() {}.getType();
-						ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
-						result=resultStatusData.getResultStatus();
-					}
-					realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
+				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
+				if(StringManagerUtils.isNotNull(responseStr)){
+					type = new TypeToken<ResultStatusData>() {}.getType();
+					ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
+					result=resultStatusData.getResultStatus();
 				}
+				realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
+				
+				
+//				if(resolutionMode==0){//开关量控制
+//					//先读取寄存器值
+//					responseStr=StringManagerUtils.sendPostMethod(url, readJson,"utf-8",0,0);
+//					
+////					responseStr="{\"ResultStatus\":1,\"Value\":[5]}";
+//					
+//					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送读地址命令:"+readJson+";返回数据:"+responseStr);
+//					type = new TypeToken<AcqAddrData>() {}.getType();
+//					AcqAddrData acqAddrData=gson.fromJson(responseStr, type);
+//					int readResult=acqAddrData.getResultStatus();
+//					if(readResult==1 
+//							&& acqAddrData.getValue()!=null 
+//							&& (acqAddrData.getValue().size()==1)   
+//							){//读取成功后，再写地址
+//						String readValueStr=acqAddrData.getValue().get(0).toString();
+//						if(StringManagerUtils.isNotNull(readValueStr) && StringManagerUtils.isInteger(readValueStr) && StringManagerUtils.isInteger(controlValue)){
+//							int readValue=StringManagerUtils.stringToInteger(readValueStr);
+//							int w=StringManagerUtils.editIntDataBit(readValue,StringManagerUtils.stringToInteger(bitIndex),(byte)StringManagerUtils.stringToInteger(controlValue));
+//							ctrlJson="{"
+//									+ "\""+IDOrIPPortKey+"\":\""+IDOrIPPort+"\","
+//									+ "\"Slave\":"+Slave+","
+//									+ "\"Addr\":"+addr+","
+//									+ "\"Value\":["+w+"]"
+//									+ "}";
+//							
+//							responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
+//							System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
+//							if(StringManagerUtils.isNotNull(responseStr)){
+//								type = new TypeToken<ResultStatusData>() {}.getType();
+//								ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
+//								result=resultStatusData.getResultStatus();
+//							}
+//							realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
+//						}
+//					}
+//				}else{
+//					responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
+//					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
+//					if(StringManagerUtils.isNotNull(responseStr)){
+//						type = new TypeToken<ResultStatusData>() {}.getType();
+//						ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
+//						result=resultStatusData.getResultStatus();
+//					}
+//					realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
+//				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -994,6 +1010,95 @@ public class RealTimeMonitoringController extends BaseController {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		result_json.append("}");
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result_json.toString());
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getDeviceSwitchingValueControlData")
+	public String getDeviceSwitchingValueControlData() throws Exception {
+		String deviceId = request.getParameter("deviceId");
+		String deviceName = request.getParameter("deviceName");
+		String deviceType = request.getParameter("deviceType");
+		String controlType = request.getParameter("controlType");
+		String controlValue = request.getParameter("controlValue");
+		String jsonLogin = "";
+		String clientIP=StringManagerUtils.getIpAddr(request);
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo!=null?userInfo.getLanguageName():"");
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		
+		String deviceTableName="tbl_device";
+		
+		List<ModbusProtocolConfig.ItemsMeaning> itemsMeaningList=new ArrayList<>();
+		
+		// 用户不存在
+		if (null != userInfo) {
+			String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType "
+					+ " from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+					+ " where t.instancecode=t2.code and t2.unitid=t3.id"
+					+ " and t.id="+deviceId;
+			List<?> list = this.service.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				String protocolCode=obj[0]+"";
+				String tcpType=obj[1]+"";
+				String signinid=obj[2]+"";
+				String ipPort=obj[3]+"";
+				String slave=obj[4]+"";
+				String realDeviceType=obj[5]+"";
+				if(StringManagerUtils.isNotNull(protocolCode) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
+					if(protocol!=null){
+						for(int i=0;i<protocol.getItems().size();i++){
+							String col="";
+							if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(i).getTitle())){
+								col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(i).getTitle()).getMappingColumn();
+							}
+							if(controlType.equalsIgnoreCase(col)){
+								if(protocol.getItems().get(i).getResolutionMode()==0){
+									itemsMeaningList=protocol.getItems().get(i).getMeaning();
+								}
+								
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		StringBuffer result_json = new StringBuffer();
+		int totalCount=0;
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<itemsMeaningList.size();i++){
+			if(StringManagerUtils.isNotNull(itemsMeaningList.get(i).getStatus0())){
+				totalCount++;
+				result_json.append("{\"index\":"+totalCount+",");
+				result_json.append("\"bitIndex\":"+itemsMeaningList.get(i).getValue()+",");
+				result_json.append("\"meaning\":\""+(StringManagerUtils.isNotNull(itemsMeaningList.get(i).getMeaning())?itemsMeaningList.get(i).getMeaning():(languageResourceMap.get("bit")+itemsMeaningList.get(i).getValue()))+"\",");
+				result_json.append("\"status\":\""+itemsMeaningList.get(i).getStatus0()+"\",");
+				result_json.append("\"value\":0},");
+			}
+			if(StringManagerUtils.isNotNull(itemsMeaningList.get(i).getStatus1())){
+				totalCount++;
+				result_json.append("{\"index\":"+totalCount+",");
+				result_json.append("\"bitIndex\":"+itemsMeaningList.get(i).getValue()+",");
+				result_json.append("\"meaning\":\""+(StringManagerUtils.isNotNull(itemsMeaningList.get(i).getMeaning())?itemsMeaningList.get(i).getMeaning():(languageResourceMap.get("bit")+itemsMeaningList.get(i).getValue()))+"\",");
+				result_json.append("\"status\":\""+itemsMeaningList.get(i).getStatus1()+"\",");
+				result_json.append("\"value\":1},");
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("],");
+		result_json.append("\"totalCount\":"+totalCount+",");
 		result_json.append("}");
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

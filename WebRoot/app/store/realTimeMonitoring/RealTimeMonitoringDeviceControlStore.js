@@ -21,7 +21,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
             var get_rawData = store.proxy.reader.rawData;
             var isControl = get_rawData.isControl;
             var commStatus = get_rawData.commStatus;
-            var showButtonCount=3;
+            var showButtonCount=9999;
 
             var controlGridPanel = Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
             if (!isNotVal(controlGridPanel)) {
@@ -72,10 +72,10 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                             var itemMeaning = record.data.itemMeaning || [];
                             var buttonCount = 0;
                             
-                            if (resolutionMode == 1 && itemMeaning.length<=showButtonCount) {
+                            if (resolutionMode == 1 && itemMeaning.length > 0 && itemMeaning.length<=showButtonCount) {
                                 buttonCount = itemMeaning.length;
-                            } else if (resolutionMode == 0 && itemMeaning.length > 0) {
-                                buttonCount = 2;
+                            } else if (resolutionMode == 0 && itemMeaning.length > 0 && itemMeaning.length<=showButtonCount) {
+                            	buttonCount = itemMeaning.length;
                             } else {
                                 buttonCount = 1;
                             }
@@ -104,31 +104,44 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                         index: i
                                     });
                                 }
-                            } else if (resolutionMode == 0 && itemMeaning.length > 0) {
-                            	var switchingOpenValue=loginUserLanguageResource.switchingOpenValue;
-                            	var switchingCloseValue=loginUserLanguageResource.switchingCloseValue;
-                            	
-                            	for(var i = 0; i < itemMeaning.length; i++){
-                            		if(itemMeaning[i][0]==1 && isNotVal(itemMeaning[i][1]) ){
-                            			switchingOpenValue=itemMeaning[i][1];
-                            		}else if(itemMeaning[i][0]==0 && isNotVal(itemMeaning[i][1]) ){
-                            			switchingCloseValue=itemMeaning[i][1];
-                            		}
-                            	}
-                            	
-                                buttonsToShow.push({
-                                    text: switchingOpenValue,
-                                    tooltip: switchingOpenValue,
-                                    value: 'open',
-                                    index: 0
-                                });
-                                buttonsToShow.push({
-                                    text: switchingCloseValue,
-                                    tooltip: switchingCloseValue,
-                                    value: 'close',
-                                    index: 1
-                                });
-                            } else {
+                            } else if (resolutionMode == 0 && itemMeaning.length > 0 && itemMeaning.length <= showButtonCount) {
+                                for (var i = 0; i < itemMeaning.length; i++) {
+                                    buttonsToShow.push({
+                                        text: itemMeaning[i].status,
+                                        tooltip: itemMeaning[i].status,
+                                        value: itemMeaning[i].value,
+                                        bitIndex: itemMeaning[i].bitIndex,
+                                        index: i
+                                    });
+                                }
+                            } 
+//                            else if (resolutionMode == 0 && itemMeaning.length > 0) {
+//                            	var switchingOpenValue=loginUserLanguageResource.switchingOpenValue;
+//                            	var switchingCloseValue=loginUserLanguageResource.switchingCloseValue;
+//                            	
+//                            	for(var i = 0; i < itemMeaning.length; i++){
+//                            		if(itemMeaning[i][0]==1 && isNotVal(itemMeaning[i][1]) ){
+//                            			switchingOpenValue=itemMeaning[i][1];
+//                            		}else if(itemMeaning[i][0]==0 && isNotVal(itemMeaning[i][1]) ){
+//                            			switchingCloseValue=itemMeaning[i][1];
+//                            		}
+//                            	}
+//                            	
+//                                buttonsToShow.push({
+//                                    text: switchingOpenValue,
+//                                    tooltip: switchingOpenValue,
+//                                    value: 'open',
+//                                    index: 0
+//                                });
+//                                buttonsToShow.push({
+//                                    text: switchingCloseValue,
+//                                    tooltip: switchingCloseValue,
+//                                    value: 'close',
+//                                    index: 1
+//                                });
+//                            } 
+                            
+                            else {
                                 buttonsToShow.push({
                                     text: loginUserLanguageResource.set,
                                     tooltip: loginUserLanguageResource.set,
@@ -149,7 +162,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                                     index: btnConfig.index,
                                     disabled: !(commStatus > 0 && isControl == 1),
                                     handler: function(btn) {
-                                        controlBtnHandler(btn, btn.index);
+                                        controlBtnHandler(btn, btn.index,showButtonCount);
                                     }
                                 });
                             });

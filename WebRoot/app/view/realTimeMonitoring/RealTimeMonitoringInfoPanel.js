@@ -1172,7 +1172,7 @@ function renderControlBtn(btn,btnIndex){
 //    btn.setDisabled(false);
 }
 
-function controlBtnHandler(btn,btnIndex){
+function controlBtnHandler(btn,btnIndex,showButtonCount){
 	var selection=Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection();
 	if(selection.length>0){
 		var record = btn.up().getWidgetRecord();
@@ -1187,13 +1187,14 @@ function controlBtnHandler(btn,btnIndex){
 	    var commStatus = record.data.commStatus;
 	    var resolutionMode = record.data.resolutionMode;
 	    var itemMeaning = record.data.itemMeaning;
-	    var bitIndex = record.data.bitIndex;
+//	    var bitIndex = record.data.bitIndex;
+	    
 	    
 	    var quantity = record.data.quantity;
 		
 	    var all_loading = new Ext.LoadMask({msg: loginUserLanguageResource.commandSending+'...',target: Ext.getBody().component});
 	    
-	    if(resolutionMode == 1 && itemMeaning.length <= 3) {
+	    if(resolutionMode == 1 && itemMeaning.length <= showButtonCount) {
             all_loading.show();
             Ext.Ajax.request({
                 url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
@@ -1228,148 +1229,51 @@ function controlBtnHandler(btn,btnIndex){
                 failure: function (response, options) {
                     all_loading.hide();
                     if (response.timedout) {
-//                    	Ext.Msg.alert('请求超时！设置的' + (options.timeout/1000) + '秒超时已到');
                     	Ext.Msg.alert('请求超时!');
                     } else {
                     	Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-//                        console.log('请求失败，状态码: ' + response.status);
                     }
-                    
-                    // 还可以获取更多错误信息
-//                    console.log('错误信息: ' + response.statusText);
                 }
             });
-            
-//            var xhr = new XMLHttpRequest();
-//            var url = context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass';
-//            var params = Ext.Object.toQueryString({
-//                deviceId: deviceId,
-//                deviceName: deviceName,
-//                controlType: itemcode,
-//                quantity: quantity,
-//                controlValue: itemMeaning[btnIndex][0]
-//            });
-//
-//            xhr.timeout = 3000; // 3秒超时
-//            xhr.open('POST', url, true);
-//            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-//
-//            xhr.ontimeout = function () {
-//                all_loading.hide();
-//                console.log('✅ XMLHttpRequest 超时触发');
-//                Ext.Msg.alert('请求超时', '设置的3秒超时已到');
-//            };
-//
-//            xhr.onload = function () {
-//                all_loading.hide();
-//                if (xhr.status === 200) {
-//                    try {
-//                        var data = Ext.decode(xhr.responseText);
-//                        if (data.success == true && data.flag == false) {
-//                            Ext.MessageBox.show({
-//                                title: loginUserLanguageResource.tip,
-//                                msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
-//                                icon: Ext.MessageBox.INFO,
-//                                buttons: Ext.Msg.OK,
-//                                fn: function () {
-//                                    window.location.href = context + "/login";
-//                                }
-//                            });
-//                        } else if (data.flag == true && data.error == false) {
-//                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
-//                        } else if (data.flag == true && data.error == true) {
-//                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
-//                        }
-//                    } catch (e) {
-//                        Ext.Msg.alert(loginUserLanguageResource.tip, "响应数据解析错误");
-//                    }
-//                } else {
-//                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin);
-//                }
-//            };
-//
-//            xhr.onerror = function () {
-//                all_loading.hide();
-//                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin);
-//            };
-//
-//            xhr.send(params);
-        }else if(resolutionMode == 0 && itemMeaning.length > 0){
-	    	if(btnIndex==0){
-                all_loading.show();
-                Ext.Ajax.request({
-                    url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
-                    method: "POST",
-                    params: {
-                        deviceId: deviceId,
-                        deviceName: deviceName,
-                        controlType: itemcode,
-                        bitIndex: bitIndex,
-                        quantity: quantity,
-                        controlValue: 1
-                    },
-                    success: function (response, action) {
-                        all_loading.hide();
-                        var data = Ext.decode(response.responseText);
-                        if (data.success == true && data.flag == false) {
-                            Ext.MessageBox.show({
-                                title: loginUserLanguageResource.tip,
-                                msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
-                                icon: Ext.MessageBox.INFO,
-                                buttons: Ext.Msg.OK,
-                                fn: function () {
-                                    window.location.href = context + "/login";
-                                }
-                            });
-                        } else if (data.flag == true && data.error == false) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
-                        } else if (data.flag == true && data.error == true) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
-                        }
-                    },
-                    failure: function () {
-                        all_loading.hide();
-                        Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+        }else if(resolutionMode == 0 && itemMeaning.length > 0 && itemMeaning.length <= showButtonCount){
+        	var bitIndex = itemMeaning[btnIndex].bitIndex;
+        	var controlValue = itemMeaning[btnIndex].value;
+            all_loading.show();
+            Ext.Ajax.request({
+                url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+                method: "POST",
+                params: {
+                    deviceId: deviceId,
+                    deviceName: deviceName,
+                    controlType: itemcode,
+                    bitIndex: bitIndex,
+                    quantity: quantity,
+                    controlValue: controlValue
+                },
+                success: function (response, action) {
+                    all_loading.hide();
+                    var data = Ext.decode(response.responseText);
+                    if (data.success == true && data.flag == false) {
+                        Ext.MessageBox.show({
+                            title: loginUserLanguageResource.tip,
+                            msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
+                            icon: Ext.MessageBox.INFO,
+                            buttons: Ext.Msg.OK,
+                            fn: function () {
+                                window.location.href = context + "/login";
+                            }
+                        });
+                    } else if (data.flag == true && data.error == false) {
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
+                    } else if (data.flag == true && data.error == true) {
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
                     }
-                });
-            }else if(btnIndex==1){
-                all_loading.show();
-                Ext.Ajax.request({
-                    url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
-                    method: "POST",
-                    params: {
-                        deviceId: deviceId,
-                        deviceName: deviceName,
-                        controlType: itemcode,
-                        bitIndex: bitIndex,
-                        quantity: quantity,
-                        controlValue: 0
-                    },
-                    success: function (response, action) {
-                        all_loading.hide();
-                        var data = Ext.decode(response.responseText);
-                        if (data.success == true && data.flag == false) {
-                            Ext.MessageBox.show({
-                                title: loginUserLanguageResource.tip,
-                                msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
-                                icon: Ext.MessageBox.INFO,
-                                buttons: Ext.Msg.OK,
-                                fn: function () {
-                                    window.location.href = context + "/login";
-                                }
-                            });
-                        } else if (data.flag == true && data.error == false) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
-                        } else if (data.flag == true && data.error == true) {
-                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + data.msg + "</font>");
-                        }
-                    },
-                    failure: function () {
-                        all_loading.hide();
-                        Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-                    }
-                });
-            }
+                },
+                failure: function () {
+                    all_loading.hide();
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+                }
+            });
 	    }else{
 	    	if(btnIndex==0){
                 Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
@@ -1394,9 +1298,9 @@ function controlBtnHandler(btn,btnIndex){
                 var showInfo=loginUserLanguageResource.controlItem+':<font color=red>'+record.data.itemName+'</font>';
                 if(resolutionMode==2){
                 	showInfo+='&nbsp;&nbsp;';
-                	showInfo+=loginUserLanguageResource.unit+":<font color=red>"+(isNotVal(record.data.unit)?record.data.unit:"无")+'</font>'
+                	showInfo+=loginUserLanguageResource.unit+":<font color=red>"+(isNotVal(record.data.unit)?record.data.unit:" ")+'</font>'
                 }
-                if(resolutionMode==1){
+                if(resolutionMode==1 || resolutionMode==0){
                 	Ext.getCmp("DeviceControlConfirmBtn_Id").hide();
                 }
                 
@@ -1434,6 +1338,8 @@ function controlBtnHandler(btn,btnIndex){
                         fields: ['boxkey', 'boxval'],
                         data: data
                     });
+                }else if (resolutionMode == 0 && itemMeaning.length > 0) {
+                	Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
                 }
                 DeviceControlCheckPassWindow.show();
             }

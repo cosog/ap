@@ -4206,6 +4206,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			List<String> controlItemMeaningList=new ArrayList<String>();
 			List<ModbusProtocolConfig.Items> controlItemList=new ArrayList<>();
 			StringBuffer deviceControlList=new StringBuffer();
+			Map<String,String> controlItemMeaningMap=new LinkedHashMap<>();
 			deviceControlList.append("[");
 			
 			if(displayInstanceOwnItem!=null){
@@ -4219,9 +4220,16 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									if("rw".equalsIgnoreCase(protocol.getItems().get(k).getRWType())
 											||"w".equalsIgnoreCase(protocol.getItems().get(k).getRWType())){
 										String title=protocol.getItems().get(k).getTitle();
+										String col="";
+										if(loadProtocolMappingColumnByTitleMap.containsKey(title)){
+											col=loadProtocolMappingColumnByTitleMap.get(title).getMappingColumn();
+										}
 										
 										String switchingValueMeaning="[['1','"+languageResourceMap.get("switchingOpenValue")+"'],['0','"+languageResourceMap.get("switchingCloseValue")+"']]";
-										
+										String itemMeaning="";
+										if(controlItemMeaningMap.containsKey(col)){
+											itemMeaning=controlItemMeaningMap.get(col);
+										}
 										if(protocol.getItems().get(k).getResolutionMode()==0 && protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0 ){
 											int bitIndex=displayInstanceOwnItem.getItemList().get(j).getBitIndex();
 											for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:protocol.getItems().get(k).getMeaning()){
@@ -4232,6 +4240,20 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													}else{
 														title=itemsMeaning.getMeaning();
 													}
+													if(StringManagerUtils.isNotNull(itemsMeaning.getStatus0())){
+														if(itemMeaning.endsWith("}")){
+															itemMeaning+=",";
+														}
+														itemMeaning+="{\"bitIndex\":"+itemsMeaning.getValue()+",\"meaning\":\""+itemsMeaning.getMeaning()+"\",\"value\":0,\"status\":\""+itemsMeaning.getStatus0()+"\""+"}";
+													}
+													if(StringManagerUtils.isNotNull(itemsMeaning.getStatus1())){
+														if(itemMeaning.endsWith("}")){
+															itemMeaning+=",";
+														}
+														itemMeaning+="{\"bitIndex\":"+itemsMeaning.getValue()+",\"meaning\":\""+itemsMeaning.getMeaning()+"\",\"value\":1,\"status\":\""+itemsMeaning.getStatus1()+"\""+"}";
+													}
+													
+													break;
 												}
 											}
 										}
@@ -4243,14 +4265,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										controlItems.add(title);
 										controlItemBitindexList.add(displayInstanceOwnItem.getItemList().get(j).getBitIndex()+"");
 										controlItemList.add(protocol.getItems().get(k));
-										String col="";
-										if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
-											col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
-										}
+										
 										controlColumns.add(col);
 										controlItemResolutionMode.add(protocol.getItems().get(k).getResolutionMode());
 										if(protocol.getItems().get(k).getResolutionMode()==0){//开关量
 											controlItemMeaningList.add(switchingValueMeaning);
+											controlItemMeaningMap.put(col, itemMeaning);
 										}else if(protocol.getItems().get(k).getResolutionMode()==1){//枚举量
 											if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
 												StringBuffer itemMeaning_buff = new StringBuffer();
@@ -4289,26 +4309,35 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				commStatus=StringManagerUtils.stringToInteger(list.get(0)+"");
 			}
 			
+			Map<String,String> addItemMap=new HashMap<>();
 			if(controlColumns.size()>0){
 				for(int i=0;i<controlColumns.size();i++){
-					deviceControlList.append("{\"item\":\""+controlItems.get(i)+"\","
-							+ "\"deviceId\":\""+deviceId+"\","
-							+ "\"deviceName\":\""+deviceName+"\","
-							+ "\"itemName\":\""+controlItemList.get(i).getTitle()+"\","
-							+ "\"itemcode\":\""+controlColumns.get(i)+"\","
-							+ "\"bitIndex\":\""+controlItemBitindexList.get(i)+"\","
-							+ "\"resolutionMode\":"+controlItemResolutionMode.get(i)+","
-							
-							+ "\"storeDataType\":\""+controlItemList.get(i).getStoreDataType()+"\","
-							+ "\"unit\":\""+controlItemList.get(i).getUnit()+"\","
-							+ "\"quantity\":\""+controlItemList.get(i).getQuantity()+"\","
-							
-							+ "\"value\":\"\","
-							+ "\"operation\":"+true+","
-							+ "\"isControl\":"+isControl+","
-							+ "\"showType\":1,"
-							+ "\"commStatus\":"+commStatus+","
-							+ "\"itemMeaning\":"+controlItemMeaningList.get(i)+"},");
+					if(!addItemMap.containsKey(controlColumns.get(i))){
+						addItemMap.put(controlColumns.get(i), controlColumns.get(i));
+						String controlItemMeaning=controlItemMeaningList.get(i);
+						if(controlItemMeaningMap.containsKey(controlColumns.get(i))){
+							controlItemMeaning="["+controlItemMeaningMap.get(controlColumns.get(i))+"]";
+						}
+						deviceControlList.append("{\"item\":\""+controlItemList.get(i).getTitle()+"\","
+								+ "\"deviceId\":\""+deviceId+"\","
+								+ "\"deviceName\":\""+deviceName+"\","
+								+ "\"itemName\":\""+controlItemList.get(i).getTitle()+"\","
+								+ "\"itemcode\":\""+controlColumns.get(i)+"\","
+								+ "\"bitIndex\":\""+controlItemBitindexList.get(i)+"\","
+								+ "\"resolutionMode\":"+controlItemResolutionMode.get(i)+","
+								
+								+ "\"storeDataType\":\""+controlItemList.get(i).getStoreDataType()+"\","
+								+ "\"unit\":\""+controlItemList.get(i).getUnit()+"\","
+								+ "\"quantity\":\""+controlItemList.get(i).getQuantity()+"\","
+								
+								+ "\"value\":\"\","
+								+ "\"operation\":"+true+","
+								+ "\"isControl\":"+isControl+","
+								+ "\"showType\":1,"
+								+ "\"commStatus\":"+commStatus+","
+								+ "\"itemMeaning\":"+controlItemMeaning+"},");
+					}
+					
 				}
 				if(deviceControlList.toString().endsWith(",")){
 					deviceControlList.deleteCharAt(deviceControlList.length() - 1);

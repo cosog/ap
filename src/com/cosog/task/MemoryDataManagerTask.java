@@ -4355,6 +4355,20 @@ public class MemoryDataManagerTask {
 		return modbusProtocolConfig;
 	}
 	
+	public static ModbusProtocolConfig.Items getProtocolItem(ModbusProtocolConfig.Protocol protocol,String itemAddr,String highLowByte){
+		ModbusProtocolConfig.Items rtnItem=null;
+		if(StringManagerUtils.isNotNull(itemAddr) && protocol!=null && protocol.getItems()!=null && protocol.getItems().size()>0){
+			for(ModbusProtocolConfig.Items item:protocol.getItems()){
+				if(item.getAddr()==StringManagerUtils.stringToInteger(itemAddr)
+						&& item.getHighLowByte().equalsIgnoreCase(highLowByte)){
+					rtnItem=item;
+					break;
+				}
+			}
+		}
+		return rtnItem;
+	}
+	
 	public static ModbusProtocolConfig.Items getProtocolItem(ModbusProtocolConfig.Protocol protocol,String itemName){
 		ModbusProtocolConfig.Items rtnItem=null;
 		if(StringManagerUtils.isNotNull(itemName) && protocol!=null && protocol.getItems()!=null && protocol.getItems().size()>0){

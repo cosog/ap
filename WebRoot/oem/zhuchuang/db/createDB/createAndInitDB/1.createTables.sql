@@ -391,6 +391,7 @@ create table TBL_RUNSTATUSCONFIG
   stopvalue         VARCHAR2(50),
   runcondition      VARCHAR2(50),
   stopcondition     VARCHAR2(50),
+  bitindex          NUMBER(3),
   protocoltype      NUMBER(1)
 )
 tablespace AP_DATA
@@ -661,6 +662,7 @@ create table TBL_REPORT_ITEMS2UNIT_CONF
   itemid          NUMBER(10),
   itemname        VARCHAR2(200),
   itemcode        VARCHAR2(200),
+  bitindex        NUMBER(3),
   unitid          NUMBER(10),
   sort            NUMBER(10),
   showlevel       NUMBER(10),

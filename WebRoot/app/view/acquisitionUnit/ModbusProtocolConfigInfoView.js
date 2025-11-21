@@ -431,7 +431,7 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 			if(dataLength==0){
 				protocolItemsConfigHandsontableHelper.hot.selectCell(0,'title');
 				Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue('');
-				CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable('','','','','',true);
+				CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable('','','','','','',true);
 			}else{
 				protocolItemsConfigHandsontableHelper.hot.selectCell(0,'title');
 				
@@ -444,11 +444,12 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
             			protocolCode=selectedProtocol.data.code;
             		}
             		
+            		var itemTitle=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(0,'title');
             		var itemAddr=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(0,'addr');
             		var highLowByte=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(0,'highLowByte');
             		var resolutionMode=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(0,'resolutionMode');
             		var quantity=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(0,'quantity');
-            		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,quantity,true);
+            		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemTitle,itemAddr,highLowByte,resolutionMode,quantity,true);
         		}
 			}
 			protocolItemsConfigHandsontableHelper.initTitleDataMap(protocolItemsConfigHandsontableHelper.Data);
@@ -816,6 +817,33 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                            if (oldAddrAndHighLowByteValue !== newAddrAndHighLowByteValue) {
 	                            	needUpdateMap = true;
 	                            }
+	                            
+	                            if (prop === 'highLowByte') {
+		                        	var selectedRow=Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").getValue();
+		                        	if(selectedRow==row 
+		                        			&& protocolItemsMeaningConfigHandsontableHelper!=null
+		                        			&& protocolItemsMeaningConfigHandsontableHelper.hot!=''
+		                        			&& protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
+		                        		var resolutionMode=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'resolutionMode');
+		                        		if(resolutionMode==loginUserLanguageResource.switchingValue){
+		                        			var itemTitle=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'title');
+		                        			var itemAddr=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'addr');
+				                    		var highLowByte=newValue;
+				                    		var quantity=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'quantity');
+			                        		
+			                        		var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
+					                		var protocolCode="";
+					                		if(protocolTreeGridPanelSelectRow!=''){
+					                			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(protocolTreeGridPanelSelectRow);
+					                    		if(selectedProtocol.data.classes==1){//选中的是协议
+					                    			protocolCode=selectedProtocol.data.code;
+					                    		}
+					                		}
+			                        		
+			                        		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemTitle,itemAddr,highLowByte,resolutionMode,quantity,true);
+		                        		}
+		                        	}
+		                        }
 	                        }else if (prop === 'resolutionMode') {
 	                        	var selectedRow=Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").getValue();
 	                        	if(selectedRow==row 
@@ -823,6 +851,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                        			&& protocolItemsMeaningConfigHandsontableHelper.hot!=''
 	                        			&& protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
 	                        		var resolutionMode=newValue;
+	                        		var itemTitle=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'title');
 	                        		var itemAddr=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'addr');
 		                    		var highLowByte=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'highLowByte');
 		                    		var quantity=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'quantity');
@@ -836,7 +865,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 			                    		}
 			                		}
 	                        		
-	                        		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,quantity,true);
+	                        		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemTitle,itemAddr,highLowByte,resolutionMode,quantity,true);
 	                        		
 	                        		
 	                        		
@@ -858,6 +887,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                        			&& protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
 	                        		var resolutionMode=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'resolutionMode');
 	                        		if(resolutionMode==loginUserLanguageResource.switchingValue){
+	                        			var itemTitle=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'title');
 	                        			var itemAddr=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'addr');
 			                    		var highLowByte=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(row,'highLowByte');
 			                    		var quantity=newValue;
@@ -871,7 +901,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 				                    		}
 				                		}
 		                        		
-		                        		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,quantity,true);
+		                        		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemTitle,itemAddr,highLowByte,resolutionMode,quantity,true);
 	                        		}
 	                        	}
 	                        }
@@ -883,7 +913,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {
 	                	if(row<0 && row2<0){//只选中表头
 	                		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue('');
-	                		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable('','','','','',true);
+	                		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable('','','','','','',true);
 	                	}else{
 	                		if(row<0){
 	                    		row=0;
@@ -908,11 +938,12 @@ var ProtocolItemsConfigHandsontableHelper = {
 		                    		if(selectedProtocol.data.classes==1){//选中的是协议
 		                    			protocolCode=selectedProtocol.data.code;
 		                    		}
+		                    		var itemTitle=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'title');
 		                    		var itemAddr=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'addr');
 		                    		var highLowByte=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'highLowByte');
 		                    		var resolutionMode=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'resolutionMode');
 		                    		var quantity=protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'quantity');
-		                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,quantity,true);
+		                    		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemTitle,itemAddr,highLowByte,resolutionMode,quantity,true);
 		                		}
 	                    	}else{
 	                    		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(startRow);
@@ -1245,10 +1276,12 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 										if(protocolItemsMeaningConfigHandsontableHelper!=null && protocolItemsMeaningConfigHandsontableHelper.hot!=null){
 											var itemsMeaningData=protocolItemsMeaningConfigHandsontableHelper.hot.getData();
 											for(var j=0;j<itemsMeaningData.length;j++){
-												if(isNotVal(itemsMeaningData[j][0]) && isNotVal(itemsMeaningData[j][1])){
+												var itemValue=protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j,'value');
+												var itemMeaning=protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j,'meaning');
+												if(isNotVal(itemValue) && isNotVal(itemMeaning)){
 													var meaning={};
-													meaning.Value=itemsMeaningData[j][0];
-													meaning.Meaning=itemsMeaningData[j][1];
+													meaning.Value=itemValue;
+													meaning.Meaning=itemMeaning;
 													item.Meaning.push(meaning);
 												}
 											}
@@ -1415,7 +1448,7 @@ function saveModbusProtocolAddrMappingConfigData(configInfo,saveType){
 	});
 }
 
-function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,quantity,isNew){
+function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemTitle,itemAddr,highLowByte,resolutionMode,quantity,isNew){
 	if(protocolItemsMeaningConfigHandsontableHelper!=null){
 		if(protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
 			protocolItemsMeaningConfigHandsontableHelper.hot.destroy();
@@ -1444,7 +1477,11 @@ function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode
 		url:context + '/acquisitionUnitManagerController/getProtocolItemMeaningConfigData',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-			var showInfo="【<font color=red>"+result.itemTitle+"</font>】"+loginUserLanguageResource.meaning+"&nbsp;"
+			var showInfo=loginUserLanguageResource.meaning+"&nbsp;"
+			if(isNotVal(itemTitle)){
+				showInfo="【<font color=red>"+itemTitle+"</font>】"+loginUserLanguageResource.meaning+"&nbsp;"
+			}
+			
 			Ext.getCmp("ModbusProtocolAddrMappingItemsMeaningConfigPanel_Id").setTitle(showInfo);
 			
 			if(resolutionModeValue!=0){
@@ -1479,13 +1516,19 @@ function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode
 			if(protocolItemsMeaningConfigHandsontableHelper==null || protocolItemsMeaningConfigHandsontableHelper.hot==undefined){
 				protocolItemsMeaningConfigHandsontableHelper = ProtocolItemsMeaningConfigHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsMeaningTableInfoDiv_id");
 				var colHeaders="['"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.meaning+"']";
-				
-				if(resolutionModeValue==0){
-					colHeaders="['"+loginUserLanguageResource.bit+"','"+loginUserLanguageResource.meaning+"']";
-				}
 				var columns="[{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsMeaningConfigHandsontableHelper);}},"
-						+"{data:'meaning'}" 
+					+"{data:'meaning'}" 
+					+"]";
+				protocolItemsMeaningConfigHandsontableHelper.hiddenColumns=[];
+				if(resolutionModeValue==0){
+					colHeaders="['"+loginUserLanguageResource.bit+"','"+loginUserLanguageResource.meaning+"','']";
+					columns="[{data:'title'},"
+						+"{data:'meaning'}," 
+						+"{data:'value'}" 
 						+"]";
+					protocolItemsMeaningConfigHandsontableHelper.hiddenColumns=[2];
+				}
+				
 				
 				var contextMenu= {
                     items: {
@@ -1543,7 +1586,7 @@ function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode
 			
 			if(resolutionModeValue==0){
 				Ext.getCmp('ProtocolSwitchingValueBitStatusConfigPanel_Id').show();
-				CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,isNew);
+				CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemTitle,itemAddr,highLowByte,resolutionMode,quantity,isNew);
 			}else{
 				if(protocolSwitchingValueBitStatusConfigHandsontableHelper!=null){
 					if(protocolSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
@@ -1577,6 +1620,7 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
 	        protocolItemsMeaningConfigHandsontableHelper.columns=[];
 	        protocolItemsMeaningConfigHandsontableHelper.AllData=[];
 	        protocolItemsMeaningConfigHandsontableHelper.itemResolutionMode=2;
+	        protocolItemsMeaningConfigHandsontableHelper.hiddenColumns=[];
 	        protocolItemsMeaningConfigHandsontableHelper.contextMenu=null;
 	        
 	        protocolItemsMeaningConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
@@ -1600,6 +1644,11 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
 	        	protocolItemsMeaningConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
+	        		hiddenColumns: {
+	                    columns: protocolItemsMeaningConfigHandsontableHelper.hiddenColumns,
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
 	        		colWidths: [1,3],
 	                columns:protocolItemsMeaningConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -1623,7 +1672,7 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
 	                    	cellProperties.readOnly = true;
 	                    	cellProperties.renderer = protocolItemsMeaningConfigHandsontableHelper.addCellStyle;
 	                    }else {
-	                    	if(protocolItemsMeaningConfigHandsontableHelper.itemResolutionMode==0 && prop=='value'){
+	                    	if(protocolItemsMeaningConfigHandsontableHelper.itemResolutionMode==0 && prop=='title'){
 	                    		cellProperties.readOnly = true;
 	                    		cellProperties.renderer = protocolItemsMeaningConfigHandsontableHelper.addBoldBg;
 	                    	}else{
@@ -1967,7 +2016,7 @@ var ProtocolExtendedFieldConfigHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemAddr,highLowByte,resolutionMode,isNew){
+function CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemTitle,itemAddr,highLowByte,resolutionMode,quantity,isNew){
 	if(protocolSwitchingValueBitStatusConfigHandsontableHelper!=null){
 		if(protocolSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
 			protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
@@ -1979,7 +2028,10 @@ function CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemA
 		url:context + '/acquisitionUnitManagerController/getProtocolSwitchingValueBitStatusConfigData',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-			var showInfo="【<font color=red>"+result.itemTitle+"</font>】"+loginUserLanguageResource.switchingValueBitStatusConfig+"&nbsp;"
+			var showInfo=loginUserLanguageResource.switchingValueBitStatusConfig+"&nbsp;"
+			if(isNotVal(itemTitle)){
+				showInfo="【<font color=red>"+itemTitle+"</font>】"+loginUserLanguageResource.switchingValueBitStatusConfig+"&nbsp;"
+			}
 			Ext.getCmp("ProtocolSwitchingValueBitStatusConfigPanel_Id").setTitle(showInfo);
 			
 			
@@ -2003,7 +2055,9 @@ function CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemA
 		params: {
 			protocolCode:protocolCode,
 			itemAddr:itemAddr,
-			highLowByte:highLowByte
+			highLowByte:highLowByte,
+			quantity:quantity,
+			resolutionMode:resolutionMode
         }
 	});
 };

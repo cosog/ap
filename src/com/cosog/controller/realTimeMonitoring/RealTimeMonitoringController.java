@@ -469,6 +469,7 @@ public class RealTimeMonitoringController extends BaseController {
 			int resolutionMode=2;
 			String IFDataType="";
 			String storeDataType="";
+			String highLowByte="";
 			ModbusProtocolConfig.Items item=null;
 			for(int i=0;i<protocol.getItems().size();i++){
 				String col="";
@@ -485,6 +486,7 @@ public class RealTimeMonitoringController extends BaseController {
 					resolutionMode=protocol.getItems().get(i).getResolutionMode();
 					IFDataType=protocol.getItems().get(i).getIFDataType();
 					storeDataType=protocol.getItems().get(i).getStoreDataType();
+					highLowByte=protocol.getItems().get(i).getHighLowByte();
 					break;
 				}
 			}
@@ -513,7 +515,12 @@ public class RealTimeMonitoringController extends BaseController {
 			}else{
 				if(resolutionMode==0){
 					int readValue=0;
-					int w=StringManagerUtils.editIntDataBit(readValue,StringManagerUtils.stringToInteger(bitIndex),(byte)StringManagerUtils.stringToInteger(controlValue)); 
+					int position=15-StringManagerUtils.stringToInteger(bitIndex);
+					if("high".equalsIgnoreCase(highLowByte) && StringManagerUtils.stringToInteger(bitIndex)<8){
+						position=15-(StringManagerUtils.stringToInteger(bitIndex)+8);
+					}
+					
+					int w=StringManagerUtils.editIntDataBit(readValue,position,(byte)StringManagerUtils.stringToInteger(controlValue)); 
 					writeValue=w+"";
 				}else{
 					if(quantity==1){

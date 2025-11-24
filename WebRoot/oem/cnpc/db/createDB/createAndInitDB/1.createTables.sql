@@ -3,12 +3,12 @@
 /*==============================================================*/
 create table TBL_DEVICETYPEINFO
 (
-  id       NUMBER(10) not null,
-  parentid NUMBER(10) default 0 not null,
-  sortnum  NUMBER(10),
-  NAME_ZH_CN     VARCHAR2(100),
-  NAME_EN VARCHAR2(100),
-  NAME_RU VARCHAR2(100)
+  id         NUMBER(10) not null,
+  parentid   NUMBER(10) default 0 not null,
+  sortnum    NUMBER(10),
+  name_zh_cn VARCHAR2(100),
+  name_en    VARCHAR2(100),
+  name_ru    VARCHAR2(100)
 )
 tablespace AP_DATA
   storage
@@ -147,16 +147,9 @@ tablespace AP_DATA
     maxextents unlimited
   )
 /
--- Create/Recreate indexes 
-create index IDX_LANGUAGE2ROLE_LANGUAGE on TBL_LANGUAGE2ROLE (LANGUAGE);
-create index IDX_LANGUAGE2ROLE_ROLE on TBL_LANGUAGE2ROLE (ROLEID);
--- Create/Recreate primary, unique and foreign key constraints 
-alter table TBL_LANGUAGE2ROLE
-  add constraint PK_LANGUAGE2ROLE primary key (ID)
+alter table TBL_LANGUAGE2ROLE add constraint PK_LANGUAGE2ROLE primary key (ID)
 /
-alter table TBL_LANGUAGE2ROLE
-  add constraint FK_ROLEID foreign key (ROLEID)
-  references TBL_ROLE (ROLE_ID) on delete cascade
+alter table TBL_LANGUAGE2ROLE add constraint FK_ROLEID foreign key (ROLEID) references TBL_ROLE (ROLE_ID) on delete cascade
 /
 
 /*==============================================================*/
@@ -305,6 +298,7 @@ create table TBL_DIST_ITEM
   status_en        NUMBER default 1,
   status_ru        NUMBER default 1,
   configitemname   VARCHAR2(200),
+  configitembitindex NUMBER(3),
   creator    VARCHAR2(200),
   updateuser VARCHAR2(200),
   updatetime DATE default sysdate,
@@ -615,6 +609,7 @@ create table TBL_DISPLAY_ITEMS2UNIT_CONF
   historydata          NUMBER(1),
   realtimeoverviewsort NUMBER(10),
   historyoverviewsort  NUMBER(10),
+  switchingvalueshowtype NUMBER(1) default 0,
   matrix            VARCHAR2(8)
 )
 tablespace AP_DATA
@@ -1057,6 +1052,36 @@ alter table TBL_ACQDATA_HIST
 /
 
 /*==============================================================*/
+/* Table: TBL_ACQDATA_VACUATE                                   */
+/*==============================================================*/
+create table TBL_ACQDATA_VACUATE
+(
+  id                 NUMBER(10) not null,
+  deviceid           NUMBER(10),
+  acqtime            DATE,
+  commstatus         NUMBER(2) default 0,
+  commtime           NUMBER(8,2) default 0,
+  commtimeefficiency NUMBER(10,4) default 0,
+  commrange          CLOB,
+  runstatus          NUMBER(2) default 0,
+  runtimeefficiency  NUMBER(10,4) default 0,
+  runtime            NUMBER(8,2) default 0,
+  runrange           CLOB,
+  acqdata            CLOB,
+  checksign          NUMBER(2) default 1
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_ACQDATA_VACUATE add constraint PK_ACQDATA_VACUATE primary key (ID)
+/
+
+/*==============================================================*/
 /* Table: TBL_ACQRAWDATA                                    */
 /*==============================================================*/
 create table TBL_ACQRAWDATA
@@ -1436,14 +1461,14 @@ tablespace AP_DATA
     maxextents unlimited
   )
 /
-alter table TBL_RPCACQDATA_LATEST
-  add constraint PK_TBL_RPCACQDATA_LATEST primary key (ID)
+alter table TBL_SRPACQDATA_LATEST
+  add constraint PK_TBL_SRPACQDATA_LATEST primary key (ID)
 /
 
 /*==============================================================*/
 /* Table: TBL_SRPACQDATA_HIST                                    */
 /*==============================================================*/
-create table TBL_RPCACQDATA_HIST
+create table TBL_SRPACQDATA_HIST
 (
   id                                 NUMBER(10) not null,
   deviceid                           NUMBER(10),
@@ -1578,8 +1603,148 @@ tablespace AP_DATA
     maxextents unlimited
   )
 /
-alter table TBL_RPCACQDATA_HIST
-  add constraint PK_TBL_RPCACQDATA_HIST primary key (ID)
+alter table TBL_SRPACQDATA_HIST add constraint PK_TBL_SRPACQDATA_HIST primary key (ID)
+/
+
+/*==============================================================*/
+/* Table: TBL_SRPACQDATA_VACUATE                                    */
+/*==============================================================*/
+create table TBL_SRPACQDATA_VACUATE
+(
+  id                                 NUMBER(10) not null,
+  deviceid                           NUMBER(10),
+  acqtime                            DATE,
+  commstatus                         NUMBER(2) default 0,
+  commtime                           NUMBER(8,2) default 0,
+  commtimeefficiency                 NUMBER(10,4) default 0,
+  commrange                          CLOB,
+  runstatus                          NUMBER(2) default 0,
+  runtimeefficiency                  NUMBER(10,4) default 0,
+  runtime                            NUMBER(8,2) default 0,
+  runrange                           CLOB,
+  productiondata                     VARCHAR2(4000) default '{}',
+  pumpingmodelid                     NUMBER(10),
+  balanceinfo                        VARCHAR2(400),
+  fesdiagramacqtime                  DATE,
+  fesdiagramsrc                      NUMBER(2) default 0,
+  stroke                             NUMBER(8,2),
+  spm                                NUMBER(8,2),
+  fmax                               NUMBER(8,2),
+  fmin                               NUMBER(8,2),
+  position_curve                     CLOB,
+  angle_curve                        CLOB,
+  load_curve                         CLOB,
+  power_curve                        CLOB,
+  current_curve                      CLOB,
+  resultcode                         NUMBER(4),
+  fullnesscoefficient                NUMBER(8,2),
+  upperloadline                      NUMBER(8,2),
+  upperloadlineofexact               NUMBER(8,2),
+  lowerloadline                      NUMBER(8,2),
+  pumpfsdiagram                      CLOB,
+  theoreticalproduction              NUMBER(8,2),
+  liquidvolumetricproduction         NUMBER(8,2),
+  oilvolumetricproduction            NUMBER(8,2),
+  watervolumetricproduction          NUMBER(8,2),
+  availableplungerstrokeprod_v       NUMBER(8,2),
+  pumpclearanceleakprod_v            NUMBER(8,2),
+  tvleakvolumetricproduction         NUMBER(8,2),
+  svleakvolumetricproduction         NUMBER(8,2),
+  gasinfluenceprod_v                 NUMBER(8,2),
+  liquidweightproduction             NUMBER(8,2),
+  oilweightproduction                NUMBER(8,2),
+  waterweightproduction              NUMBER(8,2),
+  availableplungerstrokeprod_w       NUMBER(8,2),
+  pumpclearanceleakprod_w            NUMBER(8,2),
+  tvleakweightproduction             NUMBER(8,2),
+  svleakweightproduction             NUMBER(8,2),
+  gasinfluenceprod_w                 NUMBER(8,2),
+  averagewatt                        NUMBER(8,2),
+  polishrodpower                     NUMBER(8,2),
+  waterpower                         NUMBER(8,2),
+  surfacesystemefficiency            NUMBER(12,3),
+  welldownsystemefficiency           NUMBER(12,3),
+  systemefficiency                   NUMBER(12,3),
+  energyper100mlift                  NUMBER(8,2),
+  area                               NUMBER(8,2),
+  rodflexlength                      NUMBER(8,2),
+  tubingflexlength                   NUMBER(8,2),
+  inertialength                      NUMBER(8,2),
+  pumpeff1                           NUMBER(12,3),
+  pumpeff2                           NUMBER(12,3),
+  pumpeff3                           NUMBER(12,3),
+  pumpeff4                           NUMBER(12,3),
+  pumpeff                            NUMBER(12,3),
+  pumpintakep                        NUMBER(8,2),
+  pumpintaket                        NUMBER(8,2),
+  pumpintakegol                      NUMBER(8,2),
+  pumpintakevisl                     NUMBER(8,2),
+  pumpintakebo                       NUMBER(8,2),
+  pumpoutletp                        NUMBER(8,2),
+  pumpoutlett                        NUMBER(8,2),
+  pumpoutletgol                      NUMBER(8,2),
+  pumpoutletvisl                     NUMBER(8,2),
+  pumpoutletbo                       NUMBER(8,2),
+  rodstring                          VARCHAR2(200),
+  plungerstroke                      NUMBER(8,2),
+  availableplungerstroke             NUMBER(8,2),
+  leveldifferencevalue               NUMBER(8,2),
+  calcproducingfluidlevel            NUMBER(8,2),
+  noliquidfullnesscoefficient        NUMBER(10,4),
+  noliquidavailableplungerstroke     NUMBER(10,4),
+  smaxindex                          NUMBER(10),
+  sminindex                          NUMBER(10),
+  upstrokeimax                       NUMBER(8,2),
+  downstrokeimax                     NUMBER(8,2),
+  upstrokewattmax                    NUMBER(8,2),
+  downstrokewattmax                  NUMBER(8,2),
+  idegreebalance                     NUMBER(8,2),
+  wattdegreebalance                  NUMBER(8,2),
+  deltaradius                        NUMBER(8,2),
+  crankangle                         CLOB,
+  polishrodv                         CLOB,
+  polishroda                         CLOB,
+  pr                                 CLOB,
+  tf                                 CLOB,
+  loadtorque                         CLOB,
+  cranktorque                        CLOB,
+  currentbalancetorque               CLOB,
+  currentnettorque                   CLOB,
+  expectedbalancetorque              CLOB,
+  expectednettorque                  CLOB,
+  wellboreslice                      CLOB,
+  resultstatus                       NUMBER(2) default 0,
+  totalkwatth                        NUMBER(12,3),
+  todaykwatth                        NUMBER(12,3),
+  liquidvolumetricproduction_l       NUMBER(8,2),
+  oilvolumetricproduction_l          NUMBER(8,2),
+  watervolumetricproduction_l        NUMBER(8,2),
+  liquidweightproduction_l           NUMBER(8,2),
+  oilweightproduction_l              NUMBER(8,2),
+  waterweightproduction_l            NUMBER(8,2),
+  submergence                        NUMBER(8,2),
+  savetime                           DATE default sysdate,
+  gasvolumetricproduction            NUMBER(12,3),
+  totalgasvolumetricproduction       NUMBER(12,3),
+  totalwatervolumetricproduction     NUMBER(12,3),
+  rpm                                NUMBER(8,2),
+  realtimegasvolumetricproduction    NUMBER(12,3),
+  realtimewatervolumetricproduction  NUMBER(12,3),
+  realtimeoilvolumetricproduction    NUMBER(12,3),
+  realtimeliquidvolumetricproduction NUMBER(12,3),
+  realtimewaterweightproduction      NUMBER(12,3),
+  realtimeoilweightproduction        NUMBER(12,3),
+  realtimeliquidweightproduction     NUMBER(12,3)
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_SRPACQDATA_VACUATE add constraint PK_SRPACQDATA_VACUATE primary key (ID)
 /
 
 /*==============================================================*/
@@ -1642,13 +1807,13 @@ create table TBL_SRPDAILYCALCULATIONDATA
   totalgasvolumetricproduction   NUMBER(12,3),
   totalwatervolumetricproduction NUMBER(12,3),
   headerlabelinfo                VARCHAR2(4000),
+  remark                         VARCHAR2(4000),
+  rpm                            NUMBER(8,2),
   reservedcol1                   VARCHAR2(4000),
   reservedcol2                   VARCHAR2(4000),
   reservedcol3                   VARCHAR2(4000),
   reservedcol4                   VARCHAR2(4000),
-  reservedcol5                   VARCHAR2(4000),
-  remark                         VARCHAR2(4000),
-  rpm                            NUMBER(8,2)
+  reservedcol5                   VARCHAR2(4000)
 )
 tablespace AP_DATA
   storage
@@ -1658,8 +1823,8 @@ tablespace AP_DATA
     maxextents unlimited
   )
 /
-alter table TBL_RPCDAILYCALCULATIONDATA
-  add constraint PK_RPCDAILYCALCULATIONDATA primary key (ID)
+alter table TBL_SRPDAILYCALCULATIONDATA
+  add constraint PK_SRPDAILYCALCULATIONDATA primary key (ID)
 /
 
 /*==============================================================*/
@@ -1745,8 +1910,8 @@ tablespace AP_DATA
     maxextents unlimited
   )
 /
-alter table TBL_RPCTIMINGCALCULATIONDATA
-  add constraint PK_RPCTIMINGALCULATIONDATA primary key (ID)
+alter table TBL_SRPTIMINGCALCULATIONDATA
+  add constraint PK_SRPTIMINGALCULATIONDATA primary key (ID)
 /
 
 /*==============================================================*/
@@ -1907,6 +2072,85 @@ tablespace AP_DATA
 /
 alter table TBL_PCPACQDATA_HIST
   add constraint PK_TBL_PCPACQDATA_HIST primary key (ID)
+/
+
+/*==============================================================*/
+/* Table: TBL_PCPACQDATA_VACUATE                                  */
+/*==============================================================*/
+create table TBL_PCPACQDATA_VACUATE
+(
+  id                                 NUMBER(10) not null,
+  deviceid                           NUMBER(10),
+  acqtime                            DATE,
+  commstatus                         NUMBER(2) default 0,
+  commtime                           NUMBER(8,2) default 0,
+  commtimeefficiency                 NUMBER(10,4) default 0,
+  commrange                          CLOB,
+  runstatus                          NUMBER(2) default 0,
+  runtimeefficiency                  NUMBER(10,4) default 0,
+  runtime                            NUMBER(8,2) default 0,
+  runrange                           CLOB,
+  productiondata                     VARCHAR2(4000) default '{}',
+  rpm                                NUMBER(8,2),
+  torque                             NUMBER(8,2),
+  resultcode                         NUMBER(4),
+  theoreticalproduction              NUMBER(8,2),
+  liquidvolumetricproduction         NUMBER(8,2),
+  oilvolumetricproduction            NUMBER(8,2),
+  watervolumetricproduction          NUMBER(8,2),
+  liquidweightproduction             NUMBER(8,2),
+  oilweightproduction                NUMBER(8,2),
+  waterweightproduction              NUMBER(8,2),
+  averagewatt                        NUMBER(8,2),
+  waterpower                         NUMBER(8,2),
+  systemefficiency                   NUMBER(12,3),
+  energyper100mlift                  NUMBER(8,2),
+  pumpeff1                           NUMBER(12,3),
+  pumpeff2                           NUMBER(12,3),
+  pumpeff                            NUMBER(12,3),
+  pumpintakep                        NUMBER(8,2),
+  pumpintaket                        NUMBER(8,2),
+  pumpintakegol                      NUMBER(8,2),
+  pumpintakevisl                     NUMBER(8,2),
+  pumpintakebo                       NUMBER(8,2),
+  pumpoutletp                        NUMBER(8,2),
+  pumpoutlett                        NUMBER(8,2),
+  pumpoutletgol                      NUMBER(8,2),
+  pumpoutletvisl                     NUMBER(8,2),
+  pumpoutletbo                       NUMBER(8,2),
+  rodstring                          VARCHAR2(200),
+  savetime                           DATE default sysdate,
+  resultstatus                       NUMBER(2) default 0,
+  remark                             VARCHAR2(200),
+  totalkwatth                        NUMBER(12,3),
+  todaykwatth                        NUMBER(12,3),
+  liquidvolumetricproduction_l       NUMBER(8,2),
+  oilvolumetricproduction_l          NUMBER(8,2),
+  watervolumetricproduction_l        NUMBER(8,2),
+  liquidweightproduction_l           NUMBER(8,2),
+  oilweightproduction_l              NUMBER(8,2),
+  waterweightproduction_l            NUMBER(8,2),
+  gasvolumetricproduction            NUMBER(12,3),
+  totalgasvolumetricproduction       NUMBER(12,3),
+  totalwatervolumetricproduction     NUMBER(12,3),
+  submergence                        NUMBER(8,2),
+  realtimegasvolumetricproduction    NUMBER(12,3),
+  realtimewatervolumetricproduction  NUMBER(12,3),
+  realtimeoilvolumetricproduction    NUMBER(12,3),
+  realtimeliquidvolumetricproduction NUMBER(12,3),
+  realtimewaterweightproduction      NUMBER(12,3),
+  realtimeoilweightproduction        NUMBER(12,3),
+  realtimeliquidweightproduction     NUMBER(12,3)
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_PCPACQDATA_VACUATE add constraint PK_PCPACQDATA_VACUATE primary key (ID)
 /
 
 /*==============================================================*/

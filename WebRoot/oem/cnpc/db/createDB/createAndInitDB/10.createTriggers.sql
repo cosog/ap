@@ -18,6 +18,12 @@ BEGIN
 end;
 /
 
+CREATE OR REPLACE TRIGGER trg_b_acqdata_vacuate_i   before  insert on tbl_acqdata_vacuate FOR EACH ROW
+BEGIN
+  SELECT seq_acqdata_vacuate.nextval INTO :new.id FROM dual;
+end;
+/
+
 CREATE OR REPLACE TRIGGER trg_b_acqrawdata_i   before  insert on tbl_acqrawdata FOR EACH ROW
 BEGIN
   SELECT seq_acqrawdata.nextval INTO :new.id FROM dual;
@@ -90,8 +96,7 @@ BEGIN
 end;
 /
 
-CREATE OR REPLACE TRIGGER 
-trg_b_code_i   before  insert on "TBL_CODE" FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_code_i   before  insert on "TBL_CODE" FOR EACH ROW
 BEGIN
   SELECT SEQ_code.nextval INTO :new.id FROM dual;
 END;
@@ -118,6 +123,12 @@ end;
 CREATE OR REPLACE TRIGGER trg_b_datamapping_i   before  insert on tbl_datamapping FOR EACH ROW
 BEGIN
   SELECT seq_datamapping.nextval INTO :new.id FROM dual;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_dbmonitoring_i   before  insert  on TBL_DBMONITORING FOR EACH ROW
+BEGIN
+       SELECT SEQ_DBMONITORING.nextval INTO :new.ID FROM dual;
 END;
 /
 
@@ -169,6 +180,12 @@ BEGIN
 end;
 /
 
+CREATE OR REPLACE TRIGGER trg_b_language2role_i   before  insert  on TBL_LANGUAGE2ROLE FOR EACH ROW
+BEGIN
+       SELECT SEQ_LANGUAGE2ROLE.nextval INTO :new.ID FROM dual;
+END;
+/
+
 CREATE OR REPLACE TRIGGER trg_b_module2role_i   before  insert  on tbl_module2role FOR EACH ROW
 BEGIN
        SELECT seq_role_module.nextval INTO :new.rm_id FROM dual;
@@ -199,6 +216,12 @@ end;
 CREATE OR REPLACE TRIGGER trg_b_pcpacqdata_latest_i   before  insert on TBL_PCPACQDATA_LATEST FOR EACH ROW
 BEGIN
   SELECT seq_pcpacqdata_latest.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_pcpacqdata_vacuate_i   before  insert on TBL_PCPACQDATA_VACUATE FOR EACH ROW
+BEGIN
+  SELECT seq_pcpacqdata_vacuate.nextval INTO :new.id FROM dual;
 end;
 /
 
@@ -292,29 +315,31 @@ BEGIN
 end;
 /
 
-CREATE OR REPLACE TRIGGER 
-trg_b_srpacqdata_hist_i   before  insert on TBL_SRPACQDATA_HIST FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_srpacqdata_hist_i   before  insert on TBL_SRPACQDATA_HIST FOR EACH ROW
 BEGIN
   SELECT seq_srpacqdata_hist.nextval INTO :new.id FROM dual;
 end;
 /
 
-CREATE OR REPLACE TRIGGER 
-trg_b_srpacqdata_latest_i   before  insert on TBL_SRPACQDATA_LATEST FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_srpacqdata_latest_i   before  insert on TBL_SRPACQDATA_LATEST FOR EACH ROW
 BEGIN
   SELECT seq_srpacqdata_latest.nextval INTO :new.id FROM dual;
 end;
 /
 
-CREATE OR REPLACE TRIGGER 
-trg_b_SRPDAILY_i   before  insert on "TBL_SRPDAILYCALCULATIONDATA" FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_srpacqdata_vacuate_i   before  insert on TBL_SRPACQDATA_VACUATE FOR EACH ROW
+BEGIN
+  SELECT seq_srpacqdata_vacuate.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_SRPDAILY_i   before  insert on "TBL_SRPDAILYCALCULATIONDATA" FOR EACH ROW
 BEGIN
   SELECT SEQ_SRPDAILYCALCULATIONDATA.nextval INTO :new.id FROM dual;
 end;
 /
 
-CREATE OR REPLACE TRIGGER 
-trg_b_SRPTIMINGCALCULATIONDATA_i   before  insert on TBL_SRPTIMINGCALCULATIONDATA FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_SRPTIMINGCALCULATIONDATA_i   before  insert on TBL_SRPTIMINGCALCULATIONDATA FOR EACH ROW
 BEGIN
   SELECT SEQ_SRPTIMINGCALCULATIONDATA.nextval INTO :new.id FROM dual;
 end;
@@ -341,17 +366,5 @@ END;
 CREATE OR REPLACE TRIGGER trg_b_videokey_i   before  insert on TBL_VIDEOKEY FOR EACH ROW
 BEGIN
   SELECT SEQ_VIDEOKEY.nextval INTO :new.id FROM dual;
-END;
-/
-
-CREATE OR REPLACE TRIGGER trg_b_language2role_i   before  insert  on TBL_LANGUAGE2ROLE FOR EACH ROW
-BEGIN
-       SELECT SEQ_LANGUAGE2ROLE.nextval INTO :new.ID FROM dual;
-END;
-/
-
-CREATE OR REPLACE TRIGGER trg_b_dbmonitoring_i   before  insert  on TBL_DBMONITORING FOR EACH ROW
-BEGIN
-       SELECT SEQ_DBMONITORING.nextval INTO :new.ID FROM dual;
 END;
 /

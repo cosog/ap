@@ -1,3 +1,8 @@
+create or replace package MYPACKAGE as
+   type MY_CURSOR is REF CURSOR;
+end MYPACKAGE;
+/
+
 create or replace function BlobToClob(blob_in IN BLOB)
 RETURN CLOB AS
     v_clob    CLOB;
@@ -20,6 +25,12 @@ END BlobToClob;
 
 create or replace function GETELEMENTFROMARRAYBYINDEX(Liststr in varchar2,sPlitVal in varchar2,iPos integer)
 return varchar2 is
+  /*
+  Liststr--传入将要被分割的字符串
+  sPlitVal--用来分割的字符串
+  iPos--获取分割后的数组中该位置的元素值
+
+  */
   type tt_type is table of varchar2(100) INDEX BY BINARY_INTEGER;
   V1 tt_type;
   --FieldNames转化为数组
@@ -100,17 +111,42 @@ EXECUTE IMMEDIATE 'truncate table tbl_acqdata_vacuate';
 EXECUTE IMMEDIATE 'truncate table tbl_srpacqdata_vacuate';
 EXECUTE IMMEDIATE 'truncate table tbl_pcpacqdata_vacuate';
 
---EXECUTE IMMEDIATE 'truncate table tbl_deviceaddinfo';
---EXECUTE IMMEDIATE 'truncate table tbl_auxiliary2master';
---EXECUTE IMMEDIATE 'truncate table tbl_devicegraphicset';
-
 EXECUTE IMMEDIATE 'truncate table tbl_deviceoperationlog';
 EXECUTE IMMEDIATE 'truncate table tbl_systemlog';
 EXECUTE IMMEDIATE 'truncate table tbl_resourcemonitoring';
 EXECUTE IMMEDIATE 'truncate table tbl_dbmonitoring';
 
+--EXECUTE IMMEDIATE 'truncate table tbl_deviceaddinfo';
+--EXECUTE IMMEDIATE 'truncate table tbl_auxiliary2master';
+--EXECUTE IMMEDIATE 'truncate table tbl_devicegraphicset';
+
 --EXECUTE IMMEDIATE 'truncate table tbl_device';
 --EXECUTE IMMEDIATE 'truncate table tbl_smsdevice';
+
+--EXECUTE IMMEDIATE 'truncate table tbl_protocolinstance';
+--EXECUTE IMMEDIATE 'truncate table tbl_protocoldisplayinstance';
+--EXECUTE IMMEDIATE 'truncate table tbl_protocolalarminstance';
+--EXECUTE IMMEDIATE 'truncate table tbl_protocolreportinstance';
+--EXECUTE IMMEDIATE 'truncate table tbl_protocolsmsinstance';
+
+--EXECUTE IMMEDIATE 'truncate table tbl_display_items2unit_conf';
+--EXECUTE IMMEDIATE 'truncate table tbl_display_unit_conf';
+
+--EXECUTE IMMEDIATE 'truncate table tbl_acq_item2group_conf';
+--EXECUTE IMMEDIATE 'truncate table tbl_acq_group2unit_conf';
+--EXECUTE IMMEDIATE 'truncate table tbl_acq_group_conf';
+--EXECUTE IMMEDIATE 'truncate table tbl_acq_unit_conf';
+
+--EXECUTE IMMEDIATE 'truncate table tbl_alarm_item2unit_conf';
+--EXECUTE IMMEDIATE 'truncate table tbl_alarm_unit_conf';
+
+--EXECUTE IMMEDIATE 'truncate table tbl_report_items2unit_conf';
+--EXECUTE IMMEDIATE 'truncate table tbl_report_unit_conf';
+
+--EXECUTE IMMEDIATE 'truncate table tbl_runstatusconfig';
+--EXECUTE IMMEDIATE 'truncate table tbl_protocol';
+
+--EXECUTE IMMEDIATE 'truncate table tbl_datamapping';
 
 
 --重置所有序列
@@ -140,17 +176,50 @@ EXECUTE IMMEDIATE 'truncate table tbl_dbmonitoring';
  prd_reset_sequence('seq_srpacqdata_vacuate');
  prd_reset_sequence('seq_pcpacqdata_vacuate');
 
- --prd_reset_sequence('seq_deviceaddinfo');
- --prd_reset_sequence('seq_auxiliary2master');
- --prd_reset_sequence('seq_devicegraphicset');
-
  prd_reset_sequence('seq_deviceoperationlog');
  prd_reset_sequence('seq_systemlog');
  prd_reset_sequence('seq_resourcemonitoring');
  prd_reset_sequence('seq_dbmonitoring');
+ 
+-- prd_reset_sequence('seq_deviceaddinfo');
+-- prd_reset_sequence('seq_auxiliary2master');
+-- prd_reset_sequence('seq_devicegraphicset');
 
- --prd_reset_sequence('seq_device');
- --prd_reset_sequence('seq_smsdevice');
+-- prd_reset_sequence('seq_device');
+-- prd_reset_sequence('seq_smsdevice');
+ 
+-- prd_reset_sequence('seq_protocolinstance');
+-- prd_reset_sequence('seq_protocoldisplayinstance');
+-- prd_reset_sequence('seq_protocolalarminstance');
+-- prd_reset_sequence('seq_protocoldisplayinstance');
+-- prd_reset_sequence('seq_protocolsmsinstance');
+
+-- prd_reset_sequence('seq_display_items2unit_conf');
+-- prd_reset_sequence('seq_display_unit_conf'); 
+ 
+-- prd_reset_sequence('seq_acq_group_item'); 
+-- prd_reset_sequence('seq_acq_unit_group'); 
+-- prd_reset_sequence('seq_acquisitiongroup'); 
+-- prd_reset_sequence('seq_acquisitionunit'); 
+ 
+-- prd_reset_sequence('seq_alarm_item2unit_conf'); 
+-- prd_reset_sequence('seq_alarm_unit_conf'); 
+ 
+-- prd_reset_sequence('seq_report_items2unit_conf'); 
+-- prd_reset_sequence('seq_report_unit_conf'); 
+ 
+-- prd_reset_sequence('seq_runstatusconfig'); 
+-- prd_reset_sequence('seq_protocol'); 
+-- prd_reset_sequence('seq_datamapping'); 
+ 
+-- delete from TBL_ORG t where t.org_id<>1;
+-- commit;
+-- delete from tbl_user t where t.user_orgid not in(select t2.org_id from TBL_ORG t2);
+-- commit;
+ 
+-- delete from tbl_devicetype2role t where t.rd_devicetypeid not in( select t2.id from tbl_devicetypeinfo t2 );
+-- commit;
+ 
 end prd_clear_data;
 /
 
@@ -1146,6 +1215,51 @@ Exception
 end prd_save_pcp_rpmtimingtotal;
 /
 
+CREATE OR REPLACE PROCEDURE prd_save_pcp_rpm_vacuate (
+       v_wellId in NUMBER,v_AcqTime in varchar2,v_RPM in NUMBER,v_productionData in varchar2,
+       v_ResultStatus in NUMBER,
+       v_ResultCode in NUMBER,
+       v_TheoreticalProduction in NUMBER,
+       v_LiquidVolumetricProduction in NUMBER,v_OilVolumetricProduction in NUMBER,v_WaterVolumetricProduction in NUMBER,
+       v_LiquidWeightProduction in NUMBER,v_OilWeightProduction in NUMBER,v_WaterWeightProduction in NUMBER,
+       v_Submergence in NUMBER,
+       v_averagewatt in NUMBER,v_WaterPower in NUMBER,
+       v_SystemEfficiency in NUMBER,v_energyper100mlift in NUMBER,
+       v_PumpEff1 in NUMBER,v_PumpEff2 in NUMBER,v_PumpEff in NUMBER,
+       v_PumpIntakeP in NUMBER,v_PumpIntakeT in NUMBER,v_PumpIntakeGOL in NUMBER,v_PumpIntakeVisl in NUMBER,v_PumpIntakeBo in NUMBER,
+       v_PumpOutletP in NUMBER,v_PumpOutletT in NUMBER,v_PumpOutletGOL in NUMBER,v_PumpOutletVisl in NUMBER,v_PumpOutletBo in NUMBER,
+       v_RodString in varchar2) as
+  p_msg varchar2(3000) := 'error';
+begin
+  update tbl_pcpacqdata_vacuate t
+      set t.rpm=v_RPM,
+          t.productiondata=v_productionData,t.resultstatus=v_ResultStatus,
+          t.resultcode=v_ResultCode,
+          t.theoreticalproduction=v_TheoreticalProduction,
+          t.liquidvolumetricproduction=v_LiquidVolumetricProduction,t.oilvolumetricproduction=v_OilVolumetricProduction,t.watervolumetricproduction=v_WaterVolumetricProduction,
+          t.liquidweightproduction=v_LiquidWeightProduction,t.oilweightproduction=v_OilWeightProduction,t.waterweightproduction=v_WaterWeightProduction,
+          t.submergence=v_Submergence,
+          t.averagewatt=v_averagewatt,t.waterpower=v_WaterPower,
+          t.systemefficiency=v_SystemEfficiency,t.energyper100mlift=v_energyper100mlift,
+          t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff=v_PumpEff,
+          t.pumpintakep=v_PumpIntakeP,t.pumpintaket=v_PumpIntakeT,t.pumpintakegol=v_PumpIntakeGOL,t.pumpIntakevisl=v_PumpIntakeVisl,t.pumpIntakebo=v_PumpIntakeBo,
+          t.pumpoutletp=v_PumpOutletP,t.pumpoutlett=v_PumpOutletT,t.pumpoutletgol=v_PumpOutletGOL,t.pumpoutletvisl=v_PumpOutletVisl,t.pumpoutletbo=v_PumpOutletBo,
+          t.rodstring=v_RodString,
+          t.realtimeliquidvolumetricproduction=v_LiquidVolumetricProduction,
+          t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
+          t.realtimeliquidweightproduction=v_LiquidWeightProduction,
+          t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
+      where t.deviceid=v_wellId and t.acqtime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
+  commit;
+  p_msg := '修改成功';
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_pcp_rpm_vacuate;
+/
+
 CREATE OR REPLACE PROCEDURE prd_save_resourcemonitoring (
   v_acqTime in varchar2,
   v_acRunStatus in number,
@@ -1398,6 +1512,7 @@ begin
       where t.deviceid=v_wellId;
     commit;
   end if;
+  
   update tbl_srpacqdata_hist t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
           t.fesdiagramsrc=v_fesdiagramSrc,
@@ -1848,6 +1963,115 @@ Exception
 end prd_save_srp_diagramtimingtotal;
 /
 
+CREATE OR REPLACE PROCEDURE prd_save_srp_diagram_vacuate (
+       v_wellId in NUMBER,v_AcqTime in varchar2,
+       v_productionData in varchar2,v_balanceInfo in varchar2,v_pumpingModelId in NUMBER,
+       v_fesdiagramAcqTime in varchar2,v_fesdiagramSrc in NUMBER,v_STROKE in NUMBER,v_SPM in NUMBER,
+       v_POSITION_CURVE in tbl_srpacqdata_vacuate.POSITION_CURVE%TYPE,
+       v_LOAD_CURVE in tbl_srpacqdata_vacuate.LOAD_CURVE%TYPE,
+       v_POWER_CURVE in tbl_srpacqdata_vacuate.POWER_CURVE%TYPE,
+       v_CURRENT_CURVE in tbl_srpacqdata_vacuate.CURRENT_CURVE%TYPE,
+       v_ResultStatus in NUMBER,
+       v_Fmax in NUMBER,v_Fmin in NUMBER,
+       v_UpStrokeIMax in NUMBER,v_DownStrokeIMax in NUMBER,v_UPStrokeWattMax in NUMBER,v_DownStrokeWattMax in NUMBER,v_IDegreeBalance in NUMBER,v_WattDegreeBalance in NUMBER,
+       v_DeltaRadius in NUMBER,
+       v_ResultCode in NUMBER,
+       v_FullnessCoefficient in NUMBER,
+       v_NoLiquidFullnessCoefficient in NUMBER,
+       v_PlungerStroke in NUMBER,v_AvailablePlungerStroke in NUMBER,v_NoLiquidAvailableStroke  in NUMBER,
+       v_UpperLoadLine in NUMBER,v_UpperLoadLineOfExact in NUMBER,v_LowerLoadLine in NUMBER,
+       v_SMaxIndex in NUMBER,v_SMinIndex in NUMBER,
+       v_PumpFSDiagram in tbl_srpacqdata_vacuate.PumpFSDiagram%TYPE,
+       v_TheoreticalProduction in NUMBER,
+       v_LiquidVolumetricProduction in NUMBER,v_OilVolumetricProduction in NUMBER,v_WaterVolumetricProduction in NUMBER,
+       v_AvailablePlungerStrokeProd_V in NUMBER,v_PumpClearanceLeakProd_V in NUMBER,
+       v_TVLeakVolumetricProduction in NUMBER,v_SVLeakVolumetricProduction in NUMBER,v_GasInfluenceProd_V in NUMBER,
+       v_LiquidWeightProduction in NUMBER,v_OilWeightProduction in NUMBER,v_WaterWeightProduction in NUMBER,
+       v_AvailablePlungerStrokeProd_W in NUMBER,v_PumpClearanceLeakProd_W in NUMBER,
+       v_TVLeakWeightProduction in NUMBER,v_SVLeakWeightProduction in NUMBER,v_GasInfluenceProd_W in NUMBER,
+
+       v_LevelDifferenceValue in NUMBER,v_CalcProducingfluidLevel in NUMBER,
+
+       v_Submergence in NUMBER,
+
+       v_averagewatt in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
+       v_SurfaceSystemEfficiency in NUMBER,v_WellDownSystemEfficiency in NUMBER,v_SystemEfficiency in NUMBER,
+       v_energyper100mlift in NUMBER,v_area in NUMBER,
+       v_RodFlexLength in NUMBER,v_TubingFlexLength in NUMBER,v_InertiaLength in NUMBER,
+       v_PumpEff1 in NUMBER,v_PumpEff2 in NUMBER,v_PumpEff3 in NUMBER,v_PumpEff4 in NUMBER,v_PumpEff in NUMBER,
+       v_PumpIntakeP in NUMBER,v_PumpIntakeT in NUMBER,v_PumpIntakeGOL in NUMBER,v_PumpIntakeVisl in NUMBER,v_PumpIntakeBo in NUMBER,
+       v_PumpOutletP in NUMBER,v_PumpOutletT in NUMBER,v_PumpOutletGOL in NUMBER,v_PumpOutletVisl in NUMBER,v_PumpOutletBo in NUMBER,
+       v_RodString in varchar2,
+       v_crankAngle in tbl_srpacqdata_vacuate.crankangle%TYPE,
+       v_polishRodV in tbl_srpacqdata_vacuate.polishrodv%TYPE,
+       v_polishRodA in tbl_srpacqdata_vacuate.polishroda%TYPE,
+       v_PR in tbl_srpacqdata_vacuate.pr%TYPE,
+       v_TF in tbl_srpacqdata_vacuate.tf%TYPE,
+       v_loadTorque in tbl_srpacqdata_vacuate.loadtorque%TYPE,
+       v_crankTorque in tbl_srpacqdata_vacuate.cranktorque%TYPE,
+       v_currentBalanceTorque in tbl_srpacqdata_vacuate.currentbalancetorque%TYPE,
+       v_currentNetTorque in tbl_srpacqdata_vacuate.currentnettorque%TYPE,
+       v_expectedBalanceTorque in tbl_srpacqdata_vacuate.expectedbalancetorque%TYPE,
+       v_expectedNetTorque in tbl_srpacqdata_vacuate.expectednettorque%TYPE,
+       v_wellboreSlice in tbl_srpacqdata_vacuate.wellboreslice%TYPE,
+       v_rpm in NUMBER) as
+  p_msg varchar2(3000) := 'error';
+begin
+  update tbl_srpacqdata_vacuate t
+      set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
+          t.fesdiagramsrc=v_fesdiagramSrc,
+          t.productiondata=v_productionData,t.balanceinfo=v_balanceInfo,t.pumpingmodelid=v_pumpingModelId,
+          t.stroke=v_STROKE,t.spm=v_SPM,
+          t.position_curve=v_POSITION_CURVE,t.load_curve=v_LOAD_CURVE,
+          t.power_curve=v_POWER_CURVE,t.current_curve=v_CURRENT_CURVE,
+          t.resultstatus=v_ResultStatus,
+          t.fmax=v_Fmax,t.fmin=v_Fmin,
+          t.upstrokeimax=v_UpStrokeIMax,t.downstrokeimax=v_DownStrokeIMax,t.upstrokewattmax=v_UPStrokeWattMax,t.downstrokewattmax=v_DownStrokeWattMax,t.idegreebalance=v_IDegreeBalance,t.wattdegreebalance=v_WattDegreeBalance,
+          t.deltaradius=v_DeltaRadius,
+          t.resultcode=v_ResultCode,
+          t.fullnesscoefficient=v_FullnessCoefficient,
+          t.noliquidfullnesscoefficient=v_NoLiquidFullnessCoefficient,
+          t.plungerstroke=v_PlungerStroke,t.availableplungerstroke=v_AvailablePlungerStroke,t.noliquidavailableplungerstroke=v_NoLiquidAvailableStroke,
+          t.upperloadline=v_UpperLoadLine,t.upperloadlineofexact=v_UpperLoadLineOfExact,t.lowerloadline=v_LowerLoadLine,
+          t.smaxindex=v_SMaxIndex,t.sminindex=v_SMinIndex,
+          t.pumpfsdiagram=v_PumpFSDiagram,
+          t.theoreticalproduction=v_TheoreticalProduction,
+          t.liquidvolumetricproduction=v_LiquidVolumetricProduction,t.oilvolumetricproduction=v_OilVolumetricProduction,t.watervolumetricproduction=v_WaterVolumetricProduction,
+          t.availableplungerstrokeprod_v=v_AvailablePlungerStrokeProd_V,t.pumpclearanceleakprod_v=v_PumpClearanceLeakProd_V,
+          t.tvleakvolumetricproduction=v_TVLeakVolumetricProduction,t.svleakvolumetricproduction=v_SVLeakVolumetricProduction,t.gasinfluenceprod_v=v_GasInfluenceProd_V,
+          t.liquidweightproduction=v_LiquidWeightProduction,t.oilweightproduction=v_OilWeightProduction,t.waterweightproduction=v_WaterWeightProduction,
+          t.availableplungerstrokeprod_w=v_AvailablePlungerStrokeProd_W,t.pumpclearanceleakprod_w=v_PumpClearanceLeakProd_W,
+          t.tvleakweightproduction=v_TVLeakWeightProduction,t.svleakweightproduction=v_SVLeakWeightProduction,t.gasinfluenceprod_w=v_GasInfluenceProd_W,
+          t.LevelDifferenceValue=v_LevelDifferenceValue,t.CalcProducingfluidLevel=v_CalcProducingfluidLevel,
+          t.submergence=v_Submergence,
+          t.averagewatt=v_averagewatt,t.polishrodpower=v_PolishRodPower,t.waterpower=v_WaterPower,
+          t.surfacesystemefficiency=v_SurfaceSystemEfficiency,t.welldownsystemefficiency=v_WellDownSystemEfficiency,t.systemefficiency=v_SystemEfficiency,
+          t.energyper100mlift=v_energyper100mlift,t.area=v_area,
+          t.rodflexlength=v_RodFlexLength,t.tubingflexlength=v_TubingFlexLength,t.inertialength=v_InertiaLength,
+          t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff3=v_PumpEff3,t.pumpeff4=v_PumpEff4,t.pumpeff=v_PumpEff,
+          t.pumpintakep=v_PumpIntakeP,t.pumpintaket=v_PumpIntakeT,t.pumpintakegol=v_PumpIntakeGOL,t.pumpIntakevisl=v_PumpIntakeVisl,t.pumpIntakebo=v_PumpIntakeBo,
+          t.pumpoutletp=v_PumpOutletP,t.pumpoutlett=v_PumpOutletT,t.pumpoutletgol=v_PumpOutletGOL,t.pumpoutletvisl=v_PumpOutletVisl,t.pumpoutletbo=v_PumpOutletBo,
+          t.rodstring=v_RodString,
+          t.crankangle=v_crankAngle,t.polishrodv=v_polishRodV,t.polishroda=v_polishRodA,t.pr=v_PR,t.tf=v_TF,
+          t.loadtorque=v_loadTorque,t.cranktorque=v_crankTorque,t.currentbalancetorque=v_currentBalanceTorque,t.currentnettorque=v_currentNetTorque,
+          t.expectedbalancetorque=v_expectedBalanceTorque,t.expectednettorque=v_expectedNetTorque,
+          t.wellboreslice=v_wellboreSlice,
+          t.rpm=v_rpm,
+          t.realtimeliquidvolumetricproduction=v_LiquidVolumetricProduction,
+          t.realtimeoilvolumetricproduction=v_OilVolumetricProduction,t.realtimewatervolumetricproduction=v_WaterVolumetricProduction,
+          t.realtimeliquidweightproduction=v_LiquidWeightProduction,
+          t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
+      where t.deviceid=v_wellId and t.acqtime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
+  commit;
+  p_msg := '修改成功';
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_srp_diagram_vacuate;
+/
+
 CREATE OR REPLACE PROCEDURE prd_save_systemLog (
   v_time in varchar2,
   v_action in number,
@@ -1967,9 +2191,9 @@ begin
            v_resultstr := '修改成功';
            p_msg := '修改成功';
         elsif othercount>0 then
-          select substr(v.path_zh_cn||'/'||t.devicename,2) into otherDeviceAllPath  
-          from tbl_device t, 
-          (select org.org_id, 
+          select substr(v.path_zh_cn||'/'||t.devicename,2) into otherDeviceAllPath
+          from tbl_device t,
+          (select org.org_id,
           sys_connect_by_path(org.org_name_zh_cn,'/') as path_zh_cn,
           sys_connect_by_path(org.org_name_en,'/') as path_en,
           sys_connect_by_path(org.org_name_ru,'/') as path_ru
@@ -1997,6 +2221,58 @@ Exception
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_update_device;
+/
+
+CREATE OR REPLACE PROCEDURE prd_update_pcp_rpm_latest (v_deviceId in NUMBER) as
+  p_msg varchar2(3000) := 'error';
+begin
+  update tbl_pcpacqdata_latest t set (acqtime,
+  rpm,
+  productiondata,resultstatus,
+  resultcode,
+  theoreticalproduction,
+  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
+  liquidweightproduction,oilweightproduction,waterweightproduction,
+  submergence,
+  averagewatt,waterpower,
+  systemefficiency,energyper100mlift,
+  pumpeff1,pumpeff2,pumpeff,
+  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
+  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
+  rodstring,
+  realtimeliquidvolumetricproduction,
+  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
+  realtimeliquidweightproduction,
+  realtimeoilweightproduction,realtimewaterweightproduction)=
+  (select acqtime,
+  rpm,
+  productiondata,resultstatus,
+  resultcode,
+  theoreticalproduction,
+  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
+  liquidweightproduction,oilweightproduction,waterweightproduction,
+  submergence,
+  averagewatt,waterpower,
+  systemefficiency,energyper100mlift,
+  pumpeff1,pumpeff2,pumpeff,
+  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
+  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
+  rodstring,
+  realtimeliquidvolumetricproduction,
+  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
+  realtimeliquidweightproduction,
+  realtimeoilweightproduction,realtimewaterweightproduction
+  from tbl_pcpacqdata_hist t3 where t3.id=
+  (select v.id from (select t2.id from tbl_srpacqdata_hist t2 where t2.deviceid=v_deviceId and t2.resultstatus=1 order by t2.acqtime desc) v where rownum=1) )
+  where t.deviceid=v_deviceId;
+  commit;
+  p_msg := '修改成功';
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg := Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_update_pcp_rpm_latest;
 /
 
 CREATE OR REPLACE PROCEDURE prd_update_smsdevice (v_recordId   in NUMBER,
@@ -2113,7 +2389,7 @@ begin
   realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
   realtimeliquidweightproduction,realtimeoilweightproduction,realtimewaterweightproduction
   from tbl_srpacqdata_hist t3 where t3.id=
-  (select v.id from (select t2.id from tbl_srpacqdata_hist t2 where t2.deviceid=v_deviceId and t2.resultstatus=1 and t2.fesdiagramacqtime is not null order by t2.fesdiagramacqtime desc) v where rownum=1) )
+  (select v.id from (select t2.id from tbl_srpacqdata_hist t2 where t2.deviceid=v_deviceId and t2.resultstatus=1 order by t2.fesdiagramacqtime desc) v where rownum=1) )
   where t.deviceid=v_deviceId;
   commit;
   p_msg := '修改成功';
@@ -2123,56 +2399,4 @@ Exception
     p_msg := Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_update_srp_diagram_latest;
-/
-
-CREATE OR REPLACE PROCEDURE prd_update_pcp_rpm_latest (v_deviceId in NUMBER) as
-  p_msg varchar2(3000) := 'error';
-begin
-  update tbl_pcpacqdata_latest t set (acqtime,
-  rpm,
-  productiondata,resultstatus,
-  resultcode,
-  theoreticalproduction,
-  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
-  liquidweightproduction,oilweightproduction,waterweightproduction,
-  submergence,
-  averagewatt,waterpower,
-  systemefficiency,energyper100mlift,
-  pumpeff1,pumpeff2,pumpeff,
-  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
-  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
-  rodstring,
-  realtimeliquidvolumetricproduction,
-  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
-  realtimeliquidweightproduction,
-  realtimeoilweightproduction,realtimewaterweightproduction)=
-  (select acqtime,
-  rpm,
-  productiondata,resultstatus,
-  resultcode,
-  theoreticalproduction,
-  liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
-  liquidweightproduction,oilweightproduction,waterweightproduction,
-  submergence,
-  averagewatt,waterpower,
-  systemefficiency,energyper100mlift,
-  pumpeff1,pumpeff2,pumpeff,
-  pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
-  pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
-  rodstring,
-  realtimeliquidvolumetricproduction,
-  realtimeoilvolumetricproduction,realtimewatervolumetricproduction,
-  realtimeliquidweightproduction,
-  realtimeoilweightproduction,realtimewaterweightproduction
-  from tbl_pcpacqdata_hist t3 where t3.id=
-  (select v.id from (select t2.id from tbl_srpacqdata_hist t2 where t2.deviceid=v_deviceId and t2.resultstatus=1 order by t2.acqtime desc) v where rownum=1) )
-  where t.deviceid=v_deviceId;
-  commit;
-  p_msg := '修改成功';
-  dbms_output.put_line('p_msg:' || p_msg);
-Exception
-  When Others Then
-    p_msg := Sqlerrm || ',' || '操作失败';
-    dbms_output.put_line('p_msg:' || p_msg);
-end prd_update_pcp_rpm_latest;
 /

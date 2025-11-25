@@ -10581,8 +10581,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		super.bulkObjectDelete(hql);
 	}
 	
-	public String getProtocolDeviceTypeChangeProtocolList(String deviceTypeIds,String language) throws Exception {
+	public String getProtocolDeviceTypeChangeProtocolList(String deviceTypeIds,User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
+		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String columns = "["
@@ -10593,13 +10594,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String sql="select t.id,t.name,t.devicetype,t2.allpath_"+language+" "
 				+ " from tbl_protocol t, viw_devicetypeinfo t2 "
-				+ " where t.devicetype=t2.id ";
+				+ " where t.devicetype=t2.id "
+				+ " and t.language="+(user!=null?user.getLanguage():0);
 		if(StringManagerUtils.isNotNull(deviceTypeIds)){
 			sql+= " and t.devicetype in("+deviceTypeIds+") ";
 		}else{
 			sql+=" 1=2";
 		}
 		sql+= " order by t.sort";
+		
 		List<?> list=this.findCallSql(sql);
 		
 		

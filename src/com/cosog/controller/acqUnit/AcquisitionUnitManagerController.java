@@ -5282,7 +5282,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				deviceTypeIds = "" + user.getDeviceTypeIds();
 			}
 		}
-		String json = this.acquisitionUnitItemManagerService.getProtocolDeviceTypeChangeProtocolList(deviceTypeIds,language);
+		String json = this.acquisitionUnitItemManagerService.getProtocolDeviceTypeChangeProtocolList(deviceTypeIds,user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

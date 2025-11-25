@@ -714,7 +714,7 @@ var ProtocolItemsConfigHandsontableHelper = {
             				this.type = 'dropdown';
                             this.strict = true;
                             this.allowInvalid = false;
-                            if(highLowByte!=''){
+                            if(isNotVal(highLowByte)){
                             	this.source = ['bit','byte'];
                             }else{
                             	this.source = ['bit','byte','int16','uint16','float32','bcd'];

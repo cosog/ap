@@ -7,7 +7,7 @@ Ext.define("AP.view.orgAndUser.UserEditPasswordWindow", {
     closeAction: 'destroy',
     width: 300,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     constrain: true,
     maximizable: false,

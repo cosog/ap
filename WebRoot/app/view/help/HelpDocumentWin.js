@@ -8,7 +8,7 @@ Ext.define('AP.view.help.HelpDocumentWin', {
     layout: 'fit',
     closeAction: 'destroy',
     constrain: true,
-    resizable: false,
+    resizable: true,
     border:false,
     modal: true,
     html:'<div align="center" style="width:100%;height:100%;padding:20px;"><img src="../images/help2vm.png" width="260" height="260" /><br/>扫一扫，手机查看<br/><a href="https://github.com/cosog/apmd" target="view_window">文档地址</a></div>',

@@ -8,7 +8,7 @@ Ext.define("AP.view.acquisitionUnit.CellColorSelectWindow", {
     closeAction: 'destroy',
     width: 700,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     constrain: true,
     maximizable: false,

@@ -7,7 +7,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
     layout: 'fit',
     closeAction: 'destroy',
     constrain: true,
-    resizable: false,
+    resizable: true,
     modal: true,
     title: loginUserLanguageResource.passwordReset,
     initComponent: function () {

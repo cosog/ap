@@ -7,7 +7,7 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
     closeAction: 'destroy',
     width: 400,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     constrain: true,
     maximizable: false,

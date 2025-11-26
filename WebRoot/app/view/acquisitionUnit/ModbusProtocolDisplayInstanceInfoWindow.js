@@ -7,7 +7,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
     closeAction: 'destroy',
     width: 500,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     constrain: true,
     maximizable: false,

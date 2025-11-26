@@ -8,7 +8,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
     width: 330,
     constrain: true,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     maximizable: false,
     layout: 'fit',

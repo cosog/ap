@@ -7,7 +7,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
     closeAction: 'destroy',
     width: 330,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     constrain: true,
     maximizable: false,

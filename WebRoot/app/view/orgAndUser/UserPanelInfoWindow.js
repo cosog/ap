@@ -7,7 +7,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
     closeAction: 'destroy',
     width: 400,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     constrain: true,
     maximizable: false,
@@ -289,6 +289,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             	xtype: 'fieldcontainer',
                 fieldLabel : loginUserLanguageResource.receiveAlarmSMS+'<font color=red>*</font>',
                 defaultType: 'radiofield',
+                hidden: !emailConfig.enable,
                 labelWidth: labelWidth,
                 anchor: '100%',
                 defaults: {
@@ -313,6 +314,7 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             	xtype: 'fieldcontainer',
                 fieldLabel : loginUserLanguageResource.receiveAlarmMail+'<font color=red>*</font>',
                 defaultType: 'radiofield',
+                hidden: !emailConfig.enable,
                 labelWidth: labelWidth,
                 anchor: '100%',
                 defaults: {

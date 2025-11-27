@@ -130,6 +130,7 @@
         var defaultGraghSize = ${configFile}.ap.others.defaultGraghSize;
         
 		var moduleContentConfig=${configFile}.ap.moduleContent;
+		var emailConfig=${configFile}.ap.email;
         
         var defaultPageSize = ${configFile}.ap.others.pageSize;
         var tabInfo=${tabInfo};

@@ -1,0 +1,11 @@
+@1.createTables.sql
+@2.createIndexs.sql
+@3.createViews.sql
+@4.createProcedures.sql
+@5.initModuleAndRole.sql
+@6.initDataDictionary.sql
+@8.initOthers.sql
+@9.createSequences.sql
+@10.createTriggers.sql
+@11.createJobs.sql
+exit

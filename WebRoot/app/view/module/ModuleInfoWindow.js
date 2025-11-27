@@ -7,7 +7,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
     closeAction: 'destroy',
     width: 320,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     constrain: true,
     maximizable: false,

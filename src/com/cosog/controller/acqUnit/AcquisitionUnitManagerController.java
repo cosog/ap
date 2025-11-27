@@ -3139,8 +3139,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionGroup.setGroupSavingInterval(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupSavingInterval()));
 					acquisitionGroup.setRemark(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getRemark());
 					acquisitionGroup.setProtocol(protocol);
-					this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
-					EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(acquisitionGroup.getId()+"", "update");
+//					this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
+					String param1=acquisitionGroup.getId()+"";
+					String method="update";
+					EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(param1,method);
+//					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByAcqGroupId(param1,method);
+//					acquisitionUnitManagerService.doAcquisitionGroupOwnItemChange(param1);
+					MemoryDataManagerTask.loadAcqInstanceOwnItemByGroupId(param1,method);
+//					MemoryDataManagerTask.loadDisplayInstanceOwnItemByAcqGroupId(param1,method);
+					
 					
 					if(user!=null){
 						this.service.saveSystemLog(user,2,languageResourceMap.get("editAcqGroup")+":"+acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupName());
@@ -3261,6 +3268,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnit.setAcqUnitId(StringManagerUtils.stringToInteger(acqUnitId));
 					this.displayUnitManagerService.doDisplayUnitEdit(displayUnit);
 					
+					
+					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(displayUnit.getId()+"","update");
 					if(user!=null){
 						this.service.saveSystemLog(user,2,languageResourceMap.get("editDisplayUnit")+":"+displayUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
 					}
@@ -3463,6 +3472,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				alarmUnit.setRemark(modbusProtocolAlarmUnitSaveData.getRemark());
 				try {
 					this.alarmUnitManagerService.doAlarmUnitEdit(alarmUnit);
+					MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(alarmUnit.getId()+"","update");
+					
 					if(user!=null){
 						this.service.saveSystemLog(user,2,languageResourceMap.get("editAlarmUnit")+":"+modbusProtocolAlarmUnitSaveData.getUnitName());
 					}

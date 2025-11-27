@@ -10,7 +10,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
     //height : 300,
     constrain: true,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     maximizable: false,
     layout: 'fit',

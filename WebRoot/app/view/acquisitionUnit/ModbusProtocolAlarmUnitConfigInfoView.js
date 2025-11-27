@@ -903,7 +903,7 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [14,15,16],
+	                    columns: (emailConfig.enable?[14,15,16]:[12,13,14,15,16]),
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -1324,6 +1324,11 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
+	        		hiddenColumns: {
+	                    columns: (emailConfig.enable?[]:[8,9]),
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
 	        		colWidths: [25,50,50,120,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigEnumItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -1542,8 +1547,8 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		hiddenColumns: {
-	                    columns: [11,12],
+	                hiddenColumns: {
+	                    columns: (emailConfig.enable?[11,12]:[9,10,11,12]),
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -1769,8 +1774,8 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		hiddenColumns: {
-	                    columns: [9,10],
+	                hiddenColumns: {
+	                    columns: (emailConfig.enable?[9,10]:[7,8,9,10]),
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -1985,8 +1990,8 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		hiddenColumns: {
-	                    columns: [9],
+	                hiddenColumns: {
+	                    columns: (emailConfig.enable?[9]:[7,8,9]),
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -2191,8 +2196,8 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	        	protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		hiddenColumns: {
-	                    columns: [9,10],
+	                hiddenColumns: {
+	                    columns: (emailConfig.enable?[9,10]:[7,8,9,10]),
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },

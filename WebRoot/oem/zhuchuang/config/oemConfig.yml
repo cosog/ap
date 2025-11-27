@@ -72,6 +72,7 @@ databaseMaintenance:                      #数据库维护
          enabled: true                    #是否启用定时删除
          retentionTime: 360               #数据保留时间，单位：天
 email:                #邮件发送账号配置
+   enable: false
    snedAccount:
       account: 123456@126.com          #邮箱账号
       password: CANDRMRCDLKHUKQX       #邮箱授权码或独立密码

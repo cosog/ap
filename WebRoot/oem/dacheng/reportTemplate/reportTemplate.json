@@ -1,0 +1,388 @@
+{
+    "singleWellRangeReportTemplate": [{
+        "calculateType": 0,
+        "templateCode": "CBMWell_heichao",
+        "templateName": "煤层气井排采数据表_单井日报表",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "25px",
+                "fontFamily": "SimSun",
+                "height": "50px",
+                "color": "",
+                "backgroundColor": ""
+            },
+            "title_zh_CN": ["deviceNameLabel井排采日报表", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["deviceNameLabel daily report", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["deviceNameLabel eжедневные отчеты", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "",
+                "backgroundColor": "",
+                "textAlign": "center"
+            },
+            "title_zh_CN": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["Position：label      Seam number：label        Production interval of well：label        Pump Model/Pumpbore Diameter：label        Pump Setting Depth：label", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["местоположение：label  Количество угольных пластов：label  Разрезы эксплуатационных скважин：label  Модель насоса/Диаметр бочки：label  Глубина насоса：label", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title_zh_CN": ["日期", "当日生产时间/h", "工作制度", "", "动液面(m)", "日 产 量", "", "压 力(Mpa)", "", "累计产量", "", "备注"],
+            "title_en": ["Date", "Production Time/h", "Working System", "", "Producing Fluid Level(m)", "Daily Production", "", "Pressure(Mpa)", "", "Cumulative Production", "", "Remark"],
+            "title_ru": ["дата", "Продолжительность/h", "Система работы", "", "Производство жидких поверхностей(m)", "Выпуск", "", "давление(Mpa)", "", "Накопительное производство", "", "замечание"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title_zh_CN": ["", "", "冲次", "冲程", "", "气(方)", "水(方)", "井底压力", "套压", "气(方)", "水(方)", ""],
+            "title_en": ["", "", "SPM", "Stroke", "", "Gas(m^3)", "Water(m^3)", "Bottom Hole Pressure", "Casing Pressure", "Gas(m^3)", "Water(m^3)", ""],
+            "title_ru": ["", "", "Ударов в минуту", "удар", "", "газ(m^3)", "Вода(m^3)", "Давление на дне скважины", "Давление в корпусе", "газ(m^3)", "Вода(m^3)", ""]
+        }],
+        "fixedRowsTop": 4,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths_zh_CN": [80, 80,80,80,80,80,80,80,80,80,80,1000],
+        "columnWidths_en": [80, 100,80,80,140,100,100,100,100,100,100,1000],
+        "columnWidths_ru": [80, 80,80,80,80,80,80,80,80,80,80,1000],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 12
+        },{
+            "row": 1,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 12
+        }, {
+            "row": 2,
+            "col": 0,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 1,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 2,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 4,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 5,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 7,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 9,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 11,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 1,
+            "startColumn": 0,
+            "endRow": 1,
+            "endColumn": 0
+        },{
+            "startRow": 4,
+            "startColumn": 3,
+            "endRow": 999999999,
+            "endColumn": 3
+        },{
+            "startRow": 4,
+            "startColumn": 11,
+            "endRow": 999999999,
+            "endColumn": 11
+        }]
+    }],
+    "singleWellDailyReportTemplate": [{
+        "calculateType": 0,
+        "templateCode": "CBMWell_heichaoDailyReport",
+        "templateName": "煤层气井排采数据表_单井班报表",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "25px",
+                "fontFamily": "SimSun",
+                "height": "50px",
+                "color": "",
+                "backgroundColor": ""
+            },
+            "title_zh_CN": ["deviceNameLabel井排采班报表", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["deviceNameLabel hourly report", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["deviceNameLabel Отчеты экипажа", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "",
+                "backgroundColor": "",
+                "textAlign": "center"
+            },
+            "title_zh_CN": ["层位：label      煤层号：label        生产井段：label        泵型/泵径：label        下泵深度：label", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["Position：label      Seam number：label        Production interval of well：label        Pump Model/Pumpbore Diameter：label        Pump Setting Depth：label", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["местоположение：label  Количество угольных пластов：label  Разрезы эксплуатационных скважин：label  Модель насоса/Диаметр бочки：label  Глубина насоса：label", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title_zh_CN": ["时间", "当日生产时间/h", "工作制度", "", "动液面(m)", "压 力(Mpa)", "", "瞬时产量", "", "日累计产量", "", "返排率%", "氯离子浓度mg/L", "备注"],
+            "title_en": ["Time", "Production Time/h", "Working System", "", "Producing Fluid Level(m)", "Pressure(Mpa)", "", "Realtime Production", "", "Daily Production", "", "Flowback Rate(%)", "Chloride Ion Concentration(mg/L)", "Remark"],
+            "title_ru": ["Время", "Продолжительность/h", "Система работы", "", "Производство жидких поверхностей(m)", "давление(Mpa)", "", "Мгновенный выход продукции", "", "Выпуск", "", "Скорость обратного потока%", "Концентрация хлоридов(mg/L)", "замечание"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title_zh_CN": ["", "", "冲次", "冲程", "", "井底压力", "套压", "气(方/小时)", "水(方/小时)", "气(方)", "水(方)", "", "", ""],
+            "title_en": ["", "", "SPM", "Stroke", "", "Bottom Hole Pressure", "Casing Pressure", "Gas(m^3/h)", "Water(m^3/h)", "Gas(m^3)", "Water(m^3)", "", "", ""],
+            "title_ru": ["", "", "Ударов в минуту", "удар", "", "Давление на дне скважины", "Давление в корпусе", "газ(m^3/h)", "Вода(m^3/h)", "газ(m^3)", "Вода(m^3)", "", "", ""]
+        }],
+        "fixedRowsTop": 4,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths_zh_CN": [80, 80,80,80,80,80,80,100,100,80,80,80,80,1000],
+        "columnWidths_en": [80, 120, 80, 80, 140, 140, 100, 100, 100, 100, 100, 100, 160, 1000],
+        "columnWidths_ru": [80, 80,80,80,80,80,80,100,100,80,80,80,80,1000],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 14
+        },{
+            "row": 1,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 14
+        }, {
+            "row": 2,
+            "col": 0,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 1,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 2,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 4,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 5,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 7,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 9,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 2,
+            "col": 11,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 12,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 2,
+            "col": 13,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 1,
+            "startColumn": 0,
+            "endRow": 1,
+            "endColumn": 0
+        },{
+            "startRow": 4,
+            "startColumn": 3,
+            "endRow": 999999999,
+            "endColumn": 3
+        },{
+            "startRow": 4,
+            "startColumn": 11,
+            "endRow": 999999999,
+            "endColumn": 11
+        },{
+            "startRow": 4,
+            "startColumn": 12,
+            "endRow": 999999999,
+            "endColumn": 12
+        },{
+            "startRow": 4,
+            "startColumn": 13,
+            "endRow": 999999999,
+            "endColumn": 13
+        }]
+    }],
+    "productionReportTemplate": [{
+        "calculateType": 0,
+        "templateCode": "CBMWell_heichaoProductionReport",
+        "templateName": "煤层气井排采生产报表_区域日报",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "25px",
+                "fontFamily": "SimSun",
+                "height": "50px",
+                "color": "",
+                "backgroundColor": ""
+            },
+            "title_zh_CN": ["orgNameLabel排采日报表", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_en": ["orgNameLabel daily report", "", "", "", "", "", "", "", "", "", "", "", ""],
+            "title_ru": ["orgNameLabel eжедневные отчеты", "", "", "", "", "", "", "", "", "", "", "", ""]
+        },{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title_zh_CN": ["日期","井名", "当日生产时间/h", "工作制度", "", "动液面(m)", "日 产 量", "", "压 力(Mpa)", "", "累计产量", "", "备注"],
+            "title_en": ["Date","Well Name", "Production Time/h", "Working System", "", "Producing Fluid Level(m)", "Daily Production", "", "Pressure(Mpa)", "", "Cumulative Production", "", "Remark"],
+            "title_ru": ["日期","Название устройства", "Продолжительность/h", "Система работы", "", "Производство жидких поверхностей(m)", "Выпуск", "", "давление(Mpa)", "", "Накопительное производство", "", "замечание"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title_zh_CN": ["", "", "", "冲次", "冲程", "", "气(方)", "水(方)", "井底压力", "套压", "气(方)", "水(方)", ""],
+            "title_en": ["", "", "", "SPM", "Stroke", "", "Gas(m^3)", "Water(m^3)", "Bottom Hole Pressure", "Casing Pressure", "Gas(m^3)", "Water(m^3)", ""],
+            "title_ru": ["", "", "", "Ударов в минуту", "удар", "", "газ(m^3)", "Вода(m^3)", "Давление на дне скважины", "Давление в корпусе", "газ(m^3)", "Вода(m^3)", ""]
+        }],
+        "fixedRowsTop": 3,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths_zh_CN": [80, 80,80,80,80,80,80,80,80,80,80,80,1000],
+        "columnWidths_en": [80, 100,100,80,80,140,100,100,140,80,100,100,1000],
+        "columnWidths_ru": [80, 80,80,80,80,80,80,80,80,80,80,80,1000],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 13
+        },{
+            "row": 1,
+            "col": 0,
+            "rowspan": 2,
+            "colspan": 1
+        },{
+            "row": 1,
+            "col": 1,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 2,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 3,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 5,
+            "rowspan": 2,
+            "colspan": 1
+        }, {
+            "row": 1,
+            "col": 6,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 8,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 10,
+            "rowspan": 1,
+            "colspan": 2
+        }, {
+            "row": 1,
+            "col": 12,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 3,
+            "startColumn": 4,
+            "endRow": 999999999,
+            "endColumn": 4
+        },{
+            "startRow": 3,
+            "startColumn": 12,
+            "endRow": 999999999,
+            "endColumn": 12
+        }]
+    }]
+}

@@ -8,7 +8,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
     minHeight: 600,
     layout: 'border',
     closeAction: 'destroy',
-    resizable: false,
+    resizable: true,
     constrain: true,
     modal: true,
     //    bodyStyle: 'padding:10px;background-color:#ffffff;',

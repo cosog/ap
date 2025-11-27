@@ -7,7 +7,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
     closeAction: 'destroy',
     width: 400,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     constrain: true,
     maximizable: false,

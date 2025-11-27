@@ -11,7 +11,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
     height: 400,
     minHeight: 400,
     shadow: 'sides',
-    resizable: false,
+    resizable: true,
     collapsible: true,
     constrain: true,
     maximizable: false,

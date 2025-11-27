@@ -13,6 +13,9 @@ values (3, 2, null, '抽油机', 'SRP', 'Насос.');
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU)
 values (4, 2, null, '螺杆泵', 'PCP', 'Винтовой насос');
 
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU)
+values (5, 2, null, '电潜泵', 'ESP', 'электронасос');
+
 /*==============================================================*/
 /* 初始化tbl_module数据                                          */
 /*==============================================================*/
@@ -74,7 +77,7 @@ insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD
 values (894, 23, '字典配置', '字典配置', 'AP.view.data.SystemdataInfoView', 'DataDictionaryManagement', 2090100, null, null, 'dictionary', 0, 'AP.controller.data.SystemdataInfoControl', 'Data dictionary management', 'Настройка словаря', 'Data dictionary management', 'Настройка словаря');
 
 insert into TBL_MODULE (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
-values (2278, 23, '运维配置', '运维配置', 'AP.view.operationMaintenance.OperationMaintenanceInfoView', 'OperationMaintenance', 2090300, null, null, 'operationMaintenance', 0, 'AP.controller.frame.MainIframeControl', 'O&M configuration', 'Конфигурация эксплуатации и техобслуживания', 'O&M configuration', 'Конфигурация эксплуатации и техобслуживания');
+values (2278, 23, '运维配置', '运维配置', 'AP.view.operationMaintenance.OperationMaintenanceInfoView', 'OperationMaintenance', 2090300, null, null, 'operationMaintenance', 0, 'AP.controller.frame.MainIframeControl', 'Operation and Maintenance Configuration', 'Конфигурация эксплуатации и техобслуживания', 'Operation and Maintenance Configuration', 'Конфигурация эксплуатации и техобслуживания');
 
 
 /*==============================================================*/
@@ -255,9 +258,6 @@ insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
 values (53, 2218, 4, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (54, 1998, 144, '1,0,0');
-
-insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
 values (55, 2278, 1, '1,1,0');
 
 
@@ -277,40 +277,91 @@ insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
 values (4, 4, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (5, 1, 2, '0,0,0');
+values (5, 5, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (6, 2, 2, '0,0,0');
+values (6, 1, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (7, 3, 2, '0,0,0');
+values (7, 2, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (8, 4, 2, '0,0,0');
+values (8, 3, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (9, 1, 3, '0,0,0');
+values (9, 4, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (10, 2, 3, '0,0,0');
+values (10, 5, 2, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (11, 3, 3, '0,0,0');
+values (11, 1, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (12, 4, 3, '0,0,0');
+values (12, 2, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (13, 1, 4, '0,0,0');
+values (13, 3, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (14, 2, 4, '0,0,0');
+values (14, 4, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (15, 3, 4, '0,0,0');
+values (15, 5, 3, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (16, 4, 4, '0,0,0');
+values (16, 1, 4, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (17, 2, 4, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (18, 3, 4, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (19, 4, 4, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (20, 5, 4, '0,0,0');
+
+/*==============================================================*/
+/* 初始化TBL_LANGUAGE2ROLE数据                                          */
+/*==============================================================*/
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (1, 1, 1, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (2, 2, 1, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (3, 3, 1, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (4, 1, 2, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (5, 2, 2, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (6, 3, 2, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (7, 1, 3, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (8, 2, 3, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (9, 3, 3, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (10, 1, 4, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (11, 2, 4, '0,0,0');
+
+insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
+values (12, 3, 4, '0,0,0');
 
 /*==============================================================*/
 /* 初始化tbl_org数据                                          */

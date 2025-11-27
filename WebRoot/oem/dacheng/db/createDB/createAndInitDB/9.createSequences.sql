@@ -19,6 +19,13 @@ start with 1
 increment by 1
 cache 20;
 
+create sequence SEQ_ACQDATA_VACUATE
+minvalue 1
+maxvalue 999999999999999999999999
+start with 1
+increment by 1
+cache 20;
+
 create sequence SEQ_ACQRAWDATA
 minvalue 1
 maxvalue 999999999999999999999999
@@ -215,6 +222,13 @@ start with 1
 increment by 1
 cache 20;
 
+create sequence SEQ_PCPACQDATA_VACUATE
+minvalue 0
+maxvalue 9999999999999999999999999
+start with 1
+increment by 1
+cache 20;
+
 create sequence SEQ_PCPDAILYCALCULATIONDATA
 minvalue 1
 maxvalue 9999999999999999999999999999
@@ -341,6 +355,13 @@ start with 1
 increment by 1
 cache 20;
 
+create sequence SEQ_SRPACQDATA_VACUATE
+minvalue 0
+maxvalue 9999999999999999999999999
+start with 1
+increment by 1
+cache 20;
+
 create sequence SEQ_SRPDAILYCALCULATIONDATA
 minvalue 1
 maxvalue 9999999999999999999999999999
@@ -407,7 +428,7 @@ cache 20;
 create sequence SEQ_LANGUAGE2ROLE
 minvalue 1
 maxvalue 999999999999999999999999
-start with 1
+start with 21
 increment by 1
 cache 20;
 

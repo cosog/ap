@@ -220,6 +220,8 @@ public class OEMConfigFile {
 	
 	public static class Email
 	{
+		private boolean enable;
+		
 	    private SnedAccount snedAccount;
 
 	    public void setSnedAccount(SnedAccount snedAccount){
@@ -228,6 +230,12 @@ public class OEMConfigFile {
 	    public SnedAccount getSnedAccount(){
 	        return this.snedAccount;
 	    }
+		public boolean getEnable() {
+			return enable;
+		}
+		public void setEnable(boolean enable) {
+			this.enable = enable;
+		}
 	}
 	
 	public static class Others

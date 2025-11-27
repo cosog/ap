@@ -167,6 +167,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         xtype: 'checkcolumn',
                         lockable: true,
                         disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                        hidden: !emailConfig.enable,
                         align: 'center',
                         sortable: true,
                         width: getLabelWidth(loginUserLanguageResource.receiveSMS,loginUserLanguage)+'px',

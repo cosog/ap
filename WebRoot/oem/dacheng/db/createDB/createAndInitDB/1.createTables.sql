@@ -32,7 +32,7 @@ create table TBL_PROTOCOL
   devicetype NUMBER(10),
   items      CLOB,
   extendedfield CLOB,
-  language   NUMBER(1)
+  language   NUMBER(1),
   sort       NUMBER(10)
 )
 tablespace AP_DATA

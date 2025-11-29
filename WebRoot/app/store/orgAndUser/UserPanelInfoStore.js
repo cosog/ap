@@ -189,6 +189,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         header: loginUserLanguageResource.receiveMail,
                         xtype: 'checkcolumn',
                         disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                        hidden: !emailConfig.enable,
                         lockable: true,
                         align: 'center',
                         sortable: true,

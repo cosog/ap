@@ -340,6 +340,7 @@ function createRealTimeMonitoringColumnObject(columnInfo) {
         var attr = myArr[i];
         var thisColumn={};
         var width_ = "";
+        var flex_ = "";
         var lock_ = "";
         var hidden_ = "";
         if (attr.hidden == true) {
@@ -352,6 +353,23 @@ function createRealTimeMonitoringColumnObject(columnInfo) {
         if (isNotVal(attr.width)) {
             thisColumn.width=attr.width;
         }
+        
+        if(myArr.length<=5){
+        	if(myArr.length==1){
+        		thisColumn.flex=1;
+        	}else{
+        		if(attr.dataIndex.toUpperCase() != 'id'.toUpperCase()){
+            		thisColumn.flex=1;
+            	} 
+        	}
+        }
+        
+//        else{
+//        	if (isNotVal(attr.flex)) {
+//                thisColumn.flex=attr.flex;
+//            }
+//        }
+        
         
         thisColumn.text=attr.header;
         thisColumn.lockable=true;

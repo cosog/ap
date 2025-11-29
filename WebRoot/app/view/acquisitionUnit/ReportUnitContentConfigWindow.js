@@ -554,6 +554,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                	if(changes != null && source=="CopyPaste.paste"){
 	                		changes.forEach(([row, prop, oldValue, newValue]) => {
 		                        if (prop === 'reportCurveConfShowValue') {
+		                        	var colSelectedRow=Ext.getCmp("ReportUnitContentConfig_SelectedRow").getValue();
 		                        	if(newValue.split(";").length==3){
 		                        		var curveConfigArr=newValue.split(";");
 		                            	var curveConfig={};
@@ -563,9 +564,16 @@ var ReportUnitContentConfigHandsontableHelper = {
 		                    			curveConfig.yAxisOpposite=curveConfigArr[1]==loginUserLanguageResource.right?true:false;
 		                    			curveConfig.color=curveConfigArr[2];
 		                    			
-		                    			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf',curveConfig);
+		                    			reportUnitContentConfigHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf',curveConfig);
+		                    			
+		                    			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(colSelectedRow,'reportCurveConfShowValue',newValue);
+		                    			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(colSelectedRow,'reportCurveConf',curveConfig);
+		                    			
 		                        	}else{
-		                        		protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf','');
+		                        		reportUnitContentConfigHandsontableHelper.hot.setDataAtRowProp(row,'reportCurveConf','');
+		                        		
+		                        		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(colSelectedRow,'reportCurveConfShowValue','');
+		                    			reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(colSelectedRow,'reportCurveConf','');
 		                        	}
 		                        }
 		                    });
@@ -600,7 +608,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemBitIndex',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex'));
 			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataChange',1);
 	                            			}else if(reportType==1){
-	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemName',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index));//名称
+	                            				reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'itemName',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'title'));//名称
 			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'unit',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'unit'));
 			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'dataSource',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'dataSource'));
 			                            		reportUnitContentConfigColInfoHandsontableHelper.hot.setDataAtRowProp(row,'totalType',reportUnitContentConfigHandsontableHelper.hot.getDataAtRowProp(index,'totalType'));

@@ -53,6 +53,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView', {
                 	title:loginUserLanguageResource.SMSInstance,
                 	id:'ModbusProtocolSMSInstanceConfigTabPanel_Id',
 //                	items: [ModbusProtocolSMSInstanceConfigInfoView],
+                	hidden: !emailConfig.enable,
     				layout: "fit",
     				border: false
                 }],

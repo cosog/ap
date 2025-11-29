@@ -634,7 +634,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [0],
+	                    columns: [0,3],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },

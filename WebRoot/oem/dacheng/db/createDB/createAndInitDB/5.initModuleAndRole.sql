@@ -62,12 +62,6 @@ insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD
 values (34, 31, '主设备', '主设备', 'AP.view.well.DeviceManagerInfoView', 'WellInformation', 2040100, null, null, 'wellInformation', 0, 'AP.controller.well.WellInfoController', 'Primary device', 'Основное устройство', 'Primary device', 'Основное устройство');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
-values (2218, 31, '辅件设备', '辅件设备', 'AP.view.well.AuxiliaryDeviceInfoView', 'AuxiliaryDeviceManager', 2040200, null, null, 'auxiliaryDevice', 0, 'AP.controller.well.WellInfoController', 'Auxiliary device management', 'Аксессуары и оборудование', 'Auxiliary device management', 'Аксессуары и оборудование');
-
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
-values (2078, 31, '短信设备', '短信设备管理', 'AP.view.well.SMSDeviceInfoView', 'SMSDeviceManager', 2040300, null, null, 'smsDevice', 0, 'AP.controller.well.WellInfoController', 'SMS device manager', 'SMS-устройства', 'SMS device manager', 'SMS-устройства');
-
-insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
 values (23, 9999, '系统配置', '系统配置', '#', 'SystemManagement', 2090000, null, null, 'system', 0, 'AP.controller.frame.MainIframeControl', 'System management', 'Конфигурация системы', 'System management', 'Конфигурация системы');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME_ZH_CN, MD_SHOWNAME_ZH_CN, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL, MD_NAME_EN, MD_NAME_RU, MD_SHOWNAME_EN, MD_SHOWNAME_RU)
@@ -147,118 +141,106 @@ insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
 values (16, 2179, 1, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (17, 2218, 1, '1,1,0');
+values (17, 2238, 1, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (18, 2238, 1, '1,0,0');
+values (18, 9999, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (19, 2078, 1, '1,1,0');
+values (19, 1998, 2, '1,0,1');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (20, 9999, 2, '1,0,0');
+values (20, 2018, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (21, 1998, 2, '1,0,1');
+values (21, 2158, 2, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (22, 2018, 2, '1,0,0');
+values (22, 2058, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (23, 2158, 2, '1,1,0');
+values (23, 2038, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (24, 2058, 2, '1,0,0');
+values (24, 2179, 2, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (25, 2038, 2, '1,0,0');
+values (25, 1777, 2, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (26, 2179, 2, '1,1,0');
+values (26, 27, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (27, 1777, 2, '1,1,0');
+values (27, 24, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (28, 27, 2, '1,0,0');
+values (28, 29, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (29, 24, 2, '1,0,0');
+values (29, 31, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (30, 29, 2, '1,0,0');
+values (30, 34, 2, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (31, 31, 2, '1,0,0');
+values (31, 23, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (32, 34, 2, '1,1,0');
+values (32, 26, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (33, 2218, 2, '1,1,0');
+values (33, 894, 2, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (34, 23, 2, '1,0,0');
+values (34, 1998, 3, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (35, 26, 2, '1,0,0');
+values (35, 2018, 3, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (36, 894, 2, '1,0,0');
+values (36, 2158, 3, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (37, 1998, 3, '1,0,0');
+values (37, 2058, 3, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (38, 2018, 3, '1,0,0');
+values (38, 2038, 3, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (39, 2158, 3, '1,0,0');
+values (39, 2179, 3, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (40, 2058, 3, '1,0,0');
+values (40, 26, 3, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (41, 2038, 3, '1,0,0');
+values (41, 894, 3, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (42, 2179, 3, '1,0,0');
+values (42, 1998, 4, '1,0,1');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (43, 26, 3, '1,0,0');
+values (43, 2018, 4, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (44, 894, 3, '1,0,0');
+values (44, 2158, 4, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (45, 1998, 4, '1,0,1');
+values (45, 2058, 4, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (46, 2018, 4, '1,0,0');
+values (46, 2038, 4, '1,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (47, 2158, 4, '1,1,0');
+values (47, 2179, 4, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (48, 2058, 4, '1,0,0');
+values (48, 1777, 4, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (49, 2038, 4, '1,0,0');
+values (49, 34, 4, '1,1,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (50, 2179, 4, '1,1,0');
-
-insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (51, 1777, 4, '1,1,0');
-
-insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (52, 34, 4, '1,1,0');
-
-insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (53, 2218, 4, '1,1,0');
-
-insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
-values (55, 2278, 1, '1,1,0');
+values (50, 2278, 1, '1,1,0');
 
 
 /*==============================================================*/

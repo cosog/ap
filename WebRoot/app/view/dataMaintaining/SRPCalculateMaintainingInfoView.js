@@ -1023,7 +1023,7 @@ function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
         		singleColumn.type='dropdown';
         		singleColumn.strict=true;
         		singleColumn.allowInvalid=false;
-        		singleColumn.source=[loginUserLanguageResource.barrelType_L, loginUserLanguageResource.barrelType_H];
+        		singleColumn.source=[loginUserLanguageResource.barrelType_H, loginUserLanguageResource.barrelType_L];
         	}else if(dataIndex.toUpperCase()==="pumpTypeName".toUpperCase()){
         		singleColumn.type='dropdown';
         		singleColumn.strict=true;

@@ -178,6 +178,12 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			int totals=this.getTotalCountRows(sql);
 			
 			sql+=" order by t."+timeCol+" desc";
+			
+			if(timeType==0){
+				sql+=",t.acqTime desc ";
+			}
+			
+			
 			int maxvalue=pager.getLimit()+pager.getStart();
 			finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 			

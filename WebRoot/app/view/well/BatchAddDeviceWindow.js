@@ -195,7 +195,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                     } else if (dataIndex.toUpperCase() === "pumpType".toUpperCase()) {
                     	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']}";
                     } else if (dataIndex.toUpperCase() === "barrelType".toUpperCase()) {
-                    	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.barrelType_L+"', '"+loginUserLanguageResource.barrelType_H+"']}";
+                    	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.barrelType_H+"', '"+loginUserLanguageResource.barrelType_L+"']}";
                     } else if (dataIndex.toUpperCase() === "pumpGrade".toUpperCase()) {
                     	columns += "{data:'" + dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['1', '2', '3', '4', '5']}";
                     } else if (dataIndex.toUpperCase() === "rodGrade1".toUpperCase() || dataIndex.toUpperCase() === "rodGrade2".toUpperCase()

@@ -2798,8 +2798,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 							}
 						}
 						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("manualInterventionCode")+"\",\"itemCode\":\"manualInterventionCode\",\"itemValue\":\""+manualInterventionName+"\"},");
-						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
-						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
+						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossRatio():"1")+"\"},");
+						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\""+(srpProductionData.getManualIntervention()!=null?srpProductionData.getManualIntervention().getNetGrossValue():"0")+"\"},");
 						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemCode\":\"levelCorrectValue\",\"itemValue\":\""+(srpProductionData.getProduction()!=null?srpProductionData.getManualIntervention().getLevelCorrectValue():"")+"\"},");
 						
 						result_json.append("{\"id\":44,\"itemName\":\""+languageResourceMap.get("FESDiagramSrc")+"\",\"itemCode\":\"FESDiagramSrc\",\"itemValue\":\""+MemoryDataManagerTask.getCodeName("FESDIAGRAMSRC", FESDiagramSrc+"", language)+"\"}");
@@ -2854,8 +2854,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemCode\":\"rodStringLength4\",\"itemValue\":\"\"},");
 						
 						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("manualInterventionCode")+"\",\"itemCode\":\"manualInterventionCode\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\"\"},");
+						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\"1\"},");
+						result_json.append("{\"id\":42,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\"0\"},");
 						result_json.append("{\"id\":43,\"itemName\":\""+languageResourceMap.get("levelCorrectValue")+"(MPa)\",\"itemCode\":\"levelCorrectValue\",\"itemValue\":\"\"},");
 						
 						result_json.append("{\"id\":44,\"itemName\":\""+languageResourceMap.get("FESDiagramSrc")+"\",\"itemCode\":\"FESDiagramSrc\",\"itemValue\":\"\"}");
@@ -2978,8 +2978,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":38,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter4")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter4\",\"itemValue\":\""+rodInsideDiameter4+"\"},");
 						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemCode\":\"rodStringLength4\",\"itemValue\":\""+rodLength4+"\"},");
 						
-						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
-						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossValue():"")+"\"}");
+						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossRatio():"1")+"\"},");
+						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossValue():"0")+"\"}");
 					}else{
 						result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"itemCode\":\"crudeOilDensity\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"itemCode\":\"waterDensity\",\"itemValue\":\"\"},");
@@ -3029,8 +3029,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						result_json.append("{\"id\":38,\"itemName\":\""+languageResourceMap.get("rodStringInsideDiameter4")+"(mm)\",\"itemCode\":\"rodStringInsideDiameter4\",\"itemValue\":\"\"},");
 						result_json.append("{\"id\":39,\"itemName\":\""+languageResourceMap.get("rodStringLength4")+"(m)\",\"itemCode\":\"rodStringLength4\",\"itemValue\":\"\"},");
 						
-						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\"\"},");
-						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\"\"}");
+						result_json.append("{\"id\":40,\"itemName\":\""+languageResourceMap.get("netGrossRatio")+"\",\"itemCode\":\"netGrossRatio\",\"itemValue\":\"1\"},");
+						result_json.append("{\"id\":41,\"itemName\":\""+languageResourceMap.get("netGrossValue")+"(m^3/d)\",\"itemCode\":\"netGrossValue\",\"itemValue\":\"0\"}");
 					}
 				}
 			}

@@ -1147,7 +1147,7 @@ public class SRPCalculateRequestData_All implements Serializable {
 		private static final long serialVersionUID = 1L;
 	    private int Code;
 	    
-	    private float NetGrossRatio;
+	    private float NetGrossRatio=1;
 	    
 	    private float NetGrossValue;
 	    

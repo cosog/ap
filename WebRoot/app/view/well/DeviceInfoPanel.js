@@ -2708,7 +2708,7 @@ var ProductionHandsontableHelper = {
 		                    
 		                    if (visualColIndex === 2 && visualRowIndex===13 && deviceCalculateDataType==1) {
 		                    	this.type = 'dropdown';
-		                    	this.source = [loginUserLanguageResource.barrelType_L, loginUserLanguageResource.barrelType_H];
+		                    	this.source = [loginUserLanguageResource.barrelType_H,loginUserLanguageResource.barrelType_L];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }

@@ -3139,7 +3139,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionGroup.setGroupSavingInterval(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupSavingInterval()));
 					acquisitionGroup.setRemark(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getRemark());
 					acquisitionGroup.setProtocol(protocol);
-//					this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
+					this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
 					String param1=acquisitionGroup.getId()+"";
 					String method="update";
 					EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(param1,method);

@@ -588,7 +588,7 @@ public class PCPCalculateRequestData  implements Serializable {
 		
 	    private int Code;
 
-	    private float NetGrossRatio;
+	    private float NetGrossRatio=1;
 	    
 	    private float NetGrossValue;
 

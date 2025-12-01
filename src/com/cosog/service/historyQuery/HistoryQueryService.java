@@ -7539,7 +7539,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+=" and 1=2";
 		}	
 		
-		distinctSql+=" and deviceId="+deviceId+" and resultstatus=1";
+		distinctSql+=" and deviceId="+deviceId+" "
+		+ " and resultstatus=1";
 		distinctSql+=" group by fesdiagramacqtime";
 		
 		String sql="select t.resultcode,count(1) "

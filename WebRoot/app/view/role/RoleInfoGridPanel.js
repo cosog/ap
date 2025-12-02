@@ -30,6 +30,10 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
             },{
                 xtype: "hidden",
                 id: 'addRoleFlag_Id',
+                value: ''
+            },{
+                xtype: "hidden",
+                id: 'selectedRoleId_Id',
                 value: 0
             },{
                 xtype: 'button',

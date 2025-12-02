@@ -232,7 +232,7 @@ public class WellAcquisitionData {
 	{
 	    private String AcqTime;
 	    
-	    private int AcquisitionCycle;
+	    private Integer AcquisitionCycle;
 
 	    private float SPM;
 
@@ -308,10 +308,10 @@ public class WellAcquisitionData {
 	    public List<Float> getP(){
 	        return this.P;
 	    }
-		public int getAcquisitionCycle() {
+		public Integer getAcquisitionCycle() {
 			return AcquisitionCycle;
 		}
-		public void setAcquisitionCycle(int acquisitionCycle) {
+		public void setAcquisitionCycle(Integer acquisitionCycle) {
 			AcquisitionCycle = acquisitionCycle;
 		}
 		public float getUpStrokeIMax() {

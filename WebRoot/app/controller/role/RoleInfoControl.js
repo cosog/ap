@@ -101,16 +101,18 @@ var SaveroleDataInfoSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.sendServer,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
-                Ext.getCmp('role_addwin_Id').close();
+                
                 
                 if (action.result.msg == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
-                    Ext.getCmp("addRoleFlag_Id").setValue(1);
+                    Ext.getCmp("addRoleFlag_Id").setValue(Ext.getCmp('role_Name_Id').getValue());
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
-                    Ext.getCmp("addRoleFlag_Id").setValue(0);
+                    Ext.getCmp("addRoleFlag_Id").setValue('');
                 }
+                
+                Ext.getCmp('role_addwin_Id').close();
                 Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
             },
             failure: function () {
@@ -529,6 +531,7 @@ function delRoleInfoByGridBtn(record) {
           				if (result.flag == false) {
           					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
           				}
+          				Ext.getCmp("selectedRoleId_Id").setValue(0);
           				Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
           			},
           			failure : function() {

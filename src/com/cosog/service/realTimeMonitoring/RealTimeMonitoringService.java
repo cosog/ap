@@ -51,7 +51,6 @@ import com.cosog.model.data.DataitemsInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
-import com.cosog.model.gridmodel.WellGridPanelData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;

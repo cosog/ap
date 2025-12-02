@@ -898,7 +898,7 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 		var calculateDataActiveId=Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getActiveTab().id;
 		if(calculateDataActiveId=='DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id'){
 			var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
-			var calculateType=getDeviceCalculateType(deviceId);
+//			var calculateType=getDeviceCalculateType(deviceId);
 			if(calculateType!=deviceCalculateDataType){
 				Ext.getCmp('DeviceCalculateDataType_Id').setValue({deviceCalculateDataType:calculateType});
 			}else{

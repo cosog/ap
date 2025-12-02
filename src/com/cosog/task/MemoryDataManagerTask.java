@@ -1002,10 +1002,7 @@ public class MemoryDataManagerTask {
 		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
+		
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -1023,6 +1020,7 @@ public class MemoryDataManagerTask {
 						jedis.hdel("PCPDeviceTodayData".getBytes(), wellList.get(i).getBytes());
 						
 						jedis.del(("DeviceRealtimeAcqData_"+wellList.get(i)).getBytes());
+						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-删除内存中的设备信息:"+wellList.get(i));
 					}
 				}else if(condition==1){
 					for(int i=0;i<wellList.size();i++){
@@ -1042,239 +1040,245 @@ public class MemoryDataManagerTask {
 					}
 				}
 			}else{
-				String sql="select t.id,"
-						+ "t.orgid,"
-						+ "t.orgName_zh_cn,t.orgName_en,t.orgName_ru,"//3~5
-						+ "t.devicename,"
-						+ "t.devicetype,"
-						+ "t.devicetypename_zh_cn,t.devicetypename_en,devicetypename_ru,"//8~10
-						+ "t.applicationscenarios,"//11
-						+ "t.calculateType,"//12
-						+ "t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,"
-						+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"
-						+ "t.instancecode,t.instancename,t.alarminstancecode,t.alarminstancename,t.displayinstancecode,t.displayinstancename,"
-						+ "t.status,t.statusName,"
-						+ "t.productiondata,t.balanceinfo,t.stroke,"
-						+ "t.sortnum,"
-						+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
-						+ "t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange,"
-						+ "decode(t2.runstatus,null,2,t2.runstatus),t2.runtime,t2.runtimeefficiency,t2.runrange,"
-						+ " decode(t.calculateType,1,t3.resultstatus,2,t4.resultstatus,0),decode(t3.resultcode,null,0,t3.resultcode) as resultcode,"
-						+ "t.protocolName,t.protocolDeviceTypeAllPath_zh_cn"
-						+ " from viw_device t"
-						+ " left outer join tbl_acqdata_latest t2 on t2.deviceid=t.id "
-						+ " left outer join tbl_srpacqdata_latest t3 on t3.deviceid=t.id "
-						+ " left outer join tbl_pcpacqdata_latest t4 on t4.deviceid=t.id "
-						+ " where 1=1 ";
-				String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue "
-						+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
-						+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
-						+ " and t3.specifictype=1";
-				String dailyTotalSql="select t.id,t.deviceid,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.itemcolumn,t.itemName,t.totalvalue,t.todayvalue "
-						+ "from TBL_DAILYTOTALCALCULATE_LATEST t,tbl_device t2 "
-						+ "where t.deviceid=t2.id";
-				if(StringManagerUtils.isNotNull(wells)){
-					if(condition==0){
-						sql+=" and t.id in("+wells+")";
-						auxiliaryDeviceSql+=" and t.id in("+wells+")";
-						dailyTotalSql+=" and t2.id in("+wells+")";
-					}else{
-						sql+=" and t.devicename in("+wells+")";
-						auxiliaryDeviceSql+=" and t.devicename in("+wells+")";
-						dailyTotalSql+=" and t2.devicename in("+wells+")";
+				conn=OracleJdbcUtis.getConnection();
+				if(conn==null){
+		        	return;
+		        }
+				if(conn!=null){
+					String sql="select t.id,"
+							+ "t.orgid,"
+							+ "t.orgName_zh_cn,t.orgName_en,t.orgName_ru,"//3~5
+							+ "t.devicename,"
+							+ "t.devicetype,"
+							+ "t.devicetypename_zh_cn,t.devicetypename_en,devicetypename_ru,"//8~10
+							+ "t.applicationscenarios,"//11
+							+ "t.calculateType,"//12
+							+ "t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,"
+							+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"
+							+ "t.instancecode,t.instancename,t.alarminstancecode,t.alarminstancename,t.displayinstancecode,t.displayinstancename,"
+							+ "t.status,t.statusName,"
+							+ "t.productiondata,t.balanceinfo,t.stroke,"
+							+ "t.sortnum,"
+							+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
+							+ "t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange,"
+							+ "decode(t2.runstatus,null,2,t2.runstatus),t2.runtime,t2.runtimeefficiency,t2.runrange,"
+							+ " decode(t.calculateType,1,t3.resultstatus,2,t4.resultstatus,0),decode(t3.resultcode,null,0,t3.resultcode) as resultcode,"
+							+ "t.protocolName,t.protocolDeviceTypeAllPath_zh_cn"
+							+ " from viw_device t"
+							+ " left outer join tbl_acqdata_latest t2 on t2.deviceid=t.id "
+							+ " left outer join tbl_srpacqdata_latest t3 on t3.deviceid=t.id "
+							+ " left outer join tbl_pcpacqdata_latest t4 on t4.deviceid=t.id "
+							+ " where 1=1 ";
+					String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue "
+							+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
+							+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
+							+ " and t3.specifictype=1";
+					String dailyTotalSql="select t.id,t.deviceid,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.itemcolumn,t.itemName,t.totalvalue,t.todayvalue "
+							+ "from TBL_DAILYTOTALCALCULATE_LATEST t,tbl_device t2 "
+							+ "where t.deviceid=t2.id";
+					if(StringManagerUtils.isNotNull(wells)){
+						if(condition==0){
+							sql+=" and t.id in("+wells+")";
+							auxiliaryDeviceSql+=" and t.id in("+wells+")";
+							dailyTotalSql+=" and t2.id in("+wells+")";
+						}else{
+							sql+=" and t.devicename in("+wells+")";
+							auxiliaryDeviceSql+=" and t.devicename in("+wells+")";
+							dailyTotalSql+=" and t2.devicename in("+wells+")";
+						}
 					}
-				}
-				sql+=" order by t.sortNum,t.devicename";
-				dailyTotalSql+=" order by t.deviceid,t.itemcolumn";
-				pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				
-				List<Object[]> auxiliaryDeviceList=OracleJdbcUtis.query(auxiliaryDeviceSql);
-				List<Object[]> dailyTotalList=OracleJdbcUtis.query(dailyTotalSql);
-				
-				List<AuxiliaryDeviceAddInfo> auxiliaryDeviceAddInfoList=new ArrayList<>();
-				for(Object[] obj:auxiliaryDeviceList){
-					AuxiliaryDeviceAddInfo auxiliaryDeviceAddInfo=new AuxiliaryDeviceAddInfo();
-					auxiliaryDeviceAddInfo.setMasterId(StringManagerUtils.stringToInteger(obj[0]+""));
-					auxiliaryDeviceAddInfo.setDeviceId(StringManagerUtils.stringToInteger(obj[1]+""));
-					auxiliaryDeviceAddInfo.setManufacturer(obj[2]+"");
-					auxiliaryDeviceAddInfo.setModel(obj[3]+"");
-					auxiliaryDeviceAddInfo.setItemCode(obj[4]+"");
-					auxiliaryDeviceAddInfo.setItemValue(obj[5]+"");
-					auxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfo);
-				}
-				while(rs.next()){
-					DeviceInfo deviceInfo=new DeviceInfo();
+					sql+=" order by t.sortNum,t.devicename";
+					dailyTotalSql+=" order by t.deviceid,t.itemcolumn";
+					pstmt = conn.prepareStatement(sql);
+					rs=pstmt.executeQuery();
 					
-					deviceInfo.setId(rs.getInt(1));
-					deviceInfo.setOrgId(rs.getInt(2));
-					deviceInfo.setOrgName_zh_CN(rs.getString(3));
-					deviceInfo.setOrgName_en(rs.getString(4));
-					deviceInfo.setOrgName_ru(rs.getString(5));
-					deviceInfo.setDeviceName(rs.getString(6));
-					deviceInfo.setDeviceType(rs.getInt(7));
-					deviceInfo.setDeviceTypeName_zh_CN(rs.getString(8));
-					deviceInfo.setDeviceTypeName_en(rs.getString(9));
-					deviceInfo.setDeviceTypeName_ru(rs.getString(10));
+					List<Object[]> auxiliaryDeviceList=OracleJdbcUtis.query(auxiliaryDeviceSql);
+					List<Object[]> dailyTotalList=OracleJdbcUtis.query(dailyTotalSql);
 					
-					deviceInfo.setApplicationScenarios(rs.getInt(11));
-					deviceInfo.setApplicationScenariosName(getCodeName("APPLICATIONSCENARIOS",deviceInfo.getApplicationScenarios()+"", Config.getInstance().configFile.getAp().getOthers().getLoginLanguage()));
-					
-					deviceInfo.setCalculateType(rs.getInt(12));
-					
-					deviceInfo.setTcpType(rs.getString(13)+"");
-					deviceInfo.setSignInId(rs.getString(14)+"");
-					deviceInfo.setIpPort(rs.getString(15)+"");
-					deviceInfo.setSlave(rs.getString(16)+"");
-					deviceInfo.setPeakDelay(rs.getInt(17));
-					
-					deviceInfo.setVideoUrl1(rs.getString(18)+"");
-					deviceInfo.setVideoKey1(rs.getInt(19));
-					deviceInfo.setVideoUrl2(rs.getString(20)+"");
-					deviceInfo.setVideoKey2(rs.getInt(21));
-					
-					deviceInfo.setInstanceCode(rs.getString(22)+"");
-					deviceInfo.setInstanceName(rs.getString(23)+"");
-					deviceInfo.setAlarmInstanceCode(rs.getString(24)+"");
-					deviceInfo.setAlarmInstanceName(rs.getString(25)+"");
-					deviceInfo.setDisplayInstanceCode(rs.getString(26)+"");
-					deviceInfo.setDisplayInstanceName(rs.getString(27)+"");
-					deviceInfo.setStatus(rs.getInt(28));
-					deviceInfo.setStatusName(rs.getString(29)+"");
-					
-					String productionData=rs.getString(30)+"";
-					String balanceInfo=rs.getString(31)+"";
-					float stroke=rs.getFloat(32);
-					
-					if(StringManagerUtils.isNotNull(productionData)){
-						if(deviceInfo.getCalculateType()==1){//功图计算
-							type = new TypeToken<SRPCalculateRequestData>() {}.getType();
-							SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
-							
-							List<AuxiliaryDeviceAddInfo> thisAuxiliaryDeviceAddInfoList=new ArrayList<>();
-							String manufacturer="";
-							String model="";
-							for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++){
-								if(auxiliaryDeviceAddInfoList.get(i).getMasterId()==deviceInfo.getId()){
-									thisAuxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfoList.get(i));
-								}
-							}
-							
-							deviceInfo.setSrpCalculateRequestData(new SRPCalculateRequestData());
-							deviceInfo.getSrpCalculateRequestData().init();
-							
-							deviceInfo.getSrpCalculateRequestData().setFluidPVT(srpProductionData.getFluidPVT());
-							deviceInfo.getSrpCalculateRequestData().setReservoir(srpProductionData.getReservoir());
-							deviceInfo.getSrpCalculateRequestData().setTubingString(srpProductionData.getTubingString());
-							deviceInfo.getSrpCalculateRequestData().setCasingString(srpProductionData.getCasingString());
-							deviceInfo.getSrpCalculateRequestData().setRodString(srpProductionData.getRodString());
-							deviceInfo.getSrpCalculateRequestData().setPump(srpProductionData.getPump());
-							deviceInfo.getSrpCalculateRequestData().setProduction(srpProductionData.getProduction());
-							
-							deviceInfo.getSrpCalculateRequestData().setManualIntervention(srpProductionData.getManualIntervention());
-							
-							if(srpProductionData.getFESDiagram()!=null){
-								deviceInfo.getSrpCalculateRequestData().getFESDiagram().setSrc(srpProductionData.getFESDiagram().getSrc());
-							}
-							
-							if(thisAuxiliaryDeviceAddInfoList.size()>0){
-								deviceInfo.getSrpCalculateRequestData().setPumpingUnit(new SRPCalculateRequestData.PumpingUnit());
-								for(int i=0;i<thisAuxiliaryDeviceAddInfoList.size();i++ ){
-									manufacturer=thisAuxiliaryDeviceAddInfoList.get(i).getManufacturer();
-									model=thisAuxiliaryDeviceAddInfoList.get(i).getModel();
-									if("structureType".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
-										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStructureType(StringManagerUtils.stringToInteger(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
-									}else if("crankRotationDirection".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
-										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankRotationDirection(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue());
-									}else if("offsetAngleOfCrank".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
-										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
-									}else if("crankGravityRadius".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
-										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
-									}else if("singleCrankWeight".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
-										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
-									}else if("singleCrankPinWeight".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
-										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
-									}else if("structuralUnbalance".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
-										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+					List<AuxiliaryDeviceAddInfo> auxiliaryDeviceAddInfoList=new ArrayList<>();
+					for(Object[] obj:auxiliaryDeviceList){
+						AuxiliaryDeviceAddInfo auxiliaryDeviceAddInfo=new AuxiliaryDeviceAddInfo();
+						auxiliaryDeviceAddInfo.setMasterId(StringManagerUtils.stringToInteger(obj[0]+""));
+						auxiliaryDeviceAddInfo.setDeviceId(StringManagerUtils.stringToInteger(obj[1]+""));
+						auxiliaryDeviceAddInfo.setManufacturer(obj[2]+"");
+						auxiliaryDeviceAddInfo.setModel(obj[3]+"");
+						auxiliaryDeviceAddInfo.setItemCode(obj[4]+"");
+						auxiliaryDeviceAddInfo.setItemValue(obj[5]+"");
+						auxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfo);
+					}
+					while(rs.next()){
+						DeviceInfo deviceInfo=new DeviceInfo();
+						
+						deviceInfo.setId(rs.getInt(1));
+						deviceInfo.setOrgId(rs.getInt(2));
+						deviceInfo.setOrgName_zh_CN(rs.getString(3));
+						deviceInfo.setOrgName_en(rs.getString(4));
+						deviceInfo.setOrgName_ru(rs.getString(5));
+						deviceInfo.setDeviceName(rs.getString(6));
+						deviceInfo.setDeviceType(rs.getInt(7));
+						deviceInfo.setDeviceTypeName_zh_CN(rs.getString(8));
+						deviceInfo.setDeviceTypeName_en(rs.getString(9));
+						deviceInfo.setDeviceTypeName_ru(rs.getString(10));
+						
+						deviceInfo.setApplicationScenarios(rs.getInt(11));
+						deviceInfo.setApplicationScenariosName(getCodeName("APPLICATIONSCENARIOS",deviceInfo.getApplicationScenarios()+"", Config.getInstance().configFile.getAp().getOthers().getLoginLanguage()));
+						
+						deviceInfo.setCalculateType(rs.getInt(12));
+						
+						deviceInfo.setTcpType(rs.getString(13)+"");
+						deviceInfo.setSignInId(rs.getString(14)+"");
+						deviceInfo.setIpPort(rs.getString(15)+"");
+						deviceInfo.setSlave(rs.getString(16)+"");
+						deviceInfo.setPeakDelay(rs.getInt(17));
+						
+						deviceInfo.setVideoUrl1(rs.getString(18)+"");
+						deviceInfo.setVideoKey1(rs.getInt(19));
+						deviceInfo.setVideoUrl2(rs.getString(20)+"");
+						deviceInfo.setVideoKey2(rs.getInt(21));
+						
+						deviceInfo.setInstanceCode(rs.getString(22)+"");
+						deviceInfo.setInstanceName(rs.getString(23)+"");
+						deviceInfo.setAlarmInstanceCode(rs.getString(24)+"");
+						deviceInfo.setAlarmInstanceName(rs.getString(25)+"");
+						deviceInfo.setDisplayInstanceCode(rs.getString(26)+"");
+						deviceInfo.setDisplayInstanceName(rs.getString(27)+"");
+						deviceInfo.setStatus(rs.getInt(28));
+						deviceInfo.setStatusName(rs.getString(29)+"");
+						
+						String productionData=rs.getString(30)+"";
+						String balanceInfo=rs.getString(31)+"";
+						float stroke=rs.getFloat(32);
+						
+						if(StringManagerUtils.isNotNull(productionData)){
+							if(deviceInfo.getCalculateType()==1){//功图计算
+								type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+								SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
+								
+								List<AuxiliaryDeviceAddInfo> thisAuxiliaryDeviceAddInfoList=new ArrayList<>();
+								String manufacturer="";
+								String model="";
+								for(int i=0;i<auxiliaryDeviceAddInfoList.size();i++){
+									if(auxiliaryDeviceAddInfoList.get(i).getMasterId().equals(deviceInfo.getId())){
+										thisAuxiliaryDeviceAddInfoList.add(auxiliaryDeviceAddInfoList.get(i));
 									}
 								}
-								deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setManufacturer(manufacturer);
-								deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setModel(model);
-								deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStroke(stroke);
 								
-								type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
-								SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
-								if(balance!=null){
-									deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setBalance(balance);
+								deviceInfo.setSrpCalculateRequestData(new SRPCalculateRequestData());
+								deviceInfo.getSrpCalculateRequestData().init();
+								
+								deviceInfo.getSrpCalculateRequestData().setFluidPVT(srpProductionData.getFluidPVT());
+								deviceInfo.getSrpCalculateRequestData().setReservoir(srpProductionData.getReservoir());
+								deviceInfo.getSrpCalculateRequestData().setTubingString(srpProductionData.getTubingString());
+								deviceInfo.getSrpCalculateRequestData().setCasingString(srpProductionData.getCasingString());
+								deviceInfo.getSrpCalculateRequestData().setRodString(srpProductionData.getRodString());
+								deviceInfo.getSrpCalculateRequestData().setPump(srpProductionData.getPump());
+								deviceInfo.getSrpCalculateRequestData().setProduction(srpProductionData.getProduction());
+								
+								deviceInfo.getSrpCalculateRequestData().setManualIntervention(srpProductionData.getManualIntervention());
+								
+								if(srpProductionData.getFESDiagram()!=null){
+									deviceInfo.getSrpCalculateRequestData().getFESDiagram().setSrc(srpProductionData.getFESDiagram().getSrc());
 								}
-							}else{
-								deviceInfo.getSrpCalculateRequestData().setPumpingUnit(null);
+								
+								if(thisAuxiliaryDeviceAddInfoList.size()>0){
+									deviceInfo.getSrpCalculateRequestData().setPumpingUnit(new SRPCalculateRequestData.PumpingUnit());
+									for(int i=0;i<thisAuxiliaryDeviceAddInfoList.size();i++ ){
+										manufacturer=thisAuxiliaryDeviceAddInfoList.get(i).getManufacturer();
+										model=thisAuxiliaryDeviceAddInfoList.get(i).getModel();
+										if("structureType".equalsIgnoreCase(auxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStructureType(StringManagerUtils.stringToInteger(auxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("crankRotationDirection".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankRotationDirection(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue());
+										}else if("offsetAngleOfCrank".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("crankGravityRadius".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("singleCrankWeight".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("singleCrankPinWeight".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}else if("structuralUnbalance".equalsIgnoreCase(thisAuxiliaryDeviceAddInfoList.get(i).getItemCode())){
+											deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(thisAuxiliaryDeviceAddInfoList.get(i).getItemValue()));
+										}
+									}
+									deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setManufacturer(manufacturer);
+									deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setModel(model);
+									deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setStroke(stroke);
+									
+									type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
+									SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+									if(balance!=null){
+										deviceInfo.getSrpCalculateRequestData().getPumpingUnit().setBalance(balance);
+									}
+								}else{
+									deviceInfo.getSrpCalculateRequestData().setPumpingUnit(null);
+								}
+							}else if(deviceInfo.getCalculateType()==2){//转速计产
+								type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+								PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
+								deviceInfo.setPcpCalculateRequestData(new PCPCalculateRequestData());
+								deviceInfo.getPcpCalculateRequestData().init();
+								
+								deviceInfo.getPcpCalculateRequestData().setFluidPVT(pcpProductionData.getFluidPVT());
+								deviceInfo.getPcpCalculateRequestData().setReservoir(pcpProductionData.getReservoir());
+								deviceInfo.getPcpCalculateRequestData().setTubingString(pcpProductionData.getTubingString());
+								deviceInfo.getPcpCalculateRequestData().setCasingString(pcpProductionData.getCasingString());
+								deviceInfo.getPcpCalculateRequestData().setRodString(pcpProductionData.getRodString());
+								deviceInfo.getPcpCalculateRequestData().setPump(pcpProductionData.getPump());
+								deviceInfo.getPcpCalculateRequestData().setProduction(pcpProductionData.getProduction());
+								
+								deviceInfo.getPcpCalculateRequestData().setManualIntervention(pcpProductionData.getManualIntervention());
 							}
-						}else if(deviceInfo.getCalculateType()==2){//转速计产
-							type = new TypeToken<PCPCalculateRequestData>() {}.getType();
-							PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
-							deviceInfo.setPcpCalculateRequestData(new PCPCalculateRequestData());
-							deviceInfo.getPcpCalculateRequestData().init();
-							
-							deviceInfo.getPcpCalculateRequestData().setFluidPVT(pcpProductionData.getFluidPVT());
-							deviceInfo.getPcpCalculateRequestData().setReservoir(pcpProductionData.getReservoir());
-							deviceInfo.getPcpCalculateRequestData().setTubingString(pcpProductionData.getTubingString());
-							deviceInfo.getPcpCalculateRequestData().setCasingString(pcpProductionData.getCasingString());
-							deviceInfo.getPcpCalculateRequestData().setRodString(pcpProductionData.getRodString());
-							deviceInfo.getPcpCalculateRequestData().setPump(pcpProductionData.getPump());
-							deviceInfo.getPcpCalculateRequestData().setProduction(pcpProductionData.getProduction());
-							
-							deviceInfo.getPcpCalculateRequestData().setManualIntervention(pcpProductionData.getManualIntervention());
+						}else{
+							deviceInfo.setSrpCalculateRequestData(null);
+							deviceInfo.setPcpCalculateRequestData(null);
 						}
-					}else{
-						deviceInfo.setSrpCalculateRequestData(null);
-						deviceInfo.setPcpCalculateRequestData(null);
-					}
-					deviceInfo.setSortNum(rs.getInt(33));
-					
-					deviceInfo.setAcqTime(rs.getString(34));
-					deviceInfo.setSaveTime("");
-					deviceInfo.setVacuateDataSaveTime("");
-					
-					deviceInfo.setCommStatus(rs.getInt(35));
-					deviceInfo.setCommTime(rs.getFloat(36));
-					deviceInfo.setCommEff(rs.getFloat(37));
-					deviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(38)));
-					
-					deviceInfo.setOnLineAcqTime(deviceInfo.getAcqTime());
-					deviceInfo.setOnLineCommStatus(deviceInfo.getCommStatus());
-					deviceInfo.setOnLineCommTime(deviceInfo.getCommTime());
-					deviceInfo.setOnLineCommEff(deviceInfo.getCommEff());
-					deviceInfo.setOnLineCommRange(deviceInfo.getCommRange());
-					
-					deviceInfo.setRunStatusAcqTime(deviceInfo.getAcqTime());
-					deviceInfo.setRunStatus(rs.getInt(39));
-					deviceInfo.setRunTime(rs.getFloat(40));
-					deviceInfo.setRunEff(rs.getFloat(41));
-					deviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(42)));
-					
-					deviceInfo.setResultStatus(rs.getInt(43));
-					deviceInfo.setResultCode(rs.getInt(44));
-					
-					deviceInfo.setProtocolName(rs.getString(45));
-					deviceInfo.setProtocolDeviceTypeAllPath_zh_CN(rs.getString(46));
-					
-					//日汇总数据
-					deviceInfo.setDailyTotalItemMap(new HashMap<>());
-					for(Object[] obj:dailyTotalList){
-						if(deviceInfo.getId()==StringManagerUtils.stringToInteger(obj[1]+"")){
-							DeviceInfo.DailyTotalItem dailyTotalItem=new DeviceInfo.DailyTotalItem();
-							dailyTotalItem.setAcqTime(obj[2]+"");
-							dailyTotalItem.setItemColumn((obj[3]+"").toUpperCase());
-							dailyTotalItem.setItemName((obj[4]+"").toUpperCase());
-							dailyTotalItem.setTotalValue(StringManagerUtils.stringToFloat(obj[5]+""));
-							dailyTotalItem.setTodayValue(StringManagerUtils.stringToFloat(obj[6]+""));
-							deviceInfo.getDailyTotalItemMap().put(dailyTotalItem.getItemColumn(), dailyTotalItem);
+						deviceInfo.setSortNum(rs.getInt(33));
+						
+						deviceInfo.setAcqTime(rs.getString(34));
+						deviceInfo.setSaveTime("");
+						deviceInfo.setVacuateDataSaveTime("");
+						
+						deviceInfo.setCommStatus(rs.getInt(35));
+						deviceInfo.setCommTime(rs.getFloat(36));
+						deviceInfo.setCommEff(rs.getFloat(37));
+						deviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(38)));
+						
+						deviceInfo.setOnLineAcqTime(deviceInfo.getAcqTime());
+						deviceInfo.setOnLineCommStatus(deviceInfo.getCommStatus());
+						deviceInfo.setOnLineCommTime(deviceInfo.getCommTime());
+						deviceInfo.setOnLineCommEff(deviceInfo.getCommEff());
+						deviceInfo.setOnLineCommRange(deviceInfo.getCommRange());
+						
+						deviceInfo.setRunStatusAcqTime(deviceInfo.getAcqTime());
+						deviceInfo.setRunStatus(rs.getInt(39));
+						deviceInfo.setRunTime(rs.getFloat(40));
+						deviceInfo.setRunEff(rs.getFloat(41));
+						deviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(42)));
+						
+						deviceInfo.setResultStatus(rs.getInt(43));
+						deviceInfo.setResultCode(rs.getInt(44));
+						
+						deviceInfo.setProtocolName(rs.getString(45));
+						deviceInfo.setProtocolDeviceTypeAllPath_zh_CN(rs.getString(46));
+						
+						//日汇总数据
+						deviceInfo.setDailyTotalItemMap(new HashMap<>());
+						for(Object[] obj:dailyTotalList){
+							if(deviceInfo.getId()==StringManagerUtils.stringToInteger(obj[1]+"")){
+								DeviceInfo.DailyTotalItem dailyTotalItem=new DeviceInfo.DailyTotalItem();
+								dailyTotalItem.setAcqTime(obj[2]+"");
+								dailyTotalItem.setItemColumn((obj[3]+"").toUpperCase());
+								dailyTotalItem.setItemName((obj[4]+"").toUpperCase());
+								dailyTotalItem.setTotalValue(StringManagerUtils.stringToFloat(obj[5]+""));
+								dailyTotalItem.setTodayValue(StringManagerUtils.stringToFloat(obj[6]+""));
+								deviceInfo.getDailyTotalItemMap().put(dailyTotalItem.getItemColumn(), dailyTotalItem);
+							}
 						}
+						
+						String key=deviceInfo.getId()+"";
+						jedis.hset("DeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceInfo));//哈希(Hash)
 					}
-					
-					String key=deviceInfo.getId()+"";
-					jedis.hset("DeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceInfo));//哈希(Hash)
 				}
 			}
 		}catch (Exception e) {

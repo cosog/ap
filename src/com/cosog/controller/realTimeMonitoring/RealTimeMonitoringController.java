@@ -30,7 +30,6 @@ import com.cosog.model.calculate.ResultStatusData;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.AcqAddrData;
 import com.cosog.model.drive.ModbusProtocolConfig;
-import com.cosog.model.gridmodel.WellGridPanelData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
 import com.cosog.service.back.WellInformationManagerService;
 import com.cosog.service.base.CommonDataService;

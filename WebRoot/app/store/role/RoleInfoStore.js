@@ -298,22 +298,44 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             }else {
                                 return true;
                             }
+                        },select( v, record, index, eOpts ){
+                        	Ext.getCmp("selectedRoleId_Id").setValue(record.data.roleId);
                         }
                     }
                 });
                 var panel = Ext.getCmp("RoleInfoGridPanelView_id");
                 panel.add(gridPanel);
             }
+            
+            
+            var selectedRow=0;
             if(get_rawData.totalCount>0){
             	var addRoleFlag=Ext.getCmp("addRoleFlag_Id").getValue();
-            	gridPanel.getSelectionModel().deselectAll(true);
-            	if(parseInt(addRoleFlag)>0){
-            		gridPanel.getSelectionModel().select(store.getCount()-1, true);
-            		Ext.getCmp("addRoleFlag_Id").setValue(0);
+            	if(isNotVal(addRoleFlag)){
+            		Ext.getCmp("addRoleFlag_Id").setValue('');
+            		for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.roleName==addRoleFlag){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
             	}else{
-            		gridPanel.getSelectionModel().select(0, true);
+            		var selectedRoleId= Ext.getCmp("selectedRoleId_Id").getValue();
+            		if(selectedRoleId>0){
+            			for(var i=0;i<store.data.length;i++){
+                    		if(store.getAt(i).data.roleId==selectedRoleId){
+                    			selectedRow=i;
+                    			break;
+                    		}
+                    	}
+            		}
             	}
+            }else{
+            	Ext.getCmp("selectedRoleId_Id").setValue(0);
             }
+            
+            gridPanel.getSelectionModel().deselectAll(true);
+            gridPanel.getSelectionModel().select(selectedRow, true);
         },
         beforeload: function (store, options) {
             var RoleName_Id = Ext.getCmp('RoleName_Id');

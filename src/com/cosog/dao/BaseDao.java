@@ -89,7 +89,6 @@ import com.cosog.model.gridmodel.InverOptimizeHandsontableChangedData;
 import com.cosog.model.gridmodel.ProductionOutGridPanelData;
 import com.cosog.model.gridmodel.ResProHandsontableChangedData;
 import com.cosog.model.gridmodel.ReservoirPropertyGridPanelData;
-import com.cosog.model.gridmodel.WellGridPanelData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
 import com.cosog.model.gridmodel.WellProHandsontableChangedData;
 import com.cosog.model.gridmodel.WellringGridPanelData;

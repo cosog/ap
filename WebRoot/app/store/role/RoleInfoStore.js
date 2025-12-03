@@ -256,6 +256,9 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         		var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();
                         		if(parseInt(currentRoleId)==parseInt(roleId)){//不能修改自己权限
                                     Ext.getCmp("RightModuleTreeInfoGridPanel_Id").disable();
+                                    
+                                    Ext.getCmp("roleGrantRightBtn_Id").disable();
+                                                                        
                                     Ext.getCmp("addRightModuleLableClassBtn_Id").disable();
                                     
                                     Ext.getCmp("RightTabTreeInfoGridPanel_Id").disable();
@@ -270,10 +273,12 @@ Ext.define('AP.store.role.RoleInfoStore', {
                                 	
                                 	var RoleManagerModuleEditFlag=parseInt(Ext.getCmp("RoleManagerModuleEditFlag").getValue());
             	                    if(RoleManagerModuleEditFlag==1){
+            	                    	Ext.getCmp("roleGrantRightBtn_Id").enable();
             	                    	Ext.getCmp("addRightModuleLableClassBtn_Id").enable();
                                         Ext.getCmp("addRightTabLableClassBtn_Id").enable();
                                         Ext.getCmp("addRightLanguageLableClassBtn_Id").enable();
             	                    }else{
+            	                    	Ext.getCmp("roleGrantRightBtn_Id").disable();
             	                    	Ext.getCmp("addRightModuleLableClassBtn_Id").disable();
                                         Ext.getCmp("addRightTabLableClassBtn_Id").disable();
                                         Ext.getCmp("addRightLanguageLableClassBtn_Id").disable();

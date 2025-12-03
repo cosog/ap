@@ -41,10 +41,63 @@ Ext.define("AP.view.role.RoleInfoView", {
         		header:false,
         		split: true,
                 collapsible: true,
+                tbar:['->',{
+                    xtype: 'button',
+                    itemId: 'roleGrantRightBtnId',
+                    id: 'roleGrantRightBtn_Id',
+                    text: loginUserLanguageResource.save,
+                    iconCls: 'save',
+                    pressed: false,
+                    disabled:loginUserRoleManagerModuleRight.editFlag!=1,
+                    handler: function () {
+                    	var rightmodule_panel = Ext.getCmp("RightModuleTreeInfoGridPanel_Id");
+                    	var righttab_panel = Ext.getCmp("RightTabTreeInfoGridPanel_Id");
+                    	var rightLanguageGridPanel = Ext.getCmp("RightLanguageTreeInfoGridPanel_Id");
+                    	
+                    	var selectedModuleCount=0;
+                    	var selectedDeviceTypeCount=0;
+                    	var selectLanguageCount=0;
+                    	
+                    	var roleLevel="";
+                    	if(Ext.getCmp("RoleInfoGridPanel_Id")!=undefined){
+                        	var _record = Ext.getCmp("RoleInfoGridPanel_Id").getSelectionModel().getSelection();
+                            if(_record.length>0){
+                            	roleLevel=_record[0].data.roleLevel;
+                            }
+                        }
+                    	
+                    	var moduleRecord = rightmodule_panel.store.data.items;
+                    	Ext.Array.each(moduleRecord, function (name, index, countriesItSelf) {
+                            var checked=moduleRecord[index].get('viewFlagName');
+                            if(checked){
+                            	selectedModuleCount++;
+                            }
+                        });
+                    	
+                    	if(parseInt(roleLevel)==1){//如果是超级管理员，授予所有模块权限
+                    		selectedDeviceTypeCount = righttab_panel.store.data.items.length;
+                    		selectLanguageCount = rightLanguageGridPanel.store.data.items.length;
+                        }else{
+                        	selectedDeviceTypeCount = righttab_panel.getChecked().length;
+                        	selectLanguageCount = rightLanguageGridPanel.getChecked().length;
+                        }
+                    	
+                    	if(selectedModuleCount>0 && selectedDeviceTypeCount>0 && selectLanguageCount>0){
+                    		grantRolePermission();
+                        	grantRoleTabPermission();
+                        	grantRoleLanguagePermission();
+                    	}else{
+                    		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+                    	}
+                    	
+                    	
+                    }
+        		}],
         		items:[{
         			region:'center',
         			layout: "fit",
         			title:loginUserLanguageResource.moduleLicense,
+        			header:false,
             		split: true,
                     collapsible: true,
             		layout: "fit",
@@ -60,6 +113,7 @@ Ext.define("AP.view.role.RoleInfoView", {
                         id: 'addRightModuleLableClassBtn_Id',
                         text: loginUserLanguageResource.save,
                         iconCls: 'save',
+                        hidden:true,
                         pressed: false,
                         disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                         handler: function () {
@@ -76,6 +130,7 @@ Ext.define("AP.view.role.RoleInfoView", {
                     items:[{
                     	region:'center',
                     	title:loginUserLanguageResource.deviceTypeLicense,
+                    	header:false,
                 		layout: "fit",
                 		items:RightTabInfoTreeGridView,
                 		tbar: [{
@@ -91,6 +146,7 @@ Ext.define("AP.view.role.RoleInfoView", {
                             iconCls: 'save',
                             disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                             pressed: false,
+                            hidden:true,
                             handler: function () {
                             	grantRoleTabPermission();
                             }
@@ -101,6 +157,7 @@ Ext.define("AP.view.role.RoleInfoView", {
             			split: true,
                         collapsible: true,
                         title:loginUserLanguageResource.languageLicense,
+                        header:false,
                         layout: "fit",
                         items: RightLanguageInfoTreeGridView,
                         tbar: [{
@@ -116,6 +173,7 @@ Ext.define("AP.view.role.RoleInfoView", {
                             iconCls: 'save',
                             disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                             pressed: false,
+                            hidden:true,
                             handler: function () {
                             	grantRoleLanguagePermission();
                             }

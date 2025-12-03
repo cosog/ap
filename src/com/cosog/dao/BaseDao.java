@@ -4496,12 +4496,14 @@ public class BaseDao extends HibernateDaoSupport {
 			if(auxiliaryDeviceHandsontableChangedData.getDelidslist()!=null && auxiliaryDeviceHandsontableChangedData.getDelidslist().size()>0){
 				String delSql="delete from tbl_auxiliarydevice t where t.id in ("+StringUtils.join(auxiliaryDeviceHandsontableChangedData.getDelidslist(), ",")+")";
 				ps=conn.prepareStatement(delSql);
+				int result=ps.executeUpdate();
 				delSql="delete from tbl_auxiliarydeviceaddinfo t where t.deviceid in("+StringUtils.join(auxiliaryDeviceHandsontableChangedData.getDelidslist(), ",")+")";
 				ps=conn.prepareStatement(delSql);
+				result=ps.executeUpdate();
 				MemoryDataManagerTask.loadDeviceInfoByPumpingAuxiliaryId(StringUtils.join(auxiliaryDeviceHandsontableChangedData.getDelidslist(), ","),"update");
 				delSql="delete from tbl_auxiliary2master t where t.auxiliaryid in("+StringUtils.join(auxiliaryDeviceHandsontableChangedData.getDelidslist(), ",")+")";
 				ps=conn.prepareStatement(delSql);
-				int result=ps.executeUpdate();
+				result=ps.executeUpdate();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

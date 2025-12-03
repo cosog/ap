@@ -115,6 +115,10 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 disabled:loginUserAuxiliaryDeviceManagerModuleRight.editFlag!=1,
                 handler: function (v, o) {
                     auxiliaryDeviceInfoHandsontableHelper.saveData();
+                    if (pumpingUnitPRTFHandsontableHelper != null && pumpingUnitPRTFHandsontableHelper.hot != null && pumpingUnitPRTFHandsontableHelper.hot != undefined) {
+                    	pumpingUnitPRTFHandsontableHelper.saveData();
+                    }
+                    
                 }
             },"-",{
     			xtype: 'button',
@@ -137,32 +141,6 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 hidden: false,
                 handler: function (v, o) {
                 	exportAuxiliaryDeviceCompleteData();
-//                    var fields = "";
-//                    var heads = "";
-//                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-//                    var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
-//                    var deviceTypeName=getTabPanelActiveName("AuxiliaryDeviceManagerTabPanel");
-//                    var url = context + '/wellInformationManagerController/exportAuxiliaryDeviceData';
-//                    for (var i = 0; i < auxiliaryDeviceInfoHandsontableHelper.colHeaders.length; i++) {
-//                        fields += auxiliaryDeviceInfoHandsontableHelper.columns[i].data + ",";
-//                        heads += auxiliaryDeviceInfoHandsontableHelper.colHeaders[i] + ","
-//                    }
-//                    if (isNotVal(fields)) {
-//                        fields = fields.substring(0, fields.length - 1);
-//                        heads = heads.substring(0, heads.length - 1);
-//                    }
-//                    
-//                    var fileName=deviceTypeName+loginUserLanguageResource.auxiliaryDevice;
-//                    var title=fileName;
-//
-//                    var param = "&fields=" + fields 
-//                    + "&heads=" + URLencode(URLencode(heads)) 
-//                    + "&orgId=" + leftOrg_Id 
-//                    + "&deviceType=" + deviceType 
-//                    + "&recordCount=10000" 
-//                    + "&fileName=" + URLencode(URLencode(fileName)) 
-//                    + "&title=" + URLencode(URLencode(title));
-//                    openExcelWindow(url + '?flag=true' + param);
                 }
             }],
     		layout: 'border',
@@ -295,10 +273,12 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     },'->', {
                         xtype: 'button',
                         id: 'saveAuxiliaryDevicePumpingUnitPRTFDataBtn_Id',
+                        disabled:loginUserAuxiliaryDeviceManagerModuleRight.editFlag!=1,
                         disabled: false,
                         hidden: false,
                         text: loginUserLanguageResource.save,
                         iconCls: 'save',
+                        hidden:true,
                         handler: function (v, o) {
                         	pumpingUnitPRTFHandsontableHelper.saveData();
                         }
@@ -672,6 +652,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         }
                     });
             	}
+        		
                 Ext.Ajax.request({
                     method: 'POST',
                     url: context + '/wellInformationManagerController/saveAuxiliaryDeviceHandsontableData',
@@ -992,6 +973,25 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                    	}
 	                    }
 	                    return cellProperties;
+	                },
+	                afterChange: function (changes, source) {
+	                	if (!changes) return;
+	                	changes.forEach(([row, prop, oldValue, newValue]) => {
+	                		
+	                		var itemCode=auxiliaryDeviceDetailsHandsontableHelper.hot.getDataAtRowProp(row,'itemCode');
+	                	
+	                		if (prop === 'itemValue' && itemCode=='stroke') {
+	                			if(isNotVal(Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id"))){
+	                				var strokeDataArr=newValue.split(",");
+
+		                			var strokeCombData=[];
+		                        	for(var i=0;i<strokeDataArr.length;i++){
+		                        		strokeCombData.push([strokeDataArr[i],strokeDataArr[i]]);
+		                        	}
+		                        	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").getStore().loadData(strokeCombData);
+	                			}
+	                		}
+	                	});
 	                }
 	            });
 	        }
@@ -1034,7 +1034,11 @@ function CreateAndLoadPumpingUnitPTFTable(deviceId,deviceName){
         success: function (response) {
         	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").getEl().unmask();
         	var result = Ext.JSON.decode(response.responseText);
-        	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").getStore().loadData(result.strokeList);
+        	if(!isNotVal(stroke)){
+        		Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").getStore().loadData(result.strokeList);
+        	}
+        	
+        	
 			if(result.strokeList.length>0){
 				var pumpingModelPRTFStrokeCombValeu=Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").getValue();
 				if(!isNotVal(pumpingModelPRTFStrokeCombValeu)){
@@ -1042,8 +1046,8 @@ function CreateAndLoadPumpingUnitPTFTable(deviceId,deviceName){
 					Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setRawValue(result.strokeList[0][0]);
 				}
 			}else{
-				Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setValue('');
-				Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setRawValue('');
+//				Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setValue('');
+//				Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").setRawValue('');
 			}
             
             if (pumpingUnitPRTFHandsontableHelper == null || pumpingUnitPRTFHandsontableHelper.hot == null || pumpingUnitPRTFHandsontableHelper.hot == undefined) {
@@ -1061,7 +1065,6 @@ function CreateAndLoadPumpingUnitPTFTable(deviceId,deviceName){
         		}else{
         			pumpingUnitPRTFHandsontableHelper.createTable(result.totalRoot);
         		}
-        		
             }else {
                 if(result.totalRoot==0){
                 	pumpingUnitPRTFHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);

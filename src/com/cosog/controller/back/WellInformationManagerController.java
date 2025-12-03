@@ -1089,7 +1089,10 @@ public class WellInformationManagerController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<AuxiliaryDeviceHandsontableChangedData>() {}.getType();
 		AuxiliaryDeviceHandsontableChangedData auxiliaryDeviceHandsontableChangedData=gson.fromJson(data, type);
 		String json=this.wellInformationManagerService.saveAuxiliaryDeviceHandsontableData(auxiliaryDeviceHandsontableChangedData,StringManagerUtils.stringToInteger(deviceType));
-		int r=wellInformationManagerService.updateAuxiliaryDeviceSpecificType(deviceId,auxiliaryDeviceSpecificType);
+		if(StringManagerUtils.isNotNull(deviceId) && StringManagerUtils.isNotNull(auxiliaryDeviceSpecificType)){
+			int r=wellInformationManagerService.updateAuxiliaryDeviceSpecificType(deviceId,auxiliaryDeviceSpecificType);
+		}
+		
 		type = new TypeToken<AuxiliaryDeviceDetailsSaveData>() {}.getType();
 		AuxiliaryDeviceDetailsSaveData auxiliaryDeviceDetailsSaveData=gson.fromJson(auxiliaryDeviceDetailsSaveDataStr, type);
 		if(auxiliaryDeviceDetailsSaveData!=null){

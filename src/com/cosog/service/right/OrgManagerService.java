@@ -375,12 +375,19 @@ public class OrgManagerService<T> extends BaseService<T> {
 
 	public int  bulkDelete(final String ids) throws Exception {
 		Log.debug("bulkDelete" + ids);
+		int r=0;
+		
+		r=MemoryDataManagerTask.deleteMemoryUserInfoByOrgId(ids);
+		r=MemoryDataManagerTask.deleteMenoryDeviceInfoByOrgId(ids);
+		
+		
 		String deleteUserSql="delete from tbl_user t where t.user_orgid in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
 		String deleteDeviceSql="delete from tbl_device t where t.orgid in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
 		String deleteOrgSql="delete from tbl_org t where t.org_id in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
-		getBaseDao().updateOrDeleteBySql(deleteUserSql);
-		getBaseDao().updateOrDeleteBySql(deleteDeviceSql);
-		return getBaseDao().updateOrDeleteBySql(deleteOrgSql);
+		r=getBaseDao().updateOrDeleteBySql(deleteUserSql);
+		r=getBaseDao().updateOrDeleteBySql(deleteDeviceSql);
+		r=getBaseDao().updateOrDeleteBySql(deleteOrgSql);
+		return r;
 		
 //		final String hql = "DELETE Org u where u.orgId in (" + ids + ") or u.orgParent in(" + ids + ")";
 //		final String delUserHql = "DELETE User u where u.userOrgid in (" + ids + ")";

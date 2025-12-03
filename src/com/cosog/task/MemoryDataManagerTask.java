@@ -994,6 +994,41 @@ public class MemoryDataManagerTask {
 		return r;
 	}
 	
+	public static int deleteMenoryDeviceInfoByOrgId(String orgId){
+		Jedis jedis=null;
+		int r=0;
+		if(!existsKey("DeviceInfo")){
+			MemoryDataManagerTask.loadDeviceInfo(null,0,"update");
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			List<byte[]> deviceInfoByteList =jedis.hvals("DeviceInfo".getBytes());
+			for(int i=0;i<deviceInfoByteList.size();i++){
+				Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+				if (obj instanceof DeviceInfo) {
+					DeviceInfo deviceInfo=(DeviceInfo)obj;
+					if(deviceInfo!=null && deviceInfo.getOrgId()==StringManagerUtils.stringToInteger(orgId)){
+						String key=deviceInfo.getId()+"";
+						jedis.hdel("DeviceInfo".getBytes(), key.getBytes());
+						jedis.hdel("SRPDeviceTodayData".getBytes(), key.getBytes());
+						jedis.hdel("PCPDeviceTodayData".getBytes(), key.getBytes());
+						
+						jedis.del(("DeviceRealtimeAcqData_"+key).getBytes());
+						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-删除内存中的设备信息:"+deviceInfo.getDeviceName());
+						r++;
+					}
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return r;
+	}
+	
 	public static void loadDeviceInfo(List<String> wellList,int condition,String method){//condition 0 -设备ID 1-设备名称
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -3945,6 +3980,37 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 		}
+	}
+	
+	public static int deleteMemoryUserInfoByOrgId(String orgId){
+		Jedis jedis=null;
+		int r=0;
+		if(!existsKey("UserInfo")){
+			MemoryDataManagerTask.loadUserInfo(null,0,"update");
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			
+			List<byte[]> byteList =jedis.hvals("UserInfo".getBytes());
+			for(int i=0;i<byteList.size();i++){
+				Object obj = SerializeObjectUnils.unserizlize(byteList.get(i));
+				if (obj instanceof UserInfo) {
+					UserInfo user=(UserInfo)obj;
+					if(user!=null && user.getUserOrgid()==StringManagerUtils.stringToInteger(orgId)){
+						jedis.hdel("UserInfo".getBytes(), (user.getUserNo()+"").getBytes());
+						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-删除内存中的用户信息:"+user.getUserId());
+						r++;
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return r;
 	}
 	
 	public static void loadUserInfo(List<String> userList,int condition,String method){//condition 0 -用户id 1-用户账号

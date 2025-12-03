@@ -2098,7 +2098,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(list.size()>0){
 			Object[] obj = (Object[]) list.get(0);
 			String prtf="";
-			String strokeListData=obj[0].toString();
+			String strokeListData=obj[0]!=null?obj[0].toString():"";
 			if(StringManagerUtils.isNotNull(strokeListData)){
 				String[] strokeArr=strokeListData.split(",");
 				for(int i=0;i<strokeArr.length;i++){

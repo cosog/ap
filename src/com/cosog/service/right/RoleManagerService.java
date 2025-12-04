@@ -269,6 +269,15 @@ public class RoleManagerService<T> extends BaseService<T> {
 		final String hql = "DELETE Role u where u.roleId in (" + ids + ")";
 		super.bulkObjectDelete(hql);
 	}
+	
+	public String getRoleAssociatedInformation(String roleId){
+		int userCount=0;
+		
+		String sql="select count(1) from tbl_user t where t.user_type="+roleId;
+		userCount=this.getTotalCountRows(sql);
+		
+		return "{\"roleId\":"+roleId+",\"userCount\":"+userCount+"}";
+	}
 
 	public T getRole(Class<T> clazz, int id) {
 		return getBaseDao().getObject(clazz, id);

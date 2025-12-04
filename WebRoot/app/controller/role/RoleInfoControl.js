@@ -508,6 +508,29 @@ var grantRoleLanguagePermission = function () {//授予角色模块权限
     return false;
 }
 
+function getRoleAssociatedInformation(roleId){
+	var r={};
+	r.roleId=roleId;
+	r.userCount=0;
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/roleManagerController/getRoleAssociatedInformation',
+		async :  false,
+		success:function(response) {
+			var result =  Ext.JSON.decode(response.responseText);
+			r.userCount=result.userCount;
+		},
+		failure:function(){
+			
+		},
+		params: {
+			roleId: roleId
+        }
+	});
+	
+	return r;
+}
+
 function delRoleInfoByGridBtn(record) {
 	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
     if (parseInt(record.data.roleId)!=parseInt(currentId)){
@@ -515,7 +538,18 @@ function delRoleInfoByGridBtn(record) {
     	deleteRoleId.push(record.data.roleId);
     	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
+        
+        var confirmInfo=loginUserLanguageResource.confirmDelete;
+        
+        var roleAssociatedInformation=getRoleAssociatedInformation(record.data.roleId);
+        
+        if(roleAssociatedInformation.userCount>0){
+        	confirmInfo=loginUserLanguageResource.roleAssociatedInformation+"<br/>" ;
+        	confirmInfo+=loginUserLanguageResource.userCount+":"+roleAssociatedInformation.userCount+"<br/>"
+        	confirmInfo+=loginUserLanguageResource.confirmDelete;
+        }
+        
+        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, confirmInfo, function (btn) {
             if (btn == "yes") {
             	Ext.Ajax.request({
           			url : context + '/roleManagerController/doRoleBulkDelete',

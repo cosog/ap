@@ -144,6 +144,31 @@ function addOrgInfo() {
 	Ext.getCmp("orgName_Parent_Id").setValue(selectedOrgId);
 	return false;
 }
+
+function getOrgAssociatedInformation(orgId){
+	var r={};
+	r.orgId=orgId;
+	r.deviceCount=0;
+	r.userCount=0;
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/orgManagerController/getOrgAssociatedInformation',
+		async :  false,
+		success:function(response) {
+			var result =  Ext.JSON.decode(response.responseText);
+			r.deviceCount=result.deviceCount;
+			r.userCount=result.userCount;
+		},
+		failure:function(){
+			
+		},
+		params: {
+			orgId: orgId
+        }
+	});
+	
+	return r;
+}
     // del to action
 function delOrgInfo() {
     var org_panel = Ext.getCmp("OrgInfoTreeGridView_Id");
@@ -153,7 +178,23 @@ function delOrgInfo() {
         // 提示是否删除数据
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete, function (btn) {
+        
+        var confirmInfo=loginUserLanguageResource.confirmDelete;
+        
+        var orgAssociatedInformation=getOrgAssociatedInformation(_record[0].get("orgId"));
+        if(orgAssociatedInformation.deviceCount>0 || orgAssociatedInformation.userCount>0){
+        	confirmInfo=loginUserLanguageResource.orgAssociatedInformation+"<br/>" ;
+        	if(orgAssociatedInformation.userCount>0){
+        		confirmInfo+=loginUserLanguageResource.userCount+":"+orgAssociatedInformation.userCount+"<br/>"
+        	}
+        	if(orgAssociatedInformation.deviceCount>0){
+        		confirmInfo+=loginUserLanguageResource.deviceCount+":"+orgAssociatedInformation.deviceCount+"<br/>"
+        	}
+        	confirmInfo+=loginUserLanguageResource.confirmDelete;
+        }
+        
+        
+        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, confirmInfo, function (btn) {
             if (btn == "yes") {
         		Ext.Ajax.request({
         			url : context + '/orgManagerController/doOrgBulkDelete',

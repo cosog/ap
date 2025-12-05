@@ -198,6 +198,24 @@ public class RoleManagerController extends BaseController {
 		}
 		return null;
 	}
+	
+	@RequestMapping("/getRoleAssociatedInformation")
+	public String getRoleAssociatedInformation() {
+		try {
+			String roleId = ParamUtils.getParameter(request, "roleId");
+			String result = roleService.getRoleAssociatedInformation(roleId);
+			response.setContentType("application/json;charset=utf-8");
+			response.setHeader("Cache-Control", "no-cache");
+			PrintWriter pw = response.getWriter();
+			pw.print(result);
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	/**<p>描述：角色编辑</p>
 	 * 

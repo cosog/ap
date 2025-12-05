@@ -394,6 +394,18 @@ public class OrgManagerService<T> extends BaseService<T> {
 //		getBaseDao().bulkObjectDelete(hql);
 //		this.getBaseDao().bulkObjectDelete(delUserHql);
 	}
+	
+	public String getOrgAssociatedInformation(String orgId){
+		int deviceCount=0,userCount=0;
+		
+		String sql="select count(1) from tbl_device t where t.orgid in (select t2.org_id from tbl_org t2 start with t2.org_id = "+orgId+" connect by t2.org_parent = prior t2.org_id)";
+		deviceCount=this.getTotalCountRows(sql);
+		
+		sql="select count(1) from tbl_user t where t.user_orgid in (select t2.org_id from tbl_org t2 start with t2.org_id = "+orgId+" connect by t2.org_parent = prior t2.org_id)";
+		userCount=this.getTotalCountRows(sql);
+		
+		return "{\"orgId\":"+orgId+",\"deviceCount\":"+deviceCount+",\"userCount\":"+userCount+"}";
+	}
 
 	public T getOrg(Class<T> clazz, int id) {
 		return getBaseDao().getObject(clazz, id);

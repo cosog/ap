@@ -1029,6 +1029,24 @@ public class MemoryDataManagerTask {
 		return r;
 	}
 	
+	public static void loadDeviceInfoByProtocolIds(String protocolIds,String method){
+		List<String> wellList=new ArrayList<String>();
+		try {
+			String sql="select t.id from tbl_device t,tbl_protocolinstance t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+					+ " where t.instancecode=t2.code and t2.unitid=t3.id and t3.protocol=t4.code "
+					+ " and t4.id in ("+protocolIds+")";
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
+			}
+			if(wellList.size()>0){
+				loadDeviceInfo(wellList,0,method);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void loadDeviceInfo(List<String> wellList,int condition,String method){//condition 0 -设备ID 1-设备名称
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -2096,6 +2114,25 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static void loadAcqInstanceOwnItemByProtocolIds(String protocolIds,String method){
+		try {
+			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
+			if(StringManagerUtils.isNotNull(protocolIds)){
+				instanceSql+=" and t.unitid in( "
+						+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
+						+ " where t2.protocol=t3.code "
+						+ " and t3.id in ("+protocolIds+") "
+						+ " )";
+			}
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAcqInstanceOwnItemById(obj[0]+"",method);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static DisplayInstanceOwnItem getDisplayInstanceOwnItemByCode(String instanceCode){
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		Jedis jedis=null;
@@ -2349,6 +2386,25 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static void loadDisplayInstanceOwnItemByProtocolIds(String protocolIds,String method){
+		try {
+			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
+			if(StringManagerUtils.isNotNull(protocolIds)){
+				instanceSql+=" and t.displayunitid in( "
+						+ " select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4"
+						+ " where t2.acqunitid=t3.id and t3.protocol=t4.code"
+						+ " and t4.id in ("+protocolIds+") "
+						+ " )";
+			}
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadDisplayInstanceOwnItemById(obj[0]+"",method);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static AlarmInstanceOwnItem getAlarmInstanceOwnItemByCode(String instanceCode){
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		Jedis jedis=null;
@@ -2547,6 +2603,25 @@ public class MemoryDataManagerTask {
 						+ " where t2.protocol=t3.code "
 						+ " and t3.name='"+protocolName+"'"
 						+ " and t3.deviceType="+deviceType
+						+ " )";
+			}
+			List<Object[]> list=OracleJdbcUtis.query(instanceSql);
+			for(Object[] obj:list){
+				loadAlarmInstanceOwnItemById(obj[0]+"",method);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void loadAlarmInstanceOwnItemByProtocolIds(String protocolIds,String method){
+		try {
+			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
+			if(StringManagerUtils.isNotNull(protocolIds)){
+				instanceSql+=" and t.alarmunitid in ("
+						+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
+						+ " where t2.protocol=t3.code "
+						+ " and t3.id in ("+protocolIds+")"
 						+ " )";
 			}
 			List<Object[]> list=OracleJdbcUtis.query(instanceSql);

@@ -422,6 +422,24 @@ public class OrgManagerController extends BaseController {
 		return null;
 	}
 
+	@RequestMapping("/getOrgAssociatedInformation")
+	public String getOrgAssociatedInformation() {
+		try {
+			String orgId = ParamUtils.getParameter(request, "orgId");
+			String result = orgService.getOrgAssociatedInformation(orgId);
+			response.setContentType("application/json;charset=utf-8");
+			response.setHeader("Cache-Control", "no-cache");
+			PrintWriter pw = response.getWriter();
+			pw.print(result);
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/**
 	 * <p>
 	 * 描述：编辑组织数据信息

@@ -2749,17 +2749,17 @@ public class AcquisitionUnitManagerController extends BaseController {
 								String param1=modbusProtocolConfig.getProtocol().get(j).getName();
 								String param2=modbusProtocolConfig.getProtocol().get(j).getDeviceType()+"";
 								String method="delete";
-								MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolNameAndType(param1,param2,method);
-								MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolNameAndType(param1,param2,method);
-								MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolNameAndType(param1,param2,method);
+								MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolIds(modbusProtocolConfig.getProtocol().get(j).getId()+"",method);
+								MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolIds(modbusProtocolConfig.getProtocol().get(j).getId()+"",method);
+								MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolIds(modbusProtocolConfig.getProtocol().get(j).getId()+"",method);
 								
-								EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolNameAndType(param1,param2,method);
-								EquipmentDriverServerTask.deleteDeleteInitializedInstanceByProtocolNameAndType(param1,param2);
-								EquipmentDriverServerTask.deleteInitializedProtocolConfig(param1,param2);
-								this.acquisitionUnitManagerService.doDeleteProtocolAssociation(param1,param2);
+								EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolIds(modbusProtocolConfig.getProtocol().get(j).getId()+"",method);
+								EquipmentDriverServerTask.deleteInitializedInstanceByProtocolIds(modbusProtocolConfig.getProtocol().get(j).getId()+"");
+								EquipmentDriverServerTask.deleteInitializedProtocolConfigByIds((modbusProtocolConfig.getProtocol().get(j).getId()+"").split(","));
+								
+								this.acquisitionUnitManagerService.doDeleteProtocolAssociation(modbusProtocolConfig.getProtocol().get(j).getId()+"");
 								
 								modbusProtocolConfig.getProtocol().remove(j);
-								
 								if(user!=null){
 									this.service.saveSystemLog(user,2,languageResourceMap.get("deleteProtocol")+":"+modbusDriverSaveData.getDelidslist().get(i));
 								}
@@ -3663,7 +3663,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					EquipmentDriverServerTask.deleteInitializedInstance(deleteInstanceList);
 					MemoryDataManagerTask.loadAcqInstanceOwnItemById(param1,"delete");
 					acquisitionUnitManagerService.doModbusProtocolInstanceBulkDelete(param1);
-					MemoryDataManagerTask.loadDeviceInfoByInstanceCode("","update");
 					MemoryDataManagerTask.loadDeviceInfoByInstanceCode("","update");
 					if(user!=null){
 						this.service.saveSystemLog(user,2,languageResourceMap.get("deleteAcqInstance"));

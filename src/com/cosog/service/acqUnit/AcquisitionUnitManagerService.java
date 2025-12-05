@@ -10305,6 +10305,104 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		super.bulkObjectDelete(hql);
 	}
 	
+	public void doDeleteProtocolAssociation(String protocolIds) throws Exception {
+		int delorUpdateCount=0;
+		String tableName="tbl_device";
+		//处理显示实例、显示单元数据
+		String sql = "update "+tableName+" t set t.displayinstancecode='' where t.displayinstancecode in ( "
+				+ " select t2.code from tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_acq_unit_conf t4,tbl_protocol t5 "
+				+ " where t2.displayunitid=t3.id and t3.acqunitid=t4.id and t4.protocol=t5.code "
+				+ " and t5.id in ("+protocolIds+")  )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_display_items2unit_conf t where t.unitid in ( "
+				+ " select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t2.acqunitid=t3.id and t3.protocol=t4.code"
+				+ " and t4.id in ("+protocolIds+") "
+				+ ")";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_protocoldisplayinstance t where t.displayunitid in ( "
+				+ " select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t2.acqunitid=t3.id and t3.protocol=t4.code"
+				+ " and t4.id in ("+protocolIds+") "
+				+ " )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_display_unit_conf t where t.acqunitid in( "
+				+ " select t2.id from tbl_acq_unit_conf t2 ,tbl_protocol t3"
+				+ " where t2.protocol=t3.code and t3.id in ("+protocolIds+") "
+				+ " )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		//处理报警实例、报警单元数据
+		sql = "update "+tableName+" t set t.alarminstancecode='' where t.alarminstancecode in ( "
+				+ " select t2.code from tbl_protocolalarminstance t2,tbl_alarm_unit_conf t3,tbl_protocol t4 "
+				+ " where t2.alarmunitid=t3.id and t3.protocol=t4.code"
+				+ " and t4.id in ("+protocolIds+") "
+				+ " )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_alarm_item2unit_conf t where t.unitid in( "
+				+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
+				+ " where t2.protocol=t3.code and t3.id in ("+protocolIds+") "
+				+ " )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_protocolalarminstance t where t.alarmunitid in( "
+				+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
+				+ " where t2.protocol=t3.code and t3.id in ("+protocolIds+") "
+				+ " )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_alarm_unit_conf t where t.id in("
+				+ " select t2.id from tbl_alarm_unit_conf t2,tbl_protocol t3"
+				+ " where t2.protocol=t3.code and t3.id in ("+protocolIds+") "
+				+ ")";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		//处理采集实例、采集单元、采集组数据
+		sql = "update "+tableName+" t set t.instancecode='' where t.instancecode in ( "
+				+ " select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+				+ " where t2.unitid=t3.id and t3.protocol=t4.code"
+				+ " and t4.id in ("+protocolIds+") "
+				+ " )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from TBL_ACQ_ITEM2GROUP_CONF t where t.groupid in ("
+				+ " select t2.id from tbl_acq_group_conf t2,tbl_protocol t3 "
+				+ " where t2.protocol=t3.code and t3.id in ("+protocolIds+") "
+				+ ")";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_acq_group_conf t where t.id in ("
+				+ " select t2.id from tbl_acq_group_conf t2,tbl_protocol t3 "
+				+ " where t2.protocol=t3.code and t3.id in ("+protocolIds+") "
+				+ " )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_acq_group2unit_conf t where t.unitid in ("
+				+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t2.protocol=t3.code and t3.id in ("+protocolIds+") "
+				+ " )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_protocolinstance t where t.unitid in ("
+				+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t2.protocol=t3.code and t3.id in ("+protocolIds+") "
+				+ " )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_acq_unit_conf t where t.id in ("
+				+ " select t2.id from tbl_acq_unit_conf t2,tbl_protocol t3 "
+				+ " where t2.protocol=t3.code and t3.id in ("+protocolIds+") "
+				+ " )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from TBL_PROTOCOL t where t.id in ("+protocolIds+") ";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+	}
+	
 	public void doDeleteProtocolAssociation(String protocolName,String deviceType) throws Exception {
 		int delorUpdateCount=0;
 		String tableName="tbl_device";
@@ -10401,8 +10499,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		sql="delete from TBL_PROTOCOL t where t.name='"+protocolName+"' and t.devicetype="+deviceType+" ";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
-		
-		
 	}
 	
 	public List<T> showAcquisitionGroupOwnItems(Class<AcquisitionGroupItem> class1, String groupCode) {
@@ -10642,12 +10738,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public void changeProtocolDeviceType(String selectedProtocolId,String selectedDeviceTypeId) throws Exception {
 		if(StringManagerUtils.stringToInteger(selectedDeviceTypeId)>0 && StringManagerUtils.isNotNull(selectedProtocolId)){
+			//删除当前初始化
+			EquipmentDriverServerTask.deleteInitializedProtocolConfigByIds(selectedProtocolId.split(","));
+			EquipmentDriverServerTask.deleteInitializedInstanceByProtocolIds(selectedProtocolId);
+			
+			
 			String sql = "update tbl_protocol t set t.devicetype="+selectedDeviceTypeId+" where t.id in ("+selectedProtocolId+")";
 			this.getBaseDao().updateOrDeleteBySql(sql);
 			String deviceTypeAllPath_zh_CN="";
 			String deviceTypeAllPath_en="";
 			String deviceTypeAllPath_ru="";
-			sql="select t.allpath_zh_cn,t.allpath_en,t.allpath_ru from viw_devicetypeinfo t where t.id=1";
+			sql="select t.allpath_zh_cn,t.allpath_en,t.allpath_ru from viw_devicetypeinfo t where t.id="+selectedDeviceTypeId;
 			List<?> list=this.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
@@ -10661,29 +10762,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(StringManagerUtils.existOrNot(protocolArr, modbusProtocolConfig.getProtocol().get(i).getId()+"")){
-						
-					}
-					
-				}
-				
-				
-				
-				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-					if(StringManagerUtils.existOrNot(protocolArr, modbusProtocolConfig.getProtocol().get(i).getId()+"")){
-						//删除已初始化的协议
-						EquipmentDriverServerTask.initProtocolConfig(modbusProtocolConfig.getProtocol().get(i).getName(),modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"","delete");
-						
 						modbusProtocolConfig.getProtocol().get(i).setDeviceType(StringManagerUtils.stringToInteger(selectedDeviceTypeId));
 						modbusProtocolConfig.getProtocol().get(i).setDeviceTypeAllPath_zh_CN(deviceTypeAllPath_zh_CN);
 						modbusProtocolConfig.getProtocol().get(i).setDeviceTypeAllPath_en(deviceTypeAllPath_en);
 						modbusProtocolConfig.getProtocol().get(i).setDeviceTypeAllPath_ru(deviceTypeAllPath_ru);
-						//重新初始化协议
-						EquipmentDriverServerTask.initProtocolConfig(modbusProtocolConfig.getProtocol().get(i).getName(),modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"","update");
-						//重新初始化实例
-						EquipmentDriverServerTask.initInstanceConfigByProtocolNameAndType(modbusProtocolConfig.getProtocol().get(i).getName(),modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"","update");
 					}
 				}
 				MemoryDataManagerTask.updateProtocolConfig(modbusProtocolConfig);
+				
+				//重新初始化
+				EquipmentDriverServerTask.initProtocolConfigByIds(selectedProtocolId.split(","),"update");
+				EquipmentDriverServerTask.initInstanceConfigByProtocolIds(selectedProtocolId,"update");
+				MemoryDataManagerTask.loadDeviceInfoByProtocolIds(selectedProtocolId,"update");
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolIds(selectedProtocolId,"update");
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{

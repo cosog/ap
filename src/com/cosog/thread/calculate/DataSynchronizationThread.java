@@ -43,7 +43,7 @@ public class DataSynchronizationThread implements Runnable{
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolNameAndType(param1,param2,method);
 				
 				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolNameAndType(param1,param2,method);
-				EquipmentDriverServerTask.deleteDeleteInitializedInstanceByProtocolNameAndType(param1,param2);
+				EquipmentDriverServerTask.deleteInitializedInstanceByProtocolNameAndType(param1,param2);
 				EquipmentDriverServerTask.deleteInitializedProtocolConfig(param1,param2);
 				this.acquisitionUnitManagerService.doDeleteProtocolAssociation(param1,param2);
 			}else if(sign==003){//修改协议

@@ -694,9 +694,69 @@ public class EquipmentDriverServerTask {
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 				}
 //				modbusProtocolConfig.getProtocol().remove(i);
-				MemoryDataManagerTask.updateProtocolConfig(modbusProtocolConfig);
+//				MemoryDataManagerTask.updateProtocolConfig(modbusProtocolConfig);
 				break;
 			}
+		}
+	}
+	
+	@SuppressWarnings("static-access")
+	public static void deleteInitializedProtocolConfigById(int protocolId){
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getProtocol();
+		Gson gson = new Gson();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		
+		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+			if(protocolId==modbusProtocolConfig.getProtocol().get(i).getId()){
+				InitProtocol initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),"delete");
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"删除协议："+gson.toJson(initProtocol));
+				if(initEnable){
+					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
+				}
+				break;
+			}
+		}
+	}
+	
+	@SuppressWarnings("static-access")
+	public static void deleteInitializedProtocolConfigByIds(String[] protocolIdArr){
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getProtocol();
+		Gson gson = new Gson();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		
+		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+			if(StringManagerUtils.existOrNot(protocolIdArr, modbusProtocolConfig.getProtocol().get(i).getId()+"", false)){
+				InitProtocol initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),"delete");
+				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"删除协议："+gson.toJson(initProtocol));
+				if(initEnable){
+					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
+				}
+				break;
+			}
+		}
+	}
+	
+	@SuppressWarnings("static-access")
+	public static void initProtocolConfigByIds(String[] protocolIdArr,String method){
+		if(!StringManagerUtils.isNotNull(method)){
+			method="update";
+		}
+		String initUrl=Config.getInstance().configFile.getAd().getInit().getProtocol();
+		Gson gson = new Gson();
+		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+		InitProtocol initProtocol=null;
+		if(modbusProtocolConfig!=null && modbusProtocolConfig.getProtocol()!=null){
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(StringManagerUtils.existOrNot(protocolIdArr, modbusProtocolConfig.getProtocol().get(i).getId()+"", false)){
+					initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
+					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"协议初始化："+gson.toJson(initProtocol));
+					if(initEnable){
+						StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
+					}
+				}
+			}
+			//同步数据库字段
+			loadAcquisitionItemColumns();
 		}
 	}
 	
@@ -852,6 +912,23 @@ public class EquipmentDriverServerTask {
 		return 0;
 	}
 	
+	public static int initInstanceConfigByProtocolIds(String protocolIds,String method){
+		String sql="select t.name from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 where t.unitid=t2.id and t2.protocol=t3.code and t3.id in ("+protocolIds+")";
+		List<String> instanceList=new ArrayList<String>();
+		List<Object[]> list=OracleJdbcUtis.query(sql);
+		try {
+			for(Object[] obj : list){
+				instanceList.add(obj[0]+"");
+			}
+			if(instanceList.size()>0){
+				initInstanceConfigByNames(instanceList,method);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	public static void deleteInitializedInstance(String instanceName,String protocolName,String protocolAllPath){
 		StringBuffer json_buff = new StringBuffer();
 		String initUrl=Config.getInstance().configFile.getAd().getInit().getInstance();
@@ -920,11 +997,31 @@ public class EquipmentDriverServerTask {
 		return t;
 	}
 	
-	public static int deleteDeleteInitializedInstanceByProtocolNameAndType(String protocolName,String deviceType){
+	public static int deleteInitializedInstanceByProtocolNameAndType(String protocolName,String deviceType){
 		String sql="select t.name,t3.name as protocolName,t4.allpath_zh_cn from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3,viw_devicetypeinfo t4 "
 				+ " where t.unitid=t2.id and t2.protocol=t3.code and t3.deviceType=t4.id"
 				+ " and t3.name='"+protocolName+"'"
 				+ " and t3.deviceType="+deviceType;
+		List<String> instanceList=new ArrayList<String>();
+		List<Object[]> list=OracleJdbcUtis.query(sql);
+		try {
+			
+			for(Object[] obj:list){
+				instanceList.add(obj[2]+"/"+obj[1]+"/"+obj[0]);
+			}
+			if(instanceList.size()>0){
+				deleteInitializedInstance(instanceList);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static int deleteInitializedInstanceByProtocolIds(String protocolIds){
+		String sql="select t.name,t3.name as protocolName,t4.allpath_zh_cn from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3,viw_devicetypeinfo t4 "
+				+ " where t.unitid=t2.id and t2.protocol=t3.code and t3.deviceType=t4.id"
+				+ " and t3.id in ("+protocolIds+")";
 		List<String> instanceList=new ArrayList<String>();
 		List<Object[]> list=OracleJdbcUtis.query(sql);
 		try {
@@ -1329,6 +1426,26 @@ public class EquipmentDriverServerTask {
 		try {
 			String sql="select t.id from tbl_device t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 ,tbl_acq_group2unit_conf t4,tbl_acq_group_conf t5 "
 					+ " where t.instancecode=t2.code and t2.unitid=t3.id and t3.id=t4.unitid and t4.groupid=t5.id and t5.id="+groupId;
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
+			}
+			if(wellList.size()>0){
+				initDriverAcquisitionInfoConfig(wellList,0,method);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	@SuppressWarnings("resource")
+	public static int initDriverAcquisitionInfoConfigByProtocolIds(String protocolIds,String method){
+		List<String> wellList=new ArrayList<String>();
+		try {
+			String sql="select t.id from tbl_device t,tbl_protocolinstance t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
+					+ " where t.instancecode=t2.code and t2.unitid=t3.id and t3.protocol=t4.code "
+					+ " and t4.id in ("+protocolIds+")";
 			List<Object[]> list=OracleJdbcUtis.query(sql);
 			for(Object[] obj:list){
 				wellList.add(obj[0]+"");

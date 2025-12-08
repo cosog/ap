@@ -21,13 +21,14 @@ public class DeviceTypeInfo {
 	private String name_ru;
 	private Integer parentId;
 	private Integer sortNum;
+	private Integer status;
 	public DeviceTypeInfo() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public DeviceTypeInfo(Integer id, String name_zh_CN, String name_en, String name_ru, Integer parentId,
-			Integer sortNum) {
+			Integer sortNum,Integer status) {
 		super();
 		this.id = id;
 		this.name_zh_CN = name_zh_CN;
@@ -35,6 +36,7 @@ public class DeviceTypeInfo {
 		this.name_ru = name_ru;
 		this.parentId = parentId;
 		this.sortNum = sortNum;
+		this.status = status;
 	}
 
 
@@ -68,6 +70,7 @@ public class DeviceTypeInfo {
 		this.sortNum = sortNum;
 	}
 
+	@Column(name = "name_zh_CN")
 	public String getName_zh_CN() {
 		return name_zh_CN;
 	}
@@ -76,6 +79,7 @@ public class DeviceTypeInfo {
 		this.name_zh_CN = name_zh_CN;
 	}
 
+	@Column(name = "name_en")
 	public String getName_en() {
 		return name_en;
 	}
@@ -84,11 +88,21 @@ public class DeviceTypeInfo {
 		this.name_en = name_en;
 	}
 
+	@Column(name = "name_ru")
 	public String getName_ru() {
 		return name_ru;
 	}
 
 	public void setName_ru(String name_ru) {
 		this.name_ru = name_ru;
+	}
+
+	@Column(name = "status")
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 }

@@ -14,12 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
+import com.cosog.model.DeviceTypeInfo;
 import com.cosog.model.User;
 import com.cosog.model.drive.TotalCalItemsToReportUnitSaveData;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.operationMaintenance.OperationMaintenanceService;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
+import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.cosog.utils.OEMConfigFile;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
@@ -38,6 +40,9 @@ public class OperationMaintenanceController  extends BaseController {
 	private CommonDataService service;
 	@Autowired
 	private OperationMaintenanceService operationMaintenanceService;
+	@Autowired
+	private OperationMaintenanceService<DeviceTypeInfo> deviceTypeMaintenanceService;
+	
 	
 	@SuppressWarnings("unused")
 	@RequestMapping("/loadOemConfigInfo")
@@ -242,6 +247,42 @@ public class OperationMaintenanceController  extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/constructDeviceTypeTreeData")
+	public String constructDeviceTypeTreeData() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
+		List<DeviceTypeInfo> list = deviceTypeMaintenanceService.operationMaintenanceService(DeviceTypeInfo.class,user);
+		boolean flag = false;
+		for (DeviceTypeInfo tabInfo : list) {
+			if (!r.hasParent(list, tabInfo)) {
+				flag = true;
+				json = r.recursionMobileTabMaintenanceTreeFn(list, tabInfo,language);
+			}
+
+		}
+		if (flag == false && list.size() > 0) {
+			for (DeviceTypeInfo tabInfo : list) {
+				json = r.recursionTabMaintenanceTreeFn(list, tabInfo,language);
+			}
+
+		}
+		json = r.modifyStr(json).replaceAll("null", "");
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.debug("constructRightModuleTreeGridTree json==" + json);
 		pw.flush();
 		pw.close();
 		return null;

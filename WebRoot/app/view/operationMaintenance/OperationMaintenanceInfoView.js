@@ -70,6 +70,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				tbar: ['->',{
     	                xtype: 'button',
     	                text: loginUserLanguageResource.save,
+    	                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
     	                iconCls: 'save',
     	                hidden:false,
     	                handler: function (v, o) {
@@ -746,6 +747,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         		    tbar: ['->',{
     	                xtype: 'button',
     	                text: loginUserLanguageResource.save,
+    	                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
     	                iconCls: 'save',
     	                hidden:false,
     	                handler: function (v, o) {
@@ -1223,6 +1225,20 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         	                }
         	            }
         	        }
+        		},{
+        			title: '标签管理',
+        			id:'OperationMaintenanceDeviceTypeMaintenancePanel_Id',
+        			layout: "fit",
+        			tbar: ['->',{
+    	                xtype: 'button',
+    	                text: loginUserLanguageResource.save,
+    	                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+    	                iconCls: 'save',
+    	                hidden:false,
+    	                handler: function (v, o) {
+    	                	
+    	                }
+    	    		}]
         		}],
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -1253,6 +1269,13 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     						loadOemConfigInfo();
     					}else if(newCard.id=='OperationMaintenanceMonitorCurveTabPanel_Id'){
     						getOperationMaintenanceMonitorCurveData();
+    					}else if(newCard.id=='OperationMaintenanceDeviceTypeMaintenancePanel_Id'){
+    						var deviceTypeMaintenanceTreeGridView = Ext.getCmp("deviceTypeMaintenanceTreeGridView_Id");
+                            if (isNotVal(deviceTypeMaintenanceTreeGridView)) {
+                            	deviceTypeMaintenanceTreeGridView.getStore().load();
+                            }else{
+                            	Ext.create("AP.store.operationMaintenance.TabManagerInfoStore");
+                            }
     					}
     				}
     			}

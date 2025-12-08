@@ -6886,10 +6886,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
-		String prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L,oilVolumetricProduction,oilVolumetricProduction_L,waterVolumetricProduction,waterVolumetricProduction_L";
-		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-			prodCol="liquidWeightProduction,liquidWeightProduction_L";
-		}
 		int vacuateRecord=configFile.getAp().getDataVacuate().getVacuateRecord();
 		int vacuateThreshold=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateThreshold();
 		AlarmShowStyle alarmShowStyle=null;
@@ -6899,6 +6895,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		String tableName="tbl_srpacqdata_hist";
 		String vacuateTableName="tbl_srpacqdata_vacuate";
+		String queryTableName=tableName;
 		
 		int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
 		boolean orerRetentionTime=false;
@@ -6910,7 +6907,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(list.size()>0 && list.get(0)!=null){
 				diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
 				if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
-					tableName=vacuateTableName;
+					queryTableName=vacuateTableName;
 					orerRetentionTime=true;
 				}
 			}
@@ -6941,7 +6938,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			
-			String distinctSql="select fesdiagramacqtime,max(id) as id from "+tableName+" "
+			String distinctSql="select fesdiagramacqtime,max(id) as id from "+queryTableName+" "
 					+ " where deviceId="+deviceId+" and resultstatus=1 "
 					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
@@ -6984,6 +6981,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			if(total>vacuateThreshold){
 				distinctSql=distinctSql.replaceAll(tableName, vacuateTableName);
+				queryTableName=vacuateTableName;
 				countSql="select count(1) from ("+distinctSql+") ";
 				int vacuateTotalCount=this.getTotalCountRows(countSql);
 				distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+vacuateTotalCount+")<"+vacuateRecord+"";
@@ -7017,7 +7015,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.deltaradius*100 as deltaradius,"//53
 					+ " t.todayKWattH,"//54
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"//55~58
-					+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
+					+ " from "+queryTableName+" t,tbl_device well where well.id=t.deviceId"
 					+ " and t.id in (select id from ("+distinctSql+")  ) ";
 			sql+= " order by t.fesdiagramacqtime desc";
 			
@@ -7236,6 +7234,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String tableName="tbl_srpacqdata_hist";
 			String vacuateTableName="tbl_srpacqdata_vacuate";
+			String queryTableName=tableName;
 			
 			int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
 			boolean orerRetentionTime=false;
@@ -7247,7 +7246,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				if(list.size()>0 && list.get(0)!=null){
 					diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
 					if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
-						tableName=vacuateTableName;
+						queryTableName=vacuateTableName;
 						orerRetentionTime=true;
 					}
 				}
@@ -7280,7 +7279,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String distinctSql="select fesdiagramacqtime,max(id) as id from "+tableName+" "
+			String distinctSql="select fesdiagramacqtime,max(id) as id from "+queryTableName+" "
 					+ " where deviceId="+deviceId+" and resultstatus=1 "
 					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
@@ -7320,6 +7319,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			if(total>vacuateThreshold){
 				distinctSql=distinctSql.replaceAll(tableName, vacuateTableName);
+				queryTableName=vacuateTableName;
 				countSql="select count(1) from ("+distinctSql+") ";
 				int vacuateTotalCount=this.getTotalCountRows(countSql);
 				distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+vacuateTotalCount+")<"+vacuateRecord+"";
@@ -7353,7 +7353,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//50~52
 					+ " t.deltaradius*100 as deltaradius,"//53
 					+ " t.todayKWattH"//54
-					+ " from tbl_srpacqdata_hist t,tbl_device well where well.id=t.deviceId"
+					+ " from "+queryTableName+" t,tbl_device well where well.id=t.deviceId"
 					+ " and t.id in (select id from ("+distinctSql+")  ) ";
 			sql+= " order by t.fesdiagramacqtime desc";
 			if(total>vacuateThreshold){

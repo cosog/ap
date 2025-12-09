@@ -325,16 +325,17 @@ public class RoleManagerService<T> extends BaseService<T> {
 	
 	public List<T> queryRightTabs(Class<T> clazz, User user) throws Exception {
 		
-		String queryString = "SELECT tab FROM DeviceTypeInfo tab where tab.id in " 
+		String queryString = "SELECT tab FROM DeviceTypeInfo tab where tab.status=1 and tab.id in " 
 				+ "( select distinct rt.rdDeviceTypeId from User u ,Role role,RoleDeviceType rt "
-				+ "where  role.roleId =rt.rdRoleId   " 
-				+ " and role.roleId = u.userType   and u.userNo="
-				+ user.getUserNo() + ") order by tab.sortNum, tab.id";
+				+ " where  role.roleId =rt.rdRoleId   " 
+				+ " and role.roleId = u.userType  "
+				+ " and u.userNo="+ user.getUserNo() + ") "
+				+ " order by tab.sortNum, tab.id";
 		return find(queryString);
 	}
 	
 	public List<T> queryRightTabsWithoutRoot(Class<T> clazz, User user) throws Exception {
-		String queryString = "SELECT tab FROM DeviceTypeInfo tab where tab.parentId <>0 and tab.id in " 
+		String queryString = "SELECT tab FROM DeviceTypeInfo tab where tab.parentId <>0 and tab.status=1 and tab.id in " 
 				+ "( select distinct rt.rdDeviceTypeId from User u ,Role role,RoleDeviceType rt "
 				+ "where  role.roleId =rt.rdRoleId   " 
 				+ " and role.roleId = u.userType   and u.userNo="

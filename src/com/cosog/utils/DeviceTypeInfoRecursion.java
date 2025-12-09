@@ -3,8 +3,10 @@ package com.cosog.utils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.cosog.model.DeviceTypeInfo;
+import com.cosog.task.MemoryDataManagerTask;
 
 
 /**<p>描述：deviceType树形treePanel递归类</p>
@@ -155,6 +157,107 @@ public class DeviceTypeInfoRecursion {
 		data = returnStr.toString();
 		return data;
 	}
+	
+	
+	public String recursionMobileTabMaintenanceTreeFn(List list, DeviceTypeInfo tabInfo,String language) {
+		String data = "";
+		String text="";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		if("zh_CN".equalsIgnoreCase(language)){
+			text=tabInfo.getName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			text=tabInfo.getName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			text=tabInfo.getName_ru();
+		}
+		text=StringManagerUtils.stringFormat(text);
+		
+		if(!StringManagerUtils.isNotNull(text)){
+			text=languageResourceMap.get("unnamed");
+		}
+		
+		if (hasChild(list, tabInfo)) {
+			returnStr.append("{\"text\":\""+text+"\",");
+			returnStr.append("\"text_zh_CN\":\""+tabInfo.getName_zh_CN()+"\",");
+			returnStr.append("\"text_en\":\""+tabInfo.getName_en()+"\",");
+			returnStr.append("\"text_ru\":\""+tabInfo.getName_ru()+"\",");
+			returnStr.append("\"parentNodeId\":\""+tabInfo.getParentId()+"\",");
+			returnStr.append("\"sortNum\":\""+tabInfo.getSortNum()+"\",");
+			returnStr.append("\"deviceTypeId\":\""+ tabInfo.getId()+"\",");
+			returnStr.append("\"expanded\":true,");
+			returnStr.append("\"deviceTypeEnable\":"+(tabInfo.getStatus()==1)+",");
+			returnStr.append("\"children\":[");
+			List childList = getChildList(list, tabInfo);
+			Iterator it = childList.iterator();
+			while (it.hasNext()) {
+				DeviceTypeInfo n = (DeviceTypeInfo) it.next();
+				recursionMobileTabMaintenanceTreeFn(list, n,language);
+			}
+			returnStr.append("]},");
+		} else {
+			returnStr.append("{\"text\":\""+text+"\",");
+			returnStr.append("\"deviceTypeId\":\""+tabInfo.getId()+"\",");
+			returnStr.append("\"text_zh_CN\":\""+tabInfo.getName_zh_CN()+"\",");
+			returnStr.append("\"text_en\":\""+tabInfo.getName_en()+"\",");
+			returnStr.append("\"text_ru\":\""+tabInfo.getName_ru()+"\",");
+			returnStr.append("\"parentNodeId\":\""+tabInfo.getParentId()+"\",");
+			returnStr.append("\"sortNum\":\""+tabInfo.getSortNum()+"\",");
+			returnStr.append("\"deviceTypeEnable\":"+(tabInfo.getStatus()==1)+",");
+			returnStr.append("\"leaf\":true},");
+		}
+		data = returnStr.toString();
+		return data;
+	}
+	
+	public String recursionTabMaintenanceTreeFn(List list, DeviceTypeInfo tabInfo,String language) {
+		String data = "";
+		String text="";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		if("zh_CN".equalsIgnoreCase(language)){
+			text=tabInfo.getName_zh_CN();
+		}else if("en".equalsIgnoreCase(language)){
+			text=tabInfo.getName_en();
+		}else if("ru".equalsIgnoreCase(language)){
+			text=tabInfo.getName_ru();
+		}
+		text=StringManagerUtils.stringFormat(text);
+		
+		if(!StringManagerUtils.isNotNull(text)){
+			text=languageResourceMap.get("unnamed");
+		}
+		if (hasChild(list, tabInfo)) {
+			returnStr.append("{\"text\":\""+text+"\",");
+			returnStr.append("\"text_zh_CN\":\""+tabInfo.getName_zh_CN()+"\",");
+			returnStr.append("\"text_en\":\""+tabInfo.getName_en()+"\",");
+			returnStr.append("\"text_ru\":\""+tabInfo.getName_ru()+"\",");
+			returnStr.append("\"parentNodeId\":\""+tabInfo.getParentId()+"\",");
+			returnStr.append("\"sortNum\":\""+tabInfo.getSortNum()+"\",");
+			returnStr.append("\"deviceTypeId\":\""+tabInfo.getId()+"\",");
+			returnStr.append("\"deviceTypeEnable\":"+(tabInfo.getStatus()==1)+",");
+			returnStr.append("\"expanded\":true,");
+			returnStr.append("\"children\":[");
+			List childList = getChildList(list, tabInfo);
+			Iterator it = childList.iterator();
+			while (it.hasNext()) {
+				DeviceTypeInfo n = (DeviceTypeInfo) it.next();
+				recursionTabMaintenanceTreeFn(list, n,language);
+			}
+			returnStr.append("]},");
+		} else {
+			returnStr.append("{\"deviceTypeId\":\""+tabInfo.getId()+"\",");
+			returnStr.append("\"text\":\""+text+"\",");
+			returnStr.append("\"text_zh_CN\":\""+tabInfo.getName_zh_CN()+"\",");
+			returnStr.append("\"text_en\":\""+tabInfo.getName_en()+"\",");
+			returnStr.append("\"text_ru\":\""+tabInfo.getName_ru()+"\",");
+			returnStr.append("\"parentNodeId\":\""+tabInfo.getParentId()+"\",");
+			returnStr.append("\"sortNum\":\""+tabInfo.getSortNum()+"\",");
+			returnStr.append("\"deviceTypeEnable\":"+(tabInfo.getStatus()==1)+",");
+			returnStr.append("\"leaf\":true},");
+		}
+		data = returnStr.toString();
+		return data;
+	}
+	
 
 	public boolean hasChild(List list, Object[] node) { // 判断是否有子节点
 		return getChildList(list, node).size() > 0 ? true : false;

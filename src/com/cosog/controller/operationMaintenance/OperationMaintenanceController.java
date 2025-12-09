@@ -11,15 +11,20 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
+import com.cosog.model.DeviceTypeInfo;
+import com.cosog.model.Role;
 import com.cosog.model.User;
 import com.cosog.model.drive.TotalCalItemsToReportUnitSaveData;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.operationMaintenance.OperationMaintenanceService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
+import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.cosog.utils.OEMConfigFile;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
@@ -38,6 +43,9 @@ public class OperationMaintenanceController  extends BaseController {
 	private CommonDataService service;
 	@Autowired
 	private OperationMaintenanceService operationMaintenanceService;
+	@Autowired
+	private OperationMaintenanceService<DeviceTypeInfo> deviceTypeMaintenanceService;
+	
 	
 	@SuppressWarnings("unused")
 	@RequestMapping("/loadOemConfigInfo")
@@ -246,4 +254,79 @@ public class OperationMaintenanceController  extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/constructDeviceTypeTreeData")
+	public String constructDeviceTypeTreeData() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		List<Integer> languageList=null;
+		if(user!=null){
+			language=user.getLanguageName();
+			languageList=user.getLanguageList();
+		}
+		DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
+		List<DeviceTypeInfo> list = deviceTypeMaintenanceService.operationMaintenanceService(DeviceTypeInfo.class,user);
+		boolean flag = false;
+		for (DeviceTypeInfo tabInfo : list) {
+			if (!r.hasParent(list, tabInfo)) {
+				flag = true;
+				json = r.recursionMobileTabMaintenanceTreeFn(list, tabInfo,language);
+			}
+
+		}
+		if (flag == false && list.size() > 0) {
+			for (DeviceTypeInfo tabInfo : list) {
+				json = r.recursionTabMaintenanceTreeFn(list, tabInfo,language);
+			}
+
+		}
+		json = r.modifyStr(json).replaceAll("null", "");
+		
+		json="{\"success\": true,"
+				+ "\"showChineseName\":"+StringManagerUtils.existOrNot(languageList, 1)+","
+				+ "\"showEnglishName\":"+StringManagerUtils.existOrNot(languageList, 2)+","
+				+ "\"showRussianName\":"+StringManagerUtils.existOrNot(languageList, 3)+","
+				+ "\"children\":"+json
+				+"}";
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.debug("constructRightModuleTreeGridTree json==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+
+	@RequestMapping("/saveDeviceTypeMaintenanceData")
+	public String saveDeviceTypeMaintenanceData() throws Exception {
+		String result ="{success:true,msg:false}";
+		HttpSession session=request.getSession();
+		Gson gson=new Gson();
+		java.lang.reflect.Type type=null;
+		String data = ParamUtils.getParameter(request, "data");
+		
+		type = new TypeToken<List<DeviceTypeInfo>>() {}.getType();
+		List<DeviceTypeInfo> list=gson.fromJson(data, type);
+		
+		
+		if(list!=null){
+			for(DeviceTypeInfo deviceTypeInfo:list){
+				this.deviceTypeMaintenanceService.modifyDeviceType(deviceTypeInfo);
+			}
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result);
+		log.debug("saveDeviceTypeMaintenanceData json==" + result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 }

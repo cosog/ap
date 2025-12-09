@@ -838,6 +838,7 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
 	var applicationScenarios=result.applicationScenarios;
 	if(pcpRPMCalculateMaintainingHandsontableHelper==null){
 		pcpRPMCalculateMaintainingHandsontableHelper = PCPRPMCalculateMaintainingHandsontableHelper.createNew(divid);
+		
 		var colHeaders="['',";
         var columns="[{data:'checked',type:'checkbox'},";
         for(var i=0;i<result.columns.length;i++){
@@ -893,14 +894,18 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
     	pcpRPMCalculateMaintainingHandsontableHelper.columns=Ext.JSON.decode(columns);
     	
     	if(result.totalRoot.length==0){
-    		pcpRPMCalculateMaintainingHandsontableHelper.createTable([]);
+    		pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [0];
+    		pcpRPMCalculateMaintainingHandsontableHelper.createTable([{}]);
         }else{
+        	pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [];
         	pcpRPMCalculateMaintainingHandsontableHelper.createTable(result.totalRoot);
         }
 	}else{
 		if(result.totalRoot.length==0){
-			pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData([]);
+			pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [0];
+			pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData([{}]);
     	}else{
+    		pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [];
     		pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}
 	}
@@ -974,7 +979,7 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                    copyPasteEnabled: false
 	                },
 	                hiddenRows: {
-	                    rows: [],
+	                    rows: pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows,
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },

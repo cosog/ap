@@ -1071,14 +1071,18 @@ function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
     	srpFESDiagramCalculateMaintainingHandsontableHelper.columns=columns;
     	
     	if(result.totalRoot.length==0){
-        	srpFESDiagramCalculateMaintainingHandsontableHelper.createTable([]);
+    		srpFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows=[0];
+        	srpFESDiagramCalculateMaintainingHandsontableHelper.createTable([{}]);
         }else{
+        	srpFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows=[];
         	srpFESDiagramCalculateMaintainingHandsontableHelper.createTable(result.totalRoot);
         }
 	}else{
 		if(result.totalRoot.length==0){
-			srpFESDiagramCalculateMaintainingHandsontableHelper.hot.loadData([]);
+			srpFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows=[0];
+			srpFESDiagramCalculateMaintainingHandsontableHelper.hot.loadData([{}]);
     	}else{
+    		srpFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows=[];
     		srpFESDiagramCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}
 	}
@@ -1162,11 +1166,11 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-//	                hiddenRows: {
-//	                    rows: [0],
-//	                    indicators: false,
-//	                    copyPasteEnabled: false
-//	                },
+	                hiddenRows: {
+	                    rows: srpFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows,
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
 	                columns:srpFESDiagramCalculateMaintainingHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

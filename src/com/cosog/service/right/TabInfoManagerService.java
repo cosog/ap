@@ -26,7 +26,7 @@ public class TabInfoManagerService<T> extends BaseService<T> {
 		List<?> list = new ArrayList<>();
 		if(user!=null){
 			String nameColumn="name_"+user.getLanguageName();
-			String queryString = "select t.id,t.parentid,t."+nameColumn+",t.sortnum from tbl_devicetypeinfo t where t.parentid<>0 ";
+			String queryString = "select t.id,t.parentid,t."+nameColumn+",t.sortnum from tbl_devicetypeinfo t where t.parentid<>0 and t.status=1 ";
 			queryString+= " and t.id in "
 					+ " ("
 					+ " select distinct(rd.rd_devicetypeid) "

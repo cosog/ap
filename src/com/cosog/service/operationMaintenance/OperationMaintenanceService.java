@@ -377,4 +377,18 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		}
 		return result_json.toString();
 	}
+	
+	public List<T> operationMaintenanceService(Class<T> clazz, User user) throws Exception {
+		
+		String queryString = "SELECT tab FROM DeviceTypeInfo tab where tab.id in " 
+				+ "( select distinct rt.rdDeviceTypeId from User u ,Role role,RoleDeviceType rt "
+				+ "where  role.roleId =rt.rdRoleId   " 
+				+ " and role.roleId = u.userType   and u.userNo="
+				+ user.getUserNo() + ") order by tab.sortNum, tab.id";
+		return find(queryString);
+	}
+	
+	public void modifyDeviceType(T deviceType) throws Exception {
+		getBaseDao().updateObject(deviceType);
+	}
 }

@@ -387,4 +387,8 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 				+ user.getUserNo() + ") order by tab.sortNum, tab.id";
 		return find(queryString);
 	}
+	
+	public void modifyDeviceType(T deviceType) throws Exception {
+		getBaseDao().updateObject(deviceType);
+	}
 }

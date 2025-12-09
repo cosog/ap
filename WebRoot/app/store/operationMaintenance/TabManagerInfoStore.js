@@ -19,7 +19,13 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
     listeners: {
         load: function (store, options, eOpts) {
             //获得列表数
+        	
+        	store.commitChanges();
+        	
             var get_rawData = store.proxy.reader.rawData;
+            var showChineseName=get_rawData.showChineseName;
+            var showEnglishName=get_rawData.showEnglishName;
+            var showRussianName=get_rawData.showRussianName;
             var deviceTypeMaintenanceTreeGridView = Ext.getCmp("deviceTypeMaintenanceTreeGridView_Id");
             if (!isNotVal(deviceTypeMaintenanceTreeGridView)) {
                 deviceTypeMaintenanceTreeGridView = Ext.create('Ext.tree.Panel', {
@@ -45,10 +51,36 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: loginUserLanguageResource.name,
+                    	text: loginUserLanguageResource.deviceType,
                     	flex: 4,
                     	align: 'left',
-                    	dataIndex: 'text',
+                    	dataIndex: 'text'
+                    },{
+                    	text: loginUserLanguageResource.language_zh_CN,
+                    	flex: 4,
+                    	align: 'left',
+                    	dataIndex: 'text_zh_CN',
+                    	hidden:!showChineseName,
+                    	editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
+                            allowBlank: false,
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
+                        }:"",
+                    },{
+                    	text: loginUserLanguageResource.language_en,
+                    	flex: 4,
+                    	align: 'left',
+                    	dataIndex: 'text_en',
+                    	hidden:!showEnglishName,
+                    	editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
+                            allowBlank: false,
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
+                        }:"",
+                    },{
+                    	text: loginUserLanguageResource.language_ru,
+                    	flex: 4,
+                    	align: 'left',
+                    	dataIndex: 'text_ru',
+                    	hidden:!showRussianName,
                     	editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
                             allowBlank: false,
                             disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
@@ -89,7 +121,7 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
                     	    }
                     	}
                     },{
-                    	header: 'deviceTypeIdaa',
+                    	header: 'deviceTypeId',
                     	hidden: true,
                     	dataIndex: 'deviceTypeId'
                     }],

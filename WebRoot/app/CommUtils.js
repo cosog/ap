@@ -4979,3 +4979,30 @@ function getStringLength(str) {
     }
     return realLength;
 }
+
+function getExtjsModifiedCells(treePanel) {
+    var store = treePanel.getStore();
+    var modifiedRecords = store.getModifiedRecords();
+    var modifiedCells = [];
+    
+    modifiedRecords.forEach(function(record) {
+        // 获取所有修改过的字段
+        var modifiedFields = record.modified || {};
+        
+        // 获取修改的字段名
+        var fieldNames = Object.keys(modifiedFields);
+        
+        fieldNames.forEach(function(fieldName) {
+            modifiedCells.push({
+                recordId: record.getId(),
+                nodeText: record.get('text'),
+                field: fieldName,
+                oldValue: record.modified[fieldName],  // 旧值
+                newValue: record.get(fieldName),       // 新值
+                record: record
+            });
+        });
+    });
+    
+    return modifiedCells;
+}

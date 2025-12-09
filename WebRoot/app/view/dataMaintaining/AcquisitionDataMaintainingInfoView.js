@@ -643,14 +643,18 @@ function CreateAndLoadRealtimeAcquisitionDataMaintainingTable(isNew,result,divid
     	realtimeAcquisitionDataMaintainingHandsontableHelper.columns=Ext.JSON.decode(columns);
     	
     	if(result.totalRoot.length==0){
-    		realtimeAcquisitionDataMaintainingHandsontableHelper.createTable([]);
+    		realtimeAcquisitionDataMaintainingHandsontableHelper.hiddenRows=[0];
+    		realtimeAcquisitionDataMaintainingHandsontableHelper.createTable([{}]);
         }else{
+        	realtimeAcquisitionDataMaintainingHandsontableHelper.hiddenRows=[];
         	realtimeAcquisitionDataMaintainingHandsontableHelper.createTable(result.totalRoot);
         }
 	}else{
 		if(result.totalRoot.length==0){
-			realtimeAcquisitionDataMaintainingHandsontableHelper.hot.loadData([]);
+			realtimeAcquisitionDataMaintainingHandsontableHelper.hiddenRows=[0];
+			realtimeAcquisitionDataMaintainingHandsontableHelper.hot.loadData([{}]);
     	}else{
+    		realtimeAcquisitionDataMaintainingHandsontableHelper.hiddenRows=[];
     		realtimeAcquisitionDataMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}
 	}
@@ -724,7 +728,7 @@ var RealtimeAcquisitionDataMaintainingHandsontableHelper = {
 	                    copyPasteEnabled: false
 	                },
 	                hiddenRows: {
-	                    rows: [],
+	                    rows: realtimeAcquisitionDataMaintainingHandsontableHelper.hiddenRows,
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -866,14 +870,18 @@ function CreateAndLoadHistoryAcquisitionDataMaintainingTable(isNew,result,divid)
     	historyAcquisitionDataMaintainingHandsontableHelper.columns=Ext.JSON.decode(columns);
     	
     	if(result.totalRoot.length==0){
-    		historyAcquisitionDataMaintainingHandsontableHelper.createTable([]);
+    		historyAcquisitionDataMaintainingHandsontableHelper.hiddenRows=[0];
+    		historyAcquisitionDataMaintainingHandsontableHelper.createTable([{}]);
         }else{
+        	historyAcquisitionDataMaintainingHandsontableHelper.hiddenRows=[];
         	historyAcquisitionDataMaintainingHandsontableHelper.createTable(result.totalRoot);
         }
 	}else{
 		if(result.totalRoot.length==0){
-			historyAcquisitionDataMaintainingHandsontableHelper.hot.loadData([]);
+			historyAcquisitionDataMaintainingHandsontableHelper.hiddenRows=[0];
+			historyAcquisitionDataMaintainingHandsontableHelper.hot.loadData([{}]);
     	}else{
+    		historyAcquisitionDataMaintainingHandsontableHelper.hiddenRows=[];
     		historyAcquisitionDataMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}
 	}
@@ -947,7 +955,7 @@ var HistoryAcquisitionDataMaintainingHandsontableHelper = {
 	                    copyPasteEnabled: false
 	                },
 	                hiddenRows: {
-	                    rows: [],
+	                    rows: historyAcquisitionDataMaintainingHandsontableHelper.hiddenRows,
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },

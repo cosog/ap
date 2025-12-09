@@ -1046,6 +1046,64 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         		        }]
         		    }]
         		},{
+        			title: loginUserLanguageResource.tagManagement,
+        			id:'OperationMaintenanceDeviceTypeMaintenancePanel_Id',
+        			layout: "fit",
+        			tbar: ['->',{
+    	                xtype: 'button',
+    	                text: loginUserLanguageResource.save,
+    	                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+    	                iconCls: 'save',
+    	                hidden:false,
+    	                handler: function (v, o) {
+    	                	var deviceTypeMaintenanceTreeGridView = Ext.getCmp("deviceTypeMaintenanceTreeGridView_Id");
+    	                	
+//    	                	var modifiedCells=getExtjsModifiedCells(deviceTypeMaintenanceTreeGridView);
+    	                	var store=deviceTypeMaintenanceTreeGridView.getStore();
+    	                	var modifiedRecords = store.getModifiedRecords();
+    	                	
+    	                	if(modifiedRecords.length>0){
+    	                		var modifiedDeviceTypes=[];
+    	                		
+    	                		modifiedRecords.forEach(function(record) {
+    	                			modifiedDeviceTypes.push({
+    	                				id: record.data.deviceTypeId,
+    	                				name_zh_CN: record.data.text_zh_CN,
+    	                				name_en: record.data.text_en,
+    	                				name_ru: record.data.text_ru,
+    	                				parentId: record.data.parentNodeId,
+    	                				sortNum: record.data.sortNum,
+    	                				status: record.data.deviceTypeEnable?1:0
+    	                	        });
+    	                	    });
+    	                		
+    	                		
+    	                		Ext.Ajax.request({
+    	                			method:'POST',
+    	                			url:context + '/operationMaintenanceController/saveDeviceTypeMaintenanceData',
+    	                			success:function(response) {
+    	                				var data=Ext.JSON.decode(response.responseText);
+    	                				
+    	                				if (data.success) {
+    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+    	                	            	store.commitChanges();
+    	                	            } else {
+    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+    	                	            }
+    	                			},
+    	                			failure:function(){
+    	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+    	                			},
+    	                			params: {
+    	                				data:JSON.stringify(modifiedDeviceTypes)
+    	                	        }
+    	                		});
+    	                	}else{
+    	                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noDataChange);
+    	                	}
+    	                }
+    	    		}]
+        		},{
         			title: loginUserLanguageResource.memoryCurve,
         			id:'OperationMaintenanceMonitorCurveTabPanel_Id',
         			layout: 'fit',
@@ -1225,20 +1283,6 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         	                }
         	            }
         	        }
-        		},{
-        			title: '标签管理',
-        			id:'OperationMaintenanceDeviceTypeMaintenancePanel_Id',
-        			layout: "fit",
-        			tbar: ['->',{
-    	                xtype: 'button',
-    	                text: loginUserLanguageResource.save,
-    	                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-    	                iconCls: 'save',
-    	                hidden:false,
-    	                handler: function (v, o) {
-    	                	
-    	                }
-    	    		}]
         		}],
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {

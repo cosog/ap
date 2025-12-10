@@ -930,7 +930,7 @@ public class WellInformationManagerController extends BaseController {
 				            ExportAuxiliaryDeviceData exportAuxiliaryDeviceData = gson.fromJson(itemJson, ExportAuxiliaryDeviceData.class);
 				            uploadList.add(exportAuxiliaryDeviceData);
 			        	}catch(Exception e){
-			        		System.out.println(itemJson);
+			        		StringManagerUtils.printLog(itemJson,2);
 			    			e.printStackTrace();
 			    			continue;
 			    		}
@@ -1640,7 +1640,7 @@ public class WellInformationManagerController extends BaseController {
 			        		ExportPrimaryDeviceData exportDeviceData = gson.fromJson(itemJson, ExportPrimaryDeviceData.class);
 				            uploadList.add(exportDeviceData);
 			        	}catch(Exception e){
-			        		System.out.println(itemJson);
+			        		StringManagerUtils.printLog(itemJson,2);
 			    			e.printStackTrace();
 			    			continue;
 			    		}
@@ -3771,7 +3771,7 @@ public class WellInformationManagerController extends BaseController {
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+""
 						+ "}";
-				StringManagerUtils.printLog(itemName+":"+ctrlJson);
+				StringManagerUtils.printLog(itemName+":"+ctrlJson,1);
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
 				if(StringManagerUtils.isNotNull(responseStr)){
@@ -4250,7 +4250,7 @@ public class WellInformationManagerController extends BaseController {
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+item.getAddr()+""
 						+ "}";
-				StringManagerUtils.printLog(item.getTitle()+":"+readJson);
+				StringManagerUtils.printLog("读地址数据:"+item.getTitle()+":"+readJson,1);
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(readUrl, readJson,"utf-8",0,0);
 				if(StringManagerUtils.isNotNull(responseStr)){

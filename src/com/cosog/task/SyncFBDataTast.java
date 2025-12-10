@@ -165,9 +165,9 @@ public class SyncFBDataTast {
 			
 		}
 		if(type==0){
-			System.out.println("泵设备实时数据同步完成");
+			StringManagerUtils.printLog("泵设备实时数据同步完成",0);
 		}else if(type==1){
-			System.out.println("管设备实时数据同步完成");
+			StringManagerUtils.printLog("管设备实时数据同步完成",0);
 		}
 		
 		return result;
@@ -207,7 +207,7 @@ public class SyncFBDataTast {
 			}
 			long calculateEndTime=System.nanoTime();
 			long sum2=FeiZhouCounterUtils.sum();
-			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":Thread complete，execute count:"+(sum2-sum1)+",time:"+StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime));
+			StringManagerUtils.printLog("Thread complete，execute count:"+(sum2-sum1)+",time:"+StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime),0);
 		}while(true);
 		
 		

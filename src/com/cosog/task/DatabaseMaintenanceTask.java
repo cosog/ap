@@ -254,7 +254,7 @@ public class DatabaseMaintenanceTask {
 			endExecutor.shutdownNow();
 		}
 		
-		StringManagerUtils.printLog("DatabaseMaintenanceTask scheduled destory!");
+		StringManagerUtils.printLog("DatabaseMaintenanceTask scheduled destory!",0);
 	}
 	
 	public static long getDataBaseTableCount(String table){

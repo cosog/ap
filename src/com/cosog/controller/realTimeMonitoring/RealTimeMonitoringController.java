@@ -552,7 +552,7 @@ public class RealTimeMonitoringController extends BaseController {
 				
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
+				StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr,1);
 				if(StringManagerUtils.isNotNull(responseStr)){
 					type = new TypeToken<ResultStatusData>() {}.getType();
 					ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
@@ -567,7 +567,7 @@ public class RealTimeMonitoringController extends BaseController {
 //					
 ////					responseStr="{\"ResultStatus\":1,\"Value\":[5]}";
 //					
-//					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送读地址命令:"+readJson+";返回数据:"+responseStr);
+//					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送读地址命令:"+readJson+";返回数据:"+responseStr);
 //					type = new TypeToken<AcqAddrData>() {}.getType();
 //					AcqAddrData acqAddrData=gson.fromJson(responseStr, type);
 //					int readResult=acqAddrData.getResultStatus();
@@ -587,7 +587,7 @@ public class RealTimeMonitoringController extends BaseController {
 //									+ "}";
 //							
 //							responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-//							System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
+//							StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
 //							if(StringManagerUtils.isNotNull(responseStr)){
 //								type = new TypeToken<ResultStatusData>() {}.getType();
 //								ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
@@ -598,7 +598,7 @@ public class RealTimeMonitoringController extends BaseController {
 //					}
 //				}else{
 //					responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-//					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
+//					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
 //					if(StringManagerUtils.isNotNull(responseStr)){
 //						type = new TypeToken<ResultStatusData>() {}.getType();
 //						ResultStatusData resultStatusData=gson.fromJson(responseStr, type);

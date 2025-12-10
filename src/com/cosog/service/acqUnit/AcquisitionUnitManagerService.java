@@ -7816,7 +7816,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("\"List\":"+gson.toJson(protocolList));
 		result_json.append(",\"DataMappingList\":"+gson.toJson(dataMappingList));
 		result_json.append("}");
-//		System.out.println(result_json.toString().replaceAll("null", ""));
+//		StringManagerUtils.printLog(result_json.toString().replaceAll("null", ""));
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -11229,11 +11229,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 //		String data=stringManagerUtils.readFile(path,"utf-8");
 //		return data;
 		
-//		System.out.println("显示单元备份数据:"+result_json.toString());
+//		StringManagerUtils.printLog("显示单元备份数据:"+result_json.toString());
 		
 //		if(result_json.length()>971411){
 //			String subStr=result_json.substring(970000, result_json.length()>972000?972000:result_json.length()-1);
-//			System.out.println("显示单元备份截取数据:"+subStr);
+//			StringManagerUtils.printLog("显示单元备份截取数据:"+subStr);
 //		}
 		
 		return result_json.toString();
@@ -11783,7 +11783,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-//		System.out.println("显示实例备份数据:"+result_json.toString());
+//		StringManagerUtils.printLog("显示实例备份数据:"+result_json.toString());
 		return result_json.toString();
 	}
 	

@@ -81,6 +81,8 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 				        		configFile.others.loginLanguage=Ext.getCmp('operationMaintenance_LogonLanguageCombox_Id').getValue();
 				        		configFile.others.showLogo=Ext.getCmp('operationMaintenance_showLogo1_Id').getValue();
 				        		configFile.others.printLog=Ext.getCmp('operationMaintenance_printLog1_Id').getValue();
+				        		configFile.others.printAdLog=Ext.getCmp('operationMaintenance_printAdLog1_Id').getValue();
+				        		configFile.others.printExceptionLog=Ext.getCmp('operationMaintenance_printExceptionLog1_Id').getValue();
 				        		configFile.others.timeEfficiencyUnit=Ext.getCmp('operationMaintenance_timeEfficiencyUnit1_Id').getValue()?1:2;
 				        		configFile.others.resourceMonitoringSaveData=Ext.getCmp('operationMaintenance_resourceMonitoringSaveData_Id').getValue();
 				        		configFile.others.exportLimit=Ext.getCmp('operationMaintenance_exportLimit_Id').getValue();
@@ -238,6 +240,14 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                                    id:'operationMaintenance_simulateAcqEnable0_Id'
     				                                }
     				                            ]
+    				                        },
+    				                        {
+    				                        	fieldLabel: loginUserLanguageResource.exportDataLimits,
+    				                        	xtype: 'numberfield',
+    				                        	name:'operationMaintenance.exportLimit',
+    				                        	id:'operationMaintenance_exportLimit_Id',
+    				                        	minValue: 1,
+    				                        	maxValue: 65534
     				                        }
     				                    ]
     				                }, {
@@ -306,14 +316,52 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                                    id:'operationMaintenance_printLog0_Id'
     				                                }
     				                            ]
-    				                        },
-    				                        {
-    				                        	fieldLabel: loginUserLanguageResource.exportDataLimits,
-    				                        	xtype: 'numberfield',
-    				                        	name:'operationMaintenance.exportLimit',
-    				                        	id:'operationMaintenance_exportLimit_Id',
-    				                        	minValue: 1,
-    				                        	maxValue: 65534
+    				                        },{
+    				                        	xtype: 'fieldcontainer',
+    				                            fieldLabel : loginUserLanguageResource.printAdLogs,
+    				                            defaultType: 'radiofield',
+    				                            anchor: '100%',
+    				                            defaults: {
+    				                                flex: 1
+    				                            },
+    				                            layout: 'hbox',
+    				                            items: [
+    				                                {
+    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
+    				                                    name:'operationMaintenance.printAdLog',
+    				                                    inputValue: '1',
+    				                                    id: 'operationMaintenance_printAdLog1_Id'
+    				                                }, {
+    				                                    boxLabel: loginUserLanguageResource.no,
+    				                                    name:'operationMaintenance.printAdLog',
+    				                                    checked:true,
+    				                                    inputValue:'0',
+    				                                    id:'operationMaintenance_printAdLog0_Id'
+    				                                }
+    				                            ]
+    				                        },{
+    				                        	xtype: 'fieldcontainer',
+    				                            fieldLabel : loginUserLanguageResource.printExceptionLogs,
+    				                            defaultType: 'radiofield',
+    				                            anchor: '100%',
+    				                            defaults: {
+    				                                flex: 1
+    				                            },
+    				                            layout: 'hbox',
+    				                            items: [
+    				                                {
+    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
+    				                                    name:'operationMaintenance.printExceptionLog',
+    				                                    inputValue: '1',
+    				                                    id: 'operationMaintenance_printExceptionLog1_Id'
+    				                                }, {
+    				                                    boxLabel: loginUserLanguageResource.no,
+    				                                    name:'operationMaintenance.printExceptionLog',
+    				                                    checked:true,
+    				                                    inputValue:'0',
+    				                                    id:'operationMaintenance_printExceptionLog0_Id'
+    				                                }
+    				                            ]
     				                        }
     				                    ]
     				                }]
@@ -1413,6 +1461,16 @@ function initOemOperationConfigInfo(configFile){
     	Ext.getCmp('operationMaintenance_printLog1_Id').setValue(true);
     }else{
     	Ext.getCmp('operationMaintenance_printLog0_Id').setValue(true);
+    }
+	if(configFile.others.printAdLog){
+    	Ext.getCmp('operationMaintenance_printAdLog1_Id').setValue(true);
+    }else{
+    	Ext.getCmp('operationMaintenance_printAdLog0_Id').setValue(true);
+    }
+	if(configFile.others.printExceptionLog){
+    	Ext.getCmp('operationMaintenance_printExceptionLog1_Id').setValue(true);
+    }else{
+    	Ext.getCmp('operationMaintenance_printExceptionLog0_Id').setValue(true);
     }
 	
 	if(configFile.others.timeEfficiencyUnit==1){

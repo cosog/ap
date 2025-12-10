@@ -32,7 +32,7 @@ public class WebSocketConfig implements WebMvcConfigurer, WebSocketConfigurer {
 	@Override  
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {  
 		// 注册多个websocket服务，addHandler第一个参数是websocket的具体业务处理类，第二个参数collectionList相当于endpoint  
-		StringManagerUtils.printLog("启动Websocket服务端");
+		StringManagerUtils.printLog("启动Websocket服务端",0);
 		String[] allowsOrigins = {"*"};
 		registry.addHandler(RealSocketHandler(), "/collectionList").setAllowedOrigins(allowsOrigins).addInterceptors(new SpringWebSocketHandlerInterceptor());  
 		

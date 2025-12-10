@@ -418,7 +418,7 @@ public class BaseDao extends HibernateDaoSupport {
 			return query.list();
 		} catch (Exception e) {
 			e.printStackTrace();
-			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+callSql);
+			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+callSql,2);
 			return new ArrayList<>();
 		}
 		
@@ -816,7 +816,7 @@ public class BaseDao extends HibernateDaoSupport {
 			rows= Integer.parseInt(query.uniqueResult() + "");
 		} catch (Exception e) {
 			e.printStackTrace();
-			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+allsql);
+			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+allsql,2);
 		}
 		
 		return rows;
@@ -992,7 +992,7 @@ public class BaseDao extends HibernateDaoSupport {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+sql);
+			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+sql,2);
 		} finally{
 			if(ps!=null){
 				try {

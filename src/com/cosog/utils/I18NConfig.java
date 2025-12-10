@@ -136,6 +136,6 @@ public class I18NConfig {
 	}
 
 	public static void main(String[] args) {
-		StringManagerUtils.printLog(I18NConfig.getWorkStatisticsImage());
+		StringManagerUtils.printLog(I18NConfig.getWorkStatisticsImage(),0);
 	}
 }

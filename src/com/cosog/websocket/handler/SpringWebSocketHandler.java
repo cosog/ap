@@ -35,9 +35,9 @@ public class SpringWebSocketHandler implements WebSocketHandler {
 	@Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         String userId= (String) session.getAttributes().get(USER_ID);
-        StringManagerUtils.printLog("用户"+userId+"已退出！");
+        StringManagerUtils.printLog("用户"+userId+"已退出！",0);
         clients.remove(userId);
-        StringManagerUtils.printLog("剩余在线用户"+clients.size());
+        StringManagerUtils.printLog("剩余在线用户"+clients.size(),0);
     }
 
 	/**
@@ -48,11 +48,11 @@ public class SpringWebSocketHandler implements WebSocketHandler {
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		// TODO Auto-generated method stub
 		logger.debug("connect to the websocket succcess ... ...");  
-        StringManagerUtils.printLog("afterConnectionEstablished");  
+        StringManagerUtils.printLog("afterConnectionEstablished",0);  
         String userId = (String) session.getAttributes().get(USER_ID);
         clients.put(userId,session);
-        StringManagerUtils.printLog("接收到客户端连接:"+userId);
-        StringManagerUtils.printLog("当前线上用户数量:"+clients.size());
+        StringManagerUtils.printLog("接收到客户端连接:"+userId,0);
+        StringManagerUtils.printLog("当前线上用户数量:"+clients.size(),0);
         //这块会实现自己业务，比如，当用户登录后，会把离线消息推送给用户
         TextMessage returnMessage = new TextMessage("Connect successfully!");
         session.sendMessage(returnMessage);
@@ -66,7 +66,7 @@ public class SpringWebSocketHandler implements WebSocketHandler {
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> arg1) throws Exception {
 		// TODO Auto-generated method stub
 		String message=arg1.getPayload()+"";
-		StringManagerUtils.printLog("服务器收到消息："+message);
+		StringManagerUtils.printLog("服务器收到消息："+message,0);
 		
 		if(message.startsWith("#anyone#")){ //单发某人
 			 
@@ -85,13 +85,13 @@ public class SpringWebSocketHandler implements WebSocketHandler {
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable arg1) throws Exception {
 		// TODO Auto-generated method stub
-		StringManagerUtils.printLog("handleTransportError");  
+		StringManagerUtils.printLog("handleTransportError",0);  
         logger.debug("websocket connection closed");  
         if(session.isOpen()){
         	session.close();
         }
         String userId= (String) session.getAttributes().get(USER_ID);
-        StringManagerUtils.printLog(userId+"传输出现异常，关闭websocket连接... ");
+        StringManagerUtils.printLog(userId+"传输出现异常，关闭websocket连接... ",0);
         clients.remove(userId);
 	}
 

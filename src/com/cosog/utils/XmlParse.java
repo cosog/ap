@@ -32,9 +32,9 @@ public class XmlParse {
 		Element root = document.getRootElement();// ��ø��ڵ�
 		List<Element> list = root.getChildren();
 		for (Element e : list) {
-			StringManagerUtils.printLog("ID=" + e.getAttributeValue("id"));
-			StringManagerUtils.printLog("username=" + e.getChildText("username"));
-			StringManagerUtils.printLog("password=" + e.getChildText("password"));
+			StringManagerUtils.printLog("ID=" + e.getAttributeValue("id"),0);
+			StringManagerUtils.printLog("username=" + e.getChildText("username"),0);
+			StringManagerUtils.printLog("password=" + e.getChildText("password"),0);
 		}
 	}
 
@@ -93,7 +93,6 @@ public class XmlParse {
 		for (Element e : list) {
 			// ��ȡIDֵ
 			if (Integer.parseInt(e.getAttributeValue("id")) == id) {
-				StringManagerUtils.printLog("--------------------");
 				e.getChild("username").setText("111111111");
 				e.getChild("password").setText("password");
 
@@ -117,11 +116,11 @@ public class XmlParse {
 		Element root = document.getRootElement();// ��ø��ڵ�
 		List<Element> list = root.getChildren();
 		// Element child = root.getChild("column"); // ��ȡ�ӽڵ�
-		StringManagerUtils.printLog(" root.getChildren()  ===" + list.size());
+		StringManagerUtils.printLog(" root.getChildren()  ===" + list.size(),0);
 		for (int i = 0; i < list.size(); i++) {
 			Element e = list.get(i);
 			if (i == 0) {
-				StringManagerUtils.printLog("ID=" + e.getAttributeValue("id"));
+				StringManagerUtils.printLog("ID=" + e.getAttributeValue("id"),0);
 				List<Element> theads = e.getChildren();
 				for (int m = 0; m < theads.size(); m++) {
 					Element th = theads.get(m);
@@ -137,7 +136,7 @@ public class XmlParse {
 				System.out
 						.println("strthBuilder***=" + strThBuilder.toString());
 			} else if (i == 1) {
-				StringManagerUtils.printLog("ID=" + e.getAttributeValue("id"));
+				StringManagerUtils.printLog("ID=" + e.getAttributeValue("id"),0);
 				List<Element> sqls = e.getChildren();
 				for (int n = 0; n < sqls.size(); n++) {
 					Element sql = sqls.get(n);
@@ -150,10 +149,9 @@ public class XmlParse {
 					}
 				}
 				tables.add(strSqlBuilder.toString());
-				StringManagerUtils.printLog("strsqlBuilder***="
-						+ strSqlBuilder.toString());
+				StringManagerUtils.printLog("strsqlBuilder***="+ strSqlBuilder.toString(),0);
 			} else if (i == 2) {
-				StringManagerUtils.printLog("ID=" + e.getAttributeValue("id"));
+				StringManagerUtils.printLog("ID=" + e.getAttributeValue("id"),0);
 				List<Element> conditions = e.getChildren();
 				for (int p = 0; p < conditions.size(); p++) {
 					Element condition = conditions.get(p);
@@ -167,8 +165,7 @@ public class XmlParse {
 						}
 					}
 				}
-				StringManagerUtils.printLog("strConBuilder***="
-						+ strConBuilder.toString());
+				StringManagerUtils.printLog("strConBuilder***="+ strConBuilder.toString(),0);
 				tables.add(strConBuilder.toString());
 			}
 
@@ -185,7 +182,7 @@ public class XmlParse {
 		String filePath = "/xml/wells.xml";
 		Vector<String> tables = XmlParseTools(filePath);
 		for (String s : tables) {
-			StringManagerUtils.printLog("s==" + s);
+			StringManagerUtils.printLog("s==" + s,0);
 		}
 
 	}

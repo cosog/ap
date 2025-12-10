@@ -101,7 +101,7 @@ public class MACAddress {
     public String getMACAddress() { 
     	String mac = "";
         String os = getOSName();   
-        StringManagerUtils.printLog(os);   
+        StringManagerUtils.printLog(os,0);   
         if(os.startsWith("windows")){   
             //本地是windows   
             mac = getWindowsMACAddress();   
@@ -119,7 +119,7 @@ public class MACAddress {
      */  
     public static void main(String[] argc) { 
     	MACAddress address = new MACAddress();
-    	StringManagerUtils.printLog(address.getMACAddress());
+    	StringManagerUtils.printLog(address.getMACAddress(),0);
     }   
 
 

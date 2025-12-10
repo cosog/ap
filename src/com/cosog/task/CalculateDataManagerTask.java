@@ -73,7 +73,7 @@ public class CalculateDataManagerTask {
 			String result="无未计算数据";
 			int count=getCount(sql);
 			if(count>0){
-				StringManagerUtils.printLog("发现未计算数据");
+				StringManagerUtils.printLog("发现未计算数据",0);
 				result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 			}
 		}
@@ -91,7 +91,7 @@ public class CalculateDataManagerTask {
 			String result="无未计算数据";
 			int count=getCount(sql);
 			if(count>0){
-				StringManagerUtils.printLog("发现未计算数据");
+				StringManagerUtils.printLog("发现未计算数据",0);
 				result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 			}
 		}
@@ -688,6 +688,6 @@ public class CalculateDataManagerTask {
 			AcquisitionTimingCalculateExecutor.shutdownNow();
 		}
 		
-		StringManagerUtils.printLog("scheduledDestory!");
+		StringManagerUtils.printLog("scheduledDestory!",0);
 	}
 }

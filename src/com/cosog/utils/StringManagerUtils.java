@@ -242,7 +242,7 @@ public class StringManagerUtils {
         try {
             str = new String(str.getBytes(charsetName), toCharsetName);
         } catch (UnsupportedEncodingException ex) {
-            StringManagerUtils.printLog("字符串编码转换异常：" + ex.getMessage());
+            StringManagerUtils.printLog("字符串编码转换异常：" + ex.getMessage(),2);
         }
         return str;
     }
@@ -288,13 +288,22 @@ public class StringManagerUtils {
         return m.matches();
     }
 
-    public static void printLog(String x) {
-        if (Config.getInstance().configFile.getAp().getOthers().getPrintLog()) {
+    public static void printLog(String x,int level) {//level 0-普通日志 1-ad交互日志 2-异常信息
+        boolean enabled=false;
+        if(level==1){
+        	enabled=Config.getInstance().configFile.getAp().getOthers().getPrintAdLog();
+        }else if(level==2){
+        	enabled=Config.getInstance().configFile.getAp().getOthers().getPrintExceptionLog();
+        }else{
+        	enabled=Config.getInstance().configFile.getAp().getOthers().getPrintLog();
+        }
+    	
+    	if (enabled) {
             System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" + x);
         }
     }
 
-    public static void printLog(Object x) {
+    public static void printLogObject(Object x) {
         if (Config.getInstance().configFile.getAp().getOthers().getPrintLog()) {
             System.out.println(x);
         }
@@ -998,7 +1007,7 @@ public class StringManagerUtils {
     public static void main(String args[]) {
         String result = StringManagerUtils.replace("id,jh,gtcjsj,cl", "gtcjsj", "to_char(gtcjsj,'YYYY-MM-DD hh24:mi:ss') as gtcjsj");
         // StringManagerUtils.printLog(StringManagerUtils.getCurrentMonth());
-        StringManagerUtils.printLog(minusMonthDate(StringManagerUtils.stringToDate("2014-01-08")));
+        StringManagerUtils.printLogObject(minusMonthDate(StringManagerUtils.stringToDate("2014-01-08")));
         // StringManagerUtils.printLog(showLastMonth("2014-01-31"));
     }
 
@@ -1160,7 +1169,6 @@ public class StringManagerUtils {
         // result = m.group(1);
         // }
         result = newStr.trim();
-        StringManagerUtils.printLog(result);
         return result;
 
     }
@@ -1996,13 +2004,13 @@ public class StringManagerUtils {
                 while ((line = in .readLine()) != null) {
                     errorInfo += line;
                 }
-                StringManagerUtils.printLog("错误信息：" + errorInfo);
+                StringManagerUtils.printLog("错误信息：" + errorInfo,0);
             } else {
                 throw new Exception();
             }
         } catch (Exception e) {
-            StringManagerUtils.printLog("发送 POST 请求出现异常！" + e);
-            StringManagerUtils.printLog("url:" + url + ",param:" + param);
+            StringManagerUtils.printLog("发送 POST 请求出现异常！" + e,2);
+            StringManagerUtils.printLog("url:" + url + ",param:" + param,2);
 //            e.printStackTrace();
         } finally {
             try {
@@ -2073,13 +2081,13 @@ public class StringManagerUtils {
                 while ((line = in .readLine()) != null) {
                     errorInfo += line;
                 }
-                StringManagerUtils.printLog("错误信息：" + errorInfo);
+                StringManagerUtils.printLog("错误信息：" + errorInfo,0);
             } else {
                 throw new Exception();
             }
         } catch (Exception e) {
-            StringManagerUtils.printLog("发送 POST 请求出现异常！" + e);
-            StringManagerUtils.printLog("url:" + url + ",param:" + param);
+            StringManagerUtils.printLog("发送 POST 请求出现异常！" + e,2);
+            StringManagerUtils.printLog("url:" + url + ",param:" + param,2);
             e.printStackTrace();
         } finally {
             try {
@@ -2121,7 +2129,7 @@ public class StringManagerUtils {
             }
 
         } catch (Exception e) {
-            StringManagerUtils.printLog("发送http请求出现异常！" + e);
+            StringManagerUtils.printLog("发送http请求出现异常！" + e,2);
             e.printStackTrace();
         } finally {
             if (conn != null) {
@@ -4042,7 +4050,7 @@ public class StringManagerUtils {
                 } else {
                     mimeMessage.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receivingAccount.get(i)));
                 }
-                StringManagerUtils.printLog("发送邮件：" + receivingAccount.get(i) + "," + topic + "," + content);
+                StringManagerUtils.printLog("发送邮件：" + receivingAccount.get(i) + "," + topic + "," + content,0);
             }
             //邮件标题
             mimeMessage.setSubject(topic);
@@ -4059,7 +4067,7 @@ public class StringManagerUtils {
         } catch (Exception e) {
             result = false;
             for (int i = 0; i < receivingAccount.size(); i++) {
-                StringManagerUtils.printLog("发送邮件失败：" + receivingAccount.get(i) + "," + topic + "," + content);
+                StringManagerUtils.printLog("发送邮件失败：" + receivingAccount.get(i) + "," + topic + "," + content,2);
             }
             e.printStackTrace();
         }

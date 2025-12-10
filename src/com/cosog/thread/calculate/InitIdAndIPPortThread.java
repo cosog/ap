@@ -51,7 +51,7 @@ public class InitIdAndIPPortThread implements Runnable{
 		}
 	
 		long time2 =System.nanoTime()/1000;
-//		System.out.println(wellType+"ID/IPPort初始化耗时："+(time2-time1)+"μs"+",TCPType:"+tcpType+",ID:"+id+",IPPort:"+ipPort+",Slave:"+slave+",ThreadId:"+Thread.currentThread().getId());
+//		StringManagerUtils.printLog(wellType+"ID/IPPort初始化耗时："+(time2-time1)+"μs"+",TCPType:"+tcpType+",ID:"+id+",IPPort:"+ipPort+",Slave:"+slave+",ThreadId:"+Thread.currentThread().getId());
 	}
 
 	public static void initDevice(DeviceInfo deviceInfo,boolean initEnable,String method){
@@ -94,7 +94,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setSlave(otherInitialized.getSlave());
 				initId.setInstanceName(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+otherInitialized.getInstanceName());
 				initId.setPeakDelay(peakDelay);
-				System.out.println("ID初始化："+initUrl+","+gson.toJson(initId));
+				StringManagerUtils.printLog("ID初始化："+initUrl+","+gson.toJson(initId),1);
 				String response="";
 				if(initEnable){
 					response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
@@ -114,7 +114,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setSlave(otherInitialized.getSlave());
 				initId.setInstanceName(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+otherInitialized.getInstanceName());
 				initId.setPeakDelay(peakDelay);
-				System.out.println("ID初始化："+initIPPortUrl+","+gson.toJson(initId));
+				StringManagerUtils.printLog("ID初始化："+initIPPortUrl+","+gson.toJson(initId),1);
 				String response="";
 				if(initEnable){
 					response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
@@ -143,7 +143,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setSlave((byte) slave);
 				initId.setInstanceName(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+instanceName);
 				initId.setPeakDelay(peakDelay);
-				System.out.println("ID初始化："+url+","+gson.toJson(initId));
+				StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId),1);
 				String response="";
 				if(initEnable){
 					response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
@@ -175,7 +175,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					initId.setSlave(initialized.getSlave());
 					initId.setInstanceName(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+instanceName);
 					initId.setPeakDelay(peakDelay);
-					System.out.println("ID初始化："+url+","+gson.toJson(initId));
+					StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId),1);
 					String response="";
 					if(initEnable){
 						response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
@@ -214,7 +214,7 @@ public class InitIdAndIPPortThread implements Runnable{
 						initId.setSlave(initialized.getSlave());
 						initId.setInstanceName(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+instanceName);
 						initId.setPeakDelay(initialized.getPeakDelay());
-						System.out.println("ID初始化："+url+","+gson.toJson(initId));
+						StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId),1);
 						if(initEnable){
 							StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 						}
@@ -230,7 +230,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					initId.setSlave((byte) slave);
 					initId.setInstanceName(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+instanceName);
 					initId.setPeakDelay(peakDelay);
-					System.out.println("ID初始化："+url+","+gson.toJson(initId));
+					StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId),1);
 					String response="";
 					if(initEnable){
 						response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
@@ -258,7 +258,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setSlave(initialized.getSlave());
 				initId.setInstanceName(deviceInfo.getProtocolDeviceTypeAllPath_zh_CN()+"/"+deviceInfo.getProtocolName()+"/"+instanceName);
 				initId.setPeakDelay(peakDelay);
-				System.out.println("ID初始化："+url+","+gson.toJson(initId));
+				StringManagerUtils.printLog("ID初始化："+url+","+gson.toJson(initId),1);
 				String response="";
 				if(initEnable){
 					response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);

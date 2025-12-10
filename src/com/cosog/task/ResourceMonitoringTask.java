@@ -148,7 +148,7 @@ public class ResourceMonitoringTask {
 				
 				result_json.append("}");
 				
-				System.out.println("表空间使用率变化:"+result_json.toString());
+				StringManagerUtils.printLog("表空间使用率变化:"+result_json.toString(),0);
 			}
 		}
 		
@@ -1017,29 +1017,29 @@ public class ResourceMonitoringTask {
         }
         return r;
         
-//        System.out.println("=== 与任务管理器对应关系 ===");
-//        System.out.println("进程PID: " + pid);
-//        System.out.println();
+//        StringManagerUtils.printLog("=== 与任务管理器对应关系 ===");
+//        StringManagerUtils.printLog("进程PID: " + pid);
+//        StringManagerUtils.printLog();
 //        
 //        // 进程内存指标
-//        System.out.println("【进程内存使用】");
-//        System.out.println("工作集(内存): " + formatBytes(process.getResidentSetSize()) + 
+//        StringManagerUtils.printLog("【进程内存使用】");
+//        StringManagerUtils.printLog("工作集(内存): " + formatBytes(process.getResidentSetSize()) + 
 //                          " ← 任务管理器'内存'列");
-//        System.out.println("提交大小: " + formatBytes(process.getVirtualSize()) + 
+//        StringManagerUtils.printLog("提交大小: " + formatBytes(process.getVirtualSize()) + 
 //                          " ← 任务管理器'提交大小'列");
 //        
-//        System.out.println();
-//        System.out.println("【系统内存信息】");
-//        System.out.println("总物理内存: " + formatBytes(memory.getTotal()) + 
+//        StringManagerUtils.printLog();
+//        StringManagerUtils.printLog("【系统内存信息】");
+//        StringManagerUtils.printLog("总物理内存: " + formatBytes(memory.getTotal()) + 
 //                          " ← 性能标签页'总物理内存'");
-//        System.out.println("可用内存: " + formatBytes(memory.getAvailable()) + 
+//        StringManagerUtils.printLog("可用内存: " + formatBytes(memory.getAvailable()) + 
 //                          " ← 性能标签页'可用物理内存'");
-//        System.out.println("已使用内存: " + formatBytes(memory.getTotal() - memory.getAvailable()) + 
+//        StringManagerUtils.printLog("已使用内存: " + formatBytes(memory.getTotal() - memory.getAvailable()) + 
 //                          " ← 性能标签页'已使用物理内存'");
 //        
 //        // 计算内存使用百分比
 //        double memoryUsagePercent = (memory.getTotal() - memory.getAvailable()) * 100.0 / memory.getTotal();
-//        System.out.println("内存使用率: " + String.format("%.1f%%", memoryUsagePercent) + 
+//        StringManagerUtils.printLog("内存使用率: " + String.format("%.1f%%", memoryUsagePercent) + 
 //                          " ← 性能标签页内存使用率");
     }
 	

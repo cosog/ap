@@ -404,7 +404,7 @@ public class MemoryDataManagerTask {
 	
 	@SuppressWarnings("static-access")
 	public static void loadProtocolConfig(String protocolName,String deviceType){
-		StringManagerUtils.printLog("驱动加载开始");
+		StringManagerUtils.printLog("驱动加载开始",0);
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		Gson gson = new Gson();
 		String path="";
@@ -494,7 +494,7 @@ public class MemoryDataManagerTask {
 		
 		updateProtocolConfig(modbusProtocolConfig);
 		
-		StringManagerUtils.printLog("驱动加载结束");
+		StringManagerUtils.printLog("驱动加载结束",0);
 	}
 	
 	public static void loadAcquisitionItemNameList(){

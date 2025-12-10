@@ -31,7 +31,7 @@ public class HandkerchiefQuestion {
           
         for (int k = 0; k < n; k++) {  
             if (array[k] != 0) {  
-                StringManagerUtils.printLog("最后赢家的编号为："+(k + 1));  
+                StringManagerUtils.printLog("最后赢家的编号为："+(k + 1),0);  
             }  
         }  
     }  

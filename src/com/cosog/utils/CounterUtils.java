@@ -66,7 +66,7 @@ public class CounterUtils {
             	if(redisInfo.getStatus()==1){
             		log+=",redis连接数-"+RedisUtil.jedisPool.getNumActive()+",最大内存:"+redisInfo.getMaxmemory_human()+",已用内存:"+redisInfo.getUsed_memory_human();
             	}
-            	StringManagerUtils.printLog(log);
+            	StringManagerUtils.printLog(log,0);
             }
         };
         timer.schedule(timerTask, 1000*2, 1000*60); // 两秒后每分钟执行一次

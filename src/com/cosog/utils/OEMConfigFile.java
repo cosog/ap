@@ -276,6 +276,10 @@ public class OEMConfigFile {
 
 	    private boolean printLog;
 	    
+	    private boolean printAdLog;
+	    
+	    private boolean printExceptionLog;
+	    
 	    private boolean exportAdInitData;
 	    
 	    private boolean saveAcqRawData;
@@ -347,6 +351,18 @@ public class OEMConfigFile {
 	    public boolean getPrintLog(){
 	        return this.printLog;
 	    }
+		public boolean getPrintAdLog() {
+			return printAdLog;
+		}
+		public void setPrintAdLog(boolean printAdLog) {
+			this.printAdLog = printAdLog;
+		}
+		public boolean getPrintExceptionLog() {
+			return printExceptionLog;
+		}
+		public void setPrintExceptionLog(boolean printExceptionLog) {
+			this.printExceptionLog = printExceptionLog;
+		}
 	    public void setSimulateAcqEnable(boolean simulateAcqEnable){
 	        this.simulateAcqEnable = simulateAcqEnable;
 	    }

@@ -51,7 +51,7 @@ public class RedisConnTestThread extends Thread{
 			jedis = RedisUtil.jedisPool.getResource();
 			String key="DeviceRealtimeAcqData_1";
 			keySet=jedis.hkeys(key.getBytes());
-			StringManagerUtils.printLog("test1_DeviceRealtimeAcqData_1_"+value);
+			StringManagerUtils.printLog("test1_DeviceRealtimeAcqData_1_"+value,0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -68,7 +68,7 @@ public class RedisConnTestThread extends Thread{
 		try {
 			String key="DeviceRealtimeAcqData_1";
 			keySet=jedis.hkeys(key.getBytes());
-			StringManagerUtils.printLog("test1_DeviceRealtimeAcqData_1_"+value);
+			StringManagerUtils.printLog("test1_DeviceRealtimeAcqData_1_"+value,0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

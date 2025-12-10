@@ -86,6 +86,8 @@ public class OperationMaintenanceController  extends BaseController {
 		String loginLanguage = ParamUtils.getParameter(request, "operationMaintenance.loginLanguage");
 		String showLogo = ParamUtils.getParameter(request, "operationMaintenance.showLogo");
 		String printLog = ParamUtils.getParameter(request, "operationMaintenance.printLog");
+		String printAdLog = ParamUtils.getParameter(request, "operationMaintenance.printAdLog");
+		String printExceptionLog = ParamUtils.getParameter(request, "operationMaintenance.printExceptionLog");
 		String timeEfficiencyUnit = ParamUtils.getParameter(request, "operationMaintenance.timeEfficiencyUnit");
 		String resourceMonitoringSaveData = ParamUtils.getParameter(request, "operationMaintenance.resourceMonitoringSaveData");
 		String exportLimit = ParamUtils.getParameter(request, "operationMaintenance.exportLimit");
@@ -105,6 +107,8 @@ public class OperationMaintenanceController  extends BaseController {
 				Config.getInstance().oemConfigFile.getOthers().setLoginLanguage(updatedOEMConfigFile.getOthers().getLoginLanguage());
 				Config.getInstance().oemConfigFile.getOthers().setShowLogo(updatedOEMConfigFile.getOthers().getShowLogo());
 				Config.getInstance().oemConfigFile.getOthers().setPrintLog(updatedOEMConfigFile.getOthers().getPrintLog());
+				Config.getInstance().oemConfigFile.getOthers().setPrintAdLog(updatedOEMConfigFile.getOthers().getPrintAdLog());
+				Config.getInstance().oemConfigFile.getOthers().setPrintExceptionLog(updatedOEMConfigFile.getOthers().getPrintExceptionLog());
 				Config.getInstance().oemConfigFile.getOthers().setTimeEfficiencyUnit(updatedOEMConfigFile.getOthers().getTimeEfficiencyUnit());
 				Config.getInstance().oemConfigFile.getOthers().setResourceMonitoringSaveData(updatedOEMConfigFile.getOthers().getResourceMonitoringSaveData());
 				Config.getInstance().oemConfigFile.getOthers().setExportLimit(updatedOEMConfigFile.getOthers().getExportLimit());

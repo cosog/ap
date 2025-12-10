@@ -93,7 +93,7 @@ public class HCHistoryDataSyncThread implements Runnable{
 					long t1=System.nanoTime();
 					List<Object[]> queryDataList=OracleJdbcUtis.query(sql,"oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#");
 					long t2=System.nanoTime();
-					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"历史数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",记录数:"+queryDataList.size());
+					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"历史数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",记录数:"+queryDataList.size(),0);
 					
 					String insertSql="";
 					String insertColumns="";
@@ -191,7 +191,7 @@ public class HCHistoryDataSyncThread implements Runnable{
 				long t1=System.nanoTime();
 				List<Object[]> queryDataList=OracleJdbcUtis.query(sql,"oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#");
 				long t2=System.nanoTime();
-				StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"日汇总数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",记录数:"+queryDataList.size());
+				StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"日汇总数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",记录数:"+queryDataList.size(),0);
 				
 				String insertSql="";
 				String insertColumns="";
@@ -406,7 +406,7 @@ public class HCHistoryDataSyncThread implements Runnable{
 				long t1=System.nanoTime();
 				List<Object[]> queryDataList=OracleJdbcUtis.query(sql,"oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:1521/orclpdb", "ap_hc", "Ap201#");
 				long t2=System.nanoTime();
-				StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"日汇总数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",记录数:"+queryDataList.size());
+				StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"日汇总数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",记录数:"+queryDataList.size(),0);
 				
 				String insertSql="";
 				String insertColumns="";
@@ -600,6 +600,6 @@ public class HCHistoryDataSyncThread implements Runnable{
 			
 		}
 		HeiChaoCounterUtils.countDown();
-		StringManagerUtils.printLog("设备id:"+deviceId+"执行完毕！");
+		StringManagerUtils.printLog("设备id:"+deviceId+"执行完毕！",0);
 	}
 }

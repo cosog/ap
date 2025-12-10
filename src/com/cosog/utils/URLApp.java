@@ -30,11 +30,11 @@ void display()
     //用URLConnection的connect()方法建立连接
     c.connect();                            //*
     // 显示该连接的相关信息，这些都是URLConnection的方法
-    StringManagerUtils.printLog("内容类型: "+c.getContentType());
-    StringManagerUtils.printLog("内容长度: "+c.getContentLength());
-    StringManagerUtils.printLog("创建日期: "+new Date(c.getDate()));
-    StringManagerUtils.printLog("最后修改日期: "+new Date(c.getLastModified()));
-    StringManagerUtils.printLog("终止日期: "+new Date(c.getExpiration()));
+    StringManagerUtils.printLog("内容类型: "+c.getContentType(),0);
+    StringManagerUtils.printLog("内容长度: "+c.getContentLength(),0);
+    StringManagerUtils.printLog("创建日期: "+new Date(c.getDate()),0);
+    StringManagerUtils.printLog("最后修改日期: "+new Date(c.getLastModified()),0);
+    StringManagerUtils.printLog("终止日期: "+new Date(c.getExpiration()),0);
 
     InputStream is=c.getInputStream();
     InputStreamReader isr=new InputStreamReader(is);
@@ -42,7 +42,7 @@ void display()
     String str=null;
     while((str=br.readLine())!=null)
     {
-      StringManagerUtils.printLog(str);
+      StringManagerUtils.printLog(str,0);
     }
       
       
@@ -55,9 +55,9 @@ void display()
 		   
 	   }
 	   
-    StringManagerUtils.printLog(e);
+	   StringManagerUtils.printLog(e.getMessage(),2);
      }
-}
+   }
    public static void main(String[] args)
    {
    URLApp app=new URLApp();

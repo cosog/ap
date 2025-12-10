@@ -210,7 +210,7 @@ public class EncryptionDecryption {
 //			StringManagerUtils.printLog("加密后的字符：" + des.encrypt(test));
 			//StringManagerUtils.printLog("解密后的字符：" + des.decrypt(des.encrypt(test)));
 
-			StringManagerUtils.printLog("解密后的字符："+ des.decrypt("b091842c846e86a6"));
+			StringManagerUtils.printLog("解密后的字符："+ des.decrypt("b091842c846e86a6"),0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

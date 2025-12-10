@@ -538,7 +538,7 @@ public class UnixPwdCrypt {
 				buffer.setCharAt(i, (char) cov_2char[c]);
 			}
 		}
-		StringManagerUtils.printLog(buffer.toString());
+		StringManagerUtils.printLog(buffer.toString(),0);
 		return (buffer.toString());
 	
 	}
@@ -548,7 +548,6 @@ public class UnixPwdCrypt {
 		 * if(args.length >= 2) { logger.info ( "[" + args[0] + "] [" + args[1]
 		 * + "] => [" + UnixPwdCrypt.crypt(args[0], args[1]) + "]" ); }
 		 */
-		StringManagerUtils.printLog("password:"
-				+ UnixPwdCrypt.crypt("Jamie#123", "password"));
+		StringManagerUtils.printLog("password:"+ UnixPwdCrypt.crypt("Jamie#123", "password"),0);
 	}
 }

@@ -61,8 +61,8 @@ public class WebSocketByJavax {
             	clients.put(this.userId,this);
                 addOnlineCount();
                 logger.debug("新连接：{}",this.userId);
-                StringManagerUtils.printLog("接收到客户端连接:"+this.userId);
-                StringManagerUtils.printLog("当前线上用户数量:"+clients.size()+","+this.getOnlineCount());
+                StringManagerUtils.printLog("接收到客户端连接:"+this.userId,0);
+                StringManagerUtils.printLog("当前线上用户数量:"+clients.size()+","+this.getOnlineCount(),0);
             }
         }
     }
@@ -98,8 +98,8 @@ public class WebSocketByJavax {
                     }
                 }
                 subOnlineCount();
-                StringManagerUtils.printLog("用户"+userId+"已退出！");
-                StringManagerUtils.printLog("剩余在线用户"+clients.size()+","+this.getOnlineCount());
+                StringManagerUtils.printLog("用户"+userId+"已退出！",0);
+                StringManagerUtils.printLog("剩余在线用户"+clients.size()+","+this.getOnlineCount(),0);
             }
         }
     }
@@ -149,7 +149,7 @@ public class WebSocketByJavax {
             			}
             		}catch(Exception e){
             			e.printStackTrace();
-            			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
+            			StringManagerUtils.printLog("webSocket信息推送失败:"+message.length(),2);
             		}
         		}
         	}
@@ -167,7 +167,7 @@ public class WebSocketByJavax {
 //            			}
 //            		}catch(Exception e){
 //            			e.printStackTrace();
-//            			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
+//            			StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
 //            		}
 //        		}
 //            }
@@ -196,7 +196,7 @@ public class WebSocketByJavax {
                     target.session.getBasicRemote().sendText(message);
                 } catch (Exception e) {
                     logger.error("发送消息失败，用户: {}", target.userId, e);
-                    System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
+                    StringManagerUtils.printLog("webSocket信息推送失败:"+message.length(),2);
                     // 可以考虑移除无效连接
                 }
             }
@@ -213,7 +213,7 @@ public class WebSocketByJavax {
 	    			}
 	        	}catch(Exception e){
 	        		e.printStackTrace();
-	        		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
+	        		StringManagerUtils.printLog("webSocket信息推送失败:"+message.length(),2);
 	        	}
 			}
 		}

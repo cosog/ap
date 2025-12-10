@@ -119,7 +119,9 @@ others:
    scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
    module: ""                     #模块 ""-仅监测 srp-仅抽油机井功图计算 pcp-仅螺杆泵井转速计算 all-全部 
    showLogo: true                  #是否显示图标
-   printLog: true                  #是否打印日志
+   printLog: false                  #是否打印日志
+   printAdLog: true                #是否打印ad交互日志
+   printExceptionLog: true         #是否打印异常日志
    exportAdInitData: true         #是否可导出ad初始化数据
    saveAcqRawData: true            #是否保存采集原始数据
    rangeLimit: 100                 #在线区间和运行区间，数组最大长度，超过将覆盖，0-无上限

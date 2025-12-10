@@ -312,10 +312,10 @@ public class EquipmentDriverServerTask {
 							TimeUnit.SECONDS, 
 							Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getWattingCount());
 					while (!executor.isCompletedByTaskCount()) {
-						System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
+						StringManagerUtils.printLog(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount(),0);
 						Thread.sleep(1000*1);
 				    }
-					System.out.println("线程池任务执行完毕！");
+					StringManagerUtils.printLog("线程池任务执行完毕！",0);
 				}
 			}
 		}catch(Exception e){
@@ -689,7 +689,7 @@ public class EquipmentDriverServerTask {
 			if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())
 					&& StringManagerUtils.stringToInteger(deviceType)==modbusProtocolConfig.getProtocol().get(i).getDeviceType()){
 				InitProtocol initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),"delete");
-				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"删除协议："+gson.toJson(initProtocol));
+				StringManagerUtils.printLog("删除协议："+gson.toJson(initProtocol),1);
 				if(initEnable){
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 				}
@@ -709,7 +709,7 @@ public class EquipmentDriverServerTask {
 		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 			if(protocolId==modbusProtocolConfig.getProtocol().get(i).getId()){
 				InitProtocol initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),"delete");
-				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"删除协议："+gson.toJson(initProtocol));
+				StringManagerUtils.printLog("删除协议："+gson.toJson(initProtocol),1);
 				if(initEnable){
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 				}
@@ -727,7 +727,7 @@ public class EquipmentDriverServerTask {
 		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 			if(StringManagerUtils.existOrNot(protocolIdArr, modbusProtocolConfig.getProtocol().get(i).getId()+"", false)){
 				InitProtocol initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),"delete");
-				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"删除协议："+gson.toJson(initProtocol));
+				StringManagerUtils.printLog("删除协议："+gson.toJson(initProtocol),1);
 				if(initEnable){
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 				}
@@ -749,7 +749,7 @@ public class EquipmentDriverServerTask {
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				if(StringManagerUtils.existOrNot(protocolIdArr, modbusProtocolConfig.getProtocol().get(i).getId()+"", false)){
 					initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
-					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"协议初始化："+gson.toJson(initProtocol));
+					StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol),1);
 					if(initEnable){
 						StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 					}
@@ -775,7 +775,7 @@ public class EquipmentDriverServerTask {
 					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())
 							&& StringManagerUtils.stringToInteger(deviceType)==modbusProtocolConfig.getProtocol().get(i).getDeviceType()){
 						initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
-						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"协议初始化："+gson.toJson(initProtocol));
+						StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol),1);
 						if(initEnable){
 							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 						}
@@ -787,7 +787,7 @@ public class EquipmentDriverServerTask {
 					if(StringManagerUtils.stringToInteger(deviceType)==modbusProtocolConfig.getProtocol().get(i).getDeviceType()){
 						initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
 //						initProtocol.setMethod(method);
-						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"协议初始化："+gson.toJson(initProtocol));
+						StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol),1);
 						if(initEnable){
 							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 						}
@@ -798,7 +798,7 @@ public class EquipmentDriverServerTask {
 					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 						initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
 //						initProtocol.setMethod(method);
-						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"协议初始化："+gson.toJson(initProtocol));
+						StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol),1);
 						if(initEnable){
 							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 						}
@@ -809,7 +809,7 @@ public class EquipmentDriverServerTask {
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
 //					initProtocol.setMethod(method);
-					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"协议初始化："+gson.toJson(initProtocol));
+					StringManagerUtils.printLog("协议初始化："+gson.toJson(initProtocol),1);
 					if(initEnable){
 						StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 					}
@@ -944,7 +944,7 @@ public class EquipmentDriverServerTask {
 		json_buff.append("\"InstanceName\":\""+initName+"\"");
 		json_buff.append("}");
 		
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"删除实例："+json_buff.toString());
+		StringManagerUtils.printLog("删除实例："+json_buff.toString(),1);
 		if(initEnable){
 			StringManagerUtils.sendPostMethod(initUrl, json_buff.toString(),"utf-8",0,0);
 		}
@@ -976,7 +976,7 @@ public class EquipmentDriverServerTask {
 			json_buff.append("\"Method\":\"delete\",");
 			json_buff.append("\"InstanceName\":\""+(instanceNameList.get(i))+"\"");
 			json_buff.append("}");
-			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"删除实例："+json_buff.toString());
+			StringManagerUtils.printLog("删除实例："+json_buff.toString(),1);
 			if(initEnable){
 				StringManagerUtils.sendPostMethod(initUrl, json_buff.toString(),"utf-8",0,0);
 			}
@@ -1062,7 +1062,7 @@ public class EquipmentDriverServerTask {
 				InitInstance initInstance=new InitInstance();
 				initInstance.setInstanceName(instanceList.get(i));
 				initInstance.setMethod(method);
-				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"删除实例："+initInstance.toString());
+				StringManagerUtils.printLog("删除实例："+initInstance.toString(),1);
 				if(initEnable){
 					StringManagerUtils.sendPostMethod(initUrl, initInstance.toString(),"utf-8",0,0);
 				}
@@ -1220,7 +1220,7 @@ public class EquipmentDriverServerTask {
 					}
 					
 					try {
-						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"实例初始化："+entry.getValue().toString());
+						StringManagerUtils.printLog("实例初始化："+entry.getValue().toString(),1);
 						if(initEnable){
 							StringManagerUtils.sendPostMethod(initUrl, entry.getValue().toString(),"utf-8",0,0);
 						}
@@ -1258,7 +1258,7 @@ public class EquipmentDriverServerTask {
 				InitInstance initInstance=new InitInstance();
 				initInstance.setInstanceName(instanceList.get(i));
 				initInstance.setMethod(method);
-				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"删除短信实例："+gson.toJson(initInstance));
+				StringManagerUtils.printLog("删除短信实例："+gson.toJson(initInstance),1);
 				if(initEnable){
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
 				}
@@ -1285,13 +1285,13 @@ public class EquipmentDriverServerTask {
 					initInstance.setInstanceName(rs.getString(2));
 					initInstance.setAcqProtocolType(rs.getString(4));
 					initInstance.setCtrlProtocolType(rs.getString(5));
-					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"短信实例初始化："+gson.toJson(initInstance));
+					StringManagerUtils.printLog("短信实例初始化："+gson.toJson(initInstance),1);
 					if(initEnable){
 						StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
 					}
 				}
 			} catch (SQLException e) {
-				System.out.println("ID短信实例初始化sql："+sql);
+				StringManagerUtils.printLog("ID短信实例初始化sql："+sql,2);
 				e.printStackTrace();
 			} finally{
 				OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -1485,14 +1485,14 @@ public class EquipmentDriverServerTask {
 				initId.setMethod(method);
 				initId.setID(obj[1]+"");
 				initId.setInstanceName(obj[2]+"");
-				System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"短信设备初始化："+gson.toJson(initId));
+				StringManagerUtils.printLog("短信设备初始化："+gson.toJson(initId),1);
 				if(initEnable){
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
 				}
 			}
 		} catch (Exception e) {
 			result=-1;
-			System.out.println("ID初始化sql："+sql);
+			StringManagerUtils.printLog("ID初始化sql："+sql,2);
 			e.printStackTrace();
 		}
 		return result;
@@ -1544,7 +1544,7 @@ public class EquipmentDriverServerTask {
 			json_buff.append("\"IPPortOnlineStatusPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIpPortOnlineStatusPushURL()+"\",");
 			json_buff.append("\"IPPortAcqGroupDataPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIpPortAcqGroupDataPushURL()+"\"");
 			json_buff.append("}");
-			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"服务初始化："+json_buff.toString());
+			StringManagerUtils.printLog("服务初始化："+json_buff.toString(),1);
 			if(initEnable){
 				StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
 			}

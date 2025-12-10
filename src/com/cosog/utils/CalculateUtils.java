@@ -82,7 +82,7 @@ public class CalculateUtils {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			System.out.println(responseDataStr);
+			StringManagerUtils.printLog(responseDataStr,2);
 		}
 		
 		
@@ -129,7 +129,7 @@ public class CalculateUtils {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			System.out.println(responseDataStr);
+			StringManagerUtils.printLog(responseDataStr,2);
 		}
 		return responseData;
 	}

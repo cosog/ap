@@ -1030,7 +1030,7 @@ public class TimingTotalCalculateThread extends Thread {
         }
 
         long calculateEndTime = System.nanoTime();
-        StringManagerUtils.printLog("定时汇总计算：" + (calculateType == 1 ? "抽油机井" : (calculateType == 2 ? "螺杆泵井" : "")) + deviceName + ",timeStr=" + timeStr + ",threadId=" + threadId + ",总耗时:" + StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime));
+        StringManagerUtils.printLog("定时汇总计算：" + (calculateType == 1 ? "抽油机井" : (calculateType == 2 ? "螺杆泵井" : "")) + deviceName + ",timeStr=" + timeStr + ",threadId=" + threadId + ",总耗时:" + StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime),0);
     }
 
     public int getThreadId() {

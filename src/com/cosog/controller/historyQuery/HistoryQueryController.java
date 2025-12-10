@@ -530,7 +530,7 @@ public class HistoryQueryController extends BaseController  {
 			long t1=System.nanoTime();
 			json = this.historyQueryService.querySurfaceCard(orgId,deviceId,deviceName,deviceType,resultCode,pager,hours,language);
 			long t2=System.nanoTime();
-			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图平铺数据查询总耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+			StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图平铺数据查询总耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -771,7 +771,7 @@ public class HistoryQueryController extends BaseController  {
 			long t1=System.nanoTime();
 			List list = this.service.reportDateJssj(sql);
 			long t2=System.nanoTime();
-			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"最新功图采集时间查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql);
+			StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"最新功图采集时间查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
 			} else {
@@ -785,7 +785,7 @@ public class HistoryQueryController extends BaseController  {
 		long t1=System.nanoTime();
 		String json = this.historyQueryService.getDeviceResultStatusStatData(orgId,deviceId,startDate,endDate,hours,language);
 		long t2=System.nanoTime();
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图平铺统计数据查询总耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+		StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":设备"+deviceId+"功图平铺统计数据查询总耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
 //		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

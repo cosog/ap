@@ -866,7 +866,7 @@ public class StringUtil {
 	}
 
 	public final static int diffDay(String dayString) throws ParseException {
-		StringManagerUtils.printLog(dayString);
+		StringManagerUtils.printLog(dayString,0);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String sysDay = sdf.format(new Date()).toString();
 		return diffDay(dayString, sysDay);

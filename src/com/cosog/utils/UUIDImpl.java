@@ -145,6 +145,6 @@ public class UUIDImpl {
 	public static void main(String[] args) throws Exception {
 		 UUIDImpl pkg = UUIDImpl.getInstance(); 
 		 String pk =pkg.genericPK();
-		StringManagerUtils.printLog("Time: " +pk);
+		StringManagerUtils.printLog("Time: " +pk,0);
 	}
 }

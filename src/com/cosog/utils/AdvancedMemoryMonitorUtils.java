@@ -41,20 +41,20 @@ public class AdvancedMemoryMonitorUtils {
     	MemoryUsage nonHeap = memoryMXBean.getNonHeapMemoryUsage();
     	 
     	Runtime runtime = Runtime.getRuntime();
-    	System.out.println("JVM总内存: " + runtime.totalMemory() / 1024 / 1024 + " MB");
-    	System.out.println("JVM已使用内存: " + (runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024 + " MB");
+    	StringManagerUtils.printLog("JVM总内存: " + runtime.totalMemory() / 1024 / 1024 + " MB",0);
+    	StringManagerUtils.printLog("JVM已使用内存: " + (runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024 + " MB",0);
     	 
     	 
-    	System.out.println("堆内存使用情况:");
-    	System.out.println("提交大小: " + heap.getCommitted() / 1024 / 1024 + " MB");
-        System.out.println("已使用: " + heap.getUsed() / 1024 / 1024 + " MB");
+    	StringManagerUtils.printLog("堆内存使用情况:",0);
+    	StringManagerUtils.printLog("提交大小: " + heap.getCommitted() / 1024 / 1024 + " MB",0);
+        StringManagerUtils.printLog("已使用: " + heap.getUsed() / 1024 / 1024 + " MB",0);
     	 
-        System.out.println("非堆内存使用情况:");
-        System.out.println("提交大小: " + nonHeap.getCommitted() / 1024 / 1024 + " MB");
-        System.out.println("已使用: " + nonHeap.getUsed() / 1024 / 1024 + " MB");
+        StringManagerUtils.printLog("非堆内存使用情况:",0);
+        StringManagerUtils.printLog("提交大小: " + nonHeap.getCommitted() / 1024 / 1024 + " MB",0);
+        StringManagerUtils.printLog("已使用: " + nonHeap.getUsed() / 1024 / 1024 + " MB",0);
          
          
-        System.out.println("堆内存与非堆内存提交大小和: " + (nonHeap.getCommitted()+heap.getCommitted() )/ 1024 / 1024 + " MB");
+        StringManagerUtils.printLog("堆内存与非堆内存提交大小和: " + (nonHeap.getCommitted()+heap.getCommitted() )/ 1024 / 1024 + " MB",0);
     	 
     	return heap;
     }

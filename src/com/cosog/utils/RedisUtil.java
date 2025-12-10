@@ -80,7 +80,7 @@ public class RedisUtil implements Serializable{
         	jedis.configSet("maxmemory", maxMemory+"MB");
         	jedis.configSet("maxmemory-policy", maxMemoryPolicy);
         } catch (Exception e) {
-            System.out.println("连接jedisPool失败!");
+            StringManagerUtils.printLog("连接jedisPool失败!",2);
         } finally{
         	if(jedis!=null){
         		jedis.close();

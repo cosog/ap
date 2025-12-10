@@ -29,20 +29,20 @@ public class DataDictInitializeListener implements ServletContextListener {
 		CalculateDataManagerTask.scheduledDestory();
 		DatabaseMaintenanceTask.scheduledDestory();
         
-		StringManagerUtils.printLog("context game over ");
+		StringManagerUtils.printLog("context game over ",0);
 		context.log("context game over ", new Throwable());
 	}
 
 	public void contextInitialized(ServletContextEvent event) {
 		cache=Config.getInstance().configFile.getAp().getOthers().getCache();
 		if(cache){
-			StringManagerUtils.printLog("数据字典缓存启动中...");
+			StringManagerUtils.printLog("数据字典缓存启动中...",0);
 			ServletContext context = event.getServletContext();
 			ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(context);
 			BaseController base = (BaseController) ctx.getBean("baseAction");
 //			base.initDataDictionaryPutInCache();
 		}else{
-			StringManagerUtils.printLog("数据字典缓存已经被禁用！");
+			StringManagerUtils.printLog("数据字典缓存已经被禁用！",0);
 		}
 	}
 }

@@ -68,7 +68,7 @@ public class FeiZhouCounterUtils {
             		expLastCount=(long) map.get("CounterExecuteExpCount");
             		long exptpm=expCurrentCount-expLastCount;
             		
-            		StringManagerUtils.printLog("飞舟历史数据同步速度 TPM:"+tpm);
+            		StringManagerUtils.printLog("飞舟历史数据同步速度 TPM:"+tpm,0);
             	}
             	map.put("CounterExecuteCount", currentCount);
             	map.put("CounterExecuteExpCount", expCurrentCount);

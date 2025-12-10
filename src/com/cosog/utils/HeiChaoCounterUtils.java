@@ -68,7 +68,7 @@ public class HeiChaoCounterUtils {
             		expLastCount=(long) map.get("CounterExecuteExpCount");
             		long exptpm=expCurrentCount-expLastCount;
             		
-            		StringManagerUtils.printLog("黑潮历史数据同步速度 TPM:"+tpm);
+            		StringManagerUtils.printLog("黑潮历史数据同步速度 TPM:"+tpm,0);
             	}
             	map.put("CounterExecuteCount", currentCount);
             	map.put("CounterExecuteExpCount", expCurrentCount);

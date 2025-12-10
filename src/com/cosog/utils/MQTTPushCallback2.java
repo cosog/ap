@@ -25,17 +25,17 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class MQTTPushCallback2 implements MqttCallback{
 	public void connectionLost(Throwable cause) {  
         // 连接丢失后，一般在这里面进行重连  
-        StringManagerUtils.printLog("连接断开，可以做重连");  
+        StringManagerUtils.printLog("连接断开，可以做重连",0);  
     }  
 
     public void deliveryComplete(IMqttDeliveryToken token) {  
-        StringManagerUtils.printLog("deliveryComplete---------" + token.isComplete());  
+        StringManagerUtils.printLog("deliveryComplete---------" + token.isComplete(),0);  
     }  
 
     public void messageArrived(String topic, MqttMessage message) throws Exception {  
         // subscribe后得到的消息会执行到这里面  
-        StringManagerUtils.printLog("接收消息主题 : " + topic);  
-        StringManagerUtils.printLog("接收消息Qos : " + message.getQos());  
-        StringManagerUtils.printLog("接收消息内容 : " + new String(message.getPayload()));  
+        StringManagerUtils.printLog("接收消息主题 : " + topic,0);  
+        StringManagerUtils.printLog("接收消息Qos : " + message.getQos(),0);  
+        StringManagerUtils.printLog("接收消息内容 : " + new String(message.getPayload()),0);  
     }
 }

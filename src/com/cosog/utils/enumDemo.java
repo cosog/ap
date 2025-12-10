@@ -15,18 +15,18 @@ public class enumDemo {
 		 * StringManagerUtils.printLog("j===>" + j); } }
 		 */
 		Scanner s = new Scanner(System.in);
-		StringManagerUtils.printLog("请输入当前的星期 英文?\r \n");
+		StringManagerUtils.printLog("请输入当前的星期 英文?\r \n",0);
 		String day = s.next();// 输入的字符串
 		Day index=Day.toDay(day.toUpperCase());
 		switch (index) {
 		case SUNDAY:
-			StringManagerUtils.printLog("星期天");
+			StringManagerUtils.printLog("星期天",0);
 			break;
 		case MONDAY:
-			StringManagerUtils.printLog("星期一");
+			StringManagerUtils.printLog("星期一",0);
 			break;
 		case TUESDAY:
-			StringManagerUtils.printLog("星期二");
+			StringManagerUtils.printLog("星期二",0);
 			break;
 
 		}

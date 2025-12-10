@@ -306,7 +306,7 @@ public class DriverAPIController extends BaseController{
 				ss = request.getInputStream();
 				StringBuffer webSocketSendData = new StringBuffer();
 				String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-				StringManagerUtils.printLog("接收到ad推送online数据："+data);
+				StringManagerUtils.printLog("接收到ad推送online数据："+data,0);
 				java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
 				AcqOnline acqOnline=gson.fromJson(data, type);
 				String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -588,7 +588,7 @@ public class DriverAPIController extends BaseController{
 				ss = request.getInputStream();
 				StringBuffer webSocketSendData = new StringBuffer();
 				String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-				StringManagerUtils.printLog("接收到ad推送online数据："+data);
+				StringManagerUtils.printLog("接收到ad推送online数据："+data,0);
 				java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
 				AcqOnline acqOnline=gson.fromJson(data, type);
 				String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -841,7 +841,7 @@ public class DriverAPIController extends BaseController{
 				ss = request.getInputStream();
 				Gson gson=new Gson();
 				String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-				StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据："+data);
+				StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据："+data,0);
 				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 				AcqGroup acqGroup=gson.fromJson(data, type);
 				if(acqGroup!=null){
@@ -858,7 +858,7 @@ public class DriverAPIController extends BaseController{
 						long t2=System.nanoTime();
 						printDenugInfo(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+deviceInfo.getDeviceName()+"采集组数据处理耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}else{
-						StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据无对应设备："+acqGroup.getID()+","+acqGroup.getSlave());
+						StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据无对应设备："+acqGroup.getID()+","+acqGroup.getSlave(),0);
 					}
 				}else{
 					json = "{success:true,flag:false}";
@@ -898,7 +898,7 @@ public class DriverAPIController extends BaseController{
 				ss = request.getInputStream();
 				Gson gson=new Gson();
 				String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-				StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据："+data);
+				StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据："+data,0);
 				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 				AcqGroup acqGroup=gson.fromJson(data, type);
 				if(acqGroup!=null){
@@ -915,7 +915,7 @@ public class DriverAPIController extends BaseController{
 						long t2=System.nanoTime();
 						printDenugInfo(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+deviceInfo.getDeviceName()+"采集组数据处理耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 					}else{
-						StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据无对应设备："+acqGroup.getIPPort()+","+acqGroup.getSlave());
+						StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据无对应设备："+acqGroup.getIPPort()+","+acqGroup.getSlave(),0);
 					}
 				}else{
 					json = "{success:true,flag:false}";
@@ -2246,7 +2246,7 @@ public class DriverAPIController extends BaseController{
 		webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 		webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
 		
-//		System.out.println(webSocketSendData.toString());
+//		StringManagerUtils.printLog(webSocketSendData.toString());
 		return webSocketSendData.toString();
 	}
 	
@@ -2276,8 +2276,8 @@ public class DriverAPIController extends BaseController{
 	@SuppressWarnings("unchecked")
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,String data){
 		String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-//		System.out.println("采集数据处理前内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
-//		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+//		StringManagerUtils.printLog("采集数据处理前内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
+//		StringManagerUtils.printLog(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		
 		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -2832,7 +2832,7 @@ public class DriverAPIController extends BaseController{
 										srpCalculateResponseData,srpCalculateRequestData,resultAlarmLevel,
 										alarmShowStyle,
 										checkSign);
-//								System.out.println(webSocketSendDataStr);
+//								StringManagerUtils.printLog(webSocketSendDataStr);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
 							}
 						}
@@ -2845,8 +2845,8 @@ public class DriverAPIController extends BaseController{
 			
 		}
 		
-//		System.out.println("采集数据处理后内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
-//		System.out.println(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
+//		StringManagerUtils.printLog("采集数据处理后内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
+//		StringManagerUtils.printLog(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		return null;
 	}
 	

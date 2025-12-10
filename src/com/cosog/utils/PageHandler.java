@@ -141,7 +141,7 @@ public class PageHandler {
 
 	public static void main(String[] args) {
 		PageHandler pageHelper = new PageHandler(1, 5, 4);
-		StringManagerUtils.printLog("还剩下记录：" + pageHelper.getPageRowsCount());
+		StringManagerUtils.printLog("还剩下记录：" + pageHelper.getPageRowsCount(),0);
 
 	}
 }

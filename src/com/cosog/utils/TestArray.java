@@ -31,7 +31,7 @@ public class TestArray {
 		boolean  flag1= "1".equals(a)&&(cljg==1||cljg==2);
 		boolean  flag2= "1".equals(a)&&(cljg==2||cljg==1);
 		boolean  flag3= "1".equals(a)&&cljg==1|| "1".equals(a)&&cljg==2;
-		StringManagerUtils.printLog("flag===="+flag+"         flag1 == "+flag1+" flag2 === "+flag2+" flag3=="+flag3);
+		StringManagerUtils.printLog("flag===="+flag+"         flag1 == "+flag1+" flag2 === "+flag2+" flag3=="+flag3,0);
 //		Map<String, List<Params>> map	=getMapData();
 //	Set<String> set=	map.keySet();
 //	for (Iterator<String> iterator = set.iterator(); iterator.hasNext();) {

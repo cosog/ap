@@ -99,7 +99,7 @@ moduleContent:
       inputData: 3                     #0-无 1-功图计算录入数据 2-转速计产录入数据 3-全部
 dataVacuate:
    vacuateRecord: 300              #进行抽稀时，保留的记录数
-   saveInterval: 1                 #抽稀表数据保存间隔 单位：小时
+   saveInterval: 60                #抽稀表数据保存间隔 单位：分钟
    saveIntervalWaveRange: 5        #抽稀表数据保存间隔波动范围 单位：分钟
    vacuateThreshold: 50000         #抽稀阈值,总记录数据超过该值，将从抽稀表中查询数据
 others:

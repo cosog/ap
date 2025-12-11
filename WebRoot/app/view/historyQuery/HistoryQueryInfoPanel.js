@@ -620,7 +620,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             		header:false,
                     items:[{
                     	region: 'center',
-                        title:loginUserLanguageResource.deviceList,
+                        title:loginUserLanguageResource.deviceOverview,
                         id:'HistoryQueryInfoDeviceListPanel_Id',
                         border: false,
                         layout: 'fit',

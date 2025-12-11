@@ -2358,9 +2358,9 @@ public class DriverAPIController extends BaseController{
 					int vacuateSaveIntervalWaveRange=Config.getInstance().configFile.getAp().getDataVacuate().getSaveIntervalWaveRange();
 					if(vacuateSaveIntervalWaveRange>0){
 						int waveRange=StringManagerUtils.getRandomData(vacuateSaveIntervalWaveRange);//获取范围内随机数
-						saveVacuateData=(timeDiff>= (Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*60*1000+waveRange*60*1000));
+						saveVacuateData=(timeDiff>= (Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*1000+waveRange*60*1000));
 					}else{
-						saveVacuateData=(timeDiff>= Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*60*1000);
+						saveVacuateData=(timeDiff>= Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*1000);
 					}
 					
 					

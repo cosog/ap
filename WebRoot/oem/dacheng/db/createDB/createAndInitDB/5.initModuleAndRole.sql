@@ -1,20 +1,107 @@
 /*==============================================================*/
 /* 初始化TBL_DEVICETYPEINFO数据                                          */
 /*==============================================================*/
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU)
-values (1, 0, 0, '设备类型根节点', 'Root', 'Корневой узел');
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (1, 0, 0, '设备类型根节点', 'Root', 'Корневой узел', 1);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU)
-values (2, 1, 1, '举升类型', 'Lifting Type', 'Тип подъёма');
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (2, 1, 1, '举升类型', 'Lifting type', 'Тип подъёма', 1);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU)
-values (3, 2, null, '抽油机', 'SRP', 'Насос.');
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (3, 2, 10, '抽油机', 'SRP', 'Насос.', 1);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU)
-values (4, 2, null, '螺杆泵', 'PCP', 'Винтовой насос');
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (4, 2, 11, '螺杆泵', 'PCP', 'Винтовой насос', 1);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU)
-values (5, 2, null, '电潜泵', 'ESP', 'электронасос');
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (5, 2, 12, '电潜泵', 'ESP', 'электронасос', 1);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (6, 2, 13, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (7, 2, 14, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (8, 2, 15, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (9, 2, 16, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (10, 2, 17, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (11, 2, 18, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (12, 2, 19, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (13, 1, 2, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (14, 13, 20, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (15, 13, 21, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (16, 13, 22, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (17, 13, 23, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (18, 13, 24, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (19, 13, 25, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (20, 13, 26, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (21, 13, 27, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (22, 13, 28, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (23, 13, 29, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (24, 1, 3, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (25, 24, 30, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (26, 24, 31, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (27, 24, 32, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (28, 24, 33, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (29, 24, 34, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (30, 24, 35, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (31, 24, 36, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (32, 24, 37, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (33, 24, 38, '未命名', null, null, 0);
+
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
+values (34, 24, 39, '未命名', null, null, 0);
 
 /*==============================================================*/
 /* 初始化tbl_module数据                                          */
@@ -262,49 +349,136 @@ insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
 values (5, 5, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (6, 1, 2, '0,0,0');
+values (6, 6, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (7, 2, 2, '0,0,0');
+values (7, 7, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (8, 3, 2, '0,0,0');
+values (8, 8, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (9, 4, 2, '0,0,0');
+values (9, 9, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (10, 5, 2, '0,0,0');
+values (10, 10, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (11, 1, 3, '0,0,0');
+values (11, 11, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (12, 2, 3, '0,0,0');
+values (12, 12, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (13, 3, 3, '0,0,0');
+values (13, 13, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (14, 4, 3, '0,0,0');
+values (14, 14, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (15, 5, 3, '0,0,0');
+values (15, 15, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (16, 1, 4, '0,0,0');
+values (16, 16, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (17, 2, 4, '0,0,0');
+values (17, 17, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (18, 3, 4, '0,0,0');
+values (18, 18, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (19, 4, 4, '0,0,0');
+values (19, 19, 1, '0,0,0');
 
 insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
-values (20, 5, 4, '0,0,0');
+values (20, 20, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (21, 21, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (22, 22, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (23, 23, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (24, 24, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (25, 25, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (26, 26, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (27, 27, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (28, 28, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (29, 29, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (30, 30, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (31, 31, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (32, 32, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (33, 33, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (34, 34, 1, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (35, 1, 2, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (36, 2, 2, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (37, 3, 2, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (38, 4, 2, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (39, 5, 2, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (40, 1, 3, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (41, 2, 3, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (42, 3, 3, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (43, 4, 3, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (44, 5, 3, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (45, 1, 4, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (46, 2, 4, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (47, 3, 4, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (48, 4, 4, '0,0,0');
+
+insert into TBL_DEVICETYPE2ROLE (RD_ID, RD_DEVICETYPEID, RD_ROLEID, RD_MATRIX)
+values (49, 5, 4, '0,0,0');
 
 /*==============================================================*/
 /* 初始化TBL_LANGUAGE2ROLE数据                                          */

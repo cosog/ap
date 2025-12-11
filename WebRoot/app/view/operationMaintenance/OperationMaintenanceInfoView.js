@@ -293,7 +293,30 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                    ]
     				                }, {
     				                    items: [
-    				                        {
+    				                    	{
+    				                        	xtype: 'fieldcontainer',
+    				                            fieldLabel : loginUserLanguageResource.printExceptionLogs,
+    				                            defaultType: 'radiofield',
+    				                            anchor: '100%',
+    				                            defaults: {
+    				                                flex: 1
+    				                            },
+    				                            layout: 'hbox',
+    				                            items: [
+    				                                {
+    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
+    				                                    name:'operationMaintenance.printExceptionLog',
+    				                                    inputValue: '1',
+    				                                    id: 'operationMaintenance_printExceptionLog1_Id'
+    				                                }, {
+    				                                    boxLabel: loginUserLanguageResource.no,
+    				                                    name:'operationMaintenance.printExceptionLog',
+    				                                    checked:true,
+    				                                    inputValue:'0',
+    				                                    id:'operationMaintenance_printExceptionLog0_Id'
+    				                                }
+    				                            ]
+    				                        },{
     				                        	xtype: 'fieldcontainer',
     				                            fieldLabel : loginUserLanguageResource.printLogs,
     				                            defaultType: 'radiofield',
@@ -337,29 +360,6 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                                    checked:true,
     				                                    inputValue:'0',
     				                                    id:'operationMaintenance_printAdLog0_Id'
-    				                                }
-    				                            ]
-    				                        },{
-    				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : loginUserLanguageResource.printExceptionLogs,
-    				                            defaultType: 'radiofield',
-    				                            anchor: '100%',
-    				                            defaults: {
-    				                                flex: 1
-    				                            },
-    				                            layout: 'hbox',
-    				                            items: [
-    				                                {
-    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
-    				                                    name:'operationMaintenance.printExceptionLog',
-    				                                    inputValue: '1',
-    				                                    id: 'operationMaintenance_printExceptionLog1_Id'
-    				                                }, {
-    				                                    boxLabel: loginUserLanguageResource.no,
-    				                                    name:'operationMaintenance.printExceptionLog',
-    				                                    checked:true,
-    				                                    inputValue:'0',
-    				                                    id:'operationMaintenance_printExceptionLog0_Id'
     				                                }
     				                            ]
     				                        }
@@ -579,7 +579,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }, {
     				                    items: [
     				                        {
-    				                        	fieldLabel: loginUserLanguageResource.vacuateSaveInterval+'('+loginUserLanguageResource.hour+')',
+    				                        	fieldLabel: loginUserLanguageResource.vacuateSaveInterval+'('+loginUserLanguageResource.minute+')',
     						                    allowBlank: false,
     						                	xtype: 'numberfield',
     						                	name:'operationMaintenance.vacuateSaveInterval',

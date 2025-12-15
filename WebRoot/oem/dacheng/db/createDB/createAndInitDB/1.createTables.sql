@@ -8,7 +8,8 @@ create table TBL_DEVICETYPEINFO
   sortnum    NUMBER(10),
   name_zh_cn VARCHAR2(100),
   name_en    VARCHAR2(100),
-  name_ru    VARCHAR2(100)
+  name_ru    VARCHAR2(100),
+  status     NUMBER(1)
 )
 tablespace AP_DATA
   storage

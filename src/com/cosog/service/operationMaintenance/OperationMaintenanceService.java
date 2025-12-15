@@ -1,9 +1,12 @@
 package com.cosog.service.operationMaintenance;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -11,6 +14,7 @@ import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.Code;
 import com.cosog.model.CurveConf;
 import com.cosog.model.DataMapping;
 import com.cosog.model.KeyValue;
@@ -28,6 +32,7 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.MemoryDataManagerTask.CalItem;
 import com.cosog.utils.Config;
+import com.cosog.utils.Page;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -390,5 +395,40 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 	
 	public void modifyDeviceType(T deviceType) throws Exception {
 		getBaseDao().updateObject(deviceType);
+	}
+	
+	public String getCalculationModelData(User user) throws IOException, SQLException {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer language_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		
+		String columns=	"[]";
+		
+		String sql="select t.id,t.name,"
+				+ " decode(t.calculatetype,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
+				+ " t.sort "
+				+ " from tbl_calculationmodel t "
+				+ " order by t.sort";
+
+
+		
+		List<?> list = this.findCallSql(sql);
+		language_json.append("[");
+		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",");
+		
+		result_json.append("\"calculateTypeList\":[['"+languageResourceMap.get("nothing")+"','"+languageResourceMap.get("nothing")+"'],['"+languageResourceMap.get("SRPCalculate")+"','"+languageResourceMap.get("SRPCalculate")+"'],['"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("PCPCalculate")+"']],");
+		result_json.append("\"totalRoot\":[");
+		for (Object o : list) {
+			Object[] obj = (Object[]) o;
+			result_json.append("{\"modelId\":"+obj[0]+",");
+			result_json.append("\"name\":\""+obj[1]+"\",");
+			result_json.append("\"calculateType\":\""+obj[2]+"\",");
+			result_json.append("\"sort\":\""+obj[3]+"\"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
 	}
 }

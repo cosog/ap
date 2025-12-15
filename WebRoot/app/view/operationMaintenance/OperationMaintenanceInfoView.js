@@ -1152,6 +1152,54 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     	                }
     	    		}]
         		},{
+        			title: '计算模型',
+        			id:'OperationMaintenanceCalculationModelTabPanel_Id',
+        			layout: 'border',
+        			items:[{
+        				region: 'west',
+        				title: '模型列表',
+        				width:'33%',
+        				layout: 'fit',
+        				collapsible: true,
+        				id:'OperationMaintenanceCalculationModelListPanel_Id',
+            			tbar:[{
+                            xtype: 'button',
+                            name: 'RoleNameBtn_Id',
+                            text: loginUserLanguageResource.refresh,
+                            iconCls: 'note-refresh',
+                            handler: function () {
+                            	var operationMaintenanceCalculationModelGridView = Ext.getCmp("operationMaintenanceCalculationModelGridView_Id");
+                                if (isNotVal(operationMaintenanceCalculationModelGridView)) {
+                                	operationMaintenanceCalculationModelGridView.getStore().load();
+                                }else{
+                                	Ext.create("AP.store.operationMaintenance.CalculationModelInfoStore");
+                                }
+                            }
+                		}, '->', {
+                            xtype: 'button',
+                            text: loginUserLanguageResource.add,
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                            iconCls: 'add',
+                            handler: function () {
+                            	
+                            }
+                		}]
+        			},{
+        				region: 'center',
+        				title: '模型配置',
+        				layout: 'fit',
+        				id:'OperationMaintenanceCalculationModelConfigPanel_Id',
+        				tbar:['->', {
+                            xtype: 'button',
+                            text: loginUserLanguageResource.save,
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                            iconCls: 'save',
+                            handler: function () {
+                            	
+                            }
+                		}]
+        			}]
+        		},{
         			title: loginUserLanguageResource.memoryCurve,
         			id:'OperationMaintenanceMonitorCurveTabPanel_Id',
         			layout: 'fit',
@@ -1367,6 +1415,13 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                             	deviceTypeMaintenanceTreeGridView.getStore().load();
                             }else{
                             	Ext.create("AP.store.operationMaintenance.TabManagerInfoStore");
+                            }
+    					}else if(newCard.id=='OperationMaintenanceCalculationModelTabPanel_Id'){
+    						var operationMaintenanceCalculationModelGridView = Ext.getCmp("operationMaintenanceCalculationModelGridView_Id");
+                            if (isNotVal(operationMaintenanceCalculationModelGridView)) {
+                            	operationMaintenanceCalculationModelGridView.getStore().load();
+                            }else{
+                            	Ext.create("AP.store.operationMaintenance.CalculationModelInfoStore");
                             }
     					}
     				}

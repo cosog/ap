@@ -2,7 +2,10 @@ package com.cosog.controller.operationMaintenance;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -27,6 +30,7 @@ import com.cosog.utils.Constants;
 import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.cosog.utils.OEMConfigFile;
 import com.cosog.utils.Page;
+import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -333,4 +337,19 @@ public class OperationMaintenanceController  extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getCalculationModelData")
+	public String getCalculationModelData() throws IOException, SQLException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		
+		String json = deviceTypeMaintenanceService.getCalculationModelData(user);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 }

@@ -24,7 +24,7 @@ Ext.define('AP.store.operationMaintenance.CalculationModelInfoStore', {
             var get_rawData = store.proxy.reader.rawData;
             var gridPanel = Ext.getCmp("operationMaintenanceCalculationModelGridView_Id");
             if (!isNotVal(gridPanel)) {
-                var gridPanel = Ext.create('Ext.grid.Panel', {
+                gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "operationMaintenanceCalculationModelGridView_Id",
                     selModel: 'cellmodel',//cellmodel rowmodel
                     plugins: [{
@@ -37,8 +37,12 @@ Ext.define('AP.store.operationMaintenance.CalculationModelInfoStore', {
                     layout: "fit",
                     stripeRows: true,
                     forceFit: false,
-                    selType: 'checkboxmodel',
-                    multiSelect: true,
+                    selModel:{
+                    	selType: (loginUserOperationMaintenanceModuleRight.editFlag==1?'checkboxmodel':''),
+                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+                    	checkOnly:false,
+                    	allowDeselect:false
+                    },
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
@@ -137,6 +141,13 @@ Ext.define('AP.store.operationMaintenance.CalculationModelInfoStore', {
                         }]
                     }],
                     listeners: {
+                    	selectionchange: function (sm, selected) {
+                    		if(selected.length>0){
+                    			
+                    		}else{
+                    			
+                    		}
+                    	},
                     	celldblclick : function( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                     		
                     	}

@@ -1152,53 +1152,193 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     	                }
     	    		}]
         		},{
-        			title: '功能显示模型',
+        			title: '功能显示实例',
         			id:'OperationMaintenanceCalculationModelTabPanel_Id',
         			layout: 'border',
+        			tbar:[{
+                        xtype: 'button',
+                        name: 'RoleNameBtn_Id',
+                        text: loginUserLanguageResource.refresh,
+                        iconCls: 'note-refresh',
+                        handler: function () {
+                        	var operationMaintenanceCalculationModelGridView = Ext.getCmp("operationMaintenanceCalculationModelGridView_Id");
+                            if (isNotVal(operationMaintenanceCalculationModelGridView)) {
+                            	operationMaintenanceCalculationModelGridView.getStore().load();
+                            }else{
+                            	Ext.create("AP.store.operationMaintenance.CalculationModelInfoStore");
+                            }
+                        }
+            		},{
+                        id: 'FunctionConfigInstanceSelectId_Id',
+                        xtype: 'textfield',
+                        value: 0,
+                        hidden: true
+                    },{
+                        id: 'addFunctionConfigInstanceSelectName_Id',
+                        xtype: 'textfield',
+                        value: '',
+                        hidden: true
+                    }, '->', {
+                        xtype: 'button',
+                        text: loginUserLanguageResource.add,
+                        disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                        iconCls: 'add',
+                        handler: function () {
+                        	var functionTabInfoWindow = Ext.create("AP.view.operationMaintenance.FunctionTabInfoWindow");
+                        	functionTabInfoWindow.show();
+                        }
+            		},'-',{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.deleteData,
+                        disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                        iconCls: 'delete',
+                        handler: function () {
+                        	var selectInstanceId=[];
+                        	var operationMaintenanceCalculationModelGridView = Ext.getCmp("operationMaintenanceCalculationModelGridView_Id");
+    	                	var selectionModel = operationMaintenanceCalculationModelGridView.getSelectionModel();
+    	                    var selectionRecord = selectionModel.getSelection();
+    	                	if(selectionRecord.length>0){
+    	                		selectionRecord.forEach(function(record) {
+    	                			selectInstanceId.push(record.data.instanceId);
+    	                	    });
+    	                		
+    	                		Ext.Ajax.request({
+    	                			method:'POST',
+    	                			url:context + '/operationMaintenanceController/deleteFunctionConfigInstance',
+    	                			success:function(response) {
+    	                				var data=Ext.JSON.decode(response.responseText);
+    	                				if (data.success) {
+    	                					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
+    	                	            	Ext.getCmp("operationMaintenanceCalculationModelGridView_Id").getStore().load();
+    	                	            } else {
+    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+    	                	            }
+    	                			},
+    	                			failure:function(){
+    	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+    	                			},
+    	                			params: {
+    	                				instanceIds: selectInstanceId.join(",")
+    	                	        }
+    	                		});
+    	                		
+    	                	} else {
+    	                        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    	                    }
+                        	
+                        }
+            		},'-',{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.save,
+                        disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                        iconCls: 'save',
+                        handler: function () {
+    	                	var operationMaintenanceCalculationModelGridView = Ext.getCmp("operationMaintenanceCalculationModelGridView_Id");
+    	                	
+    	                	var store=operationMaintenanceCalculationModelGridView.getStore();
+    	                	var modifiedRecords = store.getModifiedRecords();
+    	                	
+    	                	var selectInstanceId=0;
+    	                	var selectionModel = operationMaintenanceCalculationModelGridView.getSelectionModel();
+    	                    var selectionRecord = selectionModel.getSelection();
+    	                	if(selectionRecord.length>0){
+    	                		selectInstanceId=selectionRecord[0].data.instanceId;
+    	                	}
+    	                	
+	                		var modifiedTabDisplayInstance=[];
+	                		
+	                		modifiedRecords.forEach(function(record) {
+	                			var tabDisplayInstance={};
+	                			tabDisplayInstance.id=record.data.instanceId;
+	                			tabDisplayInstance.name=record.data.name;
+	                			tabDisplayInstance.sort=record.data.sort;
+	                			tabDisplayInstance.calculateType=0;
+	                			if(record.data.calculateType==loginUserLanguageResource.SRPCalculate){
+	                				tabDisplayInstance.calculateType=1;
+	                			}else if(record.data.calculateType==loginUserLanguageResource.PCPCalculate){
+	                				tabDisplayInstance.calculateType=2;
+	                			}
+	                			
+	                			modifiedTabDisplayInstance.push(tabDisplayInstance);
+	                	    });
+	                		
+	                		var instanceConfig={};
+	                		instanceConfig.DeviceRealTimeMonitoring={};
+	                		instanceConfig.DeviceHistoryQuery={};
+	                		instanceConfig.PrimaryDevice={};
+	                		instanceConfig.AlarmQuery={};
+	                		
+	                		instanceConfig.DeviceRealTimeMonitoring.FESDiagramStatPie=Ext.getCmp('calculationModel_showRealtimeFESDiagramStatPie_Id').getValue();
+	                		instanceConfig.DeviceRealTimeMonitoring.CommStatusStatPie=Ext.getCmp('calculationModel_showRealtimeCommStatusStatPie_Id').getValue();
+	                		instanceConfig.DeviceRealTimeMonitoring.RunStatusStatPie=Ext.getCmp('calculationModel_showRealtimeRunStatusStatPie_Id').getValue();
+	                		instanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis=Ext.getCmp('calculationModel_showRealtimeWellboreAnalysis_Id').getValue();
+	                		instanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis=Ext.getCmp('calculationModel_showRealtimeSurfaceAnalysis_Id').getValue();
+	                		instanceConfig.DeviceRealTimeMonitoring.TrendCurve=Ext.getCmp('calculationModel_showRealtimeTrendCurve_Id').getValue();
+	                		instanceConfig.DeviceRealTimeMonitoring.DynamicData=Ext.getCmp('calculationModel_showRealtimeDynamicData_Id').getValue();
+	                		instanceConfig.DeviceRealTimeMonitoring.DeviceControl=Ext.getCmp('calculationModel_showRealtimeDeviceControl_Id').getValue();
+	                		instanceConfig.DeviceRealTimeMonitoring.DeviceInformation=Ext.getCmp('calculationModel_showRealtimeDeviceInformation_Id').getValue();
+	                		
+	                		instanceConfig.DeviceHistoryQuery.FESDiagramStatPie=Ext.getCmp('calculationModel_showHistoryFESDiagramStatPie_Id').getValue();
+	                		instanceConfig.DeviceHistoryQuery.CommStatusStatPie=Ext.getCmp('calculationModel_showHistoryCommStatusStatPie_Id').getValue();
+	                		instanceConfig.DeviceHistoryQuery.RunStatusStatPie=Ext.getCmp('calculationModel_showHistoryRunStatusStatPie_Id').getValue();
+	                		instanceConfig.DeviceHistoryQuery.TrendCurve=Ext.getCmp('calculationModel_showHistoryTrendCurve_Id').getValue();
+	                		instanceConfig.DeviceHistoryQuery.TiledDiagram=Ext.getCmp('calculationModel_showHistoryTiledDiagram_Id').getValue();
+	                		instanceConfig.DeviceHistoryQuery.DiagramOverlay=Ext.getCmp('calculationModel_showHistoryDiagramOverlay_Id').getValue();
+	                		
+	                		instanceConfig.PrimaryDevice.AdditionalInformation=Ext.getCmp('calculationModel_showPrimaryDeviceAdditionalInformation_Id').getValue();
+	                		instanceConfig.PrimaryDevice.AuxiliaryDevice=Ext.getCmp('calculationModel_showPrimaryDeviceAuxiliaryDevice_Id').getValue();
+	                		instanceConfig.PrimaryDevice.VideoConfig=Ext.getCmp('calculationModel_showPrimaryDeviceVideoConfig_Id').getValue();
+	                		instanceConfig.PrimaryDevice.CalculateDataConfig=Ext.getCmp('calculationModel_showPrimaryDeviceCalculateDataConfig_Id').getValue();
+	                		instanceConfig.PrimaryDevice.FSDiagramConstruction=Ext.getCmp('calculationModel_showPrimaryDeviceFSDiagramConstruction_Id').getValue();
+	                		instanceConfig.PrimaryDevice.SystemParameterConfig=Ext.getCmp('calculationModel_showPrimaryDeviceSystemParameterConfiguration_Id').getValue();
+	                		
+	                		instanceConfig.AlarmQuery.FESDiagramResultAlarm=Ext.getCmp('calculationModel_showAlarmQueryFESDiagramResultAlarm_Id').getValue();
+	                		instanceConfig.AlarmQuery.RunStatusAlarm=Ext.getCmp('calculationModel_showAlarmQueryRunStatusAlarm_Id').getValue();
+	                		instanceConfig.AlarmQuery.CommStatusAlarm=Ext.getCmp('calculationModel_showAlarmQueryCommStatusAlarm_Id').getValue();
+	                		instanceConfig.AlarmQuery.NumericValueAlarm=Ext.getCmp('calculationModel_showAlarmQueryNumericValueAlarm_Id').getValue();
+	                		instanceConfig.AlarmQuery.EnumValueAlarm=Ext.getCmp('calculationModel_showAlarmQueryEnumValueAlarm_Id').getValue();
+	                		instanceConfig.AlarmQuery.SwitchingValueAlarm=Ext.getCmp('calculationModel_showAlarmQuerySwitchingValueAlarm_Id').getValue();
+	                		
+	                		Ext.Ajax.request({
+	                			method:'POST',
+	                			url:context + '/operationMaintenanceController/saveFunctionConfigInstance',
+	                			success:function(response) {
+	                				var data=Ext.JSON.decode(response.responseText);
+	                				
+	                				if (data.success) {
+	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+	                	            	store.commitChanges();
+	                	            	
+	                	            	Ext.getCmp("operationMaintenanceCalculationModelGridView_Id").getStore().load();
+	                	            } else {
+	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+	                	            }
+	                			},
+	                			failure:function(){
+	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+	                			},
+	                			params: {
+	                				data: JSON.stringify(modifiedTabDisplayInstance),
+	                				selectInstanceId: selectInstanceId,
+	                				instanceConfig: JSON.stringify(instanceConfig)
+	                	        }
+	                		});
+	                	
+                        }
+            		}],
         			items:[{
         				region: 'west',
-        				title: '模型列表',
+        				title: '实例列表',
         				width:'33%',
         				layout: 'fit',
         				collapsible: true,
-        				id:'OperationMaintenanceCalculationModelListPanel_Id',
-            			tbar:[{
-                            xtype: 'button',
-                            name: 'RoleNameBtn_Id',
-                            text: loginUserLanguageResource.refresh,
-                            iconCls: 'note-refresh',
-                            handler: function () {
-                            	var operationMaintenanceCalculationModelGridView = Ext.getCmp("operationMaintenanceCalculationModelGridView_Id");
-                                if (isNotVal(operationMaintenanceCalculationModelGridView)) {
-                                	operationMaintenanceCalculationModelGridView.getStore().load();
-                                }else{
-                                	Ext.create("AP.store.operationMaintenance.CalculationModelInfoStore");
-                                }
-                            }
-                		}, '->', {
-                            xtype: 'button',
-                            text: loginUserLanguageResource.add,
-                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-                            iconCls: 'add',
-                            handler: function () {
-                            	
-                            }
-                		}]
+        				id:'OperationMaintenanceCalculationModelListPanel_Id'
         			},{
         				region: 'center',
         				title: '显示内容配置',
         				id:'OperationMaintenanceCalculationModelConfigPanel_Id',
         				layout: 'border',
         			    bodyStyle: 'background-color:#ffffff;',
-        				tbar:['->', {
-                            xtype: 'button',
-                            text: loginUserLanguageResource.save,
-                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-                            iconCls: 'save',
-                            handler: function () {
-                            	
-                            }
-                		}],
                         items: [{
                             region: 'center',
                             height: '1500px',
@@ -1228,216 +1368,63 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                         },
                                         items: [{
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: '工况诊断统计饼图',
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showRealtimeFESDiagramStatPie',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showRealtimeFESDiagramStatPie1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showRealtimeFESDiagramStatPie',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showRealtimeFESDiagramStatPie0_Id'
-    				                                }
-    				                            ]
+                                            	    xtype: 'checkboxfield',
+                                            	    fieldLabel: '工况诊断统计饼图',
+                                            	    name: 'calculationModel.showRealtimeFESDiagramStatPie',
+                                            	    id: 'calculationModel_showRealtimeFESDiagramStatPie_Id',
+                                            	    checked: false
+                                            	},{
+                                            		xtype: 'checkboxfield',
+                                            	    fieldLabel: loginUserLanguageResource.wellboreAnalysis,
+                                            	    name: 'calculationModel.showRealtimeWellboreAnalysis',
+                                            	    id: 'calculationModel_showRealtimeWellboreAnalysis_Id',
+                                            	    checked: false
+                                            	},{
+                                            		xtype: 'checkboxfield',
+                                            	    fieldLabel: loginUserLanguageResource.dynamicData,
+                                            	    name: 'calculationModel.showRealtimeDynamicData',
+                                            	    id: 'calculationModel_showRealtimeDynamicData_Id',
+                                            	    checked: false
+                                            	}]
+        				                }, {
+                                            items: [{
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: '通信状态统计饼图',
+                                        	    name: 'calculationModel.showRealtimeCommStatusStatPie',
+                                        	    id: 'calculationModel_showRealtimeCommStatusStatPie_Id',
+                                        	    checked: false
+                                            },{
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.surfaceAnalysis,
+                                        	    name: 'calculationModel.showRealtimeSurfaceAnalysis',
+                                        	    id: 'calculationModel_showRealtimeSurfaceAnalysis_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.wellboreAnalysis,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showRealtimeWellboreAnalysis',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showRealtimeWellboreAnalysis1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showRealtimeWellboreAnalysis',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showRealtimeWellboreAnalysis0_Id'
-    				                                }
-    				                            ]
-    				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.dynamicData,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showRealtimeDynamicData',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showRealtimeDynamicData1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showRealtimeDynamicData',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showRealtimeDynamicData0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.deviceControl,
+                                        	    name: 'calculationModel.showRealtimeDeviceControl',
+                                        	    id: 'calculationModel_showRealtimeDeviceControl_Id',
+                                        	    checked: false
     				                        }]
         				                }, {
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: '通信状态统计饼图',
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showRealtimeCommStatusStatPie',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showRealtimeCommStatusStatPie1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showRealtimeCommStatusStatPie',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showRealtimeCommStatusStatPie0_Id'
-    				                                }
-    				                            ]
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: '运行状态统计饼图',
+                                        	    name: 'calculationModel.showRealtimeRunStatusStatPie',
+                                        	    id: 'calculationModel_showRealtimeRunStatusStatPie_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.surfaceAnalysis,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showRealtimeSurfaceAnalysis',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showRealtimeSurfaceAnalysis1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showRealtimeSurfaceAnalysis',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showRealtimeSurfaceAnalysis0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.trendCurve,
+                                        	    name: 'calculationModel.showRealtimeTrendCurve',
+                                        	    id: 'calculationModel_showRealtimeTrendCurve_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.deviceControl,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showRealtimeDeviceControl',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showRealtimeDeviceControl1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showRealtimeDeviceControl',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showRealtimeDeviceControl0_Id'
-    				                                }
-    				                            ]
-    				                        }]
-        				                }, {
-                                            items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: '运行状态统计饼图',
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showRealtimeRunStatusStatPie',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showRealtimeRunStatusStatPie1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showRealtimeRunStatusStatPie',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showRealtimeRunStatusStatPie0_Id'
-    				                                }
-    				                            ]
-    				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.trendCurve,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showRealtimeTrendCurve',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showRealtimeTrendCurve1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showRealtimeTrendCurve',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showRealtimeTrendCurve0_Id'
-    				                                }
-    				                            ]
-    				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.deviceInformation,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showRealtimeDeviceInformation',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showRealtimeDeviceInformation1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showRealtimeDeviceInformation',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showRealtimeDeviceInformation0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.deviceInformation,
+                                        	    name: 'calculationModel.showRealtimeDeviceInformation',
+                                        	    id: 'calculationModel_showRealtimeDeviceInformation_Id',
+                                        	    checked: false
     				                        }]
         				                }]
         				            },{
@@ -1452,147 +1439,45 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                         },
                                         items: [{
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: '工况诊断统计饼图',
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showHistoryFESDiagramStatPie',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showHistoryFESDiagramStatPie1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showHistoryFESDiagramStatPie',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showHistoryFESDiagramStatPie0_Id'
-    				                                }
-    				                            ]
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: '工况诊断统计饼图',
+                                        	    name: 'calculationModel.showHistoryFESDiagramStatPie',
+                                        	    id: 'calculationModel_showHistoryFESDiagramStatPie_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.trendCurve,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showHistoryTrendCurve',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showHistoryTrendCurve1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showHistoryTrendCurve',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showHistoryTrendCurve0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.trendCurve,
+                                        	    name: 'calculationModel.showHistoryTrendCurve',
+                                        	    id: 'calculationModel_showHistoryTrendCurve_Id',
+                                        	    checked: false
     				                        }]
         				                }, {
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: '通信状态统计饼图',
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showHistoryCommStatusStatPie',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showHistoryCommStatusStatPie1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showHistoryCommStatusStatPie',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showHistoryCommStatusStatPie0_Id'
-    				                                }
-    				                            ]
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: '通信状态统计饼图',
+                                        	    name: 'calculationModel.showHistoryCommStatusStatPie',
+                                        	    id: 'calculationModel_showHistoryCommStatusStatPie_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.tiledDiagram,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showHistoryTiledDiagram',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showHistoryTiledDiagram1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showHistoryTiledDiagram',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showHistoryTiledDiagram0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.tiledDiagram,
+                                        	    name: 'calculationModel.showHistoryTiledDiagram',
+                                        	    id: 'calculationModel_showHistoryTiledDiagram_Id',
+                                        	    checked: false
     				                        }]
         				                }, {
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: '运行状态统计饼图',
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showHistoryRunStatusStatPie',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showHistoryRunStatusStatPie1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showHistoryRunStatusStatPie',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showHistoryRunStatusStatPie0_Id'
-    				                                }
-    				                            ]
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: '运行状态统计饼图',
+                                        	    name: 'calculationModel.showHistoryRunStatusStatPie',
+                                        	    id: 'calculationModel_showHistoryRunStatusStatPie_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.diagramOverlay,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showHistoryDiagramOverlay',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showHistoryDiagramOverlay1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showHistoryDiagramOverlay',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showHistoryDiagramOverlay0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.diagramOverlay,
+                                        	    name: 'calculationModel.showHistoryDiagramOverlay',
+                                        	    id: 'calculationModel_showHistoryDiagramOverlay_Id',
+                                        	    checked: false
     				                        }]
         				                }]
         				            },{
@@ -1607,147 +1492,45 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                         },
                                         items: [{
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.additionalInformation,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showPrimaryDeviceAdditionalInformation',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showPrimaryDeviceAdditionalInformation1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showPrimaryDeviceAdditionalInformation',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showPrimaryDeviceAdditionalInformation0_Id'
-    				                                }
-    				                            ]
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.additionalInformation,
+                                        	    name: 'calculationModel.showPrimaryDeviceAdditionalInformation',
+                                        	    id: 'calculationModel_showPrimaryDeviceAdditionalInformation_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.calculateDataConfig,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showPrimaryDeviceCalculateDataConfig',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showPrimaryDeviceCalculateDataConfig1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showPrimaryDeviceCalculateDataConfig',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showPrimaryDeviceCalculateDataConfig0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.calculateDataConfig,
+                                        	    name: 'calculationModel.showPrimaryDeviceCalculateDataConfig',
+                                        	    id: 'calculationModel_showPrimaryDeviceCalculateDataConfig_Id',
+                                        	    checked: false
     				                        }]
         				                }, {
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.auxiliaryDevice,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showPrimaryDeviceAuxiliaryDevice',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showPrimaryDeviceAuxiliaryDevice1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showPrimaryDeviceAuxiliaryDevice',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showPrimaryDeviceAuxiliaryDevice0_Id'
-    				                                }
-    				                            ]
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.auxiliaryDevice,
+                                        	    name: 'calculationModel.showPrimaryDeviceAuxiliaryDevice',
+                                        	    id: 'calculationModel_showPrimaryDeviceAuxiliaryDevice_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.fsDiagramConstruction,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showPrimaryDeviceFSDiagramConstruction',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showPrimaryDeviceFSDiagramConstruction1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showPrimaryDeviceFSDiagramConstruction',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showPrimaryDeviceFSDiagramConstruction0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.fsDiagramConstruction,
+                                        	    name: 'calculationModel.showPrimaryDeviceFSDiagramConstruction',
+                                        	    id: 'calculationModel_showPrimaryDeviceFSDiagramConstruction_Id',
+                                        	    checked: false
     				                        }]
         				                }, {
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.videoConfig,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showPrimaryDeviceVideoConfig',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showPrimaryDeviceVideoConfig1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showPrimaryDeviceVideoConfig',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showPrimaryDeviceVideoConfig0_Id'
-    				                                }
-    				                            ]
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.videoConfig,
+                                        	    name: 'calculationModel.showPrimaryDeviceVideoConfig',
+                                        	    id: 'calculationModel_showPrimaryDeviceVideoConfig_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.systemParameterConfiguration,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showPrimaryDeviceSystemParameterConfiguration',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showPrimaryDeviceSystemParameterConfiguration1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showPrimaryDeviceSystemParameterConfiguration',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showPrimaryDeviceSystemParameterConfiguration0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.systemParameterConfiguration,
+                                        	    name: 'calculationModel.showPrimaryDeviceSystemParameterConfiguration',
+                                        	    id: 'calculationModel_showPrimaryDeviceSystemParameterConfiguration_Id',
+                                        	    checked: false
     				                        }]
         				                }]
         				            },{
@@ -1762,147 +1545,45 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                         },
                                         items: [{
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.FESDiagramResultAlarm,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showAlarmQueryFESDiagramResultAlarm',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showAlarmQueryFESDiagramResultAlarm1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showAlarmQueryFESDiagramResultAlarm',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showAlarmQueryFESDiagramResultAlarm0_Id'
-    				                                }
-    				                            ]
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.FESDiagramResultAlarm,
+                                        	    name: 'calculationModel.showAlarmQueryFESDiagramResultAlarm',
+                                        	    id: 'calculationModel_showAlarmQueryFESDiagramResultAlarm_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.numericValueAlarm,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showAlarmQueryNumericValueAlarm',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showAlarmQueryNumericValueAlarm1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showAlarmQueryNumericValueAlarm',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showAlarmQueryNumericValueAlarm0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.numericValueAlarm,
+                                        	    name: 'calculationModel.showAlarmQueryNumericValueAlarm',
+                                        	    id: 'calculationModel_showAlarmQueryNumericValueAlarm_Id',
+                                        	    checked: false
     				                        }]
         				                }, {
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.runStatusAlarm,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showAlarmQueryRunStatusAlarm',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showAlarmQueryRunStatusAlarm1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showAlarmQueryRunStatusAlarm',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showAlarmQueryRunStatusAlarm0_Id'
-    				                                }
-    				                            ]
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.runStatusAlarm,
+                                        	    name: 'calculationModel.showAlarmQueryRunStatusAlarm',
+                                        	    id: 'calculationModel_showAlarmQueryRunStatusAlarm_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.enumValueAlarm,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showAlarmQueryEnumValueAlarm',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showAlarmQueryEnumValueAlarm1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showAlarmQueryEnumValueAlarm',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showAlarmQueryEnumValueAlarm0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.enumValueAlarm,
+                                        	    name: 'calculationModel.showAlarmQueryEnumValueAlarm',
+                                        	    id: 'calculationModel_showAlarmQueryEnumValueAlarm_Id',
+                                        	    checked: false
     				                        }]
         				                }, {
                                             items: [{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.commStatusAlarm,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showAlarmQueryCommStatusAlarm',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showAlarmQueryCommStatusAlarm1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showAlarmQueryCommStatusAlarm',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showAlarmQueryCommStatusAlarm0_Id'
-    				                                }
-    				                            ]
+                                            	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.commStatusAlarm,
+                                        	    name: 'calculationModel.showAlarmQueryCommStatusAlarm',
+                                        	    id: 'calculationModel_showAlarmQueryCommStatusAlarm_Id',
+                                        	    checked: false
     				                        },{
-                                                xtype: 'fieldcontainer',
-                                                fieldLabel: loginUserLanguageResource.switchingValueAlarm,
-                                                defaultType: 'radiofield',
-                                                anchor: '100%',
-                                                defaults: {
-                                                    flex: 1
-                                                },
-                                                layout: 'hbox',
-                                                items: [
-                                                    {
-                                                        boxLabel: loginUserLanguageResource.yes + '&nbsp;&nbsp;',
-                                                        name: 'calculationModel.showAlarmQuerySwitchingValueAlarm',
-                                                        inputValue: '1',
-                                                        id: 'calculationModel_showAlarmQuerySwitchingValueAlarm1_Id'
-    				                                }, {
-                                                        boxLabel: loginUserLanguageResource.no,
-                                                        name: 'calculationModel.showAlarmQuerySwitchingValueAlarm',
-                                                        checked: true,
-                                                        inputValue: '0',
-                                                        id: 'calculationModel_showAlarmQuerySwitchingValueAlarm0_Id'
-    				                                }
-    				                            ]
+    				                        	xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.switchingValueAlarm,
+                                        	    name: 'calculationModel.showAlarmQuerySwitchingValueAlarm',
+                                        	    id: 'calculationModel_showAlarmQuerySwitchingValueAlarm_Id',
+                                        	    checked: false
     				                        }]
         				                }]
         				            }
@@ -3948,3 +3629,104 @@ function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId
         series: series
     });
 };
+
+function initFunctionConfigInstance(instanceId){
+	Ext.getCmp("OperationMaintenanceCalculationModelListPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/operationMaintenanceController/loadFunctionConfigInstance',
+		success:function(response) {
+			Ext.getCmp("OperationMaintenanceCalculationModelListPanel_Id").getEl().unmask();
+			var data=Ext.JSON.decode(response.responseText);
+			if (data.success) {
+				var instanceConfig=data.config;
+				initFunctionConfigInstanceConfig(instanceConfig);
+			} else {
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			}
+		},
+		failure:function(){
+			Ext.getCmp("OperationMaintenanceCalculationModelListPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+		},
+		params: {
+			instanceId:instanceId
+		}
+	});
+}
+
+function initFunctionConfigInstanceConfig(instanceConfig){
+	Ext.getCmp("calculationModel_showRealtimeFESDiagramStatPie_Id").setValue(false);
+	Ext.getCmp("calculationModel_showRealtimeCommStatusStatPie_Id").setValue(false);
+	Ext.getCmp("calculationModel_showRealtimeRunStatusStatPie_Id").setValue(false);
+	Ext.getCmp("calculationModel_showRealtimeWellboreAnalysis_Id").setValue(false);
+	Ext.getCmp("calculationModel_showRealtimeSurfaceAnalysis_Id").setValue(false);
+	Ext.getCmp("calculationModel_showRealtimeTrendCurve_Id").setValue(false);
+	Ext.getCmp("calculationModel_showRealtimeDynamicData_Id").setValue(false);
+	Ext.getCmp("calculationModel_showRealtimeDeviceControl_Id").setValue(false);
+	Ext.getCmp("calculationModel_showRealtimeDeviceInformation_Id").setValue(false);
+	
+	Ext.getCmp("calculationModel_showHistoryFESDiagramStatPie_Id").setValue(false);
+	Ext.getCmp("calculationModel_showHistoryCommStatusStatPie_Id").setValue(false);
+	Ext.getCmp("calculationModel_showHistoryRunStatusStatPie_Id").setValue(false);
+	Ext.getCmp("calculationModel_showHistoryTrendCurve_Id").setValue(false);
+	Ext.getCmp("calculationModel_showHistoryTiledDiagram_Id").setValue(false);
+	Ext.getCmp("calculationModel_showHistoryDiagramOverlay_Id").setValue(false);
+	
+	Ext.getCmp("calculationModel_showPrimaryDeviceAdditionalInformation_Id").setValue(false);
+	Ext.getCmp("calculationModel_showPrimaryDeviceAuxiliaryDevice_Id").setValue(false);
+	Ext.getCmp("calculationModel_showPrimaryDeviceVideoConfig_Id").setValue(false);
+	Ext.getCmp("calculationModel_showPrimaryDeviceCalculateDataConfig_Id").setValue(false);
+	Ext.getCmp("calculationModel_showPrimaryDeviceFSDiagramConstruction_Id").setValue(false);
+	Ext.getCmp("calculationModel_showPrimaryDeviceSystemParameterConfiguration_Id").setValue(false);
+	
+	Ext.getCmp("calculationModel_showAlarmQueryFESDiagramResultAlarm_Id").setValue(false);
+	Ext.getCmp("calculationModel_showAlarmQueryRunStatusAlarm_Id").setValue(false);
+	Ext.getCmp("calculationModel_showAlarmQueryCommStatusAlarm_Id").setValue(false);
+	Ext.getCmp("calculationModel_showAlarmQueryNumericValueAlarm_Id").setValue(false);
+	Ext.getCmp("calculationModel_showAlarmQueryEnumValueAlarm_Id").setValue(false);
+	Ext.getCmp("calculationModel_showAlarmQuerySwitchingValueAlarm_Id").setValue(false);
+	
+	if(instanceConfig!=undefined){
+		if(instanceConfig.DeviceRealTimeMonitoring!=undefined){
+			Ext.getCmp("calculationModel_showRealtimeFESDiagramStatPie_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.FESDiagramStatPie!=undefined?instanceConfig.DeviceRealTimeMonitoring.FESDiagramStatPie:false);
+			Ext.getCmp("calculationModel_showRealtimeCommStatusStatPie_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.CommStatusStatPie!=undefined?instanceConfig.DeviceRealTimeMonitoring.CommStatusStatPie:false);
+			Ext.getCmp("calculationModel_showRealtimeRunStatusStatPie_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.RunStatusStatPie!=undefined?instanceConfig.DeviceRealTimeMonitoring.RunStatusStatPie:false);
+			Ext.getCmp("calculationModel_showRealtimeWellboreAnalysis_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis!=undefined?instanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis:false);
+			Ext.getCmp("calculationModel_showRealtimeSurfaceAnalysis_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis!=undefined?instanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis:false);
+			Ext.getCmp("calculationModel_showRealtimeTrendCurve_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.TrendCurve!=undefined?instanceConfig.DeviceRealTimeMonitoring.TrendCurve:false);
+			Ext.getCmp("calculationModel_showRealtimeDynamicData_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.DynamicData!=undefined?instanceConfig.DeviceRealTimeMonitoring.DynamicData:false);
+			Ext.getCmp("calculationModel_showRealtimeDeviceControl_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.DeviceControl!=undefined?instanceConfig.DeviceRealTimeMonitoring.DeviceControl:false);
+			Ext.getCmp("calculationModel_showRealtimeDeviceInformation_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.DeviceInformation!=undefined?instanceConfig.DeviceRealTimeMonitoring.DeviceInformation:false);
+		}
+		
+		if(instanceConfig.DeviceHistoryQuery!=undefined){
+			Ext.getCmp("calculationModel_showHistoryFESDiagramStatPie_Id").setValue(instanceConfig.DeviceHistoryQuery.FESDiagramStatPie!=undefined?instanceConfig.DeviceHistoryQuery.FESDiagramStatPie:false);
+			Ext.getCmp("calculationModel_showHistoryCommStatusStatPie_Id").setValue(instanceConfig.DeviceHistoryQuery.CommStatusStatPie!=undefined?instanceConfig.DeviceHistoryQuery.CommStatusStatPie:false);
+			Ext.getCmp("calculationModel_showHistoryRunStatusStatPie_Id").setValue(instanceConfig.DeviceHistoryQuery.RunStatusStatPie!=undefined?instanceConfig.DeviceHistoryQuery.RunStatusStatPie:false);
+			Ext.getCmp("calculationModel_showHistoryTrendCurve_Id").setValue(instanceConfig.DeviceHistoryQuery.TrendCurve!=undefined?instanceConfig.DeviceHistoryQuery.TrendCurve:false);
+			Ext.getCmp("calculationModel_showHistoryTiledDiagram_Id").setValue(instanceConfig.DeviceHistoryQuery.TiledDiagram!=undefined?instanceConfig.DeviceHistoryQuery.TiledDiagram:false);
+			Ext.getCmp("calculationModel_showHistoryDiagramOverlay_Id").setValue(instanceConfig.DeviceHistoryQuery.DiagramOverlay!=undefined?instanceConfig.DeviceHistoryQuery.DiagramOverlay:false);
+		}
+		
+		if(instanceConfig.PrimaryDevice!=undefined){
+			Ext.getCmp("calculationModel_showPrimaryDeviceAdditionalInformation_Id").setValue(instanceConfig.PrimaryDevice.AdditionalInformation!=undefined?instanceConfig.PrimaryDevice.AdditionalInformation:false);
+			Ext.getCmp("calculationModel_showPrimaryDeviceAuxiliaryDevice_Id").setValue(instanceConfig.PrimaryDevice.AuxiliaryDevice!=undefined?instanceConfig.PrimaryDevice.AuxiliaryDevice:false);
+			Ext.getCmp("calculationModel_showPrimaryDeviceVideoConfig_Id").setValue(instanceConfig.PrimaryDevice.VideoConfig!=undefined?instanceConfig.PrimaryDevice.VideoConfig:false);
+			Ext.getCmp("calculationModel_showPrimaryDeviceCalculateDataConfig_Id").setValue(instanceConfig.PrimaryDevice.CalculateDataConfig!=undefined?instanceConfig.PrimaryDevice.CalculateDataConfig:false);
+			Ext.getCmp("calculationModel_showPrimaryDeviceFSDiagramConstruction_Id").setValue(instanceConfig.PrimaryDevice.FSDiagramConstruction!=undefined?instanceConfig.PrimaryDevice.FSDiagramConstruction:false);
+			Ext.getCmp("calculationModel_showPrimaryDeviceSystemParameterConfiguration_Id").setValue(instanceConfig.PrimaryDevice.AdditionalInformation!=undefined?instanceConfig.PrimaryDevice.SystemParameterConfig:false);
+		}
+		
+		if(instanceConfig.AlarmQuery!=undefined){
+			Ext.getCmp("calculationModel_showAlarmQueryFESDiagramResultAlarm_Id").setValue(instanceConfig.AlarmQuery.FESDiagramResultAlarm!=undefined?instanceConfig.AlarmQuery.FESDiagramResultAlarm:false);
+			Ext.getCmp("calculationModel_showAlarmQueryRunStatusAlarm_Id").setValue(instanceConfig.AlarmQuery.RunStatusAlarm!=undefined?instanceConfig.AlarmQuery.RunStatusAlarm:false);
+			Ext.getCmp("calculationModel_showAlarmQueryCommStatusAlarm_Id").setValue(instanceConfig.AlarmQuery.CommStatusAlarm!=undefined?instanceConfig.AlarmQuery.CommStatusAlarm:false);
+			Ext.getCmp("calculationModel_showAlarmQueryNumericValueAlarm_Id").setValue(instanceConfig.AlarmQuery.NumericValueAlarm!=undefined?instanceConfig.AlarmQuery.NumericValueAlarm:false);
+			Ext.getCmp("calculationModel_showAlarmQueryEnumValueAlarm_Id").setValue(instanceConfig.AlarmQuery.EnumValueAlarm!=undefined?instanceConfig.AlarmQuery.EnumValueAlarm:false);
+			Ext.getCmp("calculationModel_showAlarmQuerySwitchingValueAlarm_Id").setValue(instanceConfig.AlarmQuery.SwitchingValueAlarm!=undefined?instanceConfig.AlarmQuery.SwitchingValueAlarm:false);
+		}
+	}
+}
+
+

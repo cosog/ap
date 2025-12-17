@@ -420,7 +420,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		result_json.append("\"totalRoot\":[");
 		for (Object o : list) {
 			Object[] obj = (Object[]) o;
-			result_json.append("{\"modelId\":"+obj[0]+",");
+			result_json.append("{\"instanceId\":"+obj[0]+",");
 			result_json.append("\"name\":\""+obj[1]+"\",");
 			result_json.append("\"calculateType\":\""+obj[2]+"\",");
 			result_json.append("\"sort\":\""+obj[3]+"\"},");
@@ -430,5 +430,36 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		}
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public void addFunctionConfigInstance(T ralculationModel) throws Exception {
+		getBaseDao().addObject(ralculationModel);
+	}
+	
+	public void modifyFunctionConfigInstance(T instance) throws Exception {
+		getBaseDao().updateObject(instance);
+	}
+	
+	public String loadFunctionConfigInstance(String instanceId,User user) throws IOException, SQLException {
+		String result="{}";
+		String sql="select t.config from tbl_calculationmodel t where t.id="+instanceId;
+		List<?> list = this.findCallSql(sql);
+		if(list.size()>0 && list.get(0)!=null){
+			result=list.get(0).toString().replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+		}
+		result="{\"success\":true,\"config\":"+result+"}";
+		return result;
+	}
+	
+	public int saveFunctionConfigInstanceConfigData(String selectInstanceId,String instanceConfig) throws IOException, SQLException {
+		String sql="update tbl_calculationmodel t set t.config='"+instanceConfig+"' where t.id="+selectInstanceId;
+		int r=getBaseDao().updateOrDeleteBySql(sql);
+		return r;
+	}
+	
+	public int deleteFunctionConfigInstance(String instanceIds) throws IOException, SQLException {
+		String sql="delete from tbl_calculationmodel t where t.id in ("+instanceIds+")";
+		int r=getBaseDao().updateOrDeleteBySql(sql);
+		return r;
 	}
 }

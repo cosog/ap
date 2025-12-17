@@ -106,9 +106,9 @@ Ext.define('AP.store.operationMaintenance.CalculationModelInfoStore', {
                             minValue: 1
                         }:""
                     },{
-                    	header: 'modelId',
+                    	header: 'instanceId',
                     	hidden: true,
-                    	dataIndex: 'modelId'
+                    	dataIndex: 'instanceId'
                     },{
                     	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
@@ -116,6 +116,7 @@ Ext.define('AP.store.operationMaintenance.CalculationModelInfoStore', {
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
+                        hidden:true,
                         items: [{
                             iconCls: 'submit',
                             tooltip: loginUserLanguageResource.save,
@@ -131,6 +132,7 @@ Ext.define('AP.store.operationMaintenance.CalculationModelInfoStore', {
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
+                        hidden:true,
                         items: [{
                             iconCls: 'delete',
                             tooltip: loginUserLanguageResource.deleteData,
@@ -144,20 +146,60 @@ Ext.define('AP.store.operationMaintenance.CalculationModelInfoStore', {
                     	selectionchange: function (sm, selected) {
                     		if(selected.length>0){
                     			
-                    		}else{
-                    			
                     		}
                     	},
                     	celldblclick : function( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                     		
+                    	},select( v, record, index, eOpts ){
+                    		var instanceId=record.data.instanceId;
+                    		Ext.getCmp("FunctionConfigInstanceSelectId_Id").setValue(instanceId);
+                    		initFunctionConfigInstance(instanceId);
                     	}
                     }
                 });
                 var panel = Ext.getCmp("OperationMaintenanceCalculationModelListPanel_Id");
                 panel.add(gridPanel);
             }
+            var selectedRow=0;
+            var functionConfigInstanceSelectId=parseInt(Ext.getCmp("FunctionConfigInstanceSelectId_Id").getValue());
+            
+            var addFunctionConfigInstanceSelectName=Ext.getCmp('addFunctionConfigInstanceSelectName_Id').getValue();
+            if(isNotVal(addFunctionConfigInstanceSelectName)){
+            	Ext.getCmp("addFunctionConfigInstanceSelectName_Id").setValue('');
+            	var maxInstanceId=0;
+            	var instanceCount=0;
+            	
+            	for(var i=0;i<store.data.length;i++){
+            		if(store.getAt(i).data.name==addFunctionConfigInstanceSelectName){
+            			selectedRow=i;
+            			instanceCount++;
+            		}
+            	}
+            	if(instanceCount>1){
+            		for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.name==addFunctionConfigInstanceSelectName){
+                			if(store.getAt(i).data.instanceId>maxInstanceId){
+                				maxInstanceId=store.getAt(i).data.instanceId;
+                				selectedRow=i;
+                			}
+                		}
+                	}
+            	}
+            }else{
+            	if(functionConfigInstanceSelectId>0){
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.instanceId==functionConfigInstanceSelectId){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }
+            }
+            
+            
+            
             gridPanel.getSelectionModel().deselectAll(true);
-            gridPanel.getSelectionModel().select(0, true);
+            gridPanel.getSelectionModel().select(selectedRow, true);
         },
         beforeload: function (store, options) {
             var new_params = {

@@ -14,12 +14,18 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
+import com.cosog.model.CalculationModel;
 import com.cosog.model.DeviceTypeInfo;
 import com.cosog.model.Role;
+import com.cosog.model.RoleDeviceType;
+import com.cosog.model.RoleLanguage;
+import com.cosog.model.RoleModule;
 import com.cosog.model.User;
 import com.cosog.model.drive.TotalCalItemsToReportUnitSaveData;
 import com.cosog.service.base.CommonDataService;
@@ -37,6 +43,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 
+
 @Controller
 @RequestMapping("/operationMaintenanceController")
 @Scope("prototype")
@@ -49,7 +56,14 @@ public class OperationMaintenanceController  extends BaseController {
 	private OperationMaintenanceService operationMaintenanceService;
 	@Autowired
 	private OperationMaintenanceService<DeviceTypeInfo> deviceTypeMaintenanceService;
+	@Autowired
+	private OperationMaintenanceService<CalculationModel> calculationModelMaintenanceService;
 	
+	
+	@InitBinder("calculationModel")
+	public void initBinder(WebDataBinder binder) {
+		binder.setFieldDefaultPrefix("calculationModel.");
+	}
 	
 	@SuppressWarnings("unused")
 	@RequestMapping("/loadOemConfigInfo")
@@ -343,6 +357,95 @@ public class OperationMaintenanceController  extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		
 		String json = deviceTypeMaintenanceService.getCalculationModelData(user);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/addFunctionConfigInstance")
+	public String addFunctionConfigInstance(@ModelAttribute CalculationModel ralculationModel) throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		try {
+			
+			ralculationModel.setId(1);
+			this.calculationModelMaintenanceService.addFunctionConfigInstance(ralculationModel);
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
+	@RequestMapping("/saveFunctionConfigInstance")
+	public String saveFunctionConfigInstance() throws Exception {
+		String result ="{success:true,msg:false}";
+		HttpSession session=request.getSession();
+		Gson gson=new Gson();
+		java.lang.reflect.Type type=null;
+		String data = ParamUtils.getParameter(request, "data");
+		String selectInstanceId = ParamUtils.getParameter(request, "selectInstanceId");
+		String instanceConfig = ParamUtils.getParameter(request, "instanceConfig");
+		
+		type = new TypeToken<List<CalculationModel>>() {}.getType();
+		List<CalculationModel> list=gson.fromJson(data, type);
+		
+		
+		if(list!=null){
+			for(CalculationModel instance:list){
+				this.calculationModelMaintenanceService.modifyFunctionConfigInstance(instance);
+			}
+		}
+		
+		this.calculationModelMaintenanceService.saveFunctionConfigInstanceConfigData(selectInstanceId,instanceConfig);
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result);
+		log.debug("saveDeviceTypeMaintenanceData json==" + result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/deleteFunctionConfigInstance")
+	public String deleteFunctionConfigInstance() throws Exception {
+		String result ="{success:true,msg:false}";
+		HttpSession session=request.getSession();
+		Gson gson=new Gson();
+		java.lang.reflect.Type type=null;
+		String instanceIds = ParamUtils.getParameter(request, "instanceIds");
+		
+		this.calculationModelMaintenanceService.deleteFunctionConfigInstance(instanceIds);
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result);
+		log.debug("saveDeviceTypeMaintenanceData json==" + result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/loadFunctionConfigInstance")
+	public String loadFunctionConfigInstance() throws IOException, SQLException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String instanceId = ParamUtils.getParameter(request, "instanceId");
+		
+		String json = calculationModelMaintenanceService.loadFunctionConfigInstance(instanceId,user);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

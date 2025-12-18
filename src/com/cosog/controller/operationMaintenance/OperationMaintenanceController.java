@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
-import com.cosog.model.CalculationModel;
+import com.cosog.model.DeviceTabManager;
 import com.cosog.model.DeviceTypeInfo;
 import com.cosog.model.Role;
 import com.cosog.model.RoleDeviceType;
@@ -57,12 +57,12 @@ public class OperationMaintenanceController  extends BaseController {
 	@Autowired
 	private OperationMaintenanceService<DeviceTypeInfo> deviceTypeMaintenanceService;
 	@Autowired
-	private OperationMaintenanceService<CalculationModel> calculationModelMaintenanceService;
+	private OperationMaintenanceService<DeviceTabManager> deviceTabManagerMaintenanceService;
 	
 	
-	@InitBinder("calculationModel")
+	@InitBinder("deviceTabManager")
 	public void initBinder(WebDataBinder binder) {
-		binder.setFieldDefaultPrefix("calculationModel.");
+		binder.setFieldDefaultPrefix("deviceTabManager.");
 	}
 	
 	@SuppressWarnings("unused")
@@ -330,6 +330,8 @@ public class OperationMaintenanceController  extends BaseController {
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		String data = ParamUtils.getParameter(request, "data");
+		String selectDeviceTypeId = ParamUtils.getParameter(request, "selectDeviceTypeId");
+		String contentConfig = ParamUtils.getParameter(request, "contentConfig");
 		
 		type = new TypeToken<List<DeviceTypeInfo>>() {}.getType();
 		List<DeviceTypeInfo> list=gson.fromJson(data, type);
@@ -341,6 +343,8 @@ public class OperationMaintenanceController  extends BaseController {
 			}
 		}
 		
+		this.deviceTypeMaintenanceService.saveDeviceTypeContentConfigData(selectDeviceTypeId,contentConfig);
+		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -351,12 +355,12 @@ public class OperationMaintenanceController  extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getCalculationModelData")
-	public String getCalculationModelData() throws IOException, SQLException {
+	@RequestMapping("/getDeviceTabManagerData")
+	public String getDeviceTabManagerData() throws IOException, SQLException {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		
-		String json = deviceTypeMaintenanceService.getCalculationModelData(user);
+		String json = deviceTypeMaintenanceService.getDeviceTabManagerData(user);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -367,14 +371,14 @@ public class OperationMaintenanceController  extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/addFunctionConfigInstance")
-	public String addFunctionConfigInstance(@ModelAttribute CalculationModel ralculationModel) throws IOException {
+	@RequestMapping("/addDeviceTabManagerInstance")
+	public String addDeviceTabManagerInstance(@ModelAttribute DeviceTabManager deviceTabManager) throws IOException {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		try {
 			
-			ralculationModel.setId(1);
-			this.calculationModelMaintenanceService.addFunctionConfigInstance(ralculationModel);
+			deviceTabManager.setId(1);
+			this.deviceTabManagerMaintenanceService.addDeviceTabManagerInstance(deviceTabManager);
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -387,8 +391,8 @@ public class OperationMaintenanceController  extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/saveFunctionConfigInstance")
-	public String saveFunctionConfigInstance() throws Exception {
+	@RequestMapping("/saveDeviceTabManagerInstance")
+	public String saveDeviceTabManagerInstance() throws Exception {
 		String result ="{success:true,msg:false}";
 		HttpSession session=request.getSession();
 		Gson gson=new Gson();
@@ -397,17 +401,17 @@ public class OperationMaintenanceController  extends BaseController {
 		String selectInstanceId = ParamUtils.getParameter(request, "selectInstanceId");
 		String instanceConfig = ParamUtils.getParameter(request, "instanceConfig");
 		
-		type = new TypeToken<List<CalculationModel>>() {}.getType();
-		List<CalculationModel> list=gson.fromJson(data, type);
+		type = new TypeToken<List<DeviceTabManager>>() {}.getType();
+		List<DeviceTabManager> list=gson.fromJson(data, type);
 		
 		
 		if(list!=null){
-			for(CalculationModel instance:list){
-				this.calculationModelMaintenanceService.modifyFunctionConfigInstance(instance);
+			for(DeviceTabManager instance:list){
+				this.deviceTabManagerMaintenanceService.modifyDeviceTabManagerInstance(instance);
 			}
 		}
 		
-		this.calculationModelMaintenanceService.saveFunctionConfigInstanceConfigData(selectInstanceId,instanceConfig);
+		this.deviceTabManagerMaintenanceService.saveDeviceTabManagerInstanceConfigData(selectInstanceId,instanceConfig);
 		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -419,15 +423,15 @@ public class OperationMaintenanceController  extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/deleteFunctionConfigInstance")
-	public String deleteFunctionConfigInstance() throws Exception {
+	@RequestMapping("/deleteDeviceTabManagerInstance")
+	public String deleteDeviceTabManagerInstance() throws Exception {
 		String result ="{success:true,msg:false}";
 		HttpSession session=request.getSession();
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		String instanceIds = ParamUtils.getParameter(request, "instanceIds");
 		
-		this.calculationModelMaintenanceService.deleteFunctionConfigInstance(instanceIds);
+		this.deviceTabManagerMaintenanceService.deleteDeviceTabManagerInstance(instanceIds);
 		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -439,13 +443,30 @@ public class OperationMaintenanceController  extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/loadFunctionConfigInstance")
-	public String loadFunctionConfigInstance() throws IOException, SQLException {
+	@RequestMapping("/loadDeviceTabManagerInstance")
+	public String loadDeviceTabManagerInstance() throws IOException, SQLException {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String instanceId = ParamUtils.getParameter(request, "instanceId");
 		
-		String json = calculationModelMaintenanceService.loadFunctionConfigInstance(instanceId,user);
+		String json = deviceTabManagerMaintenanceService.loadDeviceTabManagerInstance(instanceId,user);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/loadDeviceTypeContentConfig")
+	public String loadDeviceTypeContentConfig() throws IOException, SQLException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceTypeId = ParamUtils.getParameter(request, "deviceTypeId");
+		
+		String json = deviceTabManagerMaintenanceService.loadDeviceTypeContentConfig(deviceTypeId,user);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

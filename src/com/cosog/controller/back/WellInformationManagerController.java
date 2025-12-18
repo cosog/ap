@@ -474,6 +474,21 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDeviceTabInstanceCombList")
+	public String getDeviceTabInstanceCombList() throws IOException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
+		String json=wellInformationManagerService.getDeviceTabInstanceCombList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getDisplayInstanceCombList")
 	public String getDisplayInstanceCombList() throws IOException {
 		HttpSession session=request.getSession();

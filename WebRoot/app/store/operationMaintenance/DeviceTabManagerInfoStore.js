@@ -1,11 +1,11 @@
-Ext.define('AP.store.operationMaintenance.CalculationModelInfoStore', {
+Ext.define('AP.store.operationMaintenance.DeviceTabManagerInfoStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.calculationModelInfoStore',
+    alias: 'widget.deviceTabManagerInfoStore',
     autoLoad: true,
     pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
-        url: context + '/operationMaintenanceController/getCalculationModelData',
+        url: context + '/operationMaintenanceController/getDeviceTabManagerData',
         actionMethods: {
             read: 'POST'
         },
@@ -22,10 +22,10 @@ Ext.define('AP.store.operationMaintenance.CalculationModelInfoStore', {
         load: function (store, options, eOpts) {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
-            var gridPanel = Ext.getCmp("operationMaintenanceCalculationModelGridView_Id");
+            var gridPanel = Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id");
             if (!isNotVal(gridPanel)) {
                 gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "operationMaintenanceCalculationModelGridView_Id",
+                    id: "operationMaintenanceDeviceTabManagerGridView_Id",
                     selModel: 'cellmodel',//cellmodel rowmodel
                     plugins: [{
                         ptype: 'cellediting',//cellediting rowediting
@@ -152,32 +152,32 @@ Ext.define('AP.store.operationMaintenance.CalculationModelInfoStore', {
                     		
                     	},select( v, record, index, eOpts ){
                     		var instanceId=record.data.instanceId;
-                    		Ext.getCmp("FunctionConfigInstanceSelectId_Id").setValue(instanceId);
-                    		initFunctionConfigInstance(instanceId);
+                    		Ext.getCmp("DeviceTabManagerInstanceSelectId_Id").setValue(instanceId);
+                    		initDeviceTabManagerInstance(instanceId);
                     	}
                     }
                 });
-                var panel = Ext.getCmp("OperationMaintenanceCalculationModelListPanel_Id");
+                var panel = Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id");
                 panel.add(gridPanel);
             }
             var selectedRow=0;
-            var functionConfigInstanceSelectId=parseInt(Ext.getCmp("FunctionConfigInstanceSelectId_Id").getValue());
+            var functionConfigInstanceSelectId=parseInt(Ext.getCmp("DeviceTabManagerInstanceSelectId_Id").getValue());
             
-            var addFunctionConfigInstanceSelectName=Ext.getCmp('addFunctionConfigInstanceSelectName_Id').getValue();
-            if(isNotVal(addFunctionConfigInstanceSelectName)){
-            	Ext.getCmp("addFunctionConfigInstanceSelectName_Id").setValue('');
+            var addDeviceTabManagerInstanceSelectName=Ext.getCmp('addDeviceTabManagerInstanceSelectName_Id').getValue();
+            if(isNotVal(addDeviceTabManagerInstanceSelectName)){
+            	Ext.getCmp("addDeviceTabManagerInstanceSelectName_Id").setValue('');
             	var maxInstanceId=0;
             	var instanceCount=0;
             	
             	for(var i=0;i<store.data.length;i++){
-            		if(store.getAt(i).data.name==addFunctionConfigInstanceSelectName){
+            		if(store.getAt(i).data.name==addDeviceTabManagerInstanceSelectName){
             			selectedRow=i;
             			instanceCount++;
             		}
             	}
             	if(instanceCount>1){
             		for(var i=0;i<store.data.length;i++){
-                		if(store.getAt(i).data.name==addFunctionConfigInstanceSelectName){
+                		if(store.getAt(i).data.name==addDeviceTabManagerInstanceSelectName){
                 			if(store.getAt(i).data.instanceId>maxInstanceId){
                 				maxInstanceId=store.getAt(i).data.instanceId;
                 				selectedRow=i;

@@ -577,6 +577,23 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
+	public String getDeviceTabInstanceCombList(){
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.id,t.name from tbl_tabmanager_device t order by t.sort";
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"\"},");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[])list.get(i);
+			result_json.append("{\"boxkey\":\"" + obj[0] + "\",");
+			result_json.append("\"boxval\":\"" + obj[1] + "\"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
 	public String getDisplayInstanceCombList(String dictDeviceType,String acqUnitId,User user){
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.code,t.name "
@@ -1405,6 +1422,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
 		StringBuffer deviceTypeDropdownData = new StringBuffer();
+		StringBuffer tabInstanceDropdownData = new StringBuffer();
 		StringBuffer instanceDropdownData = new StringBuffer();
 		StringBuffer displayInstanceDropdownData = new StringBuffer();
 		StringBuffer reportInstanceDropdownData = new StringBuffer();
@@ -1426,7 +1444,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " allpath_"+language+","
 				+ " to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
 				+ " to_char(commissioningdate,'yyyy-mm-dd') as commissioningdate,"
-				+ " calculatetype,decode(t.calculatetype,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
+				+ " calculatetype,deviceTabInstance,"
 				+ " sortNum"
 				+ " from "+tableName+" t "
 				+ " where 1=1";
@@ -1441,6 +1459,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		sql+= " order by t.sortnum,t.devicename ";
 		
 		String deviceTypeSql="select t.name_"+language+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
+		String deviceTabInstanceSql="select t.name from tbl_tabmanager_device t order by t.sort";
 		String instanceSql="select t.name "
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.unitid=t2.id and t2.protocol=t3.code "
@@ -1463,6 +1482,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		
 		deviceTypeDropdownData.append("[");
+		tabInstanceDropdownData.append("[");
 		instanceDropdownData.append("[");
 		displayInstanceDropdownData.append("[");
 		reportInstanceDropdownData.append("[");
@@ -1471,6 +1491,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 
 		List<?> deviceTypeList = this.findCallSql(deviceTypeSql);
 		List<?> instanceList = this.findCallSql(instanceSql);
+		List<?> deviceTabInstanceList = this.findCallSql(deviceTabInstanceSql);
 		List<?> displayInstanceList = this.findCallSql(displayInstanceSql);
 		List<?> reportInstanceList = this.findCallSql(reportInstanceSql);
 		List<?> alarmInstanceList = this.findCallSql(alarmInstanceSql);
@@ -1482,6 +1503,16 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 			if(deviceTypeDropdownData.toString().endsWith(",")){
 				deviceTypeDropdownData.deleteCharAt(deviceTypeDropdownData.length() - 1);
+			}
+		}
+		
+		if(deviceTabInstanceList.size()>0){
+			tabInstanceDropdownData.append("\"\",");
+			for(int i=0;i<deviceTabInstanceList.size();i++){
+				tabInstanceDropdownData.append("'"+deviceTabInstanceList.get(i)+"',");
+			}
+			if(tabInstanceDropdownData.toString().endsWith(",")){
+				tabInstanceDropdownData.deleteCharAt(tabInstanceDropdownData.length() - 1);
 			}
 		}
 		
@@ -1538,6 +1569,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		
 		deviceTypeDropdownData.append("]");
+		tabInstanceDropdownData.append("]");
 		instanceDropdownData.append("]");
 		displayInstanceDropdownData.append("]");
 		reportInstanceDropdownData.append("]");
@@ -1548,6 +1580,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+","
 				+ "\"deviceTypeDropdownData\":"+deviceTypeDropdownData.toString()+","
+				+ "\"tabInstanceDropdownData\":"+tabInstanceDropdownData.toString()+","
 				+ "\"instanceDropdownData\":"+instanceDropdownData.toString()+","
 				+ "\"displayInstanceDropdownData\":"+displayInstanceDropdownData.toString()+","
 				+ "\"reportInstanceDropdownData\":"+reportInstanceDropdownData.toString()+","
@@ -1580,7 +1613,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"productionDataUpdateTime\":\""+obj[17]+"\",");
 			result_json.append("\"commissioningDate\":\""+obj[18]+"\",");
 			result_json.append("\"calculateType\":\""+obj[19]+"\",");
-			result_json.append("\"calculateTypeName\":\""+obj[20]+"\",");
+			result_json.append("\"deviceTabInstance\":\""+obj[20]+"\",");
 			result_json.append("\"sortNum\":\""+obj[21]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){

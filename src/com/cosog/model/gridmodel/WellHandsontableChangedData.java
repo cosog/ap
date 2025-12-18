@@ -46,6 +46,8 @@ public class WellHandsontableChangedData {
 	    private String applicationScenariosName="";
 	    
 	    private String calculateTypeName="";
+	    
+	    private String deviceTabInstance="";
 
 	    private String instanceName="";
 	    
@@ -839,6 +841,14 @@ public class WellHandsontableChangedData {
 
 		public void setCalculateTypeName(String calculateTypeName) {
 			this.calculateTypeName = calculateTypeName;
+		}
+
+		public String getDeviceTabInstance() {
+			return deviceTabInstance;
+		}
+
+		public void setDeviceTabInstance(String deviceTabInstance) {
+			this.deviceTabInstance = deviceTabInstance;
 		}
 	    
 	}

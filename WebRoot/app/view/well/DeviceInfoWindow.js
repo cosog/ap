@@ -181,6 +181,69 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 					}
 				});
         
+        var deviceTabInstanceStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/wellInformationManagerController/getDeviceTabInstanceCombList',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var new_params = {
+							
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var deviceTabInstanceComb = Ext.create(
+        		'Ext.form.field.ComboBox', {
+					fieldLabel :  '设备标签实例',
+					labelWidth: labelWidth,
+					emptyText : '选择设备标签实例',
+					blankText : '选择设备标签实例',
+					id : 'deviceTabInstanceComb_Id',
+					anchor : '95%',
+					store: deviceTabInstanceStore,
+					queryMode : 'remote',
+					hidden: !IoTConfig,
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : true,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					listeners : {
+						select: function (v,o) {
+							if(o.data.boxkey==''){
+								v.setValue('');
+								v.setRawValue('');
+							}
+							Ext.getCmp("deviceCalculateType_Id").setValue(this.value);
+	                    },
+	                    change: function ( comb, newValue, oldValue, eOpts ) {
+	                    	
+	                    }
+					}
+				});
+        
         /**采控实例*/
         var acqInstanceStore = new Ext.data.SimpleStore({
         	fields: [{
@@ -568,34 +631,36 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 id: 'deviceApplicationScenarios_Id',
                 value: '',
                 name: "deviceInformation.applicationScenarios"
-            },{
-            	xtype : "combobox",
-				fieldLabel : loginUserLanguageResource.calculateType,
-				labelWidth: labelWidth,
-				id : 'deviceCalculateTypeComb_Id',
-				anchor : '95%',
-				triggerAction : 'all',
-				selectOnFocus : false,
-			    forceSelection : true,
-			    value:0,
-			    allowBlank: false,
-				editable : false,
-				store : new Ext.data.SimpleStore({
-							fields : ['value', 'text'],
-							data : [[0, loginUserLanguageResource.nothing],[1, loginUserLanguageResource.SRPCalculate],[2, loginUserLanguageResource.PCPCalculate]]
-						}),
-				displayField : 'text',
-				valueField : 'value',
-				queryMode : 'local',
-				emptyText : loginUserLanguageResource.selectCalculateType,
-				blankText : loginUserLanguageResource.selectCalculateType,
-				listeners : {
-					select:function(v,o){
-						Ext.getCmp("deviceCalculateType_Id").setValue(this.value);
-						
-					}
-				}
-            },{
+            },deviceTabInstanceComb,
+//            {
+//            	xtype : "combobox",
+//				fieldLabel : loginUserLanguageResource.calculateType,
+//				labelWidth: labelWidth,
+//				id : 'deviceCalculateTypeComb_Id',
+//				anchor : '95%',
+//				triggerAction : 'all',
+//				selectOnFocus : false,
+//			    forceSelection : true,
+//			    value:0,
+//			    allowBlank: false,
+//				editable : false,
+//				store : new Ext.data.SimpleStore({
+//							fields : ['value', 'text'],
+//							data : [[0, loginUserLanguageResource.nothing],[1, loginUserLanguageResource.SRPCalculate],[2, loginUserLanguageResource.PCPCalculate]]
+//						}),
+//				displayField : 'text',
+//				valueField : 'value',
+//				queryMode : 'local',
+//				emptyText : loginUserLanguageResource.selectCalculateType,
+//				blankText : loginUserLanguageResource.selectCalculateType,
+//				listeners : {
+//					select:function(v,o){
+//						Ext.getCmp("deviceCalculateType_Id").setValue(this.value);
+//						
+//					}
+//				}
+//            },
+            {
             	xtype: "hidden",
                 fieldLabel: loginUserLanguageResource.calculateType,
                 labelWidth: labelWidth,

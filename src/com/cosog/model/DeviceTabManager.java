@@ -6,14 +6,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 /**
- *  <p>描述：计算模式 实体类  TBL_CALCULATIONMODEL</p>
+ *  <p>描述：计算模式 实体类  TBL_TABMANAGER_DEVICE</p>
  *  
  * @author zhao  2025-12-15
  *
  */
 @Entity
-@Table(name = "TBL_CALCULATIONMODEL")
-public class CalculationModel implements java.io.Serializable {
+@Table(name = "TBL_TABMANAGER_DEVICE")
+public class DeviceTabManager implements java.io.Serializable {
 
 	/**
 	 * 
@@ -28,11 +28,11 @@ public class CalculationModel implements java.io.Serializable {
 	// Constructors
 
 	/** default constructor */
-	public CalculationModel() {
+	public DeviceTabManager() {
 	}
 
 	/** full constructor */
-	public CalculationModel(Integer id, String name, Integer calculateType, String config, Integer sort) {
+	public DeviceTabManager(Integer id, String name, Integer calculateType, String config, Integer sort) {
 		super();
 		this.id = id;
 		this.name = name;

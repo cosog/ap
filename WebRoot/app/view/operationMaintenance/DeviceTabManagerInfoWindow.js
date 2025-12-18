@@ -1,7 +1,7 @@
-Ext.define("AP.view.operationMaintenance.FunctionTabInfoWindow", {
+Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
     extend: 'Ext.window.Window',
-    alias: 'widget.functionTabInfoWindow',
-    id: 'functionTabInfoWindow_Id',
+    alias: 'widget.deviceTabManagerInfoWindow',
+    id: 'deviceTabManagerInfoWindow_Id',
     layout: 'fit',
     iframe: true,
     closeAction: 'destroy',
@@ -34,22 +34,22 @@ Ext.define("AP.view.operationMaintenance.FunctionTabInfoWindow", {
 
         var deviceEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
-            id: 'addFunctionConfigInstanceForm_Id',
+            id: 'addDeviceTabManagerInstanceForm_Id',
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
                 fieldLabel: 'id',
                 labelWidth: labelWidth,
-                id: 'addFunctionConfigInstance_Id',
+                id: 'addDeviceTabManagerInstance_Id',
                 value: '',
-                name: "calculationModel.id"
+                name: "deviceTabManager.id"
             },{
                 fieldLabel: loginUserLanguageResource.name+'<font color=red>*</font>',
                 labelWidth: labelWidth,
-                id: 'addFunctionConfigInstanceName_Id',
+                id: 'addDeviceTabManagerInstanceName_Id',
                 allowBlank: false,
                 anchor: '95%',
-                name: "calculationModel.name",
+                name: "deviceTabManager.name",
                 listeners: {
                 	
                 }
@@ -57,7 +57,7 @@ Ext.define("AP.view.operationMaintenance.FunctionTabInfoWindow", {
             	xtype : "combobox",
 				fieldLabel : loginUserLanguageResource.calculateType,
 				labelWidth: labelWidth,
-				id : 'addFunctionConfigInstanceCalculateTypeComb_Id',
+				id : 'addDeviceTabManagerInstanceCalculateTypeComb_Id',
 				anchor : '95%',
 				triggerAction : 'all',
 				selectOnFocus : false,
@@ -76,7 +76,7 @@ Ext.define("AP.view.operationMaintenance.FunctionTabInfoWindow", {
 				blankText : loginUserLanguageResource.selectCalculateType,
 				listeners : {
 					select:function(v,o){
-						Ext.getCmp("deviceCalculateType_Id").setValue(this.value);
+						Ext.getCmp("addDeviceTabManagerInstanceCalculateType_Id").setValue(this.value);
 						
 					}
 				}
@@ -84,13 +84,12 @@ Ext.define("AP.view.operationMaintenance.FunctionTabInfoWindow", {
             	xtype: "hidden",
                 fieldLabel: loginUserLanguageResource.calculateType,
                 labelWidth: labelWidth,
-                id: 'addFunctionConfigInstanceCalculateType_Id',
-                value: '0',
-                name: "calculationModel.calculateType"
+                id: 'addDeviceTabManagerInstanceCalculateType_Id',
+                name: "deviceTabManager.calculateType"
             },{
             	xtype: 'numberfield',
-            	id: "addFunctionConfigInstanceSortNum_Id",
-            	name: "calculationModel.sort",
+            	id: "addDeviceTabManagerInstanceSortNum_Id",
+            	name: "deviceTabManager.sort",
                 fieldLabel: loginUserLanguageResource.sortNum,
                 labelWidth: labelWidth,
                 allowBlank: true,
@@ -103,19 +102,19 @@ Ext.define("AP.view.operationMaintenance.FunctionTabInfoWindow", {
                 text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
-                	var functionTabInfoWindowForm = Ext.getCmp("functionTabInfoWindow_Id").down('form');
+                	var functionTabInfoWindowForm = Ext.getCmp("deviceTabManagerInfoWindow_Id").down('form');
                     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
                     if (functionTabInfoWindowForm.getForm().isValid()) {
                         functionTabInfoWindowForm.getForm().submit({
-                            url: context + '/operationMaintenanceController/addFunctionConfigInstance',
+                            url: context + '/operationMaintenanceController/addDeviceTabManagerInstance',
                             clientValidation: false, // 进行客户端验证
                             method: "POST",
                             waitMsg: loginUserLanguageResource.sendServer,
                             waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
-                            	Ext.getCmp('addFunctionConfigInstanceSelectName_Id').setValue(Ext.getCmp('addFunctionConfigInstanceName_Id').getValue());
-                                Ext.getCmp('functionTabInfoWindow_Id').close();
-                                Ext.getCmp("operationMaintenanceCalculationModelGridView_Id").getStore().load();
+                            	Ext.getCmp('addDeviceTabManagerInstanceSelectName_Id').setValue(Ext.getCmp('addDeviceTabManagerInstanceName_Id').getValue());
+                                Ext.getCmp('deviceTabManagerInfoWindow_Id').close();
+                                Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id").getStore().load();
                                 if (action.result.msg == true) {
                                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
                                 }
@@ -138,7 +137,7 @@ Ext.define("AP.view.operationMaintenance.FunctionTabInfoWindow", {
                 text: loginUserLanguageResource.cancel,
                 iconCls: 'cancel',
                 handler: function () {
-                    Ext.getCmp("functionTabInfoWindow_Id").close();
+                    Ext.getCmp("deviceTabManagerInfoWindow_Id").close();
                 }
             }]
         });

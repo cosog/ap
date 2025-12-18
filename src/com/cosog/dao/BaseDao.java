@@ -1052,13 +1052,13 @@ public class BaseDao extends HibernateDaoSupport {
 							String applicationScenariosValueStr=MemoryDataManagerTask.getCodeValue("APPLICATIONSCENARIOS", wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName(), user.getLanguageName());
 							cs.setInt(3, StringManagerUtils.stringToInteger(applicationScenariosValueStr));
 							
-							int calculateType=0;
-							if(languageResourceMap.get("SRPCalculate").equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCalculateTypeName())){
-								calculateType=1;
-							}else if(languageResourceMap.get("PCPCalculate").equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCalculateTypeName())){
-								calculateType=2;
-							}
-							cs.setInt(4, calculateType);
+//							int calculateType=0;
+//							if(languageResourceMap.get("SRPCalculate").equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCalculateTypeName())){
+//								calculateType=1;
+//							}else if(languageResourceMap.get("PCPCalculate").equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCalculateTypeName())){
+//								calculateType=2;
+//							}
+							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceTabInstance());
 							
 							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName());
 							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName());

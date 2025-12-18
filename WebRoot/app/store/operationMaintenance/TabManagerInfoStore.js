@@ -130,13 +130,26 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
                         },
                         itemdblclick: function () {
                         	
-                        }
+                        },select( v, record, index, eOpts ){
+                    		var deviceTypeId=record.data.deviceTypeId;
+                    		var deviceTypeName=record.data.text;
+                    		initDeviceTypeContentConfig(deviceTypeId,deviceTypeName);
+                    	}
                     }
                 });
-                var operationMaintenanceDeviceTypeMaintenancePanel = Ext.getCmp("OperationMaintenanceDeviceTypeMaintenancePanel_Id");
+                var operationMaintenanceDeviceTypeMaintenancePanel = Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id");
                 operationMaintenanceDeviceTypeMaintenancePanel.add(deviceTypeMaintenanceTreeGridView);
             }
-
+            
+            var selectedRow=0;
+            for(var i=0;i<store.data.length;i++){
+        		if(store.getAt(i).data.leaf){
+        			selectedRow=i;
+        			break;
+        		}
+        	}
+            deviceTypeMaintenanceTreeGridView.getSelectionModel().deselectAll(true);
+            deviceTypeMaintenanceTreeGridView.getSelectionModel().select(selectedRow, true);
         },
         beforeload: function (store, options) {
         	

@@ -393,11 +393,17 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		return find(queryString);
 	}
 	
+	public int saveDeviceTypeContentConfigData(String selectDeviceTypeId,String contentConfig) throws IOException, SQLException {
+		String sql="update tbl_devicetypeinfo t set t.config='"+contentConfig+"' where t.id="+selectDeviceTypeId;
+		int r=getBaseDao().updateOrDeleteBySql(sql);
+		return r;
+	}
+	
 	public void modifyDeviceType(T deviceType) throws Exception {
 		getBaseDao().updateObject(deviceType);
 	}
 	
-	public String getCalculationModelData(User user) throws IOException, SQLException {
+	public String getDeviceTabManagerData(User user) throws IOException, SQLException {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer language_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
@@ -407,7 +413,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		String sql="select t.id,t.name,"
 				+ " decode(t.calculatetype,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
 				+ " t.sort "
-				+ " from tbl_calculationmodel t "
+				+ " from tbl_tabmanager_device t "
 				+ " order by t.sort";
 
 
@@ -432,17 +438,17 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public void addFunctionConfigInstance(T ralculationModel) throws Exception {
-		getBaseDao().addObject(ralculationModel);
+	public void addDeviceTabManagerInstance(T deviceTabManager) throws Exception {
+		getBaseDao().addObject(deviceTabManager);
 	}
 	
-	public void modifyFunctionConfigInstance(T instance) throws Exception {
+	public void modifyDeviceTabManagerInstance(T instance) throws Exception {
 		getBaseDao().updateObject(instance);
 	}
 	
-	public String loadFunctionConfigInstance(String instanceId,User user) throws IOException, SQLException {
+	public String loadDeviceTabManagerInstance(String instanceId,User user) throws IOException, SQLException {
 		String result="{}";
-		String sql="select t.config from tbl_calculationmodel t where t.id="+instanceId;
+		String sql="select t.config from tbl_tabmanager_device t where t.id="+instanceId;
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0 && list.get(0)!=null){
 			result=list.get(0).toString().replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
@@ -451,14 +457,25 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		return result;
 	}
 	
-	public int saveFunctionConfigInstanceConfigData(String selectInstanceId,String instanceConfig) throws IOException, SQLException {
-		String sql="update tbl_calculationmodel t set t.config='"+instanceConfig+"' where t.id="+selectInstanceId;
+	public String loadDeviceTypeContentConfig(String deviceTypeId,User user) throws IOException, SQLException {
+		String result="{}";
+		String sql="select t.config from tbl_devicetypeinfo t where t.id="+deviceTypeId;
+		List<?> list = this.findCallSql(sql);
+		if(list.size()>0 && list.get(0)!=null){
+			result=list.get(0).toString().replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+		}
+		result="{\"success\":true,\"config\":"+result+"}";
+		return result;
+	}
+	
+	public int saveDeviceTabManagerInstanceConfigData(String selectInstanceId,String instanceConfig) throws IOException, SQLException {
+		String sql="update tbl_tabmanager_device t set t.config='"+instanceConfig+"' where t.id="+selectInstanceId;
 		int r=getBaseDao().updateOrDeleteBySql(sql);
 		return r;
 	}
 	
-	public int deleteFunctionConfigInstance(String instanceIds) throws IOException, SQLException {
-		String sql="delete from tbl_calculationmodel t where t.id in ("+instanceIds+")";
+	public int deleteDeviceTabManagerInstance(String instanceIds) throws IOException, SQLException {
+		String sql="delete from tbl_tabmanager_device t where t.id in ("+instanceIds+")";
 		int r=getBaseDao().updateOrDeleteBySql(sql);
 		return r;
 	}

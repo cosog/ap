@@ -1035,6 +1035,16 @@ function CreateAndLoadDeviceInfoTable(isNew) {
                         }
                         source += "]";
                         columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "deviceTabInstance".toUpperCase()) {
+                        var source = "[";
+                        for (var j = 0; j < result.tabInstanceDropdownData.length; j++) {
+                            source += "\'" + result.tabInstanceDropdownData[j] + "\'";
+                            if (j < result.tabInstanceDropdownData.length - 1) {
+                                source += ",";
+                            }
+                        }
+                        source += "]";
+                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "instanceName".toUpperCase()) {
                         var source = "[";
                         for (var j = 0; j < result.instanceDropdownData.length; j++) {

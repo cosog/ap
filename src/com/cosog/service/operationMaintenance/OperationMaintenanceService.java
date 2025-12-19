@@ -457,6 +457,53 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		return result;
 	}
 	
+	public String getDeviceTabInstanceConfig(String name) throws IOException, SQLException {
+		String config="{}";
+		String sql="select t.id,t.name,t.calculatetype,t.config from tbl_tabmanager_device t where t.name='"+name+"'";
+		String instanceId="0";
+		String instanceName="";
+		String calculateType="0";
+		List<?> list = this.findCallSql(sql);
+		if(list.size()>0){
+			Object[] obj=(Object[]) list.get(0);
+			instanceId=obj[0]+"";
+			instanceName=obj[1]+"";
+			calculateType=obj[2]+"";
+			if(obj[3]!=null){
+				config=(obj[3]+"").replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+			}else{
+				config="{}";
+			}
+		}
+		String result="{\"success\":true,\"instanceId\":"+instanceId+",\"instanceName\":\""+instanceName+"\",\"calculateType\":"+calculateType+",\"config\":"+config+"}";
+		return result;
+	}
+	
+	public String getDeviceTabInstanceInfoByDeviceId(String deviceId) throws IOException, SQLException {
+		String config="{}";
+		String sql="select t.id,t.name,t.calculatetype,t.config "
+				+ " from tbl_tabmanager_device t,tbl_device t2 "
+				+ " where t.id=t2.calculatetype "
+				+ " and t2.id="+deviceId;
+		String instanceId="0";
+		String instanceName="";
+		String calculateType="0";
+		List<?> list = this.findCallSql(sql);
+		if(list.size()>0){
+			Object[] obj=(Object[]) list.get(0);
+			instanceId=obj[0]+"";
+			instanceName=obj[1]+"";
+			calculateType=obj[2]+"";
+			if(obj[3]!=null){
+				config=(obj[3]+"").replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+			}else{
+				config="{}";
+			}
+		}
+		String result="{\"success\":true,\"instanceId\":"+instanceId+",\"instanceName\":\""+instanceName+"\",\"calculateType\":"+calculateType+",\"config\":"+config+"}";
+		return result;
+	}
+	
 	public String loadDeviceTypeContentConfig(String deviceTypeId,User user) throws IOException, SQLException {
 		String result="{}";
 		String sql="select t.config from tbl_devicetypeinfo t where t.id="+deviceTypeId;

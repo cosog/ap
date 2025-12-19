@@ -408,6 +408,7 @@ public class OperationMaintenanceController  extends BaseController {
 		if(list!=null){
 			for(DeviceTabManager instance:list){
 				this.deviceTabManagerMaintenanceService.modifyDeviceTabManagerInstance(instance);
+				MemoryDataManagerTask.loadDeviceInfoByTabInstanceId(instance.getId()+"","update");
 			}
 		}
 		
@@ -433,6 +434,8 @@ public class OperationMaintenanceController  extends BaseController {
 		
 		this.deviceTabManagerMaintenanceService.deleteDeviceTabManagerInstance(instanceIds);
 		
+		MemoryDataManagerTask.loadDeviceInfoByTabInstanceId(instanceIds+"","update");
+		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -450,6 +453,40 @@ public class OperationMaintenanceController  extends BaseController {
 		String instanceId = ParamUtils.getParameter(request, "instanceId");
 		
 		String json = deviceTabManagerMaintenanceService.loadDeviceTabManagerInstance(instanceId,user);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getDeviceTabInstanceConfig")
+	public String getDeviceTabInstanceConfig() throws IOException, SQLException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String name = ParamUtils.getParameter(request, "name");
+		
+		String json = deviceTabManagerMaintenanceService.getDeviceTabInstanceConfig(name);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getDeviceTabInstanceInfoByDeviceId")
+	public String getDeviceTabInstanceInfoByDeviceId() throws IOException, SQLException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		
+		String json = deviceTabManagerMaintenanceService.getDeviceTabInstanceInfoByDeviceId(deviceId);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

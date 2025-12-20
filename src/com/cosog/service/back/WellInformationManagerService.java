@@ -4403,7 +4403,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public int getDeviceCalculateType(String deviceId){
 		int calculateType=0;
 		try{
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			
 			String sql="select t.calculatetype from "+deviceTableName+" t where t.id="+deviceId;
 			List<?> list = this.findCallSql(sql);

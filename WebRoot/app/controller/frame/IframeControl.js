@@ -475,3 +475,35 @@ function saveAccessModuleLog(module_Code){
 		});  
 	}
 }
+
+function getDeviceTabInstanceInfoByDeviceId(deviceId){
+	var r={};
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/operationMaintenanceController/getDeviceTabInstanceInfoByDeviceId',
+		async:false,
+		success:function(response) {
+			r=Ext.JSON.decode(response.responseText);
+		},
+		params: {
+			deviceId:deviceId
+		}
+	});
+	return r;
+}
+
+function getDeviceTabInstanceInfoByDeviceId(deviceType){
+	var r={};
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/operationMaintenanceController/getDeviceTabInstanceInfoByDeviceId',
+		async:false,
+		success:function(response) {
+			r=Ext.JSON.decode(response.responseText);
+		},
+		params: {
+			deviceId:deviceId
+		}
+	});
+	return r;
+}

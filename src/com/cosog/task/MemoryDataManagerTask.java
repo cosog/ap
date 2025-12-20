@@ -1786,6 +1786,23 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static void loadDeviceInfoByTabInstanceId(String instanceId,String method){
+		List<String> wellList =new ArrayList<String>();
+		String sql="select t.id from tbl_device t where t.calculatetype in ("+instanceId+")";
+		try {
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				wellList.add(obj[0]+"");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(wellList.size()>0){
+			loadDeviceInfo(wellList,0,method);
+		}
+	}
+	
 	public static void loadDeviceInfoByInstanceId(String instanceId,String method){
 		List<String> wellList =new ArrayList<String>();
 		String sql="select t.id from tbl_device t,tbl_protocolinstance t2 where t.instancecode=t2.code and t2.id= "+instanceId;

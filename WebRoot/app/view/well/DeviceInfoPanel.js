@@ -282,15 +282,11 @@ var deviceAdditionalInformationTabPanelItems=[{
 	        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
         				applicationScenarios=1;
         			}
-	            	var calculateTypeName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'calculateTypeName');
-	            	if(calculateTypeName==loginUserLanguageResource.SRPCalculate){
-	            		calculateType=1;
-	    			}else if(calculateTypeName==loginUserLanguageResource.PCPCalculate){
-	            		calculateType=2;
-	    			}
+	            	var deviceTabInstance= deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceTabInstance');
+	        		var deviceTabInstanceInfo=getDeviceTabInstanceInfo(deviceTabInstance);
+	        		calculateType=deviceTabInstanceInfo.calculateType;
 	        	}
 			}
-			
 			CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationScenarios,calculateType);
 		},
 		afterrender: function (panel, eOpts) {
@@ -336,14 +332,6 @@ var deviceAdditionalInformationTabPanelItems=[{
         }
     }
 },{
-	title:loginUserLanguageResource.intelligentFrequencyConversion,
-	id:'DeviceIntelligentFrequencyConversionInfoPanel_Id',
-	hidden:true
-},{
-	title:loginUserLanguageResource.intelligentIntermissiveOilDrawing,
-	id:'DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id',
-	hidden:true
-},{
 	title:loginUserLanguageResource.systemParameterConfiguration,
 	id:'DeviceSystemParameterConfigurationInfoPanel_Id',
 	hidden: !moduleContentConfig.primaryDevice.systemParameterConfiguration,
@@ -382,6 +370,14 @@ var deviceAdditionalInformationTabPanelItems=[{
         }
     }
 	
+},{
+	title:loginUserLanguageResource.intelligentFrequencyConversion,
+	id:'DeviceIntelligentFrequencyConversionInfoPanel_Id',
+	hidden:true
+},{
+	title:loginUserLanguageResource.intelligentIntermissiveOilDrawing,
+	id:'DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id',
+	hidden:true
 }];
 
 Ext.define('AP.view.well.DeviceInfoPanel', {
@@ -836,28 +832,28 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
         				var deviceId=0;
         				var deviceName='';
         				var applicationScenarios=0;
-        				var calculateTypeName='';
     	        		var calculateType=0;
+    	        		var deviceTabInstance='';
+    	        		var deviceTabInstanceInfo={};
         				var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
         				if(isNotVal(DeviceSelectRow)){
         					var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
             	        	if(deviceInfoHandsontableData.length>0){
             	        		deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
             	        		deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
-            	        		calculateTypeName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'calculateTypeName');
+            	        		
+            	        		deviceTabInstance= deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceTabInstance');
+            	        		deviceTabInstanceInfo=getDeviceTabInstanceInfo(deviceTabInstance);
+            	        		calculateType=deviceTabInstanceInfo.calculateType;
+            	        		
             	        		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
             	        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
         	        				applicationScenarios=1;
         	        			}
-            	            	if(calculateTypeName==loginUserLanguageResource.SRPCalculate){
-            	            		calculateType=1;
-            	    			}else if(calculateTypeName==loginUserLanguageResource.PCPCalculate){
-            	            		calculateType=2;
-            	    			}
             	        	}
         				}
         				if(newCard.id=="DeviceCalculateDataInfoPanel_Id"){
-        					updateDeviceAdditionalInformationTabPaneContent(calculateTypeName);
+        					updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo);
         				}
         				
         				CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationScenarios,calculateType);
@@ -898,7 +894,6 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 		var calculateDataActiveId=Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getActiveTab().id;
 		if(calculateDataActiveId=='DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id'){
 			var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
-//			var calculateType=getDeviceCalculateType(deviceId);
 			if(calculateType!=deviceCalculateDataType){
 				Ext.getCmp('DeviceCalculateDataType_Id').setValue({deviceCalculateDataType:calculateType});
 			}else{
@@ -924,7 +919,7 @@ function getDeviceCalculateType(deviceId){
 	var calculateType=0;
 	Ext.Ajax.request({
 		method:'POST',
-		async :  false,
+		async:false,
 		url:context + '/wellInformationManagerController/getDeviceCalculateType',
 		success:function(response) {
 			calculateType = Ext.JSON.decode(response.responseText).calculateType;
@@ -945,7 +940,7 @@ function getApplicationScenariosType(deviceId){
 		async :  false,
 		url:context + '/wellInformationManagerController/getApplicationScenariosType',
 		success:function(response) {
-			applicationScenarios = Ext.JSON.decode(response.responseText).calculateType;
+			applicationScenarios = Ext.JSON.decode(response.responseText).applicationScenarios;
 		},
 		failure:function(){
 		},
@@ -1149,7 +1144,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
             	deviceInfoHandsontableHelper.hot.selectCell(0,'deviceName');
             	
-            	updateDeviceAdditionalInformationTabPaneContent('');
+            	updateDeviceAdditionalInformationTabPaneContent({});
             	CreateDeviceAdditionalInformationTable(0,'',0,0);
             }else{
             	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
@@ -1165,26 +1160,22 @@ function CreateAndLoadDeviceInfoTable(isNew) {
         		
         		var recordId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'id');
             	var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'deviceName');
-            	var calculateTypeName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'calculateTypeName');
+            	
+            	var deviceTabInstance= deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'deviceTabInstance');
+        		var deviceTabInstanceInfo=getDeviceTabInstanceInfo(deviceTabInstance);
+        		var calculateType=deviceTabInstanceInfo.calculateType;
+            	
             	var applicationScenarios=0;
             	var applicationScenariosName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'applicationScenariosName');
             	if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
     				applicationScenarios=1;
     			}
             	
-            	var calculateType=0;
-            	var calculateTypeName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'calculateTypeName');
-            	if(calculateTypeName==loginUserLanguageResource.SRPCalculate){
-            		calculateType=1;
-    			}else if(calculateTypeName==loginUserLanguageResource.PCPCalculate){
-            		calculateType=2;
-    			}
-            	
             	var combDeviceName=Ext.getCmp('deviceListComb_Id').getValue();
         		if(combDeviceName!=''){
             		Ext.getCmp("selectedDeviceId_global").setValue(recordId);
         		}
-        		updateDeviceAdditionalInformationTabPaneContent(calculateTypeName);
+        		updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo);
         		CreateDeviceAdditionalInformationTable(recordId,deviceName,applicationScenarios,calculateType);
             }
             Ext.getCmp("DeviceTotalCount_Id").update({
@@ -1437,7 +1428,7 @@ var DeviceInfoHandsontableHelper = {
                 	if(row<0 && row2<0){//只选中表头
                 		Ext.getCmp("DeviceSelectRow_Id").setValue('');
                     	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
-                    	updateDeviceAdditionalInformationTabPaneContent('');
+                    	updateDeviceAdditionalInformationTabPaneContent({});
                     	CreateDeviceAdditionalInformationTable(0,'',0,0);
                 	}else{
                 		if(row<0){
@@ -1458,20 +1449,18 @@ var DeviceInfoHandsontableHelper = {
                         	Ext.getCmp("DeviceSelectEndRow_Id").setValue(endRow);
                         	var recordId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'id');
                         	var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'deviceName');
-                        	var calculateTypeName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'calculateTypeName');
+                        	
+                        	var deviceTabInstance= deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'deviceTabInstance');
+        	        		var deviceTabInstanceInfo=getDeviceTabInstanceInfo(deviceTabInstance);
+        	        		var calculateType=deviceTabInstanceInfo.calculateType;
+                        	
                         	var applicationScenarios=0;
                         	var applicationScenariosName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'applicationScenariosName');
                         	if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
     	        				applicationScenarios=1;
     	        			}
-                        	var calculateType=0;
-                        	if(calculateTypeName==loginUserLanguageResource.SRPCalculate){
-                        		calculateType=1;
-                			}else if(calculateTypeName==loginUserLanguageResource.PCPCalculate){
-                        		calculateType=2;
-                			}
                         	
-                        	updateDeviceAdditionalInformationTabPaneContent(calculateTypeName);
+                        	updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo);
                         	CreateDeviceAdditionalInformationTable(recordId,deviceName,applicationScenarios,calculateType);
                         	Ext.getCmp("selectedDeviceId_global").setValue(recordId);
                     	}else{
@@ -1539,18 +1528,13 @@ var DeviceInfoHandsontableHelper = {
                                     	}
                                     	productionHandsontableHelper.hot.render();
                             		}
-                                }else if(params[1] == "calculateTypeName"){
-                                	updateDeviceAdditionalInformationTabPaneContent(params[3]);
+                                }else if(params[1] == "deviceTabInstance"){
+                                	var deviceTabInstanceInfo=getDeviceTabInstanceInfo(params[3]);
+                                	updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo);
                                 	
                                 	var additionalInformationType=getDeviceAdditionalInformationType();
                                 	if(additionalInformationType==31){
-                                		var calculateType=0;
-                                		if(params[3] == loginUserLanguageResource.SRPCalculate){
-                                			calculateType=1;
-                                		}else if(params[3] == loginUserLanguageResource.PCPCalculate){
-                                			calculateType=2;
-                                		}
-                                		
+                                		var calculateType=deviceTabInstanceInfo.calculateType;
                                 		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
                             			if(calculateType!=deviceCalculateDataType){
                             				Ext.getCmp('DeviceCalculateDataType_Id').setValue({deviceCalculateDataType:calculateType});
@@ -3240,61 +3224,69 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 		videoInfoHandsontableHelper=null;
 	}
 	videoInfoHandsontableHelper=null;
-	Ext.getCmp("DeviceVideoInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("DeviceVideoInfoPanel_Id")!=undefined){
+		Ext.getCmp("DeviceVideoInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
+	
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceVideoInfo',
 		success:function(response) {
-			Ext.getCmp("DeviceVideoInfoPanel_Id").getEl().unmask();
-			var result =  Ext.JSON.decode(response.responseText);
-			if(videoInfoHandsontableHelper==null || videoInfoHandsontableHelper.hot==undefined){
-				videoInfoHandsontableHelper = VideoInfoHandsontableHelper.createNew("VideoInfoTableDiv_id");
-				var colHeaders = "[";
-                var columns = "[";
-                var colWidths=[];
-                for (var i = 0; i < result.columns.length; i++) {
-                    colHeaders += "'" + result.columns[i].header + "'";
-                    colWidths.push(result.columns[i].flex);
-                    if (result.columns[i].dataIndex.toUpperCase() === "videoKey".toUpperCase()) {
-                        var source = "[";
-                        for (var j = 0; j < result.videoKeyList.length; j++) {
-                            source += "\'" + result.videoKeyList[j] + "\'";
-                            if (j < result.videoKeyList.length - 1) {
-                                source += ",";
-                            }
-                        }
-                        source += "]";
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
-                    }else {
-                        columns += "{data:'" + result.columns[i].dataIndex + "'}";
-                    }
-                    if (i < result.columns.length - 1) {
-                        colHeaders += ",";
-                        columns += ",";
-                    }
-                }
-                colHeaders += "]";
-                columns += "]";
+			if(Ext.getCmp("DeviceVideoInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceVideoInfoPanel_Id").getEl().unmask();
 				
-				videoInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				videoInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
-				videoInfoHandsontableHelper.colWidths=colWidths;
-				if(result.totalRoot.length==0){
-					videoInfoHandsontableHelper.createTable([{},{},{},{}]);
+				var result =  Ext.JSON.decode(response.responseText);
+				if(videoInfoHandsontableHelper==null || videoInfoHandsontableHelper.hot==undefined){
+					videoInfoHandsontableHelper = VideoInfoHandsontableHelper.createNew("VideoInfoTableDiv_id");
+					var colHeaders = "[";
+	                var columns = "[";
+	                var colWidths=[];
+	                for (var i = 0; i < result.columns.length; i++) {
+	                    colHeaders += "'" + result.columns[i].header + "'";
+	                    colWidths.push(result.columns[i].flex);
+	                    if (result.columns[i].dataIndex.toUpperCase() === "videoKey".toUpperCase()) {
+	                        var source = "[";
+	                        for (var j = 0; j < result.videoKeyList.length; j++) {
+	                            source += "\'" + result.videoKeyList[j] + "\'";
+	                            if (j < result.videoKeyList.length - 1) {
+	                                source += ",";
+	                            }
+	                        }
+	                        source += "]";
+	                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+	                    }else {
+	                        columns += "{data:'" + result.columns[i].dataIndex + "'}";
+	                    }
+	                    if (i < result.columns.length - 1) {
+	                        colHeaders += ",";
+	                        columns += ",";
+	                    }
+	                }
+	                colHeaders += "]";
+	                columns += "]";
+					
+					videoInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+					videoInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
+					videoInfoHandsontableHelper.colWidths=colWidths;
+					if(result.totalRoot.length==0){
+						videoInfoHandsontableHelper.createTable([{},{},{},{}]);
+					}else{
+						videoInfoHandsontableHelper.createTable(result.totalRoot);
+					}
 				}else{
-					videoInfoHandsontableHelper.createTable(result.totalRoot);
-				}
-			}else{
-				if(result.totalRoot.length==0){
-					videoInfoHandsontableHelper.hot.loadData([{},{},{},{}]);
-				}else{
-					videoInfoHandsontableHelper.hot.loadData(result.totalRoot);
+					if(result.totalRoot.length==0){
+						videoInfoHandsontableHelper.hot.loadData([{},{},{},{}]);
+					}else{
+						videoInfoHandsontableHelper.hot.loadData(result.totalRoot);
+					}
 				}
 			}
 		},
 		failure:function(){
-			Ext.getCmp("DeviceVideoInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("DeviceVideoInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceVideoInfoPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -3681,6 +3673,7 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,calcula
 				deviceAuxiliaryDeviceInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
 //					deviceAuxiliaryDeviceInfoHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					deviceAuxiliaryDeviceInfoHandsontableHelper.createTable(result.totalRoot);
 				}else{
 					deviceAuxiliaryDeviceInfoHandsontableHelper.createTable(result.totalRoot);
 				}
@@ -5050,40 +5043,47 @@ function CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applica
 		}
 		fsDiagramConstructionHandsontableHelper=null;
 	}
-	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
+	if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+		Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
+	}
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getFSDiagramConstructionDataInfo',
 		success:function(response) {
-			Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
-			var result =  Ext.JSON.decode(response.responseText);
-			if(fsDiagramConstructionHandsontableHelper==null || fsDiagramConstructionHandsontableHelper.hot==undefined){
-				fsDiagramConstructionHandsontableHelper = FSDiagramConstructionHandsontableHelper.createNew("DeviceFSDiagramConstructionInfoTableDiv_id");;
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
-				var columns="[{data:'id'}," 
-					+"{data:'itemName'}," 
-					+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,fsDiagramConstructionHandsontableHelper);}}," 
-					+"{data:'itemCode'}," 
-					+"{data:'downlinkStatus'}," 
-					+"{data:'uplinkStatus'}" 
-					+"]";
-				fsDiagramConstructionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-				fsDiagramConstructionHandsontableHelper.columns=Ext.JSON.decode(columns);
-				if(result.totalRoot.length==0){
-					fsDiagramConstructionHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+			if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+				var result =  Ext.JSON.decode(response.responseText);
+				if(fsDiagramConstructionHandsontableHelper==null || fsDiagramConstructionHandsontableHelper.hot==undefined){
+					fsDiagramConstructionHandsontableHelper = FSDiagramConstructionHandsontableHelper.createNew("DeviceFSDiagramConstructionInfoTableDiv_id");;
+					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+					var columns="[{data:'id'}," 
+						+"{data:'itemName'}," 
+						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,fsDiagramConstructionHandsontableHelper);}}," 
+						+"{data:'itemCode'}," 
+						+"{data:'downlinkStatus'}," 
+						+"{data:'uplinkStatus'}" 
+						+"]";
+					fsDiagramConstructionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+					fsDiagramConstructionHandsontableHelper.columns=Ext.JSON.decode(columns);
+					if(result.totalRoot.length==0){
+						fsDiagramConstructionHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					}else{
+						fsDiagramConstructionHandsontableHelper.createTable(result.totalRoot);
+					}
 				}else{
-					fsDiagramConstructionHandsontableHelper.createTable(result.totalRoot);
-				}
-			}else{
-				if(result.totalRoot.length==0){
-					fsDiagramConstructionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-				}else{
-					fsDiagramConstructionHandsontableHelper.hot.loadData(result.totalRoot);
+					if(result.totalRoot.length==0){
+						fsDiagramConstructionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					}else{
+						fsDiagramConstructionHandsontableHelper.hot.loadData(result.totalRoot);
+					}
 				}
 			}
 		},
 		failure:function(){
-			Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -5191,7 +5191,6 @@ var FSDiagramConstructionHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
-	                    var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 	                    
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex !=2 && visualColIndex !=5) {
@@ -5416,7 +5415,6 @@ var DeviceSystemParameterHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
-	                    var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 	                    
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex !=2) {
@@ -5813,63 +5811,257 @@ var DevicePumpingUnitDetailedInformationHandsontableHelper = {
 	    }
 	};
 
-function updateDeviceAdditionalInformationTabPaneContent(calculateTypeName){
+function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 	var tabPanel = Ext.getCmp("DeviceAdditionalInformationTabpanel_Id");
 	var activeId = tabPanel.getActiveTab().id;
+	var activeChange=false;
 	
-	if(calculateTypeName == loginUserLanguageResource.SRPCalculate || calculateTypeName == loginUserLanguageResource.PCPCalculate){
-		var calculateType=1;
-		if(calculateTypeName == loginUserLanguageResource.PCPCalculate){
-			calculateType=2;
+	var calculateType=deviceTabInstanceInfo.calculateType==undefined?0:deviceTabInstanceInfo.calculateType;
+	var deviceTabInstanceConfig=deviceTabInstanceInfo.config;
+	
+	var showAdditionalInformationTabPanel=true;
+	
+	var showAdditionalInformation=false;
+	var showAuxiliaryDevice=false;
+	var showVideoConfig=false;
+	var showCalculateDataConfig=false;
+	var showFSDiagramConstruction=false;
+	var showSystemParameterConfig=false;
+	if(deviceTabInstanceConfig!=undefined && deviceTabInstanceConfig.PrimaryDevice!=undefined){
+		showAdditionalInformation=deviceTabInstanceConfig.PrimaryDevice.AdditionalInformation!=undefined?deviceTabInstanceConfig.PrimaryDevice.AdditionalInformation:false;
+		showAuxiliaryDevice=deviceTabInstanceConfig.PrimaryDevice.AuxiliaryDevice!=undefined?deviceTabInstanceConfig.PrimaryDevice.AuxiliaryDevice:false;
+		showVideoConfig=deviceTabInstanceConfig.PrimaryDevice.VideoConfig!=undefined?deviceTabInstanceConfig.PrimaryDevice.VideoConfig:false;
+		showCalculateDataConfig=deviceTabInstanceConfig.PrimaryDevice.CalculateDataConfig!=undefined?deviceTabInstanceConfig.PrimaryDevice.CalculateDataConfig:false;
+		showFSDiagramConstruction=deviceTabInstanceConfig.PrimaryDevice.FSDiagramConstruction!=undefined?deviceTabInstanceConfig.PrimaryDevice.FSDiagramConstruction:false;
+		showSystemParameterConfig=deviceTabInstanceConfig.PrimaryDevice.AdditionalInformation!=undefined?deviceTabInstanceConfig.PrimaryDevice.SystemParameterConfig:false;
+	}
+	
+	if(calculateType==0){
+		showCalculateDataConfig=false;
+		showFSDiagramConstruction=false;
+	}else if(calculateType==2){
+		showFSDiagramConstruction=false;
+	}
+	
+	if( !(showAdditionalInformation||showAuxiliaryDevice||showVideoConfig||showCalculateDataConfig||showFSDiagramConstruction||showSystemParameterConfig) ){
+		showAdditionalInformationTabPanel=false;
+	}
+	
+	if(showAdditionalInformationTabPanel){
+		if(tabPanel.hidden){
+			tabPanel.show();
+		}
+		
+		var DeviceAdditionalInfoPanel = tabPanel.getComponent("DeviceAdditionalInfoPanel_Id");
+		if(showAdditionalInformation && DeviceAdditionalInfoPanel==undefined){
+			tabPanel.insert(0,deviceAdditionalInformationTabPanelItems[0]);
+		}else if(!showAdditionalInformation && DeviceAdditionalInfoPanel!=undefined){
+			tabPanel.remove("DeviceAdditionalInfoPanel_Id");
+		}
+		
+		var DeviceAuxiliaryDevicePanel = tabPanel.getComponent("DeviceAuxiliaryDevicePanel_Id");
+		if(showAuxiliaryDevice && DeviceAuxiliaryDevicePanel==undefined){
+			tabPanel.insert(1,deviceAdditionalInformationTabPanelItems[1]);
+		}else if(!showAuxiliaryDevice && DeviceAuxiliaryDevicePanel!=undefined){
+			tabPanel.remove("DeviceAuxiliaryDevicePanel_Id");
+		}
+		
+		var DeviceVideoInfoPanel = tabPanel.getComponent("DeviceVideoInfoPanel_Id");
+		if(showVideoConfig && DeviceVideoInfoPanel==undefined){
+			tabPanel.insert(2,deviceAdditionalInformationTabPanelItems[2]);
+		}else if(!showVideoConfig && DeviceVideoInfoPanel!=undefined){
+			tabPanel.remove("DeviceVideoInfoPanel_Id");
 		}
 		
 		var DeviceCalculateDataInfoPanel = tabPanel.getComponent("DeviceCalculateDataInfoPanel_Id");
-		var DeviceFSDiagramConstructionInfoPanel = tabPanel.getComponent("DeviceFSDiagramConstructionInfoPanel_Id");
+		if(showCalculateDataConfig && DeviceCalculateDataInfoPanel==undefined){
+			tabPanel.insert(3,deviceAdditionalInformationTabPanelItems[3]);
+		}else if(!showCalculateDataConfig && DeviceCalculateDataInfoPanel!=undefined){
+			tabPanel.remove("DeviceCalculateDataInfoPanel_Id");
+		}
 		
-		if(calculateType==1 && DeviceFSDiagramConstructionInfoPanel==undefined){
+		var DeviceFSDiagramConstructionInfoPanel = tabPanel.getComponent("DeviceFSDiagramConstructionInfoPanel_Id");
+		if(showFSDiagramConstruction && DeviceFSDiagramConstructionInfoPanel==undefined){
 			tabPanel.insert(4,deviceAdditionalInformationTabPanelItems[4]);
-		}else if(calculateType==2 && DeviceFSDiagramConstructionInfoPanel!=undefined){
-			if(activeId=="DeviceFSDiagramConstructionInfoPanel_Id"){
-				tabPanel.setActiveTab("DeviceAdditionalInfoPanel_Id");
-			}
+		}else if(!showFSDiagramConstruction && DeviceFSDiagramConstructionInfoPanel!=undefined){
 			tabPanel.remove("DeviceFSDiagramConstructionInfoPanel_Id");
 		}
 		
-		if(DeviceCalculateDataInfoPanel==undefined){
-			tabPanel.insert(3,deviceAdditionalInformationTabPanelItems[3]);
-			if(calculateType==2){//转速计产时，删除抽油机信息
-				var deviceCalculateDataTabPanel=Ext.getCmp("DeviceCalculateDataInfoPanel_Id");
-				var pumpingInfoPanel = deviceCalculateDataTabPanel.getComponent("PumpingInfoPanel_Id");
-				if(pumpingInfoPanel!=undefined){
-					deviceCalculateDataTabPanel.setActiveTab("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id");
-					deviceCalculateDataTabPanel.remove("PumpingInfoPanel_Id");
-				}
-			}
-		}else{
-			var deviceCalculateDataTabPanel=Ext.getCmp("DeviceCalculateDataInfoPanel_Id");
-			var pumpingInfoPanel = deviceCalculateDataTabPanel.getComponent("PumpingInfoPanel_Id");
-			if(calculateType==1 && pumpingInfoPanel==undefined){
-				deviceCalculateDataTabPanel.insert(1,deviceCalculateDataTabPanelItems[1]);
-			}else if(calculateType==2 && pumpingInfoPanel!=undefined){
-				deviceCalculateDataTabPanel.remove("PumpingInfoPanel_Id");
-			}
+		var DeviceSystemParameterConfigurationInfoPanel = tabPanel.getComponent("DeviceSystemParameterConfigurationInfoPanel_Id");
+		if(showSystemParameterConfig && DeviceSystemParameterConfigurationInfoPanel==undefined){
+			tabPanel.insert(5,deviceAdditionalInformationTabPanelItems[5]);
+		}else if(!showSystemParameterConfig && DeviceSystemParameterConfigurationInfoPanel!=undefined){
+			tabPanel.remove("DeviceSystemParameterConfigurationInfoPanel_Id");
 		}
 	}else{
-		var calculateType=0;
-		var DeviceCalculateDataInfoPanel = tabPanel.getComponent("DeviceCalculateDataInfoPanel_Id");
-		var DeviceFSDiagramConstructionInfoPanel = tabPanel.getComponent("DeviceFSDiagramConstructionInfoPanel_Id");
-		
-		if(DeviceCalculateDataInfoPanel!=undefined || DeviceFSDiagramConstructionInfoPanel!=undefined){
-			if(activeId=="DeviceCalculateDataInfoPanel_Id" || activeId=="DeviceFSDiagramConstructionInfoPanel_Id"){
-				tabPanel.setActiveTab("DeviceAdditionalInfoPanel_Id");
-			}
-			
-			if(DeviceCalculateDataInfoPanel!=undefined){
-				tabPanel.remove("DeviceCalculateDataInfoPanel_Id");
-			}
-    		if(DeviceFSDiagramConstructionInfoPanel!=undefined){
-				tabPanel.remove("DeviceFSDiagramConstructionInfoPanel_Id");
-			}
+		tabPanel.hide();
+	}
+	
+	
+	var activeId = tabPanel.getActiveTab().id;
+	if(activeId=='DeviceIntelligentFrequencyConversionInfoPanel_Id' || activeId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
+		tabPanel.setActiveTab(0);
+	}
+	
+	var DeviceCalculateDataInfoPanel = tabPanel.getComponent("DeviceCalculateDataInfoPanel_Id");
+	if(DeviceCalculateDataInfoPanel!=undefined){
+		var deviceCalculateDataTabPanel=Ext.getCmp("DeviceCalculateDataInfoPanel_Id");
+		var pumpingInfoPanel = deviceCalculateDataTabPanel.getComponent("PumpingInfoPanel_Id");
+		if(calculateType==1 && pumpingInfoPanel==undefined){
+			deviceCalculateDataTabPanel.insert(1,deviceCalculateDataTabPanelItems[1]);
+		}else if(calculateType==2 && pumpingInfoPanel!=undefined){
+			deviceCalculateDataTabPanel.remove("PumpingInfoPanel_Id");
 		}
 	}
+	
+	
+	
+//	// 获取所有标签页
+//    var tabs = tabPanel.items.items;
+//	// 遍历并控制显示/隐藏
+//    tabs.forEach(function(tab) {
+//        var tabId = tab.getId();
+//        var showStatus=false;
+//        if(tabId=='DeviceAdditionalInfoPanel_Id'){
+//        	showStatus=showAdditionalInformation;
+//        }else if(tabId=='DeviceAuxiliaryDevicePanel_Id'){
+//        	showStatus=showAuxiliaryDevice;
+//        }else if(tabId=='DeviceVideoInfoPanel_Id'){
+//        	showStatus=showVideoConfig;
+//        }else if(tabId=='DeviceCalculateDataInfoPanel_Id'){
+//        	showStatus=showCalculateDataConfig;
+//        	
+//        	var deviceCalculateDataTabPanel=Ext.getCmp("DeviceCalculateDataInfoPanel_Id");
+//        	if(calculateType==1){
+//        		var PumpingInfoPanel = Ext.getCmp('PumpingInfoPanel_Id');
+//        		if (!PumpingInfoPanel.isVisible()) {
+//        			PumpingInfoPanel.show();
+//                }
+//        	}else if(calculateType==2){
+//        		var PumpingInfoPanel = Ext.getCmp('PumpingInfoPanel_Id');
+//        		if (PumpingInfoPanel.isVisible()) {
+//        			PumpingInfoPanel.hide();
+//                }
+//        	}else{
+//        		showStatus=false;
+//        	}
+//        	
+//        	if(activeId=='DeviceCalculateDataInfoPanel_Id'){
+//        		if(!deviceCalculateDataTabPanel.getActiveTab().isVisible()){
+//                    var firstVisibleTab = deviceCalculateDataTabPanel.items.find(function(item) {
+//                        return item.isVisible();
+//                    });
+//                    if(firstVisibleTab){
+//                    	deviceCalculateDataTabPanel.setActiveTab(firstVisibleTab);
+//                    }
+//                }
+//        	}
+//        }else if(tabId=='DeviceFSDiagramConstructionInfoPanel_Id'){
+//        	showStatus=showFSDiagramConstruction;
+//        	if(calculateType==0){
+//        		showStatus=false;
+//        	}
+//        }else if(tabId=='DeviceIntelligentFrequencyConversionInfoPanel_Id'){
+//    		
+//    	}else if(tabId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
+//    		
+//    	}else if(tabId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
+//    		showStatus=showSystemParameterConfig;
+//    	}
+//        
+//        // 假设 permissions 对象包含标签页的访问权限
+//        if(showStatus){
+//        	if(tab.hidden){
+//        		tab.show(false);
+//        	}
+//            
+//        }else{
+//        	if(!tab.hidden){
+//        		tab.hide();
+//        	}
+//        }
+//    });
+    
+    // 如果当前激活的标签页被隐藏，切换到第一个可见的标签页
+//    if (!tabPanel.getActiveTab().isVisible()) {
+//        var firstVisibleTab = tabPanel.items.find(function(item) {
+//            return item.isVisible();
+//        });
+//        if (firstVisibleTab) {
+//            tabPanel.setActiveTab(firstVisibleTab);
+//        }
+//    }
+	
+    
+//	
+//	
+//	
+//	
+//	if(calculateType==1 || calculateType==2){
+//		
+//		var DeviceCalculateDataInfoPanel = tabPanel.getComponent("DeviceCalculateDataInfoPanel_Id");
+//		var DeviceFSDiagramConstructionInfoPanel = tabPanel.getComponent("DeviceFSDiagramConstructionInfoPanel_Id");
+//		
+//		if(calculateType==1 && DeviceFSDiagramConstructionInfoPanel==undefined){
+//			tabPanel.insert(4,deviceAdditionalInformationTabPanelItems[4]);
+//		}else if(calculateType==2 && DeviceFSDiagramConstructionInfoPanel!=undefined){
+//			if(activeId=="DeviceFSDiagramConstructionInfoPanel_Id"){
+//				tabPanel.setActiveTab("DeviceAdditionalInfoPanel_Id");
+//			}
+//			tabPanel.remove("DeviceFSDiagramConstructionInfoPanel_Id");
+//		}
+//		
+//		if(DeviceCalculateDataInfoPanel==undefined){
+//			tabPanel.insert(3,deviceAdditionalInformationTabPanelItems[3]);
+//			if(calculateType==2){//转速计产时，删除抽油机信息
+//				var deviceCalculateDataTabPanel=Ext.getCmp("DeviceCalculateDataInfoPanel_Id");
+//				var pumpingInfoPanel = deviceCalculateDataTabPanel.getComponent("PumpingInfoPanel_Id");
+//				if(pumpingInfoPanel!=undefined){
+//					deviceCalculateDataTabPanel.setActiveTab("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id");
+//					deviceCalculateDataTabPanel.remove("PumpingInfoPanel_Id");
+//				}
+//			}
+//		}else{
+//			var deviceCalculateDataTabPanel=Ext.getCmp("DeviceCalculateDataInfoPanel_Id");
+//			var pumpingInfoPanel = deviceCalculateDataTabPanel.getComponent("PumpingInfoPanel_Id");
+//			if(calculateType==1 && pumpingInfoPanel==undefined){
+//				deviceCalculateDataTabPanel.insert(1,deviceCalculateDataTabPanelItems[1]);
+//			}else if(calculateType==2 && pumpingInfoPanel!=undefined){
+//				deviceCalculateDataTabPanel.remove("PumpingInfoPanel_Id");
+//			}
+//		}
+//	}else{
+//		calculateType=0;
+//		var DeviceCalculateDataInfoPanel = tabPanel.getComponent("DeviceCalculateDataInfoPanel_Id");
+//		var DeviceFSDiagramConstructionInfoPanel = tabPanel.getComponent("DeviceFSDiagramConstructionInfoPanel_Id");
+//		
+//		if(DeviceCalculateDataInfoPanel!=undefined || DeviceFSDiagramConstructionInfoPanel!=undefined){
+//			if(activeId=="DeviceCalculateDataInfoPanel_Id" || activeId=="DeviceFSDiagramConstructionInfoPanel_Id"){
+//				tabPanel.setActiveTab("DeviceAdditionalInfoPanel_Id");
+//			}
+//			
+//			if(DeviceCalculateDataInfoPanel!=undefined){
+//				tabPanel.remove("DeviceCalculateDataInfoPanel_Id");
+//			}
+//    		if(DeviceFSDiagramConstructionInfoPanel!=undefined){
+//				tabPanel.remove("DeviceFSDiagramConstructionInfoPanel_Id");
+//			}
+//		}
+//	}
+}
+
+function getDeviceTabInstanceInfo(name){
+	var r={};
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/operationMaintenanceController/getDeviceTabInstanceConfig',
+		async:false,
+		success:function(response) {
+			r=Ext.JSON.decode(response.responseText);
+		},
+		params: {
+			name:name
+		}
+	});
+	return r;
 }

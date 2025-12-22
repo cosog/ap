@@ -61,7 +61,27 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     		var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
                     		var deviceName=record.data.deviceName;
                     		var deviceId=record.data.id;
-                    		var calculateType=record.data.calculateType;
+                    		
+                    		var deviceTabInstanceInfo=getDeviceTabInstanceInfoByDeviceId(deviceId);
+                    		var deviceTabInstanceConfig=deviceTabInstanceInfo.config;
+                    		var calculateType=deviceTabInstanceInfo.calculateType==undefined?0:deviceTabInstanceInfo.calculateType;
+                    		
+                    		var showHistoryTrendCurve=false;
+                    		var showHistoryTiledDiagram=false;
+                    		var showHistoryDiagramOverlay=false;
+                    		
+                    		if(deviceTabInstanceConfig!=undefined && deviceTabInstanceConfig.DeviceHistoryQuery!=undefined){
+                    			showHistoryTrendCurve=deviceTabInstanceConfig.DeviceHistoryQuery.TrendCurve!=undefined?deviceTabInstanceConfig.DeviceHistoryQuery.TrendCurve:false;
+                    			showHistoryTiledDiagram=deviceTabInstanceConfig.DeviceHistoryQuery.TiledDiagram!=undefined?deviceTabInstanceConfig.DeviceHistoryQuery.TiledDiagram:false;
+                    			showHistoryDiagramOverlay=deviceTabInstanceConfig.DeviceHistoryQuery.DiagramOverlay!=undefined?deviceTabInstanceConfig.DeviceHistoryQuery.DiagramOverlay:false;
+                    		}
+                    		
+                    		if(showHistoryTrendCurve==false && showHistoryTiledDiagram==false && showHistoryDiagramOverlay==false){
+                    			showHistoryTrendCurve=true;
+                    		}
+                    		
+                    		
+                    		
                     		
                     		var combDeviceName=Ext.getCmp('HistoryQueryDeviceListComb_Id').getValue();
                     		if(combDeviceName!=undefined || combDeviceName!=''){
@@ -74,7 +94,6 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                             }
                     		
                     		
-                    		var removeCenterCalDataPanel=false;
                     		var centerTabPanelChange=false;
                     		
                     		Ext.getCmp('HistoryQueryStartDate_Id').setValue('');
@@ -89,34 +108,57 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     		
                     		var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
                     		
-                    		var getTabId1 = tabPanel.getComponent("HistoryQueryTiledDiagramPanel");
-                    		var getTabId2 = tabPanel.getComponent("HistoryDiagramOverlayTabPanel");
-                    		
-                    		if(calculateType==1){
-                    			if(getTabId1==undefined){
-                    				tabPanel.insert(1,historyQueryCenterTabPanelItems[1]);
+                    		var tabChange=false;
+                    		//趋势曲线标签处理
+                    		if(showHistoryTrendCurve==false){
+                    			tabPanel.remove(Ext.getCmp("HistoryDataTabPanel"));
+                    			if(activeId=="HistoryDataTabPanel"){
+                    				tabChange=true;
                     			}
-                    			if(getTabId2==undefined){
-                    				tabPanel.insert(2,historyQueryCenterTabPanelItems[2]);
+                    		}else{
+                    			var HistoryDataTabPanel = tabPanel.getComponent("HistoryDataTabPanel");
+                				if(HistoryDataTabPanel==undefined){
+                					tabPanel.insert(0,historyQueryCenterTabPanelItems[0]);
+                					tabPanel.setActiveTab(0);
+                					tabChange=true;
+                				}
+                    		}
+                    		//图形平铺标签处理
+                    		if(showHistoryTiledDiagram==false){
+                    			tabPanel.remove(Ext.getCmp("HistoryQueryTiledDiagramPanel"));
+                    			if(activeId=="HistoryQueryTiledDiagramPanel"){
+                    				tabChange=true;
                     			}
-                       	 	}else{
-                       	 		if(getTabId1!=undefined){
-                       	 			if(tabPanel.getActiveTab().id=='HistoryQueryTiledDiagramPanel'){
-                       	 				centerTabPanelChange=true;
-                       	 			}
-                       	 			tabPanel.remove("HistoryQueryTiledDiagramPanel");
-                       	 			removeCenterCalDataPanel=true;
-                       	 		}
-                       	 		if(getTabId2!=undefined){
-                       	 			if(tabPanel.getActiveTab().id=='HistoryDiagramOverlayTabPanel'){
-                       	 				centerTabPanelChange=true;
-                       	 			}
-                       	 			tabPanel.remove("HistoryDiagramOverlayTabPanel");
-                       	 			removeCenterCalDataPanel=true;
-                       	 		}
-                       	 	}
+                    		}else{
+                    			var HistoryQueryTiledDiagramPanel = tabPanel.getComponent("HistoryQueryTiledDiagramPanel");
+                				if(calculateType==1 && HistoryQueryTiledDiagramPanel==undefined){
+                					tabPanel.insert(1,historyQueryCenterTabPanelItems[1]);
+                				}else if(calculateType!=1 && historyQueryCenterTabPanelItems!=undefined){
+                					tabPanel.remove(Ext.getCmp("historyQueryCenterTabPanelItems"));
+                        			if(activeId=="historyQueryCenterTabPanelItems"){
+                        				tabChange=true;
+                        			}
+                				}
+                    		}
+                    		//图形叠加标签处理
+                    		if(showHistoryDiagramOverlay==false){
+                    			tabPanel.remove(Ext.getCmp("HistoryDiagramOverlayTabPanel"));
+                    			if(activeId=="HistoryDiagramOverlayTabPanel"){
+                    				tabChange=true;
+                    			}
+                    		}else{
+                    			var HistoryDiagramOverlayTabPanel = tabPanel.getComponent("HistoryDiagramOverlayTabPanel");
+                				if(calculateType==1 && HistoryDiagramOverlayTabPanel==undefined){
+                					tabPanel.insert(2,historyQueryCenterTabPanelItems[2]);
+                				}else if(calculateType!=1 && HistoryDiagramOverlayTabPanel!=undefined){
+                					tabPanel.remove(Ext.getCmp("HistoryDiagramOverlayTabPanel"));
+                        			if(activeId=="HistoryDiagramOverlayTabPanel"){
+                        				tabChange=true;
+                        			}
+                				}
+                    		}
                     		
-                    		if(!centerTabPanelChange){
+                    		if(!tabChange){
                     			var activeId = tabPanel.getActiveTab().id;
                 				if(activeId=="HistoryDataTabPanel"){
                 					Ext.getCmp("HistoryQueryCenterToolbar1_id").show();

@@ -492,18 +492,146 @@ function getDeviceTabInstanceInfoByDeviceId(deviceId){
 	return r;
 }
 
-function getDeviceTabInstanceInfoByDeviceId(deviceType){
+function getProjectTabInstanceInfoByDeviceType(deviceType){
 	var r={};
+	r.DeviceRealTimeMonitoring={
+			FESDiagramStatPie: false,
+            CommStatusStatPie: false,
+            RunStatusStatPie: false	
+	};
+	r.DeviceHistoryQuery={
+			FESDiagramStatPie: false,
+            CommStatusStatPie: false,
+            RunStatusStatPie: false
+	};
+	if(r.AlarmQuery==undefined){
+		r.AlarmQuery={
+				FESDiagramResultAlarm: false,
+	            RunStatusAlarm: false,
+	            CommStatusAlarm: false,
+	            NumericValueAlarm: false,
+	            EnumValueAlarm: false,
+	            SwitchingValueAlarm: false
+		};
+	}
+	
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/operationMaintenanceController/getDeviceTabInstanceInfoByDeviceId',
+		url:context + '/operationMaintenanceController/getProjectTabInstanceInfoByDeviceType',
 		async:false,
 		success:function(response) {
-			r=Ext.JSON.decode(response.responseText);
+			var result=Ext.JSON.decode(response.responseText);
+			if(result.config.length>0){
+				for(var i=0;i<result.config.length;i++){
+					var showRealtimeFESDiagramStatPie=false;
+					var showRealtimeCommStatusStatPie=false;
+					var showRealtimeRunStatusStatPie=false;
+					
+					var showHistoryFESDiagramStatPie=false;
+					var showHistoryCommStatusStatPie=false;
+					var showHistoryRunStatusStatPie=false;
+					
+					var showAlarmQueryFESDiagramResultAlarm=false;
+					var showAlarmQueryRunStatusAlarm=false;
+					var showAlarmQueryCommStatusAlarm=false;
+					var showAlarmQueryNumericValueAlarm=false;
+					var showAlarmQueryEnumValueAlarm=false;
+					var showAlarmQuerySwitchingValueAlarm=false;
+					
+					
+					if(result.config[i].DeviceRealTimeMonitoring!=undefined){
+						showRealtimeFESDiagramStatPie=result.config[i].DeviceRealTimeMonitoring.FESDiagramStatPie!=undefined?result.config[i].DeviceRealTimeMonitoring.FESDiagramStatPie:false;
+						showRealtimeCommStatusStatPie=result.config[i].DeviceRealTimeMonitoring.CommStatusStatPie!=undefined?result.config[i].DeviceRealTimeMonitoring.CommStatusStatPie:false;
+						showRealtimeRunStatusStatPie=result.config[i].DeviceRealTimeMonitoring.RunStatusStatPie!=undefined?result.config[i].DeviceRealTimeMonitoring.RunStatusStatPie:false;
+					}
+					
+					if(result.config[i].DeviceHistoryQuery!=undefined){
+						showHistoryFESDiagramStatPie=result.config[i].DeviceHistoryQuery.FESDiagramStatPie!=undefined?result.config[i].DeviceHistoryQuery.FESDiagramStatPie:false;
+						showHistoryCommStatusStatPie=result.config[i].DeviceHistoryQuery.CommStatusStatPie!=undefined?result.config[i].DeviceHistoryQuery.CommStatusStatPie:false;
+						showHistoryRunStatusStatPie=result.config[i].DeviceHistoryQuery.RunStatusStatPie!=undefined?result.config[i].DeviceHistoryQuery.RunStatusStatPie:false;
+					}
+					
+					if(result.config[i].AlarmQuery!=undefined){
+						showAlarmQueryFESDiagramResultAlarm=result.config[i].AlarmQuery.FESDiagramResultAlarm!=undefined?result.config[i].AlarmQuery.FESDiagramResultAlarm:false;
+						showAlarmQueryRunStatusAlarm=result.config[i].AlarmQuery.RunStatusAlarm!=undefined?result.config[i].AlarmQuery.RunStatusAlarm:false;
+						showAlarmQueryCommStatusAlarm=result.config[i].AlarmQuery.CommStatusAlarm!=undefined?result.config[i].AlarmQuery.CommStatusAlarm:false;
+						
+						showAlarmQueryNumericValueAlarm=result.config[i].AlarmQuery.NumericValueAlarm!=undefined?result.config[i].AlarmQuery.NumericValueAlarm:false;
+						showAlarmQueryEnumValueAlarm=result.config[i].AlarmQuery.EnumValueAlarm!=undefined?result.config[i].AlarmQuery.EnumValueAlarm:false;
+						showAlarmQuerySwitchingValueAlarm=result.config[i].AlarmQuery.SwitchingValueAlarm!=undefined?result.config[i].AlarmQuery.SwitchingValueAlarm:false;
+					}
+					
+					
+					if(r.DeviceRealTimeMonitoring.FESDiagramStatPie==false){
+						r.DeviceRealTimeMonitoring.FESDiagramStatPie=showRealtimeFESDiagramStatPie;
+					}
+					if(r.DeviceRealTimeMonitoring.CommStatusStatPie==false){
+						r.DeviceRealTimeMonitoring.CommStatusStatPie=showRealtimeCommStatusStatPie;
+					}
+					if(r.DeviceRealTimeMonitoring.RunStatusStatPie==false){
+						r.DeviceRealTimeMonitoring.RunStatusStatPie=showRealtimeRunStatusStatPie;
+					}
+					
+					if(r.DeviceHistoryQuery.FESDiagramStatPie==false){
+						r.DeviceHistoryQuery.FESDiagramStatPie=showHistoryFESDiagramStatPie;
+					}
+					if(r.DeviceHistoryQuery.CommStatusStatPie==false){
+						r.DeviceHistoryQuery.CommStatusStatPie=showHistoryCommStatusStatPie;
+					}
+					if(r.DeviceHistoryQuery.RunStatusStatPie==false){
+						r.DeviceHistoryQuery.RunStatusStatPie=showHistoryRunStatusStatPie;
+					}
+					
+					if(r.AlarmQuery.FESDiagramResultAlarm==false){
+						r.AlarmQuery.FESDiagramResultAlarm=showAlarmQueryFESDiagramResultAlarm;
+					}
+					if(r.AlarmQuery.RunStatusAlarm==false){
+						r.AlarmQuery.RunStatusAlarm=showAlarmQueryRunStatusAlarm;
+					}
+					if(r.AlarmQuery.CommStatusAlarm==false){
+						r.AlarmQuery.CommStatusAlarm=showAlarmQueryCommStatusAlarm;
+					}
+					if(r.AlarmQuery.NumericValueAlarm==false){
+						r.AlarmQuery.NumericValueAlarm=showAlarmQueryNumericValueAlarm;
+					}
+					if(r.AlarmQuery.EnumValueAlarm==false){
+						r.AlarmQuery.EnumValueAlarm=showAlarmQueryEnumValueAlarm;
+					}
+					if(r.AlarmQuery.SwitchingValueAlarm==false){
+						r.AlarmQuery.SwitchingValueAlarm=showAlarmQuerySwitchingValueAlarm;
+					}
+				}
+				
+			}
 		},
 		params: {
-			deviceId:deviceId
+			deviceType:deviceType
 		}
 	});
+	
+	if(r.DeviceRealTimeMonitoring.FESDiagramStatPie==false && r.DeviceRealTimeMonitoring.CommStatusStatPie==false && r.DeviceRealTimeMonitoring.RunStatusStatPie==false){
+		r.DeviceRealTimeMonitoring.CommStatusStatPie=true;
+		r.DeviceRealTimeMonitoring.RunStatusStatPie=true;
+	}
+	
+	if(r.DeviceHistoryQuery.FESDiagramStatPie==false && r.DeviceHistoryQuery.CommStatusStatPie==false && r.DeviceHistoryQuery.RunStatusStatPie==false){
+		r.DeviceHistoryQuery.CommStatusStatPie=true;
+		r.DeviceHistoryQuery.RunStatusStatPie=true;
+	}
+	
+	if(r.AlarmQuery.FESDiagramResultAlarm==false 
+			&& r.AlarmQuery.RunStatusAlarm==false 
+			&& r.AlarmQuery.CommStatusAlarm==false
+			&& r.AlarmQuery.NumericValueAlarm==false
+			&& r.AlarmQuery.EnumValueAlarm==false
+			&& r.AlarmQuery.SwitchingValueAlarm==false
+			){
+		r.AlarmQuery.RunStatusAlarm=true;
+		r.AlarmQuery.CommStatusAlarm=true;
+		r.AlarmQuery.NumericValueAlarm=true;
+		r.AlarmQuery.EnumValueAlarm=true;
+		r.AlarmQuery.SwitchingValueAlarm=true;
+	}
+	
 	return r;
 }

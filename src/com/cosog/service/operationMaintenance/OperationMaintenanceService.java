@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.cosog.model.Code;
 import com.cosog.model.CurveConf;
 import com.cosog.model.DataMapping;
+import com.cosog.model.DeviceTabManager;
 import com.cosog.model.KeyValue;
 import com.cosog.model.User;
 import com.cosog.model.calculate.DeviceInfo;
@@ -444,6 +445,16 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 	
 	public void modifyDeviceTabManagerInstance(T instance) throws Exception {
 		getBaseDao().updateObject(instance);
+	}
+	
+	public int updateDeviceTabManagerInstance(DeviceTabManager instance) throws Exception {
+		String sql="update tbl_tabmanager_device t "
+				+ " set t.name='"+instance.getName()+"',"
+				+ " t.calculatetype="+instance.getCalculateType()+","
+				+ " t.sort="+instance.getSort()+" "
+				+ " where t.id="+instance.getId();
+		int r=getBaseDao().updateOrDeleteBySql(sql);
+		return r;
 	}
 	
 	public String loadDeviceTabManagerInstance(String instanceId,User user) throws IOException, SQLException {

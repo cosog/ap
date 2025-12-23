@@ -55,13 +55,17 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoView", {
         		items:items,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check2');
-        				if(oldCard.xtype=='tabpanel'){
-        					oldCard.activeTab.removeAll();
-        				}else{
-        					oldCard.removeAll();
-        				}
+        				if(oldCard!=undefined){
+        					oldCard.setIconCls(null);
+        					if(oldCard.xtype=='tabpanel'){
+            					oldCard.activeTab.removeAll();
+            				}else{
+            					oldCard.removeAll();
+            				}
+                	    }
+                	    if(newCard!=undefined){
+                	    	newCard.setIconCls('check2');			
+                	    }
         			},
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
         				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 

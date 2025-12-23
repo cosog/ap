@@ -603,31 +603,35 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
         		items: AlarmQuerySecondTabPanelItems,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check3');
-        				var alarmOverViewPanelId='';
-        				var alarmDetailsPanelId='';
-        				if(oldCard.id=="FESDiagramResultAlarmInfoTabPanel_Id"){
-        					alarmOverViewPanelId='FESDiagramResultAlarmOverviewPanel_Id';
-        					alarmDetailsPanelId='FESDiagramResultAlarmDetailsPanel_Id';
-            			}else if(oldCard.id=="RunStatusAlarmInfoTabPanel_Id"){
-            				alarmOverViewPanelId='RunStatusAlarmOverviewPanel_Id';
-            				alarmDetailsPanelId='RunStatusAlarmDetailsPanel_Id';
-            			}else if(oldCard.id=="CommunicationAlarmInfoTabPanel_Id"){
-            				alarmOverViewPanelId='CommunicationAlarmOverviewPanel_Id';
-            				alarmDetailsPanelId='CommunicationAlarmDetailsPanel_Id';
-            			}else if(oldCard.id=="NumericValueAlarmInfoTabPanel_Id"){
-            				alarmOverViewPanelId='NumericValueAlarmOverviewPanel_Id';
-            				alarmDetailsPanelId='NumericValueAlarmDetailsPanel_Id';
-            			}else if(oldCard.id=="EnumValueAlarmInfoTabPanel_Id"){
-            				alarmOverViewPanelId='EnumValueAlarmOverviewPanel_Id';
-            				alarmDetailsPanelId='EnumValueAlarmDetailsPanel_Id';
-            			}else if(oldCard.id=="SwitchingValueAlarmInfoTabPanel_Id"){
-            				alarmOverViewPanelId='SwitchingValueAlarmOverviewPanel_Id';
-            				alarmDetailsPanelId='SwitchingValueAlarmDetailsPanel_Id';
-            			}
-        				Ext.getCmp(alarmOverViewPanelId).removeAll();
-        				Ext.getCmp(alarmDetailsPanelId).removeAll();
+        				if(oldCard!=undefined){
+                			oldCard.setIconCls(null);
+                	    }
+                	    if(newCard!=undefined){
+                	    	newCard.setIconCls('check3');		
+                	    	var alarmOverViewPanelId='';
+            				var alarmDetailsPanelId='';
+            				if(oldCard.id=="FESDiagramResultAlarmInfoTabPanel_Id"){
+            					alarmOverViewPanelId='FESDiagramResultAlarmOverviewPanel_Id';
+            					alarmDetailsPanelId='FESDiagramResultAlarmDetailsPanel_Id';
+                			}else if(oldCard.id=="RunStatusAlarmInfoTabPanel_Id"){
+                				alarmOverViewPanelId='RunStatusAlarmOverviewPanel_Id';
+                				alarmDetailsPanelId='RunStatusAlarmDetailsPanel_Id';
+                			}else if(oldCard.id=="CommunicationAlarmInfoTabPanel_Id"){
+                				alarmOverViewPanelId='CommunicationAlarmOverviewPanel_Id';
+                				alarmDetailsPanelId='CommunicationAlarmDetailsPanel_Id';
+                			}else if(oldCard.id=="NumericValueAlarmInfoTabPanel_Id"){
+                				alarmOverViewPanelId='NumericValueAlarmOverviewPanel_Id';
+                				alarmDetailsPanelId='NumericValueAlarmDetailsPanel_Id';
+                			}else if(oldCard.id=="EnumValueAlarmInfoTabPanel_Id"){
+                				alarmOverViewPanelId='EnumValueAlarmOverviewPanel_Id';
+                				alarmDetailsPanelId='EnumValueAlarmDetailsPanel_Id';
+                			}else if(oldCard.id=="SwitchingValueAlarmInfoTabPanel_Id"){
+                				alarmOverViewPanelId='SwitchingValueAlarmOverviewPanel_Id';
+                				alarmDetailsPanelId='SwitchingValueAlarmDetailsPanel_Id';
+                			}
+            				Ext.getCmp(alarmOverViewPanelId).removeAll();
+            				Ext.getCmp(alarmDetailsPanelId).removeAll();
+                	    }
 	        		},
 	        		tabchange: function (tabPanel, newCard,oldCard, obj) {
 	        			Ext.getCmp("AlarmOverviewSelectRow_Id").setValue(0);

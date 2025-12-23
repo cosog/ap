@@ -609,29 +609,29 @@ function getProjectTabInstanceInfoByDeviceType(deviceType){
 		}
 	});
 	
-	if(r.DeviceRealTimeMonitoring.FESDiagramStatPie==false && r.DeviceRealTimeMonitoring.CommStatusStatPie==false && r.DeviceRealTimeMonitoring.RunStatusStatPie==false){
-		r.DeviceRealTimeMonitoring.CommStatusStatPie=true;
-		r.DeviceRealTimeMonitoring.RunStatusStatPie=true;
-	}
-	
-	if(r.DeviceHistoryQuery.FESDiagramStatPie==false && r.DeviceHistoryQuery.CommStatusStatPie==false && r.DeviceHistoryQuery.RunStatusStatPie==false){
-		r.DeviceHistoryQuery.CommStatusStatPie=true;
-		r.DeviceHistoryQuery.RunStatusStatPie=true;
-	}
-	
-	if(r.AlarmQuery.FESDiagramResultAlarm==false 
-			&& r.AlarmQuery.RunStatusAlarm==false 
-			&& r.AlarmQuery.CommStatusAlarm==false
-			&& r.AlarmQuery.NumericValueAlarm==false
-			&& r.AlarmQuery.EnumValueAlarm==false
-			&& r.AlarmQuery.SwitchingValueAlarm==false
-			){
-		r.AlarmQuery.RunStatusAlarm=true;
-		r.AlarmQuery.CommStatusAlarm=true;
-		r.AlarmQuery.NumericValueAlarm=true;
-		r.AlarmQuery.EnumValueAlarm=true;
-		r.AlarmQuery.SwitchingValueAlarm=true;
-	}
+//	if(r.DeviceRealTimeMonitoring.FESDiagramStatPie==false && r.DeviceRealTimeMonitoring.CommStatusStatPie==false && r.DeviceRealTimeMonitoring.RunStatusStatPie==false){
+//		r.DeviceRealTimeMonitoring.CommStatusStatPie=true;
+//		r.DeviceRealTimeMonitoring.RunStatusStatPie=true;
+//	}
+//	
+//	if(r.DeviceHistoryQuery.FESDiagramStatPie==false && r.DeviceHistoryQuery.CommStatusStatPie==false && r.DeviceHistoryQuery.RunStatusStatPie==false){
+//		r.DeviceHistoryQuery.CommStatusStatPie=true;
+//		r.DeviceHistoryQuery.RunStatusStatPie=true;
+//	}
+//	
+//	if(r.AlarmQuery.FESDiagramResultAlarm==false 
+//			&& r.AlarmQuery.RunStatusAlarm==false 
+//			&& r.AlarmQuery.CommStatusAlarm==false
+//			&& r.AlarmQuery.NumericValueAlarm==false
+//			&& r.AlarmQuery.EnumValueAlarm==false
+//			&& r.AlarmQuery.SwitchingValueAlarm==false
+//			){
+//		r.AlarmQuery.RunStatusAlarm=true;
+//		r.AlarmQuery.CommStatusAlarm=true;
+//		r.AlarmQuery.NumericValueAlarm=true;
+//		r.AlarmQuery.EnumValueAlarm=true;
+//		r.AlarmQuery.SwitchingValueAlarm=true;
+//	}
 	
 	return r;
 }

@@ -135,22 +135,25 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 }],
                 listeners: {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check1');
-        				
-        				if(newCard.id=="ScadaDriverModbusUnitConfigTabPanel_Id"){
-        					var ModbusProtocolUnitConfigInfoView=Ext.getCmp("modbusProtocolUnitConfigInfoViewId");
-        					if(!isNotVal(ModbusProtocolUnitConfigInfoView)){
-        						ModbusProtocolUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView');
-        						Ext.getCmp("ScadaDriverModbusUnitConfigTabPanel_Id").add(ModbusProtocolUnitConfigInfoView);
-        					}
-        				}else if(newCard.id=="ScadaDriverModbusInstanceConfigTabPanel_Id"){
-        					var ModbusProtocolInstanceConfigInfoView=Ext.getCmp("modbusProtocolInstanceConfigInfoViewId");
-        					if(!isNotVal(ModbusProtocolInstanceConfigInfoView)){
-        						ModbusProtocolInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView');
-        						Ext.getCmp("ScadaDriverModbusInstanceConfigTabPanel_Id").add(ModbusProtocolInstanceConfigInfoView);
-        					}
-        				}
+                		if(oldCard!=undefined){
+                			oldCard.setIconCls(null);
+                	    }
+                	    if(newCard!=undefined){
+                	    	newCard.setIconCls('check1');		
+                	    	if(newCard.id=="ScadaDriverModbusUnitConfigTabPanel_Id"){
+            					var ModbusProtocolUnitConfigInfoView=Ext.getCmp("modbusProtocolUnitConfigInfoViewId");
+            					if(!isNotVal(ModbusProtocolUnitConfigInfoView)){
+            						ModbusProtocolUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView');
+            						Ext.getCmp("ScadaDriverModbusUnitConfigTabPanel_Id").add(ModbusProtocolUnitConfigInfoView);
+            					}
+            				}else if(newCard.id=="ScadaDriverModbusInstanceConfigTabPanel_Id"){
+            					var ModbusProtocolInstanceConfigInfoView=Ext.getCmp("modbusProtocolInstanceConfigInfoViewId");
+            					if(!isNotVal(ModbusProtocolInstanceConfigInfoView)){
+            						ModbusProtocolInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView');
+            						Ext.getCmp("ScadaDriverModbusInstanceConfigTabPanel_Id").add(ModbusProtocolInstanceConfigInfoView);
+            					}
+            				}
+                	    }
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ScadaDriverModbusProtocolConfigTabPanel_Id"){

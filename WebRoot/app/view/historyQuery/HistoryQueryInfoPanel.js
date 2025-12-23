@@ -336,8 +336,12 @@ var historyQueryCenterTabPanelItems=[{
         }],
         listeners: {
         	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-    			oldCard.setIconCls(null);
-    			newCard.setIconCls('check3');
+        		if(oldCard!=undefined){
+        			oldCard.setIconCls(null);
+        	    }
+        	    if(newCard!=undefined){
+        	    	newCard.setIconCls('check3');				
+        	    }
     		},
     		tabchange: function (tabPanel, newCard,oldCard, obj) {
         		loadHistoryDiagramTiledList(1);
@@ -710,8 +714,12 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                 		items: historyStatTabItems,
                 		listeners: {
                 			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                				oldCard.setIconCls(null);
-                				newCard.setIconCls('check3');
+                				if(oldCard!=undefined){
+                        			oldCard.setIconCls(null);
+                        	    }
+                        	    if(newCard!=undefined){
+                        	    	newCard.setIconCls('check3');				
+                        	    }
                 			},
                 			tabchange: function (tabPanel, newCard,oldCard, obj) {
             					if(newCard.id=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
@@ -748,6 +756,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             		
             		tbar:{
             			xtype:"container",
+            			id:'HistoryQueryCenterToolbar_id',
             			border:false,
             			items:[{
             				xtype:"toolbar",
@@ -1399,8 +1408,12 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             		items: historyQueryCenterTabPanelItems,
             		listeners: {
             			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-            				oldCard.setIconCls(null);
-            				newCard.setIconCls('check3');
+            				if(oldCard!=undefined){
+                    			oldCard.setIconCls(null);
+                    	    }
+                    	    if(newCard!=undefined){
+                    	    	newCard.setIconCls('check3');				
+                    	    }
             			},
             			tabchange: function (tabPanel, newCard,oldCard, obj) {
         					if(newCard.id=="HistoryDataTabPanel"){

@@ -33,9 +33,14 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         	        				Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loading).show();
         	        				cleanDeviceAddInfoAndControlInfo();
-        	        				oldCard.removeAll();
-        	        				oldCard.setIconCls(null);
-        	        				newCard.setIconCls('check2');
+        	        				
+        	        				if(oldCard!=undefined){
+        	        					oldCard.removeAll();
+            	        				oldCard.setIconCls(null);
+                    				}
+                    				if(newCard!=undefined){
+                    					newCard.setIconCls('check2');
+                    				}
         	        			},
         	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
         	        				var RealTimeMonitoringInfoPanel = Ext.create('AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel');
@@ -220,13 +225,18 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
     					Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loading).show();
-    					if(oldCard.xtype=='tabpanel'){
-        					oldCard.activeTab.removeAll();
-        				}else{
-        					oldCard.removeAll();
+    					
+    					if(oldCard!=undefined){
+    						if(oldCard.xtype=='tabpanel'){
+            					oldCard.activeTab.removeAll();
+            				}else{
+            					oldCard.removeAll();
+            				}
+            				oldCard.setIconCls(null);
         				}
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check1');
+        				if(newCard!=undefined){
+        					newCard.setIconCls('check1');
+        				}
         			},
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
     					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
@@ -292,19 +302,27 @@ function realTimeDataRefresh(){
 			tabChange=true;
 		}
 	}
+	
+	if(projectTabConfig.DeviceRealTimeMonitoring.FESDiagramStatPie==false && projectTabConfig.DeviceRealTimeMonitoring.CommStatusStatPie==false && projectTabConfig.DeviceRealTimeMonitoring.RunStatusStatPie==false){
+		tabPanel.hide();
+	}else{
+		if(tabPanel.isHidden() ){
+			tabPanel.show();
+		}
+		if(!tabChange){
+	 		statTabActiveId = tabPanel.getActiveTab().id;
+	 		if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
+	 			loadAndInitFESdiagramResultStat(true);
+	 		}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
+	 			loadAndInitCommStatusStat(true);
+	 		}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
+	 			loadAndInitRunStatusStat(true);
+	 		}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+	 			loadAndInitDeviceTypeStat(true);
+	 		}
+	 	}
+	}
  	
- 	if(!tabChange){
- 		statTabActiveId = tabPanel.getActiveTab().id;
- 		if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
- 			loadAndInitFESdiagramResultStat(true);
- 		}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
- 			loadAndInitCommStatusStat(true);
- 		}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
- 			loadAndInitRunStatusStat(true);
- 		}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
- 			loadAndInitDeviceTypeStat(true);
- 		}
- 	}
 	 	
 	Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setValue('');
 	Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setRawValue('');
@@ -664,8 +682,8 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
         exporting: {
             enabled: true,
             filename: title,
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
+            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
         },
         plotOptions: {
             spline: {
@@ -854,69 +872,71 @@ function initRealTimeMonitoringFESDiagramResultStatPieOrColChat(get_rawData) {
 };
 
 function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, name, data,colors) {
-	Highcharts.chart(divId, {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false
-		},
-		credits : {
-			enabled : false
-		},
-		title : {
-			text : title
-		},
-//		colors : colors,
-		tooltip : {
-			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
-		},
-		legend : {
-			align : 'center',//center left
-			verticalAlign : 'bottom',//bottom middle
-			layout : 'horizontal' //vertical 竖直 horizontal-水平
-		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					color : '#000000',
-					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}'
-				},
-				events: {
-					click: function(e) {
-						Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-						var statSelectFESdiagramResultId="RealTimeMonitoringStatSelectFESdiagramResult_Id";
-						var deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
-						var gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
-						var store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
-						if(!e.point.selected){//如果没被选中,则本次是选中
-							Ext.getCmp(statSelectFESdiagramResultId).setValue(e.point.name);
-						}else{//取消选中
-							Ext.getCmp(statSelectFESdiagramResultId).setValue('');
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.chart(divId, {
+			chart : {
+				plotBackgroundColor : null,
+				plotBorderWidth : null,
+				plotShadow : false
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title
+			},
+//			colors : colors,
+			tooltip : {
+				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+			},
+			legend : {
+				align : 'center',//center left
+				verticalAlign : 'bottom',//bottom middle
+				layout : 'horizontal' //vertical 竖直 horizontal-水平
+			},
+			plotOptions : {
+				pie : {
+					allowPointSelect : true,
+					cursor : 'pointer',
+					dataLabels : {
+						enabled : true,
+						color : '#000000',
+						connectorColor : '#000000',
+						format : '<b>{point.name}</b>: {point.y}'
+					},
+					events: {
+						click: function(e) {
+							Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+							var statSelectFESdiagramResultId="RealTimeMonitoringStatSelectFESdiagramResult_Id";
+							var deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
+							var gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
+							var store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
+							if(!e.point.selected){//如果没被选中,则本次是选中
+								Ext.getCmp(statSelectFESdiagramResultId).setValue(e.point.name);
+							}else{//取消选中
+								Ext.getCmp(statSelectFESdiagramResultId).setValue('');
+							}
+							Ext.getCmp(deviceListComb_Id).setValue('');
+							Ext.getCmp(deviceListComb_Id).setRawValue('');
+							refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),0,Ext.getCmp(gridPanel_Id),store);
 						}
-						Ext.getCmp(deviceListComb_Id).setValue('');
-						Ext.getCmp(deviceListComb_Id).setRawValue('');
-						refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),0,Ext.getCmp(gridPanel_Id),store);
-					}
-				},
-				showInLegend : true
-			}
-		},
-		exporting:{ 
-            enabled:true,    
-            filename:title,   
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
-		},
-		series : [{
-					type : 'pie',
-					name : name,
-					data : data
-				}]
-		});
+					},
+					showInLegend : true
+				}
+			},
+			exporting:{ 
+	            enabled:true,    
+	            filename:title,   
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+			},
+			series : [{
+						type : 'pie',
+						name : name,
+						data : data
+					}]
+			});
+	}
 };
 
 
@@ -939,7 +959,10 @@ function loadAndInitCommStatusStat(all){
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringCommStatusStatData',
 		success:function(response) {
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
+			
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initRealTimeMonitoringStatPieOrColChat(result);
@@ -987,82 +1010,86 @@ function initRealTimeMonitoringStatPieOrColChat(get_rawData) {
 };
 
 function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) {
-	Highcharts.chart(divId, {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false
-		},
-		credits : {
-			enabled : false
-		},
-		title : {
-			text : title
-		},
-		colors : colors,
-		tooltip : {
-			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
-		},
-		legend : {
-			align : 'center',
-			verticalAlign : 'bottom',
-			layout : 'horizontal' //vertical 竖直 horizontal-水平
-		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					color : '#000000',
-					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}'
-				},
-				events: {
-					click: function(e) {
-						var statSelectCommStatusId="RealTimeMonitoringStatSelectCommStatus_Id";
-						var deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
-						var gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
-						var selectedDeviceId_global="selectedDeviceId_global";
-						var store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
-						var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-						var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.chart(divId, {
+			chart : {
+				plotBackgroundColor : null,
+				plotBorderWidth : null,
+				plotShadow : false
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title
+			},
+			colors : colors,
+			tooltip : {
+				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+			},
+			legend : {
+				align : 'center',
+				verticalAlign : 'bottom',
+				layout : 'horizontal' //vertical 竖直 horizontal-水平
+			},
+			plotOptions : {
+				pie : {
+					allowPointSelect : true,
+					cursor : 'pointer',
+					dataLabels : {
+						enabled : true,
+						color : '#000000',
+						connectorColor : '#000000',
+						format : '<b>{point.name}</b>: {point.y}'
+					},
+					events: {
+						click: function(e) {
+							var statSelectCommStatusId="RealTimeMonitoringStatSelectCommStatus_Id";
+							var deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
+							var gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
+							var selectedDeviceId_global="selectedDeviceId_global";
+							var store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
+							var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
+							var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
 
-						Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                    	
-						statSelectCommStatusId="RealTimeMonitoringStatSelectCommStatus_Id";
-						deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
-						gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
-						store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
-						selectedDeviceId_global="selectedDeviceId_global";
-					
+							Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+	                    	
+							statSelectCommStatusId="RealTimeMonitoringStatSelectCommStatus_Id";
+							deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
+							gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
+							store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
+							selectedDeviceId_global="selectedDeviceId_global";
 						
-						if(!e.point.selected){//如果没被选中,则本次是选中
-							Ext.getCmp(statSelectCommStatusId).setValue(e.point.name);
-						}else{//取消选中
-							Ext.getCmp(statSelectCommStatusId).setValue('');
+							
+							if(!e.point.selected){//如果没被选中,则本次是选中
+								Ext.getCmp(statSelectCommStatusId).setValue(e.point.name);
+							}else{//取消选中
+								Ext.getCmp(statSelectCommStatusId).setValue('');
+							}
+							
+							Ext.getCmp(deviceListComb_Id).setValue('');
+							Ext.getCmp(deviceListComb_Id).setRawValue('');
+							refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
 						}
-						
-						Ext.getCmp(deviceListComb_Id).setValue('');
-						Ext.getCmp(deviceListComb_Id).setRawValue('');
-						refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
-					}
-				},
-				showInLegend : true
-			}
-		},
-		exporting:{ 
-            enabled:true,    
-            filename:title,  
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
-		},
-		series : [{
-					type : 'pie',
-					name : name,
-					data : data
-				}]
-		});
+					},
+					showInLegend : true
+				}
+			},
+			exporting:{ 
+	            enabled:true,    
+	            filename:title,  
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+			},
+			series : [{
+						type : 'pie',
+						name : name,
+						data : data
+					}]
+			});
+	}else{
+		
+	}
 };
 
 function loadAndInitRunStatusStat(all){
@@ -1146,83 +1173,85 @@ function initRealTimeMonitoringRunStatusStatPieOrColChat(get_rawData) {
 };
 
 function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data,colors) {
-	Highcharts.chart(divId, {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false
-		},
-		credits : {
-			enabled : false
-		},
-		title : {
-			text : title
-		},
-		colors : colors,
-		tooltip : {
-			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
-		},
-		legend : {
-			align : 'center',
-			verticalAlign : 'bottom',
-			layout : 'horizontal' //vertical 竖直 horizontal-水平
-		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					color : '#000000',
-					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}'
-				},
-				events: {
-					click: function(e) {
-						var statSelectRunStatusId="RealTimeMonitoringStatSelectRunStatus_Id";
-						var deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
-						var gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
-						var store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
-						var selectedDeviceId_global="selectedDeviceId_global";
-						var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-						var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.chart(divId, {
+			chart : {
+				plotBackgroundColor : null,
+				plotBorderWidth : null,
+				plotShadow : false
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title
+			},
+			colors : colors,
+			tooltip : {
+				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+			},
+			legend : {
+				align : 'center',
+				verticalAlign : 'bottom',
+				layout : 'horizontal' //vertical 竖直 horizontal-水平
+			},
+			plotOptions : {
+				pie : {
+					allowPointSelect : true,
+					cursor : 'pointer',
+					dataLabels : {
+						enabled : true,
+						color : '#000000',
+						connectorColor : '#000000',
+						format : '<b>{point.name}</b>: {point.y}'
+					},
+					events: {
+						click: function(e) {
+							var statSelectRunStatusId="RealTimeMonitoringStatSelectRunStatus_Id";
+							var deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
+							var gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
+							var store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
+							var selectedDeviceId_global="selectedDeviceId_global";
+							var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
+							var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
 
-						Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                    	
-						statSelectRunStatusId="RealTimeMonitoringStatSelectRunStatus_Id";
-						deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
-						gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
-						store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
-						selectedDeviceId_global="selectedDeviceId_global";
-					
+							Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+	                    	
+							statSelectRunStatusId="RealTimeMonitoringStatSelectRunStatus_Id";
+							deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
+							gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
+							store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
+							selectedDeviceId_global="selectedDeviceId_global";
 						
-						if(!e.point.selected){//如果没被选中,则本次是选中
-							Ext.getCmp(statSelectRunStatusId).setValue(e.point.name);
-						}else{//取消选中
-							Ext.getCmp(statSelectRunStatusId).setValue('');
+							
+							if(!e.point.selected){//如果没被选中,则本次是选中
+								Ext.getCmp(statSelectRunStatusId).setValue(e.point.name);
+							}else{//取消选中
+								Ext.getCmp(statSelectRunStatusId).setValue('');
+							}
+							
+							Ext.getCmp(deviceListComb_Id).setValue('');
+							Ext.getCmp(deviceListComb_Id).setRawValue('');
+
+							refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
 						}
-						
-						Ext.getCmp(deviceListComb_Id).setValue('');
-						Ext.getCmp(deviceListComb_Id).setRawValue('');
-
-						refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
-					}
-				},
-				showInLegend : true
-			}
-		},
-		exporting:{ 
-            enabled:true,    
-            filename:title,  
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
-		},
-		series : [{
-					type : 'pie',
-					name : name,
-					data : data
-				}]
-		});
+					},
+					showInLegend : true
+				}
+			},
+			exporting:{ 
+	            enabled:true,    
+	            filename:title,
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+			},
+			series : [{
+						type : 'pie',
+						name : name,
+						data : data
+					}]
+			});
+	}
 };
 
 function loadAndInitDeviceTypeStat(all){
@@ -1277,83 +1306,86 @@ function initRealTimeMonitoringDeviceTypeStatPieOrColChat(get_rawData) {
 };
 
 function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,colors) {
-	Highcharts.chart(divId, {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false
-		},
-		credits : {
-			enabled : false
-		},
-		title : {
-			text : title
-		},
-		colors : colors,
-		tooltip : {
-			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
-		},
-		legend : {
-			align : 'center',
-			verticalAlign : 'bottom',
-			layout : 'horizontal' //vertical 竖直 horizontal-水平
-		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					color : '#000000',
-					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}'
-				},
-				events: {
-					click: function(e) {
-						var statSelectDeviceType_Id="RealTimeMonitoringStatSelectDeviceType_Id";
-						var deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
-						var gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
-						var store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
-						var selectedDeviceId_global="selectedDeviceId_global";
-						var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-						var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.chart(divId, {
+			chart : {
+				plotBackgroundColor : null,
+				plotBorderWidth : null,
+				plotShadow : false
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title
+			},
+			colors : colors,
+			tooltip : {
+				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+			},
+			legend : {
+				align : 'center',
+				verticalAlign : 'bottom',
+				layout : 'horizontal' //vertical 竖直 horizontal-水平
+			},
+			plotOptions : {
+				pie : {
+					allowPointSelect : true,
+					cursor : 'pointer',
+					dataLabels : {
+						enabled : true,
+						color : '#000000',
+						connectorColor : '#000000',
+						format : '<b>{point.name}</b>: {point.y}'
+					},
+					events: {
+						click: function(e) {
+							var statSelectDeviceType_Id="RealTimeMonitoringStatSelectDeviceType_Id";
+							var deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
+							var gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
+							var store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
+							var selectedDeviceId_global="selectedDeviceId_global";
+							var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
+							var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
 
-						Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-                    	
-						statSelectDeviceType_Id="RealTimeMonitoringStatSelectDeviceType_Id";
-						deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
-						gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
-						store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
-						selectedDeviceId_global="selectedDeviceId_global";
-					
+							Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+	                    	
+							statSelectDeviceType_Id="RealTimeMonitoringStatSelectDeviceType_Id";
+							deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
+							gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
+							store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
+							selectedDeviceId_global="selectedDeviceId_global";
 						
-						if(!e.point.selected){//如果没被选中,则本次是选中
-							Ext.getCmp(statSelectDeviceType_Id).setValue(e.point.name);
-						}else{//取消选中
-							Ext.getCmp(statSelectDeviceType_Id).setValue('');
+							
+							if(!e.point.selected){//如果没被选中,则本次是选中
+								Ext.getCmp(statSelectDeviceType_Id).setValue(e.point.name);
+							}else{//取消选中
+								Ext.getCmp(statSelectDeviceType_Id).setValue('');
+							}
+							
+							Ext.getCmp(deviceListComb_Id).setValue('');
+							Ext.getCmp(deviceListComb_Id).setRawValue('');
+
+							refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
 						}
-						
-						Ext.getCmp(deviceListComb_Id).setValue('');
-						Ext.getCmp(deviceListComb_Id).setRawValue('');
-
-						refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
-					}
-				},
-				showInLegend : true
-			}
-		},
-		exporting:{ 
-            enabled:true,    
-            filename:title,    
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
-		},
-		series : [{
-					type : 'pie',
-					name : name,
-					data : data
-				}]
-		});
+					},
+					showInLegend : true
+				}
+			},
+			exporting:{ 
+	            enabled:true,    
+	            filename:title,    
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+			},
+			series : [{
+						type : 'pie',
+						name : name,
+						data : data
+					}]
+			});
+	}
+	
 };
 
 function deviceRealtimeMonitoringCurve(deviceType){
@@ -1380,7 +1412,10 @@ function deviceRealtimeMonitoringCurve(deviceType){
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringCurveData',
 		success:function(response) {
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+            }
+			
 			var result =  Ext.JSON.decode(response.responseText);
 			var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
 		    var data = result.list;
@@ -1432,10 +1467,10 @@ function deviceRealtimeMonitoringCurve(deviceType){
                     htmlResult += '></div>';
             	}
                 $('#'+containerId).append(htmlResult);
-                var aa=($('#'+containerId)[0]);
-                var bb=aa.childElementCount;
-                var cc=aa.children;
-                var dd=cc[0].id;
+//                var aa=($('#'+containerId)[0]);
+//                var bb=aa.childElementCount;
+//                var cc=aa.children;
+//                var dd=cc[0].id;
                 //数据处理
                 for(var i=0;i<totals;i++){
                 	divId = divPrefix + i+"_Id";
@@ -1516,140 +1551,142 @@ function deviceRealtimeMonitoringCurve(deviceType){
 };
 
 function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, title, subtitle, xtitle,yTitle, color,legend,navigator,scrollbar,timeFormat,maxValue,minValue,yAxisOpposite) {
-    Highcharts.setOptions({
-        global: {
-            useUTC: false
-        }
-    });
-    var mychart = new Highcharts.stockChart({
-        chart: {
-            renderTo: divId,
-            type: 'spline',
-            shadow: true,
-            borderWidth: 0,
-            zoomType: 'xy'
-        },
-        credits: {
-            enabled: false
-        },
-        navigator: {
-    		enabled: navigator
-    	},
-    	scrollbar: {
-    		enabled: scrollbar
-    	},
-        rangeSelector: {
-    		buttons: [{
-    			count: 1,
-    			type: 'hour',//minute hour week month all
-    			text: '1'+loginUserLanguageResource.hour
-    		}, {
-    			count: 6,
-    			type: 'hour',
-    			text: '6'+loginUserLanguageResource.hour
-    		}, {
-    			count: 12,
-    			type: 'hour',
-    			text: '12'+loginUserLanguageResource.hour
-    		}, {
-    			type: 'all',
-    			text: loginUserLanguageResource.all
-    		}],
-    		inputEnabled: false,
-    		selected: 0
-    	},
-        title: {
-            text: title
-        },
-        subtitle: {
-            text: subtitle
-        },
-        colors: color,
-        xAxis: {
-            type: 'datetime',
-            title: {
-                text: xtitle
-            },
-//            tickInterval: tickInterval,
-            tickPixelInterval:tickInterval,
-            labels: {
-                formatter: function () {
-                    return Highcharts.dateFormat(timeFormat, this.value);
-                },
-                autoRotation:true,//自动旋转
-                rotation: -45 //倾斜度，防止数量过多显示不全  
-//                step: 2
-            }
-        },
-        yAxis: {
-        	max:maxValue,
-    		min:minValue,
-        	lineWidth: 1,
-            title: {
-                text: yTitle,
-                style: {
-//                    color: color,
-                }
-            },
-            labels: {
-            	style: {
-//                    color: color,
-                }
-            },
-            opposite:yAxisOpposite
-      },
-        tooltip: {
-            crosshairs: true, //十字准线
-            shared: true,
-            style: {
-                color: '#333333',
-                fontSize: '12px',
-                padding: '8px'
-            },
-            dateTimeLabelFormats: {
-                millisecond: '%Y-%m-%d %H:%M:%S.%L',
-                second: '%Y-%m-%d %H:%M:%S',
-                minute: '%Y-%m-%d %H:%M',
-                hour: '%Y-%m-%d %H',
-                day: '%Y-%m-%d',
-                week: '%m-%d',
-                month: '%Y-%m',
-                year: '%Y'
-            }
-        },
-        exporting: {
-            enabled: true,
-            filename: title,
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
-        },
-        plotOptions: {
-            spline: {
-                lineWidth: 1,
-                fillOpacity: 0.3,
-                marker: {
-                    enabled: true,
-                    radius: 3, //曲线点半径，默认是4
-                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
-                    states: {
-                        hover: {
-                            enabled: true,
-                            radius: 6
-                        }
-                    }
-                },
-                shadow: true
-            }
-        },
-        legend: {
-            layout: 'horizontal',//horizontal水平 vertical 垂直
-            align: 'center',  //left，center 和 right
-            verticalAlign: 'bottom',//top，middle 和 bottom
-            enabled: legend,
-            borderWidth: 0
-        },
-        series: series
-    });
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.setOptions({
+	        global: {
+	            useUTC: false
+	        }
+	    });
+	    var mychart = new Highcharts.stockChart({
+	        chart: {
+	            renderTo: divId,
+	            type: 'spline',
+	            shadow: true,
+	            borderWidth: 0,
+	            zoomType: 'xy'
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        navigator: {
+	    		enabled: navigator
+	    	},
+	    	scrollbar: {
+	    		enabled: scrollbar
+	    	},
+	        rangeSelector: {
+	    		buttons: [{
+	    			count: 1,
+	    			type: 'hour',//minute hour week month all
+	    			text: '1'+loginUserLanguageResource.hour
+	    		}, {
+	    			count: 6,
+	    			type: 'hour',
+	    			text: '6'+loginUserLanguageResource.hour
+	    		}, {
+	    			count: 12,
+	    			type: 'hour',
+	    			text: '12'+loginUserLanguageResource.hour
+	    		}, {
+	    			type: 'all',
+	    			text: loginUserLanguageResource.all
+	    		}],
+	    		inputEnabled: false,
+	    		selected: 0
+	    	},
+	        title: {
+	            text: title
+	        },
+	        subtitle: {
+	            text: subtitle
+	        },
+	        colors: color,
+	        xAxis: {
+	            type: 'datetime',
+	            title: {
+	                text: xtitle
+	            },
+//	            tickInterval: tickInterval,
+	            tickPixelInterval:tickInterval,
+	            labels: {
+	                formatter: function () {
+	                    return Highcharts.dateFormat(timeFormat, this.value);
+	                },
+	                autoRotation:true,//自动旋转
+	                rotation: -45 //倾斜度，防止数量过多显示不全  
+//	                step: 2
+	            }
+	        },
+	        yAxis: {
+	        	max:maxValue,
+	    		min:minValue,
+	        	lineWidth: 1,
+	            title: {
+	                text: yTitle,
+	                style: {
+//	                    color: color,
+	                }
+	            },
+	            labels: {
+	            	style: {
+//	                    color: color,
+	                }
+	            },
+	            opposite:yAxisOpposite
+	      },
+	        tooltip: {
+	            crosshairs: true, //十字准线
+	            shared: true,
+	            style: {
+	                color: '#333333',
+	                fontSize: '12px',
+	                padding: '8px'
+	            },
+	            dateTimeLabelFormats: {
+	                millisecond: '%Y-%m-%d %H:%M:%S.%L',
+	                second: '%Y-%m-%d %H:%M:%S',
+	                minute: '%Y-%m-%d %H:%M',
+	                hour: '%Y-%m-%d %H',
+	                day: '%Y-%m-%d',
+	                week: '%m-%d',
+	                month: '%Y-%m',
+	                year: '%Y'
+	            }
+	        },
+	        exporting: {
+	            enabled: true,
+	            filename: title,
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	        },
+	        plotOptions: {
+	            spline: {
+	                lineWidth: 1,
+	                fillOpacity: 0.3,
+	                marker: {
+	                    enabled: true,
+	                    radius: 3, //曲线点半径，默认是4
+	                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+	                    states: {
+	                        hover: {
+	                            enabled: true,
+	                            radius: 6
+	                        }
+	                    }
+	                },
+	                shadow: true
+	            }
+	        },
+	        legend: {
+	            layout: 'horizontal',//horizontal水平 vertical 垂直
+	            align: 'center',  //left，center 和 right
+	            verticalAlign: 'bottom',//top，middle 和 bottom
+	            enabled: legend,
+	            borderWidth: 0
+	        },
+	        series: series
+	    });
+	}
 };
 
 function clearVideo(deviceType){

@@ -28,9 +28,14 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         	        				Ext.getCmp("ProductionReportRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-        	        				oldCard.setIconCls(null);
-        	        				newCard.setIconCls('check2');
-        	        				oldCard.removeAll();
+        	        				
+        	        				if(oldCard!=undefined){
+        	        					oldCard.setIconCls(null);
+        	        					oldCard.removeAll();
+        	                	    }
+        	                	    if(newCard!=undefined){
+        	                	    	newCard.setIconCls('check2');		
+        	                	    }
         	        			},
         	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
         	        				var DailyReportPanel = Ext.create('AP.view.reportOut.DailyReportPanel');
@@ -108,13 +113,18 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
                 listeners: {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
                 		Ext.getCmp("ProductionReportRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-                		oldCard.setIconCls(null);
-        				newCard.setIconCls('check1');
-                		if(oldCard.xtype=='tabpanel'){
-        					oldCard.activeTab.removeAll();
-        				}else{
-        					oldCard.removeAll();
-        				}
+                		
+                		if(oldCard!=undefined){
+                			oldCard.setIconCls(null);
+                			if(oldCard.xtype=='tabpanel'){
+            					oldCard.activeTab.removeAll();
+            				}else{
+            					oldCard.removeAll();
+            				}
+                	    }
+                	    if(newCard!=undefined){
+                	    	newCard.setIconCls('check1');			
+                	    }
         			},
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
         				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 

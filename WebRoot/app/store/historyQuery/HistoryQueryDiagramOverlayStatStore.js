@@ -18,7 +18,10 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-        	Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel").getEl().unmask();
+        	if(isNotVal(Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel"))){
+        		Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel").getEl().unmask();
+        	}
+        	
             var get_rawData = store.proxy.reader.rawData;
             
             var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id');
@@ -84,7 +87,10 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
                     }
                 });
                 var HistoryQueryFSdiagramOverlayStatTable = Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel");
-                HistoryQueryFSdiagramOverlayStatTable.add(HistoryQueryFSdiagramOverlayStatGrid);
+                
+                if(isNotVal(HistoryQueryFSdiagramOverlayStatTable)){
+                	HistoryQueryFSdiagramOverlayStatTable.add(HistoryQueryFSdiagramOverlayStatGrid);
+                }
             }
             
             var slectModel=HistoryQueryFSdiagramOverlayStatGrid.getSelectionModel();
@@ -118,7 +124,10 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
         	var endTime_Second=0;
         	var hours=getHistoryQueryHours();
         	
-        	Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel").el.mask(loginUserLanguageResource.loading).show();
+        	if(isNotVal(Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel"))){
+        		Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel").el.mask(loginUserLanguageResource.loading).show();
+			}
+        	
         	var new_params = {
         			orgId: orgId,
             		deviceType:deviceType,

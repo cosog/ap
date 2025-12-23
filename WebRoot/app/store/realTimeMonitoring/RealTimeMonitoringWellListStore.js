@@ -81,10 +81,11 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     			showRealtimeDeviceInformation=deviceTabInstanceConfig.DeviceRealTimeMonitoring.DeviceInformation!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.DeviceInformation:false;
                     		}
                     		
-                    		if(showRealtimeWellboreAnalysis==false && showRealtimeSurfaceAnalysis==false && showRealtimeTrendCurve==false && showRealtimeDynamicData==false){
-                    			showRealtimeTrendCurve=true;
-                    			showRealtimeDynamicData=true;
-                    		}
+//                    		if(showRealtimeWellboreAnalysis==false && showRealtimeSurfaceAnalysis==false && showRealtimeTrendCurve==false && showRealtimeDynamicData==false){
+//                    			showRealtimeTrendCurve=true;
+//                    			showRealtimeDynamicData=true;
+//                    		}
+                    		
                     		
                     		var combDeviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
                     		if(combDeviceName!=undefined || combDeviceName!=''){
@@ -92,7 +93,10 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     		}
                     		
                     		var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
-                    		var activeId = tabPanel.getActiveTab().id;
+                    		var activeId = '';
+                    		if(tabPanel.getActiveTab()!=undefined){
+                    			activeId = tabPanel.getActiveTab().id;
+                    		}
                     		
                     		var tabChange=false;
                     		//井筒分析标签处理

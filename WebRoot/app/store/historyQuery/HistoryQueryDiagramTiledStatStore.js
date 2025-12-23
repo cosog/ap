@@ -18,7 +18,10 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramTiledStatStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-        	Ext.getCmp("HistoryQueryTiledDiagramPanel").getEl().unmask();
+        	if(isNotVal(Ext.getCmp("HistoryQueryTiledDiagramPanel"))){
+        		Ext.getCmp("HistoryQueryTiledDiagramPanel").getEl().unmask();
+        	}
+        	
             var get_rawData = store.proxy.reader.rawData;
             
             var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id');
@@ -79,7 +82,10 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramTiledStatStore', {
                     }
                 });
                 var HistoryQueryTiledDiagramStatPanel = Ext.getCmp("HistoryQueryTiledDiagramStatPanel");
-                HistoryQueryTiledDiagramStatPanel.add(HistoryQueryFSdiagramTiledStatGrid);
+                if(isNotVal(HistoryQueryTiledDiagramStatPanel)){
+                	HistoryQueryTiledDiagramStatPanel.add(HistoryQueryFSdiagramTiledStatGrid);
+                }
+                
             }
             
             var slectModel=HistoryQueryFSdiagramTiledStatGrid.getSelectionModel();
@@ -113,7 +119,10 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramTiledStatStore', {
         	var endTime_Second=0;
         	var hours=getHistoryQueryHours();
         	
-        	Ext.getCmp("HistoryQueryTiledDiagramPanel").el.mask(loginUserLanguageResource.loading).show();
+        	if(isNotVal(Ext.getCmp("HistoryQueryTiledDiagramPanel"))){
+        		Ext.getCmp("HistoryQueryTiledDiagramPanel").el.mask(loginUserLanguageResource.loading).show();
+			}
+        	
         	var new_params = {
         			orgId: orgId,
             		deviceType:deviceType,

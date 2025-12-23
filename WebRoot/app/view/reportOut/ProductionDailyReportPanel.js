@@ -399,8 +399,12 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                 }],
                 listeners: {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check3');
+                		if(oldCard!=undefined){
+                			oldCard.setIconCls(null);
+                	    }
+                	    if(newCard!=undefined){
+                	    	newCard.setIconCls('check3');				
+                	    }
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	

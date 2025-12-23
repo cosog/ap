@@ -28,9 +28,14 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         	        	listeners: {
         	        		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         	        			Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-        	        			oldCard.removeAll();
-        	        			oldCard.setIconCls(null);
-    	        				newCard.setIconCls('check2');
+        	        			
+    	        				if(oldCard!=undefined){
+    	        					oldCard.removeAll();
+            	        			oldCard.setIconCls(null);
+    	                	    }
+    	                	    if(newCard!=undefined){
+    	                	    	newCard.setIconCls('check2');		
+    	                	    }
         	        		},
         	        		tabchange: function (tabPanel, newCard,oldCard, obj) {
         	        			var HistoryQueryInfoPanel = Ext.create('AP.view.historyQuery.HistoryQueryInfoPanel');
@@ -109,13 +114,18 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         				Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-        				if(oldCard.xtype=='tabpanel'){
-        					oldCard.activeTab.removeAll();
-        				}else{
-        					oldCard.removeAll();
-        				}
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check1');
+        				
+        				if(oldCard!=undefined){
+        					if(oldCard.xtype=='tabpanel'){
+            					oldCard.activeTab.removeAll();
+            				}else{
+            					oldCard.removeAll();
+            				}
+            				oldCard.setIconCls(null);
+                	    }
+                	    if(newCard!=undefined){
+                	    	newCard.setIconCls('check1');
+                	    }
         			},
     				tabchange: function (tabPanel, newCard,oldCard, obj) {
     					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
@@ -177,16 +187,25 @@ function historyDataRefresh(){
 			tabChange=true;
 		}
 	}
-	if(!tabChange){
-		if(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
- 			loadAndInitHistoryQueryFESdiagramResultStat(true);
- 		}else if(statTabActiveId=="HistoryQueryStatGraphPanel_Id"){
- 			loadAndInitHistoryQueryCommStatusStat(true);
- 		}else if(statTabActiveId=="HistoryQueryRunStatusStatGraphPanel_Id"){
- 			loadAndInitHistoryQueryRunStatusStat(true);
- 		}else if(statTabActiveId=="HistoryQueryDeviceTypeStatGraphPanel_Id"){
- 			loadAndInitHistoryQueryDeviceTypeStat(true);
- 		}
+	
+	if(projectTabConfig.DeviceHistoryQuery.FESDiagramStatPie==false && projectTabConfig.DeviceHistoryQuery.CommStatusStatPie==false && projectTabConfig.DeviceHistoryQuery.RunStatusStatPie==false){
+		tabPanel.hide();
+	}else{
+		if(tabPanel.isHidden() ){
+			tabPanel.show();
+		}
+		
+		if(!tabChange){
+			if(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
+	 			loadAndInitHistoryQueryFESdiagramResultStat(true);
+	 		}else if(statTabActiveId=="HistoryQueryStatGraphPanel_Id"){
+	 			loadAndInitHistoryQueryCommStatusStat(true);
+	 		}else if(statTabActiveId=="HistoryQueryRunStatusStatGraphPanel_Id"){
+	 			loadAndInitHistoryQueryRunStatusStat(true);
+	 		}else if(statTabActiveId=="HistoryQueryDeviceTypeStatGraphPanel_Id"){
+	 			loadAndInitHistoryQueryDeviceTypeStat(true);
+	 		}
+		}
 	}
 	
 	if(isNotVal(realtimeTurnToHisyorySign)){//如果是实时跳转
@@ -552,7 +571,9 @@ function deviceHistoryQueryCurve(deviceType){
 		method:'POST',
 		url:context + '/historyQueryController/getHistoryQueryCurveData',
 		success:function(response) {
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 		    var data = result.list;
 		    var graphicSet=result.graphicSet;
@@ -715,7 +736,9 @@ function deviceHistoryQueryCurve(deviceType){
 		    initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, '', '', yAxis, color_all,true,timeFormat);
 		},
 		failure:function(){
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -795,8 +818,8 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
         exporting: {
             enabled: true,
             filename: title,
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight,
+            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
             buttons: {
             	contextButton: {
             		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
@@ -852,13 +875,18 @@ function loadAndInitHistoryQueryCommStatusStat(all){
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringCommStatusStatData',
 		success:function(response) {
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
+			
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initHistoryQueryStatPieOrColChat(result);
 		},
 		failure:function(){
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -898,75 +926,78 @@ function initHistoryQueryStatPieOrColChat(get_rawData) {
 };
 
 function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
-	Highcharts.chart(divId, {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false
-		},
-		credits : {
-			enabled : false
-		},
-		title : {
-			text : title
-		},
-		colors : colors,
-		tooltip : {
-			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
-		},
-		legend : {
-			align : 'center',
-			verticalAlign : 'bottom',
-			layout : 'horizontal' //vertical 竖直 horizontal-水平
-		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					color : '#000000',
-					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}'
-				},
-				events: {
-					click: function(e) {
-						var statSelectCommStatusId="HistoryQueryStatSelectCommStatus_Id";
-						var deviceListComb_Id="HistoryQueryDeviceListComb_Id";
-						var gridPanel_Id="HistoryQueryDeviceListGridPanel_Id";
-						var store="AP.store.historyQuery.HistoryQueryWellListStore";
-						var selectedDeviceId_global="selectedDeviceId_global";
-						var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.chart(divId, {
+			chart : {
+				plotBackgroundColor : null,
+				plotBorderWidth : null,
+				plotShadow : false
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title
+			},
+			colors : colors,
+			tooltip : {
+				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+			},
+			legend : {
+				align : 'center',
+				verticalAlign : 'bottom',
+				layout : 'horizontal' //vertical 竖直 horizontal-水平
+			},
+			plotOptions : {
+				pie : {
+					allowPointSelect : true,
+					cursor : 'pointer',
+					dataLabels : {
+						enabled : true,
+						color : '#000000',
+						connectorColor : '#000000',
+						format : '<b>{point.name}</b>: {point.y}'
+					},
+					events: {
+						click: function(e) {
+							var statSelectCommStatusId="HistoryQueryStatSelectCommStatus_Id";
+							var deviceListComb_Id="HistoryQueryDeviceListComb_Id";
+							var gridPanel_Id="HistoryQueryDeviceListGridPanel_Id";
+							var store="AP.store.historyQuery.HistoryQueryWellListStore";
+							var selectedDeviceId_global="selectedDeviceId_global";
+							var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
 
-						Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-						
-						if(!e.point.selected){//如果没被选中,则本次是选中
-							Ext.getCmp(statSelectCommStatusId).setValue(e.point.name);
-						}else{//取消选中
-							Ext.getCmp(statSelectCommStatusId).setValue('');
+							Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+							
+							if(!e.point.selected){//如果没被选中,则本次是选中
+								Ext.getCmp(statSelectCommStatusId).setValue(e.point.name);
+							}else{//取消选中
+								Ext.getCmp(statSelectCommStatusId).setValue('');
+							}
+							
+							Ext.getCmp(deviceListComb_Id).setValue('');
+							Ext.getCmp(deviceListComb_Id).setRawValue('');
+
+							refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
 						}
-						
-						Ext.getCmp(deviceListComb_Id).setValue('');
-						Ext.getCmp(deviceListComb_Id).setRawValue('');
-
-						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
-					}
-				},
-				showInLegend : true
-			}
-		},
-		exporting:{ 
-            enabled:true,    
-            filename:title,
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
-		},
-		series : [{
-					type : 'pie',
-					name : name,
-					data : data
-				}]
-		});
+					},
+					showInLegend : true
+				}
+			},
+			exporting:{ 
+	            enabled:true,    
+	            filename:title,
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+			},
+			series : [{
+						type : 'pie',
+						name : name,
+						data : data
+					}]
+			});
+	}
+	
 };
 
 function loadAndInitHistoryQueryRunStatusStat(all){
@@ -986,13 +1017,18 @@ function loadAndInitHistoryQueryRunStatusStat(all){
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringRunStatusStatData',
 		success:function(response) {
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
+			
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initHistoryQueryRunStatusStatPieOrColChat(result);
 		},
 		failure:function(){
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1035,73 +1071,76 @@ function initHistoryQueryRunStatusStatPieOrColChat(get_rawData) {
 };
 
 function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,colors) {
-	Highcharts.chart(divId, {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false
-		},
-		credits : {
-			enabled : false
-		},
-		title : {
-			text : title
-		},
-		colors : colors,
-		tooltip : {
-			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
-		},
-		legend : {
-			align : 'center',
-			verticalAlign : 'bottom',
-			layout : 'horizontal' //vertical 竖直 horizontal-水平
-		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					color : '#000000',
-					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}'
-				},
-				events: {
-					click: function(e) {
-						var statSelectRunStatusId="HistoryQueryStatSelectRunStatus_Id";
-						var deviceListComb_Id="HistoryQueryDeviceListComb_Id";
-						var gridPanel_Id="HistoryQueryDeviceListGridPanel_Id";
-						var store="AP.store.historyQuery.HistoryQueryWellListStore";
-						var selectedDeviceId_global="selectedDeviceId_global";
-						var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
-						Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-						
-						if(!e.point.selected){//如果没被选中,则本次是选中
-							Ext.getCmp(statSelectRunStatusId).setValue(e.point.name);
-						}else{//取消选中
-							Ext.getCmp(statSelectRunStatusId).setValue('');
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.chart(divId, {
+			chart : {
+				plotBackgroundColor : null,
+				plotBorderWidth : null,
+				plotShadow : false
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title
+			},
+			colors : colors,
+			tooltip : {
+				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+			},
+			legend : {
+				align : 'center',
+				verticalAlign : 'bottom',
+				layout : 'horizontal' //vertical 竖直 horizontal-水平
+			},
+			plotOptions : {
+				pie : {
+					allowPointSelect : true,
+					cursor : 'pointer',
+					dataLabels : {
+						enabled : true,
+						color : '#000000',
+						connectorColor : '#000000',
+						format : '<b>{point.name}</b>: {point.y}'
+					},
+					events: {
+						click: function(e) {
+							var statSelectRunStatusId="HistoryQueryStatSelectRunStatus_Id";
+							var deviceListComb_Id="HistoryQueryDeviceListComb_Id";
+							var gridPanel_Id="HistoryQueryDeviceListGridPanel_Id";
+							var store="AP.store.historyQuery.HistoryQueryWellListStore";
+							var selectedDeviceId_global="selectedDeviceId_global";
+							var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+							Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+							
+							if(!e.point.selected){//如果没被选中,则本次是选中
+								Ext.getCmp(statSelectRunStatusId).setValue(e.point.name);
+							}else{//取消选中
+								Ext.getCmp(statSelectRunStatusId).setValue('');
+							}
+							
+							Ext.getCmp(deviceListComb_Id).setValue('');
+							Ext.getCmp(deviceListComb_Id).setRawValue('');
+							refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
 						}
-						
-						Ext.getCmp(deviceListComb_Id).setValue('');
-						Ext.getCmp(deviceListComb_Id).setRawValue('');
-						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
-					}
-				},
-				showInLegend : true
-			}
-		},
-		exporting:{ 
-            enabled:true,    
-            filename:title,    
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
-		},
-		series : [{
-					type : 'pie',
-					name : name,
-					data : data
-				}]
-		});
+					},
+					showInLegend : true
+				}
+			},
+			exporting:{ 
+	            enabled:true,    
+	            filename:title,    
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+			},
+			series : [{
+						type : 'pie',
+						name : name,
+						data : data
+					}]
+			});
+	}
+	
 };
 
 function loadAndInitHistoryQueryFESdiagramResultStat(all){
@@ -1118,13 +1157,18 @@ function loadAndInitHistoryQueryFESdiagramResultStat(all){
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringFESDiagramResultStatData',
 		success:function(response) {
-			Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl().unmask();
+			if(isNotVal(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id"))){
+				Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl().unmask();
+			}
+			
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initHistoryQueryFESDiagramResultStatPieOrColChat(result);
 		},
 		failure:function(){
-			Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl().unmask();
+			if(isNotVal(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id"))){
+				Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1155,78 +1199,81 @@ function initHistoryQueryFESDiagramResultStatPieOrColChat(get_rawData) {
 };
 
 function ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, name, data,colors) {
-	Highcharts.chart(divId, {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false
-		},
-		credits : {
-			enabled : false
-		},
-		title : {
-			text : title
-		},
-//		colors : colors,
-		tooltip : {
-			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
-		},
-		legend : {
-			align : 'center',
-			verticalAlign : 'bottom',
-			layout : 'horizontal' //vertical 竖直 horizontal-水平
-		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					color : '#000000',
-					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}'
-				},
-				events: {
-					click: function(e) {
-						Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-                    	
-						var statSelectFESdiagramResultId="HistoryQueryStatSelectFESdiagramResult_Id";
-						var deviceListComb_Id="HistoryQueryDeviceListComb_Id";
-						var gridPanel_Id="HistoryQueryDeviceListGridPanel_Id";
-						var store="AP.store.realTimeMonitoring.HistoryQueryWellListStore";
-						
-						if(!e.point.selected){//如果没被选中,则本次是选中
-							Ext.getCmp(statSelectFESdiagramResultId).setValue(e.point.name);
-						}else{//取消选中
-							Ext.getCmp(statSelectFESdiagramResultId).setValue('');
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.chart(divId, {
+			chart : {
+				plotBackgroundColor : null,
+				plotBorderWidth : null,
+				plotShadow : false
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title
+			},
+//			colors : colors,
+			tooltip : {
+				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+			},
+			legend : {
+				align : 'center',
+				verticalAlign : 'bottom',
+				layout : 'horizontal' //vertical 竖直 horizontal-水平
+			},
+			plotOptions : {
+				pie : {
+					allowPointSelect : true,
+					cursor : 'pointer',
+					dataLabels : {
+						enabled : true,
+						color : '#000000',
+						connectorColor : '#000000',
+						format : '<b>{point.name}</b>: {point.y}'
+					},
+					events: {
+						click: function(e) {
+							Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+	                    	
+							var statSelectFESdiagramResultId="HistoryQueryStatSelectFESdiagramResult_Id";
+							var deviceListComb_Id="HistoryQueryDeviceListComb_Id";
+							var gridPanel_Id="HistoryQueryDeviceListGridPanel_Id";
+							var store="AP.store.realTimeMonitoring.HistoryQueryWellListStore";
+							
+							if(!e.point.selected){//如果没被选中,则本次是选中
+								Ext.getCmp(statSelectFESdiagramResultId).setValue(e.point.name);
+							}else{//取消选中
+								Ext.getCmp(statSelectFESdiagramResultId).setValue('');
+							}
+							
+							Ext.getCmp(deviceListComb_Id).setValue('');
+							Ext.getCmp(deviceListComb_Id).setRawValue('');
+							var gridPanel = Ext.getCmp(gridPanel_Id);
+							if (isNotVal(gridPanel)) {
+								gridPanel.getSelectionModel().deselectAll(true);
+								gridPanel.getStore().load();
+							}else{
+								Ext.create(store);
+							}
 						}
-						
-						Ext.getCmp(deviceListComb_Id).setValue('');
-						Ext.getCmp(deviceListComb_Id).setRawValue('');
-						var gridPanel = Ext.getCmp(gridPanel_Id);
-						if (isNotVal(gridPanel)) {
-							gridPanel.getSelectionModel().deselectAll(true);
-							gridPanel.getStore().load();
-						}else{
-							Ext.create(store);
-						}
-					}
-				},
-				showInLegend : true
-			}
-		},
-		exporting:{ 
-            enabled:true,    
-            filename:title,    
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
-		},
-		series : [{
-					type : 'pie',
-					name : name,
-					data : data
-				}]
-		});
+					},
+					showInLegend : true
+				}
+			},
+			exporting:{ 
+	            enabled:true,    
+	            filename:title,    
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+			},
+			series : [{
+						type : 'pie',
+						name : name,
+						data : data
+					}]
+			});
+	}
+	
 };
 
 function loadAndInitHistoryQueryDeviceTypeStat(all){
@@ -1244,13 +1291,17 @@ function loadAndInitHistoryQueryDeviceTypeStat(all){
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringDeviceTypeStatData',
 		success:function(response) {
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initHistoryQueryDeviceTypeStatPieOrColChat(result);
 		},
 		failure:function(){
-			Ext.getCmp(panelId).getEl().unmask();
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1281,74 +1332,76 @@ function initHistoryQueryDeviceTypeStatPieOrColChat(get_rawData) {
 };
 
 function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
-	Highcharts.chart(divId, {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false
-		},
-		credits : {
-			enabled : false
-		},
-		title : {
-			text : title
-		},
-		colors : colors,
-		tooltip : {
-			pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
-		},
-		legend : {
-			align : 'center',
-			verticalAlign : 'bottom',
-			layout : 'horizontal' //vertical 竖直 horizontal-水平
-		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					color : '#000000',
-					connectorColor : '#000000',
-					format : '<b>{point.name}</b>: {point.y}'
-				},
-				events: {
-					click: function(e) {
-						var statSelectDeviceType_Id="HistoryQueryStatSelectDeviceType_Id";
-						var deviceListComb_Id="HistoryQueryDeviceListComb_Id";
-						var gridPanel_Id="HistoryQueryDeviceListGridPanel_Id";
-						var store="AP.store.historyQuery.HistoryQueryWellListStore";
-						var selectedDeviceId_global="selectedDeviceId_global";
-						var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
-						
-						Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-						
-						if(!e.point.selected){//如果没被选中,则本次是选中
-							Ext.getCmp(statSelectDeviceType_Id).setValue(e.point.name);
-						}else{//取消选中
-							Ext.getCmp(statSelectDeviceType_Id).setValue('');
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.chart(divId, {
+			chart : {
+				plotBackgroundColor : null,
+				plotBorderWidth : null,
+				plotShadow : false
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title
+			},
+			colors : colors,
+			tooltip : {
+				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+			},
+			legend : {
+				align : 'center',
+				verticalAlign : 'bottom',
+				layout : 'horizontal' //vertical 竖直 horizontal-水平
+			},
+			plotOptions : {
+				pie : {
+					allowPointSelect : true,
+					cursor : 'pointer',
+					dataLabels : {
+						enabled : true,
+						color : '#000000',
+						connectorColor : '#000000',
+						format : '<b>{point.name}</b>: {point.y}'
+					},
+					events: {
+						click: function(e) {
+							var statSelectDeviceType_Id="HistoryQueryStatSelectDeviceType_Id";
+							var deviceListComb_Id="HistoryQueryDeviceListComb_Id";
+							var gridPanel_Id="HistoryQueryDeviceListGridPanel_Id";
+							var store="AP.store.historyQuery.HistoryQueryWellListStore";
+							var selectedDeviceId_global="selectedDeviceId_global";
+							var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+							
+							Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+							
+							if(!e.point.selected){//如果没被选中,则本次是选中
+								Ext.getCmp(statSelectDeviceType_Id).setValue(e.point.name);
+							}else{//取消选中
+								Ext.getCmp(statSelectDeviceType_Id).setValue('');
+							}
+							
+							Ext.getCmp(deviceListComb_Id).setValue('');
+							Ext.getCmp(deviceListComb_Id).setRawValue('');
+							refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
 						}
-						
-						Ext.getCmp(deviceListComb_Id).setValue('');
-						Ext.getCmp(deviceListComb_Id).setRawValue('');
-						refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
-					}
-				},
-				showInLegend : true
-			}
-		},
-		exporting:{ 
-            enabled:true,    
-            filename:title,    
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
-		},
-		series : [{
-					type : 'pie',
-					name : name,
-					data : data
-				}]
-		});
+					},
+					showInLegend : true
+				}
+			},
+			exporting:{ 
+	            enabled:true,    
+	            filename:title,    
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+			},
+			series : [{
+						type : 'pie',
+						name : name,
+						data : data
+					}]
+			});
+	}
 };
 
 function getHistoryQueryDeviceListDataPage(deviceId,deviceType,limit){

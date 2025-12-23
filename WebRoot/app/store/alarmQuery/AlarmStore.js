@@ -53,7 +53,10 @@ Ext.define('AP.store.alarmQuery.AlarmStore', {
                     }
                 });
                 var panel = Ext.getCmp(getAlarmDetailsDataPanIdFromTabActive());
-                panel.add(gridPanel);
+                
+                if (isNotVal(panel)) {
+                	panel.add(gridPanel);
+                }
             }
             
             var startDate=Ext.getCmp('AlarmQueryStartDate_Id');

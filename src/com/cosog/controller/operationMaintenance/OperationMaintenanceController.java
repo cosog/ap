@@ -3,12 +3,14 @@ package com.cosog.controller.operationMaintenance;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -406,9 +408,13 @@ public class OperationMaintenanceController  extends BaseController {
 		
 		
 		if(list!=null){
+			List<String> updateIds=new ArrayList<>();
 			for(DeviceTabManager instance:list){
-				this.deviceTabManagerMaintenanceService.modifyDeviceTabManagerInstance(instance);
-				MemoryDataManagerTask.loadDeviceInfoByTabInstanceId(instance.getId()+"","update");
+				this.deviceTabManagerMaintenanceService.updateDeviceTabManagerInstance(instance);
+				updateIds.add(instance.getId()+"");
+			}
+			if(updateIds.size()>0){
+				MemoryDataManagerTask.loadDeviceInfoByTabInstanceId(StringUtils.join(updateIds, ","),"update");
 			}
 		}
 		

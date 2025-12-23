@@ -75,31 +75,33 @@ var realtimeStatTabItems=[{
         	}
         }
     }
-},{
-	title:loginUserLanguageResource.deviceType,
-	layout: 'fit',
-	hidden: true,
-	id:'RealTimeMonitoringDeviceTypeStatGraphPanel_Id',
-	html: '<div id="RealTimeMonitoringDeviceTypeStatPieDiv_Id" style="width:100%;height:100%;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if(isNotVal($("#RealTimeMonitoringStatGraphPanelPieDiv_Id"))){
-        		if ($("#RealTimeMonitoringDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
-        			highchartsResize("RealTimeMonitoringDeviceTypeStatPieDiv_Id");
-        		}else{
-                	var toolTip=Ext.getCmp("RealTimeMonitoringDeviceTypeStatPieToolTip_Id");
-                	if(!isNotVal(toolTip)){
-                		Ext.create('Ext.tip.ToolTip', {
-                            id:'RealTimeMonitoringDeviceTypeStatPieToolTip_Id',
-                    		target: 'RealTimeMonitoringDeviceTypeStatPieDiv_Id',
-                            html: loginUserLanguageResource.statPieChartToolTip
-                        });
-                	}
-                }
-        	}
-        }
-    }
-}];
+}
+//,{
+//	title:loginUserLanguageResource.deviceType,
+//	layout: 'fit',
+//	hidden: true,
+//	id:'RealTimeMonitoringDeviceTypeStatGraphPanel_Id',
+//	html: '<div id="RealTimeMonitoringDeviceTypeStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+//	listeners: {
+//        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+//        	if(isNotVal($("#RealTimeMonitoringStatGraphPanelPieDiv_Id"))){
+//        		if ($("#RealTimeMonitoringDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
+//        			highchartsResize("RealTimeMonitoringDeviceTypeStatPieDiv_Id");
+//        		}else{
+//                	var toolTip=Ext.getCmp("RealTimeMonitoringDeviceTypeStatPieToolTip_Id");
+//                	if(!isNotVal(toolTip)){
+//                		Ext.create('Ext.tip.ToolTip', {
+//                            id:'RealTimeMonitoringDeviceTypeStatPieToolTip_Id',
+//                    		target: 'RealTimeMonitoringDeviceTypeStatPieDiv_Id',
+//                            html: loginUserLanguageResource.statPieChartToolTip
+//                        });
+//                	}
+//                }
+//        	}
+//        }
+//    }
+//}
+];
 
 var realtimeCurveAndTableTabPanelItems=[{
 	title: loginUserLanguageResource.wellboreAnalysis,
@@ -632,8 +634,12 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		items: realtimeStatTabItems,
                 		listeners: {
                 			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                				oldCard.setIconCls(null);
-                				newCard.setIconCls('check3');
+                				if(oldCard!=undefined){
+                					oldCard.setIconCls(null);
+                				}
+                				if(newCard!=undefined){
+                					newCard.setIconCls('check3');
+                				}
                 			},
                 			tabchange: function (tabPanel, newCard,oldCard, obj) {
             					if(newCard.id=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
@@ -670,8 +676,12 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		items: realtimeCurveAndTableTabPanelItems,
                 		listeners: {
                 			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                				oldCard.setIconCls(null);
-                				newCard.setIconCls('check3');
+                				if(oldCard!=undefined){
+                					oldCard.setIconCls(null);
+                				}
+                				if(newCard!=undefined){
+                					newCard.setIconCls('check3');
+                				}
                 			},
                 			tabchange: function (tabPanel, newCard,oldCard, obj) {
             					var selectRow= Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
@@ -703,8 +713,12 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		items: RealTimeMonitoringRightTabPanelItems,
                 		listeners: {
                 			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                				oldCard.setIconCls(null);
-                				newCard.setIconCls('check3');
+                				if(oldCard!=undefined){
+                					oldCard.setIconCls(null);
+                				}
+                				if(newCard!=undefined){
+                					newCard.setIconCls('check3');
+                				}
                 			},
                 			tabchange: function (tabPanel, newCard, oldCard,obj) {
                         		if(newCard.id=="RealTimeMonitoringRightControlAndVideoPanel"){
@@ -790,7 +804,10 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getDeviceRealTimeMonitoringData',
 		success:function(response) {
-			Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").getEl().unmask();
+			if(isNotVal(Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id"))){
+				Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").getEl().unmask();
+            }
+			
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceRealTimeMonitoringDataHandsontableHelper==null || deviceRealTimeMonitoringDataHandsontableHelper.hot==undefined){
 				deviceRealTimeMonitoringDataHandsontableHelper = DeviceRealTimeMonitoringDataHandsontableHelper.createNew("RealTimeMonitoringInfoDataTableInfoDiv_id");
@@ -824,7 +841,9 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 				var col=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col;
 				var column=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].column;
 				var columnDataType=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].columnDataType;
-				deviceRealTimeMonitoringDataHandsontableHelper.hot.setCellMeta(row,col,'columnDataType',columnDataType);
+				if(deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
+					deviceRealTimeMonitoringDataHandsontableHelper.hot.setCellMeta(row,col,'columnDataType',columnDataType);
+				}
 			}
 			
 		},
@@ -942,82 +961,84 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	        }
 	        
 	        deviceRealTimeMonitoringDataHandsontableHelper.createTable = function (data) {
-	        	$('#'+deviceRealTimeMonitoringDataHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+deviceRealTimeMonitoringDataHandsontableHelper.divid);
-	        	deviceRealTimeMonitoringDataHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-	        		data: data,
-	        		colWidths: [30,20,30,20,30,20],
-	                columns:deviceRealTimeMonitoringDataHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                rowHeaders: false,//显示行头
-	                colHeaders: false,
-	                autoWrapRow: false, //自动换行
-	                rowHeights: [40],
-	                columnSorting: true, //允许排序
-	                allowInsertRow:false,
-	                sortIndicator: true,
-	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
-	                filters: true,
-	                renderAllRows: true,
-	                search: true,
-	                mergeCells: [{
-                        "row": 0,
-                        "col": 0,
-                        "rowspan": 1,
-                        "colspan": 6
-                    }],
-	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
-	                    var visualRowIndex = this.instance.toVisualRow(row);
-	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.renderer = deviceRealTimeMonitoringDataHandsontableHelper.addCellStyle;
-	                    
-	                    cellProperties.readOnly = true;
-	                    return cellProperties;
-	                },
-	                afterOnCellMouseOver: function(event, coords, TD){
-	                	if(coords.col>=0 && coords.row>=0 && deviceRealTimeMonitoringDataHandsontableHelper!=null&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=''&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined && deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell!=undefined){
-	                		var rawValue=deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
-	                		if(isNotVal(rawValue)){
-                				var showValue=rawValue;
-            					var rowChar=90;
-            					var maxWidth=rowChar*10;
-            					if(rawValue.length>rowChar){
-            						showValue='';
-            						let arr = [];
-            						let index = 0;
-            						while(index<rawValue.length){
-            							arr.push(rawValue.slice(index,index +=rowChar));
-            						}
-            						for(var i=0;i<arr.length;i++){
-            							showValue+=arr[i];
-            							if(i<arr.length-1){
-            								showValue+='<br>';
-            							}
-            						}
-            					}
-                				if(!isNotVal(TD.tip)){
-                					var height=28;
-                					TD.tip = Ext.create('Ext.tip.ToolTip', {
-		                			    target: event.target,
-		                			    maxWidth:maxWidth,
-		                			    html: showValue,
-		                			    listeners: {
-		                			    	hide: function (thisTip, eOpts) {
-		                                	},
-		                                	close: function (thisTip, eOpts) {
-		                                	}
-		                                }
-		                			});
-                				}else{
-                					TD.tip.setHtml(showValue);
-                				}
-                			}
-	                	}
-	                }
-	        	});
+	        	if($('#'+deviceRealTimeMonitoringDataHandsontableHelper.divid)!=undefined && $('#'+deviceRealTimeMonitoringDataHandsontableHelper.divid)[0]!=undefined){
+	        		$('#'+deviceRealTimeMonitoringDataHandsontableHelper.divid).empty();
+		        	var hotElement = document.querySelector('#'+deviceRealTimeMonitoringDataHandsontableHelper.divid);
+		        	deviceRealTimeMonitoringDataHandsontableHelper.hot = new Handsontable(hotElement, {
+		        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+		        		data: data,
+		        		colWidths: [30,20,30,20,30,20],
+		                columns:deviceRealTimeMonitoringDataHandsontableHelper.columns,
+		                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+		                rowHeaders: false,//显示行头
+		                colHeaders: false,
+		                autoWrapRow: false, //自动换行
+		                rowHeights: [40],
+		                columnSorting: true, //允许排序
+		                allowInsertRow:false,
+		                sortIndicator: true,
+		                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+		                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+		                filters: true,
+		                renderAllRows: true,
+		                search: true,
+		                mergeCells: [{
+	                        "row": 0,
+	                        "col": 0,
+	                        "rowspan": 1,
+	                        "colspan": 6
+	                    }],
+		                cells: function (row, col, prop) {
+		                	var cellProperties = {};
+		                    var visualRowIndex = this.instance.toVisualRow(row);
+		                    var visualColIndex = this.instance.toVisualColumn(col);
+		                    cellProperties.renderer = deviceRealTimeMonitoringDataHandsontableHelper.addCellStyle;
+		                    
+		                    cellProperties.readOnly = true;
+		                    return cellProperties;
+		                },
+		                afterOnCellMouseOver: function(event, coords, TD){
+		                	if(coords.col>=0 && coords.row>=0 && deviceRealTimeMonitoringDataHandsontableHelper!=null&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=''&&deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined && deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell!=undefined){
+		                		var rawValue=deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+		                		if(isNotVal(rawValue)){
+	                				var showValue=rawValue;
+	            					var rowChar=90;
+	            					var maxWidth=rowChar*10;
+	            					if(rawValue.length>rowChar){
+	            						showValue='';
+	            						let arr = [];
+	            						let index = 0;
+	            						while(index<rawValue.length){
+	            							arr.push(rawValue.slice(index,index +=rowChar));
+	            						}
+	            						for(var i=0;i<arr.length;i++){
+	            							showValue+=arr[i];
+	            							if(i<arr.length-1){
+	            								showValue+='<br>';
+	            							}
+	            						}
+	            					}
+	                				if(!isNotVal(TD.tip)){
+	                					var height=28;
+	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+			                			    target: event.target,
+			                			    maxWidth:maxWidth,
+			                			    html: showValue,
+			                			    listeners: {
+			                			    	hide: function (thisTip, eOpts) {
+			                                	},
+			                                	close: function (thisTip, eOpts) {
+			                                	}
+			                                }
+			                			});
+	                				}else{
+	                					TD.tip.setHtml(showValue);
+	                				}
+	                			}
+		                	}
+		                }
+		        	});
+	        	}
 	        }
 	        return deviceRealTimeMonitoringDataHandsontableHelper;
 	    }

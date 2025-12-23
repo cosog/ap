@@ -51,28 +51,31 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                 }],
                 listeners: {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check2');
-        				
-        				if(newCard.id=="ModbusProtocolAlarmUnitConfigTabPanel_Id"){
-        					var ModbusProtocolAlarmUnitConfigInfoView=Ext.getCmp("modbusProtocolAlarmUnitConfigInfoViewId");
-        					if(!isNotVal(ModbusProtocolAlarmUnitConfigInfoView)){
-        						ModbusProtocolAlarmUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView');
-        						Ext.getCmp("ModbusProtocolAlarmUnitConfigTabPanel_Id").add(ModbusProtocolAlarmUnitConfigInfoView);
-        					}
-        				}else if(newCard.id=="ModbusProtocolDisplayUnitConfigTabPanel_Id"){
-        					var ModbusProtocolDisplayUnitConfigInfoView=Ext.getCmp("modbusProtocolDisplayUnitConfigInfoViewId");
-        					if(!isNotVal(ModbusProtocolDisplayUnitConfigInfoView)){
-        						ModbusProtocolDisplayUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView');
-        						Ext.getCmp("ModbusProtocolDisplayUnitConfigTabPanel_Id").add(ModbusProtocolDisplayUnitConfigInfoView);
-        					}
-        				}else if(newCard.id=="ModbusProtocolReportUnitConfigTabPanel_Id"){
-        					var ModbusProtocolReportUnitConfigInfoView=Ext.getCmp("modbusProtocolReportUnitConfigInfoViewId");
-        					if(!isNotVal(ModbusProtocolReportUnitConfigInfoView)){
-        						ModbusProtocolReportUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView');
-        						Ext.getCmp("ModbusProtocolReportUnitConfigTabPanel_Id").add(ModbusProtocolReportUnitConfigInfoView);
-        					}
-        				}
+                		if(oldCard!=undefined){
+                			oldCard.setIconCls(null);
+                	    }
+                	    if(newCard!=undefined){
+                	    	newCard.setIconCls('check2');	
+                	    	if(newCard.id=="ModbusProtocolAlarmUnitConfigTabPanel_Id"){
+            					var ModbusProtocolAlarmUnitConfigInfoView=Ext.getCmp("modbusProtocolAlarmUnitConfigInfoViewId");
+            					if(!isNotVal(ModbusProtocolAlarmUnitConfigInfoView)){
+            						ModbusProtocolAlarmUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView');
+            						Ext.getCmp("ModbusProtocolAlarmUnitConfigTabPanel_Id").add(ModbusProtocolAlarmUnitConfigInfoView);
+            					}
+            				}else if(newCard.id=="ModbusProtocolDisplayUnitConfigTabPanel_Id"){
+            					var ModbusProtocolDisplayUnitConfigInfoView=Ext.getCmp("modbusProtocolDisplayUnitConfigInfoViewId");
+            					if(!isNotVal(ModbusProtocolDisplayUnitConfigInfoView)){
+            						ModbusProtocolDisplayUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView');
+            						Ext.getCmp("ModbusProtocolDisplayUnitConfigTabPanel_Id").add(ModbusProtocolDisplayUnitConfigInfoView);
+            					}
+            				}else if(newCard.id=="ModbusProtocolReportUnitConfigTabPanel_Id"){
+            					var ModbusProtocolReportUnitConfigInfoView=Ext.getCmp("modbusProtocolReportUnitConfigInfoViewId");
+            					if(!isNotVal(ModbusProtocolReportUnitConfigInfoView)){
+            						ModbusProtocolReportUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView');
+            						Ext.getCmp("ModbusProtocolReportUnitConfigTabPanel_Id").add(ModbusProtocolReportUnitConfigInfoView);
+            					}
+            				}
+                	    }
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(newCard.id=="ModbusProtocolAcqUnitConfigTabPanel_Id"){

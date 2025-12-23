@@ -76,11 +76,15 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     			showHistoryDiagramOverlay=deviceTabInstanceConfig.DeviceHistoryQuery.DiagramOverlay!=undefined?deviceTabInstanceConfig.DeviceHistoryQuery.DiagramOverlay:false;
                     		}
                     		
+//                    		if(showHistoryTrendCurve==false && showHistoryTiledDiagram==false && showHistoryDiagramOverlay==false){
+//                    			showHistoryTrendCurve=true;
+//                    		}
+                    		
                     		if(showHistoryTrendCurve==false && showHistoryTiledDiagram==false && showHistoryDiagramOverlay==false){
-                    			showHistoryTrendCurve=true;
+                    			Ext.getCmp('HistoryQueryCenterToolbar_id').hide();
+                    		}else{
+                    			Ext.getCmp('HistoryQueryCenterToolbar_id').show();
                     		}
-                    		
-                    		
                     		
                     		
                     		var combDeviceName=Ext.getCmp('HistoryQueryDeviceListComb_Id').getValue();
@@ -93,9 +97,6 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                             	Ext.getCmp("HistoryQueryDataInfoPanel_Id").removeAll();
                             }
                     		
-                    		
-                    		var centerTabPanelChange=false;
-                    		
                     		Ext.getCmp('HistoryQueryStartDate_Id').setValue('');
                     		Ext.getCmp('HistoryQueryStartDate_Id').setRawValue('');
                     		Ext.getCmp('HistoryQueryEndDate_Id').setValue('');
@@ -107,6 +108,10 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     		Ext.getCmp('HistoryFSDiagramQueryEndDate_Id').setRawValue('');
                     		
                     		var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
+                    		var activeId = '';
+                    		if(tabPanel.getActiveTab()!=undefined){
+                    			activeId = tabPanel.getActiveTab().id;
+                    		}
                     		
                     		var tabChange=false;
                     		//趋势曲线标签处理

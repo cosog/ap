@@ -415,8 +415,12 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 }],
                 listeners: {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check3');
+                		if(oldCard!=undefined){
+                			oldCard.setIconCls(null);
+                	    }
+                	    if(newCard!=undefined){
+                	    	newCard.setIconCls('check3');				
+                	    }
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
                     	if(Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id=='SingleWellDailyReportTabPanel_id'){

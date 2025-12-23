@@ -27,9 +27,13 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        				oldCard.setIconCls(null);
-        	        				newCard.setIconCls('check2');
-        	        				oldCard.removeAll();
+        	        				if(oldCard!=undefined){
+        	        					oldCard.setIconCls(null);
+        	        					oldCard.removeAll();
+        	                	    }
+        	                	    if(newCard!=undefined){
+        	                	    	newCard.setIconCls('check2');
+        	                	    }
         	        			},
         	        			tabchange: function (tabPanel, newCard,oldCard, obj) {
         	        				var DeviceInfoPanel = Ext.create('AP.view.well.DeviceInfoPanel');
@@ -122,13 +126,17 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         		items:items,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				oldCard.setIconCls(null);
-        				newCard.setIconCls('check1');
-        				if(oldCard.xtype=='tabpanel'){
-        					oldCard.activeTab.removeAll();
-        				}else{
-        					oldCard.removeAll();
-        				}
+        				if(oldCard!=undefined){
+        					oldCard.setIconCls(null);
+        					if(oldCard.xtype=='tabpanel'){
+            					oldCard.activeTab.removeAll();
+            				}else{
+            					oldCard.removeAll();
+            				}
+                	    }
+                	    if(newCard!=undefined){
+                	    	newCard.setIconCls('check1');		
+                	    }
         			},
         			tabchange: function (tabPanel, newCard,oldCard, obj) {
         				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 

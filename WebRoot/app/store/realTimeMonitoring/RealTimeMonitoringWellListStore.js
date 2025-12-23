@@ -54,10 +54,37 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     		var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
                     		var deviceName=record.data.deviceName;
                     		var deviceId=record.data.id;
-                    		var calculateType=record.data.calculateType;
+                    		
                     		
                     		var deviceInfo=getDeviceAddInfoAndControlInfo(deviceId,deviceType);
                     		
+                    		
+                    		var deviceTabInstanceInfo=getDeviceTabInstanceInfoByDeviceId(deviceId);
+                    		var deviceTabInstanceConfig=deviceTabInstanceInfo.config;
+                    		var calculateType=deviceTabInstanceInfo.calculateType==undefined?0:deviceTabInstanceInfo.calculateType;
+                    		
+                    		var showRealtimeWellboreAnalysis=false;
+                    		var showRealtimeSurfaceAnalysis=false;
+                    		var showRealtimeTrendCurve=false;
+                    		var showRealtimeDynamicData=false;
+                    		
+                    		var showRealtimeDeviceControl=false;
+                    		var showRealtimeDeviceInformation=false;
+                    		
+                    		if(deviceTabInstanceConfig!=undefined && deviceTabInstanceConfig.DeviceRealTimeMonitoring!=undefined){
+                    			showRealtimeWellboreAnalysis=deviceTabInstanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis:false;
+                    			showRealtimeSurfaceAnalysis=deviceTabInstanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis:false;
+                    			showRealtimeTrendCurve=deviceTabInstanceConfig.DeviceRealTimeMonitoring.TrendCurve!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.TrendCurve:false;
+                    			showRealtimeDynamicData=deviceTabInstanceConfig.DeviceRealTimeMonitoring.DynamicData!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.DynamicData:false;
+                    			
+                    			showRealtimeDeviceControl=deviceTabInstanceConfig.DeviceRealTimeMonitoring.DeviceControl!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.DeviceControl:false;
+                    			showRealtimeDeviceInformation=deviceTabInstanceConfig.DeviceRealTimeMonitoring.DeviceInformation!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.DeviceInformation:false;
+                    		}
+                    		
+                    		if(showRealtimeWellboreAnalysis==false && showRealtimeSurfaceAnalysis==false && showRealtimeTrendCurve==false && showRealtimeDynamicData==false){
+                    			showRealtimeTrendCurve=true;
+                    			showRealtimeDynamicData=true;
+                    		}
                     		
                     		var combDeviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
                     		if(combDeviceName!=undefined || combDeviceName!=''){
@@ -67,110 +94,186 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     		var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
                     		var activeId = tabPanel.getActiveTab().id;
                     		
-                    		if(activeId=="RealTimeMonitoringCurveTabPanel_Id"){
-                    			deviceRealtimeMonitoringCurve(deviceType);
-                    			
-                    			var RealTimeMonitoringFSDiagramAnalysisTabPanel = tabPanel.getComponent("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id");
-                    			var RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel = tabPanel.getComponent("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id");
-                    			if(calculateType==1){
-                    				if(RealTimeMonitoringFSDiagramAnalysisTabPanel==undefined){
-                    					tabPanel.insert(0,realtimeCurveAndTableTabPanelItems[0]);
-                    				}
-                    				if(RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel==undefined){
-                    					tabPanel.insert(1,realtimeCurveAndTableTabPanelItems[1]);
-                    				}
-                    			}else{
-                    				if(RealTimeMonitoringFSDiagramAnalysisTabPanel!=undefined){
-                    					tabPanel.remove("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id");
-                    				}
-                    				if(RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel!=undefined){
-                    					tabPanel.remove("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id");
-                    				}
-                    			}
-                    		}else if(activeId=="RealTimeMonitoringTableTabPanel_Id"){
-                        		CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,calculateType);
-                        		
-                        		var RealTimeMonitoringFSDiagramAnalysisTabPanel = tabPanel.getComponent("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id");
-                    			var RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel = tabPanel.getComponent("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id");
-                    			if(calculateType==1){
-                    				if(RealTimeMonitoringFSDiagramAnalysisTabPanel==undefined){
-                    					tabPanel.insert(0,realtimeCurveAndTableTabPanelItems[0]);
-                    				}
-                    				if(RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel==undefined){
-                    					tabPanel.insert(1,realtimeCurveAndTableTabPanelItems[1]);
-                    				}
-                    			}else{
-                    				if(RealTimeMonitoringFSDiagramAnalysisTabPanel!=undefined){
-                    					tabPanel.remove("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id");
-                    				}
-                    				if(RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel!=undefined){
-                    					tabPanel.remove("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id");
-                    				}
+                    		var tabChange=false;
+                    		//井筒分析标签处理
+                    		if(showRealtimeWellboreAnalysis==false){
+                    			tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
+                    			if(activeId=="RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){
+                    				tabChange=true;
                     			}
                     		}else{
-        						if(calculateType==1){
-        							Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');
-        						}else{
-        							tabPanel.setActiveTab("RealTimeMonitoringCurveTabPanel_Id");
-        							
-        							tabPanel.remove("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id");
-        							tabPanel.remove("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id");
-        						}
-        					}
+                    			var RealTimeMonitoringFSDiagramAnalysisTabPanel = tabPanel.getComponent("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id");
+                				if(calculateType==1 && RealTimeMonitoringFSDiagramAnalysisTabPanel==undefined){
+                					tabPanel.insert(0,realtimeCurveAndTableTabPanelItems[0]);
+                					tabPanel.setActiveTab(0);
+                					tabChange=true;
+                				}else if(calculateType!=1 && RealTimeMonitoringFSDiagramAnalysisTabPanel!=undefined){
+                					tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
+                        			if(activeId=="RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){
+                        				tabChange=true;
+                        			}
+                				}
+                    		}
+                    		//地面分析标签处理
+                    		if(showRealtimeSurfaceAnalysis==false){
+                    			tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
+                    			if(activeId=="RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){
+                    				tabChange=true;
+                    			}
+                    		}else{
+                    			var RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel = tabPanel.getComponent("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id");
+                				if(calculateType==1 && RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel==undefined){
+                					tabPanel.insert(1,realtimeCurveAndTableTabPanelItems[1]);
+                				}else if(calculateType!=1 && RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel!=undefined){
+                					tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
+                					if(activeId=="RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){
+                        				tabChange=true;
+                        			}
+                				}
+                    		}
                     		
-                    		if(deviceInfo.videoNum==0 && deviceInfo.controlItemNum==0 && deviceInfo.addInfoNum==0 && deviceInfo.auxiliaryDeviceNum==0){
+                    		//趋势曲线标签处理
+                    		if(showRealtimeTrendCurve==false){
+                    			tabPanel.remove(Ext.getCmp("RealTimeMonitoringCurveTabPanel_Id"));
+                    			if(activeId=="RealTimeMonitoringCurveTabPanel_Id"){
+                    				tabChange=true;
+                    			}
+                    		}else{
+                    			var RealTimeMonitoringCurveTabPanel = tabPanel.getComponent("RealTimeMonitoringCurveTabPanel_Id");
+                    			if(RealTimeMonitoringCurveTabPanel==undefined){
+                    				tabPanel.insert(2,realtimeCurveAndTableTabPanelItems[2]);
+                    			}
+                    		}
+                    		//动态数据标签处理
+                    		if(showRealtimeDynamicData==false){
+                    			tabPanel.remove(Ext.getCmp("RealTimeMonitoringTableTabPanel_Id"));
+                    			if(activeId=="RealTimeMonitoringTableTabPanel_Id"){
+                    				tabChange=true;
+                    			}
+                    		}else{
+                    			var RealTimeMonitoringTableTabPanel = tabPanel.getComponent("RealTimeMonitoringTableTabPanel_Id");
+                    			if(RealTimeMonitoringTableTabPanel==undefined){
+                    				tabPanel.insert(3,realtimeCurveAndTableTabPanelItems[3]);
+                    			}
+                    		}
+                    		
+                    		if(tabPanel.getActiveTab()==undefined){
+                    			tabPanel.hide();
+                    		}else{
+                    			if(tabPanel.isHidden() ){
+                    				tabPanel.show();
+                    			}
+                    			if(!tabChange){
+                        			activeId = tabPanel.getActiveTab().id;
+                        			if(activeId=="RealTimeMonitoringCurveTabPanel_Id"){
+                        				deviceRealtimeMonitoringCurve(deviceType);
+                        			}else if(activeId=="RealTimeMonitoringTableTabPanel_Id"){
+                        				CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,calculateType);
+                        			}else{
+                						if(calculateType==1){
+                							Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');
+                						}else{
+                							tabPanel.setActiveTab(0);
+                							
+                							tabPanel.remove("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id");
+                							tabPanel.remove("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id");
+                						}
+                					}
+                        		}
+                    		}
+                    		
+                    		
+                    		
+                    		var controlTabChange=false;
+                    		var showControlAndInformationTabPanel=true;
+                    		if(deviceInfo.videoNum==0){
                     			cleanDeviceAddInfoAndControlInfo();
-                    			Ext.getCmp("RealTimeMonitoringRightTabPanel").hide();
+                    		}
+                    		if(showRealtimeDeviceControl==false && showRealtimeDeviceInformation==false){
+                    			showControlAndInformationTabPanel=false;
+                    		}
+                    		
+                    		var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
+                    		if(!showControlAndInformationTabPanel){
+                    			rightTabPanel.hide();
                     			Ext.getCmp("RealTimeMonitoringTabPanel").getEl().unmask();
                     			Ext.getCmp("RealTimeMonitoringInfoPanel_Id").getEl().unmask();
                     		}else{
-                    			if(Ext.getCmp("RealTimeMonitoringRightTabPanel").isHidden() ){
-                    				Ext.getCmp("RealTimeMonitoringRightTabPanel").show();
+                    			if(rightTabPanel.isHidden() ){
+                    				rightTabPanel.show();
                     			}
                     			
-                    			var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
                         		var rightTabPanelActiveTabId=rightTabPanel.getActiveTab().id;
                         		
-                        		var RealTimeMonitoringRightControlAndVideoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightControlAndVideoPanel");
-                    			var RealTimeMonitoringRightDeviceInfoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightDeviceInfoPanel");
-                    			
-                    			if( (deviceInfo.videoNum>0 || deviceInfo.controlItemNum>0) && RealTimeMonitoringRightControlAndVideoPanel==undefined){
-                    				rightTabPanel.insert(0,RealTimeMonitoringRightTabPanelItems[0]);
-                    			}
-                    			
-                    			if( (deviceInfo.addInfoNum>0 || deviceInfo.auxiliaryDeviceNum>0) && RealTimeMonitoringRightDeviceInfoPanel==undefined){
-                    				rightTabPanel.insert(1,RealTimeMonitoringRightTabPanelItems[1]);
-                    			}
-                    			
-                    			if(rightTabPanelActiveTabId=='RealTimeMonitoringRightControlAndVideoPanel' ){
-                        			if(deviceInfo.videoNum==0 && deviceInfo.controlItemNum==0){
-                        				cleanDeviceAddInfoAndControlInfo();
-                        				rightTabPanel.setActiveTab("RealTimeMonitoringRightDeviceInfoPanel");
-                        				rightTabPanel.remove("RealTimeMonitoringRightControlAndVideoPanel");
-                        			}else{
-                        				createVideo(deviceType,record.data);
-                            			var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
-                            			if(isNotVal(controlGridPanel)){
-                            				controlGridPanel.getStore().load();
-                            			}else{
-                            				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore');
-                            			}
-                            			if(deviceInfo.addInfoNum==0 && deviceInfo.auxiliaryDeviceNum==0){
-                            				rightTabPanel.remove("RealTimeMonitoringRightDeviceInfoPanel");
-                            			}
+                        		//控制标签处理
+                        		if(showRealtimeDeviceControl==false){
+                        			rightTabPanel.remove(Ext.getCmp("RealTimeMonitoringRightControlAndVideoPanel"));
+                        			if(rightTabPanelActiveTabId=="RealTimeMonitoringRightControlAndVideoPanel"){
+                        				controlTabChange=true;
                         			}
-                        			
-                        		}else if(rightTabPanelActiveTabId=='RealTimeMonitoringRightDeviceInfoPanel'){
-                        			if(deviceInfo.addInfoNum==0 && deviceInfo.auxiliaryDeviceNum==0){
-                        				rightTabPanel.setActiveTab("RealTimeMonitoringRightControlAndVideoPanel");
-                        				rightTabPanel.remove("RealTimeMonitoringRightDeviceInfoPanel");
-                        			}else{
-                        				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
-                        				if(deviceInfo.videoNum==0 && deviceInfo.controlItemNum==0){
-                        					cleanDeviceAddInfoAndControlInfo();
-                        					rightTabPanel.remove("RealTimeMonitoringRightControlAndVideoPanel");
+                        		}else{
+                        			var RealTimeMonitoringRightControlAndVideoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightControlAndVideoPanel");
+                        			if(RealTimeMonitoringRightControlAndVideoPanel==undefined){
+                        				if(deviceInfo.videoNum!=0 || deviceInfo.controlItemNum!=0){
+                        					rightTabPanel.insert(0,RealTimeMonitoringRightTabPanelItems[0]);
+                            				rightTabPanel.setActiveTab(0);
+                            				controlTabChange=true;
                         				}
                         			}
+                        		}
+                        		
+                        		//设备信息标签处理
+                        		if(showRealtimeDeviceInformation==false){
+                        			rightTabPanel.remove(Ext.getCmp("RealTimeMonitoringRightDeviceInfoPanel"));
+                        			if(rightTabPanelActiveTabId=="RealTimeMonitoringRightDeviceInfoPanel"){
+                        				controlTabChange=true;
+                        			}
+                        		}else{
+                        			var RealTimeMonitoringRightDeviceInfoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightDeviceInfoPanel");
+                        			if(RealTimeMonitoringRightDeviceInfoPanel==undefined){
+                        				if(deviceInfo.addInfoNum!=0 || deviceInfo.auxiliaryDeviceNum!=0){
+                        					rightTabPanel.insert(1,RealTimeMonitoringRightTabPanelItems[1]);
+                        				}
+                        			}
+                        		}
+                        		
+                        		
+                        		if(rightTabPanel.getActiveTab()==undefined){
+                        			rightTabPanel.hide();
+                        		}else{
+                        			if(!controlTabChange){
+                        				rightTabPanelActiveTabId=rightTabPanel.getActiveTab().id;
+                            			if(rightTabPanelActiveTabId=='RealTimeMonitoringRightControlAndVideoPanel' ){
+                                			if(deviceInfo.videoNum==0 && deviceInfo.controlItemNum==0){
+                                				cleanDeviceAddInfoAndControlInfo();
+                                				rightTabPanel.setActiveTab("RealTimeMonitoringRightDeviceInfoPanel");
+                                				rightTabPanel.remove("RealTimeMonitoringRightControlAndVideoPanel");
+                                			}else{
+                                				createVideo(deviceType,record.data);
+                                    			var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
+                                    			if(isNotVal(controlGridPanel)){
+                                    				controlGridPanel.getStore().load();
+                                    			}else{
+                                    				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore');
+                                    			}
+                                    			if(deviceInfo.addInfoNum==0 && deviceInfo.auxiliaryDeviceNum==0){
+                                    				rightTabPanel.remove("RealTimeMonitoringRightDeviceInfoPanel");
+                                    			}
+                                			}
+                                			
+                                		}else if(rightTabPanelActiveTabId=='RealTimeMonitoringRightDeviceInfoPanel'){
+                                			if(deviceInfo.addInfoNum==0 && deviceInfo.auxiliaryDeviceNum==0){
+                                				rightTabPanel.setActiveTab("RealTimeMonitoringRightControlAndVideoPanel");
+                                				rightTabPanel.remove("RealTimeMonitoringRightDeviceInfoPanel");
+                                			}else{
+                                				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
+                                				if(deviceInfo.videoNum==0 && deviceInfo.controlItemNum==0){
+                                					cleanDeviceAddInfoAndControlInfo();
+                                					rightTabPanel.remove("RealTimeMonitoringRightControlAndVideoPanel");
+                                				}
+                                			}
+                                		}
+                            		}
                         		}
                     		}
                     	},

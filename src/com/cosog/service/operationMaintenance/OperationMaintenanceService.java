@@ -504,6 +504,31 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		return result;
 	}
 	
+	public String getProjectTabInstanceInfoByDeviceType(String deviceType) throws IOException, SQLException {
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.id,t.config from tbl_devicetypeinfo t where t.id in ("+deviceType+")";
+		result_json.append("{\"success\":true,\"config\":[");
+		List<?> list = this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			String deviceTypeId=obj[0]+"";
+			String config="{}";
+			if(obj[1]!=null){
+				config=(obj[1]+"").replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+			}
+			
+			result_json.append(config+",");
+		}
+		
+		
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String loadDeviceTypeContentConfig(String deviceTypeId,User user) throws IOException, SQLException {
 		String result="{}";
 		String sql="select t.config from tbl_devicetypeinfo t where t.id="+deviceTypeId;

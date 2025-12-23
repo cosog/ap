@@ -497,6 +497,23 @@ public class OperationMaintenanceController  extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getProjectTabInstanceInfoByDeviceType")
+	public String getProjectTabInstanceInfoByDeviceType() throws IOException, SQLException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		
+		String json = deviceTabManagerMaintenanceService.getProjectTabInstanceInfoByDeviceType(deviceType);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/loadDeviceTypeContentConfig")
 	public String loadDeviceTypeContentConfig() throws IOException, SQLException {
 		HttpSession session=request.getSession();

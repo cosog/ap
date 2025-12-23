@@ -339,24 +339,51 @@ function alarmQueryDataRefresh(){
 	Ext.getCmp("selectedDeviceType_global").setValue(deviceType);
 	Ext.getCmp("selectedFirstDeviceType_global").setValue(firstDeviceType); 
 	
-	var removeFESDiagramResultAlarmInfoPanel=false;
-	var alarmTypeTabChange=false;
+	
 	var tabPanel = Ext.getCmp("AlarmQuerySecondTabPanel");
 	var alarmTypeTabActiveId = tabPanel.getActiveTab().id;
 	
-	var getTabId = tabPanel.getComponent("FESDiagramResultAlarmInfoTabPanel_Id");
+	var projectTabConfig=getProjectTabInstanceInfoByDeviceType(deviceType);
 	
-	if(deviceCount>0 && getTabId==undefined){
-		tabPanel.insert(0,AlarmQuerySecondTabPanelItems[0]);
- 	}else if(deviceCount==0 && getTabId!=undefined){
- 		if(alarmTypeTabActiveId=='FESDiagramResultAlarmInfoTabPanel_Id'){
- 			alarmTypeTabChange=true;
- 		}
- 		Ext.getCmp("AlarmQuerySecondTabPanel").remove(Ext.getCmp("FESDiagramResultAlarmInfoTabPanel_Id"));
- 		removeFESDiagramResultAlarmInfoPanel=true;
- 	}
+	var tabChange=false;
+	if(projectTabConfig.AlarmQuery.FESDiagramResultAlarm==false){
+		tabPanel.remove(Ext.getCmp("FESDiagramResultAlarmInfoTabPanel_Id"));
+		if(statTabActiveId=="FESDiagramResultAlarmInfoTabPanel_Id"){
+			tabChange=true;
+		}
+	}
+	if(projectTabConfig.AlarmQuery.RunStatusAlarm==false){
+		tabPanel.remove(Ext.getCmp("RunStatusAlarmInfoTabPanel_Id"));
+		if(statTabActiveId=="RunStatusAlarmInfoTabPanel_Id"){
+			tabChange=true;
+		}
+	}
+	if(projectTabConfig.AlarmQuery.CommStatusAlarm==false){
+		tabPanel.remove(Ext.getCmp("CommunicationAlarmInfoTabPanel_Id"));
+		if(statTabActiveId=="CommunicationAlarmInfoTabPanel_Id"){
+			tabChange=true;
+		}
+	}
+	if(projectTabConfig.AlarmQuery.NumericValueAlarm==false){
+		tabPanel.remove(Ext.getCmp("NumericValueAlarmInfoTabPanel_Id"));
+		if(statTabActiveId=="NumericValueAlarmInfoTabPanel_Id"){
+			tabChange=true;
+		}
+	}
+	if(projectTabConfig.AlarmQuery.EnumValueAlarm==false){
+		tabPanel.remove(Ext.getCmp("EnumValueAlarmInfoTabPanel_Id"));
+		if(statTabActiveId=="EnumValueAlarmInfoTabPanel_Id"){
+			tabChange=true;
+		}
+	}
+	if(projectTabConfig.AlarmQuery.SwitchingValueAlarm==false){
+		tabPanel.remove(Ext.getCmp("SwitchingValueAlarmInfoTabPanel_Id"));
+		if(statTabActiveId=="SwitchingValueAlarmInfoTabPanel_Id"){
+			tabChange=true;
+		}
+	}
 	
-	if(!alarmTypeTabChange){
+	if(!tabChange){
 		if(alarmTypeTabActiveId=="FESDiagramResultAlarmInfoTabPanel_Id"){
 			Ext.getCmp("AlarmOverviewSelectRow_Id").setValue(0);
 			Ext.getCmp("AlarmDeviceListComb_Id").setValue('');

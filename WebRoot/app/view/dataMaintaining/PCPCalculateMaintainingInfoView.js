@@ -20,76 +20,6 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
 //            afterPageText: "共{0}页",
             displayInfo: true
         });
-        var wellListStore = new Ext.data.JsonStore({
-            pageSize: defaultWellComboxSize,
-            fields: [{
-                name: "boxkey",
-                type: "string"
-            }, {
-                name: "boxval",
-                type: "string"
-            }],
-            proxy: {
-                url: context + '/wellInformationManagerController/loadWellComboxList',
-                type: "ajax",
-                actionMethods: {
-                    read: 'POST'
-                },
-                reader: {
-                    type: 'json',
-                    rootProperty: 'list',
-                    totalProperty: 'totals'
-                }
-            },
-            autoLoad: true,
-            listeners: {
-                beforeload: function (store, options) {
-                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var deviceName = Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').getValue();
-                    var new_params = {
-                        orgId: leftOrg_Id,
-                        deviceName: deviceName,
-                        calculateType: 2
-                    };
-                    Ext.apply(store.proxy.extraParams, new_params);
-                }
-            }
-        });
-        var wellListComb = Ext.create(
-                'Ext.form.field.ComboBox', {
-                    fieldLabel: loginUserLanguageResource.deviceName,
-                    id: 'PCPCalculateMaintainingWellListComBox_Id',
-                    store: wellListStore,
-                    labelWidth: getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage),
-                    width: (getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage)+110),
-                    queryMode: 'remote',
-                    emptyText: '--'+loginUserLanguageResource.all+'--',
-                    blankText: '--'+loginUserLanguageResource.all+'--',
-                    typeAhead: true,
-                    autoSelect: false,
-                    allowBlank: true,
-                    triggerAction: 'all',
-                    editable: true,
-                    displayField: "boxval",
-                    valueField: "boxkey",
-                    pageSize: comboxPagingStatus,
-                    minChars: 0,
-                    listeners: {
-                    	expand: function (sm, selections) {
-                    		wellListComb.getStore().loadPage(1);
-                        },
-                        select: function (combo, record, index) {
-                        	calculateSignComb.clearValue();
-                			var gridPanel = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id");
-            				if (isNotVal(gridPanel)) {
-            					gridPanel.getStore().load();
-            				}else{
-            					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore');
-            				}
-                        }
-                    }
-                });
-        
         var calculateSignStore = new Ext.data.JsonStore({
             fields: [{
                 name: "boxkey",
@@ -114,12 +44,17 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
             listeners: {
                 beforeload: function (store, options) {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                    var welName=Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').getValue();
                     var startDate=Ext.getCmp('PCPCalculateMaintainingStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('PCPCalculateMaintainingEndDate_Id').rawValue;
+                    
+                    var deviceName='';
+                    if(Ext.getCmp("DataMaintainingDeviceListGridPanel_Id")!=undefined && Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                    	deviceName = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+                 	}
+                    
                     var new_params = {
                     		orgId: orgId,
-                    		welName: welName,
+                    		welName: deviceName,
                             startDate:startDate,
                             endDate:endDate,
                             deviceType:1
@@ -176,20 +111,6 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
             	     //tbar第一行工具栏
             	     xtype:"toolbar",
             	     items : [{
-                         id: 'PCPCalculateMaintainingDeviceListSelectRow_Id',
-                         xtype: 'textfield',
-                         value: -1,
-                         hidden: true
-                     },{
-                         xtype: 'button',
-                         text: loginUserLanguageResource.refresh,
-                         iconCls: 'note-refresh',
-                         hidden:false,
-                         handler: function (v, o) {
-                         	refreshPCPCalculateMaintainingData();
-                         }
-             		},'-',wellListComb
-             			,"-",{
                          xtype: 'datefield',
                          anchor: '100%',
                          fieldLabel: '',
@@ -631,9 +552,9 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                         	 var deleteRecordList=[];
                         	 
                         	 var deviceId=0;
-                        	 var selectRow= Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").getValue();
-                        	 if(Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                         		deviceId=Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                        	 var selectRow= Ext.getCmp("DataMaintainingDeviceListSelectRow_Id").getValue();
+                        	 if(Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                         		deviceId=Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                          	 }
                         	 
                         	 if(checkedStatus.length>0){
@@ -695,15 +616,6 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
             	}]
             },
         	items: [{
-        		region: 'west',
-            	width: '30%',
-            	title: loginUserLanguageResource.deviceList,
-            	id: 'PCPCalculateMaintainingWellListPanel_Id',
-            	collapsible: true, // 是否可折叠
-                collapsed:false,//是否折叠
-                split: true, // 竖折叠条
-            	layout: "fit"
-            },{
             	region: 'center',
             	xtype: 'tabpanel',
         		id:"PCPCalculateMaintainingTabPanel",
@@ -1146,9 +1058,9 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	            	var calculateType=2;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
 	            	
 	            	var applicationScenarios=0;
-	            	var selectRow= Ext.getCmp("PCPCalculateMaintainingDeviceListSelectRow_Id").getValue();
-	            	if(Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection().length>0){
-	            		applicationScenarios=Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
+	            	var selectRow= Ext.getCmp("DataMaintainingDeviceListSelectRow_Id").getValue();
+	            	if(Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+	            		applicationScenarios=Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
 	            	}
 	            	
 	            	Ext.Ajax.request({
@@ -1277,8 +1189,6 @@ function ReTotalRPMData(){
 }
 
 function resetPCPCalculateMaintainingQueryParams(){
-	Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').setValue('');
-	Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').setRawValue('');
 	Ext.getCmp('PCPCalculateMaintainingStartDate_Id').setValue('');
 	Ext.getCmp('PCPCalculateMaintainingStartDate_Id').setRawValue('');
 	Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').setValue('');
@@ -1295,10 +1205,26 @@ function resetPCPCalculateMaintainingQueryParams(){
 
 function refreshPCPCalculateMaintainingData(){
 	resetPCPCalculateMaintainingQueryParams();
-	var gridPanel = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id");
-	if (isNotVal(gridPanel)) {
-		gridPanel.getStore().load();
-	}else{
-		Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore');
+	
+	var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
+	if(activeId=="PCPCalculateMaintainingPanel"){
+		var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
+		if (isNotVal(bbar)) {
+			if(bbar.getStore().isEmptyStore){
+				var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+				bbar.setStore(PCPCalculateMaintainingDataStore);
+			}else{
+				bbar.getStore().loadPage(1);
+			}
+		}else{
+			Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+		}
+	}else if(activeId=="PCPTotalCalculateMaintainingPanel"){
+		var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
+        if (isNotVal(gridPanel)) {
+        	gridPanel.getStore().loadPage(1);
+        }else{
+        	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
+        }
 	}
 }

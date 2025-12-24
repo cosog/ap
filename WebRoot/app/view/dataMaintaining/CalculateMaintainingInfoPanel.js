@@ -8,56 +8,152 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
         var SRPCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.SRPCalculateMaintainingInfoView');
         var PCPCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.PCPCalculateMaintainingInfoView');
         var AcquisitionDataMaintainingInfoView = Ext.create('AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView');
+        
+        var wellListStore = new Ext.data.JsonStore({
+            pageSize: defaultWellComboxSize,
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/wellInformationManagerController/loadWellComboxList',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+            },
+            autoLoad: true,
+            listeners: {
+                beforeload: function (store, options) {
+                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+                    var deviceName = Ext.getCmp('DataMaintainingDeviceListComBox_Id').getValue();
+                    var new_params = {
+                        orgId: leftOrg_Id,
+                        deviceName: deviceName,
+                        deviceType: getDeviceTypeFromTabId("CalculateMaintainingRootTabPanel")
+                    };
+                    Ext.apply(store.proxy.extraParams, new_params);
+                }
+            }
+        });
+        var wellListComb = Ext.create(
+                'Ext.form.field.ComboBox', {
+                    fieldLabel: loginUserLanguageResource.deviceName,
+                    id: 'DataMaintainingDeviceListComBox_Id',
+                    store: wellListStore,
+                    labelWidth: getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage),
+                    width: (getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage)+110),
+                    queryMode: 'remote',
+                    emptyText: '--'+loginUserLanguageResource.all+'--',
+                    blankText: '--'+loginUserLanguageResource.all+'--',
+                    typeAhead: true,
+                    autoSelect: false,
+                    allowBlank: true,
+                    triggerAction: 'all',
+                    editable: true,
+                    displayField: "boxval",
+                    valueField: "boxkey",
+                    pageSize: comboxPagingStatus,
+                    minChars: 0,
+                    listeners: {
+                    	expand: function (sm, selections) {
+                    		wellListComb.getStore().loadPage(1);
+                        },
+                        select: function (combo, record, index) {
+                			var gridPanel = Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id");
+            				if (isNotVal(gridPanel)) {
+            					gridPanel.getStore().load();
+            				}else{
+            					Ext.create('AP.store.dataMaintaining.AcquisitionDataMaintainingWellListStore');
+            				}
+                        }
+                    }
+                });
+        
         Ext.apply(me, {
+        	layout: 'border',
+            border: false,
         	items: [{
+        		region: 'west',
+            	width: '30%',
+            	title: loginUserLanguageResource.deviceList,
+            	id: 'DataMaintainingDeviceListPanel_Id',
+            	collapsible: true, // 是否可折叠
+                collapsed:false,//是否折叠
+                split: true, // 竖折叠条
+            	layout: "fit",
+            	tbar:[{
+                    id: 'DataMaintainingDeviceListSelectRow_Id',
+                    xtype: 'textfield',
+                    value: -1,
+                    hidden: true
+                },{
+                    xtype: 'button',
+                    text: loginUserLanguageResource.refresh,
+                    iconCls: 'note-refresh',
+                    hidden:false,
+                    handler: function (v, o) {
+                    	refreshCalculateMaintainingData();
+                    }
+        		},'-',wellListComb]
+        	},{
+        		region: 'center',
         		xtype: 'tabpanel',
         		id:"CalculateMaintainingTabPanel",
 //        		activeTab: 0,
         		border: false,
         		tabPosition: 'top',
         		items: [{
-        				title: loginUserLanguageResource.acquisitionData,
-        				id:'AcquisitionDataMaintainingInfoPanel_Id',
-        				items: [AcquisitionDataMaintainingInfoView],
-        				iconCls: 'check3',
-        				layout: "fit",
-        				border: false
-        			},{
-        				title: loginUserLanguageResource.SRPCalculate,
-        				id:'SRPCalculateMaintainingInfoPanel_Id',
-        				items: [SRPCalculateMaintainingInfoView],
-        				layout: "fit",
-        				hidden: !moduleContentConfig.dataMaintaining.FESDiagramResultData,
-        				border: false
-        			},{
-        				title: loginUserLanguageResource.PCPCalculate,
-        				id:'PCPCalculateMaintainingInfoPanel_Id',
-        				items: [PCPCalculateMaintainingInfoView],
-        				layout: "fit",
-        				hidden: !moduleContentConfig.dataMaintaining.RPMResultData,
-        				border: false
-        			}],
-        			listeners: {
-        				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        					if(oldCard!=undefined){
-                    			oldCard.setIconCls(null);
-                    	    }
-                    	    if(newCard!=undefined){
-                    	    	newCard.setIconCls('check3');				
-                    	    }
-            			},
-            			tabchange: function (tabPanel, newCard,oldCard, obj) {
-        					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
-        					if(newCard.id=="AcquisitionDataMaintainingInfoPanel_Id"){
-        						refreshAcquisitionDataMaintainingData();
-        					}else if(newCard.id=="SRPCalculateMaintainingInfoPanel_Id"){
-        						refreshSRPCalculateMaintainingData();
-        					}else if(newCard.id=="PCPCalculateMaintainingInfoPanel_Id"){
-        						refreshPCPCalculateMaintainingData();
-        					}
+        			title: loginUserLanguageResource.acquisitionData,
+        			id:'AcquisitionDataMaintainingInfoPanel_Id',
+        			items: [AcquisitionDataMaintainingInfoView],
+        			iconCls: 'check3',
+        			layout: "fit",
+        			border: false
+        		},{
+        			title: loginUserLanguageResource.SRPCalculate,
+        			id:'SRPCalculateMaintainingInfoPanel_Id',
+        			items: [SRPCalculateMaintainingInfoView],
+        			layout: "fit",
+//        			hidden: !moduleContentConfig.dataMaintaining.FESDiagramResultData,
+        			border: false
+        		},{
+        			title: loginUserLanguageResource.PCPCalculate,
+        			id:'PCPCalculateMaintainingInfoPanel_Id',
+        			items: [PCPCalculateMaintainingInfoView],
+        			layout: "fit",
+//        			hidden: !moduleContentConfig.dataMaintaining.RPMResultData,
+        			border: false
+        		}],
+        		listeners: {
+        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+        				if(oldCard!=undefined){
+                    		oldCard.setIconCls(null);
+                    	}
+        				if(newCard!=undefined){
+        					newCard.setIconCls('check3');				
+                    	}
+            		},
+            		tabchange: function (tabPanel, newCard,oldCard, obj) {
+        				Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
+        				if(newCard.id=="AcquisitionDataMaintainingInfoPanel_Id"){
+        					refreshAcquisitionDataMaintainingData();
+        				}else if(newCard.id=="SRPCalculateMaintainingInfoPanel_Id"){
+        					refreshSRPCalculateMaintainingData();
+        				}else if(newCard.id=="PCPCalculateMaintainingInfoPanel_Id"){
+        					refreshPCPCalculateMaintainingData();
         				}
         			}
-            	}]
+        		}
+            }]
         });
         me.callParent(arguments);
     }

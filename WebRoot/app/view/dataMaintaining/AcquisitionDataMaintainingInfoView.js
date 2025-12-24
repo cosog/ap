@@ -18,74 +18,7 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
             pageSize: defaultPageSize,
             displayInfo: true
         });
-        var wellListStore = new Ext.data.JsonStore({
-            pageSize: defaultWellComboxSize,
-            fields: [{
-                name: "boxkey",
-                type: "string"
-            }, {
-                name: "boxval",
-                type: "string"
-            }],
-            proxy: {
-                url: context + '/wellInformationManagerController/loadWellComboxList',
-                type: "ajax",
-                actionMethods: {
-                    read: 'POST'
-                },
-                reader: {
-                    type: 'json',
-                    rootProperty: 'list',
-                    totalProperty: 'totals'
-                }
-            },
-            autoLoad: true,
-            listeners: {
-                beforeload: function (store, options) {
-                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var deviceName = Ext.getCmp('AcquisitionDataMaintainingDeviceListComBox_Id').getValue();
-                    var new_params = {
-                        orgId: leftOrg_Id,
-                        deviceName: deviceName,
-                        calculateType: 2
-                    };
-                    Ext.apply(store.proxy.extraParams, new_params);
-                }
-            }
-        });
-        var wellListComb = Ext.create(
-                'Ext.form.field.ComboBox', {
-                    fieldLabel: loginUserLanguageResource.deviceName,
-                    id: 'AcquisitionDataMaintainingDeviceListComBox_Id',
-                    store: wellListStore,
-                    labelWidth: getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage),
-                    width: (getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage)+110),
-                    queryMode: 'remote',
-                    emptyText: '--'+loginUserLanguageResource.all+'--',
-                    blankText: '--'+loginUserLanguageResource.all+'--',
-                    typeAhead: true,
-                    autoSelect: false,
-                    allowBlank: true,
-                    triggerAction: 'all',
-                    editable: true,
-                    displayField: "boxval",
-                    valueField: "boxkey",
-                    pageSize: comboxPagingStatus,
-                    minChars: 0,
-                    listeners: {
-                    	expand: function (sm, selections) {
-                    		wellListComb.getStore().loadPage(1);
-                        },
-                        select: function (combo, record, index) {
-                			var gridPanel = Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id");
-            				if (isNotVal(gridPanel)) {
-            					gridPanel.getStore().load();
-            				}else{
-            					Ext.create('AP.store.dataMaintaining.AcquisitionDataMaintainingWellListStore');
-            				}
-                        }
-                    }
-                });
+        
         Ext.apply(me, {
         	layout: 'border',
             border: false,
@@ -96,20 +29,6 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
             	     //tbar第一行工具栏
             	     xtype:"toolbar",
             	     items : [{
-                         id: 'AcquisitionDataMaintainingDeviceListSelectRow_Id',
-                         xtype: 'textfield',
-                         value: -1,
-                         hidden: true
-                     },{
-                         xtype: 'button',
-                         text: loginUserLanguageResource.refresh,
-                         iconCls: 'note-refresh',
-                         hidden:false,
-                         handler: function (v, o) {
-                         	refreshAcquisitionDataMaintainingData();
-                         }
-             		},'-',wellListComb
-             			,"-",{
                          xtype: 'datefield',
                          anchor: '100%',
                          fieldLabel: '',
@@ -340,12 +259,6 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                           		Ext.getCmp('AcquisitionDataMaintainingStartTime_Minute_Id').focus(true, 100);
                           		return;
                           	}
-//                          	var startTime_Second=Ext.getCmp('AcquisitionDataMaintainingStartTime_Second_Id').getValue();
-//                          	if(!r2.test(startTime_Second)){
-//                          		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-//                          		Ext.getCmp('AcquisitionDataMaintainingStartTime_Second_Id').focus(true, 100);
-//                          		return;
-//                          	}
                           	var startTime_Second=0;
                           	
                           	var endTime_Hour=Ext.getCmp('AcquisitionDataMaintainingEndTime_Hour_Id').getValue();
@@ -404,44 +317,11 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
     	        			}else if(activeId=="HistoryAcquisitionDataMaintainingPanel"){
     	        				deleteHistoryAcquisitionData();
     	        			}
-                        	
-                        	
-                        	
-//                        	var checkedStatus=realtimeAcquisitionDataMaintainingHandsontableHelper.hot.getDataAtProp('checked');
-//                          	var deleteRecordList=[];
-//                          	var deviceId=0;
-//                          	var selectRow= Ext.getCmp("AcquisitionDataMaintainingDeviceListSelectRow_Id").getValue();
-//                        	if(Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
-//                        		deviceId=Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-//                         	}
-//                        	 
-//                        	 if(checkedStatus.length>0){
-//                        		 for(var i=0;i<checkedStatus.length;i++){
-//                        			 if(checkedStatus[i]){
-//                        				 var recordId=realtimeAcquisitionDataMaintainingHandsontableHelper.hot.getDataAtRowProp(i,'recordId'); 
-//                        				 deleteRecordList.push(recordId);
-//                        			 }
-//                        		 }
-//                        	 }
-//                        	 if(deleteRecordList.length>0){
-//                        		 deleteCalculateData(deviceId,deleteRecordList,2);
-//                        	 }else{
-//                        		 Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
-//                        	 }
                         }
                     }]
             	}]
             },
         	items: [{
-        		region: 'west',
-            	width: '30%',
-            	title: loginUserLanguageResource.deviceList,
-            	id: 'AcquisitionDataMaintainingDeviceListPanel_Id',
-            	collapsible: true, // 是否可折叠
-                collapsed:false,//是否折叠
-                split: true, // 竖折叠条
-            	layout: "fit"
-            },{
             	region: 'center',
             	xtype: 'tabpanel',
         		id:"AcquisitionDataMaintainingTabPanel",
@@ -1069,8 +949,6 @@ var HistoryAcquisitionDataMaintainingHandsontableHelper = {
 };
 
 function resetAcquisitionDataMaintainingQueryParams(){
-	Ext.getCmp('AcquisitionDataMaintainingDeviceListComBox_Id').setValue('');
-	Ext.getCmp('AcquisitionDataMaintainingDeviceListComBox_Id').setRawValue('');
 	Ext.getCmp('AcquisitionDataMaintainingStartDate_Id').setValue('');
 	Ext.getCmp('AcquisitionDataMaintainingStartDate_Id').setRawValue('');
 	Ext.getCmp('AcquisitionDataMaintainingStartTime_Hour_Id').setValue('');
@@ -1084,11 +962,30 @@ function resetAcquisitionDataMaintainingQueryParams(){
 function refreshAcquisitionDataMaintainingData(){
 	resetAcquisitionDataMaintainingQueryParams();
 	var activeId = Ext.getCmp("AcquisitionDataMaintainingTabPanel").getActiveTab().id;
-	var gridPanel = Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id");
-	if (isNotVal(gridPanel)) {
-		gridPanel.getStore().load();
-	}else{
-		Ext.create('AP.store.dataMaintaining.AcquisitionDataMaintainingWellListStore');
+	if(activeId=="RealtimeAcquisitionDataMaintainingPanel"){
+		var bbar=Ext.getCmp("RealtimeAcquisitionDataMaintainingBbar");
+		if (isNotVal(bbar)) {
+			if(bbar.getStore().isEmptyStore){
+				var RealtimeAcquisitionDataMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore');
+				bbar.setStore(RealtimeAcquisitionDataMaintainingDataStore);
+			}else{
+				bbar.getStore().loadPage(1);
+			}
+		}else{
+			Ext.create('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore');
+		}
+	}else if(activeId=="HistoryAcquisitionDataMaintainingPanel"){
+		var bbar=Ext.getCmp("HistoryAcquisitionDataMaintainingBbar");
+		if (isNotVal(bbar)) {
+			if(bbar.getStore().isEmptyStore){
+				var HistoryAcquisitionDataMaintainingDataStore=Ext.create('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore');
+				bbar.setStore(HistoryAcquisitionDataMaintainingDataStore);
+			}else{
+				bbar.getStore().loadPage(1);
+			}
+		}else{
+			Ext.create('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore');
+		}
 	}
 }
 
@@ -1096,8 +993,8 @@ function deleteRealtimeAcquisitionData() {
     var checkedStatus = realtimeAcquisitionDataMaintainingHandsontableHelper.hot.getDataAtProp('checked');
     var deleteAcqTimeList = [];
     var deviceId = 0;
-    if (Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length > 0) {
-        deviceId = Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+    if (Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length > 0) {
+        deviceId = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
     }
 
     if (checkedStatus.length > 0) {
@@ -1154,9 +1051,9 @@ function deleteHistoryAcquisitionData() {
     var deleteRecordList = [];
     var deviceId = 0;
     var calculateType = 0;
-    if (Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length > 0) {
-        deviceId = Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-        calculateType = Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
+    if (Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length > 0) {
+        deviceId = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        calculateType = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
     }
 
     if (checkedStatus.length > 0) {

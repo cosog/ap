@@ -51,11 +51,11 @@ Ext.define('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore
         	var deviceName='';
         	var deviceId=0;
         	var applicationScenarios=0;
-        	var selectRow= Ext.getCmp("AcquisitionDataMaintainingDeviceListSelectRow_Id").getValue();
-        	if(Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
-        		deviceName = Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
-        		deviceId=Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-        		applicationScenarios=Ext.getCmp("AcquisitionDataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
+        	var selectRow= Ext.getCmp("DataMaintainingDeviceListSelectRow_Id").getValue();
+        	if(Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+        		deviceName = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+        		deviceId=Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		applicationScenarios=Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
         	}
             
             var startDate=Ext.getCmp('AcquisitionDataMaintainingStartDate_Id').rawValue;

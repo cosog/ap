@@ -53,11 +53,11 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
         	var deviceName='';
         	var deviceId=0;
         	var applicationScenarios=0;
-        	var selectRow= Ext.getCmp("SRPCalculateMaintainingDeviceListSelectRow_Id").getValue();
-        	if(Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection().length>0){
-        		deviceName = Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
-        		deviceId=Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-        		applicationScenarios=Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
+        	var selectRow= Ext.getCmp("DataMaintainingDeviceListSelectRow_Id").getValue();
+        	if(Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+        		deviceName = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+        		deviceId=Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		applicationScenarios=Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.applicationScenarios;
         	}
         	
 //            var wellName=Ext.getCmp('SRPCalculateMaintainingWellListComBox_Id').getValue();

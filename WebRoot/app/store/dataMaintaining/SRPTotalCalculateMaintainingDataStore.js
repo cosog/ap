@@ -82,10 +82,10 @@ Ext.define('AP.store.dataMaintaining.SRPTotalCalculateMaintainingDataStore', {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceName='';
         	var deviceId=0;
-        	var selectRow= Ext.getCmp("SRPCalculateMaintainingDeviceListSelectRow_Id").getValue();
-        	if(Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection().length>0){
-        		deviceName = Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
-        		deviceId=Ext.getCmp("SRPCalculateMaintainingWellListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        	var selectRow= Ext.getCmp("DataMaintainingDeviceListSelectRow_Id").getValue();
+        	if(Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+        		deviceName = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+        		deviceId=Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         	}
         	
         	var startDate=Ext.getCmp('SRPCalculateMaintainingStartDate_Id').rawValue;

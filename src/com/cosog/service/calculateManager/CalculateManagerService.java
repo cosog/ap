@@ -483,6 +483,59 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
+	public String getDeviceList(String orgId, String deviceName, Page pager,String deviceType,String language)
+			throws Exception {
+		String columns= "";
+		String sql="";
+		String finalSql="";
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		columns = "["
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\",flex:3 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("applicationScenarios")+"\",\"dataIndex\":\"applicationScenariosName\",flex:3 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("cloudAcqtime")+"\",\"dataIndex\":\"acqTime\",flex:5,width:150,children:[] }"
+				+ "]";
+		sql="select well.id,well.deviceName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
+				+ " well.applicationscenarios,well.calculateType "
+				+ " from tbl_acqdata_latest t,viw_device well "
+				+ " where t.deviceId=well.id "
+				+ " and well.orgid in("+orgId+") ";
+		if(StringManagerUtils.isNum(deviceType)){
+			sql+= " and well.devicetype="+deviceType;
+		}else{
+			sql+= " and well.devicetype in ("+deviceType+")";
+		}
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and  well.deviceName = '" + deviceName.trim() + "' ";
+		}
+		sql+=" order by well.sortnum,well.deviceName";
+		int maxvalue=pager.getLimit()+pager.getStart();
+		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
+		
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(finalSql);
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			result_json.append("{\"id\":\""+obj[0]+"\",");
+			result_json.append("\"deviceName\":\""+obj[1]+"\",");
+			result_json.append("\"acqTime\":\""+obj[2]+"\",");
+			result_json.append("\"applicationScenarios\":\""+obj[3]+"\",");
+			result_json.append("\"applicationScenariosName\":\""+MemoryDataManagerTask.getCodeName("APPLICATIONSCENARIOS",obj[3]+"", language)+"\",");
+			result_json.append("\"calculateType\":\""+obj[4]+"\"},");
+			
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json = result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		
+		String json=result_json.toString().replaceAll("null", "");
+		return json;
+	}
+	
 	public String getAcquisitionDataDeviceListData(String orgId, String deviceName, Page pager,String deviceType,String language)
 			throws Exception {
 		String columns= "";

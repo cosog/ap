@@ -302,6 +302,43 @@ public class CalculateManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDeviceList")
+	public String getDeviceList() throws Exception {
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateSign = ParamUtils.getParameter(request, "calculateSign");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		this.pager = new Page("pagerForm", request);
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		String json = calculateManagerService.getDeviceList(orgId, deviceName, pager,deviceType,language);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@SuppressWarnings("unused")
 	@RequestMapping("/saveRecalculateData")
 	public String saveRecalculateData() throws Exception {

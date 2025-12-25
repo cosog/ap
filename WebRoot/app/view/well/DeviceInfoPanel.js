@@ -185,7 +185,7 @@ var deviceAdditionalInformationTabPanelItems=[{
 	title:loginUserLanguageResource.additionalInformation,
 	id:'DeviceAdditionalInfoPanel_Id',
 	iconCls: 'check3',
-	hidden: !moduleContentConfig.primaryDevice.additionalInformation,
+//	hidden: !moduleContentConfig.primaryDevice.additionalInformation,
 	html: '<div class="DeviceAdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceAdditionalInfoTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -206,7 +206,7 @@ var deviceAdditionalInformationTabPanelItems=[{
 },{
 	title:loginUserLanguageResource.auxiliaryDevice,
 	id:'DeviceAuxiliaryDevicePanel_Id',
-	hidden: !moduleContentConfig.primaryDevice.auxiliaryDevice,
+//	hidden: !moduleContentConfig.primaryDevice.auxiliaryDevice,
 	html: '<div class="DeviceAuxiliaryDeviceContainer" style="width:100%;height:100%;"><div class="con" id="DeviceAuxiliaryDeviceTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -227,7 +227,7 @@ var deviceAdditionalInformationTabPanelItems=[{
 },{
 	title:loginUserLanguageResource.videoConfig,
 	id:'DeviceVideoInfoPanel_Id',
-	hidden: !moduleContentConfig.primaryDevice.videoConfig,
+//	hidden: !moduleContentConfig.primaryDevice.videoConfig,
 	tbar:['->',{
         xtype: 'button',
         text: loginUserLanguageResource.editVideoKey,
@@ -260,7 +260,7 @@ var deviceAdditionalInformationTabPanelItems=[{
 	xtype: 'tabpanel',
 	id:'DeviceCalculateDataInfoPanel_Id',
 	activeTab: 0,
-	hidden: !moduleContentConfig.primaryDevice.calculateDataConfig,
+//	hidden: !moduleContentConfig.primaryDevice.calculateDataConfig,
 	items: deviceCalculateDataTabPanelItems,
 	listeners: {
 		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
@@ -300,7 +300,7 @@ var deviceAdditionalInformationTabPanelItems=[{
 },{
 	title:loginUserLanguageResource.fsDiagramConstruction,
 	id:'DeviceFSDiagramConstructionInfoPanel_Id',
-	hidden: !moduleContentConfig.primaryDevice.FSDiagramConstruction,
+//	hidden: !moduleContentConfig.primaryDevice.FSDiagramConstruction,
 	tbar:['->',{
 		xtype: 'button',
 		text:loginUserLanguageResource.downlink,
@@ -338,7 +338,7 @@ var deviceAdditionalInformationTabPanelItems=[{
 },{
 	title:loginUserLanguageResource.systemParameterConfiguration,
 	id:'DeviceSystemParameterConfigurationInfoPanel_Id',
-	hidden: !moduleContentConfig.primaryDevice.systemParameterConfiguration,
+//	hidden: !moduleContentConfig.primaryDevice.systemParameterConfiguration,
 	tbar:['->',{
 		xtype: 'button',
 		text:loginUserLanguageResource.downlink,
@@ -808,7 +808,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	split: true,
             	collapsible: true,
             	header:false,
-            	hidden:!moduleContentConfig.primaryDevice.deviceExtendInformation,
+//            	hidden:!moduleContentConfig.primaryDevice.deviceExtendInformation,
             	xtype: 'tabpanel',
             	id:'DeviceAdditionalInformationTabpanel_Id',
             	activeTab: 0,

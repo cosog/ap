@@ -746,7 +746,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
         		id:"SRPCalculateMaintainingTabPanel",
         		activeTab: 0,
         		border: false,
-        		tabPosition: 'bottom',
+        		tabPosition: 'left',
         		items: [{
         			title: loginUserLanguageResource.singleRecord,
     				layout: "fit",

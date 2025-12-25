@@ -327,7 +327,7 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
         		id:"AcquisitionDataMaintainingTabPanel",
         		activeTab: 0,
         		border: false,
-        		tabPosition: 'bottom',
+        		tabPosition: 'left',
         		items: [{
         			title: loginUserLanguageResource.realtimeMonitoring,
     				layout: "fit",

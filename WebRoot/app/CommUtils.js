@@ -4914,7 +4914,26 @@ function getDeviceTypeActiveId(){
 	return deviceTypeActiveId;
 }
 
-
+function getDefaultActiveDeviceTypeTab(){
+	var activeDeviceType=0;
+	if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
+		if(tabInfo.children[0].children!=undefined && tabInfo.children[0].children!=null && tabInfo.children[0].children.length>0){
+			var allSecondIds='';
+			var childrenLength=tabInfo.children[0].children.length;
+			for(var j=0;j<tabInfo.children[0].children.length;j++){
+				if(j==0){
+    				allSecondIds+=tabInfo.children[0].children[j].deviceTypeId;
+        		}else{
+        			allSecondIds+=(','+tabInfo.children[0].children[j].deviceTypeId);
+        		}
+			}
+			activeDeviceType=allSecondIds;
+		}else{
+			activeDeviceType=tabInfo.children[0].deviceTypeId;
+		}
+	}
+	return activeDeviceType;
+}
 
 function getCalculateTypeDeviceCount(orgId,deviceType,calculateType){
 	var deviceCount=0;

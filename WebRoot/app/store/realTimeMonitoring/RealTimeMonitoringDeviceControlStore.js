@@ -36,7 +36,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                         header: loginUserLanguageResource.controlItem,
                         dataIndex: 'item',
                         align: 'left',
-                        flex: 6,
+                        flex: 5,
                         renderer: function (value, e, o) {
                             e.tdStyle = "vertical-align:middle;";
                             if (isNotVal(value)) {
@@ -48,7 +48,8 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                         align: 'center',
                         stopSelection: true,
                         xtype: 'widgetcolumn',
-                        minWidth: 100, // 调整宽度以适应垂直排列
+                        flex: 2,
+//                        minWidth: 100, // 调整宽度以适应垂直排列
                         widget: {
                             xtype: 'container',
                             layout: {

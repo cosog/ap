@@ -621,7 +621,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
         		id:"PCPCalculateMaintainingTabPanel",
         		activeTab: 0,
         		border: false,
-        		tabPosition: 'bottom',
+        		tabPosition: 'left',
         		items: [{
         			title: loginUserLanguageResource.singleRecord,
     				layout: "fit",

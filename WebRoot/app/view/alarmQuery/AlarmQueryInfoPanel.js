@@ -1,8 +1,9 @@
 var AlarmQuerySecondTabPanelItems=[{
 	title: loginUserLanguageResource.FESDiagramResultAlarm,
 	id:'FESDiagramResultAlarmInfoTabPanel_Id',
-	hidden:onlyMonitor,
-	iconCls: onlyMonitor?null:'check3',
+//	hidden:onlyMonitor,
+//	iconCls: onlyMonitor?null:'check3',
+	iconCls: 'check3',
 	layout: 'border',
 	items: [{
     	region: 'west',
@@ -26,7 +27,7 @@ var AlarmQuerySecondTabPanelItems=[{
 	title: loginUserLanguageResource.runStatusAlarm,
 	id:'RunStatusAlarmInfoTabPanel_Id',
 	layout: "border",
-	iconCls: onlyMonitor?'check3':null,
+//	iconCls: onlyMonitor?'check3':null,
 	items: [{
 		region: 'west',
     	width: '30%',
@@ -207,7 +208,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
         	items: [{
         		xtype: 'tabpanel',
         		id:"AlarmQuerySecondTabPanel",
-        		activeTab: onlyMonitor?1:0,
+//        		activeTab: onlyMonitor?1:0,
+        		activeTab: 0,
         		border: false,
 //        		tabPosition: 'left',
         		tabPosition: 'top',

@@ -52,21 +52,84 @@ Ext.define('AP.store.dataMaintaining.DataMaintainingDevcieListStore', {
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("DataMaintainingDeviceListSelectRow_Id").setValue(index);
+                    		var calculateType=record.data.calculateType;
                     		
                     		var combDeviceName=Ext.getCmp('DataMaintainingDeviceListComBox_Id').getValue();
                     		if(combDeviceName!=''){
                         		Ext.getCmp("selectedDeviceId_global").setValue(record.data.id);
                     		}
                     		
+                    		
                     		var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
                     		var activeId = tabPanel.getActiveTab().id;
-                    		if(activeId=="AcquisitionDataMaintainingInfoPanel_Id"){
-                    			refreshAcquisitionDataMaintainingData();
-                    		}else if(activeId=="SRPCalculateMaintainingInfoPanel_Id"){
-                    			refreshSRPCalculateMaintainingData();
-                    		}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
-                    			refreshPCPCalculateMaintainingData();
+                    		var tabChange=false;
+                    		var SRPCalculateMaintainingInfoPanel = tabPanel.getComponent("SRPCalculateMaintainingInfoPanel_Id");
+                    		var PCPCalculateMaintainingInfoPanel = tabPanel.getComponent("PCPCalculateMaintainingInfoPanel_Id");
+                    		if(calculateType==1){
+                    			if(activeId=='PCPCalculateMaintainingInfoPanel_Id'){
+                    				tabPanel.setActiveTab('AcquisitionDataMaintainingInfoPanel_Id');
+                    				tabChange=true;
+                    			}
+                    			if(SRPCalculateMaintainingInfoPanel==undefined){
+                    				var SRPCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.SRPCalculateMaintainingInfoView');
+                    				tabPanel.insert(1,{
+                            			title: loginUserLanguageResource.SRPCalculate,
+                            			id:'SRPCalculateMaintainingInfoPanel_Id',
+                            			items: [SRPCalculateMaintainingInfoView],
+                            			layout: "fit",
+//                            			hidden: !moduleContentConfig.dataMaintaining.FESDiagramResultData,
+                            			border: false
+                            		});
+                    			}
+                    			
+                    			if(PCPCalculateMaintainingInfoPanel!=undefined){
+                    				tabPanel.remove(PCPCalculateMaintainingInfoPanel);
+                    			}
+                    		}else if(calculateType==2){
+                    			if(activeId=='SRPCalculateMaintainingInfoPanel_Id'){
+                    				tabPanel.setActiveTab('AcquisitionDataMaintainingInfoPanel_Id');
+                    				tabChange=true;
+                    			}
+                    			if(PCPCalculateMaintainingInfoPanel==undefined){
+                    				var PCPCalculateMaintainingInfoView = Ext.create('AP.view.dataMaintaining.PCPCalculateMaintainingInfoView');
+                    				tabPanel.insert(2,{
+                            			title: loginUserLanguageResource.PCPCalculate,
+                            			id:'PCPCalculateMaintainingInfoPanel_Id',
+                            			items: [PCPCalculateMaintainingInfoView],
+                            			layout: "fit",
+//                            			hidden: !moduleContentConfig.dataMaintaining.RPMResultData,
+                            			border: false
+                            		});
+                    			}
+                    			
+                    			if(SRPCalculateMaintainingInfoPanel!=undefined){
+                    				tabPanel.remove(SRPCalculateMaintainingInfoPanel);
+                    			}
+                    		}else{
+                    			if(activeId!='AcquisitionDataMaintainingInfoPanel_Id'){
+                    				tabPanel.setActiveTab('AcquisitionDataMaintainingInfoPanel_Id');
+                    				tabChange=true;
+                    			}
+                    			
+                    			if(SRPCalculateMaintainingInfoPanel!=undefined){
+                    				tabPanel.remove(SRPCalculateMaintainingInfoPanel);
+                    			}
+                    			if(PCPCalculateMaintainingInfoPanel!=undefined){
+                    				tabPanel.remove(PCPCalculateMaintainingInfoPanel);
+                    			}
                     		}
+                    		
+                    		
+                    		if(!tabChange){
+                    			if(activeId=="AcquisitionDataMaintainingInfoPanel_Id"){
+                        			refreshAcquisitionDataMaintainingData();
+                        		}else if(activeId=="SRPCalculateMaintainingInfoPanel_Id"){
+                        			refreshSRPCalculateMaintainingData();
+                        		}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
+                        			refreshPCPCalculateMaintainingData();
+                        		}
+                    		}
+                    		
                         }
                     }
                 });

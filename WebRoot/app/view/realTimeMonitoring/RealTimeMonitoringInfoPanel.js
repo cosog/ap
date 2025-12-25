@@ -5,8 +5,9 @@ var realtimeStatTabItems=[{
 	closable:false,
 	closeAction:'hide',
 	id:'RealTimeMonitoringFESdiagramResultStatGraphPanel_Id',
-	hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
-	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?null:'check3',
+//	hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
+//	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?null:'check3',
+	iconCls: 'check3',
 	html: '<div id="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -30,7 +31,7 @@ var realtimeStatTabItems=[{
 	title:loginUserLanguageResource.commStatus,
 	layout: 'fit',
 	closable:false,
-	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?'check3':null,
+//	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?'check3':null,
 	id:'RealTimeMonitoringStatGraphPanel_Id',
 	html: '<div id="RealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
@@ -110,8 +111,9 @@ var realtimeCurveAndTableTabPanelItems=[{
     autoScroll:false,
     scrollable: false,
     id: 'RealTimeMonitoringFSDiagramAnalysisTabPanel_Id',
-    hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
-    iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?null:'check3',
+//    hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
+//    iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?null:'check3',
+    iconCls: 'check3',
     layout: {
         type: 'vbox',
         pack: 'start',
@@ -201,7 +203,7 @@ var realtimeCurveAndTableTabPanelItems=[{
     autoScroll:false,
     scrollable: false,
     id: 'RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id',
-    hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
+//    hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
     layout: {
         type: 'vbox',
         pack: 'start',
@@ -294,7 +296,7 @@ var realtimeCurveAndTableTabPanelItems=[{
 	title:loginUserLanguageResource.trendCurve,
 	id:"RealTimeMonitoringCurveTabPanel_Id",
 	layout: 'border',
-	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?'check3':null,
+//	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?'check3':null,
 	items: [{
 		region: 'center',
 		layout: 'fit',
@@ -534,143 +536,143 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
             items: [{
                 border: false,
                 layout: 'border',
-                items: [{
-                    region: 'center',
-                    layout: 'border',
-                    id:'RealTimeMonitoringCenterPanel_Id',
-                    items:[{
-                    	region: 'center',
-                    	title:loginUserLanguageResource.deviceOverview,
-                    	id:'RealTimeMonitoringInfoDeviceListPanel_Id',
-                        border: false,
-                        layout: 'fit',
-                        tbar:[{
-                        	id: 'RealTimeMonitoringInfoDeviceListSelectRow_Id',
-                        	xtype: 'textfield',
-                            value: -1,
-                            hidden: true
-                         },{
-                        	id: 'RealTimeMonitoringStatSelectFESdiagramResult_Id',
-                        	xtype: 'textfield',
-                            value: '',
-                            hidden: true
-                         },{
-                        	id: 'RealTimeMonitoringStatSelectCommStatus_Id',
-                        	xtype: 'textfield',
-                            value: '',
-                            hidden: true
-                         },{
-                        	id: 'RealTimeMonitoringStatSelectRunStatus_Id',
-                        	xtype: 'textfield',
-                            value: '',
-                            hidden: true
-                         },{
-                        	id: 'RealTimeMonitoringStatSelectDeviceType_Id',
-                        	xtype: 'textfield',
-                            value: '',
-                            hidden: true
-                         },{
-                             id: 'RealTimeMonitoringColumnStr_Id',
-                             xtype: 'textfield',
-                             value: '',
-                             hidden: true
-                         },{
-                             xtype: 'button',
-                             text: loginUserLanguageResource.refresh,
-                             iconCls: 'note-refresh',
-                             hidden:false,
-                             handler: function (v, o) {
-                            	 realTimeDataRefresh();
-                    		}
-                 		},'-',deviceCombo,'-', {
-                             xtype: 'button',
-                             text: loginUserLanguageResource.exportData,
-                             iconCls: 'export',
-                             hidden:false,
-                             handler: function (v, o) {
-                            	 var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                            	 var deviceName = Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
-                            	 var FESdiagramResultStatValue=Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").getValue();
-                             	 var commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
-                             	 var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
-                             	 var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
-                            	 var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-                            	 
-                            	 var dictDeviceType=deviceType;
-                            	 if(dictDeviceType.includes(",")){
-                            		 dictDeviceType=getDeviceTypeFromTabId_first("RealTimeMonitoringTabPanel");
-                             	 }
-                            	 
-                            	 var fileName=loginUserLanguageResource.realtimeMonitoringExpFileName;
-                            	 var title=loginUserLanguageResource.realtimeMonitoringExpFileName;
-                            	 var columnStr=Ext.getCmp("RealTimeMonitoringColumnStr_Id").getValue();
-                            	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
-                             }
-                         }, '->', {
-                         	xtype: 'button',
-                            text:loginUserLanguageResource.showHistory,
-                            tooltip:loginUserLanguageResource.showHistoryBtnTooltip,
-                            handler: function (v, o) {
-                            	var selectRow= Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
-                        		var gridPanel=Ext.getCmp("RealTimeMonitoringListGridPanel_Id");
-                        		if(isNotVal(gridPanel)){
-                        			var record=gridPanel.getStore().getAt(selectRow);
-                        			gotoDeviceHistory(record.data.id,record.data.deviceName,record.data.deviceType);
+                items:[{
+                	region: 'center',
+                	layout: 'border',
+                	border: false,
+                	items:[{
+                        region: 'center',
+                        layout: 'border',
+                        id:'RealTimeMonitoringCenterPanel_Id',
+                        items:[{
+                        	region: 'center',
+                        	title:loginUserLanguageResource.deviceOverview,
+                        	id:'RealTimeMonitoringInfoDeviceListPanel_Id',
+                            border: false,
+                            layout: 'fit',
+                            tbar:[{
+                            	id: 'RealTimeMonitoringInfoDeviceListSelectRow_Id',
+                            	xtype: 'textfield',
+                                value: -1,
+                                hidden: true
+                             },{
+                            	id: 'RealTimeMonitoringStatSelectFESdiagramResult_Id',
+                            	xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                             },{
+                            	id: 'RealTimeMonitoringStatSelectCommStatus_Id',
+                            	xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                             },{
+                            	id: 'RealTimeMonitoringStatSelectRunStatus_Id',
+                            	xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                             },{
+                            	id: 'RealTimeMonitoringStatSelectDeviceType_Id',
+                            	xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                             },{
+                                 id: 'RealTimeMonitoringColumnStr_Id',
+                                 xtype: 'textfield',
+                                 value: '',
+                                 hidden: true
+                             },{
+                                 xtype: 'button',
+                                 text: loginUserLanguageResource.refresh,
+                                 iconCls: 'note-refresh',
+                                 hidden:false,
+                                 handler: function (v, o) {
+                                	 realTimeDataRefresh();
                         		}
-                            }
+                     		},'-',deviceCombo,'-', {
+                                 xtype: 'button',
+                                 text: loginUserLanguageResource.exportData,
+                                 iconCls: 'export',
+                                 hidden:false,
+                                 handler: function (v, o) {
+                                	 var orgId = Ext.getCmp('leftOrg_Id').getValue();
+                                	 var deviceName = Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
+                                	 var FESdiagramResultStatValue=Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").getValue();
+                                 	 var commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
+                                 	 var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
+                                 	 var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
+                                	 var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
+                                	 
+                                	 var dictDeviceType=deviceType;
+                                	 if(dictDeviceType.includes(",")){
+                                		 dictDeviceType=getDeviceTypeFromTabId_first("RealTimeMonitoringTabPanel");
+                                 	 }
+                                	 
+                                	 var fileName=loginUserLanguageResource.realtimeMonitoringExpFileName;
+                                	 var title=loginUserLanguageResource.realtimeMonitoringExpFileName;
+                                	 var columnStr=Ext.getCmp("RealTimeMonitoringColumnStr_Id").getValue();
+                                	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
+                                 }
+                             }, '->', {
+                             	xtype: 'button',
+                                text:loginUserLanguageResource.showHistory,
+                                tooltip:loginUserLanguageResource.showHistoryBtnTooltip,
+                                handler: function (v, o) {
+                                	var selectRow= Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
+                            		var gridPanel=Ext.getCmp("RealTimeMonitoringListGridPanel_Id");
+                            		if(isNotVal(gridPanel)){
+                            			var record=gridPanel.getStore().getAt(selectRow);
+                            			gotoDeviceHistory(record.data.id,record.data.deviceName,record.data.deviceType);
+                            		}
+                                }
+                            }]
+                        },{
+                        	region: 'south',
+                        	split: true,
+                            collapsible: true,
+                        	height: '50%',
+                        	xtype: 'tabpanel',
+                        	id:'RealTimeMonitoringStatTabPanel',
+//                        	activeTab: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?1:0,
+                        	activeTab:0,
+                            header: false,
+                            closable:true,
+                			closeAction:'hide',
+                    		tabPosition: 'top',
+                    		items: realtimeStatTabItems,
+                    		listeners: {
+                    			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                    				if(oldCard!=undefined){
+                    					oldCard.setIconCls(null);
+                    				}
+                    				if(newCard!=undefined){
+                    					newCard.setIconCls('check3');
+                    				}
+                    			},
+                    			tabchange: function (tabPanel, newCard,oldCard, obj) {
+                					if(newCard.id=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
+                						loadAndInitFESdiagramResultStat(true);
+                					}else if(newCard.id=="RealTimeMonitoringStatGraphPanel_Id"){
+                						loadAndInitCommStatusStat(true);
+                					}else if(newCard.id=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
+                						loadAndInitRunStatusStat(true);
+                					}else if(newCard.id=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+                						loadAndInitDeviceTypeStat(true);
+                					}
+                					Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setValue('');
+            						Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setRawValue('');
+            						refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),0,Ext.getCmp('RealTimeMonitoringListGridPanel_Id'),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
+                				}
+                			}
                         }]
                     },{
-                    	region: 'south',
-                    	split: true,
+                    	region: 'east',
+                        width: '60%',
+                        split: true,
                         collapsible: true,
-                    	height: '50%',
-                    	xtype: 'tabpanel',
-                    	id:'RealTimeMonitoringStatTabPanel',
-                    	activeTab: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?1:0,
-                        header: false,
-                        closable:true,
-            			closeAction:'hide',
-                		tabPosition: 'top',
-                		items: realtimeStatTabItems,
-                		listeners: {
-                			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                				if(oldCard!=undefined){
-                					oldCard.setIconCls(null);
-                				}
-                				if(newCard!=undefined){
-                					newCard.setIconCls('check3');
-                				}
-                			},
-                			tabchange: function (tabPanel, newCard,oldCard, obj) {
-            					if(newCard.id=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
-            						loadAndInitFESdiagramResultStat(true);
-            					}else if(newCard.id=="RealTimeMonitoringStatGraphPanel_Id"){
-            						loadAndInitCommStatusStat(true);
-            					}else if(newCard.id=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
-            						loadAndInitRunStatusStat(true);
-            					}else if(newCard.id=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-            						loadAndInitDeviceTypeStat(true);
-            					}
-            					Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setValue('');
-        						Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setRawValue('');
-        						refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),0,Ext.getCmp('RealTimeMonitoringListGridPanel_Id'),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
-            				}
-            			}
-                    }]
-                }, {
-                	region: 'east',
-                    width: '68%',
-                    id:'RealTimeMonitoringEastPanel_Id',
-                    autoScroll: false,
-                    split: true,
-                    collapsible: true,
-                    layout: 'border',
-                    header: false,
-                    items:[{
-                        region: 'center',
                         xtype: 'tabpanel',
                 		id:"RealTimeMonitoringCurveAndTableTabPanel",
-                		activeTab: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?2:0,
+//                		activeTab: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?2:0,
+                		activeTab:0,
                 		border: false,
                 		tabPosition: 'top',
                 		items: realtimeCurveAndTableTabPanelItems,
@@ -697,94 +699,107 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 						Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');
                 					}
             					}
-            				}
-                		}
-                    },{
-                    	region: 'east',
-                    	width: '31%',
-                    	xtype: 'tabpanel',
-                    	id:"RealTimeMonitoringRightTabPanel",
-                		activeTab: 0,
-                		border: false,
-                		split: true,
-                        collapsible: true,
-                        header: false,
-                		tabPosition: 'top',
-                		items: RealTimeMonitoringRightTabPanelItems,
-                		listeners: {
-                			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                				if(oldCard!=undefined){
-                					oldCard.setIconCls(null);
-                				}
-                				if(newCard!=undefined){
-                					newCard.setIconCls('check3');
-                				}
-                			},
-                			tabchange: function (tabPanel, newCard, oldCard,obj) {
-                        		if(newCard.id=="RealTimeMonitoringRightControlAndVideoPanel"){
-                                	if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                                		createVideo(0,Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
-                                		var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
-                            			if(isNotVal(controlGridPanel)){
-                            				controlGridPanel.getStore().load();
-                            			}else{
-                            				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore');
-                            			}
-                                	}else{
-                                		var videoPanel1=Ext.getCmp("RealTimeMonitoringRightVideoPanel1");
-                                		var videoPanel2=Ext.getCmp("RealTimeMonitoringRightVideoPanel2");
-                                		if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
-                                			videoPlayrHelper.player1.stop();
-                                		}
-                                		if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
-                                			videoPlayrHelper.player2.stop();
-                                		}
-                                		videoPanel1.hide();
-                                		videoPanel2.hide();
-                                		Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
-                                	}
-                        		}else{
-                        			if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
-                        				videoPlayrHelper.player1.stop();
-                        			}
-                        			if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
-                        				videoPlayrHelper.player2.stop();
-                        			}
-                        			
-                        			if(newCard.id=="RealTimeMonitoringRightDeviceInfoPanel"){
-                        				if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                        					Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
-                        				}
-                        			}
-                        		}
+            				},
+            				beforeCollapse: function (panel, eOpts) {
+                            	var container=$('#realTimeMonitoringCurveContainer');
+    		        			if(container!=undefined && container.length>0){
+    		        				var containerChildren=container[0].children;
+    		        				if(containerChildren!=undefined && containerChildren.length>0){
+    		        					for(var i=0;i<containerChildren.length;i++){
+    		        						$("#"+containerChildren[i].id).hide(); 
+    		        					}
+    		        				}
+    		        			}
+                            },
+                            expand: function (panel, eOpts) {
+                            	var container=$('#realTimeMonitoringCurveContainer');
+    		        			if(container!=undefined && container.length>0){
+    		        				var containerChildren=container[0].children;
+    		        				if(containerChildren!=undefined && containerChildren.length>0){
+    		        					for(var i=0;i<containerChildren.length;i++){
+    		        						$("#"+containerChildren[i].id).show(); 
+    		        					}
+    		        				}
+    		        			}
                             }
-                        }
-                    }],
-                    listeners: {
-                        beforeCollapse: function (panel, eOpts) {
-                        	var container=$('#realTimeMonitoringCurveContainer');
-		        			if(container!=undefined && container.length>0){
-		        				var containerChildren=container[0].children;
-		        				if(containerChildren!=undefined && containerChildren.length>0){
-		        					for(var i=0;i<containerChildren.length;i++){
-		        						$("#"+containerChildren[i].id).hide(); 
-		        					}
-		        				}
-		        			}
-                        },
-                        expand: function (panel, eOpts) {
-                        	var container=$('#realTimeMonitoringCurveContainer');
-		        			if(container!=undefined && container.length>0){
-		        				var containerChildren=container[0].children;
-		        				if(containerChildren!=undefined && containerChildren.length>0){
-		        					for(var i=0;i<containerChildren.length;i++){
-		        						$("#"+containerChildren[i].id).show(); 
-		        					}
-		        				}
-		        			}
+                		}
+                	}]
+                },{
+                	region: 'east',
+                	width: '21%',
+                	xtype: 'tabpanel',
+                	id:"RealTimeMonitoringRightTabPanel",
+            		activeTab: 0,
+            		border: false,
+            		split: true,
+                    collapsible: true,
+                    header: false,
+            		tabPosition: 'top',
+            		items: RealTimeMonitoringRightTabPanelItems,
+            		listeners: {
+            			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+            				if(oldCard!=undefined){
+            					oldCard.setIconCls(null);
+            				}
+            				if(newCard!=undefined){
+            					newCard.setIconCls('check3');
+            				}
+            			},
+            			tabchange: function (tabPanel, newCard, oldCard,obj) {
+                    		if(newCard.id=="RealTimeMonitoringRightControlAndVideoPanel"){
+                            	if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                            		createVideo(0,Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
+                            		var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
+                        			if(isNotVal(controlGridPanel)){
+                        				controlGridPanel.getStore().load();
+                        			}else{
+                        				Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore');
+                        			}
+                            	}else{
+                            		var videoPanel1=Ext.getCmp("RealTimeMonitoringRightVideoPanel1");
+                            		var videoPanel2=Ext.getCmp("RealTimeMonitoringRightVideoPanel2");
+                            		if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+                            			videoPlayrHelper.player1.stop();
+                            		}
+                            		if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+                            			videoPlayrHelper.player2.stop();
+                            		}
+                            		videoPanel1.hide();
+                            		videoPanel2.hide();
+                            		Ext.getCmp("RealTimeMonitoringRightControlPanel").removeAll();
+                            	}
+                    		}else{
+                    			if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+                    				videoPlayrHelper.player1.stop();
+                    			}
+                    			if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+                    				videoPlayrHelper.player2.stop();
+                    			}
+                    			
+                    			if(newCard.id=="RealTimeMonitoringRightDeviceInfoPanel"){
+                    				if(Ext.getCmp("RealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                    					Ext.create('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore');
+                    				}
+                    			}
+                    		}
                         }
                     }
                 }]
+                
+//                items: [{}, {
+//                	region: 'east',
+//                    width: '68%',
+//                    id:'RealTimeMonitoringEastPanel_Id',
+//                    autoScroll: false,
+//                    split: true,
+//                    collapsible: true,
+//                    layout: 'border',
+//                    header: false,
+//                    items:[{},{}],
+//                    listeners: {
+//                        
+//                    }
+//                }]
             }]
         });
         me.callParent(arguments);

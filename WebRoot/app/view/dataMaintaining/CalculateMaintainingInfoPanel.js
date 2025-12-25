@@ -108,9 +108,9 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoPanel", {
         		region: 'center',
         		xtype: 'tabpanel',
         		id:"CalculateMaintainingTabPanel",
-//        		activeTab: 0,
+        		activeTab: 0,
         		border: false,
-        		tabPosition: 'top',
+        		tabPosition: 'bottom',
         		items: [{
         			title: loginUserLanguageResource.acquisitionData,
         			id:'AcquisitionDataMaintainingInfoPanel_Id',

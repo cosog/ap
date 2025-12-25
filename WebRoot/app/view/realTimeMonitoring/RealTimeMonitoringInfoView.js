@@ -15,6 +15,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         var deviceTypeActiveId=getDeviceTypeActiveId();
         var firstActiveTab=deviceTypeActiveId.firstActiveTab;
         var secondActiveTab=deviceTypeActiveId.secondActiveTab;
+        
+//        var defaultActiveDeviceType=getDefaultActiveDeviceTypeTab();
         if(tabInfo.children!=undefined && tabInfo.children!=null && tabInfo.children.length>0){
         	for(var i=0;i<tabInfo.children.length;i++){
         		var panelItem={};
@@ -1394,7 +1396,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
 	var contentId="realTimeMonitoringCurveContent";
 	var containerId="realTimeMonitoringCurveContainer";
 	var divPrefix="realTimeMonitoringCurveDiv";
-	var eastPanelId="RealTimeMonitoringEastPanel_Id";
+	var eastPanelId="RealTimeMonitoringCurveAndTableTabPanel";
 	var panelId="RealTimeMonitoringCurveTabPanel_Id";
 	
 	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
@@ -1869,23 +1871,28 @@ function initVideo(panelId,divId,videoUrl,videoKeyId,deviceType,videoNo,isNew){
 }
 
 function createVideo(deviceType,data,videoNo,isNew){
-	if(moduleContentConfig.primaryDevice.videoConfig){
-		var panelId1='RealTimeMonitoringRightVideoPanel1';
-		var divId1='RealTimeMonitoringRightVideoDiv1_Id';
-		
-		var panelId2='RealTimeMonitoringRightVideoPanel2';
-		var divId2='RealTimeMonitoringRightVideoDiv2_Id';
-		
-		var videoUrl1=data.videoUrl1,videoUrl2=data.videoUrl2;
-		var videoKeyId1=data.videoKeyId1,videoKeyId2=data.videoKeyId2;
-		
-		if(videoNo==1){
-			initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
-		}else if(videoNo==2){
-			initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
-		}else{
-			initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
-			initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
+	
+	var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
+	if(rightTabPanel!=undefined){
+		var RealTimeMonitoringRightControlAndVideoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightControlAndVideoPanel");
+		if(RealTimeMonitoringRightControlAndVideoPanel!=undefined){
+			var panelId1='RealTimeMonitoringRightVideoPanel1';
+			var divId1='RealTimeMonitoringRightVideoDiv1_Id';
+			
+			var panelId2='RealTimeMonitoringRightVideoPanel2';
+			var divId2='RealTimeMonitoringRightVideoDiv2_Id';
+			
+			var videoUrl1=data.videoUrl1,videoUrl2=data.videoUrl2;
+			var videoKeyId1=data.videoKeyId1,videoKeyId2=data.videoKeyId2;
+			
+			if(videoNo==1){
+				initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
+			}else if(videoNo==2){
+				initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
+			}else{
+				initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
+				initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
+			}
 		}
 	}
 }
@@ -1950,6 +1957,9 @@ function getDeviceAddInfoAndControlInfo(deviceId,deviceType){
 	});
 	return deviceInfo;
 }
+
+
+
 
 function cleanDeviceAddInfoAndControlInfo(){
 	clearVideo();

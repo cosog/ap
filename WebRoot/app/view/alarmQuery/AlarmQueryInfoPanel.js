@@ -602,15 +602,13 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                    	 	exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                     }
                 }],
-        		items: AlarmQuerySecondTabPanelItems,
+//        		items: AlarmQuerySecondTabPanelItems,
+                items: [],
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         				if(oldCard!=undefined){
                 			oldCard.setIconCls(null);
-                	    }
-                	    if(newCard!=undefined){
-                	    	newCard.setIconCls('check3');		
-                	    	var alarmOverViewPanelId='';
+                			var alarmOverViewPanelId='';
             				var alarmDetailsPanelId='';
             				if(oldCard.id=="FESDiagramResultAlarmInfoTabPanel_Id"){
             					alarmOverViewPanelId='FESDiagramResultAlarmOverviewPanel_Id';
@@ -633,6 +631,9 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                 			}
             				Ext.getCmp(alarmOverViewPanelId).removeAll();
             				Ext.getCmp(alarmDetailsPanelId).removeAll();
+                	    }
+                	    if(newCard!=undefined){
+                	    	newCard.setIconCls('check3');
                 	    }
 	        		},
 	        		tabchange: function (tabPanel, newCard,oldCard, obj) {

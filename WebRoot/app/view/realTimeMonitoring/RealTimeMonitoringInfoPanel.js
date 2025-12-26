@@ -458,6 +458,31 @@ var RealTimeMonitoringRightTabPanelItems=[{
 }];
 
 
+//var projectTabConfig=getDefaultProjectTabInstanceInfoByDeviceType();
+//var realtimeDefaultStatTabItems=[];
+//var statTabHide=true;
+//if(projectTabConfig.DeviceRealTimeMonitoring.FESDiagramStatPie){
+//	realtimeDefaultStatTabItems.push(realtimeStatTabItems[0]);
+//}
+//if(projectTabConfig.DeviceRealTimeMonitoring.CommStatusStatPie){
+//	realtimeDefaultStatTabItems.push(realtimeStatTabItems[1]);
+//}
+//if(projectTabConfig.DeviceRealTimeMonitoring.RunStatusStatPie){
+//	realtimeDefaultStatTabItems.push(realtimeStatTabItems[2]);
+//}
+//if(realtimeDefaultStatTabItems.length>0){
+//	statTabHide=false;
+//}
+//for(var i=0;i<realtimeDefaultStatTabItems.length;i++){
+//	if(i==0){
+//		realtimeDefaultStatTabItems[i].iconCls='check3';
+//	}else{
+//		realtimeDefaultStatTabItems[i].iconCls=null;
+//	}
+//}
+
+
+
 Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.realTimeMonitoringInfoPanel',
@@ -638,7 +663,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                             closable:true,
                 			closeAction:'hide',
                     		tabPosition: 'top',
-                    		items: realtimeStatTabItems,
+//                    		hidden:statTabHide,
+//                    		items: realtimeDefaultStatTabItems,
+                    		hidden:true,
+                    		items:[],
                     		listeners: {
                     			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
                     				if(oldCard!=undefined){
@@ -675,7 +703,9 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 		activeTab:0,
                 		border: false,
                 		tabPosition: 'top',
-                		items: realtimeCurveAndTableTabPanelItems,
+//                		items: realtimeCurveAndTableTabPanelItems,
+                		items:[],
+                		hidden:true,
                 		listeners: {
                 			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
                 				if(oldCard!=undefined){
@@ -735,7 +765,9 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                     collapsible: true,
                     header: false,
             		tabPosition: 'top',
-            		items: RealTimeMonitoringRightTabPanelItems,
+//            		items: RealTimeMonitoringRightTabPanelItems,
+            		hidden:true,
+            		items:[],
             		listeners: {
             			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
             				if(oldCard!=undefined){

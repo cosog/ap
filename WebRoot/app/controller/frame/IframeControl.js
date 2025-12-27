@@ -492,6 +492,12 @@ function getDeviceTabInstanceInfoByDeviceId(deviceId){
 	return r;
 }
 
+function getDefaultProjectTabInstanceInfoByDeviceType(){
+	var defaultActiveDeviceType=getDefaultActiveDeviceTypeTab();
+	var projectTabConfig=getProjectTabInstanceInfoByDeviceType(defaultActiveDeviceType);
+	return projectTabConfig;
+}
+
 function getProjectTabInstanceInfoByDeviceType(deviceType){
 	var r={};
 	r.DeviceRealTimeMonitoring={

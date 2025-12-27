@@ -165,7 +165,7 @@ function historyDataRefresh(){
 	var removeHistoryFESdiagramResultStatGraphPanel=false;
 	
 	var tabPanel = Ext.getCmp("HistoryQueryStatTabPanel");
-	var statTabActiveId = tabPanel.getActiveTab().id;
+	var statTabActiveId =tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	var projectTabConfig=getProjectTabInstanceInfoByDeviceType(deviceType);
 	
 	var tabChange=false;
@@ -174,17 +174,34 @@ function historyDataRefresh(){
 		if(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
 			tabChange=true;
 		}
+	}else{
+		var HistoryQueryFESdiagramResultStatGraphPanel = tabPanel.getComponent("HistoryQueryFESdiagramResultStatGraphPanel_Id");
+		if(HistoryQueryFESdiagramResultStatGraphPanel==undefined){
+			tabPanel.insert(0,historyStatTabItems[0]);
+		}
 	}
+	
 	if(projectTabConfig.DeviceHistoryQuery.CommStatusStatPie==false){
 		tabPanel.remove(Ext.getCmp("HistoryQueryStatGraphPanel_Id"));
 		if(statTabActiveId=="HistoryQueryStatGraphPanel_Id"){
 			tabChange=true;
 		}
+	}else{
+		var HistoryQueryStatGraphPanel = tabPanel.getComponent("HistoryQueryStatGraphPanel_Id");
+		if(HistoryQueryStatGraphPanel==undefined){
+			tabPanel.insert(1,historyStatTabItems[1]);
+		}
 	}
+	
 	if(projectTabConfig.DeviceHistoryQuery.RunStatusStatPie==false){
 		tabPanel.remove(Ext.getCmp("HistoryQueryRunStatusStatGraphPanel_Id"));
 		if(statTabActiveId=="HistoryQueryRunStatusStatGraphPanel_Id"){
 			tabChange=true;
+		}
+	}else{
+		var HistoryQueryRunStatusStatGraphPanel = tabPanel.getComponent("HistoryQueryRunStatusStatGraphPanel_Id");
+		if(HistoryQueryRunStatusStatGraphPanel==undefined){
+			tabPanel.insert(2,historyStatTabItems[2]);
 		}
 	}
 	
@@ -194,17 +211,22 @@ function historyDataRefresh(){
 		if(tabPanel.isHidden() ){
 			tabPanel.show();
 		}
-		
-		if(!tabChange){
-			if(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
-	 			loadAndInitHistoryQueryFESdiagramResultStat(true);
-	 		}else if(statTabActiveId=="HistoryQueryStatGraphPanel_Id"){
-	 			loadAndInitHistoryQueryCommStatusStat(true);
-	 		}else if(statTabActiveId=="HistoryQueryRunStatusStatGraphPanel_Id"){
-	 			loadAndInitHistoryQueryRunStatusStat(true);
-	 		}else if(statTabActiveId=="HistoryQueryDeviceTypeStatGraphPanel_Id"){
-	 			loadAndInitHistoryQueryDeviceTypeStat(true);
-	 		}
+		if(tabPanel.getActiveTab()==undefined){
+			if(tabPanel.items.length>0){
+				tabPanel.setActiveTab(0);
+			}
+		}else{
+			if(!tabChange){
+				if(statTabActiveId=="HistoryQueryFESdiagramResultStatGraphPanel_Id"){
+		 			loadAndInitHistoryQueryFESdiagramResultStat(true);
+		 		}else if(statTabActiveId=="HistoryQueryStatGraphPanel_Id"){
+		 			loadAndInitHistoryQueryCommStatusStat(true);
+		 		}else if(statTabActiveId=="HistoryQueryRunStatusStatGraphPanel_Id"){
+		 			loadAndInitHistoryQueryRunStatusStat(true);
+		 		}else if(statTabActiveId=="HistoryQueryDeviceTypeStatGraphPanel_Id"){
+		 			loadAndInitHistoryQueryDeviceTypeStat(true);
+		 		}
+			}
 		}
 	}
 	
@@ -216,9 +238,7 @@ function historyDataRefresh(){
 		Ext.getCmp('HistoryQueryDeviceListComb_Id').setValue('');
 		Ext.getCmp('HistoryQueryDeviceListComb_Id').setRawValue('');
 	}
-//	if(!removeHistoryFESdiagramResultStatGraphPanel){//如果删除了工况统计，则不刷新表格，由统计tabchange刷新
-//		refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("HistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.HistoryQueryWellListStore');
-//	}
+
 	refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("HistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.HistoryQueryWellListStore');
 }
 
@@ -489,7 +509,7 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,dictDeviceTy
 
 exportHistoryQueryDiagramTiledDataExcel = function (orgId,deviceType,deviceId,deviceName,resultCode,startDate,endDate,hours,fileName,title) {
 	var tabPanel = Ext.getCmp("HistoryDiagramTabPanel");
-	var activeId = tabPanel.getActiveTab().id;
+	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	var diagramType="FSDiagram";
 	var fileName=deviceName+'-'+loginUserLanguageResource.FSDiagramData;
 	if(activeId=="FSDiagramTiledTabPanel_Id"){
@@ -1440,7 +1460,7 @@ function getHistoryQueryDeviceListDataPage(deviceId,deviceType,limit){
 
 loadHistoryDiagramTiledList = function (page) {
 	var tabPanel = Ext.getCmp("HistoryDiagramTabPanel");
-	var activeId = tabPanel.getActiveTab().id;
+	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	if(activeId=="FSDiagramTiledTabPanel_Id"){
 		loadSurfaceCardList(page);
 	}else if(activeId=="PSDiagramTiledTabPanel_Id"){
@@ -1850,7 +1870,7 @@ function createHistoryQueryDiagramOverlayTableColumn(columnInfo) {
 
 function refreshDeviceHistoryData(){
 	var tabPanel = Ext.getCmp("HistoryQueryCenterTabPanel");
-	var activeId = tabPanel.getActiveTab().id;
+	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	if(activeId=="HistoryDataTabPanel"){
 		var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
         if (isNotVal(gridPanel)) {

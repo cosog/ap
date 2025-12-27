@@ -713,7 +713,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                     	activeTab:0,
                         header: false,
                 		tabPosition: 'top',
-                		items: historyStatTabItems,
+//                		items: historyStatTabItems,
+                		items:[],
+                		hidden:true,
                 		listeners: {
                 			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
                 				if(oldCard!=undefined){
@@ -1407,7 +1409,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             }]
             			}]
             		},
-            		items: historyQueryCenterTabPanelItems,
+//            		items: historyQueryCenterTabPanelItems,
+            		items:[],
+            		hidden:true,
             		listeners: {
             			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
             				if(oldCard!=undefined){

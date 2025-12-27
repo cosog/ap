@@ -2935,7 +2935,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ "decode(t.realtimeSort,null,9999,t.realtimeSort) as realtimeSort,"
 						+ "decode(t.historySort,null,9999,t.historySort) as historySort,"
 						+ "t.realtimecurveconf,t.historycurveconf,"
-						+ "t.type "
+						+ "t.type, "
 						+ "t.switchingValueShowType "
 						+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 						+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()

@@ -283,7 +283,7 @@ function realTimeDataRefresh(){
 	
 	var tabPanel=Ext.getCmp("RealTimeMonitoringStatTabPanel");
 	var projectTabConfig=getProjectTabInstanceInfoByDeviceType(deviceType);
-	var statTabActiveId = tabPanel.getActiveTab().id;
+	var statTabActiveId =tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	
 	var tabChange=false;
 	if(projectTabConfig.DeviceRealTimeMonitoring.FESDiagramStatPie==false){
@@ -291,17 +291,34 @@ function realTimeDataRefresh(){
 		if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
 			tabChange=true;
 		}
+	}else{
+		var RealTimeMonitoringFESdiagramResultStatGraphPanel = tabPanel.getComponent("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id");
+		if(RealTimeMonitoringFESdiagramResultStatGraphPanel==undefined){
+			tabPanel.insert(0,realtimeStatTabItems[0]);
+		}
 	}
+	
 	if(projectTabConfig.DeviceRealTimeMonitoring.CommStatusStatPie==false){
 		tabPanel.remove(Ext.getCmp("RealTimeMonitoringStatGraphPanel_Id"));
 		if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
 			tabChange=true;
 		}
+	}else{
+		var RealTimeMonitoringStatGraphPanel = tabPanel.getComponent("RealTimeMonitoringStatGraphPanel_Id");
+		if(RealTimeMonitoringStatGraphPanel==undefined){
+			tabPanel.insert(1,realtimeStatTabItems[1]);
+		}
 	}
+	
 	if(projectTabConfig.DeviceRealTimeMonitoring.RunStatusStatPie==false){
 		tabPanel.remove(Ext.getCmp("RealTimeMonitoringRunStatusStatGraphPanel_Id"));
 		if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
 			tabChange=true;
+		}
+	}else{
+		var RealTimeMonitoringRunStatusStatGraphPanel = tabPanel.getComponent("RealTimeMonitoringRunStatusStatGraphPanel_Id");
+		if(RealTimeMonitoringRunStatusStatGraphPanel==undefined){
+			tabPanel.insert(2,realtimeStatTabItems[2]);
 		}
 	}
 	
@@ -311,18 +328,25 @@ function realTimeDataRefresh(){
 		if(tabPanel.isHidden() ){
 			tabPanel.show();
 		}
-		if(!tabChange){
-	 		statTabActiveId = tabPanel.getActiveTab().id;
-	 		if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
-	 			loadAndInitFESdiagramResultStat(true);
-	 		}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
-	 			loadAndInitCommStatusStat(true);
-	 		}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
-	 			loadAndInitRunStatusStat(true);
-	 		}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-	 			loadAndInitDeviceTypeStat(true);
-	 		}
-	 	}
+		if(tabPanel.getActiveTab()==undefined){
+			if(tabPanel.items.length>0){
+				tabPanel.setActiveTab(0);
+			}
+		}else{
+			if(!tabChange){
+		 		statTabActiveId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
+		 		if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
+		 			loadAndInitFESdiagramResultStat(true);
+		 		}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
+		 			loadAndInitCommStatusStat(true);
+		 		}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
+		 			loadAndInitRunStatusStat(true);
+		 		}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+		 			loadAndInitDeviceTypeStat(true);
+		 		}
+		 	}
+		}
+		
 	}
  	
 	 	
@@ -984,7 +1008,7 @@ function loadAndInitCommStatusStat(all){
 function initRealTimeMonitoringStatPieOrColChat(get_rawData) {
 	var divId="RealTimeMonitoringStatGraphPanelPieDiv_Id";
 	var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
-	var activeId = tabPanel.getActiveTab().id;
+	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	var title=loginUserLanguageResource.commStatus;
 	var datalist=get_rawData.totalRoot;
 	var colors=[];
@@ -1143,7 +1167,7 @@ function loadAndInitRunStatusStat(all){
 function initRealTimeMonitoringRunStatusStatPieOrColChat(get_rawData) {
 	var divId="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id";
 	var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
-	var activeId = tabPanel.getActiveTab().id;
+	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	var title=loginUserLanguageResource.runStatus;
 	var datalist=get_rawData.totalRoot;
 	var colors=[];
@@ -1958,8 +1982,17 @@ function getDeviceAddInfoAndControlInfo(deviceId,deviceType){
 	return deviceInfo;
 }
 
+function getRealtimeDefaultDeviceTabInstanceInfo(){
+	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+	var deviceType=getDefaultActiveDeviceTypeTab();
+	
+}
 
-
+function getRealtimeDefaultDeviceId(){
+	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+	var deviceType=getDefaultActiveDeviceTypeTab();
+	
+}
 
 function cleanDeviceAddInfoAndControlInfo(){
 	clearVideo();

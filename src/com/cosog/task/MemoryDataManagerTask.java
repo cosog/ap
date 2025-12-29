@@ -4531,6 +4531,26 @@ public class MemoryDataManagerTask {
 		return rtnItem;
 	}
 	
+	public static ModbusProtocolConfig.Items getProtocolItemByMappingColumn(ModbusProtocolConfig.Protocol protocol,String mappingColumn){
+		Map<String,DataMapping> protocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+		ModbusProtocolConfig.Items rtnItem=null;
+		
+		if(protocolMappingColumnMap.containsKey(mappingColumn)){
+			DataMapping dataMapping=protocolMappingColumnMap.get(mappingColumn);
+			String itemTitle=dataMapping.getName();
+			if(StringManagerUtils.isNotNull(itemTitle) && protocol!=null && protocol.getItems()!=null && protocol.getItems().size()>0){
+				for(ModbusProtocolConfig.Items item:protocol.getItems()){
+					if(itemTitle.equalsIgnoreCase(item.getTitle())){
+						rtnItem=item;
+						break;
+					}
+				}
+			}
+		}
+		
+		return rtnItem;
+	}
+	
 	public static ModbusProtocolConfig.Items getProtocolItem(ModbusProtocolConfig.Protocol protocol,String itemName){
 		ModbusProtocolConfig.Items rtnItem=null;
 		if(StringManagerUtils.isNotNull(itemName) && protocol!=null && protocol.getItems()!=null && protocol.getItems().size()>0){
@@ -4542,6 +4562,19 @@ public class MemoryDataManagerTask {
 			}
 		}
 		return rtnItem;
+	}
+	
+	public static ModbusProtocolConfig.ItemsMeaning getProtocolItemMeaning(ModbusProtocolConfig.Items item,String bitIndex){
+		ModbusProtocolConfig.ItemsMeaning rtnItemsMeaning=null;
+		if(StringManagerUtils.isNotNull(bitIndex) && item!=null && item.getMeaning()!=null && item.getMeaning().size()>0){
+			for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:item.getMeaning()){
+				if(itemsMeaning.getValue()==StringManagerUtils.stringToInteger(bitIndex)){
+					rtnItemsMeaning=itemsMeaning;
+					break;
+				}
+			}
+		}
+		return rtnItemsMeaning;
 	}
 	
 	public static ModbusProtocolConfig.ExtendedField getProtocolExtendedField(ModbusProtocolConfig.Protocol protocol,String itemName){

@@ -763,12 +763,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
 										if(workType!=null){
 											value=workType.getResultName();
-											for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
-												if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
-													resultAlarmLevel=alarmItem.getAlarmLevel();
+											if(alarmInstanceOwnItem!=null){
+												for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
+													if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
+														resultAlarmLevel=alarmItem.getAlarmLevel();
+													}
 												}
 											}
-											
 										}
 									}
 									
@@ -2498,12 +2499,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
 										if(workType!=null){
 											value=workType.getResultName();
-											for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
-												if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
-													resultAlarmLevel=alarmItem.getAlarmLevel();
+											if(alarmInstanceOwnItem!=null){
+												for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
+													if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
+														resultAlarmLevel=alarmItem.getAlarmLevel();
+													}
 												}
 											}
-											
 										}
 									}
 									break;
@@ -5594,12 +5596,24 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										}
 									}
 								}
-								calItemColumnList.add(itemcode);
-								itemCodeSortMap.put(itemcode, sort);
-								itemNameMap.put(sort, itemName);
-								itemCodeMap.put(sort, itemcode);
-								curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
-								curveDataMap.put(sort, new ArrayList<>());
+								
+								if(StringManagerUtils.stringToInteger(calculateType)==0){
+									if(StringManagerUtils.generalCalColumnFiter(itemcode)){
+										calItemColumnList.add(itemcode);
+										itemCodeSortMap.put(itemcode, sort);
+										itemNameMap.put(sort, itemName);
+										itemCodeMap.put(sort, itemcode);
+										curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+										curveDataMap.put(sort, new ArrayList<>());
+									}
+								}else{
+									calItemColumnList.add(itemcode);
+									itemCodeSortMap.put(itemcode, sort);
+									itemNameMap.put(sort, itemName);
+									itemCodeMap.put(sort, itemcode);
+									curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+									curveDataMap.put(sort, new ArrayList<>());
+								}
 							}else if("3".equalsIgnoreCase(type)){
 								inputItemColumnList.add(itemcode);
 								String itemName=itemname;
@@ -5615,13 +5629,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										
 									}
 								}
-								
-								inputItemColumnList.add(itemcode);
-								itemCodeSortMap.put(itemcode, sort);
-								itemNameMap.put(sort, itemName);
-								itemCodeMap.put(sort, itemcode);
-								curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
-								curveDataMap.put(sort, new ArrayList<>());
+								if(StringManagerUtils.stringToInteger(calculateType)>0){
+									inputItemColumnList.add(itemcode);
+									itemCodeSortMap.put(itemcode, sort);
+									itemNameMap.put(sort, itemName);
+									itemCodeMap.put(sort, itemcode);
+									curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+									curveDataMap.put(sort, new ArrayList<>());
+								}
 							}
 						}
 					}
@@ -5715,13 +5730,24 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										
 									}
 								}
+								if(StringManagerUtils.stringToInteger(calculateType)==0){
+									if(StringManagerUtils.generalCalColumnFiter(itemcode)){
+										calItemColumnList.add(itemcode);
+										itemCodeSortMap.put(itemcode, sort);
+										itemNameMap.put(sort, itemName);
+										itemCodeMap.put(sort, itemcode);
+										curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+										curveDataMap.put(sort, new ArrayList<>());
+									}
+								}else{
+									calItemColumnList.add(itemcode);
+									itemCodeSortMap.put(itemcode, sort);
+									itemNameMap.put(sort, itemName);
+									itemCodeMap.put(sort, itemcode);
+									curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+									curveDataMap.put(sort, new ArrayList<>());
+								}
 								
-								calItemColumnList.add(itemcode);
-								itemCodeSortMap.put(itemcode, sort);
-								itemNameMap.put(sort, itemName);
-								itemCodeMap.put(sort, itemcode);
-								curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
-								curveDataMap.put(sort, new ArrayList<>());
 							}else if("3".equalsIgnoreCase(type)){
 								String itemName=itemname;
 								if(inputItemList!=null && inputItemList.size()>0){
@@ -5735,13 +5761,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										
 									}
 								}
-								
-								inputItemColumnList.add(itemcode);
-								itemCodeSortMap.put(itemcode, sort);
-								itemNameMap.put(sort, itemName);
-								itemCodeMap.put(sort, itemcode);
-								curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
-								curveDataMap.put(sort, new ArrayList<>());
+								if(StringManagerUtils.stringToInteger(calculateType)>0){
+									inputItemColumnList.add(itemcode);
+									itemCodeSortMap.put(itemcode, sort);
+									itemNameMap.put(sort, itemName);
+									itemCodeMap.put(sort, itemcode);
+									curveConfMap.put(sort, curveConfStr.replaceAll("null", ""));
+									curveDataMap.put(sort, new ArrayList<>());
+								}
 							}
 						}
 					}

@@ -1874,6 +1874,7 @@ public class DriverAPIController extends BaseController{
 			String functionCode,int commAlarmLevel,int runAlarmLevel,
 			SRPCalculateResponseData srpCalculateResponseData,SRPCalculateRequestData srpCalculateRequestData,int resultAlarmLevel,
 			AlarmShowStyle alarmShowStyle,
+			ModbusProtocolConfig.Protocol protocol,
 			int checkSign){
 		StringBuffer webSocketSendData = new StringBuffer();
 		StringBuffer displayItemInfo_json = new StringBuffer();
@@ -2044,29 +2045,85 @@ public class DriverAPIController extends BaseController{
 		
 		//筛选
 		List<AcquisitionItemInfo> userAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
-		for(int j=0;j<acquisitionItemInfoList.size();j++){
-			allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\","
-					+ "\"column\":\""+acquisitionItemInfoList.get(j).getColumn()+"\","
-					+ "\"value\":\""+acquisitionItemInfoList.get(j).getValue()+"\","
-					+ "\"rawValue\":\""+acquisitionItemInfoList.get(j).getRawValue()+"\","
-					+ "\"columnDataType\":\""+acquisitionItemInfoList.get(j).getDataType()+"\","
-					+ "\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\","
-					+ "\"alarmLevel\":"+acquisitionItemInfoList.get(j).getAlarmLevel()+"},");
-			if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), acquisitionItemInfoList.get(j).getColumn(), false,0,1)){
+		
+		List<AcquisitionItemInfo> displayItemInfoList=new ArrayList<AcquisitionItemInfo>();
+		for(DisplayInstanceOwnItem.DisplayItem displayItem:displayInstanceOwnItem.getItemList()){
+			if(displayItem.getType()!=2){
+				AcquisitionItemInfo acquisitionItemInfo=StringManagerUtils.getAcquisitionItem(acquisitionItemInfoList,displayItem);
+				if(acquisitionItemInfo!=null){
+					displayItemInfoList.add(acquisitionItemInfo);
+				}else{
+					acquisitionItemInfo=new AcquisitionItemInfo();
+					if(displayItem.getType()==0){
+						ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, displayItem.getItemName());
+						if(item!=null){
+							acquisitionItemInfo.setAddr(item.getAddr());
+							acquisitionItemInfo.setDataType(item.getIFDataType());
+							acquisitionItemInfo.setResolutionMode(item.getResolutionMode()+"");
+							acquisitionItemInfo.setUnit(item.getUnit());
+							acquisitionItemInfo.setType(0);
+						}
+					}else if(displayItem.getType()==5){
+						ModbusProtocolConfig.ExtendedField extendedField=MemoryDataManagerTask.getProtocolExtendedField(protocol, displayItem.getItemName());
+						if(extendedField!=null){
+							acquisitionItemInfo.setUnit(extendedField.getUnit());
+						}
+					}else if(displayItem.getType()==1){
+						if(!displayItem.getItemCode().toUpperCase().endsWith("_TOTAL")){
+							CalItem calItem=MemoryDataManagerTask.getCalItemByCode(displayItem.getItemCode(), "zh_CN");
+							if(calItem!=null){
+								acquisitionItemInfo.setUnit(calItem.getUnit());
+							}
+						}else{
+							ModbusProtocolConfig.Items sourceItem=MemoryDataManagerTask.getProtocolItemByMappingColumn(protocol, displayItem.getItemCode().toUpperCase().replace("_TOTAL", ""));
+							if(sourceItem!=null){
+								acquisitionItemInfo.setUnit(sourceItem.getUnit());
+							}
+						}
+					}else if(displayItem.getType()==3){
+						CalItem calItem=MemoryDataManagerTask.getInputItemByCode(displayItem.getItemCode(), "zh_CN");
+						if(calItem!=null){
+							acquisitionItemInfo.setUnit(calItem.getUnit());
+						}
+					}
+					
+					
+					acquisitionItemInfo.setColumn(displayItem.getItemCode());
+					acquisitionItemInfo.setTitle(displayItem.getItemName());
+					acquisitionItemInfo.setRawTitle(displayItem.getItemName());
+					acquisitionItemInfo.setValue("");
+					acquisitionItemInfo.setRawValue("");
+					
+					acquisitionItemInfo.setBitIndex(displayItem.getBitIndex()+"");
+					acquisitionItemInfo.setAlarmLevel(0);
+					acquisitionItemInfo.setSort(displayItem.getRealtimeSort());
+					
+					displayItemInfoList.add(acquisitionItemInfo);
+				}
+			}
+		}
+		
+		
+		for(int j=0;j<displayItemInfoList.size();j++){
+			allItemInfo_json.append("{\"columnName\":\""+displayItemInfoList.get(j).getTitle()+"\","
+					+ "\"column\":\""+displayItemInfoList.get(j).getColumn()+"\","
+					+ "\"value\":\""+displayItemInfoList.get(j).getValue()+"\","
+					+ "\"rawValue\":\""+displayItemInfoList.get(j).getRawValue()+"\","
+					+ "\"columnDataType\":\""+displayItemInfoList.get(j).getDataType()+"\","
+					+ "\"resolutionMode\":\""+displayItemInfoList.get(j).getResolutionMode()+"\","
+					+ "\"alarmLevel\":"+displayItemInfoList.get(j).getAlarmLevel()+"},");
+			if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), displayItemInfoList.get(j).getColumn(), false,0,1)){
 				for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
-					if(acquisitionItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) 
+					if(displayItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) 
 							&& displayInstanceOwnItem.getItemList().get(k).getType()!=2
 							){
-						
-						
-						
 						if(displayInstanceOwnItem.getItemList().get(k).getShowLevel()==0
 								||displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 								){
 							
 							boolean match=false;
-							if(acquisitionItemInfoList.get(j).getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfoList.get(j).getResolutionMode())){//开关量
-								if(StringManagerUtils.stringToInteger(acquisitionItemInfoList.get(j).getBitIndex())==displayInstanceOwnItem.getItemList().get(k).getBitIndex()   ){
+							if(displayItemInfoList.get(j).getType()==0 && "0".equalsIgnoreCase(displayItemInfoList.get(j).getResolutionMode())){//开关量
+								if(StringManagerUtils.stringToInteger(displayItemInfoList.get(j).getBitIndex())==displayInstanceOwnItem.getItemList().get(k).getBitIndex()   ){
 									match=true;
 								}else{
 									continue;
@@ -2076,8 +2133,8 @@ public class DriverAPIController extends BaseController{
 							}
 							
 							if(match){
-								acquisitionItemInfoList.get(j).setSort(displayInstanceOwnItem.getItemList().get(k).getRealtimeSort());
-								userAcquisitionItemInfoList.add(acquisitionItemInfoList.get(j));
+								displayItemInfoList.get(j).setSort(displayInstanceOwnItem.getItemList().get(k).getRealtimeSort());
+								userAcquisitionItemInfoList.add(displayItemInfoList.get(j));
 							}
 						}
 						break;
@@ -2246,7 +2303,7 @@ public class DriverAPIController extends BaseController{
 		webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 		webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
 		
-//		StringManagerUtils.printLog(webSocketSendData.toString());
+//		StringManagerUtils.printLog(webSocketSendData.toString(),0);
 		return webSocketSendData.toString();
 	}
 	
@@ -2831,6 +2888,7 @@ public class DriverAPIController extends BaseController{
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
 										srpCalculateResponseData,srpCalculateRequestData,resultAlarmLevel,
 										alarmShowStyle,
+										protocol,
 										checkSign);
 //								StringManagerUtils.printLog(webSocketSendDataStr);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);

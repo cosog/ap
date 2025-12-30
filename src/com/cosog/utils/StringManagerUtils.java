@@ -107,6 +107,7 @@ import com.cosog.model.DataMapping;
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
+import com.cosog.model.drive.AcquisitionItemInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -4157,6 +4158,28 @@ public class StringManagerUtils {
             }
         }
         return flag;
+    }
+    
+    public static AcquisitionItemInfo getAcquisitionItem(List<AcquisitionItemInfo> acquisitionItemInfoList,DisplayInstanceOwnItem.DisplayItem displayItem){
+    	AcquisitionItemInfo r = null;
+    	for (AcquisitionItemInfo acquisitionItemInfo:acquisitionItemInfoList) {
+    		boolean match = false;
+    		if(displayItem.getType()==0 && displayItem.getBitIndex()>=0){
+    			if(acquisitionItemInfo.getColumn().equalsIgnoreCase(displayItem.getItemCode()) && acquisitionItemInfo.getBitIndex().equalsIgnoreCase(displayItem.getBitIndex()+"")){
+    				match=true;
+    			}
+    		}else{
+    			if(acquisitionItemInfo.getColumn().equalsIgnoreCase(displayItem.getItemCode())){
+    				match=true;
+    			}
+    		}
+    		
+    		if (match) {
+                r = acquisitionItemInfo;
+                break;
+            }
+    	}
+    	return r;
     }
 
     public static boolean existDisplayItemCode(List < DisplayInstanceOwnItem.DisplayItem > displayItemList, String key, boolean caseSensitive, int type,int realtimeOrHistory) {

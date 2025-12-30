@@ -2183,7 +2183,8 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			String instanceSql="select t.code from tbl_protocoldisplayinstance t where 1=1 ";
-			String sql="select t3.code as instanceCode,t5.code as protocolCode,t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
+			String sql="select t3.code as instanceCode,t5.code as protocolCode,t.unitid,t.id as itemid,t.itemname,t.itemcode,"
+					+ "decode(t.bitindex,null,-1,t.bitindex) as bitindex,"
 					+ "decode(t.showlevel,null,9999,t.showlevel) as showlevel,"
 					+ "decode(t.realtimeSort,null,9999,t.realtimeSort) as realtimeSort,"
 					+ "decode(t.historySort,null,9999,t.historySort) as historySort,"

@@ -108,7 +108,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
-		String tableName="tbl_device";
+		String tableName="viw_device";
 		if(deviceType>=300){
 			tableName="tbl_smsdevice";
 		}
@@ -168,7 +168,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
-		String tableName="tbl_device";
+		String tableName="viw_device";
 		if(deviceType>=300){
 			tableName="tbl_smsdevice";
 		}
@@ -1220,8 +1220,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String sql = "update "+tableName+" t "
 				+ " set t.productiondata='"+deviceProductionData+"',"
-				+ " t.calculatetype="+deviceCalculateDataType+","
-				+ " t.applicationscenarios="+applicationScenarios+","
+//				+ " t.calculatetype="+deviceCalculateDataType+","
+//				+ " t.applicationscenarios="+applicationScenarios+","
 				+ " t.productiondataupdatetime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " where t.id="+deviceId;
 		this.getBaseDao().updateOrDeleteBySql(sql);
@@ -1745,7 +1745,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " t.alarminstancecode,t4.name as alarminstanceName,"
 				+ " t.reportinstancecode,t5.name as reportinstanceName," //12~19
 				+ " t.videokeyid1,t.videourl1,t.videokeyid2,t.videourl2," //20~23
-				+ " t.status,t.calculatetype,t.sortnum,to_char(t.commissioningdate,'yyyy-mm-dd hh24:mi:ss'),"//24~27
+				+ " t.status,"
+				+ " decode(t6.calculatetype,null,0,t6.calculatetype) as calculatetype,"
+				+ " t.sortnum,to_char(t.commissioningdate,'yyyy-mm-dd hh24:mi:ss'),"//24~27
 				+ " t.productiondata,t.balanceinfo,t.stroke,t.constructiondata"
 				+ " from tbl_device t "
 				+ " left outer join tbl_org o on t.orgid=o.org_id "
@@ -1754,6 +1756,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " left outer join tbl_protocoldisplayinstance t3 on t.displayinstancecode=t3.code "
 				+ " left outer join tbl_protocolalarminstance t4 on t.alarminstancecode=t4.code "
 				+ " left outer join tbl_protocolreportinstance t5 on t.reportinstancecode=t5.code"
+				+ " left outer join tbl_tabmanager_device t6 on t.calculatetype=t6.id"
 				+ " where t.orgid in ("+orgId+")";
 		
 		String addInfoSql="select t.id,t2.itemname,t2.itemvalue,t2.itemunit "

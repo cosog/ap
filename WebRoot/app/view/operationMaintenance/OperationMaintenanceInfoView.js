@@ -79,14 +79,14 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 				        		var configFile={};
 				        		configFile.others={};
 				        		configFile.others.loginLanguage=Ext.getCmp('operationMaintenance_LogonLanguageCombox_Id').getValue();
-				        		configFile.others.showLogo=Ext.getCmp('operationMaintenance_showLogo1_Id').getValue();
-				        		configFile.others.printLog=Ext.getCmp('operationMaintenance_printLog1_Id').getValue();
-				        		configFile.others.printAdLog=Ext.getCmp('operationMaintenance_printAdLog1_Id').getValue();
-				        		configFile.others.printExceptionLog=Ext.getCmp('operationMaintenance_printExceptionLog1_Id').getValue();
+				        		configFile.others.showLogo=Ext.getCmp('operationMaintenance_showLogo_Id').getValue();
+				        		configFile.others.printLog=Ext.getCmp('operationMaintenance_printLog_Id').getValue();
+				        		configFile.others.printAdLog=Ext.getCmp('operationMaintenance_printAdLog_Id').getValue();
+				        		configFile.others.printExceptionLog=Ext.getCmp('operationMaintenance_printExceptionLog_Id').getValue();
 				        		configFile.others.timeEfficiencyUnit=Ext.getCmp('operationMaintenance_timeEfficiencyUnit1_Id').getValue()?1:2;
 				        		configFile.others.resourceMonitoringSaveData=Ext.getCmp('operationMaintenance_resourceMonitoringSaveData_Id').getValue();
 				        		configFile.others.exportLimit=Ext.getCmp('operationMaintenance_exportLimit_Id').getValue();
-				        		configFile.others.simulateAcqEnable=Ext.getCmp('operationMaintenance_simulateAcqEnable1_Id').getValue();
+				        		configFile.others.simulateAcqEnable=Ext.getCmp('operationMaintenance_simulateAcqEnable_Id').getValue();
 				        		configFile.others.sendCycle=Ext.getCmp('operationMaintenance_sendCycle_Id').getValue();
 				        		
 				        		configFile.databaseMaintenance={};
@@ -207,39 +207,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                                    id:'operationMaintenance_timeEfficiencyUnit2_Id'
     				                                }
     				                            ]
-    				                        },
-    				                        {
-    				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel :  loginUserLanguageResource.sendSimulationData,
-    				                            defaultType: 'radiofield',
-    				                            anchor: '100%',
-    				                            defaults: {
-    				                                flex: 1
-    				                            },
-    				                            layout: 'hbox',
-    				                            items: [
-    				                                {
-    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
-    				                                    name:'operationMaintenance.simulateAcqEnable',
-    				                                    inputValue: '1',
-    				                                    id: 'operationMaintenance_simulateAcqEnable1_Id',
-    				                                    listeners: {
-    	    						                    	change ( field, newValue, oldValue, eOpts) {
-    	    						                    		if(newValue){
-    	    						                    			Ext.getCmp('operationMaintenance_sendCycle_Id').enable();
-    	    						                    		}else{
-    	    						                    			Ext.getCmp('operationMaintenance_sendCycle_Id').disable();
-    	    						                    		}
-    	    						            			}
-    	    						                    }
-    				                                }, {
-    				                                    boxLabel: loginUserLanguageResource.no,
-    				                                    name:'operationMaintenance.simulateAcqEnable',
-    				                                    checked:true,
-    				                                    inputValue:'0',
-    				                                    id:'operationMaintenance_simulateAcqEnable0_Id'
-    				                                }
-    				                            ]
+    				                        },{
+                                        	    xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.sendSimulationData,
+                                        	    name: 'operationMaintenance.simulateAcqEnable',
+                                        	    id: 'operationMaintenance_simulateAcqEnable_Id',
+                                        	    checked: false
     				                        },
     				                        {
     				                        	fieldLabel: loginUserLanguageResource.exportDataLimits,
@@ -253,28 +226,11 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }, {
     				                    items: [
     				                        {
-    				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : loginUserLanguageResource.displayTheLogo,
-    				                            defaultType: 'radiofield',
-    				                            anchor: '100%',
-    				                            defaults: {
-    				                                flex: 1
-    				                            },
-    				                            layout: 'hbox',
-    				                            items: [
-    				                                {
-    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
-    				                                    name:'operationMaintenance.showLogo',
-    				                                    inputValue: '1',
-    				                                    id: 'operationMaintenance_showLogo1_Id'
-    				                                }, {
-    				                                    boxLabel: loginUserLanguageResource.no,
-    				                                    name:'operationMaintenance.showLogo',
-    				                                    checked:true,
-    				                                    inputValue:'0',
-    				                                    id:'operationMaintenance_showLogo0_Id'
-    				                                }
-    				                            ]
+                                        	    xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.displayTheLogo,
+                                        	    name: 'operationMaintenance.showLogo',
+                                        	    id: 'operationMaintenance_showLogo_Id',
+                                        	    checked: false
     				                        },
     				                        { 
     				                        	fieldLabel: loginUserLanguageResource.resourceMonitoringLimit ,
@@ -294,74 +250,23 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }, {
     				                    items: [
     				                    	{
-    				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : loginUserLanguageResource.printExceptionLogs,
-    				                            defaultType: 'radiofield',
-    				                            anchor: '100%',
-    				                            defaults: {
-    				                                flex: 1
-    				                            },
-    				                            layout: 'hbox',
-    				                            items: [
-    				                                {
-    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
-    				                                    name:'operationMaintenance.printExceptionLog',
-    				                                    inputValue: '1',
-    				                                    id: 'operationMaintenance_printExceptionLog1_Id'
-    				                                }, {
-    				                                    boxLabel: loginUserLanguageResource.no,
-    				                                    name:'operationMaintenance.printExceptionLog',
-    				                                    checked:true,
-    				                                    inputValue:'0',
-    				                                    id:'operationMaintenance_printExceptionLog0_Id'
-    				                                }
-    				                            ]
+                                        	    xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.printExceptionLogs,
+                                        	    name: 'operationMaintenance.printExceptionLog',
+                                        	    id: 'operationMaintenance_printExceptionLog_Id',
+                                        	    checked: false
     				                        },{
-    				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : loginUserLanguageResource.printLogs,
-    				                            defaultType: 'radiofield',
-    				                            anchor: '100%',
-    				                            defaults: {
-    				                                flex: 1
-    				                            },
-    				                            layout: 'hbox',
-    				                            items: [
-    				                                {
-    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
-    				                                    name:'operationMaintenance.printLog',
-    				                                    inputValue: '1',
-    				                                    id: 'operationMaintenance_printLog1_Id'
-    				                                }, {
-    				                                    boxLabel: loginUserLanguageResource.no,
-    				                                    name:'operationMaintenance.printLog',
-    				                                    checked:true,
-    				                                    inputValue:'0',
-    				                                    id:'operationMaintenance_printLog0_Id'
-    				                                }
-    				                            ]
+                                        	    xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.printLogs,
+                                        	    name: 'operationMaintenance.printLog',
+                                        	    id: 'operationMaintenance_printLog_Id',
+                                        	    checked: false
     				                        },{
-    				                        	xtype: 'fieldcontainer',
-    				                            fieldLabel : loginUserLanguageResource.printAdLogs,
-    				                            defaultType: 'radiofield',
-    				                            anchor: '100%',
-    				                            defaults: {
-    				                                flex: 1
-    				                            },
-    				                            layout: 'hbox',
-    				                            items: [
-    				                                {
-    				                                    boxLabel:loginUserLanguageResource.yes+'&nbsp;&nbsp;',
-    				                                    name:'operationMaintenance.printAdLog',
-    				                                    inputValue: '1',
-    				                                    id: 'operationMaintenance_printAdLog1_Id'
-    				                                }, {
-    				                                    boxLabel: loginUserLanguageResource.no,
-    				                                    name:'operationMaintenance.printAdLog',
-    				                                    checked:true,
-    				                                    inputValue:'0',
-    				                                    id:'operationMaintenance_printAdLog0_Id'
-    				                                }
-    				                            ]
+                                        	    xtype: 'checkboxfield',
+                                        	    fieldLabel: loginUserLanguageResource.printAdLogs,
+                                        	    name: 'operationMaintenance.printAdLog',
+                                        	    id: 'operationMaintenance_printAdLog_Id',
+                                        	    checked: false
     				                        }
     				                    ]
     				                }]
@@ -1105,7 +1010,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         			border: false,
 	        		tabPosition: 'left',
 	        		items:[{
-	        			title: '项目标签',
+	        			title: loginUserLanguageResource.projectTag,
 	        			id:'OperationMaintenanceDeviceTypeMaintenancePanel_Id',
 	        			iconCls: 'check3',
 	        			layout: 'border',
@@ -1192,14 +1097,14 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	    	    		}],
 	        		    items: [{
 	        		        region: 'west',
-	        		        title: '设备类型列表',
+	        		        title: loginUserLanguageResource.deviceTypeList,
 	        		        width: '45%',
 	        		        layout: 'fit',
 	        		        collapsible: true,
 	        		        id: 'OperationMaintenanceDeviceTypeMaintenanceListPanel_Id'
 	        		    }, {
 	        		        region: 'center',
-	        		        title: '显示内容配置',
+	        		        title: loginUserLanguageResource.displayContentConfig,
 	        		        id: 'OperationMaintenanceDeviceTypeContentConfigPanel_Id',
 	        		        layout: 'border',
 	        		        bodyStyle: 'background-color:#ffffff;',
@@ -1222,7 +1127,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				            // 第一个 FieldSet
 	                                    {
 	                                        xtype: 'fieldset',
-	                                        title: '实时监控模块',
+	                                        title: loginUserLanguageResource.realtimeMonitoringModule,
 	                                        layout: 'column',
 	                                        defaults: {
 	                                            layout: 'form',
@@ -1233,7 +1138,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        items: [{
 	                                            items: [{
 	                                            	    xtype: 'checkboxfield',
-	                                            	    fieldLabel: '工况诊断统计饼图',
+	                                            	    fieldLabel: loginUserLanguageResource.FESResultStatisticsPieChart,
 	                                            	    name: 'calculationModel.showRealtimeFESDiagramStatPie',
 	                                            	    id: 'calculationModel_showRealtimeFESDiagramStatPie_Id',
 	                                            	    checked: false
@@ -1241,7 +1146,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				                }, {
 	                                            items: [{
 	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: '通信状态统计饼图',
+	                                        	    fieldLabel: loginUserLanguageResource.commStatusStatisticsPieChart,
 	                                        	    name: 'calculationModel.showRealtimeCommStatusStatPie',
 	                                        	    id: 'calculationModel_showRealtimeCommStatusStatPie_Id',
 	                                        	    checked: false
@@ -1249,7 +1154,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				                }, {
 	                                            items: [{
 	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: '运行状态统计饼图',
+	                                        	    fieldLabel: loginUserLanguageResource.runStatusStatisticsPieChart,
 	                                        	    name: 'calculationModel.showRealtimeRunStatusStatPie',
 	                                        	    id: 'calculationModel_showRealtimeRunStatusStatPie_Id',
 	                                        	    checked: false
@@ -1257,7 +1162,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				                }]
 	        				            },{
 	                                        xtype: 'fieldset',
-	                                        title: '历史查询模块',
+	                                        title: loginUserLanguageResource.historyQueryModule,
 	                                        layout: 'column',
 	                                        defaults: {
 	                                            layout: 'form',
@@ -1268,7 +1173,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        items: [{
 	                                            items: [{
 	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: '工况诊断统计饼图',
+	                                        	    fieldLabel: loginUserLanguageResource.FESResultStatisticsPieChart,
 	                                        	    name: 'calculationModel.showHistoryFESDiagramStatPie',
 	                                        	    id: 'calculationModel_showHistoryFESDiagramStatPie_Id',
 	                                        	    checked: false
@@ -1276,7 +1181,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				                }, {
 	                                            items: [{
 	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: '通信状态统计饼图',
+	                                        	    fieldLabel: loginUserLanguageResource.commStatusStatisticsPieChart,
 	                                        	    name: 'calculationModel.showHistoryCommStatusStatPie',
 	                                        	    id: 'calculationModel_showHistoryCommStatusStatPie_Id',
 	                                        	    checked: false
@@ -1284,7 +1189,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				                }, {
 	                                            items: [{
 	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: '运行状态统计饼图',
+	                                        	    fieldLabel: loginUserLanguageResource.runStatusStatisticsPieChart,
 	                                        	    name: 'calculationModel.showHistoryRunStatusStatPie',
 	                                        	    id: 'calculationModel_showHistoryRunStatusStatPie_Id',
 	                                        	    checked: false
@@ -1292,7 +1197,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				                }]
 	        				            },{
 	                                        xtype: 'fieldset',
-	                                        title: '故障查询模块',
+	                                        title: loginUserLanguageResource.alarmQueryModule,
 	                                        layout: 'column',
 	                                        defaults: {
 	                                            layout: 'form',
@@ -1349,7 +1254,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        	            }]
 	        		    }]
 	        		},{
-	        			title: '设备标签',
+	        			title: loginUserLanguageResource.deviceTag,
 	        			id:'OperationMaintenanceDeviceTabManagerTabPanel_Id',
 	        			iconCls: 'check3',
 	        			layout: 'border',
@@ -1512,14 +1417,14 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	            		}],
 	        			items:[{
 	        				region: 'west',
-	        				title: '实例列表',
+	        				title: loginUserLanguageResource.instanceList,
 	        				width:'45%',
 	        				layout: 'fit',
 	        				collapsible: true,
 	        				id:'OperationMaintenanceDeviceTabManangerPanel_Id'
 	        			},{
 	        				region: 'center',
-	        				title: '显示内容配置',
+	        				title: loginUserLanguageResource.displayContentConfig,
 	        				id:'OperationMaintenanceDeviceTabManagerContentConfigPanel_Id',
 	        				layout: 'border',
 	        			    bodyStyle: 'background-color:#ffffff;',
@@ -1542,7 +1447,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				            // 第一个 FieldSet
 	                                    {
 	                                        xtype: 'fieldset',
-	                                        title: '实时监控模块',
+	                                        title: loginUserLanguageResource.realtimeMonitoringModule,
 	                                        layout: 'column',
 	                                        defaults: {
 	                                            layout: 'form',
@@ -1595,7 +1500,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				                }]
 	        				            },{
 	                                        xtype: 'fieldset',
-	                                        title: '历史查询模块',
+	                                        title: loginUserLanguageResource.historyQueryModule,
 	                                        layout: 'column',
 	                                        defaults: {
 	                                            layout: 'form',
@@ -1630,7 +1535,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				                }]
 	        				            },{
 	                                        xtype: 'fieldset',
-	                                        title: '主设备模块',
+	                                        title: loginUserLanguageResource.primaryDeviceModule,
 	                                        layout: 'column',
 	                                        defaults: {
 	                                            layout: 'form',
@@ -2029,26 +1934,10 @@ function initOemConfigInfo(configFile){
 
 function initOemOperationConfigInfo(configFile){
 	Ext.getCmp('operationMaintenance_LogonLanguageCombox_Id').setRawValue(configFile.others.loginLanguage);
-	if(configFile.others.showLogo){
-    	Ext.getCmp('operationMaintenance_showLogo1_Id').setValue(true);
-    }else{
-    	Ext.getCmp('operationMaintenance_showLogo0_Id').setValue(true);
-    }
-	if(configFile.others.printLog){
-    	Ext.getCmp('operationMaintenance_printLog1_Id').setValue(true);
-    }else{
-    	Ext.getCmp('operationMaintenance_printLog0_Id').setValue(true);
-    }
-	if(configFile.others.printAdLog){
-    	Ext.getCmp('operationMaintenance_printAdLog1_Id').setValue(true);
-    }else{
-    	Ext.getCmp('operationMaintenance_printAdLog0_Id').setValue(true);
-    }
-	if(configFile.others.printExceptionLog){
-    	Ext.getCmp('operationMaintenance_printExceptionLog1_Id').setValue(true);
-    }else{
-    	Ext.getCmp('operationMaintenance_printExceptionLog0_Id').setValue(true);
-    }
+	Ext.getCmp('operationMaintenance_showLogo_Id').setValue(configFile.others.showLogo);
+	Ext.getCmp('operationMaintenance_printLog_Id').setValue(configFile.others.printLog);
+	Ext.getCmp('operationMaintenance_printAdLog_Id').setValue(configFile.others.printAdLog);
+	Ext.getCmp('operationMaintenance_printExceptionLog_Id').setValue(configFile.others.printExceptionLog);
 	
 	if(configFile.others.timeEfficiencyUnit==1){
     	Ext.getCmp('operationMaintenance_timeEfficiencyUnit1_Id').setValue(true);
@@ -2058,11 +1947,7 @@ function initOemOperationConfigInfo(configFile){
 	Ext.getCmp('operationMaintenance_resourceMonitoringSaveData_Id').setValue(configFile.others.resourceMonitoringSaveData);
 	Ext.getCmp('operationMaintenance_exportLimit_Id').setValue(configFile.others.exportLimit);
 	
-	if(configFile.others.simulateAcqEnable){
-    	Ext.getCmp('operationMaintenance_simulateAcqEnable1_Id').setValue(true);
-    }else{
-    	Ext.getCmp('operationMaintenance_simulateAcqEnable0_Id').setValue(true);
-    }
+	Ext.getCmp('operationMaintenance_simulateAcqEnable_Id').setValue(configFile.others.simulateAcqEnable);
 	Ext.getCmp('operationMaintenance_sendCycle_Id').setValue(configFile.others.sendCycle);
 	
 	Ext.getCmp('operationMaintenance_databaseMaintenanceCycle_Id').setValue(configFile.databaseMaintenance.cycle);

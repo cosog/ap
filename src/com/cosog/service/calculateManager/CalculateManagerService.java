@@ -543,7 +543,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String finalSql="";
 		String sqlAll="";
 		String tableName="tbl_acqdata_latest";
-		String deviceTableName="tbl_device";
+		String deviceTableName="viw_device";
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		columns = "["
@@ -599,7 +599,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String finalSql="";
 		String sqlAll="";
 		String tableName="tbl_srpacqdata_latest";
-		String deviceTableName="tbl_device";
+		String deviceTableName="viw_device";
 		StringBuffer result_json = new StringBuffer();
 		if("1".equals(calculateType) || "3".equals(calculateType)){
 			tableName="tbl_srpacqdata_latest";

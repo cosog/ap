@@ -368,3 +368,9 @@ BEGIN
   SELECT SEQ_VIDEOKEY.nextval INTO :new.id FROM dual;
 END;
 /
+
+CREATE OR REPLACE TRIGGER trg_b_tabmanager_device_i   before  insert on tbl_tabmanager_device FOR EACH ROW
+BEGIN
+  SELECT seq_tabmanager_device.nextval INTO :new.id FROM dual;
+end;
+/

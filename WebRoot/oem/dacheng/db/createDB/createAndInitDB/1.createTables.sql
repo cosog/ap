@@ -9,6 +9,7 @@ create table TBL_DEVICETYPEINFO
   name_zh_cn VARCHAR2(100),
   name_en    VARCHAR2(100),
   name_ru    VARCHAR2(100),
+  config     VARCHAR2(4000),
   status     NUMBER(1)
 )
 tablespace AP_DATA
@@ -20,6 +21,32 @@ tablespace AP_DATA
   )
 /
 alter table TBL_DEVICETYPEINFO  add constraint PK_TABINFO primary key (ID)
+/
+
+/*==============================================================*/
+/* Table: tbl_tabmanager_device                                    */
+/*==============================================================*/
+create table tbl_tabmanager_device
+(
+  id            NUMBER(10) not null,
+  name          VARCHAR2(200) not null,
+  calculatetype NUMBER(2) default 0,
+  config        VARCHAR2(4000),
+  sort          NUMBER(10)
+)
+tablespace AP_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+/
+alter table tbl_tabmanager_device add constraint PK_CALCULATIONMODEL primary key (ID);
 /
 
 /*==============================================================*/

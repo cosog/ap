@@ -79,7 +79,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String reportTemplateCode="";
 		String reportUnitId="";
 		int reportUnitCalculateType=0;
-		String deviceTableName="tbl_device";
+		String deviceTableName="viw_device";
 		String viewName="VIW_DAILYCALCULATIONDATA";
 		String calTotalTableName="";
 		ReportTemplate.Template template=null;
@@ -452,7 +452,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String reportTemplateCode="";
 			String reportUnitId="";
 			int reportUnitCalculateType=0;
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			int headerRowCount=0;
@@ -914,7 +914,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				timeEfficiencyZoom=100;
 			}
 			
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String calTotalTableName="";
 			
 			String wellListSql="select t.id,t.deviceName,t3.id as unitid,t3.singlewellrangereporttemplate,t.calculateType,t3.calculateType as reportUnitCalculateType,"
@@ -1372,7 +1372,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String reportTemplateCode="";
 		String reportUnitId="";
 		int reportUnitCalculateType=0;
-		String deviceTableName="tbl_device";
+		String deviceTableName="viw_device";
 		String viewName="VIW_TIMINGCALCULATIONDATA";
 		String calTotalTableName="";
 		
@@ -1795,7 +1795,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String reportTemplateCode="";
 			String reportUnitId="";
 			int reportUnitCalculateType=0;
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String viewName="VIW_TIMINGCALCULATIONDATA";
 			String calTotalTableName="";
 			
@@ -2282,7 +2282,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			String fileName=deviceTypeName+"班报表-"+reportDate;
 			
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String calTotalTableName="";
 			String wellListSql="select t.id,t.deviceName,t3.id as unitid,t3.singlewelldailyreporttemplate,t.calculateType,t3.calculateType as reportUnitCalculateType,"
 					+ " t5.protocol"
@@ -2776,7 +2776,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String reportUnitId="";
 		String reportTemplateCode="";
 		int reportUnitCalculateType=0;
-		String deviceTableName="tbl_device";
+		String deviceTableName="viw_device";
 		String viewName="VIW_DAILYCALCULATIONDATA";
 		String calTotalTableName="";
 		
@@ -3168,7 +3168,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String reportUnitId="";
 			String reportTemplateCode="";
 			int reportUnitCalculateType=0;
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			
@@ -3632,7 +3632,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			Gson gson =new Gson();
 			java.lang.reflect.Type type=null;
 			
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			
@@ -4124,7 +4124,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		
 		String graphicSetTableName="tbl_devicegraphicset";
-		String deviceTableName="tbl_device";
+		String deviceTableName="viw_device";
 		String tableName="TBL_DAILYCALCULATIONDATA";
 		String viewName="VIW_DAILYCALCULATIONDATA";
 		String calTotalTableName="";
@@ -4478,7 +4478,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String graphicSet="{}";
 		
 		String graphicSetTableName="tbl_devicegraphicset";
-		String deviceTableName="tbl_device";
+		String deviceTableName="viw_device";
 		String tableName="TBL_TIMINGCALCULATIONDATA";
 		String viewName="VIW_TIMINGCALCULATIONDATA";
 		String calTotalTableName="";
@@ -4838,7 +4838,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String reportTemplateCode="";
 		String reportUnitId="";
 		int reportUnitCalculateType=0;
-		String deviceTableName="tbl_device";
+		String deviceTableName="viw_device";
 		String tableName="TBL_DAILYCALCULATIONDATA";
 		String viewName="VIW_DAILYCALCULATIONDATA";
 		String calTotalTableName="";
@@ -5549,7 +5549,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	public String getDeviceList(String orgId,String deviceName,String deviceType,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		String tableName="tbl_device";
+		String tableName="viw_device";
 		String sql="select t.id,t.deviceName,t.calculateType"
 				+ " from "+tableName+" t "
 				+ " where  t.orgid in ("+orgId+")";

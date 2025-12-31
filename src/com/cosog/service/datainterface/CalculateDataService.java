@@ -770,7 +770,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
-		String sql="select t.id,t.devicename from tbl_device t where t.calculatetype=1";
+		String sql="select t.id,t.devicename from viw_device t where t.calculatetype=1";
 		String fesDiagramSql="select t2.id, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 				+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
@@ -782,25 +782,25 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.calcProducingfluidLevel,t.levelDifferenceValue,"
 				+ "t.submergence,"
 				+ "t.rpm "
-				+ " from tbl_srpacqdata_hist t,tbl_device t2 "
+				+ " from tbl_srpacqdata_hist t,viw_device t2 "
 				+ " where t.deviceId=t2.id "
 				+ " and t2.calculateType=1"
 				+ " and t.fesdiagramacqtime between to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 ";
 		String commStatusSql="select t2.id, t2.devicename,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange"
-				+ " from tbl_srpacqdata_hist t,tbl_device t2 "
+				+ " from tbl_srpacqdata_hist t,viw_device t2 "
 				+ " where t.deviceId=t2.id "
 				+ " and t2.calculateType=1"
 				+ " and t.acqTime=( select max(t3.acqTime) from tbl_srpacqdata_hist t3 where t3.deviceId=t.deviceId and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		String runStatusSql="select t2.id, t2.devicename,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
-				+ " from tbl_srpacqdata_hist t,tbl_device t2 "
+				+ " from tbl_srpacqdata_hist t,viw_device t2 "
 				+ " where t.deviceId=t2.id "
 				+ " and t2.calculateType=1"
 				+ " and t.acqTime=( select max(t3.acqTime) from tbl_srpacqdata_hist t3 where t3.deviceId=t.deviceId and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		String totalStatusSql="select t2.id,t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
-				+ " from tbl_srpdailycalculationdata t,tbl_device t2 "
+				+ " from tbl_srpdailycalculationdata t,viw_device t2 "
 				+ " where t.deviceId=t2.id "
 				+ " and t2.calculateType=1"
 				+ " and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
@@ -1176,7 +1176,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getWattingCount());
 		
 		String sql="select t.id,t.devicename,t3.singleWellDailyReportTemplate,t2.unitid "
-				+ " from tbl_device t "
+				+ " from viw_device t "
 				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id "
 				+ " where 1=1"
@@ -1223,7 +1223,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
-		String sql="select t.id,t.deviceName from tbl_device t where t.calculateType=2 ";
+		String sql="select t.id,t.deviceName from viw_device t where t.calculateType=2 ";
 		String rpmSql="select t2.id, "
 				+ "to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
@@ -1232,23 +1232,23 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ "t.pumpeff,t.pumpeff1,t.pumpeff2,"
 				+ "t.systemefficiency,t.energyper100mlift,"
 				+ "t.submergence "
-				+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
+				+ " from tbl_pcpacqdata_hist t,viw_device t2 "
 				+ " where t.deviceId=t2.id "
 				+ " and t2.calculateType=2"
 				+ " and t.acqtime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 ";
 		String commStatusSql="select t2.id, t2.deviceName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange "
-				+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
+				+ " from tbl_pcpacqdata_hist t,viw_device t2 "
 				+ " where t.deviceId=t2.id and t2.calculateType=2 and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.deviceId=t.deviceId and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		
 		String runStatusSql="select t2.id, t2.deviceName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
-				+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
+				+ " from tbl_pcpacqdata_hist t,viw_device t2 "
 				+ " where t.deviceId=t2.id and t2.calculateType=2 and t.acqTime=( select max(t3.acqTime) from tbl_pcpacqdata_hist t3 where t3.deviceId=t.deviceId and t3.commstatus=1 and t3.acqTime between to_date('"+date+"','yyyy-mm-dd') +"+offsetHour+"/24 and  to_date('"+date+"','yyyy-mm-dd')+"+offsetHour+"/24+1 )";
 		
 		String totalStatusSql="select t2.id,t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
-				+ " from tbl_pcpdailycalculationdata t,tbl_device t2 "
+				+ " from tbl_pcpdailycalculationdata t,viw_device t2 "
 				+ " where t.deviceId=t2.id and t2.calculateType=2"
 				+ " and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 		if(StringManagerUtils.isNotNull(deviceIds)){
@@ -1524,7 +1524,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getWattingCount());
 		
 		String sql="select t.id,t.deviceName,t3.singleWellDailyReportTemplate,t2.unitid "
-				+ " from tbl_device t "
+				+ " from viw_device t "
 				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
 				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id "
 				+ " where t.calculateType=2"

@@ -113,7 +113,7 @@ public class DatabaseMaintenanceTask {
 		String lastDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(currentDate),-1);
 		
 		String sql="select t2.id,t2.calculatetype,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime "
-				+ " from tbl_device t2 "
+				+ " from viw_device t2 "
 				+ " left outer join TBL_ACQDATA_LATEST t on t.deviceid=t2.id "
 				+ " where 1=1 "
 				+ " order by t2.devicetype,t2.sortnum,t2.id";

@@ -2139,7 +2139,7 @@ end prd_update_auxiliarydevice;
 CREATE OR REPLACE PROCEDURE prd_update_device ( v_recordId in NUMBER,
                                                     v_deviceName    in varchar2,
                                                     v_applicationScenarios    in NUMBER,
-                                                    v_calculateType   in NUMBER,
+                                                    v_deviceTabInstance   in varchar2,
                                                     v_instance    in varchar2,
                                                     v_displayInstance    in varchar2,
                                                     v_reportInstance    in varchar2,
@@ -2173,7 +2173,7 @@ begin
           Update tbl_device t
            Set t.devicename=v_deviceName,
                t.applicationscenarios=v_applicationScenarios,
-               t.calculatetype=v_calculateType,
+               t.calculatetype=(select t2.id from tbl_tabmanager_device t2 where t2.name=v_deviceTabInstance and rownum=1),
                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
                t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),

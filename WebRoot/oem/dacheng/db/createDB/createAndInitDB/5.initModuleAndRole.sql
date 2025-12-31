@@ -1,107 +1,107 @@
 /*==============================================================*/
 /* 初始化TBL_DEVICETYPEINFO数据                                          */
 /*==============================================================*/
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (1, 0, 0, '设备类型根节点', 'Root', 'Корневой узел', 1);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (1, 0, 0, '设备类型根节点', 'Root', 'Корневой узел', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (2, 1, 1, '举升类型', 'Lifting type', 'Тип подъёма', 1);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (2, 1, 1, '举升类型', 'Lifting type', 'Тип подъёма', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (3, 2, 10, '抽油机', 'SRP', 'Насос.', 1);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (3, 2, 10, '抽油机', 'SRP', 'Насос.', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (4, 2, 11, '螺杆泵', 'PCP', 'Винтовой насос', 1);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (4, 2, 11, '螺杆泵', 'PCP', 'Винтовой насос', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (5, 2, 12, '电潜泵', 'ESP', 'электронасос', 1);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (5, 2, 12, '电潜泵', 'ESP', 'электронасос', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (6, 2, 13, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (6, 2, 13, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (7, 2, 14, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (7, 2, 14, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (8, 2, 15, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (8, 2, 15, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (9, 2, 16, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (9, 2, 16, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (10, 2, 17, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (10, 2, 17, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (11, 2, 18, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (11, 2, 18, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (12, 2, 19, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (12, 2, 19, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (13, 1, 2, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (13, 1, 2, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (14, 13, 20, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (14, 13, 20, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (15, 13, 21, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (15, 13, 21, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (16, 13, 22, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (16, 13, 22, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (17, 13, 23, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (17, 13, 23, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (18, 13, 24, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (18, 13, 24, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (19, 13, 25, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (19, 13, 25, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (20, 13, 26, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (20, 13, 26, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (21, 13, 27, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (21, 13, 27, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (22, 13, 28, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (22, 13, 28, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (23, 13, 29, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (23, 13, 29, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (24, 1, 3, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (24, 1, 3, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (25, 24, 30, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (25, 24, 30, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (26, 24, 31, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (26, 24, 31, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (27, 24, 32, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (27, 24, 32, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (28, 24, 33, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (28, 24, 33, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (29, 24, 34, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (29, 24, 34, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (30, 24, 35, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (30, 24, 35, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (31, 24, 36, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (31, 24, 36, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (32, 24, 37, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (32, 24, 37, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (33, 24, 38, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (33, 24, 38, '未命名', null, null, null, 0);
 
-insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, STATUS)
-values (34, 24, 39, '未命名', null, null, 0);
+insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
+values (34, 24, 39, '未命名', null, null, null, 0);
 
 /*==============================================================*/
 /* 初始化tbl_module数据                                          */
@@ -533,3 +533,9 @@ values (1, 'system', '3c4c1fed0fb2b548f88eab0fcfe0b425', 'system', null, null, 1
 
 insert into TBL_USER (USER_NO, USER_ID, USER_PWD, USER_NAME, USER_IN_EMAIL, USER_PHONE, USER_TYPE, USER_ORGID, USER_REGTIME, USER_QUICKLOGIN, USER_ENABLE, USER_RECEIVESMS, USER_RECEIVEMAIL, USER_LANGUAGE)
 values (2, 'admin', 'dbe745d59479077a7d5401c32e36caf1', 'admin', null, null, 1, 1, sysdate, 0, 1, 0, 0, 1);
+
+/*==============================================================*/
+/* 初始化tbl_tabmanager_device数据                                          */
+/*==============================================================*/
+insert into TBL_TABMANAGER_DEVICE (ID, NAME, CALCULATETYPE, CONFIG, SORT)
+values (1, '电潜泵应用', 0, '{"DeviceRealTimeMonitoring":{"WellboreAnalysis":false,"SurfaceAnalysis":false,"TrendCurve":true,"DynamicData":true,"DeviceControl":true,"DeviceInformation":true},"DeviceHistoryQuery":{"TrendCurve":true,"TiledDiagram":false,"DiagramOverlay":false},"PrimaryDevice":{"AdditionalInformation":false,"AuxiliaryDevice":false,"VideoConfig":false,"CalculateDataConfig":false,"FSDiagramConstruction":false,"SystemParameterConfig":false}}', 1);

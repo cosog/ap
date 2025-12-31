@@ -425,7 +425,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		int dataPage=1;
 		try{
 			String tableName="tbl_acqdata_latest";
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String calTableName="tbl_srpacqdata_latest";
 			
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -2014,7 +2014,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			int maxAuxiliaryDeviceCount=0;
 			
 			String tableName="tbl_acqdata_latest";
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String calTableName="tbl_srpacqdata_latest";
 			
 			String sql="select t.id,t.devicename,"//0~1
@@ -6029,7 +6029,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public String getCalculateTypeDeviceCount(String orgId,String deviceType,String calculateType){
 		int deviceCount=0;
 		try{
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			
 			String sql="select count(1) from "+deviceTableName+" t "
 					+ " where  t.orgid in ("+orgId+") ";

@@ -4921,7 +4921,7 @@ public class MemoryDataManagerTask {
 					+"  t.calcProducingfluidLevel, "//30
 					+"  t.levelDifferenceValue, "//31
 					+ " t.submergence "//32
-					+ " from tbl_srpacqdata_hist t,tbl_device t2 "
+					+ " from tbl_srpacqdata_hist t,viw_device t2 "
 					+ " where t.deviceid=t2.id  "
 					+ " and t2.calculateType=1"
 					+ " and t.resultstatus=1"

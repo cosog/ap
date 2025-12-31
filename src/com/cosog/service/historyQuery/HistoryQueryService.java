@@ -236,7 +236,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int dataPage=1;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String tableName="tbl_acqdata_latest";
 			String calTableName="tbl_srpacqdata_latest";
 			
@@ -1864,7 +1864,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			String hisTableName="tbl_acqdata_hist";
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String calAndInputTableName="tbl_srpacqdata_hist";
 			
 			String vacuateTableName="tbl_acqdata_vacuate";
@@ -1912,7 +1912,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String sql="select t2.id,t.devicename,"//0~1
 					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"//2
 					+ "t2.commstatus,decode(t2.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
-					+ "decode(t2.runstatus,null,2,t2.runstatus) as runStatusCalValue,t.calculateType,"
+					+ "decode(t2.runstatus,null,2,t2.runstatus) as runStatusCalValue,"
+					+ "t.calculateType,"
 					+ "t2.acqdata";
 			if(displayInstanceOwnItem!=null && userInfo!=null && protocol!=null){
 				String displayItemSql="select t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
@@ -2889,7 +2890,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String field="id,deviceName,acqTime,commStatusName";
 			
 		    String hisTableName="tbl_acqdata_hist";
-			String deviceTableName="tbl_device";
+			String deviceTableName="viw_device";
 			String calAndInputTableName="tbl_srpacqdata_hist";
 			
 			String vacuateTableName="tbl_acqdata_vacuate";

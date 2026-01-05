@@ -236,7 +236,7 @@ function websocketOnMessage(evt) {
     
     if (data.functionCode.toUpperCase() == "adExitAndDeviceOffline".toUpperCase()) { //ad退出，所有设备离线
         if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
-            var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
+            var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab()!=undefined?Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id:'';
             if(statTabActiveId=="RealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
 				loadAndInitFESdiagramResultStat(true);
 			}else if(statTabActiveId=="RealTimeMonitoringStatGraphPanel_Id"){
@@ -710,7 +710,8 @@ function websocketClose(websocket) {
 function getDeviceFESDiagramResultTotal() {
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
     var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-    var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
+    var tabPanel=Ext.getCmp("RealTimeMonitoringStatTabPanel");
+    var statTabActiveId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
     if (statTabActiveId == "RealTimeMonitoringFESdiagramResultStatGraphPanel_Id") {
         Ext.Ajax.request({
             method: 'POST',
@@ -753,7 +754,8 @@ function getDeviceFESDiagramResultTotal() {
 function getDeviceCommStatusTotal() {
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
     var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-    var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
+    var tabPanel=Ext.getCmp("RealTimeMonitoringStatTabPanel");
+    var statTabActiveId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
     if (statTabActiveId == "RealTimeMonitoringStatGraphPanel_Id") {
         Ext.Ajax.request({
             method: 'POST',
@@ -807,7 +809,10 @@ function getDeviceCommStatusTotal() {
 function getDeviceRunStatusTotal() {
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
     var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
-    var statTabActiveId = Ext.getCmp("RealTimeMonitoringStatTabPanel").getActiveTab().id;
+    
+    var tabPanel=Ext.getCmp("RealTimeMonitoringStatTabPanel");
+    var statTabActiveId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
+    
     if (statTabActiveId == "RealTimeMonitoringRunStatusStatGraphPanel_Id") {
         Ext.Ajax.request({
             method: 'POST',

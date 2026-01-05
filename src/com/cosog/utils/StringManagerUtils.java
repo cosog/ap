@@ -4847,4 +4847,17 @@ public class StringManagerUtils {
     	int r=bitArrayToInt(bitArr);
     	return r;
     }
+    
+    //数组翻转
+    public static void reverseArray(Object[] arr) {
+        int left = 0;
+        int right = arr.length - 1;
+        while (left < right) {
+        	Object temp = arr[left];
+            arr[left] = arr[right];
+            arr[right] = temp;
+            left++;
+            right--;
+        }
+    }
 }

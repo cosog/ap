@@ -826,7 +826,9 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     	html: '&nbsp;'
                     }]
             	},
-            	items: deviceAdditionalInformationTabPanelItems,
+//            	items: deviceAdditionalInformationTabPanelItems,
+            	items:[],
+        		hidden:true,
             	listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         				if(oldCard!=undefined){
@@ -883,8 +885,8 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
 
 function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationScenarios,calculateType,isNew){
 	var tabPanel = Ext.getCmp("DeviceAdditionalInformationTabpanel_Id");
-	var activeId=tabPanel.getActiveTab().id;
-	var showInfo=tabPanel.getActiveTab().title;
+	var activeId=tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
+	var showInfo=tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().title:'';
 	
 	if(isNotVal(deviceName)){
 		showInfo="【<font color=red>"+deviceName+"</font>】"+showInfo+"&nbsp;"
@@ -5825,7 +5827,7 @@ var DevicePumpingUnitDetailedInformationHandsontableHelper = {
 
 function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 	var tabPanel = Ext.getCmp("DeviceAdditionalInformationTabpanel_Id");
-	var activeId = tabPanel.getActiveTab().id;
+	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	var activeChange=false;
 	
 	var calculateType=deviceTabInstanceInfo.calculateType==undefined?0:deviceTabInstanceInfo.calculateType;
@@ -5910,8 +5912,8 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 	}
 	
 	
-	var activeId = tabPanel.getActiveTab().id;
-	if(activeId=='DeviceIntelligentFrequencyConversionInfoPanel_Id' || activeId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
+	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
+	if(activeId=='DeviceIntelligentFrequencyConversionInfoPanel_Id' || activeId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id' || activeId==''){
 		tabPanel.setActiveTab(0);
 	}
 	
@@ -5925,141 +5927,6 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 			deviceCalculateDataTabPanel.remove("PumpingInfoPanel_Id");
 		}
 	}
-	
-	
-	
-//	// 获取所有标签页
-//    var tabs = tabPanel.items.items;
-//	// 遍历并控制显示/隐藏
-//    tabs.forEach(function(tab) {
-//        var tabId = tab.getId();
-//        var showStatus=false;
-//        if(tabId=='DeviceAdditionalInfoPanel_Id'){
-//        	showStatus=showAdditionalInformation;
-//        }else if(tabId=='DeviceAuxiliaryDevicePanel_Id'){
-//        	showStatus=showAuxiliaryDevice;
-//        }else if(tabId=='DeviceVideoInfoPanel_Id'){
-//        	showStatus=showVideoConfig;
-//        }else if(tabId=='DeviceCalculateDataInfoPanel_Id'){
-//        	showStatus=showCalculateDataConfig;
-//        	
-//        	var deviceCalculateDataTabPanel=Ext.getCmp("DeviceCalculateDataInfoPanel_Id");
-//        	if(calculateType==1){
-//        		var PumpingInfoPanel = Ext.getCmp('PumpingInfoPanel_Id');
-//        		if (!PumpingInfoPanel.isVisible()) {
-//        			PumpingInfoPanel.show();
-//                }
-//        	}else if(calculateType==2){
-//        		var PumpingInfoPanel = Ext.getCmp('PumpingInfoPanel_Id');
-//        		if (PumpingInfoPanel.isVisible()) {
-//        			PumpingInfoPanel.hide();
-//                }
-//        	}else{
-//        		showStatus=false;
-//        	}
-//        	
-//        	if(activeId=='DeviceCalculateDataInfoPanel_Id'){
-//        		if(!deviceCalculateDataTabPanel.getActiveTab().isVisible()){
-//                    var firstVisibleTab = deviceCalculateDataTabPanel.items.find(function(item) {
-//                        return item.isVisible();
-//                    });
-//                    if(firstVisibleTab){
-//                    	deviceCalculateDataTabPanel.setActiveTab(firstVisibleTab);
-//                    }
-//                }
-//        	}
-//        }else if(tabId=='DeviceFSDiagramConstructionInfoPanel_Id'){
-//        	showStatus=showFSDiagramConstruction;
-//        	if(calculateType==0){
-//        		showStatus=false;
-//        	}
-//        }else if(tabId=='DeviceIntelligentFrequencyConversionInfoPanel_Id'){
-//    		
-//    	}else if(tabId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
-//    		
-//    	}else if(tabId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
-//    		showStatus=showSystemParameterConfig;
-//    	}
-//        
-//        // 假设 permissions 对象包含标签页的访问权限
-//        if(showStatus){
-//        	if(tab.hidden){
-//        		tab.show(false);
-//        	}
-//            
-//        }else{
-//        	if(!tab.hidden){
-//        		tab.hide();
-//        	}
-//        }
-//    });
-    
-    // 如果当前激活的标签页被隐藏，切换到第一个可见的标签页
-//    if (!tabPanel.getActiveTab().isVisible()) {
-//        var firstVisibleTab = tabPanel.items.find(function(item) {
-//            return item.isVisible();
-//        });
-//        if (firstVisibleTab) {
-//            tabPanel.setActiveTab(firstVisibleTab);
-//        }
-//    }
-	
-    
-//	
-//	
-//	
-//	
-//	if(calculateType==1 || calculateType==2){
-//		
-//		var DeviceCalculateDataInfoPanel = tabPanel.getComponent("DeviceCalculateDataInfoPanel_Id");
-//		var DeviceFSDiagramConstructionInfoPanel = tabPanel.getComponent("DeviceFSDiagramConstructionInfoPanel_Id");
-//		
-//		if(calculateType==1 && DeviceFSDiagramConstructionInfoPanel==undefined){
-//			tabPanel.insert(4,deviceAdditionalInformationTabPanelItems[4]);
-//		}else if(calculateType==2 && DeviceFSDiagramConstructionInfoPanel!=undefined){
-//			if(activeId=="DeviceFSDiagramConstructionInfoPanel_Id"){
-//				tabPanel.setActiveTab("DeviceAdditionalInfoPanel_Id");
-//			}
-//			tabPanel.remove("DeviceFSDiagramConstructionInfoPanel_Id");
-//		}
-//		
-//		if(DeviceCalculateDataInfoPanel==undefined){
-//			tabPanel.insert(3,deviceAdditionalInformationTabPanelItems[3]);
-//			if(calculateType==2){//转速计产时，删除抽油机信息
-//				var deviceCalculateDataTabPanel=Ext.getCmp("DeviceCalculateDataInfoPanel_Id");
-//				var pumpingInfoPanel = deviceCalculateDataTabPanel.getComponent("PumpingInfoPanel_Id");
-//				if(pumpingInfoPanel!=undefined){
-//					deviceCalculateDataTabPanel.setActiveTab("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id");
-//					deviceCalculateDataTabPanel.remove("PumpingInfoPanel_Id");
-//				}
-//			}
-//		}else{
-//			var deviceCalculateDataTabPanel=Ext.getCmp("DeviceCalculateDataInfoPanel_Id");
-//			var pumpingInfoPanel = deviceCalculateDataTabPanel.getComponent("PumpingInfoPanel_Id");
-//			if(calculateType==1 && pumpingInfoPanel==undefined){
-//				deviceCalculateDataTabPanel.insert(1,deviceCalculateDataTabPanelItems[1]);
-//			}else if(calculateType==2 && pumpingInfoPanel!=undefined){
-//				deviceCalculateDataTabPanel.remove("PumpingInfoPanel_Id");
-//			}
-//		}
-//	}else{
-//		calculateType=0;
-//		var DeviceCalculateDataInfoPanel = tabPanel.getComponent("DeviceCalculateDataInfoPanel_Id");
-//		var DeviceFSDiagramConstructionInfoPanel = tabPanel.getComponent("DeviceFSDiagramConstructionInfoPanel_Id");
-//		
-//		if(DeviceCalculateDataInfoPanel!=undefined || DeviceFSDiagramConstructionInfoPanel!=undefined){
-//			if(activeId=="DeviceCalculateDataInfoPanel_Id" || activeId=="DeviceFSDiagramConstructionInfoPanel_Id"){
-//				tabPanel.setActiveTab("DeviceAdditionalInfoPanel_Id");
-//			}
-//			
-//			if(DeviceCalculateDataInfoPanel!=undefined){
-//				tabPanel.remove("DeviceCalculateDataInfoPanel_Id");
-//			}
-//    		if(DeviceFSDiagramConstructionInfoPanel!=undefined){
-//				tabPanel.remove("DeviceFSDiagramConstructionInfoPanel_Id");
-//			}
-//		}
-//	}
 }
 
 function getDeviceTabInstanceInfo(name){

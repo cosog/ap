@@ -19,7 +19,10 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-        	Ext.getCmp("HistoryQueryDataInfoPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("HistoryQueryDataInfoPanel_Id")!=undefined){
+        		Ext.getCmp("HistoryQueryDataInfoPanel_Id").getEl().unmask();
+        	}
+        	
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;

@@ -1411,7 +1411,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             		},
 //            		items: historyQueryCenterTabPanelItems,
             		items:[],
-            		hidden:true,
+//            		hidden:true,
             		listeners: {
             			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
             				if(oldCard!=undefined){

@@ -217,9 +217,10 @@ public class RealTimeMonitoringController extends BaseController {
 				orgId = "" + user.getUserOrgIds();
 			}
 		}
-
+		long t1=System.nanoTime();
 		json = realTimeMonitoringService.getDeviceOverview(orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user);
-	
+		long t2=System.nanoTime();
+		StringManagerUtils.printLog("获取实时监控设备列表耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -254,7 +255,10 @@ public class RealTimeMonitoringController extends BaseController {
 				orgId = "" + user.getUserOrgIds();
 			}
 		}
+		long t1=System.nanoTime();
 		dataPage = realTimeMonitoringService.getDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit,language);
+		long t2=System.nanoTime();
+		StringManagerUtils.printLog("获取实时监控设备列表页码耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
 		json="{\"success\":true,\"dataPage\":"+dataPage+"}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

@@ -1467,6 +1467,7 @@ public class DriverAPIController extends BaseController{
 		Map<String,String> acqDataMap=new LinkedHashMap<>();
 		
 		if(acqGroup!=null &&acqGroup.getAddr()!=null && protocol!=null && acqInstanceOwnItem!=null){
+			String acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
 			for(int i=0;i<acqGroup.getAddr().size();i++){
 				String acqItemHighLowByte=acqGroup.getHighLowByte()!=null?acqGroup.getHighLowByte().get(i):"";
 				for(int j=0;j<protocol.getItems().size();j++){
@@ -1479,7 +1480,13 @@ public class DriverAPIController extends BaseController{
 						DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(title);
 						String columnName=dataMappingColumn.getMappingColumn();
 						
-						if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null &&acqGroup.getValue().get(i).size()>0){
+//						if(protocol.getItems().get(j).getResolutionMode()==0 && acqProtocolType.startsWith("private-")){
+//							if(acqGroup.getValue()!=null && acqGroup.getValue().size()>i && acqGroup.getValue().get(i)!=null && acqGroup.getValue().get(i).size()>0){
+//								Collections.reverse(acqGroup.getValue().get(i));
+//							}
+//						}
+						
+						if(acqGroup.getValue()!=null && acqGroup.getValue().size()>i && acqGroup.getValue().get(i)!=null && acqGroup.getValue().get(i).size()>0){
 							value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
 						}
 						String rawValue=value;

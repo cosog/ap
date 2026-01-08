@@ -3,6 +3,7 @@ package com.cosog.task;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -817,32 +818,31 @@ public class ResourceMonitoringTask {
 
 	// Windows专用方法
 	private static long getOracleMemoryWindows() throws Exception {
-//	    Process process = Runtime.getRuntime().exec(
-//	        "wmic process where \"name like '%oracle%'\" get WorkingSetSize");
-	    
 	    Process process = Runtime.getRuntime().exec(
-	    	    new String[]{"powershell", "-Command", "Get-Process *oracle* | Select-Object WorkingSet"});
+	        new String[]{"powershell", "-Command", 
+	            "(Get-Process *oracle* | Measure-Object WorkingSet -Sum).Sum"});
 	    
+	    BufferedReader reader = new BufferedReader(
+	        new InputStreamReader(process.getInputStream()));
 	    
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+	    String line = reader.readLine();
+	    process.waitFor();
 	    
-	    long totalMemory = 0;
-	    String line;
-	    boolean firstLine = true;
-	    
-	    while ((line = reader.readLine()) != null) {
-	        if (!firstLine && !line.trim().isEmpty()) {
-	            try {
-	                totalMemory += Long.parseLong(line.trim());
-	            } catch (NumberFormatException e) {
-	                // 忽略
-	            }
+	    if (line != null) {
+	        String trimmed = line.trim().replace(",", "");
+	        
+	        // 解析为 int（可能会得到负值）
+	        int intValue = Integer.parseInt(trimmed);
+	        
+	        // 如果负值，转换为 long 正值
+	        if (intValue < 0) {
+	            return intValue & 0xFFFFFFFFL;
+	        } else {
+	            return intValue;
 	        }
-	        firstLine = false;
 	    }
 	    
-	    process.waitFor();
-	    return totalMemory;
+	    return 0;
 	}
 
 	// Linux专用方法
@@ -864,6 +864,9 @@ public class ResourceMonitoringTask {
 	                try {
 	                    // RSS是以KB为单位的，需要转换为字节
 	                    long memoryKB = Long.parseLong(parts[1]);
+	                    if(memoryKB<0){
+	                    	memoryKB=memoryKB & 0xFFFFFFFFL;
+	                    }
 	                    totalMemory += memoryKB * 1024;
 	                } catch (NumberFormatException e) {
 	                    // 忽略格式错误的行

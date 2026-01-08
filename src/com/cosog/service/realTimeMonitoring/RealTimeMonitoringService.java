@@ -477,6 +477,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String deviceTypeStatValue,
 			Page pager,
 			User user) throws IOException, SQLException{
+		long start=System.nanoTime();
 		StringBuffer result_json = new StringBuffer();
 		AlarmShowStyle alarmShowStyle=null;
 		Gson gson = new Gson();
@@ -485,17 +486,32 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String language=user!=null?user.getLanguageName():"";
 			int languageValue=user!=null?user.getLanguage():0;
 			int userNo=user!=null?user.getUserNo():0;
+			
+			long t1=System.nanoTime();
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+			long t2=System.nanoTime();
+			System.out.println("获取实时监控概览表耗时1:"+StringManagerUtils.getTimeDiff(t1, t2));
+			
+			t1=System.nanoTime();
 			UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(userNo+"");
+			t2=System.nanoTime();
+			System.out.println("获取实时监控概览表耗时2:"+StringManagerUtils.getTimeDiff(t1, t2));
+			
+			t1=System.nanoTime();
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
+			t2=System.nanoTime();
+			System.out.println("获取实时监控概览表耗时3:"+StringManagerUtils.getTimeDiff(t1, t2));
+			
+			
 			String tableName="tbl_acqdata_latest";
 			String deviceTableName="viw_device";
 			String calAndInputTableName="tbl_srpacqdata_latest";
 			String ddicCode="realTimeMonitoring_Overview";
 			DataDictionary ddic = null;
 			
+			t1=System.nanoTime();
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicCode,dictDeviceType,language);
 			List<DataitemsInfo> dataItemList=ddic.getDataItemList();
 			
@@ -536,6 +552,18 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}
 				}
 			}
+			t2=System.nanoTime();
+			System.out.println("获取实时监控概览表耗时4:"+StringManagerUtils.getTimeDiff(t1, t2));
+			
+			
+			List<?> addInfoList=new ArrayList<>();
+			if(addInfoDataItemList.size()>0){
+				String addInfoSql="select t.deviceid,t.itemname,t.itemvalue,t.itemunit "
+						+ " from tbl_deviceaddinfo t "
+						+ " where t.itemname in ("+StringManagerUtils.joinStringArr2(addInfoNameList, ",")+") ";
+				addInfoList = this.findCallSql(addInfoSql);
+			}
+			
 			
 			String sql="select t.id,t.devicename,"//0~1
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
@@ -586,11 +614,288 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			int maxvalue=pager.getLimit()+pager.getStart();
 			String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 			
+			t1=System.nanoTime();
 			int totals=this.getTotalCountRows(sql);
+			t2=System.nanoTime();
+			System.out.println("获取实时监控概览表总数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+			
+			
+			t1=System.nanoTime();
 			List<?> list = this.findCallSql(finalSql);
+			t2=System.nanoTime();
+			System.out.println("获取实时监控概览表查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+			
 			result_json.append("{ \"success\":true,");
 			result_json.append("\"totalCount\":"+totals+",");
 			result_json.append("\"totalRoot\":[");
+			
+			
+			//计算数据
+			boolean SRPOrPCPCalculateData=false;
+			boolean haveSRPCalculateType=false;
+			boolean havePCPCalculateType=false;
+			for(int j=0;j<displayCalItemList.size();j++){
+				String column=displayCalItemList.get(j).getCode();
+				if(!StringManagerUtils.generalCalColumnFiter(column)){
+					SRPOrPCPCalculateData=true;
+					break;
+				}
+			}
+			List<String> deviceIdList=new ArrayList<>();
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[]) list.get(i);
+				String deviceId=obj[0]+"";
+				String calculateType=obj[11]+"";
+				deviceIdList.add(deviceId);
+				if("1".equalsIgnoreCase(calculateType)){
+					haveSRPCalculateType=true;
+				}else if("2".equalsIgnoreCase(calculateType)){
+					havePCPCalculateType=true;
+				}
+			}
+			
+			
+			
+			Map<String,Map<String,String>> calDataQueryValueMap=new HashMap<>();
+			if(displayCalItemList.size()>0 && deviceIdList.size()>0){
+				String calDataSql="select t.deviceid,"
+						+ " t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+" as commtimeefficiency,t.commrange,"
+						+ " decode(t.runstatus,null,2,t.runstatus) as runStatusCalValue,t.runtime,t.runtimeefficiency*"+timeEfficiencyZoom+" as runtimeefficiency,t.runrange "
+						+ " from tbl_acqdata_latest t,tbl_device t2"
+						+ " where t.deviceid=t2.id"
+						+ " and t2.orgid in ("+orgId+") ";
+				if(StringManagerUtils.isNum(deviceType)){
+					sql+= " and t2.devicetype="+deviceType;
+				}else{
+					sql+= " and t2.devicetype in ("+deviceType+")";
+				}
+				
+				if(StringManagerUtils.isNotNull(deviceName)){
+					sql+= " and t2.devicename='"+deviceName+"'";
+				}
+				
+				
+				t1=System.nanoTime();
+				List<?> calDataList = this.findCallSql(calDataSql);
+				t2=System.nanoTime();
+				System.out.println("获取实时监控概览表通用计算数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+				for(int i=0;i<calDataList.size();i++){
+					Object[] obj=(Object[]) calDataList.get(i);
+					String deviceId=obj[0]+"";
+					Map<String,String> deviceCalDataMap=new HashMap<>();
+					deviceCalDataMap.put("CommTime".toUpperCase(), obj[1]+"");
+					deviceCalDataMap.put("commTimeEfficiency".toUpperCase(), obj[2]+"");
+					deviceCalDataMap.put("commRange".toUpperCase(), StringManagerUtils.CLOBObjectToString(obj[3]));
+					
+					deviceCalDataMap.put("RunStatus".toUpperCase(), obj[4]+"");
+					deviceCalDataMap.put("RunTime".toUpperCase(), obj[5]+"");
+					deviceCalDataMap.put("RunTimeEfficiency".toUpperCase(), obj[6]+"");
+					deviceCalDataMap.put("RunRange".toUpperCase(), StringManagerUtils.CLOBObjectToString(obj[7]));
+					
+					calDataQueryValueMap.put(deviceId, deviceCalDataMap);
+				}
+				if(SRPOrPCPCalculateData){
+					if(haveSRPCalculateType){
+						String srpCalDataSql="select t.deviceid,"//0
+								+ " t.ResultCode,t.FMax,t.FMin," //1~3
+								+ " t.Stroke,t.PlungerStroke,t.AvailablePlungerStroke,t.NoLiquidAvailablePlungerStroke,"//4~7
+								+ " t.FullnessCoefficient,t.NoLiquidFullnessCoefficient,"//8~9
+								+ " t.UpperLoadLine,t.LowerLoadLine,t.UpperLoadLineOfExact,"//10~12
+								+ " t.TheoreticalProduction,"//13
+								+ " t.LiquidVolumetricProduction,t.OilVolumetricProduction,t.WaterVolumetricProduction,t.AvailablePlungerStrokeProd_v,t.PumpClearanceleakProd_v,t.TVLeakVolumetricProduction,t.SVLeakVolumetricProduction,t.GasInfluenceProd_v,t.LiquidVolumetricProduction_l,t.OilVolumetricProduction_l,t.WaterVolumetricProduction_l,"//14~24
+								+ " t.LiquidWeightProduction,t.OilWeightProduction,t.WaterWeightProduction,t.AvailablePlungerStrokeProd_w,t.PumpClearanceleakProd_w,t.TVLeakWeightProduction,t.SVLeakWeightProduction,t.GasInfluenceProd_w,t.LiquidWeightProduction_l,t.OilWeightProduction_l,t.WaterWeightProduction_l,"//25~35
+								+ " t.AverageWatt,t.PolishRodPower,t.WaterPower,"//36~38
+								+ " t.SurfaceSystemEfficiency,t.WellDownSystemEfficiency,t.SystemEfficiency,t.Area,t.EnergyPer100mLift,"//39~43
+								+ " t.RodFlexLength,t.TubingFlexLength,t.InertiaLength,t.PumpEff1,t.PumpEff2,t.PumpEff3,t.PumpEff4,t.PumpEff,"//44~51
+								+ " t.PumpIntakeP,t.PumpIntakeT,t.PumpIntakeGOL,t.PumpIntakeVisl,t.PumpIntakeBo,"//52~56
+								+ " t.PumpOutletP,t.PumpOutletT,t.PumpOutletGOL,t.PumpOutletVisl,t.PumpOutletBo,"//57~61
+								+ " t.UpStrokeIMax,t.DownStrokeIMax,t.UpStrokeWattMax,t.DownStrokeWattMax,t.IDegreeBalance,t.WattDegreeBalance,t.DeltaRadius,"//62~68
+								+ " t.LevelDifferenceValue,t.CalcProducingfluidLevel,"//69~70
+								+ " t.Submergence"//71
+								+ " from tbl_srpacqdata_latest t,tbl_device t2,tbl_tabmanager_device t3 "
+								+ " where t.deviceid=t2.id and t2.calculatetype=t3.id and t3.calculatetype=1"
+								+ " and t2.orgid in ("+orgId+") ";
+						if(StringManagerUtils.isNum(deviceType)){
+							sql+= " and t2.devicetype="+deviceType;
+						}else{
+							sql+= " and t2.devicetype in ("+deviceType+")";
+						}
+						
+						if(StringManagerUtils.isNotNull(deviceName)){
+							sql+= " and t2.devicename='"+deviceName+"'";
+						}
+						t1=System.nanoTime();
+						List<?> SRPCalDataList = this.findCallSql(srpCalDataSql);
+						t2=System.nanoTime();
+						System.out.println("获取实时监控概览表功图计算数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+						for(int i=0;i<SRPCalDataList.size();i++){
+							Object[] obj=(Object[]) SRPCalDataList.get(i);
+							String deviceId=obj[0]+"";
+							if(calDataQueryValueMap.containsKey(deviceId)){
+								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
+								deviceCalDataMap.put("ResultCode".toUpperCase(), obj[1]+"");
+								deviceCalDataMap.put("FMax".toUpperCase(), obj[2]+"");
+								deviceCalDataMap.put("FMin".toUpperCase(), obj[3]+"");
+								
+								deviceCalDataMap.put("Stroke".toUpperCase(), obj[4]+"");
+								deviceCalDataMap.put("PlungerStroke".toUpperCase(), obj[5]+"");
+								deviceCalDataMap.put("AvailablePlungerStroke".toUpperCase(), obj[6]+"");
+								deviceCalDataMap.put("NoLiquidAvailablePlungerStroke".toUpperCase(), obj[7]+"");
+								
+								deviceCalDataMap.put("FullnessCoefficient".toUpperCase(), obj[8]+"");
+								deviceCalDataMap.put("NoLiquidFullnessCoefficient".toUpperCase(), obj[9]+"");
+								
+								deviceCalDataMap.put("UpperLoadLine".toUpperCase(), obj[10]+"");
+								deviceCalDataMap.put("LowerLoadLine".toUpperCase(), obj[11]+"");
+								deviceCalDataMap.put("UpperLoadLineOfExact".toUpperCase(), obj[12]+"");
+								
+								deviceCalDataMap.put("TheoreticalProduction".toUpperCase(), obj[13]+"");
+								
+								deviceCalDataMap.put("LiquidVolumetricProduction".toUpperCase(), obj[14]+"");
+								deviceCalDataMap.put("OilVolumetricProduction".toUpperCase(), obj[15]+"");
+								deviceCalDataMap.put("WaterVolumetricProduction".toUpperCase(), obj[16]+"");
+								deviceCalDataMap.put("AvailablePlungerStrokeProd_v".toUpperCase(), obj[17]+"");
+								deviceCalDataMap.put("PumpClearanceleakProd_v".toUpperCase(), obj[18]+"");
+								deviceCalDataMap.put("TVLeakVolumetricProduction".toUpperCase(), obj[19]+"");
+								deviceCalDataMap.put("SVLeakVolumetricProduction".toUpperCase(), obj[20]+"");
+								deviceCalDataMap.put("GasInfluenceProd_v".toUpperCase(), obj[21]+"");
+								deviceCalDataMap.put("LiquidVolumetricProduction_l.toUpperCase()", obj[22]+"");
+								deviceCalDataMap.put("OilVolumetricProduction_l.toUpperCase()", obj[23]+"");
+								deviceCalDataMap.put("WaterVolumetricProduction_l.toUpperCase()", obj[24]+"");
+								
+								deviceCalDataMap.put("LiquidWeightProduction".toUpperCase(), obj[25]+"");
+								deviceCalDataMap.put("OilWeightProduction".toUpperCase(), obj[26]+"");
+								deviceCalDataMap.put("WaterWeightProduction".toUpperCase(), obj[27]+"");
+								deviceCalDataMap.put("AvailablePlungerStrokeProd_w".toUpperCase(), obj[28]+"");
+								deviceCalDataMap.put("PumpClearanceleakProd_w".toUpperCase(), obj[29]+"");
+								deviceCalDataMap.put("TVLeakWeightProduction".toUpperCase(), obj[30]+"");
+								deviceCalDataMap.put("SVLeakWeightProduction".toUpperCase(), obj[31]+"");
+								deviceCalDataMap.put("GasInfluenceProd_w".toUpperCase(), obj[32]+"");
+								deviceCalDataMap.put("LiquidWeightProduction_l".toUpperCase(), obj[33]+"");
+								deviceCalDataMap.put("OilWeightProduction_l".toUpperCase(), obj[34]+"");
+								deviceCalDataMap.put("WaterWeightProduction_l".toUpperCase(), obj[35]+"");
+								
+								deviceCalDataMap.put("AverageWatt".toUpperCase(), obj[36]+"");
+								deviceCalDataMap.put("PolishRodPower".toUpperCase(), obj[37]+"");
+								deviceCalDataMap.put("WaterPower".toUpperCase(), obj[38]+"");
+								
+								deviceCalDataMap.put("SurfaceSystemEfficiency".toUpperCase(), obj[39]+"");
+								deviceCalDataMap.put("WellDownSystemEfficiency".toUpperCase(), obj[40]+"");
+								deviceCalDataMap.put("SystemEfficiency".toUpperCase(), obj[41]+"");
+								deviceCalDataMap.put("Area".toUpperCase(), obj[42]+"");
+								deviceCalDataMap.put("EnergyPer100mLift".toUpperCase(), obj[43]+"");
+								
+								
+								deviceCalDataMap.put("RodFlexLength".toUpperCase(), obj[44]+"");
+								deviceCalDataMap.put("TubingFlexLength".toUpperCase(), obj[45]+"");
+								deviceCalDataMap.put("InertiaLength".toUpperCase(), obj[46]+"");
+								deviceCalDataMap.put("PumpEff1".toUpperCase(), obj[47]+"");
+								deviceCalDataMap.put("PumpEff2".toUpperCase(), obj[48]+"");
+								deviceCalDataMap.put("PumpEff3".toUpperCase(), obj[49]+"");
+								deviceCalDataMap.put("PumpEff4".toUpperCase(), obj[50]+"");
+								deviceCalDataMap.put("PumpEff".toUpperCase(), obj[51]+"");
+								
+								deviceCalDataMap.put("PumpIntakeP".toUpperCase(), obj[52]+"");
+								deviceCalDataMap.put("PumpIntakeT".toUpperCase(), obj[53]+"");
+								deviceCalDataMap.put("PumpIntakeGOL".toUpperCase(), obj[54]+"");
+								deviceCalDataMap.put("PumpIntakeVisl".toUpperCase(), obj[55]+"");
+								deviceCalDataMap.put("PumpIntakeBo".toUpperCase(), obj[56]+"");
+								deviceCalDataMap.put("PumpOutletP".toUpperCase(), obj[57]+"");
+								deviceCalDataMap.put("PumpOutletT".toUpperCase(), obj[58]+"");
+								deviceCalDataMap.put("PumpOutletGOL".toUpperCase(), obj[59]+"");
+								deviceCalDataMap.put("PumpOutletVisl".toUpperCase(), obj[60]+"");
+								deviceCalDataMap.put("PumpOutletBo".toUpperCase(), obj[61]+"");
+								
+								deviceCalDataMap.put("UpStrokeIMax".toUpperCase(), obj[62]+"");
+								deviceCalDataMap.put("DownStrokeIMax".toUpperCase(), obj[63]+"");
+								deviceCalDataMap.put("UpStrokeWattMax".toUpperCase(), obj[64]+"");
+								deviceCalDataMap.put("DownStrokeWattMax".toUpperCase(), obj[65]+"");
+								deviceCalDataMap.put("IDegreeBalance".toUpperCase(), obj[66]+"");
+								deviceCalDataMap.put("WattDegreeBalance".toUpperCase(), obj[67]+"");
+								deviceCalDataMap.put("DeltaRadius".toUpperCase(), obj[68]+"");
+
+								deviceCalDataMap.put("LevelDifferenceValue".toUpperCase(), obj[69]+"");
+								deviceCalDataMap.put("CalcProducingfluidLevel".toUpperCase(), obj[70]+"");
+								
+								deviceCalDataMap.put("Submergence".toUpperCase(), obj[71]+"");
+							}
+						}
+					}
+					
+					if(havePCPCalculateType){
+						String pcpCalDataSql="select t.deviceid,"//0
+								+ " t.TheoreticalProduction,"//1
+								+ " t.LiquidVolumetricProduction,t.OilVolumetricProduction,t.WaterVolumetricProduction,t.LiquidVolumetricProduction_l,t.OilVolumetricProduction_l,t.WaterVolumetricProduction_l,"//2~7
+								+ " t.LiquidWeightProduction,t.OilWeightProduction,t.WaterWeightProduction,t.LiquidWeightProduction_l,t.OilWeightProduction_l,t.WaterWeightProduction_l,"//8~13
+								+ " t.AverageWatt,t.WaterPower,t.SystemEfficiency,"//14~16
+								+ " t.PumpEff1,t.PumpEff2,t.PumpEff,"//17~19
+								+ " t.PumpIntakeP,t.PumpIntakeT,t.PumpIntakeGOL,t.PumpIntakeVisl,t.PumpIntakeBo,"//20~24
+								+ " t.PumpOutletP,t.PumpOutletT,t.PumpOutletGOL,t.PumpOutletVisl,t.PumpOutletBo"//25~29
+								+ " from tbl_pcpacqdata_latest t,tbl_device t2,tbl_tabmanager_device t3 "
+								+ " where t.deviceid=t2.id and t2.calculatetype=t3.id and t3.calculatetype=2"
+								+ " and t2.orgid in ("+orgId+") ";
+						if(StringManagerUtils.isNum(deviceType)){
+							sql+= " and t2.devicetype="+deviceType;
+						}else{
+							sql+= " and t2.devicetype in ("+deviceType+")";
+						}
+						
+						if(StringManagerUtils.isNotNull(deviceName)){
+							sql+= " and t2.devicename='"+deviceName+"'";
+						}
+						t1=System.nanoTime();
+						List<?> PCPCalDataList = this.findCallSql(pcpCalDataSql);
+						t2=System.nanoTime();
+						System.out.println("获取实时监控概览表转速计算数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+						for(int i=0;i<PCPCalDataList.size();i++){
+							Object[] obj=(Object[]) PCPCalDataList.get(i);
+							String deviceId=obj[0]+"";
+							if(calDataQueryValueMap.containsKey(deviceId)){
+								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
+								
+								deviceCalDataMap.put("TheoreticalProduction".toUpperCase(), obj[1]+"");
+								
+								deviceCalDataMap.put("LiquidVolumetricProduction".toUpperCase(), obj[2]+"");
+								deviceCalDataMap.put("OilVolumetricProduction".toUpperCase(), obj[3]+"");
+								deviceCalDataMap.put("WaterVolumetricProduction".toUpperCase(), obj[4]+"");
+								deviceCalDataMap.put("LiquidVolumetricProduction_l.toUpperCase()", obj[5]+"");
+								deviceCalDataMap.put("OilVolumetricProduction_l.toUpperCase()", obj[6]+"");
+								deviceCalDataMap.put("WaterVolumetricProduction_l.toUpperCase()", obj[7]+"");
+								
+								deviceCalDataMap.put("LiquidWeightProduction".toUpperCase(), obj[8]+"");
+								deviceCalDataMap.put("OilWeightProduction".toUpperCase(), obj[9]+"");
+								deviceCalDataMap.put("WaterWeightProduction".toUpperCase(), obj[10]+"");
+								deviceCalDataMap.put("LiquidWeightProduction_l".toUpperCase(), obj[11]+"");
+								deviceCalDataMap.put("OilWeightProduction_l".toUpperCase(), obj[12]+"");
+								deviceCalDataMap.put("WaterWeightProduction_l".toUpperCase(), obj[13]+"");
+								
+								deviceCalDataMap.put("AverageWatt".toUpperCase(), obj[14]+"");
+								deviceCalDataMap.put("WaterPower".toUpperCase(), obj[15]+"");
+								deviceCalDataMap.put("SystemEfficiency".toUpperCase(), obj[16]+"");
+								
+								deviceCalDataMap.put("PumpEff1".toUpperCase(), obj[17]+"");
+								deviceCalDataMap.put("PumpEff2".toUpperCase(), obj[18]+"");
+								deviceCalDataMap.put("PumpEff".toUpperCase(), obj[19]+"");
+								
+								deviceCalDataMap.put("PumpIntakeP".toUpperCase(), obj[20]+"");
+								deviceCalDataMap.put("PumpIntakeT".toUpperCase(), obj[21]+"");
+								deviceCalDataMap.put("PumpIntakeGOL".toUpperCase(), obj[22]+"");
+								deviceCalDataMap.put("PumpIntakeVisl".toUpperCase(), obj[23]+"");
+								deviceCalDataMap.put("PumpIntakeBo".toUpperCase(), obj[24]+"");
+								deviceCalDataMap.put("PumpOutletP".toUpperCase(), obj[25]+"");
+								deviceCalDataMap.put("PumpOutletT".toUpperCase(), obj[26]+"");
+								deviceCalDataMap.put("PumpOutletGOL".toUpperCase(), obj[27]+"");
+								deviceCalDataMap.put("PumpOutletVisl".toUpperCase(), obj[28]+"");
+								deviceCalDataMap.put("PumpOutletBo".toUpperCase(), obj[29]+"");
+							}
+						}
+					}
+				}
+			}
+			
+			
+			
+			t1=System.nanoTime();
 			for(int i=0;i<list.size();i++){
 				Object[] obj=(Object[]) list.get(i);
 				String deviceId=obj[0]+"";
@@ -876,94 +1181,56 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 					}
 					if(deviceCalItemList.size()>0){
-						String calDataSql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime";//0~2;
-						if(StringManagerUtils.stringToInteger(calculateType)>0){
+						if(calDataQueryValueMap.containsKey(deviceId)){
+							Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
+							
 							for(int j=0;j<deviceCalItemList.size();j++){
-								String column=deviceCalItemList.get(j).getCode();
-								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
-								if(calItem!=null){
-									String rawColumn=column;
-									if("resultName".equalsIgnoreCase(column)){
-										column="resultCode";
-									}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
-										column=column+"*"+timeEfficiencyZoom+" as "+column;
-									}else if("runstatusName".equalsIgnoreCase(column)){
-										column="runstatus";
-									}
-									
-									String tableAlias="t3";
-									if(StringManagerUtils.generalCalColumnFiter(rawColumn)){
-										tableAlias="t2";
-									}
-									calDataSql+=","+tableAlias+"."+column;
+
+								String columnName=deviceCalItemList.get(j).getName_zh_CN();
+								if("en".equalsIgnoreCase(language)){
+									columnName=deviceCalItemList.get(j).getName_en();
+								}else if("ru".equalsIgnoreCase(language)){
+									columnName=deviceCalItemList.get(j).getName_ru();
 								}
-							}
-						}else{
-							for(int j=0;j<deviceCalItemList.size();j++){
+								
+								
+								String rawColumnName=columnName;
 								String column=deviceCalItemList.get(j).getCode();
-								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
-								if(calItem!=null){
-									if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
-										column=column+"*"+timeEfficiencyZoom+" as "+column;
-									}else if("runstatusName".equalsIgnoreCase(column)){
-										column="runstatus";
-									}
-									calDataSql+=",t2."+column;
+								
+								String value="";
+								if("resultCode".equalsIgnoreCase(column)||"resultName".equalsIgnoreCase(column)){
+									value=deviceCalDataMap.containsKey("resultCode".toUpperCase())?deviceCalDataMap.get("resultCode".toUpperCase()):"";
+								}else if("runStatus".equalsIgnoreCase(column)||"RunStatusName".equalsIgnoreCase(column)){
+									value=deviceCalDataMap.containsKey("runStatus".toUpperCase())?deviceCalDataMap.get("runStatus".toUpperCase()):"";
+								}else{
+									value=deviceCalDataMap.containsKey(column.toUpperCase())?deviceCalDataMap.get(column.toUpperCase()):"";
 								}
-							}
-						}
-						
-						calDataSql+= " from "+deviceTableName+" t "
-								+" left outer join "+tableName+" t2 on t2.deviceid=t.id"
-								+" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t2.deviceid "
-//								+ " and t3.acqtime=t2.acqtime "
-								+" where t.id="+deviceId+"";
-						List<?> calDataQueryList = this.findCallSql(calDataSql);
-						if(calDataQueryList.size()>0){
-							Object[] calDataObj=(Object[]) calDataQueryList.get(0);
-							for(int j=0;j<deviceCalItemList.size();j++){
-								int index=j+3;
-								if(index<calDataObj.length){
-									String columnName=deviceCalItemList.get(j).getName_zh_CN();
-									if("en".equalsIgnoreCase(language)){
-										columnName=deviceCalItemList.get(j).getName_en();
-									}else if("ru".equalsIgnoreCase(language)){
-										columnName=deviceCalItemList.get(j).getName_ru();
-									}
-									
-									
-									String rawColumnName=columnName;
-									String value=calDataObj[index]+"";
-									if(calDataObj[index] instanceof CLOB || calDataObj[index] instanceof Clob){
-										value=StringManagerUtils.CLOBObjectToString(calDataObj[index]);
-									}
-									String rawValue=value;
-									String addr="";
-									String column=deviceCalItemList.get(j).getCode();
-									String columnDataType="";
-									String resolutionMode="";
-									String bitIndex="";
-									String unit=deviceCalItemList.get(j).getDataUnit();
-									int sort=deviceCalItemList.get(j).getSorts();
-																		
-									if("resultCode".equalsIgnoreCase(column)||"resultName".equalsIgnoreCase(column)){
-										WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
-										if(workType!=null){
-											value=workType.getResultName();
-											if(alarmInstanceOwnItem!=null){
-												for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
-													if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
-														resultAlarmLevel=alarmItem.getAlarmLevel();
-													}
+								String rawValue=value;
+								String addr="";
+								
+								String columnDataType="";
+								String resolutionMode="";
+								String bitIndex="";
+								String unit=deviceCalItemList.get(j).getDataUnit();
+								int sort=deviceCalItemList.get(j).getSorts();
+																	
+								if("resultCode".equalsIgnoreCase(column)||"resultName".equalsIgnoreCase(column)){
+									WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
+									if(workType!=null){
+										value=workType.getResultName();
+										if(alarmInstanceOwnItem!=null){
+											for(AlarmInstanceOwnItem.AlarmItem alarmItem:alarmInstanceOwnItem.getItemList()){
+												if(alarmItem.getAlarmLevel()>0 && alarmItem.getType()==4 && alarmItem.getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
+													resultAlarmLevel=alarmItem.getAlarmLevel();
 												}
 											}
 										}
 									}
-									
-									if( !("runStatus".equalsIgnoreCase(column)||"RunStatusName".equalsIgnoreCase(column)) ){
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
-										protocolItemResolutionDataList.add(protocolItemResolutionData);
-									}
+								}
+								
+								if( !("runStatus".equalsIgnoreCase(column)||"RunStatusName".equalsIgnoreCase(column)) ){
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
+									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}
 						}
@@ -1148,27 +1415,26 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				//附加信息
 				if(addInfoDataItemList.size()>0){
-					String addInfoSql="select t.itemname,t.itemvalue,t.itemunit "
-							+ " from tbl_deviceaddinfo t "
-							+ " where t.deviceid= "+deviceId
-							+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(addInfoNameList, ",")+") ";
-					List<?> addInfoList = this.findCallSql(addInfoSql);
 					for(int j=0;j<addInfoList.size();j++){
 						Object[] addInfoObj=(Object[]) addInfoList.get(j);
-						String itemName=addInfoObj[0]+"";
-						String itemValue=addInfoObj[1]+"";
-						String itemUnit=addInfoObj[2]+"";
 						
-						String addInfoColumn="";
+						String itemDeviceId=addInfoObj[0]+"";
+						String itemName=addInfoObj[1]+"";
+						String itemValue=addInfoObj[2]+"";
+						String itemUnit=addInfoObj[3]+"";
 						
-						for(int k=0;k<addInfoDataItemList.size();k++){
-							String addInfoName=addInfoDataItemList.get(k).getConfigItemName();
-							if(itemName.equals(addInfoName)){
-								addInfoColumn="addInfoColumn"+(k+1);
-								break;
+						if(deviceId.equalsIgnoreCase(itemDeviceId)){
+							String addInfoColumn="";
+							
+							for(int k=0;k<addInfoDataItemList.size();k++){
+								String addInfoName=addInfoDataItemList.get(k).getConfigItemName();
+								if(itemName.equals(addInfoName)){
+									addInfoColumn="addInfoColumn"+(k+1);
+									break;
+								}
 							}
+							result_json.append("\""+addInfoColumn+"\":\""+itemValue+"\",");
 						}
-						result_json.append("\""+addInfoColumn+"\":\""+itemValue+"\",");
 					}
 				}
 				
@@ -1286,6 +1552,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				result_json.append("\"alarmInfo\":"+alarmInfo+"");
 				result_json.append("},");
 			}
+			
+			t2=System.nanoTime();
+			System.out.println("获取实时监控概览表遍历耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+			
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);
 			}
@@ -1296,6 +1566,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		long end=System.nanoTime();
+		System.out.println("获取实时监控概览表耗时:"+StringManagerUtils.getTimeDiff(start, end));
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -1363,6 +1635,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 			}
 			
+			List<?> addInfoList=new ArrayList<>();
+			if(addInfoDataItemList.size()>0){
+				String addInfoSql="select t.deviceid,t.itemname,t.itemvalue,t.itemunit "
+						+ " from tbl_deviceaddinfo t "
+						+ " where t.itemname in ("+StringManagerUtils.joinStringArr2(addInfoNameList, ",")+") ";
+				addInfoList = this.findCallSql(addInfoSql);
+			}
+			
 			String sql="select t.id,t.devicename,"//0~1
 					+ "t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,"//2~5
 					+ "c1.name_"+language+" as devicetypename,"//6
@@ -1416,6 +1696,263 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			List<String> columnList=new ArrayList<>(Arrays.asList(field.split(",")));
 						
 			List<?> list = this.findCallSql(finalSql);
+			
+			//计算数据
+			boolean SRPOrPCPCalculateData=false;
+			boolean haveSRPCalculateType=false;
+			boolean havePCPCalculateType=false;
+			for(int j=0;j<displayCalItemList.size();j++){
+				String column=displayCalItemList.get(j).getCode();
+				if(!StringManagerUtils.generalCalColumnFiter(column)){
+					SRPOrPCPCalculateData=true;
+					break;
+				}
+			}
+			List<String> deviceIdList=new ArrayList<>();
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[]) list.get(i);
+				String deviceId=obj[0]+"";
+				String calculateType=obj[11]+"";
+				deviceIdList.add(deviceId);
+				if("1".equalsIgnoreCase(calculateType)){
+					haveSRPCalculateType=true;
+				}else if("2".equalsIgnoreCase(calculateType)){
+					havePCPCalculateType=true;
+				}
+			}
+			
+			
+			
+			Map<String,Map<String,String>> calDataQueryValueMap=new HashMap<>();
+			if(displayCalItemList.size()>0 && deviceIdList.size()>0){
+				String calDataSql="select t.deviceid,"
+						+ " t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+" as commtimeefficiency,t.commrange,"
+						+ " decode(t.runstatus,null,2,t.runstatus) as runStatusCalValue,t.runtime,t.runtimeefficiency*"+timeEfficiencyZoom+" as runtimeefficiency,t.runrange "
+						+ " from tbl_acqdata_latest t,tbl_device t2"
+						+ " where t.deviceid=t2.id"
+						+ " and t2.orgid in ("+orgId+") ";
+				if(StringManagerUtils.isNum(deviceType)){
+					sql+= " and t2.devicetype="+deviceType;
+				}else{
+					sql+= " and t2.devicetype in ("+deviceType+")";
+				}
+				
+				if(StringManagerUtils.isNotNull(deviceName)){
+					sql+= " and t2.devicename='"+deviceName+"'";
+				}
+				
+				List<?> calDataList = this.findCallSql(calDataSql);
+				for(int i=0;i<calDataList.size();i++){
+					Object[] obj=(Object[]) calDataList.get(i);
+					String deviceId=obj[0]+"";
+					Map<String,String> deviceCalDataMap=new HashMap<>();
+					deviceCalDataMap.put("CommTime".toUpperCase(), obj[1]+"");
+					deviceCalDataMap.put("commTimeEfficiency".toUpperCase(), obj[2]+"");
+					deviceCalDataMap.put("commRange".toUpperCase(), StringManagerUtils.CLOBObjectToString(obj[3]));
+					
+					deviceCalDataMap.put("RunStatus".toUpperCase(), obj[4]+"");
+					deviceCalDataMap.put("RunTime".toUpperCase(), obj[5]+"");
+					deviceCalDataMap.put("RunTimeEfficiency".toUpperCase(), obj[6]+"");
+					deviceCalDataMap.put("RunRange".toUpperCase(), StringManagerUtils.CLOBObjectToString(obj[7]));
+					
+					calDataQueryValueMap.put(deviceId, deviceCalDataMap);
+				}
+				if(SRPOrPCPCalculateData){
+					if(haveSRPCalculateType){
+						String srpCalDataSql="select t.deviceid,"//0
+								+ " t.ResultCode,t.FMax,t.FMin," //1~3
+								+ " t.Stroke,t.PlungerStroke,t.AvailablePlungerStroke,t.NoLiquidAvailablePlungerStroke,"//4~7
+								+ " t.FullnessCoefficient,t.NoLiquidFullnessCoefficient,"//8~9
+								+ " t.UpperLoadLine,t.LowerLoadLine,t.UpperLoadLineOfExact,"//10~12
+								+ " t.TheoreticalProduction,"//13
+								+ " t.LiquidVolumetricProduction,t.OilVolumetricProduction,t.WaterVolumetricProduction,t.AvailablePlungerStrokeProd_v,t.PumpClearanceleakProd_v,t.TVLeakVolumetricProduction,t.SVLeakVolumetricProduction,t.GasInfluenceProd_v,t.LiquidVolumetricProduction_l,t.OilVolumetricProduction_l,t.WaterVolumetricProduction_l,"//14~24
+								+ " t.LiquidWeightProduction,t.OilWeightProduction,t.WaterWeightProduction,t.AvailablePlungerStrokeProd_w,t.PumpClearanceleakProd_w,t.TVLeakWeightProduction,t.SVLeakWeightProduction,t.GasInfluenceProd_w,t.LiquidWeightProduction_l,t.OilWeightProduction_l,t.WaterWeightProduction_l,"//25~35
+								+ " t.AverageWatt,t.PolishRodPower,t.WaterPower,"//36~38
+								+ " t.SurfaceSystemEfficiency,t.WellDownSystemEfficiency,t.SystemEfficiency,t.Area,t.EnergyPer100mLift,"//39~43
+								+ " t.RodFlexLength,t.TubingFlexLength,t.InertiaLength,t.PumpEff1,t.PumpEff2,t.PumpEff3,t.PumpEff4,t.PumpEff,"//44~51
+								+ " t.PumpIntakeP,t.PumpIntakeT,t.PumpIntakeGOL,t.PumpIntakeVisl,t.PumpIntakeBo,"//52~56
+								+ " t.PumpOutletP,t.PumpOutletT,t.PumpOutletGOL,t.PumpOutletVisl,t.PumpOutletBo,"//57~61
+								+ " t.UpStrokeIMax,t.DownStrokeIMax,t.UpStrokeWattMax,t.DownStrokeWattMax,t.IDegreeBalance,t.WattDegreeBalance,t.DeltaRadius,"//62~68
+								+ " t.LevelDifferenceValue,t.CalcProducingfluidLevel,"//69~70
+								+ " t.Submergence"//71
+								+ " from tbl_srpacqdata_latest t,tbl_device t2,tbl_tabmanager_device t3 "
+								+ " where t.deviceid=t2.id and t2.calculatetype=t3.id and t3.calculatetype=1"
+								+ " and t2.orgid in ("+orgId+") ";
+						if(StringManagerUtils.isNum(deviceType)){
+							sql+= " and t2.devicetype="+deviceType;
+						}else{
+							sql+= " and t2.devicetype in ("+deviceType+")";
+						}
+						
+						if(StringManagerUtils.isNotNull(deviceName)){
+							sql+= " and t2.devicename='"+deviceName+"'";
+						}
+						
+						List<?> SRPCalDataList = this.findCallSql(srpCalDataSql);
+						for(int i=0;i<SRPCalDataList.size();i++){
+							Object[] obj=(Object[]) SRPCalDataList.get(i);
+							String deviceId=obj[0]+"";
+							if(calDataQueryValueMap.containsKey(deviceId)){
+								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
+								deviceCalDataMap.put("ResultCode".toUpperCase(), obj[1]+"");
+								deviceCalDataMap.put("FMax".toUpperCase(), obj[2]+"");
+								deviceCalDataMap.put("FMin".toUpperCase(), obj[3]+"");
+								
+								deviceCalDataMap.put("Stroke".toUpperCase(), obj[4]+"");
+								deviceCalDataMap.put("PlungerStroke".toUpperCase(), obj[5]+"");
+								deviceCalDataMap.put("AvailablePlungerStroke".toUpperCase(), obj[6]+"");
+								deviceCalDataMap.put("NoLiquidAvailablePlungerStroke".toUpperCase(), obj[7]+"");
+								
+								deviceCalDataMap.put("FullnessCoefficient".toUpperCase(), obj[8]+"");
+								deviceCalDataMap.put("NoLiquidFullnessCoefficient".toUpperCase(), obj[9]+"");
+								
+								deviceCalDataMap.put("UpperLoadLine".toUpperCase(), obj[10]+"");
+								deviceCalDataMap.put("LowerLoadLine".toUpperCase(), obj[11]+"");
+								deviceCalDataMap.put("UpperLoadLineOfExact".toUpperCase(), obj[12]+"");
+								
+								deviceCalDataMap.put("TheoreticalProduction".toUpperCase(), obj[13]+"");
+								
+								deviceCalDataMap.put("LiquidVolumetricProduction".toUpperCase(), obj[14]+"");
+								deviceCalDataMap.put("OilVolumetricProduction".toUpperCase(), obj[15]+"");
+								deviceCalDataMap.put("WaterVolumetricProduction".toUpperCase(), obj[16]+"");
+								deviceCalDataMap.put("AvailablePlungerStrokeProd_v".toUpperCase(), obj[17]+"");
+								deviceCalDataMap.put("PumpClearanceleakProd_v".toUpperCase(), obj[18]+"");
+								deviceCalDataMap.put("TVLeakVolumetricProduction".toUpperCase(), obj[19]+"");
+								deviceCalDataMap.put("SVLeakVolumetricProduction".toUpperCase(), obj[20]+"");
+								deviceCalDataMap.put("GasInfluenceProd_v".toUpperCase(), obj[21]+"");
+								deviceCalDataMap.put("LiquidVolumetricProduction_l.toUpperCase()", obj[22]+"");
+								deviceCalDataMap.put("OilVolumetricProduction_l.toUpperCase()", obj[23]+"");
+								deviceCalDataMap.put("WaterVolumetricProduction_l.toUpperCase()", obj[24]+"");
+								
+								deviceCalDataMap.put("LiquidWeightProduction".toUpperCase(), obj[25]+"");
+								deviceCalDataMap.put("OilWeightProduction".toUpperCase(), obj[26]+"");
+								deviceCalDataMap.put("WaterWeightProduction".toUpperCase(), obj[27]+"");
+								deviceCalDataMap.put("AvailablePlungerStrokeProd_w".toUpperCase(), obj[28]+"");
+								deviceCalDataMap.put("PumpClearanceleakProd_w".toUpperCase(), obj[29]+"");
+								deviceCalDataMap.put("TVLeakWeightProduction".toUpperCase(), obj[30]+"");
+								deviceCalDataMap.put("SVLeakWeightProduction".toUpperCase(), obj[31]+"");
+								deviceCalDataMap.put("GasInfluenceProd_w".toUpperCase(), obj[32]+"");
+								deviceCalDataMap.put("LiquidWeightProduction_l".toUpperCase(), obj[33]+"");
+								deviceCalDataMap.put("OilWeightProduction_l".toUpperCase(), obj[34]+"");
+								deviceCalDataMap.put("WaterWeightProduction_l".toUpperCase(), obj[35]+"");
+								
+								deviceCalDataMap.put("AverageWatt".toUpperCase(), obj[36]+"");
+								deviceCalDataMap.put("PolishRodPower".toUpperCase(), obj[37]+"");
+								deviceCalDataMap.put("WaterPower".toUpperCase(), obj[38]+"");
+								
+								deviceCalDataMap.put("SurfaceSystemEfficiency".toUpperCase(), obj[39]+"");
+								deviceCalDataMap.put("WellDownSystemEfficiency".toUpperCase(), obj[40]+"");
+								deviceCalDataMap.put("SystemEfficiency".toUpperCase(), obj[41]+"");
+								deviceCalDataMap.put("Area".toUpperCase(), obj[42]+"");
+								deviceCalDataMap.put("EnergyPer100mLift".toUpperCase(), obj[43]+"");
+								
+								
+								deviceCalDataMap.put("RodFlexLength".toUpperCase(), obj[44]+"");
+								deviceCalDataMap.put("TubingFlexLength".toUpperCase(), obj[45]+"");
+								deviceCalDataMap.put("InertiaLength".toUpperCase(), obj[46]+"");
+								deviceCalDataMap.put("PumpEff1".toUpperCase(), obj[47]+"");
+								deviceCalDataMap.put("PumpEff2".toUpperCase(), obj[48]+"");
+								deviceCalDataMap.put("PumpEff3".toUpperCase(), obj[49]+"");
+								deviceCalDataMap.put("PumpEff4".toUpperCase(), obj[50]+"");
+								deviceCalDataMap.put("PumpEff".toUpperCase(), obj[51]+"");
+								
+								deviceCalDataMap.put("PumpIntakeP".toUpperCase(), obj[52]+"");
+								deviceCalDataMap.put("PumpIntakeT".toUpperCase(), obj[53]+"");
+								deviceCalDataMap.put("PumpIntakeGOL".toUpperCase(), obj[54]+"");
+								deviceCalDataMap.put("PumpIntakeVisl".toUpperCase(), obj[55]+"");
+								deviceCalDataMap.put("PumpIntakeBo".toUpperCase(), obj[56]+"");
+								deviceCalDataMap.put("PumpOutletP".toUpperCase(), obj[57]+"");
+								deviceCalDataMap.put("PumpOutletT".toUpperCase(), obj[58]+"");
+								deviceCalDataMap.put("PumpOutletGOL".toUpperCase(), obj[59]+"");
+								deviceCalDataMap.put("PumpOutletVisl".toUpperCase(), obj[60]+"");
+								deviceCalDataMap.put("PumpOutletBo".toUpperCase(), obj[61]+"");
+								
+								deviceCalDataMap.put("UpStrokeIMax".toUpperCase(), obj[62]+"");
+								deviceCalDataMap.put("DownStrokeIMax".toUpperCase(), obj[63]+"");
+								deviceCalDataMap.put("UpStrokeWattMax".toUpperCase(), obj[64]+"");
+								deviceCalDataMap.put("DownStrokeWattMax".toUpperCase(), obj[65]+"");
+								deviceCalDataMap.put("IDegreeBalance".toUpperCase(), obj[66]+"");
+								deviceCalDataMap.put("WattDegreeBalance".toUpperCase(), obj[67]+"");
+								deviceCalDataMap.put("DeltaRadius".toUpperCase(), obj[68]+"");
+
+								deviceCalDataMap.put("LevelDifferenceValue".toUpperCase(), obj[69]+"");
+								deviceCalDataMap.put("CalcProducingfluidLevel".toUpperCase(), obj[70]+"");
+								
+								deviceCalDataMap.put("Submergence".toUpperCase(), obj[71]+"");
+							}
+						}
+					}
+					
+					if(havePCPCalculateType){
+						String pcpCalDataSql="select t.deviceid,"//0
+								+ " t.TheoreticalProduction,"//1
+								+ " t.LiquidVolumetricProduction,t.OilVolumetricProduction,t.WaterVolumetricProduction,t.LiquidVolumetricProduction_l,t.OilVolumetricProduction_l,t.WaterVolumetricProduction_l,"//2~7
+								+ " t.LiquidWeightProduction,t.OilWeightProduction,t.WaterWeightProduction,t.LiquidWeightProduction_l,t.OilWeightProduction_l,t.WaterWeightProduction_l,"//8~13
+								+ " t.AverageWatt,t.WaterPower,t.SystemEfficiency,"//14~16
+								+ " t.PumpEff1,t.PumpEff2,t.PumpEff,"//17~19
+								+ " t.PumpIntakeP,t.PumpIntakeT,t.PumpIntakeGOL,t.PumpIntakeVisl,t.PumpIntakeBo,"//20~24
+								+ " t.PumpOutletP,t.PumpOutletT,t.PumpOutletGOL,t.PumpOutletVisl,t.PumpOutletBo"//25~29
+								+ " from tbl_pcpacqdata_latest t,tbl_device t2,tbl_tabmanager_device t3 "
+								+ " where t.deviceid=t2.id and t2.calculatetype=t3.id and t3.calculatetype=2"
+								+ " and t2.orgid in ("+orgId+") ";
+						if(StringManagerUtils.isNum(deviceType)){
+							sql+= " and t2.devicetype="+deviceType;
+						}else{
+							sql+= " and t2.devicetype in ("+deviceType+")";
+						}
+						
+						if(StringManagerUtils.isNotNull(deviceName)){
+							sql+= " and t2.devicename='"+deviceName+"'";
+						}
+						List<?> PCPCalDataList = this.findCallSql(pcpCalDataSql);
+						for(int i=0;i<PCPCalDataList.size();i++){
+							Object[] obj=(Object[]) PCPCalDataList.get(i);
+							String deviceId=obj[0]+"";
+							if(calDataQueryValueMap.containsKey(deviceId)){
+								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
+								
+								deviceCalDataMap.put("TheoreticalProduction".toUpperCase(), obj[1]+"");
+								
+								deviceCalDataMap.put("LiquidVolumetricProduction".toUpperCase(), obj[2]+"");
+								deviceCalDataMap.put("OilVolumetricProduction".toUpperCase(), obj[3]+"");
+								deviceCalDataMap.put("WaterVolumetricProduction".toUpperCase(), obj[4]+"");
+								deviceCalDataMap.put("LiquidVolumetricProduction_l.toUpperCase()", obj[5]+"");
+								deviceCalDataMap.put("OilVolumetricProduction_l.toUpperCase()", obj[6]+"");
+								deviceCalDataMap.put("WaterVolumetricProduction_l.toUpperCase()", obj[7]+"");
+								
+								deviceCalDataMap.put("LiquidWeightProduction".toUpperCase(), obj[8]+"");
+								deviceCalDataMap.put("OilWeightProduction".toUpperCase(), obj[9]+"");
+								deviceCalDataMap.put("WaterWeightProduction".toUpperCase(), obj[10]+"");
+								deviceCalDataMap.put("LiquidWeightProduction_l".toUpperCase(), obj[11]+"");
+								deviceCalDataMap.put("OilWeightProduction_l".toUpperCase(), obj[12]+"");
+								deviceCalDataMap.put("WaterWeightProduction_l".toUpperCase(), obj[13]+"");
+								
+								deviceCalDataMap.put("AverageWatt".toUpperCase(), obj[14]+"");
+								deviceCalDataMap.put("WaterPower".toUpperCase(), obj[15]+"");
+								deviceCalDataMap.put("SystemEfficiency".toUpperCase(), obj[16]+"");
+								
+								deviceCalDataMap.put("PumpEff1".toUpperCase(), obj[17]+"");
+								deviceCalDataMap.put("PumpEff2".toUpperCase(), obj[18]+"");
+								deviceCalDataMap.put("PumpEff".toUpperCase(), obj[19]+"");
+								
+								deviceCalDataMap.put("PumpIntakeP".toUpperCase(), obj[20]+"");
+								deviceCalDataMap.put("PumpIntakeT".toUpperCase(), obj[21]+"");
+								deviceCalDataMap.put("PumpIntakeGOL".toUpperCase(), obj[22]+"");
+								deviceCalDataMap.put("PumpIntakeVisl".toUpperCase(), obj[23]+"");
+								deviceCalDataMap.put("PumpIntakeBo".toUpperCase(), obj[24]+"");
+								deviceCalDataMap.put("PumpOutletP".toUpperCase(), obj[25]+"");
+								deviceCalDataMap.put("PumpOutletT".toUpperCase(), obj[26]+"");
+								deviceCalDataMap.put("PumpOutletGOL".toUpperCase(), obj[27]+"");
+								deviceCalDataMap.put("PumpOutletVisl".toUpperCase(), obj[28]+"");
+								deviceCalDataMap.put("PumpOutletBo".toUpperCase(), obj[29]+"");
+							}
+						}
+					}
+				}
+			}
+			
+			
+			
 			List<Object> record=null;
 			JSONObject jsonObject=null;
 			Object[] obj=null;
@@ -1665,84 +2202,49 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 					}
 					if(deviceCalItemList.size()>0){
-						String calDataSql="select t.id,t.devicename,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime";//0~2;
-						if(StringManagerUtils.stringToInteger(calculateType)>0){
+						if(calDataQueryValueMap.containsKey(deviceId)){
+							Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
+							
 							for(int j=0;j<deviceCalItemList.size();j++){
-								String column=deviceCalItemList.get(j).getCode();
-								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
-								if(calItem!=null){
-									String rawColumn=column;
-									if("resultName".equalsIgnoreCase(column)){
-										column="resultCode";
-									}else if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
-										column=column+"*"+timeEfficiencyZoom+" as "+column;
-									}else if("runstatusName".equalsIgnoreCase(column)){
-										column="runstatus";
-									}
-									String tableAlias="t3";
-									if(StringManagerUtils.generalCalColumnFiter(rawColumn)){
-										tableAlias="t2";
-									}
-									calDataSql+=","+tableAlias+"."+column;
+
+								String columnName=deviceCalItemList.get(j).getName_zh_CN();
+								if("en".equalsIgnoreCase(language)){
+									columnName=deviceCalItemList.get(j).getName_en();
+								}else if("ru".equalsIgnoreCase(language)){
+									columnName=deviceCalItemList.get(j).getName_ru();
 								}
-							}
-						}else{
-							for(int j=0;j<deviceCalItemList.size();j++){
+								
+								
+								String rawColumnName=columnName;
 								String column=deviceCalItemList.get(j).getCode();
-								CalItem calItem=MemoryDataManagerTask.getSingleCalItemByCode(column, calItemList);
-								if(calItem!=null){
-									if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
-										column=column+"*"+timeEfficiencyZoom+" as "+column;
-									}else if("runstatusName".equalsIgnoreCase(column)){
-										column="runstatus";
-									}
-									calDataSql+=",t2."+column;
+								
+								String value="";
+								if("resultCode".equalsIgnoreCase(column)||"resultName".equalsIgnoreCase(column)){
+									value=deviceCalDataMap.containsKey("resultCode".toUpperCase())?deviceCalDataMap.get("resultCode".toUpperCase()):"";
+								}else if("runStatus".equalsIgnoreCase(column)||"RunStatusName".equalsIgnoreCase(column)){
+									value=deviceCalDataMap.containsKey("runStatus".toUpperCase())?deviceCalDataMap.get("runStatus".toUpperCase()):"";
+								}else{
+									value=deviceCalDataMap.containsKey(column.toUpperCase())?deviceCalDataMap.get(column.toUpperCase()):"";
 								}
-							}
-						}
-						
-						calDataSql+= " from "+deviceTableName+" t "
-								+" left outer join "+tableName+" t2 on t2.deviceid=t.id"
-								+" left outer join "+calAndInputTableName+" t3 on t3.deviceid=t2.deviceid and t3.acqtime=t2.acqtime "
-								+" where t.id="+deviceId+"";
-						List<?> calDataQueryList = this.findCallSql(calDataSql);
-						if(calDataQueryList.size()>0){
-							Object[] calDataObj=(Object[]) calDataQueryList.get(0);
-							for(int j=0;j<deviceCalItemList.size();j++){
-								int index=j+3;
-								if(index<calDataObj.length){
-									String columnName=deviceCalItemList.get(j).getName_zh_CN();
-									if("en".equalsIgnoreCase(language)){
-										columnName=deviceCalItemList.get(j).getName_en();
-									}else if("ru".equalsIgnoreCase(language)){
-										columnName=deviceCalItemList.get(j).getName_ru();
+								String rawValue=value;
+								String addr="";
+								
+								String columnDataType="";
+								String resolutionMode="";
+								String bitIndex="";
+								String unit=deviceCalItemList.get(j).getDataUnit();
+								int sort=deviceCalItemList.get(j).getSorts();
+																	
+								if("resultCode".equalsIgnoreCase(column)||"resultName".equalsIgnoreCase(column)){
+									WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
+									if(workType!=null){
+										value=workType.getResultName();
 									}
-									
-									
-									String rawColumnName=columnName;
-									String value=calDataObj[index]+"";
-									if(calDataObj[index] instanceof CLOB || calDataObj[index] instanceof Clob){
-										value=StringManagerUtils.CLOBObjectToString(calDataObj[index]);
-									}
-									String rawValue=value;
-									String addr="";
-									String column=deviceCalItemList.get(j).getCode();
-									String columnDataType="";
-									String resolutionMode="";
-									String bitIndex="";
-									String unit=deviceCalItemList.get(j).getDataUnit();
-									int sort=deviceCalItemList.get(j).getSorts();
-									
-									if("resultCode".equalsIgnoreCase(column)||"resultName".equalsIgnoreCase(column)){
-										WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
-										if(workType!=null){
-											value=workType.getResultName();
-										}
-									}
-									if( !("runStatus".equalsIgnoreCase(column)||"RunStatusName".equalsIgnoreCase(column)) ){
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
-										protocolItemResolutionDataList.add(protocolItemResolutionData);
-									}
+								}
+								
+								if( !("runStatus".equalsIgnoreCase(column)||"RunStatusName".equalsIgnoreCase(column)) ){
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
+									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}
 						}
@@ -1891,27 +2393,26 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				//附加信息
 				if(addInfoDataItemList.size()>0){
-					String addInfoSql="select t.itemname,t.itemvalue,t.itemunit "
-							+ " from tbl_deviceaddinfo t "
-							+ " where t.deviceid= "+deviceId
-							+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(addInfoNameList, ",")+") ";
-					List<?> addInfoList = this.findCallSql(addInfoSql);
 					for(int j=0;j<addInfoList.size();j++){
 						Object[] addInfoObj=(Object[]) addInfoList.get(j);
-						String itemName=addInfoObj[0]+"";
-						String itemValue=addInfoObj[1]+"";
-						String itemUnit=addInfoObj[2]+"";
 						
-						String addInfoColumn="";
+						String itemDeviceId=addInfoObj[0]+"";
+						String itemName=addInfoObj[1]+"";
+						String itemValue=addInfoObj[2]+"";
+						String itemUnit=addInfoObj[3]+"";
 						
-						for(int k=0;k<addInfoDataItemList.size();k++){
-							String addInfoName=addInfoDataItemList.get(k).getConfigItemName();
-							if(itemName.equals(addInfoName)){
-								addInfoColumn="addInfoColumn"+(k+1);
-								break;
+						if(deviceId.equalsIgnoreCase(itemDeviceId)){
+							String addInfoColumn="";
+							
+							for(int k=0;k<addInfoDataItemList.size();k++){
+								String addInfoName=addInfoDataItemList.get(k).getConfigItemName();
+								if(itemName.equals(addInfoName)){
+									addInfoColumn="addInfoColumn"+(k+1);
+									break;
+								}
 							}
+							result_json.append("\""+addInfoColumn+"\":\""+itemValue+"\",");
 						}
-						result_json.append("\""+addInfoColumn+"\":\""+itemValue+"\",");
 					}
 				}
 				

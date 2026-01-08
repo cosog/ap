@@ -98,6 +98,8 @@ public class MemoryDataManagerTask {
 		
 		cleanData();
 		
+		loadUserInfo(null,0,"update");
+		
 		loadProtocolConfig("","");
 		System.out.println("加载协议完成");
 		
@@ -296,6 +298,8 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static void cleanData(){
+		cleanData("UserInfo");
+		
 		cleanData("modbusProtocolConfig");
 		cleanData("ProtocolMappingColumn");
 		cleanData("ProtocolMappingColumnByTitle");

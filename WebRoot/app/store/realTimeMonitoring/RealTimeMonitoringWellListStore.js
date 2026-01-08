@@ -106,7 +106,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
             	var record={
             			data:{
             				deviceName:'',
-            				deviceId:0,
+            				id:0,
             				videoUrl1:'',
             				videoUrl2:'',
             				videoKeyId1:0,

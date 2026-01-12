@@ -31,12 +31,12 @@ public class DeviceAlarmInfo {
 	
 	public Map<String,ScheduledExecutorService> alarmInfoTimerMap;
 	
-	public void addTimer(String alarmKey,int delay,AlarmInfo alarmInfo){
+	public void addTimer(String alarmKey,int delay,AlarmInfo alarmInfo,String acqTime){
 		ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 		executorService.schedule(new Thread(new Runnable() {
             @Override
             public void run() {
-            	String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+            	String alarmTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
             	Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
             	
             	String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
@@ -65,10 +65,10 @@ public class DeviceAlarmInfo {
 				String key=deviceId+","+deviceType+","+alarmInfo.getColumn()+","+alarmInfo.getAlarmInfo();
 				String lastAlarmTime=alarmInfoMap.get(key);
 				
-				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, time, "yyyy-MM-dd HH:mm:ss");
+				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, alarmTime, "yyyy-MM-dd HH:mm:ss");
 				if(timeDiff>alarmInfo.getRetriggerTime()*1000){
-					SaveDelayAlarmData(deviceName,deviceType+"",time,alarmInfo);
-					alarmInfoMap.put(key, time);
+					SaveDelayAlarmData(deviceId,deviceType+"",acqTime,alarmTime,alarmInfo);
+					alarmInfoMap.put(key, alarmTime);
 					if(alarmInfo.getIsSendMessage()==1){//如果该报警项发送短信
 						if(alarmInfo.getAlarmType()==3){//开关量报警
 							SMSContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
@@ -151,26 +151,29 @@ public class DeviceAlarmInfo {
 		}
 	}
 	
-	public int SaveDelayAlarmData(String deviceName,String deviceType,String acqTime,AlarmInfo alarmInfo){
+	public int SaveDelayAlarmData(int deviceId,String deviceType,String acqTime,String alarmTime,AlarmInfo alarmInfo){
 		Connection conn = null;
 	    CallableStatement cs= null;
 	    int r=0;
 	    try{
 			conn=OracleJdbcUtis.getConnection();
 			if(conn!=null){
-				cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?)}");
-				cs.setString(1, deviceName);
+				cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+				cs.setInt(1, deviceId);
 				cs.setString(2, deviceType);
 				cs.setString(3, acqTime);
-				cs.setString(4, alarmInfo.getTitle());
-				cs.setInt(5, alarmInfo.getAlarmType());
-				cs.setString(6, alarmInfo.getRawValue());
-				cs.setString(7, alarmInfo.getAlarmInfo());
-				cs.setString(8, alarmInfo.getAlarmLimit()+"");
-				cs.setString(9, alarmInfo.getHystersis()+"");
-				cs.setInt(10, alarmInfo.getAlarmLevel());
-				cs.setInt(11, alarmInfo.getIsSendMessage());
-				cs.setInt(12, alarmInfo.getIsSendMail());
+				cs.setString(4, alarmTime);
+				cs.setString(5, alarmInfo.getTitle());
+				cs.setInt(6, alarmInfo.getAlarmType());
+				cs.setString(7, alarmInfo.getRawValue());
+				cs.setString(8, alarmInfo.getAlarmInfo());
+				cs.setString(9, alarmInfo.getAlarmLimit()+"");
+				cs.setString(10, alarmInfo.getHystersis()+"");
+				cs.setInt(11, alarmInfo.getAlarmLevel());
+				cs.setInt(12, alarmInfo.getIsSendMessage());
+				cs.setInt(13, alarmInfo.getIsSendMail());
+				cs.setString(14, alarmInfo.getColumn());
+				cs.setString(15, alarmInfo.getBitIndex());
 				r=cs.executeUpdate();
 				if(cs!=null){
 					cs.close();

@@ -22,12 +22,12 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;
-            var column = createRealTimeMonitoringColumn(arrColumns);
-            Ext.getCmp("HistoryQueryWellListColumnStr_Id").setValue(column);
+            var column = createHistoryDeviceOverviewColumnObject(arrColumns);
+            Ext.getCmp("HistoryQueryWellListColumnStr_Id").setValue(JSON.stringify(column));
             Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(get_rawData.AlarmShowStyle));
             var gridPanel = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id");
             if (!isNotVal(gridPanel)) {
-                var newColumns = Ext.JSON.decode(column);
+                var newColumns = column;
                 var bbar = new Ext.PagingToolbar({
                 	id:'HistoryQueryDeviceListGridPagingToolbar',
                 	store: store,

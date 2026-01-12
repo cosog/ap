@@ -455,8 +455,8 @@ public class DriverAPIController extends BaseController{
 										break;
 									}
 								}
-								commAlarm="insert into "+alarmTableName+" (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlevel)"
-										+ "values("+deviceId+",to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),'通信状态',3,"+(acqOnline.getStatus()?2:0)+",'"+alarmInfo+"',"+commAlarmLevel+")";
+								commAlarm="insert into "+alarmTableName+" (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlevel,itemcode)"
+										+ "values("+deviceId+",to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),'通信状态',3,"+(acqOnline.getStatus()?2:0)+",'"+alarmInfo+"',"+commAlarmLevel+",'commStatusName')";
 								
 								
 								String lastAlarmTime=alarmInfoMap.get(key);
@@ -1160,7 +1160,7 @@ public class DriverAPIController extends BaseController{
 					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 						
 					}else{
-						deviceAlarmInfo.addTimer(alarmKey, alarmInfo.getDelay(),alarmInfo);
+						deviceAlarmInfo.addTimer(alarmKey, alarmInfo.getDelay(),alarmInfo,acqTime);
 					}
 				}else{
 					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
@@ -1371,7 +1371,7 @@ public class DriverAPIController extends BaseController{
 					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 						
 					}else{
-						deviceAlarmInfo.addTimer(alarmKey, alarmInfo.getDelay(),alarmInfo);
+						deviceAlarmInfo.addTimer(alarmKey, alarmInfo.getDelay(),alarmInfo,acqTime);
 					}
 				}else{
 					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){

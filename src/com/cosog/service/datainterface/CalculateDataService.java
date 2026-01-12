@@ -67,8 +67,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 	@Autowired
 	private CommonDataService commonDataService;
 	
-	public void saveAlarmInfo(String deviceName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException{
-		getBaseDao().saveAlarmInfo(deviceName,deviceType,acqTime,acquisitionItemInfoList);
+	public void saveAlarmInfo(int deviceId,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException{
+		getBaseDao().saveAlarmInfo(deviceId,deviceType,acqTime,acquisitionItemInfoList);
 	}
 	
 	public void saveAndSendAlarmInfo(int deviceId,String deviceName,String deviceType,String deviceTypeName,
@@ -153,7 +153,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 			}
 		}
 		if(saveAcquisitionItemInfoList.size()>0){
-			getBaseDao().saveAlarmInfo(deviceName,deviceType,acqTime,saveAcquisitionItemInfoList);
+			getBaseDao().saveAlarmInfo(deviceId,deviceType,acqTime,saveAcquisitionItemInfoList);
 		}
 		if(isSendSMS || isSendMail){
 			sendAlarmSMS(deviceName,deviceType,deviceTypeName,isSendSMS,isSendMail,SMSContent.toString(),EMailContent.toString());

@@ -251,9 +251,96 @@ function historyDataRefresh(){
 			}
 		}
 	}
-	
-	
 }
+
+function createHistoryDeviceOverviewColumnObject(columnInfo) {
+    var myArr = columnInfo;
+    var myColumns = [];
+    for (var i = 0; i < myArr.length; i++) {
+        var attr = myArr[i];
+        var thisColumn={};
+        var width_ = "";
+        var flex_ = "";
+        var lock_ = "";
+        var hidden_ = "";
+        if (attr.hidden == true) {
+        	thisColumn.hidden=true;
+        }
+        if (isNotVal(attr.lock)) {
+            //lock_ = ",locked:" + attr.lock;
+//        	thisColumn.locked=attr.lock;
+        }
+        if (isNotVal(attr.width)) {
+            thisColumn.width=attr.width;
+        }
+        
+        if(myArr.length<=5){
+        	if(myArr.length==1){
+        		thisColumn.flex=1;
+        	}else{
+        		if(attr.dataIndex.toUpperCase() != 'id'.toUpperCase()){
+            		thisColumn.flex=1;
+            	} 
+        	}
+        }
+        
+//        else{
+//        	if (isNotVal(attr.flex)) {
+//                thisColumn.flex=attr.flex;
+//            }
+//        }
+        
+        
+        thisColumn.text=attr.header;
+        thisColumn.lockable=true;
+        thisColumn.align='center';
+        
+        if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
+        	thisColumn.xtype='rownumberer';
+        	thisColumn.sortable=false;
+        	thisColumn.locked=false;
+        }
+        else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
+        	thisColumn.sortable=false;
+        	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.renderer=function(value,o,p,e){
+        		return adviceCommStatusColor(value,o,p,e);
+        	};
+        }
+        else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {
+        	thisColumn.sortable=false;
+        	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.renderer=function(value,o,p,e){
+        		return adviceRunStatusColor(value,o,p,e);
+        	};
+        }
+        else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
+        	thisColumn.sortable=false;
+        	thisColumn.locked=false;
+        	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.renderer=function(value,o,p,e){
+        		return adviceTimeFormat(value,o,p,e);
+        	};
+        } 
+//        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
+//        	thisColumn.sortable=false;
+//        	thisColumn.dataIndex=attr.dataIndex;
+//        	thisColumn.renderer=function(value,o,p,e){
+//        		return adviceResultStatusColor(value,o,p,e);
+//        	};
+//        }
+        else {
+        	thisColumn.sortable=false;
+        	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.renderer=function(value,o,p,e){
+        		return adviceHistoryDataColor(value,o,p,e);
+        	};
+        }
+        
+        myColumns.push(thisColumn);
+    }
+    return myColumns;
+};
 
 function createHistoryQueryDeviceListColumn(columnInfo) {
     var myArr = columnInfo;
@@ -337,11 +424,11 @@ function createHistoryQueryColumn(columnInfo) {
         else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
             myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
         }
-        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceResultStatusColor(value,o,p,e);}";
-        }
+//        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
+//            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceResultStatusColor(value,o,p,e);}";
+//        }
         else {
-        	myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRealtimeMonitoringDataColor(value,o,p,e);}";
+        	myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceHistoryDataColor(value,o,p,e);}";
         }
         myColumns += "}";
         if (i < myArr.length - 1) {
@@ -351,6 +438,62 @@ function createHistoryQueryColumn(columnInfo) {
     myColumns += "]";
     return myColumns;
 };
+
+adviceHistoryDataColor = function (val, o, p, e) {
+    var alarmInfo = p.data.alarmInfo;
+    var alarmLevel=0;
+    var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+    var column = o.column.dataIndex;
+    if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
+    	if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
+	        for (var i = 0; i < alarmInfo.length; i++) {
+	            if (column.toUpperCase() == alarmInfo[i].item.toUpperCase()) {
+	            	var backgroundColor = '#FFFFFF';
+	                var color = '#000000';
+	                var opacity = 1;
+	                alarmLevel=alarmInfo[i].alarmLevel;
+	                
+	                if (alarmLevel == 0) {
+	                    backgroundColor = '#' + alarmShowStyle.Data.Normal.BackgroundColor;
+	                    color = '#' + alarmShowStyle.Data.Normal.Color;
+	                    opacity = alarmShowStyle.Data.Normal.Opacity;
+	                } else if (alarmLevel == 100) {
+	                    backgroundColor = '#' + alarmShowStyle.Data.FirstLevel.BackgroundColor;
+	                    color = '#' + alarmShowStyle.Data.FirstLevel.Color;
+	                    opacity = alarmShowStyle.Data.FirstLevel.Opacity;
+	                } else if (alarmLevel == 200) {
+	                    backgroundColor = '#' + alarmShowStyle.Data.SecondLevel.BackgroundColor;
+	                    color = '#' + alarmShowStyle.Data.SecondLevel.Color;
+	                    opacity = alarmShowStyle.Data.SecondLevel.Opacity;
+	                } else if (alarmLevel == 300) {
+	                    backgroundColor = '#' + alarmShowStyle.Data.ThirdLevel.BackgroundColor;
+	                    color = '#' + alarmShowStyle.Data.ThirdLevel.Color;
+	                    opacity = alarmShowStyle.Data.ThirdLevel.Opacity;
+	                }
+	                if(alarmLevel>0){
+	 			 		var rgba=color16ToRgba(backgroundColor,opacity);
+		 			 	o.style='background-color:'+rgba+';color:'+color+';';
+	 			 	}
+	            	break;
+	            }
+	        }
+	    }
+	    if(alarmLevel==0){
+	    	var backgroundColor = '#' + alarmShowStyle.Data.Normal.BackgroundColor;
+	    	var color = '#' + alarmShowStyle.Data.Normal.Color;
+	    	var opacity = alarmShowStyle.Data.Normal.Opacity;
+	    	var rgba = color16ToRgba(backgroundColor, opacity);
+            o.style = 'background-color:' + rgba + ';color:' + color + ';';
+	    }
+    }
+    if (val == undefined) {
+        val = '';
+    }
+    var tipval = val;
+    if(isNotVal(tipval)){
+	    return '<span data-qtip="' + tipval + '" data-dismissDelay=10000>' + val + '</span>';
+    }
+}
 
 function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
@@ -1866,11 +2009,11 @@ function createHistoryQueryDiagramOverlayTableColumn(columnInfo) {
         else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
             myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
         } 
-        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceResultStatusColor(value,o,p,e);}";
-        }
+//        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
+//            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceResultStatusColor(value,o,p,e);}";
+//        }
         else {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRealtimeMonitoringDataColor(value,o,p,e);}";
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceHistoryDataColor(value,o,p,e);}";
         }
         myColumns += "}";
         if (i < myArr.length - 1) {

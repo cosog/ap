@@ -2131,32 +2131,37 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		return true;
 	}
-	public Boolean saveAlarmInfo(String wellName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException {
+	public Boolean saveAlarmInfo(int deviceId,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
 		try {
-			cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			for(int i=0;i<acquisitionItemInfoList.size();i++){
 				if(acquisitionItemInfoList.get(i).getAlarmLevel()>0){
 					String title=acquisitionItemInfoList.get(i).getTitle();
-					cs.setString(1, wellName);
+					cs.setInt(1, deviceId);
 					cs.setString(2, deviceType);
 					cs.setString(3, acqTime);
+					cs.setString(4, acqTime);
 					
 					if(acquisitionItemInfoList.get(i).getType()==0 && StringManagerUtils.stringToInteger(acquisitionItemInfoList.get(i).getResolutionMode())==0   ){
 						title=acquisitionItemInfoList.get(i).getRawTitle()+"/"+title;
 					}
 					
-					cs.setString(4, title);
-					cs.setInt(5, acquisitionItemInfoList.get(i).getAlarmType());
-					cs.setString(6, acquisitionItemInfoList.get(i).getRawValue());
-					cs.setString(7, acquisitionItemInfoList.get(i).getAlarmInfo());
-					cs.setString(8, acquisitionItemInfoList.get(i).getAlarmLimit()+"");
-					cs.setString(9, acquisitionItemInfoList.get(i).getHystersis()+"");
-					cs.setInt(10, acquisitionItemInfoList.get(i).getAlarmLevel());
-					cs.setInt(11, acquisitionItemInfoList.get(i).getIsSendMessage());
-					cs.setInt(12, acquisitionItemInfoList.get(i).getIsSendMail());
+					cs.setString(5, title);
+					cs.setInt(6, acquisitionItemInfoList.get(i).getAlarmType());
+					cs.setString(7, acquisitionItemInfoList.get(i).getRawValue());
+					cs.setString(8, acquisitionItemInfoList.get(i).getAlarmInfo());
+					cs.setString(9, acquisitionItemInfoList.get(i).getAlarmLimit()+"");
+					cs.setString(10, acquisitionItemInfoList.get(i).getHystersis()+"");
+					cs.setInt(11, acquisitionItemInfoList.get(i).getAlarmLevel());
+					cs.setInt(12, acquisitionItemInfoList.get(i).getIsSendMessage());
+					cs.setInt(13, acquisitionItemInfoList.get(i).getIsSendMail());
+					
+					cs.setString(14, acquisitionItemInfoList.get(i).getColumn());
+					cs.setString(15, acquisitionItemInfoList.get(i).getBitIndex());
+					
 					cs.executeUpdate();
 				}
 			}

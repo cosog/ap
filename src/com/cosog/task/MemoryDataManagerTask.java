@@ -4582,6 +4582,21 @@ public class MemoryDataManagerTask {
 		return rtnItemsMeaning;
 	}
 	
+	public static ModbusProtocolConfig.ItemsMeaning getProtocolItemMeaning(ModbusProtocolConfig.Protocol protocol,String itemName,String meaning){
+		ModbusProtocolConfig.ItemsMeaning rtnItemsMeaning=null;
+		ModbusProtocolConfig.Items item=getProtocolItem(protocol, itemName);
+		if(StringManagerUtils.isNotNull(meaning) && item!=null && item.getMeaning()!=null && item.getMeaning().size()>0){
+			for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:item.getMeaning()){
+				if(meaning.equalsIgnoreCase(itemsMeaning.getMeaning())){
+					rtnItemsMeaning=itemsMeaning;
+					break;
+				}
+			}
+		}
+		
+		return rtnItemsMeaning;
+	}
+	
 	public static ModbusProtocolConfig.ExtendedField getProtocolExtendedField(ModbusProtocolConfig.Protocol protocol,String itemName){
 		ModbusProtocolConfig.ExtendedField r=null;
 		if(StringManagerUtils.isNotNull(itemName) && protocol!=null && protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0){

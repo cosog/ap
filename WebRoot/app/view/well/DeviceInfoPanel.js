@@ -964,7 +964,7 @@ function getApplicationScenariosType(deviceId){
 function getDeviceAdditionalInformationType(){
 	var type=-1;
 	var tabPanel = Ext.getCmp("DeviceAdditionalInformationTabpanel_Id");
-	var activeId=tabPanel.getActiveTab().id
+	var activeId=tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:"";
 	if(activeId=='DeviceAdditionalInfoPanel_Id'){
 		type=0;
 	}else if(activeId=='DeviceAuxiliaryDevicePanel_Id'){

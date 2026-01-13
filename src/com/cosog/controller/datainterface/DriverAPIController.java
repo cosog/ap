@@ -2112,8 +2112,12 @@ public class DriverAPIController extends BaseController{
 		
 		
 		for(int j=0;j<displayItemInfoList.size();j++){
+			String column=displayItemInfoList.get(j).getColumn();
+			if(displayItemInfoList.get(j).getType()==0 && "0".equalsIgnoreCase(displayItemInfoList.get(j).getResolutionMode())){
+				column+="_"+displayItemInfoList.get(j).getBitIndex();
+			}
 			allItemInfo_json.append("{\"columnName\":\""+displayItemInfoList.get(j).getTitle()+"\","
-					+ "\"column\":\""+displayItemInfoList.get(j).getColumn()+"\","
+					+ "\"column\":\""+column+"\","
 					+ "\"value\":\""+displayItemInfoList.get(j).getValue()+"\","
 					+ "\"rawValue\":\""+displayItemInfoList.get(j).getRawValue()+"\","
 					+ "\"columnDataType\":\""+displayItemInfoList.get(j).getDataType()+"\","
@@ -2212,6 +2216,12 @@ public class DriverAPIController extends BaseController{
 					alarmLevel=finalAcquisitionItemInfoList.get(index).getAlarmLevel();
 					unit=finalAcquisitionItemInfoList.get(index).getUnit();
 					bitIndex=finalAcquisitionItemInfoList.get(index).getBitIndex();
+					
+					if(finalAcquisitionItemInfoList.get(index).getType()==0 && "0".equalsIgnoreCase(resolutionMode)){
+						column+="_"+bitIndex;
+					}
+					
+					
 					if(finalAcquisitionItemInfoList.get(index).getType()==1){
 						CalItem calItem=MemoryDataManagerTask.getCalItemByCode(column, userInfo.getLanguageName());
 						if(calItem!=null){
@@ -2897,7 +2907,7 @@ public class DriverAPIController extends BaseController{
 										alarmShowStyle,
 										protocol,
 										checkSign);
-//								StringManagerUtils.printLog(webSocketSendDataStr);
+//								StringManagerUtils.printLog(webSocketSendDataStr,0);
 								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
 							}
 						}

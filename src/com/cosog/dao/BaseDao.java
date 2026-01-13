@@ -2159,6 +2159,9 @@ public class BaseDao extends HibernateDaoSupport {
 					cs.setInt(12, acquisitionItemInfoList.get(i).getIsSendMessage());
 					cs.setInt(13, acquisitionItemInfoList.get(i).getIsSendMail());
 					
+//					acquisitionItemInfoList.get(i).getRetriggerTime();
+//					acquisitionItemInfoList.get(i).getAlarmDelay();
+					
 					cs.setString(14, acquisitionItemInfoList.get(i).getColumn());
 					cs.setString(15, acquisitionItemInfoList.get(i).getBitIndex());
 					

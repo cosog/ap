@@ -1207,44 +1207,44 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        },
 	                                        items: [{
 	                                            items: [{
-	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.FESDiagramResultAlarm,
-	                                        	    name: 'calculationModel.showAlarmQueryFESDiagramResultAlarm',
-	                                        	    id: 'calculationModel_showAlarmQueryFESDiagramResultAlarm_Id',
-	                                        	    checked: false
-	    				                        },{
 	    				                        	xtype: 'checkboxfield',
 	                                        	    fieldLabel: loginUserLanguageResource.numericValueAlarm,
 	                                        	    name: 'calculationModel.showAlarmQueryNumericValueAlarm',
 	                                        	    id: 'calculationModel_showAlarmQueryNumericValueAlarm_Id',
 	                                        	    checked: false
-	    				                        }]
-	        				                }, {
-	                                            items: [{
-	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.runStatusAlarm,
-	                                        	    name: 'calculationModel.showAlarmQueryRunStatusAlarm',
-	                                        	    id: 'calculationModel_showAlarmQueryRunStatusAlarm_Id',
-	                                        	    checked: false
 	    				                        },{
-	    				                        	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.enumValueAlarm,
-	                                        	    name: 'calculationModel.showAlarmQueryEnumValueAlarm',
-	                                        	    id: 'calculationModel_showAlarmQueryEnumValueAlarm_Id',
-	                                        	    checked: false
-	    				                        }]
-	        				                }, {
-	                                            items: [{
 	                                            	xtype: 'checkboxfield',
 	                                        	    fieldLabel: loginUserLanguageResource.commStatusAlarm,
 	                                        	    name: 'calculationModel.showAlarmQueryCommStatusAlarm',
 	                                        	    id: 'calculationModel_showAlarmQueryCommStatusAlarm_Id',
 	                                        	    checked: false
+	    				                        }]
+	        				                }, {
+	                                            items: [{
+	    				                        	xtype: 'checkboxfield',
+	                                        	    fieldLabel: loginUserLanguageResource.enumValueAlarm,
+	                                        	    name: 'calculationModel.showAlarmQueryEnumValueAlarm',
+	                                        	    id: 'calculationModel_showAlarmQueryEnumValueAlarm_Id',
+	                                        	    checked: false
 	    				                        },{
+	                                            	xtype: 'checkboxfield',
+	                                        	    fieldLabel: loginUserLanguageResource.runStatusAlarm,
+	                                        	    name: 'calculationModel.showAlarmQueryRunStatusAlarm',
+	                                        	    id: 'calculationModel_showAlarmQueryRunStatusAlarm_Id',
+	                                        	    checked: false
+	    				                        }]
+	        				                }, {
+	                                            items: [{
 	    				                        	xtype: 'checkboxfield',
 	                                        	    fieldLabel: loginUserLanguageResource.switchingValueAlarm,
 	                                        	    name: 'calculationModel.showAlarmQuerySwitchingValueAlarm',
 	                                        	    id: 'calculationModel_showAlarmQuerySwitchingValueAlarm_Id',
+	                                        	    checked: false
+	    				                        },{
+	                                            	xtype: 'checkboxfield',
+	                                        	    fieldLabel: loginUserLanguageResource.FESDiagramResultAlarm,
+	                                        	    name: 'calculationModel.showAlarmQueryFESDiagramResultAlarm',
+	                                        	    id: 'calculationModel_showAlarmQueryFESDiagramResultAlarm_Id',
 	                                        	    checked: false
 	    				                        }]
 	        				                }]

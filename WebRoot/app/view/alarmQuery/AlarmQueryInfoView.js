@@ -364,43 +364,6 @@ function alarmQueryDataRefresh(){
 	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	
 	var tabChange=false;
-	if(projectTabConfig.AlarmQuery.FESDiagramResultAlarm==false){
-		tabPanel.remove(Ext.getCmp("FESDiagramResultAlarmInfoTabPanel_Id"));
-		if(activeId=="FESDiagramResultAlarmInfoTabPanel_Id"){
-			tabChange=true;
-		}
-	}else{
-		var FESDiagramResultAlarmInfoTabPanel = tabPanel.getComponent("FESDiagramResultAlarmInfoTabPanel_Id");
-		if(FESDiagramResultAlarmInfoTabPanel==undefined){
-			tabPanel.insert(0,AlarmQuerySecondTabPanelItems[0]);
-		}
-	}
-	
-	if(projectTabConfig.AlarmQuery.RunStatusAlarm==false){
-		tabPanel.remove(Ext.getCmp("RunStatusAlarmInfoTabPanel_Id"));
-		if(activeId=="RunStatusAlarmInfoTabPanel_Id"){
-			tabChange=true;
-		}
-	}else{
-		var RunStatusAlarmInfoTabPanel = tabPanel.getComponent("RunStatusAlarmInfoTabPanel_Id");
-		if(RunStatusAlarmInfoTabPanel==undefined){
-			tabPanel.insert(1,AlarmQuerySecondTabPanelItems[1]);
-		}
-	}
-	
-	
-	if(projectTabConfig.AlarmQuery.CommStatusAlarm==false){
-		tabPanel.remove(Ext.getCmp("CommunicationAlarmInfoTabPanel_Id"));
-		if(activeId=="CommunicationAlarmInfoTabPanel_Id"){
-			tabChange=true;
-		}
-	}else{
-		var CommunicationAlarmInfoTabPanel = tabPanel.getComponent("CommunicationAlarmInfoTabPanel_Id");
-		if(CommunicationAlarmInfoTabPanel==undefined){
-			tabPanel.insert(2,AlarmQuerySecondTabPanelItems[2]);
-		}
-	}
-	
 	if(projectTabConfig.AlarmQuery.NumericValueAlarm==false){
 		tabPanel.remove(Ext.getCmp("NumericValueAlarmInfoTabPanel_Id"));
 		if(activeId=="NumericValueAlarmInfoTabPanel_Id"){
@@ -409,7 +372,7 @@ function alarmQueryDataRefresh(){
 	}else{
 		var NumericValueAlarmInfoTabPanel = tabPanel.getComponent("NumericValueAlarmInfoTabPanel_Id");
 		if(NumericValueAlarmInfoTabPanel==undefined){
-			tabPanel.insert(3,AlarmQuerySecondTabPanelItems[3]);
+			tabPanel.insert(0,AlarmQuerySecondTabPanelItems[0]);
 		}
 	}
 	
@@ -421,10 +384,10 @@ function alarmQueryDataRefresh(){
 	}else{
 		var EnumValueAlarmInfoTabPanel = tabPanel.getComponent("EnumValueAlarmInfoTabPanel_Id");
 		if(EnumValueAlarmInfoTabPanel==undefined){
-			tabPanel.insert(4,AlarmQuerySecondTabPanelItems[4]);
+			tabPanel.insert(1,AlarmQuerySecondTabPanelItems[1]);
 		}
 	}
-	
+
 	if(projectTabConfig.AlarmQuery.SwitchingValueAlarm==false){
 		tabPanel.remove(Ext.getCmp("SwitchingValueAlarmInfoTabPanel_Id"));
 		if(activeId=="SwitchingValueAlarmInfoTabPanel_Id"){
@@ -433,6 +396,42 @@ function alarmQueryDataRefresh(){
 	}else{
 		var SwitchingValueAlarmInfoTabPanel = tabPanel.getComponent("SwitchingValueAlarmInfoTabPanel_Id");
 		if(SwitchingValueAlarmInfoTabPanel==undefined){
+			tabPanel.insert(2,AlarmQuerySecondTabPanelItems[2]);
+		}
+	}
+	
+	if(projectTabConfig.AlarmQuery.CommStatusAlarm==false){
+		tabPanel.remove(Ext.getCmp("CommunicationAlarmInfoTabPanel_Id"));
+		if(activeId=="CommunicationAlarmInfoTabPanel_Id"){
+			tabChange=true;
+		}
+	}else{
+		var CommunicationAlarmInfoTabPanel = tabPanel.getComponent("CommunicationAlarmInfoTabPanel_Id");
+		if(CommunicationAlarmInfoTabPanel==undefined){
+			tabPanel.insert(3,AlarmQuerySecondTabPanelItems[3]);
+		}
+	}
+	
+	if(projectTabConfig.AlarmQuery.RunStatusAlarm==false){
+		tabPanel.remove(Ext.getCmp("RunStatusAlarmInfoTabPanel_Id"));
+		if(activeId=="RunStatusAlarmInfoTabPanel_Id"){
+			tabChange=true;
+		}
+	}else{
+		var RunStatusAlarmInfoTabPanel = tabPanel.getComponent("RunStatusAlarmInfoTabPanel_Id");
+		if(RunStatusAlarmInfoTabPanel==undefined){
+			tabPanel.insert(4,AlarmQuerySecondTabPanelItems[4]);
+		}
+	}
+	
+	if(projectTabConfig.AlarmQuery.FESDiagramResultAlarm==false){
+		tabPanel.remove(Ext.getCmp("FESDiagramResultAlarmInfoTabPanel_Id"));
+		if(activeId=="FESDiagramResultAlarmInfoTabPanel_Id"){
+			tabChange=true;
+		}
+	}else{
+		var FESDiagramResultAlarmInfoTabPanel = tabPanel.getComponent("FESDiagramResultAlarmInfoTabPanel_Id");
+		if(FESDiagramResultAlarmInfoTabPanel==undefined){
 			tabPanel.insert(5,AlarmQuerySecondTabPanelItems[5]);
 		}
 	}

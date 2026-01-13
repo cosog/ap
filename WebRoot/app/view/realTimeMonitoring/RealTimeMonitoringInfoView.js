@@ -468,13 +468,13 @@ function createRealTimeMonitoringColumnObject(columnInfo) {
         		return adviceTimeFormat(value,o,p,e);
         	};
         } 
-        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
-        	thisColumn.sortable=false;
-        	thisColumn.dataIndex=attr.dataIndex;
-        	thisColumn.renderer=function(value,o,p,e){
-        		return adviceResultStatusColor(value,o,p,e);
-        	};
-        }
+//        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
+//        	thisColumn.sortable=false;
+//        	thisColumn.dataIndex=attr.dataIndex;
+//        	thisColumn.renderer=function(value,o,p,e){
+//        		return adviceResultStatusColor(value,o,p,e);
+//        	};
+//        }
         else {
         	thisColumn.sortable=false;
         	thisColumn.dataIndex=attr.dataIndex;
@@ -518,9 +518,9 @@ function createRealTimeMonitoringColumn(columnInfo) {
         else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
             myColumns += ',"sortable":false,"locked":false,"dataIndex":"' + attr.dataIndex + '","renderer":function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}';
         } 
-        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
-            myColumns += ',"sortable":false,"dataIndex":"' + attr.dataIndex + '","renderer":function(value,o,p,e){return adviceResultStatusColor(value,o,p,e);}';
-        }
+//        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
+//            myColumns += ',"sortable":false,"dataIndex":"' + attr.dataIndex + '","renderer":function(value,o,p,e){return adviceResultStatusColor(value,o,p,e);}';
+//        }
         else {
             myColumns += ',"sortable":false,"dataIndex":"' + attr.dataIndex + '","renderer":function(value,o,p,e){return adviceRealtimeMonitoringDataColor(value,o,p,e);}';
         }

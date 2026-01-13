@@ -284,12 +284,20 @@ function websocketOnMessage(evt) {
                     for (var i = 0; i < store.getCount(); i++) {
                         var record = store.getAt(i);
                         if (record.data.id == data.deviceId) {
+                        	var alarmInfo=[];
                             for (var j = 0; j < data.allItemInfo.length; j++) {
                                 for (let item in record.data) {
                                     if (item.toUpperCase() == data.allItemInfo[j].column.toUpperCase()) {
                                         record.set(item, data.allItemInfo[j].value);
                                         if (item.toUpperCase() == "runStatusName".toUpperCase()) {
                                             record.set("runStatus", parseInt(data.allItemInfo[j].rawValue));
+                                        }
+                                        
+                                        if(data.allItemInfo[j].alarmLevel>0){
+                                        	alarmInfo.push({
+                                                item: data.allItemInfo[j].column,
+                                                alarmLevel: data.allItemInfo[j].alarmLevel
+                                            });
                                         }
                                         break;
                                     }
@@ -301,6 +309,9 @@ function websocketOnMessage(evt) {
                             record.set("commAlarmLevel", data.commAlarmLevel);
                             record.set("runAlarmLevel", data.runAlarmLevel);
                             record.set("resultAlarmLevel", data.resultAlarmLevel);
+                            
+                            record.set("alarmInfo", alarmInfo);
+                            
                             record.commit();
                             break;
                         }

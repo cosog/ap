@@ -451,7 +451,9 @@ public class DriverAPIController extends BaseController{
 										commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 										isSendMessage=alarmInstanceOwnItem.getItemList().get(j).getIsSendMessage();
 										isSendMail=alarmInstanceOwnItem.getItemList().get(j).getIsSendMail();
-										retriggerTime=alarmInstanceOwnItem.getItemList().get(j).getRetriggerTime();
+										if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(j).getRetriggerTime())){
+											retriggerTime=StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(j).getRetriggerTime());
+										}
 										break;
 									}
 								}
@@ -461,7 +463,7 @@ public class DriverAPIController extends BaseController{
 								
 								String lastAlarmTime=alarmInfoMap.get(key);
 								long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, currentTime, "yyyy-MM-dd HH:mm:ss");
-								if(commAlarmLevel>0&&timeDiff>retriggerTime*1000){
+								if(commAlarmLevel>0&&timeDiff>=retriggerTime*1000){
 									result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarm);
 									calculateDataService.sendAlarmSMS(deviceName, deviceType+"",deviceTypeName,isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
 									alarmInfoMap.put(key, currentTime);
@@ -723,7 +725,11 @@ public class DriverAPIController extends BaseController{
 										commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 										isSendMessage=alarmInstanceOwnItem.getItemList().get(j).getIsSendMessage();
 										isSendMail=alarmInstanceOwnItem.getItemList().get(j).getIsSendMail();
-										retriggerTime=alarmInstanceOwnItem.getItemList().get(j).getRetriggerTime();
+										
+										if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(j).getRetriggerTime())){
+											retriggerTime=StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(j).getRetriggerTime());
+										}
+										
 										break;
 									}
 								}
@@ -733,7 +739,7 @@ public class DriverAPIController extends BaseController{
 								
 								String lastAlarmTime=alarmInfoMap.get(key);
 								long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, currentTime, "yyyy-MM-dd HH:mm:ss");
-								if(commAlarmLevel>0&&timeDiff>retriggerTime*1000){
+								if(commAlarmLevel>0&&timeDiff>=retriggerTime*1000){
 									result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarm);
 									calculateDataService.sendAlarmSMS(deviceName, deviceType+"",deviceTypeName,isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
 									alarmInfoMap.put(key, currentTime);
@@ -1002,40 +1008,43 @@ public class DriverAPIController extends BaseController{
 				int alarmSign=alarmInstanceOwnItem.getItemList().get(l).getAlarmSign();
 				if(alarmSign==1){
 					if(acquisitionItemInfo.getType()==0){
-						if((acquisitionItemInfo.getAddr()+"").equals(alarmInstanceOwnItem.getItemList().get(l).getItemAddr()+"")){
+						if(acquisitionItemInfo.getResolutionMode().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(l).getType()+"")
+								&& (acquisitionItemInfo.getAddr()+"").equals(alarmInstanceOwnItem.getItemList().get(l).getItemAddr()+"")
+								){
 							int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
-							int delay=alarmInstanceOwnItem.getItemList().get(l).getDelay();
-							int retriggerTime=alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime();
+							int delay=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getDelay())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getDelay()):0;
+							int retriggerTime=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime()):0;
+							
 							if(alarmType==2 && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
-								float hystersis=alarmInstanceOwnItem.getItemList().get(l).getHystersis();
-								float upperLimit=alarmInstanceOwnItem.getItemList().get(l).getUpperLimit();
-								float lowerLimit=alarmInstanceOwnItem.getItemList().get(l).getLowerLimit();
+								float hystersis=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getHystersis())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getHystersis()):0;
+								float upperLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()):0;
+								float lowerLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()):0;
 								
 								if(existAlarm){//如果已存在报警
 									upperLimit=upperLimit-hystersis;
 									lowerLimit=lowerLimit+hystersis;
 								}
 								
-								if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
+								if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()) && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
 									alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
 									acquisitionItemInfo.setAlarmLevel(alarmLevel);
-									acquisitionItemInfo.setHystersis(hystersis);
+									acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
 									acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit());
 									acquisitionItemInfo.setAlarmInfo("高报");
 									acquisitionItemInfo.setAlarmType(alarmType);
-									acquisitionItemInfo.setAlarmDelay(delay);
-									acquisitionItemInfo.setRetriggerTime(retriggerTime);
+									acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+									acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
 									acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
 									acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
 								}else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
 									alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
 									acquisitionItemInfo.setAlarmLevel(alarmLevel);
-									acquisitionItemInfo.setHystersis(hystersis);
+									acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
 									acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit());
 									acquisitionItemInfo.setAlarmInfo("低报");
 									acquisitionItemInfo.setAlarmType(alarmType);
-									acquisitionItemInfo.setAlarmDelay(delay);
-									acquisitionItemInfo.setRetriggerTime(retriggerTime);
+									acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+									acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
 									acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
 									acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
 								}
@@ -1047,8 +1056,8 @@ public class DriverAPIController extends BaseController{
 										acquisitionItemInfo.setAlarmLevel(alarmLevel);
 										acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
 										acquisitionItemInfo.setAlarmType(alarmType);
-										acquisitionItemInfo.setAlarmDelay(delay);
-										acquisitionItemInfo.setRetriggerTime(retriggerTime);
+										acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+										acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
 										acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
 										acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
 									}
@@ -1059,23 +1068,24 @@ public class DriverAPIController extends BaseController{
 									acquisitionItemInfo.setAlarmLevel(alarmLevel);
 									acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
 									acquisitionItemInfo.setAlarmType(alarmType);
-									acquisitionItemInfo.setAlarmDelay(delay);
-									acquisitionItemInfo.setRetriggerTime(retriggerTime);
+									acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+									acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
 									acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
 									acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
 								}
 							}
 						}
+						
 					}else if(acquisitionItemInfo.getType()==5){
 						int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
-						int delay=alarmInstanceOwnItem.getItemList().get(l).getDelay();
-						int retriggerTime=alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime();
+						int delay=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getDelay())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getDelay()):0;
+						int retriggerTime=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime()):0;
 						if(alarmType==7 
 								&&acquisitionItemInfo.getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(l).getItemCode()) 
 								&& StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
-							float hystersis=alarmInstanceOwnItem.getItemList().get(l).getHystersis();
-							float upperLimit=alarmInstanceOwnItem.getItemList().get(l).getUpperLimit();
-							float lowerLimit=alarmInstanceOwnItem.getItemList().get(l).getLowerLimit();
+							float hystersis=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getHystersis())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getHystersis()):0;
+							float upperLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()):0;
+							float lowerLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()):0;
 							
 							if(existAlarm){//如果已存在报警
 								upperLimit=upperLimit-hystersis;
@@ -1085,23 +1095,23 @@ public class DriverAPIController extends BaseController{
 							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
 								alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
 								acquisitionItemInfo.setAlarmLevel(alarmLevel);
-								acquisitionItemInfo.setHystersis(hystersis);
+								acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
 								acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit());
 								acquisitionItemInfo.setAlarmInfo("高报");
 								acquisitionItemInfo.setAlarmType(alarmType);
-								acquisitionItemInfo.setAlarmDelay(delay);
-								acquisitionItemInfo.setRetriggerTime(retriggerTime);
+								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
 								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
 								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
 							}else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
 								alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
 								acquisitionItemInfo.setAlarmLevel(alarmLevel);
-								acquisitionItemInfo.setHystersis(hystersis);
+								acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
 								acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit());
 								acquisitionItemInfo.setAlarmInfo("低报");
 								acquisitionItemInfo.setAlarmType(alarmType);
-								acquisitionItemInfo.setAlarmDelay(delay);
-								acquisitionItemInfo.setRetriggerTime(retriggerTime);
+								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
 								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
 								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
 							}
@@ -1123,10 +1133,10 @@ public class DriverAPIController extends BaseController{
 				}
 			}else{
 				String alarmStartTime =alarmInfo.getAlarmStartTime();
-				int retriggerTime=acquisitionItemInfo.getRetriggerTime();
+				int retriggerTime=StringManagerUtils.stringToInteger(acquisitionItemInfo.getRetriggerTime());
 				
 				long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-				if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>retriggerTime*1000) ){
+				if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>=retriggerTime*1000) ){
 					alarmInfo.setAlarmStartTime(acqTime);
 					alarmInfo.setTriggerAlarm(true);
 					acquisitionItemInfo.setTriggerAlarm(true);
@@ -1156,11 +1166,11 @@ public class DriverAPIController extends BaseController{
 				alarmInfo.setIsSendMessage(acquisitionItemInfo.getIsSendMessage());
 				alarmInfo.setIsSendMail(acquisitionItemInfo.getIsSendMail());
 				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
-				if(alarmInfo.getDelay()>0){
+				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
 					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 						
 					}else{
-						deviceAlarmInfo.addTimer(alarmKey, alarmInfo.getDelay(),alarmInfo,acqTime);
+						deviceAlarmInfo.addTimer(alarmKey, StringManagerUtils.stringToInteger(alarmInfo.getDelay()),alarmInfo,acqTime);
 					}
 				}else{
 					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
@@ -1250,75 +1260,89 @@ public class DriverAPIController extends BaseController{
 				}
 			}
 			
-			for(int k=0;alarmInstanceOwnItem!=null&&k<alarmInstanceOwnItem.getItemList().size();k++){
-				if(("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
-						&&alarmInstanceOwnItem.getItemList().get(k).getType()==4
-						&&workType!=null&&workType.getResultCode()==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
-					alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
-					if(alarmLevel>0){
-						acquisitionItemInfo.setAlarmLevel(alarmLevel);
-						acquisitionItemInfo.setAlarmInfo(workType.getResultName());
-						acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-						acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-						acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-						acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-						acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
-					}
-					break;
-				}else if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
-						&& alarmInstanceOwnItem.getItemList().get(k).getType()==6
-						&& alarmInstanceOwnItem.getItemList().get(k).getValue()==StringManagerUtils.stringToInteger(calItemResolutionDataList.get(i).getRawValue())
-						){
-					alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
-					if(alarmLevel>0){
-						acquisitionItemInfo.setAlarmLevel(alarmLevel);
-						acquisitionItemInfo.setAlarmInfo(calItemResolutionDataList.get(i).getValue());
-						acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-						acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-						acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-						acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-						acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
-					}
-					break;
-				}else if(alarmInstanceOwnItem.getItemList().get(k).getType()==5&&calItemResolutionDataList.get(i).getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
-					float hystersis=alarmInstanceOwnItem.getItemList().get(k).getHystersis();
-					float upperLimit=alarmInstanceOwnItem.getItemList().get(k).getUpperLimit();
-					float lowerLimit=alarmInstanceOwnItem.getItemList().get(k).getLowerLimit();
+			for(int k=0;alarmInstanceOwnItem!=null && k<alarmInstanceOwnItem.getItemList().size();k++){
+				int alarmSign=alarmInstanceOwnItem.getItemList().get(k).getAlarmSign();
+				if(alarmSign==1){
+					int delay=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getDelay())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getDelay()):0;
+					int retriggerTime=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime()):0;
 					
-					if(existAlarm){//如果已存在报警
-						upperLimit=upperLimit-hystersis;
-						lowerLimit=lowerLimit+hystersis;
-					}
-					
-					if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()+"") 
-							&& StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
+					if(("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
+							&&alarmInstanceOwnItem.getItemList().get(k).getType()==4
+							&&workType!=null&&workType.getResultCode()==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
 						alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
 						if(alarmLevel>0){
 							acquisitionItemInfo.setAlarmLevel(alarmLevel);
-							acquisitionItemInfo.setHystersis(hystersis);
-							acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit());
-							acquisitionItemInfo.setAlarmInfo("高报");
+							acquisitionItemInfo.setAlarmInfo(workType.getResultName());
 							acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getDelay())){
+								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+							}
 							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-							acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
+							
+							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime())){
+								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
+							}
 						}
-					}else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
-						alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmSign()>0?alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel():0;
+						break;
+					}else if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
+							&& alarmInstanceOwnItem.getItemList().get(k).getType()==6
+							&& alarmInstanceOwnItem.getItemList().get(k).getValue()==StringManagerUtils.stringToInteger(calItemResolutionDataList.get(i).getRawValue())
+							){
+						alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
 						if(alarmLevel>0){
 							acquisitionItemInfo.setAlarmLevel(alarmLevel);
-							acquisitionItemInfo.setHystersis(hystersis);
-							acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit());
-							acquisitionItemInfo.setAlarmInfo("低报");
+							acquisitionItemInfo.setAlarmInfo(calItemResolutionDataList.get(i).getValue());
 							acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getDelay())){
+								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+							}
 							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-							acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
+							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime())){
+								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
+							}
 						}
+						break;
+					}else if(alarmInstanceOwnItem.getItemList().get(k).getType()==5&&calItemResolutionDataList.get(i).getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
+						float hystersis=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getHystersis())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(k).getHystersis()):0;
+						float upperLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()):0;
+						float lowerLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()):0;
+						if(existAlarm){//如果已存在报警
+							upperLimit=upperLimit-hystersis;
+							lowerLimit=lowerLimit+hystersis;
+						}
+						
+						if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()) 
+								&& StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
+							alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
+							if(alarmLevel>0){
+								acquisitionItemInfo.setAlarmLevel(alarmLevel);
+								acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(k).getHystersis());
+								acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit());
+								acquisitionItemInfo.setAlarmInfo("高报");
+								acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
+								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
+							}
+						}else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()) && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
+							alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmSign()>0?alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel():0;
+							if(alarmLevel>0){
+								acquisitionItemInfo.setAlarmLevel(alarmLevel);
+								acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(k).getHystersis());
+								acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit());
+								acquisitionItemInfo.setAlarmInfo("低报");
+								acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
+								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
+							}
+						}
+						break;
 					}
-					break;
 				}
 			}
 			
@@ -1334,10 +1358,10 @@ public class DriverAPIController extends BaseController{
 				}
 			}else{
 				String alarmStartTime =alarmInfo.getAlarmStartTime();
-				int retriggerTime=acquisitionItemInfo.getRetriggerTime();
+				int retriggerTime=StringManagerUtils.stringToInteger(acquisitionItemInfo.getRetriggerTime());
 				
 				long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-				if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>retriggerTime*1000) ){
+				if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>=retriggerTime*1000) ){
 					alarmInfo.setAlarmStartTime(acqTime);
 					alarmInfo.setTriggerAlarm(true);
 					acquisitionItemInfo.setTriggerAlarm(true);
@@ -1367,11 +1391,11 @@ public class DriverAPIController extends BaseController{
 				alarmInfo.setIsSendMail(acquisitionItemInfo.getIsSendMail());
 				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
 				
-				if(alarmInfo.getDelay()>0){
+				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
 					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 						
 					}else{
-						deviceAlarmInfo.addTimer(alarmKey, alarmInfo.getDelay(),alarmInfo,acqTime);
+						deviceAlarmInfo.addTimer(alarmKey, StringManagerUtils.stringToInteger(alarmInfo.getDelay()),alarmInfo,acqTime);
 					}
 				}else{
 					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
@@ -2122,7 +2146,7 @@ public class DriverAPIController extends BaseController{
 					+ "\"rawValue\":\""+displayItemInfoList.get(j).getRawValue()+"\","
 					+ "\"columnDataType\":\""+displayItemInfoList.get(j).getDataType()+"\","
 					+ "\"resolutionMode\":\""+displayItemInfoList.get(j).getResolutionMode()+"\","
-					+ "\"alarmLevel\":"+displayItemInfoList.get(j).getAlarmLevel()+"},");
+					+ "\"alarmLevel\":"+(displayItemInfoList.get(j).getTriggerAlarm()?displayItemInfoList.get(j).getAlarmLevel():0)+"},");
 			if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), displayItemInfoList.get(j).getColumn(), false,0,1)){
 				for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 					if(displayItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) 
@@ -2213,7 +2237,7 @@ public class DriverAPIController extends BaseController{
 					column=finalAcquisitionItemInfoList.get(index).getColumn();
 					columnDataType=finalAcquisitionItemInfoList.get(index).getDataType();
 					resolutionMode=finalAcquisitionItemInfoList.get(index).getResolutionMode()+"";
-					alarmLevel=finalAcquisitionItemInfoList.get(index).getAlarmLevel();
+					alarmLevel=finalAcquisitionItemInfoList.get(index).getTriggerAlarm()?finalAcquisitionItemInfoList.get(index).getAlarmLevel():0;
 					unit=finalAcquisitionItemInfoList.get(index).getUnit();
 					bitIndex=finalAcquisitionItemInfoList.get(index).getBitIndex();
 					
@@ -2677,7 +2701,7 @@ public class DriverAPIController extends BaseController{
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
 					
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
-						if(acquisitionItemInfo.getTriggerAlarm() && acquisitionItemInfo.getAlarmDelay()==0){
+						if(acquisitionItemInfo.getTriggerAlarm() && StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay())==0){
 							alarm=true;
 							break;
 						}

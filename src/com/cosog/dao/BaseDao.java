@@ -2136,7 +2136,7 @@ public class BaseDao extends HibernateDaoSupport {
 		CallableStatement cs=null;
 		
 		try {
-			cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			for(int i=0;i<acquisitionItemInfoList.size();i++){
 				if(acquisitionItemInfoList.get(i).getAlarmLevel()>0){
 					String title=acquisitionItemInfoList.get(i).getTitle();
@@ -2151,19 +2151,41 @@ public class BaseDao extends HibernateDaoSupport {
 					
 					cs.setString(5, title);
 					cs.setInt(6, acquisitionItemInfoList.get(i).getAlarmType());
-					cs.setString(7, acquisitionItemInfoList.get(i).getRawValue());
+					if(StringManagerUtils.isNum(acquisitionItemInfoList.get(i).getRawValue())){
+						cs.setString(7, acquisitionItemInfoList.get(i).getRawValue());
+					}else{
+						cs.setString(7, null);
+					}
 					cs.setString(8, acquisitionItemInfoList.get(i).getAlarmInfo());
-					cs.setString(9, acquisitionItemInfoList.get(i).getAlarmLimit()+"");
-					cs.setString(10, acquisitionItemInfoList.get(i).getHystersis()+"");
+					if(StringManagerUtils.isNum(acquisitionItemInfoList.get(i).getAlarmLimit())){
+						cs.setString(9, acquisitionItemInfoList.get(i).getAlarmLimit());
+					}else{
+						cs.setString(9, null);
+					}
+					if(StringManagerUtils.isNum(acquisitionItemInfoList.get(i).getHystersis())){
+						cs.setString(10, acquisitionItemInfoList.get(i).getHystersis());
+					}else{
+						cs.setString(10, null);
+					}
 					cs.setInt(11, acquisitionItemInfoList.get(i).getAlarmLevel());
-					cs.setInt(12, acquisitionItemInfoList.get(i).getIsSendMessage());
-					cs.setInt(13, acquisitionItemInfoList.get(i).getIsSendMail());
 					
-//					acquisitionItemInfoList.get(i).getRetriggerTime();
-//					acquisitionItemInfoList.get(i).getAlarmDelay();
+					if(StringManagerUtils.isNum(acquisitionItemInfoList.get(i).getAlarmDelay())){
+						cs.setString(12, acquisitionItemInfoList.get(i).getAlarmDelay());
+					}else{
+						cs.setString(12, null);
+					}
 					
-					cs.setString(14, acquisitionItemInfoList.get(i).getColumn());
-					cs.setString(15, acquisitionItemInfoList.get(i).getBitIndex());
+					if(StringManagerUtils.isNum(acquisitionItemInfoList.get(i).getRetriggerTime())){
+						cs.setString(13, acquisitionItemInfoList.get(i).getRetriggerTime());
+					}else{
+						cs.setString(13, null);
+					}
+					
+					cs.setInt(14, acquisitionItemInfoList.get(i).getIsSendMessage());
+					cs.setInt(15, acquisitionItemInfoList.get(i).getIsSendMail());
+					
+					cs.setString(16, acquisitionItemInfoList.get(i).getColumn());
+					cs.setString(17, acquisitionItemInfoList.get(i).getBitIndex());
 					
 					cs.executeUpdate();
 				}

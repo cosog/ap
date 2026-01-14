@@ -66,7 +66,7 @@ public class DeviceAlarmInfo {
 				String lastAlarmTime=alarmInfoMap.get(key);
 				
 				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, alarmTime, "yyyy-MM-dd HH:mm:ss");
-				if(timeDiff>alarmInfo.getRetriggerTime()*1000){
+				if(timeDiff>StringManagerUtils.stringToInteger(alarmInfo.getRetriggerTime())*1000){
 					SaveDelayAlarmData(deviceId,deviceType+"",acqTime,alarmTime,alarmInfo);
 					alarmInfoMap.put(key, alarmTime);
 					if(alarmInfo.getIsSendMessage()==1){//如果该报警项发送短信
@@ -158,22 +158,47 @@ public class DeviceAlarmInfo {
 	    try{
 			conn=OracleJdbcUtis.getConnection();
 			if(conn!=null){
-				cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+				cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 				cs.setInt(1, deviceId);
 				cs.setString(2, deviceType);
 				cs.setString(3, acqTime);
 				cs.setString(4, alarmTime);
 				cs.setString(5, alarmInfo.getTitle());
 				cs.setInt(6, alarmInfo.getAlarmType());
-				cs.setString(7, alarmInfo.getRawValue());
+				if(StringManagerUtils.isNum(alarmInfo.getRawValue())){
+					cs.setString(7, alarmInfo.getRawValue());
+				}else{
+					cs.setString(7, null);
+				}
 				cs.setString(8, alarmInfo.getAlarmInfo());
-				cs.setString(9, alarmInfo.getAlarmLimit()+"");
-				cs.setString(10, alarmInfo.getHystersis()+"");
+				if(StringManagerUtils.isNum(alarmInfo.getAlarmLimit())){
+					cs.setString(9, alarmInfo.getAlarmLimit());
+				}else{
+					cs.setString(9, null);
+				}
+				if(StringManagerUtils.isNum(alarmInfo.getHystersis())){
+					cs.setString(10, alarmInfo.getHystersis());
+				}else{
+					cs.setString(10, null);
+				}
 				cs.setInt(11, alarmInfo.getAlarmLevel());
-				cs.setInt(12, alarmInfo.getIsSendMessage());
-				cs.setInt(13, alarmInfo.getIsSendMail());
-				cs.setString(14, alarmInfo.getColumn());
-				cs.setString(15, alarmInfo.getBitIndex());
+				if(StringManagerUtils.isNum(alarmInfo.getDelay())){
+					cs.setString(12, alarmInfo.getDelay());
+				}else{
+					cs.setString(12, null);
+				}
+				
+				if(StringManagerUtils.isNum(alarmInfo.getRetriggerTime())){
+					cs.setString(13, alarmInfo.getRetriggerTime());
+				}else{
+					cs.setString(13, null);
+				}
+				
+				cs.setInt(14, alarmInfo.getIsSendMessage());
+				cs.setInt(15, alarmInfo.getIsSendMail());
+				
+				cs.setString(16, alarmInfo.getColumn());
+				cs.setString(17, alarmInfo.getBitIndex());
 				r=cs.executeUpdate();
 				if(cs!=null){
 					cs.close();
@@ -231,17 +256,17 @@ public class DeviceAlarmInfo {
 		
 		public String bitIndex="";
 		
-		public float alarmLimit;
+		public String alarmLimit;
 		
-		public float hystersis;
+		public String hystersis;
 		
 		public String alarmInfo;
 		
 		public int alarmType;
 		
-		public int delay;
+		public String delay;
 		
-		public int retriggerTime;
+		public String retriggerTime;
 		
 		public int isSendMessage;
 		
@@ -315,16 +340,16 @@ public class DeviceAlarmInfo {
 		public void setBitIndex(String bitIndex) {
 			this.bitIndex = bitIndex;
 		}
-		public float getAlarmLimit() {
+		public String getAlarmLimit() {
 			return alarmLimit;
 		}
-		public void setAlarmLimit(float alarmLimit) {
+		public void setAlarmLimit(String alarmLimit) {
 			this.alarmLimit = alarmLimit;
 		}
-		public float getHystersis() {
+		public String getHystersis() {
 			return hystersis;
 		}
-		public void setHystersis(float hystersis) {
+		public void setHystersis(String hystersis) {
 			this.hystersis = hystersis;
 		}
 		public String getAlarmInfo() {
@@ -339,16 +364,16 @@ public class DeviceAlarmInfo {
 		public void setAlarmType(int alarmType) {
 			this.alarmType = alarmType;
 		}
-		public int getDelay() {
+		public String getDelay() {
 			return delay;
 		}
-		public void setDelay(int delay) {
+		public void setDelay(String delay) {
 			this.delay = delay;
 		}
-		public int getRetriggerTime() {
+		public String getRetriggerTime() {
 			return retriggerTime;
 		}
-		public void setRetriggerTime(int retriggerTime) {
+		public void setRetriggerTime(String retriggerTime) {
 			this.retriggerTime = retriggerTime;
 		}
 		public int getIsSendMessage() {

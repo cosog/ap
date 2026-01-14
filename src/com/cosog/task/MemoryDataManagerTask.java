@@ -2526,11 +2526,11 @@ public class MemoryDataManagerTask {
 					alarmItem.setBitIndex(rs.getInt(8));
 					
 					alarmItem.setValue(rs.getFloat(9));
-					alarmItem.setUpperLimit(rs.getFloat(10));
-					alarmItem.setLowerLimit(rs.getFloat(11));
-					alarmItem.setHystersis(rs.getFloat(12));
-					alarmItem.setDelay(rs.getInt(13));
-					alarmItem.setRetriggerTime(rs.getInt(14));
+					alarmItem.setUpperLimit( (rs.getObject(10)+"").replaceAll("null", "") );
+					alarmItem.setLowerLimit( (rs.getObject(11)+"").replaceAll("null", "") );
+					alarmItem.setHystersis( (rs.getObject(12)+"").replaceAll("null", "") );
+					alarmItem.setDelay( (rs.getObject(13)+"").replaceAll("null", "") );
+					alarmItem.setRetriggerTime( (rs.getObject(14)+"").replaceAll("null", "") );
 					
 					alarmItem.setAlarmLevel(rs.getInt(15));
 					alarmItem.setAlarmSign(rs.getInt(16));

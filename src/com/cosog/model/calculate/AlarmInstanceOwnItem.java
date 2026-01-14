@@ -21,11 +21,11 @@ public class AlarmInstanceOwnItem implements Serializable {
 		public int bitIndex;
 		
 		public float value;
-		public float upperLimit;
-		public float lowerLimit;
-		public float hystersis;
-		public int delay;
-		public int retriggerTime;
+		public String upperLimit;
+		public String lowerLimit;
+		public String hystersis;
+		public String delay;
+		public String retriggerTime;
 		
 		public int alarmLevel;
 		public int alarmSign;
@@ -75,28 +75,28 @@ public class AlarmInstanceOwnItem implements Serializable {
 		public void setValue(float value) {
 			this.value = value;
 		}
-		public float getUpperLimit() {
+		public String getUpperLimit() {
 			return upperLimit;
 		}
-		public void setUpperLimit(float upperLimit) {
+		public void setUpperLimit(String upperLimit) {
 			this.upperLimit = upperLimit;
 		}
-		public float getLowerLimit() {
+		public String getLowerLimit() {
 			return lowerLimit;
 		}
-		public void setLowerLimit(float lowerLimit) {
+		public void setLowerLimit(String lowerLimit) {
 			this.lowerLimit = lowerLimit;
 		}
-		public float getHystersis() {
+		public String getHystersis() {
 			return hystersis;
 		}
-		public void setHystersis(float hystersis) {
+		public void setHystersis(String hystersis) {
 			this.hystersis = hystersis;
 		}
-		public int getDelay() {
+		public String getDelay() {
 			return delay;
 		}
-		public void setDelay(int delay) {
+		public void setDelay(String delay) {
 			this.delay = delay;
 		}
 		public int getAlarmLevel() {
@@ -129,10 +129,10 @@ public class AlarmInstanceOwnItem implements Serializable {
 		public void setIsSendMail(int isSendMail) {
 			this.isSendMail = isSendMail;
 		}
-		public int getRetriggerTime() {
+		public String getRetriggerTime() {
 			return retriggerTime;
 		}
-		public void setRetriggerTime(int retriggerTime) {
+		public void setRetriggerTime(String retriggerTime) {
 			this.retriggerTime = retriggerTime;
 		}
 	}

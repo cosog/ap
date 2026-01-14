@@ -58,7 +58,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				+ " t.itemname,t.alarmtype,"
 				+ " t.alarmvalue,t.alarminfo,t.alarmlimit,t.hystersis,"
 				+ " t.alarmlevel,"
-				+ " t.issendmessage,t.issendmail,"
+				+ " t.delay,t.retriggertime,"
+				+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 				+ " t.recoverytime,t.orgid "
 				+ " from "+tableName+" t where t.orgid in ("+orgId+") "
 				+ " and t.alarmtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
@@ -157,10 +159,14 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			result_json.append("\"hystersis\":\""+obj[11]+"\",");
 			result_json.append("\"alarmLevel\":\""+obj[12]+"\",");
 			result_json.append("\"alarmLevelName\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[12]+"", language)+"\",");
-			result_json.append("\"isSendMessage\":\""+obj[13]+"\",");
-			result_json.append("\"isSendMail\":\""+obj[14]+"\",");
-			result_json.append("\"recoveryTime\":\""+obj[15]+"\",");
-			result_json.append("\"orgId\":\""+obj[16]+"\"},");
+			
+			result_json.append("\"delay\":\""+obj[13]+"\",");
+			result_json.append("\"retriggerTime\":\""+obj[14]+"\",");
+			
+			result_json.append("\"isSendMessage\":\""+obj[15]+"\",");
+			result_json.append("\"isSendMail\":\""+obj[16]+"\",");
+			result_json.append("\"recoveryTime\":\""+obj[17]+"\",");
+			result_json.append("\"orgId\":\""+obj[18]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -195,7 +201,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 					+ " t.itemname,t.alarmtype,"
 					+ " t.alarmvalue,t.alarminfo,t.alarmlimit,t.hystersis,"
 					+ " t.alarmlevel,"
-					+ " t.issendmessage,t.issendmail,"
+					+ " t.delay,t.retriggertime,"
+					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
+					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 					+ " t.recoverytime,t.orgid "
 					+ " from "+tableName+" t where t.orgid in ("+orgId+") "
 					+ " and t.alarmtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
@@ -295,10 +303,12 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				result_json.append("\"hystersis\":\""+obj[11]+"\",");
 				result_json.append("\"alarmLevel\":\""+obj[12]+"\",");
 				result_json.append("\"alarmLevelName\":\""+MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[12]+"", user.getLanguageName())+"\",");
-				result_json.append("\"isSendMessage\":\""+obj[13]+"\",");
-				result_json.append("\"isSendMail\":\""+obj[14]+"\",");
-				result_json.append("\"recoveryTime\":\""+obj[15]+"\",");
-				result_json.append("\"orgId\":\""+obj[16]+"\"}");
+				result_json.append("\"delay\":\""+obj[13]+"\",");
+				result_json.append("\"retriggerTime\":\""+obj[14]+"\",");
+				result_json.append("\"isSendMessage\":\""+obj[15]+"\",");
+				result_json.append("\"isSendMail\":\""+obj[16]+"\",");
+				result_json.append("\"recoveryTime\":\""+obj[17]+"\",");
+				result_json.append("\"orgId\":\""+obj[18]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {

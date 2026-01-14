@@ -21,12 +21,12 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 	
 	public int sort;
 	
-	public float alarmLimit;
-	public float hystersis;
+	public String alarmLimit;
+	public String hystersis;
 	public String alarmInfo;
 	public int alarmType;
-	public int alarmDelay;
-	public int retriggerTime;
+	public String alarmDelay;
+	public String retriggerTime;
 	public int isSendMessage;
 	public int isSendMail;
 	public boolean triggerAlarm;
@@ -37,8 +37,8 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 	}
 
 	public AcquisitionItemInfo(int addr, String column, String title,String rawTitle, String value, String rawValue, String dataType,
-			String unit, int alarmLevel, String resolutionMode, String bitIndex, int sort, float alarmLimit,
-			float hystersis, String alarmInfo, int alarmType, int alarmDelay, int isSendMessage, int isSendMail,int type) {
+			String unit, int alarmLevel, String resolutionMode, String bitIndex, int sort, String alarmLimit,
+			String hystersis, String alarmInfo, int alarmType, String alarmDelay, String retriggerTime, int isSendMessage, int isSendMail,int type) {
 		super();
 		this.addr = addr;
 		this.column = column;
@@ -57,6 +57,7 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 		this.alarmInfo = alarmInfo;
 		this.alarmType = alarmType;
 		this.alarmDelay = alarmDelay;
+		this.retriggerTime = retriggerTime;
 		this.isSendMessage = isSendMessage;
 		this.isSendMail = isSendMail;
 		this.type=type;
@@ -132,19 +133,19 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 		this.alarmLevel = alarmLevel;
 	}
 
-	public float getAlarmLimit() {
+	public String getAlarmLimit() {
 		return alarmLimit;
 	}
 
-	public void setAlarmLimit(float alarmLimit) {
+	public void setAlarmLimit(String alarmLimit) {
 		this.alarmLimit = alarmLimit;
 	}
 
-	public float getHystersis() {
+	public String getHystersis() {
 		return hystersis;
 	}
 
-	public void setHystersis(float hystersis) {
+	public void setHystersis(String hystersis) {
 		this.hystersis = hystersis;
 	}
 
@@ -212,11 +213,11 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 		this.bitIndex = bitIndex;
 	}
 
-	public int getAlarmDelay() {
+	public String getAlarmDelay() {
 		return alarmDelay;
 	}
 
-	public void setAlarmDelay(int alarmDelay) {
+	public void setAlarmDelay(String alarmDelay) {
 		this.alarmDelay = alarmDelay;
 	}
 
@@ -252,11 +253,11 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 		this.rawTitle = rawTitle;
 	}
 
-	public int getRetriggerTime() {
+	public String getRetriggerTime() {
 		return retriggerTime;
 	}
 
-	public void setRetriggerTime(int retriggerTime) {
+	public void setRetriggerTime(String retriggerTime) {
 		this.retriggerTime = retriggerTime;
 	}
 

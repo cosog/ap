@@ -430,7 +430,8 @@ public class DriverAPIController extends BaseController{
 							}
 							
 							
-							String commAlarm="";
+							String commAlarmSql="";
+							String commRealtimeAlarmSql="";
 							int commAlarmLevel=0,isSendMessage=0,isSendMail=0,retriggerTime=0;
 							String key="";
 							String alarmInfo="";
@@ -439,15 +440,19 @@ public class DriverAPIController extends BaseController{
 								Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
 								if(acqOnline.getStatus()){
 									key=deviceId+","+deviceType+",online";
-									alarmInfo="online";
-									alarmSMSContent=currentTime+":"+deviceName+"online";
+									alarmInfo="上线";
+									alarmSMSContent=currentTime+":"+deviceName+alarmInfo;
 								}else{
 									key=deviceId+","+deviceType+",offline";
-									alarmInfo="offline";
-									alarmSMSContent=currentTime+":"+deviceName+"offline";
+									alarmInfo="离线";
+									alarmSMSContent=currentTime+":"+deviceName+alarmInfo;
 								}
 								for(int j=0;j<alarmInstanceOwnItem.getItemList().size();j++){
-									if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel()>0 && (acqOnline.getStatus()?2:0)==alarmInstanceOwnItem.getItemList().get(j).getValue()){
+									if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 
+											&& alarmInstanceOwnItem.getItemList().get(j).getAlarmSign()==1
+											&& alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel()>0 
+											&& (acqOnline.getStatus()?2:0)==alarmInstanceOwnItem.getItemList().get(j).getValue()
+											){
 										commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 										isSendMessage=alarmInstanceOwnItem.getItemList().get(j).getIsSendMessage();
 										isSendMail=alarmInstanceOwnItem.getItemList().get(j).getIsSendMail();
@@ -457,14 +462,24 @@ public class DriverAPIController extends BaseController{
 										break;
 									}
 								}
-								commAlarm="insert into "+alarmTableName+" (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlevel,itemcode)"
+								commAlarmSql="insert into "+alarmTableName+" (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlevel,itemcode)"
 										+ "values("+deviceId+",to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),'通信状态',3,"+(acqOnline.getStatus()?2:0)+",'"+alarmInfo+"',"+commAlarmLevel+",'commStatusName')";
-								
-								
+								commRealtimeAlarmSql="update  tbl_alarminfo_latest t "
+										+ " set t.alarmtime=to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),"
+										+ " t.itemname='通信状态',"
+										+ " t.alarmvalue= "+(acqOnline.getStatus()?2:0)+","
+										+ " t.alarminfo='"+alarmInfo+"',"
+										+ " t.alarmlevel="+commAlarmLevel+","
+										+ " t.itemcode='commStatusName'"
+										+ " where t.deviceid="+deviceId+" and t.alarmtype=3";
 								String lastAlarmTime=alarmInfoMap.get(key);
 								long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, currentTime, "yyyy-MM-dd HH:mm:ss");
 								if(commAlarmLevel>0&&timeDiff>=retriggerTime*1000){
-									result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarm);
+									result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarmSql);
+									result=commonDataService.getBaseDao().updateOrDeleteBySql(commRealtimeAlarmSql);
+									if(result==0){
+										result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarmSql.replaceAll(alarmTableName, "tbl_alarminfo_latest"));
+									}
 									calculateDataService.sendAlarmSMS(deviceName, deviceType+"",deviceTypeName,isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
 									alarmInfoMap.put(key, currentTime);
 								}
@@ -994,7 +1009,11 @@ public class DriverAPIController extends BaseController{
 			acquisitionItemInfo.setSort(protocolItemResolutionDataList.get(i).getSort());
 			acquisitionItemInfo.setType(protocolItemResolutionDataList.get(i).getType());
 			
-			String alarmKey=deviceInfo.getId()+"_"+acquisitionItemInfo.getColumn()+"_"+acquisitionItemInfo.getBitIndex();
+			String alarmKey=deviceInfo.getId()+"_"+acquisitionItemInfo.getColumn();
+			if(StringManagerUtils.isNotNull(acquisitionItemInfo.getBitIndex())){
+				alarmKey+="_"+acquisitionItemInfo.getBitIndex();
+			}
+			
 			boolean existAlarm=deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey);
 			boolean existAlarmTimer=deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey);
 			DeviceAlarmInfo.AlarmInfo alarmInfo=null;
@@ -1118,9 +1137,9 @@ public class DriverAPIController extends BaseController{
 							break;
 						}
 					}
-					
 				}
 			}
+			
 			if(acquisitionItemInfo.getAlarmLevel()==0){
 				if(deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)){
 					deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
@@ -1134,16 +1153,30 @@ public class DriverAPIController extends BaseController{
 			}else{
 				String alarmStartTime =alarmInfo.getAlarmStartTime();
 				int retriggerTime=StringManagerUtils.stringToInteger(acquisitionItemInfo.getRetriggerTime());
-				
 				long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-				if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>=retriggerTime*1000) ){
-					alarmInfo.setAlarmStartTime(acqTime);
-					alarmInfo.setTriggerAlarm(true);
-					acquisitionItemInfo.setTriggerAlarm(true);
-				}else{
+				
+				if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay())==0  //没有设置延时
+						|| (StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay())>0 &&  deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)) //设置了延时且已存在报警项       
+						){
+					if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>=retriggerTime*1000) ){
+						alarmInfo.setTriggerAlarm(true);
+						acquisitionItemInfo.setTriggerAlarm(true);
+					}else{
+						alarmInfo.setTriggerAlarm(false);
+						acquisitionItemInfo.setTriggerAlarm(false);
+					}
+				}
+				
+				
+				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0 && deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 					alarmInfo.setTriggerAlarm(false);
 					acquisitionItemInfo.setTriggerAlarm(false);
 				}
+				
+				if(alarmInfo.getTriggerAlarm()){
+					alarmInfo.setAlarmStartTime(acqTime);
+				}
+				
 				
 				alarmInfo.setAlarmTime(acqTime);
 				alarmInfo.setAddr(acquisitionItemInfo.getAddr());
@@ -1165,11 +1198,11 @@ public class DriverAPIController extends BaseController{
 				alarmInfo.setRetriggerTime(acquisitionItemInfo.getRetriggerTime());
 				alarmInfo.setIsSendMessage(acquisitionItemInfo.getIsSendMessage());
 				alarmInfo.setIsSendMail(acquisitionItemInfo.getIsSendMail());
+				
 				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
+				
 				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
-					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
-						
-					}else{
+					if(!existAlarm && !existAlarmTimer){
 						deviceAlarmInfo.addTimer(alarmKey, StringManagerUtils.stringToInteger(alarmInfo.getDelay()),alarmInfo,acqTime);
 					}
 				}else{
@@ -1180,7 +1213,6 @@ public class DriverAPIController extends BaseController{
 						deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
 					}
 				}
-				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
 			}
 			acquisitionItemInfoList.add(acquisitionItemInfo);
 		}
@@ -1239,7 +1271,7 @@ public class DriverAPIController extends BaseController{
 			acquisitionItemInfo.setSort(calItemResolutionDataList.get(i).getSort());
 			acquisitionItemInfo.setType(calItemResolutionDataList.get(i).getType());
 			
-			String alarmKey=deviceInfo.getId()+"_"+acquisitionItemInfo.getColumn()+"_"+acquisitionItemInfo.getBitIndex();
+			String alarmKey=deviceInfo.getId()+"_"+acquisitionItemInfo.getColumn();
 			boolean existAlarm=deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey);
 			boolean existAlarmTimer=deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey);
 			DeviceAlarmInfo.AlarmInfo alarmInfo=null;
@@ -1274,15 +1306,10 @@ public class DriverAPIController extends BaseController{
 							acquisitionItemInfo.setAlarmLevel(alarmLevel);
 							acquisitionItemInfo.setAlarmInfo(workType.getResultName());
 							acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getDelay())){
-								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-							}
+							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
 							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-							
-							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime())){
-								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
-							}
+							acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
 						}
 						break;
 					}else if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
@@ -1294,14 +1321,10 @@ public class DriverAPIController extends BaseController{
 							acquisitionItemInfo.setAlarmLevel(alarmLevel);
 							acquisitionItemInfo.setAlarmInfo(calItemResolutionDataList.get(i).getValue());
 							acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getDelay())){
-								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-							}
+							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
 							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
 							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime())){
-								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
-							}
+							acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
 						}
 						break;
 					}else if(alarmInstanceOwnItem.getItemList().get(k).getType()==5&&calItemResolutionDataList.get(i).getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
@@ -1359,16 +1382,34 @@ public class DriverAPIController extends BaseController{
 			}else{
 				String alarmStartTime =alarmInfo.getAlarmStartTime();
 				int retriggerTime=StringManagerUtils.stringToInteger(acquisitionItemInfo.getRetriggerTime());
-				
 				long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-				if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>=retriggerTime*1000) ){
-					alarmInfo.setAlarmStartTime(acqTime);
-					alarmInfo.setTriggerAlarm(true);
-					acquisitionItemInfo.setTriggerAlarm(true);
-				}else{
+				
+				
+				
+				
+				if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay())==0  //没有设置延时
+						|| (StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay())>0 &&  deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)) //设置了延时且已存在报警项       
+						){
+					if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>=retriggerTime*1000) ){
+						alarmInfo.setTriggerAlarm(true);
+						acquisitionItemInfo.setTriggerAlarm(true);
+					}else{
+						alarmInfo.setTriggerAlarm(false);
+						acquisitionItemInfo.setTriggerAlarm(false);
+					}
+				}
+				
+				
+				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0 && deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 					alarmInfo.setTriggerAlarm(false);
 					acquisitionItemInfo.setTriggerAlarm(false);
 				}
+				
+				if(alarmInfo.getTriggerAlarm()){
+					alarmInfo.setAlarmStartTime(acqTime);
+				}
+				
+				
 				alarmInfo.setAlarmTime(acqTime);
 				alarmInfo.setAddr(acquisitionItemInfo.getAddr());
 				alarmInfo.setColumn(acquisitionItemInfo.getColumn());
@@ -1389,12 +1430,11 @@ public class DriverAPIController extends BaseController{
 				alarmInfo.setRetriggerTime(acquisitionItemInfo.getRetriggerTime());
 				alarmInfo.setIsSendMessage(acquisitionItemInfo.getIsSendMessage());
 				alarmInfo.setIsSendMail(acquisitionItemInfo.getIsSendMail());
+				
 				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
 				
 				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
-					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
-						
-					}else{
+					if(!existAlarm && !existAlarmTimer){
 						deviceAlarmInfo.addTimer(alarmKey, StringManagerUtils.stringToInteger(alarmInfo.getDelay()),alarmInfo,acqTime);
 					}
 				}else{
@@ -2701,7 +2741,7 @@ public class DriverAPIController extends BaseController{
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
 					
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
-						if(acquisitionItemInfo.getTriggerAlarm() && StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay())==0){
+						if(acquisitionItemInfo.getTriggerAlarm()){
 							alarm=true;
 							break;
 						}

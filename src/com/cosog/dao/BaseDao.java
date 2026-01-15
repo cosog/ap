@@ -2190,7 +2190,6 @@ public class BaseDao extends HibernateDaoSupport {
 					cs.executeUpdate();
 				}
 			}
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally{

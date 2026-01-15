@@ -23,6 +23,7 @@ import com.cosog.model.DataMapping;
 import com.cosog.model.calculate.AdOnlineProbeResponseData;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.DeviceInfo;
+import com.cosog.model.drive.AcqGroup;
 import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
@@ -365,7 +366,9 @@ public class EquipmentDriverServerTask {
 				StringManagerUtils stringManagerUtils=new StringManagerUtils();
 				String url=Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdAcqGroupDataPushURL();
 				
-				String onlineUrl=Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdOnlineStatusPushURL();
+//				String onlineUrl=Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdOnlineStatusPushURL();
+//				String data="{\"ID\":\"1010021\",\"Status\":false}";
+//				StringManagerUtils.sendPostMethod(onlineUrl, data,"utf-8",0,0);
 				
 				String path="";
 				path=stringManagerUtils.getFilePath(deviceName+"_01.json","example/"+language+"/");
@@ -374,6 +377,8 @@ public class EquipmentDriverServerTask {
 				path=stringManagerUtils.getFilePath(deviceName+"_02.json","example/"+language+"/");
 				String data2=stringManagerUtils.readFile(path,"utf-8");
 				
+				Gson gson=new Gson();
+				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 				
 				int i=0;
 				while(true){
@@ -384,7 +389,22 @@ public class EquipmentDriverServerTask {
 							path=stringManagerUtils.getFilePath(deviceName+"_"+indexStr+".json","example/"+language+"/");
 							data=stringManagerUtils.readFile(path,"utf-8");
 							StringManagerUtils.sendPostMethod(url, data,"utf-8",0,0);
-						}else{
+						}
+						else if("pcp01".equalsIgnoreCase(deviceName) && "zh_CN".equalsIgnoreCase(language)){
+							if(i>0 && i%10==0 ){
+								AcqGroup acqGroup=gson.fromJson(data, type);
+								acqGroup.getValue().get(22).set(0, 10);
+								StringManagerUtils.sendPostMethod(url, gson.toJson(acqGroup),"utf-8",0,0);
+							}else{
+								if(i%2==0){
+									StringManagerUtils.sendPostMethod(url, data,"utf-8",0,0);
+								}else{
+									StringManagerUtils.sendPostMethod(url, data2,"utf-8",0,0);
+								}
+							}
+						}
+						
+						else{
 							if(i%2==0){
 								StringManagerUtils.sendPostMethod(url, data,"utf-8",0,0);
 							}else{

@@ -37,7 +37,10 @@ public class DeviceAlarmInfo {
             @Override
             public void run() {
             	String alarmTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-            	Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
+//            	Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
+            	
+            	alarmInfo.setTriggerAlarm(true);
+            	alarmInfo.setAlarmStartTime(acqTime);
             	
             	String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
             	String deviceTypeName="";
@@ -62,13 +65,13 @@ public class DeviceAlarmInfo {
 				}else if(alarmInfo.getAlarmLevel()==300){
 					alarmLevelName="三级报警";
 				}
-				String key=deviceId+","+deviceType+","+alarmInfo.getColumn()+","+alarmInfo.getAlarmInfo();
-				String lastAlarmTime=alarmInfoMap.get(key);
+//				String key=deviceId+","+deviceType+","+alarmInfo.getColumn()+","+alarmInfo.getAlarmInfo();
+//				String lastAlarmTime=alarmInfoMap.get(key);
 				
-				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, alarmTime, "yyyy-MM-dd HH:mm:ss");
-				if(timeDiff>StringManagerUtils.stringToInteger(alarmInfo.getRetriggerTime())*1000){
+//				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, alarmTime, "yyyy-MM-dd HH:mm:ss");
+//				if(timeDiff>StringManagerUtils.stringToInteger(alarmInfo.getRetriggerTime())*1000){
 					SaveDelayAlarmData(deviceId,deviceType+"",acqTime,alarmTime,alarmInfo);
-					alarmInfoMap.put(key, alarmTime);
+//					alarmInfoMap.put(key, alarmTime);
 					if(alarmInfo.getIsSendMessage()==1){//如果该报警项发送短信
 						if(alarmInfo.getAlarmType()==3){//开关量报警
 							SMSContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
@@ -101,7 +104,7 @@ public class DeviceAlarmInfo {
 							EMailContent.append(alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}
 					}
-				}
+//				}
 				if(isSendSMS || isSendMail){
 					try {
 						sendAlarmSMS(deviceName,deviceType+"",deviceTypeName,isSendSMS,isSendMail,SMSContent.toString(),EMailContent.toString());

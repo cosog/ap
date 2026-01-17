@@ -2458,6 +2458,7 @@ public class DriverAPIController extends BaseController{
 			if(acqGroup!=null){
 				String protocolCode="";
 				List<KeyValue> acqDataList=new ArrayList<>();
+				List<KeyValue> acqDataAlarmList=new ArrayList<>();
 				AcqInstanceOwnItem acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(deviceInfo.getInstanceCode());
 				String acqProtocolType="";
 				if(acqInstanceOwnItem!=null){
@@ -2740,8 +2741,20 @@ public class DriverAPIController extends BaseController{
 					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,srpCalculateResponseData,deviceInfo,acqTime);
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
 					
+					
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
-						if(acquisitionItemInfo.getTriggerAlarm()){
+						if(acquisitionItemInfo.getAlarmLevel()>0 && acquisitionItemInfo.getTriggerAlarm()){
+							String column=acquisitionItemInfo.getColumn();
+							if(acquisitionItemInfo.getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode())){
+								column+="_"+acquisitionItemInfo.getBitIndex();
+							}
+							acqDataAlarmList.add(new KeyValue(column,acquisitionItemInfo.getAlarmLevel()+""));
+						}
+					}
+					
+					
+					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
+						if(acquisitionItemInfo.getAlarmLevel()>0 && acquisitionItemInfo.getTriggerAlarm()){
 							alarm=true;
 							break;
 						}
@@ -2775,7 +2788,8 @@ public class DriverAPIController extends BaseController{
 					//更新数据库实时clob数据
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(new Gson().toJson(acqDataList));
-					String updateRealClobSql="update "+realtimeTable+" t set t.acqdata=? ";
+					clobCont.add(new Gson().toJson(acqDataAlarmList));
+					String updateRealClobSql="update "+realtimeTable+" t set t.acqdata=?,t.alarminfo=? ";
 					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 						updateRealClobSql+=",t.commrange=?";
 						clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
@@ -2814,7 +2828,8 @@ public class DriverAPIController extends BaseController{
 						//更新历史clob数据
 						clobCont=new ArrayList<String>();
 						clobCont.add(new Gson().toJson(acqDataList));
-						String updateHistoryClobSql="update "+historyTable+" t set t.acqdata=? ";
+						clobCont.add(new Gson().toJson(acqDataAlarmList));
+						String updateHistoryClobSql="update "+historyTable+" t set t.acqdata=?,alarminfo=? ";
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 							updateHistoryClobSql+=",t.commrange=?";
 							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
@@ -2878,7 +2893,8 @@ public class DriverAPIController extends BaseController{
 						
 						clobCont=new ArrayList<String>();
 						clobCont.add(new Gson().toJson(acqDataList));
-						String updateHistoryClobSql="update "+vacuateTable+" t set t.acqdata=? ";
+						clobCont.add(new Gson().toJson(acqDataAlarmList));
+						String updateHistoryClobSql="update "+vacuateTable+" t set t.acqdata=?,t.alarminfo=? ";
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 							updateHistoryClobSql+=",t.commrange=?";
 							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());

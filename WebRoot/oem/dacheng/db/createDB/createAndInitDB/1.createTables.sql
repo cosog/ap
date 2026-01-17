@@ -44,9 +44,9 @@ tablespace AP_DATA
     next 1M
     minextents 1
     maxextents unlimited
-  );
+  )
 /
-alter table tbl_tabmanager_device add constraint PK_CALCULATIONMODEL primary key (ID);
+alter table tbl_tabmanager_device add constraint PK_CALCULATIONMODEL primary key (ID)
 /
 
 /*==============================================================*/
@@ -1034,6 +1034,7 @@ create table TBL_ACQDATA_LATEST
   runtime            NUMBER(8,2) default 0,
   runrange           CLOB,
   acqdata            CLOB,
+  alarminfo          CLOB,
   checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA
@@ -1065,6 +1066,7 @@ create table TBL_ACQDATA_HIST
   runtime            NUMBER(8,2) default 0,
   runrange           CLOB,
   acqdata            CLOB,
+  alarminfo          CLOB,
   checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA
@@ -1096,6 +1098,7 @@ create table TBL_ACQDATA_VACUATE
   runtime            NUMBER(8,2) default 0,
   runrange           CLOB,
   acqdata            CLOB,
+  alarminfo          CLOB,
   checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA
@@ -1147,6 +1150,11 @@ create table TBL_ALARMINFO_LATEST
   alarmlimit    NUMBER(10,3),
   hystersis     NUMBER(10,3),
   alarmlevel    NUMBER(3),
+  itemcode      VARCHAR2(200),
+  bitindex      NUMBER(3),
+  acqtime       DATE,
+  delay         NUMBER(10),
+  retriggertime NUMBER(10),
   issendmessage NUMBER(1) default 0,
   issendmail    NUMBER(1) default 0,
   recoverytime  DATE
@@ -1178,6 +1186,11 @@ create table TBL_ALARMINFO_HIST
   alarmlimit    NUMBER(10,3),
   hystersis     NUMBER(10,3),
   alarmlevel    NUMBER(3),
+  itemcode      VARCHAR2(200),
+  bitindex      NUMBER(3),
+  acqtime       DATE,
+  delay         NUMBER(10),
+  retriggertime NUMBER(10),
   issendmessage NUMBER(1) default 0,
   issendmail    NUMBER(1) default 0,
   recoverytime  DATE

@@ -37,81 +37,73 @@ public class DeviceAlarmInfo {
             @Override
             public void run() {
             	String alarmTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-//            	Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
             	
             	alarmInfo.setTriggerAlarm(true);
             	alarmInfo.setAlarmStartTime(acqTime);
             	
-            	String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
-            	String deviceTypeName="";
-            	if("zh_CN".equalsIgnoreCase(loginLanguage)){
-					deviceTypeName=deviceTypeName_zh_CN;
-				}else if("en".equalsIgnoreCase(loginLanguage)){
-					deviceTypeName=deviceTypeName_en;
-				}else if("ru".equalsIgnoreCase(loginLanguage)){
-					deviceTypeName=deviceTypeName_ru;
-				}
-            	
-            	boolean isSendSMS=alarmInfo.getIsSendMail()==1;
-        		boolean isSendMail=alarmInfo.getIsSendMessage()==1;
-        		StringBuffer SMSContent = new StringBuffer();
-        		StringBuffer EMailContent = new StringBuffer();
-        		SMSContent.append(deviceTypeName+deviceName+"于"+alarmInfo.getAlarmTime()+"发生报警:");
-				String alarmLevelName="";
-				if(alarmInfo.getAlarmLevel()==100){
-					alarmLevelName="一级报警";
-				}else if(alarmInfo.getAlarmLevel()==200){
-					alarmLevelName="二级报警";
-				}else if(alarmInfo.getAlarmLevel()==300){
-					alarmLevelName="三级报警";
-				}
-//				String key=deviceId+","+deviceType+","+alarmInfo.getColumn()+","+alarmInfo.getAlarmInfo();
-//				String lastAlarmTime=alarmInfoMap.get(key);
-				
-//				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, alarmTime, "yyyy-MM-dd HH:mm:ss");
-//				if(timeDiff>StringManagerUtils.stringToInteger(alarmInfo.getRetriggerTime())*1000){
-					SaveDelayAlarmData(deviceId,deviceType+"",acqTime,alarmTime,alarmInfo);
-//					alarmInfoMap.put(key, alarmTime);
-					if(alarmInfo.getIsSendMessage()==1){//如果该报警项发送短信
-						if(alarmInfo.getAlarmType()==3){//开关量报警
-							SMSContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-						}else if(alarmInfo.getAlarmType()==2){//枚举量报警
-							SMSContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-						}else if(alarmInfo.getAlarmType()==1){//数值量报警
-							SMSContent.append(alarmInfo.getTitle()+alarmInfo.getAlarmInfo()
-									+",报警值"+alarmInfo.getValue()
-									+",限值"+alarmInfo.getAlarmLimit()
-									+",回差"+alarmInfo.getHystersis()
-									+",报警级别:"+alarmLevelName
-									+";");
-						}else{
-							SMSContent.append(alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-						}
-					}
-					if(alarmInfo.getIsSendMail()==1){//如果该报警项发送邮件
-						if(alarmInfo.getAlarmType()==3){//开关量报警
-							EMailContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-						}else if(alarmInfo.getAlarmType()==2){//枚举量报警
-							EMailContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-						}else if(alarmInfo.getAlarmType()==1){//数值量报警
-							EMailContent.append(alarmInfo.getTitle()+alarmInfo.getAlarmInfo()
-									+",报警值"+alarmInfo.getValue()
-									+",限值"+alarmInfo.getAlarmLimit()
-									+",回差"+alarmInfo.getHystersis()
-									+",报警级别:"+alarmLevelName
-									+";");
-						}else{
-							EMailContent.append(alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-						}
-					}
+//            	String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
+//            	String deviceTypeName="";
+//            	if("zh_CN".equalsIgnoreCase(loginLanguage)){
+//					deviceTypeName=deviceTypeName_zh_CN;
+//				}else if("en".equalsIgnoreCase(loginLanguage)){
+//					deviceTypeName=deviceTypeName_en;
+//				}else if("ru".equalsIgnoreCase(loginLanguage)){
+//					deviceTypeName=deviceTypeName_ru;
 //				}
-				if(isSendSMS || isSendMail){
-					try {
-						sendAlarmSMS(deviceName,deviceType+"",deviceTypeName,isSendSMS,isSendMail,SMSContent.toString(),EMailContent.toString());
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
+//            	
+//            	boolean isSendSMS=alarmInfo.getIsSendMail()==1;
+//        		boolean isSendMail=alarmInfo.getIsSendMessage()==1;
+//        		StringBuffer SMSContent = new StringBuffer();
+//        		StringBuffer EMailContent = new StringBuffer();
+//        		SMSContent.append(deviceTypeName+deviceName+"于"+alarmInfo.getAlarmTime()+"发生报警:");
+//				String alarmLevelName="";
+//				if(alarmInfo.getAlarmLevel()==100){
+//					alarmLevelName="一级报警";
+//				}else if(alarmInfo.getAlarmLevel()==200){
+//					alarmLevelName="二级报警";
+//				}else if(alarmInfo.getAlarmLevel()==300){
+//					alarmLevelName="三级报警";
+//				}
+//				SaveDelayAlarmData(deviceId,deviceType+"",acqTime,alarmTime,alarmInfo);
+//				if(alarmInfo.getIsSendMessage()==1){//如果该报警项发送短信
+//					if(alarmInfo.getAlarmType()==3){//开关量报警
+//						SMSContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
+//					}else if(alarmInfo.getAlarmType()==2){//枚举量报警
+//						SMSContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
+//					}else if(alarmInfo.getAlarmType()==1){//数值量报警
+//						SMSContent.append(alarmInfo.getTitle()+alarmInfo.getAlarmInfo()
+//								+",报警值"+alarmInfo.getValue()
+//								+",限值"+alarmInfo.getAlarmLimit()
+//								+",回差"+alarmInfo.getHystersis()
+//								+",报警级别:"+alarmLevelName
+//								+";");
+//					}else{
+//						SMSContent.append(alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
+//					}
+//				}
+//				if(alarmInfo.getIsSendMail()==1){//如果该报警项发送邮件
+//					if(alarmInfo.getAlarmType()==3){//开关量报警
+//						EMailContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
+//					}else if(alarmInfo.getAlarmType()==2){//枚举量报警
+//						EMailContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
+//					}else if(alarmInfo.getAlarmType()==1){//数值量报警
+//						EMailContent.append(alarmInfo.getTitle()+alarmInfo.getAlarmInfo()
+//								+",报警值"+alarmInfo.getValue()
+//								+",限值"+alarmInfo.getAlarmLimit()
+//								+",回差"+alarmInfo.getHystersis()
+//								+",报警级别:"+alarmLevelName
+//								+";");
+//					}else{
+//						EMailContent.append(alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
+//					}
+//				}
+//				if(isSendSMS || isSendMail){
+//					try {
+//						sendAlarmSMS(deviceName,deviceType+"",deviceTypeName,isSendSMS,isSendMail,SMSContent.toString(),EMailContent.toString());
+//					} catch (SQLException e) {
+//						e.printStackTrace();
+//					}
+//				}
 				//执行完后退出并删除定时器
             	if(!executorService.isShutdown()){
             	   executorService.shutdown();

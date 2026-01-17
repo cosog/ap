@@ -472,8 +472,9 @@ end prd_save_alarmcolor;
 /
 
 CREATE OR REPLACE PROCEDURE prd_save_alarminfo (
-  v_deviceName in varchar2,
+  v_deviceId in number,
   v_deviceType in number,
+  v_acqTime in varchar2,
   v_alarmTime in varchar2,
   v_itemName in varchar2,
   v_alarmType in number,
@@ -482,30 +483,33 @@ CREATE OR REPLACE PROCEDURE prd_save_alarminfo (
   v_alarmLimit in number,
   v_hystersis in number,
   v_alarmLevel in number,
+  v_delay in number,
+  v_retriggerTime in number,
   v_isSendMessage in number,
-  v_isSendMail in number
+  v_isSendMail in number,
+  v_itemCode in varchar2,
+  v_bitIndex in number
   ) is
   p_msg varchar2(3000) := 'error';
   counts number :=0;
   counts_latest number :=0;
-  p_deviceid number :=0;
 begin
-  select t.id into p_deviceid from tbl_device t where t.devicename=v_deviceName and t.devicetype=v_deviceType ;
-
   select count(1) into counts from tbl_alarminfo_hist t
-  where t.deviceid=p_deviceid
+  where t.deviceid=v_deviceId
   and t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss')
   and t.itemname=v_itemName;
 
   select count(1) into counts_latest from tbl_alarminfo_latest t
-  where t.deviceid=p_deviceid
+  where t.deviceid=v_deviceId
   and t.alarmtype=v_alarmType;
 
-  if counts_latest=0 and p_deviceid>0 then
-    insert into tbl_alarminfo_latest (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlimit,
-    hystersis,alarmlevel,issendmessage,issendmail)
+  if counts_latest=0 and v_deviceId>0 then
+    insert into tbl_alarminfo_latest (deviceid,acqtime,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlimit,
+    hystersis,alarmlevel,delay,retriggertime,
+    issendmessage,issendmail,itemcode,bitindex)
     values(
-         p_deviceid,
+         v_deviceId,
+         to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
          to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss'),
          v_itemName,
          v_alarmType,
@@ -514,28 +518,38 @@ begin
          v_alarmLimit,
          v_hystersis,
          v_alarmLevel,
+         v_delay,
+         v_retriggerTime,
          v_isSendMessage,
-         v_isSendMail
+         v_isSendMail,
+         v_itemCode,
+         v_bitIndex
       );
     commit;
     p_msg := '实时数据插入成功';
   elsif counts_latest>0 then
     update tbl_alarminfo_latest t set alarmvalue=v_alarmValue,
     alarminfo=v_alarmInfo,alarmlimit=v_alarmLimit,hystersis=v_hystersis,alarmlevel=v_alarmLevel,
+    delay=v_delay,retriggertime=v_retriggerTime,
     issendmessage=v_isSendMessage,issendmail=v_isSendMail,
+    t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
     t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss'),
-    t.itemname=v_itemName
-    where t.deviceid=p_deviceid
+    t.itemname=v_itemName,
+    t.itemcode=v_itemCode,
+    t.bitindex=v_bitIndex
+    where t.deviceid=v_deviceId
     and t.alarmtype=v_alarmType;
     commit;
     p_msg := '实时数据更新成功';
   end if;
 
-  if counts=0 and p_deviceid>0 then
-    insert into tbl_alarminfo_hist (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlimit,
-    hystersis,alarmlevel,issendmessage,issendmail)
+  if counts=0 and v_deviceId>0 then
+    insert into tbl_alarminfo_hist (deviceid,acqtime,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlimit,
+    hystersis,alarmlevel,delay,retriggertime,
+    issendmessage,issendmail,itemcode,bitindex)
     values(
-         p_deviceid,
+         v_deviceId,
+         to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
          to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss'),
          v_itemName,
          v_alarmType,
@@ -544,16 +558,24 @@ begin
          v_alarmLimit,
          v_hystersis,
          v_alarmLevel,
+         v_delay,
+         v_retriggerTime,
          v_isSendMessage,
-         v_isSendMail
+         v_isSendMail,
+         v_itemCode,
+         v_bitIndex
       );
     commit;
     p_msg := '插入成功';
   elsif counts>0 then
     update tbl_alarminfo_hist t set t.alarmtype=v_alarmType,alarmvalue=v_alarmValue,
     alarminfo=v_alarmInfo,alarmlimit=v_alarmLimit,hystersis=v_hystersis,alarmlevel=v_alarmLevel,
-    issendmessage=v_isSendMessage,issendmail=v_isSendMail
-    where t.deviceid=p_deviceid
+    delay=v_delay,retriggertime=v_retriggerTime,
+    issendmessage=v_isSendMessage,issendmail=v_isSendMail,
+    t.itemcode=v_itemCode,
+    t.bitindex=v_bitIndex,
+    t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss')
+    where t.deviceid=v_deviceId
     and t.alarmtime=to_date(v_alarmTime,'yyyy-mm-dd hh24:mi:ss')
     and t.itemname=v_itemName;
     commit;

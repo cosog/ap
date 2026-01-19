@@ -446,6 +446,13 @@ function createRealTimeMonitoringColumnObject(columnInfo) {
         	thisColumn.sortable=false;
         	thisColumn.locked=false;
         }
+        else if (attr.dataIndex.toUpperCase()=='deviceName'.toUpperCase()) {
+        	thisColumn.sortable=false;
+        	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.renderer=function(value,o,p,e){
+        		return adviceDeviceOverviewDeviceNameColor(value,o,p,e);
+        	};
+        }
         else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
         	thisColumn.sortable=false;
         	thisColumn.dataIndex=attr.dataIndex;

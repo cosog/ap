@@ -49,7 +49,7 @@ public class EquipmentDriverServerTask {
 	private static boolean initSwitch=false;
 	private static boolean initEnable=initSwitch && Config.getInstance().configFile.getAp().getOthers().getIot();
 	
-	public static boolean initFinished=true;
+	public static boolean initFinished=false;
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
 	}

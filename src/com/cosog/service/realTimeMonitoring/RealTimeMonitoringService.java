@@ -155,6 +155,130 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
+	public String getRealTimeMonitoringNumStatusStatData(String orgId,String deviceType,String deviceTypeStatValue,String language) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		String columns = "["
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"item\",children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"count\",children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalCount\":4,");
+		
+
+		String tableName="tbl_acqdata_latest";
+		String deviceTableName="viw_device";
+		
+		String sql="select t2.commstatus,t2.runstatus,t2.alarminfo,t.alarmInstanceCode "
+				+ " from "+deviceTableName+" t "
+				+ " left outer join "+tableName+" t2 on  t2.deviceid=t.id "
+				+ " where t.orgid in("+orgId+") "
+				+ " and t.deviceType in ("+deviceType+")";
+		int normalDeviceCount=0,firstLevelCount=0,secondLevelCount=0,thirdLevelCount=0;
+		
+		
+		List<?> list = this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			int commStatus=StringManagerUtils.stringToInteger(obj[0]+"");
+			int runStatus=StringManagerUtils.stringToInteger(obj[1]+"");
+			String deviceAlarmInfo=StringManagerUtils.CLOBObjectToString(obj[2]);
+			if(!StringManagerUtils.isNotNull(deviceAlarmInfo)){
+				deviceAlarmInfo="[]";
+			}
+			String alarmInstanceCode=(obj[0]+"").replace("null", "");
+			
+			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
+			alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
+			
+			type = new TypeToken<List<KeyValue>>() {}.getType();
+			List<KeyValue> alarmInfoList=gson.fromJson(deviceAlarmInfo, type);
+			
+			
+			int commAlarmLevel=0,runAlarmLevel=0,maxAlarmLevel=0;
+			if(alarmInstanceOwnItem!=null){
+				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
+					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getValue()==commStatus){
+						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getValue()==runStatus){
+						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}
+				}
+				
+				if(commAlarmLevel==100){
+					firstLevelCount++;
+				}else if(commAlarmLevel==200){
+					secondLevelCount++;
+				}else if(commAlarmLevel==300){
+					thirdLevelCount++;
+				}
+				
+				if(runAlarmLevel==100){
+					firstLevelCount++;
+				}else if(runAlarmLevel==200){
+					secondLevelCount++;
+				}else if(runAlarmLevel==300){
+					thirdLevelCount++;
+				}
+				
+				
+				if(commAlarmLevel>0){
+					 maxAlarmLevel=commAlarmLevel;
+				 }
+				 
+				 if(runAlarmLevel>0 && (maxAlarmLevel==0 || runAlarmLevel<maxAlarmLevel) ){
+					 maxAlarmLevel=runAlarmLevel;
+				 }
+				
+				
+				for(KeyValue keyValue:alarmInfoList){
+					int itemALarmLevel=StringManagerUtils.stringToInteger(keyValue.getValue());
+					if(itemALarmLevel>0 && (maxAlarmLevel==0 || itemALarmLevel<maxAlarmLevel) ){
+						 maxAlarmLevel=itemALarmLevel;
+					}
+					if(itemALarmLevel==100){
+						firstLevelCount++;
+					}else if(itemALarmLevel==200){
+						secondLevelCount++;
+					}else if(itemALarmLevel==300){
+						thirdLevelCount++;
+					}
+				}
+				
+			}
+			if(maxAlarmLevel==0){
+				normalDeviceCount++;
+			}
+		}
+		result_json.append("\"totalRoot\":[");
+		result_json.append("{\"id\":1,");
+		result_json.append("\"item\":'"+languageResourceMap.get("normal")+"',");
+		result_json.append("\"itemCode\":\"normalDeviceCount\",");
+		result_json.append("\"count\":"+normalDeviceCount+"},");
+		
+		result_json.append("{\"id\":2,");
+		result_json.append("\"item\":'"+languageResourceMap.get("alarmLevel1")+"',");
+		result_json.append("\"itemCode\":\"firstLevelCount\",");
+		result_json.append("\"count\":"+firstLevelCount+"},");
+		
+		result_json.append("{\"id\":3,");
+		result_json.append("\"item\":'"+languageResourceMap.get("alarmLevel2")+"',");
+		result_json.append("\"itemCode\":\"secondLevelCount\",");
+		result_json.append("\"count\":"+secondLevelCount+"},");
+		
+		result_json.append("{\"id\":4,");
+		result_json.append("\"item\":'"+languageResourceMap.get("alarmLevel3")+"',");
+		result_json.append("\"itemCode\":\"thirdLevelCount\",");
+		result_json.append("\"count\":"+thirdLevelCount+"}");
+		result_json.append("]");
+		result_json.append("}");
+
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
+	}
+	
 	public String getRealTimeMonitoringCommStatusStatData(String orgId,String deviceType,String deviceTypeStatValue,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		AlarmShowStyle alarmShowStyle=null;

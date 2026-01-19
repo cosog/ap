@@ -122,7 +122,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore', {
                 					if(itemsConfigTabPanel==undefined){
                 						tabPanel.insert(1,displayUnitConfigRightTabPanelItems[1]);
                             		}
-                					tabPanel.setActiveTab("ModbusProtocolDisplayUnitPropertiesConfigPanel_Id");
+                					tabPanel.setActiveTab("ModbusProtocolDisplayUnitItemsConfigTableInfoPanel_Id");
                     			}else{
                     				var activeId = tabPanel.getActiveTab().id; 
                     				if(activeId=='ModbusProtocolDisplayUnitPropertiesConfigPanel_Id'){

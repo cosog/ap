@@ -76,7 +76,9 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
     			        }
     			    ]
     			});
-    			Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel").add(deviceInfoGridPanel);
+    			if(Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel")!=undefined){
+    				Ext.getCmp("RealTimeMonitoringRightDeviceAddInfoPanel").add(deviceInfoGridPanel);
+    			}
     		}else{
     			deviceInfoGridPanel.reconfigure(deviceInfoStore);
     		}
@@ -144,7 +146,9 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
     			        })
     			    }]
     			});
-    			Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").add(deviceAuxiliaryInfoGridPanel);
+    			if(Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel")!=undefined){
+    				Ext.getCmp("RealTimeMonitoringRightAuxiliaryDeviceInfoPanel").add(deviceAuxiliaryInfoGridPanel);
+    			}
     		}else{
     			deviceAuxiliaryInfoGridPanel.reconfigure(deviceAuxiliaryInfoStore);
     		}

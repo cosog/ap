@@ -1,7 +1,76 @@
 var AlarmQuerySecondTabPanelItems=[{
+	title: loginUserLanguageResource.FESDiagramResultAlarm,
+	id:'FESDiagramResultAlarmInfoTabPanel_Id',
+//	hidden:onlyMonitor,
+//	iconCls: onlyMonitor?null:'check3',
+	iconCls: 'check3',
+	layout: 'border',
+	items: [{
+    	region: 'west',
+    	width: '30%',
+		title: loginUserLanguageResource.deviceList,
+		id: 'FESDiagramResultAlarmOverviewPanel_Id',
+		autoScroll: false,
+        scrollable: false,
+        split: true,
+        collapsible: true,
+		layout: 'fit'
+	},{
+		region: 'center',
+		title: loginUserLanguageResource.alarmData,
+		id: 'FESDiagramResultAlarmDetailsPanel_Id',
+        autoScroll: false,
+        layout: 'fit'
+	}]
+},{
+//	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">通信状态报警</div>',
+	title: loginUserLanguageResource.commStatusAlarm,
+	id:'CommunicationAlarmInfoTabPanel_Id',
+	layout: "border",
+	items: [{
+    	region: 'west',
+    	width: '30%',
+		title: loginUserLanguageResource.deviceList,
+		id: 'CommunicationAlarmOverviewPanel_Id',
+		autoScroll: false,
+        scrollable: false,
+        split: true,
+        collapsible: true,
+		layout: 'fit'
+	},{
+		region: 'center',
+		title: loginUserLanguageResource.alarmData,
+		id: 'CommunicationAlarmDetailsPanel_Id',
+        autoScroll: false,
+        layout: 'fit'
+	}]
+},{
+//	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">运行状态报警</div>',
+	title: loginUserLanguageResource.runStatusAlarm,
+	id:'RunStatusAlarmInfoTabPanel_Id',
+	layout: "border",
+//	iconCls: onlyMonitor?'check3':null,
+	items: [{
+		region: 'west',
+    	width: '30%',
+		title: loginUserLanguageResource.deviceList,
+		id: 'RunStatusAlarmOverviewPanel_Id',
+		autoScroll: false,
+        scrollable: false,
+        split: true,
+        collapsible: true,
+		layout: 'fit'
+	},{
+        region: 'center',
+		title: loginUserLanguageResource.alarmData,
+		id: 'RunStatusAlarmDetailsPanel_Id',
+        autoScroll: false,
+        layout: 'fit'
+	}]
+},{
 	title: loginUserLanguageResource.numericValueAlarm,
 	id:'NumericValueAlarmInfoTabPanel_Id',
-	iconCls: 'check3',
+//	iconCls: 'check3',
 	layout: "border",
 	items: [{
     	region: 'west',
@@ -59,75 +128,6 @@ var AlarmQuerySecondTabPanelItems=[{
 		region: 'center',
 		title: loginUserLanguageResource.alarmData,
 		id: 'SwitchingValueAlarmDetailsPanel_Id',
-        autoScroll: false,
-        layout: 'fit'
-	}]
-},{
-//	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">通信状态报警</div>',
-	title: loginUserLanguageResource.commStatusAlarm,
-	id:'CommunicationAlarmInfoTabPanel_Id',
-	layout: "border",
-	items: [{
-    	region: 'west',
-    	width: '30%',
-		title: loginUserLanguageResource.deviceList,
-		id: 'CommunicationAlarmOverviewPanel_Id',
-		autoScroll: false,
-        scrollable: false,
-        split: true,
-        collapsible: true,
-		layout: 'fit'
-	},{
-		region: 'center',
-		title: loginUserLanguageResource.alarmData,
-		id: 'CommunicationAlarmDetailsPanel_Id',
-        autoScroll: false,
-        layout: 'fit'
-	}]
-},{
-//	title: '<div style="color:#6C6262;font-size:11px;font-family:SimSun">运行状态报警</div>',
-	title: loginUserLanguageResource.runStatusAlarm,
-	id:'RunStatusAlarmInfoTabPanel_Id',
-	layout: "border",
-//	iconCls: onlyMonitor?'check3':null,
-	items: [{
-		region: 'west',
-    	width: '30%',
-		title: loginUserLanguageResource.deviceList,
-		id: 'RunStatusAlarmOverviewPanel_Id',
-		autoScroll: false,
-        scrollable: false,
-        split: true,
-        collapsible: true,
-		layout: 'fit'
-	},{
-        region: 'center',
-		title: loginUserLanguageResource.alarmData,
-		id: 'RunStatusAlarmDetailsPanel_Id',
-        autoScroll: false,
-        layout: 'fit'
-	}]
-},{
-	title: loginUserLanguageResource.FESDiagramResultAlarm,
-	id:'FESDiagramResultAlarmInfoTabPanel_Id',
-//	hidden:onlyMonitor,
-//	iconCls: onlyMonitor?null:'check3',
-//	iconCls: 'check3',
-	layout: 'border',
-	items: [{
-    	region: 'west',
-    	width: '30%',
-		title: loginUserLanguageResource.deviceList,
-		id: 'FESDiagramResultAlarmOverviewPanel_Id',
-		autoScroll: false,
-        scrollable: false,
-        split: true,
-        collapsible: true,
-		layout: 'fit'
-	},{
-		region: 'center',
-		title: loginUserLanguageResource.alarmData,
-		id: 'FESDiagramResultAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
 	}]

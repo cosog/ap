@@ -1728,6 +1728,77 @@ color16ToRgba = function(sColor,Opacity){
 	 	}
 	}
  
+ adviceDeviceOverviewDeviceNameColor = function (val, o, p, e) {
+	 var commAlarmLevel=p.data.commAlarmLevel==undefined?0:p.data.commAlarmLevel;
+	 var runAlarmLevel=p.data.runAlarmLevel==undefined?0:p.data.runAlarmLevel;
+	 var alarmInfo = p.data.alarmInfo;
+	 var maxAlarmLevel=0;
+	 var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+	 if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
+		 if(commAlarmLevel>0){
+			 maxAlarmLevel=commAlarmLevel;
+		 }
+		 
+		 if(runAlarmLevel>0 && (maxAlarmLevel==0 || runAlarmLevel<maxAlarmLevel) ){
+			 maxAlarmLevel=runAlarmLevel;
+		 }
+		 
+		 if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
+			 for (var i = 0; i < alarmInfo.length; i++) {
+				 if(alarmInfo[i].alarmLevel>0 && (maxAlarmLevel==0 || alarmInfo[i].alarmLevel<maxAlarmLevel) ){
+					 maxAlarmLevel=alarmInfo[i].alarmLevel;
+				 }
+			 }
+		 }
+	 }
+	 
+	if(val == undefined) {
+		 val = '';
+	}
+	var returnInfo='';
+	if(isNotVal(val)){
+		if (maxAlarmLevel == 0) {
+			returnInfo= '<span data-qtip="' + val + '" data-dismissDelay=10000>' + val + '</span>';
+        }else{
+        	var color ='';
+        	if (maxAlarmLevel == 100) {
+        		color='#' +alarmShowStyle.Data.FirstLevel.Color;
+        	} else if (maxAlarmLevel == 200) {
+        		color='#' +alarmShowStyle.Data.SecondLevel.Color;
+        	} else if (maxAlarmLevel == 300) {
+        		color='#' +alarmShowStyle.Data.ThirdLevel.Color;
+        	}
+        	
+//        	returnInfo= '<span data-qtip="' + val + '" data-dismissDelay=10000>' +'<span style="color: '+color+'; margin-right: 2px;">●</span>'+ val + '</span>';
+        	
+        	// 创建SVG圆点（可配置大小）
+            var svgDot = Ext.String.format(
+            	    // SVG画布设置：创建一个8x8像素的画布
+            	    '<svg width="8" height="8" style="margin-right: 2px; vertical-align: middle;">' +
+            	    
+            	    // 圆形元素：在画布上绘制一个圆形
+            	    // cx="4"  - 圆心在X轴的位置（水平中心）
+            	    // cy="4"  - 圆心在Y轴的位置（垂直中心）
+            	    // r       - 圆的半径
+            	    '  <circle cx="4" cy="4" r="3.5" fill="{0}" stroke="{1}" stroke-width="1"/>' +
+            	    
+            	    '</svg>',
+            	    color,  // fill颜色 - 圆的填充色
+            	    Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)'  // stroke颜色 - 圆的边框色
+            	);
+            
+            return svgDot + Ext.util.Format.htmlEncode(val);
+        }
+		
+		
+		
+		
+		
+		
+		return returnInfo;
+	}
+ }
+ 
  adviceRealtimeMonitoringDataColor = function (val, o, p, e) {
 	    var alarmInfo = p.data.alarmInfo;
 	    var alarmLevel=0;

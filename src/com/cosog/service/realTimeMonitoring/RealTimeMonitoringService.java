@@ -160,6 +160,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		AlarmShowStyle alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"item\",children:[] },"
@@ -189,7 +190,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(!StringManagerUtils.isNotNull(deviceAlarmInfo)){
 				deviceAlarmInfo="[]";
 			}
-			String alarmInstanceCode=(obj[0]+"").replace("null", "");
+			String alarmInstanceCode=(obj[3]+"").replace("null", "");
 			
 			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 			alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(alarmInstanceCode);
@@ -256,24 +257,25 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		result_json.append("{\"id\":1,");
 		result_json.append("\"item\":'"+languageResourceMap.get("normal")+"',");
-		result_json.append("\"itemCode\":\"normalDeviceCount\",");
+		result_json.append("\"level\":0,");
 		result_json.append("\"count\":"+normalDeviceCount+"},");
 		
 		result_json.append("{\"id\":2,");
 		result_json.append("\"item\":'"+languageResourceMap.get("alarmLevel1")+"',");
-		result_json.append("\"itemCode\":\"firstLevelCount\",");
+		result_json.append("\"level\":100,");
 		result_json.append("\"count\":"+firstLevelCount+"},");
 		
 		result_json.append("{\"id\":3,");
 		result_json.append("\"item\":'"+languageResourceMap.get("alarmLevel2")+"',");
-		result_json.append("\"itemCode\":\"secondLevelCount\",");
+		result_json.append("\"level\":200,");
 		result_json.append("\"count\":"+secondLevelCount+"},");
 		
 		result_json.append("{\"id\":4,");
 		result_json.append("\"item\":'"+languageResourceMap.get("alarmLevel3")+"',");
-		result_json.append("\"itemCode\":\"thirdLevelCount\",");
+		result_json.append("\"level\":300,");
 		result_json.append("\"count\":"+thirdLevelCount+"}");
 		result_json.append("]");
+		result_json.append(",\"AlarmShowStyle\":"+(alarmShowStyle!=null?new Gson().toJson(alarmShowStyle):"{}"));
 		result_json.append("}");
 
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -370,7 +372,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("}");
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{}
+		}finally{
+			
+		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	

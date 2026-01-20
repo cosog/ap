@@ -503,12 +503,14 @@ function getProjectTabInstanceInfoByDeviceType(deviceType){
 	r.DeviceRealTimeMonitoring={
 			FESDiagramStatPie: false,
             CommStatusStatPie: false,
-            RunStatusStatPie: false	
+            RunStatusStatPie: false,
+            NumStatusStatPie: false	
 	};
 	r.DeviceHistoryQuery={
 			FESDiagramStatPie: false,
             CommStatusStatPie: false,
-            RunStatusStatPie: false
+            RunStatusStatPie: false,
+            NumStatusStatPie: false
 	};
 	if(r.AlarmQuery==undefined){
 		r.AlarmQuery={
@@ -532,10 +534,12 @@ function getProjectTabInstanceInfoByDeviceType(deviceType){
 					var showRealtimeFESDiagramStatPie=false;
 					var showRealtimeCommStatusStatPie=false;
 					var showRealtimeRunStatusStatPie=false;
+					var showRealtimeNumStatusStatPie=false;
 					
 					var showHistoryFESDiagramStatPie=false;
 					var showHistoryCommStatusStatPie=false;
 					var showHistoryRunStatusStatPie=false;
+					var showHistoryNumStatusStatPie=false;
 					
 					var showAlarmQueryFESDiagramResultAlarm=false;
 					var showAlarmQueryRunStatusAlarm=false;
@@ -549,12 +553,14 @@ function getProjectTabInstanceInfoByDeviceType(deviceType){
 						showRealtimeFESDiagramStatPie=result.config[i].DeviceRealTimeMonitoring.FESDiagramStatPie!=undefined?result.config[i].DeviceRealTimeMonitoring.FESDiagramStatPie:false;
 						showRealtimeCommStatusStatPie=result.config[i].DeviceRealTimeMonitoring.CommStatusStatPie!=undefined?result.config[i].DeviceRealTimeMonitoring.CommStatusStatPie:false;
 						showRealtimeRunStatusStatPie=result.config[i].DeviceRealTimeMonitoring.RunStatusStatPie!=undefined?result.config[i].DeviceRealTimeMonitoring.RunStatusStatPie:false;
+						showRealtimeNumStatusStatPie=result.config[i].DeviceRealTimeMonitoring.NumStatusStatPie!=undefined?result.config[i].DeviceRealTimeMonitoring.NumStatusStatPie:false;
 					}
 					
 					if(result.config[i].DeviceHistoryQuery!=undefined){
 						showHistoryFESDiagramStatPie=result.config[i].DeviceHistoryQuery.FESDiagramStatPie!=undefined?result.config[i].DeviceHistoryQuery.FESDiagramStatPie:false;
 						showHistoryCommStatusStatPie=result.config[i].DeviceHistoryQuery.CommStatusStatPie!=undefined?result.config[i].DeviceHistoryQuery.CommStatusStatPie:false;
 						showHistoryRunStatusStatPie=result.config[i].DeviceHistoryQuery.RunStatusStatPie!=undefined?result.config[i].DeviceHistoryQuery.RunStatusStatPie:false;
+						showHistoryNumStatusStatPie=result.config[i].DeviceHistoryQuery.NumStatusStatPie!=undefined?result.config[i].DeviceHistoryQuery.NumStatusStatPie:false;
 					}
 					
 					if(result.config[i].AlarmQuery!=undefined){
@@ -577,6 +583,9 @@ function getProjectTabInstanceInfoByDeviceType(deviceType){
 					if(r.DeviceRealTimeMonitoring.RunStatusStatPie==false){
 						r.DeviceRealTimeMonitoring.RunStatusStatPie=showRealtimeRunStatusStatPie;
 					}
+					if(r.DeviceRealTimeMonitoring.NumStatusStatPie==false){
+						r.DeviceRealTimeMonitoring.NumStatusStatPie=showRealtimeNumStatusStatPie;
+					}
 					
 					if(r.DeviceHistoryQuery.FESDiagramStatPie==false){
 						r.DeviceHistoryQuery.FESDiagramStatPie=showHistoryFESDiagramStatPie;
@@ -586,6 +595,9 @@ function getProjectTabInstanceInfoByDeviceType(deviceType){
 					}
 					if(r.DeviceHistoryQuery.RunStatusStatPie==false){
 						r.DeviceHistoryQuery.RunStatusStatPie=showHistoryRunStatusStatPie;
+					}
+					if(r.DeviceHistoryQuery.NumStatusStatPie==false){
+						r.DeviceHistoryQuery.NumStatusStatPie=showHistoryNumStatusStatPie;
 					}
 					
 					if(r.AlarmQuery.FESDiagramResultAlarm==false){
@@ -614,30 +626,6 @@ function getProjectTabInstanceInfoByDeviceType(deviceType){
 			deviceType:deviceType
 		}
 	});
-	
-//	if(r.DeviceRealTimeMonitoring.FESDiagramStatPie==false && r.DeviceRealTimeMonitoring.CommStatusStatPie==false && r.DeviceRealTimeMonitoring.RunStatusStatPie==false){
-//		r.DeviceRealTimeMonitoring.CommStatusStatPie=true;
-//		r.DeviceRealTimeMonitoring.RunStatusStatPie=true;
-//	}
-//	
-//	if(r.DeviceHistoryQuery.FESDiagramStatPie==false && r.DeviceHistoryQuery.CommStatusStatPie==false && r.DeviceHistoryQuery.RunStatusStatPie==false){
-//		r.DeviceHistoryQuery.CommStatusStatPie=true;
-//		r.DeviceHistoryQuery.RunStatusStatPie=true;
-//	}
-//	
-//	if(r.AlarmQuery.FESDiagramResultAlarm==false 
-//			&& r.AlarmQuery.RunStatusAlarm==false 
-//			&& r.AlarmQuery.CommStatusAlarm==false
-//			&& r.AlarmQuery.NumericValueAlarm==false
-//			&& r.AlarmQuery.EnumValueAlarm==false
-//			&& r.AlarmQuery.SwitchingValueAlarm==false
-//			){
-//		r.AlarmQuery.RunStatusAlarm=true;
-//		r.AlarmQuery.CommStatusAlarm=true;
-//		r.AlarmQuery.NumericValueAlarm=true;
-//		r.AlarmQuery.EnumValueAlarm=true;
-//		r.AlarmQuery.SwitchingValueAlarm=true;
-//	}
 	
 	return r;
 }

@@ -322,7 +322,23 @@ function realTimeDataRefresh(){
 		}
 	}
 	
-	if(projectTabConfig.DeviceRealTimeMonitoring.FESDiagramStatPie==false && projectTabConfig.DeviceRealTimeMonitoring.CommStatusStatPie==false && projectTabConfig.DeviceRealTimeMonitoring.RunStatusStatPie==false){
+	if(projectTabConfig.DeviceRealTimeMonitoring.NumStatusStatPie==false){
+		tabPanel.remove(Ext.getCmp("RealTimeMonitoringNumStatusStatGraphPanel_Id"));
+		if(statTabActiveId=="RealTimeMonitoringNumStatusStatGraphPanel_Id"){
+			tabChange=true;
+		}
+	}else{
+		var RealTimeMonitoringNumStatusStatGraphPanel = tabPanel.getComponent("RealTimeMonitoringNumStatusStatGraphPanel_Id");
+		if(RealTimeMonitoringNumStatusStatGraphPanel==undefined){
+			tabPanel.insert(3,realtimeStatTabItems[3]);
+		}
+	}
+	
+	if(projectTabConfig.DeviceRealTimeMonitoring.FESDiagramStatPie==false 
+			&& projectTabConfig.DeviceRealTimeMonitoring.CommStatusStatPie==false 
+			&& projectTabConfig.DeviceRealTimeMonitoring.RunStatusStatPie==false
+			&& projectTabConfig.DeviceRealTimeMonitoring.NumStatusStatPie==false
+			){
 		tabPanel.hide();
 		
 		Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').setValue('');
@@ -345,7 +361,9 @@ function realTimeDataRefresh(){
 		 			loadAndInitCommStatusStat(true);
 		 		}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
 		 			loadAndInitRunStatusStat(true);
-		 		}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+		 		}else if(statTabActiveId=="RealTimeMonitoringNumStatusStatGraphPanel_Id"){
+					loadAndInitNumStatusStat(true);
+				}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
 		 			loadAndInitDeviceTypeStat(true);
 		 		}
 		 		
@@ -354,11 +372,7 @@ function realTimeDataRefresh(){
 		 		refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("RealTimeMonitoringListGridPanel_Id"),'AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore');
 		 	}
 		}
-		
 	}
- 	
-	 	
-	
 }
 
 function createRealTimeMonitoringStatColumn(columnInfo) {
@@ -754,7 +768,7 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 };
 
 
-function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr) {
+function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportDeviceRealTimeOverviewData'+deviceType+'_'+timestamp;
 	
@@ -802,6 +816,7 @@ function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,dictDevic
     + "&FESdiagramResultStatValue=" + URLencode(URLencode(FESdiagramResultStatValue))
     + "&commStatusStatValue=" + URLencode(URLencode(commStatusStatValue))
     + "&runStatusStatValue=" + URLencode(URLencode(runStatusStatValue))
+    + "&numStatusStatValue=" + URLencode(URLencode(numStatusStatValue))
     + "&deviceTypeStatValue=" + URLencode(URLencode(deviceTypeStatValue))
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
@@ -862,6 +877,7 @@ function loadAndInitFESdiagramResultStat(all){
 		Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").setValue('');
+		Ext.getCmp("RealTimeMonitoringStatSelectNumStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
 		commStatusStatValue='';
 		deviceTypeStatValue='';
@@ -990,6 +1006,7 @@ function loadAndInitCommStatusStat(all){
 		Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").setValue('');
+		Ext.getCmp("RealTimeMonitoringStatSelectNumStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
 	}
 
@@ -1142,6 +1159,7 @@ function loadAndInitRunStatusStat(all){
 		Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").setValue('');
+		Ext.getCmp("RealTimeMonitoringStatSelectNumStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
 	}else{
 		deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
@@ -1175,7 +1193,6 @@ function loadAndInitRunStatusStat(all){
         }
 	});
 }
-
 
 function initRealTimeMonitoringRunStatusStatPieOrColChat(get_rawData) {
 	var divId="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id";
@@ -1273,6 +1290,168 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 							Ext.getCmp(deviceListComb_Id).setRawValue('');
 
 							refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
+						}
+					},
+					showInLegend : true
+				}
+			},
+			exporting:{ 
+	            enabled:true,    
+	            filename:title,
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+			},
+			series : [{
+						type : 'pie',
+						name : name,
+						data : data
+					}]
+			});
+	}
+};
+
+function loadAndInitNumStatusStat(all){
+	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+	var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
+	var panelId="RealTimeMonitoringNumStatusStatGraphPanel_Id";
+	if(all){
+		Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").setValue('');
+		Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").setValue('');
+		Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").setValue('');
+		Ext.getCmp("RealTimeMonitoringStatSelectNumStatus_Id").setValue('');
+		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
+	}
+	if(isNotVal(Ext.getCmp(panelId))){
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	}
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/realTimeMonitoringController/getRealTimeMonitoringNumStatusStatData',
+		success:function(response) {
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
+			
+			var result =  Ext.JSON.decode(response.responseText);
+			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
+			initRealTimeMonitoringNumStatusStatPieOrColChat(result);
+		},
+		failure:function(){
+			if(isNotVal(Ext.getCmp(panelId))){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+		},
+		params: {
+			orgId:orgId,
+			deviceType:deviceType
+        }
+	});
+}
+
+function initRealTimeMonitoringNumStatusStatPieOrColChat(get_rawData) {
+	var divId="RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id";
+	var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
+	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
+	var title=loginUserLanguageResource.numStatus;
+	var datalist=get_rawData.totalRoot;
+	var colors=[];
+	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+	var pieData=[];
+	for(var i=0;i<datalist.length;i++){
+		if(datalist[i].itemCode!='all'){
+			if(datalist[i].count>0){
+				var singleData={};
+				singleData.name=datalist[i].item;
+				singleData.y=datalist[i].count;
+				singleData.level=datalist[i].level;
+				
+				if(datalist[i].level==0){
+					singleData.color='#'+alarmShowStyle.Data.Normal.BackgroundColor;
+				}else if(datalist[i].level==100){
+					singleData.color='#'+alarmShowStyle.Data.FirstLevel.BackgroundColor;
+				}else if(datalist[i].level==200){
+					singleData.color='#'+alarmShowStyle.Data.SecondLevel.BackgroundColor;
+				}else if(datalist[i].level==300){
+					singleData.color='#'+alarmShowStyle.Data.ThirdLevel.BackgroundColor;
+				}
+				pieData.push(singleData);
+			}
+		}
+	}
+	ShowRealTimeMonitoringNumStatusStatPieOrColChat(title,divId, "设备数占", pieData,colors);
+};
+
+function ShowRealTimeMonitoringNumStatusStatPieOrColChat(title,divId, name, data,colors) {
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.chart(divId, {
+			chart : {
+				plotBackgroundColor : null,
+				plotBorderWidth : null,
+				plotShadow : false
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title
+			},
+			colors : colors,
+			tooltip : {
+//				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+//				pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)<br/>'
+				formatter: function() {
+			        // 动态生成 tooltip 内容
+			        const point = this.point;
+			        var count=point.y;
+			        var pointName=point.name;
+			        var level=point.level;
+			        var showInfo=loginUserLanguageResource.alarmCount;
+			        if(level==0){
+			        	showInfo=loginUserLanguageResource.deviceCount;
+			        }
+			        return  pointName+'</br>'+showInfo+':'+count;
+			    }
+			},
+			legend : {
+				align : 'center',
+				verticalAlign : 'bottom',
+				layout : 'horizontal' //vertical 竖直 horizontal-水平
+			},
+			plotOptions : {
+				pie : {
+					allowPointSelect : true,
+					cursor : 'pointer',
+					dataLabels : {
+						enabled : true,
+						color : '#000000',
+						connectorColor : '#000000',
+						format : '<b>{point.name}</b>: {point.y}'
+					},
+					events: {
+						click: function(e) {
+							var statSelectNumStatusId="RealTimeMonitoringStatSelectNumStatus_Id";
+							var deviceListComb_Id="RealTimeMonitoringDeviceListComb_Id";
+							var gridPanel_Id="RealTimeMonitoringListGridPanel_Id";
+							var store="AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore";
+							var selectedDeviceId_global="selectedDeviceId_global";
+							var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
+							var activeId = Ext.getCmp("RealTimeMonitoringTabPanel").getActiveTab().id;
+
+							Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+							
+							if(!e.point.selected){//如果没被选中,则本次是选中
+								Ext.getCmp(statSelectNumStatusId).setValue(e.point.level);
+							}else{//取消选中
+								Ext.getCmp(statSelectNumStatusId).setValue('');
+							}
+							
+							Ext.getCmp(deviceListComb_Id).setValue('');
+							Ext.getCmp(deviceListComb_Id).setRawValue('');
+							
+							Ext.getCmp(gridPanel_Id).getStore().loadPage(1);
+
+//							refreshRealtimeDeviceListDataByPage(parseInt(Ext.getCmp(selectedDeviceId_global).getValue()),deviceType,Ext.getCmp(gridPanel_Id),store);
 						}
 					},
 					showInLegend : true
@@ -1941,11 +2120,13 @@ function getDeviceRealTimeOverviewDataPage(deviceId,deviceType,limit){
 	var FESdiagramResultStatValue='';
 	var commStatusStatValue='';
 	var runStatusStatValue='';
+	var numStatusStatValue='';
 	var deviceTypeStatValue='';
 	deviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
 	FESdiagramResultStatValue=Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").getValue();
 	commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
 	runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
+	numStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectNumStatus_Id").getValue();
 	deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
 	
 	Ext.Ajax.request({
@@ -1965,6 +2146,7 @@ function getDeviceRealTimeOverviewDataPage(deviceId,deviceType,limit){
             FESdiagramResultStatValue:FESdiagramResultStatValue,
             commStatusStatValue:commStatusStatValue,
             runStatusStatValue:runStatusStatValue,
+            numStatusStatValue:numStatusStatValue,
             deviceTypeStatValue:deviceTypeStatValue,
             limit:limit
         }

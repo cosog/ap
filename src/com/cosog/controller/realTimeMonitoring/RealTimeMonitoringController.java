@@ -165,6 +165,34 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getRealTimeMonitoringNumStatusStatData")
+	public String getRealTimeMonitoringNumStatusStatData() throws Exception {
+		String json = "";
+		orgId = ParamUtils.getParameter(request, "orgId");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");
+		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		json = realTimeMonitoringService.getRealTimeMonitoringNumStatusStatData(orgId,deviceType,deviceTypeStatValue,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getRealTimeMonitoringDeviceTypeStatData")
 	public String getRealTimeMonitoringDeviceTypeStatData() throws Exception {
 		String json = "";

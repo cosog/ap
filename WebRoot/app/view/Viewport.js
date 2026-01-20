@@ -243,6 +243,8 @@ function websocketOnMessage(evt) {
 				loadAndInitCommStatusStat(true);
 			}else if(statTabActiveId=="RealTimeMonitoringRunStatusStatGraphPanel_Id"){
 				loadAndInitRunStatusStat(true);
+			}else if(statTabActiveId=="RealTimeMonitoringNumStatusStatGraphPanel_Id"){
+				loadAndInitNumStatusStat(true);
 			}else if(statTabActiveId=="RealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
 				loadAndInitDeviceTypeStat(true);
 			}
@@ -263,6 +265,7 @@ function websocketOnMessage(evt) {
         		//更新通信状态统计
                 getDeviceCommStatusTotal();
                 getDeviceRunStatusTotal();
+                getDeviceNumStatusTotal();
                 getDeviceFESDiagramResultTotal();
 
                 var isSelectWell = false;
@@ -452,6 +455,7 @@ function websocketOnMessage(evt) {
                 //更新通信状态统计
                 getDeviceCommStatusTotal();
                 getDeviceRunStatusTotal();
+                getDeviceNumStatusTotal();
 
                 var isSelectWell = false;
                 var commStatusChange = false;
@@ -861,6 +865,63 @@ function getDeviceRunStatusTotal() {
                             }
                         }
                     }
+                    series.setData(pieData);
+                }
+            },
+            failure: function () {
+                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            },
+            params: {
+                orgId: orgId,
+                deviceType: deviceType
+            }
+        });
+    }
+}
+
+function getDeviceNumStatusTotal() {
+    var orgId = Ext.getCmp('leftOrg_Id').getValue();
+    var deviceType=getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
+    
+    var tabPanel=Ext.getCmp("RealTimeMonitoringStatTabPanel");
+    var statTabActiveId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
+    
+    if (statTabActiveId == "RealTimeMonitoringNumStatusStatGraphPanel_Id") {
+        Ext.Ajax.request({
+            method: 'POST',
+            url: context + '/realTimeMonitoringController/getRealTimeMonitoringNumStatusStatData',
+            success: function (response) {
+                var result = Ext.JSON.decode(response.responseText);
+                Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
+                var chart = $("#RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id").highcharts();
+
+                if (isNotVal(chart)) {
+                    var series = chart.series[0];
+                    var colors = [];
+                    var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+                    var pieData = [];
+                    var datalist = result.totalRoot;
+                    for(var i=0;i<datalist.length;i++){
+                		if(datalist[i].itemCode!='all'){
+                			if(datalist[i].count>0){
+                				var singleData={};
+                				singleData.name=datalist[i].item;
+                				singleData.y=datalist[i].count;
+                				singleData.level=datalist[i].level;
+                				
+                				if(datalist[i].level==0){
+                					singleData.color='#'+alarmShowStyle.Data.Normal.BackgroundColor;
+                				}else if(datalist[i].level==100){
+                					singleData.color='#'+alarmShowStyle.Data.FirstLevel.BackgroundColor;
+                				}else if(datalist[i].level==200){
+                					singleData.color='#'+alarmShowStyle.Data.SecondLevel.BackgroundColor;
+                				}else if(datalist[i].level==300){
+                					singleData.color='#'+alarmShowStyle.Data.ThirdLevel.BackgroundColor;
+                				}
+                				pieData.push(singleData);
+                			}
+                		}
+                	}
                     series.setData(pieData);
                 }
             },

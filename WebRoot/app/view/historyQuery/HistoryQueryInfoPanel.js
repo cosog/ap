@@ -66,28 +66,52 @@ var historyStatTabItems=[{
         }
     }
 },{
-	title:loginUserLanguageResource.deviceType,
+	title:loginUserLanguageResource.numStatus,
 	layout: 'fit',
-	hidden:true,
-	id:'HistoryQueryDeviceTypeStatGraphPanel_Id',
-	html: '<div id="HistoryQueryDeviceTypeStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+	id:'HistoryQueryNumStatusStatGraphPanel_Id',
+	html: '<div id="HistoryQueryNumStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if ($("#HistoryQueryDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
-        		highchartsResize("HistoryQueryDeviceTypeStatPieDiv_Id");
+        	if ($("#HistoryQueryNumStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+        		highchartsResize("HistoryQueryNumStatusStatGraphPanelPieDiv_Id");
         	}else{
-            	var toolTip=Ext.getCmp("HistoryQueryDeviceTypeStatPieToolTip_Id");
+            	var toolTip=Ext.getCmp("HistoryQueryNumStatusStatGraphPanelPieToolTip_Id");
             	if(!isNotVal(toolTip)){
             		Ext.create('Ext.tip.ToolTip', {
-                        id:'HistoryQueryDeviceTypeStatPieToolTip_Id',
-                		target: 'HistoryQueryDeviceTypeStatPieDiv_Id',
+                        id:'HistoryQueryNumStatusStatGraphPanelPieToolTip_Id',
+                		target: 'HistoryQueryNumStatusStatGraphPanelPieDiv_Id',
                         html: loginUserLanguageResource.statPieChartToolTip
                     });
             	}
             }
         }
     }
-}];
+}
+
+//,{
+//	title:loginUserLanguageResource.deviceType,
+//	layout: 'fit',
+//	hidden:true,
+//	id:'HistoryQueryDeviceTypeStatGraphPanel_Id',
+//	html: '<div id="HistoryQueryDeviceTypeStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+//	listeners: {
+//        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+//        	if ($("#HistoryQueryDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
+//        		highchartsResize("HistoryQueryDeviceTypeStatPieDiv_Id");
+//        	}else{
+//            	var toolTip=Ext.getCmp("HistoryQueryDeviceTypeStatPieToolTip_Id");
+//            	if(!isNotVal(toolTip)){
+//            		Ext.create('Ext.tip.ToolTip', {
+//                        id:'HistoryQueryDeviceTypeStatPieToolTip_Id',
+//                		target: 'HistoryQueryDeviceTypeStatPieDiv_Id',
+//                        html: loginUserLanguageResource.statPieChartToolTip
+//                    });
+//            	}
+//            }
+//        }
+//    }
+//}
+];
 
 var historyQueryCenterTabPanelItems=[{
 	title: loginUserLanguageResource.trendCurve,
@@ -650,6 +674,11 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             value: '',
                             hidden: true
                         },{
+                            id: 'HistoryQueryStatSelectNumStatus_Id',
+                            xtype: 'textfield',
+                            value: '',
+                            hidden: true
+                        },{
                             id: 'HistoryQueryStatSelectDeviceType_Id',
                             xtype: 'textfield',
                             value: '',
@@ -688,6 +717,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             	var FESdiagramResultStatValue=Ext.getCmp("HistoryQueryStatSelectFESdiagramResult_Id").getValue();
                             	var commStatusStatValue=Ext.getCmp("HistoryQueryStatSelectCommStatus_Id").getValue();
                             	var runStatusStatValue=Ext.getCmp("HistoryQueryStatSelectRunStatus_Id").getValue();
+                            	var numStatusStatValue=Ext.getCmp("HistoryQueryStatSelectNumStatus_Id").getValue();
                     			var deviceTypeStatValue=Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").getValue();
                            	 	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
                            	 	var fileName=loginUserLanguageResource.historyQueryDeviceList;
@@ -699,7 +729,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                            	 		dictDeviceType=getDeviceTypeFromTabId_first("HistoryQueryRootTabPanel");
                            	 	}
                            	 	
-                           	 	exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
+                           	 	exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                             }
                         }]
                     },{
@@ -732,6 +762,8 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             						loadAndInitHistoryQueryCommStatusStat(true);
             					}else if(newCard.id=="HistoryQueryRunStatusStatGraphPanel_Id"){
             						loadAndInitHistoryQueryRunStatusStat(true);
+            					}else if(newCard.id=="HistoryQueryNumStatusStatGraphPanel_Id"){
+            						loadAndInitHistoryQueryNumStatusStat(true);
             					}else if(newCard.id=="HistoryQueryDeviceTypeStatGraphPanel_Id"){
             						loadAndInitHistoryQueryDeviceTypeStat(true);
             					}

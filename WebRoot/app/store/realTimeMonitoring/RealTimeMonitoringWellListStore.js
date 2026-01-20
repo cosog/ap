@@ -76,33 +76,6 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
             	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
-//            	var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
-//            	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
-//            	if(activeId=="RealTimeMonitoringCurveTabPanel_Id"){
-//            		tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
-//                	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
-//                	$("#realTimeMonitoringCurveContainer").html('');
-//                	$("#RealTimeMonitoringInfoDataTableInfoContainer").html('');
-//            	}else if(activeId=="RealTimeMonitoringTableTabPanel_Id"){
-//            		tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
-//                	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
-//                	if(deviceRealTimeMonitoringDataHandsontableHelper!=null){
-//            			if(deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
-//            				deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
-//            			}
-//            			deviceRealTimeMonitoringDataHandsontableHelper=null;
-//            		}
-//            	}else{
-//            		tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
-//                	tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
-//            	}
-//            	cleanDeviceAddInfoAndControlInfo();
-//            	Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel").hide();
-//            	Ext.getCmp("RealTimeMonitoringRightTabPanel").hide();
-//            	
-//            	Ext.getCmp("RealTimeMonitoringTabPanel").getEl().unmask();
-//            	Ext.getCmp("RealTimeMonitoringInfoPanel_Id").getEl().unmask();
-            	
             	var record={
             			data:{
             				deviceName:'',
@@ -124,6 +97,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
         	var FESdiagramResultStatValue=Ext.getCmp("RealTimeMonitoringStatSelectFESdiagramResult_Id").getValue();
         	var commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
         	var runStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectRunStatus_Id").getValue();
+        	var numStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectNumStatus_Id").getValue();
         	var deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
         	
         	var dictDeviceType=deviceType;
@@ -141,6 +115,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     FESdiagramResultStatValue:FESdiagramResultStatValue,
                     commStatusStatValue:commStatusStatValue,
                     runStatusStatValue:runStatusStatValue,
+                    numStatusStatValue:numStatusStatValue,
                     deviceTypeStatValue:deviceTypeStatValue
                 };
             Ext.apply(store.proxy.extraParams, new_params);

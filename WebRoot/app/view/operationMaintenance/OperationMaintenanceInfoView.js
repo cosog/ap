@@ -1058,10 +1058,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                		contentConfig.DeviceRealTimeMonitoring.FESDiagramStatPie=Ext.getCmp('calculationModel_showRealtimeFESDiagramStatPie_Id').getValue();
 		                		contentConfig.DeviceRealTimeMonitoring.CommStatusStatPie=Ext.getCmp('calculationModel_showRealtimeCommStatusStatPie_Id').getValue();
 		                		contentConfig.DeviceRealTimeMonitoring.RunStatusStatPie=Ext.getCmp('calculationModel_showRealtimeRunStatusStatPie_Id').getValue();
+		                		contentConfig.DeviceRealTimeMonitoring.NumStatusStatPie=Ext.getCmp('calculationModel_showRealtimeNumStatusStatPie_Id').getValue();
 		                		
 		                		contentConfig.DeviceHistoryQuery.FESDiagramStatPie=Ext.getCmp('calculationModel_showHistoryFESDiagramStatPie_Id').getValue();
 		                		contentConfig.DeviceHistoryQuery.CommStatusStatPie=Ext.getCmp('calculationModel_showHistoryCommStatusStatPie_Id').getValue();
 		                		contentConfig.DeviceHistoryQuery.RunStatusStatPie=Ext.getCmp('calculationModel_showHistoryRunStatusStatPie_Id').getValue();
+		                		contentConfig.DeviceHistoryQuery.NumStatusStatPie=Ext.getCmp('calculationModel_showHistoryNumStatusStatPie_Id').getValue();
 		                		
 		                		contentConfig.AlarmQuery.FESDiagramResultAlarm=Ext.getCmp('calculationModel_showAlarmQueryFESDiagramResultAlarm_Id').getValue();
 		                		contentConfig.AlarmQuery.RunStatusAlarm=Ext.getCmp('calculationModel_showAlarmQueryRunStatusAlarm_Id').getValue();
@@ -1142,6 +1144,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                            	    name: 'calculationModel.showRealtimeFESDiagramStatPie',
 	                                            	    id: 'calculationModel_showRealtimeFESDiagramStatPie_Id',
 	                                            	    checked: false
+	                                            },{
+                                            	    xtype: 'checkboxfield',
+                                            	    fieldLabel: loginUserLanguageResource.numStatusStatisticsPieChart,
+                                            	    name: 'calculationModel.showRealtimeNumStatusStatPie',
+                                            	    id: 'calculationModel_showRealtimeNumStatusStatPie_Id',
+                                            	    checked: false
 	                                            }]
 	        				                }, {
 	                                            items: [{
@@ -1177,7 +1185,13 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        	    name: 'calculationModel.showHistoryFESDiagramStatPie',
 	                                        	    id: 'calculationModel_showHistoryFESDiagramStatPie_Id',
 	                                        	    checked: false
-	    				                        }]
+	    				                        },{
+                                            	    xtype: 'checkboxfield',
+                                            	    fieldLabel: loginUserLanguageResource.numStatusStatisticsPieChart,
+                                            	    name: 'calculationModel.showHistoryNumStatusStatPie',
+                                            	    id: 'calculationModel_showHistoryNumStatusStatPie_Id',
+                                            	    checked: false
+	                                            }]
 	        				                }, {
 	                                            items: [{
 	                                            	xtype: 'checkboxfield',
@@ -3745,10 +3759,12 @@ function updateDeviceTypeContentConfig(deviceTypeContentConfig){
 	Ext.getCmp("calculationModel_showRealtimeFESDiagramStatPie_Id").setValue(false);
 	Ext.getCmp("calculationModel_showRealtimeCommStatusStatPie_Id").setValue(false);
 	Ext.getCmp("calculationModel_showRealtimeRunStatusStatPie_Id").setValue(false);
+	Ext.getCmp("calculationModel_showRealtimeNumStatusStatPie_Id").setValue(false);
 	
 	Ext.getCmp("calculationModel_showHistoryFESDiagramStatPie_Id").setValue(false);
 	Ext.getCmp("calculationModel_showHistoryCommStatusStatPie_Id").setValue(false);
 	Ext.getCmp("calculationModel_showHistoryRunStatusStatPie_Id").setValue(false);
+	Ext.getCmp("calculationModel_showHistoryNumStatusStatPie_Id").setValue(false);
 	
 	Ext.getCmp("calculationModel_showAlarmQueryFESDiagramResultAlarm_Id").setValue(false);
 	Ext.getCmp("calculationModel_showAlarmQueryRunStatusAlarm_Id").setValue(false);
@@ -3762,12 +3778,14 @@ function updateDeviceTypeContentConfig(deviceTypeContentConfig){
 			Ext.getCmp("calculationModel_showRealtimeFESDiagramStatPie_Id").setValue(deviceTypeContentConfig.DeviceRealTimeMonitoring.FESDiagramStatPie!=undefined?deviceTypeContentConfig.DeviceRealTimeMonitoring.FESDiagramStatPie:false);
 			Ext.getCmp("calculationModel_showRealtimeCommStatusStatPie_Id").setValue(deviceTypeContentConfig.DeviceRealTimeMonitoring.CommStatusStatPie!=undefined?deviceTypeContentConfig.DeviceRealTimeMonitoring.CommStatusStatPie:false);
 			Ext.getCmp("calculationModel_showRealtimeRunStatusStatPie_Id").setValue(deviceTypeContentConfig.DeviceRealTimeMonitoring.RunStatusStatPie!=undefined?deviceTypeContentConfig.DeviceRealTimeMonitoring.RunStatusStatPie:false);
+			Ext.getCmp("calculationModel_showRealtimeNumStatusStatPie_Id").setValue(deviceTypeContentConfig.DeviceRealTimeMonitoring.NumStatusStatPie!=undefined?deviceTypeContentConfig.DeviceRealTimeMonitoring.NumStatusStatPie:false);
 		}
 		
 		if(deviceTypeContentConfig.DeviceHistoryQuery!=undefined){
 			Ext.getCmp("calculationModel_showHistoryFESDiagramStatPie_Id").setValue(deviceTypeContentConfig.DeviceHistoryQuery.FESDiagramStatPie!=undefined?deviceTypeContentConfig.DeviceHistoryQuery.FESDiagramStatPie:false);
 			Ext.getCmp("calculationModel_showHistoryCommStatusStatPie_Id").setValue(deviceTypeContentConfig.DeviceHistoryQuery.CommStatusStatPie!=undefined?deviceTypeContentConfig.DeviceHistoryQuery.CommStatusStatPie:false);
 			Ext.getCmp("calculationModel_showHistoryRunStatusStatPie_Id").setValue(deviceTypeContentConfig.DeviceHistoryQuery.RunStatusStatPie!=undefined?deviceTypeContentConfig.DeviceHistoryQuery.RunStatusStatPie:false);
+			Ext.getCmp("calculationModel_showHistoryNumStatusStatPie_Id").setValue(deviceTypeContentConfig.DeviceHistoryQuery.NumStatusStatPie!=undefined?deviceTypeContentConfig.DeviceHistoryQuery.NumStatusStatPie:false);
 		}
 		
 		if(deviceTypeContentConfig.AlarmQuery!=undefined){

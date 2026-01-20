@@ -719,7 +719,8 @@ public class DriverAPIController extends BaseController{
 							}
 							
 							
-							String commAlarm="";
+							String commAlarmSql="";
+							String commRealtimeAlarmSql="";
 							int commAlarmLevel=0,isSendMessage=0,isSendMail=0,retriggerTime=0;
 							String key="";
 							String alarmInfo="";
@@ -728,12 +729,12 @@ public class DriverAPIController extends BaseController{
 								Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
 								if(acqOnline.getStatus()){
 									key=deviceId+","+deviceType+",online";
-									alarmInfo="online";
-									alarmSMSContent=currentTime+":"+deviceName+"online";
+									alarmInfo="上线";
+									alarmSMSContent=currentTime+":"+deviceName+alarmInfo;
 								}else{
 									key=deviceId+","+deviceType+",offline";
-									alarmInfo="offline";
-									alarmSMSContent=currentTime+":"+deviceName+"offline";
+									alarmInfo="离线";
+									alarmSMSContent=currentTime+":"+deviceName+alarmInfo;
 								}
 								for(int j=0;j<alarmInstanceOwnItem.getItemList().size();j++){
 									if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel()>0 && (acqOnline.getStatus()?2:0)==alarmInstanceOwnItem.getItemList().get(j).getValue()){
@@ -748,14 +749,24 @@ public class DriverAPIController extends BaseController{
 										break;
 									}
 								}
-								commAlarm="insert into "+alarmTableName+" (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlevel)"
-										+ "values("+deviceId+",to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),'通信状态',3,"+(acqOnline.getStatus()?2:0)+",'"+alarmInfo+"',"+commAlarmLevel+")";
-								
-								
+								commAlarmSql="insert into "+alarmTableName+" (deviceid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlevel,itemcode)"
+										+ "values("+deviceId+",to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),'通信状态',3,"+(acqOnline.getStatus()?2:0)+",'"+alarmInfo+"',"+commAlarmLevel+",'commStatusName')";
+								commRealtimeAlarmSql="update  tbl_alarminfo_latest t "
+										+ " set t.alarmtime=to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),"
+										+ " t.itemname='通信状态',"
+										+ " t.alarmvalue= "+(acqOnline.getStatus()?2:0)+","
+										+ " t.alarminfo='"+alarmInfo+"',"
+										+ " t.alarmlevel="+commAlarmLevel+","
+										+ " t.itemcode='commStatusName'"
+										+ " where t.deviceid="+deviceId+" and t.alarmtype=3";
 								String lastAlarmTime=alarmInfoMap.get(key);
 								long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, currentTime, "yyyy-MM-dd HH:mm:ss");
 								if(commAlarmLevel>0&&timeDiff>=retriggerTime*1000){
-									result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarm);
+									result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarmSql);
+									result=commonDataService.getBaseDao().updateOrDeleteBySql(commRealtimeAlarmSql);
+									if(result==0){
+										result=commonDataService.getBaseDao().updateOrDeleteBySql(commAlarmSql.replaceAll(alarmTableName, "tbl_alarminfo_latest"));
+									}
 									calculateDataService.sendAlarmSMS(deviceName, deviceType+"",deviceTypeName,isSendMessage==1,isSendMail==1,alarmSMSContent,alarmSMSContent);
 									alarmInfoMap.put(key, currentTime);
 								}
@@ -2744,19 +2755,12 @@ public class DriverAPIController extends BaseController{
 					
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
 						if(acquisitionItemInfo.getAlarmLevel()>0 && acquisitionItemInfo.getTriggerAlarm()){
+							alarm=true;
 							String column=acquisitionItemInfo.getColumn();
 							if(acquisitionItemInfo.getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode())){
 								column+="_"+acquisitionItemInfo.getBitIndex();
 							}
 							acqDataAlarmList.add(new KeyValue(column,acquisitionItemInfo.getAlarmLevel()+""));
-						}
-					}
-					
-					
-					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
-						if(acquisitionItemInfo.getAlarmLevel()>0 && acquisitionItemInfo.getTriggerAlarm()){
-							alarm=true;
-							break;
 						}
 					}
 					

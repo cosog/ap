@@ -117,6 +117,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
         	var FESdiagramResultStatValue=Ext.getCmp("HistoryQueryStatSelectFESdiagramResult_Id").getValue();
         	var commStatusStatValue=Ext.getCmp("HistoryQueryStatSelectCommStatus_Id").getValue();
         	var runStatusStatValue=Ext.getCmp("HistoryQueryStatSelectRunStatus_Id").getValue();
+        	var numStatusStatValue=Ext.getCmp("HistoryQueryStatSelectNumStatus_Id").getValue();
 			var deviceTypeStatValue=Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").getValue();
 			var dictDeviceType=deviceType;
         	if(dictDeviceType.includes(",")){
@@ -130,6 +131,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     FESdiagramResultStatValue:FESdiagramResultStatValue,
                     commStatusStatValue:commStatusStatValue,
                     runStatusStatValue:runStatusStatValue,
+                    numStatusStatValue:numStatusStatValue,
                     deviceTypeStatValue:deviceTypeStatValue
                 };
             Ext.apply(store.proxy.extraParams, new_params);

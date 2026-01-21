@@ -232,7 +232,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public int getHistoryQueryDeviceListDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,String limit,String language){
+	public int getHistoryQueryDeviceListDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String numStatusStatValue,String deviceTypeStatValue,String limit,String language){
 		int dataPage=1;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		try{
@@ -270,6 +270,17 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
 				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"','"+languageResourceMap.get("stop")+"'))='"+runStatusStatValue+"'";
 			}
+			if(StringManagerUtils.isNotNull(numStatusStatValue)){
+				if(StringManagerUtils.stringToInteger(numStatusStatValue)==0){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1) = 0 and decode(t2.alarmlevel2,null,0,t2.alarmlevel2) = 0 and decode(t2.alarmlevel3,null,0,t2.alarmlevel3) = 0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==100){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==200){
+					sql+=" and decode(t2.alarmlevel2,null,0,t2.alarmlevel2)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==300){
+					sql+=" and decode(t2.alarmlevel3,null,0,t2.alarmlevel3)>0";
+				}
+			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
@@ -289,6 +300,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String FESdiagramResultStatValue,
 			String commStatusStatValue,
 			String runStatusStatValue,
+			String numStatusStatValue,
 			String deviceTypeStatValue,
 			Page pager,
 			int userNo,
@@ -399,6 +411,17 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
 				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
+			}
+			if(StringManagerUtils.isNotNull(numStatusStatValue)){
+				if(StringManagerUtils.stringToInteger(numStatusStatValue)==0){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1) = 0 and decode(t2.alarmlevel2,null,0,t2.alarmlevel2) = 0 and decode(t2.alarmlevel3,null,0,t2.alarmlevel3) = 0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==100){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==200){
+					sql+=" and decode(t2.alarmlevel2,null,0,t2.alarmlevel2)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==300){
+					sql+=" and decode(t2.alarmlevel3,null,0,t2.alarmlevel3)>0";
+				}
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -1204,7 +1227,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String orgId,String deviceName,
 			String deviceType,String dictDeviceType,
 			String FESdiagramResultStatValue,
-			String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager,
+			String commStatusStatValue,String runStatusStatValue,String numStatusStatValue,String deviceTypeStatValue,Page pager,
 			int userNo,
 			String language) throws IOException, SQLException{
 		Gson gson = new Gson();
@@ -1313,6 +1336,17 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
 				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
+			}
+			if(StringManagerUtils.isNotNull(numStatusStatValue)){
+				if(StringManagerUtils.stringToInteger(numStatusStatValue)==0){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1) = 0 and decode(t2.alarmlevel2,null,0,t2.alarmlevel2) = 0 and decode(t2.alarmlevel3,null,0,t2.alarmlevel3) = 0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==100){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==200){
+					sql+=" and decode(t2.alarmlevel2,null,0,t2.alarmlevel2)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==300){
+					sql+=" and decode(t2.alarmlevel3,null,0,t2.alarmlevel3)>0";
+				}
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";

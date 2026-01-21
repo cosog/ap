@@ -75,6 +75,7 @@ public class RealTimeMonitoringController extends BaseController {
 	private String FESdiagramResultStatValue;
 	private String commStatusStatValue;
 	private String runStatusStatValue;
+	private String numStatusStatValue;
 	private String deviceTypeStatValue;
 	private String page;
 	private String orgId;
@@ -233,6 +234,7 @@ public class RealTimeMonitoringController extends BaseController {
 		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");
 		runStatusStatValue = ParamUtils.getParameter(request, "runStatusStatValue");
 		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");
+		numStatusStatValue = ParamUtils.getParameter(request, "numStatusStatValue");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -245,7 +247,7 @@ public class RealTimeMonitoringController extends BaseController {
 				orgId = "" + user.getUserOrgIds();
 			}
 		}
-		json = realTimeMonitoringService.getDeviceOverview(orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user);
+		json = realTimeMonitoringService.getDeviceOverview(orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,pager,user);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -266,6 +268,7 @@ public class RealTimeMonitoringController extends BaseController {
 		FESdiagramResultStatValue = ParamUtils.getParameter(request, "FESdiagramResultStatValue");
 		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");
 		runStatusStatValue = ParamUtils.getParameter(request, "runStatusStatValue");
+		numStatusStatValue = ParamUtils.getParameter(request, "numStatusStatValue");
 		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");
 		limit = ParamUtils.getParameter(request, "limit");
 		this.pager = new Page("pagerForm", request);
@@ -281,7 +284,7 @@ public class RealTimeMonitoringController extends BaseController {
 			}
 		}
 		long t1=System.nanoTime();
-		dataPage = realTimeMonitoringService.getDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit,language);
+		dataPage = realTimeMonitoringService.getDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,limit,language);
 		long t2=System.nanoTime();
 		StringManagerUtils.printLog("获取实时监控设备列表页码耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
 		json="{\"success\":true,\"dataPage\":"+dataPage+"}";
@@ -304,6 +307,7 @@ public class RealTimeMonitoringController extends BaseController {
 		FESdiagramResultStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "FESdiagramResultStatValue"),"utf-8");
 		commStatusStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "commStatusStatValue"),"utf-8");
 		runStatusStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "runStatusStatValue"),"utf-8");
+		numStatusStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "numStatusStatValue"),"utf-8");
 		deviceTypeStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceTypeStatValue"),"utf-8");
 		
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
@@ -336,7 +340,7 @@ public class RealTimeMonitoringController extends BaseController {
 			}
 		}
 
-		bool = realTimeMonitoringService.exportDeviceOverviewData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
+		bool = realTimeMonitoringService.exportDeviceOverviewData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
 	
 		if(session!=null){
 			session.setAttribute(key, 1);
@@ -1230,5 +1234,13 @@ public class RealTimeMonitoringController extends BaseController {
 
 	public void setRunStatusStatValue(String runStatusStatValue) {
 		this.runStatusStatValue = runStatusStatValue;
+	}
+
+	public String getNumStatusStatValue() {
+		return numStatusStatValue;
+	}
+
+	public void setNumStatusStatValue(String numStatusStatValue) {
+		this.numStatusStatValue = numStatusStatValue;
 	}
 }

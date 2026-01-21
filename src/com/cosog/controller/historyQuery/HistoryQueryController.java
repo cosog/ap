@@ -45,6 +45,7 @@ public class HistoryQueryController extends BaseController  {
 	private String FESdiagramResultStatValue;
 	private String commStatusStatValue;
 	private String runStatusStatValue;
+	private String numStatusStatValue;
 	private String deviceTypeStatValue;
 	private String page;
 	private String orgId;
@@ -120,6 +121,7 @@ public class HistoryQueryController extends BaseController  {
 		FESdiagramResultStatValue = ParamUtils.getParameter(request, "FESdiagramResultStatValue");
 		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");
 		runStatusStatValue = ParamUtils.getParameter(request, "runStatusStatValue");
+		numStatusStatValue = ParamUtils.getParameter(request, "numStatusStatValue");
 		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");
 		limit = ParamUtils.getParameter(request, "limit");
 		this.pager = new Page("pagerForm", request);
@@ -134,7 +136,7 @@ public class HistoryQueryController extends BaseController  {
 				orgId = "" + user.getUserOrgIds();
 			}
 		}
-		dataPage = historyQueryService.getHistoryQueryDeviceListDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit,language);
+		dataPage = historyQueryService.getHistoryQueryDeviceListDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,limit,language);
 		json="{\"success\":true,\"dataPage\":"+dataPage+"}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -154,6 +156,7 @@ public class HistoryQueryController extends BaseController  {
 		FESdiagramResultStatValue = ParamUtils.getParameter(request, "FESdiagramResultStatValue");
 		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");
 		runStatusStatValue = ParamUtils.getParameter(request, "runStatusStatValue");
+		numStatusStatValue = ParamUtils.getParameter(request, "numStatusStatValue");
 		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");
 		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
 		this.pager = new Page("pagerForm", request);
@@ -168,7 +171,7 @@ public class HistoryQueryController extends BaseController  {
 				orgId = "" + user.getUserOrgIds();
 			}
 		}
-		json = historyQueryService.getHistoryQueryDeviceList(orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
+		json = historyQueryService.getHistoryQueryDeviceList(orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -189,6 +192,7 @@ public class HistoryQueryController extends BaseController  {
 		FESdiagramResultStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "FESdiagramResultStatValue"),"utf-8");
 		commStatusStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "commStatusStatValue"),"utf-8");
 		runStatusStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "runStatusStatValue"),"utf-8");
+		numStatusStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "numStatusStatValue"),"utf-8");
 		deviceTypeStatValue = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceTypeStatValue"),"utf-8");
 		
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
@@ -220,7 +224,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 		}
 		
-		boolean bool = historyQueryService.exportHistoryQueryDeviceListData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
+		boolean bool = historyQueryService.exportHistoryQueryDeviceListData(user,response,fileName,title, heads, fields,orgId,deviceName,deviceType,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,pager,user!=null?user.getUserNo():0,language);
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -999,5 +1003,13 @@ public class HistoryQueryController extends BaseController  {
 
 	public void setRunStatusStatValue(String runStatusStatValue) {
 		this.runStatusStatValue = runStatusStatValue;
+	}
+
+	public String getNumStatusStatValue() {
+		return numStatusStatValue;
+	}
+
+	public void setNumStatusStatValue(String numStatusStatValue) {
+		this.numStatusStatValue = numStatusStatValue;
 	}
 }

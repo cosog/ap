@@ -381,6 +381,33 @@ public class EquipmentDriverServerTask {
 				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 				AcqGroup acqGroup=null;
 				
+				
+				
+//				String onlineUrl=Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdOnlineStatusPushURL();
+//				path=stringManagerUtils.getFilePath("test3.json","example/"+language+"/");
+//				String onLineData=stringManagerUtils.readFile(path,"utf-8");
+//				
+//				path=stringManagerUtils.getFilePath("test4.json","example/"+language+"/");
+//				String offLineData=stringManagerUtils.readFile(path,"utf-8");
+//				
+//				int i=0;
+//				while(true){
+//					try {
+//						if(i%2==0){
+//							StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
+//						}else{
+//							StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
+//						}
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//					
+//					i++;
+//					Thread.sleep(1000*cycle);
+//				}
+				
+				
+				
 				int i=0;
 				while(true){
 					try {

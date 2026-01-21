@@ -690,4 +690,28 @@ public class CalculateDataManagerTask {
 		
 		StringManagerUtils.printLog("scheduledDestory!",0);
 	}
+	
+	public static void timingScheduledDestory(){
+		if(timingInitDailyReportDataExecutor!=null && !timingInitDailyReportDataExecutor.isShutdown()){
+			timingInitDailyReportDataExecutor.shutdownNow();
+		}
+		if(AcquisitionTimingCalculateExecutor!=null && !AcquisitionTimingCalculateExecutor.isShutdown()){
+			AcquisitionTimingCalculateExecutor.shutdownNow();
+		}
+		if(SRPTimingCalculateExecutor!=null && !SRPTimingCalculateExecutor.isShutdown()){
+			SRPTimingCalculateExecutor.shutdownNow();
+		}
+		if(PCPTimingCalculateExecutor!=null && !PCPTimingCalculateExecutor.isShutdown()){
+			PCPTimingCalculateExecutor.shutdownNow();
+		}
+		StringManagerUtils.printLog("timingScheduledDestory!",0);
+	}
+	
+	public static void timingScheduledReStart(){
+		timingInitDailyReportData();
+		AcquisitionTimingCalculate();
+		SRPTimingCalculate();
+		PCPTimingCalculate();
+		StringManagerUtils.printLog("timingScheduledReStart!",0);
+	}
 }

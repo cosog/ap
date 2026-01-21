@@ -1729,19 +1729,19 @@ color16ToRgba = function(sColor,Opacity){
 	}
  
  adviceDeviceOverviewDeviceNameColor = function (val, o, p, e) {
-	 var commAlarmLevel=p.data.commAlarmLevel==undefined?0:p.data.commAlarmLevel;
-	 var runAlarmLevel=p.data.runAlarmLevel==undefined?0:p.data.runAlarmLevel;
+//	 var commAlarmLevel=p.data.commAlarmLevel==undefined?0:p.data.commAlarmLevel;
+//	 var runAlarmLevel=p.data.runAlarmLevel==undefined?0:p.data.runAlarmLevel;
 	 var alarmInfo = p.data.alarmInfo;
 	 var maxAlarmLevel=0;
 	 var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
 	 if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
-		 if(commAlarmLevel>0){
-			 maxAlarmLevel=commAlarmLevel;
-		 }
-		 
-		 if(runAlarmLevel>0 && (maxAlarmLevel==0 || runAlarmLevel<maxAlarmLevel) ){
-			 maxAlarmLevel=runAlarmLevel;
-		 }
+//		 if(commAlarmLevel>0){
+//			 maxAlarmLevel=commAlarmLevel;
+//		 }
+//		 
+//		 if(runAlarmLevel>0 && (maxAlarmLevel==0 || runAlarmLevel<maxAlarmLevel) ){
+//			 maxAlarmLevel=runAlarmLevel;
+//		 }
 		 
 		 if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
 			 for (var i = 0; i < alarmInfo.length; i++) {

@@ -129,6 +129,10 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 				        		configFile.dataVacuate.saveIntervalWaveRange=Ext.getCmp('operationMaintenance_vacuateSaveIntervalWaveRange_Id').getValue();
 				        		configFile.dataVacuate.vacuateThreshold=Ext.getCmp('operationMaintenance_vacuateThreshold_Id').getValue();
 				        		
+				        		configFile.report={};
+				        		configFile.report.offsetHour=Ext.getCmp('operationMaintenance_reportOffsetHour_Id').getValue();
+				        		configFile.report.interval=Ext.getCmp('operationMaintenance_reportInterval_Id').getValue();
+				        		
 				        		OperationMaintenanceBasicInfoSubForm.getForm().submit({
     				                url: context + '/operationMaintenanceController/updateOemConfigInfo',
     				                clientValidation: false, // 进行客户端验证
@@ -502,6 +506,41 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     						                	name:'operationMaintenance.vacuateThreshold',
     				                        	id:'operationMaintenance_vacuateThreshold_Id',
     				                        	minValue: 1
+    						                }
+    				                    ]
+    				                }]
+    				            },{
+    				            	xtype: 'fieldset',
+    				            	title: loginUserLanguageResource.reportConfig,
+    				            	layout: 'column',
+    				            	defaults: {
+    				                    layout: 'form',
+    				                    xtype: 'container',
+    				                    defaultType: 'textfield',
+    				                    style: 'width: 33%'
+    				                },
+    				                items: [{
+    				                    items: [
+    				                        {
+    				                        	fieldLabel: loginUserLanguageResource.offsetTime+'('+loginUserLanguageResource.hour+')',
+    						                    allowBlank: false,
+    						                	xtype: 'numberfield',
+    						                	name:'operationMaintenance.reportOffsetHour',
+    				                        	id:'operationMaintenance_reportOffsetHour_Id',
+    				                        	minValue: 0,
+    				                        	maxValue: 12
+    						                }
+    				                    ]
+    				                }, {
+    				                    items: [
+    				                        {
+    				                        	fieldLabel: loginUserLanguageResource.interval+'('+loginUserLanguageResource.hour+')',
+    						                    allowBlank: false,
+    						                	xtype: 'numberfield',
+    						                	name:'operationMaintenance.reportInterval',
+    				                        	id:'operationMaintenance_reportInterval_Id',
+    				                        	minValue: 0,
+    				                        	maxValue: 12
     						                }
     				                    ]
     				                }]
@@ -1988,6 +2027,9 @@ function initOemOperationConfigInfo(configFile){
 	Ext.getCmp('operationMaintenance_vacuateSaveInterval_Id').setValue(configFile.dataVacuate.saveInterval);
 	Ext.getCmp('operationMaintenance_vacuateSaveIntervalWaveRange_Id').setValue(configFile.dataVacuate.saveIntervalWaveRange);
 	Ext.getCmp('operationMaintenance_vacuateThreshold_Id').setValue(configFile.dataVacuate.vacuateThreshold);
+	
+	Ext.getCmp('operationMaintenance_reportOffsetHour_Id').setValue(configFile.report.offsetHour);
+	Ext.getCmp('operationMaintenance_reportInterval_Id').setValue(configFile.report.interval);
 	
 	if(configFile.others.simulateAcqEnable){
 		Ext.getCmp('operationMaintenance_sendCycle_Id').enable();

@@ -32,6 +32,7 @@ import com.cosog.model.User;
 import com.cosog.model.drive.TotalCalItemsToReportUnitSaveData;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.operationMaintenance.OperationMaintenanceService;
+import com.cosog.task.CalculateDataManagerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
@@ -140,6 +141,18 @@ public class OperationMaintenanceController  extends BaseController {
 				Config.getInstance().oemConfigFile.getDataVacuate().setVacuateRecord(updatedOEMConfigFile.getDataVacuate().getVacuateRecord());
 				Config.getInstance().oemConfigFile.getDataVacuate().setSaveInterval(updatedOEMConfigFile.getDataVacuate().getSaveInterval());
 				Config.getInstance().oemConfigFile.getDataVacuate().setVacuateThreshold(updatedOEMConfigFile.getDataVacuate().getVacuateThreshold());
+			}
+			
+			if(updatedOEMConfigFile.getReport()!=null){
+				boolean configChange=updatedOEMConfigFile.getReport().getOffsetHour()!=Config.getInstance().oemConfigFile.getReport().getOffsetHour()
+						||updatedOEMConfigFile.getReport().getInterval()!=Config.getInstance().oemConfigFile.getReport().getInterval();
+				if(configChange){
+					Config.getInstance().oemConfigFile.getReport().setOffsetHour(updatedOEMConfigFile.getReport().getOffsetHour());
+					Config.getInstance().oemConfigFile.getReport().setInterval(updatedOEMConfigFile.getReport().getInterval());
+					
+					CalculateDataManagerTask.timingScheduledDestory();
+					CalculateDataManagerTask.timingScheduledReStart();
+				}
 			}
 			
 			if(updatedOEMConfigFile.getDatabaseMaintenance()!=null){

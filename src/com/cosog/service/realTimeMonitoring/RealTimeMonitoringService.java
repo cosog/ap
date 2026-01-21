@@ -184,8 +184,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		List<?> list = this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
-			int commStatus=StringManagerUtils.stringToInteger(obj[0]+"");
-			int runStatus=StringManagerUtils.stringToInteger(obj[1]+"");
+//			int commStatus=StringManagerUtils.stringToInteger(obj[0]+"");
+//			int runStatus=StringManagerUtils.stringToInteger(obj[1]+"");
 			String deviceAlarmInfo=StringManagerUtils.CLOBObjectToString(obj[2]);
 			if(!StringManagerUtils.isNotNull(deviceAlarmInfo)){
 				deviceAlarmInfo="[]";
@@ -199,40 +199,41 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			List<KeyValue> alarmInfoList=gson.fromJson(deviceAlarmInfo, type);
 			
 			
-			int commAlarmLevel=0,runAlarmLevel=0,maxAlarmLevel=0;
+//			int commAlarmLevel=0,runAlarmLevel=0,maxAlarmLevel=0;
+			int maxAlarmLevel=0;
 			if(alarmInstanceOwnItem!=null){
-				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
-					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getValue()==commStatus){
-						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getValue()==runStatus){
-						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-					}
-				}
-				
-				if(commAlarmLevel==100){
-					firstLevelCount++;
-				}else if(commAlarmLevel==200){
-					secondLevelCount++;
-				}else if(commAlarmLevel==300){
-					thirdLevelCount++;
-				}
-				
-				if(runAlarmLevel==100){
-					firstLevelCount++;
-				}else if(runAlarmLevel==200){
-					secondLevelCount++;
-				}else if(runAlarmLevel==300){
-					thirdLevelCount++;
-				}
-				
-				
-				if(commAlarmLevel>0){
-					 maxAlarmLevel=commAlarmLevel;
-				 }
-				 
-				 if(runAlarmLevel>0 && (maxAlarmLevel==0 || runAlarmLevel<maxAlarmLevel) ){
-					 maxAlarmLevel=runAlarmLevel;
-				 }
+//				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
+//					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getValue()==commStatus){
+//						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+//					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getValue()==runStatus){
+//						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+//					}
+//				}
+//				
+//				if(commAlarmLevel==100){
+//					firstLevelCount++;
+//				}else if(commAlarmLevel==200){
+//					secondLevelCount++;
+//				}else if(commAlarmLevel==300){
+//					thirdLevelCount++;
+//				}
+//				
+//				if(runAlarmLevel==100){
+//					firstLevelCount++;
+//				}else if(runAlarmLevel==200){
+//					secondLevelCount++;
+//				}else if(runAlarmLevel==300){
+//					thirdLevelCount++;
+//				}
+//				
+//				
+//				if(commAlarmLevel>0){
+//					 maxAlarmLevel=commAlarmLevel;
+//				 }
+//				 
+//				 if(runAlarmLevel>0 && (maxAlarmLevel==0 || runAlarmLevel<maxAlarmLevel) ){
+//					 maxAlarmLevel=runAlarmLevel;
+//				 }
 				
 				
 				for(KeyValue keyValue:alarmInfoList){
@@ -549,7 +550,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public int getDeviceRealTimeOverviewDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,String limit,String language){
+	public int getDeviceRealTimeOverviewDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String numStatusStatValue,String deviceTypeStatValue,String limit,String language){
 		int dataPage=1;
 		try{
 			String tableName="tbl_acqdata_latest";
@@ -583,6 +584,17 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
 				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
+			if(StringManagerUtils.isNotNull(numStatusStatValue)){
+				if(StringManagerUtils.stringToInteger(numStatusStatValue)==0){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1) = 0 and decode(t2.alarmlevel2,null,0,t2.alarmlevel2) = 0 and decode(t2.alarmlevel3,null,0,t2.alarmlevel3) = 0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==100){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==200){
+					sql+=" and decode(t2.alarmlevel2,null,0,t2.alarmlevel2)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==300){
+					sql+=" and decode(t2.alarmlevel3,null,0,t2.alarmlevel3)>0";
+				}
+			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
@@ -602,6 +614,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String FESdiagramResultStatValue,
 			String commStatusStatValue,
 			String runStatusStatValue,
+			String numStatusStatValue,
 			String deviceTypeStatValue,
 			Page pager,
 			User user) throws IOException, SQLException{
@@ -721,6 +734,19 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
 				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
 			}
+			
+			if(StringManagerUtils.isNotNull(numStatusStatValue)){
+				if(StringManagerUtils.stringToInteger(numStatusStatValue)==0){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1) = 0 and decode(t2.alarmlevel2,null,0,t2.alarmlevel2) = 0 and decode(t2.alarmlevel3,null,0,t2.alarmlevel3) = 0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==100){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==200){
+					sql+=" and decode(t2.alarmlevel2,null,0,t2.alarmlevel2)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==300){
+					sql+=" and decode(t2.alarmlevel3,null,0,t2.alarmlevel3)>0";
+				}
+			}
+			
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
 			}
@@ -1542,7 +1568,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public boolean exportDeviceOverviewData(User user,HttpServletResponse response,String fileName,String sheetName,String head,String field,
 			String orgId,String deviceName,
 			String deviceType,String dictDeviceType,
-			String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager,
+			String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String numStatusStatValue,String deviceTypeStatValue,Page pager,
 			int userNo,
 			String language){
 		Gson gson = new Gson();
@@ -1652,6 +1678,17 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			if(StringManagerUtils.isNotNull(runStatusStatValue)){
 				sql+=" and decode(t2.commstatus,0,'"+languageResourceMap.get("offline")+"',null,'"+languageResourceMap.get("offline")+"',2,'"+languageResourceMap.get("goOnline")+"',decode(t2.runstatus,1,'"+languageResourceMap.get("run")+"',0,'"+languageResourceMap.get("stop")+"','"+languageResourceMap.get("emptyMsg")+"'))='"+runStatusStatValue+"'";
+			}
+			if(StringManagerUtils.isNotNull(numStatusStatValue)){
+				if(StringManagerUtils.stringToInteger(numStatusStatValue)==0){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1) = 0 and decode(t2.alarmlevel2,null,0,t2.alarmlevel2) = 0 and decode(t2.alarmlevel3,null,0,t2.alarmlevel3) = 0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==100){
+					sql+=" and decode(t2.alarmlevel1,null,0,t2.alarmlevel1)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==200){
+					sql+=" and decode(t2.alarmlevel2,null,0,t2.alarmlevel2)>0";
+				}else if(StringManagerUtils.stringToInteger(numStatusStatValue)==300){
+					sql+=" and decode(t2.alarmlevel3,null,0,t2.alarmlevel3)>0";
+				}
 			}
 			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";

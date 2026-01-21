@@ -1465,7 +1465,7 @@ function ShowHistoryQueryNumStatusStatPieOrColChat(title,divId, name, data,color
 					},
 					events: {
 						click: function(e) {
-							var statSelectRunStatusId="HistoryQueryStatSelectNumStatus_Id";
+							var statSelectNumStatusId="HistoryQueryStatSelectNumStatus_Id";
 							var deviceListComb_Id="HistoryQueryDeviceListComb_Id";
 							var gridPanel_Id="HistoryQueryDeviceListGridPanel_Id";
 							var store="AP.store.historyQuery.HistoryQueryWellListStore";
@@ -1474,9 +1474,9 @@ function ShowHistoryQueryNumStatusStatPieOrColChat(title,divId, name, data,color
 							Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
 							
 							if(!e.point.selected){//如果没被选中,则本次是选中
-								Ext.getCmp(statSelectRunStatusId).setValue(e.point.level);
+								Ext.getCmp(statSelectNumStatusId).setValue(e.point.level);
 							}else{//取消选中
-								Ext.getCmp(statSelectRunStatusId).setValue('');
+								Ext.getCmp(statSelectNumStatusId).setValue('');
 							}
 							
 							Ext.getCmp(deviceListComb_Id).setValue('');

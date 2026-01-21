@@ -4316,7 +4316,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				columns+=",t2."+inputItemColumnList.get(i);
 			}
 			
-			if(StringManagerUtils.stringToInteger(calculateType)>0){
+			if(reportUnitCalculateType>0){
 				for(int i=0;i<calItemColumnList.size();i++){
 					calAndInputColumn+=",t3."+calItemColumnList.get(i);
 				}
@@ -4670,7 +4670,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				columns+=",t2."+inputItemColumnList.get(i);
 			}
 			
-			if(StringManagerUtils.stringToInteger(calculateType)>0){
+			if(reportUnitCalculateType>0){
 				for(int i=0;i<calItemColumnList.size();i++){
 					calAndInputColumn+=",t3."+calItemColumnList.get(i);
 				}

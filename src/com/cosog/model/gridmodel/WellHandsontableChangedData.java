@@ -194,6 +194,8 @@ public class WellHandsontableChangedData {
 	    private int saveSign;
 	    
 	    private String saveStr;
+	    
+	    private int collisionDeviceId;
 
 		public String getId() {
 			return id;
@@ -849,6 +851,14 @@ public class WellHandsontableChangedData {
 
 		public void setDeviceTabInstance(String deviceTabInstance) {
 			this.deviceTabInstance = deviceTabInstance;
+		}
+
+		public int getCollisionDeviceId() {
+			return collisionDeviceId;
+		}
+
+		public void setCollisionDeviceId(int collisionDeviceId) {
+			this.collisionDeviceId = collisionDeviceId;
 		}
 	    
 	}

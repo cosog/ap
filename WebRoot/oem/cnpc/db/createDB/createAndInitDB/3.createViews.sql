@@ -36,7 +36,7 @@ select t2.id,t2.deviceid,t.devicename,
 t.devicetype,
 t4.name_zh_cn as deviceTypeName_zh_CN,t4.name_en as deviceTypeName_en,t4.name_ru as deviceTypeName_ru,
 t2.alarmtime,t2.itemname,t2.alarmtype,
-t2.alarmvalue,t2.alarminfo,t2.alarmlimit,t2.hystersis,
+t2.alarmvalue,t2.alarminfo,t2.alarmlimit,t2.hystersis,t2.delay,t2.retriggertime,
 t2.alarmlevel,
 t2.issendmessage,t2.issendmail,
 t2.recoverytime,t.orgid
@@ -54,7 +54,7 @@ select t2.id,t2.deviceid,t.devicename,
 t.devicetype,
 t4.name_zh_cn as deviceTypeName_zh_CN,t4.name_en as deviceTypeName_en,t4.name_ru as deviceTypeName_ru,
 t2.alarmtime,t2.itemname,t2.alarmtype,
-t2.alarmvalue,t2.alarminfo,t2.alarmlimit,t2.hystersis,
+t2.alarmvalue,t2.alarminfo,t2.alarmlimit,t2.hystersis,t2.delay,t2.retriggertime,
 t2.alarmlevel,
 t2.issendmessage,t2.issendmail,
 t2.recoverytime,t.orgid
@@ -104,7 +104,7 @@ connect by   t.parentid= prior t.id;
 /*==============================================================*/
 /* View: viw_device                                         */
 /*==============================================================*/
-create or replace force view viw_device as
+create or replace view viw_device as
 select t.id,
 org.org_id as orgid,
 org.org_name_zh_CN as orgName_zh_CN,org.allpath_zh_CN,
@@ -118,7 +118,8 @@ t10.name_en as devicetypename_en,
 t10.allpath_en as deviceTypeAllPath_en,
 t10.name_ru as devicetypename_ru,
 t10.allpath_ru as deviceTypeAllPath_ru,
-t.calculatetype,
+decode(t14.calculatetype,null,0,t14.calculatetype) as calculatetype,
+t14.name as deviceTabInstance,
 t.applicationscenarios,
 t.tcptype,t.signinid,t.ipport,t.slave,t.peakdelay,
 t.videourl1,t.videokeyid1,t.videourl2,t.videokeyid2,t8.account as videoKeyName1,t9.account as videoKeyName2,
@@ -147,7 +148,8 @@ left outer join tbl_videokey t9 on t.videokeyid2=t9.id
 left outer join viw_devicetypeinfo t10 on t.devicetype=t10.id
 left outer join tbl_acq_unit_conf t11 on t11.id=t2.unitid
 left outer join tbl_protocol t12 on t11.protocol=t12.code
-left outer join viw_devicetypeinfo t13 on t12.devicetype=t13.id;
+left outer join viw_devicetypeinfo t13 on t12.devicetype=t13.id
+left outer join tbl_tabmanager_device t14 on t.calculatetype=t14.id;
 /
 
 /*==============================================================*/
@@ -170,7 +172,7 @@ left outer join tbl_devicetypeinfo t5 on t.devicetype=t5.id;
 /*==============================================================*/
 /* View: viw_pcpacqdata_hist                                         */
 /*==============================================================*/
-create or replace force view viw_pcpacqdata_hist as
+create or replace view viw_pcpacqdata_hist as
 select t.id,t.deviceid,device.orgid,device.calculatetype,
 t.acqtime,
 t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,
@@ -186,14 +188,14 @@ t.averagewatt,t.waterpower,t.systemefficiency,
 t.pumpeff1*100 as pumpeff1,t.pumpeff2*100 as pumpeff2,t.pumpeff*100 as pumpeff,
 t.pumpintakep,t.pumpintaket,t.pumpintakegol,t.pumpintakevisl,t.pumpintakebo,
 t.pumpoutletp,t.pumpoutlett,t.pumpoutletgol,t.pumpoutletvisl,t.pumpoutletbo
-from tbl_device device,tbl_pcpacqdata_hist t
-where device.id=t.deviceid and device.calculatetype=2;
+from tbl_device device,tbl_pcpacqdata_hist t,tbl_tabmanager_device t2
+where device.id=t.deviceid and device.calculatetype=t2.id and t2.calculatetype=2;
 /
 
 /*==============================================================*/
 /* View: viw_pcpdailycalculationdata                                         */
 /*==============================================================*/
-create or replace force view viw_pcpdailycalculationdata as
+create or replace view viw_pcpdailycalculationdata as
 select
  t.id,device.devicename,device.id as deviceid,device.devicetype,
  t.calDate,t.extendeddays,t.calDate-t.extendeddays as acquisitionDate,
@@ -220,13 +222,14 @@ from
 tbl_device device
 left outer join  tbl_org org  on device.orgid=org.org_id
 left outer join  tbl_pcpdailycalculationdata t  on t.deviceid=device.id
-where device.calculatetype=2;
+left outer join tbl_tabmanager_device t2 on device.calculatetype=t2.id
+where t2.calculatetype=2;
 /
 
 /*==============================================================*/
 /* View: viw_pcptimingcalculationdata                                         */
 /*==============================================================*/
-create or replace force view viw_pcptimingcalculationdata as
+create or replace view viw_pcptimingcalculationdata as
 select
  t.id,device.devicename,device.id as deviceid,device.devicetype,
  t.calTime,t.extendeddays,t.calTime-t.extendeddays as acquisitionDate,
@@ -253,16 +256,17 @@ select
  device.sortnum,org.org_code,org.org_id,t.remark as remark,
  t.reservedcol1,t.reservedcol2,t.reservedcol3,t.reservedcol4,t.reservedcol5
 from
-tbl_device device,tbl_org org ,tbl_pcptimingcalculationdata t
+tbl_device device,tbl_org org ,tbl_pcptimingcalculationdata t,tbl_tabmanager_device t2
 where device.orgid=org.org_id
 and t.deviceid=device.id
-and device.calculatetype=2;
+and device.calculatetype=t2.id
+and t2.calculatetype=2;
 /
 
 /*==============================================================*/
 /* View: viw_pcp_calculatemain                                         */
 /*==============================================================*/
-create or replace force view viw_pcp_calculatemain as
+create or replace view viw_pcp_calculatemain as
 select t.id as id,
 device.id as deviceid,device.deviceName,
 t.acqtime,t.resultstatus,
@@ -272,7 +276,9 @@ t.rpm,
 t.productiondata,
 device.orgid
 from tbl_pcpacqdata_hist t
-left outer join tbl_device device on t.deviceid=device.id and device.calculatetype=2;
+left outer join tbl_device device on t.deviceid=device.id 
+left outer join tbl_tabmanager_device t2 on device.calculatetype=t2.id
+and t2.calculatetype=2;
 /
 
 /*==============================================================*/
@@ -309,7 +315,7 @@ left outer join tbl_protocolsmsinstance t2 on t.instancecode =t2.code;
 /*==============================================================*/
 /* View: viw_srpacqdata_hist                                         */
 /*==============================================================*/
-create or replace force view viw_srpacqdata_hist as
+create or replace view viw_srpacqdata_hist as
 select t.deviceid,device.orgid,device.calculatetype,
 t.id,t.acqtime,
 t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,
@@ -339,14 +345,14 @@ t.rodflexlength,t.tubingflexlength,t.inertialength,
 t.pumpeff1 as pumpeff1,t.pumpeff2 as pumpeff2,t.pumpeff3 as pumpeff3,t.pumpeff4 as pumpeff4,t.pumpeff as pumpeff,
 t.pumpintakep,t.pumpintaket,t.pumpintakegol,t.pumpintakevisl,t.pumpintakebo,
 t.pumpoutletp,t.pumpoutlett,t.pumpoutletgol,t.pumpoutletvisl,t.pumpoutletbo
-from tbl_device device,tbl_srpacqdata_hist t
-where device.id=t.deviceid and device.calculatetype=1;
+from tbl_device device,tbl_srpacqdata_hist t,tbl_tabmanager_device t2
+where device.id=t.deviceid and device.calculatetype=t2.id and t2.calculatetype=1;
 /
 
 /*==============================================================*/
 /* View: viw_srpdailycalculationdata                                         */
 /*==============================================================*/
-create or replace force view viw_srpdailycalculationdata as
+create or replace view viw_srpdailycalculationdata as
 select
  t.id,device.devicename,device.id as deviceid,device.devicetype,
  t.calDate,t.extendeddays,t.calDate-t.extendeddays as acquisitionDate,
@@ -382,13 +388,14 @@ from
 tbl_device device
 left outer join  tbl_org org  on device.orgid=org.org_id
 left outer join  tbl_srpdailycalculationdata t  on t.deviceid=device.id
-and device.calculatetype=1;
+left outer join  tbl_tabmanager_device t2 on device.calculatetype=t2.id
+and t2.calculatetype=1;
 /
 
 /*==============================================================*/
 /* View: viw_srptimingcalculationdata                                         */
 /*==============================================================*/
-create or replace force view viw_srptimingcalculationdata as
+create or replace view viw_srptimingcalculationdata as
 select
  t.id,device.devicename,device.id as deviceid,device.devicetype,
  t.calTime,t.extendeddays,t.calTime-t.extendeddays as acquisitionDate,
@@ -424,15 +431,15 @@ select
  device.sortnum,org.org_code,org.org_id,t.remark as remark,
  t.reservedcol1,t.reservedcol2,t.reservedcol3,t.reservedcol4,t.reservedcol5
 from
-tbl_device device,tbl_org org,tbl_srptimingcalculationdata t
-where device.orgid=org.org_id and t.deviceid=device.id
-and device.calculatetype=1;
+tbl_device device,tbl_org org,tbl_srptimingcalculationdata t,tbl_tabmanager_device t2
+where device.orgid=org.org_id and t.deviceid=device.id and device.calculatetype=t2.id
+and t2.calculatetype=1;
 /
 
 /*==============================================================*/
 /* View: viw_srp_calculatemain                                         */
 /*==============================================================*/
-create or replace force view viw_srp_calculatemain as
+create or replace view viw_srp_calculatemain as
 select t.id as id,
 device.id as deviceid,device.deviceName,
 t.acqtime,
@@ -443,7 +450,9 @@ t.leveldifferencevalue,t.calcproducingfluidlevel,
 t.productiondata,
 device.orgid
 from tbl_srpacqdata_hist t
-left outer join tbl_device device on t.deviceid=device.id;
+left outer join tbl_device device on t.deviceid=device.id
+left outer join tbl_tabmanager_device t2 on device.calculatetype=t2.id
+and t2.calculatetype=1;
 /
 
 /*==============================================================*/

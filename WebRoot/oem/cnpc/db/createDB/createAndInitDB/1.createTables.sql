@@ -8,7 +8,9 @@ create table TBL_DEVICETYPEINFO
   sortnum    NUMBER(10),
   name_zh_cn VARCHAR2(100),
   name_en    VARCHAR2(100),
-  name_ru    VARCHAR2(100)
+  name_ru    VARCHAR2(100),
+  config     VARCHAR2(4000),
+  status     NUMBER(1)
 )
 tablespace AP_DATA
   storage
@@ -22,6 +24,32 @@ alter table TBL_DEVICETYPEINFO  add constraint PK_TABINFO primary key (ID)
 /
 
 /*==============================================================*/
+/* Table: tbl_tabmanager_device                                    */
+/*==============================================================*/
+create table tbl_tabmanager_device
+(
+  id            NUMBER(10) not null,
+  name          VARCHAR2(200) not null,
+  calculatetype NUMBER(2) default 0,
+  config        VARCHAR2(4000),
+  sort          NUMBER(10)
+)
+tablespace AP_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table tbl_tabmanager_device add constraint PK_CALCULATIONMODEL primary key (ID)
+/
+
+/*==============================================================*/
 /* Table: TBL_PROTOCOL                                    */
 /*==============================================================*/
 create table TBL_PROTOCOL
@@ -32,7 +60,7 @@ create table TBL_PROTOCOL
   devicetype NUMBER(10),
   items      CLOB,
   extendedfield CLOB,
-  language   NUMBER(1)
+  language   NUMBER(1),
   sort       NUMBER(10)
 )
 tablespace AP_DATA
@@ -1006,6 +1034,10 @@ create table TBL_ACQDATA_LATEST
   runtime            NUMBER(8,2) default 0,
   runrange           CLOB,
   acqdata            CLOB,
+  alarminfo          CLOB,
+  alarmlevel1        NUMBER(5),
+  alarmlevel2        NUMBER(5),
+  alarmlevel3        NUMBER(5),
   checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA
@@ -1037,6 +1069,10 @@ create table TBL_ACQDATA_HIST
   runtime            NUMBER(8,2) default 0,
   runrange           CLOB,
   acqdata            CLOB,
+  alarminfo          CLOB,
+  alarmlevel1        NUMBER(5),
+  alarmlevel2        NUMBER(5),
+  alarmlevel3        NUMBER(5),
   checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA
@@ -1068,6 +1104,10 @@ create table TBL_ACQDATA_VACUATE
   runtime            NUMBER(8,2) default 0,
   runrange           CLOB,
   acqdata            CLOB,
+  alarminfo          CLOB,
+  alarmlevel1        NUMBER(5),
+  alarmlevel2        NUMBER(5),
+  alarmlevel3        NUMBER(5),
   checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA
@@ -1119,6 +1159,11 @@ create table TBL_ALARMINFO_LATEST
   alarmlimit    NUMBER(10,3),
   hystersis     NUMBER(10,3),
   alarmlevel    NUMBER(3),
+  itemcode      VARCHAR2(200),
+  bitindex      NUMBER(3),
+  acqtime       DATE,
+  delay         NUMBER(10),
+  retriggertime NUMBER(10),
   issendmessage NUMBER(1) default 0,
   issendmail    NUMBER(1) default 0,
   recoverytime  DATE
@@ -1150,6 +1195,11 @@ create table TBL_ALARMINFO_HIST
   alarmlimit    NUMBER(10,3),
   hystersis     NUMBER(10,3),
   alarmlevel    NUMBER(3),
+  itemcode      VARCHAR2(200),
+  bitindex      NUMBER(3),
+  acqtime       DATE,
+  delay         NUMBER(10),
+  retriggertime NUMBER(10),
   issendmessage NUMBER(1) default 0,
   issendmail    NUMBER(1) default 0,
   recoverytime  DATE

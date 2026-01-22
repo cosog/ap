@@ -797,7 +797,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String saveDeviceData(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,String deviceType,User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer collisionbuff = new StringBuffer();
-		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().saveDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,user);
+		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().saveDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,user,1);
 		int successCount=0;
 		int collisionCount=0;
 		collisionbuff.append("[");

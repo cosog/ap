@@ -534,12 +534,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                }, {
     				                    items: [
     				                        {
-    				                        	fieldLabel: loginUserLanguageResource.interval+'('+loginUserLanguageResource.hour+')',
+    				                        	fieldLabel: loginUserLanguageResource.deviceHourlyReportInterval+'('+loginUserLanguageResource.hour+')',
     						                    allowBlank: false,
     						                	xtype: 'numberfield',
     						                	name:'operationMaintenance.reportInterval',
     				                        	id:'operationMaintenance_reportInterval_Id',
-    				                        	minValue: 0,
+    				                        	minValue: 1,
     				                        	maxValue: 12
     						                }
     				                    ]

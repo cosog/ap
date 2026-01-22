@@ -1090,6 +1090,7 @@ public class MemoryDataManagerTask {
 									jedis.hdel("SRPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
 									jedis.hdel("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
 									jedis.del(("DeviceRealtimeAcqData_"+deviceInfo.getId()).getBytes());
+									System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-删除内存中的设备信息:"+wellList.get(i));
 									break;
 								}
 							}
@@ -1335,6 +1336,8 @@ public class MemoryDataManagerTask {
 						
 						String key=deviceInfo.getId()+"";
 						jedis.hset("DeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceInfo));//哈希(Hash)
+						
+						System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-加载设备信息:"+deviceInfo.getDeviceName());
 					}
 				}
 			}

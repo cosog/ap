@@ -692,11 +692,14 @@ public class CalculateDataManagerTask {
 	}
 	
 	public static void timingScheduledDestory(){
+		if(SRPTotalCalculationExecutor!=null && !SRPTotalCalculationExecutor.isShutdown()){
+			SRPTotalCalculationExecutor.shutdownNow();
+		}
+		if(PCPTotalCalculationExecutor!=null && !PCPTotalCalculationExecutor.isShutdown()){
+			PCPTotalCalculationExecutor.shutdownNow();
+		}
 		if(timingInitDailyReportDataExecutor!=null && !timingInitDailyReportDataExecutor.isShutdown()){
 			timingInitDailyReportDataExecutor.shutdownNow();
-		}
-		if(AcquisitionTimingCalculateExecutor!=null && !AcquisitionTimingCalculateExecutor.isShutdown()){
-			AcquisitionTimingCalculateExecutor.shutdownNow();
 		}
 		if(SRPTimingCalculateExecutor!=null && !SRPTimingCalculateExecutor.isShutdown()){
 			SRPTimingCalculateExecutor.shutdownNow();
@@ -704,11 +707,24 @@ public class CalculateDataManagerTask {
 		if(PCPTimingCalculateExecutor!=null && !PCPTimingCalculateExecutor.isShutdown()){
 			PCPTimingCalculateExecutor.shutdownNow();
 		}
+		if(AcquisitionDataTotalCalculationExecutor!=null && !AcquisitionDataTotalCalculationExecutor.isShutdown()){
+			AcquisitionDataTotalCalculationExecutor.shutdownNow();
+		}
+		if(AcquisitionTimingCalculateExecutor!=null && !AcquisitionTimingCalculateExecutor.isShutdown()){
+			AcquisitionTimingCalculateExecutor.shutdownNow();
+		}
 		StringManagerUtils.printLog("timingScheduledDestory!",0);
 	}
 	
 	public static void timingScheduledReStart(){
+		//报表初始化
 		timingInitDailyReportData();
+				
+		//跨天汇总
+		AcquisitionDataTotalCalculation();
+		SRPTotalCalculation();
+		PCPTotalCalculation();
+				
 		AcquisitionTimingCalculate();
 		SRPTimingCalculate();
 		PCPTimingCalculate();

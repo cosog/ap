@@ -1035,6 +1035,9 @@ create table TBL_ACQDATA_LATEST
   runrange           CLOB,
   acqdata            CLOB,
   alarminfo          CLOB,
+  alarmlevel1        NUMBER(5),
+  alarmlevel2        NUMBER(5),
+  alarmlevel3        NUMBER(5),
   checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA
@@ -1067,6 +1070,9 @@ create table TBL_ACQDATA_HIST
   runrange           CLOB,
   acqdata            CLOB,
   alarminfo          CLOB,
+  alarmlevel1        NUMBER(5),
+  alarmlevel2        NUMBER(5),
+  alarmlevel3        NUMBER(5),
   checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA
@@ -1099,6 +1105,9 @@ create table TBL_ACQDATA_VACUATE
   runrange           CLOB,
   acqdata            CLOB,
   alarminfo          CLOB,
+  alarmlevel1        NUMBER(5),
+  alarmlevel2        NUMBER(5),
+  alarmlevel3        NUMBER(5),
   checksign          NUMBER(2) default 1
 )
 tablespace AP_DATA

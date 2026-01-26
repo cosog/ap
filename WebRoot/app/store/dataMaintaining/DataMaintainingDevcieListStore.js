@@ -152,15 +152,47 @@ Ext.define('AP.store.dataMaintaining.DataMaintainingDevcieListStore', {
             }else{
             	Ext.getCmp("DataMaintainingDeviceListSelectRow_Id").setValue(-1);
             	
+//            	var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
+//        		var activeId = tabPanel.getActiveTab().id;
+//        		if(activeId=="AcquisitionDataMaintainingInfoPanel_Id"){
+//        			refreshAcquisitionDataMaintainingData();
+//        		}else if(activeId=="SRPCalculateMaintainingInfoPanel_Id"){
+//        			refreshSRPCalculateMaintainingData();
+//        		}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
+//        			refreshPCPCalculateMaintainingData();
+//        		}
+            	
+            	var calculateType=0;
             	var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
         		var activeId = tabPanel.getActiveTab().id;
-        		if(activeId=="AcquisitionDataMaintainingInfoPanel_Id"){
-        			refreshAcquisitionDataMaintainingData();
-        		}else if(activeId=="SRPCalculateMaintainingInfoPanel_Id"){
-        			refreshSRPCalculateMaintainingData();
-        		}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
-        			refreshPCPCalculateMaintainingData();
+        		var tabChange=false;
+        		var SRPCalculateMaintainingInfoPanel = tabPanel.getComponent("SRPCalculateMaintainingInfoPanel_Id");
+        		var PCPCalculateMaintainingInfoPanel = tabPanel.getComponent("PCPCalculateMaintainingInfoPanel_Id");
+
+
+    			if(activeId!='AcquisitionDataMaintainingInfoPanel_Id'){
+    				tabPanel.setActiveTab('AcquisitionDataMaintainingInfoPanel_Id');
+    				tabChange=true;
+    			}
+    			
+    			if(SRPCalculateMaintainingInfoPanel!=undefined){
+    				tabPanel.remove(SRPCalculateMaintainingInfoPanel);
+    			}
+    			if(PCPCalculateMaintainingInfoPanel!=undefined){
+    				tabPanel.remove(PCPCalculateMaintainingInfoPanel);
+    			}
+    		
+        		
+        		if(!tabChange){
+        			if(activeId=="AcquisitionDataMaintainingInfoPanel_Id"){
+            			refreshAcquisitionDataMaintainingData();
+            		}else if(activeId=="SRPCalculateMaintainingInfoPanel_Id"){
+            			refreshSRPCalculateMaintainingData();
+            		}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
+            			refreshPCPCalculateMaintainingData();
+            		}
         		}
+            	
             }
             Ext.getCmp("CalculateMaintainingRootTabPanel").getEl().unmask();
         },

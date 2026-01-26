@@ -1733,6 +1733,9 @@ color16ToRgba = function(sColor,Opacity){
 //	 var runAlarmLevel=p.data.runAlarmLevel==undefined?0:p.data.runAlarmLevel;
 	 var alarmInfo = p.data.alarmInfo;
 	 var maxAlarmLevel=0;
+	 var alarmCount_Level1=0;
+	 var alarmCount_Level2=0;
+	 var alarmCount_Level3=0;
 	 var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
 	 if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
 //		 if(commAlarmLevel>0){
@@ -1745,6 +1748,14 @@ color16ToRgba = function(sColor,Opacity){
 		 
 		 if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
 			 for (var i = 0; i < alarmInfo.length; i++) {
+				 if(alarmInfo[i].alarmLevel==100){
+					 alarmCount_Level1++;
+				 }else if(alarmInfo[i].alarmLevel==200){
+					 alarmCount_Level2++;
+				 }else if(alarmInfo[i].alarmLevel==300){
+					 alarmCount_Level3++;
+				 }
+				 
 				 if(alarmInfo[i].alarmLevel>0 && (maxAlarmLevel==0 || alarmInfo[i].alarmLevel<maxAlarmLevel) ){
 					 maxAlarmLevel=alarmInfo[i].alarmLevel;
 				 }
@@ -1769,8 +1780,6 @@ color16ToRgba = function(sColor,Opacity){
         		color='#' +alarmShowStyle.Data.ThirdLevel.Color;
         	}
         	
-//        	returnInfo= '<span data-qtip="' + val + '" data-dismissDelay=10000>' +'<span style="color: '+color+'; margin-right: 2px;">●</span>'+ val + '</span>';
-        	
         	// 创建SVG圆点（可配置大小）
             var svgDot = Ext.String.format(
             	    // SVG画布设置：创建一个8x8像素的画布
@@ -1787,7 +1796,110 @@ color16ToRgba = function(sColor,Opacity){
             	    Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)'  // stroke颜色 - 圆的边框色
             	);
             
-            return svgDot + Ext.util.Format.htmlEncode(val);
+            
+            
+            
+            
+//            var level1SvgDot = Ext.String.format(
+//            	    '<svg width="8" height="8" style="margin-right: 2px; vertical-align: middle;">' +
+//            	    '  <circle cx="4" cy="4" r="3.5" fill="{0}" stroke="{1}" stroke-width="1"/>' +
+//            	    '</svg>',
+//            	    '#' +alarmShowStyle.Data.FirstLevel.Color,  // fill颜色 - 圆的填充色
+//            	    Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)'  // stroke颜色 - 圆的边框色
+//            	);
+//            var level2SvgDot = Ext.String.format(
+//            	    '<svg width="8" height="8" style="margin-right: 2px; vertical-align: middle;">' +
+//            	    '  <circle cx="4" cy="4" r="3.5" fill="{0}" stroke="{1}" stroke-width="1"/>' +
+//            	    '</svg>',
+//            	    '#' +alarmShowStyle.Data.SecondLevel.Color,  // fill颜色 - 圆的填充色
+//            	    Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)'  // stroke颜色 - 圆的边框色
+//            	);
+//            var level3SvgDot = Ext.String.format(
+//            	    '<svg width="8" height="8" style="margin-right: 2px; vertical-align: middle;">' +
+//            	    '  <circle cx="4" cy="4" r="3.5" fill="{0}" stroke="{1}" stroke-width="1"/>' +
+//            	    '</svg>',
+//            	    '#' +alarmShowStyle.Data.ThirdLevel.Color,  // fill颜色 - 圆的填充色
+//            	    Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)'  // stroke颜色 - 圆的边框色
+//            	);
+//            
+//            var rtn='';
+//            var svgDotCount=0;
+//            for(var i=0;i<alarmCount_Level1;i++){
+//            	if(svgDotCount<5){
+//            		rtn+=level1SvgDot;
+//            		svgDotCount++;
+//            	}
+//            }
+//            for(var i=0;i<alarmCount_Level2;i++){
+//            	if(svgDotCount<5){
+//            		rtn+=level2SvgDot;
+//            		svgDotCount++;
+//            	}
+//            }
+//            for(var i=0;i<alarmCount_Level3;i++){
+//            	if(svgDotCount<5){
+//            		rtn+=level3SvgDot;
+//            		svgDotCount++;
+//            	}
+//            }
+            
+//            var svgDot = Ext.String.format(
+//            	    '<svg width="16" height="16" style="margin-right: 2px; vertical-align: middle;">' +
+//            	    '  <circle cx="8" cy="8" r="7" fill="{0}" stroke="{1}" stroke-width="1"/>' +
+//            	    '  <text x="8" y="11" text-anchor="middle" font-size="9" font-weight="bold" fill="white">{2}</text>' +
+//            	    '</svg>',
+//            	    color,
+//            	    Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)',
+//            	    number  // 要显示的数字
+//            	);
+            
+//          var level1SvgDot = Ext.String.format(
+//          	    '<svg width="16" height="16" style="margin-right: 0px; vertical-align: middle;">' +
+//        	    '  <circle cx="8" cy="8" r="6" fill="{0}" stroke="{1}" stroke-width="1"/>' +
+//        	    '  <text x="8" y="11" text-anchor="middle" font-size="8" font-weight="normal" fill="white">{2}</text>' +
+//        	    '</svg>',
+//        	    '#' +alarmShowStyle.Data.FirstLevel.Color,
+//        	    Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)',
+//        	    alarmCount_Level1  // 要显示的数字
+//        	);
+//          var level2SvgDot = Ext.String.format(
+//          	    '<svg width="16" height="16" style="margin-right: 0px; vertical-align: middle;">' +
+//        	    '  <circle cx="8" cy="8" r="6" fill="{0}" stroke="{1}" stroke-width="1"/>' +
+//        	    '  <text x="8" y="11" text-anchor="middle" font-size="8" font-weight="normal" fill="white">{2}</text>' +
+//        	    '</svg>',
+//        	    '#' +alarmShowStyle.Data.SecondLevel.Color,
+//        	    Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)',
+//        	    alarmCount_Level2  // 要显示的数字
+//        	);
+//          var level3SvgDot = Ext.String.format(
+//          	    '<svg width="16" height="16" style="margin-right: 0px; vertical-align: middle;">' +
+//        	    '  <circle cx="8" cy="8" r="6" fill="{0}" stroke="{1}" stroke-width="1"/>' +
+//        	    '  <text x="8" y="11" text-anchor="middle" font-size="8" font-weight="normal" fill="white">{2}</text>' +
+//        	    '</svg>',
+//        	    '#' +alarmShowStyle.Data.ThirdLevel.Color,
+//        	    Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)',
+//        	    alarmCount_Level3  // 要显示的数字
+//        	);
+          
+          
+          
+          
+          
+            var rtn='';
+            if(alarmCount_Level1>0){
+            	var level1SvgDot=createSmartDot('#' +alarmShowStyle.Data.FirstLevel.Color, alarmCount_Level1);
+            	rtn+=level1SvgDot;
+            }
+            if(alarmCount_Level2>0){
+            	var level2SvgDot=createSmartDot('#' +alarmShowStyle.Data.SecondLevel.Color, alarmCount_Level2);
+            	rtn+=level2SvgDot;
+            }
+            if(alarmCount_Level3>0){
+            	var level3SvgDot=createSmartDot('#' +alarmShowStyle.Data.ThirdLevel.Color, alarmCount_Level3);
+            	rtn+=level3SvgDot;
+            }
+            
+            return rtn + Ext.util.Format.htmlEncode(val);
         }
 		
 		
@@ -1798,6 +1910,60 @@ color16ToRgba = function(sColor,Opacity){
 		return returnInfo;
 	}
  }
+ 
+ function createSmartDot(color, number, options) {
+	    options = options || {};
+	    var height = options.height || 12;  // 固定高度
+	    var numberStr = number.toString();
+	    var textLength = numberStr.length;
+	    
+	    // 根据数字位数动态计算宽度
+	    var width;
+	    if (textLength === 1) {
+	        width = height;  // 单个数字时为圆形
+	    } else {
+	        // 两位数及以上：宽度 = 高度 + (位数-1)*字符宽度
+	        width = height + (textLength - 1) * 7;
+	    }
+	    
+	    // 胶囊形的圆角半径（高度的一半）
+	    var radius = height / 2;
+	    
+	    // 胶囊形路径（两个半圆+中间矩形）
+	    var capsulePath = Ext.String.format(
+	        'M {0},0 ' +           // 移动到左侧顶部
+	        'a {0},{0} 0 0 1 0,{1} ' +  // 左侧半圆
+	        'h {2} ' +             // 中间矩形（水平线）
+	        'a {0},{0} 0 0 1 0,-{1} ' + // 右侧半圆
+	        'z',                   // 闭合路径
+	        radius,                // 圆角半径
+	        height,                // 高度
+	        width - height         // 中间矩形的宽度
+	    );
+	    
+	    // 计算文本位置
+	    var textX = width / 2;
+	    var textY = height / 2 + 3;  // 基线位置
+	    
+	    // 字体大小根据高度调整
+	    var fontSize = Math.floor(height * 0.7);
+	    
+	    return Ext.String.format(
+	        '<svg width="{0}" height="{1}" style="margin-right: 2px; vertical-align: middle;">' +
+	        '  <path d="{2}" fill="{3}" stroke="{4}" stroke-width="1"/>' +
+	        '  <text x="{5}" y="{6}" text-anchor="middle" font-size="{7}" font-weight="normal" fill="white">{8}</text>' +
+	        '</svg>',
+	        width,          // SVG宽度（动态）
+	        height,         // SVG高度
+	        capsulePath,    // 胶囊形路径
+	        color,          // 填充色
+	        Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)',  // 边框色
+	        textX,          // 文字X坐标
+	        textY,          // 文字Y坐标
+	        fontSize,       // 字体大小
+	        numberStr       // 显示的数字
+	    );
+	}
  
  adviceRealtimeMonitoringDataColor = function (val, o, p, e) {
 	    var alarmInfo = p.data.alarmInfo;

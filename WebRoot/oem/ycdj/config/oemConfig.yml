@@ -11,9 +11,9 @@ oem:                    #oem配置 名称、简介、背景、图标、样式等
    switchDisabledButtonIcon: "./oem/cnpc/images/switch_disabled.svg"        #语言切换不可用按钮图标
    zoomInButtonIcon: "./oem/cnpc/images/zoomin.svg"        #放大按钮图标
    zoomoutButtonIcon: "./oem/cnpc/images/zooout.svg"       #缩小按钮图标
-   staticResourceTimestamp: 20260121153000  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
+   staticResourceTimestamp: 20260124123000  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
    helpDocument: "./oem/cnpc/readme"             #帮助文档所在目录
-   helpDocumentTimestamp: 20260121153000  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
+   helpDocumentTimestamp: 20260124123000  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
 report:                                   #报表配置
    template: "oem/cnpc/reportTemplate/reportTemplate.json"    #报表模板
    offsetHour: 0                          #偏移小时 数值范围：0~12
@@ -129,4 +129,4 @@ others:
    simulateAcqEnable: true         #是否发送模拟数据，用于演示
    sendCycle: 600                  #模拟数据发送周期，单位：秒
    timeDifference: 60              #模拟数据井之间发送间隔，单位：秒
-   otherStaticResourceTimestamp: 20260121153000  #其他静态资源时间戳，修改此项重新加载资源
+   otherStaticResourceTimestamp: 20260124123000  #其他静态资源时间戳，修改此项重新加载资源

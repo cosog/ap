@@ -1388,7 +1388,7 @@ function loadAndInitHistoryQueryNumStatusStat(all){
 
 function initHistoryQueryNumStatusStatPieOrColChat(get_rawData) {
 	var divId="HistoryQueryNumStatusStatGraphPanelPieDiv_Id";
-	var title=loginUserLanguageResource.runStatus;
+	var title=loginUserLanguageResource.numStatus;
 	var datalist=get_rawData.totalRoot;
 	var colors=[];
 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());

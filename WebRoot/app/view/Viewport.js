@@ -289,18 +289,17 @@ function websocketOnMessage(evt) {
                         if (record.data.id == data.deviceId) {
                         	var alarmInfo=[];
                             for (var j = 0; j < data.allItemInfo.length; j++) {
+                            	if(data.allItemInfo[j].alarmLevel>0){
+                                	alarmInfo.push({
+                                        item: data.allItemInfo[j].column,
+                                        alarmLevel: data.allItemInfo[j].alarmLevel
+                                    });
+                                }
                                 for (let item in record.data) {
                                     if (item.toUpperCase() == data.allItemInfo[j].column.toUpperCase()) {
                                         record.set(item, data.allItemInfo[j].value);
                                         if (item.toUpperCase() == "runStatusName".toUpperCase()) {
                                             record.set("runStatus", parseInt(data.allItemInfo[j].rawValue));
-                                        }
-                                        
-                                        if(data.allItemInfo[j].alarmLevel>0){
-                                        	alarmInfo.push({
-                                                item: data.allItemInfo[j].column,
-                                                alarmLevel: data.allItemInfo[j].alarmLevel
-                                            });
                                         }
                                         break;
                                     }
@@ -479,18 +478,30 @@ function websocketOnMessage(evt) {
                         var record = store.getAt(i);
                         if (record.data.id == data.deviceId) {
                             haveDevice = true;
-//                            if (selectedCommStatusStatValue != '' && selectedCommStatusStatValue != data.commStatusName) {
-//                                store.loadPage(1);
-//                            } else {
-//                                record.set("commStatusName", data.commStatusName);
-//                                record.set("commStatus", data.commStatus);
-//                                record.set("commTime", data.commTime);
-//                                record.set("commTimeEfficiency", data.commTimeEfficiency);
-//                                record.set("commRange", data.commRange);
-//                                record.set("commAlarmLevel", data.commAlarmLevel);
-//                                record.set("acqTime", data.acqTime);
-//                                record.commit();
-//                            }
+                            var alarmInfo=record.data.alarmInfo;
+                            if(alarmInfo==undefined || alarmInfo.length==undefined){
+                            	alarmInfo=[];
+                            }
+                            
+                            var existCommAlarm=false;
+                            for(var j=0;j<alarmInfo.length;j++){
+                            	if(alarmInfo[j].item.toUpperCase()=="commStatusName".toUpperCase()   ){
+                            		existCommAlarm=true;
+                            		if(data.commAlarmLevel>0){
+                            			alarmInfo[j].alarmLevel=data.commAlarmLevel;
+                            		}else{
+                            			alarmInfo.splice(j, 1);
+                            		}
+                            		break;
+                            	}
+                            }
+                            if( (!existCommAlarm) && data.commAlarmLevel>0){
+                            	alarmInfo.push({
+                            		item: 'commStatusName',
+                            		alarmLevel: data.commAlarmLevel
+                            	});
+                            }
+                            
                             record.set("commStatusName", data.commStatusName);
                             record.set("commStatus", data.commStatus);
                             record.set("commTime", data.commTime);
@@ -498,6 +509,8 @@ function websocketOnMessage(evt) {
                             record.set("commRange", data.commRange);
                             record.set("commAlarmLevel", data.commAlarmLevel);
                             record.set("acqTime", data.acqTime);
+                            record.set("alarmInfo", alarmInfo);
+                            
                             record.commit();
                             break;
                         }

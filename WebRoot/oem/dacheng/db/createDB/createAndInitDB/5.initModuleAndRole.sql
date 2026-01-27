@@ -2,19 +2,19 @@
 /* 初始化TBL_DEVICETYPEINFO数据                                          */
 /*==============================================================*/
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
-values (1, 0, 0, '设备类型根节点', 'Root', 'Корневой узел', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
+values (1, 0, 0, '设备类型根节点', 'Root', 'Корневой узел', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true,"NumStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true,"NumStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
-values (2, 1, 1, '举升类型', 'Lifting type', 'Тип подъёма', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
+values (2, 1, 1, '举升类型', 'Lifting type', 'Тип подъёма', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true,"NumStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true,"NumStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
-values (3, 2, 10, '抽油机', 'SRP', 'Насос.', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
+values (3, 2, 10, '抽油机', 'SRP', 'Насос.', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true,"NumStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true,"NumStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
-values (4, 2, 11, '螺杆泵', 'PCP', 'Винтовой насос', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
+values (4, 2, 11, '螺杆泵', 'PCP', 'Винтовой насос', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true,"NumStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true,"NumStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
-values (5, 2, 12, '电潜泵', 'ESP', 'электронасос', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
+values (5, 2, 12, '电潜泵', 'ESP', 'электронасос', '{"DeviceRealTimeMonitoring":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true,"NumStatusStatPie":true},"DeviceHistoryQuery":{"FESDiagramStatPie":false,"CommStatusStatPie":true,"RunStatusStatPie":true,"NumStatusStatPie":true},"AlarmQuery":{"FESDiagramResultAlarm":false,"RunStatusAlarm":true,"CommStatusAlarm":true,"NumericValueAlarm":true,"EnumValueAlarm":true,"SwitchingValueAlarm":true}}', 1);
 
 insert into TBL_DEVICETYPEINFO (ID, PARENTID, SORTNUM, NAME_ZH_CN, NAME_EN, NAME_RU, CONFIG, STATUS)
 values (6, 2, 13, '未命名', null, null, null, 0);
@@ -487,37 +487,13 @@ insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
 values (1, 1, 1, '0,0,0');
 
 insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (2, 2, 1, '0,0,0');
+values (2, 1, 2, '0,0,0');
 
 insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (3, 3, 1, '0,0,0');
+values (3, 1, 3, '0,0,0');
 
 insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (4, 1, 2, '0,0,0');
-
-insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (5, 2, 2, '0,0,0');
-
-insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (6, 3, 2, '0,0,0');
-
-insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (7, 1, 3, '0,0,0');
-
-insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (8, 2, 3, '0,0,0');
-
-insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (9, 3, 3, '0,0,0');
-
-insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (10, 1, 4, '0,0,0');
-
-insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (11, 2, 4, '0,0,0');
-
-insert into TBL_LANGUAGE2ROLE (ID, LANGUAGE, ROLEID, MATRIX)
-values (12, 3, 4, '0,0,0');
+values (4, 1, 4, '0,0,0');
 
 /*==============================================================*/
 /* 初始化tbl_org数据                                          */

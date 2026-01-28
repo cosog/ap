@@ -35,6 +35,10 @@ Ext.define("AP.view.acquisitionUnit.ProtocolExtendedFieldSelectWindow", {
 				xtype : "hidden",
 				id : 'protocolExtendedFieldSelectedItemName_Id',
 				value:''
+			},{
+				xtype : "hidden",
+				id : 'protocolExtendedFieldType_Id',
+				value:''
 			},'->',{
             	xtype: 'button',
     			text: loginUserLanguageResource.save,
@@ -44,11 +48,17 @@ Ext.define("AP.view.acquisitionUnit.ProtocolExtendedFieldSelectWindow", {
     				var selectedItem='';
     				var row=Ext.getCmp('protocolExtendedFieldSelectedRow_Id').getValue();
                 	var col=Ext.getCmp('protocolExtendedFieldSelectedCol_Id').getValue();
+                	var protocolExtendedFieldType=Ext.getCmp('protocolExtendedFieldType_Id').getValue();
     				if(Ext.getCmp("ProtocolExtendedFieldGridPanel_Id").getSelectionModel().getSelection().length>0){
     					var record= Ext.getCmp("ProtocolExtendedFieldGridPanel_Id").getSelectionModel().getSelection()[0];
     					selectedItem=record.data.itemName;
     				}
-    				protocolExtendedFieldConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),selectedItem);
+    				
+    				if(protocolExtendedFieldType==0){
+    					protocolExtendedFieldConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),selectedItem);
+    				}else if(protocolExtendedFieldType==1){
+    					protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),selectedItem);
+    				}
     				Ext.getCmp("ProtocolExtendedFieldSelectWindow_Id").close();
     			}
             }],

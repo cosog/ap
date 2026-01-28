@@ -7,6 +7,8 @@ var protocolItemsMeaningConfigHandsontableHelper=null;
 var protocolExtendedFieldConfigHandsontableHelper=null;
 var protocolSwitchingValueBitStatusConfigHandsontableHelper=null;
 
+var protocolExtendedFieldHighLowByteConfigHandsontableHelper=null;
+
 //采控单元
 var protocolAcqUnitConfigItemsHandsontableHelper=null;
 var protocolConfigAcqUnitPropertiesHandsontableHelper=null;
@@ -286,6 +288,14 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     					}
     					protocolSwitchingValueBitStatusConfigHandsontableHelper=null;
     				}
+    				
+    				if(protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null){
+    					if(protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot!=undefined){
+    						protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.destroy();
+    					}
+    					protocolExtendedFieldHighLowByteConfigHandsontableHelper=null;
+    				}
+    				
     				
     				//采控组HandsontableHelper资源
     				if(protocolAcqUnitConfigItemsHandsontableHelper!=null){

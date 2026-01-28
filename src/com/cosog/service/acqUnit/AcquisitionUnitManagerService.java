@@ -197,7 +197,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getProtocolExtendedFieldsConfigData(String protocolName,String classes,String code,String language){
+	public String getProtocolExtendedFieldsConfigData(String protocolName,String classes,String code,String typeStr,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer operationBuff = new StringBuffer();
 		StringBuffer additionalConditionsBuff = new StringBuffer();
@@ -205,6 +205,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("FOUROPERATION",language);
 		Map<String,Code> additionalConditionsCodeMap=MemoryDataManagerTask.getCodeMap("ADDITIONALCONDITIONS",language);
+		int type=StringManagerUtils.stringToInteger(typeStr);
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
@@ -250,19 +251,40 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(code);
 		if(protocolConfig!=null){
+			int index=0;
 			for(int j=0;j<protocolConfig.getExtendedFields().size();j++){
-				
-				result_json.append("{\"id\":"+(j+1)+","
-						+ "\"title\":\""+protocolConfig.getExtendedFields().get(j).getTitle()+"\","
-						+ "\"title1\":\""+protocolConfig.getExtendedFields().get(j).getTitle1()+"\","
-						+ "\"operation\":\""+MemoryDataManagerTask.getCodeName("FOUROPERATION", protocolConfig.getExtendedFields().get(j).getOperation()+"", language)+"\","
-						+ "\"title2\":\""+protocolConfig.getExtendedFields().get(j).getTitle2()+"\","
-						+ "\"prec\":\""+protocolConfig.getExtendedFields().get(j).getPrec()+"\","
-						+ "\"ratio\":"+protocolConfig.getExtendedFields().get(j).getRatio()+","
-						+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
-						+ "\"additionalConditions\":\""+MemoryDataManagerTask.getCodeName("ADDITIONALCONDITIONS", protocolConfig.getExtendedFields().get(j).getAdditionalConditions()+"", language)+"\","
-						+ "},");
-				
+				if(protocolConfig.getExtendedFields().get(j).getType()==type){
+					
+					String resolutionMode="";
+					if(protocolConfig.getExtendedFields().get(j).getResolutionMode()==0){
+						resolutionMode=languageResourceMap.get("switchingValue");
+					}else if(protocolConfig.getExtendedFields().get(j).getResolutionMode()==1){
+						resolutionMode=languageResourceMap.get("enumValue");
+					}else if(protocolConfig.getExtendedFields().get(j).getResolutionMode()==2){
+						resolutionMode=languageResourceMap.get("numericValue");
+					}
+					
+					String highLowByte="";
+					if("high".equalsIgnoreCase(protocolConfig.getExtendedFields().get(j).getHighLowByte())){
+						highLowByte=languageResourceMap.get("highByte");
+					}else if("low".equalsIgnoreCase(protocolConfig.getExtendedFields().get(j).getHighLowByte())){
+						highLowByte=languageResourceMap.get("lowByte");
+					}
+					
+					result_json.append("{\"id\":"+(index+1)+","
+							+ "\"title\":\""+protocolConfig.getExtendedFields().get(j).getTitle()+"\","
+							+ "\"title1\":\""+protocolConfig.getExtendedFields().get(j).getTitle1()+"\","
+							+ "\"operation\":\""+MemoryDataManagerTask.getCodeName("FOUROPERATION", protocolConfig.getExtendedFields().get(j).getOperation()+"", language)+"\","
+							+ "\"title2\":\""+protocolConfig.getExtendedFields().get(j).getTitle2()+"\","
+							+ "\"prec\":\""+protocolConfig.getExtendedFields().get(j).getPrec()+"\","
+							+ "\"ratio\":"+protocolConfig.getExtendedFields().get(j).getRatio()+","
+							+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
+							+ "\"resolutionMode\":\""+resolutionMode+"\","
+							+ "\"highLowByte\":\""+highLowByte+"\","
+							+ "\"additionalConditions\":\""+MemoryDataManagerTask.getCodeName("ADDITIONALCONDITIONS", protocolConfig.getExtendedFields().get(j).getAdditionalConditions()+"", language)+"\","
+							+ "},");
+					index++;
+				}
 			}
 		}
 	
@@ -14423,7 +14445,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String columns="["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"flex\":3,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"flex\":3,\"children\":[] }"
 				+ "]";
 		
 		List<ModbusProtocolConfig.Items> itemList=new ArrayList<>();
@@ -14445,6 +14468,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			DataMapping dataMapping=loadProtocolMappingColumnByTitleMap.get(itemList.get(i).getTitle());
 			result_json.append("{\"id\":\""+(i+1)+"\",");
 			result_json.append("\"itemName\":\""+itemList.get(i).getTitle()+"\",");
+			result_json.append("\"addr\":\""+itemList.get(i).getAddr()+"\",");
 			result_json.append("\"itemColumn\":\""+(dataMapping!=null?dataMapping.getMappingColumn():"")+"\"},");
 		}
 		

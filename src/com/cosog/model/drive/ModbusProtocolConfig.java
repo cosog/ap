@@ -313,6 +313,14 @@ public class ModbusProtocolConfig implements Serializable{
 	    private int Operation;
 	    
 	    private int AdditionalConditions;
+	    
+	    private int Type;
+	    
+	    private String HighLowByte;
+	    
+	    private int ResolutionMode;
+	    
+	    private List<ItemsMeaning> Meaning;
 
 		public String getTitle() {
 			return Title;
@@ -376,6 +384,38 @@ public class ModbusProtocolConfig implements Serializable{
 
 		public void setAdditionalConditions(int additionalConditions) {
 			AdditionalConditions = additionalConditions;
+		}
+
+		public int getType() {
+			return Type;
+		}
+
+		public void setType(int type) {
+			Type = type;
+		}
+
+		public String getHighLowByte() {
+			return HighLowByte;
+		}
+
+		public void setHighLowByte(String highLowByte) {
+			HighLowByte = highLowByte;
+		}
+
+		public int getResolutionMode() {
+			return ResolutionMode;
+		}
+
+		public void setResolutionMode(int resolutionMode) {
+			ResolutionMode = resolutionMode;
+		}
+
+		public List<ItemsMeaning> getMeaning() {
+			return Meaning;
+		}
+
+		public void setMeaning(List<ItemsMeaning> meaning) {
+			Meaning = meaning;
 		}
 	}
 }

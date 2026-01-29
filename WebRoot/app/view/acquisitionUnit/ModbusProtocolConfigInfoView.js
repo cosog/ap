@@ -33,6 +33,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     value: 0,
                     hidden: true
                 },{
+                    id: 'ProtocolExtendedFieldHighLowByteSelectRow_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
                     xtype: 'button',
                     text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
@@ -280,7 +285,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                         items:[{
                         	id:"ProtocolExtendedFieldConfigSecondaryCalculationPanel_Id",
                         	border: false,
-                            title:'二次计算',
+                            title:'数值运算',
                             layout: "border",
                             iconCls: 'check3',
                             layout: 'fit',
@@ -345,7 +350,18 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                                     html:'<div class="ProtocolExtendedFieldConfigHighLowByteItemsMeaningTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolExtendedFieldConfigHighLowByteItemsMeaningTableInfoDiv_id"></div></div>',
                                     listeners: {
                                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                        	
+                                        	if(protocolExtendedFieldMeaningConfigHandsontableHelper!=null && protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=undefined){
+                                        		var newWidth=width;
+                                        		var newHeight=height;
+                                        		var header=thisPanel.getHeader();
+                                        		if(header){
+                                        			newHeight=newHeight-header.lastBox.height-2;
+                                        		}
+                                        		protocolExtendedFieldMeaningConfigHandsontableHelper.hot.updateSettings({
+                                        			width:newWidth,
+                                        			height:newHeight
+                                        		});
+                                        	}
                                         }
                                     }
                                 },{
@@ -362,7 +378,18 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                                     html:'<div class="ProtocolExtendedFieldSwitchingValueBitStatusConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolExtendedFieldSwitchingValueBitStatusConfigTableInfoDiv_id"></div></div>',
                                     listeners: {
                                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                        	
+                                        	if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper!=null && protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+                                        		var newWidth=width;
+                                        		var newHeight=height;
+                                        		var header=thisPanel.getHeader();
+                                        		if(header){
+                                        			newHeight=newHeight-header.lastBox.height-2;
+                                        		}
+                                        		protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.updateSettings({
+                                        			width:newWidth,
+                                        			height:newHeight
+                                        		});
+                                        	}
                                         }
                                     }
                                 }]
@@ -392,11 +419,23 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                                 	}
                             	}else if(newCard.id=="ProtocolExtendedFieldConfigHighLowBytePanel_Id"){
                             		if(record.data.classes==0){
-                                		if(protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null){
+                            			if(protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null){
                         					if(protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot!=undefined){
                         						protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.destroy();
                         					}
                         					protocolExtendedFieldHighLowByteConfigHandsontableHelper=null;
+                        				}
+                        				if(protocolExtendedFieldMeaningConfigHandsontableHelper!=null){
+                        					if(protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=undefined){
+                        						protocolExtendedFieldMeaningConfigHandsontableHelper.hot.destroy();
+                        					}
+                        					protocolExtendedFieldMeaningConfigHandsontableHelper=null;
+                        				}
+                        				if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper!=null){
+                        					if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+                        						protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
+                        					}
+                        					protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper=null;
                         				}
                                 	}else if(record.data.classes==1){
                                 		CreateProtocolExtendedFieldHighLowByteConfigInfoTable(record.data.text,record.data.classes,record.data.code);
@@ -432,6 +471,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     					}
                     					protocolItemsMeaningConfigHandsontableHelper=null;
                     				}
+                            		if(protocolSwitchingValueBitStatusConfigHandsontableHelper!=null){
+                    					if(protocolSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+                    						protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolSwitchingValueBitStatusConfigHandsontableHelper=null;
+                    				}
                             	}else if(record.data.classes==1){
                             		CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                             	}
@@ -449,11 +494,23 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                                 	}
                         		}else if (Ext.getCmp("ProtocolExtendedFieldConfigRightTabPanel_Id").getActiveTab().id == 'ProtocolExtendedFieldConfigHighLowBytePanel_Id') {
                         			if(record.data.classes==0){
-                                		if(protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null){
+                        				if(protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null){
                         					if(protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot!=undefined){
                         						protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.destroy();
                         					}
                         					protocolExtendedFieldHighLowByteConfigHandsontableHelper=null;
+                        				}
+                        				if(protocolExtendedFieldMeaningConfigHandsontableHelper!=null){
+                        					if(protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=undefined){
+                        						protocolExtendedFieldMeaningConfigHandsontableHelper.hot.destroy();
+                        					}
+                        					protocolExtendedFieldMeaningConfigHandsontableHelper=null;
+                        				}
+                        				if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper!=null){
+                        					if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+                        						protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
+                        					}
+                        					protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper=null;
                         				}
                                 	}else if(record.data.classes==1){
                                 		CreateProtocolExtendedFieldHighLowByteConfigInfoTable(record.data.text,record.data.classes,record.data.code);
@@ -487,7 +544,7 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 			var result =  Ext.JSON.decode(response.responseText);
 			var dataLength=result.totalRoot.length;
 			var defultNullData=[];
-			var defultDataLength=500;
+			var defultDataLength=100;
 			for(var i=0;i<defultDataLength;i++){
 				var nullData={};
 				defultNullData.push(nullData);
@@ -987,20 +1044,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 			                    			protocolCode=selectedProtocol.data.code;
 			                    		}
 			                		}
-	                        		
 	                        		CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode,itemTitle,itemAddr,highLowByte,resolutionMode,quantity,true);
-	                        		
-	                        		
-	                        		
-//	                        		if(resolutionMode==loginUserLanguageResource.switchingValue){
-//	                        			protocolItemsMeaningConfigHandsontableHelper.hot.updateSettings({
-//	                        			    colHeaders: [loginUserLanguageResource.bit,loginUserLanguageResource.meaning]
-//	                        			});
-//	                        		}else{
-//	                        			protocolItemsMeaningConfigHandsontableHelper.hot.updateSettings({
-//	                        			    colHeaders: [loginUserLanguageResource.value,loginUserLanguageResource.meaning]
-//	                        			});
-//	                        		}
 	                        	}
 	                        }else if (prop === 'quantity') {
 	                        	var selectedRow=Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").getValue();
@@ -1339,7 +1383,7 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 				saveType=1;
 			}else if(Ext.getCmp("ProtocolConfigRightTabPanel_Id").getActiveTab().id=='ProtocolExtendedFieldConfigRightTabPanel_Id'){
 				if(Ext.getCmp("ProtocolExtendedFieldConfigRightTabPanel_Id").getActiveTab().id == 'ProtocolExtendedFieldConfigSecondaryCalculationPanel_Id') {
-					saveType=2;//拓展字段二次计算
+					saveType=2;//拓展字段数值运算
 				}else if(Ext.getCmp("ProtocolExtendedFieldConfigRightTabPanel_Id").getActiveTab().id == 'ProtocolExtendedFieldConfigHighLowBytePanel_Id') {
 					saveType=3;//拓展字段高低字节
 				}
@@ -1975,7 +2019,7 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 			protocolName:protocolName,
 			classes:classes,
 			code:code,
-			type:0   //二次计算
+			type:0   //数值运算
         }
 	});
 };
@@ -2356,7 +2400,10 @@ function CreateProtocolExtendedFieldHighLowByteConfigInfoTable(protocolName,clas
 					loginUserLanguageResource.name,
 					loginUserLanguageResource.dataColumn,
 					loginUserLanguageResource.highLowByte,
-					loginUserLanguageResource.resolutionMode
+					loginUserLanguageResource.resolutionMode,
+					loginUserLanguageResource.prec,
+					loginUserLanguageResource.ratio,
+					loginUserLanguageResource.unit
 					];
 				var columns=[{
 				    data: 'id'
@@ -2377,8 +2424,23 @@ function CreateProtocolExtendedFieldHighLowByteConfigInfoTable(protocolName,clas
 				    strict: true,
 				    allowInvalid: false,
 				    source: [loginUserLanguageResource.switchingValue, loginUserLanguageResource.enumValue, loginUserLanguageResource.numericValue]
+				}, {
+				    data: 'prec',
+				    type: 'text',
+				    allowInvalid: true,
+				    validator: function (val, callback) {
+				        return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, protocolExtendedFieldConfigHandsontableHelper);
+				    }
+				}, {
+					data: 'ratio',
+				    type: 'text',
+				    allowInvalid: true,
+				    validator: function (val, callback) {
+				        return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, protocolExtendedFieldConfigHandsontableHelper);
+				    }
+				}, {
+				    data: 'unit'
 				}];
-				
 				protocolExtendedFieldHighLowByteConfigHandsontableHelper.colHeaders=colHeaders;
 				protocolExtendedFieldHighLowByteConfigHandsontableHelper.columns=columns;
 				if(dataLength==0){
@@ -2392,6 +2454,28 @@ function CreateProtocolExtendedFieldHighLowByteConfigInfoTable(protocolName,clas
 				}else{
 					protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.loadData(result.totalRoot);
 				}
+			}
+			
+			if(dataLength==0){
+				protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.selectCell(0,'title');
+				Ext.getCmp("ProtocolExtendedFieldHighLowByteSelectRow_Id").setValue('');
+				CreateProtocolExtendedFieldMeaningConfigInfoTable('','','',true);
+			}else{
+				protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.selectCell(0,'title');
+				Ext.getCmp("ProtocolExtendedFieldHighLowByteSelectRow_Id").setValue(0);
+				
+				var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
+				var protocolCode="";
+        		if(protocolTreeGridPanelSelectRow!=''){
+        			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(protocolTreeGridPanelSelectRow);
+            		if(selectedProtocol.data.classes==1){//选中的是协议
+            			protocolCode=selectedProtocol.data.code;
+            		}
+            		
+            		var itemTitle=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(0,'title');
+            		var resolutionMode=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(0,'resolutionMode');
+            		CreateProtocolExtendedFieldMeaningConfigInfoTable(protocolCode,itemTitle,resolutionMode,true);
+        		}
 			}
 		},
 		failure:function(){
@@ -2443,7 +2527,7 @@ var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	        		colWidths: [50,200,200,80,80],
+	        		colWidths: [50,200,200,80,80,80,80,80],
 	                columns:protocolExtendedFieldHighLowByteConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -2512,6 +2596,72 @@ var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
 	                		}
 	                	}
 	                },
+	                afterChange: function (changes, source) {
+	                	if (!changes) return;
+	                	changes.forEach(([row, prop, oldValue, newValue]) => {
+	                       if (prop === 'resolutionMode') {
+	                        	var selectedRow=Ext.getCmp("ProtocolExtendedFieldHighLowByteSelectRow_Id").getValue();
+	                        	if(selectedRow==row 
+	                        			&& protocolExtendedFieldMeaningConfigHandsontableHelper!=null
+	                        			&& protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=''
+	                        			&& protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=undefined){
+	                        		var resolutionMode=newValue;
+	                        		var itemTitle=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(row,'title');
+		                    		
+	                        		
+	                        		var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
+			                		var protocolCode="";
+			                		if(protocolTreeGridPanelSelectRow!=''){
+			                			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(protocolTreeGridPanelSelectRow);
+			                    		if(selectedProtocol.data.classes==1){//选中的是协议
+			                    			protocolCode=selectedProtocol.data.code;
+			                    		}
+			                		}
+			                		CreateProtocolExtendedFieldMeaningConfigInfoTable(protocolCode,itemTitle,resolutionMode,true);
+	                        	}
+	                        }
+	                    });
+	                	if(needUpdateMap){
+	                		protocolItemsConfigHandsontableHelper.hot.render();
+	                	}
+	                },
+	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {
+	                	if(row<0 && row2<0){//只选中表头
+	                		Ext.getCmp("ProtocolExtendedFieldHighLowByteSelectRow_Id").setValue('');
+	                		CreateProtocolExtendedFieldMeaningConfigInfoTable('','','',true);
+	                	}else{
+	                		if(row<0){
+	                    		row=0;
+	                    	}
+	                    	if(row2<0){
+	                    		row2=0;
+	                    	}
+	                    	var startRow=row;
+	                    	var endRow=row2;
+	                    	if(row>row2){
+	                    		startRow=row2;
+	                        	endRow=row;
+	                    	}
+	                    	
+	                    	var selectedRow=Ext.getCmp("ProtocolExtendedFieldHighLowByteSelectRow_Id").getValue();
+	                    	if(selectedRow!=startRow){
+	                    		Ext.getCmp("ProtocolExtendedFieldHighLowByteSelectRow_Id").setValue(startRow);
+		                		var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
+		                		var protocolCode="";
+		                		if(protocolTreeGridPanelSelectRow!=''){
+		                			var selectedProtocol=Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().getAt(protocolTreeGridPanelSelectRow);
+		                    		if(selectedProtocol.data.classes==1){//选中的是协议
+		                    			protocolCode=selectedProtocol.data.code;
+		                    		}
+		                    		var itemTitle=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'title');
+		                    		var resolutionMode=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(startRow,'resolutionMode');
+		                    		CreateProtocolExtendedFieldMeaningConfigInfoTable(protocolCode,itemTitle,resolutionMode,true);
+		                		}
+	                    	}else{
+	                    		Ext.getCmp("ProtocolExtendedFieldHighLowByteSelectRow_Id").setValue(startRow);
+	                    	}
+	                	}
+	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(coords.col>=0 && coords.row>=0 && protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null&&protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot!=''&&protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot!=undefined && protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
@@ -2560,5 +2710,446 @@ var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
 	        	protocolExtendedFieldHighLowByteConfigHandsontableHelper.AllData = [];
 	        }
 	        return protocolExtendedFieldHighLowByteConfigHandsontableHelper;
+	    }
+};
+
+function CreateProtocolExtendedFieldMeaningConfigInfoTable(protocolCode,itemTitle,resolutionMode,isNew){
+	if(protocolExtendedFieldMeaningConfigHandsontableHelper!=null){
+		if(protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=undefined){
+			protocolExtendedFieldMeaningConfigHandsontableHelper.hot.destroy();
+		}
+		protocolExtendedFieldMeaningConfigHandsontableHelper=null;
+	}
+	
+	var resolutionModeValue=2;
+	if(resolutionMode==loginUserLanguageResource.switchingValue){
+		resolutionModeValue=0;
+	}else if(resolutionMode==loginUserLanguageResource.enumValue){
+		resolutionModeValue=1;
+	}
+	
+	var quantity=8;
+	
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getProtocolExtendedFieldMeaningConfigData',
+		success:function(response) {
+			var result =  Ext.JSON.decode(response.responseText);
+			var showInfo=loginUserLanguageResource.meaning+"&nbsp;"
+			if(isNotVal(itemTitle)){
+				showInfo="【<font color=red>"+itemTitle+"</font>】"+loginUserLanguageResource.meaning+"&nbsp;"
+			}
+			Ext.getCmp("ProtocolExtendedFieldConfigHighLowByteItemsMeaningConfigPanel_Id").setTitle(showInfo);
+			
+			if(resolutionModeValue!=0){
+				var dataLength=result.totalRoot.length;
+				var defultNullData=[];
+				var defultDataLength=50;
+				for(var i=0;i<defultDataLength;i++){
+					var nullData={};
+					defultNullData.push(nullData);
+				}
+				
+				if(dataLength<defultDataLength){
+					if(defultDataLength-dataLength<10){
+						for(var i=0;i<10;i++){
+							var nullData={};
+							result.totalRoot.push(nullData);
+						}
+					}else{
+						for(var i=dataLength;i<defultDataLength;i++){
+							var nullData={};
+							result.totalRoot.push(nullData);
+						}
+					}
+				}else{
+					for(var i=0;i<10;i++){
+						var nullData={};
+						result.totalRoot.push(nullData);
+					}
+				}
+			}
+			
+			if(protocolExtendedFieldMeaningConfigHandsontableHelper==null || protocolExtendedFieldMeaningConfigHandsontableHelper.hot==undefined){
+				protocolExtendedFieldMeaningConfigHandsontableHelper = ProtocolExtendedFieldMeaningConfigHandsontableHelper.createNew("ProtocolExtendedFieldConfigHighLowByteItemsMeaningTableInfoDiv_id");
+				var colHeaders="['"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.meaning+"']";
+				var columns="[{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolExtendedFieldMeaningConfigHandsontableHelper);}},"
+					+"{data:'meaning'}" 
+					+"]";
+				protocolExtendedFieldMeaningConfigHandsontableHelper.hiddenColumns=[];
+				if(resolutionModeValue==0){
+					colHeaders="['"+loginUserLanguageResource.bit+"','"+loginUserLanguageResource.meaning+"','']";
+					columns="[{data:'title'},"
+						+"{data:'meaning'}," 
+						+"{data:'value'}" 
+						+"]";
+					protocolExtendedFieldMeaningConfigHandsontableHelper.hiddenColumns=[2];
+				}
+				
+				
+				var contextMenu= {
+                    items: {
+                        "row_above": {
+                            name: loginUserLanguageResource.contextMenu_insertRowAbove,
+                        },
+                        "row_below": {
+                            name: loginUserLanguageResource.contextMenu_insertRowBelow,
+                        },
+                        "col_left": {
+                            name: loginUserLanguageResource.contextMenu_insertColumnLeft,
+                        },
+                        "col_right": {
+                            name: loginUserLanguageResource.contextMenu_insertColumnRight,
+                        },
+                        "remove_row": {
+                            name: loginUserLanguageResource.contextMenu_removeRow,
+                        },
+                        "remove_col": {
+                            name: loginUserLanguageResource.contextMenu_removeColumn,
+                        },
+                        "merge_cell": {
+                            name: loginUserLanguageResource.contextMenu_mergeCell,
+                        },
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy,
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut,
+                        }
+                    }
+                }
+				if(resolutionModeValue==0){
+					contextMenu=false;
+				}
+				
+				protocolExtendedFieldMeaningConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				protocolExtendedFieldMeaningConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
+				protocolExtendedFieldMeaningConfigHandsontableHelper.itemResolutionMode=resolutionModeValue;
+				
+				protocolExtendedFieldMeaningConfigHandsontableHelper.contextMenu=contextMenu;
+				if(dataLength==0){
+					protocolExtendedFieldMeaningConfigHandsontableHelper.createTable(defultNullData);
+				}else{
+					protocolExtendedFieldMeaningConfigHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(dataLength==0){
+					protocolExtendedFieldMeaningConfigHandsontableHelper.hot.loadData(defultNullData);
+				}else{
+					protocolExtendedFieldMeaningConfigHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+				protocolExtendedFieldMeaningConfigHandsontableHelper.itemResolutionMode=resolutionModeValue;
+			}
+			
+			if(resolutionModeValue==0){
+				Ext.getCmp('ProtocolExtendedFieldSwitchingValueBitStatusConfigPanel_Id').show();
+				CreateProtocolExtendedFieldSwitchingValueBitStatusConfigInfoTable(protocolCode,itemTitle,resolutionMode,isNew)
+			}else{
+				if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper!=null){
+					if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+						protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
+					}
+					protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper=null;
+				}
+				Ext.getCmp('ProtocolExtendedFieldSwitchingValueBitStatusConfigPanel_Id').hide();
+			}
+		},
+		failure:function(){
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+		},
+		params: {
+			protocolCode:protocolCode,
+			itemTitle:itemTitle,
+			resolutionMode:resolutionModeValue,
+			quantity:quantity
+        }
+	});
+};
+
+var ProtocolExtendedFieldMeaningConfigHandsontableHelper = {
+		createNew: function (divid) {
+	        var protocolExtendedFieldMeaningConfigHandsontableHelper = {};
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.hot1 = '';
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.divid = divid;
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.validresult=true;//数据校验
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.colHeaders=[];
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.columns=[];
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.AllData=[];
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.itemResolutionMode=2;
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.hiddenColumns=[];
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.contextMenu=null;
+	        
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.createTable = function (data) {
+	        	$('#'+protocolExtendedFieldMeaningConfigHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+protocolExtendedFieldMeaningConfigHandsontableHelper.divid);
+	        	protocolExtendedFieldMeaningConfigHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		hiddenColumns: {
+	                    columns: protocolExtendedFieldMeaningConfigHandsontableHelper.hiddenColumns,
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	        		colWidths: [1,3],
+	                columns:protocolExtendedFieldMeaningConfigHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:protocolExtendedFieldMeaningConfigHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                contextMenu: protocolExtendedFieldMeaningConfigHandsontableHelper.contextMenu,//右键菜单展示
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag!=1){
+	                    	cellProperties.readOnly = true;
+	                    	cellProperties.renderer = protocolExtendedFieldMeaningConfigHandsontableHelper.addCellStyle;
+	                    }else {
+	                    	if(protocolExtendedFieldMeaningConfigHandsontableHelper.itemResolutionMode==0 && prop=='title'){
+	                    		cellProperties.readOnly = true;
+	                    		cellProperties.renderer = protocolExtendedFieldMeaningConfigHandsontableHelper.addBoldBg;
+	                    	}else{
+	                    		cellProperties.renderer = protocolExtendedFieldMeaningConfigHandsontableHelper.addCellStyle;
+	                    	}
+	                    }
+	                    
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(coords.col>=0 && coords.row>=0 && protocolExtendedFieldMeaningConfigHandsontableHelper!=null&&protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=''&&protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=undefined && protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	        	});
+	        }
+	        //保存数据
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.saveData = function () {}
+	        protocolExtendedFieldMeaningConfigHandsontableHelper.clearContainer = function () {
+	        	protocolExtendedFieldMeaningConfigHandsontableHelper.AllData = [];
+	        }
+	        return protocolExtendedFieldMeaningConfigHandsontableHelper;
+	    }
+};
+
+function CreateProtocolExtendedFieldSwitchingValueBitStatusConfigInfoTable(protocolCode,itemTitle,resolutionMode,isNew){
+	if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper!=null){
+		if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+			protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
+		}
+		protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper=null;
+	}
+	var quantity=8;
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getProtocolExtendedFieldSwitchingValueBitStatusConfigData',
+		success:function(response) {
+			var result =  Ext.JSON.decode(response.responseText);
+			var showInfo=loginUserLanguageResource.switchingValueBitStatusConfig+"&nbsp;"
+			if(isNotVal(itemTitle)){
+				showInfo="【<font color=red>"+itemTitle+"</font>】"+loginUserLanguageResource.switchingValueBitStatusConfig+"&nbsp;"
+			}
+			Ext.getCmp("ProtocolExtendedFieldSwitchingValueBitStatusConfigPanel_Id").setTitle(showInfo);
+			
+			
+			if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper==null || protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot==undefined){
+				protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper = ProtocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.createNew("ProtocolExtendedFieldSwitchingValueBitStatusConfigTableInfoDiv_id");
+				var colHeaders="['"+loginUserLanguageResource.bit+"/"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.switchingValuStatus+"','','']";
+				
+				var columns="[{data:'title',type:'text'},"
+						+"{data:'status'}," 
+						+"{data:'bitIndex'}," 
+						+"{data:'value'}" 
+						+"]";
+				protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
+				protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.createTable(result.totalRoot);
+			}
+		},
+		failure:function(){
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+		},
+		params: {
+			protocolCode:protocolCode,
+			itemTitle:itemTitle,
+			quantity:quantity,
+			resolutionMode:resolutionMode
+        }
+	});
+};
+
+var ProtocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper = {
+		createNew: function (divid) {
+	        var protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper = {};
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot1 = '';
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.divid = divid;
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.validresult=true;//数据校验
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.colHeaders=[];
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.columns=[];
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.AllData=[];
+	        
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.createTable = function (data) {
+	        	$('#'+protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.divid);
+	        	protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot = new Handsontable(hotElement, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		data: data,
+	        		hiddenColumns: {
+	                    columns: [2,3],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	        		colWidths: [2,5],
+	                columns:protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false,//显示行头
+	                colHeaders:protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.colHeaders,//显示列头
+	                columnSorting: true,//允许排序
+	                sortIndicator: true,
+	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if(protocolConfigModuleEditFlag!=1){
+	                    	cellProperties.readOnly = true;
+	                    	cellProperties.renderer = protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.addCellStyle;
+	                    }else {
+	                    	if(prop=='title'){
+	                    		cellProperties.readOnly = true;
+	                    		cellProperties.renderer = protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.addBoldBg;
+	                    	}else{
+	                    		cellProperties.renderer = protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.addCellStyle;
+	                    	}
+	                    }
+	                    
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(coords.col>=0 && coords.row>=0 && protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper!=null&&protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=''&&protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined && protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	        	});
+	        }
+	        //保存数据
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.saveData = function () {}
+	        protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.clearContainer = function () {
+	        	protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.AllData = [];
+	        }
+	        return protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper;
 	    }
 };

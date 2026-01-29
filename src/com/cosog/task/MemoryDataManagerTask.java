@@ -4613,6 +4613,19 @@ public class MemoryDataManagerTask {
 		return r;
 	}
 	
+	public static ModbusProtocolConfig.ExtendedField getProtocolExtendedField(ModbusProtocolConfig.Protocol protocol,String itemName,int type){
+		ModbusProtocolConfig.ExtendedField r=null;
+		if(StringManagerUtils.isNotNull(itemName) && protocol!=null && protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0){
+			for(ModbusProtocolConfig.ExtendedField extendedField:protocol.getExtendedFields()){
+				if(itemName.equalsIgnoreCase(extendedField.getTitle()) && extendedField.getType()==type){
+					r=extendedField;
+					break;
+				}
+			}
+		}
+		return r;
+	}
+	
 	public static ModbusProtocolConfig.Protocol getProtocolByCode(String protocolCode){
 		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
 		ModbusProtocolConfig.Protocol protocol=null;

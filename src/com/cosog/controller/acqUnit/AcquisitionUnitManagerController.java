@@ -1314,6 +1314,31 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getProtocolExtendedFieldMeaningConfigData")
+	public String getProtocolExtendedFieldMeaningConfigData() throws Exception {
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String itemTitle = ParamUtils.getParameter(request, "itemTitle");
+		String resolutionMode = ParamUtils.getParameter(request, "resolutionMode");
+		String quantity = ParamUtils.getParameter(request, "quantity");
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		
+		json = acquisitionUnitItemManagerService.getProtocolExtendedFieldMeaningConfigData(protocolCode,itemTitle,resolutionMode,quantity,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getProtocolSwitchingValueBitStatusConfigData")
 	public String getProtocolSwitchingValueBitStatusConfigData() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
@@ -1327,9 +1352,29 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		
-		
 		json = acquisitionUnitItemManagerService.getProtocolSwitchingValueBitStatusConfigData(protocolCode,itemAddr,highLowByte,quantity,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getProtocolExtendedFieldSwitchingValueBitStatusConfigData")
+	public String getProtocolExtendedFieldSwitchingValueBitStatusConfigData() throws Exception {
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String itemTitle = ParamUtils.getParameter(request, "itemTitle");
+		String quantity = ParamUtils.getParameter(request, "quantity");
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		json = acquisitionUnitItemManagerService.getProtocolExtendedFieldSwitchingValueBitStatusConfigData(protocolCode,itemTitle,quantity,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -8206,13 +8251,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String getProtocolExtendedFieldItems() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
+		String protocolExtendedFieldType = ParamUtils.getParameter(request, "protocolExtendedFieldType");
+		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = this.acquisitionUnitManagerService.getProtocolExtendedFieldItems(protocolCode,language);
+		String json = this.acquisitionUnitManagerService.getProtocolExtendedFieldItems(protocolCode,protocolExtendedFieldType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

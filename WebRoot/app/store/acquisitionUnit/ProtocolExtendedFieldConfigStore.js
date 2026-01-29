@@ -78,8 +78,10 @@ Ext.define('AP.store.acquisitionUnit.ProtocolExtendedFieldConfigStore', {
         },
         beforeload: function (store, options) {
         	var record= Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0];//record.data.text,record.data.classes,record.data.code
+        	var protocolExtendedFieldType=Ext.getCmp('protocolExtendedFieldType_Id').getValue();
             var new_params = {
-        			protocolCode: record.data.code
+        			protocolCode: record.data.code,
+        			protocolExtendedFieldType:protocolExtendedFieldType
                 };
             Ext.apply(store.proxy.extraParams, new_params);
         },

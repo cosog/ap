@@ -88,7 +88,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                     					}
                     					protocolItemsMeaningConfigHandsontableHelper=null;
                     				}
-                            		
+                            		if(protocolSwitchingValueBitStatusConfigHandsontableHelper!=null){
+                    					if(protocolSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+                    						protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
+                    					}
+                    					protocolSwitchingValueBitStatusConfigHandsontableHelper=null;
+                    				}
                             	}else if(record.data.classes==1){
                             		CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
                             	}
@@ -106,11 +111,23 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                                 	}
                         		}else if(Ext.getCmp("ProtocolExtendedFieldConfigRightTabPanel_Id").getActiveTab().id=='ProtocolExtendedFieldConfigHighLowBytePanel_Id'){
                         			if(record.data.classes==0){
-                                		if(protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null){
+                        				if(protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null){
                         					if(protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot!=undefined){
                         						protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.destroy();
                         					}
                         					protocolExtendedFieldHighLowByteConfigHandsontableHelper=null;
+                        				}
+                        				if(protocolExtendedFieldMeaningConfigHandsontableHelper!=null){
+                        					if(protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=undefined){
+                        						protocolExtendedFieldMeaningConfigHandsontableHelper.hot.destroy();
+                        					}
+                        					protocolExtendedFieldMeaningConfigHandsontableHelper=null;
+                        				}
+                        				if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper!=null){
+                        					if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+                        						protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
+                        					}
+                        					protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper=null;
                         				}
                                 	}else if(record.data.classes==1){
                                 		CreateProtocolExtendedFieldHighLowByteConfigInfoTable(record.data.text,record.data.classes,record.data.code);

@@ -284,6 +284,12 @@ public class ModbusDriverSaveData {
 	    private String Unit;
 	    
 	    private String AdditionalConditions;
+	    
+	    private String HighLowByte;
+	    
+	    private String ResolutionMode;
+	    
+	    private List<ItemsMeaning> Meaning;
 
 		public String getTitle() {
 			return Title;
@@ -347,6 +353,30 @@ public class ModbusDriverSaveData {
 
 		public void setAdditionalConditions(String additionalConditions) {
 			AdditionalConditions = additionalConditions;
+		}
+
+		public String getHighLowByte() {
+			return HighLowByte;
+		}
+
+		public void setHighLowByte(String highLowByte) {
+			HighLowByte = highLowByte;
+		}
+
+		public String getResolutionMode() {
+			return ResolutionMode;
+		}
+
+		public void setResolutionMode(String resolutionMode) {
+			ResolutionMode = resolutionMode;
+		}
+
+		public List<ItemsMeaning> getMeaning() {
+			return Meaning;
+		}
+
+		public void setMeaning(List<ItemsMeaning> meaning) {
+			Meaning = meaning;
 		}
 	}
 	

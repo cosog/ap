@@ -2774,25 +2774,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(modbusDriverSaveData!=null){
 				modbusDriverSaveData.dataFiltering();
 				
-				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
-						TimeUnit.SECONDS, 
-						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
-				
 				//删除协议
 				if(modbusDriverSaveData.getDelidslist()!=null && modbusDriverSaveData.getDelidslist().size()>0){
 					for(int i=0;i<modbusDriverSaveData.getDelidslist().size();i++){
 						for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 							if(modbusDriverSaveData.getDelidslist().get(i).equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getCode())){
-//								DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-//								dataSynchronizationThread.setSign(002);
-//								dataSynchronizationThread.setParam1(modbusProtocolConfig.getProtocol().get(j).getName());
-//								dataSynchronizationThread.setParam2(modbusProtocolConfig.getProtocol().get(j).getDeviceType()+"");
-//								dataSynchronizationThread.setMethod("delete");
-//								dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-//								executor.execute(dataSynchronizationThread);
-								
 								String param1=modbusProtocolConfig.getProtocol().get(j).getName();
 								String param2=modbusProtocolConfig.getProtocol().get(j).getDeviceType()+"";
 								String method="delete";
@@ -2920,7 +2906,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 								}
 								
 								//处理删除项
-								Iterator<Items> it = modbusProtocolConfig.getProtocol().get(i).getItems().iterator();
+								Iterator<ModbusProtocolConfig.Items> it = modbusProtocolConfig.getProtocol().get(i).getItems().iterator();
 								while(it.hasNext()){
 									boolean isDel=true;
 									Items item=(Items)it.next();
@@ -2936,33 +2922,147 @@ public class AcquisitionUnitManagerController extends BaseController {
 									}
 								}
 							}else if(saveType==2){
-								List<ModbusProtocolConfig.ExtendedField> extendedFieldList=new ArrayList<>();
 								for(int j=0;j<modbusDriverSaveData.getExtendedFieldConfig().size();j++){
-									ModbusProtocolConfig.ExtendedField extendedField=new ModbusProtocolConfig.ExtendedField();
-									extendedField.setTitle(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle());
-									extendedField.setTitle1(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle1());
-									extendedField.setTitle2(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle2());
-									extendedField.setOperation(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("FOUROPERATION", modbusDriverSaveData.getExtendedFieldConfig().get(j).getOperation(), language)));
-									extendedField.setPrec(modbusDriverSaveData.getExtendedFieldConfig().get(j).getPrec());
-									extendedField.setRatio(modbusDriverSaveData.getExtendedFieldConfig().get(j).getRatio());
-									extendedField.setUnit(modbusDriverSaveData.getExtendedFieldConfig().get(j).getUnit());
-									extendedField.setAdditionalConditions(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("ADDITIONALCONDITIONS", modbusDriverSaveData.getExtendedFieldConfig().get(j).getAdditionalConditions(), language)));
-									extendedFieldList.add(extendedField);
+									boolean isAddItem=true;
+									for(ModbusProtocolConfig.ExtendedField extendedField:modbusProtocolConfig.getProtocol().get(i).getExtendedFields()){
+										if(extendedField.getTitle().equals(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle())){
+											isAddItem=false;
+											extendedField.setType(0);
+											extendedField.setTitle1(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle1());
+											extendedField.setTitle2(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle2());
+											extendedField.setOperation(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("FOUROPERATION", modbusDriverSaveData.getExtendedFieldConfig().get(j).getOperation(), language)));
+											extendedField.setPrec(modbusDriverSaveData.getExtendedFieldConfig().get(j).getPrec());
+											extendedField.setRatio(modbusDriverSaveData.getExtendedFieldConfig().get(j).getRatio());
+											extendedField.setUnit(modbusDriverSaveData.getExtendedFieldConfig().get(j).getUnit());
+											extendedField.setAdditionalConditions(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("ADDITIONALCONDITIONS", modbusDriverSaveData.getExtendedFieldConfig().get(j).getAdditionalConditions(), language)));
+											break;
+										}
+									}
+									if(isAddItem){
+										ModbusProtocolConfig.ExtendedField extendedField=new ModbusProtocolConfig.ExtendedField();
+										extendedField.setType(0);
+										extendedField.setTitle(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle());
+										extendedField.setTitle1(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle1());
+										extendedField.setTitle2(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle2());
+										extendedField.setOperation(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("FOUROPERATION", modbusDriverSaveData.getExtendedFieldConfig().get(j).getOperation(), language)));
+										extendedField.setPrec(modbusDriverSaveData.getExtendedFieldConfig().get(j).getPrec());
+										extendedField.setRatio(modbusDriverSaveData.getExtendedFieldConfig().get(j).getRatio());
+										extendedField.setUnit(modbusDriverSaveData.getExtendedFieldConfig().get(j).getUnit());
+										extendedField.setAdditionalConditions(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("ADDITIONALCONDITIONS", modbusDriverSaveData.getExtendedFieldConfig().get(j).getAdditionalConditions(), language)));
+										modbusProtocolConfig.getProtocol().get(i).getExtendedFields().add(extendedField);
+									}
 								}
-								modbusProtocolConfig.getProtocol().get(i).setExtendedFields(extendedFieldList);
+								
+								//处理删除项
+								Iterator<ModbusProtocolConfig.ExtendedField> it = modbusProtocolConfig.getProtocol().get(i).getExtendedFields().iterator();
+								while(it.hasNext()){
+									ModbusProtocolConfig.ExtendedField extendedField=(ModbusProtocolConfig.ExtendedField)it.next();
+									if(extendedField.getType()==0){
+										boolean isDel=true;
+										for(int k=0;k<modbusDriverSaveData.getExtendedFieldConfig().size();k++){
+											if(extendedField.getTitle().equalsIgnoreCase(modbusDriverSaveData.getExtendedFieldConfig().get(k).getTitle())){
+												isDel=false;
+												break;
+											}
+										}
+										if(isDel){
+											delItemList.add(extendedField.getTitle());
+											it.remove();
+										}
+									}
+								}
+							}else if(saveType==3){
+								for(int j=0;j<modbusDriverSaveData.getExtendedFieldConfig().size();j++){
+									boolean isAddItem=true;
+									int resolutionMode=2;
+									if(languageResourceMap.get("switchingValue").equalsIgnoreCase(modbusDriverSaveData.getExtendedFieldConfig().get(j).getResolutionMode())){
+										resolutionMode=0;
+									}else if(languageResourceMap.get("enumValue").equalsIgnoreCase(modbusDriverSaveData.getExtendedFieldConfig().get(j).getResolutionMode())){
+										resolutionMode=1;
+									}
+									
+									for(ModbusProtocolConfig.ExtendedField extendedField:modbusProtocolConfig.getProtocol().get(i).getExtendedFields()){
+										if(extendedField.getTitle().equals(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle())){
+											isAddItem=false;
+											extendedField.setType(1);
+											extendedField.setTitle1(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle1());
+											extendedField.setHighLowByte(modbusDriverSaveData.getExtendedFieldConfig().get(j).getHighLowByte());
+											extendedField.setResolutionMode(resolutionMode);
+											extendedField.setPrec(modbusDriverSaveData.getExtendedFieldConfig().get(j).getPrec());
+											extendedField.setRatio(modbusDriverSaveData.getExtendedFieldConfig().get(j).getRatio());
+											extendedField.setUnit(modbusDriverSaveData.getExtendedFieldConfig().get(j).getUnit());
+											
+											if(modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning()!=null){
+												extendedField.setMeaning(new ArrayList<ItemsMeaning>());
+												for(int m=0;m<modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning().size();m++){
+													ItemsMeaning itemsMeaning=new ItemsMeaning();
+													itemsMeaning.setValue(modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning().get(m).getValue());
+													itemsMeaning.setMeaning(modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning().get(m).getMeaning());
+													itemsMeaning.setStatus0(modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning().get(m).getStatus0());
+													itemsMeaning.setStatus1(modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning().get(m).getStatus1());
+													extendedField.getMeaning().add(itemsMeaning);
+												}
+												if(extendedField.getMeaning()!=null && extendedField.getMeaning().size()>0){
+													Collections.sort(extendedField.getMeaning());
+												}
+											}
+											
+											break;
+										}
+									}
+									if(isAddItem){
+										ModbusProtocolConfig.ExtendedField extendedField=new ModbusProtocolConfig.ExtendedField();
+										extendedField.setType(1);
+										extendedField.setTitle(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle());
+										extendedField.setTitle1(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle1());
+										extendedField.setHighLowByte(modbusDriverSaveData.getExtendedFieldConfig().get(j).getHighLowByte());
+										extendedField.setResolutionMode(resolutionMode);
+										extendedField.setPrec(modbusDriverSaveData.getExtendedFieldConfig().get(j).getPrec());
+										extendedField.setRatio(modbusDriverSaveData.getExtendedFieldConfig().get(j).getRatio());
+										extendedField.setUnit(modbusDriverSaveData.getExtendedFieldConfig().get(j).getUnit());
+										
+										if(modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning()!=null){
+											extendedField.setMeaning(new ArrayList<ItemsMeaning>());
+											for(int m=0;m<modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning().size();m++){
+												ItemsMeaning itemsMeaning=new ItemsMeaning();
+												itemsMeaning.setValue(modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning().get(m).getValue());
+												itemsMeaning.setMeaning(modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning().get(m).getMeaning());
+												itemsMeaning.setStatus0(modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning().get(m).getStatus0());
+												itemsMeaning.setStatus1(modbusDriverSaveData.getExtendedFieldConfig().get(j).getMeaning().get(m).getStatus1());
+												extendedField.getMeaning().add(itemsMeaning);
+											}
+											if(extendedField.getMeaning()!=null && extendedField.getMeaning().size()>0){
+												Collections.sort(extendedField.getMeaning());
+											}
+										}
+										
+										modbusProtocolConfig.getProtocol().get(i).getExtendedFields().add(extendedField);
+									}
+								}
+								
+								//处理删除项
+								Iterator<ModbusProtocolConfig.ExtendedField> it = modbusProtocolConfig.getProtocol().get(i).getExtendedFields().iterator();
+								while(it.hasNext()){
+									ModbusProtocolConfig.ExtendedField extendedField=(ModbusProtocolConfig.ExtendedField)it.next();
+									if(extendedField.getType()==1){
+										boolean isDel=true;
+										for(int k=0;k<modbusDriverSaveData.getExtendedFieldConfig().size();k++){
+											if(extendedField.getTitle().equalsIgnoreCase(modbusDriverSaveData.getExtendedFieldConfig().get(k).getTitle())){
+												isDel=false;
+												break;
+											}
+										}
+										if(isDel){
+											delItemList.add(extendedField.getTitle());
+											it.remove();
+										}
+									}
+								}
 							}
 							
 							//如果协议名称改变，更新数据库
 							if(!oldName.equals(modbusDriverSaveData.getProtocolName())){
 								EquipmentDriverServerTask.deleteInitializedProtocolConfig(oldName,modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"");
-//								String unitSql="update tbl_acq_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
-//								String groupSql="update tbl_acq_group_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
-//								String alatmUnitSql="update tbl_alarm_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
-//								String displayUnitSql="update tbl_display_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
-//								service.updateSql(unitSql);
-//								service.updateSql(groupSql);
-//								service.updateSql(alatmUnitSql);
-//								service.updateSql(displayUnitSql);
 							}
 							if(delItemList.size()>0){
 								String delSql="delete from tbl_acq_item2group_conf t5 "
@@ -2972,7 +3072,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 										+ "and t.protocol='"+modbusDriverSaveData.getProtocolCode()+"' "
 										+ " and t4.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+"))";
 								String delDisplayItemSql="delete from tbl_display_items2unit_conf t "
-										+ "where t.type<>1 "
+										+ "where t.type (0,2,5) "
 										+ "and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolCode()+"'  )"
 										+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+")";
 								service.updateSql(delSql);
@@ -2989,7 +3089,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 								List<String> clobCont=new ArrayList<String>();
 								clobCont.add(gson.toJson(modbusProtocolConfig.getProtocol().get(i).getItems()));
 								service.getBaseDao().executeSqlUpdateClob(updateProtocolItemsClobSql,clobCont);
-							}else if(saveType==2){
+							}else if(saveType==2 || saveType==3){
 								String updateProtocolExtendedFieldClobSql="update TBL_PROTOCOL t set t.extendedfield=? where t.code='"+modbusProtocolConfig.getProtocol().get(i).getCode()+"'";
 								List<String> clobCont=new ArrayList<String>();
 								clobCont.add(gson.toJson(modbusProtocolConfig.getProtocol().get(i).getExtendedFields()));
@@ -3007,13 +3107,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				MemoryDataManagerTask.updateProtocolConfig(modbusProtocolConfig);
 				if(StringManagerUtils.isNotNull(modbusDriverSaveData.getProtocolName())){
-//					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-//					dataSynchronizationThread.setSign(003);
-//					dataSynchronizationThread.setParam1(modbusDriverSaveData.getProtocolName());
-//					dataSynchronizationThread.setParam2(oldDeviceType);
-//					dataSynchronizationThread.setMethod("update");
-//					executor.execute(dataSynchronizationThread);
-					
 					String param1=modbusDriverSaveData.getProtocolName();
 					String param2=oldDeviceType;
 					String method="update";

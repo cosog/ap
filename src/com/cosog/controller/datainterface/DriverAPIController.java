@@ -1938,9 +1938,10 @@ public class DriverAPIController extends BaseController{
 						
 						KeyValue keyValue=new KeyValue(columnName,rawValue);
 						acqDataList.add(keyValue);
-						if(protocol.getItems().get(j).getResolutionMode()==2 && (protocol.getItems().get(j).getIFDataType().startsWith("int")||protocol.getItems().get(j).getIFDataType().startsWith("float"))){
-							acqDataMap.put(columnName,rawValue);
-						}
+						acqDataMap.put(columnName,rawValue);
+//						if(protocol.getItems().get(j).getResolutionMode()==2 && (protocol.getItems().get(j).getIFDataType().startsWith("int")||protocol.getItems().get(j).getIFDataType().startsWith("float"))){
+//							acqDataMap.put(columnName,rawValue);
+//						}
 						
 						
 						if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
@@ -2064,58 +2065,170 @@ public class DriverAPIController extends BaseController{
 		
 		if(protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0){
 			for(int i=0;i<protocol.getExtendedFields().size();i++){
-				DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle());
-				if(dataMapping!=null){
-					DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle1());
-					DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle2());
-					String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
-					String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
-					String extendedField=dataMapping.getMappingColumn();
-					String extendedFieldValue="";
-					if(acqDataMap.containsKey(mappingColumn1)){
-						String value1=acqDataMap.get(mappingColumn1);
-						extendedFieldValue=value1;
-						if(acqDataMap.containsKey(mappingColumn2)){
-							String value2=acqDataMap.get(mappingColumn2);
-							if(protocol.getExtendedFields().get(i).getOperation()==1){
-								extendedFieldValue=(StringManagerUtils.stringToFloat(value1)+StringManagerUtils.stringToFloat(value2))+"";
-							}else if(protocol.getExtendedFields().get(i).getOperation()==2){
-								extendedFieldValue=(StringManagerUtils.stringToFloat(value1)-StringManagerUtils.stringToFloat(value2))+"";
-							}else if(protocol.getExtendedFields().get(i).getOperation()==3){
-								extendedFieldValue=(StringManagerUtils.stringToFloat(value1)*StringManagerUtils.stringToFloat(value2))+"";
-							}else if(protocol.getExtendedFields().get(i).getOperation()==4){
-								if(StringManagerUtils.stringToFloat(value2)!=0){
-									extendedFieldValue=(StringManagerUtils.stringToFloat(value1)/StringManagerUtils.stringToFloat(value2))+"";
+				String title=protocol.getExtendedFields().get(i).getTitle();
+				if(protocol.getExtendedFields().get(i).getType()==0){
+					DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle());
+					if(dataMapping!=null){
+						DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle1());
+						DataMapping dataMapping2=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle2());
+						String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
+						String mappingColumn2=dataMapping2!=null?dataMapping2.getMappingColumn():"";
+						String extendedField=dataMapping.getMappingColumn();
+						String extendedFieldValue="";
+						if(acqDataMap.containsKey(mappingColumn1)){
+							String value1=acqDataMap.get(mappingColumn1);
+							if(StringManagerUtils.isNum(value1)){
+								extendedFieldValue=value1;
+								if(acqDataMap.containsKey(mappingColumn2)){
+									String value2=acqDataMap.get(mappingColumn2);
+									if(StringManagerUtils.isNum(value2)){
+										if(protocol.getExtendedFields().get(i).getOperation()==1){
+											extendedFieldValue=(StringManagerUtils.stringToFloat(value1)+StringManagerUtils.stringToFloat(value2))+"";
+										}else if(protocol.getExtendedFields().get(i).getOperation()==2){
+											extendedFieldValue=(StringManagerUtils.stringToFloat(value1)-StringManagerUtils.stringToFloat(value2))+"";
+										}else if(protocol.getExtendedFields().get(i).getOperation()==3){
+											extendedFieldValue=(StringManagerUtils.stringToFloat(value1)*StringManagerUtils.stringToFloat(value2))+"";
+										}else if(protocol.getExtendedFields().get(i).getOperation()==4){
+											if(StringManagerUtils.stringToFloat(value2)!=0){
+												extendedFieldValue=(StringManagerUtils.stringToFloat(value1)/StringManagerUtils.stringToFloat(value2))+"";
+											}else{
+												extendedFieldValue="";
+											}
+										}
+									}
+								}
+								extendedFieldValue=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(extendedFieldValue)*protocol.getExtendedFields().get(i).getRatio()+"", protocol.getExtendedFields().get(i).getPrec())+"";
+							}
+							
+						}
+						
+						if(protocol.getExtendedFields().get(i).getAdditionalConditions()==1 && StringManagerUtils.stringToFloat(extendedFieldValue)<0 ){
+							extendedFieldValue="";
+						}
+						
+						KeyValue keyValue=new KeyValue(extendedField,extendedFieldValue);
+						acqDataList.add(keyValue);
+						
+						ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+								title,
+								title,
+								extendedFieldValue,
+								extendedFieldValue,
+								"",
+								extendedField,
+								"",
+								"",
+								"",
+								protocol.getExtendedFields().get(i).getUnit(),
+								1,
+								5);
+						protocolItemResolutionDataList.add(protocolItemResolutionData);
+					}
+				}else if(protocol.getExtendedFields().get(i).getType()==1){
+					DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle());
+					if(dataMapping!=null){
+						DataMapping dataMapping1=loadProtocolMappingColumnByTitleMap.get(protocol.getExtendedFields().get(i).getTitle1());
+						String mappingColumn1=dataMapping1!=null?dataMapping1.getMappingColumn():"";
+						String extendedField=dataMapping.getMappingColumn();
+						String extendedFieldValue="";
+						
+						
+						if(acqDataMap.containsKey(mappingColumn1)){
+							String value1=acqDataMap.get(mappingColumn1);
+							extendedFieldValue=value1;
+							if(StringManagerUtils.isInteger(value1)){
+								if(protocol.getExtendedFields().get(i).getResolutionMode()!=0){//数据量或枚举量
+									extendedFieldValue=StringManagerUtils.getIntegerHighOrLowByte(StringManagerUtils.stringToInteger(extendedFieldValue),protocol.getExtendedFields().get(i).getHighLowByte())+"";
+								}else{//开关量
+									byte[] bytes=StringManagerUtils.intTo16BitArray(StringManagerUtils.stringToInteger(extendedFieldValue),protocol.getExtendedFields().get(i).getHighLowByte());
+									extendedFieldValue=StringManagerUtils.join(bytes, ",");
 								}
 							}
 						}
-						extendedFieldValue=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(extendedFieldValue)*protocol.getExtendedFields().get(i).getRatio()+"", protocol.getExtendedFields().get(i).getPrec())+"";
+						
+						KeyValue keyValue=new KeyValue(extendedField,extendedFieldValue);
+						acqDataList.add(keyValue);
+						
+						if(protocol.getExtendedFields().get(i).getResolutionMode()!=0){//数据量或枚举量
+							String value=extendedFieldValue;
+							
+							if(StringManagerUtils.isNotNull(value) && protocol.getExtendedFields().get(i).getMeaning()!=null && protocol.getExtendedFields().get(i).getMeaning().size()>0){
+								for(int l=0;l<protocol.getExtendedFields().get(i).getMeaning().size();l++){
+									if(StringManagerUtils.stringToFloat(value)==(protocol.getExtendedFields().get(i).getMeaning().get(l).getValue())){
+										value=protocol.getExtendedFields().get(i).getMeaning().get(l).getMeaning();
+										break;
+									}
+								}
+							}
+							
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+									title,
+									title,
+									extendedFieldValue,
+									extendedFieldValue,
+									"",
+									extendedField,
+									"",
+									protocol.getExtendedFields().get(i).getResolutionMode()+"",
+									"",
+									protocol.getExtendedFields().get(i).getUnit(),
+									1,
+									5);
+							protocolItemResolutionDataList.add(protocolItemResolutionData);
+						}else{//开关量
+							String value=extendedFieldValue;
+							String rawValue=value;
+							if(StringManagerUtils.isNotNull(value) && value.split(",").length==8 && protocol.getExtendedFields().get(i).getMeaning()!=null && protocol.getExtendedFields().get(i).getMeaning().size()>0){
+								String[] valueArr=value.split(",");
+								for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:protocol.getExtendedFields().get(i).getMeaning()){
+									int bitIndex=itemsMeaning.getValue();
+									String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():"关";
+									String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():"开";
+									String rawTitle=title;
+									title=itemsMeaning.getMeaning();
+									
+									if(valueArr.length>bitIndex){
+										value=("true".equalsIgnoreCase(valueArr[bitIndex]) || "1".equalsIgnoreCase(valueArr[bitIndex]))?status1:status0;
+										rawValue=("true".equalsIgnoreCase(valueArr[bitIndex]) || "1".equalsIgnoreCase(valueArr[bitIndex]))?"1":"0";
+									}else{
+										value="";
+										rawValue="";
+									}
+									
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+											rawTitle,
+											title,
+											value,
+											rawValue,
+											"",
+											extendedField,
+											"",
+											protocol.getExtendedFields().get(i).getResolutionMode()+"",
+											bitIndex+"",
+											protocol.getExtendedFields().get(i).getUnit(),
+											1,
+											5);
+									protocolItemResolutionDataList.add(protocolItemResolutionData);
+								}
+							}else{
+								ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+										title,
+										title,
+										extendedFieldValue,
+										extendedFieldValue,
+										"",
+										extendedField,
+										"",
+										protocol.getExtendedFields().get(i).getResolutionMode()+"",
+										"",
+										protocol.getExtendedFields().get(i).getUnit(),
+										1,
+										5);
+								protocolItemResolutionDataList.add(protocolItemResolutionData);
+							}
+						}
+						
 					}
-					
-					if(protocol.getExtendedFields().get(i).getAdditionalConditions()==1 && StringManagerUtils.stringToFloat(extendedFieldValue)<0 ){
-						extendedFieldValue="";
-					}
-					
-					
-					
-					
-					KeyValue keyValue=new KeyValue(extendedField,extendedFieldValue);
-					acqDataList.add(keyValue);
-					
-					ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
-							protocol.getExtendedFields().get(i).getTitle(),
-							protocol.getExtendedFields().get(i).getTitle(),
-							extendedFieldValue,
-							extendedFieldValue,
-							"",
-							extendedField,
-							"",
-							"",
-							"",
-							protocol.getExtendedFields().get(i).getUnit(),
-							1,
-							5);
-					protocolItemResolutionDataList.add(protocolItemResolutionData);
 				}
 			}
 		}
@@ -3965,6 +4078,9 @@ public class DriverAPIController extends BaseController{
 //								&& checkSign==1
 								){
 							fesDiagramEnabled=true;
+							if(FESDiagramAcqCount<=0){
+								FESDiagramAcqCount=srpCalculateRequestData.getFESDiagram().getS().size();
+							}
 							if(FESDiagramAcqCount>0){
 								if(srpCalculateRequestData.getFESDiagram().getS().size()>FESDiagramAcqCount){
 									List<Float> curveArr=new ArrayList<Float>();

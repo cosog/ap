@@ -1551,8 +1551,119 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 							}
 						}
 					}
+				}else if(saveType==3){
+					if(protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null && protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot!=null){
+						var extendedFieldHighLowByteSelectRow= Ext.getCmp("ProtocolExtendedFieldHighLowByteSelectRow_Id").getValue();
+						var extendedFieldData=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getData();
+						
+						for(var i=0;i<extendedFieldData.length;i++){
+							var title=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i,'title');
+							if(isNotVal(title)){
+								var extendedField={};
+								extendedField.Title=title;
+								extendedField.Title1=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i,'title1');
+								if(extendedField.Title1==(loginUserLanguageResource.doubleClickCellTip+'...')){
+									extendedField.Title1='';
+								}
+								var itemHighLowByte=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i,'highLowByte');
+								extendedField.HighLowByte='';
+								if(itemHighLowByte==loginUserLanguageResource.highByte){
+									extendedField.HighLowByte='high';
+								}else if(itemHighLowByte==loginUserLanguageResource.lowByte){
+									extendedField.HighLowByte='low';
+								}
+								extendedField.ResolutionMode=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i,'resolutionMode');
+								
+								var Prec=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i,'prec')+"";
+								Prec=Prec!=''?Prec.replace(/\s/g, ""):Prec;
+								extendedField.Prec=isNumber(parseFloat(Prec))?parseFloat(Prec):0;
+								
+								var Ratio=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i,'ratio');
+								extendedField.Ratio=(isNumber(parseFloat(Ratio))?parseFloat(Ratio):1);
+								
+								var Unit=protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i,'unit')+"";
+								Unit=Unit!=''?Unit.replace(/\s/g, ""):Unit;
+								if(!isNotVal(Unit)){
+									Unit='';
+								}
+								extendedField.Unit=Unit;
+								
+								if(i==extendedFieldHighLowByteSelectRow){
+									extendedField.Meaning=[];
+									if(extendedField.ResolutionMode==loginUserLanguageResource.enumValue){
+										if(protocolExtendedFieldMeaningConfigHandsontableHelper!=null && protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=null){
+											var itemsMeaningData=protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getData();
+											for(var j=0;j<itemsMeaningData.length;j++){
+												var itemValue=protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j,'value');
+												var itemMeaning=protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j,'meaning');
+												if(isNotVal(itemValue) && isNotVal(itemMeaning)){
+													var meaning={};
+													meaning.Value=itemValue;
+													meaning.Meaning=itemMeaning;
+													extendedField.Meaning.push(meaning);
+												}
+											}
+										}
+									}else if(extendedField.ResolutionMode==loginUserLanguageResource.switchingValue){
+										if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper!=null && protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=null){
+											var switchingValueBitData=protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.getData();
+											
+											for(var k=0;k<switchingValueBitData.length;k++){
+												var switchingValueBitStatus=protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtRowProp(k,'status');
+												var switchingValueBitIndex=protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtRowProp(k,'bitIndex');
+												var switchingValueBitValue=protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtRowProp(k,'value');
+												
+												if(isNotVal(switchingValueBitStatus)){
+													var exist=false;
+													for(var j=0;j<extendedField.Meaning.length;j++){
+														if(switchingValueBitIndex==extendedField.Meaning[j].Value){
+															if(switchingValueBitValue==0){
+																extendedField.Meaning[j].Status0=switchingValueBitStatus;
+															}else if(switchingValueBitValue==1){
+																extendedField.Meaning[j].Status1=switchingValueBitStatus;
+															}
+															
+															exist=true;
+															break;
+														}
+													}
+													
+													if(!exist){
+														var meaning={};
+														meaning.Value=switchingValueBitIndex;
+														if(switchingValueBitValue==0){
+															meaning.Status0=switchingValueBitStatus;
+														}else if(switchingValueBitValue==1){
+															meaning.Status1=switchingValueBitStatus;
+														}
+														extendedField.Meaning.push(meaning);
+													}
+												}
+											}
+										}
+										
+										
+										if(protocolExtendedFieldMeaningConfigHandsontableHelper!=null && protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=null){
+											var itemsMeaningData=protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getData();
+											for(var j=0;j<itemsMeaningData.length;j++){
+												var switchingValueBitIndex=protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j,'value');
+												var switchingValueMeaning=protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j,'meaning');
+												
+												for(var k=0;k<extendedField.Meaning.length;k++){
+													if(switchingValueBitIndex==extendedField.Meaning[k].Value){
+														extendedField.Meaning[k].Meaning=switchingValueMeaning;
+														break;
+													}
+												}
+											}
+										}
+									}
+								}
+								configInfo.ExtendedFieldConfig.push(extendedField);
+							}
+						}
+					}
 				}
-				
 
 				var duplicateRowList=protocolItemsConfigHandsontableHelper.getDuplicateRowList();
 				var addrDuplicateRowList=protocolItemsConfigHandsontableHelper.getAddrDuplicateRowList();
@@ -2621,9 +2732,9 @@ var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
 	                        	}
 	                        }
 	                    });
-	                	if(needUpdateMap){
-	                		protocolItemsConfigHandsontableHelper.hot.render();
-	                	}
+//	                	if(needUpdateMap){
+//	                		protocolItemsConfigHandsontableHelper.hot.render();
+//	                	}
 	                },
 	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {
 	                	if(row<0 && row2<0){//只选中表头

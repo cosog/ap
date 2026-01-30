@@ -3652,6 +3652,18 @@ public class StringManagerUtils {
         }
         return result.toString();
     }
+    
+    public static String join(byte objarr[], String sign) {
+        StringBuffer result = new StringBuffer();
+        int length = objarr != null ? objarr.length : 0;
+        for (int i = 0; objarr != null && i < length; i++) {
+            result.append(objarr[i] + "");
+            if (i < length - 1) {
+                result.append(sign);
+            }
+        }
+        return result.toString();
+    }
 
     public static String join(List < Object > objarr, String sign) {
         StringBuffer result = new StringBuffer();
@@ -4800,6 +4812,28 @@ public class StringManagerUtils {
                 result[15 - i] = 0;
             }
         }
+        return result;
+    }
+    
+    public static byte[] intTo16BitArray(int value,String type) {
+        byte[] result = new byte[8];
+        byte[] arr = new byte[16];
+        for (int i = 0; i < 16; i++) {
+            // 检查第i位是否为1
+            if ((value & (1 << i)) != 0) {
+            	arr[15 - i] = 1;  // 高位在前
+            } else {
+            	arr[15 - i] = 0;
+            }
+        }
+        for(int i=0;i<8;i++){
+        	if("high".equalsIgnoreCase(type)){
+        		result[i]=arr[i];
+        	}else if("low".equalsIgnoreCase(type)){
+        		result[i]=arr[i+8];
+        	}
+        	
+        }
         
         return result;
     }
@@ -4859,5 +4893,58 @@ public class StringManagerUtils {
             left++;
             right--;
         }
+    }
+    
+    /**
+     * 将整数转为16位（2字节）byte数组
+     */
+    public static byte[] intTo16BitBytes(int value) {
+        // 16位只需要2个字节，取低16位
+        int shortValue = value & 0xFFFF;
+        byte[] bytes = new byte[2];
+        
+        // 大端序（高位在前）
+        bytes[0] = (byte) ((shortValue >> 8) & 0xFF); // 高8位
+        bytes[1] = (byte) (shortValue & 0xFF);        // 低8位
+        
+        // 如果希望小端序（低位在前），可以交换顺序
+        // bytes[0] = (byte) (shortValue & 0xFF);        // 低8位
+        // bytes[1] = (byte) ((shortValue >> 8) & 0xFF); // 高8位
+        
+        return bytes;
+    }
+    
+    /**
+     * 从16位byte数组中提取高8位并转为整数（0-255）
+     */
+    public static int getHigh8Bits(byte[] bytes) {
+        if (bytes.length < 2) {
+            throw new IllegalArgumentException("字节数组长度必须至少为2");
+        }
+        // 高8位：取第一个字节，转换为无符号整数
+        return bytes[0] & 0xFF;
+    }
+    
+    /**
+     * 从16位byte数组中提取低8位并转为整数（0-255）
+     */
+    public static int getLow8Bits(byte[] bytes) {
+        if (bytes.length < 2) {
+            throw new IllegalArgumentException("字节数组长度必须至少为2");
+        }
+        // 低8位：取第二个字节，转换为无符号整数
+        return bytes[1] & 0xFF;
+    }
+    
+    public static int getIntegerHighOrLowByte(int value,String type){
+    	int r=0;
+    	byte[] arr=intTo16BitBytes(value);
+    	
+    	if("high".equalsIgnoreCase(type)){
+    		r=getHigh8Bits(arr);
+    	}else if("low".equalsIgnoreCase(type)){
+    		r=getLow8Bits(arr);
+    	}
+    	return r;
     }
 }

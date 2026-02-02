@@ -1188,6 +1188,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
         		updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo);
         		CreateDeviceAdditionalInformationTable(recordId,deviceName,applicationScenarios,calculateType);
             }
+            deviceInfoHandsontableHelper.hot.render();
             Ext.getCmp("DeviceTotalCount_Id").update({
                 count: result.totalCount
             });
@@ -1304,6 +1305,10 @@ var DeviceInfoHandsontableHelper = {
         		if (prop === 'signInId') {
                     // 检查重复
                 	var slave=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'slave');
+                	var tcpType=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'tcpType');
+                	if(!isNotVal(tcpType) || tcpType.toUpperCase()=='TCP Server'.toUpperCase()){
+                		td.style.backgroundColor = 'rgb(245, 245, 245)';
+                	}
                 	if(isNotVal(value) && isNotVal(slave)){
                 		var checkValue=value+"_"+slave;
                         if (checkValue && deviceInfoHandsontableHelper.signInIdAndSlaveMap.has(checkValue)) {
@@ -1324,6 +1329,12 @@ var DeviceInfoHandsontableHelper = {
                                 td.style.backgroundColor = '#FF4C42';
                             }
                         }
+                	}
+                }else if (prop === 'ipPort') {
+                    // 检查重复
+                	var tcpType=deviceInfoHandsontableHelper.hot.getDataAtRowProp(row,'tcpType');
+                	if(!isNotVal(tcpType) || tcpType.toUpperCase()=='TCP Client'.toUpperCase()){
+                		td.style.backgroundColor = 'rgb(245, 245, 245)';
                 	}
                 }
         	}
@@ -1410,18 +1421,33 @@ var DeviceInfoHandsontableHelper = {
                     			var tcpType=this.instance.getDataAtRowProp(row, 'tcpType');
                     			if(tcpType=='' || tcpType==null){
                     				cellProperties.readOnly = false;
+//                    				cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
+//                    		            td.style.backgroundColor = 'rgb(245, 245, 245)';
+//                    		        };
                     			}else{
                     				if(prop.toUpperCase() === "signInId".toUpperCase()){
                     					if(tcpType.toUpperCase() === "TCP Client".toUpperCase() || tcpType.toUpperCase() === "TCPClient".toUpperCase()){
                     						cellProperties.readOnly = false;
+//                    						cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
+//                            		            td.style.backgroundColor = '';
+//                            		        };
                     					}else{
                     						cellProperties.readOnly = true;
+//                    						cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
+//                            		            td.style.backgroundColor = 'rgb(245, 245, 245)';
+//                            		        };
                     					}
                     				}else if(prop.toUpperCase() === "ipPort".toUpperCase()){
                     					if(tcpType.toUpperCase() === "TCP Server".toUpperCase() || tcpType.toUpperCase() === "TCPServer".toUpperCase()){
                     						cellProperties.readOnly = false;
+//                    						cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
+//                            		            td.style.backgroundColor = '';
+//                            		        };
                     					}else{
                     						cellProperties.readOnly = true;
+//                    						cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
+//                            		            td.style.backgroundColor = 'rgb(245, 245, 245)';
+//                            		        };
                     					}
                     				}
                     			}

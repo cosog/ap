@@ -11,8 +11,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.orm.hibernate5.SessionFactoryUtils;
 
 import com.cosog.model.DataSourceConfig;
@@ -22,10 +23,47 @@ import com.cosog.task.MemoryDataManagerTask;
 import oracle.sql.CLOB;
 
 public class OracleJdbcUtis {
+	
+	public static BasicDataSource dataSource=null;
 
 	public static BasicDataSource outerDataSource=null;
 	
 	public static BasicDataSource outerDataWriteBackDataSource=null;
+	
+	public static int connectTimeout=10*1000;// 连接建立超时 10秒
+	
+	public static int socketTimeout=30*1000;// socket读写超时 30秒
+	
+	public static int loginTimeout=10;// 登录超时 10秒
+	
+	private static void initDataSource(){
+		String driver=Config.getInstance().configFile.getAp().getDatasource().getDriver();
+        String url = Config.getInstance().configFile.getAp().getDatasource().getDriverUrl(); 
+        String username = Config.getInstance().configFile.getAp().getDatasource().getUser();
+        String password = Config.getInstance().configFile.getAp().getDatasource().getPassword(); 
+		
+        dataSource = new BasicDataSource();     
+        
+		dataSource.setDriverClassName(driver);
+
+		dataSource.setUrl(url);
+
+		dataSource.setUsername(username);
+
+		dataSource.setPassword(password);
+		
+		dataSource.setMaxWaitMillis(connectTimeout); // 获取连接超时时间（毫秒），默认 -1 无限等待
+
+		dataSource.setInitialSize(10); // 初始化连接数
+
+		dataSource.setMaxIdle(10); // 最大空闲连接数
+
+		dataSource.setMinIdle(5); // 最小空闲连接数
+
+		dataSource.setMaxTotal(20); // 最大连接数
+	
+	}
+	
 	
 	private static void initOuterDataSource(){
 		
@@ -49,7 +87,7 @@ public class OracleJdbcUtis {
 
 			outerDataSource.setMinIdle(5); // 最小空闲连接数
 
-			outerDataSource.setMaxIdle(100); // 最大连接数
+			outerDataSource.setMaxTotal(100); // 最大连接数
 		}
 	}
 	
@@ -75,7 +113,7 @@ public class OracleJdbcUtis {
 
 			outerDataWriteBackDataSource.setMinIdle(5); // 最小空闲连接数
 
-			outerDataWriteBackDataSource.setMaxIdle(100); // 最大连接数
+			outerDataWriteBackDataSource.setMaxTotal(100); // 最大连接数
 		}
 	}
 	
@@ -103,25 +141,54 @@ public class OracleJdbcUtis {
 	
 	
 	public static Connection getConnection(){  
-        try{
-        	String driver=Config.getInstance().configFile.getAp().getDatasource().getDriver();
-            String url = Config.getInstance().configFile.getAp().getDatasource().getDriverUrl(); 
-            String username = Config.getInstance().configFile.getAp().getDatasource().getUser();
-            String password = Config.getInstance().configFile.getAp().getDatasource().getPassword();  
-            Class.forName(driver).newInstance();  
-            Connection conn = DriverManager.getConnection(url, username, password);  
-            return conn;  
-        }  
-        catch (Exception e){  
-            StringManagerUtils.printLog(e.getMessage(),2);  
-            return null;  
-        }  
+//        try{
+//        	String driver=Config.getInstance().configFile.getAp().getDatasource().getDriver();
+//            String url = Config.getInstance().configFile.getAp().getDatasource().getDriverUrl(); 
+//            String username = Config.getInstance().configFile.getAp().getDatasource().getUser();
+//            String password = Config.getInstance().configFile.getAp().getDatasource().getPassword();  
+//            Class.forName(driver).newInstance();  
+//            Properties props = new Properties();
+//            props.setProperty("user", username);
+//            props.setProperty("password", password);
+//            props.setProperty("connectTimeout", connectTimeout+""); //连接建立超时（毫秒/秒） 毫秒 
+//            props.setProperty("socketTimeout", socketTimeout+""); //socket读写超时（毫秒/秒）
+//
+//            Connection conn = DriverManager.getConnection(url, props);
+//            
+//            
+////            Connection conn = DriverManager.getConnection(url, username, password);  
+//            return conn;  
+//        }  
+//        catch (Exception e){  
+//            StringManagerUtils.printLog(e.getMessage(),2);  
+//            return null;  
+//        }  
+		
+		Connection conn=null;
+		if(dataSource==null){
+			initDataSource();
+		}
+		if(dataSource!=null){
+			try {
+				conn=dataSource.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return conn;
     }
 	
 	public static Connection getConnection(String driver,String url,String username,String password){  
         try{
             Class.forName(driver).newInstance();  
-            Connection conn = DriverManager.getConnection(url, username, password);  
+            Properties props = new Properties();
+            props.setProperty("user", username);
+            props.setProperty("password", password);
+            props.setProperty("connectTimeout", connectTimeout+""); //连接建立超时（毫秒/秒） 毫秒 
+            props.setProperty("socketTimeout", socketTimeout+""); //socket读写超时（毫秒/秒）
+            Connection conn = DriverManager.getConnection(url, props);
+            
+//            Connection conn = DriverManager.getConnection(url, username, password);  
             return conn;  
         }  
         catch (Exception e){  
@@ -336,9 +403,11 @@ public class OracleJdbcUtis {
 		PreparedStatement pstmt = null;
 		try {
 			conn=OracleJdbcUtis.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setQueryTimeout(timeOut);
-			r = pstmt.executeUpdate();
+			if(conn!=null){
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setQueryTimeout(timeOut);
+				r = pstmt.executeUpdate();
+			}
 		} catch (SQLException e) {
 			r=-1;
 			e.printStackTrace();
@@ -355,28 +424,29 @@ public class OracleJdbcUtis {
 		ResultSet rs=null;
 		ResultSetMetaData rsmd=null;
 		List<Object[]> list=new ArrayList<Object[]>();
-		
 		try {
-			ps = conn.prepareStatement(sql);
-			rs=ps.executeQuery();
-			rsmd=rs.getMetaData();  
-			int columnCount=rsmd.getColumnCount();  
-			while(rs.next())
-			{
-				Object[] objs=new Object[columnCount];
-				for(int i=0;i<columnCount;i++){
-					if(rs.getObject(i+1) instanceof oracle.sql.CLOB || rs.getObject(i+1) instanceof java.sql.Clob ){
-						try {
-							objs[i]=StringManagerUtils.CLOBtoString2(rs.getClob(i+1));
-						} catch (IOException e) {
-							objs[i]="";
-							e.printStackTrace();
+			if(conn!=null){
+				ps = conn.prepareStatement(sql);
+				rs=ps.executeQuery();
+				rsmd=rs.getMetaData();  
+				int columnCount=rsmd.getColumnCount();  
+				while(rs.next())
+				{
+					Object[] objs=new Object[columnCount];
+					for(int i=0;i<columnCount;i++){
+						if(rs.getObject(i+1) instanceof oracle.sql.CLOB || rs.getObject(i+1) instanceof java.sql.Clob ){
+							try {
+								objs[i]=StringManagerUtils.CLOBtoString2(rs.getClob(i+1));
+							} catch (IOException e) {
+								objs[i]="";
+								e.printStackTrace();
+							}
+						}else{
+							objs[i]=rs.getObject(i+1);
 						}
-					}else{
-						objs[i]=rs.getObject(i+1);
 					}
+					list.add(objs);
 				}
-				list.add(objs);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -395,27 +465,29 @@ public class OracleJdbcUtis {
 		List<Object[]> list=new ArrayList<Object[]>();
 		
 		try {
-			ps = conn.prepareStatement(sql);
-			ps.setQueryTimeout(timeout);
-			rs=ps.executeQuery();
-			rsmd=rs.getMetaData();  
-			int columnCount=rsmd.getColumnCount();  
-			while(rs.next())
-			{
-				Object[] objs=new Object[columnCount];
-				for(int i=0;i<columnCount;i++){
-					if(rs.getObject(i+1) instanceof oracle.sql.CLOB || rs.getObject(i+1) instanceof java.sql.Clob ){
-						try {
-							objs[i]=StringManagerUtils.CLOBtoString2(rs.getClob(i+1));
-						} catch (IOException e) {
-							objs[i]="";
-							e.printStackTrace();
+			if(conn!=null){
+				ps = conn.prepareStatement(sql);
+				ps.setQueryTimeout(timeout);
+				rs=ps.executeQuery();
+				rsmd=rs.getMetaData();  
+				int columnCount=rsmd.getColumnCount();  
+				while(rs.next())
+				{
+					Object[] objs=new Object[columnCount];
+					for(int i=0;i<columnCount;i++){
+						if(rs.getObject(i+1) instanceof oracle.sql.CLOB || rs.getObject(i+1) instanceof java.sql.Clob ){
+							try {
+								objs[i]=StringManagerUtils.CLOBtoString2(rs.getClob(i+1));
+							} catch (IOException e) {
+								objs[i]="";
+								e.printStackTrace();
+							}
+						}else{
+							objs[i]=rs.getObject(i+1);
 						}
-					}else{
-						objs[i]=rs.getObject(i+1);
 					}
+					list.add(objs);
 				}
-				list.add(objs);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

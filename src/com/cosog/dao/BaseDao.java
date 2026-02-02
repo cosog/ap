@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.CallableStatement;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -2297,61 +2298,33 @@ public class BaseDao extends HibernateDaoSupport {
 		StringBuffer wellboreSliceStrBuff = new StringBuffer();
 		Gson gson=new Gson();
 		
-		CLOB diagramClob_S=new CLOB((OracleConnection) conn);
-		diagramClob_S = oracle.sql.CLOB.createTemporary(conn,false,1);
-		diagramClob_S.putString(1, StringUtils.join(calculateRequestData.getFESDiagram().getS(), ","));
+		Clob diagramClob_S = conn.createClob();
+		diagramClob_S.setString(1, StringUtils.join(calculateRequestData.getFESDiagram().getS(), ","));
 		
-		CLOB diagramClob_F=new CLOB((OracleConnection) conn);
-		diagramClob_F = oracle.sql.CLOB.createTemporary(conn,false,1);
-		diagramClob_F.putString(1, StringUtils.join(calculateRequestData.getFESDiagram().getF(), ","));
+		Clob diagramClob_F = conn.createClob();
+		diagramClob_F.setString(1, StringUtils.join(calculateRequestData.getFESDiagram().getF(), ","));
 		
-		CLOB diagramClob_P=new CLOB((OracleConnection) conn);
-		diagramClob_P = oracle.sql.CLOB.createTemporary(conn,false,1);
-		diagramClob_P.putString(1, StringUtils.join(calculateRequestData.getFESDiagram().getWatt(), ","));
+		Clob diagramClob_P = conn.createClob();
+		diagramClob_P.setString(1, StringUtils.join(calculateRequestData.getFESDiagram().getWatt(), ","));
 		
-		CLOB diagramClob_I=new CLOB((OracleConnection) conn);
-		diagramClob_I = oracle.sql.CLOB.createTemporary(conn,false,1);
-		diagramClob_I.putString(1, StringUtils.join(calculateRequestData.getFESDiagram().getI(), ","));
+		Clob diagramClob_I = conn.createClob();
+		diagramClob_I.setString(1, StringUtils.join(calculateRequestData.getFESDiagram().getI(), ","));
 		
-		CLOB nullClob=new CLOB((OracleConnection) conn);
-		nullClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		nullClob.putString(1, "");
+		Clob nullClob = conn.createClob();
+		nullClob.setString(1, "");
 		
-		CLOB crankAngleClob=new CLOB((OracleConnection) conn);
-		crankAngleClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB polishRodVClob=new CLOB((OracleConnection) conn);
-		polishRodVClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB polishRodAClob=new CLOB((OracleConnection) conn);
-		polishRodAClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB PRClob=new CLOB((OracleConnection) conn);
-		PRClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB TFClob=new CLOB((OracleConnection) conn);
-		TFClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB loadTorqueClob=new CLOB((OracleConnection) conn);
-		loadTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB crankTorqueClob=new CLOB((OracleConnection) conn);
-		crankTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB currentBalanceTorqueClob=new CLOB((OracleConnection) conn);
-		currentBalanceTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB currentNetTorqueClob=new CLOB((OracleConnection) conn);
-		currentNetTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB expectedBalanceTorqueClob=new CLOB((OracleConnection) conn);
-		expectedBalanceTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB expectedNetTorqueClob=new CLOB((OracleConnection) conn);
-		expectedNetTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB wellboreSliceClob=new CLOB((OracleConnection) conn);
-		wellboreSliceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		Clob crankAngleClob = conn.createClob();
+		Clob polishRodVClob = conn.createClob();
+		Clob polishRodAClob = conn.createClob();
+		Clob PRClob = conn.createClob();
+		Clob TFClob = conn.createClob();
+		Clob loadTorqueClob = conn.createClob();
+		Clob crankTorqueClob = conn.createClob();
+		Clob currentBalanceTorqueClob = conn.createClob();
+		Clob currentNetTorqueClob = conn.createClob();
+		Clob expectedBalanceTorqueClob = conn.createClob();
+		Clob expectedNetTorqueClob = conn.createClob();
+		Clob wellboreSliceClob = conn.createClob();
 		
 		if(calculateResponseData!=null
 				&&calculateResponseData.getCalculationStatus().getResultStatus()==1
@@ -2383,36 +2356,35 @@ public class BaseDao extends HibernateDaoSupport {
 			}
 		}
 		
-		CLOB pumpFSDiagramClob=new CLOB((OracleConnection) conn);
-		pumpFSDiagramClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		pumpFSDiagramClob.putString(1, pumpFSDiagramStrBuff.toString());
+		Clob pumpFSDiagramClob = conn.createClob();
+		pumpFSDiagramClob.setString(1, pumpFSDiagramStrBuff.toString());
 		
 		if(calculateResponseData!=null&&calculateResponseData.getFESDiagram()!=null&&calculateResponseData.getFESDiagram().getCrankAngle()!=null&&calculateResponseData.getFESDiagram().getCrankAngle().size()>0){
-			crankAngleClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankAngle(), ","));
-			polishRodVClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getV(), ","));
-			polishRodAClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getA(), ","));
-			PRClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getPR(), ","));
-			TFClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getTF(), ","));
+			crankAngleClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankAngle(), ","));
+			polishRodVClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getV(), ","));
+			polishRodAClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getA(), ","));
+			PRClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getPR(), ","));
+			TFClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getTF(), ","));
 			
-			loadTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getLoadTorque(), ","));
-			crankTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankTorque(), ","));
-			currentBalanceTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","));
-			currentNetTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentNetTorque(), ","));
-			expectedBalanceTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","));
-			expectedNetTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedNetTorque(), ","));
+			loadTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getLoadTorque(), ","));
+			crankTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankTorque(), ","));
+			currentBalanceTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","));
+			currentNetTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentNetTorque(), ","));
+			expectedBalanceTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","));
+			expectedNetTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedNetTorque(), ","));
 		}else{
-			crankAngleClob.putString(1, "");
-			polishRodVClob.putString(1, "");
-			polishRodAClob.putString(1, "");
-			PRClob.putString(1, "");
-			TFClob.putString(1, "");
+			crankAngleClob.setString(1, "");
+			polishRodVClob.setString(1, "");
+			polishRodAClob.setString(1, "");
+			PRClob.setString(1, "");
+			TFClob.setString(1, "");
 			
-			loadTorqueClob.putString(1, "");
-			crankTorqueClob.putString(1, "");
-			currentBalanceTorqueClob.putString(1, "");
-			currentNetTorqueClob.putString(1, "");
-			expectedBalanceTorqueClob.putString(1, "");
-			expectedNetTorqueClob.putString(1, "");
+			loadTorqueClob.setString(1, "");
+			crankTorqueClob.setString(1, "");
+			currentBalanceTorqueClob.setString(1, "");
+			currentNetTorqueClob.setString(1, "");
+			expectedBalanceTorqueClob.setString(1, "");
+			expectedNetTorqueClob.setString(1, "");
 		}
 		
 		if(calculateResponseData!=null&&calculateResponseData.getWellboreSlice()!=null
@@ -2427,7 +2399,7 @@ public class BaseDao extends HibernateDaoSupport {
 			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getBo(), ",")+";");
 			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getGLRis(), ","));
 		}
-		wellboreSliceClob.putString(1, wellboreSliceStrBuff.toString());
+		wellboreSliceClob.setString(1, wellboreSliceStrBuff.toString());
 		try {
 			cs = conn.prepareCall("{call prd_save_srp_diagram("
 					+ "?,?,"
@@ -2712,61 +2684,33 @@ public class BaseDao extends HibernateDaoSupport {
 		StringBuffer wellboreSliceStrBuff = new StringBuffer();
 		Gson gson=new Gson();
 		
-		CLOB diagramClob_S=new CLOB((OracleConnection) conn);
-		diagramClob_S = oracle.sql.CLOB.createTemporary(conn,false,1);
-		diagramClob_S.putString(1, StringUtils.join(calculateRequestData.getFESDiagram().getS(), ","));
+		Clob diagramClob_S = conn.createClob();
+		diagramClob_S.setString(1, StringUtils.join(calculateRequestData.getFESDiagram().getS(), ","));
 		
-		CLOB diagramClob_F=new CLOB((OracleConnection) conn);
-		diagramClob_F = oracle.sql.CLOB.createTemporary(conn,false,1);
-		diagramClob_F.putString(1, StringUtils.join(calculateRequestData.getFESDiagram().getF(), ","));
+		Clob diagramClob_F = conn.createClob();
+		diagramClob_F.setString(1, StringUtils.join(calculateRequestData.getFESDiagram().getF(), ","));
 		
-		CLOB diagramClob_P=new CLOB((OracleConnection) conn);
-		diagramClob_P = oracle.sql.CLOB.createTemporary(conn,false,1);
-		diagramClob_P.putString(1, StringUtils.join(calculateRequestData.getFESDiagram().getWatt(), ","));
+		Clob diagramClob_P = conn.createClob();
+		diagramClob_P.setString(1, StringUtils.join(calculateRequestData.getFESDiagram().getWatt(), ","));
 		
-		CLOB diagramClob_I=new CLOB((OracleConnection) conn);
-		diagramClob_I = oracle.sql.CLOB.createTemporary(conn,false,1);
-		diagramClob_I.putString(1, StringUtils.join(calculateRequestData.getFESDiagram().getI(), ","));
+		Clob diagramClob_I = conn.createClob();
+		diagramClob_I.setString(1, StringUtils.join(calculateRequestData.getFESDiagram().getI(), ","));
 		
-		CLOB nullClob=new CLOB((OracleConnection) conn);
-		nullClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		nullClob.putString(1, "");
+		Clob nullClob = conn.createClob();
+		nullClob.setString(1, "");
 		
-		CLOB crankAngleClob=new CLOB((OracleConnection) conn);
-		crankAngleClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB polishRodVClob=new CLOB((OracleConnection) conn);
-		polishRodVClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB polishRodAClob=new CLOB((OracleConnection) conn);
-		polishRodAClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB PRClob=new CLOB((OracleConnection) conn);
-		PRClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB TFClob=new CLOB((OracleConnection) conn);
-		TFClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB loadTorqueClob=new CLOB((OracleConnection) conn);
-		loadTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB crankTorqueClob=new CLOB((OracleConnection) conn);
-		crankTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB currentBalanceTorqueClob=new CLOB((OracleConnection) conn);
-		currentBalanceTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB currentNetTorqueClob=new CLOB((OracleConnection) conn);
-		currentNetTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB expectedBalanceTorqueClob=new CLOB((OracleConnection) conn);
-		expectedBalanceTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB expectedNetTorqueClob=new CLOB((OracleConnection) conn);
-		expectedNetTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB wellboreSliceClob=new CLOB((OracleConnection) conn);
-		wellboreSliceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		Clob crankAngleClob = conn.createClob();
+		Clob polishRodVClob = conn.createClob();
+		Clob polishRodAClob = conn.createClob();
+		Clob PRClob = conn.createClob();
+		Clob TFClob = conn.createClob();
+		Clob loadTorqueClob = conn.createClob();
+		Clob crankTorqueClob = conn.createClob();
+		Clob currentBalanceTorqueClob = conn.createClob();
+		Clob currentNetTorqueClob = conn.createClob();
+		Clob expectedBalanceTorqueClob = conn.createClob();
+		Clob expectedNetTorqueClob = conn.createClob();
+		Clob wellboreSliceClob = conn.createClob();
 		
 		if(calculateResponseData!=null
 				&&calculateResponseData.getCalculationStatus().getResultStatus()==1
@@ -2798,36 +2742,35 @@ public class BaseDao extends HibernateDaoSupport {
 			}
 		}
 		
-		CLOB pumpFSDiagramClob=new CLOB((OracleConnection) conn);
-		pumpFSDiagramClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		pumpFSDiagramClob.putString(1, pumpFSDiagramStrBuff.toString());
+		Clob pumpFSDiagramClob = conn.createClob();
+		pumpFSDiagramClob.setString(1, pumpFSDiagramStrBuff.toString());
 		
 		if(calculateResponseData!=null&&calculateResponseData.getFESDiagram()!=null&&calculateResponseData.getFESDiagram().getCrankAngle()!=null&&calculateResponseData.getFESDiagram().getCrankAngle().size()>0){
-			crankAngleClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankAngle(), ","));
-			polishRodVClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getV(), ","));
-			polishRodAClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getA(), ","));
-			PRClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getPR(), ","));
-			TFClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getTF(), ","));
+			crankAngleClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankAngle(), ","));
+			polishRodVClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getV(), ","));
+			polishRodAClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getA(), ","));
+			PRClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getPR(), ","));
+			TFClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getTF(), ","));
 			
-			loadTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getLoadTorque(), ","));
-			crankTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankTorque(), ","));
-			currentBalanceTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","));
-			currentNetTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentNetTorque(), ","));
-			expectedBalanceTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","));
-			expectedNetTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedNetTorque(), ","));
+			loadTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getLoadTorque(), ","));
+			crankTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankTorque(), ","));
+			currentBalanceTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","));
+			currentNetTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentNetTorque(), ","));
+			expectedBalanceTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","));
+			expectedNetTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedNetTorque(), ","));
 		}else{
-			crankAngleClob.putString(1, "");
-			polishRodVClob.putString(1, "");
-			polishRodAClob.putString(1, "");
-			PRClob.putString(1, "");
-			TFClob.putString(1, "");
+			crankAngleClob.setString(1, "");
+			polishRodVClob.setString(1, "");
+			polishRodAClob.setString(1, "");
+			PRClob.setString(1, "");
+			TFClob.setString(1, "");
 			
-			loadTorqueClob.putString(1, "");
-			crankTorqueClob.putString(1, "");
-			currentBalanceTorqueClob.putString(1, "");
-			currentNetTorqueClob.putString(1, "");
-			expectedBalanceTorqueClob.putString(1, "");
-			expectedNetTorqueClob.putString(1, "");
+			loadTorqueClob.setString(1, "");
+			crankTorqueClob.setString(1, "");
+			currentBalanceTorqueClob.setString(1, "");
+			currentNetTorqueClob.setString(1, "");
+			expectedBalanceTorqueClob.setString(1, "");
+			expectedNetTorqueClob.setString(1, "");
 		}
 		
 		if(calculateResponseData!=null&&calculateResponseData.getWellboreSlice()!=null
@@ -2842,7 +2785,7 @@ public class BaseDao extends HibernateDaoSupport {
 			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getBo(), ",")+";");
 			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getGLRis(), ","));
 		}
-		wellboreSliceClob.putString(1, wellboreSliceStrBuff.toString());
+		wellboreSliceClob.setString(1, wellboreSliceStrBuff.toString());
 		try {
 			cs = conn.prepareCall("{call prd_save_srp_diagram_vacuate("
 					+ "?,?,"
@@ -3123,45 +3066,21 @@ public class BaseDao extends HibernateDaoSupport {
 		StringBuffer wellboreSliceStrBuff = new StringBuffer();
 		Gson gson=new Gson();
 		
-		CLOB nullClob=new CLOB((OracleConnection) conn);
-		nullClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		nullClob.putString(1, "");
+		Clob nullClob = conn.createClob();
+		nullClob.setString(1, "");
 		
-		CLOB crankAngleClob=new CLOB((OracleConnection) conn);
-		crankAngleClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB polishRodVClob=new CLOB((OracleConnection) conn);
-		polishRodVClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB polishRodAClob=new CLOB((OracleConnection) conn);
-		polishRodAClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB PRClob=new CLOB((OracleConnection) conn);
-		PRClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB TFClob=new CLOB((OracleConnection) conn);
-		TFClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB loadTorqueClob=new CLOB((OracleConnection) conn);
-		loadTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB crankTorqueClob=new CLOB((OracleConnection) conn);
-		crankTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB currentBalanceTorqueClob=new CLOB((OracleConnection) conn);
-		currentBalanceTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB currentNetTorqueClob=new CLOB((OracleConnection) conn);
-		currentNetTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB expectedBalanceTorqueClob=new CLOB((OracleConnection) conn);
-		expectedBalanceTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB expectedNetTorqueClob=new CLOB((OracleConnection) conn);
-		expectedNetTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		
-		CLOB wellboreSliceClob=new CLOB((OracleConnection) conn);
-		wellboreSliceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		Clob crankAngleClob = conn.createClob();
+		Clob polishRodVClob = conn.createClob();
+		Clob polishRodAClob = conn.createClob();
+		Clob PRClob = conn.createClob();
+		Clob TFClob = conn.createClob();
+		Clob loadTorqueClob = conn.createClob();
+		Clob crankTorqueClob = conn.createClob();
+		Clob currentBalanceTorqueClob = conn.createClob();
+		Clob currentNetTorqueClob = conn.createClob();
+		Clob expectedBalanceTorqueClob = conn.createClob();
+		Clob expectedNetTorqueClob = conn.createClob();
+		Clob wellboreSliceClob = conn.createClob();
 		
 		if(calculateResponseData!=null
 				&&calculateResponseData.getCalculationStatus().getResultStatus()==1
@@ -3190,36 +3109,35 @@ public class BaseDao extends HibernateDaoSupport {
 			}
 		}
 		
-		CLOB pumpFSDiagramClob=new CLOB((OracleConnection) conn);
-		pumpFSDiagramClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		pumpFSDiagramClob.putString(1, pumpFSDiagramStrBuff.toString());
+		Clob pumpFSDiagramClob = conn.createClob();
+		pumpFSDiagramClob.setString(1, pumpFSDiagramStrBuff.toString());
 		
 		if(calculateResponseData!=null&&calculateResponseData.getFESDiagram()!=null&&calculateResponseData.getFESDiagram().getCrankAngle()!=null&&calculateResponseData.getFESDiagram().getCrankAngle().size()>0){
-			crankAngleClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankAngle(), ","));
-			polishRodVClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getV(), ","));
-			polishRodAClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getA(), ","));
-			PRClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getPR(), ","));
-			TFClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getTF(), ","));
+			crankAngleClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankAngle(), ","));
+			polishRodVClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getV(), ","));
+			polishRodAClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getA(), ","));
+			PRClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getPR(), ","));
+			TFClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getTF(), ","));
 			
-			loadTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getLoadTorque(), ","));
-			crankTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankTorque(), ","));
-			currentBalanceTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","));
-			currentNetTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentNetTorque(), ","));
-			expectedBalanceTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","));
-			expectedNetTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedNetTorque(), ","));
+			loadTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getLoadTorque(), ","));
+			crankTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankTorque(), ","));
+			currentBalanceTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","));
+			currentNetTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentNetTorque(), ","));
+			expectedBalanceTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","));
+			expectedNetTorqueClob.setString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedNetTorque(), ","));
 		}else{
-			crankAngleClob.putString(1, "");
-			polishRodVClob.putString(1, "");
-			polishRodAClob.putString(1, "");
-			PRClob.putString(1, "");
-			TFClob.putString(1, "");
+			crankAngleClob.setString(1, "");
+			polishRodVClob.setString(1, "");
+			polishRodAClob.setString(1, "");
+			PRClob.setString(1, "");
+			TFClob.setString(1, "");
 			
-			loadTorqueClob.putString(1, "");
-			crankTorqueClob.putString(1, "");
-			currentBalanceTorqueClob.putString(1, "");
-			currentNetTorqueClob.putString(1, "");
-			expectedBalanceTorqueClob.putString(1, "");
-			expectedNetTorqueClob.putString(1, "");
+			loadTorqueClob.setString(1, "");
+			crankTorqueClob.setString(1, "");
+			currentBalanceTorqueClob.setString(1, "");
+			currentNetTorqueClob.setString(1, "");
+			expectedBalanceTorqueClob.setString(1, "");
+			expectedNetTorqueClob.setString(1, "");
 		}
 		
 		if(calculateResponseData!=null&&calculateResponseData.getWellboreSlice()!=null){
@@ -3232,7 +3150,7 @@ public class BaseDao extends HibernateDaoSupport {
 			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getBo(), ",")+";");
 			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getGLRis(), ","));
 		}
-		wellboreSliceClob.putString(1, wellboreSliceStrBuff.toString());
+		wellboreSliceClob.setString(1, wellboreSliceStrBuff.toString());
 		try {
 			cs = conn.prepareCall("{call prd_save_srp_diagramcaldata("
 					+ "?,?,?,?,?,?,?,?,?,?,"
@@ -3731,20 +3649,14 @@ public class BaseDao extends HibernateDaoSupport {
 			String date,int recordCount) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
+		Clob resultStrClob = conn.createClob();
+		resultStrClob.setString(1, totalAnalysisResponseData.getResultString());
 		
-		CLOB resultStrClob=new CLOB((OracleConnection) conn);
-		resultStrClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		resultStrClob.putString(1, totalAnalysisResponseData.getResultString());
+		Clob commRanceClob = conn.createClob();
+		commRanceClob.setString(1, totalAnalysisResponseData.getCommRange());
 		
-		CLOB commRanceClob=new CLOB((OracleConnection) conn);
-		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
-		
-		CLOB runRanceClob=new CLOB((OracleConnection) conn);
-		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
-		
-		
+		Clob runRanceClob = conn.createClob();
+		runRanceClob.setString(1, totalAnalysisResponseData.getRunRange());
 		try {
 			cs = conn.prepareCall("{call prd_save_srp_diagramdaily("
 					+ "?,?,"
@@ -3843,17 +3755,14 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
-		CLOB resultStrClob=new CLOB((OracleConnection) conn);
-		resultStrClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		resultStrClob.putString(1, totalAnalysisResponseData.getResultString());
+		Clob resultStrClob = conn.createClob();
+		resultStrClob.setString(1, totalAnalysisResponseData.getResultString());
 		
-		CLOB commRanceClob=new CLOB((OracleConnection) conn);
-		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
+		Clob commRanceClob = conn.createClob();
+		commRanceClob.setString(1, totalAnalysisResponseData.getCommRange());
 		
-		CLOB runRanceClob=new CLOB((OracleConnection) conn);
-		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
+		Clob runRanceClob = conn.createClob();
+		runRanceClob.setString(1, totalAnalysisResponseData.getRunRange());
 		
 		
 		try {
@@ -3954,17 +3863,14 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
-		CLOB resultStrClob=new CLOB((OracleConnection) conn);
-		resultStrClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		resultStrClob.putString(1, totalAnalysisResponseData.getResultString());
+		Clob resultStrClob = conn.createClob();
+		resultStrClob.setString(1, totalAnalysisResponseData.getResultString());
 		
-		CLOB commRanceClob=new CLOB((OracleConnection) conn);
-		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
+		Clob commRanceClob = conn.createClob();
+		commRanceClob.setString(1, totalAnalysisResponseData.getCommRange());
 		
-		CLOB runRanceClob=new CLOB((OracleConnection) conn);
-		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
+		Clob runRanceClob = conn.createClob();
+		runRanceClob.setString(1, totalAnalysisResponseData.getRunRange());
 		
 		
 		try {
@@ -4063,12 +3969,8 @@ public class BaseDao extends HibernateDaoSupport {
 	public Boolean saveFESDiagramReTotalData(String recordId,TotalAnalysisResponseData totalAnalysisResponseData,int recordCount) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
-		
-		CLOB resultStrClob=new CLOB((OracleConnection) conn);
-		resultStrClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		resultStrClob.putString(1, totalAnalysisResponseData.getResultString());
-		
-		
+		Clob resultStrClob = conn.createClob();
+		resultStrClob.setString(1, totalAnalysisResponseData.getResultString());
 		try {
 			cs = conn.prepareCall("{call prd_save_srp_diagramdailyrecal("
 					+ "?,?,"
@@ -4154,15 +4056,11 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
-		CLOB commRanceClob=new CLOB((OracleConnection) conn);
-		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
+		Clob commRanceClob = conn.createClob();
+		commRanceClob.setString(1, totalAnalysisResponseData.getCommRange());
 		
-		CLOB runRanceClob=new CLOB((OracleConnection) conn);
-		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
-		
-		
+		Clob runRanceClob = conn.createClob();
+		runRanceClob.setString(1, totalAnalysisResponseData.getRunRange());
 		try {
 			cs = conn.prepareCall("{call prd_save_pcp_rpmdaily("
 					+ "?,?,"
@@ -4241,14 +4139,11 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
-		CLOB commRanceClob=new CLOB((OracleConnection) conn);
-		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
+		Clob commRanceClob = conn.createClob();
+		commRanceClob.setString(1, totalAnalysisResponseData.getCommRange());
 		
-		CLOB runRanceClob=new CLOB((OracleConnection) conn);
-		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
-		
+		Clob runRanceClob = conn.createClob();
+		runRanceClob.setString(1, totalAnalysisResponseData.getRunRange());
 		
 		try {
 			cs = conn.prepareCall("{call prd_save_pcp_rpmdaily("
@@ -4327,14 +4222,11 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		
-		CLOB commRanceClob=new CLOB((OracleConnection) conn);
-		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
+		Clob commRanceClob = conn.createClob();
+		commRanceClob.setString(1, totalAnalysisResponseData.getCommRange());
 		
-		CLOB runRanceClob=new CLOB((OracleConnection) conn);
-		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
-		
+		Clob runRanceClob = conn.createClob();
+		runRanceClob.setString(1, totalAnalysisResponseData.getRunRange());
 		
 		try {
 			cs = conn.prepareCall("{call prd_save_pcp_rpmtimingtotal("

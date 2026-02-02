@@ -4543,7 +4543,7 @@ public class MemoryDataManagerTask {
 		Map<String,DataMapping> protocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
 		ModbusProtocolConfig.Items rtnItem=null;
 		
-		if(protocolMappingColumnMap.containsKey(mappingColumn)){
+		if(protocolMappingColumnMap!=null && protocolMappingColumnMap.containsKey(mappingColumn)){
 			DataMapping dataMapping=protocolMappingColumnMap.get(mappingColumn);
 			String itemTitle=dataMapping.getName();
 			if(StringManagerUtils.isNotNull(itemTitle) && protocol!=null && protocol.getItems()!=null && protocol.getItems().size()>0){
@@ -4629,7 +4629,7 @@ public class MemoryDataManagerTask {
 	public static ModbusProtocolConfig.Protocol getProtocolByCode(String protocolCode){
 		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
 		ModbusProtocolConfig.Protocol protocol=null;
-		if(StringManagerUtils.isNotNull(protocolCode)){
+		if(modbusProtocolConfig!=null && StringManagerUtils.isNotNull(protocolCode)){
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 					protocol=modbusProtocolConfig.getProtocol().get(i);
@@ -4657,7 +4657,7 @@ public class MemoryDataManagerTask {
 	public static ModbusProtocolConfig.Protocol getProtocolByNameAndDevicetype(String protocolName,int deviceType){
 		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
 		ModbusProtocolConfig.Protocol protocol=null;
-		if(StringManagerUtils.isNotNull(protocolName)){
+		if(modbusProtocolConfig!=null && StringManagerUtils.isNotNull(protocolName)){
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName()) 
 						&& deviceType==modbusProtocolConfig.getProtocol().get(i).getDeviceType()){
@@ -4672,7 +4672,7 @@ public class MemoryDataManagerTask {
 	public static ModbusProtocolConfig.Protocol getProtocolById(int protocolId){
 		ModbusProtocolConfig modbusProtocolConfig=getModbusProtocolConfig();
 		ModbusProtocolConfig.Protocol protocol=null;
-		if(protocolId>0){
+		if(modbusProtocolConfig!=null && protocolId>0){
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				if(protocolId==modbusProtocolConfig.getProtocol().get(i).getId()){
 					protocol=modbusProtocolConfig.getProtocol().get(i);

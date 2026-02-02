@@ -1,6 +1,7 @@
 package com.cosog.thread.calculate;
 
 import java.sql.CallableStatement;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -1116,17 +1117,13 @@ public class TimingTotalCalculateThread extends Thread {
 		Connection conn=OracleJdbcUtis.getConnection();
 		CallableStatement cs=null;
 		
-		CLOB resultStrClob=new CLOB((OracleConnection) conn);
-		resultStrClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		resultStrClob.putString(1, totalAnalysisResponseData.getResultString());
+		Clob resultStrClob = conn.createClob();
+		resultStrClob.setString(1, totalAnalysisResponseData.getResultString());
+		Clob commRanceClob = conn.createClob();
+		commRanceClob.setString(1, totalAnalysisResponseData.getCommRange());
+		Clob runRanceClob = conn.createClob();
+		commRanceClob.setString(1, totalAnalysisResponseData.getRunRange());
 		
-		CLOB commRanceClob=new CLOB((OracleConnection) conn);
-		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
-		
-		CLOB runRanceClob=new CLOB((OracleConnection) conn);
-		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
 		
 		try {
 			if(conn!=null){
@@ -1229,15 +1226,11 @@ public class TimingTotalCalculateThread extends Thread {
     	Connection conn=OracleJdbcUtis.getConnection();
 		CallableStatement cs=null;
 		
-		CLOB commRanceClob=new CLOB((OracleConnection) conn);
-		commRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		commRanceClob.putString(1, totalAnalysisResponseData.getCommRange());
+		Clob commRanceClob = conn.createClob();
+		commRanceClob.setString(1, totalAnalysisResponseData.getCommRange());
 		
-		CLOB runRanceClob=new CLOB((OracleConnection) conn);
-		runRanceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		runRanceClob.putString(1, totalAnalysisResponseData.getRunRange());
-		
-		
+		Clob runRanceClob = conn.createClob();
+		runRanceClob.setString(1, totalAnalysisResponseData.getRunRange());
 		try {
 			if(conn!=null){
 				cs = conn.prepareCall("{call prd_save_pcp_rpmtimingtotal("

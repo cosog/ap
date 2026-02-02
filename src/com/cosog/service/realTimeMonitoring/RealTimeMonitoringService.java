@@ -93,8 +93,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		try{
 			try{
 				jedisStatus=MemoryDataManagerTask.getJedisStatus();
-				alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
-				deviceList=MemoryDataManagerTask.getDeviceInfoByOrgIdArr(orgId.split(","));
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -107,6 +105,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("\"totalRoot\":[");
 			int totalCount=0;
 			if(jedisStatus){
+				alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
+				deviceList=MemoryDataManagerTask.getDeviceInfoByOrgIdArr(orgId.split(","));
 				if(deviceList!=null){
 					Map<Integer,Integer> totalMap=new TreeMap<Integer,Integer>();
 					for(int i=0;i<deviceList.size();i++){
@@ -856,7 +856,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 						List<?> SRPCalDataList = this.findCallSql(srpCalDataSql);
 						for(int i=0;i<SRPCalDataList.size();i++){
-							Object[] obj=(Object[]) SRPCalDataList.get(i);
+							Object[] obj=null;
+							if(deviceCalItemList.size()>0){
+								obj=(Object[]) SRPCalDataList.get(i);
+							}else{
+								obj=new Object[(int) SRPCalDataList.get(i)];
+							
+							}
 							String deviceId=obj[0]+"";
 							if(calDataQueryValueMap.containsKey(deviceId)){
 								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
@@ -903,7 +909,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						
 						List<?> PCPCalDataList = this.findCallSql(pcpCalDataSql);
 						for(int i=0;i<PCPCalDataList.size();i++){
-							Object[] obj=(Object[]) PCPCalDataList.get(i);
+							Object[] obj=null;
+							if(deviceCalItemList.size()>0){
+								obj=(Object[]) PCPCalDataList.get(i);
+							}else{
+								obj=new Object[(int) PCPCalDataList.get(i)];
+							
+							}
+							
 							String deviceId=obj[0]+"";
 							if(calDataQueryValueMap.containsKey(deviceId)){
 								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);

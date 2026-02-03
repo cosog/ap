@@ -3337,30 +3337,70 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									ModbusProtocolConfig.ExtendedField extendedField=MemoryDataManagerTask.getProtocolExtendedField(protocol, rawColumnName);
 									if(extendedField!=null){
 										unit=extendedField.getUnit();
+										resolutionMode=extendedField.getResolutionMode()+"";
 									}
 									if(protocolExtendedFields.size()>0 && acqDataList!=null){
 										for(KeyValue keyValue:acqDataList){
 											if(column.equalsIgnoreCase(keyValue.getKey())){
 												value=keyValue.getValue();
 												rawValue=value;
-												
 												if(extendedField!=null){
-													String extendedFieldValue=keyValue.getValue();
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
-															extendedField.getTitle(),
-															extendedField.getTitle(),
-															extendedFieldValue,
-															extendedFieldValue,
-															"",
-															column,
-															"",
-															"7",
-															"",
-															extendedField.getUnit(),
-															sort,
-															5);
-													protocolItemResolutionDataList.add(protocolItemResolutionData);
-													existData=true;
+													if(extendedField.getType()==0){
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+																extendedField.getTitle(),
+																extendedField.getTitle(),
+																value,
+																rawValue,
+																"",
+																column,
+																"",
+																"7",
+																"",
+																unit,
+																sort,
+																5);
+														protocolItemResolutionDataList.add(protocolItemResolutionData);
+														existData=true;
+													}else if(extendedField.getType()==1){
+														if(extendedField.getResolutionMode()==1 || extendedField.getResolutionMode()==2){//如果是枚举量
+															if(StringManagerUtils.isNotNull(value) && extendedField.getMeaning()!=null && extendedField.getMeaning().size()>0){
+																for(int l=0;l<extendedField.getMeaning().size();l++){
+																	if(StringManagerUtils.stringToFloat(value)==(extendedField.getMeaning().get(l).getValue())){
+																		value=extendedField.getMeaning().get(l).getMeaning();
+																		break;
+																	}
+																}
+															}
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+															protocolItemResolutionDataList.add(protocolItemResolutionData);
+															existData=true;
+														}else if(extendedField.getResolutionMode()==0){//如果是开关量
+															ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(extendedField, bitIndex);
+															if(itemsMeaning!=null && StringManagerUtils.isNotNull(value)){
+																String[] valueArr=value.split(",");
+																columnName=StringManagerUtils.isNotNull(itemsMeaning.getMeaning())?itemsMeaning.getMeaning():(languageResourceMap.get("bit")+displayItem.getBitIndex());
+																String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():"";
+																String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():"";
+																if(switchingValueShowType==1){
+																	columnName=rawColumnName+"/"+columnName;
+																}
+																for(int m=0;valueArr!=null && m<valueArr.length;m++){
+																	if(m==itemsMeaning.getValue()){
+																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
+																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+																		ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+																		protocolItemResolutionDataList.add(protocolItemResolutionData);
+																		existData=true;
+																		break;
+																	}
+																}
+															}else{
+																ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+																protocolItemResolutionDataList.add(protocolItemResolutionData);
+																existData=true;
+															}
+														}
+													}
 												}
 												break;
 											}

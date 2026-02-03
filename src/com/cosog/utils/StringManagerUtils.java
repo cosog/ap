@@ -4180,6 +4180,10 @@ public class StringManagerUtils {
     			if(acquisitionItemInfo.getColumn().equalsIgnoreCase(displayItem.getItemCode()) && acquisitionItemInfo.getBitIndex().equalsIgnoreCase(displayItem.getBitIndex()+"")){
     				match=true;
     			}
+    		}else if(displayItem.getType()==5 && displayItem.getBitIndex()>=0){
+    			if(acquisitionItemInfo.getColumn().equalsIgnoreCase(displayItem.getItemCode()) && acquisitionItemInfo.getBitIndex().equalsIgnoreCase(displayItem.getBitIndex()+"")){
+    				match=true;
+    			}
     		}else{
     			if(acquisitionItemInfo.getColumn().equalsIgnoreCase(displayItem.getItemCode())){
     				match=true;

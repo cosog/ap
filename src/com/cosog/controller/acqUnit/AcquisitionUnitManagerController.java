@@ -799,6 +799,36 @@ public class AcquisitionUnitManagerController extends BaseController {
 							if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
 								this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 							}
+						}else if(type==5){
+							displayUnitItem = new DisplayUnitItem();
+							displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));
+							displayUnitItem.setItemName(itemName);
+							displayUnitItem.setItemCode(itemCode);
+							displayUnitItem.setType(type);
+							displayUnitItem.setRealtimeOverview(StringManagerUtils.stringToInteger(module_[1]));
+							displayUnitItem.setRealtimeOverviewSort(StringManagerUtils.isNumber(module_[2])?StringManagerUtils.stringToInteger(module_[2]):null);
+							displayUnitItem.setRealtimeData(StringManagerUtils.stringToInteger(module_[3]));
+							displayUnitItem.setRealtimeSort(StringManagerUtils.isNumber(module_[4])?StringManagerUtils.stringToInteger(module_[4]):null);
+							displayUnitItem.setRealtimeColor(module_[5]);
+							displayUnitItem.setRealtimeBgColor(module_[6]);
+							
+							displayUnitItem.setHistoryOverview(StringManagerUtils.stringToInteger(module_[7]));
+							displayUnitItem.setHistoryOverviewSort(StringManagerUtils.isNumber(module_[8])?StringManagerUtils.stringToInteger(module_[8]):null);
+							displayUnitItem.setHistoryData(StringManagerUtils.stringToInteger(module_[9]));
+							displayUnitItem.setHistorySort(StringManagerUtils.isNumber(module_[10])?StringManagerUtils.stringToInteger(module_[10]):null);
+							displayUnitItem.setHistoryColor(module_[11]);
+							displayUnitItem.setHistoryBgColor(module_[12]);
+							displayUnitItem.setBitIndex(StringManagerUtils.isInteger(bitIndexStr)?StringManagerUtils.stringToInteger(bitIndexStr):null);
+							displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[13])?StringManagerUtils.stringToInteger(module_[13]):null);
+							
+							
+							displayUnitItem.setRealtimeCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[14]:"");
+							displayUnitItem.setHistoryCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[15]:"");
+							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[21])?StringManagerUtils.stringToInteger(module_[22]):0);
+							displayUnitItem.setMatrix(module_[23]);
+							if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
+								this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
+							}
 						}else {
 							displayUnitItem = new DisplayUnitItem();
 							displayUnitItem.setUnitId(StringManagerUtils.stringToInteger(unitId));

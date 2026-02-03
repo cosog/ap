@@ -1917,12 +1917,6 @@ public class DriverAPIController extends BaseController{
 						DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(title);
 						String columnName=dataMappingColumn.getMappingColumn();
 						
-//						if(protocol.getItems().get(j).getResolutionMode()==0 && acqProtocolType.startsWith("private-")){
-//							if(acqGroup.getValue()!=null && acqGroup.getValue().size()>i && acqGroup.getValue().get(i)!=null && acqGroup.getValue().get(i).size()>0){
-//								Collections.reverse(acqGroup.getValue().get(i));
-//							}
-//						}
-						
 						if(acqGroup.getValue()!=null && acqGroup.getValue().size()>i && acqGroup.getValue().get(i)!=null && acqGroup.getValue().get(i).size()>0){
 							value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
 						}
@@ -1939,10 +1933,6 @@ public class DriverAPIController extends BaseController{
 						KeyValue keyValue=new KeyValue(columnName,rawValue);
 						acqDataList.add(keyValue);
 						acqDataMap.put(columnName,rawValue);
-//						if(protocol.getItems().get(j).getResolutionMode()==2 && (protocol.getItems().get(j).getIFDataType().startsWith("int")||protocol.getItems().get(j).getIFDataType().startsWith("float"))){
-//							acqDataMap.put(columnName,rawValue);
-//						}
-						
 						
 						if(StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 							AcqInstanceOwnItem.AcqItem thisAcqItem=null;
@@ -2164,7 +2154,7 @@ public class DriverAPIController extends BaseController{
 							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
 									title,
 									title,
-									extendedFieldValue,
+									value,
 									extendedFieldValue,
 									"",
 									extendedField,
@@ -2603,7 +2593,10 @@ public class DriverAPIController extends BaseController{
 		
 		for(int j=0;j<acquisitionItemInfoList.size();j++){
 			String column=acquisitionItemInfoList.get(j).getColumn();
-			if(acquisitionItemInfoList.get(j).getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfoList.get(j).getResolutionMode())){
+			if(
+					(acquisitionItemInfoList.get(j).getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfoList.get(j).getResolutionMode()))
+					|| (acquisitionItemInfoList.get(j).getType()==5 && "0".equalsIgnoreCase(acquisitionItemInfoList.get(j).getResolutionMode()))
+					){
 				column+="_"+acquisitionItemInfoList.get(j).getBitIndex();
 			}
 			allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\","
@@ -2773,7 +2766,10 @@ public class DriverAPIController extends BaseController{
 					unit=finalAcquisitionItemInfoList.get(index).getUnit();
 					bitIndex=finalAcquisitionItemInfoList.get(index).getBitIndex();
 					
-					if(finalAcquisitionItemInfoList.get(index).getType()==0 && "0".equalsIgnoreCase(resolutionMode)){
+					if(
+							(finalAcquisitionItemInfoList.get(index).getType()==0 && "0".equalsIgnoreCase(resolutionMode))
+							|| (finalAcquisitionItemInfoList.get(index).getType()==5 && "0".equalsIgnoreCase(resolutionMode))
+							){
 						column+="_"+bitIndex;
 					}
 					
@@ -2818,8 +2814,6 @@ public class DriverAPIController extends BaseController{
 							if(displayItem.getSwitchingValueShowType()==1){
 								columnName=rawColumnName+"/"+columnName;
 							}
-							
-							
 							break;
 						}else if( ("1".equalsIgnoreCase(resolutionMode) || "2".equalsIgnoreCase(resolutionMode) )
 								&& displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())  
@@ -2876,7 +2870,7 @@ public class DriverAPIController extends BaseController{
 		webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 		webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
 		
-//		StringManagerUtils.printLog(webSocketSendData.toString(),0);
+		StringManagerUtils.printLog(webSocketSendData.toString(),0);
 		return webSocketSendData.toString();
 	}
 	

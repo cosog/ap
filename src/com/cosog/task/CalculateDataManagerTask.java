@@ -659,7 +659,7 @@ public class CalculateDataManagerTask {
 	public static  int getCount(String sql){
         int result=0;
         List<Object[]> list=OracleJdbcUtis.query(sql);
-        if(list!=null){
+        if(list!=null && list.size()>0){
         	result=StringManagerUtils.stringToInteger(list.get(0)[0]+"");
         }
         return result;

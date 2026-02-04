@@ -104,8 +104,11 @@ public class EquipmentDriverServerTask {
 					}
 					if(!driverProbeResponse.getProtocolInitStatus()){
 						initProtocolConfig("","","");
+						driverProbeResponse=adInitProbe();
 						initInstanceConfigByNames(null,"");
+						driverProbeResponse=adInitProbe();
 						initSMSInstanceConfig(null,"");
+						driverProbeResponse=adInitProbe();
 						if(executor!=null && executor.isCompletedByTaskCount()){
 							//清空内存
 							AdInitMap.cleanData();
@@ -119,10 +122,14 @@ public class EquipmentDriverServerTask {
 					
 					if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
 						while(driverProbeResponse!=null && ( (!driverProbeResponse.getProtocolInitStatus())||(!driverProbeResponse.getInstanceInitStatus()) )){
+							driverProbeResponse=adInitProbe();
 							if(!driverProbeResponse.getProtocolInitStatus()){
 								initProtocolConfig("","","");
+								driverProbeResponse=adInitProbe();
 								initInstanceConfigByNames(null,"");
+								driverProbeResponse=adInitProbe();
 								initSMSInstanceConfig(null,"");
+								driverProbeResponse=adInitProbe();
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
 									AdInitMap.cleanData();
@@ -132,7 +139,9 @@ public class EquipmentDriverServerTask {
 							}
 							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
 								initInstanceConfigByNames(null,"");
+								driverProbeResponse=adInitProbe();
 								initSMSInstanceConfig(null,"");
+								driverProbeResponse=adInitProbe();
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
 									AdInitMap.cleanData();
@@ -155,10 +164,14 @@ public class EquipmentDriverServerTask {
 										||(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() ))
 									)
 								){
+							driverProbeResponse=adInitProbe();
 							if(!driverProbeResponse.getProtocolInitStatus()){
 								initProtocolConfig("","","");
+								driverProbeResponse=adInitProbe();
 								initInstanceConfigByNames(null,"");
+								driverProbeResponse=adInitProbe();
 								initSMSInstanceConfig(null,"");
+								driverProbeResponse=adInitProbe();
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
 									AdInitMap.cleanData();
@@ -168,7 +181,9 @@ public class EquipmentDriverServerTask {
 							}
 							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
 								initInstanceConfigByNames(null,"");
+								driverProbeResponse=adInitProbe();
 								initSMSInstanceConfig(null,"");
+								driverProbeResponse=adInitProbe();
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
 									AdInitMap.cleanData();
@@ -506,7 +521,6 @@ public class EquipmentDriverServerTask {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
 		}
 	}
 	

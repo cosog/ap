@@ -828,8 +828,9 @@ function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,dictDevic
 
 
 function gotoDeviceHistory(deviceId,deviceName,deviceType){
-	Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('true');//跳转标志
-	Ext.getCmp("realtimeTurnToHisyory_DeviceName").setValue(deviceName);
+	Ext.getCmp("selectedDeviceId_global").setValue(deviceId);
+//	Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('true');//跳转标志
+//	Ext.getCmp("realtimeTurnToHisyory_DeviceName").setValue(deviceName);
 	var tabPanel = Ext.getCmp("frame_center_ids");
 	var moduleId="DeviceHistoryQuery";
 	var getTabId = tabPanel.getComponent(moduleId);
@@ -853,7 +854,7 @@ function gotoDeviceHistory(deviceId,deviceName,deviceType){
                     }
                 })).show();
                 Ext.getCmp("topModule_Id").setValue(rec.data.mdCode);
-				haveModule=true;
+//				haveModule=true;
 				break;
 			}
 		}
@@ -862,7 +863,7 @@ function gotoDeviceHistory(deviceId,deviceName,deviceType){
 	}
 	if(haveModule){
 		tabPanel.setActiveTab(moduleId);
-		Ext.getCmp('HistoryQueryDeviceListComb_Id').setValue(deviceName);
+//		Ext.getCmp('HistoryQueryDeviceListComb_Id').setValue(deviceName);
 	}
 }
 

@@ -50,10 +50,24 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     listeners: {
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
-                    		
                     		updateDeviceMonitoringData(record);
                     	},
+//                    	selectionchange: function(model, selectedRecords) {
+//                    		if(selectedRecords.length>0){
+//                    			const firstSelected = selectedRecords[0];
+//                        	    const store = gridPanel.getStore();
+//                        	    const rowIndex = store.indexOf(firstSelected);
+//                        	    Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(rowIndex);
+//                        	    updateDeviceMonitoringData(firstSelected);
+//                    		}
+//                    		
+//                    	},
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
+//                    		const selModel = gridPanel.getSelectionModel();
+//                    	    const isSelected = selModel.isSelected(record);
+//                    		alert(isSelected);
+                    		
+                    		Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
                     		gotoDeviceHistory(record.data.id,record.data.deviceName,record.data.deviceType);
                     	}
                     }

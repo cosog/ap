@@ -188,11 +188,7 @@ public class ResourceMonitoringTask {
 		
 		int resourceMonitoringSaveData=Config.getInstance().configFile.getAp().getOthers().getResourceMonitoringSaveData();
 		
-		try{
-			deviceAmount=MemoryDataManagerTask.getDeviceInfoCount();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		
 		
 		
 		if(tableSpaceInfo==null || tableSpaceInfo.getConnStatus()==0 || tableSpaceInfo.getUsedPercent()==0){
@@ -228,9 +224,16 @@ public class ResourceMonitoringTask {
 		
 		
 		if(redisInfo.getStatus()==1){
+			try{
+				deviceAmount=MemoryDataManagerTask.getDeviceInfoCount();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 			if(redisStatus==0){
 				MemoryDataManagerTask.loadMemoryData();
 			}
+		}else{
+			deviceAmount=0;
 		}
 		redisStatus=redisInfo.getStatus();
 		

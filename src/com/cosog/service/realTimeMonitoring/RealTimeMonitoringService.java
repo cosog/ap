@@ -3189,36 +3189,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					sql+= " where  t.id="+deviceId;
 					List<?> list = this.findCallSql(sql);
 					if(list.size()>0){
-						
-						//历史报警查询
-//						Map<String,Integer> alarmDataMap=new HashMap<>();
-//						if(alarmInstanceOwnItem!=null){
-//							String alarmQuerySql="select alarm.deviceid,to_char(alarm.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,alarm.alarmtype,alarm.itemname,alarm.alarmvalue,alarm.alarmlevel,alarm.itemCode,alarm.bitindex  "
-//									+ " from tbl_alarminfo_hist alarm,tbl_acqdata_latest t2 "
-//									+ " where alarm.deviceid=t2.deviceid and alarm.acqTime = t2.acqTime"
-//									+ " and t2.deviceId="+deviceId;
-//							List<?> alarmQueryList = this.findCallSql(alarmQuerySql);
-//							for(int i=0;i<alarmQueryList.size();i++){
-//								Object[] obj=(Object[]) alarmQueryList.get(i);
-//								
-//								String alarmTime=obj[1]+"";
-//								int alarmType=StringManagerUtils.stringToInteger(obj[2]+"");
-//								String alarmItemName=obj[3]+"";
-//								String alarmValue=obj[4]+"";
-//								int alarmLevel=StringManagerUtils.stringToInteger(obj[5]+"");
-//								String alarmItemCode=obj[6]+"";
-//								String bitIndex=obj[7]!=null?(obj[7]+""):"";
-//								if(StringManagerUtils.isNotNull(bitIndex)){
-//									alarmItemCode+="_"+bitIndex;
-//								}
-//								if(StringManagerUtils.isNotNull(alarmItemCode) && alarmLevel>0){
-//									String key=alarmItemCode+"_"+alarmTime+"_"+alarmType;
-//									alarmDataMap.put(key.toUpperCase(), alarmLevel);
-//								}
-//							}
-//						}
-						
-						
 						int row=1;
 						Object[] obj=(Object[]) list.get(0);
 						String acqTime=obj[2]+"";
@@ -3711,16 +3681,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											}
 										}
 									}
-									
-//									if(alarmInstanceOwnItem!=null && alarmDataMap.size()>0){
-//										String key=(finalProtocolItemResolutionDataList.get(index).getColumn()+"_"
-//												+acqTime+"_"
-//												+finalProtocolItemResolutionDataList.get(index).getResolutionMode()).toUpperCase();
-//										if(alarmDataMap.containsKey(key) && alarmDataMap.get(key)>0){
-//											alarmLevel=alarmDataMap.get(key);
-//										}
-//									}
-									
 								}
 								
 								if(StringManagerUtils.isNotNull(columnName) && StringManagerUtils.isNotNull(unit.replaceAll(" ", ""))){
@@ -4103,30 +4063,70 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									ModbusProtocolConfig.ExtendedField extendedField=MemoryDataManagerTask.getProtocolExtendedField(protocol, rawColumnName);
 									if(extendedField!=null){
 										unit=extendedField.getUnit();
+										resolutionMode=extendedField.getResolutionMode()+"";
 									}
 									if(protocolExtendedFields.size()>0 && acqDataList!=null){
 										for(KeyValue keyValue:acqDataList){
 											if(column.equalsIgnoreCase(keyValue.getKey())){
 												value=keyValue.getValue();
 												rawValue=value;
-												
 												if(extendedField!=null){
-													String extendedFieldValue=keyValue.getValue();
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
-															extendedField.getTitle(),
-															extendedField.getTitle(),
-															extendedFieldValue,
-															extendedFieldValue,
-															"",
-															column,
-															"",
-															"",
-															"",
-															extendedField.getUnit(),
-															sort,
-															5);
-													protocolItemResolutionDataList.add(protocolItemResolutionData);
-													existData=true;
+													if(extendedField.getType()==0){
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+																extendedField.getTitle(),
+																extendedField.getTitle(),
+																value,
+																rawValue,
+																"",
+																column,
+																"",
+																"7",
+																"",
+																unit,
+																sort,
+																5);
+														protocolItemResolutionDataList.add(protocolItemResolutionData);
+														existData=true;
+													}else if(extendedField.getType()==1){
+														if(extendedField.getResolutionMode()==1 || extendedField.getResolutionMode()==2){//如果是枚举量
+															if(StringManagerUtils.isNotNull(value) && extendedField.getMeaning()!=null && extendedField.getMeaning().size()>0){
+																for(int l=0;l<extendedField.getMeaning().size();l++){
+																	if(StringManagerUtils.stringToFloat(value)==(extendedField.getMeaning().get(l).getValue())){
+																		value=extendedField.getMeaning().get(l).getMeaning();
+																		break;
+																	}
+																}
+															}
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+															protocolItemResolutionDataList.add(protocolItemResolutionData);
+															existData=true;
+														}else if(extendedField.getResolutionMode()==0){//如果是开关量
+															ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(extendedField, bitIndex);
+															if(itemsMeaning!=null && StringManagerUtils.isNotNull(value)){
+																String[] valueArr=value.split(",");
+																columnName=StringManagerUtils.isNotNull(itemsMeaning.getMeaning())?itemsMeaning.getMeaning():(languageResourceMap.get("bit")+displayItem.getBitIndex());
+																String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():"";
+																String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():"";
+																if(switchingValueShowType==1){
+																	columnName=rawColumnName+"/"+columnName;
+																}
+																for(int m=0;valueArr!=null && m<valueArr.length;m++){
+																	if(m==itemsMeaning.getValue()){
+																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
+																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+																		ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+																		protocolItemResolutionDataList.add(protocolItemResolutionData);
+																		existData=true;
+																		break;
+																	}
+																}
+															}else{
+																ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+																protocolItemResolutionDataList.add(protocolItemResolutionData);
+																existData=true;
+															}
+														}
+													}
 												}
 												break;
 											}

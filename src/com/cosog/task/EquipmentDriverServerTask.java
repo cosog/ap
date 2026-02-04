@@ -104,8 +104,11 @@ public class EquipmentDriverServerTask {
 					}
 					if(!driverProbeResponse.getProtocolInitStatus()){
 						initProtocolConfig("","","");
+						driverProbeResponse=adInitProbe();
 						initInstanceConfigByNames(null,"");
+						driverProbeResponse=adInitProbe();
 						initSMSInstanceConfig(null,"");
+						driverProbeResponse=adInitProbe();
 						if(executor!=null && executor.isCompletedByTaskCount()){
 							//清空内存
 							AdInitMap.cleanData();
@@ -119,10 +122,14 @@ public class EquipmentDriverServerTask {
 					
 					if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
 						while(driverProbeResponse!=null && ( (!driverProbeResponse.getProtocolInitStatus())||(!driverProbeResponse.getInstanceInitStatus()) )){
+							driverProbeResponse=adInitProbe();
 							if(!driverProbeResponse.getProtocolInitStatus()){
 								initProtocolConfig("","","");
+								driverProbeResponse=adInitProbe();
 								initInstanceConfigByNames(null,"");
+								driverProbeResponse=adInitProbe();
 								initSMSInstanceConfig(null,"");
+								driverProbeResponse=adInitProbe();
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
 									AdInitMap.cleanData();
@@ -132,7 +139,9 @@ public class EquipmentDriverServerTask {
 							}
 							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
 								initInstanceConfigByNames(null,"");
+								driverProbeResponse=adInitProbe();
 								initSMSInstanceConfig(null,"");
+								driverProbeResponse=adInitProbe();
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
 									AdInitMap.cleanData();
@@ -155,10 +164,14 @@ public class EquipmentDriverServerTask {
 										||(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() ))
 									)
 								){
+							driverProbeResponse=adInitProbe();
 							if(!driverProbeResponse.getProtocolInitStatus()){
 								initProtocolConfig("","","");
+								driverProbeResponse=adInitProbe();
 								initInstanceConfigByNames(null,"");
+								driverProbeResponse=adInitProbe();
 								initSMSInstanceConfig(null,"");
+								driverProbeResponse=adInitProbe();
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
 									AdInitMap.cleanData();
@@ -168,7 +181,9 @@ public class EquipmentDriverServerTask {
 							}
 							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
 								initInstanceConfigByNames(null,"");
+								driverProbeResponse=adInitProbe();
 								initSMSInstanceConfig(null,"");
+								driverProbeResponse=adInitProbe();
 								if(executor!=null && executor.isCompletedByTaskCount()){
 									//清空内存
 									AdInitMap.cleanData();
@@ -458,16 +473,16 @@ public class EquipmentDriverServerTask {
 			try {
 				int sendCycle=Config.getInstance().configFile.getAp().getOthers().getSendCycle();
 				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
-				sendCycle=60;
-				timeDifference=0;
-//				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"zh_CN").start();
-//				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"zh_CN").start();
-//				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"zh_CN").start();
-//				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"zh_CN").start();
-//				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"zh_CN").start();
-//				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"zh_CN").start();
-//				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"zh_CN").start();
-//				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"zh_CN").start();
+//				sendCycle=60;
+//				timeDifference=0;
+				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"zh_CN").start();
+				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"zh_CN").start();
+				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"zh_CN").start();
+				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"zh_CN").start();
+				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"zh_CN").start();
+				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"zh_CN").start();
+				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"zh_CN").start();
+				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"zh_CN").start();
 //				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"zh_CN").start();
 //				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"zh_CN").start();
 				
@@ -477,36 +492,35 @@ public class EquipmentDriverServerTask {
 				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"zh_CN").start();
 				
 				
-//				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"en").start();
-//				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"en").start();
-//				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"en").start();
-//				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"en").start();
-//				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"en").start();
-//				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"en").start();
-//				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"en").start();
-//				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"en").start();
-////				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"en").start();
-////				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"en").start();
-//				
-//				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"en").start();
-//				
-//				
-//				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"ru").start();
-//				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"ru").start();
-//				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"ru").start();
-//				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"ru").start();
-//				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"ru").start();
-//				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"ru").start();
-//				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"ru").start();
-//				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"ru").start();
-////				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"ru").start();
-////				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"ru").start();
-//				
-//				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"ru").start();
+				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"en").start();
+				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"en").start();
+				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"en").start();
+				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"en").start();
+				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"en").start();
+				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"en").start();
+				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"en").start();
+				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"en").start();
+//				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"en").start();
+//				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"en").start();
+				
+				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"en").start();
+				
+				
+				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"ru").start();
+				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"ru").start();
+				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"ru").start();
+				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"ru").start();
+				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"ru").start();
+				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"ru").start();
+				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"ru").start();
+				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"ru").start();
+//				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"ru").start();
+//				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"ru").start();
+				
+				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"ru").start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
 		}
 	}
 	

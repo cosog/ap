@@ -877,46 +877,47 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			if(protocolConfig.getExtendedFields()!=null){
 				for(int j=0;j<protocolConfig.getExtendedFields().size();j++){
-
-					String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-					boolean checked=false;
-					DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocolConfig.getExtendedFields().get(j).getTitle());
-					String itemCode=dataMapping!=null?dataMapping.getMappingColumn():"";
-					for(int k=0;k<itemsList.size();k++){
-						Object[] obj = (Object[]) list.get(k);
-						if(itemCode.equalsIgnoreCase(itemsList.get(k))){
-							checked=true;
-							upperLimit=obj[3]+"";
-							lowerLimit=obj[4]+"";
-							hystersis=obj[5]+"";
-							delay=obj[6]+"";
-							retriggerTime=obj[7]+"";
-							alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language);
-							alarmSign=obj[9]+"";
-							isSendMessage=obj[10]+"";
-							isSendMail=obj[11]+"";
-							break;
+					if(protocolConfig.getExtendedFields().get(j).getType()==0 || (protocolConfig.getExtendedFields().get(j).getType()==1 && protocolConfig.getExtendedFields().get(j).getResolutionMode()==2)){
+						String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+						boolean checked=false;
+						DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocolConfig.getExtendedFields().get(j).getTitle());
+						String itemCode=dataMapping!=null?dataMapping.getMappingColumn():"";
+						for(int k=0;k<itemsList.size();k++){
+							Object[] obj = (Object[]) list.get(k);
+							if(itemCode.equalsIgnoreCase(itemsList.get(k))){
+								checked=true;
+								upperLimit=obj[3]+"";
+								lowerLimit=obj[4]+"";
+								hystersis=obj[5]+"";
+								delay=obj[6]+"";
+								retriggerTime=obj[7]+"";
+								alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language);
+								alarmSign=obj[9]+"";
+								isSendMessage=obj[10]+"";
+								isSendMail=obj[11]+"";
+								break;
+							}
 						}
+						result_json.append("{\"checked\":"+checked+","
+								+ "\"id\":"+(index)+","
+								+ "\"title\":\""+protocolConfig.getExtendedFields().get(j).getTitle()+"\","
+								+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
+								+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","5", language)+"\","
+								+ "\"code\":\""+itemCode+"\","
+								+ "\"addr\":\"\","
+								+ "\"type\":7,"
+								+ "\"upperLimit\":\""+upperLimit+"\","
+								+ "\"lowerLimit\":\""+lowerLimit+"\","
+								+ "\"hystersis\":\""+hystersis+"\","
+								+ "\"delay\":\""+delay+"\","
+								+ "\"retriggerTime\":\""+retriggerTime+"\","
+								+ "\"alarmLevel\":\""+alarmLevel+"\","
+								+ "\"alarmSign\":\""+alarmSign+"\","
+								+ "\"isSendMessage\":\""+isSendMessage+"\","
+								+ "\"isSendMail\":\""+isSendMail+"\""
+								+ "},");
+						index++;
 					}
-					result_json.append("{\"checked\":"+checked+","
-							+ "\"id\":"+(index)+","
-							+ "\"title\":\""+protocolConfig.getExtendedFields().get(j).getTitle()+"\","
-							+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
-							+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE","5", language)+"\","
-							+ "\"code\":\""+itemCode+"\","
-							+ "\"addr\":\"\","
-							+ "\"type\":7,"
-							+ "\"upperLimit\":\""+upperLimit+"\","
-							+ "\"lowerLimit\":\""+lowerLimit+"\","
-							+ "\"hystersis\":\""+hystersis+"\","
-							+ "\"delay\":\""+delay+"\","
-							+ "\"retriggerTime\":\""+retriggerTime+"\","
-							+ "\"alarmLevel\":\""+alarmLevel+"\","
-							+ "\"alarmSign\":\""+alarmSign+"\","
-							+ "\"isSendMessage\":\""+isSendMessage+"\","
-							+ "\"isSendMail\":\""+isSendMail+"\""
-							+ "},");
-					index++;
 				}
 			}
 		}

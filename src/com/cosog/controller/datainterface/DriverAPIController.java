@@ -3273,7 +3273,7 @@ public class DriverAPIController extends BaseController{
 					everyDataMap.put("checkSign", checkSign+"");
 					
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
-						everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getValue());
+						everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getRawValue());
 					}
 					MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"", acqTime, everyDataMap,language);
 					
@@ -4072,9 +4072,9 @@ public class DriverAPIController extends BaseController{
 //								&& checkSign==1
 								){
 							fesDiagramEnabled=true;
-							if(FESDiagramAcqCount<=0){
-								FESDiagramAcqCount=srpCalculateRequestData.getFESDiagram().getS().size();
-							}
+//							if(FESDiagramAcqCount<=0){
+//								FESDiagramAcqCount=srpCalculateRequestData.getFESDiagram().getS().size();
+//							}
 							if(FESDiagramAcqCount>0){
 								if(srpCalculateRequestData.getFESDiagram().getS().size()>FESDiagramAcqCount){
 									List<Float> curveArr=new ArrayList<Float>();

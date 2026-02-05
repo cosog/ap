@@ -2823,6 +2823,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 								this.acquisitionUnitManagerService.doDeleteProtocolAssociation(modbusProtocolConfig.getProtocol().get(j).getId()+"");
 								
 								modbusProtocolConfig.getProtocol().remove(j);
+								
+								EquipmentDriverServerTask.loadAcquisitionItemColumns();
 								if(user!=null){
 									this.service.saveSystemLog(user,2,languageResourceMap.get("deleteProtocol")+":"+modbusDriverSaveData.getDelidslist().get(i));
 								}

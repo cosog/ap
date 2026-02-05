@@ -63,12 +63,8 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
 //                    		
 //                    	},
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
-//                    		const selModel = gridPanel.getSelectionModel();
-//                    	    const isSelected = selModel.isSelected(record);
-//                    		alert(isSelected);
-                    		
-                    		Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
-                    		gotoDeviceHistory(record.data.id,record.data.deviceName,record.data.deviceType);
+//                    		Ext.getCmp("RealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(index);
+//                    		gotoDeviceHistory(record.data.id,record.data.deviceName,record.data.deviceType);
                     	}
                     }
                 });

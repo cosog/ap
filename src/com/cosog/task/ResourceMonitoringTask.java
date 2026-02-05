@@ -29,6 +29,7 @@ import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
+import com.cosog.utils.RedisUtil;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.websocket.config.WebSocketByJavax;
 import com.google.gson.Gson;
@@ -38,6 +39,7 @@ import oshi.SystemInfo;
 import oshi.hardware.GlobalMemory;
 import oshi.software.os.OSProcess;
 import oshi.software.os.OperatingSystem;
+import redis.clients.jedis.Jedis;
 
 @Component("ResourceMonitoringTask")  
 public class ResourceMonitoringTask {
@@ -68,6 +70,7 @@ public class ResourceMonitoringTask {
     private static String tableSpaceName="";
     
     private static TableSpaceInfo tableSpaceInfo=null;
+    private static int dataBaseStatus=1; 
     
     private static int save_cycle=60*10;
     private static String lastSaveTime="";
@@ -188,7 +191,13 @@ public class ResourceMonitoringTask {
 		
 		int resourceMonitoringSaveData=Config.getInstance().configFile.getAp().getOthers().getResourceMonitoringSaveData();
 		
-		
+		int currentDataBaseStatus=getDataBaseStatus();
+		if(currentDataBaseStatus==1){
+			if(dataBaseStatus==0){
+				MemoryDataManagerTask.loadMemoryData();
+			}
+		}
+		dataBaseStatus=currentDataBaseStatus;
 		
 		
 		if(tableSpaceInfo==null || tableSpaceInfo.getConnStatus()==0 || tableSpaceInfo.getUsedPercent()==0){
@@ -437,6 +446,29 @@ public class ResourceMonitoringTask {
     public static WebSocketByJavax infoHandler() {
         return new WebSocketByJavax();
     }
+	
+	public static int getDataBaseStatus(){
+		int r=0;
+		Connection conn=null;
+		try{
+			conn = OracleJdbcUtis.getConnection();
+			if(conn!=null){
+				r=1;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			r=0;
+		}finally{
+			if(conn!=null){
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return r;
+	}
 	
 	public static  float getTableSpaceSize() throws SQLException{
         float result=0;

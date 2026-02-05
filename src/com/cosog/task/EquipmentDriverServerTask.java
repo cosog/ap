@@ -105,16 +105,19 @@ public class EquipmentDriverServerTask {
 					if(!driverProbeResponse.getProtocolInitStatus()){
 						initProtocolConfig("","","");
 						driverProbeResponse=adInitProbe();
-						initInstanceConfigByNames(null,"");
-						driverProbeResponse=adInitProbe();
-						initSMSInstanceConfig(null,"");
-						driverProbeResponse=adInitProbe();
-						if(executor!=null && executor.isCompletedByTaskCount()){
-							//清空内存
-							AdInitMap.cleanData();
-							initDriverAcquisitionInfoConfig(null,0,"");
+						if(driverProbeResponse.getProtocolInitStatus()){
+							initInstanceConfigByNames(null,"");
+							initSMSInstanceConfig(null,"");
+							driverProbeResponse=adInitProbe();
+							if(driverProbeResponse.getInstanceInitStatus()){
+								if(executor!=null && executor.isCompletedByTaskCount()){
+									//清空内存
+									AdInitMap.cleanData();
+									initDriverAcquisitionInfoConfig(null,0,"");
+								}
+								driverProbeResponse=adInitProbe();
+							}
 						}
-						driverProbeResponse=adInitProbe();
 						if(driverProbeResponse==null){
 							continue;
 						}
@@ -126,28 +129,33 @@ public class EquipmentDriverServerTask {
 							if(!driverProbeResponse.getProtocolInitStatus()){
 								initProtocolConfig("","","");
 								driverProbeResponse=adInitProbe();
-								initInstanceConfigByNames(null,"");
-								driverProbeResponse=adInitProbe();
-								initSMSInstanceConfig(null,"");
-								driverProbeResponse=adInitProbe();
-								if(executor!=null && executor.isCompletedByTaskCount()){
-									//清空内存
-									AdInitMap.cleanData();
-									initDriverAcquisitionInfoConfig(null,0,"");
+								if(driverProbeResponse.getProtocolInitStatus()){
+									initInstanceConfigByNames(null,"");
+									initSMSInstanceConfig(null,"");
+									driverProbeResponse=adInitProbe();
+									if(driverProbeResponse.getInstanceInitStatus()){
+										if(executor!=null && executor.isCompletedByTaskCount()){
+											//清空内存
+											AdInitMap.cleanData();
+											initDriverAcquisitionInfoConfig(null,0,"");
+										}
+										driverProbeResponse=adInitProbe();
+									}
 								}
-								driverProbeResponse=adInitProbe();
+								
 							}
-							if(driverProbeResponse!=null && !driverProbeResponse.getInstanceInitStatus()){
+							if(driverProbeResponse!=null && driverProbeResponse.getProtocolInitStatus() && !driverProbeResponse.getInstanceInitStatus()){
 								initInstanceConfigByNames(null,"");
-								driverProbeResponse=adInitProbe();
 								initSMSInstanceConfig(null,"");
 								driverProbeResponse=adInitProbe();
-								if(executor!=null && executor.isCompletedByTaskCount()){
-									//清空内存
-									AdInitMap.cleanData();
-									initDriverAcquisitionInfoConfig(null,0,"");
+								if(driverProbeResponse.getInstanceInitStatus()){
+									if(executor!=null && executor.isCompletedByTaskCount()){
+										//清空内存
+										AdInitMap.cleanData();
+										initDriverAcquisitionInfoConfig(null,0,"");
+									}
+									driverProbeResponse=adInitProbe();
 								}
-								driverProbeResponse=adInitProbe();
 							}
 						}
 					}
@@ -199,93 +207,6 @@ public class EquipmentDriverServerTask {
 								}
 								driverProbeResponse=adInitProbe();
 							}
-						}
-					}
-					Ver=driverProbeResponse.getVer();
-				}else{
-					if(!sendMsg){
-						StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
-						sendMsg=true;
-					}
-				}
-				try {
-					Thread.sleep(1000*1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}while(true);
-		}
-	}
-	
-	
-	public void adProbeAndInit(){
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String allOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
-		
-		initWellCommStatus();
-		if(Config.getInstance().configFile.getAp().getOthers().getIot()){
-			initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
-		}
-		initWellDaliyData();
-		MemoryDataManagerTask.loadMemoryData();
-		
-		ThreadPool executor=null;
-		try {
-			executor = adInit();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		if(Config.getInstance().configFile.getAp().getOthers().getIot()){
-			boolean sendMsg=false;
-			do{
-				DriverProbeResponse driverProbeResponse=adInitProbe();
-				String Ver="";
-				if(driverProbeResponse!=null){
-					sendMsg=false;
-					if(!driverProbeResponse.getHttpServerInitStatus()){
-						try {
-							initServerConfig();
-						} catch (MalformedURLException e) {
-							e.printStackTrace();
-						}
-						driverProbeResponse=adInitProbe();
-					}
-					if(!driverProbeResponse.getProtocolInitStatus()){
-						initProtocolConfig("","","");
-						driverProbeResponse=adInitProbe();
-					}
-					if(!driverProbeResponse.getInstanceInitStatus()){
-						if(!driverProbeResponse.getProtocolInitStatus()){
-							initProtocolConfig("","","");
-							driverProbeResponse=adInitProbe();
-						}
-						initInstanceConfigByNames(null,"");
-						initSMSInstanceConfig(null,"");
-						driverProbeResponse=adInitProbe();
-					}
-					if(!driverProbeResponse.getSMSInitStatus()){
-//						initSMSDevice(null,"");
-					}
-					if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
-						if(!driverProbeResponse.getInstanceInitStatus()){
-							if(!driverProbeResponse.getProtocolInitStatus()){
-								initProtocolConfig("","","");
-								driverProbeResponse=adInitProbe();
-							}
-							initInstanceConfigByNames(null,"");
-							initSMSInstanceConfig(null,"");
-							driverProbeResponse=adInitProbe();
-						}
-						
-						if(executor!=null && executor.isCompletedByTaskCount()){
-							//清空内存
-							AdInitMap.cleanData();
-							initDriverAcquisitionInfoConfig(null,0,"");
 						}
 					}
 					Ver=driverProbeResponse.getVer();
@@ -735,6 +656,7 @@ public class EquipmentDriverServerTask {
 	
 
 	public static int loadAcquisitionItemColumns(){
+		System.out.println("同步数据库字段");
 		MemoryDataManagerTask.loadAcquisitionItemNameList();
 		MemoryDataManagerTask.loadProtocolExtendedFieldNameList();
 		syncDataMappingTable();
@@ -755,8 +677,6 @@ public class EquipmentDriverServerTask {
 				if(initEnable){
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8",0,0);
 				}
-//				modbusProtocolConfig.getProtocol().remove(i);
-//				MemoryDataManagerTask.updateProtocolConfig(modbusProtocolConfig);
 				break;
 			}
 		}
@@ -807,7 +727,7 @@ public class EquipmentDriverServerTask {
 		Gson gson = new Gson();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		InitProtocol initProtocol=null;
-		if(modbusProtocolConfig!=null && modbusProtocolConfig.getProtocol()!=null){
+		if(modbusProtocolConfig!=null && modbusProtocolConfig.getProtocol()!=null && modbusProtocolConfig.getProtocol().size()>0){
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				if(StringManagerUtils.existOrNot(protocolIdArr, modbusProtocolConfig.getProtocol().get(i).getId()+"", false)){
 					initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i),method);
@@ -831,7 +751,7 @@ public class EquipmentDriverServerTask {
 		Gson gson = new Gson();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		InitProtocol initProtocol=null;
-		if(modbusProtocolConfig!=null){
+		if(modbusProtocolConfig!=null && modbusProtocolConfig.getProtocol()!=null && modbusProtocolConfig.getProtocol().size()>0){
 			if(StringManagerUtils.isNotNull(deviceType) && StringManagerUtils.isNotNull(protocolName)){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())

@@ -415,14 +415,7 @@ public class MemoryDataManagerTask {
 		String protocolConfigData="";
 		java.lang.reflect.Type type=null;
 		//添加Modbus协议配置
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfigWithoutReLoad();
 		
-		if(modbusProtocolConfig==null){
-			modbusProtocolConfig=new ModbusProtocolConfig();
-			modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
-		}else if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()==null){
-			modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
-		}
 		try {
 			StringBuffer protocolBuff=null;
 			String sql="select t.id,t.name,t.code,t.items,t.sort,t.devicetype,t.language,t.extendedField,"
@@ -437,66 +430,78 @@ public class MemoryDataManagerTask {
 			}
 			sql+= "order by t.sort,t.id";
 			List<Object[]> list=OracleJdbcUtis.query(sql);
-			for(Object[] obj:list){
-				try {
-					String itemsStr=obj[3]+"";
-					String extendedFieldStr=obj[7]+"";
-					if(!StringManagerUtils.isNotNull(itemsStr)){
-						itemsStr="[]";
-					}
-					if(!StringManagerUtils.isNotNull(extendedFieldStr)){
-						extendedFieldStr="[]";
-					}
-					protocolBuff=new StringBuffer();
-					protocolBuff.append("{");
-					protocolBuff.append("\"Id\":\""+StringManagerUtils.stringToInteger(obj[0]+"")+"\",");
-					protocolBuff.append("\"Name\":\""+obj[1]+"\",");
-					protocolBuff.append("\"Code\":\""+obj[2]+"\",");
-					protocolBuff.append("\"Sort\":"+StringManagerUtils.stringToInteger(obj[4]+"")+",");
-					protocolBuff.append("\"DeviceType\":"+StringManagerUtils.stringToInteger(obj[5]+"")+",");
-					protocolBuff.append("\"Language\":"+StringManagerUtils.stringToInteger(obj[6]+"")+",");
-					protocolBuff.append("\"DeviceTypeAllPath_zh_CN\":\""+obj[8]+"\",");
-					protocolBuff.append("\"DeviceTypeAllPath_en\":\""+obj[9]+"\",");
-					protocolBuff.append("\"DeviceTypeAllPath_ru\":\""+obj[10]+"\",");
-					protocolBuff.append("\"Items\":"+itemsStr+",");
-					protocolBuff.append("\"ExtendedFields\":"+extendedFieldStr+"");
-					protocolBuff.append("}");
-					
-					type = new TypeToken<ModbusProtocolConfig.Protocol>() {}.getType();
-					ModbusProtocolConfig.Protocol protocol=gson.fromJson(protocolBuff.toString(), type);
-					
-					if(protocol!=null){
-						if(protocol.getItems()==null){
-							protocol.setItems(new ArrayList<>());
-						}else{
-							Collections.sort(protocol.getItems());
+			if(list.size()>0){
+				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfigWithoutReLoad();
+				
+				if(modbusProtocolConfig==null){
+					modbusProtocolConfig=new ModbusProtocolConfig();
+					modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
+				}else if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()==null){
+					modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
+				}
+				
+				for(Object[] obj:list){
+					try {
+						String itemsStr=obj[3]+"";
+						String extendedFieldStr=obj[7]+"";
+						if(!StringManagerUtils.isNotNull(itemsStr)){
+							itemsStr="[]";
 						}
-						boolean isExist=false;
-						for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-							if(protocol.getCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
-								isExist=true;
-								modbusProtocolConfig.getProtocol().set(i, protocol);
-								break;
+						if(!StringManagerUtils.isNotNull(extendedFieldStr)){
+							extendedFieldStr="[]";
+						}
+						protocolBuff=new StringBuffer();
+						protocolBuff.append("{");
+						protocolBuff.append("\"Id\":\""+StringManagerUtils.stringToInteger(obj[0]+"")+"\",");
+						protocolBuff.append("\"Name\":\""+obj[1]+"\",");
+						protocolBuff.append("\"Code\":\""+obj[2]+"\",");
+						protocolBuff.append("\"Sort\":"+StringManagerUtils.stringToInteger(obj[4]+"")+",");
+						protocolBuff.append("\"DeviceType\":"+StringManagerUtils.stringToInteger(obj[5]+"")+",");
+						protocolBuff.append("\"Language\":"+StringManagerUtils.stringToInteger(obj[6]+"")+",");
+						protocolBuff.append("\"DeviceTypeAllPath_zh_CN\":\""+obj[8]+"\",");
+						protocolBuff.append("\"DeviceTypeAllPath_en\":\""+obj[9]+"\",");
+						protocolBuff.append("\"DeviceTypeAllPath_ru\":\""+obj[10]+"\",");
+						protocolBuff.append("\"Items\":"+itemsStr+",");
+						protocolBuff.append("\"ExtendedFields\":"+extendedFieldStr+"");
+						protocolBuff.append("}");
+						
+						type = new TypeToken<ModbusProtocolConfig.Protocol>() {}.getType();
+						ModbusProtocolConfig.Protocol protocol=gson.fromJson(protocolBuff.toString(), type);
+						
+						if(protocol!=null){
+							if(protocol.getItems()==null){
+								protocol.setItems(new ArrayList<>());
+							}else{
+								Collections.sort(protocol.getItems());
+							}
+							boolean isExist=false;
+							for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+								if(protocol.getCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+									isExist=true;
+									modbusProtocolConfig.getProtocol().set(i, protocol);
+									break;
+								}
+							}
+							if(!isExist){
+								modbusProtocolConfig.getProtocol().add(protocol);
 							}
 						}
-						if(!isExist){
-							modbusProtocolConfig.getProtocol().add(protocol);
-						}
+					}catch (Exception e) {
+						e.printStackTrace();
+						continue;
 					}
-				}catch (Exception e) {
-					e.printStackTrace();
-					continue;
 				}
+				
+				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null&&modbusProtocolConfig.getProtocol().size()>0){
+					Collections.sort(modbusProtocolConfig.getProtocol());
+				}
+				
+				updateProtocolConfig(modbusProtocolConfig);
 			}
+			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null&&modbusProtocolConfig.getProtocol().size()>0){
-			Collections.sort(modbusProtocolConfig.getProtocol());
-		}
-		
-		updateProtocolConfig(modbusProtocolConfig);
 		
 		StringManagerUtils.printLog("驱动加载结束",0);
 	}
@@ -4503,6 +4508,13 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 		}
+		if(modbusProtocolConfig==null){
+			modbusProtocolConfig=new ModbusProtocolConfig();
+			modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
+		}else if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()==null){
+			modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
+		}
+		
 		return modbusProtocolConfig;
 	}
 	

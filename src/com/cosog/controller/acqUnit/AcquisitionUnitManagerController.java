@@ -3104,7 +3104,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 										+ "and t.protocol='"+modbusDriverSaveData.getProtocolCode()+"' "
 										+ " and t4.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+"))";
 								String delDisplayItemSql="delete from tbl_display_items2unit_conf t "
-										+ "where t.type (0,2,5) "
+										+ "where t.type in (0,2,5) "
 										+ "and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolCode()+"'  )"
 										+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+")";
 								service.updateSql(delSql);

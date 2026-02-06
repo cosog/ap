@@ -1,7 +1,7 @@
 Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.databaseColumnMappingTableRunItemsStore',
-    fields: ['id','protocolName','itemName','itemColumn','calColumn'],
+    fields: ['id','value','meaning','condition','value'],
     autoLoad: true,
     proxy: {
         type: 'ajax',
@@ -20,11 +20,8 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunItemsStore', {
         load: function (store, record, f, op, o) {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
-            var arrColumns = get_rawData.columns;
-//            var column = createDatabaseColumnMappingTableRunStatusItemsColumn(arrColumns);
             var gridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id");
             if (!isNotVal(gridPanel)) {
-//            	var newColumns = Ext.JSON.decode(column);
             	var resolutionMode=get_rawData.resolutionMode;
             	var newColumns=[{
         		    text: loginUserLanguageResource.idx,

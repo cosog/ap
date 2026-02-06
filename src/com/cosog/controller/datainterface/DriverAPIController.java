@@ -2870,7 +2870,7 @@ public class DriverAPIController extends BaseController{
 		webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 		webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
 		
-		StringManagerUtils.printLog(webSocketSendData.toString(),0);
+//		StringManagerUtils.printLog(webSocketSendData.toString(),0);
 		return webSocketSendData.toString();
 	}
 	
@@ -2928,6 +2928,7 @@ public class DriverAPIController extends BaseController{
 			AlarmShowStyle alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+			Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 			
 			String realtimeTable="tbl_acqdata_latest";
 			String historyTable="tbl_acqdata_hist";
@@ -3060,8 +3061,26 @@ public class DriverAPIController extends BaseController{
 					if(protocolItemResolutionDataList!=null && protocolItemResolutionDataList.size()>0){
 						Map<String,DailyTotalItem> dailyTotalItemMap=deviceInfo.getDailyTotalItemMap();
 						for(int i=0;i<protocolItemResolutionDataList.size();i++){
-							DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getRawColumnName());
-							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, protocolItemResolutionDataList.get(i).getRawColumnName());
+							DataMapping dataMappingColumn=null;
+							ModbusProtocolConfig.Items item=null;
+							ModbusProtocolConfig.ExtendedField extendedField=null;
+							int isExtendedField=0;
+							if(protocolItemResolutionDataList.get(i).getColumn().toUpperCase().startsWith("EXTENDEDFIELD_")){
+								isExtendedField=0;
+								dataMappingColumn=protocolExtendedFieldColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getRawColumnName());
+								extendedField=MemoryDataManagerTask.getProtocolExtendedField(protocol, protocolItemResolutionDataList.get(i).getRawColumnName());
+							}else{
+								dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocolItemResolutionDataList.get(i).getRawColumnName());
+								item=MemoryDataManagerTask.getProtocolItem(protocol, protocolItemResolutionDataList.get(i).getRawColumnName());
+							}
+							
+//							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, protocolItemResolutionDataList.get(i).getRawColumnName());
+							
+							if(protocolItemResolutionDataList.get(i).getColumn().toUpperCase().startsWith("EXTENDEDFIELD_")){
+								
+							}
+							
+							
 							String mappingColumn="";
 							if(dataMappingColumn!=null){
 								mappingColumn=dataMappingColumn.getMappingColumn();
@@ -3103,11 +3122,21 @@ public class DriverAPIController extends BaseController{
 										totalItem.getTotalStatus().setCount(totalItem.getTotalStatus().getCount()+1);
 										totalItem.getTotalStatus().setSum(totalItem.getTotalStatus().getSum()+newValue);
 										float avgValue=totalItem.getTotalStatus().getSum()/totalItem.getTotalStatus().getCount();
-										if(item!=null){
-											avgValue=StringManagerUtils.stringToFloat(avgValue+"",item.getPrec());
-										}else{
-											
+										
+										if(isExtendedField==0){
+											if(item!=null){
+												avgValue=StringManagerUtils.stringToFloat(avgValue+"",item.getPrec());
+											}else{
+												
+											}
+										}else if(isExtendedField==1){
+											if(extendedField!=null){
+												avgValue=StringManagerUtils.stringToFloat(avgValue+"",extendedField.getPrec());
+											}else{
+												
+											}
 										}
+										
 										totalItem.getTotalStatus().setAvgValue(avgValue);
 										
 										

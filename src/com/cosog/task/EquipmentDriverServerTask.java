@@ -798,9 +798,10 @@ public class EquipmentDriverServerTask {
 				}
 			}
 		
-			
-			//同步数据库字段
-			loadAcquisitionItemColumns();
+			if(!MemoryDataManagerTask.existsKey("modbusProtocolConfig")){
+				//同步数据库字段
+				loadAcquisitionItemColumns();
+			}
 		}
 	}
 	

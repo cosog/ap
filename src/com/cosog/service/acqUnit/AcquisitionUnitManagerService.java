@@ -6888,6 +6888,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1 ";
@@ -6896,13 +6897,22 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(modbusProtocolConfig!=null){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode()) ){
-						
 						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
 							String columnName="";
 							if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
 								columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
 							}
 							protocolMappingColumnList.add(columnName);
+						}
+						
+						if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields()!=null){
+							for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getExtendedFields().size();j++){
+								String columnName="";
+								if(protocolExtendedFieldColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle())){
+									columnName=protocolExtendedFieldColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle()).getMappingColumn();
+								}
+								protocolMappingColumnList.add(columnName);
+							}
 						}
 						if(protocolMappingColumnList.size()>0){
 							sql+=" and t.mappingcolumn in ("+StringManagerUtils.joinStringArr2(protocolMappingColumnList, ",")+")";
@@ -6944,7 +6954,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> bitIndexList=new ArrayList<>();
 		if(modbusProtocolConfig!=null){
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-
 				if(StringManagerUtils.stringToInteger(classes)==1){
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
@@ -6952,7 +6961,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
 								columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
 							}
-							
 							for (int k = 0; k < list.size(); k++) {
 								Object[] obj = (Object[]) list.get(k);
 								if((obj[2]+"").equalsIgnoreCase(columnName)){
@@ -6983,6 +6991,51 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								}
 							}
 						}
+						
+						if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields()!=null){
+							for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getExtendedFields().size();j++){
+								String columnName="";
+								if(protocolExtendedFieldColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle())){
+									columnName=protocolExtendedFieldColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle()).getMappingColumn();
+								}
+								
+								for(int k = 0; k < list.size(); k++) {
+									Object[] obj = (Object[]) list.get(k);
+									if((obj[2]+"").equalsIgnoreCase(columnName)){
+										if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getType()==1
+												&& modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getResolutionMode()==0 
+												&& modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning()!=null){
+											for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning()){
+												protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
+												protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+												resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getResolutionMode());
+												
+												itemNameList.add(obj[1]+"");
+												itemShowNameList.add(obj[1]+"/"+itemsMeaning.getMeaning());
+												itemColumnList.add(obj[2]+"");
+												calColumnList.add(obj[3]+"");
+												bitIndexList.add(itemsMeaning.getValue()+"");
+											}
+										}else{
+											protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
+											protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+											if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getType()==0){
+												resolutionModeList.add(2);
+											}else{
+												resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getResolutionMode());
+											}
+											
+											itemNameList.add(obj[1]+"");
+											itemShowNameList.add(obj[1]+"");
+											itemColumnList.add(obj[2]+"");
+											calColumnList.add(obj[3]+"");
+											bitIndexList.add("");
+										}
+										
+									}
+								}
+							}
+						}
 						break;
 					}
 				}else{
@@ -6994,7 +7047,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						for (int k = 0; k < list.size(); k++) {
 							Object[] obj = (Object[]) list.get(k);
 							if((obj[2]+"").equalsIgnoreCase(columnName)){
-								
 								if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getResolutionMode()==0 && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null){
 									for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()){
 										protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
@@ -7017,6 +7069,51 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									itemColumnList.add(obj[2]+"");
 									calColumnList.add(obj[3]+"");
 									bitIndexList.add("");
+								}
+							}
+						}
+					}
+					
+					if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields()!=null){
+						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getExtendedFields().size();j++){
+							String columnName="";
+							if(protocolExtendedFieldColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle())){
+								columnName=protocolExtendedFieldColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle()).getMappingColumn();
+							}
+							
+							for(int k = 0; k < list.size(); k++) {
+								Object[] obj = (Object[]) list.get(k);
+								if((obj[2]+"").equalsIgnoreCase(columnName)){
+									if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getType()==1
+											&& modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getResolutionMode()==0 
+											&& modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning()!=null){
+										for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning()){
+											protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
+											protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+											resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getResolutionMode());
+											
+											itemNameList.add(obj[1]+"");
+											itemShowNameList.add(obj[1]+"/"+itemsMeaning.getMeaning());
+											itemColumnList.add(obj[2]+"");
+											calColumnList.add(obj[3]+"");
+											bitIndexList.add(itemsMeaning.getValue()+"");
+										}
+									}else{
+										protocolNameList.add(modbusProtocolConfig.getProtocol().get(i).getName());
+										protocolCodeList.add(modbusProtocolConfig.getProtocol().get(i).getCode());
+										if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getType()==0){
+											resolutionModeList.add(2);
+										}else{
+											resolutionModeList.add(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getResolutionMode());
+										}
+										
+										itemNameList.add(obj[1]+"");
+										itemShowNameList.add(obj[1]+"");
+										itemColumnList.add(obj[2]+"");
+										calColumnList.add(obj[3]+"");
+										bitIndexList.add("");
+									}
+									
 								}
 							}
 						}
@@ -7055,6 +7152,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
 		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		List<Integer> runValueIndexList=new ArrayList<Integer>();
@@ -7067,7 +7165,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String setValueSql="select t.runvalue,t.stopvalue,t.runcondition,t.stopcondition"
 				+ " from tbl_runstatusconfig t "
 				+ " where t.protocol='"+protocolCode+"' and t.itemmappingcolumn='"+itemColumn+"' ";
-		if(StringManagerUtils.stringToInteger(resolutionMode)==0){
+		if(StringManagerUtils.isNotNull(resolutionMode) && StringManagerUtils.stringToInteger(resolutionMode)==0 && StringManagerUtils.isNotNull(bitIndex)){
 			setValueSql+=" and t.bitindex="+bitIndex;
 		}
 		List<?> list=this.findCallSql(setValueSql);
@@ -7132,27 +7230,55 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(modbusProtocolConfig!=null){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
-						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-							String columnName="";
-							if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
-								columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
-							}
-							if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
-								if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size()>0){
-									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size();k++){
-										totalCount++;
-										result_json.append("{\"id\":\""+(k+1)+"\",");
-										result_json.append("\"value\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue()+"\",");
-										result_json.append("\"meaning\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getMeaning()+"\"},");
-										
-										if(StringManagerUtils.existOrNot(runConfigValueList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue())){
-											runValueIndexList.add(k);
-										}else if(StringManagerUtils.existOrNot(stopConfigValueList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue())){
-											stopValueIndexList.add(k);
+						if(itemColumn.toUpperCase().startsWith("EXTENDEDFIELD_")){//如果是拓展字段
+							if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields()!=null){
+								for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getExtendedFields().size();j++){
+									String columnName="";
+									if(protocolExtendedFieldColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle())){
+										columnName=protocolExtendedFieldColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle()).getMappingColumn();
+									}
+									if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle())){
+										if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().size()>0){
+											for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().size();k++){
+												totalCount++;
+												result_json.append("{\"id\":\""+(k+1)+"\",");
+												result_json.append("\"value\":\""+modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().get(k).getValue()+"\",");
+												result_json.append("\"meaning\":\""+modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().get(k).getMeaning()+"\"},");
+												
+												if(StringManagerUtils.existOrNot(runConfigValueList, modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().get(k).getValue())){
+													runValueIndexList.add(k);
+												}else if(StringManagerUtils.existOrNot(stopConfigValueList, modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().get(k).getValue())){
+													stopValueIndexList.add(k);
+												}
+											}
 										}
+										break;
 									}
 								}
-								break;
+							}
+						}else{
+							for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+								String columnName="";
+								if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+									columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
+								}
+								if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+									if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size()>0){
+										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size();k++){
+											totalCount++;
+											result_json.append("{\"id\":\""+(k+1)+"\",");
+											result_json.append("\"value\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue()+"\",");
+											result_json.append("\"meaning\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getMeaning()+"\"},");
+											
+											if(StringManagerUtils.existOrNot(runConfigValueList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue())){
+												runValueIndexList.add(k);
+											}else if(StringManagerUtils.existOrNot(stopConfigValueList, modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue())){
+												stopValueIndexList.add(k);
+											}
+										}
+									}
+									break;
+								}
 							}
 						}
 						break;
@@ -7238,45 +7364,91 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(modbusProtocolConfig!=null){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
-						for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-							String columnName="";
-							if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
-								columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
-							}
-							if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
-								if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size()>0){
-									for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size();k++){
-										if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue()==StringManagerUtils.stringToInteger(bitIndex)){
-											String status0=StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus0())?modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus0():languageResourceMap.get("switchingOpenValue");
-											String status1=StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus1())?modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus1():languageResourceMap.get("switchingCloseValue");
-											
-											totalCount++;
-											result_json.append("{\"id\":\""+(1)+"\",");
-											result_json.append("\"value\":\"0\",");
-											result_json.append("\"meaning\":\""+status0+"\"},");
-											
-											if(StringManagerUtils.existOrNot(runConfigValueList, 0)){
-												runValueIndexList.add(0);
-											}else if(StringManagerUtils.existOrNot(stopConfigValueList, 0)){
-												stopValueIndexList.add(0);
+						if(itemColumn.toUpperCase().startsWith("EXTENDEDFIELD_")){//如果是拓展字段
+							if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields()!=null){
+								for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getExtendedFields().size();j++){
+									String columnName="";
+									if(protocolExtendedFieldColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle())){
+										columnName=protocolExtendedFieldColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle()).getMappingColumn();
+									}
+									if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getTitle())){
+										if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().size()>0){
+											for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().size();k++){
+												if(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().get(k).getValue()==StringManagerUtils.stringToInteger(bitIndex)){
+													String status0=StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().get(k).getStatus0())?modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().get(k).getStatus0():languageResourceMap.get("switchingOpenValue");
+													String status1=StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().get(k).getStatus1())?modbusProtocolConfig.getProtocol().get(i).getExtendedFields().get(j).getMeaning().get(k).getStatus1():languageResourceMap.get("switchingCloseValue");
+													
+													totalCount++;
+													result_json.append("{\"id\":\""+(1)+"\",");
+													result_json.append("\"value\":\"0\",");
+													result_json.append("\"meaning\":\""+status0+"\"},");
+													
+													if(StringManagerUtils.existOrNot(runConfigValueList, 0)){
+														runValueIndexList.add(0);
+													}else if(StringManagerUtils.existOrNot(stopConfigValueList, 0)){
+														stopValueIndexList.add(0);
+													}
+												
+													
+													totalCount++;
+													result_json.append("{\"id\":\""+(2)+"\",");
+													result_json.append("\"value\":\"1\",");
+													result_json.append("\"meaning\":\""+status1+"\"},");
+													
+													if(StringManagerUtils.existOrNot(runConfigValueList, 1)){
+														runValueIndexList.add(1);
+													}else if(StringManagerUtils.existOrNot(stopConfigValueList, 1)){
+														stopValueIndexList.add(1);
+													}
+													break;
+												}
 											}
-										
-											
-											totalCount++;
-											result_json.append("{\"id\":\""+(2)+"\",");
-											result_json.append("\"value\":\"1\",");
-											result_json.append("\"meaning\":\""+status1+"\"},");
-											
-											if(StringManagerUtils.existOrNot(runConfigValueList, 1)){
-												runValueIndexList.add(1);
-											}else if(StringManagerUtils.existOrNot(stopConfigValueList, 1)){
-												stopValueIndexList.add(1);
-											}
-											break;
 										}
+										break;
 									}
 								}
-								break;
+							}
+						}else{
+							for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+								String columnName="";
+								if(loadProtocolMappingColumnByTitleMap.containsKey(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+									columnName=loadProtocolMappingColumnByTitleMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle()).getMappingColumn();
+								}
+								if(itemColumn.equalsIgnoreCase(columnName) && itemName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle())){
+									if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size()>0){
+										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().size();k++){
+											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getValue()==StringManagerUtils.stringToInteger(bitIndex)){
+												String status0=StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus0())?modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus0():languageResourceMap.get("switchingOpenValue");
+												String status1=StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus1())?modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getMeaning().get(k).getStatus1():languageResourceMap.get("switchingCloseValue");
+												
+												totalCount++;
+												result_json.append("{\"id\":\""+(1)+"\",");
+												result_json.append("\"value\":\"0\",");
+												result_json.append("\"meaning\":\""+status0+"\"},");
+												
+												if(StringManagerUtils.existOrNot(runConfigValueList, 0)){
+													runValueIndexList.add(0);
+												}else if(StringManagerUtils.existOrNot(stopConfigValueList, 0)){
+													stopValueIndexList.add(0);
+												}
+											
+												
+												totalCount++;
+												result_json.append("{\"id\":\""+(2)+"\",");
+												result_json.append("\"value\":\"1\",");
+												result_json.append("\"meaning\":\""+status1+"\"},");
+												
+												if(StringManagerUtils.existOrNot(runConfigValueList, 1)){
+													runValueIndexList.add(1);
+												}else if(StringManagerUtils.existOrNot(stopConfigValueList, 1)){
+													stopValueIndexList.add(1);
+												}
+												break;
+											}
+										}
+									}
+									break;
+								}
 							}
 						}
 						break;

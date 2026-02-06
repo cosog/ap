@@ -64,13 +64,10 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                         			width:newWidth,
                         			height:newHeight
                         		});
-//                        		databaseColumnMappingHandsontableHelper.hot.refreshDimensions();
                         	}
                         }
                 	}
             	},{
-//            		region: 'south',
-//                	height:'50%',
                 	region: 'east',
                 	width:'50%',
                 	title:loginUserLanguageResource.runStatusConfig,

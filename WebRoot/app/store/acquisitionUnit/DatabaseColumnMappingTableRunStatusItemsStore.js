@@ -31,12 +31,12 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
                     autoLoad: false,
                     columnLines: true,
                     forceFit: false,
-                    selModel:{
-                    	selType: 'checkboxmodel',
-                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
-                    	checkOnly:false,
-                    	allowDeselect:false
-                    },
+//                    selModel:{
+//                    	selType: 'checkboxmodel',
+//                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+//                    	checkOnly:false,
+//                    	allowDeselect:false
+//                    },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
                     },

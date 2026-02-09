@@ -1232,7 +1232,7 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr,itemHighLowByte){
+function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr,itemHighLowByte,itemTitle,itemCode){
 	Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1271,7 +1271,9 @@ function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolCode,classes,un
 			unitCode:unitCode,
 			itemAddr:itemAddr,
 			itemHighLowByte:itemHighLowByte,
-			itemResolutionMode:1
+			itemResolutionMode:1,
+			itemTitle:itemTitle,
+			itemCode:itemCode
         }
 	});
 };
@@ -1444,7 +1446,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	    }
 };
 
-function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr,itemHighLowByte){
+function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr,itemHighLowByte,itemTitle,itemCode){
 	Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 	Ext.Ajax.request({
 		method:'POST',
@@ -1494,7 +1496,9 @@ function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolCode,classes,
 			unitCode:unitCode,
 			itemAddr:itemAddr,
 			itemHighLowByte:itemHighLowByte,
-			itemResolutionMode:0
+			itemResolutionMode:0,
+			itemTitle:itemTitle,
+			itemCode:itemCode
         }
 	});
 };
@@ -2360,6 +2364,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 						var selectedItem=gridStore.getAt(selectRow);
 						saveData.alarmItemName=selectedItem.data.title;
 						saveData.alarmItemAddr=selectedItem.data.addr;
+						saveData.alarmItemCode=selectedItem.data.itemCode;
 						saveData.alarmItemHighLowByte=selectedItem.data.highLowByte;
 					}
 	        	}else if(Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTabPanel_Id").getActiveTab().id=="ModbusProtocolAlarmUnitEnumItemsConfigTableInfoPanel_Id"){
@@ -2372,6 +2377,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 						var selectedItem=gridStore.getAt(selectRow);
 						saveData.alarmItemName=selectedItem.data.title;
 						saveData.alarmItemAddr=selectedItem.data.addr;
+						saveData.alarmItemCode=selectedItem.data.itemCode;
 					}
 	        	}else if(Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTabPanel_Id").getActiveTab().id=="ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id"){
 	        		saveData.resolutionMode=3;
@@ -2413,6 +2419,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 								item.bitIndex=alarmItemsData[index][2];
 								item.itemName=selectedItem.data.title;
 								item.itemAddr=selectedItem.data.addr;
+								item.itemCode=selectedItem.data.itemCode;
 								if(alarmItemsData[index][4]==alarmItemsData[index][12]){
 									item.value=1;
 								}else{
@@ -2433,6 +2440,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 								var selectedItem=gridStore.getAt(selectRow);
 								item.itemName=selectedItem.data.title;
 								item.itemAddr=selectedItem.data.addr;
+								item.itemCode=selectedItem.data.itemCode;
 								item.value=alarmItemsData[index][2];
 								item.delay=alarmItemsData[index][4];
 								item.retriggerTime=alarmItemsData[index][5];

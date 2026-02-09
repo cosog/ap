@@ -1399,14 +1399,13 @@ public class DriverAPIController extends BaseController{
 			for(int l=0;alarmInstanceOwnItem!=null&&l<alarmInstanceOwnItem.getItemList().size();l++){
 				int alarmSign=alarmInstanceOwnItem.getItemList().get(l).getAlarmSign();
 				if(alarmSign==1){
-					if(acquisitionItemInfo.getType()==0){
+					if(acquisitionItemInfo.getType()==0 || 
+							(acquisitionItemInfo.getType()==5 && ("0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) || "1".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) ) ) 
+						){
 						if(acquisitionItemInfo.getResolutionMode().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(l).getType()+"")
-								&& (acquisitionItemInfo.getAddr()+"").equals(alarmInstanceOwnItem.getItemList().get(l).getItemAddr()+"")
+								&& (acquisitionItemInfo.getColumn()).equals(alarmInstanceOwnItem.getItemList().get(l).getItemCode())
 								){
 							int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
-							int delay=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getDelay())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getDelay()):0;
-							int retriggerTime=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime()):0;
-							
 							if(alarmType==2 && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
 								float hystersis=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getHystersis())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getHystersis()):0;
 								float upperLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()):0;
@@ -1468,10 +1467,10 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 						
-					}else if(acquisitionItemInfo.getType()==5){
+					}else if(acquisitionItemInfo.getType()==5 && 
+							("".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) || "7".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) || "2".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) ) 
+							){
 						int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
-						int delay=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getDelay())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getDelay()):0;
-						int retriggerTime=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime()):0;
 						if(alarmType==7 
 								&&acquisitionItemInfo.getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(l).getItemCode()) 
 								&& StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
@@ -1904,7 +1903,6 @@ public class DriverAPIController extends BaseController{
 		Map<String,String> acqDataMap=new LinkedHashMap<>();
 		
 		if(acqGroup!=null &&acqGroup.getAddr()!=null && protocol!=null && acqInstanceOwnItem!=null){
-			String acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
 			for(int i=0;i<acqGroup.getAddr().size();i++){
 				String acqItemHighLowByte=acqGroup.getHighLowByte()!=null?acqGroup.getHighLowByte().get(i):"";
 				for(int j=0;j<protocol.getItems().size();j++){
@@ -2107,7 +2105,7 @@ public class DriverAPIController extends BaseController{
 								"",
 								extendedField,
 								"",
-								"",
+								"7",
 								"",
 								protocol.getExtendedFields().get(i).getUnit(),
 								1,
@@ -3074,12 +3072,6 @@ public class DriverAPIController extends BaseController{
 								item=MemoryDataManagerTask.getProtocolItem(protocol, protocolItemResolutionDataList.get(i).getRawColumnName());
 							}
 							
-//							ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, protocolItemResolutionDataList.get(i).getRawColumnName());
-							
-							if(protocolItemResolutionDataList.get(i).getColumn().toUpperCase().startsWith("EXTENDEDFIELD_")){
-								
-							}
-							
 							
 							String mappingColumn="";
 							if(dataMappingColumn!=null){
@@ -3272,7 +3264,8 @@ public class DriverAPIController extends BaseController{
 							}
 							
 							String column=acquisitionItemInfo.getColumn();
-							if(acquisitionItemInfo.getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode())){
+							if( (acquisitionItemInfo.getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()))
+									|| (acquisitionItemInfo.getType()==5 && "0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()))){
 								column+="_"+acquisitionItemInfo.getBitIndex();
 							}
 							realtimeDataAlarmList.add(new KeyValue(column,acquisitionItemInfo.getAlarmLevel()+""));

@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
@@ -1553,6 +1554,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String itemAddr = ParamUtils.getParameter(request, "itemAddr");
 		String itemHighLowByte = ParamUtils.getParameter(request, "itemHighLowByte");
 		String itemResolutionMode = ParamUtils.getParameter(request, "itemResolutionMode");
+		String itemTitle = ParamUtils.getParameter(request, "itemTitle");
+		String itemCode = ParamUtils.getParameter(request, "itemCode");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
@@ -1561,9 +1564,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = "";
 		if("1".equals(itemResolutionMode)){
-			json = acquisitionUnitItemManagerService.getModbusProtocolEnumAlarmItemsConfigData(protocolCode,classes,unitCode,itemAddr,itemHighLowByte,itemResolutionMode,language);
+			json = acquisitionUnitItemManagerService.getModbusProtocolEnumAlarmItemsConfigData(protocolCode,classes,unitCode,itemAddr,itemHighLowByte,itemTitle,itemCode,itemResolutionMode,language);
 		}else if("0".equals(itemResolutionMode)){
-			json = acquisitionUnitItemManagerService.getModbusProtocolSwitchAlarmItemsConfigData(protocolCode,classes,unitCode,itemAddr,itemHighLowByte,itemResolutionMode,language);
+			json = acquisitionUnitItemManagerService.getModbusProtocolSwitchAlarmItemsConfigData(protocolCode,classes,unitCode,itemAddr,itemHighLowByte,itemTitle,itemCode,itemResolutionMode,language);
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -2841,6 +2844,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 							String oldName=modbusProtocolConfig.getProtocol().get(i).getName();
 							oldDeviceType=modbusProtocolConfig.getProtocol().get(i).getDeviceType()+"";
 							List<String> delItemList=new ArrayList<String>();
+							List<ModbusProtocolConfig.Items> editSwitchingValueList=new ArrayList<>();
+							List<ModbusProtocolConfig.Items> delSwitchingValueList=new ArrayList<>();
+							
+							List<ModbusProtocolConfig.ExtendedField> editExtendedFieldSwitchingValueList=new ArrayList<>();
+							List<ModbusProtocolConfig.ExtendedField> delExtendedFieldSwitchingValueList=new ArrayList<>();
 							if(saveType==0){
 								modbusProtocolConfig.getProtocol().get(i).setName(modbusDriverSaveData.getProtocolName());
 								modbusProtocolConfig.getProtocol().get(i).setSort(StringManagerUtils.isNumber(modbusDriverSaveData.getSort())?StringManagerUtils.stringToInteger(modbusDriverSaveData.getSort()):0);
@@ -2883,8 +2891,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 											if(("r".equalsIgnoreCase(oldRWType) && "w".equalsIgnoreCase(RWType))||("w".equalsIgnoreCase(oldRWType) && "r".equalsIgnoreCase(RWType))){
 												delItemList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
 											}
-											
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRWType(RWType);
+
+											
+											int oldResolutionMode=modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getResolutionMode();
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setResolutionMode(resolutionMode);
 											modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAcqMode(acqMode);
 											
@@ -2901,6 +2911,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 												if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning()!=null&&modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().size()>0){
 													Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning());
 												}
+											}
+											
+											//如果解析模式改变
+											if(oldResolutionMode!=resolutionMode){
+												if(oldResolutionMode==0){
+													delSwitchingValueList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k));
+												}
+											}else if(resolutionMode==0){
+												editSwitchingValueList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k));
 											}
 											break;
 										}
@@ -3019,6 +3038,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 											extendedField.setType(1);
 											extendedField.setTitle1(modbusDriverSaveData.getExtendedFieldConfig().get(j).getTitle1());
 											extendedField.setHighLowByte(modbusDriverSaveData.getExtendedFieldConfig().get(j).getHighLowByte());
+											int oldResolutionMode=extendedField.getResolutionMode();
 											extendedField.setResolutionMode(resolutionMode);
 											extendedField.setPrec(modbusDriverSaveData.getExtendedFieldConfig().get(j).getPrec());
 											extendedField.setRatio(modbusDriverSaveData.getExtendedFieldConfig().get(j).getRatio());
@@ -3037,6 +3057,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 												if(extendedField.getMeaning()!=null && extendedField.getMeaning().size()>0){
 													Collections.sort(extendedField.getMeaning());
 												}
+											}
+											
+											//如果解析模式改变
+											if(oldResolutionMode!=resolutionMode){
+												if(oldResolutionMode==0){
+													delExtendedFieldSwitchingValueList.add(extendedField);
+												}
+											}else if(resolutionMode==0){
+												editExtendedFieldSwitchingValueList.add(extendedField);
 											}
 											
 											break;
@@ -3110,6 +3139,74 @@ public class AcquisitionUnitManagerController extends BaseController {
 								service.updateSql(delSql);
 								service.updateSql(delDisplayItemSql);
 							}
+							
+							if(delSwitchingValueList.size()>0){
+								List<String> delItemTitleList=new ArrayList<>();
+								for(ModbusProtocolConfig.Items item:delSwitchingValueList ){
+									delItemTitleList.add(item.getTitle());
+									String delDisplayItemSql="delete from tbl_display_items2unit_conf t "
+											+ "where t.type in (0,2) "
+											+ " and t.bitindex is not null"
+											+ " and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolCode()+"'  )"
+											+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(delItemTitleList, ",")+")";
+									service.updateSql(delDisplayItemSql);
+								}
+							}
+							
+							if(delExtendedFieldSwitchingValueList.size()>0){
+								List<String> delItemTitleList=new ArrayList<>();
+								for(ModbusProtocolConfig.ExtendedField extendedField:delExtendedFieldSwitchingValueList ){
+									delItemTitleList.add(extendedField.getTitle());
+									String delDisplayItemSql="delete from tbl_display_items2unit_conf t "
+											+ "where t.type in =5 "
+											+ " and t.bitindex is not null"
+											+ " and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolCode()+"'  )"
+											+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(delItemTitleList, ",")+")";
+									service.updateSql(delDisplayItemSql);
+								}
+							}
+							
+							if(editSwitchingValueList.size()>0){
+								for(ModbusProtocolConfig.Items item:editSwitchingValueList ){
+									List<Integer> itemBitIndexList=new ArrayList<>();
+									if(item.getMeaning()!=null){
+										for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:item.getMeaning()){
+											itemBitIndexList.add(itemsMeaning.getValue());
+										}
+									}
+									
+									String delDisplayItemSql="delete from tbl_display_items2unit_conf t "
+											+ "where t.type in (0,2) "
+											+ " and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolCode()+"'  )"
+											+ " and t.itemname  ='"+item.getTitle()+"'";
+									if(itemBitIndexList.size()>0){
+										delDisplayItemSql+=" and t.bitindex not in ("+StringUtils.join(itemBitIndexList, ",")+")";
+									}
+									service.updateSql(delDisplayItemSql);
+								}
+							}
+							
+							if(editExtendedFieldSwitchingValueList.size()>0){
+								for(ModbusProtocolConfig.ExtendedField extendedField:editExtendedFieldSwitchingValueList ){
+									List<Integer> itemBitIndexList=new ArrayList<>();
+									if(extendedField.getMeaning()!=null){
+										for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:extendedField.getMeaning()){
+											itemBitIndexList.add(itemsMeaning.getValue());
+										}
+									}
+									
+									String delDisplayItemSql="delete from tbl_display_items2unit_conf t "
+											+ "where t.type =5 "
+											+ " and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolCode()+"'  )"
+											+ " and t.itemname  ='"+extendedField.getTitle()+"'";
+									if(itemBitIndexList.size()>0){
+										delDisplayItemSql+=" and t.bitindex not in ("+StringUtils.join(itemBitIndexList, ",")+")";
+									}
+									service.updateSql(delDisplayItemSql);
+								}
+							}
+							
+							
 							Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems());
 							if(saveType==0){
 								String updateSql="update TBL_PROTOCOL t set t.name='"+modbusProtocolConfig.getProtocol().get(i).getName()+"',"
@@ -3608,20 +3705,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		if(modbusProtocolAlarmUnitSaveData!=null){
-//			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
-//					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
-//					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
-//					TimeUnit.SECONDS, 
-//					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			if(modbusProtocolAlarmUnitSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolAlarmUnitSaveData.getDelidslist().size();i++){
-//					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-//					dataSynchronizationThread.setSign(031);
-//					dataSynchronizationThread.setParam1(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i));
-//					dataSynchronizationThread.setMethod("delete");
-//					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-//					executor.execute(dataSynchronizationThread);
-					
 					String param1=modbusProtocolAlarmUnitSaveData.getDelidslist().get(i);
 					String method="delete";
 					MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(param1,method);
@@ -3684,12 +3769,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		if(modbusProtocolAlarmUnitSaveData!=null){
-//			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
-//					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
-//					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
-//					TimeUnit.SECONDS, 
-//					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
-			
 			if(StringManagerUtils.isNotNull(modbusProtocolAlarmUnitSaveData.getUnitName())){
 				try {
 					if(user!=null){
@@ -3699,12 +3778,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 					if(modbusProtocolAlarmUnitSaveData.getAlarmItems()!=null){
 						for(int i=0;i<modbusProtocolAlarmUnitSaveData.getAlarmItems().size();i++){
 							if(StringManagerUtils.isNotNull(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getItemName())
-									&&StringManagerUtils.isNotNull(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getItemAddr()+"")){
+									&&StringManagerUtils.isNotNull(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getItemCode())){
 								AlarmUnitItem alarmUnitItem=new AlarmUnitItem();
 								alarmUnitItem.setUnitId(modbusProtocolAlarmUnitSaveData.getId());
 								alarmUnitItem.setItemName(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getItemName());
 								alarmUnitItem.setItemCode(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getItemCode());
-								alarmUnitItem.setItemAddr(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getItemAddr());
+								alarmUnitItem.setItemAddr(StringManagerUtils.isInteger(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getItemAddr())?StringManagerUtils.stringToInteger(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getItemAddr()):null );
 								alarmUnitItem.setType(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getType());
 								
 								alarmUnitItem.setBitIndex(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getBitIndex());

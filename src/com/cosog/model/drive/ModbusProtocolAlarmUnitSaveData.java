@@ -15,7 +15,8 @@ public class ModbusProtocolAlarmUnitSaveData {
 	public String remark;
 	
 	public String alarmItemName;
-	public int alarmItemAddr;
+	public String alarmItemAddr;
+	public String alarmItemCode;
 	
 	public List<String> delidslist;
 	
@@ -27,7 +28,7 @@ public class ModbusProtocolAlarmUnitSaveData {
 	    
 	    private String itemCode;
 
-	    private int itemAddr;
+	    private String itemAddr;
 
 	    private String upperLimit;
 
@@ -59,10 +60,10 @@ public class ModbusProtocolAlarmUnitSaveData {
 	    public String getItemName(){
 	        return this.itemName;
 	    }
-	    public void setItemAddr(int itemAddr){
+	    public void setItemAddr(String itemAddr){
 	        this.itemAddr = itemAddr;
 	    }
-	    public int getItemAddr(){
+	    public String getItemAddr(){
 	        return this.itemAddr;
 	    }
 	    public void setUpperLimit(String upperLimit){
@@ -225,11 +226,11 @@ public class ModbusProtocolAlarmUnitSaveData {
 		this.alarmItemName = alarmItemName;
 	}
 
-	public int getAlarmItemAddr() {
+	public String getAlarmItemAddr() {
 		return alarmItemAddr;
 	}
 
-	public void setAlarmItemAddr(int alarmItemAddr) {
+	public void setAlarmItemAddr(String alarmItemAddr) {
 		this.alarmItemAddr = alarmItemAddr;
 	}
 
@@ -247,5 +248,13 @@ public class ModbusProtocolAlarmUnitSaveData {
 
 	public void setSort(String sort) {
 		this.sort = sort;
+	}
+
+	public String getAlarmItemCode() {
+		return alarmItemCode;
+	}
+
+	public void setAlarmItemCode(String alarmItemCode) {
+		this.alarmItemCode = alarmItemCode;
 	}
 }

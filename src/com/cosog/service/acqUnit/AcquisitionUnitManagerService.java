@@ -461,6 +461,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getProtocolEnumOrSwitchItemsConfigData(String protocolCode,String resolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,DataMapping> protocolColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
@@ -471,14 +473,39 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		if(protocolConfig!=null){
-			for(int j=0;j<protocolConfig.getItems().size();j++){
-				if((!"w".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())) && protocolConfig.getItems().get(j).getResolutionMode()==StringManagerUtils.stringToInteger(resolutionMode)){
-					result_json.append("{\"id\":"+(j+1)+","
-							+ "\"protocolCode\":\""+protocolCode+"\","
-							+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
-							+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
-							+ "\"highLowByte\":\""+protocolConfig.getItems().get(j).getHighLowByte()+"\""
-							+"},");
+			int index=0;
+			for(ModbusProtocolConfig.Items item:protocolConfig.getItems()){
+				if((!"w".equalsIgnoreCase(item.getRWType())) && item.getResolutionMode()==StringManagerUtils.stringToInteger(resolutionMode)){
+					DataMapping dataMapping=protocolColumnByTitleMap.get(item.getTitle());
+					if(dataMapping!=null){
+						result_json.append("{\"id\":"+(index+1)+","
+								+ "\"protocolCode\":\""+protocolCode+"\","
+								+ "\"title\":\""+item.getTitle()+"\","
+								+ "\"itemCode\":\""+dataMapping.getMappingColumn()+"\","
+								+ "\"addr\":"+item.getAddr()+","
+								+ "\"highLowByte\":\""+item.getHighLowByte()+"\""
+								+"},");
+						index++;
+					}
+					
+				}
+			}
+			if(protocolConfig.getExtendedFields()!=null){
+				for(ModbusProtocolConfig.ExtendedField item:protocolConfig.getExtendedFields()){
+					if(item.getType()==1 && item.getResolutionMode()==StringManagerUtils.stringToInteger(resolutionMode)){
+						DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(item.getTitle());
+						if(dataMapping!=null){
+							result_json.append("{\"id\":"+(index+1)+","
+									+ "\"protocolCode\":\""+protocolCode+"\","
+									+ "\"title\":\""+item.getTitle()+"\","
+									+ "\"itemCode\":\""+dataMapping.getMappingColumn()+"\","
+									+ "\"addr\":\"\","
+									+ "\"highLowByte\":\""+item.getHighLowByte()+"\""
+									+"},");
+							index++;
+						}
+						
+					}
 				}
 			}
 		}
@@ -1081,7 +1108,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolEnumAlarmItemsConfigData(String protocolCode,String classes,String unitCode,String itemAddr,String itemHighLowByte,String itemResolutionMode,String language){
+	public String getModbusProtocolEnumAlarmItemsConfigData(String protocolCode,String classes,String unitCode,String itemAddr,String itemHighLowByte,String itemTitle,String itemCode,String itemResolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -1109,7 +1136,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
-					+ " where t.type="+itemResolutionMode+" and t.itemAddr="+itemAddr+" and t.unitid=t2.id "
+					+ " where t.type="+itemResolutionMode+" and t.itemName='"+itemTitle+"' and t.unitid=t2.id "
 					+ " and t2.unit_code='"+unitCode+"' "
 					+ " order by t.id";
 			list=this.findCallSql(sql);
@@ -1125,39 +1152,81 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				Collections.sort(protocolConfig.getItems());
 			}
 			int index=1;
-			for(int j=0;j<protocolConfig.getItems().size();j++){
-				if(protocolConfig.getItems().get(j).getResolutionMode()==StringManagerUtils.stringToInteger(itemResolutionMode)
-						&& protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)
-						&& itemHighLowByte.equalsIgnoreCase(protocolConfig.getItems().get(j).getHighLowByte()!=null?protocolConfig.getItems().get(j).getHighLowByte():"")
-						){
-					for(int k=0;protocolConfig.getItems().get(j).getMeaning()!=null&&k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-						String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-						boolean checked=false;
-						for(int m=0;m<itemValueList.size();m++){
-							Object[] obj = (Object[]) list.get(m);
-							if(itemValueList.get(m)==protocolConfig.getItems().get(j).getMeaning().get(k).getValue()){
-								checked=true;
-								delay=obj[4]+"";
-								retriggerTime=obj[5]+"";
-								alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[6]+"", language);
-								alarmSign=obj[7]+"";
-								isSendMessage=obj[8]+"";
-								isSendMail=obj[9]+"";
-								break;
+			
+			if(!itemCode.toUpperCase().startsWith("EXTENDEDFIELD_")){
+				for(int j=0;j<protocolConfig.getItems().size();j++){
+					if(protocolConfig.getItems().get(j).getResolutionMode()==StringManagerUtils.stringToInteger(itemResolutionMode)
+							&& protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)
+							&& itemHighLowByte.equalsIgnoreCase(protocolConfig.getItems().get(j).getHighLowByte()!=null?protocolConfig.getItems().get(j).getHighLowByte():"")
+							){
+						for(int k=0;protocolConfig.getItems().get(j).getMeaning()!=null&&k<protocolConfig.getItems().get(j).getMeaning().size();k++){
+							String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+							boolean checked=false;
+							for(int m=0;m<itemValueList.size();m++){
+								Object[] obj = (Object[]) list.get(m);
+								if(itemValueList.get(m)==protocolConfig.getItems().get(j).getMeaning().get(k).getValue()){
+									checked=true;
+									delay=obj[4]+"";
+									retriggerTime=obj[5]+"";
+									alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[6]+"", language);
+									alarmSign=obj[7]+"";
+									isSendMessage=obj[8]+"";
+									isSendMail=obj[9]+"";
+									break;
+								}
+							}
+							result_json.append("{\"checked\":"+checked+","
+									+ "\"id\":"+(index)+","
+									+ "\"value\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
+									+ "\"meaning\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
+									+ "\"delay\":\""+delay+"\","
+									+ "\"retriggerTime\":\""+retriggerTime+"\","
+									+ "\"alarmLevel\":\""+alarmLevel+"\","
+									+ "\"alarmSign\":\""+alarmSign+"\","
+									+ "\"isSendMessage\":\""+isSendMessage+"\","
+									+ "\"isSendMail\":\""+isSendMail+"\""
+									+ "},");
+							index++;
+						}
+					}
+				}
+			}else{
+				if(protocolConfig.getExtendedFields()!=null){
+					for(ModbusProtocolConfig.ExtendedField extendedField:protocolConfig.getExtendedFields()){
+						if(extendedField.getType()==1
+								&& extendedField.getResolutionMode()==StringManagerUtils.stringToInteger(itemResolutionMode)
+								&& itemTitle.equalsIgnoreCase(extendedField.getTitle())
+								){
+							for(int k=0;extendedField.getMeaning()!=null && k<extendedField.getMeaning().size();k++){
+								String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+								boolean checked=false;
+								for(int m=0;m<itemValueList.size();m++){
+									Object[] obj = (Object[]) list.get(m);
+									if(itemValueList.get(m)==extendedField.getMeaning().get(k).getValue()){
+										checked=true;
+										delay=obj[4]+"";
+										retriggerTime=obj[5]+"";
+										alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[6]+"", language);
+										alarmSign=obj[7]+"";
+										isSendMessage=obj[8]+"";
+										isSendMail=obj[9]+"";
+										break;
+									}
+								}
+								result_json.append("{\"checked\":"+checked+","
+										+ "\"id\":"+(index)+","
+										+ "\"value\":\""+extendedField.getMeaning().get(k).getValue()+"\","
+										+ "\"meaning\":\""+extendedField.getMeaning().get(k).getMeaning()+"\","
+										+ "\"delay\":\""+delay+"\","
+										+ "\"retriggerTime\":\""+retriggerTime+"\","
+										+ "\"alarmLevel\":\""+alarmLevel+"\","
+										+ "\"alarmSign\":\""+alarmSign+"\","
+										+ "\"isSendMessage\":\""+isSendMessage+"\","
+										+ "\"isSendMail\":\""+isSendMail+"\""
+										+ "},");
+								index++;
 							}
 						}
-						result_json.append("{\"checked\":"+checked+","
-								+ "\"id\":"+(index)+","
-								+ "\"value\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
-								+ "\"meaning\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
-								+ "\"delay\":\""+delay+"\","
-								+ "\"retriggerTime\":\""+retriggerTime+"\","
-								+ "\"alarmLevel\":\""+alarmLevel+"\","
-								+ "\"alarmSign\":\""+alarmSign+"\","
-								+ "\"isSendMessage\":\""+isSendMessage+"\","
-								+ "\"isSendMail\":\""+isSendMail+"\""
-								+ "},");
-						index++;
 					}
 				}
 			}
@@ -1171,7 +1240,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getModbusProtocolSwitchAlarmItemsConfigData(String protocolCode,String classes,String unitCode,String itemAddr,String itemHighLowByte,String itemResolutionMode,String language){
+	public String getModbusProtocolSwitchAlarmItemsConfigData(String protocolCode,String classes,String unitCode,String itemAddr,String itemHighLowByte,String itemTitle,String itemCode,String itemResolutionMode,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -1200,7 +1269,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
-					+ " where t.type="+itemResolutionMode+" and t.itemAddr="+itemAddr+" and t.unitid=t2.id "
+					+ " where t.type="+itemResolutionMode+" and t.itemName='"+itemTitle+"' and t.unitid=t2.id "
 					+ " and t2.unit_code='"+unitCode+"' "
 					+ " order by t.id";
 			list=this.findCallSql(sql);
@@ -1216,50 +1285,100 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(protocolConfig.getItems()!=null){
 				Collections.sort(protocolConfig.getItems());
 			}
-			for(int j=0;j<protocolConfig.getItems().size();j++){
-				if(protocolConfig.getItems().get(j).getResolutionMode()==StringManagerUtils.stringToInteger(itemResolutionMode)
-						&& protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)
-						&& itemHighLowByte.equalsIgnoreCase(protocolConfig.getItems().get(j).getHighLowByte()!=null?protocolConfig.getItems().get(j).getHighLowByte():"")
-						){
-					for(int k=0;protocolConfig.getItems().get(j).getMeaning()!=null&&k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-						String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-						boolean checked=false;
-						for(int m=0;m<itemValueList.size();m++){
-							Object[] obj = (Object[]) list.get(m);
-							if(itemValueList.get(m)==protocolConfig.getItems().get(j).getMeaning().get(k).getValue()){
-								checked=true;
-								if("0".equals(obj[4]+"")){
-									value=protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0()!=null?protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0():languageResourceMap.get("switchingCloseValue");
-								}else if("1".equals(obj[4]+"")){
-									value=protocolConfig.getItems().get(j).getMeaning().get(k).getStatus1()!=null?protocolConfig.getItems().get(j).getMeaning().get(k).getStatus1():languageResourceMap.get("switchingOpenValue");
+			if(!itemCode.toUpperCase().startsWith("EXTENDEDFIELD_")){
+				for(int j=0;j<protocolConfig.getItems().size();j++){
+					if(protocolConfig.getItems().get(j).getResolutionMode()==StringManagerUtils.stringToInteger(itemResolutionMode)
+							&& protocolConfig.getItems().get(j).getAddr()==StringManagerUtils.stringToInteger(itemAddr)
+							&& itemHighLowByte.equalsIgnoreCase(protocolConfig.getItems().get(j).getHighLowByte()!=null?protocolConfig.getItems().get(j).getHighLowByte():"")
+							){
+						for(int k=0;protocolConfig.getItems().get(j).getMeaning()!=null&&k<protocolConfig.getItems().get(j).getMeaning().size();k++){
+							String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+							boolean checked=false;
+							for(int m=0;m<itemValueList.size();m++){
+								Object[] obj = (Object[]) list.get(m);
+								if(itemValueList.get(m)==protocolConfig.getItems().get(j).getMeaning().get(k).getValue()){
+									checked=true;
+									if("0".equals(obj[4]+"")){
+										value=protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0()!=null?protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0():languageResourceMap.get("switchingCloseValue");
+									}else if("1".equals(obj[4]+"")){
+										value=protocolConfig.getItems().get(j).getMeaning().get(k).getStatus1()!=null?protocolConfig.getItems().get(j).getMeaning().get(k).getStatus1():languageResourceMap.get("switchingOpenValue");
+									}
+									delay=obj[5]+"";
+									retriggerTime=obj[6]+"";
+									alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[7]+"", language);
+									alarmSign=obj[8]+"";
+									isSendMessage=obj[9]+"";
+									isSendMail=obj[10]+"";
+									break;
 								}
-								delay=obj[5]+"";
-								retriggerTime=obj[6]+"";
-								alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[7]+"", language);
-								alarmSign=obj[8]+"";
-								isSendMessage=obj[9]+"";
-								isSendMail=obj[10]+"";
-								break;
+							}
+							result_json.append("{\"checked\":"+checked+","
+									+ "\"id\":"+(index)+","
+									+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
+									+ "\"meaning\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
+									+ "\"status0\":\""+(protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0()!=null?protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0():languageResourceMap.get("switchingCloseValue"))+"\","
+									+ "\"status1\":\""+(protocolConfig.getItems().get(j).getMeaning().get(k).getStatus1()!=null?protocolConfig.getItems().get(j).getMeaning().get(k).getStatus1():languageResourceMap.get("switchingOpenValue"))+"\","
+									+ "\"value\":\""+value+"\","
+									+ "\"delay\":\""+delay+"\","
+									+ "\"retriggerTime\":\""+retriggerTime+"\","
+									+ "\"alarmLevel\":\""+alarmLevel+"\","
+									+ "\"alarmSign\":\""+alarmSign+"\","
+									+ "\"isSendMessage\":\""+isSendMessage+"\","
+									+ "\"isSendMail\":\""+isSendMail+"\""
+									+ "},");
+							index++;
+						}
+					}
+				}
+			}else{
+				if(protocolConfig.getExtendedFields()!=null){
+					for(ModbusProtocolConfig.ExtendedField extendedField:protocolConfig.getExtendedFields()){
+						if(extendedField.getType()==1
+								&& extendedField.getResolutionMode()==StringManagerUtils.stringToInteger(itemResolutionMode)
+								&& itemTitle.equalsIgnoreCase(extendedField.getTitle())
+								){
+							for(int k=0;extendedField.getMeaning()!=null && k<extendedField.getMeaning().size();k++){
+								String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+								boolean checked=false;
+								for(int m=0;m<itemValueList.size();m++){
+									Object[] obj = (Object[]) list.get(m);
+									if(itemValueList.get(m)==extendedField.getMeaning().get(k).getValue()){
+										checked=true;
+										if("0".equals(obj[4]+"")){
+											value=extendedField.getMeaning().get(k).getStatus0()!=null?extendedField.getMeaning().get(k).getStatus0():languageResourceMap.get("switchingCloseValue");
+										}else if("1".equals(obj[4]+"")){
+											value=extendedField.getMeaning().get(k).getStatus1()!=null?extendedField.getMeaning().get(k).getStatus1():languageResourceMap.get("switchingOpenValue");
+										}
+										delay=obj[5]+"";
+										retriggerTime=obj[6]+"";
+										alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[7]+"", language);
+										alarmSign=obj[8]+"";
+										isSendMessage=obj[9]+"";
+										isSendMail=obj[10]+"";
+										break;
+									}
+								}
+								result_json.append("{\"checked\":"+checked+","
+										+ "\"id\":"+(index)+","
+										+ "\"bitIndex\":\""+extendedField.getMeaning().get(k).getValue()+"\","
+										+ "\"meaning\":\""+extendedField.getMeaning().get(k).getMeaning()+"\","
+										+ "\"status0\":\""+(extendedField.getMeaning().get(k).getStatus0()!=null?extendedField.getMeaning().get(k).getStatus0():languageResourceMap.get("switchingCloseValue"))+"\","
+										+ "\"status1\":\""+(extendedField.getMeaning().get(k).getStatus1()!=null?extendedField.getMeaning().get(k).getStatus1():languageResourceMap.get("switchingOpenValue"))+"\","
+										+ "\"value\":\""+value+"\","
+										+ "\"delay\":\""+delay+"\","
+										+ "\"retriggerTime\":\""+retriggerTime+"\","
+										+ "\"alarmLevel\":\""+alarmLevel+"\","
+										+ "\"alarmSign\":\""+alarmSign+"\","
+										+ "\"isSendMessage\":\""+isSendMessage+"\","
+										+ "\"isSendMail\":\""+isSendMail+"\""
+										+ "},");
+								index++;
 							}
 						}
-						result_json.append("{\"checked\":"+checked+","
-								+ "\"id\":"+(index)+","
-								+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
-								+ "\"meaning\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
-								+ "\"status0\":\""+(protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0()!=null?protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0():languageResourceMap.get("switchingCloseValue"))+"\","
-								+ "\"status1\":\""+(protocolConfig.getItems().get(j).getMeaning().get(k).getStatus1()!=null?protocolConfig.getItems().get(j).getMeaning().get(k).getStatus1():languageResourceMap.get("switchingOpenValue"))+"\","
-								+ "\"value\":\""+value+"\","
-								+ "\"delay\":\""+delay+"\","
-								+ "\"retriggerTime\":\""+retriggerTime+"\","
-								+ "\"alarmLevel\":\""+alarmLevel+"\","
-								+ "\"alarmSign\":\""+alarmSign+"\","
-								+ "\"isSendMessage\":\""+isSendMessage+"\","
-								+ "\"isSendMail\":\""+isSendMail+"\""
-								+ "},");
-						index++;
 					}
 				}
 			}
+			
 		}
 	
 		if(result_json.toString().endsWith(",")){
@@ -11002,8 +11121,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(modbusProtocolAlarmUnitSaveData.getResolutionMode()==2){
 			hql = "DELETE AlarmUnitItem u where u.unitId ="+modbusProtocolAlarmUnitSaveData.getId()+" and u.type in(2,5,7)";
 		}
-		if(modbusProtocolAlarmUnitSaveData.getResolutionMode()==0 || modbusProtocolAlarmUnitSaveData.getResolutionMode()==1 &&StringManagerUtils.isNotNull(modbusProtocolAlarmUnitSaveData.getAlarmItemName())){
-			hql+=" and u.itemName='"+modbusProtocolAlarmUnitSaveData.getAlarmItemName()+"' and u.itemAddr="+modbusProtocolAlarmUnitSaveData.getAlarmItemAddr();
+		if((modbusProtocolAlarmUnitSaveData.getResolutionMode()==0 || modbusProtocolAlarmUnitSaveData.getResolutionMode()==1) && StringManagerUtils.isNotNull(modbusProtocolAlarmUnitSaveData.getAlarmItemName())){
+			hql+=" and u.itemName='"+modbusProtocolAlarmUnitSaveData.getAlarmItemName()+"' ";
 		}
 		getBaseDao().bulkObjectDelete(hql);
 	}

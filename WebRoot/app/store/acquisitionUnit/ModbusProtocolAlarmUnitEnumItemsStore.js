@@ -55,9 +55,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitEnumItemsStore', {
                 					protocolAlarmUnitConfigEnumItemsHandsontableHelper=null;
                 				}
                     		}else if(selectedGroup.data.classes==1){
-                    			CreateProtocolAlarmUnitEnumItemsConfigInfoTable(selectedGroup.data.code,selectedGroup.data.classes,selectedGroup.data.code,record.data.addr,record.data.highLowByte);
+                    			CreateProtocolAlarmUnitEnumItemsConfigInfoTable(selectedGroup.data.code,selectedGroup.data.classes,selectedGroup.data.code,record.data.addr,record.data.highLowByte,record.data.title,record.data.itemCode);
                         	}else if(selectedGroup.data.classes==2||selectedGroup.data.classes==3){
-                        		CreateProtocolAlarmUnitEnumItemsConfigInfoTable(selectedGroup.data.protocol,selectedGroup.data.classes,selectedGroup.data.code,record.data.addr,record.data.highLowByte);
+                        		CreateProtocolAlarmUnitEnumItemsConfigInfoTable(selectedGroup.data.protocol,selectedGroup.data.classes,selectedGroup.data.code,record.data.addr,record.data.highLowByte,record.data.title,record.data.itemCode);
                         	}
                     	}
                     }

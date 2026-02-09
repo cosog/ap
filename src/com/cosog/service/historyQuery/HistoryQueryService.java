@@ -817,7 +817,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if(item.getResolutionMode()==0){//如果是开关量
 										boolean isMatch=false;
 										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
-											String[] valueArr=value.split(",");
+											String[] valueArr=new String[item.getMeaning().size()];
+											if(StringManagerUtils.isNotNull(value)){
+												valueArr=value.split(",");
+											}
 											for(int l=0;l<item.getMeaning().size();l++){
 												columnName=item.getMeaning().get(l).getMeaning();
 												sort=dataitemsInfo.getSorts();
@@ -829,8 +832,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														if(m==item.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
 															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
-																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+																value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+																rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
 															}else{
 																value=valueArr[m];
 															}
@@ -1660,7 +1663,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if(item.getResolutionMode()==0){//如果是开关量
 										boolean isMatch=false;
 										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
-											String[] valueArr=value.split(",");
+											String[] valueArr=new String[item.getMeaning().size()];
+											if(StringManagerUtils.isNotNull(value)){
+												valueArr=value.split(",");
+											}
 											for(int l=0;l<item.getMeaning().size();l++){
 												columnName=item.getMeaning().get(l).getMeaning();
 												sort=dataitemsInfo.getSorts();
@@ -1672,8 +1678,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														if(m==item.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
 															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
-																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+																value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+																rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
 															}else{
 																value=valueArr[m];
 															}
@@ -2577,6 +2583,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				type = new TypeToken<List<KeyValue>>() {}.getType();
 				List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+				if(acqDataList==null){
+					acqDataList=new ArrayList<>();
+				}
+				
 				if(protocolItems.size()>0){
 					if(acqDataList!=null){
 						for(KeyValue keyValue:acqDataList){
@@ -2621,7 +2631,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if(item.getResolutionMode()==0){//如果是开关量
 										boolean isMatch=false;
 										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
-											String[] valueArr=value.split(",");
+											String[] valueArr=new String[item.getMeaning().size()];
+											if(StringManagerUtils.isNotNull(value)){
+												valueArr=value.split(",");
+											}
 											for(int l=0;l<item.getMeaning().size();l++){
 												isMatch=false;
 												columnName=item.getMeaning().get(l).getMeaning();
@@ -2646,8 +2659,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														if(m==item.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
 															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
-																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+																value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+																rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
 															}else{
 																value=valueArr[m];
 															}
@@ -2744,7 +2757,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if(extendedField.getType()==1 && extendedField.getResolutionMode()==0){//如果是开关量
 										boolean isMatch=false;
 										if(extendedField.getMeaning()!=null && extendedField.getMeaning().size()>0){
-											String[] valueArr=value.split(",");
+											String[] valueArr=new String[extendedField.getMeaning().size()];
+											if(StringManagerUtils.isNotNull(value)){
+												valueArr=value.split(",");
+											}
 											for(int l=0;l<extendedField.getMeaning().size();l++){
 												isMatch=false;
 												columnName=extendedField.getMeaning().get(l).getMeaning();
@@ -2768,8 +2784,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
 														if(m==extendedField.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
-															value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
-															rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+															value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+															rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
 															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 															protocolItemResolutionDataList.add(protocolItemResolutionData);
 															match=true;
@@ -3660,7 +3676,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if(item.getResolutionMode()==0){//如果是开关量
 										boolean isMatch=false;
 										if(item.getMeaning()!=null&&item.getMeaning().size()>0){
-											String[] valueArr=value.split(",");
+											String[] valueArr=new String[item.getMeaning().size()];
+											if(StringManagerUtils.isNotNull(value)){
+												valueArr=value.split(",");
+											}
 											for(int l=0;l<item.getMeaning().size();l++){
 												isMatch=false;
 												columnName=item.getMeaning().get(l).getMeaning();
@@ -3685,8 +3704,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														if(m==item.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
 															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
-																rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+																value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+																rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
 															}else{
 																value=valueArr[m];
 															}
@@ -3783,7 +3802,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if(extendedField.getType()==1 && extendedField.getResolutionMode()==0){//如果是开关量
 										boolean isMatch=false;
 										if(extendedField.getMeaning()!=null && extendedField.getMeaning().size()>0){
-											String[] valueArr=value.split(",");
+											String[] valueArr=new String[extendedField.getMeaning().size()];
+											if(StringManagerUtils.isNotNull(value)){
+												valueArr=value.split(",");
+											}
 											for(int l=0;l<extendedField.getMeaning().size();l++){
 												isMatch=false;
 												columnName=extendedField.getMeaning().get(l).getMeaning();
@@ -3807,8 +3829,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													for(int m=0;valueArr!=null&&m<valueArr.length;m++){
 														if(m==extendedField.getMeaning().get(l).getValue()){
 															bitIndex=m+"";
-															value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
-															rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+															value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+															rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
 															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 															protocolItemResolutionDataList.add(protocolItemResolutionData);
 															match=true;
@@ -4384,8 +4406,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						}
 						type = new TypeToken<List<KeyValue>>() {}.getType();
 						List<KeyValue> acqDataList=gson.fromJson(acqData, type);
+						if(acqDataList==null){
+							acqDataList=new ArrayList<>();
+						}
 						type = new TypeToken<List<KeyValue>>() {}.getType();
 						List<KeyValue> alarmInfoList=gson.fromJson(deviceAlarmInfo, type);
+						if(alarmInfoList==null){
+							alarmInfoList=new ArrayList<>();
+						}
 						
 						for(DisplayInstanceOwnItem.DisplayItem displayItem:displayInstanceOwnItem.getItemList()){
 							if(displayItem.getType()!=2 
@@ -4416,70 +4444,73 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										for(KeyValue keyValue:acqDataList){
 											if(column.equalsIgnoreCase(keyValue.getKey())){
 												value=keyValue.getValue();
-												rawValue=value;
-												if(item!=null){
-													if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
-															||"float32".equalsIgnoreCase(item.getIFDataType())
-															||"float64".equalsIgnoreCase(item.getIFDataType())){
-														if(value.toUpperCase().contains("E")){
-										                 	value=StringManagerUtils.scientificNotationToNormal(value);
-										                 }
-													}
-													
-													if(item.getResolutionMode()==1 || item.getResolutionMode()==2){//如果是枚举量
-														if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
-															for(int l=0;l<item.getMeaning().size();l++){
-																if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
-																	value=item.getMeaning().get(l).getMeaning();
-																	break;
-																}
-															}
+												break;
+											}
+										}
+										rawValue=value;
+										if(item!=null){
+											if("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")
+													||"float32".equalsIgnoreCase(item.getIFDataType())
+													||"float64".equalsIgnoreCase(item.getIFDataType())){
+												if(value.toUpperCase().contains("E")){
+								                 	value=StringManagerUtils.scientificNotationToNormal(value);
+								                 }
+											}
+											
+											if(item.getResolutionMode()==1 || item.getResolutionMode()==2){//如果是枚举量
+												if(StringManagerUtils.isNotNull(value)&&item.getMeaning()!=null&&item.getMeaning().size()>0){
+													for(int l=0;l<item.getMeaning().size();l++){
+														if(StringManagerUtils.stringToFloat(value)==(item.getMeaning().get(l).getValue())){
+															value=item.getMeaning().get(l).getMeaning();
+															break;
 														}
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-														protocolItemResolutionDataList.add(protocolItemResolutionData);
-														existData=true;
-													}else if(item.getResolutionMode()==0){//如果是开关量
-														ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(item, bitIndex);
-														if(itemsMeaning!=null && StringManagerUtils.isNotNull(value)){
-															String[] valueArr=value.split(",");
-															columnName=StringManagerUtils.isNotNull(itemsMeaning.getMeaning())?itemsMeaning.getMeaning():(languageResourceMap.get("bit")+displayItem.getBitIndex());
-															String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():"";
-															String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():"";
-															if(switchingValueShowType==1){
-																columnName=rawColumnName+"/"+columnName;
+													}
+												}
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+												protocolItemResolutionDataList.add(protocolItemResolutionData);
+												existData=true;
+											}else if(item.getResolutionMode()==0){//如果是开关量
+												ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(item, bitIndex);
+												if(itemsMeaning!=null && StringManagerUtils.isNotNull(value)){
+													String[] valueArr=new String[item.getMeaning().size()];
+													if(StringManagerUtils.isNotNull(value)){
+														valueArr=value.split(",");
+													}
+													columnName=StringManagerUtils.isNotNull(itemsMeaning.getMeaning())?itemsMeaning.getMeaning():(languageResourceMap.get("bit")+displayItem.getBitIndex());
+													String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():"";
+													String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():"";
+													if(switchingValueShowType==1){
+														columnName=rawColumnName+"/"+columnName;
+													}
+													for(int m=0;valueArr!=null && m<valueArr.length;m++){
+														if(m==itemsMeaning.getValue()){
+															if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
+																value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+																rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
+															}else{
+																value=valueArr[m];
 															}
-															for(int m=0;valueArr!=null && m<valueArr.length;m++){
-																if(m==itemsMeaning.getValue()){
-																	if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
-																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
-																	}else{
-																		value=valueArr[m];
-																	}
-																	ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-																	protocolItemResolutionDataList.add(protocolItemResolutionData);
-																	existData=true;
-																	break;
-																}
-															}
-														}else{
 															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 															protocolItemResolutionDataList.add(protocolItemResolutionData);
 															existData=true;
+															break;
 														}
-													}else{//如果是数据量
-														for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
-															if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
-																sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
-																break;
-															}
-														}
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-														protocolItemResolutionDataList.add(protocolItemResolutionData);
-														existData=true;
+													}
+												}else{
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+													protocolItemResolutionDataList.add(protocolItemResolutionData);
+													existData=true;
+												}
+											}else{//如果是数据量
+												for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
+													if(displayInstanceOwnItem.getItemList().get(l).getItemCode().equalsIgnoreCase(column) && displayInstanceOwnItem.getItemList().get(l).getType()!=2){
+														sort=displayInstanceOwnItem.getItemList().get(l).getRealtimeSort();
+														break;
 													}
 												}
-												break;
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+												protocolItemResolutionDataList.add(protocolItemResolutionData);
+												existData=true;
 											}
 										}
 									}
@@ -4493,66 +4524,69 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										for(KeyValue keyValue:acqDataList){
 											if(column.equalsIgnoreCase(keyValue.getKey())){
 												value=keyValue.getValue();
-												rawValue=value;
-												if(extendedField!=null){
-													if(extendedField.getType()==0){
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
-																extendedField.getTitle(),
-																extendedField.getTitle(),
-																value,
-																rawValue,
-																"",
-																column,
-																"",
-																"7",
-																"",
-																unit,
-																sort,
-																5);
-														protocolItemResolutionDataList.add(protocolItemResolutionData);
-														existData=true;
-													}else if(extendedField.getType()==1){
-														if(extendedField.getResolutionMode()==1 || extendedField.getResolutionMode()==2){//如果是枚举量
-															if(StringManagerUtils.isNotNull(value) && extendedField.getMeaning()!=null && extendedField.getMeaning().size()>0){
-																for(int l=0;l<extendedField.getMeaning().size();l++){
-																	if(StringManagerUtils.stringToFloat(value)==(extendedField.getMeaning().get(l).getValue())){
-																		value=extendedField.getMeaning().get(l).getMeaning();
-																		break;
-																	}
-																}
-															}
-															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-															protocolItemResolutionDataList.add(protocolItemResolutionData);
-															existData=true;
-														}else if(extendedField.getResolutionMode()==0){//如果是开关量
-															ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(extendedField, bitIndex);
-															if(itemsMeaning!=null && StringManagerUtils.isNotNull(value)){
-																String[] valueArr=value.split(",");
-																columnName=StringManagerUtils.isNotNull(itemsMeaning.getMeaning())?itemsMeaning.getMeaning():(languageResourceMap.get("bit")+displayItem.getBitIndex());
-																String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():"";
-																String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():"";
-																if(switchingValueShowType==1){
-																	columnName=rawColumnName+"/"+columnName;
-																}
-																for(int m=0;valueArr!=null && m<valueArr.length;m++){
-																	if(m==itemsMeaning.getValue()){
-																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
-																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
-																		ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-																		protocolItemResolutionDataList.add(protocolItemResolutionData);
-																		existData=true;
-																		break;
-																	}
-																}
-															}else{
-																ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
-																protocolItemResolutionDataList.add(protocolItemResolutionData);
-																existData=true;
+												break;
+											}
+										}
+										rawValue=value;
+										if(extendedField!=null){
+											if(extendedField.getType()==0){
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(
+														extendedField.getTitle(),
+														extendedField.getTitle(),
+														value,
+														rawValue,
+														"",
+														column,
+														"",
+														"7",
+														"",
+														unit,
+														sort,
+														5);
+												protocolItemResolutionDataList.add(protocolItemResolutionData);
+												existData=true;
+											}else if(extendedField.getType()==1){
+												if(extendedField.getResolutionMode()==1 || extendedField.getResolutionMode()==2){//如果是枚举量
+													if(StringManagerUtils.isNotNull(value) && extendedField.getMeaning()!=null && extendedField.getMeaning().size()>0){
+														for(int l=0;l<extendedField.getMeaning().size();l++){
+															if(StringManagerUtils.stringToFloat(value)==(extendedField.getMeaning().get(l).getValue())){
+																value=extendedField.getMeaning().get(l).getMeaning();
+																break;
 															}
 														}
 													}
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+													protocolItemResolutionDataList.add(protocolItemResolutionData);
+													existData=true;
+												}else if(extendedField.getResolutionMode()==0){//如果是开关量
+													ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(extendedField, bitIndex);
+													if(itemsMeaning!=null){
+														String[] valueArr=new String[extendedField.getMeaning().size()];
+														if(StringManagerUtils.isNotNull(value)){
+															valueArr=value.split(",");
+														}
+														columnName=StringManagerUtils.isNotNull(itemsMeaning.getMeaning())?itemsMeaning.getMeaning():(languageResourceMap.get("bit")+displayItem.getBitIndex());
+														String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():"";
+														String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():"";
+														if(switchingValueShowType==1){
+															columnName=rawColumnName+"/"+columnName;
+														}
+														for(int m=0;valueArr!=null && m<valueArr.length;m++){
+															if(m==itemsMeaning.getValue()){
+																value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+																rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
+																ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+																protocolItemResolutionDataList.add(protocolItemResolutionData);
+																existData=true;
+																break;
+															}
+														}
+													}else{
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+														protocolItemResolutionDataList.add(protocolItemResolutionData);
+														existData=true;
+													}
 												}
-												break;
 											}
 										}
 									}
@@ -5223,8 +5257,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 														existData=true;
 													}else if(item.getResolutionMode()==0){//如果是开关量
 														ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(item, bitIndex);
-														if(itemsMeaning!=null && StringManagerUtils.isNotNull(value)){
-															String[] valueArr=value.split(",");
+														if(itemsMeaning!=null){
+															String[] valueArr=new String[item.getMeaning().size()];
+															if(StringManagerUtils.isNotNull(value)){
+																valueArr=value.split(",");
+															}
 															columnName=StringManagerUtils.isNotNull(itemsMeaning.getMeaning())?itemsMeaning.getMeaning():(languageResourceMap.get("bit")+displayItem.getBitIndex());
 															String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():"";
 															String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():"";
@@ -5234,8 +5271,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 															for(int m=0;valueArr!=null && m<valueArr.length;m++){
 																if(m==itemsMeaning.getValue()){
 																	if("bool".equalsIgnoreCase(columnDataType) || "boolean".equalsIgnoreCase(columnDataType)){
-																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
-																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+																		value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+																		rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
 																	}else{
 																		value=valueArr[m];
 																	}
@@ -5309,8 +5346,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 															existData=true;
 														}else if(extendedField.getResolutionMode()==0){//如果是开关量
 															ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(extendedField, bitIndex);
-															if(itemsMeaning!=null && StringManagerUtils.isNotNull(value)){
-																String[] valueArr=value.split(",");
+															if(itemsMeaning!=null){
+																String[] valueArr=new String[extendedField.getMeaning().size()];
+																if(StringManagerUtils.isNotNull(value)){
+																	valueArr=value.split(",");
+																}
 																columnName=StringManagerUtils.isNotNull(itemsMeaning.getMeaning())?itemsMeaning.getMeaning():(languageResourceMap.get("bit")+displayItem.getBitIndex());
 																String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():"";
 																String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():"";
@@ -5319,8 +5359,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 																}
 																for(int m=0;valueArr!=null && m<valueArr.length;m++){
 																	if(m==itemsMeaning.getValue()){
-																		value=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0;
-																		rawValue=("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0";
+																		value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+																		rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
 																		ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
 																		protocolItemResolutionDataList.add(protocolItemResolutionData);
 																		existData=true;

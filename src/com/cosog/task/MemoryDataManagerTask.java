@@ -2213,7 +2213,7 @@ public class MemoryDataManagerTask {
 				instanceSql+=" and t.id="+instanceId;
 				sql+=" and t3.id="+instanceId;
 			}
-			sql+=" order by t3.code, t.unitid,t.id";
+			sql+=" order by t3.code, t.unitid,t.type,t.id";
 			
 			pstmt = conn.prepareStatement(instanceSql);
 			rs=pstmt.executeQuery();

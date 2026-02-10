@@ -57,20 +57,26 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 		}else if(this.sort<protocolItemResolutionData.getSort()){
 			r= -1;
 		}else{
-			if(this.type==0 && protocolItemResolutionData.getType()==0){
-				if(StringManagerUtils.stringToInteger(this.addr)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
-					r= 1;
-				}else if(StringManagerUtils.stringToInteger(this.addr)<StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
-					r= -1;
-				}else{
-					if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getBitIndex())){
-						r= 1;
-					}else{
-						r= -1;
-					}
-				}
+			if(this.type>protocolItemResolutionData.getType()){
+				r= 1;
+			}else if(this.type<protocolItemResolutionData.getType()){
+				r= -1;
 			}else{
-				
+				if(this.type==0 && protocolItemResolutionData.getType()==0){
+					if(StringManagerUtils.stringToInteger(this.addr)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
+						r= 1;
+					}else if(StringManagerUtils.stringToInteger(this.addr)<StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
+						r= -1;
+					}else{
+						if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getBitIndex())){
+							r= 1;
+						}else{
+							r= -1;
+						}
+					}
+				}else{
+					r=this.column.compareTo(protocolItemResolutionData.getColumn());
+				}
 			}
 		}
 		return r;

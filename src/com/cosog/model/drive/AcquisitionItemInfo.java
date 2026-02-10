@@ -71,19 +71,29 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 		}else if(this.sort<acquisitionItemInfo.getSort()){
 			r= -1;
 		}else{
-			if(this.type==0 && acquisitionItemInfo.getType()==0){
-				if(this.addr>acquisitionItemInfo.getAddr()){
-					r= 1;
-				}else if(this.addr<acquisitionItemInfo.getAddr()){
-					r= -1;
-				}else{
-					if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(acquisitionItemInfo.getBitIndex())){
+			if(this.type>acquisitionItemInfo.getType()){
+				r= 1;
+			}else if(this.type<acquisitionItemInfo.getType()){
+				r= -1;
+			}else{
+				if(this.type==0 && acquisitionItemInfo.getType()==0){
+					if(this.addr>acquisitionItemInfo.getAddr()){
 						r= 1;
-					}else{
+					}else if(this.addr<acquisitionItemInfo.getAddr()){
 						r= -1;
+					}else{
+						if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(acquisitionItemInfo.getBitIndex())){
+							r= 1;
+						}else{
+							r= -1;
+						}
 					}
+				}else{
+					r=this.column.compareTo(acquisitionItemInfo.getColumn());
 				}
 			}
+			
+			
 		}
 		return r;
 	}

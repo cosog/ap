@@ -28,40 +28,40 @@ databaseMaintenance:                      #数据库维护
    tableConfig:
       acqdata_hist:                       #采集数据历史表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       acqrawdata:                         #采集原始数据历史表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       alarminfo_hist:                     #报警数据历史表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       dailytotalcalculate_hist:           #日累计计算历史表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       dailycalculationdata:               #采集数据全天汇总表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       timingcalculationdata:              #采集数据定时汇总表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       srpacqdata_hist:                    #抽油机井计算数据历史表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       srpdailycalculationdata:            #抽油机井全天汇总计算数据表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       srptimingcalculationdata:           #抽油机井定时汇总计算数据表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       pcpacqdata_hist:                    #螺杆泵井计算数据历史表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       pcpdailycalculationdata:            #螺杆泵井全天汇总计算数据表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       pcptimingcalculationdata:           #螺杆泵井定时汇总计算数据表
          enabled: true                    #是否启用定时删除
-         retentionTime: 60                #数据保留时间，单位：天
+         retentionTime: 365                #数据保留时间，单位：天
       acqdata_vacuate:                    #采集数据抽稀表
          enabled: true                    #是否启用定时删除
          retentionTime: 1200               #数据保留时间，单位：天

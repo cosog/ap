@@ -13,12 +13,13 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 	public String unit="";
 	public int sort;
 	public int type;
+	public int displayItemId;
 	
 	public ProtocolItemResolutionData() {
 		super();
 	}
 	public ProtocolItemResolutionData(String rawColumnName,String columnName, String value,String rawValue, String addr, String column,
-			String columnDataType, String resolutionMode,String bitIndex,String unit,int sort,int type) {
+			String columnDataType, String resolutionMode,String bitIndex,String unit,int sort,int type,int displayItemId) {
 		super();
 		this.rawColumnName = rawColumnName;
 		this.columnName = columnName;
@@ -32,6 +33,7 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 		this.unit=unit;
 		this.sort=sort;
 		this.type=type;
+		this.displayItemId=displayItemId;
 	}
 	
 	public ProtocolItemResolutionData(String rawColumnName,String columnName, String value,String rawValue, String addr, String column,
@@ -57,25 +59,31 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 		}else if(this.sort<protocolItemResolutionData.getSort()){
 			r= -1;
 		}else{
-			if(this.type>protocolItemResolutionData.getType()){
+			if(this.displayItemId>protocolItemResolutionData.getDisplayItemId()){
 				r= 1;
-			}else if(this.type<protocolItemResolutionData.getType()){
+			}else if(this.displayItemId<protocolItemResolutionData.getDisplayItemId()){
 				r= -1;
 			}else{
-				if(this.type==0 && protocolItemResolutionData.getType()==0){
-					if(StringManagerUtils.stringToInteger(this.addr)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
-						r= 1;
-					}else if(StringManagerUtils.stringToInteger(this.addr)<StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
-						r= -1;
-					}else{
-						if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getBitIndex())){
-							r= 1;
-						}else{
-							r= -1;
-						}
-					}
+				if(this.type>protocolItemResolutionData.getType()){
+					r= 1;
+				}else if(this.type<protocolItemResolutionData.getType()){
+					r= -1;
 				}else{
-					r=this.column.compareTo(protocolItemResolutionData.getColumn());
+					if(this.type==0 && protocolItemResolutionData.getType()==0){
+						if(StringManagerUtils.stringToInteger(this.addr)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
+							r= 1;
+						}else if(StringManagerUtils.stringToInteger(this.addr)<StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
+							r= -1;
+						}else{
+							if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getBitIndex())){
+								r= 1;
+							}else{
+								r= -1;
+							}
+						}
+					}else{
+						r=this.column.compareTo(protocolItemResolutionData.getColumn());
+					}
 				}
 			}
 		}
@@ -155,5 +163,11 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 	}
 	public void setType(int type) {
 		this.type = type;
+	}
+	public int getDisplayItemId() {
+		return displayItemId;
+	}
+	public void setDisplayItemId(int displayItemId) {
+		this.displayItemId = displayItemId;
 	}
 }

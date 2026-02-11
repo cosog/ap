@@ -957,7 +957,7 @@ public class MobileService<T> extends BaseService<T> {
 													}
 												}
 											}
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,0);
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 											
 											columnName=StringManagerUtils.isNotNull(unit.replaceAll(" ", ""))?(columnName+"("+unit+")"):columnName;
@@ -1733,7 +1733,7 @@ public class MobileService<T> extends BaseService<T> {
 													}
 												}
 											}
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,0);
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 											
 											columnName=StringManagerUtils.isNotNull(unit.replaceAll(" ", ""))?(columnName+"("+unit+")"):columnName;

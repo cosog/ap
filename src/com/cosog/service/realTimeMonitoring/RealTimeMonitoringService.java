@@ -838,6 +838,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							String code=calItem.getCode();
 							if("resultName".equalsIgnoreCase(code)){
 								code="ResultCode";
+							}else if("SurfaceSystemEfficiency".equalsIgnoreCase(code) || "WellDownSystemEfficiency".equalsIgnoreCase(code)||"SystemEfficiency".equalsIgnoreCase(code)
+									|| "PumpEff1".equalsIgnoreCase(code) || "PumpEff2".equalsIgnoreCase(code) || "PumpEff3".equalsIgnoreCase(code) || "PumpEff4".equalsIgnoreCase(code) || "PumpEff".equalsIgnoreCase(code)){
+								code+="*100 as "+code;
 							}
 							srpCalDataSql+=",t."+code;
 						}
@@ -891,7 +894,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						
 						String pcpCalDataSql="select t.deviceid";
 						for(CalItem calItem:deviceCalItemList){
-							pcpCalDataSql+=",t."+calItem.getCode();
+							String code=calItem.getCode();
+							if("SurfaceSystemEfficiency".equalsIgnoreCase(code) || "WellDownSystemEfficiency".equalsIgnoreCase(code)||"SystemEfficiency".equalsIgnoreCase(code)
+									|| "PumpEff1".equalsIgnoreCase(code) || "PumpEff2".equalsIgnoreCase(code) || "PumpEff3".equalsIgnoreCase(code) || "PumpEff4".equalsIgnoreCase(code) || "PumpEff".equalsIgnoreCase(code)){
+								code+="*100 as "+code;
+							}
+							pcpCalDataSql+=",t."+code;
 						}
 						pcpCalDataSql+= " from tbl_pcpacqdata_latest t,tbl_device t2,tbl_tabmanager_device t3 "
 						+ " where t.deviceid=t2.id and t2.calculatetype=t3.id and t3.calculatetype=2"
@@ -1148,7 +1156,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}
 											}
 										}
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,0);
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}else if(item.getResolutionMode()==0){//如果是开关量
 										boolean isMatch=false;
@@ -1173,7 +1181,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 															}else{
 																value=valueArr[m];
 															}
-															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0,0);
 															protocolItemResolutionDataList.add(protocolItemResolutionData);
 															match=true;
 															break;
@@ -1183,23 +1191,23 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														value="";
 														rawValue="";
 														bitIndex=item.getMeaning().get(l).getValue()+"";
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0,0);
 														protocolItemResolutionDataList.add(protocolItemResolutionData);
 													}
 												}else{
 													value="";
 													rawValue="";
 													bitIndex=item.getMeaning().get(l).getValue()+"";
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0,0);
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 												}
 											}
 										}else{
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,0);
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 										}
 									}else{//如果是数据量
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,0);
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									} 
 									break;
@@ -1245,7 +1253,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											"",
 											extendedField.getUnit(),
 											sort,
-											5);
+											5,0);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 									break;
 								}
@@ -1313,7 +1321,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}
 								
 								if( !("runStatus".equalsIgnoreCase(column)||"RunStatusName".equalsIgnoreCase(column)) ){
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1,0);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}
@@ -1389,7 +1397,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							}
 							rawValue=value;
 							rawColumnName=columnName;
-							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3,0);
 							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
 					}else if(StringManagerUtils.stringToInteger(calculateType)==2){
@@ -1453,7 +1461,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							}
 							rawValue=value;
 							rawColumnName=columnName;
-							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3,0);
 							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
 					}
@@ -1795,6 +1803,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							String code=calItem.getCode();
 							if("resultName".equalsIgnoreCase(code)){
 								code="ResultCode";
+							}else if("SurfaceSystemEfficiency".equalsIgnoreCase(code) || "WellDownSystemEfficiency".equalsIgnoreCase(code)||"SystemEfficiency".equalsIgnoreCase(code)
+									|| "PumpEff1".equalsIgnoreCase(code) || "PumpEff2".equalsIgnoreCase(code) || "PumpEff3".equalsIgnoreCase(code) || "PumpEff4".equalsIgnoreCase(code) || "PumpEff".equalsIgnoreCase(code)){
+								code+="*100 as "+code;
 							}
 							srpCalDataSql+=",t."+code;
 						}
@@ -1842,7 +1853,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						
 						String pcpCalDataSql="select t.deviceid";
 						for(CalItem calItem:deviceCalItemList){
-							pcpCalDataSql+=",t."+calItem.getCode();
+							String code=calItem.getCode();
+							if("SurfaceSystemEfficiency".equalsIgnoreCase(code) || "WellDownSystemEfficiency".equalsIgnoreCase(code)||"SystemEfficiency".equalsIgnoreCase(code)
+									|| "PumpEff1".equalsIgnoreCase(code) || "PumpEff2".equalsIgnoreCase(code) || "PumpEff3".equalsIgnoreCase(code) || "PumpEff4".equalsIgnoreCase(code) || "PumpEff".equalsIgnoreCase(code)){
+								code+="*100 as "+code;
+							}
+							pcpCalDataSql+=",t."+code;
 						}
 						pcpCalDataSql+= " from tbl_pcpacqdata_latest t,tbl_device t2,tbl_tabmanager_device t3 "
 						+ " where t.deviceid=t2.id and t2.calculatetype=t3.id and t3.calculatetype=2"
@@ -2013,7 +2029,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}
 											}
 										}
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,0);
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									}else if(item.getResolutionMode()==0){//如果是开关量
 										boolean isMatch=false;
@@ -2033,7 +2049,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 															}else{
 																value=valueArr[m];
 															}
-															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0,0);
 															protocolItemResolutionDataList.add(protocolItemResolutionData);
 															match=true;
 															break;
@@ -2043,23 +2059,23 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														value="";
 														rawValue="";
 														bitIndex=item.getMeaning().get(l).getValue()+"";
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0,0);
 														protocolItemResolutionDataList.add(protocolItemResolutionData);
 													}
 												}else{
 													value="";
 													rawValue="";
 													bitIndex=item.getMeaning().get(l).getValue()+"";
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0);
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,item.getMeaning().get(l).getValue()+"",unit,sort,0,0);
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 												}
 											}
 										}else{
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,0);
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 										}
 									}else{//如果是数据量
-										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+										ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,0);
 										protocolItemResolutionDataList.add(protocolItemResolutionData);
 									} 
 									break;
@@ -2105,7 +2121,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											"",
 											extendedField.getUnit(),
 											sort,
-											5);
+											5,0);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 									break;
 								}
@@ -2165,7 +2181,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}
 								
 								if( !("runStatus".equalsIgnoreCase(column)||"RunStatusName".equalsIgnoreCase(column)) ){
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1,0);
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}
@@ -2241,7 +2257,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							}
 							rawValue=value;
 							rawColumnName=columnName;
-							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3,0);
 							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
 					}else if(StringManagerUtils.stringToInteger(calculateType)==2){
@@ -2305,7 +2321,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							}
 							rawValue=value;
 							rawColumnName=columnName;
-							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
+							ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3,0);
 							protocolItemResolutionDataList.add(protocolItemResolutionData);
 						}
 					}
@@ -3165,7 +3181,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								column=column+"*"+timeEfficiencyZoom+" as "+column;
 							}else if("runstatusName".equalsIgnoreCase(column)){
 								column="runstatus";
+							}else if("SurfaceSystemEfficiency".equalsIgnoreCase(column) || "WellDownSystemEfficiency".equalsIgnoreCase(column)||"SystemEfficiency".equalsIgnoreCase(column)
+									|| "PumpEff1".equalsIgnoreCase(column) || "PumpEff2".equalsIgnoreCase(column) || "PumpEff3".equalsIgnoreCase(column) || "PumpEff4".equalsIgnoreCase(column) || "PumpEff".equalsIgnoreCase(column)){
+								column+="*100 as "+column;
 							}
+							
 							sql+=",t3."+column;
 						}else{
 							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
@@ -3267,7 +3287,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														}
 													}
 												}
-												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,displayItem.getItemId());
 												protocolItemResolutionDataList.add(protocolItemResolutionData);
 												existData=true;
 											}else if(item.getResolutionMode()==0){//如果是开关量
@@ -3291,14 +3311,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 															}else{
 																value=valueArr[m];
 															}
-															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0,displayItem.getItemId());
 															protocolItemResolutionDataList.add(protocolItemResolutionData);
 															existData=true;
 															break;
 														}
 													}
 												}else{
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,0,displayItem.getItemId());
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 													existData=true;
 												}
@@ -3309,7 +3329,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														break;
 													}
 												}
-												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,displayItem.getItemId());
 												protocolItemResolutionDataList.add(protocolItemResolutionData);
 												existData=true;
 											}
@@ -3343,7 +3363,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														"",
 														unit,
 														sort,
-														5);
+														5,
+														displayItem.getItemId());
 												protocolItemResolutionDataList.add(protocolItemResolutionData);
 												existData=true;
 											}else if(extendedField.getType()==1){
@@ -3356,7 +3377,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 															}
 														}
 													}
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,5);
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,5,displayItem.getItemId());
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 													existData=true;
 												}else if(extendedField.getResolutionMode()==0){//如果是开关量
@@ -3376,14 +3397,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 															if(m==itemsMeaning.getValue()){
 																value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
 																rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
-																ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,5);
+																ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,5,displayItem.getItemId());
 																protocolItemResolutionDataList.add(protocolItemResolutionData);
 																existData=true;
 																break;
 															}
 														}
 													}else{
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,5);
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,5,displayItem.getItemId());
 														protocolItemResolutionDataList.add(protocolItemResolutionData);
 														existData=true;
 													}
@@ -3423,7 +3444,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														rawValue=runStatus;
 													}
 													
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1,displayItem.getItemId());
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 													existData=true;
 												}
@@ -3468,7 +3489,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 																"",
 																unit,
 																displayItem.getRealtimeSort(),
-																1);
+																1,displayItem.getItemId());
 														protocolItemResolutionDataList.add(protocolItemResolutionData);
 														existData=true;
 													}
@@ -3532,7 +3553,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											}
 											rawValue=value;
 											rawColumnName=columnName;
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3,displayItem.getItemId());
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 											existData=true;
 										}else if(StringManagerUtils.stringToInteger(calculateType)==2){
@@ -3579,14 +3600,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											}
 											rawValue=value;
 											rawColumnName=columnName;
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3,displayItem.getItemId());
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 											existData=true;
 										}
 									}
 								}
 								if(!existData){
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,displayItem.getItemId());
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}
@@ -3942,6 +3963,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								column=column+"*"+timeEfficiencyZoom+" as "+column;
 							}else if("runstatusName".equalsIgnoreCase(column)){
 								column="runstatus";
+							}else if("SurfaceSystemEfficiency".equalsIgnoreCase(column) || "WellDownSystemEfficiency".equalsIgnoreCase(column)||"SystemEfficiency".equalsIgnoreCase(column)
+									|| "PumpEff1".equalsIgnoreCase(column) || "PumpEff2".equalsIgnoreCase(column) || "PumpEff3".equalsIgnoreCase(column) || "PumpEff4".equalsIgnoreCase(column) || "PumpEff".equalsIgnoreCase(column)){
+								column+="*100 as "+column;
 							}
 							sql+=",t3."+column;
 						}else{
@@ -4032,7 +4056,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														}
 													}
 												}
-												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,displayItem.getItemId());
 												protocolItemResolutionDataList.add(protocolItemResolutionData);
 												existData=true;
 											}else if(item.getResolutionMode()==0){//如果是开关量
@@ -4056,14 +4080,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 															}else{
 																value=valueArr[m];
 															}
-															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+															ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,displayItem.getItemId());
 															protocolItemResolutionDataList.add(protocolItemResolutionData);
 															existData=true;
 															break;
 														}
 													}
 												}else{
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,displayItem.getItemId());
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 													existData=true;
 												}
@@ -4074,7 +4098,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														break;
 													}
 												}
-												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+												ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,displayItem.getItemId());
 												protocolItemResolutionDataList.add(protocolItemResolutionData);
 												existData=true;
 											}
@@ -4108,7 +4132,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														"",
 														unit,
 														sort,
-														5);
+														5,displayItem.getItemId());
 												protocolItemResolutionDataList.add(protocolItemResolutionData);
 												existData=true;
 											}else if(extendedField.getType()==1){
@@ -4121,7 +4145,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 															}
 														}
 													}
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,5);
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,5,displayItem.getItemId());
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 													existData=true;
 												}else if(extendedField.getResolutionMode()==0){//如果是开关量
@@ -4141,14 +4165,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 															if(m==itemsMeaning.getValue()){
 																value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
 																rawValue=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?"1":"0"):"";
-																ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,5);
+																ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,5,displayItem.getItemId());
 																protocolItemResolutionDataList.add(protocolItemResolutionData);
 																existData=true;
 																break;
 															}
 														}
 													}else{
-														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,5);
+														ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column+"_"+bitIndex,columnDataType,resolutionMode,bitIndex,unit,sort,5,displayItem.getItemId());
 														protocolItemResolutionDataList.add(protocolItemResolutionData);
 														existData=true;
 													}
@@ -4185,7 +4209,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 														rawValue=runStatus;
 													}
 													
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1);
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1,displayItem.getItemId());
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 													existData=true;
 												}
@@ -4230,7 +4254,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 																"",
 																unit,
 																displayItem.getRealtimeSort(),
-																1);
+																1,displayItem.getItemId());
 														protocolItemResolutionDataList.add(protocolItemResolutionData);
 														existData=true;
 													}
@@ -4294,7 +4318,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											}
 											rawValue=value;
 											rawColumnName=columnName;
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3,displayItem.getItemId());
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 											existData=true;
 										}else if(StringManagerUtils.stringToInteger(calculateType)==2){
@@ -4341,14 +4365,14 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											}
 											rawValue=value;
 											rawColumnName=columnName;
-											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3);
+											ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3,displayItem.getItemId());
 											protocolItemResolutionDataList.add(protocolItemResolutionData);
 											existData=true;
 										}
 									}
 								}
 								if(!existData){
-									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0);
+									ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,0,displayItem.getItemId());
 									protocolItemResolutionDataList.add(protocolItemResolutionData);
 								}
 							}

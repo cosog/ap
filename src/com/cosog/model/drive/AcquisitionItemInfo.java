@@ -32,13 +32,14 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 	public boolean triggerAlarm;
 	
 	public int type;
+	public int displayItemId;
 	public AcquisitionItemInfo() {
 		super();
 	}
 
 	public AcquisitionItemInfo(int addr, String column, String title,String rawTitle, String value, String rawValue, String dataType,
 			String unit, int alarmLevel, String resolutionMode, String bitIndex, int sort, String alarmLimit,
-			String hystersis, String alarmInfo, int alarmType, String alarmDelay, String retriggerTime, int isSendMessage, int isSendMail,int type) {
+			String hystersis, String alarmInfo, int alarmType, String alarmDelay, String retriggerTime, int isSendMessage, int isSendMail,int type,int displayItemId) {
 		super();
 		this.addr = addr;
 		this.column = column;
@@ -61,6 +62,7 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 		this.isSendMessage = isSendMessage;
 		this.isSendMail = isSendMail;
 		this.type=type;
+		this.displayItemId=displayItemId;
 	}
 
 	@Override
@@ -71,29 +73,33 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 		}else if(this.sort<acquisitionItemInfo.getSort()){
 			r= -1;
 		}else{
-			if(this.type>acquisitionItemInfo.getType()){
+			if(this.displayItemId>acquisitionItemInfo.getDisplayItemId()){
 				r= 1;
-			}else if(this.type<acquisitionItemInfo.getType()){
+			}else if(this.displayItemId<acquisitionItemInfo.getDisplayItemId()){
 				r= -1;
 			}else{
-				if(this.type==0 && acquisitionItemInfo.getType()==0){
-					if(this.addr>acquisitionItemInfo.getAddr()){
-						r= 1;
-					}else if(this.addr<acquisitionItemInfo.getAddr()){
-						r= -1;
-					}else{
-						if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(acquisitionItemInfo.getBitIndex())){
-							r= 1;
-						}else{
-							r= -1;
-						}
-					}
+				if(this.type>acquisitionItemInfo.getType()){
+					r= 1;
+				}else if(this.type<acquisitionItemInfo.getType()){
+					r= -1;
 				}else{
-					r=this.column.compareTo(acquisitionItemInfo.getColumn());
+					if(this.type==0 && acquisitionItemInfo.getType()==0){
+						if(this.addr>acquisitionItemInfo.getAddr()){
+							r= 1;
+						}else if(this.addr<acquisitionItemInfo.getAddr()){
+							r= -1;
+						}else{
+							if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(acquisitionItemInfo.getBitIndex())){
+								r= 1;
+							}else{
+								r= -1;
+							}
+						}
+					}else{
+						r=this.column.compareTo(acquisitionItemInfo.getColumn());
+					}
 				}
 			}
-			
-			
 		}
 		return r;
 	}
@@ -285,6 +291,14 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 
 	public void setTriggerAlarm(boolean triggerAlarm) {
 		this.triggerAlarm = triggerAlarm;
+	}
+
+	public int getDisplayItemId() {
+		return displayItemId;
+	}
+
+	public void setDisplayItemId(int displayItemId) {
+		this.displayItemId = displayItemId;
 	}
 	
 }

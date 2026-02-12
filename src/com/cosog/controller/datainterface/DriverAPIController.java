@@ -1635,19 +1635,22 @@ public class DriverAPIController extends BaseController{
 			acquisitionItemInfo.setTitle(calItemResolutionDataList.get(i).getColumnName());
 			acquisitionItemInfo.setRawTitle(calItemResolutionDataList.get(i).getRawColumnName());
 			
-			if("SurfaceSystemEfficiency".equalsIgnoreCase(acquisitionItemInfo.getColumn()) || "WellDownSystemEfficiency".equalsIgnoreCase(acquisitionItemInfo.getColumn())||"SystemEfficiency".equalsIgnoreCase(acquisitionItemInfo.getColumn())
-					|| "PumpEff1".equalsIgnoreCase(acquisitionItemInfo.getColumn()) || "PumpEff2".equalsIgnoreCase(acquisitionItemInfo.getColumn()) || "PumpEff3".equalsIgnoreCase(acquisitionItemInfo.getColumn()) || "PumpEff4".equalsIgnoreCase(acquisitionItemInfo.getColumn()) || "PumpEff".equalsIgnoreCase(acquisitionItemInfo.getColumn())){
-				String value=calItemResolutionDataList.get(i).getRawValue();
-				if(StringManagerUtils.isNum(value)){
-					value=StringManagerUtils.stringToFloat(value)*100+"";
-					value=StringManagerUtils.dataFormat(value,2);
-					acquisitionItemInfo.setValue(value);
-					acquisitionItemInfo.setRawValue(value);
-				}
-			}else{
-				acquisitionItemInfo.setValue(calItemResolutionDataList.get(i).getValue());
-				acquisitionItemInfo.setRawValue(calItemResolutionDataList.get(i).getRawValue());
-			}
+//			if("SurfaceSystemEfficiency".equalsIgnoreCase(acquisitionItemInfo.getColumn()) || "WellDownSystemEfficiency".equalsIgnoreCase(acquisitionItemInfo.getColumn())||"SystemEfficiency".equalsIgnoreCase(acquisitionItemInfo.getColumn())
+//					|| "PumpEff1".equalsIgnoreCase(acquisitionItemInfo.getColumn()) || "PumpEff2".equalsIgnoreCase(acquisitionItemInfo.getColumn()) || "PumpEff3".equalsIgnoreCase(acquisitionItemInfo.getColumn()) || "PumpEff4".equalsIgnoreCase(acquisitionItemInfo.getColumn()) || "PumpEff".equalsIgnoreCase(acquisitionItemInfo.getColumn())){
+//				String value=calItemResolutionDataList.get(i).getRawValue();
+//				if(StringManagerUtils.isNum(value)){
+//					value=StringManagerUtils.stringToFloat(value)*100+"";
+//					value=StringManagerUtils.dataFormat(value,2);
+//					acquisitionItemInfo.setValue(value);
+//					acquisitionItemInfo.setRawValue(value);
+//				}
+//			}else{
+//				acquisitionItemInfo.setValue(calItemResolutionDataList.get(i).getValue());
+//				acquisitionItemInfo.setRawValue(calItemResolutionDataList.get(i).getRawValue());
+//			}
+			
+			acquisitionItemInfo.setValue(calItemResolutionDataList.get(i).getValue());
+			acquisitionItemInfo.setRawValue(calItemResolutionDataList.get(i).getRawValue());
 			
 			
 			acquisitionItemInfo.setDataType(calItemResolutionDataList.get(i).getColumnDataType());
@@ -4946,9 +4949,9 @@ public class DriverAPIController extends BaseController{
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("光杆功率","光杆功率",calculateResponseData.getSystemEfficiency().getPolishRodPower()+"",calculateResponseData.getSystemEfficiency().getPolishRodPower()+"","","POLISHRODPOWER","","","","kW",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("水功率","水功率",calculateResponseData.getSystemEfficiency().getWaterPower()+"",calculateResponseData.getSystemEfficiency().getWaterPower()+"","","WATERPOWER","","","","kW",1,1,0));
 			
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("地面效率","地面效率",calculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency()+"",calculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency()+"","","SURFACESYSTEMEFFICIENCY","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("井下效率","井下效率",calculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency()+"",calculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency()+"","","WELLDOWNSYSTEMEFFICIENCY","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("系统效率","系统效率",calculateResponseData.getSystemEfficiency().getSystemEfficiency()+"",calculateResponseData.getSystemEfficiency().getSystemEfficiency()+"","","SYSTEMEFFICIENCY","","","","小数",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("地面效率","地面效率",StringManagerUtils.dataFormat(calculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency()*100+"",2),"","SURFACESYSTEMEFFICIENCY","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("井下效率","井下效率",StringManagerUtils.dataFormat(calculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency()*100+"",2),"","WELLDOWNSYSTEMEFFICIENCY","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("系统效率","系统效率",StringManagerUtils.dataFormat(calculateResponseData.getSystemEfficiency().getSystemEfficiency()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getSystemEfficiency().getSystemEfficiency()*100+"",2),"","SYSTEMEFFICIENCY","","","","%",1,1,0));
 			
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("吨液百米耗电量","吨液百米耗电量",calculateResponseData.getSystemEfficiency().getEnergyPer100mLift()+"",calculateResponseData.getSystemEfficiency().getEnergyPer100mLift()+"","","ENERGYPER100MLIFT","","","","kW· h/100m· t",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("功图面积","功图面积",calculateResponseData.getFESDiagram().getArea()+"",calculateResponseData.getFESDiagram().getArea()+"","","AREA","","","","",1,1,0));
@@ -4958,11 +4961,11 @@ public class DriverAPIController extends BaseController{
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("油管伸缩量","油管伸缩量",calculateResponseData.getPumpEfficiency().getTubingFlexLength()+"",calculateResponseData.getPumpEfficiency().getTubingFlexLength()+"","","TUBINGFLEXLENGTH","","","","m",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("惯性载荷增量","惯性载荷增量",calculateResponseData.getPumpEfficiency().getInertiaLength()+"",calculateResponseData.getPumpEfficiency().getInertiaLength()+"","","INERTIALENGTH","","","","m",1,1,0));
 			
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("冲程损失系数","冲程损失系数",calculateResponseData.getPumpEfficiency().getPumpEff1()+"",calculateResponseData.getPumpEfficiency().getPumpEff1()+"","","PUMPEFF1","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("充满系数","充满系数",calculateResponseData.getPumpEfficiency().getPumpEff2()+"",calculateResponseData.getPumpEfficiency().getPumpEff2()+"","","PUMPEFF2","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("间隙漏失系数","间隙漏失系数",calculateResponseData.getPumpEfficiency().getPumpEff3()+"",calculateResponseData.getPumpEfficiency().getPumpEff3()+"","","PUMPEFF3","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("液体收缩系数","液体收缩系数",calculateResponseData.getPumpEfficiency().getPumpEff4()+"",calculateResponseData.getPumpEfficiency().getPumpEff4()+"","","PUMPEFF4","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("总泵效","总泵效",calculateResponseData.getPumpEfficiency().getPumpEff()+"",calculateResponseData.getPumpEfficiency().getPumpEff()+"","","PUMPEFF","","","","小数",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("冲程损失系数","冲程损失系数",StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff1()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff1()*100+"",2),"","PUMPEFF1","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("充满系数","充满系数",StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff2()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff2()*100+"",2),"","PUMPEFF2","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("间隙漏失系数","间隙漏失系数",StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff3()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff3()*100+"",2),"","PUMPEFF3","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("液体收缩系数","液体收缩系数",StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff4()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff4()*100+"",2),"","PUMPEFF4","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("总泵效","总泵效",StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff()*100+"",2),"","PUMPEFF","","","","%",1,1,0));
 			
 			//泵入口出口参数
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("泵入口压力","泵入口压力",calculateResponseData.getProduction().getPumpIntakeP()+"",calculateResponseData.getProduction().getPumpIntakeP()+"","","PUMPINTAKEP","","","","MPa",1,1,0));
@@ -5045,9 +5048,9 @@ public class DriverAPIController extends BaseController{
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("光杆功率","光杆功率","","","","POLISHRODPOWER","","","","kW",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("水功率","水功率","","","","WATERPOWER","","","","kW",1,1,0));
 			
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("地面效率","地面效率","","","","SURFACESYSTEMEFFICIENCY","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("井下效率","井下效率","","","","WELLDOWNSYSTEMEFFICIENCY","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("系统效率","系统效率","","","","SYSTEMEFFICIENCY","","","","小数",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("地面效率","地面效率","","","","SURFACESYSTEMEFFICIENCY","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("井下效率","井下效率","","","","WELLDOWNSYSTEMEFFICIENCY","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("系统效率","系统效率","","","","SYSTEMEFFICIENCY","","","","%",1,1,0));
 			
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("吨液百米耗电量","吨液百米耗电量","","","","ENERGYPER100MLIFT","","","","kW· h/100m· t",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("功图面积","功图面积","","","","AREA","","","","",1,1,0));
@@ -5057,11 +5060,11 @@ public class DriverAPIController extends BaseController{
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("油管伸缩量","油管伸缩量","","","","TUBINGFLEXLENGTH","","","","m",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("惯性载荷增量","惯性载荷增量","","","","INERTIALENGTH","","","","m",1,1,0));
 			
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("冲程损失系数","冲程损失系数","","","","PUMPEFF1","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("充满系数","充满系数","","","","PUMPEFF2","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("间隙漏失系数","间隙漏失系数","","","","PUMPEFF3","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("液体收缩系数","液体收缩系数","","","","PUMPEFF4","","","","小数",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("总泵效","总泵效","","","","PUMPEFF","","","","小数",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("冲程损失系数","冲程损失系数","","","","PUMPEFF1","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("充满系数","充满系数","","","","PUMPEFF2","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("间隙漏失系数","间隙漏失系数","","","","PUMPEFF3","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("液体收缩系数","液体收缩系数","","","","PUMPEFF4","","","","%",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("总泵效","总泵效","","","","PUMPEFF","","","","%",1,1,0));
 			
 			//泵入口出口参数
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("泵入口压力","泵入口压力","","","","PUMPINTAKEP","","","","MPa",1,1,0));
@@ -5100,12 +5103,12 @@ public class DriverAPIController extends BaseController{
 			//系统效率
 			calItemList.add(new ProtocolItemResolutionData("有功功率","有功功率",calculateResponseData.getSystemEfficiency().getMotorInputWatt()+"",calculateResponseData.getSystemEfficiency().getMotorInputWatt()+"","","AVERAGEWATT","","","","kW",1,1,0));
 			calItemList.add(new ProtocolItemResolutionData("水功率","水功率",calculateResponseData.getSystemEfficiency().getWaterPower()+"",calculateResponseData.getSystemEfficiency().getWaterPower()+"","","WATERPOWER","","","","kW",1,1,0));
-			calItemList.add(new ProtocolItemResolutionData("系统效率","系统效率",calculateResponseData.getSystemEfficiency().getSystemEfficiency()+"",calculateResponseData.getSystemEfficiency().getSystemEfficiency()+"","","SYSTEMEFFICIENCY","","","","小数",1,1,0));
+			calItemList.add(new ProtocolItemResolutionData("系统效率","系统效率",StringManagerUtils.dataFormat(calculateResponseData.getSystemEfficiency().getSystemEfficiency()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getSystemEfficiency().getSystemEfficiency()*100+"",2),"","SYSTEMEFFICIENCY","","","","%",1,1,0));
 			
 			//泵效
-			calItemList.add(new ProtocolItemResolutionData("容积效率","容积效率",calculateResponseData.getPumpEfficiency().getPumpEff1()+"",calculateResponseData.getPumpEfficiency().getPumpEff1()+"","","PUMPEFF1","","","","小数",1,1,0));
-			calItemList.add(new ProtocolItemResolutionData("液体收缩系数","液体收缩系数",calculateResponseData.getPumpEfficiency().getPumpEff2()+"",calculateResponseData.getPumpEfficiency().getPumpEff2()+"","","PUMPEFF2","","","","小数",1,1,0));
-			calItemList.add(new ProtocolItemResolutionData("总泵效","总泵效",calculateResponseData.getPumpEfficiency().getPumpEff()+"",calculateResponseData.getPumpEfficiency().getPumpEff()+"","","PUMPEFF","","","","小数",1,1,0));
+			calItemList.add(new ProtocolItemResolutionData("容积效率","容积效率",StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff1()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff1()*100+"",2),"","PUMPEFF1","","","","%",1,1,0));
+			calItemList.add(new ProtocolItemResolutionData("液体收缩系数","液体收缩系数",StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff2()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff2()*100+"",2),"","PUMPEFF2","","","","%",1,1,0));
+			calItemList.add(new ProtocolItemResolutionData("总泵效","总泵效",StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getPumpEfficiency().getPumpEff()*100+"",2),"","PUMPEFF","","","","%",1,1,0));
 			
 			//泵入口出口参数
 			calItemList.add(new ProtocolItemResolutionData("泵入口压力","泵入口压力",calculateResponseData.getProduction().getPumpIntakeP()+"",calculateResponseData.getProduction().getPumpIntakeP()+"","","PUMPINTAKEP","","","","MPa",1,1,0));
@@ -5150,16 +5153,16 @@ public class DriverAPIController extends BaseController{
 			//系统效率
 			calItemList.add(new ProtocolItemResolutionData("有功功率","有功功率","","","","AVERAGEWATT","","","","kW",1,1,0));
 			calItemList.add(new ProtocolItemResolutionData("水功率","水功率","","","","WATERPOWER","","","","kW",1,1,0));
-			calItemList.add(new ProtocolItemResolutionData("系统效率","系统效率","","","","SYSTEMEFFICIENCY","","","","小数",1,1,0));
+			calItemList.add(new ProtocolItemResolutionData("系统效率","系统效率","","","","SYSTEMEFFICIENCY","","","","%",1,1,0));
 			
 			//泵效
 			calItemList.add(new ProtocolItemResolutionData("抽油杆伸长量","抽油杆伸长量","","","","RODFLEXLENGTH","","","","m",1,1,0));
 			calItemList.add(new ProtocolItemResolutionData("油管伸缩量","油管伸缩量","","","","TUBINGFLEXLENGTH","","","","m",1,1,0));
 			calItemList.add(new ProtocolItemResolutionData("惯性载荷增量","惯性载荷增量","","","","INERTIALENGTH","","","","m",1,1,0));
 			
-			calItemList.add(new ProtocolItemResolutionData("容积效率","容积效率","","","","PUMPEFF1","","","","小数",1,1,0));
-			calItemList.add(new ProtocolItemResolutionData("液体收缩系数","液体收缩系数","","","","PUMPEFF2","","","","小数",1,1,0));
-			calItemList.add(new ProtocolItemResolutionData("总泵效","总泵效","","","","PUMPEFF","","","","小数",1,1,0));
+			calItemList.add(new ProtocolItemResolutionData("容积效率","容积效率","","","","PUMPEFF1","","","","%",1,1,0));
+			calItemList.add(new ProtocolItemResolutionData("液体收缩系数","液体收缩系数","","","","PUMPEFF2","","","","%",1,1,0));
+			calItemList.add(new ProtocolItemResolutionData("总泵效","总泵效","","","","PUMPEFF","","","","%",1,1,0));
 			
 			//泵入口出口参数
 			calItemList.add(new ProtocolItemResolutionData("泵入口压力","泵入口压力","","","","PUMPINTAKEP","","","","MPa",1,1,0));

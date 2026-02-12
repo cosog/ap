@@ -76,15 +76,11 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
             var selectRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
         	if(selectRow>=0){
         		var selectUnitReportTemplateCode='';
+        		var selectUnitName='';
         		var selectUnit = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0].data;
-            	if(selectUnit.classes==0){
-            		if(isNotVal(selectUnit.children) && selectUnit.children.length>0){
-            			selectUnitReportTemplateCode=selectUnit.children[0].productionReportTemplate;
-            		}else{
-            			
-            		}
-            	}else if(selectUnit.classes==1){
+            	if(selectUnit.classes==1){
             		selectUnitReportTemplateCode=selectUnit.productionReportTemplate;
+            		selectUnitName=selectUnit.text;
             	}
             	
             	var store = gridPanel.getStore();
@@ -104,7 +100,20 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
             			}
             			productionReportTemplateHandsontableHelper=null;
             		}
-            		Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle('区域报表模板：');
+            		if(productionReportTemplateContentHandsontableHelper!=null){
+            			if(productionReportTemplateContentHandsontableHelper.hot!=undefined){
+            				productionReportTemplateContentHandsontableHelper.hot.destroy();
+            			}
+            			productionReportTemplateContentHandsontableHelper=null;
+            		}
+            		
+            		if(selectUnit.classes==1){
+                		Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle(selectUnitName + '/'+loginUserLanguageResource.deviceDailyReportTemplate);
+                		Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").setTitle(selectUnitName + '/'+loginUserLanguageResource.deviceDailyReportContentConfig);
+            		}else{
+            			Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.areaDailyReportTemplate);
+                		Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.areaDailyReportContentConfig);
+            		}
             	}
         	}
 //            gridPanel.getSelectionModel().deselectAll(true);

@@ -76,15 +76,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
             var selectRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
         	if(selectRow>=0){
         		var selectUnitReportTemplateCode='';
+        		var selectUnitName='';
         		var selectUnit = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0].data;
-            	if(selectUnit.classes==0){
-            		if(isNotVal(selectUnit.children) && selectUnit.children.length>0){
-            			selectUnitReportTemplateCode=selectUnit.children[0].singleWellRangeReportTemplate;
-            		}else{
-            			
-            		}
-            	}else if(selectUnit.classes==1){
+        		
+            	if(selectUnit.classes==1){
             		selectUnitReportTemplateCode=selectUnit.singleWellRangeReportTemplate;
+            		selectUnitName=selectUnit.text;
             	}
             	
             	var store = gridPanel.getStore();
@@ -98,13 +95,27 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
 					}
 				}
             	if(!selected){
+            		if(singleWellRangeReportTemplateHandsontableHelper!=null){
+            			if(singleWellRangeReportTemplateHandsontableHelper.hot!=undefined){
+            				singleWellRangeReportTemplateHandsontableHelper.hot.destroy();
+            			}
+            			singleWellRangeReportTemplateHandsontableHelper=null;
+            		}
+            		
             		if(singleWellRangeReportTemplateContentHandsontableHelper!=null){
             			if(singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined){
             				singleWellRangeReportTemplateContentHandsontableHelper.hot.destroy();
             			}
             			singleWellRangeReportTemplateContentHandsontableHelper=null;
             		}
-            		Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceDailyReportTemplate);
+            		
+            		if(selectUnit.classes==1){
+                		Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle(selectUnitName + '/'+loginUserLanguageResource.deviceDailyReportTemplate);
+                		Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(selectUnitName + '/'+loginUserLanguageResource.deviceDailyReportContentConfig);
+            		}else{
+            			Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceDailyReportTemplate);
+                		Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceDailyReportContentConfig);
+            		}
             	}
         	}
         },

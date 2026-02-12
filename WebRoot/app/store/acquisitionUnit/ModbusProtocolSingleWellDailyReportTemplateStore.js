@@ -76,15 +76,12 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplate
             var selectRow= Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue();
         	if(selectRow>=0){
         		var selectUnitReportTemplateCode='';
+        		var selectUnitName='';
         		var selectUnit = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection()[0].data;
-            	if(selectUnit.classes==0){
-            		if(isNotVal(selectUnit.children) && selectUnit.children.length>0){
-            			selectUnitReportTemplateCode=selectUnit.children[0].singleWellDailyReportTemplate;
-            		}else{
-            			
-            		}
-            	}else if(selectUnit.classes==1){
+        		
+            	if(selectUnit.classes==1){
             		selectUnitReportTemplateCode=selectUnit.singleWellDailyReportTemplate;
+            		selectUnitName=selectUnit.text;
             	}
             	
             	var store = gridPanel.getStore();
@@ -104,7 +101,21 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellDailyReportTemplate
             			}
             			singleWellDailyReportTemplateHandsontableHelper=null;
             		}
-            		Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportTemplate);
+            		
+            		if(singleWellDailyReportTemplateContentHandsontableHelper!=null){
+            			if(singleWellDailyReportTemplateContentHandsontableHelper.hot!=undefined){
+            				singleWellDailyReportTemplateContentHandsontableHelper.hot.destroy();
+            			}
+            			singleWellDailyReportTemplateContentHandsontableHelper=null;
+            		}
+            		if(selectUnit.classes==1){
+            			Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle(selectUnitName + '/'+loginUserLanguageResource.deviceHourlyReportTemplate);
+                		Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(selectUnitName + '/'+loginUserLanguageResource.deviceHourlyReportContentConfig);
+            		}else{
+            			Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportTemplate);
+                		Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportContentConfig);
+            		}
+            		
             	}
         	}
         },

@@ -5904,7 +5904,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "t.calculateType,"
 				+ " decode(t.calculateType,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
 				+ "t.singleWellRangeReportTemplate,t.singleWellDailyReportTemplate,t.productionreporttemplate,"
-				+ "t.sort "
+				+ "t.classes, "
+				+ "t.sort"
 				+ " from tbl_report_unit_conf t "
 				+ " order by t.sort";
 		List<?> unitList=this.findCallSql(unitSql);
@@ -5920,7 +5921,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[5]+"\",");
 			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[6]+"\",");
 			tree_json.append("\"productionReportTemplate\":\""+obj[7]+"\",");
-			tree_json.append("\"sort\":\""+obj[8]+"\",");
+			tree_json.append("\"unitClasses\":\""+obj[8]+"\",");
+			tree_json.append("\"sort\":\""+obj[9]+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true");
 			tree_json.append("},");

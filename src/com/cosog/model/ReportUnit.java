@@ -26,6 +26,7 @@ public class ReportUnit implements java.io.Serializable {
 	private String singleWellRangeReportTemplate;
 	private String singleWellDailyReportTemplate;
 	private String productionReportTemplate;
+	private Integer classes;
 	private Integer sort;
 	// Constructors
 
@@ -35,7 +36,7 @@ public class ReportUnit implements java.io.Serializable {
 
 	/** full constructor */
 	public ReportUnit(Integer id, String unitCode, String unitName,Integer calculateType, String singleWellRangeReportTemplate,String singleWellDailyReportTemplate,
-			String productionReportTemplate, Integer sort) {
+			String productionReportTemplate, Integer classes, Integer sort) {
 		super();
 		this.id = id;
 		this.unitCode = unitCode;
@@ -44,6 +45,7 @@ public class ReportUnit implements java.io.Serializable {
 		this.singleWellRangeReportTemplate = singleWellRangeReportTemplate;
 		this.singleWellDailyReportTemplate = singleWellDailyReportTemplate;
 		this.productionReportTemplate = productionReportTemplate;
+		this.classes = classes;
 		this.sort = sort;
 	}
 
@@ -119,6 +121,15 @@ public class ReportUnit implements java.io.Serializable {
 
 	public void setCalculateType(Integer calculateType) {
 		this.calculateType = calculateType;
+	}
+
+	@Column(name = "classes")
+	public Integer getClasses() {
+		return classes;
+	}
+
+	public void setClasses(Integer classes) {
+		this.classes = classes;
 	}
 
 }

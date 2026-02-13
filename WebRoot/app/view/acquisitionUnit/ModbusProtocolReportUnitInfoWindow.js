@@ -63,6 +63,11 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
                 }
             },{
 				xtype : "hidden",
+				id : 'modbusProtocolReportUnitCalculateClasses_Id',
+				value: 0,
+				name : "reportUnit.classes"
+			},{
+				xtype : "hidden",
 				id : 'modbusProtocolReportUnitCalculateType_Id',
 				value: 0,
 				name : "reportUnit.calculateType"
@@ -89,6 +94,32 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 				listeners : {
 					select:function(v,o){
 						Ext.getCmp("modbusProtocolReportUnitCalculateType_Id").setValue(this.value);
+						
+					}
+				}
+            },{
+            	xtype : "combobox",
+				fieldLabel : '报表类别'+'<font color=red>*</font>',
+				id : 'modbusProtocolReportUnitCalculateClassesComb_Id',
+				anchor : '100%',
+				triggerAction : 'all',
+				selectOnFocus : false,
+			    forceSelection : true,
+			    value:0,
+			    allowBlank: false,
+				editable : false,
+				store : new Ext.data.SimpleStore({
+							fields : ['value', 'text'],
+							data : [[0, '标准报表'],[1, '水文井报表']]
+						}),
+				displayField : 'text',
+				valueField : 'value',
+				queryMode : 'local',
+				emptyText : '选择报表类别',
+				blankText : '选择报表类别',
+				listeners : {
+					select:function(v,o){
+						Ext.getCmp("modbusProtocolReportUnitCalculateClasses_Id").setValue(this.value);
 						
 					}
 				}

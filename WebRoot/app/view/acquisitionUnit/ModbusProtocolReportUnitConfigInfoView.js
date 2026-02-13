@@ -586,7 +586,7 @@ function CreateSingleWellRangeReportTemplateInfoTable(name, calculateType, code)
         url: context + '/acquisitionUnitManagerController/getReportTemplateData',
         success: function (response) {
             Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
-            Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceDailyReportTemplate+':' + name);
+            Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle(name+'/'+loginUserLanguageResource.deviceDailyReportTemplate);
             var result = Ext.JSON.decode(response.responseText);
 
             if (singleWellRangeReportTemplateHandsontableHelper != null) {
@@ -845,7 +845,7 @@ function CreateSingleWellDailyReportTemplateInfoTable(name, calculateType, code)
         url: context + '/acquisitionUnitManagerController/getReportTemplateData',
         success: function (response) {
             Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
-            Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportTemplate+':' + name);
+            Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle(name+'/'+loginUserLanguageResource.deviceHourlyReportTemplate);
             var result = Ext.JSON.decode(response.responseText);
 
             if (singleWellDailyReportTemplateHandsontableHelper != null) {
@@ -1838,7 +1838,7 @@ function CreateProductionReportTemplateInfoTable(name, calculateType, code) {
         url: context + '/acquisitionUnitManagerController/getReportTemplateData',
         success: function (response) {
             Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
-            Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.areaDailyReportTemplate+':' + name);
+            Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle(name+'/'+loginUserLanguageResource.areaDailyReportTemplate);
             var result = Ext.JSON.decode(response.responseText);
 
             if (productionReportTemplateHandsontableHelper != null) {

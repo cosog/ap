@@ -1213,6 +1213,52 @@ public class CalculateDataService<T> extends BaseService<T> {
 		return null;
 	}
 	
+	public List<String> AcquisitionDataTimingRecord(String timeStr,String deviceIdStr){
+		ThreadPool executor = new ThreadPool("AcquisitionDataTinmingRecord",
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getCorePoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getMaximumPoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getKeepAliveTime(), 
+				TimeUnit.SECONDS, 
+				Config.getInstance().configFile.getAp().getThreadPool().getTimingTotalCalculate().getWattingCount());
+		
+		String sql="select t.id,t.devicename,t3.singleWellDailyReportTemplate,t2.unitid "
+				+ " from tbl_device t "
+				+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
+				+ " left outer join tbl_report_unit_conf t3 on t2.unitid=t3.id "
+				+ " where 1=1";
+//		sql+=" and t.id=1";
+		if(StringManagerUtils.isNotNull(deviceIdStr)){
+			sql+= " and t.id in ("+deviceIdStr+")";
+		}
+		sql+= " order by t.id";
+		List<?> welllist = findCallSql(sql);
+		for(int i=0;i<welllist.size();i++){
+			try{
+				Object[] wellObj=(Object[]) welllist.get(i);
+				int deviceId=StringManagerUtils.stringToInteger(wellObj[0]+"");
+				String deviceName=wellObj[1]+"";
+				String templateCode=(wellObj[2]+"").replaceAll("null", ""); 
+				String reportUnitId=wellObj[3]+"";
+				TimingTotalCalculateThread thread=new TimingTotalCalculateThread(deviceId, deviceId, deviceName, timeStr, templateCode,
+						reportUnitId, 10);
+				executor.execute(thread);
+			}catch(Exception e){
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		while (!executor.isCompletedByTaskCount()) {
+			try {
+				Thread.sleep(1000*1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+	    }
+		
+		return null;
+	}
+	
 	public List<String> getRPMDailyCalculationRequestData(String tatalDate,String deviceIds) throws ParseException{
 		String date="";
 		Gson gson = new Gson();
@@ -1599,15 +1645,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 		List<?> instanceList = this.findCallSql(instanceSql);
 		if(instanceList.size()>0){
 			ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
-			if(reportTemplate!=null && reportTemplate.getSingleWellRangeReportTemplate()!=null && reportTemplate.getSingleWellRangeReportTemplate().size()>0){
+			if(reportTemplate!=null && reportTemplate.getClasses0()!=null && reportTemplate.getClasses0().getSingleWellRangeReportTemplate()!=null && reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size()>0){
 				for(int i=0;i<instanceList.size();i++){
 					Object[] instanceObj=(Object[]) instanceList.get(i);
 					String instanceCode=(instanceObj[1]+"").replaceAll("null", "");
 					String unitId=(instanceObj[2]+"").replaceAll("null", "");
 					String templateCode=(instanceObj[3]+"").replaceAll("null", "");
 					if(StringManagerUtils.isNotNull(templateCode)){
-						for(int j=0;j<reportTemplate.getSingleWellRangeReportTemplate().size();j++){
-							ReportTemplate.Template template=reportTemplate.getSingleWellRangeReportTemplate().get(j);
+						for(int j=0;j<reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size();j++){
+							ReportTemplate.Template template=reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(j);
 							if(templateCode.equalsIgnoreCase(template.getTemplateCode())){
 								if(template.getEditable()!=null && template.getEditable().size()>0){
 									String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype "

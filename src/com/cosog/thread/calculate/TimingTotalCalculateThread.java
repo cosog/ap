@@ -768,6 +768,171 @@ public class TimingTotalCalculateThread extends Thread {
                     e.printStackTrace();
                 }
             }
+        }else if(calculateType == 10){//定时记录
+        	Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+    		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+    		
+    		DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId+"");
+    		RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
+
+    		if(realtimeTotalInfo!=null && realtimeTotalInfo.getAcqTime()!=null){
+    			TimeEffResponseData timeEffResponseData = null;
+                CommResponseData commResponseData = null;
+
+                String lastRunTime = "";
+                String lastCommTime = "";
+
+                int commStatus = 0;
+                float commTime = 0;
+                float commTimeEfficiency = 0;
+                String commRange = "";
+
+                int runStatus = 0;
+                float runTime = 0;
+                float runTimeEfficiency = 0;
+                String runRange = "";
+
+
+
+                String insertSql = "";
+
+                String insertColumn="deviceid,acqtime,savetime";
+                String insertValue=deviceId+","
+                		+ "to_date('"+realtimeTotalInfo.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')"+","
+                		+ "to_date('"+timeStr+"','yyyy-mm-dd hh24:mi:ss')";
+                List<String> clobCont=new ArrayList<String>();
+                
+                //通信计算
+                if(realtimeTotalInfo!=null){
+                	lastCommTime = realtimeTotalInfo.getAcqTime();
+                    commStatus = realtimeTotalInfo.getCommStatus();
+                    commTimeEfficiency = realtimeTotalInfo.getCommEff();
+                    commTime = realtimeTotalInfo.getCommTime();
+                    commRange = realtimeTotalInfo.getCommRange();
+                    lastRunTime = realtimeTotalInfo.getAcqTime();
+                    runStatus = realtimeTotalInfo.getRunStatus();
+                    runTimeEfficiency = realtimeTotalInfo.getRunEff();
+                    runTime = realtimeTotalInfo.getRunTime();
+                    runRange = realtimeTotalInfo.getRunRange();
+                }else{
+                	lastCommTime = deviceInfo.getAcqTime();
+                    commStatus = deviceInfo.getCommStatus();
+                    commTimeEfficiency = deviceInfo.getCommEff();
+                    commTime = deviceInfo.getCommTime();
+                    commRange = deviceInfo.getCommRange();
+                    lastRunTime = deviceInfo.getAcqTime();
+                    runStatus = deviceInfo.getRunStatus();
+                    runTimeEfficiency = deviceInfo.getRunEff();
+                    runTime = deviceInfo.getRunTime();
+                    runRange = deviceInfo.getRunRange();
+                }
+                
+                String commTotalRequestData = "{" +
+                    "\"AKString\":\"\"," +
+                    "\"WellName\":\"" + deviceName + "\"," +
+                    "\"OffsetHour\":" + offsetHour + "," +
+                    "\"Last\":{" +
+                    "\"AcqTime\": \"" + lastCommTime + "\"," +
+                    "\"CommStatus\": " + (commStatus>= 1) + "," +
+                    "\"CommEfficiency\": {" +
+                    "\"Efficiency\": " + commTimeEfficiency + "," +
+                    "\"Time\": " + commTime + "," +
+                    "\"Range\": " + StringManagerUtils.getWellRuningRangeJson(commRange) + "" +
+                    "}" +
+                    "}," +
+                    "\"Current\": {" +
+                    "\"AcqTime\":\"" + timeStr + "\"," +
+                    "\"CommStatus\":" + (commStatus>= 1) + "" +
+                    "}" +
+                    "}";
+                commResponseData = CalculateUtils.commCalculate(commTotalRequestData);
+
+                insertColumn += ",CommStatus";
+                insertValue +=","+commStatus;
+                if (commResponseData != null && commResponseData.getResultStatus() == 1) {
+                    if (timeStr.equalsIgnoreCase(range.getEndTime()) && commResponseData.getDaily() != null && StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())) {
+                        commTime = commResponseData.getDaily().getCommEfficiency().getTime();
+                        commTimeEfficiency = commResponseData.getDaily().getCommEfficiency().getEfficiency();
+                        commRange = commResponseData.getDaily().getCommEfficiency().getRangeString();
+                    } else {
+                        commTime = commResponseData.getCurrent().getCommEfficiency().getTime();
+                        commTimeEfficiency = commResponseData.getCurrent().getCommEfficiency().getEfficiency();
+                        commRange = commResponseData.getCurrent().getCommEfficiency().getRangeString();
+                    }
+                    
+                    insertColumn += ",commTimeEfficiency,commTime,commRange";
+                    insertValue +=","+commTimeEfficiency+","+commTime+",?";
+                    
+                    
+                    clobCont.add(commRange);
+                }
+               
+                //时率计算
+                String runTotalRequestData = "{" +
+                    "\"AKString\":\"\"," +
+                    "\"WellName\":\"" + deviceName + "\"," +
+                    "\"OffsetHour\":" + offsetHour + "," +
+                    "\"Last\":{" +
+                    "\"AcqTime\": \"" + lastRunTime + "\"," +
+                    "\"RunStatus\": " + (runStatus>= 1) + "," +
+                    "\"RunEfficiency\": {" +
+                    "\"Efficiency\": " + runTimeEfficiency + "," +
+                    "\"Time\": " + runTime + "," +
+                    "\"Range\": " + StringManagerUtils.getWellRuningRangeJson(runRange) + "" +
+                    "}" +
+                    "}," +
+                    "\"Current\": {" +
+                    "\"AcqTime\":\"" + timeStr + "\"," +
+                    "\"RunStatus\":" + (runStatus>= 1) + "" +
+                    "}" +
+                    "}";
+                timeEffResponseData = CalculateUtils.runCalculate(runTotalRequestData);
+                insertColumn += ",runStatus";
+                insertValue +=","+runStatus;
+                
+                if (timeEffResponseData != null && timeEffResponseData.getResultStatus() == 1) {
+                    if (timeStr.equalsIgnoreCase(range.getEndTime()) && timeEffResponseData.getDaily() != null && StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())) {
+                        runTime = timeEffResponseData.getDaily().getRunEfficiency().getTime();
+                        runTimeEfficiency = timeEffResponseData.getDaily().getRunEfficiency().getEfficiency();
+                        runRange = timeEffResponseData.getDaily().getRunEfficiency().getRangeString();
+                    } else {
+                        runTime = timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+                        runTimeEfficiency = timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
+                        runRange = timeEffResponseData.getCurrent().getRunEfficiency().getRangeString();
+                    }
+                    insertColumn += ",runTimeEfficiency,runTime,runRange";
+                    insertValue +=","+runTimeEfficiency+","+runTime+",?";
+                    
+                    clobCont.add(runRange);
+                }
+                
+                List<KeyValue> acqDataList=new ArrayList<>();
+
+                if(realtimeTotalInfo!=null && realtimeTotalInfo.getTotalItemMap()!=null){
+    				Map<String, RealtimeTotalInfo.TotalItem> totalItemMap=realtimeTotalInfo.getTotalItemMap();
+    				Iterator<Map.Entry<String, RealtimeTotalInfo.TotalItem>> totalItemMapIterator = totalItemMap.entrySet().iterator();
+    				while (totalItemMapIterator.hasNext()) {
+    					Map.Entry<String, RealtimeTotalInfo.TotalItem> entry = totalItemMapIterator.next();
+    					 String itemCode=entry.getKey();
+    					 RealtimeTotalInfo.TotalItem totalItem=entry.getValue();
+    					 String tatalValue=totalItem.getTotalStatus().getNewestValue()+"";
+    					 
+    					 KeyValue keyValue=new KeyValue(itemCode,tatalValue);
+    					 acqDataList.add(keyValue);
+    				}
+                }
+                insertColumn += ",acqdata";
+                insertValue +=",?";
+                clobCont.add(new Gson().toJson(acqDataList));
+               
+                insertSql = "insert into tbl_timingrecorddata ("+insertColumn+") values ("+insertValue+")";
+                try {
+    				OracleJdbcUtis.executeSqlUpdateClob(insertSql, clobCont);
+    			} catch (SQLException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+    		}
         }else{
         	Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
     		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
@@ -1031,7 +1196,7 @@ public class TimingTotalCalculateThread extends Thread {
         }
 
         long calculateEndTime = System.nanoTime();
-        StringManagerUtils.printLog("定时汇总计算：" + (calculateType == 1 ? "抽油机井" : (calculateType == 2 ? "螺杆泵井" : "")) + deviceName + ",timeStr=" + timeStr + ",threadId=" + threadId + ",总耗时:" + StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime),0);
+        StringManagerUtils.printLog( (calculateType == 10?"采集数据定时记录：":"定时汇总计算：") + (calculateType == 1 ? "抽油机井" : (calculateType == 2 ? "螺杆泵井" : "")) + deviceName + ",timeStr=" + timeStr + ",threadId=" + threadId + ",总耗时:" + StringManagerUtils.getTimeDiff(calculateStartTime, calculateEndTime),0);
     }
 
     public int getThreadId() {

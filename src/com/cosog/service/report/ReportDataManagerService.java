@@ -5607,9 +5607,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		int totalCount=0;
 		if(reportTemplate!=null){
 			List<?> list = this.findCallSql(sql);
-			List<Template> templateList=reportTemplate.getSingleWellRangeReportTemplate();
+			List<Template> templateList=reportTemplate.getClasses0().getSingleWellRangeReportTemplate();
 			if(StringManagerUtils.stringToInteger(reportType)==1){
-				templateList=reportTemplate.getProductionReportTemplate();
+				templateList=reportTemplate.getClasses0().getProductionReportTemplate();
 			}
 			for(int i=0;i<templateList.size();i++){
 				for(int j=0;j<list.size();j++){

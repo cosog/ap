@@ -18,7 +18,18 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses1ConfigInfoVi
                     html: '<div class="ReportUnitClasses1TemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitClasses1TemplateTableInfoDiv_id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	
+                            if (hydrologicalWellDailyReportTemplateHandsontableHelper != null && hydrologicalWellDailyReportTemplateHandsontableHelper.hot != null && hydrologicalWellDailyReportTemplateHandsontableHelper.hot != undefined) {
+                                var newWidth = width;
+                                var newHeight = height;
+                                var header = thisPanel.getHeader();
+                                if (header) {
+                                    newHeight = newHeight - header.lastBox.height - 2;
+                                }
+                                hydrologicalWellDailyReportTemplateHandsontableHelper.hot.updateSettings({
+                                    width: newWidth,
+                                    height: newHeight
+                                });
+                            }
                         }
                     }
             	}, {
@@ -34,7 +45,18 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses1ConfigInfoVi
                     html: '<div class="ReportUnitClasses1ContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitClasses1ContentConfigTableInfoDiv_id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	
+                            if (hydrologicalWellDailyReportContentHandsontableHelper != null && hydrologicalWellDailyReportContentHandsontableHelper.hot != null && hydrologicalWellDailyReportContentHandsontableHelper.hot != undefined) {
+                                var newWidth = width;
+                                var newHeight = height;
+                                var header = thisPanel.getHeader();
+                                if (header) {
+                                    newHeight = newHeight - header.lastBox.height - 2;
+                                }
+                                hydrologicalWellDailyReportContentHandsontableHelper.hot.updateSettings({
+                                    width: newWidth,
+                                    height: newHeight
+                                });
+                            }
                         }
                     }
             	}]

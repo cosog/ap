@@ -1500,6 +1500,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getHydrologicalWellReportTemplateData")
+	public String getHydrologicalWellReportTemplateData() throws Exception {
+		String json = "";
+		json = acquisitionUnitItemManagerService.getHydrologicalWellReportTemplateData();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getModbusProtocolNumAlarmItemsConfigData")
 	public String getModbusProtocolNumAlarmItemsConfigData() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
@@ -1777,6 +1790,30 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = "";
 		json = acquisitionUnitItemManagerService.getReportUnitTotalItemsConfigColInfoData(calculateType,reportType,templateCode,unitId,classes,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getHydrologicalWellReportUnitItemsConfigColInfoData")
+	public String getHydrologicalWellReportUnitItemsConfigColInfoData() throws Exception {
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String templateCode = ParamUtils.getParameter(request, "templateCode");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		String classes = ParamUtils.getParameter(request, "classes");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = "";
+		json = acquisitionUnitItemManagerService.getHydrologicalWellReportUnitItemsConfigColInfoData(unitId,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

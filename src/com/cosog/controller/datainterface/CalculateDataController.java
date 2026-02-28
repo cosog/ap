@@ -449,6 +449,32 @@ public class CalculateDataController extends BaseController{
 		return null;
 	}
 	
+	@RequestMapping("/AcquisitionDataTimingRecord")
+	public String AcquisitionDataTimingRecord() throws ParseException, SQLException, IOException{
+		String time=ParamUtils.getParameter(request, "time");
+		String deviceId=ParamUtils.getParameter(request, "deviceId");
+		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
+		
+		long t1 = System.nanoTime();
+		calculateDataService.AcquisitionDataTimingRecord(timeStr,deviceId);
+		long t2 = System.nanoTime();
+		StringManagerUtils.printLog("采集数据定时记录完成"+ ",总耗时:" + StringManagerUtils.getTimeDiff(t1, t2),0);
+		
+		String json ="";
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	//设置字符串utf-8编码
     public static String StringToUTF8(String xml,String type){
     	StringBuffer sb = new StringBuffer();

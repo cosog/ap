@@ -37,6 +37,8 @@ var productionReportTemplateHandsontableHelper = null;
 var productionReportTemplateContentHandsontableHelper = null;
 var singleWellDailyReportTemplateHandsontableHelper = null;
 var singleWellDailyReportTemplateContentHandsontableHelper = null;
+var hydrologicalWellDailyReportTemplateHandsontableHelper=null;
+var hydrologicalWellDailyReportContentHandsontableHelper=null;
 
 //采控实例
 var protocolConfigInstancePropertiesHandsontableHelper=null;
@@ -462,6 +464,18 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     						singleWellDailyReportTemplateContentHandsontableHelper.hot.destroy();
     					}
     					singleWellDailyReportTemplateContentHandsontableHelper=null;
+    				}
+    				if(hydrologicalWellDailyReportTemplateHandsontableHelper!=null){
+    					if(hydrologicalWellDailyReportTemplateHandsontableHelper.hot!=undefined){
+    						hydrologicalWellDailyReportTemplateHandsontableHelper.hot.destroy();
+    					}
+    					hydrologicalWellDailyReportTemplateHandsontableHelper=null;
+    				}
+    				if(hydrologicalWellDailyReportContentHandsontableHelper!=null){
+    					if(hydrologicalWellDailyReportContentHandsontableHelper.hot!=undefined){
+    						hydrologicalWellDailyReportContentHandsontableHelper.hot.destroy();
+    					}
+    					hydrologicalWellDailyReportContentHandsontableHelper=null;
     				}
     			},
     			afterrender: function ( panel, eOpts) {}

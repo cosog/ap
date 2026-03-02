@@ -5584,6 +5584,41 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
+	public String getHydrologicalWellDeviceList(String orgId,String deviceName,String language){
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		String tableName="viw_device";
+		String sql="select t.id,t.deviceName,t.calculateType"
+				+ " from "+tableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+				+ " where  t.reportinstancecode=t2.code and t2.unitid=t3.id and t3.classes=1"
+				+ " and t.orgid in ("+orgId+")";
+		
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and t.deviceName='"+deviceName+"'";
+		}
+		sql+=" order by t.sortnum,t.deviceName";
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(sql);
+		String columns = "["
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\" ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"deviceName\":\""+obj[1]+"\",");
+			result_json.append("\"calculateType\":\""+obj[2]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
 	public String getReportTemplateList(String orgId,String deviceName,String deviceType,String reportType,String language){
 		StringBuffer result_json = new StringBuffer();
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
@@ -5671,5 +5706,666 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]}");
 		return result_json.toString();
+	}
+	
+	public String loadHydrologicalWellReportDeviceComboxList(Page pager,String orgId,String deviceName,String language) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer sqlCuswhere = new StringBuffer();
+		String tableName="viw_device";
+		String sql = " select  t.deviceName as deviceName,t.deviceName as dm "
+				+ " from  "+tableName+" t,tbl_org  g,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+				+ " where t.orgId=g.org_id  "
+				+ " and t.reportinstancecode=t2.code and t2.unitid=t3.id "
+				+ " and t3.classes=1"
+				+ " and g.org_id in ("+ orgId + ")";
+		if (StringManagerUtils.isNotNull(deviceName)) {
+			sql += " and t.deviceName like '%" + deviceName + "%'";
+		}
+		sql += " order by t.sortNum, t.deviceName";
+		sqlCuswhere.append("select * from   ( select a.*,rownum as rn from (");
+		sqlCuswhere.append(""+sql);
+		int maxvalue=pager.getLimit()+pager.getStart();
+		sqlCuswhere.append(" ) a where  rownum <="+maxvalue+") b");
+		sqlCuswhere.append(" where rn >"+pager.getStart());
+		String finalsql=sqlCuswhere.toString();
+		try {
+			int totals=this.getTotalCountRows(sql);
+			List<?> list = this.findCallSql(finalsql);
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+			String get_key = "";
+			String get_val = "";
+			if (null != list && list.size() > 0) {
+				for (Object o : list) {
+					Object[] obj = (Object[]) o;
+					get_key = obj[0] + "";
+					get_val = (String) obj[1];
+					result_json.append("{boxkey:\"" + get_key + "\",");
+					result_json.append("boxval:\"" + get_val + "\"},");
+				}
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+			}
+			result_json.append("]}");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result_json.toString();
+	}
+	
+	public String getHydrologicalWellReportData(Page pager, String orgId,
+			String deviceId,String deviceName,
+			String startDate,String endDate,String reportDate,
+			String timeType,
+			int userNo,String language)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		Gson gson =new Gson();
+		java.lang.reflect.Type type=null;
+		String reportUnitId="";
+		String deviceTableName="viw_device";
+		String calTotalTableName="";
+		
+		List<List<String>> dataList=new ArrayList<>();
+		int totalCount=0;
+		int timeColIndex=-99;
+		int deviceNameColIndex=-99;
+		String maxTimeStr="";
+//		List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
+		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		
+		int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+		String timeEfficiencyUnit=languageResourceMap.get("decimals");
+		int timeEfficiencyZoom=1;
+		if(timeEfficiencyUnitType==2){
+			timeEfficiencyUnit="%";
+			timeEfficiencyZoom=100;
+		}
+		
+		ReportTemplate.Template template=MemoryDataManagerTask.getHydrologicalWellTemplate();
+		ModbusProtocolConfig.Protocol protocol=null;
+		String reportTemplateCodeSql="select t3.id,t5.protocol "
+				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3,"
+				+ " tbl_protocolinstance t4,tbl_acq_unit_conf t5 "
+				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+				+ " and t.instancecode=t4.code and t4.unitid=t5.id"
+				+ " and t.id="+deviceId;
+		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
+		if(reportTemplateCodeList.size()>0){
+			Object[] obj=(Object[]) reportTemplateCodeList.get(0);
+			reportUnitId=(obj[0]+"").replaceAll("null", "");
+			protocol=MemoryDataManagerTask.getProtocolByCode(obj[1]+"");
+		}
+		
+		if(template!=null){
+			int columnCount=0;
+			if("zh_CN".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+					columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_zh_CN().size();i++){
+						String header=template.getHeader().get(0).getTitle_zh_CN().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_zh_CN().set(i, header.replaceAll("deviceNameLabel", deviceName));
+						}
+					}
+				}
+			}else if("en".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+					columnCount=template.getHeader().get(0).getTitle_en().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_en().size();i++){
+						String header=template.getHeader().get(0).getTitle_en().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_en().set(i, header.replaceAll("deviceNameLabel", deviceName));
+						}
+					}
+				}
+			}else if("ru".equalsIgnoreCase(language)){
+				if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+					columnCount=template.getHeader().get(0).getTitle_ru().size();
+					for(int i=0;i<template.getHeader().get(0).getTitle_ru().size();i++){
+						String header=template.getHeader().get(0).getTitle_ru().get(i);
+						if(StringManagerUtils.isNotNull(header)){
+							template.getHeader().get(0).getTitle_ru().set(i, header.replaceAll("deviceNameLabel", deviceName));
+						}
+					}
+				}
+			}
+			
+			
+			
+			String templateStr=gson.toJson(template).replace("label", "");
+			if(timeEfficiencyUnitType==2){
+				templateStr=templateStr.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				templateStr=templateStr.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			
+			result_json.append("{\"success\":true,\"template\":"+templateStr+",");
+			
+			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec,t.totalType,t.dataSource "
+					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+					+ " where t.unitid="+reportUnitId+" "
+					+ " and t.sort>=0"
+					+ " and t.sort<="+columnCount
+					+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+					+ " order by t.sort";
+			List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+			List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
+			List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+			for(int i=0;i<reportItemQuertList.size();i++){
+				Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+				ReportUnitItem reportUnitItem=new ReportUnitItem();
+				reportUnitItem.setItemName(reportItemObj[0]+"");
+				reportUnitItem.setItemCode(reportItemObj[1]+"");
+				reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+				reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+				String precStr=(reportItemObj[4]+"").replaceAll("null", "");
+				if(StringManagerUtils.isNumber(precStr)){
+					reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+				}else{
+					reportUnitItem.setPrec(-1);
+				}
+				reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
+				reportUnitItem.setDataSource(StringManagerUtils.stringToInteger(reportItemObj[6]+""));
+				if(reportUnitItem.getDataSource()==0){
+					reportAcqItemList.add(reportUnitItem);
+				}else{
+					reportOtherItemList.add(reportUnitItem);
+				}
+			}
+			
+			StringBuffer sqlBuff = new StringBuffer();
+			sqlBuff.append("select t.id,to_char(t.savetime@'yyyy-mm-dd hh24:mi:ss')");
+			
+			if(reportAcqItemList.size()>0){
+				sqlBuff.append(",t.acqdata");
+			}
+			
+			for(int i=0;i<reportOtherItemList.size();i++){
+				String tableAlias="t";
+				String column=reportOtherItemList.get(i).getItemCode();
+				
+				if(reportOtherItemList.get(i).getDataType()==3){
+					sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') ");
+				}else if(reportOtherItemList.get(i).getDataType()==4 || reportOtherItemList.get(i).getDataType()==5){
+					sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') ");
+				}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
+					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom;
+					}
+					sqlBuff.append(",round("+tableAlias+"."+column+","+reportOtherItemList.get(i).getPrec()+")");
+				}else{
+					if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+						column=column+"*"+timeEfficiencyZoom;
+					}
+					sqlBuff.append(","+tableAlias+"."+column+" as "+column);
+				}
+				
+				if(timeColIndex<0 && "SaveTime".equalsIgnoreCase(column)){
+					timeColIndex=reportOtherItemList.get(i).getSort()-1;
+				}
+				
+				if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(column)){
+					deviceNameColIndex=reportOtherItemList.get(i).getSort()-1;
+				}
+			}
+			
+			
+			sqlBuff.append(" from tbl_timingrecorddata t ");
+			
+			sqlBuff.append(" where 1=1");
+			sqlBuff.append(" and t.deviceId="+deviceId+" ");
+			sqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime<= to_date('"+reportDate+"','yyyy-mm-dd')+1");
+			
+			if(StringManagerUtils.stringToInteger(timeType)!=1){
+//				sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+			}else{
+				sqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime<= to_date('"+reportDate+"','yyyy-mm-dd')+1");
+			}
+			
+			sqlBuff.append(" order by t.SaveTime");
+			
+			List<String> allColList=new ArrayList<String>();
+			
+			String sql=sqlBuff.toString().replaceAll("@", ",");
+			List<?> reportDataList = this.findCallSql(sql);
+			totalCount=reportDataList.size();
+			for(int i=0;i<reportDataList.size();i++){
+				Object[] reportDataObj=(Object[]) reportDataList.get(i);
+				String recordId=reportDataObj[0]+"";
+				maxTimeStr=reportDataObj[1]+"";
+				
+				List<String> everyDaya=new ArrayList<String>();
+				for(int j=0;j<columnCount;j++){
+					everyDaya.add("");
+				}
+				everyDaya.set(0, (i+1)+"");
+				everyDaya.add(recordId);
+				
+				int startIndex=2;
+				if(reportAcqItemList.size()>0){
+					startIndex=3;
+					String acqData=StringManagerUtils.CLOBObjectToString(reportDataObj[2]);
+					type = new TypeToken<List<KeyValue>>() {}.getType();
+					List<KeyValue> calDataList=gson.fromJson(acqData, type);
+					
+					for(ReportUnitItem reportUnitItem:reportAcqItemList){
+						String addValue="";
+						int prec=reportUnitItem.getPrec();
+						if(calDataList!=null){
+							for(KeyValue keyValue:calDataList){
+								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+									addValue=keyValue.getValue();
+									break;
+								}
+							}
+						}
+						
+						if(StringManagerUtils.isNotNull(addValue)){
+							if(StringManagerUtils.isNum(addValue)){
+								if(prec<0  && protocol!=null ){
+									ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+									if(item!=null){
+										prec=item.getPrec();
+									}
+								}
+								if(prec>=0){
+									addValue=StringManagerUtils.dataFormat(addValue, prec);
+								}
+							}
+						}
+						everyDaya.set(reportUnitItem.getSort()-1, addValue);
+					}
+				}
+				
+				for(int j=0;j<reportOtherItemList.size();j++){
+					if(reportOtherItemList.get(j).getSort()>=1){
+						String addValue="";
+						String column=reportOtherItemList.get(j).getItemCode();
+						if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+							addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
+						}else{
+							addValue=reportDataObj[j+startIndex]+"";
+						}
+						everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+					}
+				}
+				dataList.add(everyDaya);
+				
+				
+				if(allColList.size()==0){
+					for(int j=0;j<columnCount;j++){
+						allColList.add("\"\"");
+					}
+					allColList.add("\"recordId\"");
+					for(int j=0;j<reportAcqItemList.size();j++){
+						if(reportAcqItemList.get(j).getSort()>=1){
+							allColList.set(reportAcqItemList.get(j).getSort()-1, "\""+reportAcqItemList.get(j).getItemCode()+"\"");
+						}
+					}
+					for(int j=0;j<reportOtherItemList.size();j++){
+						if(reportOtherItemList.get(j).getSort()>=1){
+							allColList.set(reportOtherItemList.get(j).getSort()-1, "\""+reportOtherItemList.get(j).getItemCode()+"\"");
+						}
+					}
+				}
+			}
+			
+			//补充记录
+//			long timeDiff=StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(defaultTimeList.size()-1), "yyyy-MM-dd HH:mm:ss");
+//			if(timeDiff>0){
+//				int rownum=totalCount+1;
+//				for(int i=0;i<defaultTimeList.size();i++){
+//					if(StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss")>0){
+//						List<String> everyDaya=new ArrayList<String>();
+//						for(int j=0;j<columnCount;j++){
+//							everyDaya.add("");
+//						}
+//						everyDaya.set(0, rownum+"");
+//						everyDaya.add("-99");
+//						
+//						if(timeColIndex>=0){
+//							everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss", "HH:mm"));
+//						}
+//						if(deviceNameColIndex>=0){
+//							everyDaya.set(deviceNameColIndex,deviceName);
+//						}
+//						dataList.add(everyDaya);
+//						rownum++;
+//					}
+//				}
+//			}
+			result_json.append("\"data\":"+gson.toJson(dataList)+",\"columns\":"+allColList.toString());
+		}else{
+			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"columns\":[]");
+		}
+		result_json.append(",\"deviceName\":\""+deviceName+"\"");
+		result_json.append(",\"startDate\":\""+startDate+"\"");
+		result_json.append(",\"endDate\":\""+endDate+"\"");
+		result_json.append(",\"reportDate\":\""+reportDate+"\"");
+		result_json.append(",\"totalCount\":"+totalCount+"");
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getHydrologicalWellReportCurveData(Page pager, String orgId,
+			String deviceId,String deviceName,
+			String startDate,String endDate,String reportDate,String timeType,
+			User user)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer itemsBuff = new StringBuffer();
+		StringBuffer itemsCodeBuff = new StringBuffer();
+		StringBuffer curveConfBuff = new StringBuffer();
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		
+//		List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
+		
+		Gson gson = new Gson();
+		java.lang.reflect.Type reflectType=null;
+		
+		ConfigFile configFile=Config.getInstance().configFile;
+		String reportUnitId="";
+		String graphicSet="{}";
+		
+		String graphicSetTableName="tbl_devicegraphicset";
+		String deviceTableName="viw_device";
+		
+		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.deviceId="+deviceId;
+		List<?> graphicSetList = this.findCallSql(graphicSetSql);
+		if(graphicSetList.size()>0){
+			graphicSet=graphicSetList.get(0).toString().replaceAll("\r\n", "").replaceAll("\n", "");
+		}
+		
+		Protocol protocol=null;
+		AcqInstanceOwnItem  acqInstanceOwnItem=null;
+		
+		String protocolSql="select upper(t3.protocol),t.instancecode from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t.instancecode=t2.code and t2.unitid=t3.id"
+				+ " and  t.id="+deviceId;
+		List<?> protocolList = this.findCallSql(protocolSql);
+		if(protocolList.size()>0){
+			Object[] obj=(Object[]) protocolList.get(0);
+			protocol=MemoryDataManagerTask.getProtocolByCode(obj[0]+"");
+			acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(obj[1]+"");
+		}
+		
+		
+		String reportTemplateCodeSql="select t3.id,t3.singleWellDailyReportTemplate,t3.productionreporttemplate,t3.calculateType "
+				+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3 "
+				+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+				+ " and t.id="+deviceId;
+		List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
+		if(reportTemplateCodeList.size()>0){
+			Object[] obj=(Object[]) reportTemplateCodeList.get(0);
+			reportUnitId=(obj[0]+"").replaceAll("null", "");
+		}
+		
+		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype,t.prec,t.totalType,t.dataSource "
+				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
+				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
+				+ " and t3.id="+deviceId
+				+ " and t.sort>=0"
+				+ " and t.reportcurveconf is not null "
+				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+user.getUserNo()+"))"
+				+ " order by t.sort,t.id";
+		
+		List<String> calTimeList=new ArrayList<>();
+		Map<Integer,String> itemNameMap=new TreeMap<>();
+		Map<String,Integer> itemCodeSortMap=new HashMap<>();
+		Map<Integer,String> itemCodeMap=new TreeMap<>();
+		Map<Integer,String> curveConfMap=new TreeMap<>();
+		Map<Integer,Integer> totalTypeMap=new TreeMap<>();
+		Map<Integer,Integer> precMap=new TreeMap<>();
+		Map<Integer,List<String>> curveDataMap=new TreeMap<>();
+		
+		List<String> acqItemColumnList=new ArrayList<String>();
+		List<String> calItemColumnList=new ArrayList<String>();
+		List<String> inputItemColumnList=new ArrayList<String>();
+		
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+		
+		List<?> reportCurveItemQuertList = this.findCallSql(reportCurveItemSql);
+		for(int i=0;i<reportCurveItemQuertList.size();i++){
+			Object[] reportCurveItemObj=(Object[]) reportCurveItemQuertList.get(i);
+			String itemName=reportCurveItemObj[0]+"";
+			String itemCode=reportCurveItemObj[1]+"";
+			String reportCurveConfStr=(reportCurveItemObj[2]+"").replaceAll("null", "");
+			int dataType=StringManagerUtils.stringToInteger(reportCurveItemObj[3]+"");
+			int totalType=StringManagerUtils.stringToInteger(reportCurveItemObj[5]+"");
+			int dataSource=StringManagerUtils.stringToInteger(reportCurveItemObj[6]+"");
+			int prec=StringManagerUtils.isNumber(reportCurveItemObj[4]+"")?StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""):-1;
+			reflectType=new TypeToken<CurveConf>() {}.getType();
+			CurveConf curveConfObj=gson.fromJson(reportCurveConfStr,reflectType);
+			
+			if(dataType==2 && curveConfObj!=null){
+				int sort=curveConfObj.getSort();
+				while(itemNameMap.containsKey(sort)){
+					sort+=1;
+				}
+
+				if(dataSource==0 && protocol!=null && acqInstanceOwnItem!=null){
+					for(int k=0;k<protocol.getItems().size();k++){
+						if(protocol.getItems().get(k).getTitle().equalsIgnoreCase(itemName)){
+							String col="";
+							if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(k).getTitle())){
+								col=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(k).getTitle()).getMappingColumn();
+							}
+							
+							AcqInstanceOwnItem.AcqItem acqItem=MemoryDataManagerTask.getAcqItemByCode(acqInstanceOwnItem, col);
+							String acqItemName=protocol.getItems().get(k).getTitle();
+							if(totalType==6 && acqItem!=null && acqItem.getDailyTotalCalculate()==1){
+								acqItemName=acqItem.getDailyTotalCalculateName();
+							}
+							
+							if(StringManagerUtils.isNotNull(protocol.getItems().get(k).getUnit())){
+								acqItemName+="("+protocol.getItems().get(k).getUnit()+")";
+							}
+							if(prec<0){
+								prec=protocol.getItems().get(k).getPrec();
+							}
+							
+							itemNameMap.put(sort, acqItemName);
+							itemCodeSortMap.put(col, sort);
+							itemCodeMap.put(sort, col);
+							totalTypeMap.put(sort, totalType);
+							acqItemColumnList.add(col);
+							curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+							precMap.put(sort, prec);
+							curveDataMap.put(sort, new ArrayList<>());
+							break;
+						}
+					}
+				}else if(dataSource==1){
+					CalItem calItem=MemoryDataManagerTask.getTimingTotalCalItemByCode(itemCode, user.getLanguageName());
+					if(calItem!=null){
+						itemName=StringManagerUtils.isNotNull(calItem.getUnit())?(calItem.getName()+"("+calItem.getUnit()+")"):(calItem.getName());
+					}
+					if(prec<0){
+						prec=3;
+					}
+					itemNameMap.put(sort, itemName);
+					itemCodeSortMap.put(itemCode, sort);
+					itemCodeMap.put(sort, itemCode);
+					calItemColumnList.add(itemCode);
+					curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+					precMap.put(sort, prec);
+					curveDataMap.put(sort, new ArrayList<>());
+				}else if(dataSource==2){
+					if(prec<0){
+						prec=3;
+					}
+					itemNameMap.put(sort, itemName);
+					itemCodeSortMap.put(itemCode, sort);
+					itemCodeMap.put(sort, itemCode);
+					calItemColumnList.add(itemCode);
+					curveConfMap.put(sort, reportCurveConfStr.replaceAll("null", ""));
+					precMap.put(sort, prec);
+					curveDataMap.put(sort, new ArrayList<>());
+				}
+			}
+			
+		}
+		
+		
+		itemsBuff.append("[");
+		for (Integer key : itemNameMap.keySet()) {
+            itemsBuff.append("\""+itemNameMap.get(key)+"\",");
+        }
+		if (itemsBuff.toString().endsWith(",")) {
+			itemsBuff.deleteCharAt(itemsBuff.length() - 1);
+		}
+		itemsBuff.append("]");
+		
+		itemsCodeBuff.append("[");
+		for (Integer key : itemCodeMap.keySet()) {
+			itemsCodeBuff.append("\""+itemCodeMap.get(key)+"\",");
+        }
+		if (itemsCodeBuff.toString().endsWith(",")) {
+			itemsCodeBuff.deleteCharAt(itemsCodeBuff.length() - 1);
+		}
+		itemsCodeBuff.append("]");
+		
+		curveConfBuff.append("[");
+		for (Integer key : curveConfMap.keySet()) {
+            curveConfBuff.append(""+curveConfMap.get(key)+",");
+        }
+		if (curveConfBuff.toString().endsWith(",")) {
+			curveConfBuff.deleteCharAt(curveConfBuff.length() - 1);
+		}
+		curveConfBuff.append("]");
+		
+		
+		if(itemCodeSortMap.size()>0){
+			String columns="";
+			String calAndInputColumn="";
+			
+			if(acqItemColumnList.size()>0){
+				columns+=",t2.acqdata";
+			}
+			
+			for(int i=0;i<inputItemColumnList.size();i++){
+				columns+=",t2."+inputItemColumnList.get(i);
+			}
+			
+			for(int i=0;i<calItemColumnList.size();i++){
+				calAndInputColumn+=",t2."+calItemColumnList.get(i);
+			}
+			
+			
+			StringBuffer cueveSqlBuff = new StringBuffer();
+			cueveSqlBuff.append("select to_char(t.saveTime,'yyyy-mm-dd hh24:mi:ss') as saveTime"+columns+calAndInputColumn);
+			cueveSqlBuff.append(" from tbl_timingrecorddata t,tbl_timingrecorddata t2 ");
+			
+			cueveSqlBuff.append(" where t.id=t2.id");
+			
+			cueveSqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime<= to_date('"+reportDate+"','yyyy-mm-dd')+1");
+			
+			if(StringManagerUtils.stringToInteger(timeType)!=1){
+//				cueveSqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+			}else{
+				cueveSqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime<= to_date('"+reportDate+"','yyyy-mm-dd')+1");
+			}
+			
+			cueveSqlBuff.append(" and t.deviceid="+deviceId);
+			cueveSqlBuff.append(" order by t.SaveTime");
+			
+			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
+			for(int i=0;i<reportCurveDataList.size();i++){
+				Object[] obj=(Object[]) reportCurveDataList.get(i);
+				calTimeList.add(obj[0]+"");
+				int inputStartIndex=1+acqItemColumnList.size();
+				int calStartIndex=1+acqItemColumnList.size()+inputItemColumnList.size();
+				
+				
+				for(int j=inputStartIndex;j<inputStartIndex+inputItemColumnList.size();j++){
+					String value=obj[j]+"";
+					String itemCode=inputItemColumnList.get(j-inputStartIndex);
+					if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
+			    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
+			    	}
+					int prec=precMap.get(itemCodeSortMap.get(itemCode));
+					if(StringManagerUtils.isNum(value) && prec>=0){
+						value=StringManagerUtils.dataFormat(value, prec);;
+					}
+			    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
+				}
+				
+				for(int j=calStartIndex;j<calStartIndex+calItemColumnList.size();j++){
+					String value=obj[j]+"";
+					String itemCode=calItemColumnList.get(j-calStartIndex);
+					if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
+			    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
+			    	}
+					int prec=precMap.get(itemCodeSortMap.get(itemCode));
+					if(StringManagerUtils.isNum(value) && prec>=0){
+						value=StringManagerUtils.dataFormat(value, prec);;
+					}
+			    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
+				}
+				
+				if(acqItemColumnList.size()>0){
+					String acqCalData=StringManagerUtils.CLOBObjectToString(obj[1]);
+					reflectType = new TypeToken<List<KeyValue>>() {}.getType();
+					List<KeyValue> acqDataList=gson.fromJson(acqCalData, reflectType);
+					
+					for(String itemColumn:acqItemColumnList){
+						String addValue="";
+						int totalType=totalTypeMap.get(itemCodeSortMap.get(itemColumn));
+						if(acqDataList!=null){
+							for(KeyValue keyValue:acqDataList){
+								if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
+									addValue=keyValue.getValue();
+									break;
+								}
+							}
+						}
+						
+						if(StringManagerUtils.isNotNull(addValue)){
+							int prec=precMap.get(itemCodeSortMap.get(itemColumn));
+							if(StringManagerUtils.isNum(addValue) && prec>=0){
+								addValue=StringManagerUtils.dataFormat(addValue, prec);;
+							}
+						}
+						
+						if(!curveDataMap.containsKey(itemCodeSortMap.get(itemColumn))){
+				    		curveDataMap.put(itemCodeSortMap.get(itemColumn), new ArrayList<>());
+				    	}
+				    	curveDataMap.get(itemCodeSortMap.get(itemColumn)).add(addValue);
+					}
+					
+				}
+			}
+		}
+		
+		
+		result_json.append("{\"success\":true,"
+				+ "\"deviceName\":\""+deviceName+"\","
+				+ "\"startDate\":\""+startDate+"\","
+				+ "\"endDate\":\""+endDate+"\","
+				+ "\"reportDate\":\""+reportDate+"\","
+				+ "\"curveCount\":"+itemCodeSortMap.size()+","
+				+ "\"curveItems\":"+itemsBuff+","
+				+ "\"curveItemCodes\":"+itemsCodeBuff+","
+				+ "\"curveConf\":"+curveConfBuff+","
+				+ "\"graphicSet\":"+graphicSet+","
+				+ "\"list\":[");
+		
+		
+		for(int i=0;i<calTimeList.size();i++){
+			result_json.append("{\"calDate\":\"" + calTimeList.get(i) + "\",\"data\":[");
+			for (Integer key : itemNameMap.keySet()) {
+				result_json.append(""+curveDataMap.get(key).get(i)+",");
+	        }
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
 	}
 }

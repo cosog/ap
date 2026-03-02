@@ -1758,6 +1758,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String templateCode = ParamUtils.getParameter(request, "templateCode");
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String classes = ParamUtils.getParameter(request, "classes");
+		String unitClasses = ParamUtils.getParameter(request, "unitClasses");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
@@ -1765,7 +1766,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			language=user.getLanguageName();
 		}
 		String json = "";
-		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(calculateType,reportType,templateCode,unitId,classes,language);
+		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(calculateType,reportType,templateCode,unitId,classes,unitClasses,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1828,6 +1829,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		String reportType = ParamUtils.getParameter(request, "reportType");
+		String unitClasses = ParamUtils.getParameter(request, "unitClasses");
+		
 		String row = ParamUtils.getParameter(request, "row");
 		String col = ParamUtils.getParameter(request, "col");
 		HttpSession session=request.getSession();
@@ -1838,7 +1841,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = "";
 		int sort=(StringManagerUtils.isNum(row) && StringManagerUtils.isNumber(row) && StringManagerUtils.stringToInteger(row)>=0)?(StringManagerUtils.stringToInteger(row)+1):0;
-		json = acquisitionUnitItemManagerService.getReportUnitContentConfigItemsData(unitId,calculateType,reportType,sort,user,language);
+		json = acquisitionUnitItemManagerService.getReportUnitContentConfigItemsData(unitId,calculateType,reportType,sort,unitClasses,user,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

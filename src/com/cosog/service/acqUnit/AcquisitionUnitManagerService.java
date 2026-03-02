@@ -3270,7 +3270,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportUnitTotalCalItemsConfigData(String calculateType,String reportType,String templateCode,String unitId,String classes,String language){
+	public String getReportUnitTotalCalItemsConfigData(String calculateType,String reportType,String templateCode,String unitId,String classes,String unitClasses,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer rawData = new StringBuffer();
 		Gson gson = new Gson();
@@ -3280,19 +3280,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		ReportTemplate.Template template=null;
 		if(reportTemplate!=null){
-			List<Template> templateList=null;
-			if(StringManagerUtils.stringToInteger(reportType)==0){
-				templateList=reportTemplate.getClasses0().getSingleWellRangeReportTemplate();
-			}else if(StringManagerUtils.stringToInteger(reportType)==2){
-				templateList=reportTemplate.getClasses0().getSingleWellDailyReportTemplate();
+			if(StringManagerUtils.stringToInteger(unitClasses)==1){
+				if(reportTemplate!=null && reportTemplate.getClasses1()!=null){
+					template=reportTemplate.getClasses1();
+				}
 			}else{
-				templateList=reportTemplate.getClasses0().getProductionReportTemplate();
-			}
-			if(templateList!=null && templateList.size()>0){
-				for(int i=0;i<templateList.size();i++){
-					if(templateCode.equalsIgnoreCase(templateList.get(i).getTemplateCode()) ){
-						template=templateList.get(i);
-						break;
+				List<Template> templateList=null;
+				if(StringManagerUtils.stringToInteger(reportType)==0){
+					templateList=reportTemplate.getClasses0().getSingleWellRangeReportTemplate();
+				}else if(StringManagerUtils.stringToInteger(reportType)==2){
+					templateList=reportTemplate.getClasses0().getSingleWellDailyReportTemplate();
+				}else{
+					templateList=reportTemplate.getClasses0().getProductionReportTemplate();
+				}
+				if(templateList!=null && templateList.size()>0){
+					for(int i=0;i<templateList.size();i++){
+						if(templateCode.equalsIgnoreCase(templateList.get(i).getTemplateCode()) ){
+							template=templateList.get(i);
+							break;
+						}
 					}
 				}
 			}
@@ -4076,7 +4082,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportUnitContentConfigItemsData(String unitId,String calculateType,String reportType,int sort,User user,String language){
+	public String getReportUnitContentConfigItemsData(String unitId,String calculateType,String reportType,int sort,String unitClasses,User user,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -4091,25 +4097,27 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<CalItem> totalItemList=null;
 		try{
-
-			if(StringManagerUtils.stringToInteger(reportType)==2){
-				if("1".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getSRPTimingTotalCalculateItem(language);
-				}else if("2".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem(language);
-				}else{
-					totalItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem(language);
-				}
+			if(StringManagerUtils.stringToInteger(unitClasses)==1){
+				totalItemList=MemoryDataManagerTask.getAcqTimingRecordCalculateItem(language);
 			}else{
-				if("1".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getSRPTotalCalculateItem(language);
-				}else if("2".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
+				if(StringManagerUtils.stringToInteger(reportType)==2){
+					if("1".equalsIgnoreCase(calculateType)){
+						totalItemList=MemoryDataManagerTask.getSRPTimingTotalCalculateItem(language);
+					}else if("2".equalsIgnoreCase(calculateType)){
+						totalItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem(language);
+					}else{
+						totalItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem(language);
+					}
 				}else{
-					totalItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
+					if("1".equalsIgnoreCase(calculateType)){
+						totalItemList=MemoryDataManagerTask.getSRPTotalCalculateItem(language);
+					}else if("2".equalsIgnoreCase(calculateType)){
+						totalItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
+					}else{
+						totalItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
+					}
 				}
 			}
-		
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{

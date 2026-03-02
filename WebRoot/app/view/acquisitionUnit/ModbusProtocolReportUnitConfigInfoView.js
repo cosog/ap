@@ -773,6 +773,7 @@ function reportUnitContentConfig(row, col, value) {
     var unitName = '';
     var classes = 0;
     var reportTemplateListGridPanel="";
+    var unitClasses=0;
     
     if(reportType==0){
     	reportTemplateListGridPanel="ReportUnitSingleWellRangeReportTemplateListGridPanel_Id";
@@ -786,23 +787,31 @@ function reportUnitContentConfig(row, col, value) {
     if (reportUnitConfigTreeSelection.length > 0) {
         var record = reportUnitConfigTreeSelection[0];
         classes = record.data.classes;
+        
+        
         if (classes == 0) {
             if (isNotVal(record.data.children) && record.data.children.length > 0) {
                 unitId = record.data.children[0].id;
                 unitName = record.data.children[0].text;
+                unitClasses = record.data.children[0].unitClasses;
             }
         } else if (classes == 1) {
             unitId = record.data.id;
             unitName = record.data.text;
+            unitClasses = record.data.unitClasses;
         }
         calculateType = record.data.calculateType;
     }
 
-    var templateSelection = Ext.getCmp(reportTemplateListGridPanel).getSelectionModel().getSelection();
+    
     var templateCode = "";
-    if (templateSelection.length > 0) {
-        templateCode = templateSelection[0].data.templateCode;
+    if(unitClasses==0){
+    	var templateSelection = Ext.getCmp(reportTemplateListGridPanel).getSelectionModel().getSelection();
+        if (templateSelection.length > 0) {
+            templateCode = templateSelection[0].data.templateCode;
+        }
     }
+    
 
     var window = Ext.create("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
         title: loginUserLanguageResource.reportContentConfig
@@ -811,6 +820,9 @@ function reportUnitContentConfig(row, col, value) {
     Ext.getCmp("ReportUnitContentConfig_Classes").setValue(classes);
     Ext.getCmp("ReportUnitContentConfig_UnitId").setValue(unitId);
     Ext.getCmp("ReportUnitContentConfig_UnitName").setValue(unitName);
+    
+    Ext.getCmp("ReportUnitContentConfig_UnitClasses").setValue(unitClasses);
+    
 
     Ext.getCmp("ReportUnitContentConfig_ReportType").setValue(reportType);
     Ext.getCmp("ReportUnitContentConfig_CalculateType").setValue(calculateType);

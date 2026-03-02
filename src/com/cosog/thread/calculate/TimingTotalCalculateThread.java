@@ -775,7 +775,7 @@ public class TimingTotalCalculateThread extends Thread {
     		DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId+"");
     		RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
 
-    		if(realtimeTotalInfo!=null && realtimeTotalInfo.getAcqTime()!=null){
+    		if(realtimeTotalInfo!=null && realtimeTotalInfo.getAcqTime()!=null && StringManagerUtils.isNotNull(realtimeTotalInfo.getAcqTime())){
     			TimeEffResponseData timeEffResponseData = null;
                 CommResponseData commResponseData = null;
 

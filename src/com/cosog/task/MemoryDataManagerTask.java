@@ -346,6 +346,10 @@ public class MemoryDataManagerTask {
 		cleanData("pcpTimingTotalCalItemList-ru");
 		cleanData("pcpTimingTotalCalItemList-zh_CN");
 		
+		cleanData("acqTimingRecordCalItemList-en");
+		cleanData("acqTimingRecordCalItemList-ru");
+		cleanData("acqTimingRecordCalItemList-zh_CN");
+		
 		cleanData("srpInputItemList-en");
 		cleanData("srpInputItemList-ru");
 		cleanData("srpInputItemList-zh_CN");
@@ -3597,6 +3601,74 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static List<CalItem> getAcqTimingRecordCalculateItem(String language){
+		Jedis jedis=null;
+		List<CalItem> calItemList=new ArrayList<>();
+		String key="acqTimingRecordCalItemList-"+language;
+		if(!existsKey(key)){
+			MemoryDataManagerTask.loadAcqTimingRecordCalculateItem(language);
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			List<byte[]> calItemSet= jedis.zrange(key.getBytes(), 0, -1);
+			for(byte[] calItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(calItemByteArr);
+				calItemList.add(calItem);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return calItemList;
+	}
+	
+	public static void loadAcqTimingRecordCalculateItem(String language){
+		Jedis jedis=null;
+		String key="acqTimingRecordCalItemList-"+language;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+			}
+			//有序集合
+			jedis.zadd(key.getBytes(),1, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("deviceName"),"DeviceName","",1,2,languageResourceMap.get("deviceName"))));//1-字符串 2-数值 3-日期 4-日期时间 5-时间
+			
+			
+			jedis.zadd(key.getBytes(),2, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("date"),"SaveTime","",3,1,languageResourceMap.get("date"))));
+			jedis.zadd(key.getBytes(),3, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("time"),"SaveTime","",4,1,languageResourceMap.get("time"))));
+			
+			jedis.zadd(key.getBytes(),4, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTime"),"CommTime","h",2,1,languageResourceMap.get("commTime"))));
+			jedis.zadd(key.getBytes(),5, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commTimeEfficiency"),"CommTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("commTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),6, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("commRange"),"CommRange","",1,1,languageResourceMap.get("commRange"))));
+			
+			jedis.zadd(key.getBytes(),7, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTime"),"RunTime","h",2,1,languageResourceMap.get("runTime"))));
+			jedis.zadd(key.getBytes(),8, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runTimeEfficiency"),"RunTimeEfficiency",timeEfficiencyUnit,2,1,languageResourceMap.get("runTimeEfficiency"))));
+			jedis.zadd(key.getBytes(),9, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("runRange"),"RunRange","",1,1,languageResourceMap.get("runRange"))));
+			
+			
+			
+			jedis.zadd(key.getBytes(),10, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("remark"),"Remark","",1,2,languageResourceMap.get("remark"))));
+			
+			jedis.zadd(key.getBytes(),11, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("reservedCol1"),"reservedcol1","",1,2,languageResourceMap.get("reservedCol1"))));
+			jedis.zadd(key.getBytes(),12, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("reservedCol2"),"reservedcol2","",1,2,languageResourceMap.get("reservedCol2"))));
+			jedis.zadd(key.getBytes(),13, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("reservedCol3"),"reservedcol3","",1,2,languageResourceMap.get("reservedCol3"))));
+			jedis.zadd(key.getBytes(),14, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("reservedCol4"),"reservedcol4","",1,2,languageResourceMap.get("reservedCol4"))));
+			jedis.zadd(key.getBytes(),15, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("reservedCol5"),"reservedcol5","",1,2,languageResourceMap.get("reservedCol5"))));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+	}
+	
 	public static List<CalItem> getSRPTimingTotalCalculateItem(String language){
 		Jedis jedis=null;
 		List<CalItem> calItemList=new ArrayList<>();
@@ -4885,8 +4957,9 @@ public class MemoryDataManagerTask {
 					+ " t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,"
 					+ " t.runstatus,t.runtimeefficiency,t.runtime,t.runrange,"
 					+ " t.caldata "
-					+ " from tbl_realtimetotalcalculationdata t,tbl_device t2 "
-					+ " where t.deviceid=t2.id";
+					+ " from tbl_device t2 "
+					+ " left outer join tbl_realtimetotalcalculationdata t on t.deviceid=t2.id "
+					+ " left outer join tbl_acqdata_latest t3 on t3.deviceid=t2.id";
 			if(StringManagerUtils.isNotNull(wells)){
 				if(condition==0){
 					sql+=" and t2.id in("+wells+")";
@@ -5875,24 +5948,34 @@ public class MemoryDataManagerTask {
 		ReportTemplate reportTemplate=gson.fromJson(configData, type);
 		if(reportTemplate==null){
 			reportTemplate=new ReportTemplate();
-			reportTemplate.setSingleWellDailyReportTemplate(new ArrayList<ReportTemplate.Template>());
-			reportTemplate.setSingleWellRangeReportTemplate(new ArrayList<ReportTemplate.Template>());
-			reportTemplate.setProductionReportTemplate(new ArrayList<ReportTemplate.Template>());
+			reportTemplate.setClasses0(new ReportTemplate.Classes0());
+			reportTemplate.setClasses1(new ReportTemplate.Template());
+			
+			reportTemplate.getClasses0().setSingleWellDailyReportTemplate(new ArrayList<ReportTemplate.Template>());
+			reportTemplate.getClasses0().setSingleWellRangeReportTemplate(new ArrayList<ReportTemplate.Template>());
+			reportTemplate.getClasses0().setProductionReportTemplate(new ArrayList<ReportTemplate.Template>());
 		}else{
-			if(reportTemplate.getSingleWellDailyReportTemplate()==null){
-				reportTemplate.setSingleWellDailyReportTemplate(new ArrayList<ReportTemplate.Template>());
-			}else if(reportTemplate.getSingleWellDailyReportTemplate().size()>0){
-				Collections.sort(reportTemplate.getSingleWellDailyReportTemplate());
+			if(reportTemplate.getClasses0()==null){
+				reportTemplate.setClasses0(new ReportTemplate.Classes0());
 			}
-			if(reportTemplate.getSingleWellRangeReportTemplate()==null){
-				reportTemplate.setSingleWellRangeReportTemplate(new ArrayList<ReportTemplate.Template>());
-			}else if(reportTemplate.getSingleWellRangeReportTemplate().size()>0){
-				Collections.sort(reportTemplate.getSingleWellRangeReportTemplate());
+			if(reportTemplate.getClasses1()==null){
+				reportTemplate.setClasses1(new ReportTemplate.Template());
 			}
-			if(reportTemplate.getProductionReportTemplate()==null){
-				reportTemplate.setProductionReportTemplate(new ArrayList<ReportTemplate.Template>());
-			}else if(reportTemplate.getProductionReportTemplate().size()>0){
-				Collections.sort(reportTemplate.getProductionReportTemplate());
+			
+			if(reportTemplate.getClasses0().getSingleWellDailyReportTemplate()==null){
+				reportTemplate.getClasses0().setSingleWellDailyReportTemplate(new ArrayList<ReportTemplate.Template>());
+			}else if(reportTemplate.getClasses0().getSingleWellDailyReportTemplate().size()>0){
+				Collections.sort(reportTemplate.getClasses0().getSingleWellDailyReportTemplate());
+			}
+			if(reportTemplate.getClasses0().getSingleWellRangeReportTemplate()==null){
+				reportTemplate.getClasses0().setSingleWellRangeReportTemplate(new ArrayList<ReportTemplate.Template>());
+			}else if(reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size()>0){
+				Collections.sort(reportTemplate.getClasses0().getSingleWellRangeReportTemplate());
+			}
+			if(reportTemplate.getClasses0().getProductionReportTemplate()==null){
+				reportTemplate.getClasses0().setProductionReportTemplate(new ArrayList<ReportTemplate.Template>());
+			}else if(reportTemplate.getClasses0().getProductionReportTemplate().size()>0){
+				Collections.sort(reportTemplate.getClasses0().getProductionReportTemplate());
 			}
 		}
 		
@@ -5929,6 +6012,34 @@ public class MemoryDataManagerTask {
 		return reportTemplate;
 	}
 	
+	public static ReportTemplate.Template getHydrologicalWellTemplate(){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		Jedis jedis=null;
+		ReportTemplate reportTemplate=null;
+		ReportTemplate.Template template=null;
+		if(!existsKey("ReportTemplateConfig")){
+			MemoryDataManagerTask.loadReportTemplateConfig();
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
+			if(reportTemplate!=null && reportTemplate.getClasses1()!=null ){
+				ReportTemplate.Template template2=reportTemplate.getClasses1();
+				type = new TypeToken<ReportTemplate.Template>() {}.getType();
+				template=gson.fromJson(gson.toJson(template2), type);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return template;
+	}
+	
 	public static ReportTemplate.Template getSingleWellRangeReportTemplateByCode(String code){
 		Jedis jedis=null;
 		ReportTemplate reportTemplate=null;
@@ -5939,10 +6050,10 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
-			if(reportTemplate!=null && reportTemplate.getSingleWellRangeReportTemplate()!=null && reportTemplate.getSingleWellRangeReportTemplate().size()>0){
-				for(int i=0;i<reportTemplate.getSingleWellRangeReportTemplate().size();i++){
-					if(code.equalsIgnoreCase(reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateCode())){
-						template=reportTemplate.getSingleWellRangeReportTemplate().get(i);
+			if(reportTemplate!=null && reportTemplate.getClasses0()!=null && reportTemplate.getClasses0().getSingleWellRangeReportTemplate()!=null && reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size()>0){
+				for(int i=0;i<reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size();i++){
+					if(code.equalsIgnoreCase(reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateCode())){
+						template=reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i);
 						break;
 					}
 				}
@@ -5961,10 +6072,10 @@ public class MemoryDataManagerTask {
 	public static String getSingleWellRangeReportTemplateCodeFromName(String name){
 		String code="";
 		ReportTemplate reportTemplate=getReportTemplateConfig();
-		if(reportTemplate!=null && reportTemplate.getSingleWellRangeReportTemplate()!=null && reportTemplate.getSingleWellRangeReportTemplate().size()>0){
-			for(int i=0;i<reportTemplate.getSingleWellRangeReportTemplate().size();i++){
-				if(name.equalsIgnoreCase(reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateName())){
-					code=reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateCode();
+		if(reportTemplate!=null && reportTemplate.getClasses0()!=null && reportTemplate.getClasses0().getSingleWellRangeReportTemplate()!=null && reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size();i++){
+				if(name.equalsIgnoreCase(reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateName())){
+					code=reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateCode();
 					break;
 				}
 			}
@@ -5975,10 +6086,10 @@ public class MemoryDataManagerTask {
 	public static String getSingleWellRangeReportTemplateNameFromCode(String code){
 		String name="";
 		ReportTemplate reportTemplate=getReportTemplateConfig();
-		if(reportTemplate!=null && reportTemplate.getSingleWellRangeReportTemplate()!=null && reportTemplate.getSingleWellRangeReportTemplate().size()>0){
-			for(int i=0;i<reportTemplate.getSingleWellRangeReportTemplate().size();i++){
-				if(code.equalsIgnoreCase(reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateCode())){
-					name=reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateName();
+		if(reportTemplate!=null && reportTemplate.getClasses0()!=null && reportTemplate.getClasses0().getSingleWellRangeReportTemplate()!=null && reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size();i++){
+				if(code.equalsIgnoreCase(reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateCode())){
+					name=reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateName();
 					break;
 				}
 			}
@@ -5996,10 +6107,10 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
-			if(reportTemplate!=null && reportTemplate.getSingleWellDailyReportTemplate()!=null && reportTemplate.getSingleWellDailyReportTemplate().size()>0){
-				for(int i=0;i<reportTemplate.getSingleWellDailyReportTemplate().size();i++){
-					if(code.equalsIgnoreCase(reportTemplate.getSingleWellDailyReportTemplate().get(i).getTemplateCode())){
-						template=reportTemplate.getSingleWellDailyReportTemplate().get(i);
+			if(reportTemplate!=null && reportTemplate.getClasses0()!=null && reportTemplate.getClasses0().getSingleWellDailyReportTemplate()!=null && reportTemplate.getClasses0().getSingleWellDailyReportTemplate().size()>0){
+				for(int i=0;i<reportTemplate.getClasses0().getSingleWellDailyReportTemplate().size();i++){
+					if(code.equalsIgnoreCase(reportTemplate.getClasses0().getSingleWellDailyReportTemplate().get(i).getTemplateCode())){
+						template=reportTemplate.getClasses0().getSingleWellDailyReportTemplate().get(i);
 						break;
 					}
 				}
@@ -6018,10 +6129,10 @@ public class MemoryDataManagerTask {
 	public static String getSingleWellDailyReportTemplateCodeFromName(String name){
 		String code="";
 		ReportTemplate reportTemplate=getReportTemplateConfig();
-		if(reportTemplate!=null && reportTemplate.getSingleWellDailyReportTemplate()!=null && reportTemplate.getSingleWellDailyReportTemplate().size()>0){
-			for(int i=0;i<reportTemplate.getSingleWellDailyReportTemplate().size();i++){
-				if(name.equalsIgnoreCase(reportTemplate.getSingleWellDailyReportTemplate().get(i).getTemplateName())){
-					code=reportTemplate.getSingleWellDailyReportTemplate().get(i).getTemplateCode();
+		if(reportTemplate!=null && reportTemplate.getClasses0()!=null && reportTemplate.getClasses0().getSingleWellDailyReportTemplate()!=null && reportTemplate.getClasses0().getSingleWellDailyReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getClasses0().getSingleWellDailyReportTemplate().size();i++){
+				if(name.equalsIgnoreCase(reportTemplate.getClasses0().getSingleWellDailyReportTemplate().get(i).getTemplateName())){
+					code=reportTemplate.getClasses0().getSingleWellDailyReportTemplate().get(i).getTemplateCode();
 					break;
 				}
 			}
@@ -6032,10 +6143,10 @@ public class MemoryDataManagerTask {
 	public static String getSingleWellDailyReportTemplateNameFromCode(String code){
 		String name="";
 		ReportTemplate reportTemplate=getReportTemplateConfig();
-		if(reportTemplate!=null && reportTemplate.getSingleWellDailyReportTemplate()!=null && reportTemplate.getSingleWellDailyReportTemplate().size()>0){
-			for(int i=0;i<reportTemplate.getSingleWellDailyReportTemplate().size();i++){
-				if(code.equalsIgnoreCase(reportTemplate.getSingleWellDailyReportTemplate().get(i).getTemplateCode())){
-					name=reportTemplate.getSingleWellDailyReportTemplate().get(i).getTemplateName();
+		if(reportTemplate!=null && reportTemplate.getClasses0()!=null && reportTemplate.getClasses0().getSingleWellDailyReportTemplate()!=null && reportTemplate.getClasses0().getSingleWellDailyReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getClasses0().getSingleWellDailyReportTemplate().size();i++){
+				if(code.equalsIgnoreCase(reportTemplate.getClasses0().getSingleWellDailyReportTemplate().get(i).getTemplateCode())){
+					name=reportTemplate.getClasses0().getSingleWellDailyReportTemplate().get(i).getTemplateName();
 					break;
 				}
 			}
@@ -6053,10 +6164,10 @@ public class MemoryDataManagerTask {
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
 			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
-			if(reportTemplate!=null && reportTemplate.getProductionReportTemplate()!=null && reportTemplate.getProductionReportTemplate().size()>0){
-				for(int i=0;i<reportTemplate.getProductionReportTemplate().size();i++){
-					if(code.equalsIgnoreCase(reportTemplate.getProductionReportTemplate().get(i).getTemplateCode())){
-						template=reportTemplate.getProductionReportTemplate().get(i);
+			if(reportTemplate!=null && reportTemplate.getClasses0()!=null && reportTemplate.getClasses0().getProductionReportTemplate()!=null && reportTemplate.getClasses0().getProductionReportTemplate().size()>0){
+				for(int i=0;i<reportTemplate.getClasses0().getProductionReportTemplate().size();i++){
+					if(code.equalsIgnoreCase(reportTemplate.getClasses0().getProductionReportTemplate().get(i).getTemplateCode())){
+						template=reportTemplate.getClasses0().getProductionReportTemplate().get(i);
 						break;
 					}
 				}
@@ -6075,10 +6186,10 @@ public class MemoryDataManagerTask {
 	public static String getProductionReportTemplateCodeFromName(String name){
 		String code="";
 		ReportTemplate reportTemplate=getReportTemplateConfig();
-		if(reportTemplate!=null && reportTemplate.getProductionReportTemplate()!=null && reportTemplate.getProductionReportTemplate().size()>0){
-			for(int i=0;i<reportTemplate.getProductionReportTemplate().size();i++){
-				if(name.equalsIgnoreCase(reportTemplate.getProductionReportTemplate().get(i).getTemplateName())){
-					code=reportTemplate.getProductionReportTemplate().get(i).getTemplateCode();
+		if(reportTemplate!=null && reportTemplate.getClasses0()!=null && reportTemplate.getClasses0().getProductionReportTemplate()!=null && reportTemplate.getClasses0().getProductionReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getClasses0().getProductionReportTemplate().size();i++){
+				if(name.equalsIgnoreCase(reportTemplate.getClasses0().getProductionReportTemplate().get(i).getTemplateName())){
+					code=reportTemplate.getClasses0().getProductionReportTemplate().get(i).getTemplateCode();
 					break;
 				}
 			}
@@ -6089,10 +6200,10 @@ public class MemoryDataManagerTask {
 	public static String getProductionReportTemplateNameFromCode(String code){
 		String name="";
 		ReportTemplate reportTemplate=getReportTemplateConfig();
-		if(reportTemplate!=null && reportTemplate.getProductionReportTemplate()!=null && reportTemplate.getProductionReportTemplate().size()>0){
-			for(int i=0;i<reportTemplate.getProductionReportTemplate().size();i++){
-				if(code.equalsIgnoreCase(reportTemplate.getProductionReportTemplate().get(i).getTemplateCode())){
-					name=reportTemplate.getProductionReportTemplate().get(i).getTemplateName();
+		if(reportTemplate!=null && reportTemplate.getClasses0()!=null && reportTemplate.getClasses0().getProductionReportTemplate()!=null && reportTemplate.getClasses0().getProductionReportTemplate().size()>0){
+			for(int i=0;i<reportTemplate.getClasses0().getProductionReportTemplate().size();i++){
+				if(code.equalsIgnoreCase(reportTemplate.getClasses0().getProductionReportTemplate().get(i).getTemplateCode())){
+					name=reportTemplate.getClasses0().getProductionReportTemplate().get(i).getTemplateName();
 					break;
 				}
 			}

@@ -3270,7 +3270,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportUnitTotalCalItemsConfigData(String calculateType,String reportType,String templateCode,String unitId,String classes,String language){
+	public String getReportUnitTotalCalItemsConfigData(String calculateType,String reportType,String templateCode,String unitId,String classes,String unitClasses,String language){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer rawData = new StringBuffer();
 		Gson gson = new Gson();
@@ -3280,19 +3280,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		ReportTemplate.Template template=null;
 		if(reportTemplate!=null){
-			List<Template> templateList=null;
-			if(StringManagerUtils.stringToInteger(reportType)==0){
-				templateList=reportTemplate.getSingleWellRangeReportTemplate();
-			}else if(StringManagerUtils.stringToInteger(reportType)==2){
-				templateList=reportTemplate.getSingleWellDailyReportTemplate();
+			if(StringManagerUtils.stringToInteger(unitClasses)==1){
+				if(reportTemplate!=null && reportTemplate.getClasses1()!=null){
+					template=reportTemplate.getClasses1();
+				}
 			}else{
-				templateList=reportTemplate.getProductionReportTemplate();
-			}
-			if(templateList!=null && templateList.size()>0){
-				for(int i=0;i<templateList.size();i++){
-					if(templateCode.equalsIgnoreCase(templateList.get(i).getTemplateCode()) ){
-						template=templateList.get(i);
-						break;
+				List<Template> templateList=null;
+				if(StringManagerUtils.stringToInteger(reportType)==0){
+					templateList=reportTemplate.getClasses0().getSingleWellRangeReportTemplate();
+				}else if(StringManagerUtils.stringToInteger(reportType)==2){
+					templateList=reportTemplate.getClasses0().getSingleWellDailyReportTemplate();
+				}else{
+					templateList=reportTemplate.getClasses0().getProductionReportTemplate();
+				}
+				if(templateList!=null && templateList.size()>0){
+					for(int i=0;i<templateList.size();i++){
+						if(templateCode.equalsIgnoreCase(templateList.get(i).getTemplateCode()) ){
+							template=templateList.get(i);
+							break;
+						}
 					}
 				}
 			}
@@ -3571,11 +3577,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(reportTemplate!=null){
 			List<Template> templateList=null;
 			if(StringManagerUtils.stringToInteger(reportType)==0){
-				templateList=reportTemplate.getSingleWellRangeReportTemplate();
+				templateList=reportTemplate.getClasses0().getSingleWellRangeReportTemplate();
 			}else if(StringManagerUtils.stringToInteger(reportType)==2){
-				templateList=reportTemplate.getSingleWellDailyReportTemplate();
+				templateList=reportTemplate.getClasses0().getSingleWellDailyReportTemplate();
 			}else{
-				templateList=reportTemplate.getProductionReportTemplate();
+				templateList=reportTemplate.getClasses0().getProductionReportTemplate();
 			}
 			if(templateList!=null && templateList.size()>0){
 				for(int i=0;i<templateList.size();i++){
@@ -3832,7 +3838,251 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getReportUnitContentConfigItemsData(String unitId,String calculateType,String reportType,int sort,User user,String language){
+	public String getHydrologicalWellReportUnitItemsConfigColInfoData(String unitId,String language){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+		ReportTemplate.Template template=null;
+		if(reportTemplate!=null && reportTemplate.getClasses1()!=null){
+			template=reportTemplate.getClasses1();
+		}
+		
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalRoot\":[");
+		
+		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths_zh_CN().size()>0 || template.getColumnWidths_en().size()>0 || template.getColumnWidths_ru().size()>0  )   ){
+			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+			int columnCoumnt=template.getColumnWidths_zh_CN().size();
+			if("zh_CN".equalsIgnoreCase(language)){
+				columnCoumnt=template.getColumnWidths_zh_CN().size();
+			}else if("en".equalsIgnoreCase(language)){
+				columnCoumnt=template.getColumnWidths_en().size();
+			}else if("ru".equalsIgnoreCase(language)){
+				columnCoumnt=template.getColumnWidths_ru().size();
+			}
+			if(template.getHeader().size()>0){
+				if("zh_CN".equalsIgnoreCase(language)){
+					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN().size();
+				}else if("en".equalsIgnoreCase(language)){
+					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_en().size();
+				}else if("ru".equalsIgnoreCase(language)){
+					columnCoumnt=template.getHeader().get(template.getHeader().size()-1).getTitle_ru().size();
+				}
+			}
+			
+			List<String> itemsList=new ArrayList<String>();
+			List<String> itemsCodeList=new ArrayList<String>();
+			List<String> itemsSortList=new ArrayList<String>();
+			List<String> itemsShowLevelList=new ArrayList<String>();
+			
+			List<String> itemsPrecList=new ArrayList<String>();
+			
+			List<String> sumSignList=new ArrayList<String>();
+			List<String> averageSignList=new ArrayList<String>();
+			
+			List<String> reportCurveConfList=new ArrayList<String>();
+			
+			List<String> curveStatTypeList=new ArrayList<String>();
+			
+			List<String> itemsTotalTypeList=new ArrayList<String>();
+			
+			List<String> dataSourceList=new ArrayList<String>();
+			
+			List<String> dataTypeList=new ArrayList<String>();
+			
+			List<String> itemsUnitList=new ArrayList<String>();
+			
+
+			String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
+					+ " decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"',''),"
+					+ " t.dataSource,t.dataType "
+					+ " from tbl_report_items2unit_conf t "
+					+ " where t.sort>0 "
+					+ " and t.unitid="+unitId+" "
+					+ " order by t.sort";
+			List<?> list=this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[])list.get(i);
+				
+				String itemName=obj[0]+"";
+				String itemCode=obj[1]+"";
+				String unit="";
+				if(itemCode.toUpperCase().startsWith("C_")){
+					if(loadProtocolMappingColumnMap.containsKey(itemCode)){
+						itemName=loadProtocolMappingColumnMap.get(itemCode).getName();
+					}
+				}else{
+					CalItem calItem=MemoryDataManagerTask.getTotalCalItemByCode(itemCode, language);
+					if(calItem!=null){
+						itemName=calItem.getName();
+						unit=calItem.getUnit();
+					}
+				}
+				
+				
+				itemsList.add(itemName);
+				itemsCodeList.add(itemCode);
+				itemsUnitList.add(unit);
+				itemsSortList.add(obj[2]+"");
+				itemsShowLevelList.add(obj[3]+"");
+				
+				sumSignList.add(obj[4]+"");
+				averageSignList.add(obj[5]+"");
+				
+				String reportCurveConf=obj[6]+"";
+				if(!StringManagerUtils.isNotNull(reportCurveConf)){
+					reportCurveConf="\"\"";
+				}
+				reportCurveConfList.add(reportCurveConf);
+				curveStatTypeList.add(obj[7]+"");
+				itemsPrecList.add(obj[8]+"");
+				itemsTotalTypeList.add(obj[9]+"");
+				dataSourceList.add(MemoryDataManagerTask.getCodeName("DATASOURCE",obj[10]+"", language));
+				dataTypeList.add(obj[11]+"");
+			}
+		
+			int index=1;
+			for(int i=0;i<columnCoumnt;i++){
+				String headerName="";
+				if(template.getHeader().size()>0){
+					if("zh_CN".equalsIgnoreCase(language)){
+						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN().get(i);
+						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_zh_CN().size()>=i ){
+							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_zh_CN().get(i);
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_en().get(i);
+						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_en().size()>=i ){
+							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_en().get(i);
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_ru().get(i);
+						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_ru().size()>=i ){
+							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_ru().get(i);
+						}
+					}
+				}
+				
+				String itemName="";
+				String itemCode="";
+				
+				String unit="";
+				String dataSource="";
+				
+				String totalType="";
+				
+				String sort="";
+				String showLevel="";
+				
+				String prec="";
+				
+				boolean sumSign=false;
+				boolean averageSign=false;
+				
+				String reportCurveConf="\"\"";
+				String reportCurveConfShowValue="";
+				
+				String curveStatType="";
+				
+				String dataType="";
+				
+				String action="config";
+				
+				for(int k=0;k<itemsList.size();k++){
+					if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==index){
+						itemName=itemsList.get(k);
+						itemCode=itemsCodeList.get(k);
+						
+						unit=itemsUnitList.get(k);
+						
+						sort=itemsSortList.get(k);
+						showLevel=itemsShowLevelList.get(k);
+						
+						prec=itemsPrecList.get(k);
+						
+						if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
+							if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
+								sumSign=true;
+							}else{
+								sumSign=false;
+							}
+						}
+						
+						if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
+							if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
+								averageSign=true;
+							}else{
+								averageSign=false;
+							}
+						}
+						
+						reportCurveConf=reportCurveConfList.get(k);
+						
+						CurveConf reportCurveConfObj=null;
+						if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
+							type = new TypeToken<CurveConf>() {}.getType();
+							reportCurveConfObj=gson.fromJson(reportCurveConf, type);
+						}
+						
+						if(reportCurveConfObj!=null){
+							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
+						}
+						
+						
+						String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
+						if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
+							if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
+								curveStatType=languageResourceMap.get("curveStatType_sum");
+							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
+								curveStatType=languageResourceMap.get("curveStatType_avg");
+							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
+								curveStatType=languageResourceMap.get("curveStatType_max");
+							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
+								curveStatType=languageResourceMap.get("curveStatType_min");
+							}
+						}
+						
+						dataSource=dataSourceList.get(k);
+						totalType=itemsTotalTypeList.get(k);
+						dataType=dataTypeList.get(k);
+						break;
+					}
+				}
+				
+				result_json.append("{"
+						+ "\"id\":"+(index)+","
+						+ "\"headerName\":\""+headerName+"\","
+						+ "\"itemName\":\""+itemName+"\","
+						+ "\"unit\":\""+unit+"\","
+						+ "\"dataSource\":\""+dataSource+"\","
+						+ "\"totalType\":\""+totalType+"\","
+						+ "\"showLevel\":\""+showLevel+"\","
+						+ "\"sort\":\""+sort+"\","
+						+ "\"prec\":\""+prec+"\","
+						+ "\"sumSign\":"+sumSign+","
+						+ "\"averageSign\":"+averageSign+","
+						+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+						+ "\"reportCurveConf\":"+reportCurveConf+","
+						+ "\"curveStatType\":\""+curveStatType+"\","
+						+ "\"dataType\":\""+dataType+"\","
+						+ "\"itemCode\":\""+itemCode+"\","
+						+ "\"remark\":\"\","
+						+ "\"action\":\""+action+"\""
+						+ "},");
+				index++;
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getReportUnitContentConfigItemsData(String unitId,String calculateType,String reportType,int sort,String unitClasses,User user,String language){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -3847,25 +4097,27 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<CalItem> totalItemList=null;
 		try{
-
-			if(StringManagerUtils.stringToInteger(reportType)==2){
-				if("1".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getSRPTimingTotalCalculateItem(language);
-				}else if("2".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem(language);
-				}else{
-					totalItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem(language);
-				}
+			if(StringManagerUtils.stringToInteger(unitClasses)==1){
+				totalItemList=MemoryDataManagerTask.getAcqTimingRecordCalculateItem(language);
 			}else{
-				if("1".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getSRPTotalCalculateItem(language);
-				}else if("2".equalsIgnoreCase(calculateType)){
-					totalItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
+				if(StringManagerUtils.stringToInteger(reportType)==2){
+					if("1".equalsIgnoreCase(calculateType)){
+						totalItemList=MemoryDataManagerTask.getSRPTimingTotalCalculateItem(language);
+					}else if("2".equalsIgnoreCase(calculateType)){
+						totalItemList=MemoryDataManagerTask.getPCPTimingTotalCalculateItem(language);
+					}else{
+						totalItemList=MemoryDataManagerTask.getAcqTimingTotalCalculateItem(language);
+					}
 				}else{
-					totalItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
+					if("1".equalsIgnoreCase(calculateType)){
+						totalItemList=MemoryDataManagerTask.getSRPTotalCalculateItem(language);
+					}else if("2".equalsIgnoreCase(calculateType)){
+						totalItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
+					}else{
+						totalItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
+					}
 				}
 			}
-		
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -5996,11 +6248,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(reportTemplate!=null){
 			List<Template> templateList=null;
 			if(StringManagerUtils.stringToInteger(reportType)==0){
-				templateList=reportTemplate.getSingleWellRangeReportTemplate();
+				templateList=reportTemplate.getClasses0().getSingleWellRangeReportTemplate();
 			}else if(StringManagerUtils.stringToInteger(reportType)==2){
-				templateList=reportTemplate.getSingleWellDailyReportTemplate();
+				templateList=reportTemplate.getClasses0().getSingleWellDailyReportTemplate();
 			}else{
-				templateList=reportTemplate.getProductionReportTemplate();
+				templateList=reportTemplate.getClasses0().getProductionReportTemplate();
 			}
 			if(templateList!=null){
 				//排序
@@ -6021,18 +6273,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getReportTemplateData(String reportType,String code,String calculateType){
-		StringBuffer result_json = new StringBuffer();
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		String result="{}";
 		
 		if(reportTemplate!=null){
 			List<Template> templateList=null;
 			if(StringManagerUtils.stringToInteger(reportType)==0){
-				templateList=reportTemplate.getSingleWellRangeReportTemplate();
+				templateList=reportTemplate.getClasses0().getSingleWellRangeReportTemplate();
 			}else if(StringManagerUtils.stringToInteger(reportType)==2){
-				templateList=reportTemplate.getSingleWellDailyReportTemplate();
+				templateList=reportTemplate.getClasses0().getSingleWellDailyReportTemplate();
 			}else{
-				templateList=reportTemplate.getProductionReportTemplate();
+				templateList=reportTemplate.getClasses0().getProductionReportTemplate();
 			}
 			if(templateList!=null && templateList.size()>0){
 				for(int i=0;i<templateList.size();i++){
@@ -6047,6 +6298,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
+		}
+		
+		return result;
+	}
+	
+	public String getHydrologicalWellReportTemplateData(){
+		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+		String result="{}";
+		
+		if(reportTemplate!=null && reportTemplate.getClasses1()!=null){
+			Gson gson=new Gson();
+			result=gson.toJson(reportTemplate.getClasses1()).replaceAll("deviceNameLabel", "label").replaceAll("label", "***");
 		}
 		
 		return result;
@@ -6824,13 +7087,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getReportTemplateCombList(String deviceType){
 		StringBuffer result_json = new StringBuffer();
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
-		result_json.append("{\"totals\":"+( (reportTemplate!=null&&reportTemplate.getSingleWellRangeReportTemplate()!=null)?reportTemplate.getSingleWellRangeReportTemplate().size():0 )+",\"list\":[");
-		if(reportTemplate!=null&&reportTemplate.getSingleWellRangeReportTemplate()!=null){
+		result_json.append("{\"totals\":"+( (reportTemplate!=null&&reportTemplate.getClasses0().getSingleWellRangeReportTemplate()!=null)?reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size():0 )+",\"list\":[");
+		if(reportTemplate!=null&&reportTemplate.getClasses0().getSingleWellRangeReportTemplate()!=null){
 			//排序
-			Collections.sort(reportTemplate.getSingleWellRangeReportTemplate());
-			for(int i=0;i<reportTemplate.getSingleWellRangeReportTemplate().size();i++){
-				result_json.append("{boxkey:\"" + reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateCode() + "\",");
-				result_json.append("boxval:\"" + reportTemplate.getSingleWellRangeReportTemplate().get(i).getTemplateName() + "\"},");
+			Collections.sort(reportTemplate.getClasses0().getSingleWellRangeReportTemplate());
+			for(int i=0;i<reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size();i++){
+				result_json.append("{boxkey:\"" + reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateCode() + "\",");
+				result_json.append("boxval:\"" + reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateName() + "\"},");
 			}
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -13909,11 +14172,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(templateName) && reportTemplate!=null){
 			List<Template> templateList=null;
 			if(StringManagerUtils.stringToInteger(reportType)==0){
-				templateList=reportTemplate.getSingleWellRangeReportTemplate();
+				templateList=reportTemplate.getClasses0().getSingleWellRangeReportTemplate();
 			}else if(StringManagerUtils.stringToInteger(reportType)==2){
-				templateList=reportTemplate.getSingleWellDailyReportTemplate();
+				templateList=reportTemplate.getClasses0().getSingleWellDailyReportTemplate();
 			}else{
-				templateList=reportTemplate.getProductionReportTemplate();
+				templateList=reportTemplate.getClasses0().getProductionReportTemplate();
 			}
 			if(templateList!=null && templateList.size()>0){
 				for(int i=0;i<templateList.size();i++){

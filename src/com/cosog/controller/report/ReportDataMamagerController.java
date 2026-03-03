@@ -1060,6 +1060,33 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getHydrologicalWellDeviceList")
+	public String getHydrologicalWellDeviceList() throws Exception {
+		String json = "";
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		json = reportDataManagerService.getHydrologicalWellDeviceList(orgId,deviceName,language);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getReportTemplateList")
 	public String getReportTemplateList() throws Exception {
 		String json = "";
@@ -1139,6 +1166,261 @@ public class ReportDataMamagerController extends BaseController {
 		pw.print(jsonStr);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/loadHydrologicalWellReportDeviceComboxList")
+	public String loadHydrologicalWellReportDeviceComboxList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		orgId=ParamUtils.getParameter(request, "orgId");
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		String json = this.reportDataManagerService.loadHydrologicalWellReportDeviceComboxList(pager,orgId, deviceName,language);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getHydrologicalWellReportData")
+	public String getHydrologicalWellReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String timeType = ParamUtils.getParameter(request, "timeType");
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String tableName="tbl_timingrecorddata";
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.savetime,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			if(StringManagerUtils.isNotNull(deviceId)){
+				sql+= " and t.deviceId="+deviceId+" ";
+			}	
+			sql+= "order by savetime desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		
+		endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(startDate),0);
+		reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(reportDate),0);
+		
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		if(user!=null){
+			json = reportDataManagerService.getHydrologicalWellReportData(pager, orgId, deviceId, deviceName, startDate,endDate,reportDate,timeType,user.getUserNo(),user.getLanguageName());
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/exportHydrologicalWellReportData")
+	public String exportHydrologicalWellReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String timeType = ParamUtils.getParameter(request, "timeType");
+		
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
+		String tableName="tbl_timingrecorddata";
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.savetime,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			if(StringManagerUtils.isNotNull(deviceId)){
+				sql+= " and t.deviceId="+deviceId+" ";
+			}	
+			sql+= "order by savetime desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		
+		endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(startDate),0);
+		reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(reportDate),0);
+		
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		boolean bool = reportDataManagerService.exportHydrologicalWellReportData(user,response,pager, deviceId, deviceName, startDate,endDate,reportDate,timeType,user.getUserNo(),user.getLanguageName());
+		session.setAttribute(key, 1);
+		return null;
+	}
+	
+	@RequestMapping("/batchExportHydrologicalWellReportData")
+	public String batchExportHydrologicalWellReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String timeType = ParamUtils.getParameter(request, "timeType");
+		
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
+		String tableName="tbl_timingrecorddata";
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.savetime,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+= " and t.deviceName = '"+deviceName+"' ";
+			}	
+			sql+= "order by savetime desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		
+		endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(startDate),0);
+		reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(reportDate),0);
+		
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		boolean bool = reportDataManagerService.batchExportHydrologicalWellReportData(user,response,pager, orgId, deviceName, startDate,endDate,reportDate,timeType,user.getUserNo(),user.getLanguageName());
+		session.setAttribute(key, 1);
+		return null;
+	}
+	
+	@RequestMapping("/getHydrologicalWellReportCurveData")
+	public String getHydrologicalWellReportCurveData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String timeType = ParamUtils.getParameter(request, "timeType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String tableName="tbl_timingrecorddata";
+		
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.savetime,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			if(StringManagerUtils.isNotNull(deviceId)){
+				sql+= " and t.deviceId="+deviceId+" ";
+			}	
+			sql+= "order by savetime desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		
+		endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(startDate),0);
+		reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(reportDate),0);
+		
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		if(user!=null){
+			json = reportDataManagerService.getHydrologicalWellReportCurveData(pager, orgId, deviceId, deviceName, startDate,endDate,reportDate,timeType,user);
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

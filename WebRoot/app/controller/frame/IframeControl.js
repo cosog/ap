@@ -167,6 +167,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "DeviceRealTimeMonitoring"
 		&& module_Code != "DeviceHistoryQuery"
 		&& module_Code != "DailyReport"
+		&& module_Code != "HydrologicalWellReport"
 		&& module_Code != "DeviceOperationLogQuery"
 		&& module_Code != "SystemLogQuery"
 		&& module_Code != "AlarmQuery"
@@ -361,6 +362,13 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			}
 		}else{
 			reportDataRefresh();
+		}
+	}else if(module_Code == "HydrologicalWellReport"){
+		var gridPanel = Ext.getCmp("HydrologicalWellReportDeviceListGridPanel_Id");
+		if (isNotVal(gridPanel)) {
+			gridPanel.getStore().load();
+		}else{
+			Ext.create('AP.store.reportOut.HydrologicalWellReportDeviceListStore');
 		}
 	}else if(module_Code == 'SystemLogQuery'){
 		Ext.getCmp('systemLogUserListComb_Id').setValue("");

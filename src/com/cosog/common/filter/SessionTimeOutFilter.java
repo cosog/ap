@@ -101,6 +101,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 						||urlString.indexOf("RPMDailyCalculation")>=0
 						||urlString.indexOf("PCPTimingTotalCalculation")>=0
 						||urlString.indexOf("PCPDiscreteDailyCalculation")>=0
+						||urlString.indexOf("AcquisitionDataTimingRecord")>=0
 						||urlString.equals("getBalanceTorqueCalulate")||urlString.equals("balanceTotalCalculation")
 						||urlString.equals("saveRTUAcquisitionData")
 						||urlString.indexOf("getOuterSurfaceCardData")>=0

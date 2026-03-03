@@ -30,6 +30,11 @@ Ext.define("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
                 value: ''
             },{
                 xtype: "hidden",
+                fieldLabel: 'classes',
+                id: 'ReportUnitContentConfig_UnitClasses',
+                value: ''
+            },{
+                xtype: "hidden",
                 fieldLabel: '报表单元Id',
                 id: 'ReportUnitContentConfig_UnitId',
                 value: ''
@@ -79,12 +84,15 @@ Ext.define("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
                 	var unitId=Ext.getCmp("ReportUnitContentConfig_UnitId").getValue();
                 	var reportType=Ext.getCmp("ReportUnitContentConfig_ReportType").getValue();
                     var calculateType=Ext.getCmp("ReportUnitContentConfig_CalculateType").getValue();
+                    
+                    var unitClasses=Ext.getCmp("ReportUnitContentConfig_UnitClasses").getValue();
+                    
                     var row=Ext.getCmp("ReportUnitContentConfig_SelectedRow").getValue();
                     var col=Ext.getCmp("ReportUnitContentConfig_SelectedCol").getValue();
                     var sort=parseInt(row)+1;
                     var itemsConfigData = reportUnitContentConfigColInfoHandsontableHelper.hot.getData();
                 	
-                	grantReportUnitContentItemsPermission(unitId,reportType,calculateType,sort,itemsConfigData);
+                	grantReportUnitContentItemsPermission(unitId,reportType,calculateType,sort,unitClasses,itemsConfigData);
                 }
             }],
             layout: 'border',
@@ -169,8 +177,11 @@ function CreateReportUnitContentConfigTable() {
 	var unitId=Ext.getCmp("ReportUnitContentConfig_UnitId").getValue();
 	var reportType=Ext.getCmp("ReportUnitContentConfig_ReportType").getValue();
     var calculateType=Ext.getCmp("ReportUnitContentConfig_CalculateType").getValue();
+    
     var row=Ext.getCmp("ReportUnitContentConfig_SelectedRow").getValue();
     var col=Ext.getCmp("ReportUnitContentConfig_SelectedCol").getValue();
+    
+    var unitClasses=Ext.getCmp("ReportUnitContentConfig_UnitClasses").getValue();
     
     var sort=parseInt(row)+1;
 	
@@ -269,16 +280,25 @@ function CreateReportUnitContentConfigTable() {
 				
 				reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
 		        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
-		        if(reportType==0){
-		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
+		        
+		        if(unitClasses==1){
+		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[5,9,10,11,12,13,14];
 			        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
-		        }else if(reportType==1){
-		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[12,13,14,15,16,17];
-		        	reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,100,60,60,40,40,100,85];
-		        }else if(reportType==2){
-		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
-			        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
+		        }else{
+		        	if(reportType==0){
+			        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
+				        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
+			        }else if(reportType==1){
+			        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[12,13,14,15,16,17];
+			        	reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,100,60,60,40,40,100,85];
+			        }else if(reportType==2){
+			        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
+				        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
+			        }
 		        }
+		        
+		        
+		        
 				
 				reportUnitContentConfigHandsontableHelper.createTable(result.totalRoot);
 			}else{
@@ -302,6 +322,7 @@ function CreateReportUnitContentConfigTable() {
 			unitId: unitId,
 			reportType: reportType,
 			calculateType: calculateType,
+			unitClasses: unitClasses,
 			row: row,
 			col: col
         }
@@ -832,6 +853,7 @@ function CreateReportUnitContentConfigColInfoTable(){
 	var unitId=Ext.getCmp("ReportUnitContentConfig_UnitId").getValue();
 	var unitName=Ext.getCmp("ReportUnitContentConfig_UnitName").getValue();
 	var classes=Ext.getCmp("ReportUnitContentConfig_Classes").getValue();
+	var unitClasses=Ext.getCmp("ReportUnitContentConfig_UnitClasses").getValue();
 	var templateCode=Ext.getCmp("ReportUnitContentConfig_TemplateCode").getValue();
 	
 	var row=Ext.getCmp("ReportUnitContentConfig_SelectedRow").getValue();
@@ -888,6 +910,7 @@ function CreateReportUnitContentConfigColInfoTable(){
 			unitId: unitId,
 			templateCode: templateCode,
 			classes: classes,
+			unitClasses: unitClasses,
 			row: row
         }
 	});
@@ -1127,7 +1150,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	    }
 };
 
-function grantReportUnitContentItemsPermission(unitId,reportType,calculateType,sort,itemsConfigData) {
+function grantReportUnitContentItemsPermission(unitId,reportType,calculateType,sort,unitClasses,itemsConfigData) {
     var addUrl = context + '/acquisitionUnitManagerController/grantReportUnitContentItemsPermission';
     // 添加条件
     var saveData={};
@@ -1163,20 +1186,23 @@ function grantReportUnitContentItemsPermission(unitId,reportType,calculateType,s
         		if(item.dataType==2){
         			item.itemPrec=itemsConfigData[index][8];
 
-    				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
-            			item.totalType=1;
-            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
-            			item.totalType=2;
-            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
-            			item.totalType=3;
-            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
-            			item.totalType=4;
-            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
-            			item.totalType=5;
-            		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
-            			item.totalType=6;
-            		}
-    			
+        			if(unitClasses==1){
+        				item.totalType=4;
+        			}else{
+        				if(itemsConfigData[index][5]==loginUserLanguageResource.maxValue){
+                			item.totalType=1;
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.minValue){
+                			item.totalType=2;
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.avgValue){
+                			item.totalType=3;
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.newestValue){
+                			item.totalType=4;
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.oldestValue){
+                			item.totalType=5;
+                		}else if(itemsConfigData[index][5]==loginUserLanguageResource.dailyTotalValue){
+                			item.totalType=6;
+                		}
+        			}
         		}
         	}else if(reportType==2){
         		item.itemName = itemsConfigData[index][2];
@@ -1293,13 +1319,20 @@ function grantReportUnitContentItemsPermission(unitId,reportType,calculateType,s
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
                 	CreateReportUnitContentConfigColInfoTable();
                 	CreateReportUnitContentConfigTable();
-                	if(reportType==0){
-                		CreateSingleWellRangeReportTotalItemsInfoTable();
-                	}else if(reportType==1){
-                		CreateproductionReportTotalItemsInfoTable();
-                	}else if(reportType==2){
-                		CreateSingleWellDailyReportTotalItemsInfoTable();
+                	
+                	if(unitClasses==1){
+                		CreateHydrologicalWellDailyReportConfigItemsInfoTable();
+                	}else{
+                		if(reportType==0){
+                    		CreateSingleWellRangeReportTotalItemsInfoTable();
+                    	}else if(reportType==1){
+                    		CreateproductionReportTotalItemsInfoTable();
+                    	}else if(reportType==2){
+                    		CreateSingleWellDailyReportTotalItemsInfoTable();
+                    	}
                 	}
+                	
+                	
                 }
                 if (result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");

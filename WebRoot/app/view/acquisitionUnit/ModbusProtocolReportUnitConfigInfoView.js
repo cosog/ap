@@ -8,6 +8,9 @@
 //var singleWellDailyReportTemplateHandsontableHelper = null;
 //var singleWellDailyReportTemplateContentHandsontableHelper = null;
 
+//var hydrologicalWellDailyReportTemplateHandsontableHelper=null;
+//var hydrologicalWellDailyReportContentHandsontableHelper=null;
+
 Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.modbusProtocolReportUnitConfigInfoView',
@@ -244,7 +247,13 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
 });
 
 function CreateSingleWellRangeReportTemplateInfoTable(name, calculateType, code) {
-    Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if (singleWellRangeReportTemplateHandsontableHelper != null) {
+        if (singleWellRangeReportTemplateHandsontableHelper.hot != undefined) {
+            singleWellRangeReportTemplateHandsontableHelper.hot.destroy();
+        }
+        singleWellRangeReportTemplateHandsontableHelper = null;
+    }
+	Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/getReportTemplateData',
@@ -252,14 +261,6 @@ function CreateSingleWellRangeReportTemplateInfoTable(name, calculateType, code)
             Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
             Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle(name+'/'+loginUserLanguageResource.deviceDailyReportTemplate);
             var result = Ext.JSON.decode(response.responseText);
-
-            if (singleWellRangeReportTemplateHandsontableHelper != null) {
-                if (singleWellRangeReportTemplateHandsontableHelper.hot != undefined) {
-                    singleWellRangeReportTemplateHandsontableHelper.hot.destroy();
-                }
-                singleWellRangeReportTemplateHandsontableHelper = null;
-            }
-
             if (singleWellRangeReportTemplateHandsontableHelper == null || singleWellRangeReportTemplateHandsontableHelper.hot == undefined) {
                 singleWellRangeReportTemplateHandsontableHelper = SingleWellRangeReportTemplateHandsontableHelper.createNew("ReportUnitSingleWellRangeReportTemplateTableInfoDiv_id", "ReportUnitSingleWellRangeReportTemplateTableInfoContainer", result);
                 singleWellRangeReportTemplateHandsontableHelper.createTable();
@@ -503,6 +504,12 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
 };
 
 function CreateSingleWellDailyReportTemplateInfoTable(name, calculateType, code) {
+	if (singleWellDailyReportTemplateHandsontableHelper != null) {
+        if (singleWellDailyReportTemplateHandsontableHelper.hot != undefined) {
+            singleWellDailyReportTemplateHandsontableHelper.hot.destroy();
+        }
+        singleWellDailyReportTemplateHandsontableHelper = null;
+    }
     Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
@@ -511,14 +518,6 @@ function CreateSingleWellDailyReportTemplateInfoTable(name, calculateType, code)
             Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
             Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle(name+'/'+loginUserLanguageResource.deviceHourlyReportTemplate);
             var result = Ext.JSON.decode(response.responseText);
-
-            if (singleWellDailyReportTemplateHandsontableHelper != null) {
-                if (singleWellDailyReportTemplateHandsontableHelper.hot != undefined) {
-                    singleWellDailyReportTemplateHandsontableHelper.hot.destroy();
-                }
-                singleWellDailyReportTemplateHandsontableHelper = null;
-            }
-
             if (singleWellDailyReportTemplateHandsontableHelper == null || singleWellDailyReportTemplateHandsontableHelper.hot == undefined) {
                 singleWellDailyReportTemplateHandsontableHelper = SingleWellDailyReportTemplateHandsontableHelper.createNew("ReportUnitSingleWellDailyReportTemplateTableInfoDiv_id", "ReportUnitSingleWellDailyReportTemplateTableInfoContainer", result);
                 singleWellDailyReportTemplateHandsontableHelper.createTable();
@@ -774,6 +773,7 @@ function reportUnitContentConfig(row, col, value) {
     var unitName = '';
     var classes = 0;
     var reportTemplateListGridPanel="";
+    var unitClasses=0;
     
     if(reportType==0){
     	reportTemplateListGridPanel="ReportUnitSingleWellRangeReportTemplateListGridPanel_Id";
@@ -787,23 +787,31 @@ function reportUnitContentConfig(row, col, value) {
     if (reportUnitConfigTreeSelection.length > 0) {
         var record = reportUnitConfigTreeSelection[0];
         classes = record.data.classes;
+        
+        
         if (classes == 0) {
             if (isNotVal(record.data.children) && record.data.children.length > 0) {
                 unitId = record.data.children[0].id;
                 unitName = record.data.children[0].text;
+                unitClasses = record.data.children[0].unitClasses;
             }
         } else if (classes == 1) {
             unitId = record.data.id;
             unitName = record.data.text;
+            unitClasses = record.data.unitClasses;
         }
         calculateType = record.data.calculateType;
     }
 
-    var templateSelection = Ext.getCmp(reportTemplateListGridPanel).getSelectionModel().getSelection();
+    
     var templateCode = "";
-    if (templateSelection.length > 0) {
-        templateCode = templateSelection[0].data.templateCode;
+    if(unitClasses==0){
+    	var templateSelection = Ext.getCmp(reportTemplateListGridPanel).getSelectionModel().getSelection();
+        if (templateSelection.length > 0) {
+            templateCode = templateSelection[0].data.templateCode;
+        }
     }
+    
 
     var window = Ext.create("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
         title: loginUserLanguageResource.reportContentConfig
@@ -812,6 +820,9 @@ function reportUnitContentConfig(row, col, value) {
     Ext.getCmp("ReportUnitContentConfig_Classes").setValue(classes);
     Ext.getCmp("ReportUnitContentConfig_UnitId").setValue(unitId);
     Ext.getCmp("ReportUnitContentConfig_UnitName").setValue(unitName);
+    
+    Ext.getCmp("ReportUnitContentConfig_UnitClasses").setValue(unitClasses);
+    
 
     Ext.getCmp("ReportUnitContentConfig_ReportType").setValue(reportType);
     Ext.getCmp("ReportUnitContentConfig_CalculateType").setValue(calculateType);
@@ -824,7 +835,13 @@ function reportUnitContentConfig(row, col, value) {
 }
 
 function CreateSingleWellRangeReportTotalItemsInfoTable() {
-    Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(singleWellRangeReportTemplateContentHandsontableHelper!=null){
+		if(singleWellRangeReportTemplateContentHandsontableHelper.hot!=undefined){
+			singleWellRangeReportTemplateContentHandsontableHelper.hot.destroy();
+		}
+		singleWellRangeReportTemplateContentHandsontableHelper=null;
+	}
+	Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
 
     var calculateType = 0;
     var unitId = 0;
@@ -1062,7 +1079,14 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
 };
 
 function CreateSingleWellDailyReportTotalItemsInfoTable() {
-    Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(singleWellDailyReportTemplateContentHandsontableHelper!=null){
+		if(singleWellDailyReportTemplateContentHandsontableHelper.hot!=undefined){
+			singleWellDailyReportTemplateContentHandsontableHelper.hot.destroy();
+		}
+		singleWellDailyReportTemplateContentHandsontableHelper=null;
+	}
+	
+	Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     
     var calculateType = 0;
     var unitId = 0;
@@ -1496,6 +1520,12 @@ var ReportUnitPropertiesHandsontableHelper = {
 };
 
 function CreateProductionReportTemplateInfoTable(name, calculateType, code) {
+	if (productionReportTemplateHandsontableHelper != null) {
+        if (productionReportTemplateHandsontableHelper.hot != undefined) {
+            productionReportTemplateHandsontableHelper.hot.destroy();
+        }
+        productionReportTemplateHandsontableHelper = null;
+    }
     Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
@@ -1504,13 +1534,6 @@ function CreateProductionReportTemplateInfoTable(name, calculateType, code) {
             Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
             Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").setTitle(name+'/'+loginUserLanguageResource.areaDailyReportTemplate);
             var result = Ext.JSON.decode(response.responseText);
-
-            if (productionReportTemplateHandsontableHelper != null) {
-                if (productionReportTemplateHandsontableHelper.hot != undefined) {
-                    productionReportTemplateHandsontableHelper.hot.destroy();
-                }
-                productionReportTemplateHandsontableHelper = null;
-            }
 
             if (productionReportTemplateHandsontableHelper == null || productionReportTemplateHandsontableHelper.hot == undefined) {
                 productionReportTemplateHandsontableHelper = ProductionReportTemplateHandsontableHelper.createNew("ModbusProtocolReportUnitProductionTemplateTableInfoDiv_id", "ModbusProtocolReportUnitProductionTemplateTableInfoContainer", result);
@@ -1755,8 +1778,13 @@ var ProductionReportTemplateHandsontableHelper = {
 };
 
 function CreateproductionReportTotalItemsInfoTable(calculateType, unitId, unitName, classes) {
+	if(productionReportTemplateContentHandsontableHelper!=null){
+		if(productionReportTemplateContentHandsontableHelper.hot!=undefined){
+			productionReportTemplateContentHandsontableHelper.hot.destroy();
+		}
+		productionReportTemplateContentHandsontableHelper=null;
+	}
     Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
-    
     var calculateType = 0;
     var unitId = 0;
     var unitName = '';
@@ -1781,7 +1809,6 @@ function CreateproductionReportTotalItemsInfoTable(calculateType, unitId, unitNa
     if (templateSelection.length > 0) {
         templateCode = templateSelection[0].data.templateCode;
     }
-    
     
     Ext.Ajax.request({
         method: 'POST',
@@ -2479,16 +2506,505 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
 function getReportType() {
     var reportType = 0;
     var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportConfigPanel_Id");
-    var activeId = tabPanel.getActiveTab().id;
-    if (activeId == "ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id") {
-        var singleWellReportActiveId = Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
-        if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id') {
-            reportType = 2;
-        } else if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id') {
-            reportType = 0;
+    if(tabPanel!=undefined){
+    	var activeId = tabPanel.getActiveTab().id;
+        if (activeId == "ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id") {
+            var singleWellReportActiveId = Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
+            if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id') {
+                reportType = 2;
+            } else if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id') {
+                reportType = 0;
+            }
+        } else if (activeId == "ModbusProtocolReportUnitProductionReportTemplatePanel_Id") {
+            reportType = 1;
         }
-    } else if (activeId == "ModbusProtocolReportUnitProductionReportTemplatePanel_Id") {
-        reportType = 1;
     }
+    
     return reportType;
 }
+
+
+
+function CreateHydrologicalWellDailyReportTemplateInfoTable() {
+	if (hydrologicalWellDailyReportTemplateHandsontableHelper != null) {
+        if (hydrologicalWellDailyReportTemplateHandsontableHelper.hot != undefined) {
+            hydrologicalWellDailyReportTemplateHandsontableHelper.hot.destroy();
+        }
+        hydrologicalWellDailyReportTemplateHandsontableHelper = null;
+    }
+    Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/acquisitionUnitManagerController/getHydrologicalWellReportTemplateData',
+        success: function (response) {
+            Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id").getEl().unmask();
+            Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id").setTitle(name+'/'+'报表模板');
+            var result = Ext.JSON.decode(response.responseText);
+            if (hydrologicalWellDailyReportTemplateHandsontableHelper == null || hydrologicalWellDailyReportTemplateHandsontableHelper.hot == undefined) {
+                hydrologicalWellDailyReportTemplateHandsontableHelper = HydrologicalWellDailyReportTemplateHandsontableHelper.createNew("ReportUnitClasses1TemplateTableInfoDiv_id", "ReportUnitClasses1TemplateTableInfoContainer", result);
+                hydrologicalWellDailyReportTemplateHandsontableHelper.createTable();
+            }
+        },
+        failure: function () {
+            Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id").getEl().unmask();
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+        },
+        params: {
+        	
+        }
+    });
+}
+
+var HydrologicalWellDailyReportTemplateHandsontableHelper = {
+    createNew: function (divid, containerid, templateData) {
+        var hydrologicalWellDailyReportTemplateHandsontableHelper = {};
+        hydrologicalWellDailyReportTemplateHandsontableHelper.templateData = templateData;
+        hydrologicalWellDailyReportTemplateHandsontableHelper.get_data = {};
+        hydrologicalWellDailyReportTemplateHandsontableHelper.data = [];
+        hydrologicalWellDailyReportTemplateHandsontableHelper.hot = '';
+        hydrologicalWellDailyReportTemplateHandsontableHelper.container = document.getElementById(divid);
+
+        hydrologicalWellDailyReportTemplateHandsontableHelper.colWidths=[];
+        if(loginUserLanguage=='zh_CN'){
+        	hydrologicalWellDailyReportTemplateHandsontableHelper.colWidths=hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+        }else if(loginUserLanguage=='en'){
+        	hydrologicalWellDailyReportTemplateHandsontableHelper.colWidths=hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_en
+	    }else if(loginUserLanguage=='ru'){
+        	hydrologicalWellDailyReportTemplateHandsontableHelper.colWidths=hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.columnWidths_ru
+	    }
+
+        hydrologicalWellDailyReportTemplateHandsontableHelper.initData = function () {
+            hydrologicalWellDailyReportTemplateHandsontableHelper.data = [];
+            if(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header!=undefined){
+            	for (var i = 0; i < hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header.length; i++) {
+            		if(loginUserLanguage=='zh_CN'){
+            			hydrologicalWellDailyReportTemplateHandsontableHelper.data.push(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].title_zh_CN);
+            		}else if(loginUserLanguage=='en'){
+            			hydrologicalWellDailyReportTemplateHandsontableHelper.data.push(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].title_en);
+            		}else if(loginUserLanguage=='ru'){
+            			hydrologicalWellDailyReportTemplateHandsontableHelper.data.push(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].title_ru);
+            		} 
+                }
+            }
+        }
+
+        hydrologicalWellDailyReportTemplateHandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (hydrologicalWellDailyReportTemplateHandsontableHelper != null && hydrologicalWellDailyReportTemplateHandsontableHelper.hot != null) {
+                for (var i = 0; i < hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header.length; i++) {
+                    if (row == i) {
+                        if (isNotVal(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle)) {
+                            if (isNotVal(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontWeight)) {
+                                td.style.fontWeight = hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontWeight;
+                            }
+                            if (isNotVal(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize)) {
+                                td.style.fontSize = hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize;
+                            }
+                            if (isNotVal(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily)) {
+//                                td.style.fontFamily = hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
+                            }
+                            if (isNotVal(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.height)) {
+                                td.style.height = hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.height;
+                            }
+                            if (isNotVal(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.color)) {
+                                td.style.color = hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.color;
+                            }
+                            if (isNotVal(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor)) {
+                                td.style.backgroundColor = hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor;
+                            }
+                            if (isNotVal(hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.textAlign)) {
+                                td.style.textAlign = hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.header[i].tdStyle.textAlign;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        hydrologicalWellDailyReportTemplateHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(242, 242, 242)';
+            if (row <= 2 && row >= 1) {
+                td.style.fontWeight = 'bold';
+                td.style.fontSize = '13px';
+                td.style.color = 'rgb(0, 0, 51)';
+//                td.style.fontFamily = 'SimSun'; //SimHei-黑体 SimSun-宋体
+            }
+        }
+
+        hydrologicalWellDailyReportTemplateHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (row < 1) {
+                td.style.fontWeight = 'bold';
+                td.style.fontSize = '25px';
+//                td.style.fontFamily = 'SimSun';
+                td.style.height = '50px';
+            }
+        }
+
+        hydrologicalWellDailyReportTemplateHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(242, 242, 242)';
+            if (row < 3) {
+                td.style.fontWeight = 'bold';
+                td.style.fontSize = '5px';
+//                td.style.fontFamily = 'SimHei';
+            }
+        }
+
+
+        hydrologicalWellDailyReportTemplateHandsontableHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(183, 222, 232)';
+        }
+
+        hydrologicalWellDailyReportTemplateHandsontableHelper.addBgGreen = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(216, 228, 188)';
+        }
+
+        hydrologicalWellDailyReportTemplateHandsontableHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.display = 'none';
+        }
+
+        // 实现标题居中
+        hydrologicalWellDailyReportTemplateHandsontableHelper.titleCenter = function () {
+            $(containerid).width($($('.wtHider')[0]).width());
+        }
+
+        hydrologicalWellDailyReportTemplateHandsontableHelper.createTable = function () {
+            hydrologicalWellDailyReportTemplateHandsontableHelper.container.innerHTML = "";
+            hydrologicalWellDailyReportTemplateHandsontableHelper.hot = new Handsontable(hydrologicalWellDailyReportTemplateHandsontableHelper.container, {
+                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+                data: hydrologicalWellDailyReportTemplateHandsontableHelper.data,
+                fixedRowsTop: hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.fixedRowsTop,
+                fixedRowsBottom: hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.fixedRowsBottom,
+                //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
+                rowHeaders: false,
+                colHeaders: false,
+                rowHeights: hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.rowHeights,
+                colWidths: hydrologicalWellDailyReportTemplateHandsontableHelper.colWidths,
+//                colWidths: [80, 100, 80, 80, 120, 120, 100, 100, 100, 100, 100, 100, 160, 1000],
+                //					rowHeaders: true, //显示行头
+                rowHeaders(index) {
+                    return 'Row ' + (index + 1);
+                },
+                //					colHeaders: true, //显示列头
+                colHeaders(index) {
+                    return 'Col ' + (index + 1);
+                },
+                stretchH: 'all',
+                columnSorting: true, //允许排序
+                allowInsertRow: false,
+                sortIndicator: true,
+                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                filters: true,
+                renderAllRows: true,
+                search: true,
+                mergeCells: hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.mergeCells,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    var visualRowIndex = this.instance.toVisualRow(row);
+                    var visualColIndex = this.instance.toVisualColumn(col);
+                    cellProperties.readOnly = true;
+                    cellProperties.renderer = hydrologicalWellDailyReportTemplateHandsontableHelper.addStyle;
+                    return cellProperties;
+                },
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(coords.col>=0 && coords.row>=0 && hydrologicalWellDailyReportTemplateHandsontableHelper!=null
+                		&& hydrologicalWellDailyReportTemplateHandsontableHelper.hot!=''
+                		&& hydrologicalWellDailyReportTemplateHandsontableHelper.hot!=undefined 
+                		&& hydrologicalWellDailyReportTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=hydrologicalWellDailyReportTemplateHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
+            });
+        }
+        hydrologicalWellDailyReportTemplateHandsontableHelper.getData = function (data) {
+
+        }
+
+        var init = function () {
+            hydrologicalWellDailyReportTemplateHandsontableHelper.initData();
+        }
+
+        init();
+        return hydrologicalWellDailyReportTemplateHandsontableHelper;
+    }
+};
+
+function CreateHydrologicalWellDailyReportConfigItemsInfoTable() {
+	if(hydrologicalWellDailyReportContentHandsontableHelper!=null){
+		if(hydrologicalWellDailyReportContentHandsontableHelper.hot!=undefined){
+			hydrologicalWellDailyReportContentHandsontableHelper.hot.destroy();
+		}
+		hydrologicalWellDailyReportContentHandsontableHelper=null;
+	}
+	
+	Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    
+    var calculateType = 0;
+    var unitId = 0;
+    var unitName = '';
+    var classes = 0;
+    var reportUnitConfigTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
+    if (reportUnitConfigTreeSelection.length > 0) {
+        var record = reportUnitConfigTreeSelection[0];
+        if (record.data.classes == 1) {
+            unitId = record.data.id;
+        }
+        calculateType = record.data.calculateType;
+        unitName = record.data.text;
+        classes = record.data.classes;
+    }
+    
+    Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/acquisitionUnitManagerController/getHydrologicalWellReportUnitItemsConfigColInfoData',
+        success: function (response) {
+            Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").getEl().unmask();
+            var result = Ext.JSON.decode(response.responseText);
+            if (classes == 0) {
+                Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportContentConfig);
+            } else {
+                Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").setTitle(unitName + '/'+'报表内容');
+            }
+            if (hydrologicalWellDailyReportContentHandsontableHelper == null || hydrologicalWellDailyReportContentHandsontableHelper.hot == undefined) {
+                hydrologicalWellDailyReportContentHandsontableHelper = HydrologicalWellDailyReportContentHandsontableHelper.createNew("ReportUnitClasses1ContentConfigTableInfoDiv_id");
+                var colHeaders = [loginUserLanguageResource.idx, loginUserLanguageResource.dataColumnName,loginUserLanguageResource.dataColumn, loginUserLanguageResource.unit, loginUserLanguageResource.dataSource, loginUserLanguageResource.totalType, loginUserLanguageResource.showLevel, loginUserLanguageResource.prec, loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
+                var columns = [{
+                        data: 'id'
+                    },
+                    {
+                        data: 'headerName'
+                    },
+                    {
+                        data: 'itemName'
+                    },
+                    {
+                        data: 'unit'
+                    },
+                    {
+                        data: 'dataSource'
+                    },
+                    {
+                        data: 'totalType'
+                    },
+                    {
+                        data: 'showLevel'
+                    },
+                    {
+                        data: 'prec'
+                    },
+                    {
+                        data: 'reportCurveConfShowValue'
+                    },
+                    {
+                        data: 'config',
+                        renderer: renderReportUnitContentConfig
+                    }];
+                hydrologicalWellDailyReportContentHandsontableHelper.colHeaders = colHeaders;
+                hydrologicalWellDailyReportContentHandsontableHelper.columns = columns;
+                hydrologicalWellDailyReportContentHandsontableHelper.createTable(result.totalRoot);
+            } else {
+                hydrologicalWellDailyReportContentHandsontableHelper.hot.loadData(result.totalRoot);
+            }
+        },
+        failure: function () {
+            Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").getEl().unmask();
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+        },
+        params: {
+            calculateType: calculateType,
+            reportType: 2,
+            unitId: unitId,
+            classes: classes
+        }
+    });
+};
+
+var HydrologicalWellDailyReportContentHandsontableHelper = {
+    createNew: function (divid) {
+        var hydrologicalWellDailyReportContentHandsontableHelper = {};
+        hydrologicalWellDailyReportContentHandsontableHelper.hot1 = '';
+        hydrologicalWellDailyReportContentHandsontableHelper.divid = divid;
+        hydrologicalWellDailyReportContentHandsontableHelper.validresult = true; //数据校验
+        hydrologicalWellDailyReportContentHandsontableHelper.colHeaders = [];
+        hydrologicalWellDailyReportContentHandsontableHelper.columns = [];
+        hydrologicalWellDailyReportContentHandsontableHelper.AllData = [];
+
+        hydrologicalWellDailyReportContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (value != null) {
+                var arr = value.split(';');
+                if (arr.length == 3) {
+                    td.style.backgroundColor = '#' + arr[2];
+                }
+            }
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+        
+        hydrologicalWellDailyReportContentHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+
+        hydrologicalWellDailyReportContentHandsontableHelper.createTable = function (data) {
+            $('#' + hydrologicalWellDailyReportContentHandsontableHelper.divid).empty();
+            var hotElement = document.querySelector('#' + hydrologicalWellDailyReportContentHandsontableHelper.divid);
+            hydrologicalWellDailyReportContentHandsontableHelper.hot = new Handsontable(hotElement, {
+                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+                data: data,
+                hiddenColumns: {
+                    columns: [5],
+                    indicators: false,
+                    copyPasteEnabled: false
+                },
+                colWidths: [50, 150, 150, 80, 90, 120, 80, 60, 110, 80],
+                columns: hydrologicalWellDailyReportContentHandsontableHelper.columns,
+                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+                autoWrapRow: true,
+                rowHeaders: false, //显示行头
+                colHeaders: hydrologicalWellDailyReportContentHandsontableHelper.colHeaders, //显示列头
+                columnSorting: true, //允许排序
+                sortIndicator: true,
+                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                filters: true,
+                renderAllRows: true,
+                search: true,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    var visualRowIndex = this.instance.toVisualRow(row);
+                    var visualColIndex = this.instance.toVisualColumn(col);
+                    
+                    cellProperties.readOnly = true;
+                    if (visualColIndex == 8) {
+                        cellProperties.renderer = hydrologicalWellDailyReportContentHandsontableHelper.addCurveBg;
+                    }
+                    else{
+                    	if(hydrologicalWellDailyReportContentHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& hydrologicalWellDailyReportContentHandsontableHelper.columns[visualColIndex].type!='checkbox'
+	    	            		&& prop.toUpperCase()!='config'.toUpperCase()){
+	                    	cellProperties.renderer = hydrologicalWellDailyReportContentHandsontableHelper.addCellStyle;
+	    	            }
+                    }
+                    return cellProperties;
+                },
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(coords.col>=0 && coords.row>=0 && hydrologicalWellDailyReportContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+                		&& hydrologicalWellDailyReportContentHandsontableHelper!=null
+                		&& hydrologicalWellDailyReportContentHandsontableHelper.hot!=''
+                		&& hydrologicalWellDailyReportContentHandsontableHelper.hot!=undefined 
+                		&& hydrologicalWellDailyReportContentHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=hydrologicalWellDailyReportContentHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
+            });
+        }
+        //保存数据
+        hydrologicalWellDailyReportContentHandsontableHelper.saveData = function () {}
+        hydrologicalWellDailyReportContentHandsontableHelper.clearContainer = function () {
+            hydrologicalWellDailyReportContentHandsontableHelper.AllData = [];
+        }
+        return hydrologicalWellDailyReportContentHandsontableHelper;
+    }
+};

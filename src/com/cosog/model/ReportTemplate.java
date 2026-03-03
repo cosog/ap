@@ -8,11 +8,44 @@ public class ReportTemplate  implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private List<Template> singleWellRangeReportTemplate;
+	private Classes0 classes0;
 	
-	private List<Template> singleWellDailyReportTemplate;
+	private Template classes1;
+	
+	public static class Classes0 implements Serializable
+	{
+		private static final long serialVersionUID = 1L;
+		
+		private List<Template> singleWellRangeReportTemplate;
+		
+		private List<Template> singleWellDailyReportTemplate;
 
-	private List<Template> productionReportTemplate;
+		private List<Template> productionReportTemplate;
+
+		public List<Template> getSingleWellRangeReportTemplate() {
+			return singleWellRangeReportTemplate;
+		}
+
+		public void setSingleWellRangeReportTemplate(List<Template> singleWellRangeReportTemplate) {
+			this.singleWellRangeReportTemplate = singleWellRangeReportTemplate;
+		}
+
+		public List<Template> getSingleWellDailyReportTemplate() {
+			return singleWellDailyReportTemplate;
+		}
+
+		public void setSingleWellDailyReportTemplate(List<Template> singleWellDailyReportTemplate) {
+			this.singleWellDailyReportTemplate = singleWellDailyReportTemplate;
+		}
+
+		public List<Template> getProductionReportTemplate() {
+			return productionReportTemplate;
+		}
+
+		public void setProductionReportTemplate(List<Template> productionReportTemplate) {
+			this.productionReportTemplate = productionReportTemplate;
+		}
+	}
 	
 	public static class TdStyle implements Serializable
 	{
@@ -313,27 +346,19 @@ public class ReportTemplate  implements Serializable{
 		}
 	}
 
-	public List<Template> getProductionReportTemplate() {
-		return productionReportTemplate;
+	public Classes0 getClasses0() {
+		return classes0;
 	}
 
-	public void setProductionReportTemplate(List<Template> productionReportTemplate) {
-		this.productionReportTemplate = productionReportTemplate;
+	public void setClasses0(Classes0 classes0) {
+		this.classes0 = classes0;
 	}
 
-	public List<Template> getSingleWellRangeReportTemplate() {
-		return singleWellRangeReportTemplate;
+	public Template getClasses1() {
+		return classes1;
 	}
 
-	public void setSingleWellRangeReportTemplate(List<Template> singleWellRangeReportTemplate) {
-		this.singleWellRangeReportTemplate = singleWellRangeReportTemplate;
-	}
-
-	public List<Template> getSingleWellDailyReportTemplate() {
-		return singleWellDailyReportTemplate;
-	}
-
-	public void setSingleWellDailyReportTemplate(List<Template> singleWellDailyReportTemplate) {
-		this.singleWellDailyReportTemplate = singleWellDailyReportTemplate;
+	public void setClasses1(Template classes1) {
+		this.classes1 = classes1;
 	}
 }

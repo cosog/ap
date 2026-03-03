@@ -1211,8 +1211,6 @@ public class ReportDataMamagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String tableName="tbl_timingrecorddata";
-		
-		
 		if (!StringManagerUtils.isNotNull(endDate)) {
 			String sql = " select * from (select  to_char(t.savetime,'yyyy-mm-dd') from "+tableName+" t where 1=1";
 			if(StringManagerUtils.isNotNull(deviceId)){
@@ -1226,12 +1224,18 @@ public class ReportDataMamagerController extends BaseController {
 				endDate = StringManagerUtils.getCurrentTime();
 			}
 		}
+		
 		if(!StringManagerUtils.isNotNull(startDate)){
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
 			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
 		}
+		
+		endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(startDate),0);
+		reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(reportDate),0);
+		
 		String json = "";
 		this.pager = new Page("pagerForm", request);
 		pager.setStart_date(startDate);
@@ -1251,6 +1255,110 @@ public class ReportDataMamagerController extends BaseController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	@RequestMapping("/exportHydrologicalWellReportData")
+	public String exportHydrologicalWellReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String timeType = ParamUtils.getParameter(request, "timeType");
+		
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
+		String tableName="tbl_timingrecorddata";
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.savetime,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			if(StringManagerUtils.isNotNull(deviceId)){
+				sql+= " and t.deviceId="+deviceId+" ";
+			}	
+			sql+= "order by savetime desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		
+		endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(startDate),0);
+		reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(reportDate),0);
+		
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		boolean bool = reportDataManagerService.exportHydrologicalWellReportData(user,response,pager, deviceId, deviceName, startDate,endDate,reportDate,timeType,user.getUserNo(),user.getLanguageName());
+		session.setAttribute(key, 1);
+		return null;
+	}
+	
+	@RequestMapping("/batchExportHydrologicalWellReportData")
+	public String batchExportHydrologicalWellReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String timeType = ParamUtils.getParameter(request, "timeType");
+		
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
+		String tableName="tbl_timingrecorddata";
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.savetime,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+= " and t.deviceName = '"+deviceName+"' ";
+			}	
+			sql+= "order by savetime desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		
+		endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(startDate),0);
+		reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(reportDate),0);
+		
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		boolean bool = reportDataManagerService.batchExportHydrologicalWellReportData(user,response,pager, orgId, deviceName, startDate,endDate,reportDate,timeType,user.getUserNo(),user.getLanguageName());
+		session.setAttribute(key, 1);
 		return null;
 	}
 	
@@ -1289,6 +1397,10 @@ public class ReportDataMamagerController extends BaseController {
 		if(!StringManagerUtils.isNotNull(reportDate)){
 			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
 		}
+		
+		endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(startDate),0);
+		reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(reportDate),0);
 		
 		String json = "";
 		this.pager = new Page("pagerForm", request);

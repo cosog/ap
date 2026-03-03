@@ -6013,6 +6013,8 @@ public class MemoryDataManagerTask {
 	}
 	
 	public static ReportTemplate.Template getHydrologicalWellTemplate(){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		Jedis jedis=null;
 		ReportTemplate reportTemplate=null;
 		ReportTemplate.Template template=null;
@@ -6023,7 +6025,9 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
 			if(reportTemplate!=null && reportTemplate.getClasses1()!=null ){
-				template=reportTemplate.getClasses1();
+				ReportTemplate.Template template2=reportTemplate.getClasses1();
+				type = new TypeToken<ReportTemplate.Template>() {}.getType();
+				template=gson.fromJson(gson.toJson(template2), type);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

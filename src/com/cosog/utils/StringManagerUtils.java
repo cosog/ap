@@ -53,6 +53,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -4950,5 +4951,48 @@ public class StringManagerUtils {
     		r=getLow8Bits(arr);
     	}
     	return r;
+    }
+    
+    public static List<String> getTimeIntervals(int interval,String formatterStr) {
+        List<String> timeList = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatterStr);
+        
+        // 一天的分钟数：24 * 60 = 1440分钟
+        // 每5分钟一个点，总共 1440 / 5 = 288个点
+        for (int minute = 0; minute < 24 * 60; minute += interval) {
+            LocalTime time = LocalTime.of(minute / 60, minute % 60);
+            timeList.add(time.format(formatter));
+        }
+        
+        return timeList;
+    }
+    
+    /**
+     * 获取两个日期之间的所有日期（包含起始和结束）
+     * @param startDateStr 起始日期字符串，格式：yyyy-MM-dd
+     * @param endDateStr 结束日期字符串，格式：yyyy-MM-dd
+     * @return 连续的日期字符串列表
+     */
+    public static List<String> getDatesBetween(String startDateStr, String endDateStr) {
+        List<String> dateList = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        
+        // 解析日期字符串
+        LocalDate startDate = LocalDate.parse(startDateStr, formatter);
+        LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+        
+        // 验证日期顺序
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("起始日期不能晚于结束日期");
+        }
+        
+        // 循环添加日期
+        LocalDate currentDate = startDate;
+        while (!currentDate.isAfter(endDate)) {
+            dateList.add(currentDate.format(formatter));
+            currentDate = currentDate.plusDays(1);
+        }
+        
+        return dateList;
     }
 }

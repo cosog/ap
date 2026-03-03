@@ -5764,14 +5764,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		String reportUnitId="";
 		String deviceTableName="viw_device";
-		String calTotalTableName="";
 		
 		List<List<String>> dataList=new ArrayList<>();
 		int totalCount=0;
+		int dateColIndex=-99;
 		int timeColIndex=-99;
-		int deviceNameColIndex=-99;
-		String maxTimeStr="";
-//		List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
@@ -5832,17 +5829,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			
-			
-			
-			String templateStr=gson.toJson(template).replace("label", "");
-			if(timeEfficiencyUnitType==2){
-				templateStr=templateStr.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
-			}else{
-				templateStr=templateStr.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
-			}
-			
-			result_json.append("{\"success\":true,\"template\":"+templateStr+",");
-			
 			String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec,t.totalType,t.dataSource "
 					+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 					+ " where t.unitid="+reportUnitId+" "
@@ -5876,7 +5862,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			
 			StringBuffer sqlBuff = new StringBuffer();
-			sqlBuff.append("select t.id,to_char(t.savetime@'yyyy-mm-dd hh24:mi:ss')");
+			sqlBuff.append("select t.id,to_char(t.savetime@'yyyy-mm-dd') as saveDate,to_char(t.savetime@'hh24:mi') as savetime");
 			
 			if(reportAcqItemList.size()>0){
 				sqlBuff.append(",t.acqdata");
@@ -5902,12 +5888,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					sqlBuff.append(","+tableAlias+"."+column+" as "+column);
 				}
 				
-				if(timeColIndex<0 && "SaveTime".equalsIgnoreCase(column)){
-					timeColIndex=reportOtherItemList.get(i).getSort()-1;
+				if(dateColIndex<0 && "SaveTime".equalsIgnoreCase(column) && reportOtherItemList.get(i).getDataType()==3){
+					dateColIndex=reportOtherItemList.get(i).getSort()-1;
 				}
 				
-				if(deviceNameColIndex<0 && "deviceName".equalsIgnoreCase(column)){
-					deviceNameColIndex=reportOtherItemList.get(i).getSort()-1;
+				if(timeColIndex<0 && "SaveTime".equalsIgnoreCase(column) && (reportOtherItemList.get(i).getDataType()==4||reportOtherItemList.get(i).getDataType()==5 )){
+					timeColIndex=reportOtherItemList.get(i).getSort()-1;
 				}
 			}
 			
@@ -5916,12 +5902,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			sqlBuff.append(" where 1=1");
 			sqlBuff.append(" and t.deviceId="+deviceId+" ");
-			sqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime<= to_date('"+reportDate+"','yyyy-mm-dd')+1");
 			
-			if(StringManagerUtils.stringToInteger(timeType)!=1){
-//				sqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+			
+			if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+				sqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
+				sqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
 			}else{
-				sqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime<= to_date('"+reportDate+"','yyyy-mm-dd')+1");
+				sqlBuff.append(" and t.acqTime > to_date('"+startDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
+				sqlBuff.append(" and t.SaveTime > to_date('"+startDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
 			}
 			
 			sqlBuff.append(" order by t.SaveTime");
@@ -5934,7 +5922,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			for(int i=0;i<reportDataList.size();i++){
 				Object[] reportDataObj=(Object[]) reportDataList.get(i);
 				String recordId=reportDataObj[0]+"";
-				maxTimeStr=reportDataObj[1]+"";
 				
 				List<String> everyDaya=new ArrayList<String>();
 				for(int j=0;j<columnCount;j++){
@@ -5943,12 +5930,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				everyDaya.set(0, (i+1)+"");
 				everyDaya.add(recordId);
 				
-				int startIndex=2;
+				int startIndex=3;
 				if(reportAcqItemList.size()>0){
-					startIndex=3;
-					String acqData=StringManagerUtils.CLOBObjectToString(reportDataObj[2]);
+					startIndex=4;
+					String acqData=StringManagerUtils.CLOBObjectToString(reportDataObj[3]);
 					type = new TypeToken<List<KeyValue>>() {}.getType();
-					List<KeyValue> calDataList=gson.fromJson(acqData, type);
+					
+					List<KeyValue> calDataList=null;
+					try{
+						calDataList=gson.fromJson(acqData, type);
+					}catch(Exception e){
+						calDataList=new ArrayList<>();
+					}
 					
 					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
@@ -5992,8 +5985,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 				dataList.add(everyDaya);
-				
-				
 				if(allColList.size()==0){
 					for(int j=0;j<columnCount;j++){
 						allColList.add("\"\"");
@@ -6012,31 +6003,93 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			
-			//补充记录
-//			long timeDiff=StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(defaultTimeList.size()-1), "yyyy-MM-dd HH:mm:ss");
-//			if(timeDiff>0){
-//				int rownum=totalCount+1;
-//				for(int i=0;i<defaultTimeList.size();i++){
-//					if(StringManagerUtils.getTimeDifference(maxTimeStr, defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss")>0){
-//						List<String> everyDaya=new ArrayList<String>();
-//						for(int j=0;j<columnCount;j++){
-//							everyDaya.add("");
-//						}
-//						everyDaya.set(0, rownum+"");
-//						everyDaya.add("-99");
-//						
-//						if(timeColIndex>=0){
-//							everyDaya.set(timeColIndex,StringManagerUtils.timeFormatConverter(defaultTimeList.get(i), "yyyy-MM-dd HH:mm:ss", "HH:mm"));
-//						}
-//						if(deviceNameColIndex>=0){
-//							everyDaya.set(deviceNameColIndex,deviceName);
-//						}
-//						dataList.add(everyDaya);
-//						rownum++;
-//					}
-//				}
-//			}
-			result_json.append("\"data\":"+gson.toJson(dataList)+",\"columns\":"+allColList.toString());
+			List<String> dateList = StringManagerUtils.getDatesBetween(startDate,endDate);
+			if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+				dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);
+			}
+			
+			List<String> timeList=new ArrayList<>();;
+			if(StringManagerUtils.stringToInteger(timeType)==1){
+				timeList=StringManagerUtils.getTimeIntervals(5,"HH:mm");
+			}else if(StringManagerUtils.stringToInteger(timeType)==2){
+				timeList=StringManagerUtils.getTimeIntervals(60,"HH:mm");
+			}else if(StringManagerUtils.stringToInteger(timeType)==3){
+				timeList=StringManagerUtils.getTimeIntervals(60*6,"HH:mm");
+			}else if(StringManagerUtils.stringToInteger(timeType)==4){
+				timeList=StringManagerUtils.getTimeIntervals(60*12,"HH:mm");
+			}else if(StringManagerUtils.stringToInteger(timeType)==5){
+				timeList.add("12:00");
+			}
+			
+			
+			List<List<String>> finalDataList=new ArrayList<>();
+			int index=0;
+			for(int i=0;i<dateList.size();i++){
+				ReportTemplate.MergeCells mergeCell=new ReportTemplate.MergeCells();
+				mergeCell.setRow(index+template.getHeader().size());
+				mergeCell.setCol(dateColIndex);
+				mergeCell.setColspan(1);
+				mergeCell.setRowspan(timeList.size());
+				template.getMergeCells().add(mergeCell);
+				
+				for(int j=0;j<timeList.size();j++){
+					List<String> everyDaya=new ArrayList<String>();
+					for(int k=0;k<columnCount;k++){
+						everyDaya.add("");
+					}
+					everyDaya.set(0, (index+1)+"");
+					everyDaya.add("-99");
+					
+					if(dateColIndex>=0){
+						everyDaya.set(dateColIndex,dateList.get(i));
+					}
+					if(timeColIndex>=0){
+						everyDaya.set(timeColIndex,timeList.get(j));
+					}
+					
+					finalDataList.add(everyDaya);
+					index++;
+				}
+			}
+			
+			for(int i=0;i<finalDataList.size();i++){
+				String dateStr="";
+				String timeStr="";
+				if(dateColIndex>=0){
+					dateStr=finalDataList.get(i).get(dateColIndex);
+				}
+				if(timeColIndex>=0){
+					timeStr=finalDataList.get(i).get(timeColIndex);
+				}
+				
+				for(int j=0;j<dataList.size();j++){
+					String dateStr2="";
+					String timeStr2="";
+					if(dateColIndex>=0){
+						dateStr2=dataList.get(j).get(dateColIndex);
+					}
+					if(timeColIndex>=0){
+						timeStr2=dataList.get(j).get(timeColIndex);
+					}
+					
+					if(dateStr.equalsIgnoreCase(dateStr2) && timeStr.equalsIgnoreCase(timeStr2)){
+						for(int k=0;k<dataList.get(j).size();k++){
+							finalDataList.get(i).set(k, dataList.get(j).get(k));
+						}
+						break;
+					}
+				}
+			}
+			
+			String templateStr=gson.toJson(template).replace("label", "");
+			if(timeEfficiencyUnitType==2){
+				templateStr=templateStr.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
+			}else{
+				templateStr=templateStr.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			result_json.append("{\"success\":true,\"template\":"+templateStr+",");
+			result_json.append("\"data\":"+gson.toJson(finalDataList)+",\"columns\":"+allColList.toString());
+			totalCount=finalDataList.size();
 		}else{
 			result_json.append("{\"success\":false,\"template\":{},\"data\":[],\"columns\":[]");
 		}
@@ -6047,6 +6100,831 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		result_json.append(",\"totalCount\":"+totalCount+"");
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public boolean exportHydrologicalWellReportData(User user,HttpServletResponse response,
+			Page pager,
+			String deviceId,String deviceName,
+			String startDate,String endDate,String reportDate,
+			String timeType,
+			int userNo,String language)throws Exception {
+		try{
+			List<List<Object>> sheetDataList = new ArrayList<>();
+			
+			int headerRowCount=0;
+			String title=deviceName+"水文观测数据统计表";
+			String fileName=deviceName+"水文观测数据统计表";
+			
+			if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+				fileName+="-"+reportDate;
+			}else{
+				fileName+="-"+startDate+"~"+endDate;
+			}
+			
+			Gson gson =new Gson();
+			java.lang.reflect.Type type=null;
+			String reportUnitId="";
+			String deviceTableName="viw_device";
+			
+			List<List<String>> dataList=new ArrayList<>();
+			int totalCount=0;
+			int dateColIndex=-99;
+			int timeColIndex=-99;
+			
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
+			ReportTemplate.Template template=MemoryDataManagerTask.getHydrologicalWellTemplate();
+			ModbusProtocolConfig.Protocol protocol=null;
+			String reportTemplateCodeSql="select t3.id,t5.protocol "
+					+ " from "+deviceTableName+" t,tbl_protocolreportinstance t2,tbl_report_unit_conf t3,"
+					+ " tbl_protocolinstance t4,tbl_acq_unit_conf t5 "
+					+ " where t.reportinstancecode=t2.code and t2.unitid=t3.id "
+					+ " and t.instancecode=t4.code and t4.unitid=t5.id"
+					+ " and t.id="+deviceId;
+			List<?> reportTemplateCodeList = this.findCallSql(reportTemplateCodeSql);
+			if(reportTemplateCodeList.size()>0){
+				Object[] obj=(Object[]) reportTemplateCodeList.get(0);
+				reportUnitId=(obj[0]+"").replaceAll("null", "");
+				protocol=MemoryDataManagerTask.getProtocolByCode(obj[1]+"");
+			}
+			
+			
+			if(template!=null){
+				int columnCount=0;
+				if("zh_CN".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+						columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_zh_CN().size();i++){
+							String header=template.getHeader().get(0).getTitle_zh_CN().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								template.getHeader().get(0).getTitle_zh_CN().set(i, header.replaceAll("deviceNameLabel", deviceName));
+							}
+						}
+					}
+				}else if("en".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+						columnCount=template.getHeader().get(0).getTitle_en().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_en().size();i++){
+							String header=template.getHeader().get(0).getTitle_en().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								template.getHeader().get(0).getTitle_en().set(i, header.replaceAll("deviceNameLabel", deviceName));
+							}
+						}
+					}
+				}else if("ru".equalsIgnoreCase(language)){
+					if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+						columnCount=template.getHeader().get(0).getTitle_ru().size();
+						for(int i=0;i<template.getHeader().get(0).getTitle_ru().size();i++){
+							String header=template.getHeader().get(0).getTitle_ru().get(i);
+							if(StringManagerUtils.isNotNull(header)){
+								template.getHeader().get(0).getTitle_ru().set(i, header.replaceAll("deviceNameLabel", deviceName));
+							}
+						}
+					}
+				}
+				
+				String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec,t.totalType,t.dataSource "
+						+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+						+ " where t.unitid="+reportUnitId+" "
+						+ " and t.sort>=0"
+						+ " and t.sort<="+columnCount
+						+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+						+ " order by t.sort";
+				List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+				List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
+				List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+				for(int i=0;i<reportItemQuertList.size();i++){
+					Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+					ReportUnitItem reportUnitItem=new ReportUnitItem();
+					reportUnitItem.setItemName(reportItemObj[0]+"");
+					reportUnitItem.setItemCode(reportItemObj[1]+"");
+					reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+					reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+					String precStr=(reportItemObj[4]+"").replaceAll("null", "");
+					if(StringManagerUtils.isNumber(precStr)){
+						reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+					}else{
+						reportUnitItem.setPrec(-1);
+					}
+					reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
+					reportUnitItem.setDataSource(StringManagerUtils.stringToInteger(reportItemObj[6]+""));
+					if(reportUnitItem.getDataSource()==0){
+						reportAcqItemList.add(reportUnitItem);
+					}else{
+						reportOtherItemList.add(reportUnitItem);
+					}
+				}
+				
+				StringBuffer sqlBuff = new StringBuffer();
+				sqlBuff.append("select t.id,to_char(t.savetime@'yyyy-mm-dd') as saveDate,to_char(t.savetime@'hh24:mi') as savetime");
+				
+				if(reportAcqItemList.size()>0){
+					sqlBuff.append(",t.acqdata");
+				}
+				
+				for(int i=0;i<reportOtherItemList.size();i++){
+					String tableAlias="t";
+					String column=reportOtherItemList.get(i).getItemCode();
+					
+					if(reportOtherItemList.get(i).getDataType()==3){
+						sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') ");
+					}else if(reportOtherItemList.get(i).getDataType()==4 || reportOtherItemList.get(i).getDataType()==5){
+						sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') ");
+					}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
+						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+							column=column+"*"+timeEfficiencyZoom;
+						}
+						sqlBuff.append(",round("+tableAlias+"."+column+","+reportOtherItemList.get(i).getPrec()+")");
+					}else{
+						if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+							column=column+"*"+timeEfficiencyZoom;
+						}
+						sqlBuff.append(","+tableAlias+"."+column+" as "+column);
+					}
+					
+					if(dateColIndex<0 && "SaveTime".equalsIgnoreCase(column) && reportOtherItemList.get(i).getDataType()==3){
+						dateColIndex=reportOtherItemList.get(i).getSort()-1;
+					}
+					
+					if(timeColIndex<0 && "SaveTime".equalsIgnoreCase(column) && (reportOtherItemList.get(i).getDataType()==4||reportOtherItemList.get(i).getDataType()==5 )){
+						timeColIndex=reportOtherItemList.get(i).getSort()-1;
+					}
+				}
+				
+				
+				sqlBuff.append(" from tbl_timingrecorddata t ");
+				
+				sqlBuff.append(" where 1=1");
+				sqlBuff.append(" and t.deviceId="+deviceId+" ");
+				
+				
+				if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+					sqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
+					sqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
+				}else{
+					sqlBuff.append(" and t.acqTime > to_date('"+startDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
+					sqlBuff.append(" and t.SaveTime > to_date('"+startDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
+				}
+				
+				sqlBuff.append(" order by t.SaveTime");
+				
+				List<String> allColList=new ArrayList<String>();
+				
+				String sql=sqlBuff.toString().replaceAll("@", ",");
+				List<?> reportDataList = this.findCallSql(sql);
+				totalCount=reportDataList.size();
+				for(int i=0;i<reportDataList.size();i++){
+					Object[] reportDataObj=(Object[]) reportDataList.get(i);
+					String recordId=reportDataObj[0]+"";
+					
+					List<String> everyDaya=new ArrayList<String>();
+					for(int j=0;j<columnCount;j++){
+						everyDaya.add("");
+					}
+					everyDaya.set(0, (i+1)+"");
+					
+					int startIndex=3;
+					if(reportAcqItemList.size()>0){
+						startIndex=4;
+						String acqData=StringManagerUtils.CLOBObjectToString(reportDataObj[3]);
+						type = new TypeToken<List<KeyValue>>() {}.getType();
+						
+						List<KeyValue> calDataList=null;
+						try{
+							calDataList=gson.fromJson(acqData, type);
+						}catch(Exception e){
+							calDataList=new ArrayList<>();
+						}
+						
+						for(ReportUnitItem reportUnitItem:reportAcqItemList){
+							String addValue="";
+							int prec=reportUnitItem.getPrec();
+							if(calDataList!=null){
+								for(KeyValue keyValue:calDataList){
+									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+										addValue=keyValue.getValue();
+										break;
+									}
+								}
+							}
+							
+							if(StringManagerUtils.isNotNull(addValue)){
+								if(StringManagerUtils.isNum(addValue)){
+									if(prec<0  && protocol!=null ){
+										ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+										if(item!=null){
+											prec=item.getPrec();
+										}
+									}
+									if(prec>=0){
+										addValue=StringManagerUtils.dataFormat(addValue, prec);
+									}
+								}
+							}
+							everyDaya.set(reportUnitItem.getSort()-1, addValue);
+						}
+					}
+					
+					for(int j=0;j<reportOtherItemList.size();j++){
+						if(reportOtherItemList.get(j).getSort()>=1){
+							String addValue="";
+							String column=reportOtherItemList.get(j).getItemCode();
+							if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+								addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
+							}else{
+								addValue=reportDataObj[j+startIndex]+"";
+							}
+							everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+						}
+					}
+					dataList.add(everyDaya);
+					if(allColList.size()==0){
+						for(int j=0;j<columnCount;j++){
+							allColList.add("\"\"");
+						}
+						allColList.add("\"recordId\"");
+						for(int j=0;j<reportAcqItemList.size();j++){
+							if(reportAcqItemList.get(j).getSort()>=1){
+								allColList.set(reportAcqItemList.get(j).getSort()-1, "\""+reportAcqItemList.get(j).getItemCode()+"\"");
+							}
+						}
+						for(int j=0;j<reportOtherItemList.size();j++){
+							if(reportOtherItemList.get(j).getSort()>=1){
+								allColList.set(reportOtherItemList.get(j).getSort()-1, "\""+reportOtherItemList.get(j).getItemCode()+"\"");
+							}
+						}
+					}
+				}
+				
+				List<String> dateList = StringManagerUtils.getDatesBetween(startDate,endDate);
+				if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+					dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);
+				}
+				
+				List<String> timeList=new ArrayList<>();;
+				if(StringManagerUtils.stringToInteger(timeType)==1){
+					timeList=StringManagerUtils.getTimeIntervals(5,"HH:mm");
+				}else if(StringManagerUtils.stringToInteger(timeType)==2){
+					timeList=StringManagerUtils.getTimeIntervals(60,"HH:mm");
+				}else if(StringManagerUtils.stringToInteger(timeType)==3){
+					timeList=StringManagerUtils.getTimeIntervals(60*6,"HH:mm");
+				}else if(StringManagerUtils.stringToInteger(timeType)==4){
+					timeList=StringManagerUtils.getTimeIntervals(60*12,"HH:mm");
+				}else if(StringManagerUtils.stringToInteger(timeType)==5){
+					timeList.add("12:00");
+				}
+				
+				
+				List<List<String>> finalDataList=new ArrayList<>();
+				int index=0;
+				for(int i=0;i<dateList.size();i++){
+					ReportTemplate.MergeCells mergeCell=new ReportTemplate.MergeCells();
+					mergeCell.setRow(index+template.getHeader().size());
+					mergeCell.setCol(dateColIndex);
+					mergeCell.setColspan(1);
+					mergeCell.setRowspan(timeList.size());
+					template.getMergeCells().add(mergeCell);
+					
+					for(int j=0;j<timeList.size();j++){
+						List<String> everyDaya=new ArrayList<String>();
+						for(int k=0;k<columnCount;k++){
+							everyDaya.add("");
+						}
+						everyDaya.set(0, (index+1)+"");
+						
+						if(dateColIndex>=0){
+							everyDaya.set(dateColIndex,dateList.get(i));
+						}
+						if(timeColIndex>=0){
+							everyDaya.set(timeColIndex,timeList.get(j));
+						}
+						
+						finalDataList.add(everyDaya);
+						index++;
+					}
+				}
+				
+				for(int i=0;i<finalDataList.size();i++){
+					String dateStr="";
+					String timeStr="";
+					if(dateColIndex>=0){
+						dateStr=finalDataList.get(i).get(dateColIndex);
+					}
+					if(timeColIndex>=0){
+						timeStr=finalDataList.get(i).get(timeColIndex);
+					}
+					
+					for(int j=0;j<dataList.size();j++){
+						String dateStr2="";
+						String timeStr2="";
+						if(dateColIndex>=0){
+							dateStr2=dataList.get(j).get(dateColIndex);
+						}
+						if(timeColIndex>=0){
+							timeStr2=dataList.get(j).get(timeColIndex);
+						}
+						
+						if(dateStr.equalsIgnoreCase(dateStr2) && timeStr.equalsIgnoreCase(timeStr2)){
+							for(int k=0;k<dataList.get(j).size();k++){
+								finalDataList.get(i).set(k, dataList.get(j).get(k));
+							}
+							break;
+						}
+					}
+				}
+				
+				for(int i=0;i<template.getHeader().size();i++){
+					List<Object> record = new ArrayList<>();
+					if("zh_CN".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_zh_CN().size();j++){
+							record.add(template.getHeader().get(i).getTitle_zh_CN().get(j));
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_en().size();j++){
+							record.add(template.getHeader().get(i).getTitle_en().get(j));
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						for(int j=0;j<template.getHeader().get(i).getTitle_ru().size();j++){
+							record.add(template.getHeader().get(i).getTitle_ru().get(j));
+						}
+					}
+					
+					sheetDataList.add(record);
+				}
+				for(int i=0;i<finalDataList.size();i++){
+					List<Object> record = new ArrayList<>();
+					for(int j=0;j<finalDataList.get(i).size();j++){
+						record.add(finalDataList.get(i).get(j));
+					}
+					sheetDataList.add(record);
+				}
+				if(template.getMergeCells()!=null && template.getMergeCells().size()>0){
+					for(int i=0;i<template.getMergeCells().size();i++){
+						if(template.getMergeCells().get(i).getRowspan()==1&&template.getMergeCells().get(i).getColspan()>1){
+							for(int j=template.getMergeCells().get(i).getCol();j<template.getMergeCells().get(i).getCol()+template.getMergeCells().get(i).getColspan();j++){
+								String value=sheetDataList.get(template.getMergeCells().get(i).getRow()).get(j)+"";
+								if(j!=template.getMergeCells().get(i).getCol()){
+									sheetDataList.get(template.getMergeCells().get(i).getRow()).set(j, ExcelUtils.COLUMN_MERGE);
+								}
+							}
+						}else if(template.getMergeCells().get(i).getRowspan()>1&&template.getMergeCells().get(i).getColspan()==1){
+							for(int j=template.getMergeCells().get(i).getRow();j<template.getMergeCells().get(i).getRow()+template.getMergeCells().get(i).getRowspan();j++){
+								String value=sheetDataList.get(j).get(template.getMergeCells().get(i).getCol())+"";
+								if(j!=template.getMergeCells().get(i).getRow()){
+									sheetDataList.get(j).set(template.getMergeCells().get(i).getCol(), ExcelUtils.ROW_MERGE);
+								}
+							}
+						}
+					}
+				}
+			}
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null,headerRowCount,template,language);
+			if(user!=null){
+				saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean batchExportHydrologicalWellReportData(User user,HttpServletResponse response,
+			Page pager,
+			String orgId,
+			String deviceName,
+			String startDate,String endDate,String reportDate,
+			String timeType,
+			int userNo,String language)throws Exception {
+		try{
+			List<List<List<Object>>> sheetList =new ArrayList<>();
+			List<String> sheetNameList =new ArrayList<>();
+			List<String> titleList =new ArrayList<>();
+			List<ReportTemplate.Template> sheetTemplateList=new ArrayList<>();
+			
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			
+			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String timeEfficiencyUnit=languageResourceMap.get("decimals");
+			int timeEfficiencyZoom=1;
+			if(timeEfficiencyUnitType==2){
+				timeEfficiencyUnit="%";
+				timeEfficiencyZoom=100;
+			}
+			
+			Gson gson =new Gson();
+			java.lang.reflect.Type type=null;
+			
+			String fileName="水文观测数据统计表";
+			
+			if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+				fileName+="-"+reportDate;
+			}else{
+				fileName+="-"+startDate+"~"+endDate;
+			}
+			
+			
+			String deviceTableName="viw_device";
+			String calTotalTableName="";
+			String wellListSql="select t.id,t.deviceName,t3.id as unitid,t3.singlewelldailyreporttemplate,t.calculateType,t3.calculateType as reportUnitCalculateType,"
+					+ " t5.protocol"
+					+ " from "+deviceTableName+" t "
+					+ " left outer join tbl_protocolreportinstance t2 on t.reportinstancecode=t2.code"
+					+ " left outer join tbl_report_unit_conf t3 on t3.id=t2.unitid"
+					+ " left outer join tbl_protocolinstance t4 on t.instancecode=t4.code"
+					+ " left outer join tbl_acq_unit_conf t5 on t4.unitid=t5.id"
+					+ " where t3.classes=1"
+					+ " and t.orgid in ("+orgId+")";
+			
+			if(StringManagerUtils.isNotNull(deviceName)){
+				wellListSql+=" and t.deviceName='"+deviceName+"'";
+			}
+			wellListSql+=" order by t.sortnum,t.deviceName";
+			
+			List<?> wellList = this.findCallSql(wellListSql);
+			
+			
+			for(int deviceIndex=0;deviceIndex<wellList.size();deviceIndex++){
+				Object[] obj=(Object[]) wellList.get(deviceIndex);
+				String deviceId=obj[0]+"";
+				deviceName=obj[1]+"";
+				String reportUnitId=(obj[2]+"").replaceAll("null", "");
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(obj[6]+"");
+				
+				String sheetName="";
+				if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+					sheetName=deviceName+StringManagerUtils.timeFormatConverter(reportDate, "yyyy-MM-dd", "MM.dd");
+				}else{
+					sheetName=deviceName;
+				}
+				
+				String title="";
+				
+				List<List<Object>> sheetDataList = new ArrayList<>();
+				
+				List<List<String>> dataList=new ArrayList<>();
+				int dateColIndex=-99;
+				int timeColIndex=-99;
+				
+				ReportTemplate.Template template=MemoryDataManagerTask.getHydrologicalWellTemplate();
+				
+				
+				if(template!=null){
+					sheetNameList.add(sheetName);
+					sheetTemplateList.add(template);
+					
+
+					int columnCount=0;
+					if("zh_CN".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_zh_CN()!=null){
+							columnCount=template.getHeader().get(0).getTitle_zh_CN().size();
+							for(int i=0;i<template.getHeader().get(0).getTitle_zh_CN().size();i++){
+								String header=template.getHeader().get(0).getTitle_zh_CN().get(i);
+								if(StringManagerUtils.isNotNull(header)){
+									template.getHeader().get(0).getTitle_zh_CN().set(i, header.replaceAll("deviceNameLabel", deviceName));
+								}
+							}
+						}
+					}else if("en".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_en()!=null){
+							columnCount=template.getHeader().get(0).getTitle_en().size();
+							for(int i=0;i<template.getHeader().get(0).getTitle_en().size();i++){
+								String header=template.getHeader().get(0).getTitle_en().get(i);
+								if(StringManagerUtils.isNotNull(header)){
+									template.getHeader().get(0).getTitle_en().set(i, header.replaceAll("deviceNameLabel", deviceName));
+								}
+							}
+						}
+					}else if("ru".equalsIgnoreCase(language)){
+						if(template.getHeader().size()>0 && template.getHeader().get(0).getTitle_ru()!=null){
+							columnCount=template.getHeader().get(0).getTitle_ru().size();
+							for(int i=0;i<template.getHeader().get(0).getTitle_ru().size();i++){
+								String header=template.getHeader().get(0).getTitle_ru().get(i);
+								if(StringManagerUtils.isNotNull(header)){
+									template.getHeader().get(0).getTitle_ru().set(i, header.replaceAll("deviceNameLabel", deviceName));
+								}
+							}
+						}
+					}
+					
+					String reportItemSql="select t.itemname,t.itemcode,t.sort,t.datatype,t.prec,t.totalType,t.dataSource "
+							+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
+							+ " where t.unitid="+reportUnitId+" "
+							+ " and t.sort>=0"
+							+ " and t.sort<="+columnCount
+							+ " and t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+")"
+							+ " order by t.sort";
+					List<ReportUnitItem> reportAcqItemList=new ArrayList<>();
+					List<ReportUnitItem> reportOtherItemList=new ArrayList<>();
+					List<?> reportItemQuertList = this.findCallSql(reportItemSql);
+					for(int i=0;i<reportItemQuertList.size();i++){
+						Object[] reportItemObj=(Object[]) reportItemQuertList.get(i);
+						ReportUnitItem reportUnitItem=new ReportUnitItem();
+						reportUnitItem.setItemName(reportItemObj[0]+"");
+						reportUnitItem.setItemCode(reportItemObj[1]+"");
+						reportUnitItem.setSort(StringManagerUtils.stringToInteger(reportItemObj[2]+""));
+						reportUnitItem.setDataType(StringManagerUtils.stringToInteger(reportItemObj[3]+""));
+						String precStr=(reportItemObj[4]+"").replaceAll("null", "");
+						if(StringManagerUtils.isNumber(precStr)){
+							reportUnitItem.setPrec(StringManagerUtils.stringToInteger(precStr));
+						}else{
+							reportUnitItem.setPrec(-1);
+						}
+						reportUnitItem.setTotalType(StringManagerUtils.stringToInteger(reportItemObj[5]+""));
+						reportUnitItem.setDataSource(StringManagerUtils.stringToInteger(reportItemObj[6]+""));
+						if(reportUnitItem.getDataSource()==0){
+							reportAcqItemList.add(reportUnitItem);
+						}else{
+							reportOtherItemList.add(reportUnitItem);
+						}
+					}
+					
+					StringBuffer sqlBuff = new StringBuffer();
+					sqlBuff.append("select t.id,to_char(t.savetime@'yyyy-mm-dd') as saveDate,to_char(t.savetime@'hh24:mi') as savetime");
+					
+					if(reportAcqItemList.size()>0){
+						sqlBuff.append(",t.acqdata");
+					}
+					
+					for(int i=0;i<reportOtherItemList.size();i++){
+						String tableAlias="t";
+						String column=reportOtherItemList.get(i).getItemCode();
+						
+						if(reportOtherItemList.get(i).getDataType()==3){
+							sqlBuff.append(",to_char("+tableAlias+"."+column+"@'yyyy-mm-dd') ");
+						}else if(reportOtherItemList.get(i).getDataType()==4 || reportOtherItemList.get(i).getDataType()==5){
+							sqlBuff.append(",to_char("+tableAlias+"."+column+"@'hh24:mi') ");
+						}else if(reportOtherItemList.get(i).getDataType()==2 && reportOtherItemList.get(i).getPrec()>=0){
+							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom;
+							}
+							sqlBuff.append(",round("+tableAlias+"."+column+","+reportOtherItemList.get(i).getPrec()+")");
+						}else{
+							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
+								column=column+"*"+timeEfficiencyZoom;
+							}
+							sqlBuff.append(","+tableAlias+"."+column+" as "+column);
+						}
+						
+						if(dateColIndex<0 && "SaveTime".equalsIgnoreCase(column) && reportOtherItemList.get(i).getDataType()==3){
+							dateColIndex=reportOtherItemList.get(i).getSort()-1;
+						}
+						
+						if(timeColIndex<0 && "SaveTime".equalsIgnoreCase(column) && (reportOtherItemList.get(i).getDataType()==4||reportOtherItemList.get(i).getDataType()==5 )){
+							timeColIndex=reportOtherItemList.get(i).getSort()-1;
+						}
+					}
+					
+					
+					sqlBuff.append(" from tbl_timingrecorddata t ");
+					
+					sqlBuff.append(" where 1=1");
+					sqlBuff.append(" and t.deviceId="+deviceId+" ");
+					
+					
+					if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+						sqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
+						sqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
+					}else{
+						sqlBuff.append(" and t.acqTime > to_date('"+startDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
+						sqlBuff.append(" and t.SaveTime > to_date('"+startDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
+					}
+					
+					sqlBuff.append(" order by t.SaveTime");
+					
+					List<String> allColList=new ArrayList<String>();
+					
+					String sql=sqlBuff.toString().replaceAll("@", ",");
+					List<?> reportDataList = this.findCallSql(sql);
+					for(int i=0;i<reportDataList.size();i++){
+						Object[] reportDataObj=(Object[]) reportDataList.get(i);
+						String recordId=reportDataObj[0]+"";
+						
+						List<String> everyDaya=new ArrayList<String>();
+						for(int j=0;j<columnCount;j++){
+							everyDaya.add("");
+						}
+						everyDaya.set(0, (i+1)+"");
+						
+						
+						
+						int startIndex=3;
+						if(reportAcqItemList.size()>0){
+							startIndex=4;
+							String acqData=StringManagerUtils.CLOBObjectToString(reportDataObj[3]);
+							type = new TypeToken<List<KeyValue>>() {}.getType();
+							
+							List<KeyValue> calDataList=null;
+							try{
+								calDataList=gson.fromJson(acqData, type);
+							}catch(Exception e){
+								calDataList=new ArrayList<>();
+							}
+							
+							for(ReportUnitItem reportUnitItem:reportAcqItemList){
+								String addValue="";
+								int prec=reportUnitItem.getPrec();
+								if(calDataList!=null){
+									for(KeyValue keyValue:calDataList){
+										if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
+											addValue=keyValue.getValue();
+											break;
+										}
+									}
+								}
+								
+								if(StringManagerUtils.isNotNull(addValue)){
+									if(StringManagerUtils.isNum(addValue)){
+										if(prec<0  && protocol!=null ){
+											ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+											if(item!=null){
+												prec=item.getPrec();
+											}
+										}
+										if(prec>=0){
+											addValue=StringManagerUtils.dataFormat(addValue, prec);
+										}
+									}
+								}
+								everyDaya.set(reportUnitItem.getSort()-1, addValue);
+							}
+						}
+						
+						for(int j=0;j<reportOtherItemList.size();j++){
+							if(reportOtherItemList.get(j).getSort()>=1){
+								String addValue="";
+								String column=reportOtherItemList.get(j).getItemCode();
+								if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
+									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
+								}else{
+									addValue=reportDataObj[j+startIndex]+"";
+								}
+								everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));
+							}
+						}
+						dataList.add(everyDaya);
+						if(allColList.size()==0){
+							for(int j=0;j<columnCount;j++){
+								allColList.add("\"\"");
+							}
+							allColList.add("\"recordId\"");
+							for(int j=0;j<reportAcqItemList.size();j++){
+								if(reportAcqItemList.get(j).getSort()>=1){
+									allColList.set(reportAcqItemList.get(j).getSort()-1, "\""+reportAcqItemList.get(j).getItemCode()+"\"");
+								}
+							}
+							for(int j=0;j<reportOtherItemList.size();j++){
+								if(reportOtherItemList.get(j).getSort()>=1){
+									allColList.set(reportOtherItemList.get(j).getSort()-1, "\""+reportOtherItemList.get(j).getItemCode()+"\"");
+								}
+							}
+						}
+					}
+					
+					List<String> dateList = StringManagerUtils.getDatesBetween(startDate,endDate);
+					if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+						dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);
+					}
+					
+					List<String> timeList=new ArrayList<>();;
+					if(StringManagerUtils.stringToInteger(timeType)==1){
+						timeList=StringManagerUtils.getTimeIntervals(5,"HH:mm");
+					}else if(StringManagerUtils.stringToInteger(timeType)==2){
+						timeList=StringManagerUtils.getTimeIntervals(60,"HH:mm");
+					}else if(StringManagerUtils.stringToInteger(timeType)==3){
+						timeList=StringManagerUtils.getTimeIntervals(60*6,"HH:mm");
+					}else if(StringManagerUtils.stringToInteger(timeType)==4){
+						timeList=StringManagerUtils.getTimeIntervals(60*12,"HH:mm");
+					}else if(StringManagerUtils.stringToInteger(timeType)==5){
+						timeList.add("12:00");
+					}
+					
+					
+					List<List<String>> finalDataList=new ArrayList<>();
+					int index=0;
+					for(int i=0;i<dateList.size();i++){
+						ReportTemplate.MergeCells mergeCell=new ReportTemplate.MergeCells();
+						mergeCell.setRow(index+template.getHeader().size());
+						mergeCell.setCol(dateColIndex);
+						mergeCell.setColspan(1);
+						mergeCell.setRowspan(timeList.size());
+						template.getMergeCells().add(mergeCell);
+						
+						for(int j=0;j<timeList.size();j++){
+							List<String> everyDaya=new ArrayList<String>();
+							for(int k=0;k<columnCount;k++){
+								everyDaya.add("");
+							}
+							everyDaya.set(0, (index+1)+"");
+							
+							if(dateColIndex>=0){
+								everyDaya.set(dateColIndex,dateList.get(i));
+							}
+							if(timeColIndex>=0){
+								everyDaya.set(timeColIndex,timeList.get(j));
+							}
+							
+							finalDataList.add(everyDaya);
+							index++;
+						}
+					}
+					
+					for(int i=0;i<finalDataList.size();i++){
+						String dateStr="";
+						String timeStr="";
+						if(dateColIndex>=0){
+							dateStr=finalDataList.get(i).get(dateColIndex);
+						}
+						if(timeColIndex>=0){
+							timeStr=finalDataList.get(i).get(timeColIndex);
+						}
+						
+						for(int j=0;j<dataList.size();j++){
+							String dateStr2="";
+							String timeStr2="";
+							if(dateColIndex>=0){
+								dateStr2=dataList.get(j).get(dateColIndex);
+							}
+							if(timeColIndex>=0){
+								timeStr2=dataList.get(j).get(timeColIndex);
+							}
+							
+							if(dateStr.equalsIgnoreCase(dateStr2) && timeStr.equalsIgnoreCase(timeStr2)){
+								for(int k=0;k<dataList.get(j).size();k++){
+									finalDataList.get(i).set(k, dataList.get(j).get(k));
+								}
+								break;
+							}
+						}
+					}
+					
+					for(int i=0;i<template.getHeader().size();i++){
+						List<Object> record = new ArrayList<>();
+						if("zh_CN".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(i).getTitle_zh_CN().size();j++){
+								record.add(template.getHeader().get(i).getTitle_zh_CN().get(j));
+							}
+						}else if("en".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(i).getTitle_en().size();j++){
+								record.add(template.getHeader().get(i).getTitle_en().get(j));
+							}
+						}else if("ru".equalsIgnoreCase(language)){
+							for(int j=0;j<template.getHeader().get(i).getTitle_ru().size();j++){
+								record.add(template.getHeader().get(i).getTitle_ru().get(j));
+							}
+						}
+						
+						sheetDataList.add(record);
+					}
+					for(int i=0;i<finalDataList.size();i++){
+						List<Object> record = new ArrayList<>();
+						for(int j=0;j<finalDataList.get(i).size();j++){
+							record.add(finalDataList.get(i).get(j));
+						}
+						sheetDataList.add(record);
+					}
+					if(template.getMergeCells()!=null && template.getMergeCells().size()>0){
+						for(int i=0;i<template.getMergeCells().size();i++){
+							if(template.getMergeCells().get(i).getRowspan()==1&&template.getMergeCells().get(i).getColspan()>1){
+								for(int j=template.getMergeCells().get(i).getCol();j<template.getMergeCells().get(i).getCol()+template.getMergeCells().get(i).getColspan();j++){
+									String value=sheetDataList.get(template.getMergeCells().get(i).getRow()).get(j)+"";
+									if(j!=template.getMergeCells().get(i).getCol()){
+										sheetDataList.get(template.getMergeCells().get(i).getRow()).set(j, ExcelUtils.COLUMN_MERGE);
+									}
+								}
+							}else if(template.getMergeCells().get(i).getRowspan()>1&&template.getMergeCells().get(i).getColspan()==1){
+								for(int j=template.getMergeCells().get(i).getRow();j<template.getMergeCells().get(i).getRow()+template.getMergeCells().get(i).getRowspan();j++){
+									String value=sheetDataList.get(j).get(template.getMergeCells().get(i).getCol())+"";
+									if(j!=template.getMergeCells().get(i).getRow()){
+										sheetDataList.get(j).set(template.getMergeCells().get(i).getCol(), ExcelUtils.ROW_MERGE);
+									}
+								}
+							}
+						}
+					}
+				
+					
+					sheetList.add(sheetDataList);
+				}
+			}
+			
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, titleList,sheetNameList, sheetList, null, null,sheetTemplateList,language);
+			if(user!=null){
+				saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public String getHydrologicalWellReportCurveData(Page pager, String orgId,
@@ -6060,6 +6938,24 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		
 //		List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
+		
+		List<String> dateList = StringManagerUtils.getDatesBetween(startDate,endDate);
+		if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+			dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);
+		}
+		
+		List<String> timeList=new ArrayList<>();
+		if(StringManagerUtils.stringToInteger(timeType)==1){
+			timeList=StringManagerUtils.getTimeIntervals(5,"HH:mm:ss");
+		}else if(StringManagerUtils.stringToInteger(timeType)==2){
+			timeList=StringManagerUtils.getTimeIntervals(60,"HH:mm:ss");
+		}else if(StringManagerUtils.stringToInteger(timeType)==3){
+			timeList=StringManagerUtils.getTimeIntervals(60*6,"HH:mm:ss");
+		}else if(StringManagerUtils.stringToInteger(timeType)==4){
+			timeList=StringManagerUtils.getTimeIntervals(60*12,"HH:mm:ss");
+		}else if(StringManagerUtils.stringToInteger(timeType)==5){
+			timeList.add("12:00:00");
+		}
 		
 		Gson gson = new Gson();
 		java.lang.reflect.Type reflectType=null;
@@ -6258,12 +7154,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			cueveSqlBuff.append(" where t.id=t2.id");
 			
-			cueveSqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime<= to_date('"+reportDate+"','yyyy-mm-dd')+1");
 			
-			if(StringManagerUtils.stringToInteger(timeType)!=1){
-//				cueveSqlBuff.append(" and to_char(t.calTime,'yyyy-mm-dd hh24:mi:ss') in ("+StringManagerUtils.joinStringArr2(defaultTimeList, ",")+")");
+			
+			if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
+				cueveSqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
+				cueveSqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
 			}else{
-				cueveSqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime<= to_date('"+reportDate+"','yyyy-mm-dd')+1");
+				cueveSqlBuff.append(" and t.acqTime > to_date('"+startDate+"','yyyy-mm-dd') and t.acqTime<= to_date('"+endDate+"','yyyy-mm-dd')+1");
+				cueveSqlBuff.append(" and t.SaveTime > to_date('"+startDate+"','yyyy-mm-dd') and t.SaveTime<= to_date('"+endDate+"','yyyy-mm-dd')+1");
 			}
 			
 			cueveSqlBuff.append(" and t.deviceid="+deviceId);
@@ -6272,68 +7170,79 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			List<?> reportCurveDataList = this.findCallSql(cueveSqlBuff.toString().replaceAll("@", ","));
 			for(int i=0;i<reportCurveDataList.size();i++){
 				Object[] obj=(Object[]) reportCurveDataList.get(i);
-				calTimeList.add(obj[0]+"");
-				int inputStartIndex=1+acqItemColumnList.size();
-				int calStartIndex=1+acqItemColumnList.size()+inputItemColumnList.size();
+				String saveTime=obj[0]+"";
 				
-				
-				for(int j=inputStartIndex;j<inputStartIndex+inputItemColumnList.size();j++){
-					String value=obj[j]+"";
-					String itemCode=inputItemColumnList.get(j-inputStartIndex);
-					if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
-			    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
-			    	}
-					int prec=precMap.get(itemCodeSortMap.get(itemCode));
-					if(StringManagerUtils.isNum(value) && prec>=0){
-						value=StringManagerUtils.dataFormat(value, prec);;
-					}
-			    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
-				}
-				
-				for(int j=calStartIndex;j<calStartIndex+calItemColumnList.size();j++){
-					String value=obj[j]+"";
-					String itemCode=calItemColumnList.get(j-calStartIndex);
-					if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
-			    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
-			    	}
-					int prec=precMap.get(itemCodeSortMap.get(itemCode));
-					if(StringManagerUtils.isNum(value) && prec>=0){
-						value=StringManagerUtils.dataFormat(value, prec);;
-					}
-			    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
-				}
-				
-				if(acqItemColumnList.size()>0){
-					String acqCalData=StringManagerUtils.CLOBObjectToString(obj[1]);
-					reflectType = new TypeToken<List<KeyValue>>() {}.getType();
-					List<KeyValue> acqDataList=gson.fromJson(acqCalData, reflectType);
+				if(StringManagerUtils.isNotNull(saveTime)
+						&& saveTime.split(" ").length==2 
+						&& StringManagerUtils.existOrNot(dateList, saveTime.split(" ")[0], false)
+						&& StringManagerUtils.existOrNot(timeList, saveTime.split(" ")[1], false)
+						){
+					calTimeList.add(saveTime);
+					int inputStartIndex=1+acqItemColumnList.size();
+					int calStartIndex=1+acqItemColumnList.size()+inputItemColumnList.size();
 					
-					for(String itemColumn:acqItemColumnList){
-						String addValue="";
-						int totalType=totalTypeMap.get(itemCodeSortMap.get(itemColumn));
-						if(acqDataList!=null){
-							for(KeyValue keyValue:acqDataList){
-								if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
-									addValue=keyValue.getValue();
-									break;
+					
+					for(int j=inputStartIndex;j<inputStartIndex+inputItemColumnList.size();j++){
+						String value=obj[j]+"";
+						String itemCode=inputItemColumnList.get(j-inputStartIndex);
+						if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
+				    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
+				    	}
+						int prec=precMap.get(itemCodeSortMap.get(itemCode));
+						if(StringManagerUtils.isNum(value) && prec>=0){
+							value=StringManagerUtils.dataFormat(value, prec);;
+						}
+				    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
+					}
+					
+					for(int j=calStartIndex;j<calStartIndex+calItemColumnList.size();j++){
+						String value=obj[j]+"";
+						String itemCode=calItemColumnList.get(j-calStartIndex);
+						if(!curveDataMap.containsKey(itemCodeSortMap.get(itemCode))){
+				    		curveDataMap.put(itemCodeSortMap.get(itemCode), new ArrayList<>());
+				    	}
+						int prec=precMap.get(itemCodeSortMap.get(itemCode));
+						if(StringManagerUtils.isNum(value) && prec>=0){
+							value=StringManagerUtils.dataFormat(value, prec);;
+						}
+				    	curveDataMap.get(itemCodeSortMap.get(itemCode)).add(value);
+					}
+					
+					if(acqItemColumnList.size()>0){
+						String acqCalData=StringManagerUtils.CLOBObjectToString(obj[1]);
+						reflectType = new TypeToken<List<KeyValue>>() {}.getType();
+						List<KeyValue> acqDataList=gson.fromJson(acqCalData, reflectType);
+						
+						for(String itemColumn:acqItemColumnList){
+							String addValue="";
+							int totalType=totalTypeMap.get(itemCodeSortMap.get(itemColumn));
+							if(acqDataList!=null){
+								for(KeyValue keyValue:acqDataList){
+									if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
+										addValue=keyValue.getValue();
+										break;
+									}
 								}
 							}
-						}
-						
-						if(StringManagerUtils.isNotNull(addValue)){
-							int prec=precMap.get(itemCodeSortMap.get(itemColumn));
-							if(StringManagerUtils.isNum(addValue) && prec>=0){
-								addValue=StringManagerUtils.dataFormat(addValue, prec);;
+							
+							if(StringManagerUtils.isNotNull(addValue)){
+								int prec=precMap.get(itemCodeSortMap.get(itemColumn));
+								if(StringManagerUtils.isNum(addValue) && prec>=0){
+									addValue=StringManagerUtils.dataFormat(addValue, prec);;
+								}
 							}
+							
+							if(!curveDataMap.containsKey(itemCodeSortMap.get(itemColumn))){
+					    		curveDataMap.put(itemCodeSortMap.get(itemColumn), new ArrayList<>());
+					    	}
+					    	curveDataMap.get(itemCodeSortMap.get(itemColumn)).add(addValue);
 						}
 						
-						if(!curveDataMap.containsKey(itemCodeSortMap.get(itemColumn))){
-				    		curveDataMap.put(itemCodeSortMap.get(itemColumn), new ArrayList<>());
-				    	}
-				    	curveDataMap.get(itemCodeSortMap.get(itemColumn)).add(addValue);
 					}
-					
 				}
+				
+				
+				
 			}
 		}
 		

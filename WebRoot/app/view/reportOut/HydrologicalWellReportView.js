@@ -66,8 +66,8 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                             deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
-//                        	Ext.getCmp("HydrologicalWellReportDeviceListSelectRow_Id").setValue(-1);
-//                        	Ext.getCmp("HydrologicalWellReportDeviceListGridPanel_Id").getStore().load();
+                        	Ext.getCmp("HydrologicalWellReportDeviceListSelectRow_Id").setValue(-1);
+                        	Ext.getCmp("HydrologicalWellReportDeviceListGridPanel_Id").getStore().load();
                         }
                     }
                 });
@@ -121,7 +121,8 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                 iconCls: 'search',
                 hidden:false,
                 handler: function (v, o) {
-                	
+                	CreateHydrologicalWellReportTable();
+                	CreateHydrologicalWellReportCurve();
                 }
     		},{
             	id: 'HydrologicalWellReportDeviceListSelectRow_Id',
@@ -229,20 +230,21 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                             text: loginUserLanguageResource.exportData,
                             iconCls: 'export',
                             handler: function (v, o) {
-//                            	ExportHydrologicalWellReportData();
+                            	ExportHydrologicalWellReportData();
                             }
                         },'-',{
                             xtype: 'button',
                             text: loginUserLanguageResource.bulkExportData,
                             iconCls: 'export',
                             handler: function (v, o) {
-//                            	batchExportHydrologicalWellReportData();
+                            	batchExportHydrologicalWellReportData();
                             }
                         },'-',{
                             xtype: 'button',
                             text: loginUserLanguageResource.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
+                            hidden:true,
                             handler: function (v, o) {
 //                            	hydrologicalWellReportHelper.saveData();
                             }
@@ -295,11 +297,131 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                     	collapsible: true, // 是否可折叠
                         collapsed:false,//是否折叠
                         split: true, // 竖折叠条
-                    	layout: "fit"
+                    	layout: "fit",
+                    	tbar:[{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.forward,
+                            iconCls: 'forward',
+                            id:'HydrologicalWellReport2ForwardBtn_Id',
+                            handler: function (v, o) {
+                            	var str = Ext.getCmp("HydrologicalWellReport2Date_Id").rawValue;
+                            	var startDate = new Date(Date.parse(str .replace(/-/g, '/')));
+                            	var day=-1;
+                            	var value = startDate.getTime();
+                            	value += day * (24 * 3600 * 1000);
+                            	var endDate = new Date(value);
+                            	Ext.getCmp("HydrologicalWellReport2Date_Id").setValue(endDate);
+                            	CreateHydrologicalWellReportTable();
+                            	CreateHydrologicalWellReportCurve();
+                            }
+                        },'-',{
+                            xtype: 'datefield',
+                            anchor: '100%',
+                            hidden: false,
+                            editable:false,
+                            readOnly:true,
+                            width: 90,
+                            format: 'Y-m-d ',
+                            id: 'HydrologicalWellReport2Date_Id',
+                            listeners: {
+                            	change ( thisField, newValue, oldValue, eOpts )  {
+                            		var startDateStr=Ext.getCmp("HydrologicalWellReportStartDate_Id").rawValue;
+                            		var endDateStr=Ext.getCmp("HydrologicalWellReportEndDate_Id").rawValue;
+                            		var reportDateStr=Ext.getCmp("HydrologicalWellReport2Date_Id").rawValue;
+                            		
+                            		var startDate = new Date(Date.parse(startDateStr .replace(/-/g, '/'))).getTime();
+                            		var endDate = new Date(Date.parse(endDateStr .replace(/-/g, '/'))).getTime();
+                            		var reportDate = new Date(Date.parse(reportDateStr .replace(/-/g, '/'))).getTime();
+                            		
+                            		
+                            		if(reportDate>startDate){
+                            			Ext.getCmp("HydrologicalWellReport2ForwardBtn_Id").enable();
+                            		}else{
+                            			Ext.getCmp("HydrologicalWellReport2ForwardBtn_Id").disable();
+                            		}
+                            		
+                            		if(reportDate<endDate){
+                            			Ext.getCmp("HydrologicalWellReport2BackwardsBtn_Id").enable();
+                            		}else{
+                            			Ext.getCmp("HydrologicalWellReport2BackwardsBtn_Id").disable();
+                            		}
+                            	}
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.backward,
+                            id:'HydrologicalWellReport2BackwardsBtn_Id',
+                            iconCls: 'backwards',
+                            handler: function (v, o) {
+                            	var str = Ext.getCmp("HydrologicalWellReport2Date_Id").rawValue;
+                            	var startDate = new Date(Date.parse(str .replace(/-/g, '/')));
+                            	var day=1;
+                            	var value = startDate .getTime();
+                            	value += day * (24 * 3600 * 1000);
+                            	var endDate = new Date(value);
+                            	Ext.getCmp("HydrologicalWellReport2Date_Id").setValue(endDate);
+                            	CreateHydrologicalWellReportTable();
+                            	CreateHydrologicalWellReportCurve();
+                            }
+                        }, '->',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.exportData,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	ExportHydrologicalWellReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.bulkExportData,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	batchExportHydrologicalWellReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.save,
+                            iconCls: 'save',
+                            disabled: loginUserRoleReportEdit!=1,
+                            hidden:true,
+                            handler: function (v, o) {
+//                            	hydrologicalWellReportHelper.saveData();
+                            }
+                        },'-', {
+                            id: 'HydrologicalWellReport2TotalCount_Id',
+                            xtype: 'component',
+                            tpl: loginUserLanguageResource.totalCount + ': {count}',
+                            style: 'margin-right:15px'
+                        }],
+                        html:'<div class="HydrologicalWellReport2Container" style="width:100%;height:100%;"><div class="con" id="HydrologicalWellReport2Div_id"></div></div>',
+                        listeners: {
+                        	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        		if(hydrologicalWellReportHelper!=null && hydrologicalWellReportHelper.hot!=undefined){
+                        			var newWidth=width;
+                            		var newHeight=height-22-1;//减去工具条高度
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		hydrologicalWellReportHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
+                        	}
+                        }
                     },{
                     	region: 'center',
                     	layout: "fit",
-                    	title:loginUserLanguageResource.reportCurve
+                    	title:loginUserLanguageResource.reportCurve,
+                    	id:'HydrologicalWellReport2CurvePanel_id',
+                        html: '<div id="HydrologicalWellReport2CurveDiv_Id" style="width:100%;height:100%;"></div>',
+                        listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                if ($("#HydrologicalWellReport2CurveDiv_Id").highcharts() != undefined) {
+                                	highchartsResize("HydrologicalWellReport2CurveDiv_Id");
+                                }
+                            }
+                        }
                     }]
                 },{
                 	id:'HydrologicalWellReportTabPanel3_id',
@@ -313,11 +435,66 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                     	collapsible: true, // 是否可折叠
                         collapsed:false,//是否折叠
                         split: true, // 竖折叠条
-                    	layout: "fit"
+                    	layout: "fit",
+                    	tbar:['->',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.exportData,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	ExportHydrologicalWellReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.bulkExportData,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	batchExportHydrologicalWellReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.save,
+                            iconCls: 'save',
+                            disabled: loginUserRoleReportEdit!=1,
+                            hidden:true,
+                            handler: function (v, o) {
+//                            	hydrologicalWellReportHelper.saveData();
+                            }
+                        },'-', {
+                            id: 'HydrologicalWellReport3TotalCount_Id',
+                            xtype: 'component',
+                            tpl: loginUserLanguageResource.totalCount + ': {count}',
+                            style: 'margin-right:15px'
+                        }],
+                        html:'<div class="HydrologicalWellReport3Container" style="width:100%;height:100%;"><div class="con" id="HydrologicalWellReport3Div_id"></div></div>',
+                        listeners: {
+                        	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        		if(hydrologicalWellReportHelper!=null && hydrologicalWellReportHelper.hot!=undefined){
+                        			var newWidth=width;
+                            		var newHeight=height-22-1;//减去工具条高度
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		hydrologicalWellReportHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
+                        	}
+                        }
                     },{
                     	region: 'center',
                     	layout: "fit",
-                    	title:loginUserLanguageResource.reportCurve
+                    	title:loginUserLanguageResource.reportCurve,
+                    	id:'HydrologicalWellReport3CurvePanel_id',
+                        html: '<div id="HydrologicalWellReport3CurveDiv_Id" style="width:100%;height:100%;"></div>',
+                        listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                if ($("#HydrologicalWellReport3CurveDiv_Id").highcharts() != undefined) {
+                                	highchartsResize("HydrologicalWellReport3CurveDiv_Id");
+                                }
+                            }
+                        }
                     }]
                 },{
                 	id:'HydrologicalWellReportTabPanel4_id',
@@ -331,11 +508,66 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                     	collapsible: true, // 是否可折叠
                         collapsed:false,//是否折叠
                         split: true, // 竖折叠条
-                    	layout: "fit"
+                    	layout: "fit",
+                    	tbar:['->',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.exportData,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	ExportHydrologicalWellReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.bulkExportData,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	batchExportHydrologicalWellReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.save,
+                            iconCls: 'save',
+                            disabled: loginUserRoleReportEdit!=1,
+                            hidden:true,
+                            handler: function (v, o) {
+//                            	hydrologicalWellReportHelper.saveData();
+                            }
+                        },'-', {
+                            id: 'HydrologicalWellReport4TotalCount_Id',
+                            xtype: 'component',
+                            tpl: loginUserLanguageResource.totalCount + ': {count}',
+                            style: 'margin-right:15px'
+                        }],
+                        html:'<div class="HydrologicalWellReport4Container" style="width:100%;height:100%;"><div class="con" id="HydrologicalWellReport4Div_id"></div></div>',
+                        listeners: {
+                        	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        		if(hydrologicalWellReportHelper!=null && hydrologicalWellReportHelper.hot!=undefined){
+                        			var newWidth=width;
+                            		var newHeight=height-22-1;//减去工具条高度
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		hydrologicalWellReportHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
+                        	}
+                        }
                     },{
                     	region: 'center',
                     	layout: "fit",
-                    	title:loginUserLanguageResource.reportCurve
+                    	title:loginUserLanguageResource.reportCurve,
+                    	id:'HydrologicalWellReport4CurvePanel_id',
+                        html: '<div id="HydrologicalWellReport4CurveDiv_Id" style="width:100%;height:100%;"></div>',
+                        listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                if ($("#HydrologicalWellReport4CurveDiv_Id").highcharts() != undefined) {
+                                	highchartsResize("HydrologicalWellReport4CurveDiv_Id");
+                                }
+                            }
+                        }
                     }]
                 },{
                 	id:'HydrologicalWellReportTabPanel5_id',
@@ -349,11 +581,66 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                     	collapsible: true, // 是否可折叠
                         collapsed:false,//是否折叠
                         split: true, // 竖折叠条
-                    	layout: "fit"
+                    	layout: "fit",
+                    	tbar:['->',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.exportData,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	ExportHydrologicalWellReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.bulkExportData,
+                            iconCls: 'export',
+                            handler: function (v, o) {
+                            	batchExportHydrologicalWellReportData();
+                            }
+                        },'-',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.save,
+                            iconCls: 'save',
+                            disabled: loginUserRoleReportEdit!=1,
+                            hidden:true,
+                            handler: function (v, o) {
+//                            	hydrologicalWellReportHelper.saveData();
+                            }
+                        },'-', {
+                            id: 'HydrologicalWellReport5TotalCount_Id',
+                            xtype: 'component',
+                            tpl: loginUserLanguageResource.totalCount + ': {count}',
+                            style: 'margin-right:15px'
+                        }],
+                        html:'<div class="HydrologicalWellReport5Container" style="width:100%;height:100%;"><div class="con" id="HydrologicalWellReport5Div_id"></div></div>',
+                        listeners: {
+                        	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        		if(hydrologicalWellReportHelper!=null && hydrologicalWellReportHelper.hot!=undefined){
+                        			var newWidth=width;
+                            		var newHeight=height-22-1;//减去工具条高度
+                            		var header=thisPanel.getHeader();
+                            		if(header){
+                            			newHeight=newHeight-header.lastBox.height-2;
+                            		}
+                            		hydrologicalWellReportHelper.hot.updateSettings({
+                            			width:newWidth,
+                            			height:newHeight
+                            		});
+                            	}
+                        	}
+                        }
                     },{
                     	region: 'center',
                     	layout: "fit",
-                    	title:loginUserLanguageResource.reportCurve
+                    	title:loginUserLanguageResource.reportCurve,
+                    	id:'HydrologicalWellReport5CurvePanel_id',
+                        html: '<div id="HydrologicalWellReport5CurveDiv_Id" style="width:100%;height:100%;"></div>',
+                        listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                if ($("#HydrologicalWellReport5CurveDiv_Id").highcharts() != undefined) {
+                                	highchartsResize("HydrologicalWellReport5CurveDiv_Id");
+                                }
+                            }
+                        }
                     }]
                 }],
                 listeners: {
@@ -366,7 +653,8 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                 	    }
         			},
         			tabchange: function (tabPanel, newCard, oldCard, obj) {
-        				
+        				CreateHydrologicalWellReportTable();
+                    	CreateHydrologicalWellReportCurve();
         			}
                 }
             }]
@@ -511,14 +799,14 @@ function CreateHydrologicalWellReportTable(){
 			
 			if(result.success){
 				if(hydrologicalWellReportHelper==null || hydrologicalWellReportHelper.hot==undefined){
-					if(timeType==1 || timeType==2){
-						result.template.mergeCells.push({
-				            "row": result.template.header.length,
-				            "col": 0,
-				            "rowspan": result.data.length,
-				            "colspan": 1
-				        });
-					}
+//					if(timeType==1 || timeType==2){
+//						result.template.mergeCells.push({
+//				            "row": result.template.header.length,
+//				            "col": 0,
+//				            "rowspan": result.data.length,
+//				            "colspan": 1
+//				        });
+//					}
 					hydrologicalWellReportHelper = HydrologicalWellReportHelper.createNew(divId,containerId,result.template,result.data,result.columns);
 					hydrologicalWellReportHelper.createTable();
 				}
@@ -989,6 +1277,14 @@ function CreateHydrologicalWellReportCurve(){
 		    	tickInterval=100;
 		    }
 		    var title = result.deviceName+ "-" + loginUserLanguageResource.hourlyReportCurve+ "-"+result.reportDate;
+		    
+		    if(timeType==1 || timeType==2){
+		    	title = result.deviceName+ "-" + '水文观测孔时间压力及温度图'+ "-"+result.reportDate;
+		    }else{
+		    	title = result.deviceName+ "-" + '水文观测孔时间压力及温度图'+ "-"+result.startDate+"~"+result.endDate;
+		    }
+		    
+		    
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;
 		    var color=[];
@@ -1246,3 +1542,104 @@ function initHydrologicalWellReportCurveChartFn(series, tickInterval, divId, tit
         series: series
     });
 };
+
+function ExportHydrologicalWellReportData(){
+	var timestamp=new Date().getTime();
+	var key='ExportHydrologicalWellReportData'+timestamp;
+	
+	
+	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+    var startDate = Ext.getCmp('HydrologicalWellReportStartDate_Id').rawValue;
+    var endDate = Ext.getCmp('HydrologicalWellReportEndDate_Id').rawValue;
+    var reportDate = '';
+    
+    var deviceName='';
+    var deviceId=0;
+    var selectRow= Ext.getCmp("HydrologicalWellReportDeviceListSelectRow_Id").getValue();
+    if(Ext.getCmp("HydrologicalWellReportDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+    	deviceName=Ext.getCmp("HydrologicalWellReportDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+    	deviceId=Ext.getCmp("HydrologicalWellReportDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+    }
+    var timeType=1;
+    var panelId='HydrologicalWellReportTabPanel1_id';
+    var tabPanel = Ext.getCmp("HydrologicalWellReportTabPanel_Id");
+	var activeId = tabPanel.getActiveTab().id;
+	if(activeId=='HydrologicalWellReportTabPanel1_id'){
+		timeType=1;
+		reportDate = Ext.getCmp('HydrologicalWellReport1Date_Id').rawValue;
+		panelId='HydrologicalWellReportTabPanel1_id';
+	}else if(activeId=='HydrologicalWellReportTabPanel2_id'){
+		timeType=2;
+		reportDate = Ext.getCmp('HydrologicalWellReport2Date_Id').rawValue;
+		panelId='HydrologicalWellReportTabPanel2_id';
+	}else if(activeId=='HydrologicalWellReportTabPanel3_id'){
+		timeType=3;
+		panelId='HydrologicalWellReportTabPanel3_id';
+	}else if(activeId=='HydrologicalWellReportTabPanel4_id'){
+		timeType=4;
+		panelId='HydrologicalWellReportTabPanel4_id';
+	}else if(activeId=='HydrologicalWellReportTabPanel5_id'){
+		timeType=5;
+		panelId='HydrologicalWellReportTabPanel5_id';
+	}
+	
+	
+
+	var url=context + '/reportDataMamagerController/exportHydrologicalWellReportData?timeType='+timeType
+	+'&deviceName='+URLencode(URLencode(deviceName))
+	+'&deviceId='+deviceId
+	+'&startDate='+startDate
+	+'&endDate='+endDate
+	+'&reportDate='+reportDate
+	+'&key='+key;
+	exportDataMask(key,panelId,loginUserLanguageResource.loading);
+	document.location.href = url;
+}
+
+function batchExportHydrologicalWellReportData(){
+	var timestamp=new Date().getTime();
+	var key='batchExportHydrologicalWellReportData'+timestamp;
+	
+	
+	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+    var startDate = Ext.getCmp('HydrologicalWellReportStartDate_Id').rawValue;
+    var endDate = Ext.getCmp('HydrologicalWellReportEndDate_Id').rawValue;
+    var reportDate = '';
+    
+    var deviceName=Ext.getCmp('HydrologicalWellReportPanelDeviceListCombo_Id').getValue();
+   
+    var timeType=1;
+    var panelId='HydrologicalWellReportTabPanel1_id';
+    var tabPanel = Ext.getCmp("HydrologicalWellReportTabPanel_Id");
+	var activeId = tabPanel.getActiveTab().id;
+	if(activeId=='HydrologicalWellReportTabPanel1_id'){
+		timeType=1;
+		reportDate = Ext.getCmp('HydrologicalWellReport1Date_Id').rawValue;
+		panelId='HydrologicalWellReportTabPanel1_id';
+	}else if(activeId=='HydrologicalWellReportTabPanel2_id'){
+		timeType=2;
+		reportDate = Ext.getCmp('HydrologicalWellReport2Date_Id').rawValue;
+		panelId='HydrologicalWellReportTabPanel2_id';
+	}else if(activeId=='HydrologicalWellReportTabPanel3_id'){
+		timeType=3;
+		panelId='HydrologicalWellReportTabPanel3_id';
+	}else if(activeId=='HydrologicalWellReportTabPanel4_id'){
+		timeType=4;
+		panelId='HydrologicalWellReportTabPanel4_id';
+	}else if(activeId=='HydrologicalWellReportTabPanel5_id'){
+		timeType=5;
+		panelId='HydrologicalWellReportTabPanel5_id';
+	}
+	
+	
+
+	var url=context + '/reportDataMamagerController/batchExportHydrologicalWellReportData?timeType='+timeType
+	+'&deviceName='+URLencode(URLencode(deviceName))
+	+'&startDate='+startDate
+	+'&endDate='+endDate
+	+'&reportDate='+reportDate
+	+'&orgId='+orgId
+	+'&key='+key;
+	exportDataMask(key,panelId,loginUserLanguageResource.loading);
+	document.location.href = url;
+}

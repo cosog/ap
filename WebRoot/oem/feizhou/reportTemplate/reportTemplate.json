@@ -1,5 +1,70 @@
 {
-    "singleWellRangeReportTemplate": [],
-    "singleWellDailyReportTemplate": [],
-    "productionReportTemplate": []
+    "classes0": {
+        "singleWellRangeReportTemplate": [],
+        "singleWellDailyReportTemplate": [],
+        "productionReportTemplate": []
+    },
+    "classes1": {
+        "calculateType": 0,
+        "templateCode": "hydrologicalWellDailyReport",
+        "templateName": "水文井报表",
+        "header": [{
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title_zh_CN": ["时间", "", "水压数据(MPa)", "水温数据(℃)", "备注"],
+            "title_en": ["时间", "", "水压数据(MPa)", "水温数据(℃)", "备注"],
+            "title_ru": ["时间", "", "水压数据(MPa)", "水温数据(℃)", "备注"]
+        }, {
+            "tdStyle": {
+                "fontWeight": "bold",
+                "fontSize": "13px",
+                "fontFamily": "SimSun",
+                "height": "",
+                "color": "rgb(0, 0, 51)",
+                "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "title_zh_CN": ["日期", "时刻", "", "", ""],
+            "title_en": ["日期", "时刻", "", "", ""],
+            "title_ru": ["日期", "时刻", "", "", ""]
+        }],
+        "fixedRowsTop": 2,
+        "fixedRowsBottom": 0,
+        "rowHeights": [50],
+        "columnWidths_zh_CN": [80, 80, 120, 120, 200],
+        "columnWidths_en": [80, 80, 120, 120, 200],
+        "columnWidths_ru": [80, 80, 120, 120, 200],
+        "mergeCells": [{
+            "row": 0,
+            "col": 0,
+            "rowspan": 1,
+            "colspan": 2
+        },{
+            "row": 0,
+            "col": 2,
+            "rowspan": 2,
+            "colspan": 1
+        },{
+            "row": 0,
+            "col": 3,
+            "rowspan": 2,
+            "colspan": 1
+        },{
+            "row": 0,
+            "col": 4,
+            "rowspan": 2,
+            "colspan": 1
+        }],
+        "editable": [{
+            "startRow": 2,
+            "startColumn": 4,
+            "endRow": 999999999,
+            "endColumn": 4
+        }]
+    }
 }

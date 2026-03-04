@@ -99,7 +99,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 				}
             },{
             	xtype : "combobox",
-				fieldLabel : '报表类别'+'<font color=red>*</font>',
+				fieldLabel : loginUserLanguageResource.reportClasses+'<font color=red>*</font>',
 				id : 'modbusProtocolReportUnitCalculateClassesComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -110,13 +110,13 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [[0, '标准报表'],[1, '水文井报表']]
+							data : [[0, loginUserLanguageResource.standardReport],[1, loginUserLanguageResource.hydrologicalWellReport]]
 						}),
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '选择报表类别',
-				blankText : '选择报表类别',
+				emptyText : loginUserLanguageResource.selectReportClasses,
+				blankText : loginUserLanguageResource.selectReportClasses,
 				listeners : {
 					select:function(v,o){
 						Ext.getCmp("modbusProtocolReportUnitCalculateClasses_Id").setValue(this.value);

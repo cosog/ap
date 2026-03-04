@@ -26,22 +26,6 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 	@Override
 	public void run(){
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData,device id:"+deviceId+" start!");
-//		int index=0;
-//		while(index<100000){
-//			index++;
-//			StringManagerUtils.printLog("DatabaseHistoryDataDeleteThread,deviceId:"+deviceId+",index:"+index);
-//			if (Thread.interrupted()) {
-//                StringManagerUtils.printLog("线程"+deviceId + " 检测到中断请求");
-//                break;
-//            }
-//			try {
-//				Thread.sleep(5000);
-//			} catch (InterruptedException e) {
-//				StringManagerUtils.printLog("线程"+deviceId + " 阻塞时检测到中断请求");
-//				Thread.currentThread().interrupt();
-//				break;
-//			}
-//		}
 		
 		if(StringManagerUtils.isNotNull(acqTime)){
 			int cycle=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
@@ -85,6 +69,13 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 			if (!Thread.interrupted()) {
 				if(tableConfig.getTimingcalculationdata().getEnabled()){
 					deleteData("tbl_timingcalculationdata", "caltime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getTimingcalculationdata().getRetentionTime());
+				}
+			}
+			
+			
+			if (!Thread.interrupted()) {
+				if(tableConfig.getTimingrecorddata().getEnabled()){
+					deleteData("tbl_timingrecorddata", "savetime","deviceId",deviceId,acqTime,"yyyy-mm-dd hh24:mi:ss",tableConfig.getTimingrecorddata().getRetentionTime());
 				}
 			}
 			
@@ -159,12 +150,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 			if(StringManagerUtils.isNotNull(oldestDate)){
 				String delSql="";
 				do{
-					int range=0;
-					try {
-						range = StringManagerUtils.daysBetween(oldestDate, newestDate, "yyyy-MM-dd");
-					} catch (ParseException e) {
-						range=0;
-					}
+					int range = StringManagerUtils.daysBetween(oldestDate, newestDate, "yyyy-MM-dd");
 					
 					try {
 						if(range>retentionTime){

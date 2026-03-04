@@ -564,6 +564,8 @@ public class OEMConfigFile {
 		private DatabaseMaintenanceTableConfig srpacqdata_vacuate;
 		
 		private DatabaseMaintenanceTableConfig pcpacqdata_vacuate;
+		
+		private DatabaseMaintenanceTableConfig timingrecorddata;
 
 		public DatabaseMaintenanceTableConfig getAcqdata_hist() {
 			return acqdata_hist;
@@ -683,6 +685,14 @@ public class OEMConfigFile {
 
 		public void setPcpacqdata_vacuate(DatabaseMaintenanceTableConfig pcpacqdata_vacuate) {
 			this.pcpacqdata_vacuate = pcpacqdata_vacuate;
+		}
+
+		public DatabaseMaintenanceTableConfig getTimingrecorddata() {
+			return timingrecorddata;
+		}
+
+		public void setTimingrecorddata(DatabaseMaintenanceTableConfig timingrecorddata) {
+			this.timingrecorddata = timingrecorddata;
 		}
 	}
 	

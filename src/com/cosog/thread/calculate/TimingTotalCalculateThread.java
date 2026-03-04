@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -776,6 +777,13 @@ public class TimingTotalCalculateThread extends Thread {
     		RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
 
     		if(realtimeTotalInfo!=null && realtimeTotalInfo.getAcqTime()!=null && StringManagerUtils.isNotNull(realtimeTotalInfo.getAcqTime())){
+    			String curentDate=timeStr.split(" ")[0];
+    			String curentTime=timeStr.split(" ")[1];
+    			
+    			String lastDate=realtimeTotalInfo.getAcqTime().split(" ")[0];
+    			String lastTime=realtimeTotalInfo.getAcqTime().split(" ")[1];
+    			
+    			
     			TimeEffResponseData timeEffResponseData = null;
                 CommResponseData commResponseData = null;
 
@@ -907,20 +915,31 @@ public class TimingTotalCalculateThread extends Thread {
                 }
                 
                 List<KeyValue> acqDataList=new ArrayList<>();
-
-                if(realtimeTotalInfo!=null && realtimeTotalInfo.getTotalItemMap()!=null){
-    				Map<String, RealtimeTotalInfo.TotalItem> totalItemMap=realtimeTotalInfo.getTotalItemMap();
-    				Iterator<Map.Entry<String, RealtimeTotalInfo.TotalItem>> totalItemMapIterator = totalItemMap.entrySet().iterator();
-    				while (totalItemMapIterator.hasNext()) {
-    					Map.Entry<String, RealtimeTotalInfo.TotalItem> entry = totalItemMapIterator.next();
-    					 String itemCode=entry.getKey();
-    					 RealtimeTotalInfo.TotalItem totalItem=entry.getValue();
-    					 String tatalValue=totalItem.getTotalStatus().getNewestValue()+"";
-    					 
-    					 KeyValue keyValue=new KeyValue(itemCode,tatalValue);
-    					 acqDataList.add(keyValue);
-    				}
+                
+//                String curentDate=timeStr.split(" ")[0];
+//    			String curentTime=timeStr.split(" ")[1];
+//    			String lastDate=realtimeTotalInfo.getAcqTime().split(" ")[0];
+//    			String lastTime=realtimeTotalInfo.getAcqTime().split(" ")[1];
+                
+                int daysBetween= StringManagerUtils.daysBetween(lastDate, curentDate,"yyyy-MM-dd");
+                if(daysBetween==0 
+                		||(daysBetween==1 && StringManagerUtils.isMidnight(curentTime) )
+                		){
+                	if(realtimeTotalInfo!=null && realtimeTotalInfo.getTotalItemMap()!=null){
+        				Map<String, RealtimeTotalInfo.TotalItem> totalItemMap=realtimeTotalInfo.getTotalItemMap();
+        				Iterator<Map.Entry<String, RealtimeTotalInfo.TotalItem>> totalItemMapIterator = totalItemMap.entrySet().iterator();
+        				while (totalItemMapIterator.hasNext()) {
+        					Map.Entry<String, RealtimeTotalInfo.TotalItem> entry = totalItemMapIterator.next();
+        					 String itemCode=entry.getKey();
+        					 RealtimeTotalInfo.TotalItem totalItem=entry.getValue();
+        					 String tatalValue=totalItem.getTotalStatus().getNewestValue()+"";
+        					 
+        					 KeyValue keyValue=new KeyValue(itemCode,tatalValue);
+        					 acqDataList.add(keyValue);
+        				}
+                    }
                 }
+                
                 insertColumn += ",acqdata";
                 insertValue +=",?";
                 clobCont.add(new Gson().toJson(acqDataList));

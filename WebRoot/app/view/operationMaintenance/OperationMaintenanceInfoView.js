@@ -119,6 +119,10 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata.enabled=Ext.getCmp('operationMaintenance_timingcalculationdata_enabled_id').getValue();
 				        		configFile.databaseMaintenance.tableConfig.timingcalculationdata.retentionTime=Ext.getCmp('operationMaintenance_timingcalculationdata_retentionTim_id').getValue();
 				        		
+				        		configFile.databaseMaintenance.tableConfig.timingrecorddata={};
+				        		configFile.databaseMaintenance.tableConfig.timingrecorddata.enabled=Ext.getCmp('operationMaintenance_timingrecorddata_enabled_id').getValue();
+				        		configFile.databaseMaintenance.tableConfig.timingrecorddata.retentionTime=Ext.getCmp('operationMaintenance_timingrecorddata_retentionTim_id').getValue();
+				        		
 				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate={};
 				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate.enabled=Ext.getCmp('operationMaintenance_acqdata_vacuate_enabled_id').getValue();
 				        		configFile.databaseMaintenance.tableConfig.acqdata_vacuate.retentionTime=Ext.getCmp('operationMaintenance_acqdata_vacuate_retentionTim_id').getValue();
@@ -306,6 +310,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     						                    			Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_enabled_id').disable();
     						                    			Ext.getCmp('operationMaintenance_dailycalculationdata_enabled_id').disable();
     						                    			Ext.getCmp('operationMaintenance_timingcalculationdata_enabled_id').disable();
+    						                    			Ext.getCmp('operationMaintenance_timingrecorddata_enabled_id').disable();
     						                    			Ext.getCmp('operationMaintenance_acqdata_vacuate_enabled_id').disable();
     						                    			
     						                    			Ext.getCmp('operationMaintenance_acqdata_hist_retentionTime_Id').disable();
@@ -314,6 +319,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     						                    			Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_retentionTime_id').disable();
     						                    			Ext.getCmp('operationMaintenance_dailycalculationdata_retentionTime_id').disable();
     						                    			Ext.getCmp('operationMaintenance_timingcalculationdata_retentionTim_id').disable();
+    						                    			Ext.getCmp('operationMaintenance_timingrecorddata_retentionTim_id').disable();
     						                    			Ext.getCmp('operationMaintenance_acqdata_vacuate_retentionTim_id').disable();
     						                    		}else if(oldValue<=0 && newValue>0){
     						                    			Ext.getCmp('operationMaintenance_databaseMaintenanceStartTime_Id').enable();
@@ -325,6 +331,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     						                    			Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_enabled_id').enable();
     						                    			Ext.getCmp('operationMaintenance_dailycalculationdata_enabled_id').enable();
     						                    			Ext.getCmp('operationMaintenance_timingcalculationdata_enabled_id').enable();
+    						                    			Ext.getCmp('operationMaintenance_timingrecorddata_enabled_id').enable();
     						                    			Ext.getCmp('operationMaintenance_acqdata_vacuate_enabled_id').enable();
     						                    			
     						                    			Ext.getCmp('operationMaintenance_acqdata_hist_retentionTime_Id').enable();
@@ -333,6 +340,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     						                    			Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_retentionTime_id').enable();
     						                    			Ext.getCmp('operationMaintenance_dailycalculationdata_retentionTime_id').enable();
     						                    			Ext.getCmp('operationMaintenance_timingcalculationdata_retentionTim_id').enable();
+    						                    			Ext.getCmp('operationMaintenance_timingrecorddata_retentionTim_id').enable();
     						                    			Ext.getCmp('operationMaintenance_acqdata_vacuate_retentionTim_id').enable();
     						                    		}
     						            			}
@@ -378,6 +386,13 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     					                        fieldLabel: loginUserLanguageResource.timingCalculationTable,
     					                        name: 'operationMaintenance.timingcalculationdata_enabled',
     					                        id: 'operationMaintenance_timingcalculationdata_enabled_id',
+    					                        boxLabel: loginUserLanguageResource.enable
+    					                    },
+    					                    {
+    					                    	xtype: 'checkboxfield',
+    					                        fieldLabel: loginUserLanguageResource.timingRecordTable,
+    					                        name: 'operationMaintenance.timingrecorddata_enabled',
+    					                        id: 'operationMaintenance_timingrecorddata_enabled_id',
     					                        boxLabel: loginUserLanguageResource.enable
     					                    },
     						                {
@@ -436,6 +451,13 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     						                	xtype: 'numberfield',
     						                	name: 'operationMaintenance.timingcalculationdata_retentionTim',
     					                        id: 'operationMaintenance_timingcalculationdata_retentionTim_id',
+    				                        	minValue: 1
+    						                },
+    						                { 
+    						                	fieldLabel: loginUserLanguageResource.dataRetentionTime+'('+loginUserLanguageResource.day+')',
+    						                	xtype: 'numberfield',
+    						                	name: 'operationMaintenance.timingrecorddata_retentionTim',
+    					                        id: 'operationMaintenance_timingrecorddata_retentionTim_id',
     				                        	minValue: 1
     						                },
     				                        { 
@@ -2013,6 +2035,7 @@ function initOemOperationConfigInfo(configFile){
 	Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_enabled_id').setValue(configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist.enabled);
 	Ext.getCmp('operationMaintenance_dailycalculationdata_enabled_id').setValue(configFile.databaseMaintenance.tableConfig.dailycalculationdata.enabled);
 	Ext.getCmp('operationMaintenance_timingcalculationdata_enabled_id').setValue(configFile.databaseMaintenance.tableConfig.timingcalculationdata.enabled);
+	Ext.getCmp('operationMaintenance_timingrecorddata_enabled_id').setValue(configFile.databaseMaintenance.tableConfig.timingrecorddata.enabled);
 	Ext.getCmp('operationMaintenance_acqdata_vacuate_enabled_id').setValue(configFile.databaseMaintenance.tableConfig.acqdata_vacuate.enabled);
 	
 	Ext.getCmp('operationMaintenance_acqdata_hist_retentionTime_Id').setValue(configFile.databaseMaintenance.tableConfig.acqdata_hist.retentionTime);
@@ -2021,6 +2044,7 @@ function initOemOperationConfigInfo(configFile){
 	Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_retentionTime_id').setValue(configFile.databaseMaintenance.tableConfig.dailytotalcalculate_hist.retentionTime);
 	Ext.getCmp('operationMaintenance_dailycalculationdata_retentionTime_id').setValue(configFile.databaseMaintenance.tableConfig.dailycalculationdata.retentionTime);
 	Ext.getCmp('operationMaintenance_timingcalculationdata_retentionTim_id').setValue(configFile.databaseMaintenance.tableConfig.timingcalculationdata.retentionTime);
+	Ext.getCmp('operationMaintenance_timingrecorddata_retentionTim_id').setValue(configFile.databaseMaintenance.tableConfig.timingrecorddata.retentionTime);
 	Ext.getCmp('operationMaintenance_acqdata_vacuate_retentionTim_id').setValue(configFile.databaseMaintenance.tableConfig.acqdata_vacuate.retentionTime);
 	
 	Ext.getCmp('operationMaintenance_vacuateRecord_Id').setValue(configFile.dataVacuate.vacuateRecord);
@@ -2047,6 +2071,7 @@ function initOemOperationConfigInfo(configFile){
 		Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_enabled_id').disable();
 		Ext.getCmp('operationMaintenance_dailycalculationdata_enabled_id').disable();
 		Ext.getCmp('operationMaintenance_timingcalculationdata_enabled_id').disable();
+		Ext.getCmp('operationMaintenance_timingrecorddata_enabled_id').disable();
 		Ext.getCmp('operationMaintenance_acqdata_vacuate_enabled_id').disable();
 		
 		Ext.getCmp('operationMaintenance_acqdata_hist_retentionTime_Id').disable();
@@ -2055,6 +2080,7 @@ function initOemOperationConfigInfo(configFile){
 		Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_retentionTime_id').disable();
 		Ext.getCmp('operationMaintenance_dailycalculationdata_retentionTime_id').disable();
 		Ext.getCmp('operationMaintenance_timingcalculationdata_retentionTim_id').disable();
+		Ext.getCmp('operationMaintenance_timingrecorddata_retentionTim_id').disable();
 		Ext.getCmp('operationMaintenance_acqdata_vacuate_retentionTim_id').disable();
 	}else{
 		Ext.getCmp('operationMaintenance_databaseMaintenanceStartTime_Id').enable();
@@ -2066,6 +2092,7 @@ function initOemOperationConfigInfo(configFile){
 		Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_enabled_id').enable();
 		Ext.getCmp('operationMaintenance_dailycalculationdata_enabled_id').enable();
 		Ext.getCmp('operationMaintenance_timingcalculationdata_enabled_id').enable();
+		Ext.getCmp('operationMaintenance_timingrecorddata_enabled_id').enable();
 		Ext.getCmp('operationMaintenance_acqdata_vacuate_enabled_id').enable();
 		
 		Ext.getCmp('operationMaintenance_acqdata_hist_retentionTime_Id').enable();
@@ -2074,6 +2101,7 @@ function initOemOperationConfigInfo(configFile){
 		Ext.getCmp('operationMaintenance_dailytotalcalculate_hist_retentionTime_id').enable();
 		Ext.getCmp('operationMaintenance_dailycalculationdata_retentionTime_id').enable();
 		Ext.getCmp('operationMaintenance_timingcalculationdata_retentionTim_id').enable();
+		Ext.getCmp('operationMaintenance_timingrecorddata_retentionTim_id').enable();
 		Ext.getCmp('operationMaintenance_acqdata_vacuate_retentionTim_id').enable();
 	}
 	

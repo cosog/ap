@@ -71,6 +71,9 @@ databaseMaintenance:                      #数据库维护
       pcpacqdata_vacuate:                 #螺杆泵井计算数据抽稀表
          enabled: true                    #是否启用定时删除
          retentionTime: 1200               #数据保留时间，单位：天
+      timingrecorddata:                   #定时记录数据表
+         enabled: true                    #是否启用定时删除
+         retentionTime: 180                #数据保留时间，单位：天
 email:                #邮件发送账号配置
    enable: true
    snedAccount:

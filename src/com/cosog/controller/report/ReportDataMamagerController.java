@@ -913,7 +913,7 @@ public class ReportDataMamagerController extends BaseController {
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String graphicSetData = ParamUtils.getParameter(request, "graphicSetData");
 		this.pager = new Page("pagerForm", request);
-		int result = reportDataManagerService.setReportDataGraphicInfo(deviceId,deviceType,reportType,graphicSetData);
+		int result = reportDataManagerService.setReportDataGraphicInfo(deviceId,reportType,graphicSetData);
 		json = "{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -1421,6 +1421,25 @@ public class ReportDataMamagerController extends BaseController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	@RequestMapping("/saveHydrologicalWellReportData")
+	public String saveHydrologicalWellReportData() throws Exception {
+		String json = "{success:false}";
+		HttpSession session=request.getSession();
+		String data = ParamUtils.getParameter(request, "data");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		this.pager = new Page("pagerForm", request);
+		int result = reportDataManagerService.saveHydrologicalWellReportData(deviceId,deviceName,data);
+		json = "{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 

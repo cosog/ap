@@ -5224,9 +5224,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
 				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
 				+ " and t3.id="+deviceId
-				+ " and t.sort>=0"
-				+ " and t.reportType="+reportType
-				+ " and t.reportcurveconf is not null "
+				+ " and t.sort>=0";
+		if(StringManagerUtils.stringToInteger(reportType)!=10){
+			curveItemsSql+=" and t.reportType="+reportType;
+		}
+		curveItemsSql+= " and t.reportcurveconf is not null "
 				+ " and (t.showlevel is null or t.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
 				+ " order by t.sort";
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
@@ -5245,6 +5247,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}else if(StringManagerUtils.stringToInteger(reportType)==2){
 					if(graphicSetData.getDailyReport()!=null){
 						graphicList=graphicSetData.getDailyReport();
+					}
+				}else if(StringManagerUtils.stringToInteger(reportType)==10){
+					if(graphicSetData.getDailyReport()!=null){
+						graphicList=graphicSetData.getHydrologicalWellReport();
 					}
 				}
 			}
@@ -5337,13 +5343,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public int setReportDataGraphicInfo(String deviceId,String deviceType,String reportType,String graphicSetSaveDataStr)throws Exception {
+	public int setReportDataGraphicInfo(String deviceId,String reportType,String graphicSetSaveDataStr)throws Exception {
 		int result=0;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
 		if(StringManagerUtils.stringToInteger(deviceId)>0){
-			String deviceTableName="tbl_device";
 			String graphicSetTableName="tbl_devicegraphicset";
 			
 			type = new TypeToken<GraphicSetData>() {}.getType();
@@ -5395,6 +5400,25 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 					}else{
 						graphicSetData.setDailyReport(graphicSetSaveData.getDailyReport());
+					}
+				}else if(StringManagerUtils.stringToInteger(reportType)==10){
+					if(graphicSetData.getHydrologicalWellReport()!=null&&graphicSetData.getHydrologicalWellReport().size()>0){
+						for(int i=0;i<graphicSetSaveData.getHydrologicalWellReport().size();i++){
+							boolean isExit=false;
+							for(int j=0;j<graphicSetData.getHydrologicalWellReport().size();j++){
+								if(graphicSetSaveData.getHydrologicalWellReport().get(i).getItemCode().equalsIgnoreCase(graphicSetData.getHydrologicalWellReport().get(j).getItemCode())){
+									isExit=true;
+									graphicSetData.getHydrologicalWellReport().get(j).setyAxisMaxValue(graphicSetSaveData.getHydrologicalWellReport().get(i).getyAxisMaxValue());
+									graphicSetData.getHydrologicalWellReport().get(j).setyAxisMinValue(graphicSetSaveData.getHydrologicalWellReport().get(i).getyAxisMinValue());
+									break;
+								}
+							}
+							if(!isExit){
+								graphicSetData.getHydrologicalWellReport().add(graphicSetSaveData.getHydrologicalWellReport().get(i));
+							}
+						}
+					}else{
+						graphicSetData.setHydrologicalWellReport(graphicSetSaveData.getHydrologicalWellReport());
 					}
 				}
 				saveStr=gson.toJson(graphicSetData);
@@ -5905,11 +5929,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			
 			if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
-				sqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
-				sqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
+				sqlBuff.append(" and t.acqTime between to_date('"+reportDate+"','yyyy-mm-dd')-1 and to_date('"+reportDate+"','yyyy-mm-dd')+1");
+				sqlBuff.append(" and t.SaveTime between to_date('"+reportDate+"','yyyy-mm-dd') and to_date('"+reportDate+"','yyyy-mm-dd')+1");
 			}else{
-				sqlBuff.append(" and t.acqTime > to_date('"+startDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
-				sqlBuff.append(" and t.SaveTime > to_date('"+startDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
+				if(StringManagerUtils.stringToInteger(timeType)==3){
+					sqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') in ('00:00:00','06:00:00','12:00:00','18:00:00')");
+				}else if(StringManagerUtils.stringToInteger(timeType)==4){
+					sqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') in ('00:00:00','12:00:00')");
+				}else if(StringManagerUtils.stringToInteger(timeType)==5){
+					sqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') = '12:00:00'");
+				}
+				
+				sqlBuff.append(" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd')-1 and to_date('"+endDate+"','yyyy-mm-dd')+1");
+				sqlBuff.append(" and t.SaveTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1");
 			}
 			
 			sqlBuff.append(" order by t.SaveTime");
@@ -6267,11 +6299,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				
 				
 				if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
-					sqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
-					sqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
+					sqlBuff.append(" and t.acqTime between to_date('"+reportDate+"','yyyy-mm-dd')-1 and to_date('"+reportDate+"','yyyy-mm-dd')+1");
+					sqlBuff.append(" and t.SaveTime between to_date('"+reportDate+"','yyyy-mm-dd') and to_date('"+reportDate+"','yyyy-mm-dd')+1");
 				}else{
-					sqlBuff.append(" and t.acqTime > to_date('"+startDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
-					sqlBuff.append(" and t.SaveTime > to_date('"+startDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
+					if(StringManagerUtils.stringToInteger(timeType)==3){
+						sqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') in ('00:00:00','06:00:00','12:00:00','18:00:00')");
+					}else if(StringManagerUtils.stringToInteger(timeType)==4){
+						sqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') in ('00:00:00','12:00:00')");
+					}else if(StringManagerUtils.stringToInteger(timeType)==5){
+						sqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') = '12:00:00'");
+					}
+					sqlBuff.append(" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd')-1 and to_date('"+endDate+"','yyyy-mm-dd')+1");
+					sqlBuff.append(" and t.SaveTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1");
 				}
 				
 				sqlBuff.append(" order by t.SaveTime");
@@ -6691,11 +6730,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					
 					if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
-						sqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
-						sqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
+						sqlBuff.append(" and t.acqTime between to_date('"+reportDate+"','yyyy-mm-dd')-1 and to_date('"+reportDate+"','yyyy-mm-dd')+1");
+						sqlBuff.append(" and t.SaveTime between to_date('"+reportDate+"','yyyy-mm-dd') and to_date('"+reportDate+"','yyyy-mm-dd')+1");
 					}else{
-						sqlBuff.append(" and t.acqTime > to_date('"+startDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
-						sqlBuff.append(" and t.SaveTime > to_date('"+startDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+endDate+"','yyyy-mm-dd')+1");
+						if(StringManagerUtils.stringToInteger(timeType)==3){
+							sqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') in ('00:00:00','06:00:00','12:00:00','18:00:00')");
+						}else if(StringManagerUtils.stringToInteger(timeType)==4){
+							sqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') in ('00:00:00','12:00:00')");
+						}else if(StringManagerUtils.stringToInteger(timeType)==5){
+							sqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') = '12:00:00'");
+						}
+						sqlBuff.append(" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd')-1 and to_date('"+endDate+"','yyyy-mm-dd')+1");
+						sqlBuff.append(" and t.SaveTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1");
 					}
 					
 					sqlBuff.append(" order by t.SaveTime");
@@ -7154,14 +7200,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			cueveSqlBuff.append(" where t.id=t2.id");
 			
-			
-			
 			if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
-				cueveSqlBuff.append(" and t.acqTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.acqTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
-				cueveSqlBuff.append(" and t.SaveTime > to_date('"+reportDate+"','yyyy-mm-dd') and t.SaveTime< to_date('"+reportDate+"','yyyy-mm-dd')+1");
+				cueveSqlBuff.append(" and t.acqTime between to_date('"+reportDate+"','yyyy-mm-dd')-1 and to_date('"+reportDate+"','yyyy-mm-dd')+1");
+				cueveSqlBuff.append(" and t.SaveTime between to_date('"+reportDate+"','yyyy-mm-dd') and to_date('"+reportDate+"','yyyy-mm-dd')+1");
 			}else{
-				cueveSqlBuff.append(" and t.acqTime > to_date('"+startDate+"','yyyy-mm-dd') and t.acqTime<= to_date('"+endDate+"','yyyy-mm-dd')+1");
-				cueveSqlBuff.append(" and t.SaveTime > to_date('"+startDate+"','yyyy-mm-dd') and t.SaveTime<= to_date('"+endDate+"','yyyy-mm-dd')+1");
+				if(StringManagerUtils.stringToInteger(timeType)==3){
+					cueveSqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') in ('00:00:00','06:00:00','12:00:00','18:00:00')");
+				}else if(StringManagerUtils.stringToInteger(timeType)==4){
+					cueveSqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') in ('00:00:00','12:00:00')");
+				}else if(StringManagerUtils.stringToInteger(timeType)==5){
+					cueveSqlBuff.append(" and to_char(t.SaveTime,'hh24:mi:ss') = '12:00:00'");
+				}
+				cueveSqlBuff.append(" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd')-1 and to_date('"+endDate+"','yyyy-mm-dd')+1");
+				cueveSqlBuff.append(" and t.SaveTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1");
 			}
 			
 			cueveSqlBuff.append(" and t.deviceid="+deviceId);
@@ -7276,5 +7327,40 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public int saveHydrologicalWellReportData(String deviceId,String deviceName,String data) {
+		int result=0;
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		type = new TypeToken<CellEditData>() {}.getType();
+		CellEditData cellEditData=gson.fromJson(data, type);
+		
+		if(cellEditData!=null && cellEditData.getContentUpdateList().size()>0){
+			String tableName="tbl_timingrecorddata";
+			String updateSql="";
+			for(int i=0;i<cellEditData.getContentUpdateList().size();i++){
+				try {
+					if(StringManagerUtils.isNotNull(cellEditData.getContentUpdateList().get(i).getColumn())){
+						String updateValue=cellEditData.getContentUpdateList().get(i).getNewValue();
+						if(!cellEditData.getContentUpdateList().get(i).getHeader()){
+							if( (!StringManagerUtils.isNum(updateValue)) && (!StringManagerUtils.isNumber(updateValue)) ){
+								updateValue="'"+updateValue+"'";
+							}
+							updateSql="update "+tableName+" t set t."+cellEditData.getContentUpdateList().get(i).getColumn()+"="+updateValue+" where t.id="+cellEditData.getContentUpdateList().get(i).getRecordId();
+						}else{
+							
+						}
+						if(StringManagerUtils.isNotNull(updateSql)){
+							result+=this.getBaseDao().updateOrDeleteBySql(updateSql);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+		}
+		return result;
 	}
 }

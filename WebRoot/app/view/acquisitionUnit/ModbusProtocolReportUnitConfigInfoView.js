@@ -2532,13 +2532,34 @@ function CreateHydrologicalWellDailyReportTemplateInfoTable() {
         }
         hydrologicalWellDailyReportTemplateHandsontableHelper = null;
     }
+	
+	var calculateType = 0;
+    var unitId = 0;
+    var unitName = '';
+    var classes = 0;
+    var reportUnitConfigTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
+    if (reportUnitConfigTreeSelection.length > 0) {
+        var record = reportUnitConfigTreeSelection[0];
+        if (record.data.classes == 1) {
+            unitId = record.data.id;
+        }
+        calculateType = record.data.calculateType;
+        unitName = record.data.text;
+        classes = record.data.classes;
+    }
+	
+	
     Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/getHydrologicalWellReportTemplateData',
         success: function (response) {
             Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id").getEl().unmask();
-            Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id").setTitle(name+'/'+'报表模板');
+            if (classes == 0) {
+                Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.reportTemplate);
+            } else {
+                Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.reportTemplate);
+            }
             var result = Ext.JSON.decode(response.responseText);
             if (hydrologicalWellDailyReportTemplateHandsontableHelper == null || hydrologicalWellDailyReportTemplateHandsontableHelper.hot == undefined) {
                 hydrologicalWellDailyReportTemplateHandsontableHelper = HydrologicalWellDailyReportTemplateHandsontableHelper.createNew("ReportUnitClasses1TemplateTableInfoDiv_id", "ReportUnitClasses1TemplateTableInfoContainer", result);
@@ -2814,9 +2835,9 @@ function CreateHydrologicalWellDailyReportConfigItemsInfoTable() {
             Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").getEl().unmask();
             var result = Ext.JSON.decode(response.responseText);
             if (classes == 0) {
-                Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceHourlyReportContentConfig);
+                Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.reportContentConfig);
             } else {
-                Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").setTitle(unitName + '/'+'报表内容');
+                Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.reportContentConfig);
             }
             if (hydrologicalWellDailyReportContentHandsontableHelper == null || hydrologicalWellDailyReportContentHandsontableHelper.hot == undefined) {
                 hydrologicalWellDailyReportContentHandsontableHelper = HydrologicalWellDailyReportContentHandsontableHelper.createNew("ReportUnitClasses1ContentConfigTableInfoDiv_id");

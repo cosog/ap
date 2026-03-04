@@ -124,7 +124,14 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                 	CreateHydrologicalWellReportTable();
                 	CreateHydrologicalWellReportCurve();
                 }
-    		},{
+    		},'-',{
+                xtype: 'button',
+                text: loginUserLanguageResource.bulkExportData,
+                iconCls: 'export',
+                handler: function (v, o) {
+                	batchExportHydrologicalWellReportData();
+                }
+            },{
             	id: 'HydrologicalWellReportDeviceListSelectRow_Id',
             	xtype: 'textfield',
                 value: -1,
@@ -148,7 +155,7 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                 tabPosition: 'top',
                 items: [{
                 	id:'HydrologicalWellReportTabPanel1_id',
-                	title:'5分钟',
+                	title:loginUserLanguageResource.fiveMinutes,
                 	iconCls: 'check3',
                 	layout: 'border',
                     border: false,
@@ -234,19 +241,12 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: loginUserLanguageResource.bulkExportData,
-                            iconCls: 'export',
-                            handler: function (v, o) {
-                            	batchExportHydrologicalWellReportData();
-                            }
-                        },'-',{
-                            xtype: 'button',
                             text: loginUserLanguageResource.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
-                            hidden:true,
+                            hidden:false,
                             handler: function (v, o) {
-//                            	hydrologicalWellReportHelper.saveData();
+                            	hydrologicalWellReportHelper.saveData();
                             }
                         },'-', {
                             id: 'HydrologicalWellReport1TotalCount_Id',
@@ -287,7 +287,7 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                     }]
                 },{
                 	id:'HydrologicalWellReportTabPanel2_id',
-                	title:'1小时',
+                	title:loginUserLanguageResource.oneHour,
                 	layout: 'border',
                     border: false,
                     items:[{
@@ -372,19 +372,12 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: loginUserLanguageResource.bulkExportData,
-                            iconCls: 'export',
-                            handler: function (v, o) {
-                            	batchExportHydrologicalWellReportData();
-                            }
-                        },'-',{
-                            xtype: 'button',
                             text: loginUserLanguageResource.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
-                            hidden:true,
+                            hidden:false,
                             handler: function (v, o) {
-//                            	hydrologicalWellReportHelper.saveData();
+                            	hydrologicalWellReportHelper.saveData();
                             }
                         },'-', {
                             id: 'HydrologicalWellReport2TotalCount_Id',
@@ -425,7 +418,7 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                     }]
                 },{
                 	id:'HydrologicalWellReportTabPanel3_id',
-                	title:'6小时',
+                	title:loginUserLanguageResource.sixHours,
                 	layout: 'border',
                     border: false,
                     items:[{
@@ -445,19 +438,12 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: loginUserLanguageResource.bulkExportData,
-                            iconCls: 'export',
-                            handler: function (v, o) {
-                            	batchExportHydrologicalWellReportData();
-                            }
-                        },'-',{
-                            xtype: 'button',
                             text: loginUserLanguageResource.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
-                            hidden:true,
+                            hidden:false,
                             handler: function (v, o) {
-//                            	hydrologicalWellReportHelper.saveData();
+                            	hydrologicalWellReportHelper.saveData();
                             }
                         },'-', {
                             id: 'HydrologicalWellReport3TotalCount_Id',
@@ -498,7 +484,7 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                     }]
                 },{
                 	id:'HydrologicalWellReportTabPanel4_id',
-                	title:'12小时',
+                	title:loginUserLanguageResource.twelveHours,
                 	layout: 'border',
                     border: false,
                     items:[{
@@ -518,19 +504,12 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: loginUserLanguageResource.bulkExportData,
-                            iconCls: 'export',
-                            handler: function (v, o) {
-                            	batchExportHydrologicalWellReportData();
-                            }
-                        },'-',{
-                            xtype: 'button',
                             text: loginUserLanguageResource.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
-                            hidden:true,
+                            hidden:false,
                             handler: function (v, o) {
-//                            	hydrologicalWellReportHelper.saveData();
+                            	hydrologicalWellReportHelper.saveData();
                             }
                         },'-', {
                             id: 'HydrologicalWellReport4TotalCount_Id',
@@ -571,7 +550,7 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                     }]
                 },{
                 	id:'HydrologicalWellReportTabPanel5_id',
-                	title:'24小时',
+                	title:loginUserLanguageResource.twentyFourHours,
                 	layout: 'border',
                     border: false,
                     items:[{
@@ -591,19 +570,12 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: loginUserLanguageResource.bulkExportData,
-                            iconCls: 'export',
-                            handler: function (v, o) {
-                            	batchExportHydrologicalWellReportData();
-                            }
-                        },'-',{
-                            xtype: 'button',
                             text: loginUserLanguageResource.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
-                            hidden:true,
+                            hidden:false,
                             handler: function (v, o) {
-//                            	hydrologicalWellReportHelper.saveData();
+                            	hydrologicalWellReportHelper.saveData();
                             }
                         },'-', {
                             id: 'HydrologicalWellReport5TotalCount_Id',
@@ -1138,7 +1110,6 @@ var HydrologicalWellReportHelper = {
 	        		hydrologicalWellReportHelper.editData.contentUpdateList=hydrologicalWellReportHelper.contentUpdateList;
 	        		var deviceName='';
 	        	    var deviceId=0;
-	        	    var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
 	        	    var selectRow= Ext.getCmp("HydrologicalWellReportDeviceListSelectRow_Id").getValue();
 	        	    if(Ext.getCmp("HydrologicalWellReportDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
 	        	    	deviceName=Ext.getCmp("HydrologicalWellReportDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
@@ -1147,14 +1118,14 @@ var HydrologicalWellReportHelper = {
 //	        		alert(JSON.stringify(hydrologicalWellReportHelper.editData));
 	        		Ext.Ajax.request({
 	                    method: 'POST',
-	                    url: context + '/reportDataMamagerController/saveSingleWellRangeDailyReportData',
+	                    url: context + '/reportDataMamagerController/saveHydrologicalWellReportData',
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
 	                        	hydrologicalWellReportHelper.clearContainer();
-	                        	CreateSingleWellReportTable();
-	                        	CreateSingleWellReportCurve();
+	                        	CreateHydrologicalWellReportTable();
+	                        	CreateHydrologicalWellReportCurve();
 	                        } else {
 	                        	hydrologicalWellReportHelper.clearContainer();
 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
@@ -1166,8 +1137,7 @@ var HydrologicalWellReportHelper = {
 	                    params: {
 	                    	deviceId:deviceId,
 	                    	deviceName:deviceName,
-	                    	data: JSON.stringify(hydrologicalWellReportHelper.editData),
-	                        deviceType: deviceType
+	                    	data: JSON.stringify(hydrologicalWellReportHelper.editData)
 	                    }
 	                });
 	        	}else{
@@ -1279,9 +1249,9 @@ function CreateHydrologicalWellReportCurve(){
 		    var title = result.deviceName+ "-" + loginUserLanguageResource.hourlyReportCurve+ "-"+result.reportDate;
 		    
 		    if(timeType==1 || timeType==2){
-		    	title = result.deviceName+ "-" + '水文观测孔时间压力及温度图'+ "-"+result.reportDate;
+		    	title = result.deviceName+ "-" + loginUserLanguageResource.hydrologicalWellReportCurveTitle+ "-"+result.reportDate;
 		    }else{
-		    	title = result.deviceName+ "-" + '水文观测孔时间压力及温度图'+ "-"+result.startDate+"~"+result.endDate;
+		    	title = result.deviceName+ "-" + loginUserLanguageResource.hydrologicalWellReportCurveTitle+ "-"+result.startDate+"~"+result.endDate;
 		    }
 		    
 		    
@@ -1349,14 +1319,14 @@ function CreateHydrologicalWellReportCurve(){
 		        }else if(allPositive){
 		        	minValue=0;
 		        }
-		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.DailyReport) ){
-			    	for(var j=0;j<graphicSet.DailyReport.length;j++){
-			    		if(graphicSet.DailyReport[j].itemCode!=undefined && graphicSet.DailyReport[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
-			    			if(isNotVal(graphicSet.DailyReport[j].yAxisMaxValue)){
-					    		maxValue=parseFloat(graphicSet.DailyReport[j].yAxisMaxValue);
+		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.HydrologicalWellReport) ){
+			    	for(var j=0;j<graphicSet.HydrologicalWellReport.length;j++){
+			    		if(graphicSet.HydrologicalWellReport[j].itemCode!=undefined && graphicSet.HydrologicalWellReport[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
+			    			if(isNotVal(graphicSet.HydrologicalWellReport[j].yAxisMaxValue)){
+					    		maxValue=parseFloat(graphicSet.HydrologicalWellReport[j].yAxisMaxValue);
 					    	}
-					    	if(isNotVal(graphicSet.DailyReport[j].yAxisMinValue)){
-					    		minValue=parseFloat(graphicSet.DailyReport[j].yAxisMinValue);
+					    	if(isNotVal(graphicSet.HydrologicalWellReport[j].yAxisMinValue)){
+					    		minValue=parseFloat(graphicSet.HydrologicalWellReport[j].yAxisMinValue);
 					    	}
 					    	break;
 			    		}

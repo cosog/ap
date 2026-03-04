@@ -11,7 +11,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses1ConfigInfoVi
         		layout: "border",
         		items:[{
                     region: 'center',
-                    title: '报表模板',
+                    title: loginUserLanguageResource.reportTemplate,
                     id: 'ReportUnitClasses1TemplateTableInfoPanel_Id',
                     layout: 'fit',
                     border: false,
@@ -35,7 +35,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses1ConfigInfoVi
             	}, {
                     region: 'south',
                     height: '50%',
-                    title: '报表内容配置',
+                    title: loginUserLanguageResource.reportContentConfig,
                     collapsible: true,
                     split: true,
                     layout: 'fit',

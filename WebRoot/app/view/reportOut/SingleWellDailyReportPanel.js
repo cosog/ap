@@ -151,7 +151,14 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 	CreateSingleWellReportTable();
                 	CreateSingleWellReportCurve();
                 }
-    		},{
+    		},'-',{
+                xtype: 'button',
+                text: loginUserLanguageResource.bulkExportData,
+                iconCls: 'export',
+                handler: function (v, o) {
+                	batchExportSingleWellReportData();
+                }
+            },{
             	id: 'SingleWellDailyReportDeviceListSelectRow_Id',
             	xtype: 'textfield',
                 value: -1,
@@ -303,13 +310,6 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                             }
                         },'-',{
                             xtype: 'button',
-                            text: loginUserLanguageResource.bulkExportData,
-                            iconCls: 'export',
-                            handler: function (v, o) {
-                            	batchExportSingleWellDailyReportData();
-                            }
-                        },'-',{
-                            xtype: 'button',
                             text: loginUserLanguageResource.save,
                             iconCls: 'save',
                             disabled: loginUserRoleReportEdit!=1,
@@ -372,13 +372,6 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                             iconCls: 'export',
                             handler: function (v, o) {
                             	ExportSingleWellRangeReportData();
-                            }
-                        },'-',{
-                            xtype: 'button',
-                            text: loginUserLanguageResource.bulkExportData,
-                            iconCls: 'export',
-                            handler: function (v, o) {
-                            	batchExportSingleWellRangeReportData();
                             }
                         },'-',{
                             xtype: 'button',
@@ -1879,6 +1872,15 @@ function ExportSingleWellRangeReportData(){
 	+'&key='+key;
 	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loading);
 	document.location.href = url;
+}
+
+function batchExportSingleWellReportData(){
+	var SingleWellReportTabPanelActiveId=Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id;
+	if(SingleWellReportTabPanelActiveId=='SingleWellDailyReportTabPanel_id'){
+		batchExportSingleWellDailyReportData();
+	}else if(SingleWellReportTabPanelActiveId=='SingleWellRangeReportTabPanel_id'){
+		batchExportSingleWellRangeReportData();
+	}
 }
 
 function batchExportSingleWellRangeReportData(){

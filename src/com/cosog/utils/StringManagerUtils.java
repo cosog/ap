@@ -58,6 +58,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
@@ -167,6 +168,13 @@ public class StringManagerUtils {
     private static final Pattern CHINA_PATTERN = Pattern.compile("^((13[0-9])|(14[0,1,4-9])|(15[0-3,5-9])|(16[2,5,6,7])|(17[0-8])|(18[0-9])|(19[0-3,5-9]))\\d{8}$");
     private static final Pattern NUM_PATTERN = Pattern.compile("[0-9]+");
     private static final Pattern COLOR_PATTERN = Pattern.compile("^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$");
+    
+    private static final List<DateTimeFormatter> FORMATTERS = Arrays.asList(
+            DateTimeFormatter.ofPattern("H:mm"),     // 0:00
+            DateTimeFormatter.ofPattern("HH:mm"),    // 00:00
+            DateTimeFormatter.ofPattern("H:mm:ss"),  // 0:00:00
+            DateTimeFormatter.ofPattern("HH:mm:ss")  // 00:00:00
+        );
 
     public static String protocolItemNameToCol(String str) {
     	return "c_" + getAllFirstLetter(str);
@@ -381,12 +389,19 @@ public class StringManagerUtils {
         return Integer.parseInt(String.valueOf(between_days));
     }
     
-    public static int daysBetween(String startDateStr,String endDateStr,String format) throws ParseException {
-    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-    	LocalDate startDate = LocalDate.parse(startDateStr, formatter);
-    	LocalDate endDate = LocalDate.parse(endDateStr, formatter);
-    	long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
-    	return Integer.parseInt(String.valueOf(daysBetween));
+    public static int daysBetween(String startDateStr,String endDateStr,String format) {
+    	int r=0;
+    	try {
+    		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        	LocalDate startDate = LocalDate.parse(startDateStr, formatter);
+        	LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+        	long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+        	r= Integer.parseInt(String.valueOf(daysBetween));
+        } catch (DateTimeParseException e) {
+        	
+        }
+    	
+    	return r;
     }
     
     public static boolean dateTimeValidation(String dateTimeStr,String format){
@@ -4994,5 +5009,37 @@ public class StringManagerUtils {
         }
         
         return dateList;
+    }
+    
+    /**
+     * 判断时间字符串是否是0点
+     * @param timeStr 时间字符串
+     * @return true表示是0点
+     */
+    public static boolean isMidnight(String timeStr) {
+        if (timeStr == null || timeStr.trim().isEmpty()) {
+            return false;
+        }
+        
+        timeStr = timeStr.trim();
+        
+        // 特殊处理24:00的情况
+        if (timeStr.equals("24:00") || timeStr.equals("24:00:00")) {
+            return true;
+        }
+        
+        // 尝试用各个格式解析
+        for (DateTimeFormatter formatter : FORMATTERS) {
+            try {
+                LocalTime time = LocalTime.parse(timeStr, formatter);
+                if (time.equals(LocalTime.MIDNIGHT)) {
+                    return true;
+                }
+            } catch (DateTimeParseException ignored) {
+                // 继续尝试下一个格式
+            }
+        }
+        
+        return false;
     }
 }

@@ -783,8 +783,8 @@
                 "backgroundColor": "rgb(242, 242, 242)"
             },
             "title_zh_CN": ["时间", "", "水压数据(MPa)", "水温数据(℃)", "备注"],
-            "title_en": ["时间", "", "水压数据(MPa)", "水温数据(℃)", "备注"],
-            "title_ru": ["时间", "", "水压数据(MPa)", "水温数据(℃)", "备注"]
+            "title_en": ["Time", "", "Water pressure(MPa)", "Water temperature(℃)", "Remark"],
+            "title_ru": ["Время", "", "Давление воды(MPa)", "Температура воды(℃)", "замечание"]
         }, {
             "tdStyle": {
                 "fontWeight": "bold",
@@ -795,8 +795,8 @@
                 "backgroundColor": "rgb(242, 242, 242)"
             },
             "title_zh_CN": ["日期", "时刻", "", "", ""],
-            "title_en": ["日期", "时刻", "", "", ""],
-            "title_ru": ["日期", "时刻", "", "", ""]
+            "title_en": ["Date", "Moment", "", "", ""],
+            "title_ru": ["дата", "момент", "", "", ""]
         }],
         "fixedRowsTop": 2,
         "fixedRowsBottom": 0,

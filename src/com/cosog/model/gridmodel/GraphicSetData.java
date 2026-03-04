@@ -7,6 +7,7 @@ public class GraphicSetData {
 	public List<Graphic> History;
 	public List<Graphic> Report;
 	public List<Graphic> DailyReport;
+	public List<Graphic> HydrologicalWellReport;
 	
 	public DataFilter HistoryDataFilter;
 	
@@ -90,5 +91,13 @@ public class GraphicSetData {
 
 	public void setHistoryDataFilter(DataFilter historyDataFilter) {
 		HistoryDataFilter = historyDataFilter;
+	}
+
+	public List<Graphic> getHydrologicalWellReport() {
+		return HydrologicalWellReport;
+	}
+
+	public void setHydrologicalWellReport(List<Graphic> hydrologicalWellReport) {
+		HydrologicalWellReport = hydrologicalWellReport;
 	}
 }

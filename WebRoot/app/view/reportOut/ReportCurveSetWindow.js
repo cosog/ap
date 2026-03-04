@@ -33,19 +33,54 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function (v, o) {
-                	var deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
+                	var deviceType=0;
                 	var reportType=0;
                 	var selectRowId="SingleWellDailyReportDeviceListSelectRow_Id";
                 	var gridPanelId="SingleWellDailyReportGridPanel_Id";
                 	var divId="SingleWellRangeReportCurveDiv_Id";
-                	
-                	var SingleWellReportTabPanelActiveId=Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id;
-        			if(SingleWellReportTabPanelActiveId=='SingleWellDailyReportTabPanel_id'){
-        				reportType=2;
-        				divId="SingleWellDailyReportCurveDiv_Id";
-        			}else if(SingleWellReportTabPanelActiveId=='SingleWellRangeReportTabPanel_id'){
-        				reportType=0;
-        				divId="SingleWellRangeReportCurveDiv_Id";
+        			
+        			var module_Code = Ext.getCmp("topModule_Id").getValue();
+        			
+        			if(module_Code=='HydrologicalWellReport'){
+        				reportType=10;
+        				selectRowId="HydrologicalWellReportDeviceListSelectRow_Id";
+        				gridPanelId="HydrologicalWellReportDeviceListGridPanel_Id";
+        				
+        				
+        				var tabPanel = Ext.getCmp("HydrologicalWellReportTabPanel_Id");
+        				var activeId = tabPanel.getActiveTab().id;
+        				if(activeId=='HydrologicalWellReportTabPanel1_id'){
+        					divId='HydrologicalWellReport1CurveDiv_Id';
+        				}else if(activeId=='HydrologicalWellReportTabPanel2_id'){
+        					divId='HydrologicalWellReport2CurveDiv_Id';
+        				}else if(activeId=='HydrologicalWellReportTabPanel3_id'){
+        					divId='HydrologicalWellReport3CurveDiv_Id';
+        				}else if(activeId=='HydrologicalWellReportTabPanel4_id'){
+        					divId='HydrologicalWellReport4CurveDiv_Id';
+        				}else if(activeId=='HydrologicalWellReportTabPanel5_id'){
+        					divId='HydrologicalWellReport5CurveDiv_Id';
+        				}
+        			}else{
+        				deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
+        				var secondActiveId = Ext.getCmp("DailyReportTabPanel").getActiveTab().id;
+        				if(secondActiveId=="SingleWellDailyReportTabPanel_Id"){
+        					selectRowId="SingleWellDailyReportDeviceListSelectRow_Id";
+        					gridPanelId="SingleWellDailyReportGridPanel_Id";
+        					
+        					var SingleWellReportTabPanelActiveId=Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id;
+        					if(SingleWellReportTabPanelActiveId=='SingleWellDailyReportTabPanel_id'){
+        						reportType=2;
+        						divId="SingleWellDailyReportCurveDiv_Id";
+        					}else if(SingleWellReportTabPanelActiveId=='SingleWellRangeReportTabPanel_id'){
+        						reportType=0;
+        						divId="SingleWellRangeReportCurveDiv_Id";
+        					}
+        				}else if(secondActiveId=="ProductionDailyReportTabPanel_Id"){
+        					reportType=1;
+        					selectRowId="ProductionDailyReportInstanceListSelectRow_Id";
+        					gridPanelId="ProductionDailyReportGridPanel_Id";
+        					divId="ProductionDailyReportCurveDiv_Id";
+        				}
         			}
                 	
                 	
@@ -135,6 +170,43 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                     		
                     		graphicSetData.DailyReport.push(graphicInfo);
                     	});
+                	}else if(reportType==10){
+                		graphicSetData.HydrologicalWellReport=[];
+                    	
+                    	Ext.Array.each(curveSetData, function (name, index, countriesItSelf) {
+                    		var maxValue=null,minValue=null;
+                    		if(isNotVal(curveSetData[index][1])){
+                    			maxValue=parseFloat(curveSetData[index][1]);
+                    		}
+                    		if(isNotVal(curveSetData[index][2])){
+                    			minValue=parseFloat(curveSetData[index][2]);
+                    		}
+                    		for(var i=0;i<chart.yAxis.length;i++){
+                    			var match=false;
+                    			if(chart.yAxis[i].series.length>0){
+                    				for(var j=0;j<chart.yAxis[i].series.length;j++){
+                    					var serieName=chart.yAxis[i].series[j].name;
+                    					if(serieName==curveSetData[index][0] || serieName.replace('（','(').split('(')[0]==curveSetData[index][0].replace('（','(').split('(')[0]){
+                    						match=true;
+                    						chart.yAxis[i].update({max: maxValue,min: minValue});
+                    						break;
+                    					}
+                    				}
+                    			}
+                    			
+                    			if(match){
+                    				break;
+                    			}
+                    		}
+                    		
+                    		var graphicInfo={};
+                    		graphicInfo.yAxisMaxValue=isNotVal(curveSetData[index][1])?curveSetData[index][1]:"";
+                    		graphicInfo.yAxisMinValue=isNotVal(curveSetData[index][2])?curveSetData[index][2]:"";
+                    		graphicInfo.itemCode=curveSetData[index][3];
+                    		graphicInfo.itemType=curveSetData[index][4];
+                    		
+                    		graphicSetData.HydrologicalWellReport.push(graphicInfo);
+                    	});
                 	}
                 	Ext.Ajax.request({
                 		method:'POST',
@@ -208,26 +280,48 @@ function CreateDeviceReportCurveSetTable(){
 	var gridPanelId="SingleWellDailyReportGridPanel_Id";
 	var divId="SingleWellRangeReportCurveDiv_Id";
 	
-	var secondActiveId = Ext.getCmp("DailyReportTabPanel").getActiveTab().id;
-	if(secondActiveId=="SingleWellDailyReportTabPanel_Id"){
-		selectRowId="SingleWellDailyReportDeviceListSelectRow_Id";
-		gridPanelId="SingleWellDailyReportGridPanel_Id";
+	var module_Code = Ext.getCmp("topModule_Id").getValue();
+	
+	if(module_Code=='HydrologicalWellReport'){
+		reportType=10;
+		selectRowId="HydrologicalWellReportDeviceListSelectRow_Id";
+		gridPanelId="HydrologicalWellReportDeviceListGridPanel_Id";
 		
-		var SingleWellReportTabPanelActiveId=Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id;
-		if(SingleWellReportTabPanelActiveId=='SingleWellDailyReportTabPanel_id'){
-			reportType=2;
-			divId="SingleWellDailyReportCurveDiv_Id";
-		}else if(SingleWellReportTabPanelActiveId=='SingleWellRangeReportTabPanel_id'){
-			reportType=0;
-			divId="SingleWellRangeReportCurveDiv_Id";
+		
+		var tabPanel = Ext.getCmp("HydrologicalWellReportTabPanel_Id");
+		var activeId = tabPanel.getActiveTab().id;
+		if(activeId=='HydrologicalWellReportTabPanel1_id'){
+			divId='HydrologicalWellReport1CurveDiv_Id';
+		}else if(activeId=='HydrologicalWellReportTabPanel2_id'){
+			divId='HydrologicalWellReport2CurveDiv_Id';
+		}else if(activeId=='HydrologicalWellReportTabPanel3_id'){
+			divId='HydrologicalWellReport3CurveDiv_Id';
+		}else if(activeId=='HydrologicalWellReportTabPanel4_id'){
+			divId='HydrologicalWellReport4CurveDiv_Id';
+		}else if(activeId=='HydrologicalWellReportTabPanel5_id'){
+			divId='HydrologicalWellReport5CurveDiv_Id';
 		}
-	}else if(secondActiveId=="ProductionDailyReportTabPanel_Id"){
-		reportType=1;
-		selectRowId="ProductionDailyReportInstanceListSelectRow_Id";
-		gridPanelId="ProductionDailyReportGridPanel_Id";
-		divId="ProductionDailyReportCurveDiv_Id";
+	}else{
+		var secondActiveId = Ext.getCmp("DailyReportTabPanel").getActiveTab().id;
+		if(secondActiveId=="SingleWellDailyReportTabPanel_Id"){
+			selectRowId="SingleWellDailyReportDeviceListSelectRow_Id";
+			gridPanelId="SingleWellDailyReportGridPanel_Id";
+			
+			var SingleWellReportTabPanelActiveId=Ext.getCmp("SingleWellReportTabPanel_Id").getActiveTab().id;
+			if(SingleWellReportTabPanelActiveId=='SingleWellDailyReportTabPanel_id'){
+				reportType=2;
+				divId="SingleWellDailyReportCurveDiv_Id";
+			}else if(SingleWellReportTabPanelActiveId=='SingleWellRangeReportTabPanel_id'){
+				reportType=0;
+				divId="SingleWellRangeReportCurveDiv_Id";
+			}
+		}else if(secondActiveId=="ProductionDailyReportTabPanel_Id"){
+			reportType=1;
+			selectRowId="ProductionDailyReportInstanceListSelectRow_Id";
+			gridPanelId="ProductionDailyReportGridPanel_Id";
+			divId="ProductionDailyReportCurveDiv_Id";
+		}
 	}
-
 	
 	var deviceName='';
 	var deviceId=0;

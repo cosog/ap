@@ -286,7 +286,7 @@ public class RealTimeMonitoringController extends BaseController {
 		long t1=System.nanoTime();
 		dataPage = realTimeMonitoringService.getDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,limit,language);
 		long t2=System.nanoTime();
-		StringManagerUtils.printLog("获取实时监控设备列表页码耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
+//		StringManagerUtils.printLog("获取实时监控设备列表页码耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
 		json="{\"success\":true,\"dataPage\":"+dataPage+"}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

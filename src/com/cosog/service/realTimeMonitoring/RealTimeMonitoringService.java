@@ -863,7 +863,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							if(deviceCalItemList.size()>0){
 								obj=(Object[]) SRPCalDataList.get(i);
 							}else{
-								obj=new Object[(int) SRPCalDataList.get(i)];
+								obj=new Object[]{SRPCalDataList.get(i).toString()};
 							
 							}
 							String deviceId=obj[0]+"";
@@ -921,8 +921,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							if(deviceCalItemList.size()>0){
 								obj=(Object[]) PCPCalDataList.get(i);
 							}else{
-								obj=new Object[(int) PCPCalDataList.get(i)];
-							
+								obj=new Object[]{PCPCalDataList.get(i).toString()};
 							}
 							
 							String deviceId=obj[0]+"";
@@ -1824,7 +1823,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 						List<?> SRPCalDataList = this.findCallSql(srpCalDataSql);
 						for(int i=0;i<SRPCalDataList.size();i++){
-							Object[] obj=(Object[]) SRPCalDataList.get(i);
+							Object[] obj=null;
+							if(deviceCalItemList.size()>0){
+								obj=(Object[]) SRPCalDataList.get(i);
+							}else{
+								obj=new Object[]{SRPCalDataList.get(i).toString()};
+							
+							}
 							String deviceId=obj[0]+"";
 							if(calDataQueryValueMap.containsKey(deviceId)){
 								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
@@ -1836,6 +1841,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									deviceCalDataMap.put(code.toUpperCase(), obj[j+1]+"");
 								}
 							}
+						
 						}
 					}
 					
@@ -1876,7 +1882,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						
 						List<?> PCPCalDataList = this.findCallSql(pcpCalDataSql);
 						for(int i=0;i<PCPCalDataList.size();i++){
-							Object[] obj=(Object[]) PCPCalDataList.get(i);
+							Object[] obj=null;
+							if(deviceCalItemList.size()>0){
+								obj=(Object[]) PCPCalDataList.get(i);
+							}else{
+								obj=new Object[]{PCPCalDataList.get(i).toString()};
+							}
+							
 							String deviceId=obj[0]+"";
 							if(calDataQueryValueMap.containsKey(deviceId)){
 								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);

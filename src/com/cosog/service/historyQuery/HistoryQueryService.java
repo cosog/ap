@@ -533,7 +533,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						}
 						List<?> SRPCalDataList = this.findCallSql(srpCalDataSql);
 						for(int i=0;i<SRPCalDataList.size();i++){
-							Object[] obj=(Object[]) SRPCalDataList.get(i);
+							Object[] obj=null;
+							if(deviceCalItemList.size()>0){
+								obj=(Object[]) SRPCalDataList.get(i);
+							}else{
+								obj=new Object[]{SRPCalDataList.get(i).toString()};
+							
+							}
 							String deviceId=obj[0]+"";
 							if(calDataQueryValueMap.containsKey(deviceId)){
 								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
@@ -580,7 +586,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						
 						List<?> PCPCalDataList = this.findCallSql(pcpCalDataSql);
 						for(int i=0;i<PCPCalDataList.size();i++){
-							Object[] obj=(Object[]) PCPCalDataList.get(i);
+							Object[] obj=null;
+							if(deviceCalItemList.size()>0){
+								obj=(Object[]) PCPCalDataList.get(i);
+							}else{
+								obj=new Object[]{PCPCalDataList.get(i).toString()};
+							}
+							
 							String deviceId=obj[0]+"";
 							if(calDataQueryValueMap.containsKey(deviceId)){
 								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
@@ -1458,7 +1470,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						}
 						List<?> SRPCalDataList = this.findCallSql(srpCalDataSql);
 						for(int i=0;i<SRPCalDataList.size();i++){
-							Object[] obj=(Object[]) SRPCalDataList.get(i);
+							Object[] obj=null;
+							if(deviceCalItemList.size()>0){
+								obj=(Object[]) SRPCalDataList.get(i);
+							}else{
+								obj=new Object[]{SRPCalDataList.get(i).toString()};
+							
+							}
 							String deviceId=obj[0]+"";
 							if(calDataQueryValueMap.containsKey(deviceId)){
 								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
@@ -1505,7 +1523,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						
 						List<?> PCPCalDataList = this.findCallSql(pcpCalDataSql);
 						for(int i=0;i<PCPCalDataList.size();i++){
-							Object[] obj=(Object[]) PCPCalDataList.get(i);
+							Object[] obj=null;
+							if(deviceCalItemList.size()>0){
+								obj=(Object[]) PCPCalDataList.get(i);
+							}else{
+								obj=new Object[]{PCPCalDataList.get(i).toString()};
+							}
+							
 							String deviceId=obj[0]+"";
 							if(calDataQueryValueMap.containsKey(deviceId)){
 								Map<String,String> deviceCalDataMap= calDataQueryValueMap.get(deviceId);
@@ -2465,7 +2489,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			long t1=System.nanoTime();
 			List<?> list = this.findCallSql(finalSql);
 			long t2=System.nanoTime();
-			StringManagerUtils.printLog("设备"+deviceName+"历史数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",finalSql:"+finalSql,0);
+//			StringManagerUtils.printLog("设备"+deviceName+"历史数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",finalSql:"+finalSql,0);
 			
 			
 			int totals=0;
@@ -2475,7 +2499,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				t1=System.nanoTime();
 				totals=this.getTotalCountRows(sql);
 				t2=System.nanoTime();
-				StringManagerUtils.printLog("设备"+deviceName+"历史数据总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
+//				StringManagerUtils.printLog("设备"+deviceName+"历史数据总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
 			}
 			
 			String startTime=pager.getStart_date();
@@ -3132,7 +3156,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.append("},");
 			}
 			t2=System.nanoTime();
-			StringManagerUtils.printLog("设备"+deviceName+"历史数据遍历耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
+//			StringManagerUtils.printLog("设备"+deviceName+"历史数据遍历耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
 			if(result_json.toString().endsWith(",")){
 				result_json.deleteCharAt(result_json.length() - 1);
 			}
@@ -3142,7 +3166,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			e.printStackTrace();
 		}
 		long end=System.nanoTime();
-		StringManagerUtils.printLog("设备"+deviceName+"历史数据总耗时:"+StringManagerUtils.getTimeDiff(start, end),0);
+//		StringManagerUtils.printLog("设备"+deviceName+"历史数据总耗时:"+StringManagerUtils.getTimeDiff(start, end),0);
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -6234,7 +6258,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				long t1=System.nanoTime();
 				totalCount=this.getTotalCountRows(queryIdSql);
 				long t2=System.nanoTime();
-				StringManagerUtils.printLog("设备"+deviceName+"历史曲线数据总点数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",queryIdSql:"+queryIdSql,0);
+//				StringManagerUtils.printLog("设备"+deviceName+"历史曲线数据总点数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",queryIdSql:"+queryIdSql,0);
 				if(totalCount>vacuateThreshold){
 					queryIdSql=queryIdSql.replaceAll(tableName, vacuateTableName);
 					vacuateTotalCount=this.getTotalCountRows(queryIdSql);
@@ -6262,7 +6286,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				t1=System.nanoTime();
 				List<?> list = this.findCallSql(finalSql);
 				t2=System.nanoTime();
-				StringManagerUtils.printLog("设备"+deviceName+"历史曲线数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",finalSql:"+finalSql,0);
+//				StringManagerUtils.printLog("设备"+deviceName+"历史曲线数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",finalSql:"+finalSql,0);
 				
 				vacuateCount=list.size();
 				
@@ -6413,7 +6437,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					}
 				}
 				t2=System.nanoTime();
-				StringManagerUtils.printLog("设备"+deviceName+"历史曲线数据遍历耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
+//				StringManagerUtils.printLog("设备"+deviceName+"历史曲线数据遍历耗时:"+StringManagerUtils.getTimeDiff(t1, t2),0);
 			}
 			
 			String minAcqTime=acqTimeList.size()>0?acqTimeList.get(0):"";
@@ -6450,7 +6474,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			e.printStackTrace();
 		}
 		long end=System.nanoTime();
-		StringManagerUtils.printLog("设备"+deviceName+"历史曲线总耗时:"+StringManagerUtils.getTimeDiff(start, end),0);
+//		StringManagerUtils.printLog("设备"+deviceName+"历史曲线总耗时:"+StringManagerUtils.getTimeDiff(start, end),0);
 		return result_json.toString();
 	}
 	
@@ -6743,7 +6767,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		long t1=System.nanoTime();
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		long t2=System.nanoTime();
-		StringManagerUtils.printLog("设备"+deviceId+"功图平铺总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",totalSql:"+totalSql,0);
+//		StringManagerUtils.printLog("设备"+deviceId+"功图平铺总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",totalSql:"+totalSql,0);
 		String totalShow=totals+"";
 		
 		allsql+= " order by t.fesdiagramacqtime desc";
@@ -6751,7 +6775,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		t1=System.nanoTime();
 		List<?> list=this.findCallSql(sql);
 		t2=System.nanoTime();
-		StringManagerUtils.printLog("设备"+deviceId+"功图平铺分页查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
+//		StringManagerUtils.printLog("设备"+deviceId+"功图平铺分页查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
 		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalShow\":\""+totalShow+"\",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
@@ -7368,7 +7392,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			long t1=System.nanoTime();
 			int total=this.getTotalCountRows(countSql);
 			long t2=System.nanoTime();
-			StringManagerUtils.printLog("设备"+deviceId+"功图叠加总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+countSql,0);
+//			StringManagerUtils.printLog("设备"+deviceId+"功图叠加总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+countSql,0);
 			
 			if(total>vacuateThreshold){
 				distinctSql=distinctSql.replaceAll(tableName, vacuateTableName);
@@ -7422,7 +7446,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			t1=System.nanoTime();
 			List<?> list=this.findCallSql(sql);
 			t2=System.nanoTime();
-			StringManagerUtils.printLog("设备"+deviceId+"功图叠加数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
+//			StringManagerUtils.printLog("设备"+deviceId+"功图叠加数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
 			
 //			Map<String,Integer> alarmDataMap=new HashMap<>();
 //			if(alarmInstanceOwnItem!=null){
@@ -8032,7 +8056,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		long t1=System.nanoTime();
 		List<?> list = this.findCallSql(sql);
 		long t2=System.nanoTime();
-		StringManagerUtils.printLog("设备"+deviceId+"功图平铺统计查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
+//		StringManagerUtils.printLog("设备"+deviceId+"功图平铺统计查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
 		count=list.size();
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);

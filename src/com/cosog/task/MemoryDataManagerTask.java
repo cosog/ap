@@ -5761,7 +5761,7 @@ public class MemoryDataManagerTask {
 						JSONObject obj=arr.getJSONObject(i);
 						String item=obj.getString("FIELD");
 						if(StringManagerUtils.isNotNull(item)){
-							String value=obj.getString("LANGUAGE");
+							String value=obj.getString("APPLY VALUE");
 							if(!key.equalsIgnoreCase("oem")){
 								value=StringManagerUtils.stringFormat(value);
 							}
@@ -5772,15 +5772,15 @@ public class MemoryDataManagerTask {
 			    	JSONArray arr = entry.getValue();
 				    for(int i=0;i<arr.size();i++){
 						JSONObject obj=arr.getJSONObject(i);
-						String itemCode=obj.getString("ITEMCODE");
-						String itemName=obj.getString("ITEMNAME");
+						String itemCode=obj.getString("ITEM CODE");
+						String itemName=obj.getString("ITEM NAME APPLY VALUE");
 						
 						if(!"LANGUAGE".equalsIgnoreCase(itemCode)){
 							itemName=StringManagerUtils.stringFormat(itemName);
 						}
 						
-						int itemValue=obj.getIntValue("ITEMVALUE");
-						String tableCode=obj.getString("TABLECODE");
+						int itemValue=obj.getIntValue("ITEM VALUE");
+						String tableCode=obj.getString("TABLE CODE");
 						String remark=obj.getString("REMARK");
 						Code code=new Code();
 						code.setItemcode(itemCode);
@@ -5802,15 +5802,15 @@ public class MemoryDataManagerTask {
 			    	for(int i=0;i<arr.size();i++){
 			    		JSONObject obj=arr.getJSONObject(i);
 			    		WorkType workType=new WorkType();
-			    		int resultCode=obj.getIntValue("RESULTCODE"); 
-			    		String resultName=StringManagerUtils.stringFormat(obj.getString("RESULTNAME")); 
-			    		String resultDescription=StringManagerUtils.stringFormat(obj.getString("RESULTDESCRIPTION"));
-			    		String optimizationSuggestion=StringManagerUtils.stringFormat(obj.getString("OPTIMIZATIONSUGGESTION"));
+			    		int resultCode=obj.getIntValue("RESULT CODE"); 
+			    		String resultName=StringManagerUtils.stringFormat(obj.getString("RESULT NAME APPLY VALUE")); 
+//			    		String resultDescription=StringManagerUtils.stringFormat(obj.getString("RESULTDESCRIPTION"));
+			    		String optimizationSuggestion=StringManagerUtils.stringFormat(obj.getString("OPTIMIZATION SUGGESTION APPLY VALUE"));
 			    		String remark=StringManagerUtils.stringFormat(obj.getString("REMARK"));
 			    		
 			    		workType.setResultCode(resultCode);
 						workType.setResultName(resultName);
-						workType.setResultDescription(resultDescription);
+						workType.setResultDescription("");
 						workType.setOptimizationSuggestion(optimizationSuggestion);
 						workType.setRemark(remark);
 						workTypeMap.put(resultCode+"", workType);

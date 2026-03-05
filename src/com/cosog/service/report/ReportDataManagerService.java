@@ -4379,7 +4379,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				if(acqItemColumnList.size()>0){
 					String acqCalData=StringManagerUtils.CLOBObjectToString(obj[1]);
 					reflectType = new TypeToken<List<KeyValue>>() {}.getType();
-					List<KeyValue> acqDataList=gson.fromJson(acqCalData, reflectType);
+					List<KeyValue> acqDataList=null;
+					try{
+						reflectType = new TypeToken<List<KeyValue>>() {}.getType();
+						acqDataList=gson.fromJson(acqCalData, reflectType);
+					}catch(Exception e){
+						acqDataList=new ArrayList<>();
+					}
 					
 					for(String itemColumn:acqItemColumnList){
 						String addValue="";
@@ -4737,7 +4743,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				if(acqItemColumnList.size()>0){
 					String acqCalData=StringManagerUtils.CLOBObjectToString(obj[1]);
 					reflectType = new TypeToken<List<KeyValue>>() {}.getType();
-					List<KeyValue> acqDataList=gson.fromJson(acqCalData, reflectType);
+					List<KeyValue> acqDataList=null;
+					try{
+						reflectType = new TypeToken<List<KeyValue>>() {}.getType();
+						acqDataList=gson.fromJson(acqCalData, reflectType);
+					}catch(Exception e){
+						acqDataList=new ArrayList<>();
+					}
 					
 					for(String itemColumn:acqItemColumnList){
 						String addValue="";
@@ -5093,7 +5105,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				if(acqItemColumnList.size()>0){
 					String acqCalData=StringManagerUtils.CLOBObjectToString(obj[1]);
 					reflectType = new TypeToken<List<KeyValue>>() {}.getType();
-					List<KeyValue> acqDataList=gson.fromJson(acqCalData, reflectType);
+					List<KeyValue> acqDataList=null;
+					try{
+						reflectType = new TypeToken<List<KeyValue>>() {}.getType();
+						acqDataList=gson.fromJson(acqCalData, reflectType);
+					}catch(Exception e){
+						acqDataList=new ArrayList<>();
+					}
 					
 					for(String itemColumn:acqItemColumnList){
 						String addValue="";
@@ -5966,20 +5984,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				if(reportAcqItemList.size()>0){
 					startIndex=4;
 					String acqData=StringManagerUtils.CLOBObjectToString(reportDataObj[3]);
-					type = new TypeToken<List<KeyValue>>() {}.getType();
-					
-					List<KeyValue> calDataList=null;
+					List<KeyValue> acqDataList=null;
 					try{
-						calDataList=gson.fromJson(acqData, type);
+						type = new TypeToken<List<KeyValue>>() {}.getType();
+						acqDataList=gson.fromJson(acqData, type);
 					}catch(Exception e){
-						calDataList=new ArrayList<>();
+						acqDataList=new ArrayList<>();
 					}
 					
 					for(ReportUnitItem reportUnitItem:reportAcqItemList){
 						String addValue="";
 						int prec=reportUnitItem.getPrec();
-						if(calDataList!=null){
-							for(KeyValue keyValue:calDataList){
+						if(acqDataList!=null){
+							for(KeyValue keyValue:acqDataList){
 								if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
 									addValue=keyValue.getValue();
 									break;
@@ -6035,9 +6052,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 			}
 			
-			List<String> dateList = StringManagerUtils.getDatesBetween(startDate,endDate);
-			if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
-				dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);
+			List<String> dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);
+			if(StringManagerUtils.stringToInteger(timeType)!=1 && StringManagerUtils.stringToInteger(timeType)!=2){
+				dateList = StringManagerUtils.getDatesBetween(startDate,endDate);
+				Collections.reverse(dateList);
 			}
 			
 			List<String> timeList=new ArrayList<>();;
@@ -6141,11 +6159,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String timeType,
 			int userNo,String language)throws Exception {
 		try{
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			List<List<Object>> sheetDataList = new ArrayList<>();
 			
 			int headerRowCount=0;
-			String title=deviceName+"水文观测数据统计表";
-			String fileName=deviceName+"水文观测数据统计表";
+			String title=deviceName+languageResourceMap.get("hydrologicalWellTotalTable");
+			String fileName=deviceName+languageResourceMap.get("hydrologicalWellTotalTable");
 			
 			if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
 				fileName+="-"+reportDate;
@@ -6162,8 +6181,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int totalCount=0;
 			int dateColIndex=-99;
 			int timeColIndex=-99;
-			
-			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
 			String timeEfficiencyUnit=languageResourceMap.get("decimals");
@@ -6334,20 +6351,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					if(reportAcqItemList.size()>0){
 						startIndex=4;
 						String acqData=StringManagerUtils.CLOBObjectToString(reportDataObj[3]);
-						type = new TypeToken<List<KeyValue>>() {}.getType();
-						
-						List<KeyValue> calDataList=null;
+						List<KeyValue> acqDataList=null;
 						try{
-							calDataList=gson.fromJson(acqData, type);
+							type = new TypeToken<List<KeyValue>>() {}.getType();
+							acqDataList=gson.fromJson(acqData, type);
 						}catch(Exception e){
-							calDataList=new ArrayList<>();
+							acqDataList=new ArrayList<>();
 						}
 						
 						for(ReportUnitItem reportUnitItem:reportAcqItemList){
 							String addValue="";
 							int prec=reportUnitItem.getPrec();
-							if(calDataList!=null){
-								for(KeyValue keyValue:calDataList){
+							if(acqDataList!=null){
+								for(KeyValue keyValue:acqDataList){
 									if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
 										addValue=keyValue.getValue();
 										break;
@@ -6403,9 +6419,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 				
-				List<String> dateList = StringManagerUtils.getDatesBetween(startDate,endDate);
-				if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
-					dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);
+				List<String> dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);
+				if(StringManagerUtils.stringToInteger(timeType)!=1 && StringManagerUtils.stringToInteger(timeType)!=2){
+					dateList = StringManagerUtils.getDatesBetween(startDate,endDate);
+					Collections.reverse(dateList);
 				}
 				
 				List<String> timeList=new ArrayList<>();;
@@ -6562,7 +6579,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			Gson gson =new Gson();
 			java.lang.reflect.Type type=null;
 			
-			String fileName="水文观测数据统计表";
+			String fileName=languageResourceMap.get("hydrologicalWellTotalTable");
 			
 			if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
 				fileName+="-"+reportDate;
@@ -6600,7 +6617,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				
 				String sheetName="";
 				if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
-					sheetName=deviceName+StringManagerUtils.timeFormatConverter(reportDate, "yyyy-MM-dd", "MM.dd");
+//					sheetName=deviceName+StringManagerUtils.timeFormatConverter(reportDate, "yyyy-MM-dd", "MM.dd");
+					sheetName=deviceName;
 				}else{
 					sheetName=deviceName;
 				}
@@ -6766,20 +6784,19 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						if(reportAcqItemList.size()>0){
 							startIndex=4;
 							String acqData=StringManagerUtils.CLOBObjectToString(reportDataObj[3]);
-							type = new TypeToken<List<KeyValue>>() {}.getType();
-							
-							List<KeyValue> calDataList=null;
+							List<KeyValue> acqDataList=null;
 							try{
-								calDataList=gson.fromJson(acqData, type);
+								type = new TypeToken<List<KeyValue>>() {}.getType();
+								acqDataList=gson.fromJson(acqData, type);
 							}catch(Exception e){
-								calDataList=new ArrayList<>();
+								acqDataList=new ArrayList<>();
 							}
 							
 							for(ReportUnitItem reportUnitItem:reportAcqItemList){
 								String addValue="";
 								int prec=reportUnitItem.getPrec();
-								if(calDataList!=null){
-									for(KeyValue keyValue:calDataList){
+								if(acqDataList!=null){
+									for(KeyValue keyValue:acqDataList){
 										if(reportUnitItem.getItemCode().equalsIgnoreCase(keyValue.getKey())){
 											addValue=keyValue.getValue();
 											break;
@@ -6835,9 +6852,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}
 					}
 					
-					List<String> dateList = StringManagerUtils.getDatesBetween(startDate,endDate);
-					if(StringManagerUtils.stringToInteger(timeType)==1 || StringManagerUtils.stringToInteger(timeType)==2){
-						dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);
+					List<String> dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);
+					if(StringManagerUtils.stringToInteger(timeType)!=1 && StringManagerUtils.stringToInteger(timeType)!=2){
+						dateList = StringManagerUtils.getDatesBetween(startDate,endDate);
+						Collections.reverse(dateList);
 					}
 					
 					List<String> timeList=new ArrayList<>();;
@@ -7261,8 +7279,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					
 					if(acqItemColumnList.size()>0){
 						String acqCalData=StringManagerUtils.CLOBObjectToString(obj[1]);
-						reflectType = new TypeToken<List<KeyValue>>() {}.getType();
-						List<KeyValue> acqDataList=gson.fromJson(acqCalData, reflectType);
+						List<KeyValue> acqDataList=null;
+						try{
+							reflectType = new TypeToken<List<KeyValue>>() {}.getType();
+							acqDataList=gson.fromJson(acqCalData, reflectType);
+						}catch(Exception e){
+							acqDataList=new ArrayList<>();
+						}
+						
 						
 						for(String itemColumn:acqItemColumnList){
 							String addValue="";

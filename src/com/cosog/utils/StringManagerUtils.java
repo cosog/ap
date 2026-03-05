@@ -4997,15 +4997,13 @@ public class StringManagerUtils {
         LocalDate endDate = LocalDate.parse(endDateStr, formatter);
         
         // 验证日期顺序
-        if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("起始日期不能晚于结束日期");
-        }
-        
-        // 循环添加日期
-        LocalDate currentDate = startDate;
-        while (!currentDate.isAfter(endDate)) {
-            dateList.add(currentDate.format(formatter));
-            currentDate = currentDate.plusDays(1);
+        if (!startDate.isAfter(endDate)) {
+        	// 循环添加日期
+            LocalDate currentDate = startDate;
+            while (!currentDate.isAfter(endDate)) {
+                dateList.add(currentDate.format(formatter));
+                currentDate = currentDate.plusDays(1);
+            }
         }
         
         return dateList;

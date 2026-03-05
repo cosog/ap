@@ -1226,7 +1226,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-9);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
 			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
@@ -1291,7 +1291,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-9);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
 			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
@@ -1343,7 +1343,7 @@ public class ReportDataMamagerController extends BaseController {
 		}
 		
 		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-9);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
 			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
@@ -1392,7 +1392,7 @@ public class ReportDataMamagerController extends BaseController {
 			}
 		}
 		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-9);
 		}
 		if(!StringManagerUtils.isNotNull(reportDate)){
 			reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);

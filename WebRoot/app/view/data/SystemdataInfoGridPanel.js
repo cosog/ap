@@ -59,8 +59,9 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
     		},'-',sysdatacomboxsimp,'-', {
                 xtype: 'textfield',
                 fieldLabel: loginUserLanguageResource.name,
-                labelWidth: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage),
-                width: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)+120,
+                labelWidth: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)+10,
+                width: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)+130,
+                
                 id: 'sysname_Id',
                 name: 'sysdata_name',
                 action: "findsysdatatextaction"

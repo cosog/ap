@@ -2149,6 +2149,8 @@ public class DriverAPIController extends BaseController{
 									extendedFieldValue=StringManagerUtils.getIntegerHighOrLowByte(StringManagerUtils.stringToInteger(extendedFieldValue),protocol.getExtendedFields().get(i).getHighLowByte())+"";
 								}else{//开关量
 									byte[] bytes=StringManagerUtils.intTo16BitArray(StringManagerUtils.stringToInteger(extendedFieldValue),protocol.getExtendedFields().get(i).getHighLowByte());
+									//翻转
+									org.apache.commons.lang3.ArrayUtils.reverse(bytes);
 									extendedFieldValue=StringManagerUtils.join(bytes, ",");
 								}
 							}

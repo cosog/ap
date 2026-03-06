@@ -285,7 +285,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                         items:[{
                         	id:"ProtocolExtendedFieldConfigSecondaryCalculationPanel_Id",
                         	border: false,
-                            title:'数值运算',
+                            title:loginUserLanguageResource.numericCalculation,
                             layout: "border",
                             iconCls: 'check3',
                             layout: 'fit',

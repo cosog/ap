@@ -165,7 +165,7 @@ function submitImportedDeviceFile() {
 //                            columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
 //                        }
                         else if (result.columns[i].dataIndex.toUpperCase() === "applicationScenariosName".toUpperCase()) {
-                        	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.applicationScenarios1+"', '"+loginUserLanguageResource.applicationScenarios0+"']}";
+                        	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.applicationScenarios1+"', '"+loginUserLanguageResource.applicationScenarios0+"', '"+loginUserLanguageResource.applicationScenarios2+"']}";
                         } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase()) {
                             columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,importDeviceHandsontableHelper);}}";
                         } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {

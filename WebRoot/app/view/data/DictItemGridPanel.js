@@ -37,8 +37,8 @@ Ext.define('AP.view.data.DictItemGridPanel', {
                 	xtype: 'textfield',
                     id: 'dataDictionaryItemSearchValue_Id',
                     fieldLabel: loginUserLanguageResource.name,
-                    labelWidth: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage),
-                    width: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)+120
+                    labelWidth: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)+10,
+                    width: getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)+130
                 },'-',{
                 	xtype: 'button',
                     text: loginUserLanguageResource.search,

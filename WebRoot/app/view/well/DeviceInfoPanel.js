@@ -41,6 +41,8 @@ var deviceCalculateDataTabPanelItems=[{
     	        		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
     	        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
 	        				applicationScenarios=1;
+	        			}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+	        				applicationScenarios=2;
 	        			}
     	        	}
 				}
@@ -285,6 +287,8 @@ var deviceAdditionalInformationTabPanelItems=[{
 	        		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
 	        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
         				applicationScenarios=1;
+        			}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+        				applicationScenarios=2;
         			}
 	            	var deviceTabInstance= deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceTabInstance');
 	        		var deviceTabInstanceInfo=getDeviceTabInstanceInfo(deviceTabInstance);
@@ -859,6 +863,8 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	        		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
             	        		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
         	        				applicationScenarios=1;
+        	        			}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+        	        				applicationScenarios=2;
         	        			}
             	        	}
         				}
@@ -1179,6 +1185,8 @@ function CreateAndLoadDeviceInfoTable(isNew) {
             	var applicationScenariosName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'applicationScenariosName');
             	if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
     				applicationScenarios=1;
+    			}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+    				applicationScenarios=2;
     			}
             	
             	var combDeviceName=Ext.getCmp('deviceListComb_Id').getValue();
@@ -1498,6 +1506,8 @@ var DeviceInfoHandsontableHelper = {
                         	var applicationScenariosName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(startRow,'applicationScenariosName');
                         	if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
     	        				applicationScenarios=1;
+    	        			}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+    	        				applicationScenarios=2;
     	        			}
                         	
                         	updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo);
@@ -1771,6 +1781,8 @@ var DeviceInfoHandsontableHelper = {
         		var applicationScenarios=0;
         		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
     				applicationScenarios=1;
+    			}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+    				applicationScenarios=2;
     			}
             	
             	var deviceAdditionalInformationData={};
@@ -1876,6 +1888,8 @@ var DeviceInfoHandsontableHelper = {
                     		if(applicationScenarios==0){
                     			deviceProductionData.Production.WaterCut=100;
                     		}else if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
+                    			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
+                    		}else if(applicationScenarios==2 && isNumber(parseFloat(productionHandsontableData[9][2]))){
                     			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
                     		}
                     		
@@ -2116,6 +2130,8 @@ var DeviceInfoHandsontableHelper = {
                     		if(applicationScenarios==0){
                     			deviceProductionData.Production.WaterCut=100;
                     		}else if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
+                    			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
+                    		}else if(applicationScenarios==2 && isNumber(parseFloat(productionHandsontableData[9][2]))){
                     			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
                     		}
                     		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[10][2]))){
@@ -2597,14 +2613,11 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 				var hiddenRows=[0,3,9,10];
 				const plugin = productionHandsontableHelper.hot.getPlugin('hiddenRows');
 				if(applicationScenarios==0){
-					
-				}
-				if(applicationScenarios==0){
             		plugin.hideRows(hiddenRows);
             		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth_cbm+'(m)');
             		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature_cbm+'(℃)');
             		productionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure_cbm+'(MPa)');
-            	}else if(applicationScenarios==1){
+            	}else{
             		plugin.showRows(hiddenRows);
             		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth+'(m)');
             		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature+'(℃)');
@@ -3880,6 +3893,8 @@ function deviceProductionDataDownlink(){
 		var applicationScenarios=0;
 		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
 			applicationScenarios=1;
+		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+			applicationScenarios=2;
 		}
 		
 		var deviceProductionData={};
@@ -3926,6 +3941,8 @@ function deviceProductionDataDownlink(){
         		if(applicationScenarios==0){
         			deviceProductionData.Production.WaterCut=100;
         		}else if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
+        			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
+        		}else if(applicationScenarios==2 && isNumber(parseFloat(productionHandsontableData[9][2]))){
         			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
         		}
         		
@@ -4169,7 +4186,10 @@ function deviceProductionDataDownlink(){
         			deviceProductionData.Production.WaterCut=100;
         		}else if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[9][2]))){
         			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
+        		}else if(applicationScenarios==2 && isNumber(parseFloat(productionHandsontableData[9][2]))){
+        			deviceProductionData.Production.WaterCut=100;
         		}
+        		
         		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[10][2]))){
         			deviceProductionData.Production.ProductionGasOilRatio=parseFloat(productionHandsontableData[10][2]);
         		}
@@ -4545,6 +4565,8 @@ function deviceFSDiagramConstructionDataDownlink(){
 		var applicationScenarios=0;
 		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
 			applicationScenarios=1;
+		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+			applicationScenarios=2;
 		}
 		
 
@@ -4683,6 +4705,8 @@ function deviceSystemParameterDataDownlink(){
 		var applicationScenarios=0;
 		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
 			applicationScenarios=1;
+		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+			applicationScenarios=2;
 		}
 
 		Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
@@ -4745,6 +4769,8 @@ function deviceProductionDataUplink(){
 		var applicationScenarios=0;
 		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
 			applicationScenarios=1;
+		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+			applicationScenarios=2;
 		}
 		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 		
@@ -4961,6 +4987,8 @@ function deviceFSDiagramConstructionDataUplink(){
 		var applicationScenarios=0;
 		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
 			applicationScenarios=1;
+		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+			applicationScenarios=2;
 		}
 
 		Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
@@ -5024,6 +5052,8 @@ function deviceSystemParameterDataUplink(){
 		var applicationScenarios=0;
 		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
 			applicationScenarios=1;
+		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+			applicationScenarios=2;
 		}
 
 		Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();

@@ -5804,7 +5804,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson =new Gson();
 		java.lang.reflect.Type type=null;
-		String reportUnitId="";
+		String reportUnitId="0";
 		String deviceTableName="viw_device";
 		
 		List<List<String>> dataList=new ArrayList<>();

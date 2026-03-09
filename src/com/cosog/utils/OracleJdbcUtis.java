@@ -36,32 +36,63 @@ public class OracleJdbcUtis {
 	
 	public static int loginTimeout=10;// 登录超时 10秒
 	
-	private static void initDataSource(){
-		String driver=Config.getInstance().configFile.getAp().getDatasource().getDriver();
-        String url = Config.getInstance().configFile.getAp().getDatasource().getDriverUrl(); 
-        String username = Config.getInstance().configFile.getAp().getDatasource().getUser();
-        String password = Config.getInstance().configFile.getAp().getDatasource().getPassword(); 
-		
-        dataSource = new BasicDataSource();     
-        
-		dataSource.setDriverClassName(driver);
-
-		dataSource.setUrl(url);
-
-		dataSource.setUsername(username);
-
-		dataSource.setPassword(password);
-		
-		dataSource.setMaxWaitMillis(connectTimeout); // 获取连接超时时间（毫秒），默认 -1 无限等待
-
-		dataSource.setInitialSize(10); // 初始化连接数
-
-		dataSource.setMaxIdle(10); // 最大空闲连接数
-
-		dataSource.setMinIdle(5); // 最小空闲连接数
-
-		dataSource.setMaxTotal(20); // 最大连接数
+	private static final int MAX_RETRY_COUNT = 3;
 	
+	private static void initDataSource(){
+		try {
+			String driver=Config.getInstance().configFile.getAp().getDatasource().getDriver();
+	        String url = Config.getInstance().configFile.getAp().getDatasource().getDriverUrl(); 
+	        String username = Config.getInstance().configFile.getAp().getDatasource().getUser();
+	        String password = Config.getInstance().configFile.getAp().getDatasource().getPassword(); 
+			
+	        dataSource = new BasicDataSource();     
+	        
+			dataSource.setDriverClassName(driver);
+
+			dataSource.setUrl(url);
+
+			dataSource.setUsername(username);
+
+			dataSource.setPassword(password);
+			
+			dataSource.setMaxWaitMillis(connectTimeout); // 获取连接超时时间（毫秒），默认 -1 无限等待
+			
+			dataSource.setInitialSize(5); // 初始化连接数
+
+			dataSource.setMaxIdle(10); // 最大空闲连接数
+
+			dataSource.setMinIdle(5); // 最小空闲连接数
+
+			dataSource.setMaxTotal(20); // 最大连接数
+			
+			// 连接测试配置
+			// 根据数据库类型设置验证查询
+	        String validationQuery = getValidationQuery(url, driver);
+	        if (validationQuery != null) {
+	        	dataSource.setTestOnBorrow(true);
+		        dataSource.setTestOnReturn(true);
+		        dataSource.setTestWhileIdle(true);
+		        dataSource.setValidationQuery(validationQuery);
+		        dataSource.setValidationQueryTimeout(5);
+	        }
+	        
+	        
+	        // 连接回收配置
+	        dataSource.setTimeBetweenEvictionRunsMillis(30000);
+	        dataSource.setMinEvictableIdleTimeMillis(60000);
+	        dataSource.setRemoveAbandonedOnBorrow(true);
+	        dataSource.setRemoveAbandonedTimeout(300);
+	        
+	        // 连接属性
+	        Properties props = new Properties();
+	        props.setProperty("connectTimeout", "5000");
+	        props.setProperty("socketTimeout", "60000");
+	        props.setProperty("tcpKeepAlive", "true");
+	        dataSource.setConnectionProperties(props.toString());
+		} catch (Exception e) {
+            e.printStackTrace();
+            dataSource = null;
+        }
 	}
 	
 	
@@ -140,7 +171,7 @@ public class OracleJdbcUtis {
 	}
 	
 	
-	public static Connection getConnection(){  
+	public static Connection getConnection2(){  
 //        try{
 //        	String driver=Config.getInstance().configFile.getAp().getDatasource().getDriver();
 //            String url = Config.getInstance().configFile.getAp().getDatasource().getDriverUrl(); 
@@ -176,6 +207,60 @@ public class OracleJdbcUtis {
 			}
 		}
 		return conn;
+    }
+	
+	public static Connection getConnection() {
+        Connection conn = null;
+        int retryCount = 0;
+        while (conn == null && retryCount < MAX_RETRY_COUNT) {
+            try {
+                if (dataSource == null) {
+                    initDataSource();
+                }
+                
+                if (dataSource != null) {
+                    conn = dataSource.getConnection();
+                    // 测试连接是否有效
+                    if (!conn.isValid(3)) {
+                        conn.close();
+                        conn = null;
+                        throw new SQLException("Invalid connection");
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                retryCount++;
+                
+                // 重置数据源，下次重新初始化
+                closeDataSource();
+                
+                if (retryCount >= MAX_RETRY_COUNT) {
+                    System.err.println("Failed to get connection after " + MAX_RETRY_COUNT + " retries");
+                } else {
+                    try {
+                        Thread.sleep(1000 * retryCount); // 递增等待时间
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return conn;
+    }
+	
+	// 关闭数据源
+    public static synchronized void closeDataSource() {
+        if (dataSource != null) {
+            try {
+                dataSource.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                dataSource = null;
+            }
+        }
     }
 	
 	public static Connection getConnection(String driver,String url,String username,String password){  
@@ -285,8 +370,21 @@ public class OracleJdbcUtis {
         } 
     }
 	
-	public static void closeDBConnection(Connection conn,Statement stmt,PreparedStatement pstmt,ResultSet rs){  
-        if(conn != null){  
+	public static void closeDBConnection(Connection conn,Statement stmt,PreparedStatement pstmt,ResultSet rs){
+        try{
+        	if(stmt!=null){
+        		stmt.close();
+        	}
+        	if(pstmt!=null)
+        		pstmt.close();  
+        	if(rs!=null)
+        		rs.close();
+        	if(conn!=null)
+        		conn.close();  
+        }catch(SQLException e){  
+            StringManagerUtils.printLog("closeDBConnectionError!",2);  
+            e.printStackTrace();  
+        }finally{  
             try{
             	if(stmt!=null){
             		stmt.close();
@@ -295,25 +393,12 @@ public class OracleJdbcUtis {
             		pstmt.close();  
             	if(rs!=null)
             		rs.close();
-                conn.close();  
             }catch(SQLException e){  
-                StringManagerUtils.printLog("closeDBConnectionError!",2);  
                 e.printStackTrace();  
-            }finally{  
-                try{
-                	if(stmt!=null){
-                		stmt.close();
-                	}
-                	if(pstmt!=null)
-                		pstmt.close();  
-                	if(rs!=null)
-                		rs.close();
-                }catch(SQLException e){  
-                    e.printStackTrace();  
-                }  
-                conn = null;  
             }  
+            conn = null;  
         }  
+    
     }
 	
 	public static boolean databaseStatus(){
@@ -345,11 +430,13 @@ public class OracleJdbcUtis {
 		PreparedStatement ps = null;
 		try {
 			conn=OracleJdbcUtis.getConnection();
-			ps=conn.prepareStatement(sql);
-			for(int i=0;i<values.size();i++){ 
-				ps.setCharacterStream(i+1, new java.io.StringReader(values.get(i)), values.get(i).length());
+			if(conn!=null){
+				ps=conn.prepareStatement(sql);
+				for(int i=0;i<values.size();i++){ 
+					ps.setCharacterStream(i+1, new java.io.StringReader(values.get(i)), values.get(i).length());
+				}
+				n=ps.executeUpdate();  
 			}
-			n=ps.executeUpdate();  
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -364,12 +451,14 @@ public class OracleJdbcUtis {
 		PreparedStatement ps = null;
 		try {
 			conn=OracleJdbcUtis.getConnection();
-			ps=conn.prepareStatement(sql);
-			ps.setQueryTimeout(timeOut);
-			for(int i=0;i<values.size();i++){ 
-				ps.setCharacterStream(i+1, new java.io.StringReader(values.get(i)), values.get(i).length());
+			if(conn!=null){
+				ps=conn.prepareStatement(sql);
+				ps.setQueryTimeout(timeOut);
+				for(int i=0;i<values.size();i++){ 
+					ps.setCharacterStream(i+1, new java.io.StringReader(values.get(i)), values.get(i).length());
+				}
+				n=ps.executeUpdate();  
 			}
-			n=ps.executeUpdate();  
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -384,8 +473,10 @@ public class OracleJdbcUtis {
 		PreparedStatement pstmt = null;
 		try {
 			conn=OracleJdbcUtis.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			r = pstmt.executeUpdate();
+			if(conn!=null){
+				pstmt = conn.prepareStatement(sql);
+				r = pstmt.executeUpdate();
+			}
 		} catch (SQLException e) {
 			r=-1;
 			e.printStackTrace();
@@ -668,4 +759,28 @@ public class OracleJdbcUtis {
         }  
         return iNum;  
     }
+	
+	private static String getValidationQuery(String url, String driver) {
+	    if (url == null) return null;
+	    
+	    // 根据URL判断数据库类型
+	    String urlLower = url.toLowerCase();
+	    if (urlLower.contains("oracle")) {
+	        return "SELECT 1 FROM DUAL";
+	    } else if (urlLower.contains("mysql")) {
+	        return "SELECT 1";
+	    } else if (urlLower.contains("postgresql")) {
+	        return "SELECT 1";
+	    } else if (urlLower.contains("sqlserver") || urlLower.contains("microsoft")) {
+	        return "SELECT 1";
+	    } else if (urlLower.contains("db2")) {
+	        return "SELECT 1 FROM SYSIBM.SYSDUMMY1";
+	    } else if (urlLower.contains("h2")) {
+	        return "SELECT 1";
+	    } else if (urlLower.contains("derby")) {
+	        return "SELECT 1 FROM SYSIBM.SYSDUMMY1";
+	    }
+	    
+	    return null;
+	}
 }

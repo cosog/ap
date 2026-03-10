@@ -8,9 +8,20 @@ bannerCSS=bannerCSS.substring(bannerCSS.indexOf("/"),bannerCSS.length());
 
 boolean showVideo=(boolean)session.getAttribute("showVideo");
 String browserLang=(String)session.getAttribute("browserLang");
+if(browserLang == null || browserLang.isEmpty()) {
+    // 尝试从请求参数获取
+    browserLang = request.getParameter("lang");
+}
+if(browserLang == null || browserLang.isEmpty()) {
+    browserLang = "zh_CN"; // 默认值
+}
 
 String oemStaticResourceTimestamp=(String)session.getAttribute("oemStaticResourceTimestamp");
 String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticResourceTimestamp");
+
+//设置到request属性中，方便EL表达式使用
+request.setAttribute("browserLang", browserLang);
+request.setAttribute("showVideo", showVideo);
 
 %>
 <link rel="stylesheet" href="<%=path+bannerCSS%>?timestamp=<%=oemStaticResourceTimestamp%>>" type="text/css"/>
@@ -44,7 +55,7 @@ String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticRes
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/rowEditor/CellEditing.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <!--<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/message.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>-->
 <!-- Extjs 中文脚本 -->
-<script type="text/javascript" src="<%=path%>/scripts/extjs/locale/ext-locale-${browserLang}.js?timestamp=<%=otherStaticResourceTimestamp%>"></script> 
+<script type="text/javascript" src="<%=path%>/scripts/extjs/locale/ext-locale-<%=browserLang%>.js?timestamp=<%=otherStaticResourceTimestamp%>"></script> 
 <script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 
 
@@ -58,7 +69,7 @@ String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticRes
 
 <!--<script src="https://open.ys7.com/sdk/js/1.3/ezuikit.js"></script>-->
 <%if(showVideo){ %>
-<script type="text/javascript" src="<%=path%>/scripts/UIKit/ezuikit-${browserLang}.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<script type="text/javascript" src="<%=path%>/scripts/UIKit/ezuikit-<%=browserLang%>.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <%} %>
 
 <script type="text/javascript" src="<%=path%>/app/ajaxfilter.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
@@ -70,7 +81,7 @@ String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticRes
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/exporting.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <!--<script type="text/javascript" src="<%=path%>/scripts/highcharts/offline-exporting.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>-->
 <%if(!"en".equalsIgnoreCase(browserLang)){ %>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-${browserLang}.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-<%=browserLang%>.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <%} %>
 
 <!-- handsontable -->

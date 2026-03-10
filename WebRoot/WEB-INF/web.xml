@@ -79,6 +79,16 @@
     <url-pattern>/</url-pattern>
   </servlet-mapping>
   <filter>
+    <filter-name>ExternalTokenFilter</filter-name>
+    <filter-class>com.cosog.common.filter.ExternalTokenFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>ExternalTokenFilter</filter-name>
+    <url-pattern>/ap/home</url-pattern>
+    <url-pattern>/ap/main</url-pattern>
+    <url-pattern>/ap/index</url-pattern>
+  </filter-mapping>
+  <filter>
     <filter-name>webInterceptor</filter-name>
     <filter-class>com.cosog.common.filter.SessionTimeOutFilter</filter-class>
   </filter>

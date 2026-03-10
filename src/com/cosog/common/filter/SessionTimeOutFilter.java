@@ -41,12 +41,50 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
 		// TODO Auto-generated method stub
-		log.debug("I am a userLogin listener .....");
 		HttpServletRequest request = (HttpServletRequest) req;
-		HttpServletResponse response = (HttpServletResponse) resp;
-		HttpSession session = null;
-		session = request.getSession();
+	    HttpServletResponse response = (HttpServletResponse) resp;
+	    
+	    // 获取请求的来源
+        String origin = request.getHeader("Origin");
+	    
+	    if (origin != null && !origin.isEmpty()) {
+            // 关键：必须设置为具体的 origin，不能是 *
+            response.setHeader("Access-Control-Allow-Origin", origin);
+            // 允许携带凭证（cookie/session）
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            // 允许的 HTTP 方法
+            response.setHeader("Access-Control-Allow-Methods", 
+                "POST, GET, OPTIONS, DELETE, PUT");
+            // 允许的请求头
+            response.setHeader("Access-Control-Allow-Headers", 
+                "x-requested-with, Content-Type, Accept, Authorization, Cookie");
+            // 暴露的响应头（如果需要前端读取 cookie）
+            response.setHeader("Access-Control-Expose-Headers", 
+                "Set-Cookie, Cookie");
+            // 预检请求缓存时间（1小时）
+            response.setHeader("Access-Control-Max-Age", "3600");
+        }
+        
+        // 处理 OPTIONS 预检请求
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
+        
+		
+		log.debug("I am a userLogin listener .....");
+		HttpSession session = request.getSession();
 		String path = request.getServletPath();
+		
+		
+		// 如果是外部系统访问且携带Token，优先验证Token
+	    String token = request.getParameter("token");
+	    if (token != null && !token.isEmpty()) {
+	        // Token验证由ExternalTokenFilter处理，这里跳过
+	        chain.doFilter(req, resp);
+	        return;
+	    }
+		
 		User user = (User) session.getAttribute("userLogin");
 		String loginUrl[] = path.split("\\/");
 		Map<String, Object> license = DataModelMap.getMapObject();

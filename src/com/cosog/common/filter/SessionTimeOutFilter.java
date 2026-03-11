@@ -162,7 +162,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 					response.setHeader("Cache-Control", "no-cache");
 					PrintWriter pw = response.getWriter();
 					StringBuffer script = new StringBuffer();
-					script.append("{success:false,flag:false}");
+					script.append("{\"success\":false,\"flag\":false}");
 					response.getWriter().write(script.toString());
 					pw.flush();
 					pw.close();
@@ -176,7 +176,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
 			StringBuffer script = new StringBuffer();
-			script.append("{success:false,flag:'unuck'}");
+			script.append("{\"success\":false,\"flag\":\"unuck\"}");
 			response.getWriter().write(script.toString());
 			pw.flush();
 			pw.close();

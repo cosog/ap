@@ -3,6 +3,8 @@ package com.cosog.controller.right;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
+import com.cosog.model.DeviceTypeInfo;
 import com.cosog.model.Module;
 import com.cosog.model.Org;
 import com.cosog.model.User;
@@ -34,12 +37,15 @@ import com.cosog.service.right.TabInfoManagerService;
 import com.cosog.service.right.UserManagerService;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
+import com.cosog.utils.ConfigFile;
 import com.cosog.utils.Constants;
+import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.UnixPwdCrypt;
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionContext;
 
 @Controller
@@ -59,7 +65,7 @@ public class ExternalLoginController extends BaseController {
 	@Autowired
 	private ModuleManagerService<Module> modService;
 	@Autowired
-	private TabInfoManagerService<?> tabInfoManagerService;
+	private TabInfoManagerService<DeviceTypeInfo> tabInfoManagerService;
     
     // Token缓存（生产环境建议用Redis）
     private static final Map<String, TokenInfo> tokenCache = new ConcurrentHashMap<>();
@@ -76,6 +82,9 @@ public class ExternalLoginController extends BaseController {
             
             String clientIp=StringManagerUtils.getIpAddr(request);
             HttpSession session=request.getSession();
+            
+            Gson gson=new Gson();
+            ConfigFile configFile=Config.getInstance().configFile;
             
             if (!StringManagerUtils.isNotNull(userId) || !StringManagerUtils.isNotNull(userPwd)) {
                 out.print("{\"success\":false,\"code\":400,\"message\":\"用户名密码不能为空\"}");
@@ -119,10 +128,83 @@ public class ExternalLoginController extends BaseController {
 				session.setAttribute("SESSION_USERNAME", username);
 				session.setAttribute("WW_TRANS_I18N_LOCALE", l);
 				session.setAttribute("browserLang", locale);
+				
+				
+				List<?> list = this.tabInfoManagerService.queryTabs(DeviceTypeInfo.class,user);
+				String loadingUI="Loading UI…";
+				
+				String loginLanguage=configFile.getAp().getOthers().getLoginLanguage();
+				String viewProjectName="";
+				String helpDocumentUrl=configFile.getAp().getOem().getHelpDocument();
+				String bannerCSS=configFile.getAp().getOem().getBannerCSS();
+				
+				if(!helpDocumentUrl.endsWith("/")){
+					helpDocumentUrl+="/";
+				}
+				if(!bannerCSS.endsWith("/")){
+					bannerCSS+="/";
+				}
+				
+				
+				if(user!=null){
+					loginLanguage=user.getLanguageName();
+				}
+				helpDocumentUrl+="help"+(StringManagerUtils.isNotNull(loginLanguage)?("-"+loginLanguage):"")+".html";
+				bannerCSS+="banner"+(StringManagerUtils.isNotNull(loginLanguage)?("-"+loginLanguage):"")+".css";
+				
+				if(languageResourceMap.containsKey("projectName")){
+					viewProjectName=languageResourceMap.get("projectName");
+				}
+				
+				if(languageResourceMap.containsKey("loadingTheUI")){
+					loadingUI=languageResourceMap.get("loadingTheUI");
+				}
+				
+				String tabInfoJson = "";
+				DeviceTypeInfoRecursion r = new DeviceTypeInfoRecursion();
+				if (list != null) {
+					for (Object tabinfo : list) {
+						Object[] obj = (Object[]) tabinfo;
+						if (!r.hasParent(list, obj)) {
+							tabInfoJson = r.recursionTabFn(list, obj);
+						}
+					}
+				}
+				tabInfoJson = r.modifyTabStr(tabInfoJson);
+				tabInfoJson = this.tabInfoManagerService.getArrayTojsonPage(tabInfoJson);
+				
+				session.setAttribute("tabInfo", tabInfoJson);
+				session.setAttribute("configFile", gson.toJson(configFile));
+				session.setAttribute("oem", gson.toJson(configFile.getAp().getOem()));
+				session.setAttribute("viewProjectName", viewProjectName);
+				session.setAttribute("favicon", configFile.getAp().getOem().getFavicon());
+				session.setAttribute("bannerCSS", bannerCSS);
+				session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
+				session.setAttribute("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
+				session.setAttribute("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
+				session.setAttribute("loadingUI", loadingUI);
+				session.setAttribute("helpDocumentUrl", helpDocumentUrl);
+				session.setAttribute("showVideo", configFile.getAp().getModuleContent().getPrimaryDevice().getVideoConfig());
+				
+				Map<String,Object> displayInfoMap=new HashMap<>();
+				displayInfoMap.put("tabInfo", tabInfoJson);
+				displayInfoMap.put("configFile", gson.toJson(configFile));
+				displayInfoMap.put("oem", gson.toJson(configFile.getAp().getOem()));
+				displayInfoMap.put("viewProjectName", viewProjectName);
+				displayInfoMap.put("favicon", configFile.getAp().getOem().getFavicon());
+				displayInfoMap.put("bannerCSS", bannerCSS);
+				displayInfoMap.put("showLogo", configFile.getAp().getOthers().getShowLogo());
+				displayInfoMap.put("oemStaticResourceTimestamp", configFile.getAp().getOem().getStaticResourceTimestamp());
+				displayInfoMap.put("otherStaticResourceTimestamp", configFile.getAp().getOthers().getOtherStaticResourceTimestamp());
+				displayInfoMap.put("loadingUI", loadingUI);
+				displayInfoMap.put("helpDocumentUrl", helpDocumentUrl);
+				displayInfoMap.put("showVideo", configFile.getAp().getModuleContent().getPrimaryDevice().getVideoConfig());
+				
+				
 				SessionLockHelper.putSession(session);
                 
                 // 生成一次性Token
-				String token = generateToken(session.getId(), user,clientIp);
+				String token = generateToken(session.getId(), user,clientIp,displayInfoMap);
                 
                 // 构建返回结果
                 StringBuilder result = new StringBuilder();
@@ -165,7 +247,7 @@ public class ExternalLoginController extends BaseController {
     /**
      * 生成一次性Token
      */
-    private String generateToken(String sessionId, User user, String clientIp) {
+    private String generateToken(String sessionId, User user, String clientIp,Map<String,Object> displayInfoMap) {
         // 生成唯一Token
         String token = UUID.randomUUID().toString().replaceAll("-", "");
         
@@ -179,6 +261,20 @@ public class ExternalLoginController extends BaseController {
         
         // 保存完整的User对象（包含所有权限信息）
         tokenInfo.setUser(user);
+        
+        //保存显示信息
+        tokenInfo.setTabInfo(displayInfoMap.containsKey("tabInfo")?displayInfoMap.get("tabInfo").toString():"{}");
+        tokenInfo.setConfigFile(displayInfoMap.containsKey("configFile")?displayInfoMap.get("configFile").toString():"{}");
+        tokenInfo.setOem(displayInfoMap.containsKey("oem")?displayInfoMap.get("oem").toString():"{}");
+        tokenInfo.setViewProjectName(displayInfoMap.containsKey("viewProjectName")?displayInfoMap.get("viewProjectName").toString():"");
+        tokenInfo.setFavicon(displayInfoMap.containsKey("favicon")?displayInfoMap.get("favicon").toString():"");
+        tokenInfo.setBannerCSS(displayInfoMap.containsKey("bannerCSS")?displayInfoMap.get("bannerCSS").toString():"");
+        tokenInfo.setShowLogo(displayInfoMap.containsKey("showLogo")?(boolean)displayInfoMap.get("showLogo"):false);
+        tokenInfo.setOemStaticResourceTimestamp(displayInfoMap.containsKey("oemStaticResourceTimestamp")?displayInfoMap.get("oemStaticResourceTimestamp").toString():"");
+        tokenInfo.setOtherStaticResourceTimestamp(displayInfoMap.containsKey("otherStaticResourceTimestamp")?displayInfoMap.get("otherStaticResourceTimestamp").toString():"");
+        tokenInfo.setLoadingUI(displayInfoMap.containsKey("loadingUI")?displayInfoMap.get("loadingUI").toString():"");
+        tokenInfo.setHelpDocumentUrl(displayInfoMap.containsKey("helpDocumentUrl")?displayInfoMap.get("helpDocumentUrl").toString():"");
+        tokenInfo.setShowVideo(displayInfoMap.containsKey("showVideo")?(boolean)displayInfoMap.get("showVideo"):false);
         
         // 存入缓存
         tokenCache.put(token, tokenInfo);
@@ -211,7 +307,7 @@ public class ExternalLoginController extends BaseController {
         }
         
         // 在URL中同时传递token和language
-        return baseUrl + contextPath + "/home?token=" + token + "&lang=" + language;
+        return baseUrl + contextPath + "/externalHome?token=" + token + "&lang=" + language;
     }
     
     /**
@@ -302,6 +398,20 @@ public class ExternalLoginController extends BaseController {
         private int defaultComboxSize;   // 默认下拉框大小
         private int defaultGraghSize;    // 默认图表大小
         
+        //显示相关
+        private String tabInfo;
+        private String configFile;
+        private String oem;
+        private String viewProjectName;
+        private String favicon;
+        private String bannerCSS;
+        private boolean showLogo;
+        private String oemStaticResourceTimestamp;
+        private String otherStaticResourceTimestamp;
+        private String loadingUI;
+        private String helpDocumentUrl;
+        private boolean showVideo;
+        
         // getters and setters...
         public User getUser() {
             return user;
@@ -338,26 +448,26 @@ public class ExternalLoginController extends BaseController {
         
         // 将TokenInfo中的信息恢复到User对象
         public User restoreUser() {
-            User user = new User();
-            user.setUserId(this.userId);
-            user.setUserName(this.userName);
-            user.setLanguageName(this.language);
-            user.setOrgtreeid(this.orgtreeid);
-            user.setUserParentOrgids(this.userParentOrgids);
-            user.setUserOrgIds(this.userOrgIds);
-            user.setUserOrgNames(this.userOrgNames);
-            user.setAllOrgPatentNodeIds(this.allOrgPatentNodeIds);
-            user.setAllModParentNodeIds(this.allModParentNodeIds);
-            user.setDeviceTypeIds(this.deviceTypeIds);
-            user.setLanguageResource(this.languageResource);
-            user.setLanguageResourceFirstLower(this.languageResourceFirstLower);
-            user.setLoginTime(this.loginTime);
-            user.setPageSize(String.valueOf(this.pageSize));
-            user.setSyncOrAsync(this.syncOrAsync);
-            user.setDefaultComboxSize(String.valueOf(this.defaultComboxSize));
-            user.setDefaultGraghSize(String.valueOf(this.defaultGraghSize));
-            user.setLoginIp(this.clientIp);
-            return user;
+//            User user = new User();
+//            user.setUserId(this.userId);
+//            user.setUserName(this.userName);
+//            user.setLanguageName(this.language);
+//            user.setOrgtreeid(this.orgtreeid);
+//            user.setUserParentOrgids(this.userParentOrgids);
+//            user.setUserOrgIds(this.userOrgIds);
+//            user.setUserOrgNames(this.userOrgNames);
+//            user.setAllOrgPatentNodeIds(this.allOrgPatentNodeIds);
+//            user.setAllModParentNodeIds(this.allModParentNodeIds);
+//            user.setDeviceTypeIds(this.deviceTypeIds);
+//            user.setLanguageResource(this.languageResource);
+//            user.setLanguageResourceFirstLower(this.languageResourceFirstLower);
+//            user.setLoginTime(this.loginTime);
+//            user.setPageSize(String.valueOf(this.pageSize));
+//            user.setSyncOrAsync(this.syncOrAsync);
+//            user.setDefaultComboxSize(String.valueOf(this.defaultComboxSize));
+//            user.setDefaultGraghSize(String.valueOf(this.defaultGraghSize));
+//            user.setLoginIp(this.clientIp);
+            return this.user;
         }
 
 		public String getSessionId() {
@@ -534,6 +644,102 @@ public class ExternalLoginController extends BaseController {
 
 		public void setDefaultGraghSize(int defaultGraghSize) {
 			this.defaultGraghSize = defaultGraghSize;
+		}
+
+		public String getTabInfo() {
+			return tabInfo;
+		}
+
+		public void setTabInfo(String tabInfo) {
+			this.tabInfo = tabInfo;
+		}
+
+		public String getConfigFile() {
+			return configFile;
+		}
+
+		public void setConfigFile(String configFile) {
+			this.configFile = configFile;
+		}
+
+		public String getOem() {
+			return oem;
+		}
+
+		public void setOem(String oem) {
+			this.oem = oem;
+		}
+
+		public String getViewProjectName() {
+			return viewProjectName;
+		}
+
+		public void setViewProjectName(String viewProjectName) {
+			this.viewProjectName = viewProjectName;
+		}
+
+		public String getFavicon() {
+			return favicon;
+		}
+
+		public void setFavicon(String favicon) {
+			this.favicon = favicon;
+		}
+
+		public String getBannerCSS() {
+			return bannerCSS;
+		}
+
+		public void setBannerCSS(String bannerCSS) {
+			this.bannerCSS = bannerCSS;
+		}
+
+		public boolean getShowLogo() {
+			return showLogo;
+		}
+
+		public void setShowLogo(boolean showLogo) {
+			this.showLogo = showLogo;
+		}
+
+		public String getOemStaticResourceTimestamp() {
+			return oemStaticResourceTimestamp;
+		}
+
+		public void setOemStaticResourceTimestamp(String oemStaticResourceTimestamp) {
+			this.oemStaticResourceTimestamp = oemStaticResourceTimestamp;
+		}
+
+		public String getOtherStaticResourceTimestamp() {
+			return otherStaticResourceTimestamp;
+		}
+
+		public void setOtherStaticResourceTimestamp(String otherStaticResourceTimestamp) {
+			this.otherStaticResourceTimestamp = otherStaticResourceTimestamp;
+		}
+
+		public String getLoadingUI() {
+			return loadingUI;
+		}
+
+		public void setLoadingUI(String loadingUI) {
+			this.loadingUI = loadingUI;
+		}
+
+		public String getHelpDocumentUrl() {
+			return helpDocumentUrl;
+		}
+
+		public void setHelpDocumentUrl(String helpDocumentUrl) {
+			this.helpDocumentUrl = helpDocumentUrl;
+		}
+
+		public boolean getShowVideo() {
+			return showVideo;
+		}
+
+		public void setShowVideo(boolean showVideo) {
+			this.showVideo = showVideo;
 		}
     }
 }

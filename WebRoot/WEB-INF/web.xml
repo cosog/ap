@@ -84,9 +84,7 @@
   </filter>
   <filter-mapping>
     <filter-name>ExternalTokenFilter</filter-name>
-    <url-pattern>/ap/home</url-pattern>
-    <url-pattern>/ap/main</url-pattern>
-    <url-pattern>/ap/index</url-pattern>
+    <url-pattern>/externalHome</url-pattern>
   </filter-mapping>
   <filter>
     <filter-name>webInterceptor</filter-name>

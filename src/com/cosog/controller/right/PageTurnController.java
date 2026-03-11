@@ -94,7 +94,7 @@ public class PageTurnController extends BaseController {
 	public String toTouchLogin() throws Exception {
 		return "touchLogin";
 	}
-	@RequestMapping({"/home","/toMain"})
+	@RequestMapping({"/home","/toMain","/externalHome"})
 	public String toMain() throws Exception {
 		Gson gson=new Gson();
 		@SuppressWarnings("static-access")

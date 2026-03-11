@@ -1,9 +1,10 @@
 <!DOCTYPE HTML>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	import="java.util.*" pageEncoding="UTF-8"%>
+	import="java.util.*,com.cosog.model.User,com.cosog.utils.ConfigFile,com.google.gson.Gson" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
+	Gson gson = new Gson();
 	String path = request.getContextPath();
    	String browserLang=(String)session.getAttribute("browserLang");
    	String viewProjectName=(String)session.getAttribute("viewProjectName");
@@ -14,6 +15,36 @@
    	boolean showLogo=(boolean)session.getAttribute("showLogo");
    	String oemStaticResourceTimestamp=(String)session.getAttribute("oemStaticResourceTimestamp");
 	String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticResourceTimestamp");
+	
+	User userLogin=(User)session.getAttribute("userLogin");
+	String userLoginNo=userLogin!=null?userLogin.getUserNo()+"":"";
+	String userLoginId=userLogin!=null?userLogin.getUserId():"";
+	String userLoginName=userLogin!=null?userLogin.getUserName():"";
+	String userLoginType=userLogin!=null?userLogin.getUserType()+"":"";
+	String userLoginOrgId=userLogin!=null?userLogin.getUserOrgid()+"":"";
+	String userLoginOrgIds=userLogin!=null?userLogin.getUserOrgIds():"";
+	String userLoginOrgNames=userLogin!=null?userLogin.getUserOrgNames():"";
+	String userLoginParentOrgids=userLogin!=null?userLogin.getUserParentOrgids():"";
+	String userLoginSyncOrAsync=userLogin!=null?userLogin.getSyncOrAsync():"";
+	String userLoginPicUrl=userLogin!=null?userLogin.getPicUrl():"";
+	
+	int loginUserRoleLevel=userLogin!=null?userLogin.getRoleLevel():0;
+	int loginUserRoleShowLevel=userLogin!=null?userLogin.getRoleShowLevel():0;
+	int loginUserRoleVideoKeyEdit=userLogin!=null?userLogin.getRoleVideoKeyEdit():0;
+	int loginUserLanguageKeyEdit=userLogin!=null?userLogin.getRoleLanguageEdit():0;
+	String loginUserLanguage=userLogin!=null?userLogin.getLanguageName()+"":"zh_CN";
+	int loginUserLanguageValue=userLogin!=null?userLogin.getLanguage():0;
+	
+	String loginUserLanguageListJson = gson.toJson(userLogin!=null&&userLogin.getLanguageList()!=null?userLogin.getLanguageList():new ArrayList<>());
+	String loginUserLanguageResource=userLogin!=null?userLogin.getLanguageResource():"{}";
+	String loginUserLanguageResourceFirstLower=userLogin!=null?userLogin.getLanguageResourceFirstLower():"{}";	
+	
+	String configFileJson=(String)session.getAttribute("configFile");
+   	
+   	String tabInfoJson=(String)session.getAttribute("tabInfo");
+	
+   	
+   	
    	request.setAttribute("browserLang",browserLang );
    	String loadingUI="Loading UI…";
    	loadingUI=(String)session.getAttribute("loadingUI");
@@ -40,26 +71,28 @@
     <jsp:include flush="true" page="./tags.jsp" />
     <script>
         var context = '<%=path%>';
-
-        var user_ = "${userLogin.userNo}";
+        var user_ = '<%=userLoginNo%>';
         if (user_ == null || "" == (user_)) {
            // window.location.href = "../login";
             window.location.href = "<%=path%>/login";
         }
         
-        var userAccount = "${userLogin.userId}";
+        var userAccount = '<%=userLoginId%>';
 
-        var loginUserRoleLevel = "${userLogin.roleLevel}";
-        var loginUserRoleShowLevel = "${userLogin.roleShowLevel}";
+        var loginUserRoleLevel = <%=loginUserRoleLevel%>;
+        var loginUserRoleShowLevel = <%=loginUserRoleShowLevel%>;
         var loginUserRoleReportEdit = true;
-        var loginUserRoleVideoKeyEdit = "${userLogin.roleVideoKeyEdit}";
-        var loginUserLanguageKeyEdit = "${userLogin.roleLanguageEdit}";
-        var loginUserLanguage = "${userLogin.languageName}";
-        var loginUserLanguageValue = "${userLogin.language}";
+        var loginUserRoleVideoKeyEdit = <%=loginUserRoleVideoKeyEdit%>;
+        var loginUserLanguageKeyEdit = <%=loginUserLanguageKeyEdit%>;
+        var loginUserLanguage = '<%=loginUserLanguage%>';
+        var loginUserLanguageValue = <%=loginUserLanguageValue%>;
         
-        var loginUserLanguageList=JSON.parse("${userLogin.languageList}");
+        var loginUserLanguageList=JSON.parse('<%=loginUserLanguageListJson%>');
         
-        var loginUserLanguageResource='${userLogin.languageResource}';
+        
+        
+        
+        var loginUserLanguageResource='<%= loginUserLanguageResource.replace("'", "\\'") %>';
         if(isNotVal(loginUserLanguageResource)){
         	loginUserLanguageResource=JSON.parse(loginUserLanguageResource);
         }else{
@@ -67,7 +100,7 @@
         }
         
         
-        var loginUserLanguageResourceFirstLower='${userLogin.languageResourceFirstLower}';
+        var loginUserLanguageResourceFirstLower='<%= loginUserLanguageResourceFirstLower.replace("'", "\\'") %>';
         if(isNotVal(loginUserLanguageResourceFirstLower)){
         	loginUserLanguageResourceFirstLower=JSON.parse(loginUserLanguageResourceFirstLower);
         }else{
@@ -75,7 +108,9 @@
         }
         
         
-        var oem = ${configFile}.ap.oem;
+        var configFile=JSON.parse('<%= configFileJson.replace("'", "\\'") %>');
+        
+        var oem = configFile.ap.oem;
 
         var bannerLogoImg = oem.logo;
         bannerLogoImg = context + bannerLogoImg.substring(bannerLogoImg.indexOf("/"), bannerLogoImg.length);
@@ -98,11 +133,11 @@
         var zoomoutButtonIcon = oem.zoomoutButtonIcon;
         zoomoutButtonIcon = context + zoomoutButtonIcon.substring(zoomoutButtonIcon.indexOf("/"), zoomoutButtonIcon.length);
 
-        var productionUnit = ${configFile}.ap.others.productionUnit;
+        var productionUnit = configFile.ap.others.productionUnit;
         
-        var IoTConfig = ${ configFile}.ap.others.iot;     //物联网
-        var sceneConfig = ${ configFile}.ap.others.scene; //应用场景 all-全部 oil-油井 cbm-煤层气井
-        var moduleConfig = ${ configFile}.ap.others.module;//模块 ""-仅监测 all-全部 srp-抽油机井功图计算 pcp-螺杆泵井转速计算
+        var IoTConfig = configFile.ap.others.iot;     //物联网
+        var sceneConfig = configFile.ap.others.scene; //应用场景 all-全部 oil-油井 cbm-煤层气井
+        var moduleConfig = configFile.ap.others.module;//模块 ""-仅监测 all-全部 srp-抽油机井功图计算 pcp-螺杆泵井转速计算
         
         var pcpHidden = true;
         if(moduleConfig=='all' || moduleConfig=='pcp'){
@@ -114,28 +149,29 @@
         	onlyMonitor=true;
         }
         
-        var exportAdInitData = ${configFile}.ap.others.exportAdInitData;
+        var exportAdInitData = configFile.ap.others.exportAdInitData;
         
-        var showLogo = ${configFile}.ap.others.showLogo;
+        var showLogo = configFile.ap.others.showLogo;
         
-        var oemStaticResourceTimestamp = ${configFile}.ap.oem.staticResourceTimestamp;
-        var otherStaticResourceTimestamp = ${configFile}.ap.others.otherStaticResourceTimestamp;
+        var oemStaticResourceTimestamp = configFile.ap.oem.staticResourceTimestamp;
+        var otherStaticResourceTimestamp = configFile.ap.others.otherStaticResourceTimestamp;
 
         //var helpDocumentUrl=oem.helpDocument;
-        var helpDocumentUrl="${helpDocumentUrl}";
+        var helpDocumentUrl=oem.helpDocument;
         var helpDocumentTimestamp=oem.helpDocumentTimestamp;
         helpDocumentUrl = context + helpDocumentUrl.substring(helpDocumentUrl.indexOf("/"), helpDocumentUrl.length);
         
-        var defaultComboxSize = ${configFile}.ap.others.defaultComboxSize;
-        var defaultGraghSize = ${configFile}.ap.others.defaultGraghSize;
+        var defaultComboxSize = configFile.ap.others.defaultComboxSize;
+        var defaultGraghSize = configFile.ap.others.defaultGraghSize;
         
-		var moduleContentConfig=${configFile}.ap.moduleContent;
-		var emailConfig=${configFile}.ap.email;
+		var moduleContentConfig=configFile.ap.moduleContent;
+		var emailConfig=configFile.ap.email;
         
-        var defaultPageSize = ${configFile}.ap.others.pageSize;
-        var tabInfo=${tabInfo};
+        var defaultPageSize = configFile.ap.others.pageSize;
         
-        var resourceMonitoringSaveData=${configFile}.ap.others.resourceMonitoringSaveData; 
+        var tabInfo=JSON.parse('<%= tabInfoJson.replace("'", "\\'") %>');
+        
+        var resourceMonitoringSaveData=configFile.ap.others.resourceMonitoringSaveData; 
         
         function initBannerDisplayInformation() {
             $("#banner_exit").css("background", "url(" + exitButtonIcon + "?timestamp="+oemStaticResourceTimestamp+")  no-repeat");
@@ -353,15 +389,15 @@
         Ext.onReady(function() {
             Ext.BLANK_IMAGE_URL = "<%=path%>/scripts/extjs/resources/themesimages/default/s.gif";
             Ext.BLANK_IMAGE_URL = "<%=path%>/scripts/extjs/resources/themes/images/default/tree/s.gif";
-            var user = "${userLogin.userNo}";
-            var user_Name = "${userLogin.userName}";
-            user_Type = "${userLogin.userType}";
-            userOrg_Id = "${userLogin.userOrgid}";
-            userOrg_Ids = "${userLogin.userOrgIds}";
-            userOrg_Names = "${userLogin.userOrgNames}";
-            userParentOrg_Ids = "${userLogin.userParentOrgids}";
-            userSyncOrAsync = "${userLogin.syncOrAsync}";
-            pic_url = "${userLogin.picUrl}"; //动态监测功图查询时，需要的图形URL地址
+            var user = '<%=userLoginNo%>';
+            var user_Name ='<%=userLoginName%>';
+            user_Type = '<%=userLoginType%>';
+            userOrg_Id = '<%=userLoginOrgId%>';
+            userOrg_Ids = '<%=userLoginOrgIds%>';
+            userOrg_Names = "<%=userLoginOrgNames%>";
+            userParentOrg_Ids = '<%=userLoginParentOrgids%>';
+            userSyncOrAsync = '<%=userLoginSyncOrAsync%>';
+            pic_url = '<%=userLoginPicUrl%>';
             
             _clientWidth = document.body.clientWidth;
         });

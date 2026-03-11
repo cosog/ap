@@ -29,6 +29,17 @@ public class ExternalTokenFilter implements Filter {
     
     // 共享Token缓存（需要和登录控制器使用同一个）
     private static Map<String, TokenInfo> tokenCache;
+    // 不需要Token验证的路径
+    private static final String[] EXCLUDED_PATHS = {
+        "/userLogin",           // 登录接口
+        "/external/login",      // 外部系统登录接口
+        "/css/",                // 静态资源
+        "/js/",
+        "/images/",
+        "/fonts/",
+        "/error",
+        "/favicon.ico"
+    };
     
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -44,20 +55,48 @@ public class ExternalTokenFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
         
         String path = request.getServletPath();
+        String contextPath = request.getContextPath();
+        String fullPath = request.getRequestURI();
         
-        // 只处理需要Token验证的路径
-        if (path.contains("/ap/home") || path.contains("/ap/main")) {
-            
+        // 1. 检查是否是排除的路径（静态资源、登录接口等）
+        if (isExcludedPath(path)) {
+            log.debug("排除路径，直接放行: " + path);
+            chain.doFilter(req, resp);
+            return;
+        }
+        
+        // 2. 检查是否有正常登录的session（内部系统用户）
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            User user = (User) session.getAttribute("userLogin");
+            if (user != null) {
+                log.debug("正常登录用户，直接放行: " + user.getUserName());
+                chain.doFilter(req, resp);
+                return;
+            }
+        }
+        
+        // 3. 检查是否是外部系统的请求（需要token验证的路径）
+        if (path.contains("/externalHome")) {
             String token = request.getParameter("token");
-            
+            // 尝试从Header获取token
             if (token == null || token.isEmpty()) {
-                // 尝试从Header获取
                 token = request.getHeader("X-Access-Token");
             }
             
+            // 如果没有token，可能是直接访问的非法请求
             if (token == null || token.isEmpty()) {
-                sendError(response, 401, "缺少访问令牌");
-                return;
+                // 检查是否是从外部系统跳转过来的
+                String referer = request.getHeader("Referer");
+                if (referer != null && referer.contains("external")) {
+                    sendError(response, 401, "缺少访问令牌");
+                    return;
+                } else {
+                    // 可能是内部系统直接访问但没有session（session过期）
+                    log.warn("无token且无session的直接访问，重定向到登录页: " + path);
+                    response.sendRedirect(contextPath + "/login.jsp");
+                    return;
+                }
             }
             
             // 验证Token
@@ -76,23 +115,46 @@ public class ExternalTokenFilter implements Filter {
             }
             
             // 恢复Session
-            HttpSession session = restoreSession(request, tokenInfo);
+            HttpSession newSession = restoreSession(request, tokenInfo);
             
-            if (session == null) {
+            if (newSession == null) {
+                log.error("会话恢复失败，token: " + token);
                 sendError(response, 401, "会话已失效");
                 return;
             }
             
             // Token使用一次后立即失效（一次性使用）
             tokenCache.remove(token);
-            
-            // 设置Session到request
-            request.setAttribute("javax.servlet.http.HttpSession", session);
-            
             log.info("Token验证成功，用户：" + tokenInfo.getUserId() + "，路径：" + path);
         }
         
         chain.doFilter(req, resp);
+    }
+    
+    /**
+     * 判断是否是排除的路径
+     */
+    private boolean isExcludedPath(String path) {
+        if (path == null || path.isEmpty()) {
+            return true;
+        }
+        
+        for (String excludePath : EXCLUDED_PATHS) {
+            if (path.startsWith(excludePath) || path.equals(excludePath)) {
+                return true;
+            }
+        }
+        
+        // 静态资源文件
+        if (path.endsWith(".css") || path.endsWith(".js") || 
+            path.endsWith(".png") || path.endsWith(".jpg") || 
+            path.endsWith(".gif") || path.endsWith(".ico") ||
+            path.endsWith(".woff") || path.endsWith(".woff2") ||
+            path.endsWith(".ttf") || path.endsWith(".eot")) {
+            return true;
+        }
+        
+        return false;
     }
     
     /**
@@ -156,6 +218,20 @@ public class ExternalTokenFilter implements Filter {
         			locale = new Locale("zh", "CN"); 
         		}
                 session.setAttribute("WW_TRANS_I18N_LOCALE", locale);
+                
+                
+                session.setAttribute("tabInfo", tokenInfo.getTabInfo());
+				session.setAttribute("configFile", tokenInfo.getConfigFile());
+				session.setAttribute("oem", tokenInfo.getOem());
+				session.setAttribute("viewProjectName", tokenInfo.getViewProjectName());
+				session.setAttribute("favicon", tokenInfo.getFavicon());
+				session.setAttribute("bannerCSS", tokenInfo.getBannerCSS());
+				session.setAttribute("showLogo", tokenInfo.getShowLogo());
+				session.setAttribute("oemStaticResourceTimestamp", tokenInfo.getOemStaticResourceTimestamp());
+				session.setAttribute("otherStaticResourceTimestamp", tokenInfo.getOtherStaticResourceTimestamp());
+				session.setAttribute("loadingUI", tokenInfo.getLoadingUI());
+				session.setAttribute("helpDocumentUrl", tokenInfo.getHelpDocumentUrl());
+				session.setAttribute("showVideo", tokenInfo.getShowLogo());
                 
                 log.info("Session恢复成功 - 用户: " + user.getUserName() + 
                         ", 语言: " + language + 

@@ -84,7 +84,7 @@ public class EquipmentDriverServerTask {
 		
 		if(Config.getInstance().configFile.getAp().getOthers().getIot()){
 			boolean sendMsg=false;
-			exampleDataManage();
+//			exampleDataManage();
 			do{
 				DriverProbeResponse driverProbeResponse=adInitProbe();
 				String Ver="";

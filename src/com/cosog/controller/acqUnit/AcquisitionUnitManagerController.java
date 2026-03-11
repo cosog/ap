@@ -304,12 +304,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 		
 			EquipmentDriverServerTask.initProtocolConfig(protocolModel.getName(),protocolModel.getDeviceType()+"","update");
 			
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			
 		}
 		out.print(result);
@@ -359,7 +359,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(StringManagerUtils.isNotNull(acqUnit)){
 				EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(acqUnit, "update");
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -374,7 +374,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/doAcquisitionGroupEdit")
 	public String doAcquisitionGroupEdit(@ModelAttribute AcquisitionGroup acquisitionGroup) throws IOException {
-		String result ="{success:true,msg:false}";
+		String result ="{\"success\":false,\"msg\":false}";
 		PrintWriter out = response.getWriter();
 		try {
 			this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
@@ -390,7 +390,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
-			result= "{success:true,msg:true}";
+			result= "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -443,7 +443,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(user!=null){
 				this.service.saveSystemLog(user,2,languageResourceMap.get("addAcqUnit")+":"+acquisitionUnit.getUnitName());
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -458,7 +458,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/doAcquisitionUnitEdit")
 	public String doAcquisitionUnitEdit(@ModelAttribute AcquisitionUnit acquisitionUnit) {
-		String result ="{success:true,msg:false}";
+		String result ="{\"success\":false,\"msg\":false}";
 		try {
 			this.acquisitionUnitManagerService.doAcquisitionUnitEdit(acquisitionUnit);
 			HttpSession session=request.getSession();
@@ -474,7 +474,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
-			result= "{success:true,msg:true}";
+			result= "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 			pw.flush();
@@ -651,7 +651,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			MemoryDataManagerTask.loadDisplayInstanceOwnItemByAcqGroupId(param1,method);
 			
 			
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
@@ -695,7 +695,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(unitId,"update");
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
@@ -861,7 +861,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 				}
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
@@ -955,7 +955,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 //			executor.execute(dataSynchronizationThread);
 			
 			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
@@ -1011,7 +1011,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
@@ -1066,7 +1066,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
@@ -1175,7 +1175,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 				}
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
@@ -1286,7 +1286,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 				}
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
@@ -3288,7 +3288,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					
 				}
 			}
-			json ="{success:true}";
+			json ="{\"success\":true}";
 		}catch(Exception e){
 			e.printStackTrace();
 			json ="{success:false}";
@@ -3384,7 +3384,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			
 		}
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -3483,7 +3483,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			
 		}
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -3601,7 +3601,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			
 		}
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -3655,7 +3655,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			MemoryDataManagerTask.loadAcqInstanceOwnItemByNameAndUnitId(protocolInstance.getName(),protocolInstance.getUnitId()+"","update");
 			EquipmentDriverServerTask.initInstanceConfigByNames(instanceList, "update");
 			
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -3686,7 +3686,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(user!=null){
 				this.service.saveSystemLog(user,2,languageResourceMap.get("addAlarmUnit")+":"+alarmUnit.getUnitName());
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -3715,7 +3715,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(user!=null){
 				this.service.saveSystemLog(user,2,languageResourceMap.get("addDisplayUnit")+":"+displayUnit.getUnitName());
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -3731,7 +3731,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/saveModbusProtocolAlarmUnitData")
 	public String saveModbusProtocolAlarmUnitData() throws Exception {
 		Gson gson=new Gson();
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<ModbusProtocolAlarmUnitSaveData>() {}.getType();
 		ModbusProtocolAlarmUnitSaveData modbusProtocolAlarmUnitSaveData=gson.fromJson(data, type);
@@ -3774,7 +3774,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					if(user!=null){
 						this.service.saveSystemLog(user,2,languageResourceMap.get("editAlarmUnit")+":"+modbusProtocolAlarmUnitSaveData.getUnitName());
 					}
-					json = "{success:true,msg:true}";
+					json = "{\"success\":true,\"msg\":true}";
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -3795,7 +3795,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/grantAlarmItemsToAlarmUnitPermission")
 	public String grantAlarmItemsToAlarmUnitPermission() throws Exception {
 		Gson gson=new Gson();
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<ModbusProtocolAlarmUnitSaveData>() {}.getType();
 		ModbusProtocolAlarmUnitSaveData modbusProtocolAlarmUnitSaveData=gson.fromJson(data, type);
@@ -3895,7 +3895,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(modbusProtocolAlarmUnitSaveData.getId()+"","update");
 					}
 					
-					json = "{success:true,msg:true}";
+					json = "{\"success\":true,\"msg\":true}";
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -3923,7 +3923,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson=new Gson();
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		String data = ParamUtils.getParameter(request, "data");
 		String protocols = ParamUtils.getParameter(request, "protocols");
 		java.lang.reflect.Type type = new TypeToken<ModbusProtocolInstanceSaveData>() {}.getType();
@@ -4061,7 +4061,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getId()+"", "update");
 					}
 					
-					json = "{success:true,msg:true}";
+					json = "{\"success\":true,\"msg\":true}";
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -4111,7 +4111,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("addDisplayInstance")+":"+protocolDisplayInstance.getName());
 			}
 			
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -4141,7 +4141,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(user!=null){
 				this.service.saveSystemLog(user,2,languageResourceMap.get("addReportUnit")+":"+reportUnit.getUnitName());
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -4174,7 +4174,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(user!=null){
 				this.service.saveSystemLog(user,2,languageResourceMap.get("addReportInstance")+":"+protocolReportInstance.getName());
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -4200,7 +4200,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson=new Gson();
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<ModbusProtocolDisplayInstanceSaveData>() {}.getType();
 		ModbusProtocolDisplayInstanceSaveData modbusProtocolDisplayInstanceSaveData=gson.fromJson(data, type);
@@ -4284,7 +4284,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 					
 //					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(protocolDisplayInstance.getId()+"","update");
-					json = "{success:true,msg:true}";
+					json = "{\"success\":true,\"msg\":true}";
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -4312,7 +4312,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson=new Gson();
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<ModbusProtocolReportUnitSaveData>() {}.getType();
 		ModbusProtocolReportUnitSaveData modbusProtocolReportUnitSaveData=gson.fromJson(data, type);
@@ -4347,7 +4347,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					if(user!=null){
 						this.service.saveSystemLog(user,2,languageResourceMap.get("editReportUnit")+":"+reportUnit.getUnitName());
 					}
-					json = "{success:true,msg:true}";
+					json = "{\"success\":true,\"msg\":true}";
 				} catch (Exception e) {
 					e.printStackTrace();
 					json = "{success:false,msg:false}";
@@ -4373,7 +4373,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson=new Gson();
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<ModbusProtocolReportInstanceSaveData>() {}.getType();
 		ModbusProtocolReportInstanceSaveData modbusProtocolReportInstanceSaveData=gson.fromJson(data, type);
@@ -4414,7 +4414,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					if(user!=null){
 						this.service.saveSystemLog(user,2,languageResourceMap.get("editReportInstance")+":"+protocolReportInstance.getName());
 					}
-					json = "{success:true,msg:true}";
+					json = "{\"success\":true,\"msg\":true}";
 				} catch (Exception e) {
 					e.printStackTrace();
 					json = "{success:false,msg:false}";
@@ -4460,7 +4460,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(user!=null){
 				this.service.saveSystemLog(user,2,languageResourceMap.get("addAlarmInstance")+":"+protocolAlarmInstance.getName());
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -4486,7 +4486,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson=new Gson();
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<ModbusProtocolAlarmInstanceSaveData>() {}.getType();
 		ModbusProtocolAlarmInstanceSaveData modbusProtocolAlarmInstanceSaveData=gson.fromJson(data, type);
@@ -4569,7 +4569,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					if(user!=null){
 						this.service.saveSystemLog(user,2,languageResourceMap.get("editAlarmInstance")+":"+protocolAlarmInstance.getName());
 					}
-					json = "{success:true,msg:true}";
+					json = "{\"success\":true,\"msg\":true}";
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -4605,7 +4605,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(user!=null){
 				this.service.saveSystemLog(user,2,languageResourceMap.get("addSMSInstance")+":"+protocolSMSInstance.getName());
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -4622,7 +4622,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/doModbusProtocolSMSInstanceEdit")
 	public String doModbusProtocolSMSInstanceEdit(@ModelAttribute ProtocolSMSInstance protocolSMSInstance) {
-		String result ="{success:true,msg:false}";
+		String result ="{\"success\":false,\"msg\":false}";
 		try {
 			this.protocolSMSInstanceManagerService.doModbusProtocolSMSInstanceEdit(protocolSMSInstance);
 			List<String> instanceList=new ArrayList<String>();
@@ -4644,7 +4644,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
-			result= "{success:true,msg:true}";
+			result= "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 			pw.flush();
@@ -4773,7 +4773,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("updateColumnMapping"));
 			}
 		}
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -4810,7 +4810,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.service.saveSystemLog(user,2,languageResourceMap.get("updateRunStatusConfig"));
 		}
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -5511,7 +5511,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveImportProtocolData")
 	public String saveImportProtocolData() throws Exception {
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		String data = ParamUtils.getParameter(request, "data");
 		String check=ParamUtils.getParameter(request, "check");
 		HttpSession session=request.getSession();
@@ -5532,7 +5532,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.service.saveSystemLog(user,2,languageResourceMap.get("importProtocol"));
 		}
 		
-//		json ="{success:true}";
+//		json ="{\"success\":true}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -6726,7 +6726,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -6764,7 +6764,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			e.printStackTrace();
 		}
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -6798,7 +6798,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			e.printStackTrace();
 		}
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -6962,7 +6962,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -6997,7 +6997,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			e.printStackTrace();
 		}
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7026,7 +7026,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			e.printStackTrace();
 		}
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7182,7 +7182,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7218,7 +7218,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7248,7 +7248,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7413,7 +7413,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7447,7 +7447,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7475,7 +7475,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7653,7 +7653,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7687,7 +7687,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7715,7 +7715,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7846,7 +7846,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7880,7 +7880,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -7908,7 +7908,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -8039,7 +8039,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -8073,7 +8073,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -8101,7 +8101,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -8231,7 +8231,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -8265,7 +8265,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -8293,7 +8293,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -8419,7 +8419,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -8453,7 +8453,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -8481,7 +8481,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

@@ -72,7 +72,7 @@ public class TabInfoManagerService<T> extends BaseService<T> {
 	
 	public String getArrayTojsonPage(String data) {
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("{success:true");
+		strBuf.append("{\"success\":true");
 		if (null != data) {
 			String jsonStr = "";
 			try {

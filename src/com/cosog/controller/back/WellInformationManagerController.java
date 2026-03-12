@@ -3048,6 +3048,7 @@ public class WellInformationManagerController extends BaseController {
 									
 									downStatusMap.put("PumpGrade", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpGrade",srpProductionData.getPump().getPumpGrade()+"",userInfo.getLanguageName()));
 									downStatusMap.put("PumpBoreDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",srpProductionData.getPump().getPumpBoreDiameter()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpBoreDiameter2", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter2",srpProductionData.getPump().getPumpBoreDiameter2()*1000+"",userInfo.getLanguageName()));
 									downStatusMap.put("PlungerLength", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PlungerLength",srpProductionData.getPump().getPlungerLength()+"",userInfo.getLanguageName()));
 									
 									
@@ -3868,6 +3869,7 @@ public class WellInformationManagerController extends BaseController {
 								
 								statusMap.put("PumpGrade", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpGrade",userInfo.getLanguageName()));
 								statusMap.put("PumpBoreDiameter", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",userInfo.getLanguageName()));
+								statusMap.put("PumpBoreDiameter2", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter2",userInfo.getLanguageName()));
 								statusMap.put("PlungerLength", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_PlungerLength",userInfo.getLanguageName()));
 								
 								

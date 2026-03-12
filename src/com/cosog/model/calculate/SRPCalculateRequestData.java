@@ -345,6 +345,8 @@ public class SRPCalculateRequestData implements Serializable {
 
 	    private float PumpBoreDiameter;
 	    
+	    private float PumpBoreDiameter2;
+	    
 	    public void setBarrelType(String BarrelType){
 	        this.BarrelType = BarrelType;
 	    }
@@ -370,6 +372,12 @@ public class SRPCalculateRequestData implements Serializable {
 	    public float getPumpBoreDiameter(){
 	        return this.PumpBoreDiameter;
 	    }
+		public float getPumpBoreDiameter2() {
+			return PumpBoreDiameter2;
+		}
+		public void setPumpBoreDiameter2(float pumpBoreDiameter2) {
+			PumpBoreDiameter2 = pumpBoreDiameter2;
+		}
 	}
 	
 	public static class EveryCasing implements Serializable {

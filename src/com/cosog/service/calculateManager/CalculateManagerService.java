@@ -265,6 +265,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						result_json.append("\"barrelTypeName\":\""+barrelType+"\",");
 						result_json.append("\"pumpGrade\":\""+srpProductionData.getPump().getPumpGrade()+"\",");
 						result_json.append("\"pumpboreDiameter\":\""+srpProductionData.getPump().getPumpBoreDiameter()*1000+"\",");
+						result_json.append("\"pumpboreDiameter2\":\""+srpProductionData.getPump().getPumpBoreDiameter2()*1000+"\",");
 						result_json.append("\"plungerLength\":\""+srpProductionData.getPump().getPlungerLength()+"\",");
 					}
 					if(srpProductionData.getTubingString()!=null&&srpProductionData.getTubingString().getEveryTubing()!=null&&srpProductionData.getTubingString().getEveryTubing().size()>0){
@@ -751,6 +752,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					pump.setBarrelType(barrelType);
 					pump.setPumpGrade(StringManagerUtils.stringToInteger(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()));
 					pump.setPumpBoreDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpboreDiameter())*0.001));
+					pump.setPumpBoreDiameter2((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpboreDiameter2())*0.001));
 					pump.setPlungerLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPlungerLength()));
 					
 					

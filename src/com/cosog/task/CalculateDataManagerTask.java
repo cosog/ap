@@ -46,20 +46,20 @@ public class CalculateDataManagerTask {
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
-//		long time=StringManagerUtils.stringToTimeStamp("2024-05-14 12:00:00", "yyyy-MM-dd HH:mm:ss");
-//		//报表初始化
-//		timingInitDailyReportData();
-//		
-//		//跨天汇总
-//		AcquisitionDataTotalCalculation();
-//		SRPTotalCalculation();
-//		PCPTotalCalculation();
-//		
-//		AcquisitionTimingCalculate();
-//		SRPTimingCalculate();
-//		PCPTimingCalculate();
-//		
-//		AcquisitionTimingRecord();
+		long time=StringManagerUtils.stringToTimeStamp("2024-05-14 12:00:00", "yyyy-MM-dd HH:mm:ss");
+		//报表初始化
+		timingInitDailyReportData();
+		
+		//跨天汇总
+		AcquisitionDataTotalCalculation();
+		SRPTotalCalculation();
+		PCPTotalCalculation();
+		
+		AcquisitionTimingCalculate();
+		SRPTimingCalculate();
+		PCPTimingCalculate();
+		
+		AcquisitionTimingRecord();
 	}
 	
 	@SuppressWarnings("static-access")

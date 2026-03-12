@@ -70,6 +70,8 @@ public class CalculateManagerHandsontableChangedData {
 	    private String barrelTypeName="整筒泵";
 
 	    private String pumpboreDiameter="38";
+	    
+	    private String pumpboreDiameter2="38";
 
 	    private String plungerLength="1.2";
 
@@ -567,6 +569,14 @@ public class CalculateManagerHandsontableChangedData {
 
 		public void setRecordId(String recordId) {
 			this.recordId = recordId;
+		}
+
+		public String getPumpboreDiameter2() {
+			return pumpboreDiameter2;
+		}
+
+		public void setPumpboreDiameter2(String pumpboreDiameter2) {
+			this.pumpboreDiameter2 = pumpboreDiameter2;
 		}
 	}
 }

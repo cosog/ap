@@ -67,6 +67,7 @@ public class TotalAnalysisResponseData {
     private Item PumpEff3; //间隙漏失系数				小数
     private Item PumpEff4; //液体收缩系数				小数
     private Item PumpBoreDiameter;
+    private Item PumpBoreDiameter2;
     private Item PumpSettingDepth;
     private Item ProducingfluidLevel;
     private Item Submergence;
@@ -1119,6 +1120,14 @@ public class TotalAnalysisResponseData {
 
 	public void setLevelDifferenceValue(Item levelDifferenceValue) {
 		LevelDifferenceValue = levelDifferenceValue;
+	}
+
+	public Item getPumpBoreDiameter2() {
+		return PumpBoreDiameter2;
+	}
+
+	public void setPumpBoreDiameter2(Item pumpBoreDiameter2) {
+		PumpBoreDiameter2 = pumpBoreDiameter2;
 	}
 
 	

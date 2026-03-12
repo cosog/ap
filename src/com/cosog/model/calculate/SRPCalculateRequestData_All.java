@@ -383,6 +383,8 @@ public class SRPCalculateRequestData_All implements Serializable {
 	    private float PlungerLength;
 
 	    private float PumpBoreDiameter;
+	    
+	    private float PumpBoreDiameter2;
 
 	    private float Clearance;
 
@@ -436,6 +438,12 @@ public class SRPCalculateRequestData_All implements Serializable {
 	    public float getAntiImpactStroke(){
 	        return this.AntiImpactStroke;
 	    }
+		public float getPumpBoreDiameter2() {
+			return PumpBoreDiameter2;
+		}
+		public void setPumpBoreDiameter2(float pumpBoreDiameter2) {
+			PumpBoreDiameter2 = pumpBoreDiameter2;
+		}
 	}
 	
 	public static class EveryCasing implements Serializable {

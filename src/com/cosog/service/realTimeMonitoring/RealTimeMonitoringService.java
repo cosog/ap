@@ -1390,6 +1390,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -2263,6 +2265,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -2630,6 +2634,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						result_json.append("\"barrelTypeName\":\""+barrelType+"\",");
 						result_json.append("\"pumpGrade\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPumpGrade():"")+"\",");
 						result_json.append("\"pumpboreDiameter\":\""+(srpProductionData.getPump()!=null?(srpProductionData.getPump().getPumpBoreDiameter()*1000):"")+"\",");
+						result_json.append("\"pumpboreDiameter2\":\""+(srpProductionData.getPump()!=null?(srpProductionData.getPump().getPumpBoreDiameter2()*1000):"")+"\",");
+						
 						result_json.append("\"plungerLength\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPlungerLength():"")+"\",");
 						
 						result_json.append("\"tubingStringInsideDiameter\":\""+(srpProductionData.getTubingString()!=null&&srpProductionData.getTubingString().getEveryTubing()!=null&&srpProductionData.getTubingString().getEveryTubing().size()>0?(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\",");
@@ -3559,6 +3565,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 												}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 													value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+												}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+													value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 												}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 													value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 												}
@@ -4324,6 +4332,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 												}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 													value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+												}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+													value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 												}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 													value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 												}
@@ -5308,6 +5318,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											inputItemValue=srpProductionData.getProduction().getPumpSettingDepth()+"";
 										}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 											inputItemValue=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+										}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+											inputItemValue=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 										}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 											inputItemValue=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 										}
@@ -5688,6 +5700,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										inputItemValue=srpProductionData.getProduction().getPumpSettingDepth()+"";
 									}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 										inputItemValue=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+									}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+										inputItemValue=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 									}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 										inputItemValue=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 									}

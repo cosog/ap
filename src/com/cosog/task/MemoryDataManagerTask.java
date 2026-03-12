@@ -1632,6 +1632,7 @@ public class MemoryDataManagerTask {
 					}
 					if(productionData.getPump()!=null){
 						productionDataMap.put("PumpBoreDiameter".toUpperCase(), productionData.getPump().getPumpBoreDiameter()+"");
+						productionDataMap.put("PumpBoreDiameter2".toUpperCase(), productionData.getPump().getPumpBoreDiameter2()+"");
 					}
 					if(productionData.getManualIntervention()!=null){
 						productionDataMap.put("LevelCorrectValue".toUpperCase(), productionData.getManualIntervention().getLevelCorrectValue()+"");
@@ -4026,8 +4027,9 @@ public class MemoryDataManagerTask {
 			jedis.zadd(key.getBytes(),13, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpSettingDepth"),"PumpSettingDepth","m",2,2,languageResourceMap.get("pumpSettingDepth"))));
 			
 			jedis.zadd(key.getBytes(),14, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpBoreDiameter"),"PumpBoreDiameter","mm",2,2,languageResourceMap.get("pumpBoreDiameter"))));
+			jedis.zadd(key.getBytes(),15, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("pumpBoreDiameter2"),"PumpBoreDiameter2","mm",2,2,languageResourceMap.get("pumpBoreDiameter2"))));
 			
-			jedis.zadd(key.getBytes(),15, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("levelCorrectValue"),"LevelCorrectValue","MPa",2,2,languageResourceMap.get("levelCorrectValue"))));
+			jedis.zadd(key.getBytes(),16, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("levelCorrectValue"),"LevelCorrectValue","MPa",2,2,languageResourceMap.get("levelCorrectValue"))));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -6357,88 +6359,89 @@ public class MemoryDataManagerTask {
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BarrelType"),"write_BarrelType",107) );
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PumpGrade"),"write_PumpGrade",108) );
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PumpBoreDiameter"),"write_PumpBoreDiameter",109) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PlungerLength"),"write_PlungerLength",110) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PumpBoreDiameter2"),"write_PumpBoreDiameter2",110) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PlungerLength"),"write_PlungerLength",111) );
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_TubingStringInsideDiameter"),"write_TubingStringInsideDiameter",111) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CasingStringOutsideDiameter"),"write_CasingStringOutsideDiameter",112) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_TubingStringInsideDiameter"),"write_TubingStringInsideDiameter",112) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CasingStringOutsideDiameter"),"write_CasingStringOutsideDiameter",113) );
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringType1"),"write_RodStringType1",113) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodGrade1"),"write_RodGrade1",114) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringOutsideDiameter1"),"write_RodStringOutsideDiameter1",115) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringInsideDiameter1"),"write_RodStringInsideDiameter1",116) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringLength1"),"write_RodStringLength1",117) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringType1"),"write_RodStringType1",114) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodGrade1"),"write_RodGrade1",115) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringOutsideDiameter1"),"write_RodStringOutsideDiameter1",116) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringInsideDiameter1"),"write_RodStringInsideDiameter1",117) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringLength1"),"write_RodStringLength1",118) );
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringType2"),"write_RodStringType2",118) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodGrade2"),"write_RodGrade2",119) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringOutsideDiameter2"),"write_RodStringOutsideDiameter2",120) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringInsideDiameter2"),"write_RodStringInsideDiameter2",121) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringLength2"),"write_RodStringLength2",122) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringType2"),"write_RodStringType2",119) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodGrade2"),"write_RodGrade2",120) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringOutsideDiameter2"),"write_RodStringOutsideDiameter2",121) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringInsideDiameter2"),"write_RodStringInsideDiameter2",122) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringLength2"),"write_RodStringLength2",123) );
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringType3"),"write_RodStringType3",123) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodGrade3"),"write_RodGrade3",124) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringOutsideDiameter3"),"write_RodStringOutsideDiameter3",125) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringInsideDiameter3"),"write_RodStringInsideDiameter3",126) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringLength3"),"write_RodStringLength3",127) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringType3"),"write_RodStringType3",124) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodGrade3"),"write_RodGrade3",125) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringOutsideDiameter3"),"write_RodStringOutsideDiameter3",126) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringInsideDiameter3"),"write_RodStringInsideDiameter3",127) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringLength3"),"write_RodStringLength3",128) );
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringType4"),"write_RodStringType4",128) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodGrade4"),"write_RodGrade4",129) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringOutsideDiameter4"),"write_RodStringOutsideDiameter4",130) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringInsideDiameter4"),"write_RodStringInsideDiameter4",131) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringLength4"),"write_RodStringLength4",132) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringType4"),"write_RodStringType4",129) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodGrade4"),"write_RodGrade4",130) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringOutsideDiameter4"),"write_RodStringOutsideDiameter4",131) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringInsideDiameter4"),"write_RodStringInsideDiameter4",132) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RodStringLength4"),"write_RodStringLength4",133) );
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_ManualInterventionCode"),"write_ManualInterventionCode",133) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_NetGrossRatio"),"write_NetGrossRatio",134) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_NetGrossValue"),"write_NetGrossValue",135) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_LevelCorrectValue"),"write_LevelCorrectValue",136) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_ManualInterventionCode"),"write_ManualInterventionCode",134) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_NetGrossRatio"),"write_NetGrossRatio",135) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_NetGrossValue"),"write_NetGrossValue",136) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_LevelCorrectValue"),"write_LevelCorrectValue",137) );
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PumpingUnitStructure"),"write_PumpingUnitStructure",137) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_Stroke"),"write_Stroke",138) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CrankRotationDirection"),"write_CrankRotationDirection",139) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_OffsetAngleOfCrank"),"write_OffsetAngleOfCrank",140) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CrankGravityRadius"),"write_CrankGravityRadius",141) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_SingleCrankWeight"),"write_SingleCrankWeight",142) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_SingleCrankPinWeight"),"write_SingleCrankPinWeight",143) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_StructuralUnbalance"),"write_StructuralUnbalance",144) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PumpingUnitStructure"),"write_PumpingUnitStructure",138) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_Stroke"),"write_Stroke",139) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CrankRotationDirection"),"write_CrankRotationDirection",140) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_OffsetAngleOfCrank"),"write_OffsetAngleOfCrank",141) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CrankGravityRadius"),"write_CrankGravityRadius",142) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_SingleCrankWeight"),"write_SingleCrankWeight",143) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_SingleCrankPinWeight"),"write_SingleCrankPinWeight",144) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_StructuralUnbalance"),"write_StructuralUnbalance",145) );
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition1"),"write_BalancePosition1",145) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition2"),"write_BalancePosition2",146) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition3"),"write_BalancePosition3",147) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition4"),"write_BalancePosition4",148) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition5"),"write_BalancePosition5",149) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition6"),"write_BalancePosition6",150) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition7"),"write_BalancePosition7",151) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition8"),"write_BalancePosition8",152) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition1"),"write_BalancePosition1",146) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition2"),"write_BalancePosition2",147) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition3"),"write_BalancePosition3",148) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition4"),"write_BalancePosition4",149) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition5"),"write_BalancePosition5",150) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition6"),"write_BalancePosition6",151) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition7"),"write_BalancePosition7",152) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalancePosition8"),"write_BalancePosition8",153) );
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight1"),"write_BalanceWeight1",153) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight2"),"write_BalanceWeight2",154) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight3"),"write_BalanceWeight3",155) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight4"),"write_BalanceWeight4",156) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight5"),"write_BalanceWeight5",157) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight6"),"write_BalanceWeight6",158) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight7"),"write_BalanceWeight7",159) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight8"),"write_BalanceWeight8",160) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight1"),"write_BalanceWeight1",154) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight2"),"write_BalanceWeight2",155) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight3"),"write_BalanceWeight3",156) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight4"),"write_BalanceWeight4",157) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight5"),"write_BalanceWeight5",158) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight6"),"write_BalanceWeight6",159) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight7"),"write_BalanceWeight7",160) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BalanceWeight8"),"write_BalanceWeight8",161) );
 		
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_TransmissionRatio"),"write_TransmissionRatio",161) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PRTFPointCount"),"write_PRTFPointCount",162) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CrankAngle"),"write_CrankAngle",163) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PR"),"write_PR",164) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_TF"),"write_TF",165) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_TransmissionRatio"),"write_TransmissionRatio",162) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PRTFPointCount"),"write_PRTFPointCount",163) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CrankAngle"),"write_CrankAngle",164) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PR"),"write_PR",165) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_TF"),"write_TF",166) );
 		
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CrankDIInitAngle"),"write_CrankDIInitAngle",166) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterpolationCNT"),"write_InterpolationCNT",167) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_SurfaceSystemEfficiency"),"write_SurfaceSystemEfficiency",168) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_WattTimes"),"write_WattTimes",169) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_ITimes"),"write_ITimes",170) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FSDiagramTimes"),"write_FSDiagramTimes",171) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FSDiagramLeftTimes"),"write_FSDiagramLeftTimes",172) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FSDiagramRightTimes"),"write_FSDiagramRightTimes",173) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_LeftPercent"),"write_LeftPercent",174) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RightPercent"),"write_RightPercent",175) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PositiveXWatt"),"write_PositiveXWatt",176) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_NegativeXWatt"),"write_NegativeXWatt",177) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PRTFSrc"),"write_PRTFSrc",178) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BoardDataSource"),"write_BoardDataSource",179) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CrankDIInitAngle"),"write_CrankDIInitAngle",167) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterpolationCNT"),"write_InterpolationCNT",168) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_SurfaceSystemEfficiency"),"write_SurfaceSystemEfficiency",169) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_WattTimes"),"write_WattTimes",170) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_ITimes"),"write_ITimes",171) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FSDiagramTimes"),"write_FSDiagramTimes",172) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FSDiagramLeftTimes"),"write_FSDiagramLeftTimes",173) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FSDiagramRightTimes"),"write_FSDiagramRightTimes",174) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_LeftPercent"),"write_LeftPercent",175) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_RightPercent"),"write_RightPercent",176) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PositiveXWatt"),"write_PositiveXWatt",177) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_NegativeXWatt"),"write_NegativeXWatt",178) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_PRTFSrc"),"write_PRTFSrc",179) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_BoardDataSource"),"write_BoardDataSource",180) );
 		
 		return calculateColumnInfo;
 	}

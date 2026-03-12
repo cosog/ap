@@ -4813,8 +4813,10 @@ public class DriverAPIController extends BaseController{
 		
 		if(deviceInfo!=null && deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getPump()!=null){
 			srpInputItemList.add(new ProtocolItemResolutionData("泵径","泵径",deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter()*1000+"",deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter()*1000+"","","PumpBoreDiameter","","","","mm",1,3,0));
+			srpInputItemList.add(new ProtocolItemResolutionData("泵径2","泵径2",deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter2()*1000+"",deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter2()*1000+"","","PumpBoreDiameter","","","","mm",1,3,0));
 		}else{
 			srpInputItemList.add(new ProtocolItemResolutionData("泵径","泵径","","","","PumpBoreDiameter","","","","mm",1,3,0));
+			srpInputItemList.add(new ProtocolItemResolutionData("泵径2","泵径2","","","","PumpBoreDiameter2","","","","mm",1,3,0));
 		}
 		
 		if(deviceInfo!=null && deviceInfo.getSrpCalculateRequestData().getManualIntervention()!=null){

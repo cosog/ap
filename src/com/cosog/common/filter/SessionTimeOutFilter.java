@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.AntPathMatcher;
 
 import com.cosog.model.User;
 import com.cosog.utils.Config;
@@ -43,6 +44,21 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 		// TODO Auto-generated method stub
 		HttpServletRequest request = (HttpServletRequest) req;
 	    HttpServletResponse response = (HttpServletResponse) resp;
+	    
+	    // 获取请求的 URI 或 ServletPath
+	    String requestURI = request.getRequestURI();          // 例如：/ap/api/acq/id/group
+	    String servletPath = request.getServletPath();        // 例如：/api/acq/id/group
+	    String contextPath = request.getContextPath();			///例如：/ap
+	    String fullPath = requestURI.substring(contextPath.length()); // 去掉上下文路径例如： /api/acq/id/group
+
+	    // 定义不需要拦截的路径（可以是一个集合，支持通配符或正则）
+	    // 这里以简单的字符串包含或精确匹配为例
+	    AntPathMatcher matcher = new AntPathMatcher();
+	    if (matcher.match("/api/**", servletPath)) {
+	        // 直接放行，不执行后续的权限检查
+	        chain.doFilter(request, response);
+	        return;
+	    }
 	    
 	    // 获取请求的来源
         String origin = request.getHeader("Origin");

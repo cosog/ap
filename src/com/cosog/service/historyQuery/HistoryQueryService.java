@@ -1059,6 +1059,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -1909,6 +1911,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -3048,6 +3052,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -4054,6 +4060,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -4759,6 +4767,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 												}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 													value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+												}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+													value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 												}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 													value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 												}
@@ -5547,6 +5557,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 												}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 													value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+												}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+													value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 												}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 													value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 												}
@@ -6384,6 +6396,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										inputItemValue=srpProductionData.getProduction().getPumpSettingDepth()+"";
 									}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
 										inputItemValue=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+									}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
+										inputItemValue=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
 									}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 										inputItemValue=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 									}

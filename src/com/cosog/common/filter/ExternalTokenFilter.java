@@ -124,7 +124,7 @@ public class ExternalTokenFilter implements Filter {
             }
             
             // Token使用一次后立即失效（一次性使用）
-            tokenCache.remove(token);
+//            tokenCache.remove(token);
             log.info("Token验证成功，用户：" + tokenInfo.getUserId() + "，路径：" + path);
         }
         
@@ -233,6 +233,7 @@ public class ExternalTokenFilter implements Filter {
 				session.setAttribute("helpDocumentUrl", tokenInfo.getHelpDocumentUrl());
 				session.setAttribute("showVideo", tokenInfo.getShowLogo());
                 
+				
                 log.info("Session恢复成功 - 用户: " + user.getUserName() + 
                         ", 语言: " + language + 
                         ", 组织: " + user.getUserOrgNames() +

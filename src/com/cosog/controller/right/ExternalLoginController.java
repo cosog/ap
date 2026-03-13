@@ -257,7 +257,7 @@ public class ExternalLoginController extends BaseController {
         tokenInfo.setClientIp(clientIp);
         tokenInfo.setUserAgent(request.getHeader("User-Agent"));
         tokenInfo.setCreateTime(System.currentTimeMillis());
-        tokenInfo.setExpireTime(System.currentTimeMillis() + 30 * 1000); // 30秒有效期
+        tokenInfo.setExpireTime(System.currentTimeMillis() + 24*60*60 * 1000); // 24小时有效期
         
         // 保存完整的User对象（包含所有权限信息）
         tokenInfo.setUser(user);

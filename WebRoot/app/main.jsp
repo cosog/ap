@@ -16,6 +16,8 @@
    	String oemStaticResourceTimestamp=(String)session.getAttribute("oemStaticResourceTimestamp");
 	String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticResourceTimestamp");
 	
+	String helpDocumentUrl=(String)session.getAttribute("helpDocumentUrl");
+	
 	User userLogin=(User)session.getAttribute("userLogin");
 	String userLoginNo=userLogin!=null?userLogin.getUserNo()+"":"";
 	String userLoginId=userLogin!=null?userLogin.getUserId():"";
@@ -157,7 +159,7 @@
         var otherStaticResourceTimestamp = configFile.ap.others.otherStaticResourceTimestamp;
 
         //var helpDocumentUrl=oem.helpDocument;
-        var helpDocumentUrl=oem.helpDocument;
+        var helpDocumentUrl='<%=helpDocumentUrl%>';
         var helpDocumentTimestamp=oem.helpDocumentTimestamp;
         helpDocumentUrl = context + helpDocumentUrl.substring(helpDocumentUrl.indexOf("/"), helpDocumentUrl.length);
         

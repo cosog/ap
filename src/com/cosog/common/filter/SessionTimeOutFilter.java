@@ -79,6 +79,25 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 	                session.setAttribute("userLogin", user);
 	                session.setAttribute("SESSION_USERNAME", user.getUserName());
 	                session.setAttribute("browserLang", user.getLanguageName());
+	                
+	                // 权限相关属性（可选，因为 User 已包含，但某些旧代码可能直接读 session 属性）
+	                session.setAttribute("orgtreeid", user.getOrgtreeid());
+	                session.setAttribute("userParentOrgids", user.getUserParentOrgids());
+	                session.setAttribute("userOrgIds", user.getUserOrgIds());
+	                session.setAttribute("userOrgNames", user.getUserOrgNames());
+	                session.setAttribute("allOrgPatentNodeIds", user.getAllOrgPatentNodeIds());
+	                session.setAttribute("allModParentNodeIds", user.getAllModParentNodeIds());
+	                session.setAttribute("deviceTypeIds", user.getDeviceTypeIds());
+	                
+	                // 恢复语言资源
+	                session.setAttribute("languageResource", user.getLanguageResource());
+	                session.setAttribute("languageResourceFirstLower", user.getLanguageResourceFirstLower());
+	                
+	                // 恢复配置信息
+	                session.setAttribute("pageSize", user.getPageSize());
+	                session.setAttribute("syncOrAsync", user.getSyncOrAsync());
+	                session.setAttribute("defaultComboxSize", user.getDefaultComboxSize());
+	                session.setAttribute("defaultGraghSize", user.getDefaultGraghSize());
 
 	                session.setAttribute("tabInfo", tokenInfo.getTabInfo());
 	                session.setAttribute("configFile", tokenInfo.getConfigFile());
@@ -92,17 +111,6 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 	                session.setAttribute("loadingUI", tokenInfo.getLoadingUI());
 	                session.setAttribute("helpDocumentUrl", tokenInfo.getHelpDocumentUrl());
 	                session.setAttribute("showVideo", tokenInfo.getShowVideo());
-
-	                // 权限相关属性（可选，因为 User 已包含，但某些旧代码可能直接读 session 属性）
-	                session.setAttribute("orgtreeid", user.getOrgtreeid());
-	                session.setAttribute("userParentOrgids", user.getUserParentOrgids());
-	                session.setAttribute("userOrgIds", user.getUserOrgIds());
-	                session.setAttribute("userOrgNames", user.getUserOrgNames());
-	                session.setAttribute("allOrgPatentNodeIds", user.getAllOrgPatentNodeIds());
-	                session.setAttribute("allModParentNodeIds", user.getAllModParentNodeIds());
-	                session.setAttribute("deviceTypeIds", user.getDeviceTypeIds());
-	                session.setAttribute("languageResource", user.getLanguageResource());
-	                session.setAttribute("languageResourceFirstLower", user.getLanguageResourceFirstLower());
 
 	                // 设置 Locale
 	                String locale = Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();

@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.AntPathMatcher;
 
+import com.cosog.controller.right.ExternalLoginController;
 import com.cosog.model.User;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
@@ -60,48 +61,96 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 	        return;
 	    }
 	    
-	    // 获取请求的来源
-        String origin = request.getHeader("Origin");
-	    
-	    if (origin != null && !origin.isEmpty()) {
-            // 关键：必须设置为具体的 origin，不能是 *
-            response.setHeader("Access-Control-Allow-Origin", origin);
-            // 允许携带凭证（cookie/session）
-            response.setHeader("Access-Control-Allow-Credentials", "true");
-            // 允许的 HTTP 方法
-            response.setHeader("Access-Control-Allow-Methods", 
-                "POST, GET, OPTIONS, DELETE, PUT");
-            // 允许的请求头
-            response.setHeader("Access-Control-Allow-Headers", 
-                "x-requested-with, Content-Type, Accept, Authorization, Cookie");
-            // 暴露的响应头（如果需要前端读取 cookie）
-            response.setHeader("Access-Control-Expose-Headers", 
-                "Set-Cookie, Cookie");
-            // 预检请求缓存时间（1小时）
-            response.setHeader("Access-Control-Max-Age", "3600");
-        }
-        
-        // 处理 OPTIONS 预检请求
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return;
-        }
-        
-		
-		log.debug("I am a userLogin listener .....");
-		HttpSession session = request.getSession();
-		String path = request.getServletPath();
-		
-		
-		// 如果是外部系统访问且携带Token，优先验证Token
+	 // 获取 token（从参数或 Header）
 	    String token = request.getParameter("token");
+	    if (token == null || token.isEmpty()) {
+	        token = request.getHeader("X-Access-Token");
+	    }
+
 	    if (token != null && !token.isEmpty()) {
-	        // Token验证由ExternalTokenFilter处理，这里跳过
-	        chain.doFilter(req, resp);
-	        return;
+	        Map<String, ExternalLoginController.TokenInfo> tokenCache = ExternalLoginController.getTokenCache();
+	        ExternalLoginController.TokenInfo tokenInfo = tokenCache.get(token);
+	        if (tokenInfo != null && !tokenInfo.isExpired()) {
+	            // token 有效，恢复 session
+	            HttpSession session = request.getSession(true);
+	            User user = tokenInfo.restoreUser(); // 直接获取存储的完整 User 对象
+	            if (user != null) {
+	                // 恢复所有必要的 session 属性（参考 ExternalTokenFilter 的 restoreSession 方法）
+	                session.setAttribute("userLogin", user);
+	                session.setAttribute("SESSION_USERNAME", user.getUserName());
+	                session.setAttribute("browserLang", user.getLanguageName());
+	                
+	                // 权限相关属性（可选，因为 User 已包含，但某些旧代码可能直接读 session 属性）
+	                session.setAttribute("orgtreeid", user.getOrgtreeid());
+	                session.setAttribute("userParentOrgids", user.getUserParentOrgids());
+	                session.setAttribute("userOrgIds", user.getUserOrgIds());
+	                session.setAttribute("userOrgNames", user.getUserOrgNames());
+	                session.setAttribute("allOrgPatentNodeIds", user.getAllOrgPatentNodeIds());
+	                session.setAttribute("allModParentNodeIds", user.getAllModParentNodeIds());
+	                session.setAttribute("deviceTypeIds", user.getDeviceTypeIds());
+	                
+	                // 恢复语言资源
+	                session.setAttribute("languageResource", user.getLanguageResource());
+	                session.setAttribute("languageResourceFirstLower", user.getLanguageResourceFirstLower());
+	                
+	                // 恢复配置信息
+	                session.setAttribute("pageSize", user.getPageSize());
+	                session.setAttribute("syncOrAsync", user.getSyncOrAsync());
+	                session.setAttribute("defaultComboxSize", user.getDefaultComboxSize());
+	                session.setAttribute("defaultGraghSize", user.getDefaultGraghSize());
+
+	                session.setAttribute("tabInfo", tokenInfo.getTabInfo());
+	                session.setAttribute("configFile", tokenInfo.getConfigFile());
+	                session.setAttribute("oem", tokenInfo.getOem());
+	                session.setAttribute("viewProjectName", tokenInfo.getViewProjectName());
+	                session.setAttribute("favicon", tokenInfo.getFavicon());
+	                session.setAttribute("bannerCSS", tokenInfo.getBannerCSS());
+	                session.setAttribute("showLogo", tokenInfo.getShowLogo());
+	                session.setAttribute("oemStaticResourceTimestamp", tokenInfo.getOemStaticResourceTimestamp());
+	                session.setAttribute("otherStaticResourceTimestamp", tokenInfo.getOtherStaticResourceTimestamp());
+	                session.setAttribute("loadingUI", tokenInfo.getLoadingUI());
+	                session.setAttribute("helpDocumentUrl", tokenInfo.getHelpDocumentUrl());
+	                session.setAttribute("showVideo", tokenInfo.getShowVideo());
+
+	                // 设置 Locale
+	                String locale = Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
+	        		if(user!=null && StringManagerUtils.isNotNull(user.getLanguageName())){
+	        			locale=user.getLanguageName();
+	        		}
+	                
+	                Locale l = Locale.getDefault(); 
+	        		if(locale==null){
+	        			l = new Locale("zh", "CN"); 
+	        		}else if (locale.equals("zh_CN")) { 
+	        			l = new Locale("zh", "CN"); 
+	        		} else if (locale.equals("en")) { 
+	        			l = new Locale("en", "US"); 
+	        		}
+	                
+	                session.setAttribute("WW_TRANS_I18N_LOCALE", locale);
+
+	                log.info("通过 token 恢复 session 成功，用户: " + user.getUserName());
+	            }
+	            // 继续请求（此时 session 已恢复）
+	            chain.doFilter(req, resp);
+	            return;
+	        } else {
+	            // token 无效或过期，返回 401
+	            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	            response.setContentType("application/json;charset=utf-8");
+	            response.getWriter().print("{\"success\":false,\"code\":401,\"message\":\"无效或过期的令牌\"}");
+	            return;
+	        }
 	    }
 		
-		User user = (User) session.getAttribute("userLogin");
+	    
+	    log.debug("I am a userLogin listener .....");
+		HttpSession session = request.getSession(false);
+		User user = (session != null) ? (User) session.getAttribute("userLogin") : null;
+		
+		
+		
+		String path = request.getServletPath();
 		String loginUrl[] = path.split("\\/");
 		Map<String, Object> license = DataModelMap.getMapObject();
 		String uck = (String) license.get("license");
@@ -121,19 +170,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 			l = new Locale("zh", "CN"); 
 		} else if (locale.equals("en")) { 
 			l = new Locale("en", "US"); 
-		} 
-		//ActionContext.getContext().setLocale(l);   
-//		request.getSession().setAttribute("WW_TRANS_I18N_LOCALE", l);
-//		request.getSession().setAttribute("browserLang",locale);
-//		// 取会话中的语言版本
-//		browserLang = (String) request.getSession().getAttribute("locale");
-//		// 如果会话中没有指定，则取浏览器的语言版本
-//		if(browserLang==null){
-//			browserLang=locale;
-//		}else if(locale==null){
-//			browserLang = request.getLocale().toString();
-//		}
-//		request.setAttribute("locale", browserLang);
+		}
 		String urlString = loginUrl[loginUrl.length - 1];
 		if (uck.equalsIgnoreCase("God bless you!")) {
 			if (!path.contains("Controller")){//只过滤Controller

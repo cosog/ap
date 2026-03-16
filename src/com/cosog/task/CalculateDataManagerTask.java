@@ -44,6 +44,8 @@ public class CalculateDataManagerTask {
 	
 	public static ScheduledExecutorService AcquisitionTimingRecordExecutor=null;
 	
+	private static boolean acquisitionTimingRecordEnable=false;
+	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
 		long time=StringManagerUtils.stringToTimeStamp("2024-05-14 12:00:00", "yyyy-MM-dd HH:mm:ss");
@@ -661,23 +663,25 @@ public class CalculateDataManagerTask {
 	}
 	
 	public static void AcquisitionTimingRecord() {
-		AcquisitionTimingRecordExecutor = Executors.newScheduledThreadPool(1);
-        long interval = 5 * 60 * 1000;
-        long initDelay = StringManagerUtils.getTimeMillis("00:00:00") - System.currentTimeMillis();
-        while(initDelay<0){
-        	initDelay=interval + initDelay;
-        }
-        AcquisitionTimingRecordExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:00");
-            	try {
-            		AcquisitionDataTimingRecord(timeStr);
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
-            }
-        }), initDelay, interval, TimeUnit.MILLISECONDS);
+		if(acquisitionTimingRecordEnable){
+			AcquisitionTimingRecordExecutor = Executors.newScheduledThreadPool(1);
+	        long interval = 5 * 60 * 1000;
+	        long initDelay = StringManagerUtils.getTimeMillis("00:00:00") - System.currentTimeMillis();
+	        while(initDelay<0){
+	        	initDelay=interval + initDelay;
+	        }
+	        AcquisitionTimingRecordExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
+	            @Override
+	            public void run() {
+	                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:00");
+	            	try {
+	            		AcquisitionDataTimingRecord(timeStr);
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
+	            }
+	        }), initDelay, interval, TimeUnit.MILLISECONDS);
+		}
     }
 	
 	public static void AcquisitionDataTimingRecord(String timeStr){

@@ -1972,7 +1972,7 @@ var DeviceInfoHandsontableHelper = {
                         			Rod1.InsideDiameter=parseInt(productionHandsontableData[23][2])*0.001;
                         		}
                         		if(isNumber(parseInt(productionHandsontableData[24][2]))){
-                        			Rod1.Length=parseInt(productionHandsontableData[24][2]);
+                        			Rod1.Length=parseFloat(productionHandsontableData[24][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod1);
                     		}
@@ -2002,7 +2002,7 @@ var DeviceInfoHandsontableHelper = {
                         			Rod2.InsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
                         		}
                         		if(isNumber(parseInt(productionHandsontableData[29][2]))){
-                        			Rod2.Length=parseInt(productionHandsontableData[29][2]);
+                        			Rod2.Length=parseFloat(productionHandsontableData[29][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod2);
                     		}
@@ -2032,7 +2032,7 @@ var DeviceInfoHandsontableHelper = {
                         			Rod3.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
                         		}
                         		if(isNumber(parseInt(productionHandsontableData[34][2]))){
-                        			Rod3.Length=parseInt(productionHandsontableData[34][2]);
+                        			Rod3.Length=parseFloat(productionHandsontableData[34][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod3);
                     		}
@@ -2062,7 +2062,7 @@ var DeviceInfoHandsontableHelper = {
                         			Rod4.InsideDiameter=parseInt(productionHandsontableData[38][2])*0.001;
                         		}
                         		if(isNumber(parseInt(productionHandsontableData[39][2]))){
-                        			Rod4.Length=parseInt(productionHandsontableData[39][2]);
+                        			Rod4.Length=parseFloat(productionHandsontableData[39][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod4);
                     		}

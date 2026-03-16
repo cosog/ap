@@ -16,6 +16,8 @@
    	String oemStaticResourceTimestamp=(String)session.getAttribute("oemStaticResourceTimestamp");
 	String otherStaticResourceTimestamp=(String)session.getAttribute("otherStaticResourceTimestamp");
 	
+	String helpDocumentUrl=(String)session.getAttribute("helpDocumentUrl");
+	
 	User userLogin=(User)session.getAttribute("userLogin");
 	String userLoginNo=userLogin!=null?userLogin.getUserNo()+"":"";
 	String userLoginId=userLogin!=null?userLogin.getUserId():"";
@@ -157,7 +159,7 @@
         var otherStaticResourceTimestamp = configFile.ap.others.otherStaticResourceTimestamp;
 
         //var helpDocumentUrl=oem.helpDocument;
-        var helpDocumentUrl=oem.helpDocument;
+        var helpDocumentUrl='<%=helpDocumentUrl%>';
         var helpDocumentTimestamp=oem.helpDocumentTimestamp;
         helpDocumentUrl = context + helpDocumentUrl.substring(helpDocumentUrl.indexOf("/"), helpDocumentUrl.length);
         
@@ -400,7 +402,47 @@
             pic_url = '<%=userLoginPicUrl%>';
             
             _clientWidth = document.body.clientWidth;
+            
+            
+         // 1. 从 URL 中获取 token（假设 URL 参数为 ?token=xxx）
+            var token = getParameterByName('token');
+            
+            // 2. 保存到全局，方便使用
+            window.__accessToken = token;
+            
+            // 3. 配置 Ext.Ajax 全局属性
+            Ext.Ajax.setWithCredentials(true);               // 允许携带 Cookie
+            Ext.Ajax.setDefaultHeaders({
+                'X-Access-Token': token || ''                // 同时携带自定义 Token
+            });
+            
+            // 4. 在每个请求前自动添加 token 参数（可选，如果后端也接受参数）
+            Ext.Ajax.on('beforerequest', function(conn, options) {
+                options.params = options.params || {};
+                options.params.token = window.__accessToken; // 添加到请求参数
+                options.withCredentials = true;               // 确保携带凭证
+            });
+            
+            // 5. 统一处理 401/999 错误（如跳转回登录页）
+            //Ext.Ajax.on('requestexception', function(conn, response, options) {
+            //    if (response.status === 401 || response.status === 999) {
+            //        // 会话失效，重新跳转到外部登录入口（可携带当前页作为回调）
+            //        var loginUrl = context + '/external/login?callback=' + encodeURIComponent(window.location.href);
+            //        window.location.href = loginUrl;
+            //    }
+            //});
         });
+        
+     // 工具函数：从 URL 获取参数
+        function getParameterByName(name) {
+            var url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+            var results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
 
     </script>
 </body>

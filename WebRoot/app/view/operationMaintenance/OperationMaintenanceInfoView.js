@@ -1463,6 +1463,9 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                		instanceConfig.PrimaryDevice.FSDiagramConstruction=Ext.getCmp('calculationModel_showPrimaryDeviceFSDiagramConstruction_Id').getValue();
 		                		instanceConfig.PrimaryDevice.SystemParameterConfig=Ext.getCmp('calculationModel_showPrimaryDeviceSystemParameterConfiguration_Id').getValue();
 		                		
+		                		instanceConfig.PrimaryDevice.IntelligentFrequencyConversion=Ext.getCmp('calculationModel_showPrimaryDeviceIntelligentFrequencyConversion_Id').getValue();
+		                		instanceConfig.PrimaryDevice.InterlockProtection=Ext.getCmp('calculationModel_showPrimaryDeviceInterlockProtection_Id').getValue();
+		                		
 		                		Ext.Ajax.request({
 		                			method:'POST',
 		                			url:context + '/operationMaintenanceController/saveDeviceTabManagerInstance',
@@ -1631,6 +1634,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        	    name: 'calculationModel.showPrimaryDeviceCalculateDataConfig',
 	                                        	    id: 'calculationModel_showPrimaryDeviceCalculateDataConfig_Id',
 	                                        	    checked: false
+	    				                        },{
+	    				                        	xtype: 'checkboxfield',
+	                                        	    fieldLabel: loginUserLanguageResource.intelligentFrequencyConversion,
+	                                        	    name: 'calculationModel.showPrimaryDeviceIntelligentFrequencyConversion',
+	                                        	    id: 'calculationModel_showPrimaryDeviceIntelligentFrequencyConversion_Id',
+	                                        	    checked: false
 	    				                        }]
 	        				                }, {
 	                                            items: [{
@@ -1644,6 +1653,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        	    fieldLabel: loginUserLanguageResource.fsDiagramConstruction,
 	                                        	    name: 'calculationModel.showPrimaryDeviceFSDiagramConstruction',
 	                                        	    id: 'calculationModel_showPrimaryDeviceFSDiagramConstruction_Id',
+	                                        	    checked: false
+	    				                        },{
+	    				                        	xtype: 'checkboxfield',
+	                                        	    fieldLabel: loginUserLanguageResource.interlockProtection,
+	                                        	    name: 'calculationModel.showPrimaryDeviceInterlockProtection',
+	                                        	    id: 'calculationModel_showPrimaryDeviceInterlockProtection_Id',
 	                                        	    checked: false
 	    				                        }]
 	        				                }, {
@@ -3773,6 +3788,9 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 	Ext.getCmp("calculationModel_showPrimaryDeviceFSDiagramConstruction_Id").setValue(false);
 	Ext.getCmp("calculationModel_showPrimaryDeviceSystemParameterConfiguration_Id").setValue(false);
 	
+	Ext.getCmp("calculationModel_showPrimaryDeviceIntelligentFrequencyConversion_Id").setValue(false);
+	Ext.getCmp("calculationModel_showPrimaryDeviceInterlockProtection_Id").setValue(false);
+	
 	if(instanceConfig!=undefined){
 		if(instanceConfig.DeviceRealTimeMonitoring!=undefined){
 			Ext.getCmp("calculationModel_showRealtimeWellboreAnalysis_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis!=undefined?instanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis:false);
@@ -3795,7 +3813,10 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 			Ext.getCmp("calculationModel_showPrimaryDeviceVideoConfig_Id").setValue(instanceConfig.PrimaryDevice.VideoConfig!=undefined?instanceConfig.PrimaryDevice.VideoConfig:false);
 			Ext.getCmp("calculationModel_showPrimaryDeviceCalculateDataConfig_Id").setValue(instanceConfig.PrimaryDevice.CalculateDataConfig!=undefined?instanceConfig.PrimaryDevice.CalculateDataConfig:false);
 			Ext.getCmp("calculationModel_showPrimaryDeviceFSDiagramConstruction_Id").setValue(instanceConfig.PrimaryDevice.FSDiagramConstruction!=undefined?instanceConfig.PrimaryDevice.FSDiagramConstruction:false);
-			Ext.getCmp("calculationModel_showPrimaryDeviceSystemParameterConfiguration_Id").setValue(instanceConfig.PrimaryDevice.AdditionalInformation!=undefined?instanceConfig.PrimaryDevice.SystemParameterConfig:false);
+			Ext.getCmp("calculationModel_showPrimaryDeviceSystemParameterConfiguration_Id").setValue(instanceConfig.PrimaryDevice.SystemParameterConfig!=undefined?instanceConfig.PrimaryDevice.SystemParameterConfig:false);
+			
+			Ext.getCmp("calculationModel_showPrimaryDeviceIntelligentFrequencyConversion_Id").setValue(instanceConfig.PrimaryDevice.IntelligentFrequencyConversion!=undefined?instanceConfig.PrimaryDevice.IntelligentFrequencyConversion:false);
+			Ext.getCmp("calculationModel_showPrimaryDeviceInterlockProtection_Id").setValue(instanceConfig.PrimaryDevice.InterlockProtection!=undefined?instanceConfig.PrimaryDevice.InterlockProtection:false);
 		}
 	}
 }

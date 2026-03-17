@@ -1398,6 +1398,29 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getIntelligentFrequencyConversionInfo")
+	public String getIntelligentFrequencyConversionInfo() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String deviceCalculateDataType=ParamUtils.getParameter(request, "deviceCalculateDataType");
+		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getIntelligentFrequencyConversionInfo(deviceId,language);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getDeviceVideoInfo")
 	public String getDeviceVideoInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -3689,15 +3712,26 @@ public class WellInformationManagerController extends BaseController {
 	
 	public String dataDownlink(String protocolCode,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String writeValue,String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
+		List<DataMapping> dataMappingList=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
 		String status=languageResourceMap.get("noDownlink");
+		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		int reslut=0;
-		if(dataMapping!=null && dataMapping.getCalculateEnable()==1){
-			reslut=deviceControlOperation_Mdubus(protocolCode,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),writeValue);
-			if(reslut==1){
-				status=languageResourceMap.get("downlinkSuccessfully");
-			}else{
-				status=languageResourceMap.get("downlinkFailed");
+		if(protocol!=null && dataMappingList.size()>0){
+			for(int i=0;i<dataMappingList.size();i++){
+				if(dataMappingList.get(i).getCalculateEnable()==1){
+					ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, dataMappingList.get(i).getName());
+					if(item!=null){
+						reslut=deviceControlOperation_Mdubus(protocolCode,tcpType,signinid,ipPort,Slave,dataMappingList.get(i).getMappingColumn(),writeValue);
+						if(reslut==1){
+							status=languageResourceMap.get("downlinkSuccessfully");
+						}else{
+							status=languageResourceMap.get("downlinkFailed");
+						}
+						break;
+					}
+					
+					
+				}
 			}
 		}
 		return status;
@@ -3787,7 +3821,7 @@ public class WellInformationManagerController extends BaseController {
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+""
 						+ "}";
-				StringManagerUtils.printLog(itemName+":"+ctrlJson,1);
+				StringManagerUtils.printLog("写地址数据:"+itemName+":"+ctrlJson,1);
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
 				if(StringManagerUtils.isNotNull(responseStr)){
@@ -4215,11 +4249,19 @@ public class WellInformationManagerController extends BaseController {
 	
 	public String dataUplink(String protocolCode,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
+		List<DataMapping> dataMappingList=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
+		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		String result=languageResourceMap.get("noUplink");
-		if(dataMapping!=null && dataMapping.getCalculateEnable()==1){
-			result=readAddr(protocolCode,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),language);
-			
+		if(protocol!=null && dataMappingList.size()>0){
+			for(int i=0;i<dataMappingList.size();i++){
+				if(dataMappingList.get(i).getCalculateEnable()==1){
+					ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, dataMappingList.get(i).getName());
+					if(item!=null){
+						result=readAddr(protocolCode,tcpType,signinid,ipPort,Slave,dataMappingList.get(i).getMappingColumn(),language);
+						break;
+					}
+				}
+			}
 		}
 		return result;
 	}

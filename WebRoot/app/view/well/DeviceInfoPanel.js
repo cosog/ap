@@ -11,6 +11,9 @@ var deviceAdditionalInfoHandsontableHelper=null;
 var fsDiagramConstructionHandsontableHelper = null;
 var deviceSystemParameterHandsontableHelper = null;
 
+var deviceIntelligentFrequencyConversionHandsontableHelper = null;
+var deviceInterlockProtectionHandsontableHelper = null;
+
 var deviceCalculateDataTabPanelItems=[{
 	title:loginUserLanguageResource.wellboreData,
 	id:'DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id',
@@ -381,7 +384,79 @@ var deviceAdditionalInformationTabPanelItems=[{
 },{
 	title:loginUserLanguageResource.intelligentFrequencyConversion,
 	id:'DeviceIntelligentFrequencyConversionInfoPanel_Id',
-	hidden:true
+	hidden:false,
+	tbar:['->',{
+		xtype: 'button',
+		text:loginUserLanguageResource.downlink,
+		iconCls: 'downlink',
+		disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+		handler: function (v, o) {
+			deviceIntelligentFrequencyConversionDataDownlink();
+		}
+	},'-',{
+		xtype: 'button',
+		text:loginUserLanguageResource.uplink,
+		iconCls: 'uplink',
+		disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+		handler: function (v, o) {
+//			deviceIntelligentFrequencyConversionDataUplink();
+		}
+	}],
+	html: '<div class="DeviceIntelligentFrequencyConversionConfigurationInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceIntelligentFrequencyConversionInfoTableDiv_id"></div></div>',
+    listeners: {
+        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+        	if (deviceIntelligentFrequencyConversionHandsontableHelper != null && deviceIntelligentFrequencyConversionHandsontableHelper.hot != null && deviceIntelligentFrequencyConversionHandsontableHelper.hot != undefined) {
+        		var newWidth=width;
+        		var newHeight=height-23-1;
+        		var header=thisPanel.getHeader();
+        		if(header){
+        			newHeight=newHeight-header.lastBox.height-2;
+        		}
+        		deviceIntelligentFrequencyConversionHandsontableHelper.hot.updateSettings({
+        			width:newWidth,
+        			height:newHeight
+        		});
+            }
+        }
+    }
+},{
+	title:loginUserLanguageResource.interlockProtection,
+	id:'DeviceInterlockProtectionInfoPanel_Id',
+	hidden:false,
+	tbar:['->',{
+		xtype: 'button',
+		text:loginUserLanguageResource.downlink,
+		iconCls: 'downlink',
+		disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+		handler: function (v, o) {
+//			deviceInterlockProtectionDataDownlink();
+		}
+	},'-',{
+		xtype: 'button',
+		text:loginUserLanguageResource.uplink,
+		iconCls: 'uplink',
+		disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
+		handler: function (v, o) {
+//			deviceInterlockProtectionDataUplink();
+		}
+	}],
+	html: '<div class="DeviceInterlockProtectionConfigurationInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceInterlockProtectionInfoTableDiv_id"></div></div>',
+    listeners: {
+        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+        	if (deviceInterlockProtectionHandsontableHelper != null && deviceInterlockProtectionHandsontableHelper.hot != null && deviceInterlockProtectionHandsontableHelper.hot != undefined) {
+        		var newWidth=width;
+        		var newHeight=height-23-1;
+        		var header=thisPanel.getHeader();
+        		if(header){
+        			newHeight=newHeight-header.lastBox.height-2;
+        		}
+        		deviceInterlockProtectionHandsontableHelper.hot.updateSettings({
+        			width:newWidth,
+        			height:newHeight
+        		});
+            }
+        }
+    }
 },{
 	title:loginUserLanguageResource.intelligentIntermissiveOilDrawing,
 	id:'DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id',
@@ -923,7 +998,9 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 	}else if(activeId=='DeviceFSDiagramConstructionInfoPanel_Id'){
 		CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applicationScenarios,isNew);
 	}else if(activeId=='DeviceIntelligentFrequencyConversionInfoPanel_Id'){
-		
+		CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId,deviceName,applicationScenarios,isNew);
+	}else if(activeId=='DeviceInterlockProtectionInfoPanel_Id'){
+		CreateAndLoadDeviceInterlockProtectionTable(deviceId,deviceName,applicationScenarios,isNew);
 	}else if(activeId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id'){
 		
 	}else if(activeId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
@@ -992,6 +1069,8 @@ function getDeviceAdditionalInformationType(){
 		type=6;
 	}else if(activeId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
 		type=7;
+	}else if(activeId=='DeviceInterlockProtectionInfoPanel_Id'){
+		type=8;
 	}
 	return type;
 }
@@ -3929,7 +4008,7 @@ function deviceProductionDataDownlink(){
             var manualInterventionResultName=loginUserLanguageResource.noIntervention;
             var FESDiagramSrcName='';
             if(productionHandsontableHelper!=null && productionHandsontableHelper.hot!=undefined){
-        		var productionHandsontableData=productionHandsontableHelper.hot.getData();
+            	var productionHandsontableData=productionHandsontableHelper.hot.getData();
         		deviceProductionData.FluidPVT={};
         		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[0][2]))){
         			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
@@ -3999,162 +4078,169 @@ function deviceProductionDataDownlink(){
         		if(isNumber(parseInt(productionHandsontableData[15][2]))){
         			deviceProductionData.Pump.PumpBoreDiameter=parseInt(productionHandsontableData[15][2])*0.001;
         		}
-        		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
-        			deviceProductionData.Pump.PlungerLength=parseFloat(productionHandsontableData[16][2]);
+        		if(isNumber(parseInt(productionHandsontableData[16][2]))){
+        			deviceProductionData.Pump.PumpBoreDiameter2=parseInt(productionHandsontableData[16][2])*0.001;
+        		}
+        		if(isNumber(parseFloat(productionHandsontableData[17][2]))){
+        			deviceProductionData.Pump.PlungerLength=parseFloat(productionHandsontableData[17][2]);
         		}
         		
         		deviceProductionData.TubingString={};
         		deviceProductionData.TubingString.EveryTubing=[];
         		var EveryTubing={};
-        		if(isNumber(parseInt(productionHandsontableData[17][2]))){
-        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
+        		if(isNumber(parseInt(productionHandsontableData[18][2]))){
+        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
         		}
         		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
         		
         		deviceProductionData.CasingString={};
         		deviceProductionData.CasingString.EveryCasing=[];
         		var EveryCasing={};
-        		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+        		if(isNumber(parseInt(productionHandsontableData[19][2]))){
+        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[19][2])*0.001;
         		}
         		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
         		
         		deviceProductionData.RodString={};
         		deviceProductionData.RodString.EveryRod=[];
         		
-        		if(isNotVal(productionHandsontableData[19][2]) 
-        				&& isNotVal(productionHandsontableData[20][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[21][2])) 
-        				&& (productionHandsontableData[22][2]=='' || isNumber(parseInt(productionHandsontableData[22][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[23][2]))){
+        		if(isNotVal(productionHandsontableData[20][2]) 
+        				&& isNotVal(productionHandsontableData[21][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[22][2])) 
+        				&& (productionHandsontableData[23][2]=='' || isNumber(parseInt(productionHandsontableData[23][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[24][2]))){
         			var Rod1={};
-        			if(isNotVal(productionHandsontableData[19][2])){
-            			if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue1){
+        			if(isNotVal(productionHandsontableData[20][2])){
+            			if(productionHandsontableData[20][2]==loginUserLanguageResource.rodStringTypeValue1){
             				Rod1.Type=1;
-            			}else if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue2){
+            			}else if(productionHandsontableData[20][2]==loginUserLanguageResource.rodStringTypeValue2){
             				Rod1.Type=2;
-            			}else if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue3){
+            			}else if(productionHandsontableData[20][2]==loginUserLanguageResource.rodStringTypeValue3){
             				Rod1.Type=3;
             			}
             		}
-            		if(isNotVal(productionHandsontableData[20][2])){
-            			Rod1.Grade=productionHandsontableData[20][2];
-            		}
-            		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+            		if(isNotVal(productionHandsontableData[21][2])){
+            			Rod1.Grade=productionHandsontableData[21][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[23][2]))){
-            			Rod1.Length=parseInt(productionHandsontableData[23][2]);
+            			Rod1.InsideDiameter=parseInt(productionHandsontableData[23][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[24][2]))){
+            			Rod1.Length=parseFloat(productionHandsontableData[24][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod1);
         		}
         		
-        		if(isNotVal(productionHandsontableData[24][2]) 
-        				&& isNotVal(productionHandsontableData[25][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[26][2])) 
-        				&& (productionHandsontableData[27][2]=='' || isNumber(parseInt(productionHandsontableData[27][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[28][2]))){
+        		if(isNotVal(productionHandsontableData[25][2]) 
+        				&& isNotVal(productionHandsontableData[26][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[27][2])) 
+        				&& (productionHandsontableData[28][2]=='' || isNumber(parseInt(productionHandsontableData[28][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[29][2]))){
         			var Rod2={};
-        			if(isNotVal(productionHandsontableData[24][2])){
-        				if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue1){
+        			if(isNotVal(productionHandsontableData[25][2])){
+        				if(productionHandsontableData[25][2]==loginUserLanguageResource.rodStringTypeValue1){
         					Rod2.Type=1;
-            			}else if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue2){
+            			}else if(productionHandsontableData[25][2]==loginUserLanguageResource.rodStringTypeValue2){
             				Rod2.Type=2;
-            			}else if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue3){
+            			}else if(productionHandsontableData[25][2]==loginUserLanguageResource.rodStringTypeValue3){
             				Rod2.Type=3;
             			}
             		}
-            		if(isNotVal(productionHandsontableData[25][2])){
-            			Rod2.Grade=productionHandsontableData[25][2];
-            		}
-            		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
+            		if(isNotVal(productionHandsontableData[26][2])){
+            			Rod2.Grade=productionHandsontableData[26][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[27][2]))){
-            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[28][2]))){
-            			Rod2.Length=parseInt(productionHandsontableData[28][2]);
+            			Rod2.InsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[29][2]))){
+            			Rod2.Length=parseFloat(productionHandsontableData[29][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod2);
         		}
         		
-        		if(isNotVal(productionHandsontableData[29][2]) 
-        				&& isNotVal(productionHandsontableData[30][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[31][2])) 
-        				&& (productionHandsontableData[32][2]=='' || isNumber(parseInt(productionHandsontableData[32][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[33][2]))){
+        		if(isNotVal(productionHandsontableData[30][2]) 
+        				&& isNotVal(productionHandsontableData[31][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[32][2])) 
+        				&& (productionHandsontableData[33][2]=='' || isNumber(parseInt(productionHandsontableData[33][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[34][2]))){
         			var Rod3={};
-            		if(isNotVal(productionHandsontableData[29][2])){
-            			if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue1){
+            		if(isNotVal(productionHandsontableData[30][2])){
+            			if(productionHandsontableData[30][2]==loginUserLanguageResource.rodStringTypeValue1){
             				Rod3.Type=1;
-            			}else if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue2){
+            			}else if(productionHandsontableData[30][2]==loginUserLanguageResource.rodStringTypeValue2){
             				Rod3.Type=2;
-            			}else if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue3){
+            			}else if(productionHandsontableData[30][2]==loginUserLanguageResource.rodStringTypeValue3){
             				Rod3.Type=3;
             			}
             		}
-            		if(isNotVal(productionHandsontableData[30][2])){
-            			Rod3.Grade=productionHandsontableData[30][2];
-            		}
-            		if(isNumber(parseInt(productionHandsontableData[31][2]))){
-            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
+            		if(isNotVal(productionHandsontableData[31][2])){
+            			Rod3.Grade=productionHandsontableData[31][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[33][2]))){
-            			Rod3.Length=parseInt(productionHandsontableData[33][2]);
+            			Rod3.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[34][2]))){
+            			Rod3.Length=parseFloat(productionHandsontableData[34][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod3);
         		}
         		
-        		if(isNotVal(productionHandsontableData[34][2]) 
-        				&& isNotVal(productionHandsontableData[35][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[36][2])) 
-        				&& (productionHandsontableData[37][2]=='' || isNumber(parseInt(productionHandsontableData[37][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[38][2]))){
+        		if(isNotVal(productionHandsontableData[35][2]) 
+        				&& isNotVal(productionHandsontableData[36][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[37][2])) 
+        				&& (productionHandsontableData[38][2]=='' || isNumber(parseInt(productionHandsontableData[38][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[39][2]))){
         			var Rod4={};
-            		if(isNotVal(productionHandsontableData[34][2])){
-            			if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue1){
+            		if(isNotVal(productionHandsontableData[35][2])){
+            			if(productionHandsontableData[35][2]==loginUserLanguageResource.rodStringTypeValue1){
             				Rod4.Type=1;
-            			}else if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue2){
+            			}else if(productionHandsontableData[35][2]==loginUserLanguageResource.rodStringTypeValue2){
             				Rod4.Type=2;
-            			}else if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue3){
+            			}else if(productionHandsontableData[35][2]==loginUserLanguageResource.rodStringTypeValue3){
             				Rod4.Type=3;
             			}
             		}
-            		if(isNotVal(productionHandsontableData[35][2])){
-            			Rod4.Grade=productionHandsontableData[35][2];
-            		}
-            		if(isNumber(parseInt(productionHandsontableData[36][2]))){
-            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
+            		if(isNotVal(productionHandsontableData[36][2])){
+            			Rod4.Grade=productionHandsontableData[36][2];
             		}
             		if(isNumber(parseInt(productionHandsontableData[37][2]))){
-            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
             		}
             		if(isNumber(parseInt(productionHandsontableData[38][2]))){
-            			Rod4.Length=parseInt(productionHandsontableData[38][2]);
+            			Rod4.InsideDiameter=parseInt(productionHandsontableData[38][2])*0.001;
+            		}
+            		if(isNumber(parseInt(productionHandsontableData[39][2]))){
+            			Rod4.Length=parseFloat(productionHandsontableData[39][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod4);
         		}
         		
         		
         		deviceProductionData.ManualIntervention={};
-        		manualInterventionResultName=productionHandsontableData[39][2];
-        		if(isNumber(parseFloat(productionHandsontableData[40][2]))){
-        			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[40][2]);
-        		}
+        		manualInterventionResultName=productionHandsontableData[40][2];
         		if(isNumber(parseFloat(productionHandsontableData[41][2]))){
-        			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[41][2]);
+        			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[41][2]);
         		}
         		if(isNumber(parseFloat(productionHandsontableData[42][2]))){
-        			deviceProductionData.ManualIntervention.LevelCorrectValue=parseFloat(productionHandsontableData[42][2]);
+        			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[42][2]);
         		}
-        	}
+        		if(isNumber(parseFloat(productionHandsontableData[43][2]))){
+        			deviceProductionData.ManualIntervention.LevelCorrectValue=parseFloat(productionHandsontableData[43][2]);
+        		}
+        		
+        		deviceProductionData.FESDiagram={};
+        		deviceProductionData.FESDiagram.Src=0;
+        		FESDiagramSrcName=productionHandsontableData[44][2];
+            }
             
             pumpingUnitInfo.Balance={};
             pumpingUnitInfo.Stroke="";
@@ -5906,8 +5992,398 @@ var DevicePumpingUnitDetailedInformationHandsontableHelper = {
 	    }
 	};
 
+function CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId,deviceName,applicationScenarios,isNew){
+	if(deviceIntelligentFrequencyConversionHandsontableHelper!=null){
+		if(deviceIntelligentFrequencyConversionHandsontableHelper.hot!=undefined){
+			deviceIntelligentFrequencyConversionHandsontableHelper.hot.destroy();
+		}
+		deviceIntelligentFrequencyConversionHandsontableHelper=null;
+	}
+	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/wellInformationManagerController/getIntelligentFrequencyConversionInfo',
+		success:function(response) {
+			Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			if(deviceIntelligentFrequencyConversionHandsontableHelper==null || deviceIntelligentFrequencyConversionHandsontableHelper.hot==undefined){
+				deviceIntelligentFrequencyConversionHandsontableHelper = DeviceIntelligentFrequencyConversionHandsontableHelper.createNew("DeviceIntelligentFrequencyConversionInfoTableDiv_id");;
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+				var columns="[{data:'id'}," 
+					+"{data:'itemClasses'}," 
+					+"{data:'itemName'}," 
+					+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceIntelligentFrequencyConversionHandsontableHelper);}}," 
+					+"{data:'itemCode'}," 
+					+"{data:'downlinkStatus'}," 
+					+"{data:'uplinkStatus'}" 
+					+"]";
+				deviceIntelligentFrequencyConversionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				deviceIntelligentFrequencyConversionHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					deviceIntelligentFrequencyConversionHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					deviceIntelligentFrequencyConversionHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					deviceIntelligentFrequencyConversionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					deviceIntelligentFrequencyConversionHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+		},
+		params: {
+			deviceId:deviceId
+        }
+	});
+};
+
+var DeviceIntelligentFrequencyConversionHandsontableHelper = {
+	    createNew: function (divid) {
+	        var deviceIntelligentFrequencyConversionHandsontableHelper = {};
+	        deviceIntelligentFrequencyConversionHandsontableHelper.hot = '';
+	        deviceIntelligentFrequencyConversionHandsontableHelper.divid = divid;
+	        deviceIntelligentFrequencyConversionHandsontableHelper.colHeaders = [];
+	        deviceIntelligentFrequencyConversionHandsontableHelper.columns = [];
+	        
+	        deviceIntelligentFrequencyConversionHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        deviceIntelligentFrequencyConversionHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        deviceIntelligentFrequencyConversionHandsontableHelper.addUplinkStatusCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            if(isNotVal(deviceIntelligentFrequencyConversionHandsontableHelper.hot)){
+	            	var itemValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
+		            if(isNotVal(itemValue) && isNotVal(value)){
+		            	if(value!=loginUserLanguageResource.uplinkFailed){
+		            		if(isNumber(itemValue) && isNumber(value)){
+		            			if(parseFloat(itemValue)==parseFloat(value)){
+		            				td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            			}else{
+		            				td.style.backgroundColor = "#f09614";
+		            			}
+		            		}else{
+		            			if(itemValue==value){
+		            				td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            			}else{
+		            				td.style.backgroundColor = "#f09614";
+		            			}
+		            		}
+		            	}else{
+		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}
+		            }else{
+		            	td.innerHTML='';
+		            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            }
+	            }else{
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            }
+	            
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+
+	        deviceIntelligentFrequencyConversionHandsontableHelper.createTable = function (data) {
+	            $('#' + deviceIntelligentFrequencyConversionHandsontableHelper.divid).empty();
+	            var hotElement = document.querySelector('#' + deviceIntelligentFrequencyConversionHandsontableHelper.divid);
+	            deviceIntelligentFrequencyConversionHandsontableHelper.hot = new Handsontable(hotElement, {
+	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	            	data: data,
+	            	colWidths: [50,100,100,50],
+	                hiddenColumns: {
+	                    columns: [0,4,5,6],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                hiddenRows: {
+	                    rows: [],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                columns: deviceIntelligentFrequencyConversionHandsontableHelper.columns,
+	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false, //显示行头
+	                colHeaders: deviceIntelligentFrequencyConversionHandsontableHelper.colHeaders, //显示列头
+	                columnSorting: true, //允许排序
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
+	                mergeCells:[{
+	                    "row": 0,
+	                    "col": 1,
+	                    "rowspan": 1,
+	                    "colspan": 2
+	                },{
+	                    "row": 1,
+	                    "col": 1,
+	                    "rowspan": 4,
+	                    "colspan": 1
+	                },{
+	                    "row": 5,
+	                    "col": 1,
+	                    "rowspan": 4,
+	                    "colspan": 1
+	                },{
+	                    "row": 9,
+	                    "col": 1,
+	                    "rowspan": 28,
+	                    "colspan": 1
+	                }],
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    
+	                    if(DeviceManagerModuleEditFlag==1){
+	                    	if (visualColIndex !=3) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = deviceIntelligentFrequencyConversionHandsontableHelper.addCellStyle;
+			                }
+	                    }else{
+	                    	cellProperties.readOnly = true;
+	                    	if (visualColIndex !=3 && visualColIndex !=5) {
+	                    		cellProperties.renderer = deviceIntelligentFrequencyConversionHandsontableHelper.addCellStyle;
+	                    	}else if (visualColIndex == 6) {
+	                    		cellProperties.renderer = deviceIntelligentFrequencyConversionHandsontableHelper.addUplinkStatusCellStyle;
+	                    	}
+	                    }
+	                    
+	                    if (visualColIndex === 3 && (visualRowIndex===0 || visualRowIndex>=9) ) {
+	                    	this.type = 'checkbox';
+	                    }
+	                    
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(coords.col>=0 && coords.row>=0 && deviceIntelligentFrequencyConversionHandsontableHelper!=null&&deviceIntelligentFrequencyConversionHandsontableHelper.hot!=''&&deviceIntelligentFrequencyConversionHandsontableHelper.hot!=undefined && deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	            });
+	        }
+	        return deviceIntelligentFrequencyConversionHandsontableHelper;
+	    }
+	};
+
+function deviceIntelligentFrequencyConversionDataDownlink(){
+	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+	if(deviceInfoHandsontableData.length>0){
+		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+		var applicationScenarios=0;
+		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+			applicationScenarios=1;
+		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+			applicationScenarios=2;
+		}
+		
+		var frequencyConversionData={};
+
+		
+        if(deviceIntelligentFrequencyConversionHandsontableHelper!=null && deviceIntelligentFrequencyConversionHandsontableHelper.hot!=undefined){
+        	var frequencyConversionHandsontableData=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getData();
+        	var frequencyConversionDataArr=[];
+        	for(var i=0;i<frequencyConversionHandsontableData.length;i++){
+        		var itemCode=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtRowProp(i,'itemCode');
+        		var itemValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtRowProp(i,'itemValue');
+        		
+        		var cellProperties = deviceIntelligentFrequencyConversionHandsontableHelper.hot.getCellMeta(i, 3);
+        		var cellType = cellProperties.type;
+
+        		if (cellType === 'checkbox') {
+        			itemValue=itemValue?1:0;
+        		} else if (cellType === 'text' || cellType === 'numeric') {
+                	if(isNumber(parseFloat(itemValue))){
+                		itemValue=parseFloat(itemValue);
+            		}
+        		}
+        		frequencyConversionDataArr.push({key:itemCode,value:itemValue});
+        	}
+        	
+        	
+        	
+//        	frequencyConversionData.Enable=frequencyConversionHandsontableData[0][3]?1:0;
+//
+//        	
+//        	var columns="[{data:'id'}," 
+//				+"{data:'itemClasses'}," 
+//				+"{data:'itemName'}," 
+//				+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceIntelligentFrequencyConversionHandsontableHelper);}}," 
+//				+"{data:'itemCode'}," 
+//				+"{data:'downlinkStatus'}," 
+//				+"{data:'uplinkStatus'}" 
+//				+"]";
+        	
+        	alert(JSON.stringify(frequencyConversionDataArr));
+        		
+//			Ext.getCmp("DeviceCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+//			Ext.Ajax.request({
+//	            url: context + '/wellInformationManagerController/deviceProductionDataDownlink',
+//	            method: "POST",
+//	            params: {
+//	            	deviceId: deviceId,
+//	            	deviceName: deviceName,
+//	            	productionData:JSON.stringify(deviceProductionData),
+//	            	pumpingUnitInfo:JSON.stringify(pumpingUnitInfo),
+//	            	manualInterventionResultName:manualInterventionResultName,
+//	            	applicationScenarios:applicationScenarios
+//	            },
+//	            success: function (response, action) {
+//	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+//	            	
+//	            	var result =  Ext.JSON.decode(response.responseText);
+//	            	
+//	            	if (result.flag == false) {
+//	                    Ext.MessageBox.show({
+//	                        title: loginUserLanguageResource.tip,
+//	                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+//	                        icon: Ext.MessageBox.INFO,
+//	                        buttons: Ext.Msg.OK,
+//	                        fn: function () {
+//	                            window.location.href = context + "/login";
+//	                        }
+//	                    });
+//	                } else if (result.flag == true && result.error == false) {
+//	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+//	                }  else if (result.flag == true && result.error == true) {
+//	                    
+//	                	const plugin = productionHandsontableHelper.hot.getPlugin('hiddenColumns');
+//                    	plugin.showColumns([4]);
+//                    	plugin.hideColumns([5]);
+//                    	productionHandsontableHelper.hot.render();
+//                    	
+//                    	var codeColumnValue=productionHandsontableHelper.hot.getDataAtProp('itemCode');
+//                    	for(var i=0;i<codeColumnValue.length;i++){
+//                    		for(var j=0;j<result.downStatusList.length;j++){
+//                    			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+//                    				productionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+//                    				break;
+//                    			}
+//                    		}
+//                    	}
+////	                	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+//	                } 
+//	            },
+//	            failure: function () {
+//	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+//	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+//	            }
+//	        });
+		
+        }
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
+function getDeviceAdditionalInformationTabIndex(tabId,tabPanelId,tabItems){
+	var index=0;
+	var tabPanel = Ext.getCmp(tabPanelId);
+	var tabsArray = tabPanel.items.items;
+	
+	var fisrstTabId='';
+	var lastTabId='';
+	if(tabItems.length>0){
+		fisrstTabId=tabItems[0].id;
+		if(tabId==fisrstTabId){
+			index=0;
+		}else{
+			for(var i=1;i<tabItems.length;i++){
+				if(tabItems[i].id==tabId){
+					for(var j=i-1;j>=0;j--){
+						if(tabPanel.getComponent(tabItems[j].id)!=undefined){
+							lastTabId=tabItems[j].id;
+							break;
+						}
+					}
+					break;
+				}
+			}
+			
+			for(var i=0;i<tabsArray.length;i++){
+				if(tabsArray[i].id==lastTabId){
+					index=i+1;
+					break;
+				}
+			}
+			
+		}
+	}
+	
+	return index;
+	
+}
+
 function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 	var tabPanel = Ext.getCmp("DeviceAdditionalInformationTabpanel_Id");
+	
 	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	var activeChange=false;
 	
@@ -5922,6 +6398,9 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 	var showCalculateDataConfig=false;
 	var showFSDiagramConstruction=false;
 	var showSystemParameterConfig=false;
+	var showIntelligentFrequencyConversion=false;
+	var showInterlockProtection=false;
+	
 	if(deviceTabInstanceConfig!=undefined && deviceTabInstanceConfig.PrimaryDevice!=undefined){
 		showAdditionalInformation=deviceTabInstanceConfig.PrimaryDevice.AdditionalInformation!=undefined?deviceTabInstanceConfig.PrimaryDevice.AdditionalInformation:false;
 		showAuxiliaryDevice=deviceTabInstanceConfig.PrimaryDevice.AuxiliaryDevice!=undefined?deviceTabInstanceConfig.PrimaryDevice.AuxiliaryDevice:false;
@@ -5929,6 +6408,9 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 		showCalculateDataConfig=deviceTabInstanceConfig.PrimaryDevice.CalculateDataConfig!=undefined?deviceTabInstanceConfig.PrimaryDevice.CalculateDataConfig:false;
 		showFSDiagramConstruction=deviceTabInstanceConfig.PrimaryDevice.FSDiagramConstruction!=undefined?deviceTabInstanceConfig.PrimaryDevice.FSDiagramConstruction:false;
 		showSystemParameterConfig=deviceTabInstanceConfig.PrimaryDevice.AdditionalInformation!=undefined?deviceTabInstanceConfig.PrimaryDevice.SystemParameterConfig:false;
+		
+		showIntelligentFrequencyConversion=deviceTabInstanceConfig.PrimaryDevice.IntelligentFrequencyConversion!=undefined?deviceTabInstanceConfig.PrimaryDevice.IntelligentFrequencyConversion:false;
+		showInterlockProtection=deviceTabInstanceConfig.PrimaryDevice.InterlockProtection!=undefined?deviceTabInstanceConfig.PrimaryDevice.InterlockProtection:false;
 	}
 	
 	if(calculateType==0){
@@ -5947,46 +6429,61 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 			tabPanel.show();
 		}
 		
+		
 		var DeviceAdditionalInfoPanel = tabPanel.getComponent("DeviceAdditionalInfoPanel_Id");
 		if(showAdditionalInformation && DeviceAdditionalInfoPanel==undefined){
-			tabPanel.insert(0,deviceAdditionalInformationTabPanelItems[0]);
+			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceAdditionalInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[0]);
 		}else if(!showAdditionalInformation && DeviceAdditionalInfoPanel!=undefined){
 			tabPanel.remove("DeviceAdditionalInfoPanel_Id");
 		}
 		
 		var DeviceAuxiliaryDevicePanel = tabPanel.getComponent("DeviceAuxiliaryDevicePanel_Id");
 		if(showAuxiliaryDevice && DeviceAuxiliaryDevicePanel==undefined){
-			tabPanel.insert(1,deviceAdditionalInformationTabPanelItems[1]);
+			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceAuxiliaryDevicePanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[1]);
 		}else if(!showAuxiliaryDevice && DeviceAuxiliaryDevicePanel!=undefined){
 			tabPanel.remove("DeviceAuxiliaryDevicePanel_Id");
 		}
 		
 		var DeviceVideoInfoPanel = tabPanel.getComponent("DeviceVideoInfoPanel_Id");
 		if(showVideoConfig && DeviceVideoInfoPanel==undefined){
-			tabPanel.insert(2,deviceAdditionalInformationTabPanelItems[2]);
+			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceVideoInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[2]);
 		}else if(!showVideoConfig && DeviceVideoInfoPanel!=undefined){
 			tabPanel.remove("DeviceVideoInfoPanel_Id");
 		}
 		
 		var DeviceCalculateDataInfoPanel = tabPanel.getComponent("DeviceCalculateDataInfoPanel_Id");
 		if(showCalculateDataConfig && DeviceCalculateDataInfoPanel==undefined){
-			tabPanel.insert(3,deviceAdditionalInformationTabPanelItems[3]);
+			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceCalculateDataInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[3]);
 		}else if(!showCalculateDataConfig && DeviceCalculateDataInfoPanel!=undefined){
 			tabPanel.remove("DeviceCalculateDataInfoPanel_Id");
 		}
 		
 		var DeviceFSDiagramConstructionInfoPanel = tabPanel.getComponent("DeviceFSDiagramConstructionInfoPanel_Id");
 		if(showFSDiagramConstruction && DeviceFSDiagramConstructionInfoPanel==undefined){
-			tabPanel.insert(4,deviceAdditionalInformationTabPanelItems[4]);
+			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceFSDiagramConstructionInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[4]);
 		}else if(!showFSDiagramConstruction && DeviceFSDiagramConstructionInfoPanel!=undefined){
 			tabPanel.remove("DeviceFSDiagramConstructionInfoPanel_Id");
 		}
 		
 		var DeviceSystemParameterConfigurationInfoPanel = tabPanel.getComponent("DeviceSystemParameterConfigurationInfoPanel_Id");
 		if(showSystemParameterConfig && DeviceSystemParameterConfigurationInfoPanel==undefined){
-			tabPanel.insert(5,deviceAdditionalInformationTabPanelItems[5]);
+			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceSystemParameterConfigurationInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[5]);
 		}else if(!showSystemParameterConfig && DeviceSystemParameterConfigurationInfoPanel!=undefined){
 			tabPanel.remove("DeviceSystemParameterConfigurationInfoPanel_Id");
+		}
+		
+		var DeviceIntelligentFrequencyConversionInfoPanel = tabPanel.getComponent("DeviceIntelligentFrequencyConversionInfoPanel_Id");
+		if(showIntelligentFrequencyConversion && DeviceIntelligentFrequencyConversionInfoPanel==undefined){
+			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceIntelligentFrequencyConversionInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[6]);
+		}else if(!showIntelligentFrequencyConversion && DeviceIntelligentFrequencyConversionInfoPanel!=undefined){
+			tabPanel.remove("DeviceIntelligentFrequencyConversionInfoPanel_Id");
+		}
+		
+		var DeviceInterlockProtectionInfoPanel = tabPanel.getComponent("DeviceInterlockProtectionInfoPanel_Id");
+		if(showInterlockProtection && DeviceInterlockProtectionInfoPanel==undefined){
+			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceInterlockProtectionInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[7]);
+		}else if(!showInterlockProtection && DeviceInterlockProtectionInfoPanel!=undefined){
+			tabPanel.remove("DeviceInterlockProtectionInfoPanel_Id");
 		}
 	}else{
 		tabPanel.hide();
@@ -5994,7 +6491,7 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 	
 	
 	var activeId = tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
-	if(activeId=='DeviceIntelligentFrequencyConversionInfoPanel_Id' || activeId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id' || activeId==''){
+	if(activeId=='DeviceIntelligentIntermissiveOilDrawingInfoPanel_Id' || activeId==''){
 		tabPanel.setActiveTab(0);
 	}
 	

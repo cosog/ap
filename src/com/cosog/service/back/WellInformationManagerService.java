@@ -3195,6 +3195,76 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String getIntelligentFrequencyConversionInfo(String deviceId,String language) {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		try{
+			String columns = "["
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "]";
+			
+			result_json.append("{\"success\":true,\"totalCount\":2,\"columns\":"+columns+",\"totalRoot\":[");
+			result_json.append("{\"id\":1,\"itemClasses\":\""+languageResourceMap.get("enable")+"\",\"itemName\":\""+languageResourceMap.get("enable")+"\",\"itemCode\":\"write_FrequencyConversionEnable\",\"itemValue\":false},");
+			
+			result_json.append("{\"id\":2,\"itemClasses\":\""+languageResourceMap.get("frequencyUpscalingPparameters")+"\",\"itemName\":\""+languageResourceMap.get("frequencyUpscalingFullnessCoefficientLimit")+"("+languageResourceMap.get("decimals")+")"+"\",\"itemCode\":\"write_FrequencyConversion_Up_FullnessCoefficientLimit\",\"itemValue\":\"\"},");
+			result_json.append("{\"id\":3,\"itemClasses\":\""+languageResourceMap.get("frequencyUpscalingPparameters")+"\",\"itemName\":\""+languageResourceMap.get("frequencyUpperLimit")+"(Hz)"+"\",\"itemCode\":\"write_FrequencyConversion_Up_FrequencyUpperLimit\",\"itemValue\":\"\"},");
+			result_json.append("{\"id\":4,\"itemClasses\":\""+languageResourceMap.get("frequencyUpscalingPparameters")+"\",\"itemName\":\""+languageResourceMap.get("frequencyUpscalingStepSize")+"(Hz)"+"\",\"itemCode\":\"write_FrequencyConversion_Up_StepSize\",\"itemValue\":\"\"},");
+			result_json.append("{\"id\":5,\"itemClasses\":\""+languageResourceMap.get("frequencyUpscalingPparameters")+"\",\"itemName\":\""+languageResourceMap.get("frequencyUpscalingStabilityDuration")+"("+languageResourceMap.get("minute")+")"+"\",\"itemCode\":\"write_FrequencyConversion_Up_StabilityDuration\",\"itemValue\":\"\"},");
+			
+			result_json.append("{\"id\":6,\"itemClasses\":\""+languageResourceMap.get("frequencyReductionParameters")+"\",\"itemName\":\""+languageResourceMap.get("frequencyReductionFullnessCoefficientLimit")+"("+languageResourceMap.get("decimals")+")"+"\",\"itemCode\":\"write_FrequencyConversion_Down_FullnessCoefficientLimit\",\"itemValue\":\"\"},");
+			result_json.append("{\"id\":7,\"itemClasses\":\""+languageResourceMap.get("frequencyReductionParameters")+"\",\"itemName\":\""+languageResourceMap.get("frequencyLowerLimit")+"(Hz)"+"\",\"itemCode\":\"write_FrequencyConversion_Down_FrequencyLowerLimit\",\"itemValue\":\"\"},");
+			result_json.append("{\"id\":8,\"itemClasses\":\""+languageResourceMap.get("frequencyReductionParameters")+"\",\"itemName\":\""+languageResourceMap.get("frequencyReductionStepSize")+"(Hz)"+"\",\"itemCode\":\"write_FrequencyConversion_Down_StepSize\",\"itemValue\":\"\"},");
+			result_json.append("{\"id\":9,\"itemClasses\":\""+languageResourceMap.get("frequencyReductionParameters")+"\",\"itemName\":\""+languageResourceMap.get("frequencyReductionStabilityDuration")+"("+languageResourceMap.get("minute")+")"+"\",\"itemCode\":\"write_FrequencyConversion_Down_StabilityDuration\",\"itemValue\":\"\"},");
+			
+			
+			Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
+			
+			result_json.append("{\"id\":10,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1201")?workTypeMap.get("1201").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1201\",\"itemValue\":false},");
+			result_json.append("{\"id\":11,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1202")?workTypeMap.get("1202").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1202\",\"itemValue\":false},");
+			result_json.append("{\"id\":12,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1203")?workTypeMap.get("1203").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1203\",\"itemValue\":false},");
+			result_json.append("{\"id\":13,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1204")?workTypeMap.get("1204").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1204\",\"itemValue\":false},");
+			result_json.append("{\"id\":14,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1205")?workTypeMap.get("1205").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1205\",\"itemValue\":false},");
+			result_json.append("{\"id\":15,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1206")?workTypeMap.get("1206").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1206\",\"itemValue\":false},");
+			result_json.append("{\"id\":16,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1207")?workTypeMap.get("1207").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1207\",\"itemValue\":false},");
+			result_json.append("{\"id\":17,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1208")?workTypeMap.get("1208").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1208\",\"itemValue\":false},");
+			result_json.append("{\"id\":18,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1209")?workTypeMap.get("1209").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1209\",\"itemValue\":false},");
+			result_json.append("{\"id\":19,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1210")?workTypeMap.get("1210").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1210\",\"itemValue\":false},");
+			result_json.append("{\"id\":20,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1212")?workTypeMap.get("1212").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1212\",\"itemValue\":false},");
+			result_json.append("{\"id\":21,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1213")?workTypeMap.get("1213").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1213\",\"itemValue\":false},");
+			result_json.append("{\"id\":22,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1214")?workTypeMap.get("1214").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1214\",\"itemValue\":false},");
+			result_json.append("{\"id\":23,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1215")?workTypeMap.get("1215").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1215\",\"itemValue\":false},");
+			result_json.append("{\"id\":24,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1216")?workTypeMap.get("1216").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1216\",\"itemValue\":false},");
+			result_json.append("{\"id\":25,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1217")?workTypeMap.get("1217").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1217\",\"itemValue\":false},");
+			result_json.append("{\"id\":26,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1218")?workTypeMap.get("1218").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1218\",\"itemValue\":false},");
+			result_json.append("{\"id\":27,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1219")?workTypeMap.get("1219").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1219\",\"itemValue\":false},");
+			result_json.append("{\"id\":28,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1220")?workTypeMap.get("1220").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1220\",\"itemValue\":false},");
+			result_json.append("{\"id\":29,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1221")?workTypeMap.get("1221").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1221\",\"itemValue\":false},");
+			result_json.append("{\"id\":30,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1222")?workTypeMap.get("1222").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1222\",\"itemValue\":false},");
+			result_json.append("{\"id\":31,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1223")?workTypeMap.get("1223").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1223\",\"itemValue\":false},");
+			result_json.append("{\"id\":32,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1224")?workTypeMap.get("1224").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1224\",\"itemValue\":false},");
+			result_json.append("{\"id\":33,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1225")?workTypeMap.get("1225").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1225\",\"itemValue\":false},");
+			result_json.append("{\"id\":34,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1226")?workTypeMap.get("1226").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1226\",\"itemValue\":false},");
+			result_json.append("{\"id\":35,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1227")?workTypeMap.get("1227").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1227\",\"itemValue\":false},");
+			result_json.append("{\"id\":36,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1230")?workTypeMap.get("1230").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1230\",\"itemValue\":false},");
+			result_json.append("{\"id\":37,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1232")?workTypeMap.get("1232").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1232\",\"itemValue\":false},");
+			
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			result_json.append("}");
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			
+		}
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getDeviceVideoInfo(String deviceId,String deviceType,String orgId,String language) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer videoKeyDropdownData = new StringBuffer();

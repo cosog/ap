@@ -563,19 +563,41 @@ public class MemoryDataManagerTask {
 		return protocolExtendedFieldNameList;
 	}
 	
-	public static List<DataMapping> getDataMappingByCalColumn(String calColumn){
-		List<DataMapping> list=new ArrayList<>();
+//	public static List<DataMapping> getDataMappingByCalColumn(String calColumn){
+//		List<DataMapping> list=new ArrayList<>();
+//		try{
+//			Map<String,DataMapping> loadProtocolMappingColumnMap=getProtocolMappingColumn();
+//			for (String key : loadProtocolMappingColumnMap.keySet()) {
+//				if(calColumn.equalsIgnoreCase(loadProtocolMappingColumnMap.get(key).getCalColumn())){
+//					list.add(loadProtocolMappingColumnMap.get(key));
+//				}
+//	        }
+//		}catch(Exception e){
+//			list=new ArrayList<>();
+//		}
+//		return list;
+//	}
+	
+	public static DataMapping getDataMappingByCalColumn(String protocolCode,String calColumn){
+		DataMapping dataMapping=null;
 		try{
-			Map<String,DataMapping> loadProtocolMappingColumnMap=getProtocolMappingColumn();
-			for (String key : loadProtocolMappingColumnMap.keySet()) {
-				if(calColumn.equalsIgnoreCase(loadProtocolMappingColumnMap.get(key).getCalColumn())){
-					list.add(loadProtocolMappingColumnMap.get(key));
-				}
-	        }
+			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
+			if(protocol!=null){
+				Map<String,DataMapping> loadProtocolMappingColumnMap=getProtocolMappingColumn();
+				for (String key : loadProtocolMappingColumnMap.keySet()) {
+					if(calColumn.equalsIgnoreCase(loadProtocolMappingColumnMap.get(key).getCalColumn())){
+						ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(key).getName());
+						if(item!=null){
+							dataMapping=loadProtocolMappingColumnMap.get(key);
+							break;
+						}
+					}
+		        }
+			}
 		}catch(Exception e){
-			list=new ArrayList<>();
+			
 		}
-		return list;
+		return dataMapping;
 	}
 	
 	public static Map<String,DataMapping> getProtocolMappingColumn(){

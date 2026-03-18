@@ -399,7 +399,7 @@ var deviceAdditionalInformationTabPanelItems=[{
 		iconCls: 'uplink',
 		disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
 		handler: function (v, o) {
-//			deviceIntelligentFrequencyConversionDataUplink();
+			deviceIntelligentFrequencyConversionDataUplink();
 		}
 	}],
 	html: '<div class="DeviceIntelligentFrequencyConversionConfigurationInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceIntelligentFrequencyConversionInfoTableDiv_id"></div></div>',
@@ -2508,6 +2508,73 @@ var DeviceInfoHandsontableHelper = {
             		}
             		
             		deviceAdditionalInformationData.data=JSON.stringify(FSDiagramConstructionData);
+            	}else if(additionalInformationType==5){
+            		var frequencyConversionData={};
+            		if(deviceIntelligentFrequencyConversionHandsontableHelper!=null && deviceIntelligentFrequencyConversionHandsontableHelper.hot!=undefined){
+            			var frequencyConversionHandsontableData=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getData();
+                    	frequencyConversionData.Enable=frequencyConversionHandsontableData[0][3]?1:0;
+                    	
+                    	frequencyConversionData.FrequencyUpscaling={};
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[1][3]))){
+                    		frequencyConversionData.FrequencyUpscaling.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[1][3]);
+                		}
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[2][3]))){
+                    		frequencyConversionData.FrequencyUpscaling.FrequencyUpperLimit=parseFloat(frequencyConversionHandsontableData[2][3]);
+                		}
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[3][3]))){
+                    		frequencyConversionData.FrequencyUpscaling.StepSize=parseFloat(frequencyConversionHandsontableData[3][3]);
+                		}
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[4][3]))){
+                    		frequencyConversionData.FrequencyUpscaling.StabilityDuration=parseFloat(frequencyConversionHandsontableData[4][3]);
+                		}
+                    	
+                    	frequencyConversionData.FrequencyReduction={};
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[5][3]))){
+                    		frequencyConversionData.FrequencyReduction.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[5][3]);
+                		}
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[6][3]))){
+                    		frequencyConversionData.FrequencyReduction.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[6][3]);
+                		}
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[7][3]))){
+                    		frequencyConversionData.FrequencyReduction.StepSize=parseFloat(frequencyConversionHandsontableData[7][3]);
+                		}
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[8][3]))){
+                    		frequencyConversionData.FrequencyReduction.StabilityDuration=parseFloat(frequencyConversionHandsontableData[8][3]);
+                		}
+                    	
+                    	
+                    	frequencyConversionData.FSDiagramWorkTypeEnable={};
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1201=frequencyConversionHandsontableData[9][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1202=frequencyConversionHandsontableData[10][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1203=frequencyConversionHandsontableData[11][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1204=frequencyConversionHandsontableData[12][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1205=frequencyConversionHandsontableData[13][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1206=frequencyConversionHandsontableData[14][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1207=frequencyConversionHandsontableData[15][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1208=frequencyConversionHandsontableData[16][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1209=frequencyConversionHandsontableData[17][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1210=frequencyConversionHandsontableData[18][3]?1:0;
+                    	
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1212=frequencyConversionHandsontableData[19][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1213=frequencyConversionHandsontableData[20][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1214=frequencyConversionHandsontableData[21][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1215=frequencyConversionHandsontableData[22][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1216=frequencyConversionHandsontableData[23][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1217=frequencyConversionHandsontableData[24][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1218=frequencyConversionHandsontableData[25][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1219=frequencyConversionHandsontableData[26][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1220=frequencyConversionHandsontableData[27][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1221=frequencyConversionHandsontableData[28][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1222=frequencyConversionHandsontableData[29][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1223=frequencyConversionHandsontableData[30][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1224=frequencyConversionHandsontableData[31][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1225=frequencyConversionHandsontableData[32][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1226=frequencyConversionHandsontableData[33][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1227=frequencyConversionHandsontableData[34][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=frequencyConversionHandsontableData[35][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=frequencyConversionHandsontableData[36][3]?1:0;
+            		}
+            		deviceAdditionalInformationData.data=JSON.stringify(frequencyConversionData);
             	}
             	
             	Ext.Ajax.request({
@@ -5217,6 +5284,71 @@ function deviceSystemParameterDataUplink(){
 	}
 }
 
+
+function deviceIntelligentFrequencyConversionDataUplink(){
+	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+	if(deviceInfoHandsontableData.length>0){
+		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+		var applicationScenarios=0;
+		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+			applicationScenarios=1;
+		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+			applicationScenarios=2;
+		}
+
+		Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		Ext.Ajax.request({
+            url: context + '/wellInformationManagerController/deviceIntelligentFrequencyConversionDataUplink',
+            method: "POST",
+            params: {
+            	deviceId: deviceId
+            },
+            success: function (response, action) {
+            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+            	var result =  Ext.JSON.decode(response.responseText);
+            	
+            	if (result.flag == false) {
+                    Ext.MessageBox.show({
+                        title: loginUserLanguageResource.tip,
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        icon: Ext.MessageBox.INFO,
+                        buttons: Ext.Msg.OK,
+                        fn: function () {
+                            window.location.href = context + "/login";
+                        }
+                    });
+                } else if (result.flag == true && result.error == false) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+                }  else if (result.flag == true && result.error == true) {
+                	const plugin = deviceIntelligentFrequencyConversionHandsontableHelper.hot.getPlugin('hiddenColumns');
+                	plugin.showColumns([6]);
+                	plugin.hideColumns([5]);
+                	deviceIntelligentFrequencyConversionHandsontableHelper.hot.render();
+                	
+                	var codeColumnValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtProp('itemCode');
+                	for(var i=0;i<codeColumnValue.length;i++){
+                		for(var j=0;j<result.downStatusList.length;j++){
+                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                				deviceIntelligentFrequencyConversionHandsontableHelper.hot.setDataAtRowProp(i,'uplinkStatus',result.downStatusList[j].status);
+                				break;
+                			}
+                		}
+                	}
+                } 
+            },
+            failure: function () {
+            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+            }
+        });
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
 function CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applicationScenarios,isNew){
 	if(fsDiagramConstructionHandsontableHelper!=null){
 		if(fsDiagramConstructionHandsontableHelper.hot!=undefined){
@@ -6008,7 +6140,7 @@ function CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId,deviceN
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceIntelligentFrequencyConversionHandsontableHelper==null || deviceIntelligentFrequencyConversionHandsontableHelper.hot==undefined){
 				deviceIntelligentFrequencyConversionHandsontableHelper = DeviceIntelligentFrequencyConversionHandsontableHelper.createNew("DeviceIntelligentFrequencyConversionInfoTableDiv_id");;
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 				var columns="[{data:'id'}," 
 					+"{data:'itemClasses'}," 
 					+"{data:'itemName'}," 
@@ -6067,7 +6199,7 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(isNotVal(deviceIntelligentFrequencyConversionHandsontableHelper.hot)){
 	            	var itemValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
-		            if(isNotVal(itemValue) && isNotVal(value)){
+		            if(isNotVal(itemValue+"") && isNotVal(value)){
 		            	if(value!=loginUserLanguageResource.uplinkFailed){
 		            		if(isNumber(itemValue) && isNumber(value)){
 		            			if(parseFloat(itemValue)==parseFloat(value)){
@@ -6165,16 +6297,17 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
 	                    
 	                    if(DeviceManagerModuleEditFlag==1){
-	                    	if (visualColIndex !=3) {
+	                    	if (visualColIndex !=3 && visualColIndex !=6) {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = deviceIntelligentFrequencyConversionHandsontableHelper.addCellStyle;
+			                }else if (visualColIndex ==6) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = deviceIntelligentFrequencyConversionHandsontableHelper.addUplinkStatusCellStyle;
 			                }
 	                    }else{
 	                    	cellProperties.readOnly = true;
-	                    	if (visualColIndex !=3 && visualColIndex !=5) {
+	                    	if (visualColIndex !=3) {
 	                    		cellProperties.renderer = deviceIntelligentFrequencyConversionHandsontableHelper.addCellStyle;
-	                    	}else if (visualColIndex == 6) {
-	                    		cellProperties.renderer = deviceIntelligentFrequencyConversionHandsontableHelper.addUplinkStatusCellStyle;
 	                    	}
 	                    }
 	                    
@@ -6245,97 +6378,119 @@ function deviceIntelligentFrequencyConversionDataDownlink(){
 		}
 		
 		var frequencyConversionData={};
-
-		
         if(deviceIntelligentFrequencyConversionHandsontableHelper!=null && deviceIntelligentFrequencyConversionHandsontableHelper.hot!=undefined){
         	var frequencyConversionHandsontableData=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getData();
-        	var frequencyConversionDataArr=[];
-        	for(var i=0;i<frequencyConversionHandsontableData.length;i++){
-        		var itemCode=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtRowProp(i,'itemCode');
-        		var itemValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtRowProp(i,'itemValue');
-        		
-        		var cellProperties = deviceIntelligentFrequencyConversionHandsontableHelper.hot.getCellMeta(i, 3);
-        		var cellType = cellProperties.type;
-
-        		if (cellType === 'checkbox') {
-        			itemValue=itemValue?1:0;
-        		} else if (cellType === 'text' || cellType === 'numeric') {
-                	if(isNumber(parseFloat(itemValue))){
-                		itemValue=parseFloat(itemValue);
-            		}
-        		}
-        		frequencyConversionDataArr.push({key:itemCode,value:itemValue});
-        	}
+        	frequencyConversionData.Enable=frequencyConversionHandsontableData[0][3]?1:0;
+        	
+        	frequencyConversionData.FrequencyUpscaling={};
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[1][3]))){
+        		frequencyConversionData.FrequencyUpscaling.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[1][3]);
+    		}
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[2][3]))){
+        		frequencyConversionData.FrequencyUpscaling.FrequencyUpperLimit=parseFloat(frequencyConversionHandsontableData[2][3]);
+    		}
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[3][3]))){
+        		frequencyConversionData.FrequencyUpscaling.StepSize=parseFloat(frequencyConversionHandsontableData[3][3]);
+    		}
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[4][3]))){
+        		frequencyConversionData.FrequencyUpscaling.StabilityDuration=parseFloat(frequencyConversionHandsontableData[4][3]);
+    		}
+        	
+        	frequencyConversionData.FrequencyReduction={};
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[5][3]))){
+        		frequencyConversionData.FrequencyReduction.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[5][3]);
+    		}
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[6][3]))){
+        		frequencyConversionData.FrequencyReduction.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[6][3]);
+    		}
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[7][3]))){
+        		frequencyConversionData.FrequencyReduction.StepSize=parseFloat(frequencyConversionHandsontableData[7][3]);
+    		}
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[8][3]))){
+        		frequencyConversionData.FrequencyReduction.StabilityDuration=parseFloat(frequencyConversionHandsontableData[8][3]);
+    		}
         	
         	
+        	frequencyConversionData.FSDiagramWorkTypeEnable={};
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1201=frequencyConversionHandsontableData[9][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1202=frequencyConversionHandsontableData[10][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1203=frequencyConversionHandsontableData[11][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1204=frequencyConversionHandsontableData[12][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1205=frequencyConversionHandsontableData[13][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1206=frequencyConversionHandsontableData[14][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1207=frequencyConversionHandsontableData[15][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1208=frequencyConversionHandsontableData[16][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1209=frequencyConversionHandsontableData[17][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1210=frequencyConversionHandsontableData[18][3]?1:0;
         	
-//        	frequencyConversionData.Enable=frequencyConversionHandsontableData[0][3]?1:0;
-//
-//        	
-//        	var columns="[{data:'id'}," 
-//				+"{data:'itemClasses'}," 
-//				+"{data:'itemName'}," 
-//				+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceIntelligentFrequencyConversionHandsontableHelper);}}," 
-//				+"{data:'itemCode'}," 
-//				+"{data:'downlinkStatus'}," 
-//				+"{data:'uplinkStatus'}" 
-//				+"]";
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1212=frequencyConversionHandsontableData[19][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1213=frequencyConversionHandsontableData[20][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1214=frequencyConversionHandsontableData[21][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1215=frequencyConversionHandsontableData[22][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1216=frequencyConversionHandsontableData[23][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1217=frequencyConversionHandsontableData[24][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1218=frequencyConversionHandsontableData[25][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1219=frequencyConversionHandsontableData[26][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1220=frequencyConversionHandsontableData[27][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1221=frequencyConversionHandsontableData[28][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1222=frequencyConversionHandsontableData[29][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1223=frequencyConversionHandsontableData[30][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1224=frequencyConversionHandsontableData[31][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1225=frequencyConversionHandsontableData[32][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1226=frequencyConversionHandsontableData[33][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1227=frequencyConversionHandsontableData[34][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=frequencyConversionHandsontableData[35][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=frequencyConversionHandsontableData[36][3]?1:0;
         	
-        	alert(JSON.stringify(frequencyConversionDataArr));
-        		
-//			Ext.getCmp("DeviceCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
-//			Ext.Ajax.request({
-//	            url: context + '/wellInformationManagerController/deviceProductionDataDownlink',
-//	            method: "POST",
-//	            params: {
-//	            	deviceId: deviceId,
-//	            	deviceName: deviceName,
-//	            	productionData:JSON.stringify(deviceProductionData),
-//	            	pumpingUnitInfo:JSON.stringify(pumpingUnitInfo),
-//	            	manualInterventionResultName:manualInterventionResultName,
-//	            	applicationScenarios:applicationScenarios
-//	            },
-//	            success: function (response, action) {
-//	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
-//	            	
-//	            	var result =  Ext.JSON.decode(response.responseText);
-//	            	
-//	            	if (result.flag == false) {
-//	                    Ext.MessageBox.show({
-//	                        title: loginUserLanguageResource.tip,
-//	                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
-//	                        icon: Ext.MessageBox.INFO,
-//	                        buttons: Ext.Msg.OK,
-//	                        fn: function () {
-//	                            window.location.href = context + "/login";
-//	                        }
-//	                    });
-//	                } else if (result.flag == true && result.error == false) {
-//	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-//	                }  else if (result.flag == true && result.error == true) {
-//	                    
-//	                	const plugin = productionHandsontableHelper.hot.getPlugin('hiddenColumns');
-//                    	plugin.showColumns([4]);
-//                    	plugin.hideColumns([5]);
-//                    	productionHandsontableHelper.hot.render();
-//                    	
-//                    	var codeColumnValue=productionHandsontableHelper.hot.getDataAtProp('itemCode');
-//                    	for(var i=0;i<codeColumnValue.length;i++){
-//                    		for(var j=0;j<result.downStatusList.length;j++){
-//                    			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
-//                    				productionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
-//                    				break;
-//                    			}
-//                    		}
-//                    	}
-////	                	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-//	                } 
-//	            },
-//	            failure: function () {
-//	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
-//	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-//	            }
-//	        });
+			Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+			Ext.Ajax.request({
+	            url: context + '/wellInformationManagerController/deviceIntelligentFrequencyConversionDataDownlink',
+	            method: "POST",
+	            params: {
+	            	deviceId: deviceId,
+	            	deviceName: deviceName,
+	            	data:JSON.stringify(frequencyConversionData)
+	            },
+	            success: function (response, action) {
+	            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+	            	
+	            	var result =  Ext.JSON.decode(response.responseText);
+	            	
+	            	if (result.flag == false) {
+	                    Ext.MessageBox.show({
+	                        title: loginUserLanguageResource.tip,
+	                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+	                        icon: Ext.MessageBox.INFO,
+	                        buttons: Ext.Msg.OK,
+	                        fn: function () {
+	                            window.location.href = context + "/login";
+	                        }
+	                    });
+	                } else if (result.flag == true && result.error == false) {
+	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+	                }  else if (result.flag == true && result.error == true) {
+	                    
+	                	const plugin = deviceIntelligentFrequencyConversionHandsontableHelper.hot.getPlugin('hiddenColumns');
+                    	plugin.showColumns([5]);
+                    	plugin.hideColumns([6]);
+                    	deviceIntelligentFrequencyConversionHandsontableHelper.hot.render();
+                    	
+                    	var codeColumnValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtProp('itemCode');
+                    	for(var i=0;i<codeColumnValue.length;i++){
+                    		for(var j=0;j<result.downStatusList.length;j++){
+                    			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                    				deviceIntelligentFrequencyConversionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+                    				break;
+                    			}
+                    		}
+                    	}
+	                } 
+	            },
+	            failure: function () {
+	            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+	            }
+	        });
 		
         }
 	}else{

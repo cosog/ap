@@ -53,6 +53,7 @@ import com.cosog.model.VideoKey;
 import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.FSDiagramConstructionRequestData;
+import com.cosog.model.calculate.IntelligentFrequencyConversionData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.PumpingPRTFData;
@@ -1956,6 +1957,8 @@ public class WellInformationManagerController extends BaseController {
 				}
 			}else if(additionalInformationSaveData.getType()==4){
 				this.wellInformationManagerService.saveFSDiagramConstructionData(deviceId,additionalInformationSaveData.getData());
+			}else if(additionalInformationSaveData.getType()==5){
+				this.wellInformationManagerService.saveFrequencyConversionDataData(deviceId,additionalInformationSaveData.getData());
 			}
 		}
 		
@@ -3639,6 +3642,129 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/deviceIntelligentFrequencyConversionDataDownlink")
+	public String deviceIntelligentFrequencyConversionDataDownlink() throws Exception {
+		String deviceId = request.getParameter("deviceId");
+		String data = request.getParameter("data");
+		
+		String jsonLogin = "";
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		// 用户不存在
+		if (null != userInfo) {
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+			if (StringManagerUtils.isNotNull(deviceId)) {
+				String sql = "select t5.name as protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus,"
+						+ " t6.allpath_zh_cn,t5.code as protocolCode" 
+					    + " from tbl_device t" 
+					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
+					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
+					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id"
+					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
+					    +" where t.id=" + deviceId;
+				List<?> list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					Object[] obj=(Object[]) list.get(0);
+					String protocolName=obj[7]+"/"+obj[0]+"";
+					String protocolCode=obj[8]+"";
+					String tcpType=obj[1]+"";
+					String signinid=obj[2]+"";
+					String ipPort=obj[3]+"";
+					String slave=obj[4]+"";
+					String deviceType=obj[5]+"";
+					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
+						if (commStatus > 0) {
+							Gson gson = new Gson();
+							java.lang.reflect.Type type=null;
+							Map<String,String> downStatusMap=new LinkedHashMap<>();
+							type = new TypeToken<IntelligentFrequencyConversionData>() {}.getType();
+							IntelligentFrequencyConversionData frequencyConversionData=gson.fromJson(data, type);
+							if(frequencyConversionData!=null){
+								downStatusMap.put("write_FrequencyConversionEnable", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable",frequencyConversionData.getEnable()+"",userInfo.getLanguageName()));
+								if(frequencyConversionData.getFrequencyUpscaling()!=null){
+									downStatusMap.put("write_FrequencyConversion_Up_FullnessCoefficientLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FullnessCoefficientLimit",frequencyConversionData.getFrequencyUpscaling().getFullnessCoefficientLimit()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversion_Up_FrequencyUpperLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FrequencyUpperLimit",frequencyConversionData.getFrequencyUpscaling().getFrequencyUpperLimit()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversion_Up_StepSize", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_StepSize",frequencyConversionData.getFrequencyUpscaling().getStepSize()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversion_Up_StabilityDuration", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_StabilityDuration",frequencyConversionData.getFrequencyUpscaling().getStabilityDuration()+"",userInfo.getLanguageName()));
+								}
+								if(frequencyConversionData.getFrequencyReduction()!=null){
+									downStatusMap.put("write_FrequencyConversion_Down_FullnessCoefficientLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FullnessCoefficientLimit",frequencyConversionData.getFrequencyReduction().getFullnessCoefficientLimit()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversion_Down_FrequencyLowerLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FrequencyLowerLimit",frequencyConversionData.getFrequencyReduction().getFrequencyLowerLimit()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversion_Down_StepSize", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StepSize",frequencyConversionData.getFrequencyReduction().getStepSize()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversion_Down_StabilityDuration", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StabilityDuration",frequencyConversionData.getFrequencyReduction().getStabilityDuration()+"",userInfo.getLanguageName()));
+								}
+								
+								if(frequencyConversionData.getFSDiagramWorkTypeEnable()!=null){
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1201", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1201",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1201()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1202", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1202",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1202()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1203", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1203",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1203()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1204", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1204",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1204()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1205", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1205",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1205()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1206", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1206",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1206()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1207", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1207",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1207()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1208", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1208",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1208()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1209", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1209",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1209()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1210", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1210",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1210()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1212", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1212",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1212()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1213", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1213",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1213()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1214", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1214",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1214()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1215", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1215",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1215()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1216", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1216",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1216()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1217", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1217",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1217()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1218", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1218",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1218()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1219", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1219",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1219()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1220", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1220",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1220()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1221", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1221",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1221()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1222", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1222",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1222()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1223", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1223",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1223()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1224", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1224",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1224()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1225", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1225",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1225()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1226", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1226",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1226()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1227", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1227",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1227()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1230", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1230",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1230()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1232", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1232",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1232()+"",userInfo.getLanguageName()));
+								}
+								
+								this.wellInformationManagerService.saveFrequencyConversionDataData(StringManagerUtils.stringToInteger(deviceId), data);
+							}
+							
+							StringBuffer result_json = new StringBuffer();
+							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
+							for (String key : downStatusMap.keySet()) {
+								result_json.append("{\"key\":\""+key+"\",\"status\":\""+downStatusMap.get(key)+"\"},");
+					        }
+							if(result_json.toString().endsWith(",")){
+								result_json.deleteCharAt(result_json.length() - 1);
+							}
+							result_json.append("]}");
+							jsonLogin=result_json.toString();
+						} else {
+						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						}
+					}else{
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+					}
+				}else{
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+				}
+			}else {
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+			}
+
+		} else {
+			jsonLogin = "{success:true,flag:false}";
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonLogin);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/deviceSystemParameterDataDownlink")
 	public String deviceSystemParameterDataDownlink() throws Exception {
 		String deviceId = request.getParameter("deviceId");
@@ -3712,26 +3838,15 @@ public class WellInformationManagerController extends BaseController {
 	
 	public String dataDownlink(String protocolCode,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String writeValue,String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		List<DataMapping> dataMappingList=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
+		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(protocolCode,calColumn);
 		String status=languageResourceMap.get("noDownlink");
-		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		int reslut=0;
-		if(protocol!=null && dataMappingList.size()>0){
-			for(int i=0;i<dataMappingList.size();i++){
-				if(dataMappingList.get(i).getCalculateEnable()==1){
-					ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, dataMappingList.get(i).getName());
-					if(item!=null){
-						reslut=deviceControlOperation_Mdubus(protocolCode,tcpType,signinid,ipPort,Slave,dataMappingList.get(i).getMappingColumn(),writeValue);
-						if(reslut==1){
-							status=languageResourceMap.get("downlinkSuccessfully");
-						}else{
-							status=languageResourceMap.get("downlinkFailed");
-						}
-						break;
-					}
-					
-					
-				}
+		if(dataMapping!=null){
+			reslut=deviceControlOperation_Mdubus(protocolCode,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),writeValue);
+			if(reslut==1){
+				status=languageResourceMap.get("downlinkSuccessfully");
+			}else{
+				status=languageResourceMap.get("downlinkFailed");
 			}
 		}
 		return status;
@@ -4247,21 +4362,123 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/deviceIntelligentFrequencyConversionDataUplink")
+	public String deviceIntelligentFrequencyConversionDataUplink() throws Exception {
+		String deviceId = request.getParameter("deviceId");
+		
+		String jsonLogin = "";
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		
+		String deviceTableName="tbl_device";
+		// 用户不存在
+		if (null != userInfo) {
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+			if (StringManagerUtils.isNotNull(deviceId)) {
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus," 
+						+ " t6.allpath_zh_cn" 
+					    + " from tbl_device t" 
+					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
+					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
+					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" 
+					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
+					    + " where t.id=" + deviceId;
+				List<?> list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					Object[] obj=(Object[]) list.get(0);
+					String protocolCode=obj[0]+"";
+					String tcpType=obj[1]+"";
+					String signinid=obj[2]+"";
+					String ipPort=obj[3]+"";
+					String slave=obj[4]+"";
+					String deviceType=obj[5]+"";
+					int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
+					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
+						if (commStatus > 0) {
+							Map<String,String> statusMap=new LinkedHashMap<>();
+							statusMap.put("write_FrequencyConversionEnable", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable",userInfo.getLanguageName()));
+							
+							statusMap.put("write_FrequencyConversion_Up_FullnessCoefficientLimit", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FullnessCoefficientLimit",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversion_Up_FrequencyUpperLimit", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FrequencyUpperLimit",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversion_Up_StepSize", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_StepSize",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversion_Up_StabilityDuration", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_StabilityDuration",userInfo.getLanguageName()));
+							
+							statusMap.put("write_FrequencyConversion_Down_FullnessCoefficientLimit", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FullnessCoefficientLimit",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversion_Down_FrequencyLowerLimit", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FrequencyLowerLimit",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversion_Down_StepSize", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StepSize",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversion_Down_StabilityDuration", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StabilityDuration",userInfo.getLanguageName()));
+							
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1201", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1201",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1202", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1202",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1203", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1203",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1204", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1204",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1205", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1205",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1206", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1206",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1207", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1207",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1208", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1208",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1209", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1209",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1210", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1210",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1212", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1212",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1213", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1213",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1214", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1214",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1215", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1215",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1216", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1216",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1217", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1217",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1218", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1218",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1219", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1219",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1220", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1220",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1221", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1221",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1222", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1222",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1223", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1223",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1224", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1224",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1225", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1225",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1226", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1226",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1227", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1227",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1230", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1230",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1232", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1232",userInfo.getLanguageName()));
+							
+							StringBuffer result_json = new StringBuffer();
+							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
+							for (String key : statusMap.keySet()) {
+								result_json.append("{\"key\":\""+key+"\",\"status\":\""+statusMap.get(key)+"\"},");
+					        }
+							if(result_json.toString().endsWith(",")){
+								result_json.deleteCharAt(result_json.length() - 1);
+							}
+							result_json.append("]}");
+							jsonLogin=result_json.toString();
+						} else {
+						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						}
+					}else{
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+					}
+				}else{
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+				}
+			}else {
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+			}
+
+		} else {
+			jsonLogin = "{success:true,flag:false}";
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonLogin);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	public String dataUplink(String protocolCode,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		List<DataMapping> dataMappingList=MemoryDataManagerTask.getDataMappingByCalColumn(calColumn);
-		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
+		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(protocolCode,calColumn);
 		String result=languageResourceMap.get("noUplink");
-		if(protocol!=null && dataMappingList.size()>0){
-			for(int i=0;i<dataMappingList.size();i++){
-				if(dataMappingList.get(i).getCalculateEnable()==1){
-					ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, dataMappingList.get(i).getName());
-					if(item!=null){
-						result=readAddr(protocolCode,tcpType,signinid,ipPort,Slave,dataMappingList.get(i).getMappingColumn(),language);
-						break;
-					}
-				}
-			}
+		if(dataMapping!=null){
+			result=readAddr(protocolCode,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),language);
 		}
 		return result;
 	}

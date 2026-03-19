@@ -3,6 +3,7 @@ package com.cosog.controller.datainterface;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -2929,7 +2930,7 @@ public class DriverAPIController extends BaseController{
 		return r;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "static-access", "unused" })
 	public String DataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,String data){
 		String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 //		StringManagerUtils.printLog("采集数据处理前内存情况,设备名称:"+deviceInfo.getDeviceName()+",采集时间:"+acqTime);
@@ -3025,20 +3026,18 @@ public class DriverAPIController extends BaseController{
 						saveVacuateData=(timeDiff>= Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*1000);
 					}
 					
-					
-					
-//					if(timeDiff>= Config.getInstance().configFile.getAp().getDataVacuate().getSaveInterval()*60*60*1000){
-//						saveVacuateData=true;
-//					}
-					
-					
 					CommResponseData commResponseData=null;
 					TimeEffResponseData timeEffResponseData=null;
 					
-					SRPCalculateRequestData srpCalculateRequestData=null;
-					SRPCalculateResponseData srpCalculateResponseData=null;
+					
 					WorkType workType=null;
 					PCPCalculateResponseData pcpCalculateResponseData=null;
+					
+					
+					
+					SRPCalculateReturnData srpCalculateReturnData=new SRPCalculateReturnData();
+					
+					PCPCalculateReturnData pcpCalculateReturnData=new PCPCalculateReturnData();
 					
 					RealtimeTotalInfo realtimeTotalInfo=MemoryDataManagerTask.getDeviceRealtimeTotalDataById(deviceInfo.getId()+"");
 					if(realtimeTotalInfo==null){
@@ -3248,17 +3247,16 @@ public class DriverAPIController extends BaseController{
 					List<ProtocolItemResolutionData> inputItemItemResolutionDataList=new ArrayList<>();;
 					
 					if(deviceInfo.getCalculateType()==1){
-						srpCalculateRequestData=new SRPCalculateRequestData();
-						srpCalculateRequestData.init();
-						srpCalculateResponseData=SRPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
-								acqTime,calItemResolutionDataList,runStatus,srpCalculateRequestData,save,saveVacuateData,checkSign);
+						srpCalculateReturnData=SRPDataProcessing(deviceInfo,acqGroup,
+								commResponseData,timeEffResponseData,acqTime,
+								calItemResolutionDataList,runStatus);
 						inputItemItemResolutionDataList=getSRPInputItemData(deviceInfo);
-						if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-							workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+						if(srpCalculateReturnData.getSrpCalculateResponseData()!=null && srpCalculateReturnData.getSrpCalculateResponseData().getCalculationStatus().getResultStatus()==1){
+							workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateReturnData.getSrpCalculateResponseData().getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
 						}
 					}else if(deviceInfo.getCalculateType()==2){
-						pcpCalculateResponseData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
-								acqTime,calItemResolutionDataList,runStatus,save,saveVacuateData,checkSign);
+						pcpCalculateReturnData=PCPDataProcessing(deviceInfo,acqGroup,commResponseData,timeEffResponseData,
+								acqTime,calItemResolutionDataList,runStatus);
 						inputItemItemResolutionDataList=getPCPInputItemData(deviceInfo);
 					}
 					
@@ -3283,7 +3281,7 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					acquisitionItemInfoList=DataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
-					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,srpCalculateResponseData,deviceInfo,acqTime);
+					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,srpCalculateReturnData.getSrpCalculateResponseData(),deviceInfo,acqTime);
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
 					
 					
@@ -3369,6 +3367,20 @@ public class DriverAPIController extends BaseController{
 					
 					//如果满足单组入库间隔或者有报警，保存历史数据
 					if(save || alarm){
+						if(deviceInfo.getCalculateType()==1){
+							saveSRPCalculateData(deviceInfo,acqTime,
+									commResponseData,timeEffResponseData,
+									srpCalculateReturnData,saveVacuateData
+									);
+						}else if(deviceInfo.getCalculateType()==2){
+							savePCPCalculateData(deviceInfo,acqTime,
+									commResponseData,timeEffResponseData,
+									pcpCalculateReturnData,saveVacuateData
+									);
+						}
+						
+						
+						
 						if(Config.getInstance().configFile.getAp().getOthers().getSaveAcqRawData()){
 							String rawData=acqGroup.getRawData();
 							if(StringManagerUtils.isNotNull(rawData)){
@@ -3556,7 +3568,7 @@ public class DriverAPIController extends BaseController{
 							if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
 								int items=3;
 								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
-										srpCalculateResponseData,srpCalculateRequestData,resultAlarmLevel,
+										srpCalculateReturnData.getSrpCalculateResponseData(),srpCalculateReturnData.getSrpCalculateRequestData(),resultAlarmLevel,
 										alarmShowStyle,
 										protocol,
 										checkSign);
@@ -3627,27 +3639,124 @@ public class DriverAPIController extends BaseController{
 				&& !updateTotalDataSql.toLowerCase().contains("producingfluidLevel")){
 			updateTotalDataSql+=",t.producingfluidLevel= "+srpCalculateResponseData.getProduction().getProducingfluidLevel();
 		}
-		
 	}
 	
-	public SRPCalculateResponseData SRPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,String acqTime,
-			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,SRPCalculateRequestData srpCalculateRequestData,
-			boolean save,boolean saveVacuateData,int checkSign){
+	public void saveSRPCalculateData(DeviceInfo deviceInfo,String acqTime,
+			CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
+			SRPCalculateReturnData srpCalculateReturnData,boolean saveVacuateData
+			){
+		String SRPRealtimeTable="tbl_srpacqdata_latest";
+		String SRPHistoryTable="tbl_srpacqdata_hist";
+		String SRPTotalDataTable="tbl_srpdailycalculationdata";
+		String SRPVacuateTable="tbl_srpacqdata_vacuate";
+		
+		String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
+		if(!StringManagerUtils.timeMatchDate(acqTime, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
+			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
+		}
+		
+		int result=commonDataService.getBaseDao().updateOrDeleteBySql(srpCalculateReturnData.getUpdateSRPRealtimeData());
+		if(result==0){
+			result=commonDataService.getBaseDao().updateOrDeleteBySql(srpCalculateReturnData.getInsertSRPHistSql().replace(SRPHistoryTable, SRPRealtimeTable));
+		}
+		
+		commonDataService.getBaseDao().updateOrDeleteBySql(srpCalculateReturnData.getInsertSRPHistSql());
+		commonDataService.getBaseDao().updateOrDeleteBySql(srpCalculateReturnData.getUpdateSRPTotalDataSql());
+		
+		if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+			List<String> clobCont=new ArrayList<String>();
+			String updateRealRangeClobSql="update "+SRPRealtimeTable+" t set t.commrange=?";
+			String updateHisRangeClobSql="update "+SRPHistoryTable+" t set t.commrange=?";
+			String updateTotalRangeClobSql="update "+SRPTotalDataTable+" t set t.commrange=?";
+			clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+			if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+				updateRealRangeClobSql+=", t.runrange=?";
+				updateHisRangeClobSql+=", t.runrange=?";
+				updateTotalRangeClobSql+=", t.runrange=?";
+				clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+			}
+			updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
+			updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+			updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+			commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
+			commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+			commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
+		}
+		
+		if(srpCalculateReturnData.getFESDiagramCalculate() || srpCalculateReturnData.getIsAcqCalResultData()){
+			try {
+				commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,srpCalculateReturnData.getSrpCalculateRequestData(),srpCalculateReturnData.getSrpCalculateResponseData(),srpCalculateReturnData.getFesDiagramEnabled());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(srpCalculateReturnData.getTotalAnalysisResponseData()!=null&&srpCalculateReturnData.getTotalAnalysisResponseData().getResultStatus()==1){//保存汇总数据
+			int recordCount=srpCalculateReturnData.getTotalAnalysisRequestData().getAcqTime()!=null?srpCalculateReturnData.getTotalAnalysisRequestData().getAcqTime().size():0;
+			try {
+				commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(deviceInfo,srpCalculateReturnData.getTotalAnalysisResponseData(),srpCalculateReturnData.getTotalAnalysisRequestData(),date,recordCount);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(saveVacuateData){
+			commonDataService.getBaseDao().updateOrDeleteBySql(srpCalculateReturnData.getInsertSRPHistSql().replaceAll(SRPHistoryTable, SRPVacuateTable));
+			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+				List<String> clobCont=new ArrayList<String>();
+				String updateHisRangeClobSql="update "+SRPVacuateTable+" t set t.commrange=?";
+				clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+					updateHisRangeClobSql+=", t.runrange=?";
+					clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+				}
+				updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+				commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+			}
+		
+			if(srpCalculateReturnData.getFESDiagramCalculate() || srpCalculateReturnData.getIsAcqCalResultData()){
+				try {
+					commonDataService.getBaseDao().saveVacuateFESDiagramAndCalculateData(deviceInfo,srpCalculateReturnData.getSrpCalculateRequestData(),srpCalculateReturnData.getSrpCalculateResponseData(),srpCalculateReturnData.getFesDiagramEnabled());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	@SuppressWarnings("unused")
+	public SRPCalculateReturnData SRPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,
+			CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,String acqTime,
+			List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus
+			){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		
 		DataWriteBackConfig dataWriteBackConfig=MemoryDataManagerTask.getDataWriteBackConfig();
 		
 		SRPDeviceTodayData deviceTodayData=null;
+		SRPCalculateReturnData srpCalculateReturnData=new SRPCalculateReturnData();
+		
 		SRPCalculateResponseData srpCalculateResponseData=null;
+		TotalAnalysisRequestData totalAnalysisRequestData=null;
+		TotalAnalysisResponseData totalAnalysisResponseData=null;
+		
+		srpCalculateReturnData.setSrpCalculateRequestData(new SRPCalculateRequestData());
+		srpCalculateReturnData.getSrpCalculateRequestData().init();
 		try{
 			int FESDiagramCheckSign=1;
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			
-			String realtimeTable="tbl_srpacqdata_latest";
-			String historyTable="tbl_srpacqdata_hist";
-			String totalDataTable="tbl_srpdailycalculationdata";
-			String vacuateTable="tbl_srpacqdata_vacuate";
+			String SRPRealtimeTable="tbl_srpacqdata_latest";
+			String SRPHistoryTable="tbl_srpacqdata_hist";
+			String SRPTotalDataTable="tbl_srpdailycalculationdata";
+			String SRPVacuateTable="tbl_srpacqdata_vacuate";
 			if(acqGroup!=null){
 				String protocolCode="";
 				String acqProtocolType="";
@@ -3664,13 +3773,10 @@ public class DriverAPIController extends BaseController{
 						date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
 					}
 					
-					updateRequestData(srpCalculateRequestData,deviceInfo);
+					updateRequestData(srpCalculateReturnData.getSrpCalculateRequestData(),deviceInfo);
 					
-					TotalAnalysisResponseData totalAnalysisResponseData=null;
-					TotalAnalysisRequestData totalAnalysisRequestData=null;
 					String totalRequestData="";
 					
-					boolean isAcqCalResultData=false;
 					boolean isAcqRPMData=false;
 					
 					int acqResultCode=0;
@@ -3690,35 +3796,36 @@ public class DriverAPIController extends BaseController{
 					acqRPM=0;
 					
 					
-					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1,t.runStatus="+runStatus;
+					String updateSRPRealtimeData="update "+SRPRealtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1,t.runStatus="+runStatus;
 					
 					
 					String insertHistColumns="deviceid,acqTime,CommStatus,runStatus";
 					String insertHistValue=deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),1,"+runStatus;
-					String insertHistSql="";
+					String insertSRPHistSql="";
 					
-					String updateTotalDataSql="update "+totalDataTable+" t set t.CommStatus=1,t.runStatus="+runStatus;
+					String updateSRPTotalDataSql="update "+SRPTotalDataTable+" t set t.CommStatus=1,t.runStatus="+runStatus;
 					
 					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-						updateRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+						updateSRPRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
 						insertHistColumns+=",commTimeEfficiency,commTime";
 						insertHistValue+=","+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","+commResponseData.getCurrent().getCommEfficiency().getTime();
 						
-						updateTotalDataSql+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+						updateSRPTotalDataSql+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
 					}
 					if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
-						updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+						updateSRPRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
 								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
 						insertHistColumns+=",runTimeEfficiency,runTime";
 						insertHistValue+=","+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+","+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
-						updateTotalDataSql+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+						updateSRPTotalDataSql+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
 								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
 					}
 					
 					int FESDiagramAcqCount=0;
 					boolean FESDiagramCalculate=false;
+					boolean isAcqCalResultData=false;
 					for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
 						for(int j=0;j<protocol.getItems().size();j++){
 							if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
@@ -3752,28 +3859,28 @@ public class DriverAPIController extends BaseController{
 									
 									if("TubingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(srpCalculateRequestData.getProduction()!=null){
-												srpCalculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
+											if(srpCalculateReturnData.getSrpCalculateRequestData().getProduction()!=null){
+												srpCalculateReturnData.getSrpCalculateRequestData().getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
 												deviceInfo.getSrpCalculateRequestData().getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
-											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+											updateSRPTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
 									}else if("CasingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(srpCalculateRequestData.getProduction()!=null){
-												srpCalculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
+											if(srpCalculateReturnData.getSrpCalculateRequestData().getProduction()!=null){
+												srpCalculateReturnData.getSrpCalculateRequestData().getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
 												deviceInfo.getSrpCalculateRequestData().getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
-											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+											updateSRPTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
 									}else if("WellHeadTemperature".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(srpCalculateRequestData.getProduction()!=null){
-												srpCalculateRequestData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
+											if(srpCalculateReturnData.getSrpCalculateRequestData().getProduction()!=null){
+												srpCalculateReturnData.getSrpCalculateRequestData().getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
 												deviceInfo.getSrpCalculateRequestData().getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
@@ -3781,23 +3888,23 @@ public class DriverAPIController extends BaseController{
 										}
 									}else if("ProducingfluidLevel".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(srpCalculateRequestData.getProduction()!=null){
-												srpCalculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
+											if(srpCalculateReturnData.getSrpCalculateRequestData().getProduction()!=null){
+												srpCalculateReturnData.getSrpCalculateRequestData().getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
 												deviceInfo.getSrpCalculateRequestData().getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
 											}
-											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+											updateSRPTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
 									}else if("BottomHolePressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+											updateSRPTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
 									}else if("VolumeWaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn()) || "WaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(srpCalculateRequestData.getProduction()!=null){
-												srpCalculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
-												srpCalculateRequestData.getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
+											if(srpCalculateReturnData.getSrpCalculateRequestData().getProduction()!=null){
+												srpCalculateReturnData.getSrpCalculateRequestData().getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
+												srpCalculateReturnData.getSrpCalculateRequestData().getProduction().setWeightWaterCut(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(deviceInfo.getSrpCalculateRequestData()!=null&&deviceInfo.getSrpCalculateRequestData().getProduction()!=null){
 												deviceInfo.getSrpCalculateRequestData().getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
@@ -3813,7 +3920,7 @@ public class DriverAPIController extends BaseController{
 											|| "RealtimeWaterWeightProduction".equalsIgnoreCase(dataMappingColumn.getCalColumn())
 											){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											updateRealtimeData+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+											updateSRPRealtimeData+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 											insertHistColumns+=","+dataMappingColumn.getCalColumn();
 											insertHistValue+=","+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
@@ -3833,19 +3940,19 @@ public class DriverAPIController extends BaseController{
 									        	}
 									        }
 										}
-								        srpCalculateRequestData.getFESDiagram().setAcqTime(FESDiagramAcqtime);
+								        srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setAcqTime(FESDiagramAcqtime);
 								        FESDiagramCalculate=true;
 									}else if("Stroke".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-										updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-										srpCalculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(rawValue));
+										updateSRPTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+										srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setStroke(StringManagerUtils.stringToFloat(rawValue));
 									}else if("SPM".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-										updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
-										srpCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
+										updateSRPTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+										srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
 									}else if("Position_Curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
-												srpCalculateRequestData.getFESDiagram().getS().add(StringManagerUtils.stringToFloat(dataArr[k]));
+												srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getS().add(StringManagerUtils.stringToFloat(dataArr[k]));
 											}
 										}
 										FESDiagramCalculate=true;
@@ -3853,7 +3960,7 @@ public class DriverAPIController extends BaseController{
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
-												srpCalculateRequestData.getFESDiagram().getF().add(StringManagerUtils.stringToFloat(dataArr[k]));
+												srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getF().add(StringManagerUtils.stringToFloat(dataArr[k]));
 											}
 										}
 										FESDiagramCalculate=true;
@@ -3861,7 +3968,7 @@ public class DriverAPIController extends BaseController{
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
-												srpCalculateRequestData.getFESDiagram().getWatt().add(StringManagerUtils.stringToFloat(dataArr[k]));
+												srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getWatt().add(StringManagerUtils.stringToFloat(dataArr[k]));
 											}
 										}
 										FESDiagramCalculate=true;
@@ -3869,7 +3976,7 @@ public class DriverAPIController extends BaseController{
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
-												srpCalculateRequestData.getFESDiagram().getI().add(StringManagerUtils.stringToFloat(dataArr[k]));
+												srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getI().add(StringManagerUtils.stringToFloat(dataArr[k]));
 											}
 										}
 										FESDiagramCalculate=true;
@@ -4040,16 +4147,14 @@ public class DriverAPIController extends BaseController{
 						
 						//如果采集了计算数据
 						deviceTodayData=MemoryDataManagerTask.getSRPDeviceTodayDataById(deviceInfo.getId());
-						if(isAcqCalResultData 
-//								&& checkSign==1
-								){
+						if(isAcqCalResultData ){
 							fesDiagramEnabled=true;
 							
 							srpCalculateResponseData=new SRPCalculateResponseData();
 							srpCalculateResponseData.init();
 							
 							srpCalculateResponseData.getFESDiagram().setAcqTime(acqTime);
-							srpCalculateRequestData.getFESDiagram().setAcqTime(acqTime);
+							srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setAcqTime(acqTime);
 							
 							srpCalculateResponseData.getCalculationStatus().setResultStatus(acqResultStatus);
 							srpCalculateResponseData.getCalculationStatus().setResultCode(acqResultCode);
@@ -4110,70 +4215,65 @@ public class DriverAPIController extends BaseController{
 							
 							srpCalculateResponseData.getProduction().setSubmergence(acqSubmergence);
 							
-							if(srpCalculateRequestData.getProduction()!=null){
-								srpCalculateResponseData.getProduction().setWaterCut(srpCalculateRequestData.getProduction().getWaterCut());
-								srpCalculateResponseData.getProduction().setProductionGasOilRatio(srpCalculateRequestData.getProduction().getProductionGasOilRatio());
-								srpCalculateResponseData.getProduction().setTubingPressure(srpCalculateRequestData.getProduction().getTubingPressure());
-								srpCalculateResponseData.getProduction().setCasingPressure(srpCalculateRequestData.getProduction().getCasingPressure());
-								srpCalculateResponseData.getProduction().setWellHeadTemperature(srpCalculateRequestData.getProduction().getWellHeadTemperature());
-								srpCalculateResponseData.getProduction().setPumpSettingDepth(srpCalculateRequestData.getProduction().getPumpSettingDepth());
-								srpCalculateResponseData.getProduction().setProducingfluidLevel(srpCalculateRequestData.getProduction().getProducingfluidLevel());
+							if(srpCalculateReturnData.getSrpCalculateRequestData().getProduction()!=null){
+								srpCalculateResponseData.getProduction().setWaterCut(srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getWaterCut());
+								srpCalculateResponseData.getProduction().setProductionGasOilRatio(srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getProductionGasOilRatio());
+								srpCalculateResponseData.getProduction().setTubingPressure(srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getTubingPressure());
+								srpCalculateResponseData.getProduction().setCasingPressure(srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getCasingPressure());
+								srpCalculateResponseData.getProduction().setWellHeadTemperature(srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getWellHeadTemperature());
+								srpCalculateResponseData.getProduction().setPumpSettingDepth(srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getPumpSettingDepth());
+								srpCalculateResponseData.getProduction().setProducingfluidLevel(srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getProducingfluidLevel());
 							}
 							if(isAcqRPMData){
 								srpCalculateResponseData.setRPM(acqRPM);
 							}
 						}
 						
-						if(FESDiagramCalculate 
-//								&& checkSign==1
-								){
+						if(FESDiagramCalculate ){
 							fesDiagramEnabled=true;
-//							if(FESDiagramAcqCount<=0){
-//								FESDiagramAcqCount=srpCalculateRequestData.getFESDiagram().getS().size();
-//							}
 							if(FESDiagramAcqCount>0){
-								if(srpCalculateRequestData.getFESDiagram().getS().size()>FESDiagramAcqCount){
+								if(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getS().size()>FESDiagramAcqCount){
 									List<Float> curveArr=new ArrayList<Float>();
 									for(int i=0;i<FESDiagramAcqCount;i++){
-										curveArr.add(srpCalculateRequestData.getFESDiagram().getS().get(i));
+										curveArr.add(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getS().get(i));
 								    }
-								    srpCalculateRequestData.getFESDiagram().setS(curveArr);
+								    srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setS(curveArr);
 								}
 
-								if(srpCalculateRequestData.getFESDiagram().getF().size()>FESDiagramAcqCount){
+								if(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getF().size()>FESDiagramAcqCount){
 									List<Float> curveArr=new ArrayList<Float>();
 									for(int i=0;i<FESDiagramAcqCount;i++){
-										curveArr.add(srpCalculateRequestData.getFESDiagram().getF().get(i));
+										curveArr.add(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getF().get(i));
 								    }
-								    srpCalculateRequestData.getFESDiagram().setF(curveArr);
+								    srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setF(curveArr);
 								}
 								
-								if(srpCalculateRequestData.getFESDiagram().getWatt().size()>FESDiagramAcqCount){
+								if(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getWatt().size()>FESDiagramAcqCount){
 									List<Float> curveArr=new ArrayList<Float>();
 									for(int i=0;i<FESDiagramAcqCount;i++){
-										curveArr.add(srpCalculateRequestData.getFESDiagram().getWatt().get(i));
+										curveArr.add(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getWatt().get(i));
 								    }
-								    srpCalculateRequestData.getFESDiagram().setWatt(curveArr);
+								    srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setWatt(curveArr);
 								}
 								
-								if(srpCalculateRequestData.getFESDiagram().getI().size()>FESDiagramAcqCount){
+								if(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getI().size()>FESDiagramAcqCount){
 									List<Float> curveArr=new ArrayList<Float>();
 									for(int i=0;i<FESDiagramAcqCount;i++){
-										curveArr.add(srpCalculateRequestData.getFESDiagram().getI().get(i));
+										curveArr.add(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getI().get(i));
 								    }
-								    srpCalculateRequestData.getFESDiagram().setI(curveArr);
+								    srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setI(curveArr);
 								}
 								
 							}
 							
-							if(srpCalculateRequestData.getProduction()!=null && srpCalculateRequestData.getFluidPVT()!=null){
-//								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(srpCalculateRequestData.getProduction().getWaterCut(), srpCalculateRequestData.getFluidPVT().getCrudeOilDensity(), srpCalculateRequestData.getFluidPVT().getWaterDensity());
-								float weightWaterCut=srpCalculateRequestData.getProduction().getWaterCut();
-								srpCalculateRequestData.getProduction().setWeightWaterCut(weightWaterCut);
+							if(srpCalculateReturnData.getSrpCalculateRequestData().getProduction()!=null && srpCalculateReturnData.getSrpCalculateRequestData().getFluidPVT()!=null){
+//								float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getWaterCut(), srpCalculateReturnData.getSrpCalculateRequestData().getFluidPVT().getCrudeOilDensity(), srpCalculateReturnData.getSrpCalculateRequestData().getFluidPVT().getWaterDensity());
+								float weightWaterCut=srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getWaterCut();
+								srpCalculateReturnData.getSrpCalculateRequestData().getProduction().setWeightWaterCut(weightWaterCut);
 								deviceInfo.getSrpCalculateRequestData().getProduction().setWaterCut(weightWaterCut);
 							}
 							
-							srpCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(srpCalculateRequestData));
+							srpCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(srpCalculateReturnData.getSrpCalculateRequestData()));
 							
 							if(srpCalculateResponseData!=null && isAcqRPMData){
 								srpCalculateResponseData.setRPM(acqRPM);
@@ -4232,8 +4332,8 @@ public class DriverAPIController extends BaseController{
 								
 								responseResultData.getProduction().setTubingPressure(srpCalculateResponseData.getProduction().getTubingPressure());
 								responseResultData.getProduction().setCasingPressure(srpCalculateResponseData.getProduction().getCasingPressure());
-								if(srpCalculateRequestData.getProduction()!=null){
-									responseResultData.getProduction().setWeightWaterCut(srpCalculateRequestData.getProduction().getWeightWaterCut());
+								if(srpCalculateReturnData.getSrpCalculateRequestData().getProduction()!=null){
+									responseResultData.getProduction().setWeightWaterCut(srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getWeightWaterCut());
 								}
 							}
 							
@@ -4275,7 +4375,7 @@ public class DriverAPIController extends BaseController{
 						}
 						
 						
-						calItemResolutionDataList=getFESDiagramCalItemData(srpCalculateRequestData,srpCalculateResponseData,calItemResolutionDataList);
+						calItemResolutionDataList=getFESDiagramCalItemData(srpCalculateReturnData.getSrpCalculateRequestData(),srpCalculateResponseData,calItemResolutionDataList);
 						if(workType!=null){
 							calItemResolutionDataList.add(new ProtocolItemResolutionData("优化建议","优化建议",workType.getOptimizationSuggestion(),workType.getOptimizationSuggestion(),"","optimizationSuggestion","","","","",1,1,0));
 						}else{
@@ -4296,8 +4396,8 @@ public class DriverAPIController extends BaseController{
 								&& srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232
 								&& srpCalculateResponseData.getProduction().getProducingfluidLevel()>=0
 								&& FESDiagramCalculate
-								&& !updateTotalDataSql.toLowerCase().contains("producingfluidLevel")){
-							updateTotalDataSql+=",t.producingfluidLevel= "+srpCalculateResponseData.getProduction().getProducingfluidLevel();
+								&& !updateSRPTotalDataSql.toLowerCase().contains("producingfluidLevel")){
+							updateSRPTotalDataSql+=",t.producingfluidLevel= "+srpCalculateResponseData.getProduction().getProducingfluidLevel();
 						}
 						
 						//同时进行了时率计算和功图计算，则进行功图汇总计算
@@ -4320,7 +4420,7 @@ public class DriverAPIController extends BaseController{
 							calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产油量","日累计产油量",totalAnalysisResponseData.getOilWeightProduction().getValue()+"",totalAnalysisResponseData.getOilWeightProduction().getValue()+"","","oilWeightProduction_l","","","","t/d",1,1,0));
 							calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产水量","日累计产水量",totalAnalysisResponseData.getWaterWeightProduction().getValue()+"",totalAnalysisResponseData.getWaterWeightProduction().getValue()+"","","waterWeightProduction_l","","","","t/d",1,1,0));
 							
-							updateRealtimeData+=",t.liquidvolumetricproduction_l="+totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()
+							updateSRPRealtimeData+=",t.liquidvolumetricproduction_l="+totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()
 									+",t.oilvolumetricproduction_l="+totalAnalysisResponseData.getOilVolumetricProduction().getValue()
 									+",t.watervolumetricproduction_l="+totalAnalysisResponseData.getWaterVolumetricProduction().getValue()
 									+",t.liquidweightproduction_l="+totalAnalysisResponseData.getLiquidWeightProduction().getValue()
@@ -4339,75 +4439,85 @@ public class DriverAPIController extends BaseController{
 							calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产水量","日累计产水量","","","","waterWeightProduction_l","","","","t/d",1,1,0));
 						}
 						
-						updateRealtimeData+=" where t.deviceId= "+deviceInfo.getId();
-						insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
+						updateSRPRealtimeData+=" where t.deviceId= "+deviceInfo.getId();
+						insertSRPHistSql="insert into "+SRPHistoryTable+"("+insertHistColumns+")values("+insertHistValue+")";
 						
-						updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+						updateSRPTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 						
-						if(save 
-//								&& checkSign==1
-								){
-							int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
-							if(result==0){
-								updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
-								result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
-							}
-							
-							commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
-							commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
-							
-							if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-								List<String> clobCont=new ArrayList<String>();
-								String updateRealRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
-								String updateHisRangeClobSql="update "+historyTable+" t set t.commrange=?";
-								String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
-								clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-								if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-									updateRealRangeClobSql+=", t.runrange=?";
-									updateHisRangeClobSql+=", t.runrange=?";
-									updateTotalRangeClobSql+=", t.runrange=?";
-									clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
-								}
-								updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
-								updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
-								updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
-								commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
-								commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
-								commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
-							}
-							
-							if(FESDiagramCalculate || isAcqCalResultData){
-								commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,srpCalculateRequestData,srpCalculateResponseData,fesDiagramEnabled);
-							}
-							
-							if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
-								int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
-								commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
-							}
-						}
+//						if(save){
+//							int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateSRPRealtimeData);
+//							if(result==0){
+//								updateSRPRealtimeData=insertSRPHistSql.replace(SRPHistoryTable, SRPRealtimeTable);
+//								result=commonDataService.getBaseDao().updateOrDeleteBySql(updateSRPRealtimeData);
+//							}
+//							
+//							commonDataService.getBaseDao().updateOrDeleteBySql(insertSRPHistSql);
+//							commonDataService.getBaseDao().updateOrDeleteBySql(updateSRPTotalDataSql);
+//							
+//							if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+//								List<String> clobCont=new ArrayList<String>();
+//								String updateRealRangeClobSql="update "+SRPRealtimeTable+" t set t.commrange=?";
+//								String updateHisRangeClobSql="update "+SRPHistoryTable+" t set t.commrange=?";
+//								String updateTotalRangeClobSql="update "+SRPTotalDataTable+" t set t.commrange=?";
+//								clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+//								if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+//									updateRealRangeClobSql+=", t.runrange=?";
+//									updateHisRangeClobSql+=", t.runrange=?";
+//									updateTotalRangeClobSql+=", t.runrange=?";
+//									clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+//								}
+//								updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
+//								updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+//								updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+//								commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
+//								commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+//								commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
+//							}
+//							
+//							if(FESDiagramCalculate || isAcqCalResultData){
+//								commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,srpCalculateReturnData.getSrpCalculateRequestData(),srpCalculateResponseData,fesDiagramEnabled);
+//							}
+//							
+//							if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
+//								int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
+//								commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
+//							}
+//						}
 						
-						if(saveVacuateData){
-							insertHistSql=insertHistSql.replaceAll(historyTable, vacuateTable);
-							commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
-							
-							
-							if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-								List<String> clobCont=new ArrayList<String>();
-								String updateHisRangeClobSql="update "+vacuateTable+" t set t.commrange=?";
-								clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-								if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-									updateHisRangeClobSql+=", t.runrange=?";
-									clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
-								}
-								updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
-								commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
-							}
-							
-							if(FESDiagramCalculate || isAcqCalResultData){
-								commonDataService.getBaseDao().saveVacuateFESDiagramAndCalculateData(deviceInfo,srpCalculateRequestData,srpCalculateResponseData,fesDiagramEnabled);
-							}
-							
-						}
+//						if(saveVacuateData){
+//							insertSRPHistSql=insertSRPHistSql.replaceAll(SRPHistoryTable, SRPVacuateTable);
+//							commonDataService.getBaseDao().updateOrDeleteBySql(insertSRPHistSql);
+//							
+//							
+//							if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+//								List<String> clobCont=new ArrayList<String>();
+//								String updateHisRangeClobSql="update "+SRPVacuateTable+" t set t.commrange=?";
+//								clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+//								if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+//									updateHisRangeClobSql+=", t.runrange=?";
+//									clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+//								}
+//								updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+//								commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+//							}
+//							
+//							if(FESDiagramCalculate || isAcqCalResultData){
+//								commonDataService.getBaseDao().saveVacuateFESDiagramAndCalculateData(deviceInfo,srpCalculateReturnData.getSrpCalculateRequestData(),srpCalculateResponseData,fesDiagramEnabled);
+//							}
+//							
+//						}
+						
+						srpCalculateReturnData.setFESDiagramCalculate(FESDiagramCalculate);
+						srpCalculateReturnData.setIsAcqCalResultData(isAcqCalResultData);
+						srpCalculateReturnData.setFesDiagramEnabled(fesDiagramEnabled);
+						
+						srpCalculateReturnData.setUpdateSRPRealtimeData(updateSRPRealtimeData);
+						srpCalculateReturnData.setInsertSRPHistSql(insertSRPHistSql);
+						srpCalculateReturnData.setUpdateSRPTotalDataSql(updateSRPTotalDataSql);
+						
+						srpCalculateReturnData.setSrpCalculateResponseData(srpCalculateResponseData);
+						srpCalculateReturnData.setTotalAnalysisRequestData(totalAnalysisRequestData);
+						srpCalculateReturnData.setTotalAnalysisResponseData(totalAnalysisResponseData);
 						
 						//放入内存数据库中
 						MemoryDataManagerTask.updateSRPDeviceTodayDataDeviceInfo(deviceTodayData);
@@ -4419,24 +4529,111 @@ public class DriverAPIController extends BaseController{
 		}finally{
 			
 		}
-		return srpCalculateResponseData;
+		return srpCalculateReturnData;
 	}
 	
-	public PCPCalculateResponseData PCPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
-			String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus,
-			boolean save,boolean saveVacuateData,
-			int checkSign){
+	public void savePCPCalculateData(DeviceInfo deviceInfo,String acqTime,
+			CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
+			PCPCalculateReturnData calculateReturnData,boolean saveVacuateData
+			){
+		String PCPRealtimeTable="tbl_pcpacqdata_latest";
+		String PCPHistoryTable="tbl_pcpacqdata_hist";
+		String PCPTotalDataTable="tbl_pcpdailycalculationdata";
+		String PCPVacuateTable="tbl_pcpacqdata_vacuate";
+		
+		String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
+		if(!StringManagerUtils.timeMatchDate(acqTime, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
+			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
+		}
+		
+		int result=commonDataService.getBaseDao().updateOrDeleteBySql(calculateReturnData.getUpdatePCPRealtimeData());
+		if(result==0){
+			result=commonDataService.getBaseDao().updateOrDeleteBySql(calculateReturnData.getInsertPCPHistSql().replace(PCPHistoryTable, PCPRealtimeTable));
+		}
+		commonDataService.getBaseDao().updateOrDeleteBySql(calculateReturnData.getInsertPCPHistSql());
+		commonDataService.getBaseDao().updateOrDeleteBySql(calculateReturnData.getUpdatePCPTotalDataSql());
+		
+		if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+			List<String> clobCont=new ArrayList<String>();
+			String updateRealRangeClobSql="update "+PCPRealtimeTable+" t set t.commrange=?";
+			String updateHisRangeClobSql="update "+PCPHistoryTable+" t set t.commrange=?";
+			String updateTotalRangeClobSql="update "+PCPTotalDataTable+" t set t.commrange=?";
+			clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+			if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+				updateRealRangeClobSql+=", t.runrange=?";
+				updateHisRangeClobSql+=", t.runrange=?";
+				updateTotalRangeClobSql+=", t.runrange=?";
+				clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+			}
+			updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
+			updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+			updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+			commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
+			commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+			commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
+		}
+		
+		try {
+			commonDataService.getBaseDao().saveAcqRPMAndCalculateData(deviceInfo,calculateReturnData.getCalculateRequestData(),calculateReturnData.getCalculateResponseData());
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+		if(calculateReturnData.getTotalAnalysisResponseData()!=null && calculateReturnData.getTotalAnalysisResponseData().getResultStatus()==1){//保存汇总数据
+			int recordCount=calculateReturnData.getTotalAnalysisRequestData().getAcqTime()!=null?calculateReturnData.getTotalAnalysisRequestData().getAcqTime().size():0;
+			try {
+				commonDataService.getBaseDao().saveRPMTotalCalculateData(deviceInfo,calculateReturnData.getTotalAnalysisResponseData(),calculateReturnData.getTotalAnalysisRequestData(),date,recordCount);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(saveVacuateData){
+			commonDataService.getBaseDao().updateOrDeleteBySql(calculateReturnData.getInsertPCPHistSql().replaceAll(PCPHistoryTable, PCPVacuateTable));
+			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+				List<String> clobCont=new ArrayList<String>();
+				String updateHisRangeClobSql="update "+PCPVacuateTable+" t set t.commrange=?";
+				clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+					updateHisRangeClobSql+=", t.runrange=?";
+					clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+				}
+				updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+				commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
+			}
+			try {
+				commonDataService.getBaseDao().saveVacuateRPMAndCalculateData(deviceInfo,calculateReturnData.getCalculateRequestData(),calculateReturnData.getCalculateResponseData());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+	public PCPCalculateReturnData PCPDataProcessing(DeviceInfo deviceInfo,AcqGroup acqGroup,CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
+			String acqTime,List<ProtocolItemResolutionData> calItemResolutionDataList,int runStatus){
+		
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		PCPDeviceTodayData deviceTodayData=null;
 		PCPCalculateResponseData pcpCalculateResponseData=null;
+		TotalAnalysisResponseData totalAnalysisResponseData=null;
+		TotalAnalysisRequestData totalAnalysisRequestData=null;
+		
+		PCPCalculateReturnData calculateReturnData=new PCPCalculateReturnData();
+		
 		try{
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			
-			String realtimeTable="tbl_pcpacqdata_latest";
-			String historyTable="tbl_pcpacqdata_hist";
-			String totalDataTable="tbl_pcpdailycalculationdata";
-			String vacuateTable="tbl_pcpacqdata_vacuate";
+			String PCPRealtimeTable="tbl_pcpacqdata_latest";
+			String PCPHistoryTable="tbl_pcpacqdata_hist";
+			String PCPTotalDataTable="tbl_pcpdailycalculationdata";
+			String PCPVacuateTable="tbl_pcpacqdata_vacuate";
 			if(acqGroup!=null){
 //				List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem();
 				String protocolCode="";
@@ -4451,40 +4648,38 @@ public class DriverAPIController extends BaseController{
 					if(!StringManagerUtils.timeMatchDate(acqTime, date, Config.getInstance().configFile.getAp().getReport().getOffsetHour())){
 						date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
 					}
+					calculateReturnData.setCalculateRequestData(new PCPCalculateRequestData());
+					calculateReturnData.getCalculateRequestData().init();
+					updateRPMRequestData(calculateReturnData.getCalculateRequestData(),deviceInfo,acqTime);
 					
-					PCPCalculateRequestData pcpCalculateRequestData=new PCPCalculateRequestData();
-					pcpCalculateRequestData.init();
-					updateRPMRequestData(pcpCalculateRequestData,deviceInfo,acqTime);
 					
-					TotalAnalysisResponseData totalAnalysisResponseData=null;
-					TotalAnalysisRequestData totalAnalysisRequestData=null;
 					
 					boolean isAcqRPM=false;
 					
-					String updateRealtimeData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1,t.runStatus="+runStatus;
+					String updatePCPRealtimeData="update "+PCPRealtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),t.CommStatus=1,t.runStatus="+runStatus;
 					
 					
 					String insertHistColumns="deviceid,acqTime,CommStatus,runStatus";
 					String insertHistValue=deviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),1,"+runStatus;
-					String insertHistSql="";
+					String insertPCPHistSql="";
 					
-					String updateTotalDataSql="update "+totalDataTable+" t set t.CommStatus=1,t.runStatus="+runStatus;
+					String updatePCPTotalDataSql="update "+PCPTotalDataTable+" t set t.CommStatus=1,t.runStatus="+runStatus;
 					
 					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-						updateRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+						updatePCPRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
 						insertHistColumns+=",commTimeEfficiency,commTime";
 						insertHistValue+=","+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","+commResponseData.getCurrent().getCommEfficiency().getTime();
 						
-						updateTotalDataSql+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+						updatePCPTotalDataSql+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
 					}
 					if(timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
-						updateRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+						updatePCPRealtimeData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
 								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
 						insertHistColumns+=",runTimeEfficiency,runTime";
 						insertHistValue+=","+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()+","+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
-						updateTotalDataSql+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+						updatePCPTotalDataSql+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
 								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
 					}
 					
@@ -4519,28 +4714,28 @@ public class DriverAPIController extends BaseController{
 									
 									if("TubingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(pcpCalculateRequestData.getProduction()!=null){
-												pcpCalculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
+											if(calculateReturnData.getCalculateRequestData().getProduction()!=null){
+												calculateReturnData.getCalculateRequestData().getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(deviceInfo.getPcpCalculateRequestData().getProduction()!=null){
 												deviceInfo.getPcpCalculateRequestData().getProduction().setTubingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
-											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+											updatePCPTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
 									}else if("CasingPressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(pcpCalculateRequestData.getProduction()!=null){
-												pcpCalculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
+											if(calculateReturnData.getCalculateRequestData().getProduction()!=null){
+												calculateReturnData.getCalculateRequestData().getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(deviceInfo.getPcpCalculateRequestData().getProduction()!=null){
 												deviceInfo.getPcpCalculateRequestData().getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
 											}
-											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+											updatePCPTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
 									}else if("WellHeadTemperature".equalsIgnoreCase(dataMappingColumn.getCalColumn())){//油压
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(pcpCalculateRequestData.getProduction()!=null){
-												pcpCalculateRequestData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
+											if(calculateReturnData.getCalculateRequestData().getProduction()!=null){
+												calculateReturnData.getCalculateRequestData().getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(deviceInfo.getPcpCalculateRequestData().getProduction()!=null){
 												deviceInfo.getPcpCalculateRequestData().getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(rawValue));
@@ -4548,22 +4743,22 @@ public class DriverAPIController extends BaseController{
 										}
 									}else if("ProducingfluidLevel".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(pcpCalculateRequestData.getProduction()!=null){
-												pcpCalculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
+											if(calculateReturnData.getCalculateRequestData().getProduction()!=null){
+												calculateReturnData.getCalculateRequestData().getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(deviceInfo.getPcpCalculateRequestData().getProduction()!=null){
 												deviceInfo.getPcpCalculateRequestData().getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
 											}
-											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+											updatePCPTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
 									}else if("BottomHolePressure".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											updateTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
+											updatePCPTotalDataSql+=",t."+dataMappingColumn.getCalColumn()+"="+StringManagerUtils.stringToFloat(rawValue)+"";
 										}
 									}else if("VolumeWaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn()) || "WaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
-											if(pcpCalculateRequestData.getProduction()!=null){
-												pcpCalculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
+											if(calculateReturnData.getCalculateRequestData().getProduction()!=null){
+												calculateReturnData.getCalculateRequestData().getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
 											}
 											if(deviceInfo.getPcpCalculateRequestData().getProduction()!=null){
 												deviceInfo.getPcpCalculateRequestData().getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
@@ -4572,7 +4767,7 @@ public class DriverAPIController extends BaseController{
 									}else if("RPM".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 										if(StringManagerUtils.isNum(rawValue) || StringManagerUtils.isNumber(rawValue)){
 											isAcqRPM=true;
-											pcpCalculateRequestData.setRPM(StringManagerUtils.stringToFloat(rawValue));
+											calculateReturnData.getCalculateRequestData().setRPM(StringManagerUtils.stringToFloat(rawValue));
 										}
 									}
 								}
@@ -4583,14 +4778,12 @@ public class DriverAPIController extends BaseController{
 					
 					//进行转速计算
 					deviceTodayData=MemoryDataManagerTask.getPCPDeviceTodayDataById(deviceInfo.getId());
-					if(isAcqRPM 
-//							&& checkSign==1
-							){
-						if(pcpCalculateRequestData.getProduction()!=null && pcpCalculateRequestData.getFluidPVT()!=null){
-							float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(pcpCalculateRequestData.getProduction().getWaterCut(), pcpCalculateRequestData.getFluidPVT().getCrudeOilDensity(), pcpCalculateRequestData.getFluidPVT().getWaterDensity());
-							pcpCalculateRequestData.getProduction().setWeightWaterCut(weightWaterCut);
+					if(isAcqRPM){
+						if(calculateReturnData.getCalculateRequestData().getProduction()!=null && calculateReturnData.getCalculateRequestData().getFluidPVT()!=null){
+							float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(calculateReturnData.getCalculateRequestData().getProduction().getWaterCut(), calculateReturnData.getCalculateRequestData().getFluidPVT().getCrudeOilDensity(), calculateReturnData.getCalculateRequestData().getFluidPVT().getWaterDensity());
+							calculateReturnData.getCalculateRequestData().getProduction().setWeightWaterCut(weightWaterCut);
 						}
-						pcpCalculateResponseData=CalculateUtils.rpmCalculate(gson.toJson(pcpCalculateRequestData));
+						pcpCalculateResponseData=CalculateUtils.rpmCalculate(gson.toJson(calculateReturnData.getCalculateRequestData()));
 						if(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 							PCPCalculateResponseData responseResultData =new PCPCalculateResponseData(); 
 							responseResultData.init();
@@ -4616,8 +4809,8 @@ public class DriverAPIController extends BaseController{
 								responseResultData.getProduction().setTubingPressure(pcpCalculateResponseData.getProduction().getTubingPressure());
 								responseResultData.getProduction().setCasingPressure(pcpCalculateResponseData.getProduction().getCasingPressure());
 								
-								if(pcpCalculateRequestData.getProduction()!=null){
-									responseResultData.getProduction().setWeightWaterCut(pcpCalculateRequestData.getProduction().getWeightWaterCut());
+								if(calculateReturnData.getCalculateRequestData().getProduction()!=null){
+									responseResultData.getProduction().setWeightWaterCut(calculateReturnData.getCalculateRequestData().getProduction().getWeightWaterCut());
 								}
 							}
 							
@@ -4655,7 +4848,7 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 					
-					calItemResolutionDataList=getRPMCalItemData(pcpCalculateRequestData,pcpCalculateResponseData,calItemResolutionDataList);
+					calItemResolutionDataList=getRPMCalItemData(calculateReturnData.getCalculateRequestData(),pcpCalculateResponseData,calItemResolutionDataList);
 					
 					
 					//同时进行了时率计算和转速计算，则进行转速汇总计算
@@ -4677,7 +4870,7 @@ public class DriverAPIController extends BaseController{
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产水量","日累计产水量",totalAnalysisResponseData.getWaterWeightProduction().getValue()+"",totalAnalysisResponseData.getWaterWeightProduction().getValue()+"","","waterWeightProduction_l","","","","t/d",1,1,0));
 						
 
-						updateRealtimeData+=",t.liquidvolumetricproduction_l="+totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()
+						updatePCPRealtimeData+=",t.liquidvolumetricproduction_l="+totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()
 								+",t.oilvolumetricproduction_l="+totalAnalysisResponseData.getOilVolumetricProduction().getValue()
 								+",t.watervolumetricproduction_l="+totalAnalysisResponseData.getWaterVolumetricProduction().getValue()
 								+",t.liquidweightproduction_l="+totalAnalysisResponseData.getLiquidWeightProduction().getValue()
@@ -4696,63 +4889,22 @@ public class DriverAPIController extends BaseController{
 						calItemResolutionDataList.add(new ProtocolItemResolutionData("日累计产水量","日累计产水量","","","","waterWeightProduction_l","","","","t/d",1,1,0));
 					}
 					
-					updateRealtimeData+=" where t.deviceId= "+deviceInfo.getId();
-					insertHistSql="insert into "+historyTable+"("+insertHistColumns+")values("+insertHistValue+")";
-					updateTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
+					updatePCPRealtimeData+=" where t.deviceId= "+deviceInfo.getId();
+					insertPCPHistSql="insert into "+PCPHistoryTable+"("+insertHistColumns+")values("+insertHistValue+")";
+					updatePCPTotalDataSql+=" where t.deviceId= "+deviceInfo.getId()+" and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
 					
-					if(save 
-//							&& checkSign==1
-							){
-						int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
-						if(result==0){
-							updateRealtimeData=insertHistSql.replace(historyTable, realtimeTable);
-							result=commonDataService.getBaseDao().updateOrDeleteBySql(updateRealtimeData);
-						}
-						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql);
-						commonDataService.getBaseDao().updateOrDeleteBySql(updateTotalDataSql);
-						
-						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-							List<String> clobCont=new ArrayList<String>();
-							String updateRealRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
-							String updateHisRangeClobSql="update "+historyTable+" t set t.commrange=?";
-							String updateTotalRangeClobSql="update "+totalDataTable+" t set t.commrange=?";
-							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-								updateRealRangeClobSql+=", t.runrange=?";
-								updateHisRangeClobSql+=", t.runrange=?";
-								updateTotalRangeClobSql+=", t.runrange=?";
-								clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
-							}
-							updateRealRangeClobSql+=" where t.deviceid="+deviceInfo.getId();
-							updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
-							updateTotalRangeClobSql+=" where t.deviceId= "+deviceInfo.getId()+"and t.caldate=to_date('"+date+"','yyyy-mm-dd')";
-							commonDataService.getBaseDao().executeSqlUpdateClob(updateRealRangeClobSql,clobCont);
-							commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
-							commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
-						}
-						
-						commonDataService.getBaseDao().saveAcqRPMAndCalculateData(deviceInfo,pcpCalculateRequestData,pcpCalculateResponseData);
-						if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
-							int recordCount=totalAnalysisRequestData.getAcqTime()!=null?totalAnalysisRequestData.getAcqTime().size():0;
-							commonDataService.getBaseDao().saveRPMTotalCalculateData(deviceInfo,totalAnalysisResponseData,totalAnalysisRequestData,date,recordCount);
-						}
-					}
-					if(saveVacuateData){
-						commonDataService.getBaseDao().updateOrDeleteBySql(insertHistSql.replaceAll(historyTable, vacuateTable));
-						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-							List<String> clobCont=new ArrayList<String>();
-							String updateHisRangeClobSql="update "+vacuateTable+" t set t.commrange=?";
-							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-								updateHisRangeClobSql+=", t.runrange=?";
-								clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
-							}
-							updateHisRangeClobSql+=" where t.deviceid="+deviceInfo.getId() +" and t.acqTime="+"to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
-							commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
-						}
-						commonDataService.getBaseDao().saveVacuateRPMAndCalculateData(deviceInfo,pcpCalculateRequestData,pcpCalculateResponseData);
-						
-					}
+					calculateReturnData.setIsAcqRPM(isAcqRPM);
+					
+					calculateReturnData.setUpdatePCPRealtimeData(updatePCPRealtimeData);
+					calculateReturnData.setInsertPCPHistSql(insertPCPHistSql);
+					calculateReturnData.setUpdatePCPTotalDataSql(updatePCPTotalDataSql);
+					
+					calculateReturnData.setCalculateResponseData(pcpCalculateResponseData);
+					calculateReturnData.setTotalAnalysisRequestData(totalAnalysisRequestData);
+					calculateReturnData.setTotalAnalysisResponseData(totalAnalysisResponseData);
+					
+					
+					
 					MemoryDataManagerTask.updatePCPDeviceTodayDataDeviceInfo(deviceTodayData);
 				}
 			}
@@ -4762,7 +4914,7 @@ public class DriverAPIController extends BaseController{
 			
 		}
 		
-		return pcpCalculateResponseData;
+		return calculateReturnData;
 	}
 	
 	public static List<ProtocolItemResolutionData> getSRPInputItemData(DeviceInfo deviceInfo){
@@ -5642,5 +5794,149 @@ public class DriverAPIController extends BaseController{
 
 	public void setPrintInfo(boolean printInfo) {
 		this.printInfo = printInfo;
+	}
+	
+	public static class SRPCalculateReturnData{
+		private boolean FESDiagramCalculate;
+		private boolean isAcqCalResultData;
+		private boolean fesDiagramEnabled;
+		
+		private String updateSRPRealtimeData;
+		private String insertSRPHistSql;
+		private String updateSRPTotalDataSql;
+		
+		private SRPCalculateRequestData srpCalculateRequestData=null;
+		private SRPCalculateResponseData srpCalculateResponseData=null;
+		
+		private TotalAnalysisRequestData totalAnalysisRequestData=null;
+		private TotalAnalysisResponseData totalAnalysisResponseData=null;
+		
+		public boolean getFESDiagramCalculate() {
+			return FESDiagramCalculate;
+		}
+		public void setFESDiagramCalculate(boolean fESDiagramCalculate) {
+			FESDiagramCalculate = fESDiagramCalculate;
+		}
+		
+		public boolean getIsAcqCalResultData() {
+			return isAcqCalResultData;
+		}
+		public void setIsAcqCalResultData(boolean isAcqCalResultData) {
+			this.isAcqCalResultData = isAcqCalResultData;
+		}
+		
+		public boolean getFesDiagramEnabled() {
+			return fesDiagramEnabled;
+		}
+		public void setFesDiagramEnabled(boolean fesDiagramEnabled) {
+			this.fesDiagramEnabled = fesDiagramEnabled;
+		}
+		
+		public String getUpdateSRPRealtimeData() {
+			return updateSRPRealtimeData;
+		}
+		public void setUpdateSRPRealtimeData(String updateSRPRealtimeData) {
+			this.updateSRPRealtimeData = updateSRPRealtimeData;
+		}
+		
+		public String getInsertSRPHistSql() {
+			return insertSRPHistSql;
+		}
+		public void setInsertSRPHistSql(String insertSRPHistSql) {
+			this.insertSRPHistSql = insertSRPHistSql;
+		}
+		
+		public String getUpdateSRPTotalDataSql() {
+			return updateSRPTotalDataSql;
+		}
+		public void setUpdateSRPTotalDataSql(String updateSRPTotalDataSql) {
+			this.updateSRPTotalDataSql = updateSRPTotalDataSql;
+		}
+		public SRPCalculateRequestData getSrpCalculateRequestData() {
+			return srpCalculateRequestData;
+		}
+		public void setSrpCalculateRequestData(SRPCalculateRequestData srpCalculateRequestData) {
+			this.srpCalculateRequestData = srpCalculateRequestData;
+		}
+		public SRPCalculateResponseData getSrpCalculateResponseData() {
+			return srpCalculateResponseData;
+		}
+		public void setSrpCalculateResponseData(SRPCalculateResponseData srpCalculateResponseData) {
+			this.srpCalculateResponseData = srpCalculateResponseData;
+		}
+		public TotalAnalysisRequestData getTotalAnalysisRequestData() {
+			return totalAnalysisRequestData;
+		}
+		public void setTotalAnalysisRequestData(TotalAnalysisRequestData totalAnalysisRequestData) {
+			this.totalAnalysisRequestData = totalAnalysisRequestData;
+		}
+		public TotalAnalysisResponseData getTotalAnalysisResponseData() {
+			return totalAnalysisResponseData;
+		}
+		public void setTotalAnalysisResponseData(TotalAnalysisResponseData totalAnalysisResponseData) {
+			this.totalAnalysisResponseData = totalAnalysisResponseData;
+		}
+	}
+	
+	public static class PCPCalculateReturnData{
+		private boolean isAcqRPM;
+		
+		private String updatePCPRealtimeData;
+		private String insertPCPHistSql;
+		private String updatePCPTotalDataSql;
+		
+		private PCPCalculateRequestData calculateRequestData=null;
+		private PCPCalculateResponseData calculateResponseData=null;
+		
+		private TotalAnalysisRequestData totalAnalysisRequestData=null;
+		private TotalAnalysisResponseData totalAnalysisResponseData=null;
+		public boolean getIsAcqRPM() {
+			return isAcqRPM;
+		}
+		public void setIsAcqRPM(boolean isAcqRPM) {
+			this.isAcqRPM = isAcqRPM;
+		}
+		public String getUpdatePCPRealtimeData() {
+			return updatePCPRealtimeData;
+		}
+		public void setUpdatePCPRealtimeData(String updatePCPRealtimeData) {
+			this.updatePCPRealtimeData = updatePCPRealtimeData;
+		}
+		public String getInsertPCPHistSql() {
+			return insertPCPHistSql;
+		}
+		public void setInsertPCPHistSql(String insertPCPHistSql) {
+			this.insertPCPHistSql = insertPCPHistSql;
+		}
+		public String getUpdatePCPTotalDataSql() {
+			return updatePCPTotalDataSql;
+		}
+		public void setUpdatePCPTotalDataSql(String updatePCPTotalDataSql) {
+			this.updatePCPTotalDataSql = updatePCPTotalDataSql;
+		}
+		public PCPCalculateRequestData getCalculateRequestData() {
+			return calculateRequestData;
+		}
+		public void setCalculateRequestData(PCPCalculateRequestData calculateRequestData) {
+			this.calculateRequestData = calculateRequestData;
+		}
+		public PCPCalculateResponseData getCalculateResponseData() {
+			return calculateResponseData;
+		}
+		public void setCalculateResponseData(PCPCalculateResponseData calculateResponseData) {
+			this.calculateResponseData = calculateResponseData;
+		}
+		public TotalAnalysisRequestData getTotalAnalysisRequestData() {
+			return totalAnalysisRequestData;
+		}
+		public void setTotalAnalysisRequestData(TotalAnalysisRequestData totalAnalysisRequestData) {
+			this.totalAnalysisRequestData = totalAnalysisRequestData;
+		}
+		public TotalAnalysisResponseData getTotalAnalysisResponseData() {
+			return totalAnalysisResponseData;
+		}
+		public void setTotalAnalysisResponseData(TotalAnalysisResponseData totalAnalysisResponseData) {
+			this.totalAnalysisResponseData = totalAnalysisResponseData;
+		}
 	}
 }

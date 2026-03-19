@@ -458,11 +458,12 @@ function createRealTimeMonitoringColumnObject(columnInfo) {
         if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
         	thisColumn.xtype='rownumberer';
         	thisColumn.sortable=false;
-        	thisColumn.locked=false;
+        	thisColumn.locked=true;
         }
         else if (attr.dataIndex.toUpperCase()=='deviceName'.toUpperCase()) {
         	thisColumn.sortable=false;
         	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.locked=true;
         	thisColumn.renderer=function(value,o,p,e){
         		return adviceDeviceOverviewDeviceNameColor(value,o,p,e);
         	};

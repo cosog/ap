@@ -979,6 +979,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
                 },
                 colWidths: [50, 150, 150, 80, 90, 120, 80, 60, 110, 80],
                 columns: singleWellRangeReportTemplateContentHandsontableHelper.columns,
+                fixedColumnsStart:2,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
                 rowHeaders: false, //显示行头
@@ -1222,6 +1223,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
                 },
                 colWidths: [50, 150, 150, 80, 90, 120, 80, 60, 110, 80],
                 columns: singleWellDailyReportTemplateContentHandsontableHelper.columns,
+                fixedColumnsStart:2,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
                 rowHeaders: false, //显示行头
@@ -1903,6 +1905,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
                 },
                 colWidths: [50, 150, 150, 60, 90, 120, 80, 60, 50, 50, 110, 110, 60],
                 columns: productionReportTemplateContentHandsontableHelper.columns,
+                fixedColumnsStart:2,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
                 rowHeaders: false, //显示行头
@@ -2936,6 +2939,7 @@ var HydrologicalWellDailyReportContentHandsontableHelper = {
                 },
                 colWidths: [50, 150, 150, 80, 90, 120, 80, 60, 110, 80],
                 columns: hydrologicalWellDailyReportContentHandsontableHelper.columns,
+                fixedColumnsStart:2,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
                 rowHeaders: false, //显示行头

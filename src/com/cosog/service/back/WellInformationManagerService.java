@@ -56,6 +56,7 @@ import com.cosog.model.calculate.AlarmInstanceOwnItem;
 import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.FSDiagramConstructionRequestData;
 import com.cosog.model.calculate.IntelligentFrequencyConversionData;
+import com.cosog.model.calculate.InterlockProtectionData;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.PumpingPRTFData;
@@ -1279,8 +1280,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
-	public void saveFrequencyConversionDataData(int deviceId,String data) throws Exception {
+	public void saveFrequencyConversionData(int deviceId,String data) throws Exception {
 		String sql = "update tbl_device t set t.frequencyconversiondata='"+data+"' where t.id="+deviceId;
+		this.getBaseDao().updateOrDeleteBySql(sql);
+	}
+	
+	public void saveInterlockProtectionData(int deviceId,String data) throws Exception {
+		String sql = "update tbl_device t set t.interlockprotectiondata='"+data+"' where t.id="+deviceId;
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
@@ -3266,6 +3272,74 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("{\"id\":35,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1227")?workTypeMap.get("1227").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1227\",\"itemValue\":"+(intelligentFrequencyConversionData!=null&&intelligentFrequencyConversionData.getFSDiagramWorkTypeEnable()!=null&&intelligentFrequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1227()==1)+"},");
 				result_json.append("{\"id\":36,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1230")?workTypeMap.get("1230").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1230\",\"itemValue\":"+(intelligentFrequencyConversionData!=null&&intelligentFrequencyConversionData.getFSDiagramWorkTypeEnable()!=null&&intelligentFrequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1230()==1)+"},");
 				result_json.append("{\"id\":37,\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1232")?workTypeMap.get("1232").getResultName():"")+"\",\"itemCode\":\"write_FrequencyConversionEnable_FSDiagramWorkType1232\",\"itemValue\":"+(intelligentFrequencyConversionData!=null&&intelligentFrequencyConversionData.getFSDiagramWorkTypeEnable()!=null&&intelligentFrequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1232()==1)+"},");
+			}
+			
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+			result_json.append("]");
+			result_json.append("}");
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			
+		}
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getInterlockProtectionInfo(String deviceId,String language) {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		try{
+			String columns = "["
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "]";
+			
+			String deviceTableName="tbl_device";
+			String sql = "select t.interlockprotectiondata "
+					+ " from "+deviceTableName+" t "
+					+ " where t.id="+deviceId;
+			List<?> list = this.findCallSql(sql);
+			result_json.append("{\"success\":true,\"totalCount\":"+(list.size()>0?37:0)+",\"columns\":"+columns+",\"totalRoot\":[");
+			if(list.size()>0){
+				String dataStr=list.get(0)+"";
+				Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
+				type = new TypeToken<InterlockProtectionData>() {}.getType();
+				InterlockProtectionData interlockProtectionData=gson.fromJson(dataStr, type);
+				int index=1;
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("enable")+"\",\"itemName\":\""+languageResourceMap.get("enable")+"\",\"itemCode\":\"write_InterlockProtectionEnable\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getEnable()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1201")?workTypeMap.get("1201").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1201\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1201()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1202")?workTypeMap.get("1202").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1202\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1202()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1203")?workTypeMap.get("1203").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1203\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1203()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1204")?workTypeMap.get("1204").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1204\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1204()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1205")?workTypeMap.get("1205").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1205\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1205()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1206")?workTypeMap.get("1206").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1206\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1206()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1207")?workTypeMap.get("1207").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1207\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1207()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1208")?workTypeMap.get("1208").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1208\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1208()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1209")?workTypeMap.get("1209").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1209\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1209()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1210")?workTypeMap.get("1210").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1210\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1210()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1212")?workTypeMap.get("1212").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1212\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1212()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1213")?workTypeMap.get("1213").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1213\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1213()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1214")?workTypeMap.get("1214").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1214\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1214()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1215")?workTypeMap.get("1215").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1215\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1215()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1216")?workTypeMap.get("1216").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1216\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1216()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1217")?workTypeMap.get("1217").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1217\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1217()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1218")?workTypeMap.get("1218").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1218\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1218()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1219")?workTypeMap.get("1219").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1219\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1219()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1220")?workTypeMap.get("1220").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1220\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1220()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1221")?workTypeMap.get("1221").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1221\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1221()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1222")?workTypeMap.get("1222").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1222\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1222()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1223")?workTypeMap.get("1223").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1223\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1223()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1224")?workTypeMap.get("1224").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1224\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1224()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1225")?workTypeMap.get("1225").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1225\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1225()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1226")?workTypeMap.get("1226").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1226\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1226()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1227")?workTypeMap.get("1227").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1227\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1227()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1230")?workTypeMap.get("1230").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1230\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1230()==1)+"},");
+				result_json.append("{\"id\":"+(index++)+",\"itemClasses\":\""+languageResourceMap.get("FSDiagramWorkTypeEnable")+"\",\"itemName\":\""+(workTypeMap!=null&&workTypeMap.containsKey("1232")?workTypeMap.get("1232").getResultName():"")+"\",\"itemCode\":\"write_InterlockProtectionEnable_FSDiagramWorkType1232\",\"itemValue\":"+(interlockProtectionData!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable()!=null&&interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1232()==1)+"},");
 			}
 			
 			if (result_json.toString().endsWith(",")) {

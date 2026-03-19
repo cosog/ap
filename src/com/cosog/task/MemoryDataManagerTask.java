@@ -6503,6 +6503,37 @@ public class MemoryDataManagerTask {
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1230"),"write_FrequencyConversionEnable_FSDiagramWorkType1230",index++) );
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1232"),"write_FrequencyConversionEnable_FSDiagramWorkType1232",index++) );
 		
+		
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable"),"write_InterlockProtectionEnable",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1201"),"write_InterlockProtectionEnable_FSDiagramWorkType1201",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1202"),"write_InterlockProtectionEnable_FSDiagramWorkType1202",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1203"),"write_InterlockProtectionEnable_FSDiagramWorkType1203",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1204"),"write_InterlockProtectionEnable_FSDiagramWorkType1204",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1205"),"write_InterlockProtectionEnable_FSDiagramWorkType1205",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1206"),"write_InterlockProtectionEnable_FSDiagramWorkType1206",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1207"),"write_InterlockProtectionEnable_FSDiagramWorkType1207",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1208"),"write_InterlockProtectionEnable_FSDiagramWorkType1208",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1209"),"write_InterlockProtectionEnable_FSDiagramWorkType1209",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1210"),"write_InterlockProtectionEnable_FSDiagramWorkType1210",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1212"),"write_InterlockProtectionEnable_FSDiagramWorkType1212",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1213"),"write_InterlockProtectionEnable_FSDiagramWorkType1213",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1214"),"write_InterlockProtectionEnable_FSDiagramWorkType1214",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1215"),"write_InterlockProtectionEnable_FSDiagramWorkType1215",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1216"),"write_InterlockProtectionEnable_FSDiagramWorkType1216",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1217"),"write_InterlockProtectionEnable_FSDiagramWorkType1217",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1218"),"write_InterlockProtectionEnable_FSDiagramWorkType1218",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1219"),"write_InterlockProtectionEnable_FSDiagramWorkType1219",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1220"),"write_InterlockProtectionEnable_FSDiagramWorkType1220",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1221"),"write_InterlockProtectionEnable_FSDiagramWorkType1221",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1222"),"write_InterlockProtectionEnable_FSDiagramWorkType1222",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1223"),"write_InterlockProtectionEnable_FSDiagramWorkType1223",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1224"),"write_InterlockProtectionEnable_FSDiagramWorkType1224",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1225"),"write_InterlockProtectionEnable_FSDiagramWorkType1225",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1226"),"write_InterlockProtectionEnable_FSDiagramWorkType1226",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1227"),"write_InterlockProtectionEnable_FSDiagramWorkType1227",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1230"),"write_InterlockProtectionEnable_FSDiagramWorkType1230",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1232"),"write_InterlockProtectionEnable_FSDiagramWorkType1232",index++) );
+		
 		return calculateColumnInfo;
 	}
 	

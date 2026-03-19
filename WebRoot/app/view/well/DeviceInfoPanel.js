@@ -429,7 +429,7 @@ var deviceAdditionalInformationTabPanelItems=[{
 		iconCls: 'downlink',
 		disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
 		handler: function (v, o) {
-//			deviceInterlockProtectionDataDownlink();
+			deviceInterlockProtectionDataDownlink();
 		}
 	},'-',{
 		xtype: 'button',
@@ -437,7 +437,7 @@ var deviceAdditionalInformationTabPanelItems=[{
 		iconCls: 'uplink',
 		disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
 		handler: function (v, o) {
-//			deviceInterlockProtectionDataUplink();
+			deviceInterlockProtectionDataUplink();
 		}
 	}],
 	html: '<div class="DeviceInterlockProtectionConfigurationInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceInterlockProtectionInfoTableDiv_id"></div></div>',
@@ -1099,6 +1099,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
         success: function (response) {
         	Ext.getCmp("DeviceTablePanel_id").getEl().unmask();
         	var result = Ext.JSON.decode(response.responseText);
+        	var fixedColumnsStart=0;
             if (deviceInfoHandsontableHelper == null || deviceInfoHandsontableHelper.hot == null || deviceInfoHandsontableHelper.hot == undefined) {
                 deviceInfoHandsontableHelper = DeviceInfoHandsontableHelper.createNew("DeviceTableDiv_id");
                 deviceInfoHandsontableHelper.dataLength=result.totalCount;
@@ -1107,6 +1108,11 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 
                 for (var i = 0; i < result.columns.length; i++) {
                     colHeaders += "'" + result.columns[i].header + "'";
+                    if (result.columns[i].dataIndex.toUpperCase() === "id".toUpperCase() || result.columns[i].dataIndex.toUpperCase() === "deviceName".toUpperCase()) {
+                    	fixedColumnsStart++;
+                    }
+                    
+                    
                     if (result.columns[i].dataIndex.toUpperCase() === "orgName".toUpperCase()) {
                         columns += "{data:'" + result.columns[i].dataIndex + "',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,deviceInfoHandsontableHelper);}}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "liftingTypeName".toUpperCase()) {
@@ -1211,6 +1217,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
                 columns += "]";
                 deviceInfoHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
                 deviceInfoHandsontableHelper.columns = Ext.JSON.decode(columns);
+                deviceInfoHandsontableHelper.fixedColumnsStart=fixedColumnsStart;
                 if(result.totalRoot.length==0){
                 	deviceInfoHandsontableHelper.hiddenRows = [0];
                 	deviceInfoHandsontableHelper.createTable([{}]);
@@ -1316,6 +1323,8 @@ var DeviceInfoHandsontableHelper = {
         deviceInfoHandsontableHelper.delidslist = [];
         deviceInfoHandsontableHelper.insertlist = [];
         deviceInfoHandsontableHelper.editWellNameList = [];
+        
+        deviceInfoHandsontableHelper.fixedColumnsStart=0;
         
         deviceInfoHandsontableHelper.signInIdAndSlaveMap=new Map();
         
@@ -1465,6 +1474,7 @@ var DeviceInfoHandsontableHelper = {
                     copyPasteEnabled: false
                 },
                 columns: deviceInfoHandsontableHelper.columns,
+                fixedColumnsStart:deviceInfoHandsontableHelper.fixedColumnsStart,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 rowHeaders: true, //显示行头
                 colHeaders: deviceInfoHandsontableHelper.colHeaders, //显示列头
@@ -2575,6 +2585,44 @@ var DeviceInfoHandsontableHelper = {
                     	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=frequencyConversionHandsontableData[36][3]?1:0;
             		}
             		deviceAdditionalInformationData.data=JSON.stringify(frequencyConversionData);
+            	}else if(additionalInformationType==8){
+            		var interlockProtectionData={};
+            		if(deviceInterlockProtectionHandsontableHelper!=null && deviceInterlockProtectionHandsontableHelper.hot!=undefined){
+            			var interlockProtectionHandsontableData=deviceInterlockProtectionHandsontableHelper.hot.getData();
+                    	interlockProtectionData.Enable=interlockProtectionHandsontableData[0][3]?1:0;
+                    	
+                    	interlockProtectionData.FSDiagramWorkTypeEnable={};
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1201=interlockProtectionHandsontableData[1][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1202=interlockProtectionHandsontableData[2][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1203=interlockProtectionHandsontableData[3][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1204=interlockProtectionHandsontableData[4][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1205=interlockProtectionHandsontableData[5][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1206=interlockProtectionHandsontableData[6][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1207=interlockProtectionHandsontableData[7][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1208=interlockProtectionHandsontableData[8][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1209=interlockProtectionHandsontableData[9][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1210=interlockProtectionHandsontableData[10][3]?1:0;
+                    	
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1212=interlockProtectionHandsontableData[11][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1213=interlockProtectionHandsontableData[12][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1214=interlockProtectionHandsontableData[13][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1215=interlockProtectionHandsontableData[14][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1216=interlockProtectionHandsontableData[15][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1217=interlockProtectionHandsontableData[16][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1218=interlockProtectionHandsontableData[17][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1219=interlockProtectionHandsontableData[18][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1220=interlockProtectionHandsontableData[19][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1221=interlockProtectionHandsontableData[20][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1222=interlockProtectionHandsontableData[21][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1223=interlockProtectionHandsontableData[22][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1224=interlockProtectionHandsontableData[23][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1225=interlockProtectionHandsontableData[24][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1226=interlockProtectionHandsontableData[25][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1227=interlockProtectionHandsontableData[26][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=interlockProtectionHandsontableData[27][3]?1:0;
+                    	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=interlockProtectionHandsontableData[28][3]?1:0;
+            		}
+            		deviceAdditionalInformationData.data=JSON.stringify(interlockProtectionData);
             	}
             	
             	Ext.Ajax.request({
@@ -5326,21 +5374,145 @@ function deviceIntelligentFrequencyConversionDataUplink(){
                 	const plugin = deviceIntelligentFrequencyConversionHandsontableHelper.hot.getPlugin('hiddenColumns');
                 	plugin.showColumns([6]);
                 	plugin.hideColumns([5]);
-                	deviceIntelligentFrequencyConversionHandsontableHelper.hot.render();
                 	
                 	var codeColumnValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtProp('itemCode');
                 	for(var i=0;i<codeColumnValue.length;i++){
                 		for(var j=0;j<result.downStatusList.length;j++){
                 			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
-                				deviceIntelligentFrequencyConversionHandsontableHelper.hot.setDataAtRowProp(i,'uplinkStatus',result.downStatusList[j].status);
+                				var cellProperties = deviceIntelligentFrequencyConversionHandsontableHelper.hot.getCellMeta(i, 3);
+                				var uplinkStatusCellMeta = deviceIntelligentFrequencyConversionHandsontableHelper.hot.getCellMeta(i, 6); 
+                				if(cellProperties.type === 'checkbox' && result.downStatusList[j].status!=loginUserLanguageResource.noUplink && result.downStatusList[j].status!=loginUserLanguageResource.uplinkFailed){
+                					if(uplinkStatusCellMeta.type != 'checkbox'){
+                						deviceIntelligentFrequencyConversionHandsontableHelper.hot.setCellMeta(i, 6, 'type', 'checkbox')
+                					}
+                				}else{
+                					if(uplinkStatusCellMeta.type != 'text'){
+                						deviceIntelligentFrequencyConversionHandsontableHelper.hot.setCellMeta(i, 6, 'type', 'text')
+                					}
+                				}
                 				break;
                 			}
                 		}
                 	}
+                	deviceIntelligentFrequencyConversionHandsontableHelper.hot.render();
+                	
+                	for(var i=0;i<codeColumnValue.length;i++){
+                		for(var j=0;j<result.downStatusList.length;j++){
+                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                				
+                				let newStatus = result.downStatusList[j].status;
+                				let targetType = deviceIntelligentFrequencyConversionHandsontableHelper.hot.getCellMeta(i, 6).type; // 获取当前类型
+
+                				// 如果目标是 checkbox，确保值是布尔型
+                				if (targetType === 'checkbox' && typeof newStatus !== 'boolean') {
+                				    newStatus = (newStatus === true || newStatus === 'true');
+                				}
+
+                				deviceIntelligentFrequencyConversionHandsontableHelper.hot.setDataAtRowProp(i, 'uplinkStatus', newStatus);
+//                				deviceIntelligentFrequencyConversionHandsontableHelper.hot.setDataAtRowProp(i,'uplinkStatus',result.downStatusList[j].status);
+                				break;
+                			}
+                		}
+                	}
+                	deviceIntelligentFrequencyConversionHandsontableHelper.hot.render();
                 } 
             },
             failure: function () {
             	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+            }
+        });
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
+function deviceInterlockProtectionDataUplink(){
+	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+	if(deviceInfoHandsontableData.length>0){
+		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+		var applicationScenarios=0;
+		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+			applicationScenarios=1;
+		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+			applicationScenarios=2;
+		}
+
+		Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		Ext.Ajax.request({
+            url: context + '/wellInformationManagerController/deviceInterlockProtectionDataUplink',
+            method: "POST",
+            params: {
+            	deviceId: deviceId
+            },
+            success: function (response, action) {
+            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+            	var result =  Ext.JSON.decode(response.responseText);
+            	
+            	if (result.flag == false) {
+                    Ext.MessageBox.show({
+                        title: loginUserLanguageResource.tip,
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        icon: Ext.MessageBox.INFO,
+                        buttons: Ext.Msg.OK,
+                        fn: function () {
+                            window.location.href = context + "/login";
+                        }
+                    });
+                } else if (result.flag == true && result.error == false) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+                }  else if (result.flag == true && result.error == true) {
+                	const plugin = deviceInterlockProtectionHandsontableHelper.hot.getPlugin('hiddenColumns');
+                	plugin.showColumns([6]);
+                	plugin.hideColumns([5]);
+                	
+                	var codeColumnValue=deviceInterlockProtectionHandsontableHelper.hot.getDataAtProp('itemCode');
+                	for(var i=0;i<codeColumnValue.length;i++){
+                		for(var j=0;j<result.downStatusList.length;j++){
+                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                				var cellProperties = deviceInterlockProtectionHandsontableHelper.hot.getCellMeta(i, 3);
+                				var uplinkStatusCellMeta = deviceInterlockProtectionHandsontableHelper.hot.getCellMeta(i, 6); 
+                				if(cellProperties.type === 'checkbox' && result.downStatusList[j].status!=loginUserLanguageResource.noUplink && result.downStatusList[j].status!=loginUserLanguageResource.uplinkFailed){
+                					if(uplinkStatusCellMeta.type != 'checkbox'){
+                						deviceInterlockProtectionHandsontableHelper.hot.setCellMeta(i, 6, 'type', 'checkbox')
+                					}
+                				}else{
+                					if(uplinkStatusCellMeta.type != 'text'){
+                						deviceInterlockProtectionHandsontableHelper.hot.setCellMeta(i, 6, 'type', 'text')
+                					}
+                				}
+                				break;
+                			}
+                		}
+                	}
+                	deviceInterlockProtectionHandsontableHelper.hot.render();
+                	
+                	for(var i=0;i<codeColumnValue.length;i++){
+                		for(var j=0;j<result.downStatusList.length;j++){
+                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                				
+                				let newStatus = result.downStatusList[j].status;
+                				let targetType = deviceInterlockProtectionHandsontableHelper.hot.getCellMeta(i, 6).type; // 获取当前类型
+
+                				// 如果目标是 checkbox，确保值是布尔型
+                				if (targetType === 'checkbox' && typeof newStatus !== 'boolean') {
+                				    newStatus = (newStatus === true || newStatus === 'true');
+                				}
+
+                				deviceInterlockProtectionHandsontableHelper.hot.setDataAtRowProp(i, 'uplinkStatus', newStatus);
+//                				deviceInterlockProtectionHandsontableHelper.hot.setDataAtRowProp(i,'uplinkStatus',result.downStatusList[j].status);
+                				break;
+                			}
+                		}
+                	}
+                	deviceInterlockProtectionHandsontableHelper.hot.render();
+                } 
+            },
+            failure: function () {
+            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -6195,27 +6367,65 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
 	        
+	        deviceIntelligentFrequencyConversionHandsontableHelper.addCheckboxCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        	if (cellProperties.type === 'checkbox') {
+	                Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+	            } else {
+	                Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            }
+	        	
+	        	td.style.setProperty('background-color', '#f09614', 'important');
+
+	            if (cellProperties.type === 'checkbox') {
+	                var label = td.querySelector('label');
+	                if (label) {
+	                    label.style.setProperty('background-color', 'transparent', 'important');
+	                }
+	            }
+	            
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
 	        deviceIntelligentFrequencyConversionHandsontableHelper.addUplinkStatusCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            if(isNotVal(deviceIntelligentFrequencyConversionHandsontableHelper.hot)){
-	            	var itemValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
-		            if(isNotVal(itemValue+"") && isNotVal(value)){
-		            	if(value!=loginUserLanguageResource.uplinkFailed){
+//	        	if(protocolAcqUnitConfigItemsHandsontableHelper.columns[col].type=='checkbox'){
+//	        		protocolAcqUnitConfigItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+//	        	}else if(protocolAcqUnitConfigItemsHandsontableHelper.columns[col].type=='dropdown'){
+//	        		protocolAcqUnitConfigItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+//	        	}else{
+//	        		protocolAcqUnitConfigItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
+//	        	}
+	        	
+	            if (cellProperties.type === 'checkbox') {
+	                Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+	            } else {
+	                Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            }
+	            
+	            
+	            if(isNotVal(instance)){
+	            	var itemValue=instance.getDataAtRowProp(row,'itemValue');
+		            if(isNotVal(itemValue+"") && isNotVal(value+"")){
+		            	if(value===loginUserLanguageResource.uplinkFailed){
+		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else if(value===loginUserLanguageResource.noUplink){
+//		            		td.style.backgroundColor = "#f09614";
+		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else{
 		            		if(isNumber(itemValue) && isNumber(value)){
-		            			if(parseFloat(itemValue)==parseFloat(value)){
+		            			if(parseFloat(itemValue)===parseFloat(value)){
 		            				td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            			}else{
 		            				td.style.backgroundColor = "#f09614";
 		            			}
 		            		}else{
-		            			if(itemValue==value){
+		            			if(itemValue===value){
 		            				td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            			}else{
 		            				td.style.backgroundColor = "#f09614";
 		            			}
 		            		}
-		            	}else{
-		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}
 		            }else{
 		            	td.innerHTML='';
@@ -6253,7 +6463,8 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	                rowHeaders: false, //显示行头
 	                colHeaders: deviceIntelligentFrequencyConversionHandsontableHelper.colHeaders, //显示列头
 	                columnSorting: true, //允许排序
-	                sortIndicator: true,
+	                sortIndicator: false,
+	                columnSorting: false,
 	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
 	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
 	                filters: true,
@@ -6311,7 +6522,7 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	                    	}
 	                    }
 	                    
-	                    if (visualColIndex === 3 && (visualRowIndex===0 || visualRowIndex>=9) ) {
+	                    if ( (visualColIndex === 3) && (visualRowIndex===0 || visualRowIndex>=9) ) {
 	                    	this.type = 'checkbox';
 	                    }
 	                    
@@ -6360,6 +6571,249 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	            });
 	        }
 	        return deviceIntelligentFrequencyConversionHandsontableHelper;
+	    }
+	};
+
+function CreateAndLoadDeviceInterlockProtectionTable(deviceId,deviceName,applicationScenarios,isNew){
+	if(deviceInterlockProtectionHandsontableHelper!=null){
+		if(deviceInterlockProtectionHandsontableHelper.hot!=undefined){
+			deviceInterlockProtectionHandsontableHelper.hot.destroy();
+		}
+		deviceInterlockProtectionHandsontableHelper=null;
+	}
+	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/wellInformationManagerController/getInterlockProtectionInfo',
+		success:function(response) {
+			Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+			var result =  Ext.JSON.decode(response.responseText);
+			if(deviceInterlockProtectionHandsontableHelper==null || deviceInterlockProtectionHandsontableHelper.hot==undefined){
+				deviceInterlockProtectionHandsontableHelper = DeviceInterlockProtectionHandsontableHelper.createNew("DeviceInterlockProtectionInfoTableDiv_id");;
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+				var columns="[{data:'id'}," 
+					+"{data:'itemClasses'}," 
+					+"{data:'itemName'}," 
+					+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceInterlockProtectionHandsontableHelper);}}," 
+					+"{data:'itemCode'}," 
+					+"{data:'downlinkStatus'}," 
+					+"{data:'uplinkStatus'}" 
+					+"]";
+				deviceInterlockProtectionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				deviceInterlockProtectionHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					deviceInterlockProtectionHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					deviceInterlockProtectionHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					deviceInterlockProtectionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					deviceInterlockProtectionHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+		},
+		params: {
+			deviceId:deviceId
+        }
+	});
+};
+
+var DeviceInterlockProtectionHandsontableHelper = {
+	    createNew: function (divid) {
+	        var deviceInterlockProtectionHandsontableHelper = {};
+	        deviceInterlockProtectionHandsontableHelper.hot = '';
+	        deviceInterlockProtectionHandsontableHelper.divid = divid;
+	        deviceInterlockProtectionHandsontableHelper.colHeaders = [];
+	        deviceInterlockProtectionHandsontableHelper.columns = [];
+	        
+	        deviceInterlockProtectionHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        deviceInterlockProtectionHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+	        
+	        deviceInterlockProtectionHandsontableHelper.addUplinkStatusCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        	
+	            if (cellProperties.type === 'checkbox') {
+	                Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+	            } else {
+	                Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            }
+	            
+	            
+	            if(isNotVal(instance)){
+	            	var itemValue=instance.getDataAtRowProp(row,'itemValue');
+		            if(isNotVal(itemValue+"") && isNotVal(value+"")){
+		            	if(value===loginUserLanguageResource.uplinkFailed){
+		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else if(value===loginUserLanguageResource.noUplink){
+//		            		td.style.backgroundColor = "#f09614";
+		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else{
+		            		if(isNumber(itemValue) && isNumber(value)){
+		            			if(parseFloat(itemValue)===parseFloat(value)){
+		            				td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            			}else{
+		            				td.style.backgroundColor = "#f09614";
+		            			}
+		            		}else{
+		            			if(itemValue===value){
+		            				td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            			}else{
+		            				td.style.backgroundColor = "#f09614";
+		            			}
+		            		}
+		            	}
+		            }else{
+		            	td.innerHTML='';
+		            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            }
+	            }else{
+	            	td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            }
+	            
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+
+	        deviceInterlockProtectionHandsontableHelper.createTable = function (data) {
+	            $('#' + deviceInterlockProtectionHandsontableHelper.divid).empty();
+	            var hotElement = document.querySelector('#' + deviceInterlockProtectionHandsontableHelper.divid);
+	            deviceInterlockProtectionHandsontableHelper.hot = new Handsontable(hotElement, {
+	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	            	data: data,
+	            	colWidths: [50,100,100,50],
+	                hiddenColumns: {
+	                    columns: [0,4,5,6],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                hiddenRows: {
+	                    rows: [],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                columns: deviceInterlockProtectionHandsontableHelper.columns,
+	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false, //显示行头
+	                colHeaders: deviceInterlockProtectionHandsontableHelper.colHeaders, //显示列头
+	                columnSorting: true, //允许排序
+	                sortIndicator: false,
+	                columnSorting: false,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
+	                mergeCells:[{
+	                    "row": 0,
+	                    "col": 1,
+	                    "rowspan": 1,
+	                    "colspan": 2
+	                },{
+	                    "row": 1,
+	                    "col": 1,
+	                    "rowspan": 28,
+	                    "colspan": 1
+	                }],
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    
+	                    if(DeviceManagerModuleEditFlag==1){
+	                    	if (visualColIndex !=3 && visualColIndex !=6) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = deviceInterlockProtectionHandsontableHelper.addCellStyle;
+			                }else if (visualColIndex ==6) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = deviceInterlockProtectionHandsontableHelper.addUplinkStatusCellStyle;
+			                }
+	                    }else{
+	                    	cellProperties.readOnly = true;
+	                    	if (visualColIndex !=3) {
+	                    		cellProperties.renderer = deviceInterlockProtectionHandsontableHelper.addCellStyle;
+	                    	}
+	                    }
+	                    
+	                    if (visualColIndex === 3) {
+	                    	this.type = 'checkbox';
+	                    }
+	                    
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(coords.col>=0 && coords.row>=0 && deviceInterlockProtectionHandsontableHelper!=null&&deviceInterlockProtectionHandsontableHelper.hot!=''&&deviceInterlockProtectionHandsontableHelper.hot!=undefined && deviceInterlockProtectionHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var cellProperties = deviceInterlockProtectionHandsontableHelper.hot.getCellMeta(coords.row,coords.col); 
+	                		if(cellProperties.type=='text'){
+	                			var rawValue=deviceInterlockProtectionHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+		                		if(isNotVal(rawValue)){
+	                				var showValue=rawValue;
+	            					var rowChar=90;
+	            					var maxWidth=rowChar*10;
+	            					if(rawValue.length>rowChar){
+	            						showValue='';
+	            						let arr = [];
+	            						let index = 0;
+	            						while(index<rawValue.length){
+	            							arr.push(rawValue.slice(index,index +=rowChar));
+	            						}
+	            						for(var i=0;i<arr.length;i++){
+	            							showValue+=arr[i];
+	            							if(i<arr.length-1){
+	            								showValue+='<br>';
+	            							}
+	            						}
+	            					}
+	                				if(!isNotVal(TD.tip)){
+	                					var height=28;
+	                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+			                			    target: event.target,
+			                			    maxWidth:maxWidth,
+			                			    html: showValue,
+			                			    listeners: {
+			                			    	hide: function (thisTip, eOpts) {
+			                                	},
+			                                	close: function (thisTip, eOpts) {
+			                                	}
+			                                }
+			                			});
+	                				}else{
+	                					TD.tip.setHtml(showValue);
+	                				}
+	                			}
+	                		}
+	                	}
+	                }
+	            });
+	        }
+	        return deviceInterlockProtectionHandsontableHelper;
 	    }
 	};
 
@@ -6488,6 +6942,111 @@ function deviceIntelligentFrequencyConversionDataDownlink(){
 	            },
 	            failure: function () {
 	            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+	            }
+	        });
+		
+        }
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
+function deviceInterlockProtectionDataDownlink(){
+	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
+	if(deviceInfoHandsontableData.length>0){
+		var DeviceSelectRow= Ext.getCmp("DeviceSelectRow_Id").getValue();
+		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
+		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
+		var applicationScenariosName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'applicationScenariosName');
+		var applicationScenarios=0;
+		if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+			applicationScenarios=1;
+		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+			applicationScenarios=2;
+		}
+		
+		var interlockProtectionData={};
+        if(deviceInterlockProtectionHandsontableHelper!=null && deviceInterlockProtectionHandsontableHelper.hot!=undefined){
+        	var interlockProtectionHandsontableData=deviceInterlockProtectionHandsontableHelper.hot.getData();
+        	interlockProtectionData.Enable=interlockProtectionHandsontableData[0][3]?1:0;
+        	
+        	interlockProtectionData.FSDiagramWorkTypeEnable={};
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1201=interlockProtectionHandsontableData[1][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1202=interlockProtectionHandsontableData[2][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1203=interlockProtectionHandsontableData[3][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1204=interlockProtectionHandsontableData[4][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1205=interlockProtectionHandsontableData[5][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1206=interlockProtectionHandsontableData[6][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1207=interlockProtectionHandsontableData[7][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1208=interlockProtectionHandsontableData[8][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1209=interlockProtectionHandsontableData[9][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1210=interlockProtectionHandsontableData[10][3]?1:0;
+        	
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1212=interlockProtectionHandsontableData[11][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1213=interlockProtectionHandsontableData[12][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1214=interlockProtectionHandsontableData[13][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1215=interlockProtectionHandsontableData[14][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1216=interlockProtectionHandsontableData[15][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1217=interlockProtectionHandsontableData[16][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1218=interlockProtectionHandsontableData[17][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1219=interlockProtectionHandsontableData[18][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1220=interlockProtectionHandsontableData[19][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1221=interlockProtectionHandsontableData[20][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1222=interlockProtectionHandsontableData[21][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1223=interlockProtectionHandsontableData[22][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1224=interlockProtectionHandsontableData[23][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1225=interlockProtectionHandsontableData[24][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1226=interlockProtectionHandsontableData[25][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1227=interlockProtectionHandsontableData[26][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=interlockProtectionHandsontableData[27][3]?1:0;
+        	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=interlockProtectionHandsontableData[28][3]?1:0;
+        	
+        	
+			Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+			Ext.Ajax.request({
+	            url: context + '/wellInformationManagerController/deviceInterlockProtectionDataDownlink',
+	            method: "POST",
+	            params: {
+	            	deviceId: deviceId,
+	            	deviceName: deviceName,
+	            	data:JSON.stringify(interlockProtectionData)
+	            },
+	            success: function (response, action) {
+	            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+	            	var result =  Ext.JSON.decode(response.responseText);
+	            	
+	            	if (result.flag == false) {
+	                    Ext.MessageBox.show({
+	                        title: loginUserLanguageResource.tip,
+	                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+	                        icon: Ext.MessageBox.INFO,
+	                        buttons: Ext.Msg.OK,
+	                        fn: function () {
+	                            window.location.href = context + "/login";
+	                        }
+	                    });
+	                } else if (result.flag == true && result.error == false) {
+	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+	                }  else if (result.flag == true && result.error == true) {
+	                	const plugin = deviceInterlockProtectionHandsontableHelper.hot.getPlugin('hiddenColumns');
+                    	plugin.showColumns([5]);
+                    	plugin.hideColumns([6]);
+                    	deviceInterlockProtectionHandsontableHelper.hot.render();
+                    	
+                    	var codeColumnValue=deviceInterlockProtectionHandsontableHelper.hot.getDataAtProp('itemCode');
+                    	for(var i=0;i<codeColumnValue.length;i++){
+                    		for(var j=0;j<result.downStatusList.length;j++){
+                    			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                    				deviceInterlockProtectionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+                    				break;
+                    			}
+                    		}
+                    	}
+	                } 
+	            },
+	            failure: function () {
+	            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
 	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
 	            }
 	        });

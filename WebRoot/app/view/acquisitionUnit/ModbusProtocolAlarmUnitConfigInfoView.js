@@ -915,6 +915,7 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	                },
 	        		colWidths: [25,50,120,80,80,80,80,80,100,100,120,120,120,120,80,80,80],
 	                columns:protocolAlarmUnitConfigNumItemsHandsontableHelper.columns,
+	                fixedColumnsStart:3,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
@@ -1339,6 +1340,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	                },
 	        		colWidths: [25,50,50,120,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigEnumItemsHandsontableHelper.columns,
+	                fixedColumnsStart:4,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
@@ -1564,6 +1566,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	                },
 	        		colWidths: [25,50,50,120,150,100,100,120,120,120,120],
 	                columns:protocolAlarmUnitConfigSwitchItemsHandsontableHelper.columns,
+	                fixedColumnsStart:4,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头

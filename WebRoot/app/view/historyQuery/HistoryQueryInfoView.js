@@ -316,11 +316,12 @@ function createHistoryDeviceOverviewColumnObject(columnInfo) {
         if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
         	thisColumn.xtype='rownumberer';
         	thisColumn.sortable=false;
-        	thisColumn.locked=false;
+        	thisColumn.locked=true;
         }
         else if (attr.dataIndex.toUpperCase()=='deviceName'.toUpperCase()) {
         	thisColumn.sortable=false;
         	thisColumn.dataIndex=attr.dataIndex;
+        	thisColumn.locked=true;
         	thisColumn.renderer=function(value,o,p,e){
         		return adviceDeviceOverviewDeviceNameColor(value,o,p,e);
         	};
@@ -2195,7 +2196,7 @@ function createHistoryQueryDiagramOverlayTableColumn(columnInfo) {
             myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRunStatusColor(value,o,p,e);}";
         }
         else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
-            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
+            myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
         } 
 //        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
 //            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceResultStatusColor(value,o,p,e);}";

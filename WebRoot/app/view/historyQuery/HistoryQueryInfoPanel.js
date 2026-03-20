@@ -175,7 +175,7 @@ var historyQueryCenterTabPanelItems=[{
         	layout: "fit",
             autoScroll: true,
             iconCls: 'check3',
-            html: '<div id="surfaceCardContainer" class="hbox" style="width:100%;height:100%;"></div>',
+            html: '<div id="surfaceCardContainer" class="hbox" style="width:100%;height:100%;display:flex;flex-wrap:wrap;align-content:flex-start;"></div>',
             listeners: {
             	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                 	var container=$('#surfaceCardContainer');
@@ -213,7 +213,7 @@ var historyQueryCenterTabPanelItems=[{
                 render: function (p, o, i, c) {
                     p.body.on('scroll', function () {
                         var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
-                        if (diagramPage < totalPages) {
+                        if (diagramTiledPage < totalPages) {
                             var HistoryDiagramTabPanel = Ext.getCmp("FSDiagramTiledTabPanel_Id");
                             
                             let scroller = HistoryDiagramTabPanel.getScrollable();
@@ -224,8 +224,8 @@ var historyQueryCenterTabPanelItems=[{
                             var hRatio = (position.y / (scrollHeight - clientHeight));
 //                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
                             if (hRatio > 0.8) {
-                                diagramPage++;
-                                loadHistoryDiagramTiledList(diagramPage);
+                                diagramTiledPage++;
+                                loadHistoryDiagramTiledList(diagramTiledPage);
                             }
                         }
                     }, this);
@@ -236,7 +236,7 @@ var historyQueryCenterTabPanelItems=[{
         	id:'PSDiagramTiledTabPanel_Id',
         	layout: "fit",
             autoScroll: true,
-            html: '<div id="PSDiagramTiledContainer" class="hbox" style="width:100%;height:100%;"></div>',
+            html: '<div id="PSDiagramTiledContainer" class="hbox" style="width:100%;height:100%;display:flex;flex-wrap:wrap;align-content:flex-start;"></div>',
             listeners: {
             	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                 	var container=$('#PSDiagramTiledContainer');
@@ -272,13 +272,8 @@ var historyQueryCenterTabPanelItems=[{
                 render: function (p, o, i, c) {
                     p.body.on('scroll', function () {
                         var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
-                        if (diagramPage < totalPages) {
+                        if (diagramTiledPage < totalPages) {
                             var HistoryDiagramTabPanel = Ext.getCmp("PSDiagramTiledTabPanel_Id");
-//                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("PSDiagramTiledContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-//                            if (hRatio > 0.5) {
-//                                diagramPage++;
-//                                loadHistoryDiagramTiledList(diagramPage);
-//                            }
                             
                             let scroller = HistoryDiagramTabPanel.getScrollable();
                             let position = scroller.getPosition(); // {x:0, y: scrollTop}
@@ -288,8 +283,8 @@ var historyQueryCenterTabPanelItems=[{
                             var hRatio = (position.y / (scrollHeight - clientHeight));
 //                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
                             if (hRatio > 0.8) {
-                                diagramPage++;
-                                loadHistoryDiagramTiledList(diagramPage);
+                                diagramTiledPage++;
+                                loadHistoryDiagramTiledList(diagramTiledPage);
                             }
                         }
                     }, this);
@@ -300,7 +295,7 @@ var historyQueryCenterTabPanelItems=[{
         	id:'ISDiagramTiledTabPanel_Id',
         	layout: "fit",
             autoScroll: true,
-            html: '<div id="ISDiagramTiledContainer" class="hbox" style="width:100%;height:100%;"></div>',
+            html: '<div id="ISDiagramTiledContainer" class="hbox" style="width:100%;height:100%;display:flex;flex-wrap:wrap;align-content:flex-start;"></div>',
             listeners: {
             	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                 	var container=$('#ISDiagramTiledContainer');
@@ -335,14 +330,8 @@ var historyQueryCenterTabPanelItems=[{
                 render: function (p, o, i, c) {
                     p.body.on('scroll', function () {
                         var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
-                        if (diagramPage < totalPages) {
+                        if (diagramTiledPage < totalPages) {
                             var HistoryDiagramTabPanel = Ext.getCmp("ISDiagramTiledTabPanel_Id");
-//                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("ISDiagramTiledContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-//                            if (hRatio > 0.5) {
-//                                diagramPage++;
-//                                loadHistoryDiagramTiledList(diagramPage);
-//                            }
-                            
                             let scroller = HistoryDiagramTabPanel.getScrollable();
                             let position = scroller.getPosition(); // {x:0, y: scrollTop}
                             let scrollHeight = scroller.getSize().y; // 内容总高度
@@ -351,8 +340,8 @@ var historyQueryCenterTabPanelItems=[{
                             var hRatio = (position.y / (scrollHeight - clientHeight));
 //                            var hRatio = HistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
                             if (hRatio > 0.8) {
-                                diagramPage++;
-                                loadHistoryDiagramTiledList(diagramPage);
+                                diagramTiledPage++;
+                                loadHistoryDiagramTiledList(diagramTiledPage);
                             }
                         }
                     }, this);
@@ -769,7 +758,8 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
             					}
             					Ext.getCmp('HistoryQueryDeviceListComb_Id').setValue('');
             					Ext.getCmp('HistoryQueryDeviceListComb_Id').setRawValue('');
-            					refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),0,Ext.getCmp("HistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.HistoryQueryWellListStore');
+            					var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+            					refreshHistoryDeviceListDataByPage(parseInt(Ext.getCmp("selectedDeviceId_global").getValue()),deviceType,Ext.getCmp("HistoryQueryDeviceListGridPanel_Id"),'AP.store.historyQuery.HistoryQueryWellListStore');
             				}
             			}
                     }]

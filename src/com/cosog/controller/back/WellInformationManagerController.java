@@ -3213,6 +3213,10 @@ public class WellInformationManagerController extends BaseController {
 								}
 							}
 							
+							List<String> initWellList=new ArrayList<String>();
+							initWellList.add(deviceId);
+							MemoryDataManagerTask.loadDeviceInfo(initWellList,0,"update");
+							
 							StringBuffer result_json = new StringBuffer();
 							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
 							for (String key : downStatusMap.keySet()) {
@@ -3434,6 +3438,9 @@ public class WellInformationManagerController extends BaseController {
 				}else{
 					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
 				}
+				List<String> initWellList=new ArrayList<String>();
+				initWellList.add(deviceId);
+				MemoryDataManagerTask.loadDeviceInfo(initWellList,0,"update");
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
 			}

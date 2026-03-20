@@ -1,3 +1,4 @@
+var diagramTiledPage=1;
 Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.historyMonitoringInfoView', // 定义别名
@@ -1815,11 +1816,49 @@ loadHistoryDiagramTiledList = function (page) {
 	}
 }
 
+function resizeTiledGraphs(panel,containerId) {
+    var container = $('#'+containerId);
+    if (!container || container.length === 0) return;
+    var containerChildren = container[0].children;
+    if (!containerChildren || containerChildren.length === 0) return;
+
+    var panelHeight = panel.getHeight();
+    var panelWidth = panel.getWidth();
+    var scrollWidth = getScrollWidth(); // 固定滚动条宽度
+
+    // 使用原生 DOM 判断滚动条
+    var panelEl = panel.getEl().dom;
+    var hasVerticalScroll = panelEl.scrollHeight > panelEl.clientHeight;
+
+    // 有效宽度：有滚动条时减去滚动条宽度
+    var effectivePanelWidth = panelWidth - (hasVerticalScroll ? scrollWidth : 0);
+    var columnCount = parseInt(effectivePanelWidth / graghMinWidth);
+    if (columnCount < 1) columnCount = 1;
+    var gtWidth = effectivePanelWidth / columnCount - 1;
+    var gtHeight = gtWidth * 0.75;
+
+    // 设置每个 div 的宽高
+    for (var i = 0; i < containerChildren.length; i++) {
+        var divElement = document.getElementById(containerChildren[i].id);
+        if (divElement) {
+            divElement.style.width = gtWidth + 'px';
+            divElement.style.height = gtHeight + 'px';
+        }
+    }
+
+    // 调整 Highcharts 大小
+    for (var i = 0; i < containerChildren.length; i++) {
+        var chart = $("#" + containerChildren[i].id).highcharts();
+        if (chart) {
+            highchartsResize(containerChildren[i].id);
+        }
+    }
+}
+
 loadSurfaceCardList = function (page) {
-	diagramPage=page;
+	diagramTiledPage=page;
     Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loading); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
-    page=page;
     if(page==1){
     	$("#surfaceCardContainer").html(''); // 将html内容清空
     }
@@ -1865,6 +1904,7 @@ loadSurfaceCardList = function (page) {
             page: page
         },
         success: function (response) {
+        	console.log("加载图形平铺第"+page+"页数据");
         	if(page==1){
         		$("#surfaceCardContainer").html(''); // 将html内容清空
         	}
@@ -1898,13 +1938,19 @@ loadSurfaceCardList = function (page) {
             var scrollWidth = getScrollWidth(); // 滚动条的宽度
             
             var scroller = HistoryDiagramTabPanel.getScrollable();
-            
             var scrollSize = scroller.getSize().y;      // 内容高度
             var clientSize = scroller.getClientSize().y; // 可视高度
             var hasVerticalScroll = scrollSize > clientSize;
             
-            var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
-            var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
+//            var panelEl = HistoryDiagramTabPanel.getEl().dom;  // panel 是 Ext.getCmp("FSDiagramTiledTabPanel_Id")
+//            var hasVerticalScroll = panelEl.scrollHeight > panelEl.clientHeight;
+            
+//            console.log("scrollSize:"+panelEl.scrollHeight+",clientSize:"+panelEl.clientHeight+",hasVerticalScroll:"+hasVerticalScroll);
+            
+//            var effectivePanelWidth = panelWidth - (hasVerticalScroll ? scrollWidth : 0);
+            var effectivePanelWidth = panelWidth - scrollWidth;
+            var columnCount = parseInt( effectivePanelWidth/graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
+            var gtWidth = effectivePanelWidth/columnCount-1; // 有滚动条时图形宽度
             var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
             
             
@@ -1938,10 +1984,9 @@ loadSurfaceCardList = function (page) {
 
 
 loadPSDiagramTiledList = function (page) {
-	diagramPage=page;
+	diagramTiledPage=page;
     Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loading); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
-    page=page;
     if(page==1){
     	$("#PSDiagramTiledContainer").html(''); // 将html内容清空
     }
@@ -2049,10 +2094,9 @@ loadPSDiagramTiledList = function (page) {
 }
 
 loadISDiagramTiledList = function (page) {
-	diagramPage=page;
+	diagramTiledPage=page;
     Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loading); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
-    page=page;
     if(page==1){
     	$("#ISDiagramTiledContainer").html(''); // 将html内容清空
     }

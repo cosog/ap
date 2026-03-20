@@ -2871,7 +2871,11 @@ var ProductionHandsontableHelper = {
 	            if(isNotVal(productionHandsontableHelper.hot)){
 	            	var itemValue=productionHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
 		            if(isNotVal(itemValue) && isNotVal(value)){
-		            	if(value!=loginUserLanguageResource.uplinkFailed){
+		            	if (value === loginUserLanguageResource.uplinkFailed) {
+		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else if (value === loginUserLanguageResource.noUplink) {
+		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else{
 		            		if(isNumber(itemValue) && isNumber(value)){
 		            			if(parseFloat(itemValue)==parseFloat(value)){
 		            				td.style.backgroundColor = 'rgb(245, 245, 245)';
@@ -2885,8 +2889,6 @@ var ProductionHandsontableHelper = {
 		            				td.style.backgroundColor = "#f09614";
 		            			}
 		            		}
-		            	}else{
-		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}
 		            }else{
 		            	td.innerHTML='';
@@ -3162,7 +3164,11 @@ var PumpingInfoHandsontableHelper = {
 	            	if(row==3 && prop.toUpperCase()=='uplinkStatus'.toUpperCase()){
 		            	var itemValue=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(row, 'itemValue2');
 		            	if (isNotVal(itemValue) && isNotVal(value)) {
-			                if (value != loginUserLanguageResource.uplinkFailed) {
+		            		if (value === loginUserLanguageResource.uplinkFailed) {
+			            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+			            	}else if (value === loginUserLanguageResource.noUplink) {
+			            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+			            	}else{
 			                    if (isNumber(itemValue) && isNumber(value)) {
 			                        if (parseFloat(itemValue) == parseFloat(value)) {
 			                            td.style.backgroundColor = 'rgb(245, 245, 245)';
@@ -3176,8 +3182,6 @@ var PumpingInfoHandsontableHelper = {
 			                            td.style.backgroundColor = "#f09614";
 			                        }
 			                    }
-			                } else {
-			                    td.style.backgroundColor = 'rgb(245, 245, 245)';
 			                }
 			            } else {
 			                td.innerHTML = '';
@@ -3187,15 +3191,17 @@ var PumpingInfoHandsontableHelper = {
 		            	var itemValue1=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(row, 'itemValue1');
 		            	var itemValue2=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(row, 'itemValue2');
 		            	if ((isNotVal(itemValue1) || isNotVal(itemValue1)) && isNotVal(value)) {
-			                if (value != loginUserLanguageResource.uplinkFailed && value != loginUserLanguageResource.uplinkFailed+'/'+loginUserLanguageResource.uplinkFailed) {
+		            		if (value == loginUserLanguageResource.uplinkFailed || value == loginUserLanguageResource.uplinkFailed+'/'+loginUserLanguageResource.uplinkFailed) {
+		            			td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            		}else if (value == loginUserLanguageResource.noUplink || value == loginUserLanguageResource.noUplink+'/'+loginUserLanguageResource.noUplink) {
+		            			td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            		}else{
 			                	var valueArr=value.split('/');
 			                	if (valueArr.length==2 && parseFloat(itemValue1) == parseFloat(valueArr[0]) && parseFloat(itemValue2) == parseFloat(valueArr[1]) ) {
 		                            td.style.backgroundColor = 'rgb(245, 245, 245)';
 		                        } else {
 		                            td.style.backgroundColor = "#f09614";
 		                        }
-			                } else {
-			                    td.style.backgroundColor = 'rgb(245, 245, 245)';
 			                }
 			            } else {
 			                td.innerHTML = '';
@@ -5603,7 +5609,11 @@ var FSDiagramConstructionHandsontableHelper = {
 	            if(isNotVal(fsDiagramConstructionHandsontableHelper.hot)){
 	            	var itemValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
 		            if(isNotVal(itemValue) && isNotVal(value)){
-		            	if(value!=loginUserLanguageResource.uplinkFailed){
+		            	if (value === loginUserLanguageResource.uplinkFailed) {
+		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else if (value === loginUserLanguageResource.noUplink) {
+		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else{
 		            		if(isNumber(itemValue) && isNumber(value)){
 		            			if(parseFloat(itemValue)==parseFloat(value)){
 		            				td.style.backgroundColor = 'rgb(245, 245, 245)';
@@ -5617,8 +5627,6 @@ var FSDiagramConstructionHandsontableHelper = {
 		            				td.style.backgroundColor = "#f09614";
 		            			}
 		            		}
-		            	}else{
-		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}
 		            }else{
 		            	td.innerHTML='';
@@ -5826,7 +5834,11 @@ var DeviceSystemParameterHandsontableHelper = {
 	            if(isNotVal(deviceSystemParameterHandsontableHelper.hot)){
 	            	var itemValue=deviceSystemParameterHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
 		            if(isNotVal(itemValue) && isNotVal(value)){
-		            	if(value!=loginUserLanguageResource.uplinkFailed){
+		            	if (value === loginUserLanguageResource.uplinkFailed) {
+		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else if (value === loginUserLanguageResource.noUplink) {
+		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else{
 		            		if(isNumber(itemValue) && isNumber(value)){
 		            			if(parseFloat(itemValue)==parseFloat(value)){
 		            				td.style.backgroundColor = 'rgb(245, 245, 245)';
@@ -5840,8 +5852,6 @@ var DeviceSystemParameterHandsontableHelper = {
 		            				td.style.backgroundColor = "#f09614";
 		            			}
 		            		}
-		            	}else{
-		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}
 		            }else{
 		            	td.innerHTML='';
@@ -6066,7 +6076,11 @@ var DevicePumpingUnitPRTFHandsontableHelper = {
 	            		}
 	            		var itemValue = devicePumpingUnitPRTFHandsontableHelper.hot.getDataAtRowProp(row, itemValueCol);
 			            if (isNotVal(itemValue) && isNotVal(value)) {
-			                if (value != loginUserLanguageResource.uplinkFailed) {
+			            	if (value === loginUserLanguageResource.uplinkFailed) {
+			            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+			            	}else if (value === loginUserLanguageResource.noUplink) {
+			            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+			            	}else{
 			                    if (isNumber(itemValue) && isNumber(value)) {
 			                        if (parseFloat(itemValue) == parseFloat(value)) {
 			                            td.style.backgroundColor = 'rgb(245, 245, 245)';
@@ -6080,8 +6094,6 @@ var DevicePumpingUnitPRTFHandsontableHelper = {
 			                            td.style.backgroundColor = "#f09614";
 			                        }
 			                    }
-			                } else {
-			                    td.style.backgroundColor = 'rgb(245, 245, 245)';
 			                }
 			            } else {
 			                td.innerHTML = '';
@@ -6227,7 +6239,11 @@ var DevicePumpingUnitDetailedInformationHandsontableHelper = {
 	            if(isNotVal(devicePumpingUnitDetailedInformationHandsontableHelper.hot)){
 	            	var itemValue = devicePumpingUnitDetailedInformationHandsontableHelper.hot.getDataAtRowProp(row, 'itemValue');
 		            if (isNotVal(itemValue) && isNotVal(value)) {
-		                if (value != loginUserLanguageResource.uplinkFailed) {
+		            	if (value === loginUserLanguageResource.uplinkFailed) {
+		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else if (value === loginUserLanguageResource.noUplink) {
+		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
+		            	}else{
 		                    if (isNumber(itemValue) && isNumber(value)) {
 		                        if (parseFloat(itemValue) == parseFloat(value)) {
 		                            td.style.backgroundColor = 'rgb(245, 245, 245)';
@@ -6241,8 +6257,6 @@ var DevicePumpingUnitDetailedInformationHandsontableHelper = {
 		                            td.style.backgroundColor = "#f09614";
 		                        }
 		                    }
-		                } else {
-		                    td.style.backgroundColor = 'rgb(245, 245, 245)';
 		                }
 		            } else {
 		                td.innerHTML = '';
@@ -6646,13 +6660,11 @@ var DeviceInterlockProtectionHandsontableHelper = {
 	        }
 	        
 	        deviceInterlockProtectionHandsontableHelper.addUplinkStatusCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	        	
 	            if (cellProperties.type === 'checkbox') {
 	                Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
 	            } else {
 	                Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            }
-	            
 	            
 	            if(isNotVal(instance)){
 	            	var itemValue=instance.getDataAtRowProp(row,'itemValue');
@@ -6660,7 +6672,6 @@ var DeviceInterlockProtectionHandsontableHelper = {
 		            	if(value===loginUserLanguageResource.uplinkFailed){
 		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}else if(value===loginUserLanguageResource.noUplink){
-//		            		td.style.backgroundColor = "#f09614";
 		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}else{
 		            		if(isNumber(itemValue) && isNumber(value)){

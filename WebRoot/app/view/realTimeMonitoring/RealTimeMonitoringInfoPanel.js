@@ -327,7 +327,7 @@ var realtimeCurveAndTableTabPanelItems=[{
 		autoScroll: true,
 		border: false,
 		id:"realTimeMonitoringCurveContent",
-		html: '<div id="realTimeMonitoringCurveContainer" class="hbox" style="width:100%;height:100%;"></div>',
+		html: '<div id="realTimeMonitoringCurveContainer" class="hbox" style="width:100%;height:100%;display:flex;flex-wrap:wrap;align-content:flex-start;"></div>',
 		listeners: {
             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
             	var container=$('#realTimeMonitoringCurveContainer');

@@ -1958,7 +1958,34 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	
-	public boolean saveDeviceControlLog(String deviceId,String wellName,String deviceType,String title,String value,User user) throws SQLException{
+//	public boolean saveDeviceControlLog(String deviceId,String wellName,String deviceType,String title,String value,User user) throws SQLException{
+//		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+//		CallableStatement cs=null;
+//		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+//		try {
+//			cs = conn.prepareCall("{call prd_save_deviceOperationLog(?,?,?,?,?,?,?)}");
+//			String currentTiem=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//			cs.setString(1, currentTiem);
+//			cs.setString(2, wellName);
+//			cs.setInt(3, StringManagerUtils.stringToInteger(deviceType));
+//			cs.setInt(4, 3);
+//			cs.setString(5, user.getUserId());
+//			cs.setString(6, user.getLoginIp());
+//			cs.setString(7, languageResourceMap.get("controlItem")+":"+title+","+languageResourceMap.get("writeValue")+":"+value);
+//			cs.executeUpdate();
+//		}catch (SQLException e) {
+//			e.printStackTrace();
+//		}finally{
+//			
+//			if(cs!=null){
+//				cs.close();
+//			}
+//			conn.close();
+//		}
+//		return true;
+//	}
+	
+	public boolean saveDeviceControlLog(String deviceId,String wellName,String deviceType,String remark,User user) throws SQLException{
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
@@ -1971,7 +1998,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setInt(4, 3);
 			cs.setString(5, user.getUserId());
 			cs.setString(6, user.getLoginIp());
-			cs.setString(7, languageResourceMap.get("controlItem")+":"+title+","+languageResourceMap.get("writeValue")+":"+value);
+			cs.setString(7, remark);
 			cs.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();

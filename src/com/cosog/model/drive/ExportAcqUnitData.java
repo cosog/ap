@@ -68,6 +68,8 @@ public class ExportAcqUnitData {
 	    private int DailyTotalCalculate;
 
 	    private String DailyTotalCalculateName;
+	    
+	    private int ItemEnable;
 
 	    public void setId(int Id){
 	        this.Id = Id;
@@ -117,6 +119,12 @@ public class ExportAcqUnitData {
 	    public String getDailyTotalCalculateName(){
 	        return this.DailyTotalCalculateName;
 	    }
+		public int getItemEnable() {
+			return ItemEnable;
+		}
+		public void setItemEnable(int itemEnable) {
+			ItemEnable = itemEnable;
+		}
 	}
 	
 	public static class AcqGroup

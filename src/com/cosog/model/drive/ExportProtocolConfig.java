@@ -262,6 +262,7 @@ public class ExportProtocolConfig {
 		private String RealtimeCurveConf;
 		private String HistoryCurveConf;
 		private Integer Type;
+		private Integer ItemEnable;
 		public Integer getId() {
 			return Id;
 		}
@@ -333,6 +334,12 @@ public class ExportProtocolConfig {
 		}
 		public void setType(Integer type) {
 			Type = type;
+		}
+		public Integer getItemEnable() {
+			return ItemEnable;
+		}
+		public void setItemEnable(Integer itemEnable) {
+			ItemEnable = itemEnable;
 		}
 	}
 	

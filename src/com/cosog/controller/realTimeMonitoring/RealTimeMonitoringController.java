@@ -590,55 +590,12 @@ public class RealTimeMonitoringController extends BaseController {
 					type = new TypeToken<ResultStatusData>() {}.getType();
 					ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
 					result=resultStatusData.getResultStatus();
+					if(result==1){
+						Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+						String remark=languageResourceMap.get("controlItem")+":"+title+","+languageResourceMap.get("writeValue")+":"+StringManagerUtils.objectToString(controlValue, dataType);
+						realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,remark,user);
+					}
 				}
-				realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
-				
-				
-//				if(resolutionMode==0){//开关量控制
-//					//先读取寄存器值
-//					responseStr=StringManagerUtils.sendPostMethod(url, readJson,"utf-8",0,0);
-//					
-////					responseStr="{\"ResultStatus\":1,\"Value\":[5]}";
-//					
-//					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送读地址命令:"+readJson+";返回数据:"+responseStr);
-//					type = new TypeToken<AcqAddrData>() {}.getType();
-//					AcqAddrData acqAddrData=gson.fromJson(responseStr, type);
-//					int readResult=acqAddrData.getResultStatus();
-//					if(readResult==1 
-//							&& acqAddrData.getValue()!=null 
-//							&& (acqAddrData.getValue().size()==1)   
-//							){//读取成功后，再写地址
-//						String readValueStr=acqAddrData.getValue().get(0).toString();
-//						if(StringManagerUtils.isNotNull(readValueStr) && StringManagerUtils.isInteger(readValueStr) && StringManagerUtils.isInteger(controlValue)){
-//							int readValue=StringManagerUtils.stringToInteger(readValueStr);
-//							int w=StringManagerUtils.editIntDataBit(readValue,StringManagerUtils.stringToInteger(bitIndex),(byte)StringManagerUtils.stringToInteger(controlValue));
-//							ctrlJson="{"
-//									+ "\""+IDOrIPPortKey+"\":\""+IDOrIPPort+"\","
-//									+ "\"Slave\":"+Slave+","
-//									+ "\"Addr\":"+addr+","
-//									+ "\"Value\":["+w+"]"
-//									+ "}";
-//							
-//							responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-//							StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
-//							if(StringManagerUtils.isNotNull(responseStr)){
-//								type = new TypeToken<ResultStatusData>() {}.getType();
-//								ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
-//								result=resultStatusData.getResultStatus();
-//							}
-//							realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
-//						}
-//					}
-//				}else{
-//					responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-//					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") +"发送控制命令:"+ctrlJson+";返回数据:"+responseStr);
-//					if(StringManagerUtils.isNotNull(responseStr)){
-//						type = new TypeToken<ResultStatusData>() {}.getType();
-//						ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
-//						result=resultStatusData.getResultStatus();
-//					}
-//					realTimeMonitoringService.saveDeviceControlLog(deviceId,deviceName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
-//				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

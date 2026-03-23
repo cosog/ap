@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +91,7 @@ import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.excel.ExcelUtils;
+import com.fasterxml.jackson.annotation.JacksonInject.Value;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -3006,11 +3008,11 @@ public class WellInformationManagerController extends BaseController {
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
+							List<String> downlinkSuccessList=new ArrayList<>();
 							if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
 								type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 								SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
 								if(srpProductionData!=null){
-									
 									String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue,"
 											+ " t.stroke,t.balanceinfo "
 											+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
@@ -3072,23 +3074,75 @@ public class WellInformationManagerController extends BaseController {
 									}
 									
 									downStatusMap.put("CrudeOilDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",srpProductionData.getFluidPVT().getCrudeOilDensity()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("CrudeOilDensity").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("crudeOilDensity")+":"+srpProductionData.getFluidPVT().getCrudeOilDensity()+"");
+									}
+									
 									downStatusMap.put("WaterDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterDensity",srpProductionData.getFluidPVT().getWaterDensity()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("WaterDensity").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("waterDensity")+":"+srpProductionData.getFluidPVT().getWaterDensity()+"");
+									}
+									
 									downStatusMap.put("NaturalGasRelativeDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("NaturalGasRelativeDensity").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("naturalGasRelativeDensity")+":"+srpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"");
+									}
+									
 									downStatusMap.put("SaturationPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SaturationPressure",srpProductionData.getFluidPVT().getSaturationPressure()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("SaturationPressure").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("saturationPressure")+":"+srpProductionData.getFluidPVT().getSaturationPressure()+"");
+									}
 									
 									downStatusMap.put("ReservoirDepth", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",srpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ReservoirDepth").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("reservoirDepth")+":"+srpProductionData.getReservoir().getDepth()+"");
+									}
 									downStatusMap.put("ReservoirTemperature", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",srpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ReservoirTemperature").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("reservoirTemperature")+":"+srpProductionData.getReservoir().getTemperature()+"");
+									}
 									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",srpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ReservoirDepth_cbm").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("reservoirDepth_cbm")+":"+srpProductionData.getReservoir().getDepth()+"");
+									}
 									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",srpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ReservoirTemperature_cbm").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("reservoirTemperature_cbm")+":"+srpProductionData.getReservoir().getTemperature()+"");
+									}
 									
 									downStatusMap.put("TubingPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure",srpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("TubingPressure").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("tubingPressure")+":"+srpProductionData.getProduction().getTubingPressure()+"");
+									}
 									downStatusMap.put("TubingPressure_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",srpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("TubingPressure_cbm").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("tubingPressure_cbm")+":"+srpProductionData.getProduction().getTubingPressure()+"");
+									}
+									
 									downStatusMap.put("CasingPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingPressure",srpProductionData.getProduction().getCasingPressure()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("CasingPressure").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("casingPressure")+":"+srpProductionData.getProduction().getCasingPressure()+"");
+									}
 									downStatusMap.put("WellHeadTemperature", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WellHeadTemperature",srpProductionData.getProduction().getWellHeadTemperature()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("WellHeadTemperature").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("wellHeadTemperature")+":"+srpProductionData.getProduction().getWellHeadTemperature()+"");
+									}
 									downStatusMap.put("WaterCut", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterCut",srpProductionData.getProduction().getWaterCut()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("WaterCut").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("waterCut")+":"+srpProductionData.getProduction().getWaterCut()+"");
+									}
 									downStatusMap.put("ProductionGasOilRatio", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ProductionGasOilRatio",srpProductionData.getProduction().getProductionGasOilRatio()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ProductionGasOilRatio").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("productionGasOilRatio")+":"+srpProductionData.getProduction().getProductionGasOilRatio()+"");
+									}
 									downStatusMap.put("ProducingfluidLevel", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ProducingfluidLevel",srpProductionData.getProduction().getProducingfluidLevel()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ProducingfluidLevel").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("producingfluidLevel")+":"+srpProductionData.getProduction().getProducingfluidLevel()+"");
+									}
 									downStatusMap.put("PumpSettingDepth", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",srpProductionData.getProduction().getPumpSettingDepth()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("PumpSettingDepth").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("pumpSettingDepth")+":"+srpProductionData.getProduction().getPumpSettingDepth()+"");
+									}
 									
 									int barrelType=0;
 									if("L".equalsIgnoreCase(srpProductionData.getPump().getBarrelType())){
@@ -3097,15 +3151,34 @@ public class WellInformationManagerController extends BaseController {
 										barrelType=1;
 									}
 									downStatusMap.put("BarrelType", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BarrelType",barrelType+"",userInfo.getLanguageName()));
-									
+									if(downStatusMap.get("BarrelType").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("barrelType")+":"+barrelType+"");
+									}
 									downStatusMap.put("PumpGrade", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpGrade",srpProductionData.getPump().getPumpGrade()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("PumpGrade").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("pumpGrade")+":"+srpProductionData.getPump().getPumpGrade()+"");
+									}
 									downStatusMap.put("PumpBoreDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",srpProductionData.getPump().getPumpBoreDiameter()*1000+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("PumpBoreDiameter").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("pumpBoreDiameter")+":"+srpProductionData.getPump().getPumpBoreDiameter()*1000+"");
+									}
 									downStatusMap.put("PumpBoreDiameter2", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter2",srpProductionData.getPump().getPumpBoreDiameter2()*1000+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("PumpBoreDiameter2").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("pumpBoreDiameter2")+":"+srpProductionData.getPump().getPumpBoreDiameter2()*1000+"");
+									}
 									downStatusMap.put("PlungerLength", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PlungerLength",srpProductionData.getPump().getPlungerLength()+"",userInfo.getLanguageName()));
-									
+									if(downStatusMap.get("PlungerLength").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("plungerLength")+":"+srpProductionData.getPump().getPlungerLength()+"");
+									}
 									
 									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("TubingStringInsideDiameter").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("tubingStringInsideDiameter")+":"+srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"");
+									}
 									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("CasingStringOutsideDiameter").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("casingStringOutsideDiameter")+":"+srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"");
+									}
 									
 									for(int i=0;i<srpProductionData.getRodString().getEveryRod().size();i++){
 										downStatusMap.put("RodStringType"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getType()+"",userInfo.getLanguageName()));
@@ -3129,25 +3202,58 @@ public class WellInformationManagerController extends BaseController {
 											rodGrade=8;
 										}
 										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),rodGrade+"",userInfo.getLanguageName()));
+										if(downStatusMap.get("RodGrade"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											downlinkSuccessList.add(languageResourceMap.get("rodGrade"+(i+1))+":"+rodGrade+"");
+										}
 										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"",userInfo.getLanguageName()));
+										if(downStatusMap.get("RodStringOutsideDiameter"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											downlinkSuccessList.add(languageResourceMap.get("rodStringOutsideDiameter"+(i+1))+":"+srpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"");
+										}
 										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+										if(downStatusMap.get("RodStringInsideDiameter"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											downlinkSuccessList.add(languageResourceMap.get("rodStringInsideDiameter"+(i+1))+":"+srpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"");
+										}
 										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
+										if(downStatusMap.get("RodStringLength"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											downlinkSuccessList.add(languageResourceMap.get("rodStringLength"+(i+1))+":"+srpProductionData.getRodString().getEveryRod().get(i).getLength()+"");
+										}
 									}
 									
 									WorkType w=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName, userInfo.getLanguageName());
 									downStatusMap.put("ManualInterventionCode", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ManualInterventionCode",(w!=null?w.getResultCode():0)+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ManualInterventionCode").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("manualInterventionCode")+":"+(w!=null?w.getResultCode():0)+"");
+									}
 									downStatusMap.put("NetGrossRatio", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",srpProductionData.getManualIntervention().getNetGrossRatio()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("NetGrossRatio").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("netGrossRatio")+":"+srpProductionData.getManualIntervention().getNetGrossRatio()+"");
+									}
 									downStatusMap.put("NetGrossValue", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossValue",srpProductionData.getManualIntervention().getNetGrossValue()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("NetGrossValue").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("netGrossValue")+":"+srpProductionData.getManualIntervention().getNetGrossValue()+"");
+									}
 									downStatusMap.put("LevelCorrectValue", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_LevelCorrectValue",srpProductionData.getManualIntervention().getLevelCorrectValue()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("LevelCorrectValue").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("levelCorrectValue")+":"+srpProductionData.getManualIntervention().getLevelCorrectValue()+"");
+									}
+									
 									srpProductionData.getManualIntervention().setCode(w!=null?w.getResultCode():0);
 									
 									if(srpProductionData.getPumpingUnit()!=null){
 										downStatusMap.put("CrankRotationDirection", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(srpProductionData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
+										if(downStatusMap.get("CrankRotationDirection").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											downlinkSuccessList.add(languageResourceMap.get("crankRotationDirection")+":"+("Clockwise".equalsIgnoreCase(srpProductionData.getPumpingUnit().getCrankRotationDirection())?"1":"0"));
+										}
 										downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",srpProductionData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
-										
+										if(downStatusMap.get("OffsetAngleOfCrank").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											downlinkSuccessList.add(languageResourceMap.get("offsetAngleOfCrank")+":"+srpProductionData.getPumpingUnit().getOffsetAngleOfCrank());
+										}
 										if(srpProductionData.getPumpingUnit().getBalance()!=null && srpProductionData.getPumpingUnit().getBalance().getEveryBalance()!=null){
 											for(int i=0;i<srpProductionData.getPumpingUnit().getBalance().getEveryBalance().size();i++){
 												downStatusMap.put("BalanceWeight"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),srpProductionData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName()));
+												if(downStatusMap.get("BalanceWeight"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+													downlinkSuccessList.add(languageResourceMap.get("balanceWeight")+(i+1)+":"+srpProductionData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight());
+												}
 											}
 										}
 									}
@@ -3158,14 +3264,38 @@ public class WellInformationManagerController extends BaseController {
 								PCPCalculateRequestData pcpProductionData=gson.fromJson(productionData, type);
 								if(pcpProductionData!=null){
 									downStatusMap.put("CrudeOilDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrudeOilDensity",pcpProductionData.getFluidPVT().getCrudeOilDensity()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("CrudeOilDensity").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("crudeOilDensity")+":"+pcpProductionData.getFluidPVT().getCrudeOilDensity()+"");
+									}
 									downStatusMap.put("WaterDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_WaterDensity",pcpProductionData.getFluidPVT().getWaterDensity()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("WaterDensity").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("waterDensity")+":"+pcpProductionData.getFluidPVT().getWaterDensity()+"");
+									}
 									downStatusMap.put("NaturalGasRelativeDensity", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NaturalGasRelativeDensity",pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("NaturalGasRelativeDensity").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("naturalGasRelativeDensity")+":"+pcpProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"");
+									}
 									downStatusMap.put("SaturationPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SaturationPressure",pcpProductionData.getFluidPVT().getSaturationPressure()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("SaturationPressure").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("saturationPressure")+":"+pcpProductionData.getFluidPVT().getSaturationPressure()+"");
+									}
 									
 									downStatusMap.put("ReservoirDepth", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",pcpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ReservoirDepth").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("reservoirDepth")+":"+pcpProductionData.getReservoir().getDepth()+"");
+									}
 									downStatusMap.put("ReservoirTemperature", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",pcpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ReservoirTemperature").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("reservoirTemperature")+":"+pcpProductionData.getReservoir().getTemperature()+"");
+									}
 									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",pcpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ReservoirDepth_cbm").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("reservoirDepth_cbm")+":"+pcpProductionData.getReservoir().getDepth()+"");
+									}
 									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",pcpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("ReservoirTemperature_cbm").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("reservoirTemperature_cbm")+":"+pcpProductionData.getReservoir().getTemperature()+"");
+									}
 									
 									downStatusMap.put("TubingPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure",pcpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
 									downStatusMap.put("TubingPressure_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",pcpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
@@ -3177,8 +3307,40 @@ public class WellInformationManagerController extends BaseController {
 									downStatusMap.put("PumpSettingDepth", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpSettingDepth",pcpProductionData.getProduction().getPumpSettingDepth()+"",userInfo.getLanguageName()));
 							
 									
+									if(downStatusMap.get("TubingPressure").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("tubingPressure")+":"+pcpProductionData.getProduction().getTubingPressure()+"");
+									}
+									if(downStatusMap.get("TubingPressure_cbm").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("tubingPressure_cbm")+":"+pcpProductionData.getProduction().getTubingPressure()+"");
+									}
+									if(downStatusMap.get("CasingPressure").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("casingPressure")+":"+pcpProductionData.getProduction().getCasingPressure()+"");
+									}
+									if(downStatusMap.get("WellHeadTemperature").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("wellHeadTemperature")+":"+pcpProductionData.getProduction().getWellHeadTemperature()+"");
+									}
+									if(downStatusMap.get("WaterCut").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("waterCut")+":"+pcpProductionData.getProduction().getWaterCut()+"");
+									}
+									if(downStatusMap.get("ProductionGasOilRatio").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("productionGasOilRatio")+":"+pcpProductionData.getProduction().getProductionGasOilRatio()+"");
+									}
+									if(downStatusMap.get("ProducingfluidLevel").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("producingfluidLevel")+":"+pcpProductionData.getProduction().getProducingfluidLevel()+"");
+									}
+									if(downStatusMap.get("PumpSettingDepth").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("pumpSettingDepth")+":"+pcpProductionData.getProduction().getPumpSettingDepth()+"");
+									}
+									
 									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
 									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("TubingStringInsideDiameter").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("tubingStringInsideDiameter")+":"+pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"");
+									}
+									if(downStatusMap.get("CasingStringOutsideDiameter").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("casingStringOutsideDiameter")+":"+pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"");
+									}
+									
 									
 									for(int i=0;i<pcpProductionData.getRodString().getEveryRod().size();i++){
 										downStatusMap.put("RodStringType"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringType"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getType()+"",userInfo.getLanguageName()));
@@ -3204,10 +3366,29 @@ public class WellInformationManagerController extends BaseController {
 										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"",userInfo.getLanguageName()));
 										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
 										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
+										
+										if(downStatusMap.get("RodGrade"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											downlinkSuccessList.add(languageResourceMap.get("rodGrade"+(i+1))+":"+rodGrade+"");
+										}
+										if(downStatusMap.get("RodStringOutsideDiameter"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											downlinkSuccessList.add(languageResourceMap.get("rodStringOutsideDiameter"+(i+1))+":"+pcpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"");
+										}
+										if(downStatusMap.get("RodStringInsideDiameter"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											downlinkSuccessList.add(languageResourceMap.get("rodStringInsideDiameter"+(i+1))+":"+pcpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"");
+										}
+										if(downStatusMap.get("RodStringLength"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											downlinkSuccessList.add(languageResourceMap.get("rodStringLength"+(i+1))+":"+pcpProductionData.getRodString().getEveryRod().get(i).getLength()+"");
+										}
 									}
 									
 									downStatusMap.put("NetGrossRatio", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossRatio",pcpProductionData.getManualIntervention().getNetGrossRatio()+"",userInfo.getLanguageName()));
 									downStatusMap.put("NetGrossValue", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NetGrossValue",pcpProductionData.getManualIntervention().getNetGrossValue()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("NetGrossRatio").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("netGrossRatio")+":"+pcpProductionData.getManualIntervention().getNetGrossRatio()+"");
+									}
+									if(downStatusMap.get("NetGrossValue").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										downlinkSuccessList.add(languageResourceMap.get("netGrossValue")+":"+pcpProductionData.getManualIntervention().getNetGrossValue()+"");
+									}
 									
 									this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceId),gson.toJson(pcpProductionData),StringManagerUtils.stringToInteger(deviceCalculateDataType),StringManagerUtils.stringToInteger(applicationScenarios));
 								}
@@ -3216,6 +3397,18 @@ public class WellInformationManagerController extends BaseController {
 							List<String> initWellList=new ArrayList<String>();
 							initWellList.add(deviceId);
 							MemoryDataManagerTask.loadDeviceInfo(initWellList,0,"update");
+							
+							if(downlinkSuccessList.size()>0){
+								StringBuffer remark = new StringBuffer();
+								remark.append(languageResourceMap.get("wellboreDataDownlink")+",");
+								for(int i=0;i<downlinkSuccessList.size();i++){
+									remark.append(downlinkSuccessList.get(i)+";");
+								}
+								if(remark.toString().endsWith(";")){
+									remark.deleteCharAt(remark.length() - 1);
+								}
+								this.wellInformationManagerService.getBaseDao().saveDeviceControlLog(deviceId,deviceName,deviceType,remark.toString(),userInfo);
+							}
 							
 							StringBuffer result_json = new StringBuffer();
 							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
@@ -3255,6 +3448,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/devicePumpingUnitDataDownlink")
 	public String devicePumpingUnitDataDownlink() throws Exception {
 		String deviceId = request.getParameter("deviceId");
+		String deviceName = request.getParameter("deviceName");
 		String manufacturer = request.getParameter("manufacturer");
 		String model = request.getParameter("model");
 		String stroke = request.getParameter("stroke");
@@ -3294,7 +3488,7 @@ public class WellInformationManagerController extends BaseController {
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
-							
+							List <String> downlinkSuccessList = new ArrayList < > ();
 							FSDiagramConstructionRequestData requestData=new FSDiagramConstructionRequestData();
 							if(requestData!=null){
 								String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue,"
@@ -3389,16 +3583,39 @@ public class WellInformationManagerController extends BaseController {
 								
 								if(requestData.getPumpingUnit()!=null){
 									downStatusMap.put("Stroke", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_Stroke",requestData.getPumpingUnit().getStroke()+"",userInfo.getLanguageName()));
-									
+									if(downStatusMap.get("Stroke").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("stroke") + ":" + requestData.getPumpingUnit().getStroke());
+									}
 									downStatusMap.put("structureType", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpingUnitStructure",requestData.getPumpingUnit().getStructureType()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("structureType").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("pumpingUnitStructure") + ":" + requestData.getPumpingUnit().getStructureType());
+									}
 									
 									downStatusMap.put("CrankRotationDirection", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(requestData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
+									if(downStatusMap.get("CrankRotationDirection").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("crankRotationDirection") + ":" + ("Clockwise".equalsIgnoreCase(requestData.getPumpingUnit().getCrankRotationDirection())?"1":"0"));
+									}
 									downStatusMap.put("OffsetAngleOfCrank", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_OffsetAngleOfCrank",requestData.getPumpingUnit().getOffsetAngleOfCrank()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("OffsetAngleOfCrank").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("offsetAngleOfCrank") + ":" + requestData.getPumpingUnit().getOffsetAngleOfCrank());
+									}
 									
 									downStatusMap.put("CrankGravityRadius", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankGravityRadius",requestData.getPumpingUnit().getCrankGravityRadius()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("CrankGravityRadius").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("crankGravityRadius") + ":" + requestData.getPumpingUnit().getCrankGravityRadius());
+									}
 									downStatusMap.put("SingleCrankWeight", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SingleCrankWeight",requestData.getPumpingUnit().getSingleCrankWeight()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("SingleCrankWeight").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("singleCrankWeight") + ":" + requestData.getPumpingUnit().getSingleCrankWeight());
+									}
 									downStatusMap.put("SingleCrankPinWeight", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",requestData.getPumpingUnit().getSingleCrankPinWeight()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("SingleCrankPinWeight").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("singleCrankPinWeight") + ":" + requestData.getPumpingUnit().getSingleCrankPinWeight());
+									}
 									downStatusMap.put("StructuralUnbalance", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",requestData.getPumpingUnit().getStructuralUnbalance()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("StructuralUnbalance").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("structuralUnbalance") + ":" + requestData.getPumpingUnit().getStructuralUnbalance());
+									}
 									
 									if(requestData.getPumpingUnit().getBalance()!=null && requestData.getPumpingUnit().getBalance().getEveryBalance()!=null){
 										for(int i=0;i<requestData.getPumpingUnit().getBalance().getEveryBalance().size();i++){
@@ -3407,17 +3624,43 @@ public class WellInformationManagerController extends BaseController {
 													+"/"
 													+dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName())
 													);
+											if(downStatusMap.get("positionAndWeight"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											    downlinkSuccessList.add(languageResourceMap.get("balancePosition")+"(i+1)" + ":" + requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getPosition());
+											    downlinkSuccessList.add(languageResourceMap.get("balanceWeight")+"(i+1)" + ":" + requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight());
+											}
 										}
 									}
 									
 									downStatusMap.put("PRTFPointCount", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PRTFPointCount",PRTFPointCount+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("PRTFPointCount").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_PRTFPointCount") + ":" + PRTFPointCount);
+									}
 									
 									downStatusMap.put("CrankAngle", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankAngle",StringUtils.join(crankAngleList, ","),userInfo.getLanguageName()));
+									if(downStatusMap.get("CrankAngle").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_CrankAngle") + ":" + StringUtils.join(crankAngleList, ","));
+									}
 									downStatusMap.put("PR", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PR",StringUtils.join(PRList, ","),userInfo.getLanguageName()));
+									if(downStatusMap.get("PR").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_PR") + ":" + StringUtils.join(PRList, ","));
+									}
 									downStatusMap.put("TF", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TF",StringUtils.join(TFList, ","),userInfo.getLanguageName()));
+									if(downStatusMap.get("TF").equalsIgnoreCase(languageResourceMap.get("TFList"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_TF") + ":" + StringUtils.join(PRList, ","));
+									}
 								}
 							}
-						
+							if(downlinkSuccessList.size()>0){
+							    StringBuffer remark = new StringBuffer();
+							    remark.append(languageResourceMap.get("pumpingInfoDownlink") + ",");
+							    for (int i = 0; i < downlinkSuccessList.size(); i++) {
+							        remark.append(downlinkSuccessList.get(i) + ";");
+							    }
+							    if (remark.toString().endsWith(";")) {
+							        remark.deleteCharAt(remark.length() - 1);
+							    }
+							    this.wellInformationManagerService.getBaseDao().saveDeviceControlLog(deviceId, deviceName, deviceType, remark.toString(), userInfo);
+							}
 							
 							StringBuffer result_json = new StringBuffer();
 							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
@@ -3460,6 +3703,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/deviceFSDiagramConstructionDataDownlink")
 	public String deviceFSDiagramConstructionDataDownlink() throws Exception {
 		String deviceId = request.getParameter("deviceId");
+		String deviceName = request.getParameter("deviceName");
 		String data = request.getParameter("data");
 		
 		String jsonLogin = "";
@@ -3494,10 +3738,10 @@ public class WellInformationManagerController extends BaseController {
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
+							List<String> downlinkSuccessList = new ArrayList<>();
 							type = new TypeToken<FSDiagramConstructionRequestData>() {}.getType();
 							FSDiagramConstructionRequestData requestData=gson.fromJson(data, type);
 							if(requestData!=null){
-								
 								String auxiliaryDeviceSql="select t.id,t3.id as auxiliarydeviceid,t3.manufacturer,t3.model,t4.itemcode,t4.itemvalue,"
 										+ " t.stroke,t.balanceinfo,"
 										+ " t3.prtf "
@@ -3606,6 +3850,42 @@ public class WellInformationManagerController extends BaseController {
 								downStatusMap.put("positiveXWatt", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PositiveXWatt",requestData.getPositiveXWatt()+"",userInfo.getLanguageName()));
 								downStatusMap.put("negativeXWatt", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_NegativeXWatt",requestData.getNegativeXWatt()+"",userInfo.getLanguageName()));
 								
+								if(downStatusMap.get("crankDIInitAngle").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("crankDIInitAngle") + ":" + requestData.getCrankDIInitAngle());
+								}
+								if(downStatusMap.get("interpolationCNT").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("interpolationCNT") + ":" + requestData.getInterpolationCNT());
+								}
+								if(downStatusMap.get("surfaceSystemEfficiency").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("surfaceSystemEfficiency") + ":" + requestData.getSurfaceSystemEfficiency());
+								}
+								if(downStatusMap.get("wattTimes").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("wattTimes") + ":" + requestData.getWattTimes());
+								}
+								if(downStatusMap.get("iTimes").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("iTimes") + ":" + requestData.getITimes());
+								}
+								if(downStatusMap.get("fsDiagramTimes").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("fsDiagramTimes") + ":" + requestData.getFSDiagramTimes());
+								}
+								if(downStatusMap.get("fsDiagramLeftTimes").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("fsDiagramLeftTimes") + ":" + requestData.getFSDiagramLeftTimes());
+								}
+								if(downStatusMap.get("fsDiagramRightTimes").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("fsDiagramRightTimes") + ":" + requestData.getFSDiagramRightTimes());
+								}
+								if(downStatusMap.get("leftPercent").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("leftPercent") + ":" + requestData.getLeftPercent());
+								}
+								if(downStatusMap.get("rightPercent").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("rightPercent") + ":" + requestData.getRightPercent());
+								}
+								if(downStatusMap.get("positiveXWatt").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("positiveXWatt") + ":" + requestData.getPositiveXWatt());
+								}
+								if(downStatusMap.get("negativeXWatt").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("negativeXWatt") + ":" + requestData.getNegativeXWatt());
+								}
 								
 								if(requestData.getPumpingUnit()!=null){
 									downStatusMap.put("Stroke", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_Stroke",requestData.getPumpingUnit().getStroke()+"",userInfo.getLanguageName()));
@@ -3620,10 +3900,43 @@ public class WellInformationManagerController extends BaseController {
 									downStatusMap.put("SingleCrankPinWeight", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SingleCrankPinWeight",requestData.getPumpingUnit().getSingleCrankPinWeight()+"",userInfo.getLanguageName()));
 									downStatusMap.put("StructuralUnbalance", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_StructuralUnbalance",requestData.getPumpingUnit().getStructuralUnbalance()+"",userInfo.getLanguageName()));
 									
+									if(downStatusMap.get("Stroke").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("stroke") + ":" + requestData.getPumpingUnit().getStroke());
+									}
+									if(downStatusMap.get("PumpingUnitStructure").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("pumpingUnitStructure") + ":" + requestData.getPumpingUnit().getStructureType());
+									}
+									if(downStatusMap.get("CrankRotationDirection").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("crankRotationDirection") + ":" + ("Clockwise".equalsIgnoreCase(requestData.getPumpingUnit().getCrankRotationDirection())?"1":"0"));
+									}
+									if(downStatusMap.get("OffsetAngleOfCrank").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("offsetAngleOfCrank") + ":" + requestData.getPumpingUnit().getOffsetAngleOfCrank());
+									}
+									if(downStatusMap.get("CrankGravityRadius").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("crankGravityRadius") + ":" + requestData.getPumpingUnit().getCrankGravityRadius());
+									}
+									if(downStatusMap.get("SingleCrankWeight").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("singleCrankWeight") + ":" + requestData.getPumpingUnit().getSingleCrankWeight());
+									}
+									if(downStatusMap.get("SingleCrankPinWeight").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("singleCrankPinWeight") + ":" + requestData.getPumpingUnit().getSingleCrankPinWeight());
+									}
+									if(downStatusMap.get("StructuralUnbalance").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("structuralUnbalance") + ":" + requestData.getPumpingUnit().getStructuralUnbalance());
+									}
+									
 									if(requestData.getPumpingUnit().getBalance()!=null && requestData.getPumpingUnit().getBalance().getEveryBalance()!=null){
 										for(int i=0;i<requestData.getPumpingUnit().getBalance().getEveryBalance().size();i++){
 											downStatusMap.put("BalanceWeight"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalanceWeight"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight()+"",userInfo.getLanguageName()));
 											downStatusMap.put("BalancePosition"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BalancePosition"+(i+1),requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getPosition()+"",userInfo.getLanguageName()));
+											
+											if(downStatusMap.get("BalanceWeight"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											    downlinkSuccessList.add(languageResourceMap.get("balanceWeight")+"(i+1)" + ":" + requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getWeight());
+											}
+											
+											if(downStatusMap.get("BalancePosition"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+											    downlinkSuccessList.add(languageResourceMap.get("balancePosition")+"(i+1)" + ":" + requestData.getPumpingUnit().getBalance().getEveryBalance().get(i).getPosition());
+											}
 										}
 									}
 									
@@ -3632,12 +3945,44 @@ public class WellInformationManagerController extends BaseController {
 									downStatusMap.put("CrankAngle", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankAngle",StringUtils.join(crankAngleList, ","),userInfo.getLanguageName()));
 									downStatusMap.put("PR", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PR",StringUtils.join(PRList, ","),userInfo.getLanguageName()));
 									downStatusMap.put("TF", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TF",StringUtils.join(TFList, ","),userInfo.getLanguageName()));
+									
+									if(downStatusMap.get("PRTFPointCount").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_PRTFPointCount") + ":" + PRTFPointCount);
+									}
+									if(downStatusMap.get("CrankAngle").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_CrankAngle") + ":" + StringUtils.join(crankAngleList, ","));
+									}
+									if(downStatusMap.get("PR").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_PR") + ":" + StringUtils.join(PRList, ","));
+									}
+									if(downStatusMap.get("TF").equalsIgnoreCase(languageResourceMap.get("TFList"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_TF") + ":" + StringUtils.join(PRList, ","));
+									}
 								}
 								
 								downStatusMap.put("PRTFSrc", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PRTFSrc",requestData.getPRTFSrc()+"",userInfo.getLanguageName()));
 								downStatusMap.put("BoardDataSource", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_BoardDataSource",requestData.getBoardDataSource()+"",userInfo.getLanguageName()));
 								
+								if(downStatusMap.get("PRTFSrc").equalsIgnoreCase(languageResourceMap.get("TFList"))){
+								    downlinkSuccessList.add(languageResourceMap.get("PRTFSrc") + ":" + requestData.getPRTFSrc());
+								}
+								if(downStatusMap.get("BoardDataSource").equalsIgnoreCase(languageResourceMap.get("TFList"))){
+								    downlinkSuccessList.add(languageResourceMap.get("boardDataSource") + ":" + requestData.getBoardDataSource());
+								}
+								
 								this.wellInformationManagerService.saveFSDiagramConstructionData(StringManagerUtils.stringToInteger(deviceId), data);
+								
+								if(downlinkSuccessList.size()>0){
+								    StringBuffer remark = new StringBuffer();
+								    remark.append(languageResourceMap.get("fsDiagramConstructionDownlink") + ",");
+								    for (int i = 0; i < downlinkSuccessList.size(); i++) {
+								        remark.append(downlinkSuccessList.get(i) + ";");
+								    }
+								    if (remark.toString().endsWith(";")) {
+								        remark.deleteCharAt(remark.length() - 1);
+								    }
+								    this.wellInformationManagerService.getBaseDao().saveDeviceControlLog(deviceId, deviceName, deviceType, remark.toString(), userInfo);
+								}
 							}
 							
 							StringBuffer result_json = new StringBuffer();
@@ -3678,6 +4023,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/deviceIntelligentFrequencyConversionDataDownlink")
 	public String deviceIntelligentFrequencyConversionDataDownlink() throws Exception {
 		String deviceId = request.getParameter("deviceId");
+		String deviceName = request.getParameter("deviceName");
 		String data = request.getParameter("data");
 		
 		String jsonLogin = "";
@@ -3712,21 +4058,51 @@ public class WellInformationManagerController extends BaseController {
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
+							List<String> downlinkSuccessList = new ArrayList<>();
 							type = new TypeToken<IntelligentFrequencyConversionData>() {}.getType();
 							IntelligentFrequencyConversionData frequencyConversionData=gson.fromJson(data, type);
 							if(frequencyConversionData!=null){
 								downStatusMap.put("write_FrequencyConversionEnable", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable",frequencyConversionData.getEnable()+"",userInfo.getLanguageName()));
+								if(downStatusMap.get("write_FrequencyConversionEnable").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable") + ":" + frequencyConversionData.getEnable());
+								}
 								if(frequencyConversionData.getFrequencyUpscaling()!=null){
 									downStatusMap.put("write_FrequencyConversion_Up_FullnessCoefficientLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FullnessCoefficientLimit",frequencyConversionData.getFrequencyUpscaling().getFullnessCoefficientLimit()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_FrequencyConversion_Up_FrequencyUpperLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FrequencyUpperLimit",frequencyConversionData.getFrequencyUpscaling().getFrequencyUpperLimit()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_FrequencyConversion_Up_StepSize", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_StepSize",frequencyConversionData.getFrequencyUpscaling().getStepSize()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_FrequencyConversion_Up_StabilityDuration", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_StabilityDuration",frequencyConversionData.getFrequencyUpscaling().getStabilityDuration()+"",userInfo.getLanguageName()));
+									
+									if(downStatusMap.get("write_FrequencyConversion_Up_FullnessCoefficientLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_FullnessCoefficientLimit") + ":" + frequencyConversionData.getFrequencyUpscaling().getFullnessCoefficientLimit());
+									}
+									if(downStatusMap.get("write_FrequencyConversion_Up_FrequencyUpperLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_FrequencyUpperLimit") + ":" + frequencyConversionData.getFrequencyUpscaling().getFrequencyUpperLimit());
+									}
+									if(downStatusMap.get("write_FrequencyConversion_Up_StepSize").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_StepSize") + ":" + frequencyConversionData.getFrequencyUpscaling().getStepSize());
+									}
+									if(downStatusMap.get("write_FrequencyConversion_Up_StabilityDuration").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_StabilityDuration") + ":" + frequencyConversionData.getFrequencyUpscaling().getStabilityDuration());
+									}
 								}
 								if(frequencyConversionData.getFrequencyReduction()!=null){
 									downStatusMap.put("write_FrequencyConversion_Down_FullnessCoefficientLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FullnessCoefficientLimit",frequencyConversionData.getFrequencyReduction().getFullnessCoefficientLimit()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_FrequencyConversion_Down_FrequencyLowerLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FrequencyLowerLimit",frequencyConversionData.getFrequencyReduction().getFrequencyLowerLimit()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_FrequencyConversion_Down_StepSize", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StepSize",frequencyConversionData.getFrequencyReduction().getStepSize()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_FrequencyConversion_Down_StabilityDuration", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StabilityDuration",frequencyConversionData.getFrequencyReduction().getStabilityDuration()+"",userInfo.getLanguageName()));
+									
+									if(downStatusMap.get("write_FrequencyConversion_Down_FullnessCoefficientLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_FullnessCoefficientLimit") + ":" + frequencyConversionData.getFrequencyReduction().getFullnessCoefficientLimit());
+									}
+									if(downStatusMap.get("write_FrequencyConversion_Down_FrequencyLowerLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_FrequencyLowerLimit") + ":" + frequencyConversionData.getFrequencyReduction().getFrequencyLowerLimit());
+									}
+									if(downStatusMap.get("write_FrequencyConversion_Down_StepSize").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_StepSize") + ":" + frequencyConversionData.getFrequencyReduction().getStepSize());
+									}
+									if(downStatusMap.get("write_FrequencyConversion_Down_StabilityDuration").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_StabilityDuration") + ":" + frequencyConversionData.getFrequencyReduction().getStabilityDuration());
+									}
 								}
 								
 								if(frequencyConversionData.getFSDiagramWorkTypeEnable()!=null){
@@ -3758,6 +4134,103 @@ public class WellInformationManagerController extends BaseController {
 									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1227", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1227",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1227()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1230", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1230",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1230()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1232", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1232",frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1232()+"",userInfo.getLanguageName()));
+									
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1201").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1201") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1201());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1202").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1202") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1202());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1203").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1203") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1203());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1204").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1204") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1204());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1205").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1205") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1205());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1206").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1206") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1206());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1207").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1207") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1207());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1208").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1208") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1208());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1209").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1209") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1209());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1210").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1210") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1210());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1212").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1212") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1212());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1213").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1213") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1213());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1214").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1214") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1214());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1215").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1215") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1215());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1216").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1216") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1216());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1217").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1217") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1217());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1218").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1218") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1218());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1219").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1219") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1219());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1220").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1220") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1220());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1221").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1221") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1221());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1222").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1222") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1222());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1223").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1223") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1223());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1224").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1224") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1224());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1225").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1225") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1225());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1226").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1226") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1226());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1227").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1227") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1227());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1230").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1230") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1230());
+									}
+									if(downStatusMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1232").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1232") + ":" + frequencyConversionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1232());
+									}
+								}
+								
+								if(downlinkSuccessList.size()>0){
+								    StringBuffer remark = new StringBuffer();
+								    remark.append(languageResourceMap.get("intelligentFrequencyConversionDownlink") + ",");
+								    for (int i = 0; i < downlinkSuccessList.size(); i++) {
+								        remark.append(downlinkSuccessList.get(i) + ";");
+								    }
+								    if (remark.toString().endsWith(";")) {
+								        remark.deleteCharAt(remark.length() - 1);
+								    }
+								    this.wellInformationManagerService.getBaseDao().saveDeviceControlLog(deviceId, deviceName, deviceType, remark.toString(), userInfo);
 								}
 								
 								this.wellInformationManagerService.saveFrequencyConversionData(StringManagerUtils.stringToInteger(deviceId), data);
@@ -3801,8 +4274,8 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/deviceInterlockProtectionDataDownlink")
 	public String deviceInterlockProtectionDataDownlink() throws Exception {
 		String deviceId = request.getParameter("deviceId");
+		String deviceName = request.getParameter("deviceName");
 		String data = request.getParameter("data");
-		
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
 		// 用户不存在
@@ -3835,11 +4308,14 @@ public class WellInformationManagerController extends BaseController {
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
+							List<String> downlinkSuccessList = new ArrayList<>();
 							type = new TypeToken<InterlockProtectionData>() {}.getType();
 							InterlockProtectionData interlockProtectionData=gson.fromJson(data, type);
 							if(interlockProtectionData!=null){
 								downStatusMap.put("write_InterlockProtectionEnable", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_InterlockProtectionEnable",interlockProtectionData.getEnable()+"",userInfo.getLanguageName()));
-								
+								if(downStatusMap.get("write_InterlockProtectionEnable").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+								    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable") + ":" + interlockProtectionData.getEnable());
+								}
 								if(interlockProtectionData.getFSDiagramWorkTypeEnable()!=null){
 									downStatusMap.put("write_InterlockProtectionEnable_FSDiagramWorkType1201", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_InterlockProtectionEnable_FSDiagramWorkType1201",interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1201()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_InterlockProtectionEnable_FSDiagramWorkType1202", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_InterlockProtectionEnable_FSDiagramWorkType1202",interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1202()+"",userInfo.getLanguageName()));
@@ -3869,9 +4345,104 @@ public class WellInformationManagerController extends BaseController {
 									downStatusMap.put("write_InterlockProtectionEnable_FSDiagramWorkType1227", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_InterlockProtectionEnable_FSDiagramWorkType1227",interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1227()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_InterlockProtectionEnable_FSDiagramWorkType1230", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_InterlockProtectionEnable_FSDiagramWorkType1230",interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1230()+"",userInfo.getLanguageName()));
 									downStatusMap.put("write_InterlockProtectionEnable_FSDiagramWorkType1232", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_InterlockProtectionEnable_FSDiagramWorkType1232",interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1232()+"",userInfo.getLanguageName()));
+									
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1201").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1201") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1201());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1202").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1202") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1202());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1203").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1203") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1203());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1204").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1204") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1204());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1205").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1205") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1205());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1206").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1206") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1206());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1207").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1207") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1207());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1208").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1208") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1208());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1209").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1209") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1209());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1210").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1210") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1210());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1212").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1212") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1212());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1213").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1213") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1213());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1214").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1214") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1214());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1215").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1215") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1215());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1216").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1216") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1216());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1217").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1217") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1217());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1218").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1218") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1218());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1219").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1219") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1219());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1220").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1220") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1220());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1221").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1221") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1221());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1222").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1222") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1222());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1223").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1223") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1223());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1224").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1224") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1224());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1225").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1225") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1225());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1226").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1226") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1226());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1227").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1227") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1227());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1230").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1230") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1230());
+									}
+									if(downStatusMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1232").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_InterlockProtectionEnable_FSDiagramWorkType1232") + ":" + interlockProtectionData.getFSDiagramWorkTypeEnable().getFSDiagramWorkType1232());
+									}
 								}
-								
 								this.wellInformationManagerService.saveInterlockProtectionData(StringManagerUtils.stringToInteger(deviceId), data);
+								if(downlinkSuccessList.size()>0){
+								    StringBuffer remark = new StringBuffer();
+								    remark.append(languageResourceMap.get("interlockProtectionDownlink") + ",");
+								    for (int i = 0; i < downlinkSuccessList.size(); i++) {
+								        remark.append(downlinkSuccessList.get(i) + ";");
+								    }
+								    if (remark.toString().endsWith(";")) {
+								        remark.deleteCharAt(remark.length() - 1);
+								    }
+								    this.wellInformationManagerService.getBaseDao().saveDeviceControlLog(deviceId, deviceName, deviceType, remark.toString(), userInfo);
+								}
 							}
 							
 							StringBuffer result_json = new StringBuffer();
@@ -3912,7 +4483,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/deviceSystemParameterDataDownlink")
 	public String deviceSystemParameterDataDownlink() throws Exception {
 		String deviceId = request.getParameter("deviceId");
-		
+		String deviceName = request.getParameter("deviceName");
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
 		// 用户不存在
@@ -3943,8 +4514,17 @@ public class WellInformationManagerController extends BaseController {
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
 						if (commStatus > 0) {
 							Map<String,String> downStatusMap=new LinkedHashMap<>();
+							List<String> downlinkSuccessList = new ArrayList<>();
 							downStatusMap.put("systemDate", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SystemDate",StringManagerUtils.getCurrentTime("yyyy00MM00dd"),userInfo.getLanguageName()));
 							downStatusMap.put("systemTime", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_SystemTime",StringManagerUtils.getCurrentTime("00HH00mm00ss"),userInfo.getLanguageName()));
+							
+							if(downStatusMap.get("systemDate").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+							    downlinkSuccessList.add(languageResourceMap.get("systemDate") + ":" + StringManagerUtils.getCurrentTime("yyyy00MM00dd"));
+							}
+							if(downStatusMap.get("systemTime").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+							    downlinkSuccessList.add(languageResourceMap.get("systemTime") + ":" + StringManagerUtils.getCurrentTime("00HH00mm00ss"));
+							}
+							
 							StringBuffer result_json = new StringBuffer();
 							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
 							for (String key : downStatusMap.keySet()) {
@@ -3955,6 +4535,18 @@ public class WellInformationManagerController extends BaseController {
 							}
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
+							
+							if(downlinkSuccessList.size()>0){
+							    StringBuffer remark = new StringBuffer();
+							    remark.append(languageResourceMap.get("systemParameterConfigurationDownlink") + ",");
+							    for (int i = 0; i < downlinkSuccessList.size(); i++) {
+							        remark.append(downlinkSuccessList.get(i) + ";");
+							    }
+							    if (remark.toString().endsWith(";")) {
+							        remark.deleteCharAt(remark.length() - 1);
+							    }
+							    this.wellInformationManagerService.getBaseDao().saveDeviceControlLog(deviceId, deviceName, deviceType, remark.toString(), userInfo);
+							}
 						} else {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}

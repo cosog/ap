@@ -1362,8 +1362,11 @@ var grantDisplayAcqItemsPermission = function () {
     	
     	var realtimeDataSign=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'realtimeData');
     	var historyDataSign=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historyData');
+    	var itemEnable= protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'checked');
     	
-        if (realtimeDataSign || historyDataSign) {
+        if (itemEnable || realtimeDataSign || historyDataSign) {
+        	itemEnable= itemEnable?1:0;
+        	itemEnable=1;
         	var itemName = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'title');
         	
         	var itemShowLevel = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'showLevel');
@@ -1442,7 +1445,8 @@ var grantDisplayAcqItemsPermission = function () {
             + type +"##"
             + itemCode +"##"//21
             + switchingValueShowType +"##"//22
-            + matrix_value+ "|";
+            + matrix_value +"##"
+            + itemEnable+ "|";//24
         }
     }
 
@@ -1499,12 +1503,13 @@ var grantDisplayCtrlItemsPermission = function () {
     }
 
     Ext.Array.each(ctrlItemsData, function (name, index, countriesItSelf) {
-        if ((ctrlItemsData[index][0]+'')==='true') {
-        	
+    	var itemEnable=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'title');
+    	var itemShowLevel = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'showLevel');
+    	var itemRealtimeSort = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'realtimeSort');
+        if (itemEnable
+        		|| isNotVal(itemShowLevel)
+        		|| isNotVal(itemRealtimeSort)) {
         	var itemName = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'title');
-        	var itemShowLevel = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'showLevel');
-        	var itemRealtimeSort = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'realtimeSort');
-        	
         	var resolutionMode = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'resolutionMode');
         	var itemAddr = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'addr');
         	var itemHighLowByte = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'highLowByte');
@@ -1531,8 +1536,8 @@ var grantDisplayCtrlItemsPermission = function () {
             + itemHighLowByte + ":" 
             + bitIndex +":"
             + switchingValueShowType +":"
-            
-            + matrix_value+ "|";
+            + matrix_value +":"
+            + itemEnable+ "|";
         }
     });
 

@@ -562,6 +562,7 @@ public class MobileService<T> extends BaseService<T> {
 							+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
 							+ " and t.type<>2"
 							+ " and t.historyData=1"
+							+ " and t.itemEnable=1"
 							+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
 					displayItemSql+=" order by t.historySort,t.type,t.id";
 					List<?> displayItemQueryList = this.findCallSql(displayItemSql);
@@ -1320,6 +1321,7 @@ public class MobileService<T> extends BaseService<T> {
 							+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
 							+ " and t.type<>2"
 							+ " and t.historyData=1"
+							+ " and t.itemEnable=1"
 							+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
 					displayItemSql+=" order by t.historySort,t.type,t.id";
 					List<?> displayItemQueryList = this.findCallSql(displayItemSql);
@@ -2406,6 +2408,7 @@ public class MobileService<T> extends BaseService<T> {
 									+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 									+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
 									+ " and t.itemcode='"+code+"'"
+									+ " and t.itemEnable=1"
 									+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
 							List<?> displayItemQueryList = this.findCallSql(displayItemSql);
 							for(int i=0;i<displayItemQueryList.size();i++){

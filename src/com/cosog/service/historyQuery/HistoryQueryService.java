@@ -2216,6 +2216,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
 						+ " and t.type<>2"
 						+ " and t.historyData=1"
+						+ " and t.itemEnable=1"
 						+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
 				displayItemSql+=" order by t.historySort,decode(t.type,5,0,t.type),t.id";
 				List<?> displayItemQueryList = this.findCallSql(displayItemSql);
@@ -3304,6 +3305,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
 						+ " and t.type<>2"
 						+ " and t.historyData=1"
+						+ " and t.itemEnable=1"
 						+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
 				displayItemSql+=" order by t.historySort,decode(t.type,5,0,t.type),t.id";
 				List<?> displayItemQueryList = this.findCallSql(displayItemSql);
@@ -6043,7 +6045,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurveconf,t4.itemcode,t4.type "
 						+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
 						+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
-						+ " and t.id="+deviceId+" and t4.historycurveconf is not null "
+						+ " and t.id="+deviceId+" "
+						+ " and t4.historycurveconf is not null "
+						+ " and t4.itemEnable=1"
 						+ " order by t4.realtimeSort,t4.id";
 				List<?> protocolList = this.findCallSql(protocolSql);
 				
@@ -6511,6 +6515,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " and t.id="+deviceId+" "
 				+ " and t4.historycurveconf is not null "
 				+ " and (t4.showlevel is null or t4.showlevel>=(select r.showlevel from tbl_user u,tbl_role r where u.user_type=r.role_level and u.user_no="+userNo+"))"
+				+ " and t4.itemEnable=1"
 				+ " order by t4.realtimeSort,t4.id";
 		List<?> graphicSetList = this.findCallSql(graphicSetSql);
 		List<?> curveItemList = this.findCallSql(curveItemsSql);

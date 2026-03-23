@@ -2114,6 +2114,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
 						+ " and t.type in(0,5)"
 						+ " and t.historyData=1"
+						+ " and t.itemEnable=1"
 						+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
 				displayItemSql+=" order by t.historySort,decode(t.type,5,0,t.type),t.id";
 				List<?> displayItemQueryList = this.findCallSql(displayItemSql);
@@ -2434,6 +2435,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						+ " where t.unitid=t2.id and t2.id="+displayInstanceOwnItem.getUnitId()
 						+ " and t.type in(0,5)"
 						+ " and t.historyData=1"
+						+ " and t.itemEnable=1"
 						+ " and decode(t.showlevel,null,9999,t.showlevel)>="+userInfo.getRoleShowLevel();
 				displayItemSql+=" order by t.historySort,decode(t.type,5,0,t.type),t.id";
 				List<?> displayItemQueryList = this.findCallSql(displayItemSql);

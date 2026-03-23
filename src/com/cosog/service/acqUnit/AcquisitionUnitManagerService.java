@@ -327,8 +327,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<Integer> dailyTotalCalculateList=new ArrayList<Integer>();
 		List<String> dailyTotalCalculateNameList=new ArrayList<String>();
+		List<Integer> itemEnableList=new ArrayList<Integer>();
 		if("3".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.bitindex,t.dailyTotalCalculate,t.dailyTotalCalculateName from "
+			String sql="select t.itemname,t.bitindex,t.dailyTotalCalculate,t.dailyTotalCalculateName,t.itemEnable from "
 					+ " TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2 "
 					+ " where t.groupid=t2.id and t2.group_code='"+code+"' order by t.id";
 			List<?> list=this.findCallSql(sql);
@@ -338,6 +339,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsBitIndexList.add(obj[1]+"");
 				dailyTotalCalculateList.add(StringManagerUtils.stringToInteger(obj[2]+""));
 				dailyTotalCalculateNameList.add(obj[3]+"");
+				itemEnableList.add(StringManagerUtils.stringToInteger(obj[4]+""));
 			}
 		}
 
@@ -383,7 +385,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
 										&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
 									){
-									checked=true;
+									checked=itemEnableList.get(m)==1;
 									dailyTotalCalculate=dailyTotalCalculateList.get(m)==1;
 									if(dailyTotalCalculate){
 										dailyTotalCalculateName=dailyTotalCalculateNameList.get(m);
@@ -414,11 +416,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							index++;
 						}
 					}else{
-						checked=StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false);
-						
+//						checked=StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false);
+						checked=false;
 						for(int m=0;m<itemsList.size();m++){
 							if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
-								checked=true;
+								checked=itemEnableList.get(m)==1;
 								dailyTotalCalculate=dailyTotalCalculateList.get(m)==1;
 								if(dailyTotalCalculate){
 									dailyTotalCalculateName=dailyTotalCalculateNameList.get(m);
@@ -1724,6 +1726,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		List<Integer> switchingValueShowTypeList=new ArrayList<>();
 		
+		List<Boolean> itemEnableList=new ArrayList<>();
+		
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		int index=1;
 		
@@ -1731,7 +1735,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if("2".equalsIgnoreCase(classes)){
 			String acqUnitIiemsSql="select distinct t.itemname,t.bitindex "
 					+ "from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
-					+ "where t.groupid=t2.id  and t2.id=t3.groupid and t3.unitid=t4.id and t4.id="+acqUnitId+" and t2.type=0";
+					+ "where t.groupid=t2.id  and t2.id=t3.groupid and t3.unitid=t4.id and t4.id="+acqUnitId+" and t2.type=0 and t.itemEnable=1";
 			
 			String sql="select t.itemname,t.itemcode,"
 					+ " t.bitindex,t.realtimeSort,t.historySort,"
@@ -1739,9 +1743,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ " t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
 					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
 					+ "t.historyOverview,t.historyOverviewSort,t.historyData,"
-					+ "t.switchingValueShowType "
+					+ "t.switchingValueShowType,"
+					+ "t.itemEnable "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
-					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=0"
+					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=0 "
+//					+ "and t.itemEnable=1"
 					+ " order by t.realtimeSort";
 			List<?> acqItemList=this.findCallSql(acqUnitIiemsSql);
 			List<?> list=this.findCallSql(sql);
@@ -1787,6 +1793,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				historyDataList.add(StringManagerUtils.stringToInteger(obj[17]+"")==1);
 				
 				switchingValueShowTypeList.add(StringManagerUtils.stringToInteger(obj[18]+""));
+				itemEnableList.add(StringManagerUtils.stringToInteger(obj[19]+"")==1);
 			}
 		}
 		
@@ -1883,7 +1890,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
 													&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
 												){
-												checked=true;
+												checked=itemEnableList.get(m);
 												realtimeSort=itemsRealtimeSortList.get(m);
 												historySort=itemsHistorySortList.get(m);
 												showLevel=itemsShowLevelList.get(m);
@@ -1970,10 +1977,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								}
 							}
 						}else{
-							checked=StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false);
-							if(checked){
+							if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false)){
 								for(int k=0;k<itemsList.size();k++){
 									if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
+										checked=itemEnableList.get(k);
 										realtimeSort=itemsRealtimeSortList.get(k);
 										historySort=itemsHistorySortList.get(k);
 										showLevel=itemsShowLevelList.get(k);
@@ -2084,6 +2091,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			historyOverviewSortList=new ArrayList<String>();
 			
 			switchingValueShowTypeList=new ArrayList<>();
+			itemEnableList=new ArrayList<>();
 			
 			if("2".equalsIgnoreCase(classes)){
 				String sql="select t.itemname,t.itemcode,"
@@ -2092,7 +2100,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ " t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
 						+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
 						+ "t.historyOverview,t.historyOverviewSort,t.historyData,"
-						+ "t.switchingValueShowType "
+						+ "t.switchingValueShowType,t.itemEnable "
 						+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 						+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=5"
 						+ " order by t.realtimeSort";
@@ -2134,6 +2142,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					historyDataList.add(StringManagerUtils.stringToInteger(obj[17]+"")==1);
 					
 					switchingValueShowTypeList.add(StringManagerUtils.stringToInteger(obj[18]+""));
+					
+					itemEnableList.add(StringManagerUtils.stringToInteger(obj[19]+"")==1);
 				}
 			}
 			
@@ -2206,7 +2216,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getExtendedFields().get(j).getTitle())
 									&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getExtendedFields().get(j).getMeaning().get(k).getValue()+"")
 								){
-								checked=true;
+								checked=itemEnableList.get(m);
 								realtimeSort=itemsRealtimeSortList.get(m);
 								historySort=itemsHistorySortList.get(m);
 								showLevel=itemsShowLevelList.get(m);
@@ -2291,9 +2301,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}else{
 					checked=StringManagerUtils.existOrNot(itemsCodeList, extendedField,false);
-					if(checked){
+					if(StringManagerUtils.existOrNot(itemsCodeList, extendedField,false)){
 						for(int k=0;k<itemsList.size();k++){
 							if(itemsCodeList.get(k).equalsIgnoreCase(extendedField)){
+								checked=itemEnableList.get(k);
 								realtimeSort=itemsRealtimeSortList.get(k);
 								historySort=itemsHistorySortList.get(k);
 								showLevel=itemsShowLevelList.get(k);
@@ -2395,6 +2406,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		historyDataList=new ArrayList<>();
 		historyOverviewList=new ArrayList<>();
 		historyOverviewSortList=new ArrayList<String>();
+		
+		itemEnableList=new ArrayList<>();
 		if("2".equalsIgnoreCase(classes) && StringManagerUtils.isNotNull(unitId)){
 			String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
 					+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
@@ -2427,7 +2440,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
 					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor,"
 					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData,"
+					+ "t.itemEnable "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=1"
 					+ " order by t.realtimeSort";
@@ -2465,6 +2479,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
 				historyOverviewSortList.add(obj[15]+"");
 				historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
+				
+				itemEnableList.add(StringManagerUtils.stringToInteger(obj[17]+"")==1);
 			}
 		}
 		
@@ -2490,11 +2506,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			boolean historyOverview=false;
 			String  historyOverviewSort="";
 			boolean historyData=false;
-
-			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
-			if(checked){
+			
+			if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false)){
 				for(int k=0;k<itemsList.size();k++){
 					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+						checked=itemEnableList.get(k);
 						realtimeSort=itemsRealtimeSortList.get(k);
 						historySort=itemsHistorySortList.get(k);
 						showLevel=itemsShowLevelList.get(k);
@@ -2595,12 +2611,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		historyOverviewList=new ArrayList<>();
 		historyOverviewSortList=new ArrayList<String>();
 		
+		itemEnableList=new ArrayList<>();
+		
 		if("2".equalsIgnoreCase(classes)){
 			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
 					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
 					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor, "
 					+ "t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
-					+ "t.historyOverview,t.historyOverviewSort,t.historyData "
+					+ "t.historyOverview,t.historyOverviewSort,t.historyData,"
+					+ "t.itemEnable "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=3"
 					+ " order by t.realtimeSort";
@@ -2636,6 +2655,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				historyOverviewList.add(StringManagerUtils.stringToInteger(obj[14]+"")==1);
 				historyOverviewSortList.add(obj[15]+"");
 				historyDataList.add(StringManagerUtils.stringToInteger(obj[16]+"")==1);
+				
+				itemEnableList.add(StringManagerUtils.stringToInteger(obj[17]+"")==1);
 			}
 		}
 
@@ -2661,10 +2682,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String  historyOverviewSort="";
 			boolean historyData=false;
 
-			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
-			if(checked){
+			if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false)){
 				for(int k=0;k<itemsList.size();k++){
 					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
+						checked=itemEnableList.get(k);
 						realtimeSort=itemsRealtimeSortList.get(k);
 						historySort=itemsHistorySortList.get(k);
 						showLevel=itemsShowLevelList.get(k);
@@ -2768,12 +2789,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemsBitIndexList=new ArrayList<String>();
 		List<String> itemsShowLevelList=new ArrayList<String>();
 		
+		List<Boolean> itemEnableList=new ArrayList<>();
+		
 		List<Integer> switchingValueShowTypeList=new ArrayList<>();
 		if("2".equalsIgnoreCase(classes)){
 			String acqUnitIiemsSql="select distinct t.itemname,t.bitindex "
 					+ "from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
 					+ "where t.groupid=t2.id  and t2.id=t3.groupid and t3.unitid=t4.id and t4.id="+acqUnitId+" and t2.type=1";
-			String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel,t.switchingValueShowType "
+			String sql="select t.itemname,t.bitindex,t.realtimeSort,t.showlevel,t.switchingValueShowType,t.itemEnable "
 					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
 					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=2"
 					+ " order by t.realtimeSort";
@@ -2791,6 +2814,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				itemsRealtimeSortList.add(obj[2]+"");
 				itemsShowLevelList.add(obj[3]+"");
 				switchingValueShowTypeList.add(StringManagerUtils.stringToInteger(obj[4]+""));
+				itemEnableList.add(StringManagerUtils.stringToInteger(obj[5]+"")==1);
 			}
 		}
 
@@ -2844,7 +2868,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											if(itemsList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())
 													&&itemsBitIndexList.get(m).equalsIgnoreCase(protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"")
 												){
-												checked=true;
+												checked=itemEnableList.get(m);
 												realtimeSort=itemsRealtimeSortList.get(m);
 												showLevel=itemsShowLevelList.get(m);
 												
@@ -2881,10 +2905,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								}
 							}
 						}else{
-							checked=StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false);
-							if(checked){
+							if(StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle(),false)){
 								for(int k=0;k<itemsList.size();k++){
 									if(itemsList.get(k).equalsIgnoreCase(protocolConfig.getItems().get(j).getTitle())){
+										checked=itemEnableList.get(k);
 										realtimeSort=itemsRealtimeSortList.get(k);
 										showLevel=itemsShowLevelList.get(k);
 										break;
@@ -2910,356 +2934,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-		}
-	
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String getProtocolDisplayUnitCalItemsConfigData(String classes,String unitId,String calculateType,String language){
-		StringBuffer result_json = new StringBuffer();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		List<CalItem> calItemList=new ArrayList<>();
-		try{
-			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
-			}else if("2".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
-			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurveConf\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",width:80 ,children:[] }"
-				+ "]";
-		
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
-		
-		List<String> itemsList=new ArrayList<String>();
-		List<String> itemsCodeList=new ArrayList<String>();
-		List<String> itemsRealtimeSortList=new ArrayList<String>();
-		List<String> itemsHistorySortList=new ArrayList<String>();
-		List<String> itemsShowLevelList=new ArrayList<String>();
-		List<String> realtimeCurveConfList=new ArrayList<String>();
-		List<String> historyCurveConfList=new ArrayList<String>();
-		
-		List<String> realtimeColorList = new ArrayList<String>();
-	    List<String> realtimeBgColorList = new ArrayList<String>();
-	    List<String> historyColorList = new ArrayList<String>();
-	    List<String> historyBgColorList = new ArrayList<String>();
-		
-		if("2".equalsIgnoreCase(classes) && StringManagerUtils.isNotNull(unitId)){
-			ModbusProtocolConfig.Protocol protocol=null;
-			String protocolSql="select t.protocol from TBL_ACQ_UNIT_CONF t,tbl_display_unit_conf t2 where t.id=t2.acqunitid and t2.id="+unitId;
-			List<?> protocolList=this.findCallSql(protocolSql);
-			if(protocolList.size()>0){
-				protocol=MemoryDataManagerTask.getProtocolByCode(protocolList.get(0)+"");
-			}
-			String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
-					+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
-					+ " tbl_datamapping t6 "
-					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.acqunitid "
-					+ " and t.itemname=t6.name and t.dailytotalcalculate=1 and t5.id="+unitId
-					+ " order by t.id";
-			List<?> unitDailyTotalItemsList=this.findCallSql(dailyTotalItemsSql);
-			for(int i=0;i<unitDailyTotalItemsList.size();i++){
-				Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
-				String itemName=obj[0]+"";
-				String name=obj[1]+"";
-				String code=(obj[2]+"_TOTAL").toUpperCase();
-				String unit="";
-				if(protocol!=null&&protocol.getItems()!=null){
-					for(ModbusProtocolConfig.Items item:protocol.getItems()){
-						if(itemName.equalsIgnoreCase(item.getTitle())){
-							unit=item.getUnit();
-							break;
-						}
-					}
-				}
-				CalItem calItem=new CalItem(name,code,unit,2,4,itemName+languageResourceMap.get("dailyCalculate"));
-				calItemList.add(calItem);
-			}
-		}
-		
-		if("2".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
-					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
-					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
-					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
-					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=1"
-					+ " order by t.realtimeSort";
-			List<?> list=this.findCallSql(sql);
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[])list.get(i);
-				itemsList.add(obj[0]+"");
-				itemsCodeList.add(obj[1]+"");
-				itemsRealtimeSortList.add(obj[2]+"");
-				itemsHistorySortList.add(obj[3]+"");
-				
-				itemsShowLevelList.add(obj[4]+"");
-				String realtimeCurveConf=obj[5]+"";
-				if(!StringManagerUtils.isNotNull(obj[5]+"")){
-					realtimeCurveConf="\"\"";
-				}
-				String historyCurveConf=obj[6]+"";
-				if(!StringManagerUtils.isNotNull(obj[6]+"")){
-					historyCurveConf="\"\"";
-				}
-				
-				realtimeCurveConfList.add(realtimeCurveConf);
-				historyCurveConfList.add(historyCurveConf);
-				
-				realtimeColorList.add(obj[7]+"");
-				realtimeBgColorList.add(obj[8]+"");
-				historyColorList.add(obj[9]+"");
-				historyBgColorList.add(obj[10]+"");
-			}
-		}
-		
-		int index=1;
-
-		for(CalItem calItem:calItemList){
-			boolean checked=false;
-			String realtimeSort="";
-			String historySort="";
-			String showLevel="";
-			String realtimeCurveConf="\"\"";
-			String realtimeCurveConfShowValue="";
-			String historyCurveConf="\"\"";
-			String historyCurveConfShowValue="";
-			String realtimeColor=""; 
-			String realtimeBgColor="";
-			String historyColor="";
-			String historyBgColor="";
-
-			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
-			if(checked){
-				for(int k=0;k<itemsList.size();k++){
-					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-						realtimeSort=itemsRealtimeSortList.get(k);
-						historySort=itemsHistorySortList.get(k);
-						showLevel=itemsShowLevelList.get(k);
-						realtimeCurveConf=realtimeCurveConfList.get(k);
-						historyCurveConf=historyCurveConfList.get(k);
-						
-						realtimeColor=realtimeColorList.get(k);
-						realtimeBgColor=realtimeBgColorList.get(k);
-						historyColor=historyColorList.get(k);
-						historyBgColor=historyBgColorList.get(k);
-						
-						CurveConf realtimeCurveConfObj=null;
-						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
-							type = new TypeToken<CurveConf>() {}.getType();
-							realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
-						}
-						
-						CurveConf historyCurveConfObj=null;
-						if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
-							type = new TypeToken<CurveConf>() {}.getType();
-							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
-						}
-						
-						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-						}
-						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-						}
-						break;
-					}
-				}
-			}
-			result_json.append("{\"checked\":"+checked+","
-					+ "\"id\":"+(index)+","
-					+ "\"title\":\""+calItem.getName()+"\","
-					+ "\"unit\":\""+calItem.getUnit()+"\","
-					+ "\"showLevel\":\""+showLevel+"\","
-					+ "\"realtimeSort\":\""+realtimeSort+"\","
-					+ "\"realtimeColor\":\""+realtimeColor+"\","
-					+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-					+ "\"historySort\":\""+historySort+"\","
-					+ "\"historyColor\":\""+historyColor+"\","
-					+ "\"historyBgColor\":\""+historyBgColor+"\","
-					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
-					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-					+ "\"historyCurveConf\":"+historyCurveConf+","
-					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-					+ "\"code\":\""+calItem.getCode()+"\","
-					+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\""
-					+ "},");
-			index++;
-		
-		}
-	
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String getProtocolDisplayUnitInputItemsConfigData(String deviceType,String classes,String unitId,String calculateType,String language){
-		StringBuffer result_json = new StringBuffer();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		
-		List<CalItem> inputItemList=new ArrayList<>();
-		try{
-			if("1".equalsIgnoreCase(calculateType)){
-				inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
-			}else if("2".equalsIgnoreCase(calculateType)){
-				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurveConf\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",width:80 ,children:[] }"
-				+ "]";
-		
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
-		
-		List<String> itemsList=new ArrayList<String>();
-		List<String> itemsCodeList=new ArrayList<String>();
-		List<String> itemsRealtimeSortList=new ArrayList<String>();
-		List<String> itemsHistorySortList=new ArrayList<String>();
-		List<String> itemsShowLevelList=new ArrayList<String>();
-		List<String> realtimeCurveConfList=new ArrayList<String>();
-		List<String> historyCurveConfList=new ArrayList<String>();
-		List<String> realtimeColorList=new ArrayList<String>();
-		List<String> realtimeBgColorList=new ArrayList<String>();
-		List<String> historyColorList=new ArrayList<String>();
-		List<String> historyBgColorList=new ArrayList<String>();
-		if("2".equalsIgnoreCase(classes)){
-			String sql="select t.itemname,t.itemcode,t.realtimeSort,t.historySort,"
-					+ "t.showlevel,t.realtimeCurveConf,t.historyCurveConf,"
-					+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
-					+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2 "
-					+ " where t.unitid=t2.id and t2.id= "+unitId+" and t.type=3"
-					+ " order by t.realtimeSort";
-			List<?> list=this.findCallSql(sql);
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[])list.get(i);
-				itemsList.add(obj[0]+"");
-				itemsCodeList.add(obj[1]+"");
-				itemsRealtimeSortList.add(obj[2]+"");
-				itemsHistorySortList.add(obj[3]+"");
-				itemsShowLevelList.add(obj[4]+"");
-				String realtimeCurveConf=obj[5]+"";
-				if(!StringManagerUtils.isNotNull(obj[5]+"")){
-					realtimeCurveConf="\"\"";
-				}
-				String historyCurveConf=obj[6]+"";
-				if(!StringManagerUtils.isNotNull(obj[6]+"")){
-					historyCurveConf="\"\"";
-				}
-				
-				realtimeCurveConfList.add(realtimeCurveConf);
-				historyCurveConfList.add(historyCurveConf);
-				
-				realtimeColorList.add(obj[7]+"");
-				realtimeBgColorList.add(obj[8]+"");
-				historyColorList.add(obj[9]+"");
-				historyBgColorList.add(obj[10]+"");
-			}
-		}
-		
-		int index=1;
-
-		for(CalItem calItem:inputItemList){
-			boolean checked=false;
-			String realtimeSort="";
-			String historySort="";
-			String showLevel="";
-			String realtimeCurveConf="\"\"";
-			String realtimeCurveConfShowValue="";
-			String historyCurveConf="\"\"";
-			String historyCurveConfShowValue="";
-			String realtimeColor=""; 
-			String realtimeBgColor="";
-			String historyColor="";
-			String historyBgColor="";
-
-			checked=StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(),false);
-			if(checked){
-				for(int k=0;k<itemsList.size();k++){
-					if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-						realtimeSort=itemsRealtimeSortList.get(k);
-						historySort=itemsHistorySortList.get(k);
-						showLevel=itemsShowLevelList.get(k);
-						realtimeCurveConf=realtimeCurveConfList.get(k);
-						historyCurveConf=historyCurveConfList.get(k);
-						realtimeColor=realtimeColorList.get(k);
-						realtimeBgColor=realtimeBgColorList.get(k);
-						historyColor=historyColorList.get(k);
-						historyBgColor=historyBgColorList.get(k);
-						
-						CurveConf realtimeCurveConfObj=null;
-						if(StringManagerUtils.isNotNull(realtimeCurveConf) && !"\"\"".equals(realtimeCurveConf)){
-							type = new TypeToken<CurveConf>() {}.getType();
-							realtimeCurveConfObj=gson.fromJson(realtimeCurveConf, type);
-						}
-						
-						CurveConf historyCurveConfObj=null;
-						if(StringManagerUtils.isNotNull(historyCurveConf) && !"\"\"".equals(historyCurveConf)){
-							type = new TypeToken<CurveConf>() {}.getType();
-							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
-						}
-						
-						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-						}
-						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-						}
-						break;
-					}
-				}
-			}
-			result_json.append("{\"checked\":"+checked+","
-					+ "\"id\":"+(index)+","
-					+ "\"title\":\""+calItem.getName()+"\","
-					+ "\"unit\":\""+calItem.getUnit()+"\","
-					+ "\"showLevel\":\""+showLevel+"\","
-					+ "\"realtimeSort\":\""+realtimeSort+"\","
-					+ "\"realtimeColor\":\""+realtimeColor+"\","
-					+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-					+ "\"historySort\":\""+historySort+"\","
-					+ "\"historyColor\":\""+historyColor+"\","
-					+ "\"historyBgColor\":\""+historyBgColor+"\","
-					+ "\"realtimeCurveConf\":"+realtimeCurveConf+","
-					+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-					+ "\"historyCurveConf\":"+historyCurveConf+","
-					+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-					+ "\"code\":\""+calItem.getCode()+"\""
-					+ "},");
-			index++;
-		
 		}
 	
 		if(result_json.toString().endsWith(",")){
@@ -4852,335 +4526,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"code\":\""+obj[1]+""+"\""
 					+ "},");
 		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String getProtocolDisplayInstanceCalItemsConfigData(String id,String classes,String calculateType,String language){
-		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		List<CalItem> calItemList=new ArrayList<>();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		try{
-			if("1".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
-			}else if("2".equalsIgnoreCase(calculateType)){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
-			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
-				+ "]";
-		
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
-		
-		List<String> itemsList=new ArrayList<String>();
-		List<String> itemsCodeList=new ArrayList<String>();
-		List<String> itemsRealtimeSortList=new ArrayList<String>();
-		List<String> itemsHistorySortList=new ArrayList<String>();
-		List<String> itemsBitIndexList=new ArrayList<String>();
-		List<String> itemsShowLevelList=new ArrayList<String>();
-		List<String> realtimeCurveConfList=new ArrayList<String>();
-		List<String> historyCurveConfList=new ArrayList<String>();
-		List<String> realtimeColorList=new ArrayList<String>();
-		List<String> realtimeBgColorList=new ArrayList<String>();
-		List<String> historyColorList=new ArrayList<String>();
-		List<String> historyBgColorList=new ArrayList<String>();
-		
-		if(StringManagerUtils.isNotNull(id)){
-			
-			ModbusProtocolConfig.Protocol protocol=null;
-			String protocolSql="select t.protocol from TBL_ACQ_UNIT_CONF t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 where t.id=t2.acqunitid and t2.id=t3.displayunitid and t3.id="+id;
-			List<?> protocolList=this.findCallSql(protocolSql);
-			if(protocolList.size()>0){
-				protocol=MemoryDataManagerTask.getProtocolByCode(protocolList.get(0)+"");
-			}
-			
-			String dailyTotalItemsSql="select t.itemname,t.dailytotalcalculatename,t6.mappingcolumn "
-					+ " from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_display_unit_conf t5,"
-					+ " tbl_datamapping t6,tbl_protocoldisplayinstance t7 "
-					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.acqunitid and t5.id=t7.displayunitid "
-					+ " and t.itemname=t6.name "
-					+ " and t.dailytotalcalculate=1 and t7.id= "+id
-					+ " order by t.id";
-			List<?> unitDailyTotalItemsList=this.findCallSql(dailyTotalItemsSql);
-			for(int i=0;i<unitDailyTotalItemsList.size();i++){
-				Object[] obj=(Object[])unitDailyTotalItemsList.get(i);
-				String itemName=obj[0]+"";
-				String name=obj[1]+"";
-				String code=(obj[2]+"_TOTAL").toUpperCase();
-				String unit="";
-				if(protocol!=null&&protocol.getItems()!=null){
-					for(ModbusProtocolConfig.Items item:protocol.getItems()){
-						if(itemName.equalsIgnoreCase(item.getTitle())){
-							unit=item.getUnit();
-							break;
-						}
-					}
-				}
-				CalItem calItem=new CalItem(name,code,unit,2,4,itemName+languageResourceMap.get("dailyCalculate"));
-				calItemList.add(calItem);
-			}
-		}
-		
-		String sql="select t.itemname,t.itemcode,t.bitindex,"
-				+ "t.realtimeSort,t.historySort,"
-				+ "t.showlevel,"
-				+ "t.realtimeCurveConf,historyCurveConf,"
-				+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
-				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
-				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=1 and t3.id= "+id
-				+ " order by t.id";
-		if(calItemList!=null && calItemList.size()>0){
-			List<?> list=this.findCallSql(sql);
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[])list.get(i);
-				itemsList.add(obj[0]+"");
-				itemsCodeList.add(obj[1]+"");
-				itemsBitIndexList.add(obj[2]+"");
-				itemsRealtimeSortList.add(obj[3]+"");
-				itemsHistorySortList.add(obj[4]+"");
-				itemsShowLevelList.add(obj[5]+"");
-				String realtimeCurveConfShowValue="";
-				String historyCurveConfShowValue="";
-				
-				CurveConf realtimeCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
-					type = new TypeToken<CurveConf>() {}.getType();
-					realtimeCurveConfObj=gson.fromJson(obj[6]+"", type);
-				}
-				
-				CurveConf historyCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[7]+"") && !"\"\"".equals(obj[7]+"")){
-					type = new TypeToken<CurveConf>() {}.getType();
-					historyCurveConfObj=gson.fromJson(obj[7]+"", type);
-				}
-				
-				if(realtimeCurveConfObj!=null){
-					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-				}
-				if(historyCurveConfObj!=null){
-					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-				}
-				
-				realtimeCurveConfList.add(realtimeCurveConfShowValue);
-				historyCurveConfList.add(historyCurveConfShowValue);
-				
-				realtimeColorList.add(obj[8]+"");
-				realtimeBgColorList.add(obj[9]+"");
-				historyColorList.add(obj[10]+"");
-				historyBgColorList.add(obj[11]+"");
-			}
-			int index=1;
-			for(CalItem calItem:calItemList){
-				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
-					String realtimeSort="";
-					String historySort="";
-					String showLevel="";
-					String realtimeCurveConfShowValue="";
-					String historyCurveConfShowValue="";
-					String realtimeColor=""; 
-					String realtimeBgColor="";
-					String historyColor="";
-					String historyBgColor="";
-
-					for(int k=0;k<itemsList.size();k++){
-						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-							realtimeSort=itemsRealtimeSortList.get(k);
-							historySort=itemsHistorySortList.get(k);
-							showLevel=itemsShowLevelList.get(k);
-							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-							historyCurveConfShowValue=historyCurveConfList.get(k);
-							realtimeColor=realtimeColorList.get(k);
-							realtimeBgColor=realtimeBgColorList.get(k);
-							historyColor=historyColorList.get(k);
-							historyBgColor=historyBgColorList.get(k);
-							break;
-						}
-					}
-					result_json.append("{"
-							+ "\"id\":"+index+","
-							+ "\"title\":\""+calItem.getName()+"\","
-							+ "\"unit\":\""+calItem.getUnit()+"\","
-							+ "\"showLevel\":\""+showLevel+"\","
-							+ "\"realtimeSort\":\""+realtimeSort+"\","
-							+ "\"realtimeColor\":\""+realtimeColor+"\","
-							+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-							+ "\"historySort\":\""+historySort+"\","
-							+ "\"historyColor\":\""+historyColor+"\","
-							+ "\"historyBgColor\":\""+historyBgColor+"\","
-							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\","
-							+ "\"dataSource\":\""+MemoryDataManagerTask.getCodeName("DATASOURCE",calItem.getDataSource()+"", language)+"\""
-							+ "},");
-					index++;
-				}
-			}
-		}
-		
-		
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]");
-		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String getProtocolDisplayInstanceInputItemsConfigData(String id,String classes,String calculateType,String language){
-		StringBuffer result_json = new StringBuffer();
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		List<CalItem> inputItemList=new ArrayList<>();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		try{
-			if("1".equalsIgnoreCase(calculateType)){
-				inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
-			}else if("2".equalsIgnoreCase(calculateType)){
-				inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
-				+ "]";
-		
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
-		
-		List<String> itemsList=new ArrayList<String>();
-		List<String> itemsCodeList=new ArrayList<String>();
-		List<String> itemsRealtimeSortList=new ArrayList<String>();
-		List<String> itemsHistorySortList=new ArrayList<String>();
-		List<String> itemsBitIndexList=new ArrayList<String>();
-		List<String> itemsShowLevelList=new ArrayList<String>();
-		List<String> realtimeCurveConfList=new ArrayList<String>();
-		List<String> historyCurveConfList=new ArrayList<String>();
-		List<String> realtimeColorList=new ArrayList<String>();
-		List<String> realtimeBgColorList=new ArrayList<String>();
-		List<String> historyColorList=new ArrayList<String>();
-		List<String> historyBgColorList=new ArrayList<String>();
-		
-		String sql="select t.itemname,t.itemcode,t.bitindex,"
-				+ "t.realtimeSort,t.historySort,"
-				+ "t.showlevel,"
-				+ "t.realtimeCurveConf,historyCurveConf,"
-				+ "t.realtimeColor,t.realtimeBgColor,t.historyColor,t.historyBgColor "
-				+ " from tbl_display_items2unit_conf t,tbl_display_unit_conf t2,tbl_protocoldisplayinstance t3 "
-				+ " where t.unitid=t2.id and t2.id=t3.displayunitid and t.type=3 "
-				+ " and t3.id= "+id
-				+ " order by t.id";
-		if(inputItemList!=null){
-			List<?> list=this.findCallSql(sql);
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[])list.get(i);
-				itemsList.add(obj[0]+"");
-				itemsCodeList.add(obj[1]+"");
-				itemsBitIndexList.add(obj[2]+"");
-				itemsRealtimeSortList.add(obj[3]+"");
-				itemsHistorySortList.add(obj[4]+"");
-				itemsShowLevelList.add(obj[5]+"");
-				String realtimeCurveConfShowValue="";
-				String historyCurveConfShowValue="";
-				
-				CurveConf realtimeCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[6]+"") && !"\"\"".equals(obj[6]+"")){
-					type = new TypeToken<CurveConf>() {}.getType();
-					realtimeCurveConfObj=gson.fromJson(obj[6]+"", type);
-				}
-				
-				CurveConf historyCurveConfObj=null;
-				if(StringManagerUtils.isNotNull(obj[7]+"") && !"\"\"".equals(obj[7]+"")){
-					type = new TypeToken<CurveConf>() {}.getType();
-					historyCurveConfObj=gson.fromJson(obj[7]+"", type);
-				}
-				
-				if(realtimeCurveConfObj!=null){
-					realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-				}
-				if(historyCurveConfObj!=null){
-					historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-				}
-				
-				realtimeCurveConfList.add(realtimeCurveConfShowValue);
-				historyCurveConfList.add(historyCurveConfShowValue);
-				
-				realtimeColorList.add(obj[8]+"");
-				realtimeBgColorList.add(obj[9]+"");
-				historyColorList.add(obj[10]+"");
-				historyBgColorList.add(obj[11]+"");
-			}
-			int index=1;
-			for(CalItem calItem:inputItemList){
-				if(StringManagerUtils.existOrNot(itemsCodeList, calItem.getCode(), false)){
-					String realtimeSort="";
-					String historySort="";
-					String showLevel="";
-					String realtimeCurveConfShowValue="";
-					String historyCurveConfShowValue="";
-					String realtimeColor=""; 
-					String realtimeBgColor="";
-					String historyColor="";
-					String historyBgColor="";
-
-					for(int k=0;k<itemsList.size();k++){
-						if(itemsCodeList.get(k).equalsIgnoreCase(calItem.getCode())){
-							realtimeSort=itemsRealtimeSortList.get(k);
-							historySort=itemsHistorySortList.get(k);
-							showLevel=itemsShowLevelList.get(k);
-							realtimeCurveConfShowValue=realtimeCurveConfList.get(k);
-							historyCurveConfShowValue=historyCurveConfList.get(k);
-							realtimeColor=realtimeColorList.get(k);
-							realtimeBgColor=realtimeBgColorList.get(k);
-							historyColor=historyColorList.get(k);
-							historyBgColor=historyBgColorList.get(k);
-							break;
-						}
-					}
-					result_json.append("{"
-							+ "\"id\":"+index+","
-							+ "\"title\":\""+calItem.getName()+"\","
-							+ "\"unit\":\""+calItem.getUnit()+"\","
-							+ "\"showLevel\":\""+showLevel+"\","
-							+ "\"realtimeSort\":\""+realtimeSort+"\","
-							+ "\"realtimeColor\":\""+realtimeColor+"\","
-							+ "\"realtimeBgColor\":\""+realtimeBgColor+"\","
-							+ "\"historySort\":\""+historySort+"\","
-							+ "\"historyColor\":\""+historyColor+"\","
-							+ "\"historyBgColor\":\""+historyBgColor+"\","
-							+ "\"realtimeCurveConfShowValue\":\""+realtimeCurveConfShowValue+"\","
-							+ "\"historyCurveConfShowValue\":\""+historyCurveConfShowValue+"\""
-							+ "},");
-					index++;
-				}
-			}
-		}
-		
-		
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
@@ -8209,7 +7554,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ " from tbl_display_unit_conf t,tbl_acq_unit_conf t2 "
 									+ " where t.acqunitid=t2.id and t.id in ("+displayUnitStr+") and t2.id in("+acqUnitStr+") "
 									+ " order by t2.id,t.id";
-							String displayItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.realtimeSort,t.bitindex,t.showlevel,t.realtimecurveconf,t.historycurveconf,t.type,t.matrix,t.unitid "
+							String displayItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.realtimeSort,t.bitindex,t.showlevel,t.realtimecurveconf,t.historycurveconf,t.type,t.matrix,t.unitid,t.itemEnable "
 									+ " from tbl_display_items2unit_conf t, tbl_display_unit_conf t2,tbl_acq_unit_conf t3 "
 									+ " where t.unitid=t2.id and t2.acqunitid=t3.id "
 									+ " and t2.id in ("+displayUnitStr+") and t3.id in("+acqUnitStr+") "
@@ -8269,6 +7614,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											displayItem.setMatrix((displayItemObj[10]+"").replaceAll("null", ""));
 											
 											displayItem.setUnitId(StringManagerUtils.stringToInteger(displayItemObj[11]+""));
+											
+											displayItem.setItemEnable(StringManagerUtils.stringToInteger(displayItemObj[12]+""));
 											
 											displayUnit.getDisplayItemList().add(displayItem);
 										}
@@ -9879,6 +9226,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												displayUnitItem.setType(displayUnit.getDisplayItemList().get(j).getType());
 												displayUnitItem.setRealtimeCurveConf(displayUnit.getDisplayItemList().get(j).getRealtimeCurveConf());
 												displayUnitItem.setHistoryCurveConf(displayUnit.getDisplayItemList().get(j).getHistoryCurveConf());
+												displayUnitItem.setItemEnable(displayUnit.getDisplayItemList().get(j).getItemEnable());
 												displayUnitItem.setUnitId(addDisplayUnitId);
 												getBaseDao().addObject(displayUnitItem);
 											}
@@ -10247,6 +9595,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																displayUnitItem.setRealtimeCurveConf(displayUnit.getDisplayItemList().get(k).getRealtimeCurveConf());
 																displayUnitItem.setHistoryCurveConf(displayUnit.getDisplayItemList().get(k).getHistoryCurveConf());
 																displayUnitItem.setMatrix(displayUnit.getDisplayItemList().get(k).getMatrix());
+																displayUnitItem.setItemEnable(displayUnit.getDisplayItemList().get(k).getItemEnable());
 																getBaseDao().addObject(displayUnitItem);
 															}
 														}
@@ -10317,6 +9666,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																	displayUnitItem.setRealtimeCurveConf(displayUnit.getDisplayItemList().get(k).getRealtimeCurveConf());
 																	displayUnitItem.setHistoryCurveConf(displayUnit.getDisplayItemList().get(k).getHistoryCurveConf());
 																	displayUnitItem.setMatrix(displayUnit.getDisplayItemList().get(k).getMatrix());
+																	displayUnitItem.setItemEnable(displayUnit.getDisplayItemList().get(k).getItemEnable());
 																	getBaseDao().addObject(displayUnitItem);
 																}
 															}
@@ -10474,6 +9824,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 																	displayUnitItem.setRealtimeCurveConf(displayUnit.getDisplayItemList().get(k).getRealtimeCurveConf());
 																	displayUnitItem.setHistoryCurveConf(displayUnit.getDisplayItemList().get(k).getHistoryCurveConf());
 																	displayUnitItem.setMatrix(displayUnit.getDisplayItemList().get(k).getMatrix());
+																	displayUnitItem.setItemEnable(displayUnit.getDisplayItemList().get(k).getItemEnable());
 																	getBaseDao().addObject(displayUnitItem);
 																}
 															}
@@ -11570,7 +10921,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ " where t.id=t2.groupid and t2.unitid=t3.id "
 					+ " and t3.id ="+StringManagerUtils.stringToInteger(acqUnitObj[0]+"")
 					+ " order by t3.id,t.id";
-			String acqItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.groupid,t.bitindex,t.matrix,t.dailytotalcalculate,t.dailytotalcalculatename "
+			String acqItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.groupid,t.bitindex,t.matrix,t.dailytotalcalculate,t.dailytotalcalculatename,t.itemenable "
 					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
 					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id "
 					+ " and t4.id = "+StringManagerUtils.stringToInteger(acqUnitObj[0]+"")
@@ -11609,7 +10960,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						result_json.append("\"Matrix\":\""+((acqItemObj[6]+"").replaceAll("null", ""))+"\",");
 						result_json.append("\"DailyTotalCalculate\":"+StringManagerUtils.stringToInteger(acqItemObj[7]+"")+",");
-						result_json.append("\"DailyTotalCalculateName\":\""+((acqItemObj[8]+"").replaceAll("null", ""))+"\"");
+						result_json.append("\"DailyTotalCalculateName\":\""+((acqItemObj[8]+"").replaceAll("null", ""))+"\",");
+						result_json.append("\"ItemEnable\":"+StringManagerUtils.stringToInteger(acqItemObj[9]+"")+"");
 						result_json.append("},");
 					}
 				}
@@ -11666,7 +11018,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ " where t.id=t2.groupid and t2.unitid=t3.id "
 					+ " and t3.id ="+StringManagerUtils.stringToInteger(acqUnitObj[0]+"")
 					+ " order by t3.id,t.id";
-			String acqItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.groupid,t.bitindex,t.matrix,t.dailytotalcalculate,t.dailytotalcalculatename "
+			String acqItemSql="select t.id,t.itemid,t.itemname,t.itemcode,t.groupid,t.bitindex,t.matrix,t.dailytotalcalculate,t.dailytotalcalculatename,t.ItemEnable "
 					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4 "
 					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id "
 					+ " and t4.id = "+StringManagerUtils.stringToInteger(acqUnitObj[0]+"")
@@ -11703,7 +11055,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}
 						result_json.append("\"Matrix\":\""+((acqItemObj[6]+"").replaceAll("null", ""))+"\",");
 						result_json.append("\"DailyTotalCalculate\":"+StringManagerUtils.stringToInteger(acqItemObj[7]+"")+",");
-						result_json.append("\"DailyTotalCalculateName\":\""+((acqItemObj[8]+"").replaceAll("null", ""))+"\"");
+						result_json.append("\"DailyTotalCalculateName\":\""+((acqItemObj[8]+"").replaceAll("null", ""))+"\",");
+						result_json.append("\"ItemEnable\":"+StringManagerUtils.stringToInteger(acqItemObj[9]+"")+"");
 						result_json.append("},");
 					}
 				}
@@ -11909,7 +11262,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
 				+ " t.historyOverview,t.historyOverviewSort,t.historyData,"
 				+ " switchingValueShowType,"
-				+ "t.unitid "
+				+ "t.itemEnable, "
+				+ "t.unitid"
+				
 				+ " from tbl_display_items2unit_conf t, tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.unitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code"
 				+ " and t4.devicetype in ( select t5.rd_devicetypeid from tbl_devicetype2role t5 where t5.rd_roleid="+(user!=null?user.getUserType():0)+") "
@@ -11962,7 +11317,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					result_json.append("\"HistoryOverviewSort\":"+(StringManagerUtils.isInteger(displayItemObj[20]+"")?StringManagerUtils.stringToInteger(displayItemObj[20]+""):-99)+",");
 					result_json.append("\"HistoryData\":"+StringManagerUtils.stringToInteger(displayItemObj[21]+"")+",");
 					
-					result_json.append("\"SwitchingValueShowType\":"+StringManagerUtils.stringToInteger(displayItemObj[22]+"")+"");
+					result_json.append("\"SwitchingValueShowType\":"+StringManagerUtils.stringToInteger(displayItemObj[22]+"")+",");
+					result_json.append("\"ItemEnable\":"+StringManagerUtils.stringToInteger(displayItemObj[23]+"")+"");
 					
 					result_json.append("},");
 				}
@@ -12013,7 +11369,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " t.realtimeOverview,t.realtimeOverviewSort,t.realtimeData, "
 				+ " t.historyOverview,t.historyOverviewSort,t.historyData,"
 				+ " t.switchingvalueshowtype,"
-				+ "t.unitid "
+				+ " t.itemEnable,"
+				+ " t.unitid "
 				+ " from tbl_display_items2unit_conf t, tbl_display_unit_conf t2 "
 				+ " where t.unitid=t2.id "
 				+ " and t2.id in ("+unitListStr+")"
@@ -12065,7 +11422,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					result_json.append("\"HistoryOverviewSort\":"+(StringManagerUtils.isInteger(displayItemObj[20]+"")?StringManagerUtils.stringToInteger(displayItemObj[20]+""):-99)+",");
 					result_json.append("\"HistoryData\":"+StringManagerUtils.stringToInteger(displayItemObj[21]+"")+",");
 					
-					result_json.append("\"SwitchingValueShowType\":"+StringManagerUtils.stringToInteger(displayItemObj[22]+"")+"");
+					result_json.append("\"SwitchingValueShowType\":"+StringManagerUtils.stringToInteger(displayItemObj[22]+"")+",");
+					
+					result_json.append("\"ItemEnable\":"+StringManagerUtils.stringToInteger(displayItemObj[23]+"")+"");
 					
 					result_json.append("},");
 				}
@@ -12392,6 +11751,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			sql+=" and t5.id in("+instanceList+")";
 			instanceSql+=" and t.id in("+instanceList+")";
 		}
+		sql+=" and t.itemEnable=1";
 		sql+= " order by t5.sort,t.groupid,t.id";
 		instanceSql+=" order by t.sort";
 		
@@ -13355,6 +12715,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							acquisitionGroupItem.setMatrix(exportAcqUnitData.getGroupList().get(i).getItemList().get(j).getMatrix());
 							acquisitionGroupItem.setDailyTotalCalculateName(exportAcqUnitData.getGroupList().get(i).getItemList().get(j).getDailyTotalCalculateName());
 							acquisitionGroupItem.setDailyTotalCalculate(exportAcqUnitData.getGroupList().get(i).getItemList().get(j).getDailyTotalCalculate());
+							acquisitionGroupItem.setItemEnable(exportAcqUnitData.getGroupList().get(i).getItemList().get(j).getItemEnable());
 							try {
 								this.grantAcquisitionItemsPermission(acquisitionGroupItem);
 							} catch (Exception e) {

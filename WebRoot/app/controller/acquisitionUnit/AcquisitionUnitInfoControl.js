@@ -521,7 +521,11 @@ var grantAcquisitionItemsPermission = function (groupType) {
     }
     if (driverConfigItemsData.length > 0) {
         Ext.Array.each(driverConfigItemsData, function (name, index, countriesItSelf) {
-            if ((driverConfigItemsData[index][0]+'')==='true') {
+            if (protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'checked')
+            		|| protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculate')
+            		|| isNotVal(protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculateName'))
+            		) {
+            	var itemEnable=protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'checked')?1:0;
             	var itemName = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'title');
             	var itemAddr = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'addr');
             	var itemHighLowByte = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'highLowByte');
@@ -550,7 +554,8 @@ var grantAcquisitionItemsPermission = function (groupType) {
                 + bitIndex +":"
                 + matrix_value +":"
                 + dailyTotalCalculateName+ ":"
-                + dailyTotalCalculate+ "|";
+                + dailyTotalCalculate+ ":"
+                + itemEnable+ "|";
             }
         });
         

@@ -1085,6 +1085,7 @@ public class EquipmentDriverServerTask {
 				sql+=" and t5.name in("+instances+")";
 				instanceSql+=" and t.name in("+instances+")";
 			}
+			sql+=" and t.itemenable=1";
 			sql+= " order by t5.sort,t.groupid,t.id";
 			instanceSql+=" order by t.sort";
 			

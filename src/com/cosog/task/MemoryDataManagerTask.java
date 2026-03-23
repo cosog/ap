@@ -2001,6 +2001,7 @@ public class MemoryDataManagerTask {
 				instanceSql+=" and t.id="+instanceId;
 				sql+=" and t5.id ="+instanceId;
 			}
+			sql+=" and t.itemenable=1";
 			sql+=" order by t5.code, t.groupid,t.id";
 			pstmt = conn.prepareStatement(instanceSql);
 			rs=pstmt.executeQuery();
@@ -2239,6 +2240,7 @@ public class MemoryDataManagerTask {
 				instanceSql+=" and t.id="+instanceId;
 				sql+=" and t3.id="+instanceId;
 			}
+			sql+=" and t.itemEnable=1";
 			sql+=" order by t3.code, t.unitid,t.type,t.id";
 			
 			pstmt = conn.prepareStatement(instanceSql);

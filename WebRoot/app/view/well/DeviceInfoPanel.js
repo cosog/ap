@@ -4692,6 +4692,7 @@ function devicePumpingUnitDataDownlink(){
             method: "POST",
             params: {
             	deviceId: deviceId,
+            	deviceName: deviceName,
             	manufacturer:manufacturer,
             	model:model,
             	stroke:stroke,
@@ -4880,6 +4881,7 @@ function deviceFSDiagramConstructionDataDownlink(){
             method: "POST",
             params: {
             	deviceId: deviceId,
+            	deviceName: deviceName,
             	data: JSON.stringify(FSDiagramConstructionData)
             },
             success: function (response, action) {
@@ -4946,7 +4948,8 @@ function deviceSystemParameterDataDownlink(){
             url: context + '/wellInformationManagerController/deviceSystemParameterDataDownlink',
             method: "POST",
             params: {
-            	deviceId: deviceId
+            	deviceId: deviceId,
+            	deviceName: deviceName
             },
             success: function (response, action) {
             	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();

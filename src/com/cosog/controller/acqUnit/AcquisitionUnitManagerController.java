@@ -573,18 +573,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String params = ParamUtils.getParameter(request, "params");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String groupId = ParamUtils.getParameter(request, "groupId");
-//			String groupCode = ParamUtils.getParameter(request, "groupCode");
 			String protocolCode = ParamUtils.getParameter(request, "protocol");
 			log.debug("grantAcquisitionItemsPermission params==" + params);
 			String paramsArr[] = StringManagerUtils.split(params, ",");
-//			String groupName="";
-//			String groupIdSql="select t.id,t.group_name from tbl_acq_group_conf t where t.group_code='"+groupCode+"' ";
-//			List list = this.service.findCallSql(groupIdSql);
-//			if(list.size()>0){
-//				Object[] obj=(Object[]) list.get(0);
-//				groupId=obj[0]+"";
-//				groupName=obj[1]+"";
-//			}
 			
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 			if (StringManagerUtils.isNotNull(groupId) && protocol!=null) {
@@ -625,6 +616,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						acquisitionGroupItem.setMatrix(module_[5]);
 						acquisitionGroupItem.setDailyTotalCalculateName(module_[6]);
 						acquisitionGroupItem.setDailyTotalCalculate(StringManagerUtils.stringToInteger(module_[7]));
+						acquisitionGroupItem.setItemEnable(StringManagerUtils.stringToInteger(module_[8]));
 						
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
@@ -797,6 +789,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							displayUnitItem.setHistoryCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[15]:"");
 							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[21])?StringManagerUtils.stringToInteger(module_[22]):0);
 							displayUnitItem.setMatrix(module_[23]);
+							displayUnitItem.setItemEnable(StringManagerUtils.stringToInteger(module_[24]));
 							if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
 								this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 							}
@@ -827,6 +820,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							displayUnitItem.setHistoryCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[15]:"");
 							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[21])?StringManagerUtils.stringToInteger(module_[22]):0);
 							displayUnitItem.setMatrix(module_[23]);
+							displayUnitItem.setItemEnable(StringManagerUtils.stringToInteger(module_[24]));
 							if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
 								this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 							}
@@ -856,6 +850,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							displayUnitItem.setHistoryCurveConf(module_[15]);
 							displayUnitItem.setSwitchingValueShowType(0);
 							displayUnitItem.setMatrix(module_[23]);
+							displayUnitItem.setItemEnable(StringManagerUtils.stringToInteger(module_[24]));
 							this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 						}
 					}
@@ -937,6 +932,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setBitIndex(bitIndex>=0?bitIndex:null);
 						displayUnitItem.setSwitchingValueShowType(StringManagerUtils.stringToInteger(module_[7]));
 						displayUnitItem.setMatrix(module_[8]);
+						displayUnitItem.setItemEnable(StringManagerUtils.stringToInteger(module_[9]));
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 					}
 					
@@ -1706,51 +1702,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getProtocolDisplayUnitCalItemsConfigData")
-	public String getProtocolDisplayUnitCalItemsConfigData() throws Exception {
-		String classes = ParamUtils.getParameter(request, "classes");
-		String unitId = ParamUtils.getParameter(request, "unitId");
-		String calculateType = ParamUtils.getParameter(request, "calculateType");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitCalItemsConfigData(classes,unitId,calculateType,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/getProtocolDisplayUnitInputItemsConfigData")
-	public String getProtocolDisplayUnitInputItemsConfigData() throws Exception {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
-		String classes = ParamUtils.getParameter(request, "classes");
-		String unitId = ParamUtils.getParameter(request, "unitId");
-		String calculateType = ParamUtils.getParameter(request, "calculateType");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayUnitInputItemsConfigData(deviceType,classes,unitId,calculateType,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/getReportUnitTotalCalItemsConfigData")
 	public String getReportUnitTotalCalItemsConfigData() throws Exception {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
@@ -1928,50 +1879,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = "";
 		json = acquisitionUnitItemManagerService.getImportProtocolDisplayInstanceCtrlItemsConfigData(id,type,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/getProtocolDisplayInstanceCalItemsConfigData")
-	public String getProtocolDisplayInstanceCalItemsConfigData() throws Exception {
-		String id = ParamUtils.getParameter(request, "id");
-		String classes = ParamUtils.getParameter(request, "classes");
-		String calculateType = ParamUtils.getParameter(request, "calculateType");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceCalItemsConfigData(id,classes,calculateType,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/getProtocolDisplayInstanceInputItemsConfigData")
-	public String getProtocolDisplayInstanceInputItemsConfigData() throws Exception {
-		String id = ParamUtils.getParameter(request, "id");
-		String classes = ParamUtils.getParameter(request, "classes");
-		String calculateType = ParamUtils.getParameter(request, "calculateType");
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		String json = "";
-		json = acquisitionUnitItemManagerService.getProtocolDisplayInstanceInputItemsConfigData(id,classes,calculateType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

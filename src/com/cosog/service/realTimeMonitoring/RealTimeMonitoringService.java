@@ -5470,6 +5470,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ " and t.id="+deviceId+" "
 					+ " and t4.realtimecurveconf is not null "
 					+ " and decode(t4.showlevel,null,9999,t4.showlevel)>=( select r.showlevel from tbl_role r,tbl_user u where u.user_type=r.role_id and u.user_no='"+userNo+"' )"
+					+ " and t4.itemEnable=1"
 					+ " order by t4.realtimeSort,t4.id";
 			List<?> protocolList = this.findCallSql(protocolSql);
 			List<?> curveItemList = this.findCallSql(curveItemsSql);
@@ -5764,8 +5765,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public void saveDeviceControlLog(String deviceId,String deviceName,String deviceType,String title,String value,User user) throws SQLException{
-		getBaseDao().saveDeviceControlLog(deviceId,deviceName,deviceType,title,value,user);
+	public void saveDeviceControlLog(String deviceId,String deviceName,String deviceType,String remark,User user) throws SQLException{
+		getBaseDao().saveDeviceControlLog(deviceId,deviceName,deviceType,remark,user);
 	}
 	
 	public String getResourceProbeHistoryCurveData(String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
@@ -6192,6 +6193,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String controlItemSql="select t4.itemname "
 				+ " from TBL_DEVICE t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
 				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type=2 "
+				+ " and t4.itemEnable=1"
 				+ " and t.id="+deviceId;
 		String addInfoSql="select t2.itemname "
 				+ " from tbl_device t,tbl_deviceaddinfo t2 "

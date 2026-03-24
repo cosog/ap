@@ -1503,12 +1503,13 @@ var grantDisplayCtrlItemsPermission = function () {
     }
 
     Ext.Array.each(ctrlItemsData, function (name, index, countriesItSelf) {
-    	var itemEnable=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'title');
+    	var itemEnable=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'checked');
     	var itemShowLevel = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'showLevel');
     	var itemRealtimeSort = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'realtimeSort');
         if (itemEnable
         		|| isNotVal(itemShowLevel)
         		|| isNotVal(itemRealtimeSort)) {
+        	itemEnable= itemEnable?1:0;
         	var itemName = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'title');
         	var resolutionMode = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'resolutionMode');
         	var itemAddr = protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.getDataAtRowProp(index,'addr');

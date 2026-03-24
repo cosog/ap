@@ -1532,29 +1532,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getModbusProtocolCalNumAlarmItemsConfigData")
-	public String getModbusProtocolCalNumAlarmItemsConfigData() throws Exception {
-		String deviceType = ParamUtils.getParameter(request, "deviceType");
-		String classes = ParamUtils.getParameter(request, "classes");
-		String code = ParamUtils.getParameter(request, "code");
-		String calculateType = ParamUtils.getParameter(request, "calculateType");
-		String json = "";
-		HttpSession session=request.getSession();
-		User user = (User) session.getAttribute("userLogin");
-		String language="";
-		if(user!=null){
-			language=user.getLanguageName();
-		}
-		json = acquisitionUnitItemManagerService.getModbusProtocolCalNumAlarmItemsConfigData(deviceType,classes,code,calculateType,language);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/getModbusProtocolEnumAlarmItemsConfigData")
 	public String getModbusProtocolEnumAlarmItemsConfigData() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
@@ -3766,14 +3743,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 									alarmLevel=300;
 								}
 								
-								if(languageResourceMap.get("enable").equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmSign())){
-									alarmSign=1;
-								}else if(languageResourceMap.get("disable").equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmSign())){
-									alarmSign=0;
-								}
+//								if(languageResourceMap.get("enable").equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmSign())){
+//									alarmSign=1;
+//								}else if(languageResourceMap.get("disable").equalsIgnoreCase(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmSign())){
+//									alarmSign=0;
+//								}
 								
 								alarmUnitItem.setAlarmLevel(alarmLevel);
-								alarmUnitItem.setAlarmSign(alarmSign);
+								alarmUnitItem.setAlarmSign(modbusProtocolAlarmUnitSaveData.getAlarmItems().get(i).getAlarmSign());
 								
 								int isSendMessage=0;
 								int isSendMail=0;

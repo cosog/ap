@@ -834,7 +834,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String sql="select t.itemname,t.itemcode,t.itemaddr,t.upperlimit,t.lowerlimit,t.hystersis,"
 					+ " t.delay,t.retriggerTime,"
 					+ " t.alarmlevel,"
-					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " t.alarmsign,"
 					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
@@ -861,26 +861,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						&& protocolConfig.getItems().get(j).getQuantity()==1
 						&& ( protocolConfig.getItems().get(j).getIFDataType().contains("int") || protocolConfig.getItems().get(j).getIFDataType().contains("float") )
 						){
-					String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-					boolean checked=false;
+					String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",isSendMessage="",isSendMail="";
+					boolean alarmSign=false;
 					DataMapping dataMapping=protocolColumnByTitleMap.get(protocolConfig.getItems().get(j).getTitle());
 					for(int k=0;k<itemAddrsList.size();k++){
 						Object[] obj = (Object[]) list.get(k);
 						if(itemAddrsList.get(k)==protocolConfig.getItems().get(j).getAddr()){
-							checked=true;
 							upperLimit=obj[3]+"";
 							lowerLimit=obj[4]+"";
 							hystersis=obj[5]+"";
 							delay=obj[6]+"";
 							retriggerTime=obj[7]+"";
 							alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language);
-							alarmSign=obj[9]+"";
+							alarmSign=StringManagerUtils.stringToInteger(obj[9]+"")==1;
 							isSendMessage=obj[10]+"";
 							isSendMail=obj[11]+"";
 							break;
 						}
 					}
-					result_json.append("{\"checked\":"+checked+","
+					result_json.append("{\"checked\":"+alarmSign+","
 							+ "\"id\":"+(index)+","
 							+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
@@ -894,7 +893,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"delay\":\""+delay+"\","
 							+ "\"retriggerTime\":\""+retriggerTime+"\","
 							+ "\"alarmLevel\":\""+alarmLevel+"\","
-							+ "\"alarmSign\":\""+alarmSign+"\","
 							+ "\"isSendMessage\":\""+isSendMessage+"\","
 							+ "\"isSendMail\":\""+isSendMail+"\""
 							+ "},");
@@ -907,27 +905,26 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(protocolConfig.getExtendedFields()!=null){
 				for(int j=0;j<protocolConfig.getExtendedFields().size();j++){
 					if(protocolConfig.getExtendedFields().get(j).getType()==0 || (protocolConfig.getExtendedFields().get(j).getType()==1 && protocolConfig.getExtendedFields().get(j).getResolutionMode()==2)){
-						String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-						boolean checked=false;
+						String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",isSendMessage="",isSendMail="";
+						boolean alarmSign=false;
 						DataMapping dataMapping=protocolExtendedFieldColumnByTitleMap.get(protocolConfig.getExtendedFields().get(j).getTitle());
 						String itemCode=dataMapping!=null?dataMapping.getMappingColumn():"";
 						for(int k=0;k<itemsList.size();k++){
 							Object[] obj = (Object[]) list.get(k);
 							if(itemCode.equalsIgnoreCase(itemsList.get(k))){
-								checked=true;
 								upperLimit=obj[3]+"";
 								lowerLimit=obj[4]+"";
 								hystersis=obj[5]+"";
 								delay=obj[6]+"";
 								retriggerTime=obj[7]+"";
 								alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language);
-								alarmSign=obj[9]+"";
+								alarmSign=StringManagerUtils.stringToInteger(obj[9]+"")==1;
 								isSendMessage=obj[10]+"";
 								isSendMail=obj[11]+"";
 								break;
 							}
 						}
-						result_json.append("{\"checked\":"+checked+","
+						result_json.append("{\"checked\":"+alarmSign+","
 								+ "\"id\":"+(index)+","
 								+ "\"title\":\""+protocolConfig.getExtendedFields().get(j).getTitle()+"\","
 								+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
@@ -941,7 +938,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								+ "\"delay\":\""+delay+"\","
 								+ "\"retriggerTime\":\""+retriggerTime+"\","
 								+ "\"alarmLevel\":\""+alarmLevel+"\","
-								+ "\"alarmSign\":\""+alarmSign+"\","
 								+ "\"isSendMessage\":\""+isSendMessage+"\","
 								+ "\"isSendMail\":\""+isSendMail+"\""
 								+ "},");
@@ -957,25 +953,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(calItemList!=null){
 			for(CalItem calItem:calItemList){
 				if(calItem.getDataType()==2){
-					String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-					boolean checked=false;
+					String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",isSendMessage="",isSendMail="";
+					boolean alarmSign=false;
 					for(int k=0;k<itemsList.size();k++){
 						Object[] obj = (Object[]) list.get(k);
 						if(calItem.getCode().equalsIgnoreCase(itemsList.get(k))){
-							checked=true;
 							upperLimit=obj[3]+"";
 							lowerLimit=obj[4]+"";
 							hystersis=obj[5]+"";
 							delay=obj[6]+"";
 							retriggerTime=obj[7]+"";
 							alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[8]+"", language);
-							alarmSign=obj[9]+"";
+							alarmSign=StringManagerUtils.stringToInteger(obj[9]+"")==1;
 							isSendMessage=obj[10]+"";
 							isSendMail=obj[11]+"";
 							break;
 						}
 					}
-					result_json.append("{\"checked\":"+checked+","
+					result_json.append("{\"checked\":"+alarmSign+","
 							+ "\"id\":"+(index)+","
 							+ "\"title\":\""+calItem.getName()+"\","
 							+ "\"unit\":\""+calItem.getUnit()+"\","
@@ -989,7 +984,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"delay\":\""+delay+"\","
 							+ "\"retriggerTime\":\""+retriggerTime+"\","
 							+ "\"alarmLevel\":\""+alarmLevel+"\","
-							+ "\"alarmSign\":\""+alarmSign+"\","
 							+ "\"isSendMessage\":\""+isSendMessage+"\","
 							+ "\"isSendMail\":\""+isSendMail+"\""
 							+ "},");
@@ -1003,110 +997,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append("}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String getModbusProtocolCalNumAlarmItemsConfigData(String deviceType,String classes,String code,String calculateType,String language){
-		StringBuffer result_json = new StringBuffer();
-		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		List<CalItem> calItemList=null;
-		try{
-			if(StringManagerUtils.stringToInteger(calculateType)==1){
-				calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
-			}else if(StringManagerUtils.stringToInteger(calculateType)==2){
-				calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
-			}else{
-				calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
-			}
-			String columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
-					+ "]";
-			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-			result_json.append("\"totalRoot\":[");
-			if(calItemList!=null){
-				List<String> itemsList=new ArrayList<String>();
-				List<?> list=null;
-				if("3".equalsIgnoreCase(classes)){
-					String sql="select t.itemname,t.itemcode,t.upperlimit,t.lowerlimit,t.hystersis,"
-							+ " t.delay,t.retriggerTime,"
-							+ " t.alarmlevel,"
-							+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
-							+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
-							+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
-							+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
-							+ " where t.type=5 and t.unitid=t2.id "
-							+ " and t2.unit_code='"+code+"' "
-							+ " order by t.id";
-					list=this.findCallSql(sql);
-					for(int i=0;i<list.size();i++){
-						Object[] obj = (Object[]) list.get(i);
-						itemsList.add(obj[1]+"");
-					}
-				}
-				
-				int index=1;
-				for(CalItem calItem:calItemList){
-					if(calItem.getDataType()==2){
-						String upperLimit="",lowerLimit="",hystersis="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-						boolean checked=false;
-						for(int k=0;k<itemsList.size();k++){
-							Object[] obj = (Object[]) list.get(k);
-							if(calItem.getCode().equalsIgnoreCase(itemsList.get(k))){
-								checked=true;
-								upperLimit=obj[2]+"";
-								lowerLimit=obj[3]+"";
-								hystersis=obj[4]+"";
-								delay=obj[5]+"";
-								retriggerTime=obj[6]+"";
-								
-								alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[7]+"", language);
-								
-								alarmSign=obj[8]+"";
-								isSendMessage=obj[9]+"";
-								isSendMail=obj[10]+"";
-								break;
-							}
-						}
-						result_json.append("{\"checked\":"+checked+","
-								+ "\"id\":"+(index)+","
-								+ "\"title\":\""+calItem.getName()+"\","
-								+ "\"unit\":\""+calItem.getUnit()+"\","
-								+ "\"code\":\""+calItem.getCode()+"\","
-								+ "\"upperLimit\":\""+upperLimit+"\","
-								+ "\"lowerLimit\":\""+lowerLimit+"\","
-								+ "\"hystersis\":\""+hystersis+"\","
-								+ "\"delay\":\""+delay+"\","
-								+ "\"retriggerTime\":\""+retriggerTime+"\","
-								+ "\"alarmLevel\":\""+alarmLevel+"\","
-								+ "\"alarmSign\":\""+alarmSign+"\","
-								+ "\"isSendMessage\":\""+isSendMessage+"\","
-								+ "\"isSendMail\":\""+isSendMail+"\""
-								+ "},");
-						index++;
-					}
-				}
-			}
-			
-			if(result_json.toString().endsWith(",")){
-				result_json.deleteCharAt(result_json.length() - 1);
-			}
-			result_json.append("]");
-			result_json.append("}");
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			
-		}
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -1134,7 +1024,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String sql="select t.itemname,t.itemcode,t.itemaddr,t.value,"
 					+ " t.delay,t.retriggerTime,"
 					+ " t.alarmlevel,"
-					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " t.alarmsign,"
 					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
@@ -1162,29 +1052,27 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							&& itemHighLowByte.equalsIgnoreCase(protocolConfig.getItems().get(j).getHighLowByte()!=null?protocolConfig.getItems().get(j).getHighLowByte():"")
 							){
 						for(int k=0;protocolConfig.getItems().get(j).getMeaning()!=null&&k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-							String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-							boolean checked=false;
+							String value="",delay="",retriggerTime="",alarmLevel="",isSendMessage="",isSendMail="";
+							boolean alarmSign=false;
 							for(int m=0;m<itemValueList.size();m++){
 								Object[] obj = (Object[]) list.get(m);
 								if(itemValueList.get(m)==protocolConfig.getItems().get(j).getMeaning().get(k).getValue()){
-									checked=true;
 									delay=obj[4]+"";
 									retriggerTime=obj[5]+"";
 									alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[6]+"", language);
-									alarmSign=obj[7]+"";
+									alarmSign=StringManagerUtils.stringToInteger(obj[7]+"")==1;
 									isSendMessage=obj[8]+"";
 									isSendMail=obj[9]+"";
 									break;
 								}
 							}
-							result_json.append("{\"checked\":"+checked+","
+							result_json.append("{\"checked\":"+alarmSign+","
 									+ "\"id\":"+(index)+","
 									+ "\"value\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
 									+ "\"meaning\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
 									+ "\"delay\":\""+delay+"\","
 									+ "\"retriggerTime\":\""+retriggerTime+"\","
 									+ "\"alarmLevel\":\""+alarmLevel+"\","
-									+ "\"alarmSign\":\""+alarmSign+"\","
 									+ "\"isSendMessage\":\""+isSendMessage+"\","
 									+ "\"isSendMail\":\""+isSendMail+"\""
 									+ "},");
@@ -1200,29 +1088,27 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								&& itemTitle.equalsIgnoreCase(extendedField.getTitle())
 								){
 							for(int k=0;extendedField.getMeaning()!=null && k<extendedField.getMeaning().size();k++){
-								String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-								boolean checked=false;
+								String value="",delay="",retriggerTime="",alarmLevel="",isSendMessage="",isSendMail="";
+								boolean alarmSign=false;
 								for(int m=0;m<itemValueList.size();m++){
 									Object[] obj = (Object[]) list.get(m);
 									if(itemValueList.get(m)==extendedField.getMeaning().get(k).getValue()){
-										checked=true;
 										delay=obj[4]+"";
 										retriggerTime=obj[5]+"";
 										alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[6]+"", language);
-										alarmSign=obj[7]+"";
+										alarmSign=StringManagerUtils.stringToInteger(obj[7]+"")==1;
 										isSendMessage=obj[8]+"";
 										isSendMail=obj[9]+"";
 										break;
 									}
 								}
-								result_json.append("{\"checked\":"+checked+","
+								result_json.append("{\"checked\":"+alarmSign+","
 										+ "\"id\":"+(index)+","
 										+ "\"value\":\""+extendedField.getMeaning().get(k).getValue()+"\","
 										+ "\"meaning\":\""+extendedField.getMeaning().get(k).getMeaning()+"\","
 										+ "\"delay\":\""+delay+"\","
 										+ "\"retriggerTime\":\""+retriggerTime+"\","
 										+ "\"alarmLevel\":\""+alarmLevel+"\","
-										+ "\"alarmSign\":\""+alarmSign+"\","
 										+ "\"isSendMessage\":\""+isSendMessage+"\","
 										+ "\"isSendMail\":\""+isSendMail+"\""
 										+ "},");
@@ -1267,7 +1153,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String sql="select t.itemname,t.itemcode,t.itemaddr,t.bitindex,t.value,"
 					+ " t.delay,t.retriggerTime,"
 					+ " t.alarmlevel,"
-					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"'), "
+					+ " t.alarmsign,"
 					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
@@ -1294,12 +1180,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							&& itemHighLowByte.equalsIgnoreCase(protocolConfig.getItems().get(j).getHighLowByte()!=null?protocolConfig.getItems().get(j).getHighLowByte():"")
 							){
 						for(int k=0;protocolConfig.getItems().get(j).getMeaning()!=null&&k<protocolConfig.getItems().get(j).getMeaning().size();k++){
-							String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-							boolean checked=false;
+							String value="",delay="",retriggerTime="",alarmLevel="",isSendMessage="",isSendMail="";
+							boolean alarmSign=false;
 							for(int m=0;m<itemValueList.size();m++){
 								Object[] obj = (Object[]) list.get(m);
 								if(itemValueList.get(m)==protocolConfig.getItems().get(j).getMeaning().get(k).getValue()){
-									checked=true;
 									if("0".equals(obj[4]+"")){
 										value=protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0()!=null?protocolConfig.getItems().get(j).getMeaning().get(k).getStatus0():languageResourceMap.get("switchingCloseValue");
 									}else if("1".equals(obj[4]+"")){
@@ -1308,13 +1193,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									delay=obj[5]+"";
 									retriggerTime=obj[6]+"";
 									alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[7]+"", language);
-									alarmSign=obj[8]+"";
+									alarmSign=StringManagerUtils.stringToInteger(obj[8]+"")==1;
 									isSendMessage=obj[9]+"";
 									isSendMail=obj[10]+"";
 									break;
 								}
 							}
-							result_json.append("{\"checked\":"+checked+","
+							result_json.append("{\"checked\":"+alarmSign+","
 									+ "\"id\":"+(index)+","
 									+ "\"bitIndex\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getValue()+"\","
 									+ "\"meaning\":\""+protocolConfig.getItems().get(j).getMeaning().get(k).getMeaning()+"\","
@@ -1324,7 +1209,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									+ "\"delay\":\""+delay+"\","
 									+ "\"retriggerTime\":\""+retriggerTime+"\","
 									+ "\"alarmLevel\":\""+alarmLevel+"\","
-									+ "\"alarmSign\":\""+alarmSign+"\","
 									+ "\"isSendMessage\":\""+isSendMessage+"\","
 									+ "\"isSendMail\":\""+isSendMail+"\""
 									+ "},");
@@ -1340,12 +1224,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								&& itemTitle.equalsIgnoreCase(extendedField.getTitle())
 								){
 							for(int k=0;extendedField.getMeaning()!=null && k<extendedField.getMeaning().size();k++){
-								String value="",delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
-								boolean checked=false;
+								String value="",delay="",retriggerTime="",alarmLevel="",isSendMessage="",isSendMail="";
+								boolean alarmSign=false;
 								for(int m=0;m<itemValueList.size();m++){
 									Object[] obj = (Object[]) list.get(m);
 									if(itemValueList.get(m)==extendedField.getMeaning().get(k).getValue()){
-										checked=true;
 										if("0".equals(obj[4]+"")){
 											value=extendedField.getMeaning().get(k).getStatus0()!=null?extendedField.getMeaning().get(k).getStatus0():languageResourceMap.get("switchingCloseValue");
 										}else if("1".equals(obj[4]+"")){
@@ -1354,13 +1237,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										delay=obj[5]+"";
 										retriggerTime=obj[6]+"";
 										alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[7]+"", language);
-										alarmSign=obj[8]+"";
+										alarmSign=StringManagerUtils.stringToInteger(obj[8]+"")==1;
 										isSendMessage=obj[9]+"";
 										isSendMail=obj[10]+"";
 										break;
 									}
 								}
-								result_json.append("{\"checked\":"+checked+","
+								result_json.append("{\"checked\":"+alarmSign+","
 										+ "\"id\":"+(index)+","
 										+ "\"bitIndex\":\""+extendedField.getMeaning().get(k).getValue()+"\","
 										+ "\"meaning\":\""+extendedField.getMeaning().get(k).getMeaning()+"\","
@@ -1370,7 +1253,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										+ "\"delay\":\""+delay+"\","
 										+ "\"retriggerTime\":\""+retriggerTime+"\","
 										+ "\"alarmLevel\":\""+alarmLevel+"\","
-										+ "\"alarmSign\":\""+alarmSign+"\","
 										+ "\"isSendMessage\":\""+isSendMessage+"\","
 										+ "\"isSendMail\":\""+isSendMail+"\""
 										+ "},");
@@ -1416,7 +1298,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String sql="select t.itemname,t.itemcode,"
 					+ " t.delay,t.retriggerTime,"
 					+ " t.alarmlevel,"
-					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+//					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+" t.alarmsign,"
 					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
@@ -1432,8 +1315,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		
 		for(int i=0;i<commStatusItemCodeList.size();i++){
-			boolean checked=false;
-			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+			boolean alarmSign=false;
+			String delay="",retriggerTime="",alarmLevel="",isSendMessage="",isSendMail="";
 			String itemName=languageResourceMap.get(commStatusItemCodeList.get(i));
 			String itemCode=commStatusItemCodeList.get(i);
 			int value=1;
@@ -1448,18 +1331,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				for(int j=0;j<list.size();j++){
 					Object[] obj = (Object[]) list.get(j);
 					if(commStatusItemCodeList.get(i).equalsIgnoreCase(obj[1]+"")){
-						checked=true;
 						delay=obj[2]+"";
 						retriggerTime=obj[3]+"";
 						alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[4]+"", language);
-						alarmSign=obj[5]+"";
+						alarmSign=StringManagerUtils.stringToInteger(obj[5]+"")==1;
 						isSendMessage=obj[6]+"";
 						isSendMail=obj[7]+"";
 						break;
 					}
 				}
 			}
-			result_json.append("{\"checked\":"+checked+","
+			result_json.append("{\"checked\":"+alarmSign+","
 					+ "\"id\":"+(i+1)+","
 					+ "\"title\":\""+itemName+"\","
 					+ "\"code\":\""+itemCode+"\","
@@ -1467,7 +1349,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"delay\":\""+delay+"\","
 					+ "\"retriggerTime\":\""+retriggerTime+"\","
 					+ "\"alarmLevel\":\""+alarmLevel+"\","
-					+ "\"alarmSign\":\""+alarmSign+"\","
 					+ "\"isSendMessage\":\""+isSendMessage+"\","
 					+ "\"isSendMail\":\""+isSendMail+"\""
 					+ "},");
@@ -1505,7 +1386,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String sql="select t.itemname,t.itemcode,"
 					+ " t.delay,t.retriggerTime,"
 					+ " t.alarmlevel,"
-					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+ " t.alarmsign,"
 					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
@@ -1521,8 +1402,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		
 		for(int i=0;i<runStatusItemCodeList.size();i++){
-			boolean checked=false;
-			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+			boolean alarmSign=false;
+			String delay="",retriggerTime="",alarmLevel="",isSendMessage="",isSendMail="";
 			
 			String itemName=languageResourceMap.get(runStatusItemCodeList.get(i));
 			String itemCode=runStatusItemCodeList.get(i);
@@ -1538,18 +1419,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				for(int j=0;j<list.size();j++){
 					Object[] obj = (Object[]) list.get(j);
 					if(runStatusItemCodeList.get(i).equalsIgnoreCase(obj[1]+"")){
-						checked=true;
 						delay=obj[2]+"";
 						retriggerTime=obj[3]+"";
 						alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[4]+"", language);
-						alarmSign=obj[5]+"";
+						alarmSign=StringManagerUtils.stringToInteger(obj[5]+"")==1;
 						isSendMessage=obj[6]+"";
 						isSendMail=obj[7]+"";
 						break;
 					}
 				}
 			}
-			result_json.append("{\"checked\":"+checked+","
+			result_json.append("{\"checked\":"+alarmSign+","
 					+ "\"id\":"+(i+1)+","
 					+ "\"title\":\""+itemName+"\","
 					+ "\"code\":\""+itemCode+"\","
@@ -1557,7 +1437,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					+ "\"delay\":\""+delay+"\","
 					+ "\"retriggerTime\":\""+retriggerTime+"\","
 					+ "\"alarmLevel\":\""+alarmLevel+"\","
-					+ "\"alarmSign\":\""+alarmSign+"\","
 					+ "\"isSendMessage\":\""+isSendMessage+"\","
 					+ "\"isSendMail\":\""+isSendMail+"\""
 					+ "},");
@@ -1594,7 +1473,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			String sql="select t.itemname,t.itemcode,"
 					+ " t.delay,t.retriggerTime,"
 					+ " t.alarmlevel,"
-					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+//					+ " decode(t.alarmsign,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as alarmsign,"
+					+" t.alarmsign,"
 					+ " decode(t.issendmessage,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmessage,"
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail "
 					+ " from tbl_alarm_item2unit_conf t,tbl_alarm_unit_conf t2  "
@@ -1614,32 +1494,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Map.Entry<String, WorkType> entry = it.next();
 			String resultCode=new String(entry.getKey());
 			WorkType workType=entry.getValue();
-			boolean checked=false;
 			idx++;
-			String delay="",retriggerTime="",alarmLevel="",alarmSign="",isSendMessage="",isSendMail="";
+			String delay="",retriggerTime="",alarmLevel="",isSendMessage="",isSendMail="";
+			boolean alarmSign=false;
 			if(StringManagerUtils.existOrNot(itemsList,workType.getResultCode()+"",false)){
 				for(int j=0;j<list.size();j++){
 					Object[] obj = (Object[]) list.get(j);
 					if((workType.getResultCode()+"").equalsIgnoreCase(obj[1]+"")){
-						checked=true;
 						delay=obj[2]+"";
 						retriggerTime=obj[3]+"";
 						alarmLevel=MemoryDataManagerTask.getCodeName("ALARMLEVEL",obj[4]+"", language);
-						alarmSign=obj[5]+"";
+						alarmSign=StringManagerUtils.stringToInteger(obj[5]+"")==1;
 						isSendMessage=obj[6]+"";
 						isSendMail=obj[7]+"";
 						break;
 					}
 				}
 			}
-			result_json.append("{\"checked\":"+checked+","
+			result_json.append("{\"checked\":"+alarmSign+","
 					+ "\"id\":"+idx+","
 					+ "\"title\":\""+workType.getResultName()+"\","
 					+ "\"code\":\""+workType.getResultCode()+"\","
 					+ "\"delay\":\""+delay+"\","
 					+ "\"retriggerTime\":\""+retriggerTime+"\","
 					+ "\"alarmLevel\":\""+alarmLevel+"\","
-					+ "\"alarmSign\":\""+alarmSign+"\","
 					+ "\"isSendMessage\":\""+isSendMessage+"\","
 					+ "\"isSendMail\":\""+isSendMail+"\""
 					+ "},");

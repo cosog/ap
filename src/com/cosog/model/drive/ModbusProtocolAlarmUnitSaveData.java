@@ -42,7 +42,7 @@ public class ModbusProtocolAlarmUnitSaveData {
 
 	    private String alarmLevel;
 
-	    private String alarmSign;
+	    private int alarmSign;
 	    
 	    private int type;
 	    
@@ -96,10 +96,10 @@ public class ModbusProtocolAlarmUnitSaveData {
 	    public String getAlarmLevel(){
 	        return this.alarmLevel;
 	    }
-	    public void setAlarmSign(String alarmSign){
+	    public void setAlarmSign(int alarmSign){
 	        this.alarmSign = alarmSign;
 	    }
-	    public String getAlarmSign(){
+	    public int getAlarmSign(){
 	        return this.alarmSign;
 	    }
 		public int getType() {

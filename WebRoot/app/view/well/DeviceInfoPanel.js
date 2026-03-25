@@ -2522,67 +2522,83 @@ var DeviceInfoHandsontableHelper = {
             		var frequencyConversionData={};
             		if(deviceIntelligentFrequencyConversionHandsontableHelper!=null && deviceIntelligentFrequencyConversionHandsontableHelper.hot!=undefined){
             			var frequencyConversionHandsontableData=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getData();
-                    	frequencyConversionData.Enable=frequencyConversionHandsontableData[0][3]?1:0;
                     	
-                    	frequencyConversionData.FrequencyUpscaling={};
+                    	frequencyConversionData.FullnessCoefficientModel={};
+                    	frequencyConversionData.FullnessCoefficientModel.Enable=frequencyConversionHandsontableData[0][3]?1:0;
+                    	
+                    	frequencyConversionData.FullnessCoefficientModel.FrequencyUpscaling={};
                     	if(isNumber(parseFloat(frequencyConversionHandsontableData[1][3]))){
-                    		frequencyConversionData.FrequencyUpscaling.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[1][3]);
+                    		frequencyConversionData.FullnessCoefficientModel.FrequencyUpscaling.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[1][3]);
                 		}
                     	if(isNumber(parseFloat(frequencyConversionHandsontableData[2][3]))){
-                    		frequencyConversionData.FrequencyUpscaling.FrequencyUpperLimit=parseFloat(frequencyConversionHandsontableData[2][3]);
+                    		frequencyConversionData.FullnessCoefficientModel.FrequencyUpscaling.FrequencyUpperLimit=parseFloat(frequencyConversionHandsontableData[2][3]);
                 		}
                     	if(isNumber(parseFloat(frequencyConversionHandsontableData[3][3]))){
-                    		frequencyConversionData.FrequencyUpscaling.StepSize=parseFloat(frequencyConversionHandsontableData[3][3]);
+                    		frequencyConversionData.FullnessCoefficientModel.FrequencyUpscaling.StepSize=parseFloat(frequencyConversionHandsontableData[3][3]);
                 		}
                     	if(isNumber(parseFloat(frequencyConversionHandsontableData[4][3]))){
-                    		frequencyConversionData.FrequencyUpscaling.StabilityDuration=parseFloat(frequencyConversionHandsontableData[4][3]);
+                    		frequencyConversionData.FullnessCoefficientModel.FrequencyUpscaling.StabilityDuration=parseFloat(frequencyConversionHandsontableData[4][3]);
                 		}
                     	
-                    	frequencyConversionData.FrequencyReduction={};
+                    	frequencyConversionData.FullnessCoefficientModel.FrequencyReduction={};
                     	if(isNumber(parseFloat(frequencyConversionHandsontableData[5][3]))){
-                    		frequencyConversionData.FrequencyReduction.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[5][3]);
+                    		frequencyConversionData.FullnessCoefficientModel.FrequencyReduction.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[5][3]);
                 		}
                     	if(isNumber(parseFloat(frequencyConversionHandsontableData[6][3]))){
-                    		frequencyConversionData.FrequencyReduction.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[6][3]);
+                    		frequencyConversionData.FullnessCoefficientModel.FrequencyReduction.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[6][3]);
                 		}
                     	if(isNumber(parseFloat(frequencyConversionHandsontableData[7][3]))){
-                    		frequencyConversionData.FrequencyReduction.StepSize=parseFloat(frequencyConversionHandsontableData[7][3]);
+                    		frequencyConversionData.FullnessCoefficientModel.FrequencyReduction.StepSize=parseFloat(frequencyConversionHandsontableData[7][3]);
                 		}
                     	if(isNumber(parseFloat(frequencyConversionHandsontableData[8][3]))){
-                    		frequencyConversionData.FrequencyReduction.StabilityDuration=parseFloat(frequencyConversionHandsontableData[8][3]);
+                    		frequencyConversionData.FullnessCoefficientModel.FrequencyReduction.StabilityDuration=parseFloat(frequencyConversionHandsontableData[8][3]);
                 		}
                     	
+                    	frequencyConversionData.RodStressModel={};
+                    	frequencyConversionData.RodStressModel.Enable=frequencyConversionHandsontableData[9][3]?1:0;
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[10][3]))){
+                    		frequencyConversionData.RodStressModel.MaxRodStressRatio=parseFloat(frequencyConversionHandsontableData[10][3]);
+                		}
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[11][3]))){
+                    		frequencyConversionData.RodStressModel.RodStressRangeRatio=parseFloat(frequencyConversionHandsontableData[11][3]);
+                		}
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[12][3]))){
+                    		frequencyConversionData.RodStressModel.StepSize=parseFloat(frequencyConversionHandsontableData[12][3]);
+                		}
+                    	if(isNumber(parseFloat(frequencyConversionHandsontableData[13][3]))){
+                    		frequencyConversionData.RodStressModel.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[13][3]);
+                		}
                     	
                     	frequencyConversionData.FSDiagramWorkTypeEnable={};
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1201=frequencyConversionHandsontableData[9][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1202=frequencyConversionHandsontableData[10][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1203=frequencyConversionHandsontableData[11][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1204=frequencyConversionHandsontableData[12][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1205=frequencyConversionHandsontableData[13][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1206=frequencyConversionHandsontableData[14][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1207=frequencyConversionHandsontableData[15][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1208=frequencyConversionHandsontableData[16][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1209=frequencyConversionHandsontableData[17][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1210=frequencyConversionHandsontableData[18][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1201=frequencyConversionHandsontableData[14][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1202=frequencyConversionHandsontableData[15][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1203=frequencyConversionHandsontableData[16][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1204=frequencyConversionHandsontableData[17][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1205=frequencyConversionHandsontableData[18][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1206=frequencyConversionHandsontableData[19][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1207=frequencyConversionHandsontableData[20][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1208=frequencyConversionHandsontableData[21][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1209=frequencyConversionHandsontableData[22][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1210=frequencyConversionHandsontableData[23][3]?1:0;
                     	
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1212=frequencyConversionHandsontableData[19][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1213=frequencyConversionHandsontableData[20][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1214=frequencyConversionHandsontableData[21][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1215=frequencyConversionHandsontableData[22][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1216=frequencyConversionHandsontableData[23][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1217=frequencyConversionHandsontableData[24][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1218=frequencyConversionHandsontableData[25][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1219=frequencyConversionHandsontableData[26][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1220=frequencyConversionHandsontableData[27][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1221=frequencyConversionHandsontableData[28][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1222=frequencyConversionHandsontableData[29][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1223=frequencyConversionHandsontableData[30][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1224=frequencyConversionHandsontableData[31][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1225=frequencyConversionHandsontableData[32][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1226=frequencyConversionHandsontableData[33][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1227=frequencyConversionHandsontableData[34][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=frequencyConversionHandsontableData[35][3]?1:0;
-                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=frequencyConversionHandsontableData[36][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1212=frequencyConversionHandsontableData[24][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1213=frequencyConversionHandsontableData[25][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1214=frequencyConversionHandsontableData[26][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1215=frequencyConversionHandsontableData[27][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1216=frequencyConversionHandsontableData[28][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1217=frequencyConversionHandsontableData[29][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1218=frequencyConversionHandsontableData[30][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1219=frequencyConversionHandsontableData[31][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1220=frequencyConversionHandsontableData[32][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1221=frequencyConversionHandsontableData[33][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1222=frequencyConversionHandsontableData[34][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1223=frequencyConversionHandsontableData[35][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1224=frequencyConversionHandsontableData[36][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1225=frequencyConversionHandsontableData[37][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1226=frequencyConversionHandsontableData[38][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1227=frequencyConversionHandsontableData[39][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=frequencyConversionHandsontableData[40][3]?1:0;
+                    	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=frequencyConversionHandsontableData[41][3]?1:0;
             		}
             		deviceAdditionalInformationData.data=JSON.stringify(frequencyConversionData);
             	}else if(additionalInformationType==8){
@@ -6500,20 +6516,15 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	                mergeCells:[{
 	                    "row": 0,
 	                    "col": 1,
-	                    "rowspan": 1,
-	                    "colspan": 2
-	                },{
-	                    "row": 1,
-	                    "col": 1,
-	                    "rowspan": 4,
-	                    "colspan": 1
-	                },{
-	                    "row": 5,
-	                    "col": 1,
-	                    "rowspan": 4,
+	                    "rowspan": 9,
 	                    "colspan": 1
 	                },{
 	                    "row": 9,
+	                    "col": 1,
+	                    "rowspan": 5,
+	                    "colspan": 1
+	                },{
+	                    "row": 14,
 	                    "col": 1,
 	                    "rowspan": 28,
 	                    "colspan": 1
@@ -6539,7 +6550,7 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	                    	}
 	                    }
 	                    
-	                    if ( (visualColIndex === 3) && (visualRowIndex===0 || visualRowIndex>=9) ) {
+	                    if ( (visualColIndex === 3) && (visualRowIndex===0 || visualRowIndex===9 || visualRowIndex>=14) ) {
 	                    	this.type = 'checkbox';
 	                    }
 	                    
@@ -6848,67 +6859,83 @@ function deviceIntelligentFrequencyConversionDataDownlink(){
 		var frequencyConversionData={};
         if(deviceIntelligentFrequencyConversionHandsontableHelper!=null && deviceIntelligentFrequencyConversionHandsontableHelper.hot!=undefined){
         	var frequencyConversionHandsontableData=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getData();
-        	frequencyConversionData.Enable=frequencyConversionHandsontableData[0][3]?1:0;
         	
-        	frequencyConversionData.FrequencyUpscaling={};
+        	frequencyConversionData.FullnessCoefficientModel={};
+        	frequencyConversionData.FullnessCoefficientModel.Enable=frequencyConversionHandsontableData[0][3]?1:0;
+        	
+        	frequencyConversionData.FullnessCoefficientModel.FrequencyUpscaling={};
         	if(isNumber(parseFloat(frequencyConversionHandsontableData[1][3]))){
-        		frequencyConversionData.FrequencyUpscaling.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[1][3]);
+        		frequencyConversionData.FullnessCoefficientModel.FrequencyUpscaling.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[1][3]);
     		}
         	if(isNumber(parseFloat(frequencyConversionHandsontableData[2][3]))){
-        		frequencyConversionData.FrequencyUpscaling.FrequencyUpperLimit=parseFloat(frequencyConversionHandsontableData[2][3]);
+        		frequencyConversionData.FullnessCoefficientModel.FrequencyUpscaling.FrequencyUpperLimit=parseFloat(frequencyConversionHandsontableData[2][3]);
     		}
         	if(isNumber(parseFloat(frequencyConversionHandsontableData[3][3]))){
-        		frequencyConversionData.FrequencyUpscaling.StepSize=parseFloat(frequencyConversionHandsontableData[3][3]);
+        		frequencyConversionData.FullnessCoefficientModel.FrequencyUpscaling.StepSize=parseFloat(frequencyConversionHandsontableData[3][3]);
     		}
         	if(isNumber(parseFloat(frequencyConversionHandsontableData[4][3]))){
-        		frequencyConversionData.FrequencyUpscaling.StabilityDuration=parseFloat(frequencyConversionHandsontableData[4][3]);
+        		frequencyConversionData.FullnessCoefficientModel.FrequencyUpscaling.StabilityDuration=parseFloat(frequencyConversionHandsontableData[4][3]);
     		}
         	
-        	frequencyConversionData.FrequencyReduction={};
+        	frequencyConversionData.FullnessCoefficientModel.FrequencyReduction={};
         	if(isNumber(parseFloat(frequencyConversionHandsontableData[5][3]))){
-        		frequencyConversionData.FrequencyReduction.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[5][3]);
+        		frequencyConversionData.FullnessCoefficientModel.FrequencyReduction.FullnessCoefficientLimit=parseFloat(frequencyConversionHandsontableData[5][3]);
     		}
         	if(isNumber(parseFloat(frequencyConversionHandsontableData[6][3]))){
-        		frequencyConversionData.FrequencyReduction.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[6][3]);
+        		frequencyConversionData.FullnessCoefficientModel.FrequencyReduction.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[6][3]);
     		}
         	if(isNumber(parseFloat(frequencyConversionHandsontableData[7][3]))){
-        		frequencyConversionData.FrequencyReduction.StepSize=parseFloat(frequencyConversionHandsontableData[7][3]);
+        		frequencyConversionData.FullnessCoefficientModel.FrequencyReduction.StepSize=parseFloat(frequencyConversionHandsontableData[7][3]);
     		}
         	if(isNumber(parseFloat(frequencyConversionHandsontableData[8][3]))){
-        		frequencyConversionData.FrequencyReduction.StabilityDuration=parseFloat(frequencyConversionHandsontableData[8][3]);
+        		frequencyConversionData.FullnessCoefficientModel.FrequencyReduction.StabilityDuration=parseFloat(frequencyConversionHandsontableData[8][3]);
     		}
         	
+        	frequencyConversionData.RodStressModel={};
+        	frequencyConversionData.RodStressModel.Enable=frequencyConversionHandsontableData[9][3]?1:0;
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[10][3]))){
+        		frequencyConversionData.RodStressModel.MaxRodStressRatio=parseFloat(frequencyConversionHandsontableData[10][3]);
+    		}
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[11][3]))){
+        		frequencyConversionData.RodStressModel.RodStressRangeRatio=parseFloat(frequencyConversionHandsontableData[11][3]);
+    		}
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[12][3]))){
+        		frequencyConversionData.RodStressModel.StepSize=parseFloat(frequencyConversionHandsontableData[12][3]);
+    		}
+        	if(isNumber(parseFloat(frequencyConversionHandsontableData[13][3]))){
+        		frequencyConversionData.RodStressModel.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[13][3]);
+    		}
         	
         	frequencyConversionData.FSDiagramWorkTypeEnable={};
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1201=frequencyConversionHandsontableData[9][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1202=frequencyConversionHandsontableData[10][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1203=frequencyConversionHandsontableData[11][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1204=frequencyConversionHandsontableData[12][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1205=frequencyConversionHandsontableData[13][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1206=frequencyConversionHandsontableData[14][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1207=frequencyConversionHandsontableData[15][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1208=frequencyConversionHandsontableData[16][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1209=frequencyConversionHandsontableData[17][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1210=frequencyConversionHandsontableData[18][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1201=frequencyConversionHandsontableData[14][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1202=frequencyConversionHandsontableData[15][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1203=frequencyConversionHandsontableData[16][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1204=frequencyConversionHandsontableData[17][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1205=frequencyConversionHandsontableData[18][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1206=frequencyConversionHandsontableData[19][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1207=frequencyConversionHandsontableData[20][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1208=frequencyConversionHandsontableData[21][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1209=frequencyConversionHandsontableData[22][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1210=frequencyConversionHandsontableData[23][3]?1:0;
         	
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1212=frequencyConversionHandsontableData[19][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1213=frequencyConversionHandsontableData[20][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1214=frequencyConversionHandsontableData[21][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1215=frequencyConversionHandsontableData[22][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1216=frequencyConversionHandsontableData[23][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1217=frequencyConversionHandsontableData[24][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1218=frequencyConversionHandsontableData[25][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1219=frequencyConversionHandsontableData[26][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1220=frequencyConversionHandsontableData[27][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1221=frequencyConversionHandsontableData[28][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1222=frequencyConversionHandsontableData[29][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1223=frequencyConversionHandsontableData[30][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1224=frequencyConversionHandsontableData[31][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1225=frequencyConversionHandsontableData[32][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1226=frequencyConversionHandsontableData[33][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1227=frequencyConversionHandsontableData[34][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=frequencyConversionHandsontableData[35][3]?1:0;
-        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=frequencyConversionHandsontableData[36][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1212=frequencyConversionHandsontableData[24][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1213=frequencyConversionHandsontableData[25][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1214=frequencyConversionHandsontableData[26][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1215=frequencyConversionHandsontableData[27][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1216=frequencyConversionHandsontableData[28][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1217=frequencyConversionHandsontableData[29][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1218=frequencyConversionHandsontableData[30][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1219=frequencyConversionHandsontableData[31][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1220=frequencyConversionHandsontableData[32][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1221=frequencyConversionHandsontableData[33][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1222=frequencyConversionHandsontableData[34][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1223=frequencyConversionHandsontableData[35][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1224=frequencyConversionHandsontableData[36][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1225=frequencyConversionHandsontableData[37][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1226=frequencyConversionHandsontableData[38][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1227=frequencyConversionHandsontableData[39][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=frequencyConversionHandsontableData[40][3]?1:0;
+        	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=frequencyConversionHandsontableData[41][3]?1:0;
         	
 			Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 			Ext.Ajax.request({

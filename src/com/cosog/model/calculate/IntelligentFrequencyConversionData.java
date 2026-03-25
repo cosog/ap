@@ -1,37 +1,117 @@
 package com.cosog.model.calculate;
 
 public class IntelligentFrequencyConversionData {
-	private int Enable;
 
-    private FrequencyUpscaling FrequencyUpscaling;
+    private FullnessCoefficientModel FullnessCoefficientModel;
+    
+    private RodStressModel RodStressModel;
 
-    private FrequencyReduction FrequencyReduction;
+	public RodStressModel getRodStressModel() {
+		return RodStressModel;
+	}
+	public void setRodStressModel(RodStressModel rodStressModel) {
+		RodStressModel = rodStressModel;
+	}
 
-    private FSDiagramWorkTypeEnable FSDiagramWorkTypeEnable;
+	private FSDiagramWorkTypeEnable FSDiagramWorkTypeEnable;
 
-    public void setEnable(int Enable){
-        this.Enable = Enable;
-    }
-    public int getEnable(){
-        return this.Enable;
-    }
-    public void setFrequencyUpscaling(FrequencyUpscaling FrequencyUpscaling){
-        this.FrequencyUpscaling = FrequencyUpscaling;
-    }
-    public FrequencyUpscaling getFrequencyUpscaling(){
-        return this.FrequencyUpscaling;
-    }
-    public void setFrequencyReduction(FrequencyReduction FrequencyReduction){
-        this.FrequencyReduction = FrequencyReduction;
-    }
-    public FrequencyReduction getFrequencyReduction(){
-        return this.FrequencyReduction;
-    }
+    public FullnessCoefficientModel getFullnessCoefficientModel() {
+		return FullnessCoefficientModel;
+	}
+	public void setFullnessCoefficientModel(FullnessCoefficientModel fullnessCoefficientModel) {
+		FullnessCoefficientModel = fullnessCoefficientModel;
+	}
+    
     public void setFSDiagramWorkTypeEnable(FSDiagramWorkTypeEnable FSDiagramWorkTypeEnable){
         this.FSDiagramWorkTypeEnable = FSDiagramWorkTypeEnable;
     }
     public FSDiagramWorkTypeEnable getFSDiagramWorkTypeEnable(){
         return this.FSDiagramWorkTypeEnable;
+    }
+    
+    public static class RodStressModel{
+    	
+    	private int Enable;
+    	
+    	private float MaxRodStressRatio;
+    	
+    	private float RodStressRangeRatio;
+    	
+    	private float StepSize;
+    	
+    	private float FrequencyLowerLimit;
+
+		public int getEnable() {
+			return Enable;
+		}
+
+		public void setEnable(int enable) {
+			Enable = enable;
+		}
+
+		public float getMaxRodStressRatio() {
+			return MaxRodStressRatio;
+		}
+
+		public void setMaxRodStressRatio(float maxRodStressRatio) {
+			MaxRodStressRatio = maxRodStressRatio;
+		}
+
+		public float getRodStressRangeRatio() {
+			return RodStressRangeRatio;
+		}
+
+		public void setRodStressRangeRatio(float rodStressRangeRatio) {
+			RodStressRangeRatio = rodStressRangeRatio;
+		}
+
+		public float getStepSize() {
+			return StepSize;
+		}
+
+		public void setStepSize(float stepSize) {
+			StepSize = stepSize;
+		}
+
+		public float getFrequencyLowerLimit() {
+			return FrequencyLowerLimit;
+		}
+
+		public void setFrequencyLowerLimit(float frequencyLowerLimit) {
+			FrequencyLowerLimit = frequencyLowerLimit;
+		}
+    }
+    
+    public static class FullnessCoefficientModel{
+    	private int Enable;
+
+        private FrequencyUpscaling FrequencyUpscaling;
+
+        private FrequencyReduction FrequencyReduction;
+
+		public int getEnable() {
+			return Enable;
+		}
+
+		public void setEnable(int enable) {
+			Enable = enable;
+		}
+
+		public FrequencyUpscaling getFrequencyUpscaling() {
+			return FrequencyUpscaling;
+		}
+
+		public void setFrequencyUpscaling(FrequencyUpscaling frequencyUpscaling) {
+			FrequencyUpscaling = frequencyUpscaling;
+		}
+
+		public FrequencyReduction getFrequencyReduction() {
+			return FrequencyReduction;
+		}
+
+		public void setFrequencyReduction(FrequencyReduction frequencyReduction) {
+			FrequencyReduction = frequencyReduction;
+		}
     }
 	
 	public static class FrequencyUpscaling

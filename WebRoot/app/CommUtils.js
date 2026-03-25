@@ -6,6 +6,22 @@ defaultWellComboxSize=10000;
 comboxPagingStatus=0;//0-不分页  大于0分页
 isShowMap=true;//是否显示地图 true-显示   false-不显示
 recordCount=1000;//后台电子表格总行数
+
+//普通样式（灰色，正常粗细）
+var normalStyle = {
+    fill: '#999',
+    fontWeight: 'normal',
+    fontSize: '12px',
+    cursor: 'pointer'
+};
+// 激活样式（蓝色，加粗）
+var activeStyle = {
+    fill: '#2caffe',
+    fontWeight: 'bold',
+    fontSize: '12px',
+    cursor: 'pointer'
+};
+
 //定时器
 var realtimeInterval,realtimeGraphicalInterval;
 var MonitorRATast=Ext.TaskManager.newTask({
@@ -3247,7 +3263,66 @@ function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
 		                	}
 		                },
 		                viewDistance: 10                 // 图形前面看图的距离
-		            }
+		            },
+		            events: {
+                        load: function() {
+                            const chart = this;
+                            const renderer = chart.renderer;
+
+                            // 创建模式1文本
+                            const mode1Text = renderer.text('模式1', 10, 20)
+                                .attr(normalStyle)   // 使用 attr 设置样式
+                                .add()
+                                .toFront()
+                                .on('click', function() {
+//                                    if (currentMode === 'mode1') return;
+//                                    currentMode = 'mode1';
+//                                    // 更新数据
+//                                    chart.series[0].setData(datasets.mode1);
+//                                    chart.setTitle({ text: '模式1数据展示' });
+                                    // 切换样式
+                                    mode1Text.attr(activeStyle);
+                                    mode2Text.attr(normalStyle);
+                                    alert('模式1');
+                                });
+
+                            // 分隔符 "/"
+                            const separator = renderer.text('/', 10 + 35, 20)
+                                .attr({ fill: '#ccc', fontSize: '12px' })
+                                .add()
+                                .toFront();
+
+                            // 创建模式2文本
+                            const mode2Text = renderer.text('模式2', 10 + 35 + 8, 20)
+                                .attr(normalStyle)
+                                .add()
+                                .toFront()
+                                .on('click', function() {
+//                                    if (currentMode === 'mode2') return;
+//                                    currentMode = 'mode2';
+//                                    chart.series[0].setData(datasets.mode2);
+//                                    chart.setTitle({ text: '模式2数据展示' });
+                                    mode2Text.attr(activeStyle);
+                                    mode1Text.attr(normalStyle);
+                                    alert('模式2');
+                                });
+
+                            // 初始高亮当前模式（mode1）
+                            mode1Text.attr(activeStyle);
+                            mode2Text.attr(normalStyle);
+
+                            // 添加半透明背景框（可选，提升视觉和点击区域）
+//                            renderer.rect(5, 5, 70, 22, 3)
+//                                .attr({ fill: 'rgba(255,255,255,0.8)', stroke: '#ddd', 'stroke-width': 1, zIndex: 5 })
+//                                .add()
+//                                .toFront();  // 背景也要置于上层，但不要盖住文字，所以文字单独 toFront 后会在背景之上
+
+                            // 确保文字在背景之上
+                            mode1Text.toFront();
+                            separator.toFront();
+                            mode2Text.toFront();
+                        }
+                    }
 		        },                                                                                   
 		        title: {                                                                             
 		            text: loginUserLanguageResource.rodStress,              // 杆柱应力      

@@ -4062,46 +4062,72 @@ public class WellInformationManagerController extends BaseController {
 							type = new TypeToken<IntelligentFrequencyConversionData>() {}.getType();
 							IntelligentFrequencyConversionData frequencyConversionData=gson.fromJson(data, type);
 							if(frequencyConversionData!=null){
-								downStatusMap.put("write_FrequencyConversionEnable", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable",frequencyConversionData.getEnable()+"",userInfo.getLanguageName()));
-								if(downStatusMap.get("write_FrequencyConversionEnable").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-								    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionEnable") + ":" + frequencyConversionData.getEnable());
+								if(frequencyConversionData.getFullnessCoefficientModel()!=null){
+									downStatusMap.put("write_FrequencyConversionWithFullnessCoefficientEnable", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithFullnessCoefficientEnable",frequencyConversionData.getFullnessCoefficientModel().getEnable()+"",userInfo.getLanguageName()));
+									if(downStatusMap.get("write_FrequencyConversionWithFullnessCoefficientEnable").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionWithFullnessCoefficientEnable") + ":" + frequencyConversionData.getFullnessCoefficientModel().getEnable());
+									}
+									if(frequencyConversionData.getFullnessCoefficientModel().getFrequencyUpscaling()!=null){
+										downStatusMap.put("write_FrequencyConversion_Up_FullnessCoefficientLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FullnessCoefficientLimit",frequencyConversionData.getFullnessCoefficientModel().getFrequencyUpscaling().getFullnessCoefficientLimit()+"",userInfo.getLanguageName()));
+										downStatusMap.put("write_FrequencyConversion_Up_FrequencyUpperLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FrequencyUpperLimit",frequencyConversionData.getFullnessCoefficientModel().getFrequencyUpscaling().getFrequencyUpperLimit()+"",userInfo.getLanguageName()));
+										downStatusMap.put("write_FrequencyConversion_Up_StepSize", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_StepSize",frequencyConversionData.getFullnessCoefficientModel().getFrequencyUpscaling().getStepSize()+"",userInfo.getLanguageName()));
+										downStatusMap.put("write_FrequencyConversion_Up_StabilityDuration", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_StabilityDuration",frequencyConversionData.getFullnessCoefficientModel().getFrequencyUpscaling().getStabilityDuration()+"",userInfo.getLanguageName()));
+										
+										if(downStatusMap.get("write_FrequencyConversion_Up_FullnessCoefficientLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_FullnessCoefficientLimit") + ":" + frequencyConversionData.getFullnessCoefficientModel().getFrequencyUpscaling().getFullnessCoefficientLimit());
+										}
+										if(downStatusMap.get("write_FrequencyConversion_Up_FrequencyUpperLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_FrequencyUpperLimit") + ":" + frequencyConversionData.getFullnessCoefficientModel().getFrequencyUpscaling().getFrequencyUpperLimit());
+										}
+										if(downStatusMap.get("write_FrequencyConversion_Up_StepSize").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_StepSize") + ":" + frequencyConversionData.getFullnessCoefficientModel().getFrequencyUpscaling().getStepSize());
+										}
+										if(downStatusMap.get("write_FrequencyConversion_Up_StabilityDuration").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_StabilityDuration") + ":" + frequencyConversionData.getFullnessCoefficientModel().getFrequencyUpscaling().getStabilityDuration());
+										}
+									}
+									if(frequencyConversionData.getFullnessCoefficientModel().getFrequencyReduction()!=null){
+										downStatusMap.put("write_FrequencyConversion_Down_FullnessCoefficientLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FullnessCoefficientLimit",frequencyConversionData.getFullnessCoefficientModel().getFrequencyReduction().getFullnessCoefficientLimit()+"",userInfo.getLanguageName()));
+										downStatusMap.put("write_FrequencyConversion_Down_FrequencyLowerLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FrequencyLowerLimit",frequencyConversionData.getFullnessCoefficientModel().getFrequencyReduction().getFrequencyLowerLimit()+"",userInfo.getLanguageName()));
+										downStatusMap.put("write_FrequencyConversion_Down_StepSize", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StepSize",frequencyConversionData.getFullnessCoefficientModel().getFrequencyReduction().getStepSize()+"",userInfo.getLanguageName()));
+										downStatusMap.put("write_FrequencyConversion_Down_StabilityDuration", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StabilityDuration",frequencyConversionData.getFullnessCoefficientModel().getFrequencyReduction().getStabilityDuration()+"",userInfo.getLanguageName()));
+										
+										if(downStatusMap.get("write_FrequencyConversion_Down_FullnessCoefficientLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_FullnessCoefficientLimit") + ":" + frequencyConversionData.getFullnessCoefficientModel().getFrequencyReduction().getFullnessCoefficientLimit());
+										}
+										if(downStatusMap.get("write_FrequencyConversion_Down_FrequencyLowerLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_FrequencyLowerLimit") + ":" + frequencyConversionData.getFullnessCoefficientModel().getFrequencyReduction().getFrequencyLowerLimit());
+										}
+										if(downStatusMap.get("write_FrequencyConversion_Down_StepSize").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_StepSize") + ":" + frequencyConversionData.getFullnessCoefficientModel().getFrequencyReduction().getStepSize());
+										}
+										if(downStatusMap.get("write_FrequencyConversion_Down_StabilityDuration").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+										    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_StabilityDuration") + ":" + frequencyConversionData.getFullnessCoefficientModel().getFrequencyReduction().getStabilityDuration());
+										}
+									}
 								}
-								if(frequencyConversionData.getFrequencyUpscaling()!=null){
-									downStatusMap.put("write_FrequencyConversion_Up_FullnessCoefficientLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FullnessCoefficientLimit",frequencyConversionData.getFrequencyUpscaling().getFullnessCoefficientLimit()+"",userInfo.getLanguageName()));
-									downStatusMap.put("write_FrequencyConversion_Up_FrequencyUpperLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FrequencyUpperLimit",frequencyConversionData.getFrequencyUpscaling().getFrequencyUpperLimit()+"",userInfo.getLanguageName()));
-									downStatusMap.put("write_FrequencyConversion_Up_StepSize", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_StepSize",frequencyConversionData.getFrequencyUpscaling().getStepSize()+"",userInfo.getLanguageName()));
-									downStatusMap.put("write_FrequencyConversion_Up_StabilityDuration", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_StabilityDuration",frequencyConversionData.getFrequencyUpscaling().getStabilityDuration()+"",userInfo.getLanguageName()));
+								
+								if(frequencyConversionData.getRodStressModel()!=null){
+									downStatusMap.put("write_FrequencyConversionWithRodStressExceedingEnable", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStressExceedingEnable",frequencyConversionData.getRodStressModel().getEnable()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionWithRodStress_MaxRodStressRatio", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_MaxRodStressRatio",frequencyConversionData.getRodStressModel().getMaxRodStressRatio()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionWithRodStress_RodStressRangeRatio", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_RodStressRangeRatio",frequencyConversionData.getRodStressModel().getRodStressRangeRatio()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionWithRodStress_StepSize", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_StepSize",frequencyConversionData.getRodStressModel().getStepSize()+"",userInfo.getLanguageName()));
+									downStatusMap.put("write_FrequencyConversionWithRodStress_FrequencyLowerLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_FrequencyLowerLimit",frequencyConversionData.getRodStressModel().getFrequencyLowerLimit()+"",userInfo.getLanguageName()));
 									
-									if(downStatusMap.get("write_FrequencyConversion_Up_FullnessCoefficientLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_FullnessCoefficientLimit") + ":" + frequencyConversionData.getFrequencyUpscaling().getFullnessCoefficientLimit());
+									if(downStatusMap.get("write_FrequencyConversionWithRodStressExceedingEnable").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionWithRodStressExceedingEnable") + ":" + frequencyConversionData.getRodStressModel().getEnable());
 									}
-									if(downStatusMap.get("write_FrequencyConversion_Up_FrequencyUpperLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_FrequencyUpperLimit") + ":" + frequencyConversionData.getFrequencyUpscaling().getFrequencyUpperLimit());
+									if(downStatusMap.get("write_FrequencyConversionWithRodStress_MaxRodStressRatio").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionWithRodStress_MaxRodStressRatio") + ":" + frequencyConversionData.getRodStressModel().getMaxRodStressRatio());
 									}
-									if(downStatusMap.get("write_FrequencyConversion_Up_StepSize").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_StepSize") + ":" + frequencyConversionData.getFrequencyUpscaling().getStepSize());
+									if(downStatusMap.get("write_FrequencyConversionWithRodStress_RodStressRangeRatio").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionWithRodStress_RodStressRangeRatio") + ":" + frequencyConversionData.getRodStressModel().getRodStressRangeRatio());
 									}
-									if(downStatusMap.get("write_FrequencyConversion_Up_StabilityDuration").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Up_StabilityDuration") + ":" + frequencyConversionData.getFrequencyUpscaling().getStabilityDuration());
+									if(downStatusMap.get("write_FrequencyConversionWithRodStress_StepSize").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionWithRodStress_StepSize") + ":" + frequencyConversionData.getRodStressModel().getStepSize());
 									}
-								}
-								if(frequencyConversionData.getFrequencyReduction()!=null){
-									downStatusMap.put("write_FrequencyConversion_Down_FullnessCoefficientLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FullnessCoefficientLimit",frequencyConversionData.getFrequencyReduction().getFullnessCoefficientLimit()+"",userInfo.getLanguageName()));
-									downStatusMap.put("write_FrequencyConversion_Down_FrequencyLowerLimit", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FrequencyLowerLimit",frequencyConversionData.getFrequencyReduction().getFrequencyLowerLimit()+"",userInfo.getLanguageName()));
-									downStatusMap.put("write_FrequencyConversion_Down_StepSize", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StepSize",frequencyConversionData.getFrequencyReduction().getStepSize()+"",userInfo.getLanguageName()));
-									downStatusMap.put("write_FrequencyConversion_Down_StabilityDuration", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StabilityDuration",frequencyConversionData.getFrequencyReduction().getStabilityDuration()+"",userInfo.getLanguageName()));
-									
-									if(downStatusMap.get("write_FrequencyConversion_Down_FullnessCoefficientLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_FullnessCoefficientLimit") + ":" + frequencyConversionData.getFrequencyReduction().getFullnessCoefficientLimit());
-									}
-									if(downStatusMap.get("write_FrequencyConversion_Down_FrequencyLowerLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_FrequencyLowerLimit") + ":" + frequencyConversionData.getFrequencyReduction().getFrequencyLowerLimit());
-									}
-									if(downStatusMap.get("write_FrequencyConversion_Down_StepSize").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_StepSize") + ":" + frequencyConversionData.getFrequencyReduction().getStepSize());
-									}
-									if(downStatusMap.get("write_FrequencyConversion_Down_StabilityDuration").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversion_Down_StabilityDuration") + ":" + frequencyConversionData.getFrequencyReduction().getStabilityDuration());
+									if(downStatusMap.get("write_FrequencyConversionWithRodStress_FrequencyLowerLimit").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
+									    downlinkSuccessList.add(languageResourceMap.get("write_FrequencyConversionWithRodStress_FrequencyLowerLimit") + ":" + frequencyConversionData.getRodStressModel().getFrequencyLowerLimit());
 									}
 								}
 								
@@ -5133,7 +5159,7 @@ public class WellInformationManagerController extends BaseController {
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
 						if (commStatus > 0) {
 							Map<String,String> statusMap=new LinkedHashMap<>();
-							statusMap.put("write_FrequencyConversionEnable", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionWithFullnessCoefficientEnable", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithFullnessCoefficientEnable",userInfo.getLanguageName()));
 							
 							statusMap.put("write_FrequencyConversion_Up_FullnessCoefficientLimit", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FullnessCoefficientLimit",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversion_Up_FrequencyUpperLimit", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Up_FrequencyUpperLimit",userInfo.getLanguageName()));
@@ -5144,6 +5170,13 @@ public class WellInformationManagerController extends BaseController {
 							statusMap.put("write_FrequencyConversion_Down_FrequencyLowerLimit", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_FrequencyLowerLimit",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversion_Down_StepSize", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StepSize",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversion_Down_StabilityDuration", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversion_Down_StabilityDuration",userInfo.getLanguageName()));
+							
+							statusMap.put("write_FrequencyConversionWithRodStressExceedingEnable", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStressExceedingEnable",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionWithRodStress_MaxRodStressRatio", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_MaxRodStressRatio",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionWithRodStress_RodStressRangeRatio", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_RodStressRangeRatio",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionWithRodStress_StepSize", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_StepSize",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionWithRodStress_FrequencyLowerLimit", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_FrequencyLowerLimit",userInfo.getLanguageName()));
+							
 							
 							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1201", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1201",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1202", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1202",userInfo.getLanguageName()));
@@ -5173,23 +5206,14 @@ public class WellInformationManagerController extends BaseController {
 							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1227", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1227",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1230", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1230",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1232", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1232",userInfo.getLanguageName()));
-							
-							
-//							statusMap.put("write_FrequencyConversionEnable", "0");
-//							statusMap.put("write_FrequencyConversion_Up_FullnessCoefficientLimit", "0.55");
-//							statusMap.put("write_FrequencyConversion_Up_FrequencyUpperLimit", "60.50");
-//							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1201", "1");
-//							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1202", "0");
-//							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1207", "1");
-//							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1223", "1");
-//							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1232", "1");
+						
 							
 							
 							StringBuffer result_json = new StringBuffer();
 							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");
 							for (String key : statusMap.keySet()) {
 								String value=statusMap.get(key);
-								if(("write_FrequencyConversionEnable".equalsIgnoreCase(key) || key.startsWith("write_FrequencyConversionEnable_FSDiagramWorkType")) 
+								if(("write_FrequencyConversionWithFullnessCoefficientEnable".equalsIgnoreCase(key) || key.startsWith("write_FrequencyConversionEnable_FSDiagramWorkType")) 
 										&&  !value.equalsIgnoreCase(languageResourceMap.get("noUplink"))
 										&&  !value.equalsIgnoreCase(languageResourceMap.get("uplinkFailed"))
 										){

@@ -5880,8 +5880,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			
-			
+			int rodCNT=0;
 			String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
+			String rodStressRangeRatio1="0",rodStressRangeRatio2="0",rodStressRangeRatio3="0",rodStressRangeRatio4="0";
 			
 			if("1232".equals(resultCode) || !StringManagerUtils.isNotNull(pumpFSDiagram)){//采集异常
 				String positionCurveDataArr[]=positionCurveData.split(",");
@@ -5902,16 +5903,38 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		        }
 		        if(obj[11]!=null){
 		        	String rodDataArr[]=obj[11].toString().split(";");
+		        	if(rodDataArr.length>1){
+		        		String rodData[]=rodDataArr[0].split(",");
+		        		if(rodData.length==4){
+		        			rodCNT=StringManagerUtils.stringToInteger(rodData[0]);
+		        		}
+		        	}
 			        for(int i=1;i<rodDataArr.length;i++){
-			        	if(i==1&&rodDataArr[i].split(",").length==6){
-			        		rodStressRatio1=rodDataArr[i].split(",")[5];
-			        	}else if(i==2&&rodDataArr[i].split(",").length==6){
-			        		rodStressRatio2=rodDataArr[i].split(",")[5];
-			        	}else if(i==3&&rodDataArr[i].split(",").length==6){
-			        		rodStressRatio3=rodDataArr[i].split(",")[5];
-			        	}else if(i==4&&rodDataArr[i].split(",").length==6){
-			        		rodStressRatio4=rodDataArr[i].split(",")[5];
+			        	String everyRodData[]=rodDataArr[i].split(",");
+			        	if(everyRodData.length>=6){
+			        		if(i==1){
+				        		rodStressRatio1=everyRodData[5];
+				        	}else if(i==2){
+				        		rodStressRatio2=everyRodData[5];
+				        	}else if(i==3){
+				        		rodStressRatio3=everyRodData[5];
+				        	}else if(i==4){
+				        		rodStressRatio4=everyRodData[5];
+				        	}
 			        	}
+			        	
+			        	if(everyRodData.length>=7){
+			        		if(i==1){
+				        		rodStressRangeRatio1=everyRodData[6];
+				        	}else if(i==2){
+				        		rodStressRangeRatio2=everyRodData[6];
+				        	}else if(i==3){
+				        		rodStressRangeRatio3=everyRodData[6];
+				        	}else if(i==4){
+				        		rodStressRangeRatio4=everyRodData[6];
+				        	}
+			        	}
+			        	
 			        }
 		        }
 			}
@@ -5934,12 +5957,18 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        
 	        dataSbf.append("resultCode:\""+resultCode+"\",");         // 工况代码
 	        dataSbf.append("resultName:\""+(workType!=null?workType.getResultName():"")+"\",");         // 工况类型
-	        dataSbf.append("optimizationSuggestion:\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");         // 优化建议
+	        dataSbf.append("optimizationSuggestion:\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");         // 优化建议 rodCNT
 	        
-	        dataSbf.append("rodStressRatio1:"+rodStressRatio1+",");       // 一级应力百分比
-	        dataSbf.append("rodStressRatio2:"+rodStressRatio2+",");       // 二级应力百分比 
+	        dataSbf.append("rodCNT:"+rodCNT+",");
+	        dataSbf.append("rodStressRatio1:"+rodStressRatio1+",");       	// 一级应力百分比
+	        dataSbf.append("rodStressRatio2:"+rodStressRatio2+",");       	// 二级应力百分比 
 	        dataSbf.append("rodStressRatio3:"+rodStressRatio3+",");           // 三级应力百分比
 	        dataSbf.append("rodStressRatio4:"+rodStressRatio4+",");           // 四级应力百分比
+	        
+	        dataSbf.append("rodStressRangeRatio1:"+rodStressRangeRatio1+",");       	// 一级应力范围百分比
+	        dataSbf.append("rodStressRangeRatio2:"+rodStressRangeRatio2+",");      	 	// 二级应力范围百分比 
+	        dataSbf.append("rodStressRangeRatio3:"+rodStressRangeRatio3+",");           // 三级范围应力百分比
+	        dataSbf.append("rodStressRangeRatio4:"+rodStressRangeRatio4+",");           // 四级范围应力百分比
 	        
 	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[12]==null?"":obj[12].toString(),1)+",");       // 冲程损失系数
 	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[13]==null?"":obj[13].toString().toString(),1)+",");       // 充满系数
@@ -5964,10 +5993,15 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("resultName:\"\",");
 	        dataSbf.append("resultCode:\"\",");  
 	        dataSbf.append("optimizationSuggestion:\"\",");
+	        dataSbf.append("rodCNT:0,");
 	        dataSbf.append("rodStressRatio1:\"\","); 
 	        dataSbf.append("rodStressRatio2:\"\",");  
 	        dataSbf.append("rodStressRatio3:\"\",");
 	        dataSbf.append("rodStressRatio4:\"\",");  
+	        dataSbf.append("rodStressRangeRatio1:\"\",");
+	        dataSbf.append("rodStressRangeRatio2:\"\",");
+	        dataSbf.append("rodStressRangeRatio3:\"\",");
+	        dataSbf.append("rodStressRangeRatio4:\"\",");
 	        dataSbf.append("pumpEff1:\"\","); 
 	        dataSbf.append("pumpEff2:\"\",");  
 	        dataSbf.append("pumpEff3:\"\",");

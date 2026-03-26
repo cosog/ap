@@ -1390,6 +1390,46 @@ public class StringManagerUtils {
         }
         return flag;
     }
+    
+    public static boolean rodCalColumnFiter(String value) {
+        boolean flag = false;
+        String arrays[] = {
+        	"maxRodStressRatio1",
+            "rodStressRangeRatio1",
+            "rodMaxStress1",
+            "rodMinStress1",
+            "rodAllowableStress1",
+            "rodFMax1",
+            "rodFMin1",
+            "maxRodStressRatio2",
+            "rodStressRangeRatio2",
+            "rodMaxStress2",
+            "rodMinStress2",
+            "rodAllowableStress2",
+            "rodFMax2",
+            "rodFMin2",
+            "maxRodStressRatio3",
+            "rodStressRangeRatio3",
+            "rodMaxStress3",
+            "rodMinStress3",
+            "rodAllowableStress3",
+            "rodFMax3",
+            "rodFMin3",
+            "maxRodStressRatio4",
+            "rodStressRangeRatio4",
+            "rodMaxStress4",
+            "rodMinStress4",
+            "rodAllowableStress4",
+            "rodFMax4",
+            "rodFMin4"
+        };
+        for (String str: arrays) {
+            if (str.equalsIgnoreCase(value)) {
+                flag = true;
+            }
+        }
+        return flag;
+    }
 
     public static boolean databaseColumnFiter(String value) {
         boolean flag = false;

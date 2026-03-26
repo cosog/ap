@@ -5206,8 +5206,6 @@ public class WellInformationManagerController extends BaseController {
 							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1227", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1227",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1230", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1230",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1232", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1232",userInfo.getLanguageName()));
-						
-							
 							
 							StringBuffer result_json = new StringBuffer();
 							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\",\"downStatusList\":[");

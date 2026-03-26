@@ -155,7 +155,8 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 						result.append(this.getRodString().getEveryRod().get(i).getMaxStress()+",");
 						result.append(this.getRodString().getEveryRod().get(i).getMinStress()+",");
 						result.append(this.getRodString().getEveryRod().get(i).getAllowableStress()+",");
-						result.append(this.getRodString().getEveryRod().get(i).getStressRatio());
+						result.append(this.getRodString().getEveryRod().get(i).getStressRatio()+",");
+						result.append(this.getRodString().getEveryRod().get(i).getStressRangeRatio());
 					}
 				}
 			}
@@ -316,7 +317,9 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 
 	    private float Density;
 
-	    private float TE;
+	    private float T;
+	    
+	    private float E;
 
 	    private float SF;
 
@@ -327,6 +330,8 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 	    private float MinStress;
 
 	    private float AllowableStress;
+	    
+	    private float StressRangeRatio;
 
 	    private float StressRatio;
 
@@ -390,13 +395,25 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 	    public float getDensity(){
 	        return this.Density;
 	    }
-	    public void setTE(float TE){
-	        this.TE = TE;
-	    }
-	    public float getTE(){
-	        return this.TE;
-	    }
-	    public void setSF(float SF){
+	    public float getT() {
+			return T;
+		}
+		public void setT(float t) {
+			T = t;
+		}
+		public float getE() {
+			return E;
+		}
+		public void setE(float e) {
+			E = e;
+		}
+		public float getStressRangeRatio() {
+			return StressRangeRatio;
+		}
+		public void setStressRangeRatio(float stressRangeRatio) {
+			StressRangeRatio = stressRangeRatio;
+		}
+		public void setSF(float SF){
 	        this.SF = SF;
 	    }
 	    public float getSF(){

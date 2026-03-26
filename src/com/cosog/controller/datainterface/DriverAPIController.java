@@ -2461,7 +2461,9 @@ public class DriverAPIController extends BaseController{
 		String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 		//井筒分析图形数据
 		StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
+		int rodCNT=0;
 		String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
+		String rodStressRangeRatio1="0",rodStressRangeRatio2="0",rodStressRangeRatio3="0",rodStressRangeRatio4="0";
 		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
 			int curvecount=srpCalculateResponseData.getFESDiagram().getS().get(0).size();
 			int pointcount=srpCalculateResponseData.getFESDiagram().getS().size();
@@ -2487,12 +2489,16 @@ public class DriverAPIController extends BaseController{
 			for(int i=0;i<srpCalculateResponseData.getRodString().getEveryRod().size();i++){
 				if(i==0){
 	        		rodStressRatio1=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRangeRatio1=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
 	        	}else if(i==1){
 	        		rodStressRatio2=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRangeRatio2=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
 	        	}else if(i==2){
 	        		rodStressRatio3=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRangeRatio3=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
 	        	}else if(i==3){
 	        		rodStressRatio4=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRangeRatio4=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
 	        	}
 			}
 		}
@@ -2534,11 +2540,15 @@ public class DriverAPIController extends BaseController{
 			wellBoreChartsData.append("\"optimizationSuggestion\":\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");
 			wellBoreChartsData.append("\"resultCode\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getCalculationStatus().getResultCode():"")+"\",");
 			
-			
+			wellBoreChartsData.append("\"rodCNT\":"+rodCNT+",");
 			wellBoreChartsData.append("\"rodStressRatio1\":\""+rodStressRatio1+"\",");
 			wellBoreChartsData.append("\"rodStressRatio2\":\""+rodStressRatio2+"\",");
 			wellBoreChartsData.append("\"rodStressRatio3\":\""+rodStressRatio3+"\",");
 			wellBoreChartsData.append("\"rodStressRatio4\":\""+rodStressRatio4+"\",");
+			wellBoreChartsData.append("rodStressRangeRatio1:"+rodStressRangeRatio1+",");
+			wellBoreChartsData.append("rodStressRangeRatio2:"+rodStressRangeRatio2+",");
+			wellBoreChartsData.append("rodStressRangeRatio3:"+rodStressRangeRatio3+",");
+			wellBoreChartsData.append("rodStressRangeRatio4:"+rodStressRangeRatio4+",");
 			
 			wellBoreChartsData.append("\"pumpEff1\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getPumpEfficiency().getPumpEff1()*100+"",2):"")+"\",");
 			wellBoreChartsData.append("\"pumpEff2\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getPumpEfficiency().getPumpEff2()*100+"",2):"")+"\",");

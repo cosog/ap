@@ -3192,47 +3192,68 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	});
 }
 
-showRodPress = function(result, divId) {
+showRodPress = function(result, divId,showType) {
 	var deviceName=result.deviceName;                        // 井名
 	var acqTime=result.acqTime;                    // 时间
+	
+	var rodCNT=result.rodCNT;
 	var rodStressRatio1=changeTwoDecimal(parseFloat(result.rodStressRatio1)*100);              // 一级应力百分比
 	var rodStressRatio2=changeTwoDecimal(parseFloat(result.rodStressRatio2)*100);              // 二级应力百分比
 	var rodStressRatio3=changeTwoDecimal(parseFloat(result.rodStressRatio3)*100);              // 三级应力百分比
 	var rodStressRatio4=changeTwoDecimal(parseFloat(result.rodStressRatio4)*100);              // 四级应力百分比
+	var rodStressRangeRatio1=changeTwoDecimal(parseFloat(result.rodStressRangeRatio1)*100);              // 一级应力范围百分比
+	var rodStressRangeRatio2=changeTwoDecimal(parseFloat(result.rodStressRangeRatio2)*100);              // 二级应力范围百分比
+	var rodStressRangeRatio3=changeTwoDecimal(parseFloat(result.rodStressRangeRatio3)*100);              // 三级应力范围百分比
+	var rodStressRangeRatio4=changeTwoDecimal(parseFloat(result.rodStressRangeRatio4)*100);              // 四级应力范围百分比
+	
+	
 	var rod1=loginUserLanguageResource.rod1;   // 一级杆
 	var rod2=loginUserLanguageResource.rod2;   // 二级杆
 	var rod3=loginUserLanguageResource.rod3;   // 三级杆
 	var rod4=loginUserLanguageResource.rod4;   // 四级杆
 	var xdata = "[";
 	var ydata = "[";
-	if(rodStressRatio1>0){
-		xdata +="'" + rod1 + "'" ;
-		ydata +=rodStressRatio1 ;
-		if(rodStressRatio2>0){
+	var ydata2 = "[";
+	
+	if(rodCNT>=1){
+		xdata +="'" + rod1 + "'";
+		ydata+=rodStressRatio1;
+		ydata2+=rodStressRangeRatio1;
+		if(rodCNT>=2){
 			xdata +=",'" + rod2 + "'" ;
 			ydata +="," + rodStressRatio2 ;
-			if(rodStressRatio3>0){
+			ydata2 +="," + rodStressRangeRatio2 ;
+			if(rodCNT>=3){
 				xdata +=",'" + rod3 + "'" ;
 				ydata +="," + rodStressRatio3 ;
-				if(rodStressRatio4>0){
+				ydata2 +="," + rodStressRangeRatio3 ;
+				if(rodCNT>=4){
 					xdata +=",'" + rod4 + "'" ;
 					ydata +="," + rodStressRatio4 ;
+					ydata2 +="," + rodStressRangeRatio4 ;
 				}
 			}
 		}
 	}
 	xdata+="]";
 	ydata+="]";
-	var xdata2 = Ext.JSON.decode(xdata);
-	var ydata2 = Ext.JSON.decode(ydata);
-	initRodPressChart(xdata2, ydata2, deviceName, acqTime, divId);
+	ydata2+="]";
+	var categories_X = Ext.JSON.decode(xdata);
+	var seriesData1 = Ext.JSON.decode(ydata);
+	var seriesData2 = Ext.JSON.decode(ydata2);
+	
+	categories_X=['一级杆','二级杆','三级杆','四极杆'];
+	seriesData1=[70,60,80,90];
+	seriesData2=[60,50,70,80];
+	
+	initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, acqTime, divId,showType);
 	return false;
 }
 
-function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
+function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, acqTime, divId,showType) {
 	var yAxisMax=100;
-	for(var i=0;i<ydata.length;i++){
-		if(parseFloat(ydata[i])>=100){
+	for(var i=0;i<seriesData1.length;i++){
+		if(parseFloat(seriesData1[i])>=100 || parseFloat(seriesData2[i])>=100){
 			yAxisMax=null;
 			break;
 		}
@@ -3263,66 +3284,66 @@ function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
 		                	}
 		                },
 		                viewDistance: 10                 // 图形前面看图的距离
-		            },
-		            events: {
-                        load: function() {
-                            const chart = this;
-                            const renderer = chart.renderer;
-
-                            // 创建模式1文本
-                            const mode1Text = renderer.text('模式1', 10, 20)
-                                .attr(normalStyle)   // 使用 attr 设置样式
-                                .add()
-                                .toFront()
-                                .on('click', function() {
-//                                    if (currentMode === 'mode1') return;
-//                                    currentMode = 'mode1';
-//                                    // 更新数据
-//                                    chart.series[0].setData(datasets.mode1);
-//                                    chart.setTitle({ text: '模式1数据展示' });
-                                    // 切换样式
-                                    mode1Text.attr(activeStyle);
-                                    mode2Text.attr(normalStyle);
-                                    alert('模式1');
-                                });
-
-                            // 分隔符 "/"
-                            const separator = renderer.text('/', 10 + 35, 20)
-                                .attr({ fill: '#ccc', fontSize: '12px' })
-                                .add()
-                                .toFront();
-
-                            // 创建模式2文本
-                            const mode2Text = renderer.text('模式2', 10 + 35 + 8, 20)
-                                .attr(normalStyle)
-                                .add()
-                                .toFront()
-                                .on('click', function() {
-//                                    if (currentMode === 'mode2') return;
-//                                    currentMode = 'mode2';
-//                                    chart.series[0].setData(datasets.mode2);
-//                                    chart.setTitle({ text: '模式2数据展示' });
-                                    mode2Text.attr(activeStyle);
-                                    mode1Text.attr(normalStyle);
-                                    alert('模式2');
-                                });
-
-                            // 初始高亮当前模式（mode1）
-                            mode1Text.attr(activeStyle);
-                            mode2Text.attr(normalStyle);
-
-                            // 添加半透明背景框（可选，提升视觉和点击区域）
-//                            renderer.rect(5, 5, 70, 22, 3)
-//                                .attr({ fill: 'rgba(255,255,255,0.8)', stroke: '#ddd', 'stroke-width': 1, zIndex: 5 })
+		            }
+//					,events: {
+//                        load: function() {
+//                            const chart = this;
+//                            const renderer = chart.renderer;
+//
+//                            // 创建模式1文本
+//                            const mode1Text = renderer.text('模式1', 10, 20)
+//                                .attr(normalStyle)   // 使用 attr 设置样式
 //                                .add()
-//                                .toFront();  // 背景也要置于上层，但不要盖住文字，所以文字单独 toFront 后会在背景之上
-
-                            // 确保文字在背景之上
-                            mode1Text.toFront();
-                            separator.toFront();
-                            mode2Text.toFront();
-                        }
-                    }
+//                                .toFront()
+//                                .on('click', function() {
+////                                    if (currentMode === 'mode1') return;
+////                                    currentMode = 'mode1';
+////                                    // 更新数据
+////                                    chart.series[0].setData(datasets.mode1);
+////                                    chart.setTitle({ text: '模式1数据展示' });
+//                                    // 切换样式
+//                                    mode1Text.attr(activeStyle);
+//                                    mode2Text.attr(normalStyle);
+//                                    alert('模式1');
+//                                });
+//
+//                            // 分隔符 "/"
+//                            const separator = renderer.text('/', 10 + 35, 20)
+//                                .attr({ fill: '#ccc', fontSize: '12px' })
+//                                .add()
+//                                .toFront();
+//
+//                            // 创建模式2文本
+//                            const mode2Text = renderer.text('模式2', 10 + 35 + 8, 20)
+//                                .attr(normalStyle)
+//                                .add()
+//                                .toFront()
+//                                .on('click', function() {
+////                                    if (currentMode === 'mode2') return;
+////                                    currentMode = 'mode2';
+////                                    chart.series[0].setData(datasets.mode2);
+////                                    chart.setTitle({ text: '模式2数据展示' });
+//                                    mode2Text.attr(activeStyle);
+//                                    mode1Text.attr(normalStyle);
+//                                    alert('模式2');
+//                                });
+//
+//                            // 初始高亮当前模式（mode1）
+//                            mode1Text.attr(activeStyle);
+//                            mode2Text.attr(normalStyle);
+//
+//                            // 添加半透明背景框（可选，提升视觉和点击区域）
+////                            renderer.rect(5, 5, 70, 22, 3)
+////                                .attr({ fill: 'rgba(255,255,255,0.8)', stroke: '#ddd', 'stroke-width': 1, zIndex: 5 })
+////                                .add()
+////                                .toFront();  // 背景也要置于上层，但不要盖住文字，所以文字单独 toFront 后会在背景之上
+//
+//                            // 确保文字在背景之上
+//                            mode1Text.toFront();
+//                            separator.toFront();
+//                            mode2Text.toFront();
+//                        }
+//                    }
 		        },                                                                                   
 		        title: {                                                                             
 		            text: loginUserLanguageResource.rodStress,              // 杆柱应力      
@@ -3333,12 +3354,13 @@ function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
 		        subtitle: {                                                                          
 		            text: deviceName+' ['+acqTime+']'
 		        },
-		        colors: ['#00bc00','#006837', '#00FF00','#006837', '#00FF00','#006837', '#00FF00','#006837'],
+//		        colors: ['#00bc00','#006837', '#00FF00','#006837', '#00FF00','#006837', '#00FF00','#006837'],
+		        colors: ['#00bc00','#00bc89','#006837','#00685c'],
 		        credits: {
 		            enabled: false
 		        },
 		        xAxis: { 
-		        	categories: xdata,
+		        	categories: categories_X,
 		            labels: {
 		                rotation: 0,
 		                align: 'center',
@@ -3365,7 +3387,7 @@ function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
                     sourceHeight: $("#"+divId)[0].offsetHeight
                },
 		        legend: {                                                                            
-		            enabled: false
+		            enabled: true
 		        }, 
 		        plotOptions : {
 		        	column: {  
@@ -3375,8 +3397,26 @@ function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
 			        } 
 				},
 		        series: [{
-		            name: loginUserLanguageResource.rodStressRatio+'(%)',  // 应力百分比(%)
-		            data: ydata,
+		            name: loginUserLanguageResource.maxRodStressRatio+'(%)',  // 应力百分比(%)
+		            data: seriesData1,
+		            visible: showType==1,
+		            dataLabels: {
+		                enabled: true,
+		                rotation: 0,
+		                color: '#0066cc',
+		                align: 'center',
+		                x: 0,
+		                y: 0,
+//		                zIndex:0,
+		                style: {
+		                    fontSize: '13px',
+		                    fontFamily: 'SimSun'
+		                }
+		            }
+		        },{
+		            name: loginUserLanguageResource.rodStressRangeRatio+'(%)',  // 应力范围百分比(%)
+		            data: seriesData2,
+		            visible: showType!=1,
 		            dataLabels: {
 		                enabled: true,
 		                rotation: 0,
@@ -3392,23 +3432,55 @@ function initRodPressChart(xdata, ydata, deviceName, acqTime, divId) {
 		            }
 		        }] 
 	});
-	SetEveryOnePointColor(rodStressChart);           //设置每一个数据点的颜色值
+	SetRodStressEveryOnePointColor(rodStressChart);           //设置每一个数据点的颜色值
+}
+
+function SetRodStressEveryOnePointColor(chart) {      // 设置每一个数据点的颜色横向渐变
+	var colors = chart.options.colors;
+	for(var s=0;s<chart.series.length;s++){
+		var pointsList = chart.series[s].points;         //获得第一个序列的所有数据点
+		
+		var seriesStartColorIndex;
+		var seriesEndColorIndex;
+		if(s==0){
+			seriesStartColorIndex=0;
+			seriesEndColorIndex=2;
+    	}else{
+    		seriesStartColorIndex=1;
+			seriesEndColorIndex=3;
+    	}
+		
+		for (var i = 0; i < pointsList.length; i++) {    //遍历设置每一个数据点颜色
+	        chart.series[s].points[i].update({
+	            color: {
+	                linearGradient: { x1: 0, y1: 0, x2: 1, y2: 0 },     //横向渐变效果 如果将x2和y2值交换将会变成纵向渐变效果
+	                stops: [
+	                            [0, Highcharts.Color(colors[seriesStartColorIndex]).setOpacity(1).get('rgba')],
+	                            [1, Highcharts.Color(colors[seriesEndColorIndex]).setOpacity(1).get('rgba')]
+	                        ]  
+	            }
+	        });
+	    }
+	}
 }
 
 function SetEveryOnePointColor(chart) {      // 设置每一个数据点的颜色横向渐变
 	var colors = chart.options.colors;
-	var pointsList = chart.series[0].points;         //获得第一个序列的所有数据点
-    for (var i = 0; i < pointsList.length; i++) {    //遍历设置每一个数据点颜色
-        chart.series[0].points[i].update({
-            color: {
-                linearGradient: { x1: 0, y1: 0, x2: 1, y2: 0 },     //横向渐变效果 如果将x2和y2值交换将会变成纵向渐变效果
-                stops: [
-                            [0, Highcharts.Color(colors[i*2]).setOpacity(1).get('rgba')],
-                            [1, Highcharts.Color(colors[i*2+1]).setOpacity(1).get('rgba')]
-                        ]  
-            }
-        });
-    }
+	
+	for(var s=0;s<chart.series.length;s++){
+		var pointsList = chart.series[s].points;         //获得第一个序列的所有数据点
+	    for (var i = 0; i < pointsList.length; i++) {    //遍历设置每一个数据点颜色
+	        chart.series[s].points[i].update({
+	            color: {
+	                linearGradient: { x1: 0, y1: 0, x2: 1, y2: 0 },     //横向渐变效果 如果将x2和y2值交换将会变成纵向渐变效果
+	                stops: [
+	                            [0, Highcharts.Color(colors[i*2]).setOpacity(1).get('rgba')],
+	                            [1, Highcharts.Color(colors[i*2+1]).setOpacity(1).get('rgba')]
+	                        ]  
+	            }
+	        });
+	    }
+	}
 }
 
 showPumpCard = function(result,divId) {

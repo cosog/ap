@@ -1550,6 +1550,7 @@ public class MemoryDataManagerTask {
 		return realtimeDataList;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void loadDeviceRealtimeAcqData(List<String> deviceIdList,String language){
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1607,6 +1608,9 @@ public class MemoryDataManagerTask {
 					columnCode="resultCode";
 				}else if("runstatusName".equalsIgnoreCase(columnCode)){
 					columnCode="runstatus";
+				}else if("SurfaceSystemEfficiency".equalsIgnoreCase(columnCode) || "WellDownSystemEfficiency".equalsIgnoreCase(columnCode)||"SystemEfficiency".equalsIgnoreCase(columnCode)
+						|| "PumpEff1".equalsIgnoreCase(columnCode) || "PumpEff2".equalsIgnoreCase(columnCode) || "PumpEff3".equalsIgnoreCase(columnCode) || "PumpEff4".equalsIgnoreCase(columnCode) || "PumpEff".equalsIgnoreCase(columnCode)){
+					columnCode+="*100 as "+columnCode;
 				}
 				
 				sql+=",t."+columnCode;
@@ -1632,6 +1636,26 @@ public class MemoryDataManagerTask {
 				type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 				SRPCalculateRequestData productionData=gson.fromJson(productionDataStr, type);
 				Map<String,String> productionDataMap=new LinkedHashMap<>();
+				Map<String,String> rodDataMap=new LinkedHashMap<>();
+				
+				if(StringManagerUtils.isNotNull(rodstring)){
+					String rodDataArr[]=rodstring.split(";");
+					if(rodDataArr.length>1){
+						for(int i=1;i<rodDataArr.length;i++){
+				        	String everyRodData[]=rodDataArr[i].split(",");
+				        	if(everyRodData.length>=7){
+				        		rodDataMap.put("RodFMax"+i, everyRodData[0]);
+				        		rodDataMap.put("RodFMin"+i, everyRodData[1]);
+				        		rodDataMap.put("RodMaxStress"+i, everyRodData[2]);
+				        		rodDataMap.put("RodMinStress"+i, everyRodData[3]);
+				        		rodDataMap.put("RodAllowableStress"+i, everyRodData[4]);
+				        		rodDataMap.put("MaxRodStressRatio"+i, StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2));
+				        		rodDataMap.put("RodStressRangeRatio"+i, StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2));
+				        	}
+				        }
+		        	}
+				}
+				
 				if(productionData!=null){
 					if(productionData.getFluidPVT()!=null){
 						productionDataMap.put("CrudeOilDensity".toUpperCase(), productionData.getFluidPVT().getCrudeOilDensity()+"");
@@ -1672,25 +1696,36 @@ public class MemoryDataManagerTask {
 						Map.Entry<String,String> entry = productionDataMapIterator.next();
 						everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
 					}
+					Iterator<Map.Entry<String,String>> rodDataMapIterator = rodDataMap.entrySet().iterator();
+					while(rodDataMapIterator.hasNext()){
+						Map.Entry<String,String> entry = rodDataMapIterator.next();
+						everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
+					}
+					
 					jedis.hset(key.getBytes(),acqTime.getBytes(), SerializeObjectUnils.serialize(everyDataMap));
 				}else{
 					Map<String,String> everyDataMap =null;
 					byte[] data=jedis.hget(key.getBytes(),acqTime.getBytes());
 					if(data!=null){
 						everyDataMap=(Map<String,String>) SerializeObjectUnils.unserizlize(data);
-						
 					}
 					
 					if(everyDataMap==null){
 						everyDataMap =new HashMap<>();
 					}
 					for(int i=0;i<srpCalItemList.size();i++){
-						everyDataMap.put(srpCalItemList.get(i).getCode().toUpperCase(), obj[i+3]+"");
+						everyDataMap.put(srpCalItemList.get(i).getCode().toUpperCase(), obj[i+4]+"");
 					}
 					
 					Iterator<Map.Entry<String,String>> productionDataMapIterator = productionDataMap.entrySet().iterator();
 					while(productionDataMapIterator.hasNext()){
 						Map.Entry<String,String> entry = productionDataMapIterator.next();
+						everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
+					}
+					
+					Iterator<Map.Entry<String,String>> rodDataMapIterator = rodDataMap.entrySet().iterator();
+					while(rodDataMapIterator.hasNext()){
+						Map.Entry<String,String> entry = rodDataMapIterator.next();
 						everyDataMap.put(entry.getKey().toUpperCase(), entry.getValue());
 					}
 					jedis.hset(key.getBytes(),acqTime.getBytes(), SerializeObjectUnils.serialize(everyDataMap));
@@ -1703,6 +1738,9 @@ public class MemoryDataManagerTask {
 				String columnCode=calItem.getCode();
 				if("runstatusName".equalsIgnoreCase(columnCode)){
 					columnCode="runstatus";
+				}else if("SurfaceSystemEfficiency".equalsIgnoreCase(columnCode) || "WellDownSystemEfficiency".equalsIgnoreCase(columnCode)||"SystemEfficiency".equalsIgnoreCase(columnCode)
+						|| "PumpEff1".equalsIgnoreCase(columnCode) || "PumpEff2".equalsIgnoreCase(columnCode) || "PumpEff3".equalsIgnoreCase(columnCode) || "PumpEff4".equalsIgnoreCase(columnCode) || "PumpEff".equalsIgnoreCase(columnCode)){
+					columnCode+="*100 as "+columnCode;
 				}
 				sql+=",t."+columnCode;
 			}
@@ -2928,6 +2966,32 @@ public class MemoryDataManagerTask {
 			for(byte[] srpCalItemByteArr:calItemSet){
 				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(srpCalItemByteArr);
 				if(!StringManagerUtils.rodCalColumnFiter(calItem.getCode())){
+					calItemList.add(calItem);
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return calItemList;
+	}
+	
+	public static List<CalItem> getSRPCalculateItemRodData(String language){
+		Jedis jedis=null;
+		String key="srpCalItemList-"+language;
+		List<CalItem> calItemList=new ArrayList<>();
+		if(!existsKey(key)){
+			MemoryDataManagerTask.loadSRPCalculateItem(language);
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			List<byte[]> calItemSet= jedis.zrange(key.getBytes(), 0, -1);
+			for(byte[] srpCalItemByteArr:calItemSet){
+				CalItem calItem=(CalItem) SerializeObjectUnils.unserizlize(srpCalItemByteArr);
+				if(StringManagerUtils.rodCalColumnFiter(calItem.getCode())){
 					calItemList.add(calItem);
 				}
 			}

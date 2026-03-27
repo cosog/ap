@@ -3242,9 +3242,9 @@ showRodPress = function(result, divId,showType) {
 	var seriesData1 = Ext.JSON.decode(ydata);
 	var seriesData2 = Ext.JSON.decode(ydata2);
 	
-	categories_X=['一级杆','二级杆','三级杆','四极杆'];
-	seriesData1=[70,60,80,90];
-	seriesData2=[60,50,70,80];
+//	categories_X=['一级杆','二级杆','三级杆','四极杆'];
+//	seriesData1=[70,60,80,90];
+//	seriesData2=[60,50,70,80];
 	
 	initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, acqTime, divId,showType);
 	return false;
@@ -3355,7 +3355,8 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 		            text: deviceName+' ['+acqTime+']'
 		        },
 //		        colors: ['#00bc00','#006837', '#00FF00','#006837', '#00FF00','#006837', '#00FF00','#006837'],
-		        colors: ['#00bc00','#00bc89','#006837','#00685c'],
+		        colors: ['#00e272','#fe6a35','#028142','#a22b01'],
+//		        colors: ['#2caffe','#544fc5','#2caffe','#544fc5'],
 		        credits: {
 		            enabled: false
 		        },
@@ -3375,7 +3376,7 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 		        	min: 0,
 		        	max: yAxisMax,
 		            title: {                                                                         
-		                text: loginUserLanguageResource.rodStressRatio+'(%)'  // 应力百分比(%)                                                          
+		                text: loginUserLanguageResource.percent+'(%)'  // 应力百分比(%)                                                          
 		            },
 		            allowDecimals: false,    // 刻度值是否为小数
 		            minorTickInterval: ''    // 不显示次刻度线
@@ -3391,13 +3392,14 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 		        }, 
 		        plotOptions : {
 		        	column: {  
-		        		pointWidth: 40,                     // 柱子宽度
+//		        		pointWidth: 40,                     // 柱子宽度
+		        		maxPointWidth:40,
 		        		borderWidth: 2
 //		        		color: '#000000'
 			        } 
 				},
 		        series: [{
-		            name: loginUserLanguageResource.maxRodStressRatio+'(%)',  // 应力百分比(%)
+		            name: loginUserLanguageResource.maxRodStress,  // 应力百分比(%)
 		            data: seriesData1,
 		            visible: showType==1,
 		            dataLabels: {
@@ -3414,7 +3416,7 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 		                }
 		            }
 		        },{
-		            name: loginUserLanguageResource.rodStressRangeRatio+'(%)',  // 应力范围百分比(%)
+		            name: loginUserLanguageResource.rodStressRange,  // 应力范围百分比(%)
 		            data: seriesData2,
 		            visible: showType!=1,
 		            dataLabels: {

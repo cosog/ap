@@ -77,7 +77,9 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
                     }
                 });
                 var panel = Ext.getCmp("HistoryQueryDataInfoPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             
             var startDate=Ext.getCmp('HistoryQueryStartDate_Id');

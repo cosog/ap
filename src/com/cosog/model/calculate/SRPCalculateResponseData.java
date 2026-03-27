@@ -145,7 +145,7 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 				if(this.getRodString().getEveryRod()!=null){
 					for(int i=0;i<this.getRodString().getEveryRod().size();i++){
 						result.append(";");
-						if(this.getFESDiagram().getFMax()!=null&&this.getFESDiagram().getFMax().size()>0){
+						if(this.getFESDiagram().getFMax()!=null && this.getFESDiagram().getFMax().size()>i && this.getFESDiagram().getFMin().size()>i){
 							result.append(this.getFESDiagram().getFMax().get(i)+",");
 							result.append(this.getFESDiagram().getFMin().get(i)+",");
 						}else{
@@ -155,7 +155,7 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 						result.append(this.getRodString().getEveryRod().get(i).getMaxStress()+",");
 						result.append(this.getRodString().getEveryRod().get(i).getMinStress()+",");
 						result.append(this.getRodString().getEveryRod().get(i).getAllowableStress()+",");
-						result.append(this.getRodString().getEveryRod().get(i).getStressRatio()+",");
+						result.append(this.getRodString().getEveryRod().get(i).getMaxStressRatio()+",");
 						result.append(this.getRodString().getEveryRod().get(i).getStressRangeRatio());
 					}
 				}
@@ -333,7 +333,7 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 	    
 	    private float StressRangeRatio;
 
-	    private float StressRatio;
+	    private float MaxStressRatio;
 
 	    public void setType(int Type){
 	        this.Type = Type;
@@ -443,12 +443,12 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 	    public float getAllowableStress(){
 	        return this.AllowableStress;
 	    }
-	    public void setStressRatio(float StressRatio){
-	        this.StressRatio = StressRatio;
-	    }
-	    public float getStressRatio(){
-	        return this.StressRatio;
-	    }
+		public float getMaxStressRatio() {
+			return MaxStressRatio;
+		}
+		public void setMaxStressRatio(float maxStressRatio) {
+			MaxStressRatio = maxStressRatio;
+		}
 	}
 	
 	public static class RodString implements Serializable {

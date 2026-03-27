@@ -2486,18 +2486,19 @@ public class DriverAPIController extends BaseController{
 		}
 		
 		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
+			rodCNT=srpCalculateResponseData.getRodString().getCNT();
 			for(int i=0;i<srpCalculateResponseData.getRodString().getEveryRod().size();i++){
 				if(i==0){
-	        		rodStressRatio1=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRatio1=srpCalculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()+"";
 	        		rodStressRangeRatio1=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
 	        	}else if(i==1){
-	        		rodStressRatio2=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRatio2=srpCalculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()+"";
 	        		rodStressRangeRatio2=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
 	        	}else if(i==2){
-	        		rodStressRatio3=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRatio3=srpCalculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()+"";
 	        		rodStressRangeRatio3=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
 	        	}else if(i==3){
-	        		rodStressRatio4=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRatio()+"";
+	        		rodStressRatio4=srpCalculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()+"";
 	        		rodStressRangeRatio4=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
 	        	}
 			}
@@ -2545,10 +2546,10 @@ public class DriverAPIController extends BaseController{
 			wellBoreChartsData.append("\"rodStressRatio2\":\""+rodStressRatio2+"\",");
 			wellBoreChartsData.append("\"rodStressRatio3\":\""+rodStressRatio3+"\",");
 			wellBoreChartsData.append("\"rodStressRatio4\":\""+rodStressRatio4+"\",");
-			wellBoreChartsData.append("rodStressRangeRatio1:"+rodStressRangeRatio1+",");
-			wellBoreChartsData.append("rodStressRangeRatio2:"+rodStressRangeRatio2+",");
-			wellBoreChartsData.append("rodStressRangeRatio3:"+rodStressRangeRatio3+",");
-			wellBoreChartsData.append("rodStressRangeRatio4:"+rodStressRangeRatio4+",");
+			wellBoreChartsData.append("\"rodStressRangeRatio1\":"+rodStressRangeRatio1+",");
+			wellBoreChartsData.append("\"rodStressRangeRatio2\":"+rodStressRangeRatio2+",");
+			wellBoreChartsData.append("\"rodStressRangeRatio3\":"+rodStressRangeRatio3+",");
+			wellBoreChartsData.append("\"rodStressRangeRatio4\":"+rodStressRangeRatio4+",");
 			
 			wellBoreChartsData.append("\"pumpEff1\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getPumpEfficiency().getPumpEff1()*100+"",2):"")+"\",");
 			wellBoreChartsData.append("\"pumpEff2\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getPumpEfficiency().getPumpEff2()*100+"",2):"")+"\",");
@@ -5149,6 +5150,35 @@ public class DriverAPIController extends BaseController{
 			
 			//杆参数
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("杆参数","杆参数",calculateResponseData.getRodCalData()+"",calculateResponseData.getRodCalData()+"","","RODSTRING","","","","",1,1,0));
+			
+			for(int i=0;i<calculateResponseData.getRodString().getEveryRod().size();i++){
+				String rodGrade="";
+				if(i==0){
+					rodGrade="一级杆";
+				}else if(i==1){
+					rodGrade="二级杆";
+				}else if(i==2){
+					rodGrade="三级杆";
+				}else if(i==3){
+					rodGrade="四级杆";
+				}
+				
+				FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最大应力百分比",rodGrade+"最大应力百分比",StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()*100+"",2),"",("MaxRodStressRatio"+(i+1)).toUpperCase(),"","","","%",1,1,0));
+				FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"应力范围百分比",rodGrade+"应力范围百分比",StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()*100+"",2),"",("RodStressRangeRatio"+(i+1)).toUpperCase(),"","","","%",1,1,0));
+				FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最大应力",rodGrade+"最大应力",calculateResponseData.getRodString().getEveryRod().get(i).getMaxStress()+"",calculateResponseData.getRodString().getEveryRod().get(i).getMaxStress()+"","",("RodMaxStress"+(i+1)).toUpperCase(),"","","","MPa",1,1,0));
+				FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最小应力",rodGrade+"最小应力",calculateResponseData.getRodString().getEveryRod().get(i).getMinStress()+"",calculateResponseData.getRodString().getEveryRod().get(i).getMinStress()+"","",("RodMinStress"+(i+1)).toUpperCase(),"","","","MPa",1,1,0));
+				FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"许用应力",rodGrade+"许用应力",calculateResponseData.getRodString().getEveryRod().get(i).getAllowableStress()+"",calculateResponseData.getRodString().getEveryRod().get(i).getAllowableStress()+"","",("RodAllowableStress"+(i+1)).toUpperCase(),"","","","MPa",1,1,0));
+				
+				float fMax=0,fMin=0;
+				if(calculateResponseData.getFESDiagram().getFMax()!=null && calculateResponseData.getFESDiagram().getFMax().size()>i && calculateResponseData.getFESDiagram().getFMin().size()>i){
+					fMax=calculateResponseData.getFESDiagram().getFMax().get(i);
+					fMin=calculateResponseData.getFESDiagram().getFMin().get(i);
+				}
+				
+				FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最大载荷",rodGrade+"最大载荷",fMax+"",fMax+"","",("RodFMax"+(i+1)).toUpperCase(),"","","","kN",1,1,0));
+				FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最小载荷",rodGrade+"最小载荷",fMin+"",fMin+"","",("RodFMin"+(i+1)).toUpperCase(),"","","","kN",1,1,0));
+			}
+			
 		}else{
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("冲程","冲程",calculateRequestData.getFESDiagram().getStroke()+"",calculateRequestData.getFESDiagram().getStroke()+"","","Stroke","","","","m",1,1,0));
 			//工况

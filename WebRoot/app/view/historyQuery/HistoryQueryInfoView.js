@@ -756,7 +756,7 @@ function deviceHistoryQueryCurve(deviceType){
 	var deviceId=0;
 	var calculateType=0;
 	var selectRow= Ext.getCmp(selectRowId).getValue();
-	if(Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
+	if(Ext.getCmp(gridPanelId)!=undefined && Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
 		calculateType=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
@@ -2361,7 +2361,9 @@ function updateDeviceHistoryQueryData(record){
 	
 	var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
     if (isNotVal(gridPanel)) {
-    	Ext.getCmp("HistoryQueryDataInfoPanel_Id").removeAll();
+    	if(isNotVal(Ext.getCmp("HistoryQueryDataInfoPanel_Id"))){
+    		Ext.getCmp("HistoryQueryDataInfoPanel_Id").removeAll();
+    	}
     }
 	
 	Ext.getCmp('HistoryQueryStartDate_Id').setValue('');

@@ -3031,6 +3031,7 @@ public class MemoryDataManagerTask {
 			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("resultName"),"ResultName","",1,1,languageResourceMap.get("resultName"))));
 			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fMax"),"FMax","kN",2,1,languageResourceMap.get("fMax"))));
 			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("fMin"),"FMin","kN",2,1,languageResourceMap.get("fMin"))));
+			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("deltaF"),"DeltaF","kN",2,1,languageResourceMap.get("deltaF"))));
 			
 			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("calculateStroke"),"Stroke","m",2,1,languageResourceMap.get("calculateStroke"))));
 			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("plungerStroke"),"PlungerStroke","m",2,1,languageResourceMap.get("plungerStroke"))));

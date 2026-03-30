@@ -133,7 +133,15 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
                         },select( v, record, index, eOpts ){
                     		var deviceTypeId=record.data.deviceTypeId;
                     		var deviceTypeName=record.data.text;
-                    		initDeviceTypeContentConfig(deviceTypeId,deviceTypeName);
+//                    		initDeviceTypeContentConfig(deviceTypeId,deviceTypeName);
+                    		
+                    		
+                    		var projectTabConfigTreeGridView = Ext.getCmp("projectTabConfigTreeGridView_Id");
+                            if (isNotVal(projectTabConfigTreeGridView)) {
+                            	projectTabConfigTreeGridView.getStore().load();
+                            }else{
+                            	Ext.create('AP.store.operationMaintenance.ProjectTabConfigInfoStore');
+                            }
                     	}
                     }
                 });

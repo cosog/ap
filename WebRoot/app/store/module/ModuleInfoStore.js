@@ -34,7 +34,7 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                     forceFit: false,
                     onlyLeafCheckable: false, // 所有结点可选，如果不需要checkbox,该属性去掉
                     singleExpand: false,
-                    selType: (loginUserModuleManagementModuleRight.editFlag==1?'checkboxmodel':''),
+//                    selType: (loginUserModuleManagementModuleRight.editFlag==1?'checkboxmodel':''),
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true

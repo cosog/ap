@@ -549,4 +549,21 @@ public class OperationMaintenanceController  extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/loadDeviceTypeContentConfigTreeData")
+	public String loadDeviceTypeContentConfigTreeData() throws IOException, SQLException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceTypeId = ParamUtils.getParameter(request, "deviceTypeId");
+		
+		String json = deviceTabManagerMaintenanceService.loadDeviceTypeContentConfigTreeData(deviceTypeId,user);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 }

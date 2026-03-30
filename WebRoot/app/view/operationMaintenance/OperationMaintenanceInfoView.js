@@ -1169,164 +1169,165 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        		        region: 'center',
 	        		        title: loginUserLanguageResource.displayContentConfig,
 	        		        id: 'OperationMaintenanceDeviceTypeContentConfigPanel_Id',
-	        		        layout: 'border',
-	        		        bodyStyle: 'background-color:#ffffff;',
-	        		        items:[{
-	                            region: 'center',
-	                            height: '1500px',
-	                            xtype: 'form',
-	                            border: false,
-	                            id: "OperationMaintenanceDeviceTypeContentSubFormId",
-	                            bodyPadding: 10,
-	                            items: [{
-	                                xtype: 'form',
-	                                bodyPadding: 10,
-	                                fieldDefaults: {
-	                                    labelAlign: 'right',
-	                                    labelWidth: 100,
-	                                    msgTarget: 'side'
-	                                },
-	                                items: [
-	        				            // 第一个 FieldSet
-	                                    {
-	                                        xtype: 'fieldset',
-	                                        title: loginUserLanguageResource.realtimeMonitoringModule,
-	                                        layout: 'column',
-	                                        defaults: {
-	                                            layout: 'form',
-	                                            xtype: 'container',
-	                                            defaultType: 'textfield',
-	                                            style: 'width: 33%'
-	                                        },
-	                                        items: [{
-	                                            items: [{
-	                                            	    xtype: 'checkboxfield',
-	                                            	    fieldLabel: loginUserLanguageResource.FESResultStatisticsPieChart,
-	                                            	    name: 'calculationModel.showRealtimeFESDiagramStatPie',
-	                                            	    id: 'calculationModel_showRealtimeFESDiagramStatPie_Id',
-	                                            	    checked: false
-	                                            },{
-                                            	    xtype: 'checkboxfield',
-                                            	    fieldLabel: loginUserLanguageResource.numStatusStatisticsPieChart,
-                                            	    name: 'calculationModel.showRealtimeNumStatusStatPie',
-                                            	    id: 'calculationModel_showRealtimeNumStatusStatPie_Id',
-                                            	    checked: false
-	                                            }]
-	        				                }, {
-	                                            items: [{
-	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.commStatusStatisticsPieChart,
-	                                        	    name: 'calculationModel.showRealtimeCommStatusStatPie',
-	                                        	    id: 'calculationModel_showRealtimeCommStatusStatPie_Id',
-	                                        	    checked: false
-	                                            }]
-	        				                }, {
-	                                            items: [{
-	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.runStatusStatisticsPieChart,
-	                                        	    name: 'calculationModel.showRealtimeRunStatusStatPie',
-	                                        	    id: 'calculationModel_showRealtimeRunStatusStatPie_Id',
-	                                        	    checked: false
-	    				                        }]
-	        				                }]
-	        				            },{
-	                                        xtype: 'fieldset',
-	                                        title: loginUserLanguageResource.historyQueryModule,
-	                                        layout: 'column',
-	                                        defaults: {
-	                                            layout: 'form',
-	                                            xtype: 'container',
-	                                            defaultType: 'textfield',
-	                                            style: 'width: 33%'
-	                                        },
-	                                        items: [{
-	                                            items: [{
-	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.FESResultStatisticsPieChart,
-	                                        	    name: 'calculationModel.showHistoryFESDiagramStatPie',
-	                                        	    id: 'calculationModel_showHistoryFESDiagramStatPie_Id',
-	                                        	    checked: false
-	    				                        },{
-                                            	    xtype: 'checkboxfield',
-                                            	    fieldLabel: loginUserLanguageResource.numStatusStatisticsPieChart,
-                                            	    name: 'calculationModel.showHistoryNumStatusStatPie',
-                                            	    id: 'calculationModel_showHistoryNumStatusStatPie_Id',
-                                            	    checked: false
-	                                            }]
-	        				                }, {
-	                                            items: [{
-	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.commStatusStatisticsPieChart,
-	                                        	    name: 'calculationModel.showHistoryCommStatusStatPie',
-	                                        	    id: 'calculationModel_showHistoryCommStatusStatPie_Id',
-	                                        	    checked: false
-	    				                        }]
-	        				                }, {
-	                                            items: [{
-	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.runStatusStatisticsPieChart,
-	                                        	    name: 'calculationModel.showHistoryRunStatusStatPie',
-	                                        	    id: 'calculationModel_showHistoryRunStatusStatPie_Id',
-	                                        	    checked: false
-	    				                        }]
-	        				                }]
-	        				            },{
-	                                        xtype: 'fieldset',
-	                                        title: loginUserLanguageResource.alarmQueryModule,
-	                                        layout: 'column',
-	                                        defaults: {
-	                                            layout: 'form',
-	                                            xtype: 'container',
-	                                            defaultType: 'textfield',
-	                                            style: 'width: 33%'
-	                                        },
-	                                        items: [{
-	                                            items: [{
-	    				                        	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.numericValueAlarm,
-	                                        	    name: 'calculationModel.showAlarmQueryNumericValueAlarm',
-	                                        	    id: 'calculationModel_showAlarmQueryNumericValueAlarm_Id',
-	                                        	    checked: false
-	    				                        },{
-	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.commStatusAlarm,
-	                                        	    name: 'calculationModel.showAlarmQueryCommStatusAlarm',
-	                                        	    id: 'calculationModel_showAlarmQueryCommStatusAlarm_Id',
-	                                        	    checked: false
-	    				                        }]
-	        				                }, {
-	                                            items: [{
-	    				                        	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.enumValueAlarm,
-	                                        	    name: 'calculationModel.showAlarmQueryEnumValueAlarm',
-	                                        	    id: 'calculationModel_showAlarmQueryEnumValueAlarm_Id',
-	                                        	    checked: false
-	    				                        },{
-	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.runStatusAlarm,
-	                                        	    name: 'calculationModel.showAlarmQueryRunStatusAlarm',
-	                                        	    id: 'calculationModel_showAlarmQueryRunStatusAlarm_Id',
-	                                        	    checked: false
-	    				                        }]
-	        				                }, {
-	                                            items: [{
-	    				                        	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.switchingValueAlarm,
-	                                        	    name: 'calculationModel.showAlarmQuerySwitchingValueAlarm',
-	                                        	    id: 'calculationModel_showAlarmQuerySwitchingValueAlarm_Id',
-	                                        	    checked: false
-	    				                        },{
-	                                            	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.FESDiagramResultAlarm,
-	                                        	    name: 'calculationModel.showAlarmQueryFESDiagramResultAlarm',
-	                                        	    id: 'calculationModel_showAlarmQueryFESDiagramResultAlarm_Id',
-	                                        	    checked: false
-	    				                        }]
-	        				                }]
-	        				            }
-	        				        ]
-	        				    }]
-	        	            }]
+	        		        layout: 'fit',
+//	        		        layout: 'border',
+//	        		        bodyStyle: 'background-color:#ffffff;',
+//	        		        items:[{
+//	                            region: 'center',
+//	                            height: '1500px',
+//	                            xtype: 'form',
+//	                            border: false,
+//	                            id: "OperationMaintenanceDeviceTypeContentSubFormId",
+//	                            bodyPadding: 10,
+//	                            items: [{
+//	                                xtype: 'form',
+//	                                bodyPadding: 10,
+//	                                fieldDefaults: {
+//	                                    labelAlign: 'right',
+//	                                    labelWidth: 100,
+//	                                    msgTarget: 'side'
+//	                                },
+//	                                items: [
+//	        				            // 第一个 FieldSet
+//	                                    {
+//	                                        xtype: 'fieldset',
+//	                                        title: loginUserLanguageResource.realtimeMonitoringModule,
+//	                                        layout: 'column',
+//	                                        defaults: {
+//	                                            layout: 'form',
+//	                                            xtype: 'container',
+//	                                            defaultType: 'textfield',
+//	                                            style: 'width: 33%'
+//	                                        },
+//	                                        items: [{
+//	                                            items: [{
+//	                                            	    xtype: 'checkboxfield',
+//	                                            	    fieldLabel: loginUserLanguageResource.FESResultStatisticsPieChart,
+//	                                            	    name: 'calculationModel.showRealtimeFESDiagramStatPie',
+//	                                            	    id: 'calculationModel_showRealtimeFESDiagramStatPie_Id',
+//	                                            	    checked: false
+//	                                            },{
+//                                            	    xtype: 'checkboxfield',
+//                                            	    fieldLabel: loginUserLanguageResource.numStatusStatisticsPieChart,
+//                                            	    name: 'calculationModel.showRealtimeNumStatusStatPie',
+//                                            	    id: 'calculationModel_showRealtimeNumStatusStatPie_Id',
+//                                            	    checked: false
+//	                                            }]
+//	        				                }, {
+//	                                            items: [{
+//	                                            	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.commStatusStatisticsPieChart,
+//	                                        	    name: 'calculationModel.showRealtimeCommStatusStatPie',
+//	                                        	    id: 'calculationModel_showRealtimeCommStatusStatPie_Id',
+//	                                        	    checked: false
+//	                                            }]
+//	        				                }, {
+//	                                            items: [{
+//	                                            	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.runStatusStatisticsPieChart,
+//	                                        	    name: 'calculationModel.showRealtimeRunStatusStatPie',
+//	                                        	    id: 'calculationModel_showRealtimeRunStatusStatPie_Id',
+//	                                        	    checked: false
+//	    				                        }]
+//	        				                }]
+//	        				            },{
+//	                                        xtype: 'fieldset',
+//	                                        title: loginUserLanguageResource.historyQueryModule,
+//	                                        layout: 'column',
+//	                                        defaults: {
+//	                                            layout: 'form',
+//	                                            xtype: 'container',
+//	                                            defaultType: 'textfield',
+//	                                            style: 'width: 33%'
+//	                                        },
+//	                                        items: [{
+//	                                            items: [{
+//	                                            	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.FESResultStatisticsPieChart,
+//	                                        	    name: 'calculationModel.showHistoryFESDiagramStatPie',
+//	                                        	    id: 'calculationModel_showHistoryFESDiagramStatPie_Id',
+//	                                        	    checked: false
+//	    				                        },{
+//                                            	    xtype: 'checkboxfield',
+//                                            	    fieldLabel: loginUserLanguageResource.numStatusStatisticsPieChart,
+//                                            	    name: 'calculationModel.showHistoryNumStatusStatPie',
+//                                            	    id: 'calculationModel_showHistoryNumStatusStatPie_Id',
+//                                            	    checked: false
+//	                                            }]
+//	        				                }, {
+//	                                            items: [{
+//	                                            	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.commStatusStatisticsPieChart,
+//	                                        	    name: 'calculationModel.showHistoryCommStatusStatPie',
+//	                                        	    id: 'calculationModel_showHistoryCommStatusStatPie_Id',
+//	                                        	    checked: false
+//	    				                        }]
+//	        				                }, {
+//	                                            items: [{
+//	                                            	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.runStatusStatisticsPieChart,
+//	                                        	    name: 'calculationModel.showHistoryRunStatusStatPie',
+//	                                        	    id: 'calculationModel_showHistoryRunStatusStatPie_Id',
+//	                                        	    checked: false
+//	    				                        }]
+//	        				                }]
+//	        				            },{
+//	                                        xtype: 'fieldset',
+//	                                        title: loginUserLanguageResource.alarmQueryModule,
+//	                                        layout: 'column',
+//	                                        defaults: {
+//	                                            layout: 'form',
+//	                                            xtype: 'container',
+//	                                            defaultType: 'textfield',
+//	                                            style: 'width: 33%'
+//	                                        },
+//	                                        items: [{
+//	                                            items: [{
+//	    				                        	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.numericValueAlarm,
+//	                                        	    name: 'calculationModel.showAlarmQueryNumericValueAlarm',
+//	                                        	    id: 'calculationModel_showAlarmQueryNumericValueAlarm_Id',
+//	                                        	    checked: false
+//	    				                        },{
+//	                                            	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.commStatusAlarm,
+//	                                        	    name: 'calculationModel.showAlarmQueryCommStatusAlarm',
+//	                                        	    id: 'calculationModel_showAlarmQueryCommStatusAlarm_Id',
+//	                                        	    checked: false
+//	    				                        }]
+//	        				                }, {
+//	                                            items: [{
+//	    				                        	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.enumValueAlarm,
+//	                                        	    name: 'calculationModel.showAlarmQueryEnumValueAlarm',
+//	                                        	    id: 'calculationModel_showAlarmQueryEnumValueAlarm_Id',
+//	                                        	    checked: false
+//	    				                        },{
+//	                                            	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.runStatusAlarm,
+//	                                        	    name: 'calculationModel.showAlarmQueryRunStatusAlarm',
+//	                                        	    id: 'calculationModel_showAlarmQueryRunStatusAlarm_Id',
+//	                                        	    checked: false
+//	    				                        }]
+//	        				                }, {
+//	                                            items: [{
+//	    				                        	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.switchingValueAlarm,
+//	                                        	    name: 'calculationModel.showAlarmQuerySwitchingValueAlarm',
+//	                                        	    id: 'calculationModel_showAlarmQuerySwitchingValueAlarm_Id',
+//	                                        	    checked: false
+//	    				                        },{
+//	                                            	xtype: 'checkboxfield',
+//	                                        	    fieldLabel: loginUserLanguageResource.FESDiagramResultAlarm,
+//	                                        	    name: 'calculationModel.showAlarmQueryFESDiagramResultAlarm',
+//	                                        	    id: 'calculationModel_showAlarmQueryFESDiagramResultAlarm_Id',
+//	                                        	    checked: false
+//	    				                        }]
+//	        				                }]
+//	        				            }
+//	        				        ]
+//	        				    }]
+//	        	            }]
 	        		    }]
 	        		},{
 	        			title: loginUserLanguageResource.deviceTag,

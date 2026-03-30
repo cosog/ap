@@ -6610,9 +6610,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
         String sql="select t2.deviceName as deviceName, "
         		+ " to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.pumpfsdiagram,"
-        		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, "
+        		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.deltaF,"
+        		+ " t.stroke,t.spm, "
         		+ " t."+prodCol+","
-        		+ " t.resultcode,"//10
+        		+ " t.resultcode,"//11
         		+ " t.rodstring,"
         		+ " t.pumpeff1*100 as pumpeff1, t.pumpeff2*100 as pumpeff2, t.pumpeff3*100 as pumpeff3, t.pumpeff4*100 as pumpeff4,"
         		+ " t.position_curve,t.load_curve"
@@ -6629,7 +6630,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String pumpFSDiagram="";
 			SerializableClobProxy   proxy=null;
 			CLOB realClob=null;
-			String resultCode=obj[10]+"";
+			String resultCode=obj[11]+"";
 			WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(resultCode+"",language);
 			if(obj[2]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[2]);
@@ -6637,8 +6638,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				pumpFSDiagram=StringManagerUtils.CLOBtoString(realClob);
 			}
 			
-			if(obj[16]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[16]);
+			if(obj[17]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				positionCurveData=StringManagerUtils.CLOBtoString(realClob);
 				if(StringManagerUtils.isNotNull(positionCurveData)){
@@ -6646,8 +6647,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 			}
 			
-			if(obj[17]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
+			if(obj[18]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				loadCurveData=StringManagerUtils.CLOBtoString(realClob);
 			}
@@ -6674,8 +6675,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		        	pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
 		        	pumpFSDiagramStrBuff.append("#");
 		        }
-		        if(obj[11]!=null){
-		        	String rodDataArr[]=obj[11].toString().split(";");
+		        if(obj[12]!=null){
+		        	String rodDataArr[]=obj[12].toString().split(";");
 		        	if(rodDataArr.length>1){
 		        		String rodData[]=rodDataArr[0].split(",");
 		        		if(rodData.length==4){
@@ -6724,9 +6725,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("lowerLoadLine:\""+obj[4]+"\",");         // 理论下载荷
 	        dataSbf.append("fmax:\""+obj[5]+"\",");         // 最大载荷
 	        dataSbf.append("fmin:\""+obj[6]+"\",");         // 最小载荷
-	        dataSbf.append("stroke:\""+obj[7]+"\",");         // 冲程
-	        dataSbf.append("spm:\""+obj[8]+"\",");         // 冲次
-	        dataSbf.append("liquidProduction:\""+obj[9]+"\",");         // 日累计产液量
+	        dataSbf.append("deltaF:\""+obj[7]+"\",");
+	        dataSbf.append("stroke:\""+obj[8]+"\",");         // 冲程
+	        dataSbf.append("spm:\""+obj[9]+"\",");         // 冲次
+	        dataSbf.append("liquidProduction:\""+obj[10]+"\",");         // 日累计产液量
 	        
 	        dataSbf.append("resultCode:\""+resultCode+"\",");         // 工况代码
 	        dataSbf.append("resultName:\""+(workType!=null?workType.getResultName():"")+"\",");         // 工况类型
@@ -6743,10 +6745,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("rodStressRangeRatio3:"+rodStressRangeRatio3+",");           // 三级范围应力百分比
 	        dataSbf.append("rodStressRangeRatio4:"+rodStressRangeRatio4+",");           // 四级范围应力百分比
 	        
-	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[12]==null?"":obj[12].toString(),1)+",");       // 冲程损失系数
-	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[13]==null?"":obj[13].toString().toString(),1)+",");       // 充满系数
-	        dataSbf.append("pumpEff3:"+StringManagerUtils.stringToFloat(obj[14]==null?"":obj[14].toString().toString(),1)+",");           // 漏失系数
-	        dataSbf.append("pumpEff4:"+StringManagerUtils.stringToFloat(obj[15]==null?"":obj[15].toString().toString(),1)+",");           // 液体收缩系数
+	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[13]==null?"":obj[13].toString(),1)+",");       // 冲程损失系数
+	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[14]==null?"":obj[14].toString().toString(),1)+",");       // 充满系数
+	        dataSbf.append("pumpEff3:"+StringManagerUtils.stringToFloat(obj[15]==null?"":obj[15].toString().toString(),1)+",");           // 漏失系数
+	        dataSbf.append("pumpEff4:"+StringManagerUtils.stringToFloat(obj[16]==null?"":obj[16].toString().toString(),1)+",");           // 液体收缩系数
 	        dataSbf.append("pumpFSDiagramData:\""+pumpFSDiagramData+"\",");         // 泵功图数据
 	        dataSbf.append("positionCurveData:\""+positionCurveData+"\",");         
 	        dataSbf.append("loadCurveData:\""+loadCurveData+"\""); 
@@ -6760,6 +6762,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("lowerLoadLine:\"\","); 
 	        dataSbf.append("fmax:\"\",");  
 	        dataSbf.append("fmin:\"\",");
+	        dataSbf.append("deltaF:\"\",");
 	        dataSbf.append("stroke:\"\",");  
 	        dataSbf.append("spm:\"\","); 
 	        dataSbf.append("liquidProduction:\"\",");  

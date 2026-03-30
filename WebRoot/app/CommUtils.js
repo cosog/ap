@@ -3044,6 +3044,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	var pointCount=gtdata.pointCount;//曲线点数
 	var fmax=gtdata.fmax;     // 最大载荷
 	var fmin=gtdata.fmin;     // 最小载荷
+	var deltaF=gtdata.deltaF;     // 交变载荷
 	var stroke=gtdata.stroke;       // 冲程
 	var spm=gtdata.spm;       // 冲次
 	var liquidProduction=gtdata.liquidProduction;     // 日产液量
@@ -3057,11 +3058,13 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
     xtext+=loginUserLanguageResource.pointCount+':'+pointCount+" ";
     xtext+=loginUserLanguageResource.fMax+':'+fmax+'kN ';
     xtext+=loginUserLanguageResource.fMin+':'+fmin+'kN ';
+    xtext+=loginUserLanguageResource.deltaF+':'+deltaF+'kN ';
     xtext+=loginUserLanguageResource.stroke+':'+stroke+'m ';
     xtext+=loginUserLanguageResource.SPM+':'+spm+'/min ';
     xtext+=loginUserLanguageResource.liquidProduction+':'+liquidProduction+productionUnitStr+' ';
     xtext+=loginUserLanguageResource.FSDiagramWorkType+':'+resultName+' ';
     xtext+=loginUserLanguageResource.optimizationSuggestion+':'+optimizationSuggestion;
+    
     var upperlimit=parseFloat(fmax)+10;
     if(parseFloat(upperLoadLine)>=parseFloat(fmax)){
     	upperlimit=parseFloat(upperLoadLine)+10;

@@ -19,6 +19,7 @@ import com.cosog.model.CurveConf;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DeviceTabManager;
 import com.cosog.model.KeyValue;
+import com.cosog.model.ProjectTabConfig;
 import com.cosog.model.User;
 import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
@@ -549,6 +550,49 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		}
 		result="{\"success\":true,\"config\":"+result+"}";
 		return result;
+	}
+	
+	public String loadDeviceTypeContentConfigTreeData(String deviceTypeId,User user) throws IOException, SQLException {
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user!=null?user.getLanguageName():"");
+		String config="{}";
+		String sql="select t.config from tbl_devicetypeinfo t where t.id="+deviceTypeId;
+		List<?> list = this.findCallSql(sql);
+		if(list.size()>0 && list.get(0)!=null){
+			config=list.get(0).toString().replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+		}
+		type = new TypeToken<ProjectTabConfig>() {}.getType();
+		ProjectTabConfig projectTabConfig=gson.fromJson(config, type);
+		result_json.append("{\"success\":true,\"children\":[");
+		
+		result_json.append("{\"text\":\""+languageResourceMap.get("realtimeMonitoringModule")+"\",\"expanded\":true,\"children\": [");
+		result_json.append("{\"text\":\""+languageResourceMap.get("FESResultStatisticsPieChart")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getDeviceRealTimeMonitoring()!=null?projectTabConfig.getDeviceRealTimeMonitoring().getFESDiagramStatPie():false)+",\"code\":\"realtimeMonitoringModule_FESResultStatisticsPieChart\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("commStatusStatisticsPieChart")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getDeviceRealTimeMonitoring()!=null?projectTabConfig.getDeviceRealTimeMonitoring().getCommStatusStatPie():false)+",\"code\":\"realtimeMonitoringModule_commStatusStatisticsPieChart\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("runStatusStatisticsPieChart")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getDeviceRealTimeMonitoring()!=null?projectTabConfig.getDeviceRealTimeMonitoring().getRunStatusStatPie():false)+",\"code\":\"realtimeMonitoringModule_runStatusStatisticsPieChart\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("numStatusStatisticsPieChart")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getDeviceRealTimeMonitoring()!=null?projectTabConfig.getDeviceRealTimeMonitoring().getNumStatusStatPie():false)+",\"code\":\"realtimeMonitoringModule_numStatusStatisticsPieChart\",\"leaf\":true}");
+		result_json.append("]},");
+		
+		result_json.append("{\"text\":\""+languageResourceMap.get("historyQueryModule")+"\",\"expanded\":true,\"children\": [");
+		result_json.append("{\"text\":\""+languageResourceMap.get("FESResultStatisticsPieChart")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getDeviceHistoryQuery()!=null?projectTabConfig.getDeviceHistoryQuery().getFESDiagramStatPie():false)+",\"code\":\"historyQueryModule_FESResultStatisticsPieChart\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("commStatusStatisticsPieChart")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getDeviceHistoryQuery()!=null?projectTabConfig.getDeviceHistoryQuery().getCommStatusStatPie():false)+",\"code\":\"historyQueryModule_commStatusStatisticsPieChart\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("runStatusStatisticsPieChart")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getDeviceHistoryQuery()!=null?projectTabConfig.getDeviceHistoryQuery().getRunStatusStatPie():false)+",\"code\":\"historyQueryModule_runStatusStatisticsPieChart\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("numStatusStatisticsPieChart")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getDeviceHistoryQuery()!=null?projectTabConfig.getDeviceHistoryQuery().getNumStatusStatPie():false)+",\"code\":\"historyQueryModule_numStatusStatisticsPieChart\",\"leaf\":true}");
+		result_json.append("]},");
+		
+		result_json.append("{\"text\":\""+languageResourceMap.get("alarmQueryModule")+"\",\"expanded\":true,\"children\": [");
+		result_json.append("{\"text\":\""+languageResourceMap.get("numericValueAlarm")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getAlarmQuery()!=null?projectTabConfig.getAlarmQuery().getNumericValueAlarm():false)+",\"code\":\"alarmQueryModule_numericValueAlarm\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("enumValueAlarm")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getAlarmQuery()!=null?projectTabConfig.getAlarmQuery().getEnumValueAlarm():false)+",\"code\":\"alarmQueryModule_enumValueAlarm\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("switchingValueAlarm")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getAlarmQuery()!=null?projectTabConfig.getAlarmQuery().getSwitchingValueAlarm():false)+",\"code\":\"alarmQueryModule_switchingValueAlarm\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("commStatusAlarm")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getAlarmQuery()!=null?projectTabConfig.getAlarmQuery().getCommStatusAlarm():false)+",\"code\":\"alarmQueryModule_commStatusAlarm\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("runStatusAlarm")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getAlarmQuery()!=null?projectTabConfig.getAlarmQuery().getRunStatusAlarm():false)+",\"code\":\"alarmQueryModule_runStatusAlarm\",\"leaf\":true},");
+		result_json.append("{\"text\":\""+languageResourceMap.get("FESDiagramResultAlarm")+"\",\"checked\":"+(projectTabConfig!=null&&projectTabConfig.getAlarmQuery()!=null?projectTabConfig.getAlarmQuery().getFESDiagramResultAlarm():false)+",\"code\":\"alarmQueryModule_FESDiagramResultAlarm\",\"leaf\":true}");
+		result_json.append("]}");
+		
+		
+		result_json.append("]}");
+		return result_json.toString();
 	}
 	
 	public int saveDeviceTabManagerInstanceConfigData(String selectInstanceId,String instanceConfig) throws IOException, SQLException {

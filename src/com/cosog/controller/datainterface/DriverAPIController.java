@@ -2520,7 +2520,7 @@ public class DriverAPIController extends BaseController{
 			wellBoreChartsData.append("\"upperLoadLine\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
 			wellBoreChartsData.append("\"lowerLoadLine\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getFESDiagram().getLowerLoadLine():"")+"\",");
 			
-			String fmax="",fmin="";
+			String fmax="",fmin="",deltaF="";
 			if(srpCalculateResponseData!=null&&(srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 				if(srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getFMax()!=null&&srpCalculateResponseData.getFESDiagram().getFMax().size()>0){
 					fmax=srpCalculateResponseData.getFESDiagram().getFMax().get(0)+"";
@@ -2528,10 +2528,14 @@ public class DriverAPIController extends BaseController{
 				if(srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getFMin()!=null&&srpCalculateResponseData.getFESDiagram().getFMin().size()>0){
 					fmin=srpCalculateResponseData.getFESDiagram().getFMin().get(0)+"";
 				}
+				if(srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getDeltaF()!=null&&srpCalculateResponseData.getFESDiagram().getDeltaF().size()>0){
+					deltaF=srpCalculateResponseData.getFESDiagram().getDeltaF().get(0)+"";
+				}
 			}
 			
 			wellBoreChartsData.append("\"fmax\":\""+fmax+"\",");
 			wellBoreChartsData.append("\"fmin\":\""+fmin+"\",");
+			wellBoreChartsData.append("\"deltaF\":\""+deltaF+"\",");
 			
 			wellBoreChartsData.append("\"stroke\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getStroke():"")+"\",");
 			wellBoreChartsData.append("\"spm\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getSPM():"")+"\",");
@@ -5049,15 +5053,19 @@ public class DriverAPIController extends BaseController{
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("工况","工况",calculateResponseData.getCalculationStatus().getResultCode()+"",calculateResponseData.getCalculationStatus().getResultCode()+"","","resultName","","","","",1,1,0));
 			
 			//最大最小载荷
-			String FMax="",FMin="";
+			String FMax="",FMin="",deltaF="";
 			if(calculateResponseData.getFESDiagram().getFMax()!=null&&calculateResponseData.getFESDiagram().getFMax().size()>0){
 				FMax=calculateResponseData.getFESDiagram().getFMax().get(0)+"";
 			}
 			if(calculateResponseData.getFESDiagram().getFMin()!=null&&calculateResponseData.getFESDiagram().getFMin().size()>0){
 				FMin=calculateResponseData.getFESDiagram().getFMin().get(0)+"";
 			}
+			if(calculateResponseData.getFESDiagram().getDeltaF()!=null&&calculateResponseData.getFESDiagram().getDeltaF().size()>0){
+				deltaF=calculateResponseData.getFESDiagram().getDeltaF().get(0)+"";
+			}
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("最大载荷","最大载荷",FMax,FMax,"","FMax","","","","kN",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("最小载荷","最小载荷",FMin,FMin,"","FMin","","","","kN",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("交变载荷","交变载荷",deltaF,deltaF,"","DeltaF","","","","kN",1,1,0));
 			//平衡
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("上冲程最大电流","上冲程最大电流",calculateResponseData.getFESDiagram().getUpStrokeIMax()+"",calculateResponseData.getFESDiagram().getUpStrokeIMax()+"","","UPSTROKEIMAX","","","","A",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("下冲程最大电流","下冲程最大电流",calculateResponseData.getFESDiagram().getDownStrokeIMax()+"",calculateResponseData.getFESDiagram().getDownStrokeIMax()+"","","DOWNSTROKEIMAX","","","","A",1,1,0));
@@ -5186,6 +5194,7 @@ public class DriverAPIController extends BaseController{
 			//最大最小载荷
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("最大载荷","最大载荷","","","","FMax","","","","kN",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("最小载荷","最小载荷","","","","FMin","","","","kN",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("交变载荷","交变载荷","","","","DeltaF","","","","kN",1,1,0));
 			//平衡
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("上冲程最大电流","上冲程最大电流","","","","UPSTROKEIMAX","","","","A",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("下冲程最大电流","下冲程最大电流","","","","DOWNSTROKEIMAX","","","","A",1,1,0));

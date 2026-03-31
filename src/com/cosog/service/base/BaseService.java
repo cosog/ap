@@ -3,11 +3,9 @@ package com.cosog.service.base;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -15,13 +13,6 @@ import java.util.Vector;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import oracle.sql.BLOB;
-import oracle.sql.CLOB;
-
-//import org.apache.commons.lang.xwork.StringUtils;
-import org.hibernate.HibernateException;
-import org.hibernate.engine.jdbc.SerializableBlobProxy;
-import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,7 +20,6 @@ import org.springframework.stereotype.Component;
 import com.cosog.dao.BaseDao;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.User;
-import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.GenericsUtils;
@@ -875,9 +865,7 @@ public class BaseService<T> {
 								BufferedInputStream bis = null;
 						        StringBuffer gtsjStr = new StringBuffer();
 								if(obj[j]!=null && (!obj[j].toString().equals("null"))&&obj[j].toString().indexOf("oracle.sql.BLOB")>-1){
-									SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[j]);
-									CLOB realClob = (CLOB) proxy.getWrappedClob(); 
-									gtsj=StringManagerUtils.CLOBtoString(realClob);
+									gtsj=StringManagerUtils.CLOBObjectToString(obj[j]);
 							        String arrgtsj[]=gtsj.replaceAll("\r\n", "\n").split("\n");
 							        gtsjStr.append(arrgtsj[2] + ","); // 功图点数
 							        for(int k=5;k<arrgtsj.length;k++){
@@ -969,9 +957,7 @@ public class BaseService<T> {
 								BufferedInputStream bis = null;
 						        StringBuffer gtsjStr = new StringBuffer();
 								if(obj[j]!=null && (!obj[j].toString().equals("null"))&&obj[j].toString().indexOf("oracle.sql.BLOB")>-1){
-									SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[j]);
-									CLOB realClob = (CLOB) proxy.getWrappedClob(); 
-									gtsj=StringManagerUtils.CLOBtoString(realClob);
+									gtsj=StringManagerUtils.CLOBObjectToString(obj[j]);
 							        String arrgtsj[]=gtsj.replaceAll("\r\n", "\n").split("\n");
 							        gtsjStr.append(arrgtsj[2] + ","); // 功图点数
 							        for(int k=5;k<arrgtsj.length;k++){

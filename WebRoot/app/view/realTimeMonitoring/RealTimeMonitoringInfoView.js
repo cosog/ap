@@ -2242,6 +2242,9 @@ function updateDeviceMonitoringData(record){
 	var showRealtimeDeviceControl=false;
 	var showRealtimeDeviceInformation=false;
 	
+	var rodStressChart_MaxRodStress=false;
+	var rodStressChart_RodStressRange=false;
+	
 	if(deviceTabInstanceConfig!=undefined && deviceTabInstanceConfig.DeviceRealTimeMonitoring!=undefined){
 		showRealtimeWellboreAnalysis=deviceTabInstanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis:false;
 		showRealtimeSurfaceAnalysis=deviceTabInstanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis:false;
@@ -2250,7 +2253,13 @@ function updateDeviceMonitoringData(record){
 		
 		showRealtimeDeviceControl=deviceTabInstanceConfig.DeviceRealTimeMonitoring.DeviceControl!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.DeviceControl:false;
 		showRealtimeDeviceInformation=deviceTabInstanceConfig.DeviceRealTimeMonitoring.DeviceInformation!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.DeviceInformation:false;
+		
+		rodStressChart_MaxRodStress=deviceTabInstanceConfig.DeviceRealTimeMonitoring.RodStressChart_MaxRodStress!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.RodStressChart_MaxRodStress:false;
+		rodStressChart_RodStressRange=deviceTabInstanceConfig.DeviceRealTimeMonitoring.RodStressChart_RodStressRange!=undefined?deviceTabInstanceConfig.DeviceRealTimeMonitoring.RodStressChart_RodStressRange:false;
 	}
+	
+	Ext.getCmp("rodStressChart_ShowMaxRodStress_Id").setValue(rodStressChart_MaxRodStress?1:0);
+	Ext.getCmp("rodStressChart_ShowRodStressRange_Id").setValue(rodStressChart_RodStressRange?1:0);
 	
 	var combDeviceName=Ext.getCmp('RealTimeMonitoringDeviceListComb_Id').getValue();
 	if(combDeviceName!=undefined || combDeviceName!=''){

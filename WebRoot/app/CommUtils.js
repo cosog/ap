@@ -3195,7 +3195,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	});
 }
 
-showRodPress = function(result, divId,showType) {
+showRodPress = function(result, divId) {
 	var deviceName=result.deviceName;                        // 井名
 	var acqTime=result.acqTime;                    // 时间
 	
@@ -3214,6 +3214,25 @@ showRodPress = function(result, divId,showType) {
 	var rod2=loginUserLanguageResource.rod2;   // 二级杆
 	var rod3=loginUserLanguageResource.rod3;   // 三级杆
 	var rod4=loginUserLanguageResource.rod4;   // 四级杆
+	
+	var showMaxRodStress=Ext.getCmp("rodStressChart_ShowMaxRodStress_Id").getValue();
+	var showRodStressRange=Ext.getCmp("rodStressChart_ShowRodStressRange_Id").getValue();
+	
+	if(isNumber(showMaxRodStress) && parseInt(showMaxRodStress) ==1){
+		showMaxRodStress=true;
+	}else{
+		showMaxRodStress=false;
+	}
+	if(isNumber(showRodStressRange) && parseInt(showRodStressRange) ==1){
+		showRodStressRange=true;
+	}else{
+		showRodStressRange=false;
+	}
+	
+	if( !(showRodStressRange || showRodStressRange) ){
+		showMaxRodStress=true;
+	}
+	
 	var xdata = "[";
 	var ydata = "[";
 	var ydata2 = "[";
@@ -3249,11 +3268,11 @@ showRodPress = function(result, divId,showType) {
 //	seriesData1=[70,60,80,90];
 //	seriesData2=[60,50,70,80];
 	
-	initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, acqTime, divId,showType);
+	initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, acqTime, divId,showMaxRodStress,showRodStressRange);
 	return false;
 }
 
-function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, acqTime, divId,showType) {
+function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, acqTime, divId,showMaxRodStress,showRodStressRange) {
 	var yAxisMax=100;
 	for(var i=0;i<seriesData1.length;i++){
 		if(parseFloat(seriesData1[i])>=100 || parseFloat(seriesData2[i])>=100){
@@ -3404,7 +3423,7 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 		        series: [{
 		            name: loginUserLanguageResource.maxRodStress,  // 应力百分比(%)
 		            data: seriesData1,
-		            visible: showType==1,
+		            visible: showMaxRodStress,
 		            dataLabels: {
 		                enabled: true,
 		                rotation: 0,
@@ -3421,7 +3440,7 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 		        },{
 		            name: loginUserLanguageResource.rodStressRange,  // 应力范围百分比(%)
 		            data: seriesData2,
-		            visible: showType!=1,
+		            visible: showRodStressRange,
 		            dataLabels: {
 		                enabled: true,
 		                rotation: 0,

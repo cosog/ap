@@ -1116,22 +1116,85 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                		contentConfig.DeviceHistoryQuery={};
 		                		contentConfig.AlarmQuery={};
 		                		
-		                		contentConfig.DeviceRealTimeMonitoring.FESDiagramStatPie=Ext.getCmp('calculationModel_showRealtimeFESDiagramStatPie_Id').getValue();
-		                		contentConfig.DeviceRealTimeMonitoring.CommStatusStatPie=Ext.getCmp('calculationModel_showRealtimeCommStatusStatPie_Id').getValue();
-		                		contentConfig.DeviceRealTimeMonitoring.RunStatusStatPie=Ext.getCmp('calculationModel_showRealtimeRunStatusStatPie_Id').getValue();
-		                		contentConfig.DeviceRealTimeMonitoring.NumStatusStatPie=Ext.getCmp('calculationModel_showRealtimeNumStatusStatPie_Id').getValue();
+//		                		contentConfig.DeviceRealTimeMonitoring.FESDiagramStatPie=Ext.getCmp('calculationModel_showRealtimeFESDiagramStatPie_Id').getValue();
+//		                		contentConfig.DeviceRealTimeMonitoring.CommStatusStatPie=Ext.getCmp('calculationModel_showRealtimeCommStatusStatPie_Id').getValue();
+//		                		contentConfig.DeviceRealTimeMonitoring.RunStatusStatPie=Ext.getCmp('calculationModel_showRealtimeRunStatusStatPie_Id').getValue();
+//		                		contentConfig.DeviceRealTimeMonitoring.NumStatusStatPie=Ext.getCmp('calculationModel_showRealtimeNumStatusStatPie_Id').getValue();
+//		                		
+//		                		contentConfig.DeviceHistoryQuery.FESDiagramStatPie=Ext.getCmp('calculationModel_showHistoryFESDiagramStatPie_Id').getValue();
+//		                		contentConfig.DeviceHistoryQuery.CommStatusStatPie=Ext.getCmp('calculationModel_showHistoryCommStatusStatPie_Id').getValue();
+//		                		contentConfig.DeviceHistoryQuery.RunStatusStatPie=Ext.getCmp('calculationModel_showHistoryRunStatusStatPie_Id').getValue();
+//		                		contentConfig.DeviceHistoryQuery.NumStatusStatPie=Ext.getCmp('calculationModel_showHistoryNumStatusStatPie_Id').getValue();
+//		                		
+//		                		contentConfig.AlarmQuery.FESDiagramResultAlarm=Ext.getCmp('calculationModel_showAlarmQueryFESDiagramResultAlarm_Id').getValue();
+//		                		contentConfig.AlarmQuery.RunStatusAlarm=Ext.getCmp('calculationModel_showAlarmQueryRunStatusAlarm_Id').getValue();
+//		                		contentConfig.AlarmQuery.CommStatusAlarm=Ext.getCmp('calculationModel_showAlarmQueryCommStatusAlarm_Id').getValue();
+//		                		contentConfig.AlarmQuery.NumericValueAlarm=Ext.getCmp('calculationModel_showAlarmQueryNumericValueAlarm_Id').getValue();
+//		                		contentConfig.AlarmQuery.EnumValueAlarm=Ext.getCmp('calculationModel_showAlarmQueryEnumValueAlarm_Id').getValue();
+//		                		contentConfig.AlarmQuery.SwitchingValueAlarm=Ext.getCmp('calculationModel_showAlarmQuerySwitchingValueAlarm_Id').getValue();
 		                		
-		                		contentConfig.DeviceHistoryQuery.FESDiagramStatPie=Ext.getCmp('calculationModel_showHistoryFESDiagramStatPie_Id').getValue();
-		                		contentConfig.DeviceHistoryQuery.CommStatusStatPie=Ext.getCmp('calculationModel_showHistoryCommStatusStatPie_Id').getValue();
-		                		contentConfig.DeviceHistoryQuery.RunStatusStatPie=Ext.getCmp('calculationModel_showHistoryRunStatusStatPie_Id').getValue();
-		                		contentConfig.DeviceHistoryQuery.NumStatusStatPie=Ext.getCmp('calculationModel_showHistoryNumStatusStatPie_Id').getValue();
+		                		contentConfig.DeviceRealTimeMonitoring.FESDiagramStatPie=false;
+		                		contentConfig.DeviceRealTimeMonitoring.CommStatusStatPie=false;
+		                		contentConfig.DeviceRealTimeMonitoring.RunStatusStatPie=false;
+		                		contentConfig.DeviceRealTimeMonitoring.NumStatusStatPie=false;
 		                		
-		                		contentConfig.AlarmQuery.FESDiagramResultAlarm=Ext.getCmp('calculationModel_showAlarmQueryFESDiagramResultAlarm_Id').getValue();
-		                		contentConfig.AlarmQuery.RunStatusAlarm=Ext.getCmp('calculationModel_showAlarmQueryRunStatusAlarm_Id').getValue();
-		                		contentConfig.AlarmQuery.CommStatusAlarm=Ext.getCmp('calculationModel_showAlarmQueryCommStatusAlarm_Id').getValue();
-		                		contentConfig.AlarmQuery.NumericValueAlarm=Ext.getCmp('calculationModel_showAlarmQueryNumericValueAlarm_Id').getValue();
-		                		contentConfig.AlarmQuery.EnumValueAlarm=Ext.getCmp('calculationModel_showAlarmQueryEnumValueAlarm_Id').getValue();
-		                		contentConfig.AlarmQuery.SwitchingValueAlarm=Ext.getCmp('calculationModel_showAlarmQuerySwitchingValueAlarm_Id').getValue();
+		                		contentConfig.DeviceHistoryQuery.FESDiagramStatPie=false;
+		                		contentConfig.DeviceHistoryQuery.CommStatusStatPie=false;
+		                		contentConfig.DeviceHistoryQuery.RunStatusStatPie=false;
+		                		contentConfig.DeviceHistoryQuery.NumStatusStatPie=false;
+		                		
+		                		contentConfig.AlarmQuery.FESDiagramResultAlarm=false;
+		                		contentConfig.AlarmQuery.RunStatusAlarm=false;
+		                		contentConfig.AlarmQuery.CommStatusAlarm=false;
+		                		contentConfig.AlarmQuery.NumericValueAlarm=false;
+		                		contentConfig.AlarmQuery.EnumValueAlarm=false;
+		                		contentConfig.AlarmQuery.SwitchingValueAlarm=false;
+		                		
+		                		var projectTabConfigTreeGridView = Ext.getCmp("projectTabConfigTreeGridView_Id");
+		                		if(isNotVal(projectTabConfigTreeGridView)){
+		                			var selected = projectTabConfigTreeGridView.getChecked();
+		                			Ext.Array.each(selected, function (name, index, countriesItSelf) {
+		                		        var code = selected[index].get('code')
+		                		        if(code.toUpperCase()=='realtimeMonitoringModule_FESResultStatisticsPieChart'.toUpperCase()){
+		                		        	contentConfig.DeviceRealTimeMonitoring.FESDiagramStatPie=true;
+		                		        }else if(code.toUpperCase()=='realtimeMonitoringModule_commStatusStatisticsPieChart'.toUpperCase()){
+		                		        	contentConfig.DeviceRealTimeMonitoring.CommStatusStatPie=true;
+		                		        }else if(code.toUpperCase()=='realtimeMonitoringModule_runStatusStatisticsPieChart'.toUpperCase()){
+		                		        	contentConfig.DeviceRealTimeMonitoring.RunStatusStatPie=true;
+		                		        }else if(code.toUpperCase()=='realtimeMonitoringModule_numStatusStatisticsPieChart'.toUpperCase()){
+		                		        	contentConfig.DeviceRealTimeMonitoring.NumStatusStatPie=true;
+		                		        }
+		                		        
+		                		        else if(code.toUpperCase()=='historyQueryModule_FESResultStatisticsPieChart'.toUpperCase()){
+		                		        	contentConfig.DeviceHistoryQuery.FESDiagramStatPie=true;
+		                		        }else if(code.toUpperCase()=='historyQueryModule_commStatusStatisticsPieChart'.toUpperCase()){
+		                		        	contentConfig.DeviceHistoryQuery.CommStatusStatPie=true;
+		                		        }else if(code.toUpperCase()=='historyQueryModule_runStatusStatisticsPieChart'.toUpperCase()){
+		                		        	contentConfig.DeviceHistoryQuery.RunStatusStatPie=true;
+		                		        }else if(code.toUpperCase()=='historyQueryModule_numStatusStatisticsPieChart'.toUpperCase()){
+		                		        	contentConfig.DeviceHistoryQuery.NumStatusStatPie=true;
+		                		        }
+
+		                		        else if(code.toUpperCase()=='alarmQueryModule_numericValueAlarm'.toUpperCase()){
+		                		        	contentConfig.AlarmQuery.NumericValueAlarm=true;
+		                		        }
+		                		        else if(code.toUpperCase()=='alarmQueryModule_enumValueAlarm'.toUpperCase()){
+		                		        	contentConfig.AlarmQuery.EnumValueAlarm=true;
+		                		        }
+		                		        else if(code.toUpperCase()=='alarmQueryModule_switchingValueAlarm'.toUpperCase()){
+		                		        	contentConfig.AlarmQuery.SwitchingValueAlarm=true;
+		                		        }
+		                		        else if(code.toUpperCase()=='alarmQueryModule_commStatusAlarm'.toUpperCase()){
+		                		        	contentConfig.AlarmQuery.CommStatusAlarm=true;
+		                		        }
+		                		        else if(code.toUpperCase()=='alarmQueryModule_runStatusAlarm'.toUpperCase()){
+		                		        	contentConfig.AlarmQuery.RunStatusAlarm=true;
+		                		        }
+		                		        else if(code.toUpperCase()=='alarmQueryModule_FESDiagramResultAlarm'.toUpperCase()){
+		                		        	contentConfig.AlarmQuery.FESDiagramResultAlarm=true;
+		                		        }
+		                		    });
+		                		}
     	                		
     	                		
     	                		Ext.Ajax.request({
@@ -1453,6 +1516,11 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                		instanceConfig.DeviceRealTimeMonitoring.DeviceControl=Ext.getCmp('calculationModel_showRealtimeDeviceControl_Id').getValue();
 		                		instanceConfig.DeviceRealTimeMonitoring.DeviceInformation=Ext.getCmp('calculationModel_showRealtimeDeviceInformation_Id').getValue();
 		                		
+		                		instanceConfig.DeviceRealTimeMonitoring.RodStressChart_MaxRodStress=Ext.getCmp('calculationModel_rodStressChart_maxRodStress_Id').getValue();
+		                		instanceConfig.DeviceRealTimeMonitoring.RodStressChart_RodStressRange=Ext.getCmp('calculationModel_rodStressChart_rodStressRange_Id').getValue();
+		                		
+		                		
+		                		
 		                		instanceConfig.DeviceHistoryQuery.TrendCurve=Ext.getCmp('calculationModel_showHistoryTrendCurve_Id').getValue();
 		                		instanceConfig.DeviceHistoryQuery.TiledDiagram=Ext.getCmp('calculationModel_showHistoryTiledDiagram_Id').getValue();
 		                		instanceConfig.DeviceHistoryQuery.DiagramOverlay=Ext.getCmp('calculationModel_showHistoryDiagramOverlay_Id').getValue();
@@ -1576,6 +1644,41 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        	    id: 'calculationModel_showRealtimeDeviceInformation_Id',
 	                                        	    checked: false
 	    				                        }]
+	        				                },{
+	        				                    xtype: 'container',        // 外层容器，负责占满整行
+	        				                    style: 'width: 100%',      // 覆盖默认的33%，实现跨列
+	        				                    layout: 'form',            // 保持与内部一致
+	        				                    items: [
+	        				                        {
+	        				                            xtype: 'checkboxgroup',
+	        				                            fieldLabel: loginUserLanguageResource.rodStressChartContent,
+	        				                            labelWidth: 100,
+	        				                            // 使用 hbox 布局让选项强制在一行（或通过 columns 和宽度控制）
+	        				                            layout: {
+	        				                                type: 'hbox',
+	        				                                align: 'middle'
+	        				                            },
+	        				                            defaults: {
+	        				                                margin: '0 15 0 0'   // 选项之间的右间隙
+	        				                            },
+	        				                            items: [
+	        				                                {
+	        				                                	boxLabel: loginUserLanguageResource.maxRodStress,
+	                                                            name: 'calculationModel.rodStressChart_maxRodStress',
+	                                                            id: 'calculationModel_rodStressChart_maxRodStress_Id',
+	        				                                    checked: false,
+	        				                                    flex: 1          // 可选，让选项均匀分布
+	        				                                },
+	        				                                {
+	        				                                	boxLabel: loginUserLanguageResource.rodStressRange,
+	                                                            name: 'calculationModel.rodStressChart_rodStressRange',
+	                                                            id: 'calculationModel_rodStressChart_rodStressRange_Id',
+	        				                                    checked: false,
+	        				                                    flex: 1
+	        				                                }
+	        				                            ]
+	        				                        }
+	        				                    ]
 	        				                }]
 	        				            },{
 	                                        xtype: 'fieldset',
@@ -3777,6 +3880,8 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 	Ext.getCmp("calculationModel_showRealtimeDynamicData_Id").setValue(false);
 	Ext.getCmp("calculationModel_showRealtimeDeviceControl_Id").setValue(false);
 	Ext.getCmp("calculationModel_showRealtimeDeviceInformation_Id").setValue(false);
+	Ext.getCmp("calculationModel_rodStressChart_maxRodStress_Id").setValue(false);
+	Ext.getCmp("calculationModel_rodStressChart_rodStressRange_Id").setValue(false);
 	
 	Ext.getCmp("calculationModel_showHistoryTrendCurve_Id").setValue(false);
 	Ext.getCmp("calculationModel_showHistoryTiledDiagram_Id").setValue(false);
@@ -3800,6 +3905,9 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 			Ext.getCmp("calculationModel_showRealtimeDynamicData_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.DynamicData!=undefined?instanceConfig.DeviceRealTimeMonitoring.DynamicData:false);
 			Ext.getCmp("calculationModel_showRealtimeDeviceControl_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.DeviceControl!=undefined?instanceConfig.DeviceRealTimeMonitoring.DeviceControl:false);
 			Ext.getCmp("calculationModel_showRealtimeDeviceInformation_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.DeviceInformation!=undefined?instanceConfig.DeviceRealTimeMonitoring.DeviceInformation:false);
+			
+			Ext.getCmp("calculationModel_rodStressChart_maxRodStress_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.RodStressChart_MaxRodStress!=undefined?instanceConfig.DeviceRealTimeMonitoring.RodStressChart_MaxRodStress:false);
+			Ext.getCmp("calculationModel_rodStressChart_rodStressRange_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.RodStressChart_RodStressRange!=undefined?instanceConfig.DeviceRealTimeMonitoring.RodStressChart_RodStressRange:false);
 		}
 		
 		if(instanceConfig.DeviceHistoryQuery!=undefined){

@@ -32,7 +32,7 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
             
             if(activeId=="RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){
             	showFSDiagramFromPumpcard(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
-            	showRodPress(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id",1);    // 调用画杆柱应力的函数
+            	showRodPress(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id");    // 调用画杆柱应力的函数
             	showPumpCard(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv3_id"); // 调用画泵功图的函数
             	showPumpEfficiency(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv4_id");    // 调用画泵效组成的函数
             }else if(activeId=="RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){

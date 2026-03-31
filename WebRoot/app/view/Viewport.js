@@ -362,7 +362,7 @@ function websocketOnMessage(evt) {
                         	}else{
                         		showSurfaceCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id");
                         	}
-                            showRodPress(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id",1); // 调用画杆柱应力的函数
+                            showRodPress(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id"); // 调用画杆柱应力的函数
                             showPumpCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv3_id"); // 调用画泵功图的函数
                             showPumpEfficiency(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv4_id"); // 调用画泵效组成的函数
                     	}

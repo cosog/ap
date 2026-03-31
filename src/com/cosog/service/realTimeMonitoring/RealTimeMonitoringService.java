@@ -6718,6 +6718,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        String pumpFSDiagramData = pumpFSDiagramStrBuff.toString();
 	        
 	        dataSbf.append("{success:true,");
+	        dataSbf.append("deviceId:\""+id+"\",");
 	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 设备名称
 	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("pointCount:\""+pointCount+"\","); 

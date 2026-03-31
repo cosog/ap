@@ -611,6 +611,16 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                                  value: '',
                                  hidden: true
                              },{
+                                 id: 'rodStressChart_ShowMaxRodStress_Id',
+                                 xtype: 'textfield',
+                                 value: '0',
+                                 hidden: true
+                             },{
+                                 id: 'rodStressChart_ShowRodStressRange_Id',
+                                 xtype: 'textfield',
+                                 value: '0',
+                                 hidden: true
+                             },{
                                  xtype: 'button',
                                  text: loginUserLanguageResource.refresh,
                                  iconCls: 'note-refresh',

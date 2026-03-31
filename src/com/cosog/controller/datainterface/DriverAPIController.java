@@ -2513,6 +2513,7 @@ public class DriverAPIController extends BaseController{
 		if(deviceInfo.getCalculateType()==1){
 			wellBoreChartsData.append("\"success\":true,");
 			wellBoreChartsData.append("\"resultStatus\":"+resultStatus+",");
+			wellBoreChartsData.append("\"deviceId\":"+deviceInfo.getId()+",");
 			wellBoreChartsData.append("\"deviceName\":\""+deviceInfo.getDeviceName()+"\",");
 			wellBoreChartsData.append("\"acqTime\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			

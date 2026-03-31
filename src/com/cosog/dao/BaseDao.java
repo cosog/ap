@@ -35,8 +35,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.internal.OracleClob;
-import oracle.sql.BLOB;
-import oracle.sql.CLOB;
 import redis.clients.jedis.Jedis;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,8 +42,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -53,6 +49,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
 import org.springframework.orm.hibernate5.SessionFactoryUtils;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
@@ -237,17 +235,17 @@ public class BaseDao extends HibernateDaoSupport {
 
 	public Object deleteCallSql(final String sql, final Object... values) {
 		Session session = getSessionFactory().getCurrentSession();
-				SQLQuery query = session.createSQLQuery(sql);
-				for (int i = 0; i < values.length; i++) {
-					query.setParameter(i, values[i]);
-				}
-				return query.executeUpdate();
+		NativeQuery<?> query = session.createNativeQuery(sql);
+		for (int i = 0; i < values.length; i++) {
+			query.setParameter(i, values[i]);
+		}
+		return query.executeUpdate();
 	}
 
 	public int deleteObject(final String hql) {
 		Session session = getSessionFactory().getCurrentSession();
-				SQLQuery query = session.createSQLQuery(hql);
-				return query.executeUpdate();
+		NativeQuery<?> query = session.createNativeQuery(hql);
+		return query.executeUpdate();
 	}
 
 	public <T> void deleteObject(T clazz) {
@@ -375,12 +373,30 @@ public class BaseDao extends HibernateDaoSupport {
 	 *            HQL参数
 	 * @return
 	 */
+//	public List find(String queryString, Object... values) {
+//		Query query = getSessionFactory().getCurrentSession().createQuery(queryString);
+//		for (int i = 0; i < values.length; i++) {
+//			query.setParameter(i, values[i]);
+//		}
+//		return query.list();
+//	}
+	
 	public List find(String queryString, Object... values) {
-		Query query = getSessionFactory().getCurrentSession().createQuery(queryString);
-		for (int i = 0; i < values.length; i++) {
-			query.setParameter(i, values[i]);
-		}
-		return query.list();
+	    try {
+	        Session session = getSessionFactory().getCurrentSession();
+	        // 使用新版 Query 接口
+	        Query query = session.createQuery(queryString);
+	        for (int i = 0; i < values.length; i++) {
+	            // 索引从 0 开始（与原行为一致）
+	            query.setParameter(i, values[i]);
+	        }
+	        // 使用 getResultList() 替代 list()
+	        return query.getResultList();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        // 建议根据业务决定是否重新抛出异常或返回空集合
+	        return new ArrayList<>();
+	    }
 	}
 	
 	/**
@@ -408,21 +424,38 @@ public class BaseDao extends HibernateDaoSupport {
 	 * @author qiands
 	 * @return List<?>
 	 */
+//	public List<?> findCallSql(final String callSql, final Object... values) {
+//		try{
+//			Session session=getSessionFactory().getCurrentSession();
+//			SQLQuery query = session.createSQLQuery(callSql);
+//			for (int i = 0; i < values.length; i++) {
+//				query.setParameter(i, values[i]);
+//			}
+////			StringManagerUtils.printLog(callSql);
+//			return query.list();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+callSql,2);
+//			return new ArrayList<>();
+//		}
+//	}
+	
 	public List<?> findCallSql(final String callSql, final Object... values) {
-		try{
-			Session session=getSessionFactory().getCurrentSession();
-			SQLQuery query = session.createSQLQuery(callSql);
-			for (int i = 0; i < values.length; i++) {
-				query.setParameter(i, values[i]);
-			}
-//			StringManagerUtils.printLog(callSql);
-			return query.list();
-		} catch (Exception e) {
-			e.printStackTrace();
-			StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+callSql,2);
-			return new ArrayList<>();
-		}
-		
+	    try {
+	        Session session = getSessionFactory().getCurrentSession();
+	        // 使用 NativeQuery 替代 SQLQuery
+	        NativeQuery<?> query = session.createNativeQuery(callSql);
+	        for (int i = 0; i < values.length; i++) {
+	            // 设置参数，索引从 0 开始（与原 SQLQuery 行为一致）
+	            query.setParameter(i, values[i]);
+	        }
+	        // 使用 getResultList() 替代 list()
+	        return query.getResultList();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        StringManagerUtils.printLog("sql执行失败-"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+callSql,2);
+	        return new ArrayList<>();
+	    }
 	}
 
 	public List<Org> findChildOrg(Integer parentId) {
@@ -479,7 +512,7 @@ public class BaseDao extends HibernateDaoSupport {
 	 */
 	public <T> List<T> getAllPageBySql(final String sql, final Page pager, final Object... values) {
 		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(sql);
+		NativeQuery query = session.createNativeQuery(sql);
 		/****
 		* 为query对象参数赋值操作
 		 * */
@@ -490,18 +523,18 @@ public class BaseDao extends HibernateDaoSupport {
 		query.setMaxResults(pager.getLimit());// 设置分页条数
 		int totals = getTotalCountRows(sql, values);//设置数据表中的总记录数
 		pager.setTotalCount(totals);
-		return query.list();
+		return query.getResultList();
 	}
 	public <T> List<T> getMyCustomPageBySql(final String sqlAll,final String sql, final Page pager, final Object... values) {
 		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(sql);
+		NativeQuery query = session.createNativeQuery(sql);
 		for (int i = 0; i < values.length; i++) {
 			values[i] = values[i].toString().replace("@", ",");
 			query.setParameter(i, values[i]);
 		}
 		int totals = getTotalCountRows(sqlAll, values);//设置数据表中的总记录数
 		pager.setTotalCount(totals);
-		return query.list();
+		return query.getResultList();
 	}
 
 	/***
@@ -519,7 +552,7 @@ public class BaseDao extends HibernateDaoSupport {
 	 */
 	public <T> List<T> getAllPageBySql(final String sql, final Page pager, final Vector<String> v) {
 		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(sql);
+		NativeQuery query = session.createNativeQuery(sql);
 		int index = -1;
 		String data = "";
 		for (int i = 0; i < v.size(); i++) {
@@ -534,7 +567,7 @@ public class BaseDao extends HibernateDaoSupport {
 		query.setFirstResult(pager.getStart());
 		query.setMaxResults(pager.getLimit());
 		pager.setTotalCount(scrollableResults.getRowNumber() + 1);
-		return query.list();
+		return query.getResultList();
 	}
 
 	public void getChildrenList(List parentitem, Integer orgid) {
@@ -575,7 +608,7 @@ public class BaseDao extends HibernateDaoSupport {
 	 */
 	public Integer getCountSQLRows(String sql) {
 		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(sql);
+		NativeQuery query = session.createNativeQuery(sql);
 		BigDecimal obj = (BigDecimal) query.uniqueResult();
 		return obj.intValue();
 	}
@@ -735,8 +768,8 @@ public class BaseDao extends HibernateDaoSupport {
 	
 	public <T> List<T> getSQLObjects(final String sql) {
 		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(sql);
-		List list = query.list();
+		NativeQuery query = session.createNativeQuery(sql);
+		List list = query.getResultList();
 		return (List<T>) list;
 	}
 
@@ -807,7 +840,8 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		
 		Integer rows =0;
-		SQLQuery query = getSessionFactory().getCurrentSession().createSQLQuery(allsql);
+		Session session=getSessionFactory().getCurrentSession();
+		NativeQuery query = session.createNativeQuery(allsql);
 //		StringManagerUtils.printLog(allsql);
 		for (int i = 0; i < values.length; i++) {
 			values[i] = values[i].toString().replace("@", ",");
@@ -2108,14 +2142,14 @@ public class BaseDao extends HibernateDaoSupport {
 
 	public int updatealarmmessage(final String sql) throws Exception {
 		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(sql);
+		NativeQuery query = session.createNativeQuery(sql);
 		return query.executeUpdate();
 
 	}
 
 	public int updateBySQL(final String sql, final List pl) throws Exception {
 		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(sql);
+		NativeQuery query = session.createNativeQuery(sql);
 		if (pl != null && !pl.isEmpty()) {
 			for (int i = 0; i < pl.size(); i++) {
 				query.setParameter(i, pl.get(i));
@@ -2134,7 +2168,7 @@ public class BaseDao extends HibernateDaoSupport {
 	 */
 	public Object updateObject(final String sql) {
 		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(sql);
+		NativeQuery query = session.createNativeQuery(sql);
 		return query.executeUpdate();
 	}
 
@@ -2157,7 +2191,7 @@ public class BaseDao extends HibernateDaoSupport {
 
 	public int updateWellorder(final String hql) {
 		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(hql);
+		NativeQuery query = session.createNativeQuery(hql);
 		return query.executeUpdate();
 	}
 

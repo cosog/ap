@@ -5910,9 +5910,9 @@ public class MemoryDataManagerTask {
 			    	JSONArray arr = entry.getValue();
 				    for(int i=0;i<arr.size();i++){
 						JSONObject obj=arr.getJSONObject(i);
-						String item=obj.getString("FIELD");
+						String item=obj.getString("DB FIELD");
 						if(StringManagerUtils.isNotNull(item)){
-							String value=obj.getString("APPLY VALUE");
+							String value=obj.getString("TRANSLATION RESULT");
 							if(!key.equalsIgnoreCase("oem")){
 								value=StringManagerUtils.stringFormat(value);
 							}
@@ -5924,7 +5924,7 @@ public class MemoryDataManagerTask {
 				    for(int i=0;i<arr.size();i++){
 						JSONObject obj=arr.getJSONObject(i);
 						String itemCode=obj.getString("ITEM CODE");
-						String itemName=obj.getString("ITEM NAME APPLY VALUE");
+						String itemName=obj.getString("ITEM NAME TRANSLATION RESULT");
 						
 						if(!"LANGUAGE".equalsIgnoreCase(itemCode)){
 							itemName=StringManagerUtils.stringFormat(itemName);
@@ -5954,9 +5954,9 @@ public class MemoryDataManagerTask {
 			    		JSONObject obj=arr.getJSONObject(i);
 			    		WorkType workType=new WorkType();
 			    		int resultCode=obj.getIntValue("RESULT CODE"); 
-			    		String resultName=StringManagerUtils.stringFormat(obj.getString("RESULT NAME APPLY VALUE")); 
+			    		String resultName=StringManagerUtils.stringFormat(obj.getString("RESULT NAME TRANSLATION RESULT")); 
 //			    		String resultDescription=StringManagerUtils.stringFormat(obj.getString("RESULTDESCRIPTION"));
-			    		String optimizationSuggestion=StringManagerUtils.stringFormat(obj.getString("OPTIMIZATION SUGGESTION APPLY VALUE"));
+			    		String optimizationSuggestion=StringManagerUtils.stringFormat(obj.getString("OPTIMIZATION SUGGESTION TRANSLATION RESULT"));
 			    		String remark=StringManagerUtils.stringFormat(obj.getString("REMARK"));
 			    		
 			    		workType.setResultCode(resultCode);

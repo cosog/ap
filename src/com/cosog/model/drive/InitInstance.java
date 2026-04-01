@@ -66,9 +66,9 @@ public class InitInstance  implements Serializable {
 	    
     	private List<Integer> Addr;
     	
-    	private List<String> HighLowByte;
-    	
-    	private List<String> AddrAndHighLowByte;
+//    	private List<String> HighLowByte;
+//    	
+//    	private List<String> AddrAndHighLowByte;
 
 	    private int GroupTimingInterval;
 	    
@@ -92,18 +92,18 @@ public class InitInstance  implements Serializable {
 		public void setId(Integer id) {
 			Id = id;
 		}
-		public List<String> getAddrAndHighLowByte() {
-			return AddrAndHighLowByte;
-		}
-		public void setAddrAndHighLowByte(List<String> addrAndHighLowByte) {
-			AddrAndHighLowByte = addrAndHighLowByte;
-		}
-		public List<String> getHighLowByte() {
-			return HighLowByte;
-		}
-		public void setHighLowByte(List<String> highLowByte) {
-			HighLowByte = highLowByte;
-		}
+//		public List<String> getAddrAndHighLowByte() {
+//			return AddrAndHighLowByte;
+//		}
+//		public void setAddrAndHighLowByte(List<String> addrAndHighLowByte) {
+//			AddrAndHighLowByte = addrAndHighLowByte;
+//		}
+//		public List<String> getHighLowByte() {
+//			return HighLowByte;
+//		}
+//		public void setHighLowByte(List<String> highLowByte) {
+//			HighLowByte = highLowByte;
+//		}
 		public List<ModbusProtocolConfig.Items> getProtocolItem() {
 			return ProtocolItem;
 		}
@@ -251,7 +251,7 @@ public class InitInstance  implements Serializable {
 	            	if (entry.getValue().isArray()) {
 	            	    for (JsonNode acqGroup : entry.getValue()) {
 	            	    	((ObjectNode)acqGroup).remove("Id");
-	            	    	((ObjectNode)acqGroup).remove("AddrAndHighLowByte");
+//	            	    	((ObjectNode)acqGroup).remove("AddrAndHighLowByte");
 	            	    	((ObjectNode)acqGroup).remove("ProtocolItem");
 	            	    }
 	            	}
@@ -260,7 +260,7 @@ public class InitInstance  implements Serializable {
 	            	    for (JsonNode ctrlGroup : entry.getValue()) {
 	            	    	((ObjectNode)ctrlGroup).remove("Id");
 	            	    	((ObjectNode)ctrlGroup).remove("GroupTimingInterval");
-	            	    	((ObjectNode)ctrlGroup).remove("AddrAndHighLowByte");
+//	            	    	((ObjectNode)ctrlGroup).remove("AddrAndHighLowByte");
 	            	    	((ObjectNode)ctrlGroup).remove("ProtocolItem");
 	            	    }
 	            	}

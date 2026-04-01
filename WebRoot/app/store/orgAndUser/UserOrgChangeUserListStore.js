@@ -88,7 +88,10 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeUserListStore', {
                     }]
                 });
                 var userListPanel = Ext.getCmp("UserOrgChangeWinUserListPanel_Id");
-                userListPanel.add(gridPanel);
+                
+                if(isNotVal(userListPanel)){
+                	userListPanel.add(gridPanel);
+                }
             }
         },
         beforeload: function (store, options) {

@@ -65,7 +65,10 @@ Ext.define('AP.store.dataMaintaining.SRPTotalCalculateMaintainingDataStore', {
                     }
                 });
                 var panel = Ext.getCmp("SRPTotalCalculateMaintainingPanel");
-                panel.add(gridPanel);
+                
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             gridPanel.getSelectionModel().deselectAll(true);
             

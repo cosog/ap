@@ -46,7 +46,10 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeOrgListStore', {
                     }]
                 });
                 var orgListPanel_Id = Ext.getCmp("UserOrgChangeWinOrgListPanel_Id");
-                orgListPanel_Id.add(treePanel);
+                
+                if(isNotVal(orgListPanel_Id)){
+                	orgListPanel_Id.add(treePanel);
+                }
             }
 
         },

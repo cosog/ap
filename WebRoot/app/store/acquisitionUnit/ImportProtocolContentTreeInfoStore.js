@@ -130,7 +130,9 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("importProtocolTreePanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
             
             treeGridPanel.getSelectionModel().deselectAll(true);

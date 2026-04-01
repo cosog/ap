@@ -69,7 +69,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSingleWellRangeReportTemplate
 
                 });
                 var panel = Ext.getCmp("ReportUnitSingleWellRangeReportTemplateListPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             
             gridPanel.getSelectionModel().deselectAll(true);

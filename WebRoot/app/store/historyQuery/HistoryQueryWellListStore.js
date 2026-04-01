@@ -63,7 +63,9 @@ Ext.define('AP.store.historyQuery.HistoryQueryWellListStore', {
                     }
                 });
                 var panel = Ext.getCmp("HistoryQueryInfoDeviceListPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;

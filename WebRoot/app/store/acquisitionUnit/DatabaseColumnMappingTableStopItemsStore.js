@@ -151,7 +151,9 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
                     }
                 });
                 var panel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningPanel2_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             gridPanel.getSelectionModel().deselectAll(true);
             if(get_rawData.stopValueIndex.length>0){

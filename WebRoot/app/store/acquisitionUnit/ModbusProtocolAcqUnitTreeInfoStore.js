@@ -210,21 +210,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("ModbusProtocolAcqGroupConfigPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
-//            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").getValue());
-//            if(selectedRow==0){
-//            	for(var i=0;i<store.data.length;i++){
-//            		if(store.getAt(i).data.classes>=2){
-//            			selectedRow=i;
-//            			if(isNotVal(store.getAt(i).data.children) && store.getAt(i).data.children.length>0){
-//            				selectedRow+=1;
-//            			}
-//            			break;
-//            		}
-//            	}
-//            }
-            
             
             var selectedRow=0;
             var addObjectName=Ext.getCmp("ModbusProtocolAcqGroupConfigAddObjectName_Id").getValue();

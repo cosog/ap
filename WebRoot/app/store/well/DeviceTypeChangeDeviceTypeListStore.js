@@ -67,7 +67,10 @@ Ext.define('AP.store.well.DeviceTypeChangeDeviceTypeListStore', {
 
                 });
                 var panel = Ext.getCmp("DeviceTypeChangeWinTypeListPanel_Id");
-                panel.add(treeGridPanel);
+                
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
         }
     }

@@ -130,7 +130,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore', {
 
                 });
                 var ModbusProtocolInstanceConfigPanel = Ext.getCmp("ModbusProtocolInstanceConfigPanel_Id");
-                ModbusProtocolInstanceConfigPanel.add(treeGridPanel);
+                if(isNotVal(ModbusProtocolInstanceConfigPanel)){
+                	ModbusProtocolInstanceConfigPanel.add(treeGridPanel);
+                }
             }
             
             

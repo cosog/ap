@@ -177,7 +177,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("ModbusProtocolAddrMappingConfigPanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
             
             var selectedRow=0;

@@ -126,13 +126,18 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         			Ext.getCmp('ModbusProtocolReportUnitReportTemplateTabPanel_Id').removeAll();
                         			if(record.data.unitClasses==1){
                         				var ModbusProtocolReportUnitClasses1ConfigInfoView=Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses1ConfigInfoView');
-                        				Ext.getCmp('ModbusProtocolReportUnitReportTemplateTabPanel_Id').add(ModbusProtocolReportUnitClasses1ConfigInfoView);
+                        				if(isNotVal(Ext.getCmp('ModbusProtocolReportUnitReportTemplateTabPanel_Id'))){
+                        					Ext.getCmp('ModbusProtocolReportUnitReportTemplateTabPanel_Id').add(ModbusProtocolReportUnitClasses1ConfigInfoView);
+                                        }
                         				
                         				CreateHydrologicalWellDailyReportTemplateInfoTable();
                         				CreateHydrologicalWellDailyReportConfigItemsInfoTable();
                         			}else{
                         				var ModbusProtocolReportUnitClasses0ConfigInfoView=Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses0ConfigInfoView');
-                        				Ext.getCmp('ModbusProtocolReportUnitReportTemplateTabPanel_Id').add(ModbusProtocolReportUnitClasses0ConfigInfoView);
+                        				
+                        				if(isNotVal(Ext.getCmp('ModbusProtocolReportUnitReportTemplateTabPanel_Id'))){
+                        					Ext.getCmp('ModbusProtocolReportUnitReportTemplateTabPanel_Id').add(ModbusProtocolReportUnitClasses0ConfigInfoView);
+                                        }
                         				
                         				var ReportUnitSingleWellDailyReportTemplateListGridPanel=Ext.getCmp("ReportUnitSingleWellDailyReportTemplateListGridPanel_Id");
                                     	if (isNotVal(ReportUnitSingleWellDailyReportTemplateListGridPanel)) {
@@ -175,7 +180,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("ModbusProtocolReportUnitConfigPanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
 //            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolReportUnitConfigSelectRow_Id").getValue());
 //            

@@ -63,7 +63,9 @@ Ext.define('AP.store.well.BatchAddDeviceApplicationScenariosListStore', {
                     }
                 });
                 var panel = Ext.getCmp("BatchAddDeviceApplicationScenariosInfoPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             var selectRow=0;
             if(sceneConfig!='all'){

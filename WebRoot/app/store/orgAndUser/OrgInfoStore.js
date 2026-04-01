@@ -84,7 +84,9 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
 
                 });
                 var panel = Ext.getCmp("OrgAndUserOrgInfoPanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
 
             //加载用户列表

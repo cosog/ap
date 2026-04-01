@@ -48,7 +48,9 @@ Ext.define('AP.store.well.WaterCutRawDataStore', {
                     }
                 });
                 var panel = Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             showWaterCutRawDataCurve(get_rawData);
         },

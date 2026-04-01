@@ -70,7 +70,9 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
                     }]
                 });
                 var panel = Ext.getCmp("DatabaseColumnMappingPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
         },
         beforeload: function (store, options) {

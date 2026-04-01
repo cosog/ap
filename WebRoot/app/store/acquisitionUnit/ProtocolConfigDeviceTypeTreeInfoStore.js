@@ -161,7 +161,9 @@ Ext.define('AP.store.acquisitionUnit.ProtocolConfigDeviceTypeTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("ProtocolConfigTabTreePanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
             if(store.data.length>0){
             	treeGridPanel.getSelectionModel().select(0, true);

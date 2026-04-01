@@ -46,7 +46,10 @@ Ext.define('AP.store.well.DeviceOrgChangeOrgListStore', {
                     }]
                 });
                 var orgListPanel_Id = Ext.getCmp("DeviceOrgChangeWinOrgListPanel_Id");
-                orgListPanel_Id.add(treePanel);
+                
+                if(isNotVal(orgListPanel_Id)){
+                	orgListPanel_Id.add(treePanel);
+                }
             }
 
         },

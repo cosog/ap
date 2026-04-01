@@ -125,7 +125,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                     }
                 });
                 var panel = Ext.getCmp("ModbusProtocolAlarmInstanceConfigPanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
 //            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmInstanceTreeSelectRow_Id").getValue());
 //            if(selectedRow==0 || selectedRow>=store.data.length ){

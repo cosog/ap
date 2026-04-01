@@ -158,7 +158,9 @@ Ext.define('AP.store.operationMaintenance.DeviceTabManagerInfoStore', {
                     }
                 });
                 var panel = Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             var selectedRow=0;
             var functionConfigInstanceSelectId=parseInt(Ext.getCmp("DeviceTabManagerInstanceSelectId_Id").getValue());

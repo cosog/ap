@@ -175,7 +175,9 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                         }
                     }
                 });
-                Ext.getCmp("RealTimeMonitoringRightControlPanel").add(controlGridPanel);
+                if(isNotVal(Ext.getCmp("RealTimeMonitoringRightControlPanel"))){
+                	Ext.getCmp("RealTimeMonitoringRightControlPanel").add(controlGridPanel);
+                }
             }
             Ext.getCmp("RealTimeMonitoringTabPanel").getEl().unmask();
             Ext.getCmp("RealTimeMonitoringInfoPanel_Id").getEl().unmask();

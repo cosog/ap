@@ -31,7 +31,6 @@ import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.thread.calculate.InitIdAndIPPortThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AdInitMap;
-import com.cosog.utils.AdvancedMemoryMonitorUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.CounterUtils;
 import com.cosog.utils.DataModelMap;
@@ -1149,8 +1148,8 @@ public class EquipmentDriverServerTask {
 								group.setId(groupId);
 								group.setGroupTimingInterval(groupTimingInterval);
 								group.setAddr(new ArrayList<Integer>());
-								group.setHighLowByte(new ArrayList<>());
-								group.setAddrAndHighLowByte(new ArrayList<>());
+//								group.setHighLowByte(new ArrayList<>());
+//								group.setAddrAndHighLowByte(new ArrayList<>());
 								group.setProtocolItem(new ArrayList<>());
 								if(groupType==0){
 									initInstance.getAcqGroup().add(group);
@@ -1162,11 +1161,11 @@ public class EquipmentDriverServerTask {
 							if(group!=null){
 								ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, itemName);
 								if(item!=null){
-									String addrAndHighLowByte=item.getAddr()+"_"+item.getHighLowByte();
-									if(!StringManagerUtils.existOrNot(group.getAddrAndHighLowByte(), addrAndHighLowByte,true)){
+									int addr=item.getAddr();
+									if(!StringManagerUtils.existOrNot(group.getAddr(), addr)){
 //										group.getAddr().add(item.getAddr());
 										group.getProtocolItem().add(item);
-										group.getAddrAndHighLowByte().add(addrAndHighLowByte);
+//										group.getAddrAndHighLowByte().add(addrAndHighLowByte);
 									}
 								}
 							}
@@ -1179,26 +1178,26 @@ public class EquipmentDriverServerTask {
 					for(InitInstance.Group group:initInstance.getAcqGroup() ){
 						Collections.sort(group.getProtocolItem());
 						group.setAddr(new ArrayList<Integer>());
-						group.setHighLowByte(new ArrayList<>());
-						group.setAddrAndHighLowByte(new ArrayList<>());
+//						group.setHighLowByte(new ArrayList<>());
+//						group.setAddrAndHighLowByte(new ArrayList<>());
 						for(ModbusProtocolConfig.Items item:group.getProtocolItem()){
-							String addrAndHighLowByte=item.getAddr()+"_"+item.getHighLowByte();
+//							String addrAndHighLowByte=item.getAddr()+"_"+item.getHighLowByte();
 							group.getAddr().add(item.getAddr());
-							group.getHighLowByte().add(item.getHighLowByte()!=null?item.getHighLowByte():"");
-							group.getAddrAndHighLowByte().add(addrAndHighLowByte);
+//							group.getHighLowByte().add(item.getHighLowByte()!=null?item.getHighLowByte():"");
+//							group.getAddrAndHighLowByte().add(addrAndHighLowByte);
 						}
 						
 					}
 					for(InitInstance.Group group:initInstance.getCtrlGroup() ){
 						Collections.sort(group.getProtocolItem());
 						group.setAddr(new ArrayList<Integer>());
-						group.setHighLowByte(new ArrayList<>());
-						group.setAddrAndHighLowByte(new ArrayList<>());
+//						group.setHighLowByte(new ArrayList<>());
+//						group.setAddrAndHighLowByte(new ArrayList<>());
 						for(ModbusProtocolConfig.Items item:group.getProtocolItem()){
-							String addrAndHighLowByte=item.getAddr()+"_"+item.getHighLowByte();
+//							String addrAndHighLowByte=item.getAddr()+"_"+item.getHighLowByte();
 							group.getAddr().add(item.getAddr());
-							group.getHighLowByte().add(item.getHighLowByte()!=null?item.getHighLowByte():"");
-							group.getAddrAndHighLowByte().add(addrAndHighLowByte);
+//							group.getHighLowByte().add(item.getHighLowByte()!=null?item.getHighLowByte():"");
+//							group.getAddrAndHighLowByte().add(addrAndHighLowByte);
 						}
 					}
 					

@@ -139,7 +139,9 @@ Ext.define('AP.store.operationMaintenance.BatchImportModuleTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("BatchImportModuleTreePanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             if(get_rawData.totalCount>0){
     			gridPanel.getSelectionModel().deselectAll(true);

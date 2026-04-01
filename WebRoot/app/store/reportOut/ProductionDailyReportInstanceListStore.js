@@ -48,7 +48,10 @@ Ext.define('AP.store.reportOut.ProductionDailyReportInstanceListStore', {
                     }
                 });
                 var ProductionDailyReportInstanceListPanel = Ext.getCmp("ProductionDailyReportInstanceListPanel_Id");
-                ProductionDailyReportInstanceListPanel.add(gridPanel);
+                
+                if(isNotVal(ProductionDailyReportInstanceListPanel)){
+                	ProductionDailyReportInstanceListPanel.add(gridPanel);
+                }
             }
             if(get_rawData.totalCount>0){
             	gridPanel.getSelectionModel().deselectAll(true);

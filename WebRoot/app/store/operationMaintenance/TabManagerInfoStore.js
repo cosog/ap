@@ -146,7 +146,10 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
                     }
                 });
                 var operationMaintenanceDeviceTypeMaintenancePanel = Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id");
-                operationMaintenanceDeviceTypeMaintenancePanel.add(deviceTypeMaintenanceTreeGridView);
+                
+                if(isNotVal(operationMaintenanceDeviceTypeMaintenancePanel)){
+                	operationMaintenanceDeviceTypeMaintenancePanel.add(deviceTypeMaintenanceTreeGridView);
+                }
             }
             
             var selectedRow=0;

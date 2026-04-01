@@ -55,7 +55,9 @@ Ext.define('AP.store.acquisitionUnit.ProtocolExtendedFieldConfigStore', {
                     }
                 });
                 var panel = Ext.getCmp("protocolExtendedFieldSelectPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
                 
                 if(get_rawData.totalCount>0){
                 	var selectRow=-1;

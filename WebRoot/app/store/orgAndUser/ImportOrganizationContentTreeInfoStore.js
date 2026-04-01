@@ -27,7 +27,7 @@ Ext.define('AP.store.orgAndUser.ImportOrganizationContentTreeInfoStore', {
             var get_rawData = store.proxy.reader.rawData;
             var treeGridPanel = Ext.getCmp("ImportOrganizationContentTreeGridPanel_Id");
             if (!isNotVal(treeGridPanel)) {
-                var treeGridPanel = Ext.create('Ext.tree.Panel', {
+                treeGridPanel = Ext.create('Ext.tree.Panel', {
                     id: "ImportOrganizationContentTreeGridPanel_Id",
                     border: false,
                     layout: "fit",
@@ -78,7 +78,10 @@ Ext.define('AP.store.orgAndUser.ImportOrganizationContentTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("importOrganizationTreePanel_Id");
-                panel.add(treeGridPanel);
+                
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
         }
     }

@@ -188,7 +188,10 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         }
                     }
                 });
-                Ext.getCmp("SystemdataInfoGridPanelViewId").add(gridPanel);
+                
+                if(isNotVal(Ext.getCmp("SystemdataInfoGridPanelViewId"))){
+                	Ext.getCmp("SystemdataInfoGridPanelViewId").add(gridPanel);
+                }
             }
             var selectRow=0;
             var selectedDataDictionaryId=Ext.getCmp("selectedDataDictionaryId").getValue();

@@ -73,7 +73,9 @@ Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeProtocolListStore',
                     }]
                 });
                 var protocolListPanel = Ext.getCmp("ProtocolDeviceTypeChangeWinProtocolListPanel_Id");
-                protocolListPanel.add(gridPanel);
+                if(isNotVal(protocolListPanel)){
+                	protocolListPanel.add(gridPanel);
+                }
             }
         },
         beforeload: function (store, options) {

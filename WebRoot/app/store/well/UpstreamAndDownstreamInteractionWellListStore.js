@@ -75,7 +75,9 @@ Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
                     }
                 });
                 var panel = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             if(get_rawData.totalCount>0){
             	gridPanel.getSelectionModel().deselectAll(true);

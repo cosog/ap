@@ -92,7 +92,10 @@ Ext.define('AP.store.alarmSet.AlarmSetGridInfoStore', {
                     }
                 });
                 var OrgInfoTreeGridViewPanel_Id = Ext.getCmp("AlarmSetInfoGridPanelView_Id");
-                OrgInfoTreeGridViewPanel_Id.add(SystemdataInfoGridPanel_panel);
+                
+                if(isNotVal(OrgInfoTreeGridViewPanel_Id)){
+                	OrgInfoTreeGridViewPanel_Id.add(SystemdataInfoGridPanel_panel);
+                }
             }
             getAlarmLevelColor();
         },

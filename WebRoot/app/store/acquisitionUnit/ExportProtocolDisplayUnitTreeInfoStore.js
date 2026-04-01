@@ -73,7 +73,9 @@ Ext.define('AP.store.acquisitionUnit.ExportProtocolDisplayUnitTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("ProtocolExportDisplayUnitPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
         }
     }

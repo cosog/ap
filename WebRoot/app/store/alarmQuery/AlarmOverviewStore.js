@@ -79,7 +79,9 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
                         }
                     });
                     
-                    panel.add(gridPanel);
+                    if(isNotVal(panel)){
+                    	panel.add(gridPanel);
+                    }
                     
                 }
                 if(get_rawData.totalCount>0){

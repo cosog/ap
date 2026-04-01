@@ -67,7 +67,9 @@ Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeDeviceTypeListStore
 
                 });
                 var panel = Ext.getCmp("ProtocolDeviceTypeChangeWinDeviceTypeListPanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
         }
     }

@@ -201,7 +201,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("ModbusProtocolAlarmUnitConfigPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
 //            var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAlarmUnitConfigSelectRow_Id").getValue());
 //            if(selectedRow==0){

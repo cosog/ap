@@ -84,7 +84,9 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
                     }]
                 });
                 var deviceListPanel = Ext.getCmp("DeviceOrgChangeWinDeviceListPanel_Id");
-                deviceListPanel.add(gridPanel);
+                if(isNotVal(deviceListPanel)){
+                	deviceListPanel.add(gridPanel);
+                }
             }
         },
         beforeload: function (store, options) {

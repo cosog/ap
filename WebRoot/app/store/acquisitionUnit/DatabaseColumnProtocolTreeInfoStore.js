@@ -101,7 +101,9 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("DatabaseColumnMappingTableLeftTreePanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
             
             var selectedRow=0;

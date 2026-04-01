@@ -58,7 +58,10 @@ Ext.define('AP.store.reportOut.SingleWellDailyReportWellListStore', {
                     }
                 });
                 var SingleWellDailyReportWellListPanel = Ext.getCmp("SingleWellDailyReportWellListPanel_Id");
-                SingleWellDailyReportWellListPanel.add(gridPanel);
+                
+                if(isNotVal(SingleWellDailyReportWellListPanel)){
+                	SingleWellDailyReportWellListPanel.add(gridPanel);
+                }
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;

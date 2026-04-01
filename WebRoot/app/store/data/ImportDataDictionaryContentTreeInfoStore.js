@@ -94,7 +94,9 @@ Ext.define('AP.store.data.ImportDataDictionaryContentTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("importDataDictionaryTreePanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
         }
     }

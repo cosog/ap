@@ -71,7 +71,9 @@ Ext.define('AP.store.module.ImportModuleContentTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("importModuleTreePanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
         }
     }

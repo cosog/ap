@@ -167,7 +167,9 @@ Ext.define('AP.store.orgAndUser.ImportUserContentTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("importUserTreePanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
         }
     }

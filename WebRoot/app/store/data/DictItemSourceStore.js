@@ -73,7 +73,10 @@ Ext.define('AP.store.data.DictItemSourceStore', {
                     }
                 });
                 var panel = Ext.getCmp("dictItemSelectPanel_Id");
-                panel.add(gridPanel);
+                
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
                 
                 var dictItemAddOrUpdate=Ext.getCmp("dictItemAddOrUpdate_Id").getValue();
                 if(dictItemAddOrUpdate==1){

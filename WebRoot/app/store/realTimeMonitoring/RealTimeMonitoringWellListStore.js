@@ -68,8 +68,10 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringWellListStore', {
                     	}
                     }
                 });
-                var RealTimeMonitoringInfoDeviceListPanel = Ext.getCmp("RealTimeMonitoringInfoDeviceListPanel_Id");
-                RealTimeMonitoringInfoDeviceListPanel.add(gridPanel);
+                var RealTimeMonitoringInfoDeviceListPanel=Ext.getCmp('RealTimeMonitoringInfoDeviceListPanel_Id');
+                if(isNotVal(RealTimeMonitoringInfoDeviceListPanel)){
+                	RealTimeMonitoringInfoDeviceListPanel.add(gridPanel);
+                }
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;

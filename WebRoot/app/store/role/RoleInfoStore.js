@@ -309,7 +309,9 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     }
                 });
                 var panel = Ext.getCmp("RoleInfoGridPanelView_id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             
             

@@ -131,7 +131,10 @@ Ext.define('AP.store.role.ImportRoleContentTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("importRoleTreePanel_Id");
-                panel.add(gridPanel);
+                
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
         }
     }

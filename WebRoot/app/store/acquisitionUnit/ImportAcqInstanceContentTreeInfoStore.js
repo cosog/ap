@@ -87,7 +87,9 @@ Ext.define('AP.store.acquisitionUnit.ImportAcqInstanceContentTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("importAcqInstanceTreePanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
             
             treeGridPanel.getSelectionModel().deselectAll(true);

@@ -52,7 +52,10 @@ Ext.define('AP.store.operationMaintenance.ProjectTabConfigInfoStore', {
                     }
                 });
                 var OperationMaintenanceDeviceTypeContentConfigPanel = Ext.getCmp("OperationMaintenanceDeviceTypeContentConfigPanel_Id");
-                OperationMaintenanceDeviceTypeContentConfigPanel.add(projectTabConfigTreeGridView);
+                
+                if(isNotVal(OperationMaintenanceDeviceTypeContentConfigPanel)){
+                	OperationMaintenanceDeviceTypeContentConfigPanel.add(projectTabConfigTreeGridView);
+                }
             }
 
         },

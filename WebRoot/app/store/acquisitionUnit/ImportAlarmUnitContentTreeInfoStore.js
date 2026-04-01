@@ -104,7 +104,9 @@ Ext.define('AP.store.acquisitionUnit.ImportAlarmUnitContentTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("importAlarmUnitTreePanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
             
             treeGridPanel.getSelectionModel().deselectAll(true);

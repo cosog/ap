@@ -102,7 +102,9 @@ Ext.define('AP.store.acquisitionUnit.ImportReportInstanceContentTreeInfoStore', 
 
                 });
                 var panel = Ext.getCmp("importReportInstanceTreePanel_Id");
-                panel.add(treeGridPanel);
+                if(isNotVal(panel)){
+                	panel.add(treeGridPanel);
+                }
             }
             
             treeGridPanel.getSelectionModel().deselectAll(true);

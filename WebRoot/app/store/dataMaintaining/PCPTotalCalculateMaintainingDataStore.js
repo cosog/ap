@@ -64,7 +64,9 @@ Ext.define('AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore', {
                     }
                 });
                 var panel = Ext.getCmp("PCPTotalCalculateMaintainingPanel");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             gridPanel.getSelectionModel().deselectAll(true);
             

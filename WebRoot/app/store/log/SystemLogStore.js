@@ -51,7 +51,9 @@ Ext.define('AP.store.log.SystemLogStore', {
                     }
                 });
                 var panel = Ext.getCmp("SystemLogPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             
             var startDate=Ext.getCmp('SystemLogQueryStartDate_Id');

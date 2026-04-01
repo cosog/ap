@@ -107,7 +107,9 @@ Ext.define('AP.store.realTimeMonitoring.DeviceControlSwitchingValueStore', {
 			        	}
 			        }
                 });
-                Ext.getCmp("DeviceControlValueTablePanel_Id").add(controlGridPanel);
+                if(isNotVal(Ext.getCmp("DeviceControlValueTablePanel_Id"))){
+                	Ext.getCmp("DeviceControlValueTablePanel_Id").add(controlGridPanel);
+                }
             }
         },
         beforeload: function (store, options) {

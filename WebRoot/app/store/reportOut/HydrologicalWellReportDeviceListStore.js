@@ -58,7 +58,10 @@ Ext.define('AP.store.reportOut.HydrologicalWellReportDeviceListStore', {
                     }
                 });
                 var HydrologicalWellReportDeviceListPanel = Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id");
-                HydrologicalWellReportDeviceListPanel.add(gridPanel);
+                
+                if(isNotVal(HydrologicalWellReportDeviceListPanel)){
+                	HydrologicalWellReportDeviceListPanel.add(gridPanel);
+                }
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;

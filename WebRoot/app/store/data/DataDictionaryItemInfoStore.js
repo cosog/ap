@@ -347,7 +347,10 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         }
                     }
                 });
-                Ext.getCmp("dataDictionaryItemPanel_Id").add(gridPanel);
+                
+                if(isNotVal(Ext.getCmp("dataDictionaryItemPanel_Id"))){
+                	Ext.getCmp("dataDictionaryItemPanel_Id").add(gridPanel);
+                }
             }
             const column = gridPanel.down('#dataDictionaryItemGridConfigColumn_ItemId');
             if (column) {

@@ -114,7 +114,9 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
                     }
                 });
                 var HistoryQueryFSdiagramOverlayTable = Ext.getCmp("HistoryQueryFSdiagramOverlayTable_Id");
-                HistoryQueryFSdiagramOverlayTable.add(HistoryQueryFSdiagramOverlayGrid);
+                if(isNotVal(HistoryQueryFSdiagramOverlayTable)){
+                	HistoryQueryFSdiagramOverlayTable.add(HistoryQueryFSdiagramOverlayGrid);
+                }
             }
             
             var slectModel=HistoryQueryFSdiagramOverlayGrid.getSelectionModel();

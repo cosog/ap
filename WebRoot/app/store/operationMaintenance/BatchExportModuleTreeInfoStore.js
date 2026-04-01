@@ -101,7 +101,10 @@ Ext.define('AP.store.operationMaintenance.BatchExportModuleTreeInfoStore', {
 
                 });
                 var panel = Ext.getCmp("BatchExportModuleTreePanel_Id");
-                panel.add(gridPanel);
+                
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
         }
     }

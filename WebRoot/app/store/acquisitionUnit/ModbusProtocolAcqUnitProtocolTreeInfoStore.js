@@ -91,7 +91,9 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitProtocolTreeInfoStore'
 
                 });
                 var panel = Ext.getCmp("ModbusProtocolAcqUnitProtocolListPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             var selectedRow=parseInt(Ext.getCmp("ModbusProtocolAcqUnitProtocolSelectRow_Id").getValue());
             var selectedCode=Ext.getCmp("UnitConfigProtocolSelectCode_Id").getValue();

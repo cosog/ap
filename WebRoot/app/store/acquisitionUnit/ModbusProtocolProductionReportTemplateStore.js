@@ -69,7 +69,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolProductionReportTemplateStore
 
                 });
                 var panel = Ext.getCmp("ReportUnitProductionReportTemplateListPanel_Id");
-                panel.add(gridPanel);
+                
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             
             gridPanel.getSelectionModel().deselectAll(true);

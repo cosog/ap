@@ -52,7 +52,9 @@ Ext.define('AP.store.log.DeviceOperationLogStore', {
                     }
                 });
                 var panel = Ext.getCmp("DeviceOperationLogPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             
             var startDate=Ext.getCmp('DeviceOperationLogQueryStartDate_Id');

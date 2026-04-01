@@ -62,7 +62,9 @@ Ext.define('AP.store.well.ExportDeviceInfoApplicationScenariosListStore', {
                     }
                 });
                 var panel = Ext.getCmp("ExportDeviceInfoApplicationScenariosInfoPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
             gridPanel.getSelectionModel().select(0, true);
         },

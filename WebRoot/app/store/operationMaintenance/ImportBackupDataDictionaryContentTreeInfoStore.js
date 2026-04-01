@@ -94,7 +94,9 @@ Ext.define('AP.store.operationMaintenance.ImportBackupDataDictionaryContentTreeI
 
                 });
                 var panel = Ext.getCmp("OperationMaintenanceDataImportPanel_Id");
-                panel.add(gridPanel);
+                if(isNotVal(panel)){
+                	panel.add(gridPanel);
+                }
             }
         }
     }

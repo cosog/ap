@@ -89,7 +89,10 @@ Ext.define('AP.store.dataMaintaining.AcquisitionDataMaintainingWellListStore', {
                     }
                 });
                 var deviceListPanel = Ext.getCmp("AcquisitionDataMaintainingDeviceListPanel_Id");
-                deviceListPanel.add(gridPanel);
+                
+                if(isNotVal(deviceListPanel)){
+                	deviceListPanel.add(gridPanel);
+                }
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;

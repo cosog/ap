@@ -84,7 +84,9 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
                     }
                 });
                 var wellListPanel = Ext.getCmp("PCPCalculateMaintainingWellListPanel_Id");
-                wellListPanel.add(gridPanel);
+                if(isNotVal(wellListPanel)){
+                	wellListPanel.add(gridPanel);
+                }
             }
             if(get_rawData.totalCount>0){
             	var selectRow=0;

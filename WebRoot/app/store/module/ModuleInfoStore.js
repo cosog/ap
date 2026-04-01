@@ -71,7 +71,10 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                     }
                 });
                 var ModuleInfoTreeGridViewPanel_Id = Ext.getCmp("ModuleInfoTreeGridViewPanel_Id");
-                ModuleInfoTreeGridViewPanel_Id.add(ResHeadrInfoGridViewPanelGrid);
+                
+                if(isNotVal(ModuleInfoTreeGridViewPanel_Id)){
+                	ModuleInfoTreeGridViewPanel_Id.add(ResHeadrInfoGridViewPanelGrid);
+                }
             }
 
         },

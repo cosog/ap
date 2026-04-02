@@ -20,83 +20,83 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramTiledStatStore', {
         load: function (store, record, f, op, o) {
         	if(isNotVal(Ext.getCmp("HistoryQueryTiledDiagramPanel"))){
         		Ext.getCmp("HistoryQueryTiledDiagramPanel").getEl().unmask();
-        	}
-        	
-            var get_rawData = store.proxy.reader.rawData;
-            
-            var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id');
-            if(startDate.rawValue==''||null==startDate.rawValue){
-            	startDate.setValue(get_rawData.start_date.split(' ')[0]);
-            	Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
-            	Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            }
-            var endDate=Ext.getCmp('HistoryFSDiagramQueryEndDate_Id');
-            if(endDate.rawValue==''||null==endDate.rawValue){
-            	endDate.setValue(get_rawData.end_date.split(' ')[0]);
-            	Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
-            	Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            }
-            
-            
-            var HistoryQueryFSdiagramTiledStatGrid = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id");
-            if (!isNotVal(HistoryQueryFSdiagramTiledStatGrid)) {
-            	var arrColumns = get_rawData.columns;
-                var column = createHistoryQueryDiagramOverlayTableColumn(arrColumns)
-                var newColumns = Ext.JSON.decode(column);
-                HistoryQueryFSdiagramTiledStatGrid = Ext.create('Ext.grid.Panel', {
-                    id: "HistoryQueryFSdiagramTiledStatGrid_Id",
-                    border: false,
-                    forceFit: false,
-                    autoScroll: true,
-                    columnLines: true,
-                    layout: "fit",
-                    selModel:{
-                    	selType: 'checkboxmodel',
-                    	mode:'MULTI',
-                    	checkOnly:true,
-                    	onHdMouseDown:function(e,t){
-                    		
-                    	}
-                    },
-                    viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
-                    },
-                    store: store,
-                    columns: newColumns,
-                    listeners: {
-                    	headerclick:function( ct, column, e, t, eOpts ) {
-                    	},
-                    	itemclick:function( view , record , item , index , e , eOpts ) {
-                    	},
-                    	selectionchange:function(grid, record , eOpts) {
-                    		loadHistoryDiagramTiledList(1);
-                    	},
-                    	afterlayout: function (t, o) {
-                        },
-                        deselect: function (v, o, index, p) {
-                        	
-                        },
-                        select: function (v, o, index, p) {
-                        	
-                        }
-                    }
-                });
-                var HistoryQueryTiledDiagramStatPanel = Ext.getCmp("HistoryQueryTiledDiagramStatPanel");
-                if(isNotVal(HistoryQueryTiledDiagramStatPanel)){
-                	HistoryQueryTiledDiagramStatPanel.add(HistoryQueryFSdiagramTiledStatGrid);
+        		
+        		var get_rawData = store.proxy.reader.rawData;
+                
+                var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id');
+                if(startDate.rawValue==''||null==startDate.rawValue){
+                	startDate.setValue(get_rawData.start_date.split(' ')[0]);
+                	Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
+                	Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
+                }
+                var endDate=Ext.getCmp('HistoryFSDiagramQueryEndDate_Id');
+                if(endDate.rawValue==''||null==endDate.rawValue){
+                	endDate.setValue(get_rawData.end_date.split(' ')[0]);
+                	Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
+                	Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
                 }
                 
-            }
-            
-            var slectModel=HistoryQueryFSdiagramTiledStatGrid.getSelectionModel();
-            var selected=[];
-            for(var i=0;i<store.data.items.length;i++){
-    			if(1232!=store.data.items[i].data.resultCode){
-    				selected.push(store.data.items[i]);
-    			}
-    		}
-            slectModel.deselectAll(true);
-            slectModel.select(selected);
+                
+                var HistoryQueryFSdiagramTiledStatGrid = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id");
+                if (!isNotVal(HistoryQueryFSdiagramTiledStatGrid)) {
+                	var arrColumns = get_rawData.columns;
+                    var column = createHistoryQueryDiagramOverlayTableColumn(arrColumns)
+                    var newColumns = Ext.JSON.decode(column);
+                    HistoryQueryFSdiagramTiledStatGrid = Ext.create('Ext.grid.Panel', {
+                        id: "HistoryQueryFSdiagramTiledStatGrid_Id",
+                        border: false,
+                        forceFit: false,
+                        autoScroll: true,
+                        columnLines: true,
+                        layout: "fit",
+                        selModel:{
+                        	selType: 'checkboxmodel',
+                        	mode:'MULTI',
+                        	checkOnly:true,
+                        	onHdMouseDown:function(e,t){
+                        		
+                        	}
+                        },
+                        viewConfig: {
+                        	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                        },
+                        store: store,
+                        columns: newColumns,
+                        listeners: {
+                        	headerclick:function( ct, column, e, t, eOpts ) {
+                        	},
+                        	itemclick:function( view , record , item , index , e , eOpts ) {
+                        	},
+                        	selectionchange:function(grid, record , eOpts) {
+                        		loadHistoryDiagramTiledList(1);
+                        	},
+                        	afterlayout: function (t, o) {
+                            },
+                            deselect: function (v, o, index, p) {
+                            	
+                            },
+                            select: function (v, o, index, p) {
+                            	
+                            }
+                        }
+                    });
+                    var HistoryQueryTiledDiagramStatPanel = Ext.getCmp("HistoryQueryTiledDiagramStatPanel");
+                    if(isNotVal(HistoryQueryTiledDiagramStatPanel)){
+                    	HistoryQueryTiledDiagramStatPanel.add(HistoryQueryFSdiagramTiledStatGrid);
+                    }
+                    
+                }
+                
+                var slectModel=HistoryQueryFSdiagramTiledStatGrid.getSelectionModel();
+                var selected=[];
+                for(var i=0;i<store.data.items.length;i++){
+        			if(1232!=store.data.items[i].data.resultCode){
+        				selected.push(store.data.items[i]);
+        			}
+        		}
+                slectModel.deselectAll(true);
+                slectModel.select(selected);
+        	}
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

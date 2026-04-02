@@ -19,14 +19,13 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-            //获得列表数
-            var get_rawData = store.proxy.reader.rawData;
-            var arrColumns = get_rawData.columns;
-            var column = createAlarmOverviewQueryColumn(arrColumns);
-            Ext.getCmp("AlarmOverviewColumnStr_Id").setValue(column);
-            
             var panel = Ext.getCmp(getAlarmOverViewPanIdFromTabActive());
             if (isNotVal(panel)) {
+            	//获得列表数
+                var get_rawData = store.proxy.reader.rawData;
+                var arrColumns = get_rawData.columns;
+                var column = createAlarmOverviewQueryColumn(arrColumns);
+                Ext.getCmp("AlarmOverviewColumnStr_Id").setValue(column);
             	var gridPanel = Ext.getCmp("AlarmOverviewGridPanel_Id");
                 if (!isNotVal(gridPanel)) {
                     var newColumns = Ext.JSON.decode(column);

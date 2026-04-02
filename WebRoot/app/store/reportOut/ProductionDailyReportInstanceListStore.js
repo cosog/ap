@@ -19,60 +19,64 @@ Ext.define('AP.store.reportOut.ProductionDailyReportInstanceListStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-            //获得列表数
-            var get_rawData = store.proxy.reader.rawData;
-            var arrColumns = get_rawData.columns;
-            var gridPanel = Ext.getCmp("ProductionDailyReportGridPanel_Id");
-            if (!isNotVal(gridPanel)) {
-                var column = createProductionDailyReportTemplateListDataColumn(arrColumns);
-                var newColumns = Ext.JSON.decode(column);
-                gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "ProductionDailyReportGridPanel_Id",
-                    border: false,
-                    autoLoad: false,
-                    columnLines: true,
-                    forceFit: true,
-                    viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
-                    },
-                    store: store,
-                    columns: newColumns,
-                    listeners: {
-                    	selectionchange: function (view, selected, o) {
-                    	},
-                    	select: function(grid, record, index, eOpts) {
-                    		Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").setValue(index);
-                    		CreateProductionDailyReportTable();
-                    		CreateProductionDailyReportCurve();
+        	if(Ext.getCmp("ProductionDailyReportInstanceListPanel_Id")!=undefined){
+                //获得列表数
+                var get_rawData = store.proxy.reader.rawData;
+                var arrColumns = get_rawData.columns;
+                var gridPanel = Ext.getCmp("ProductionDailyReportGridPanel_Id");
+                if (!isNotVal(gridPanel)) {
+                    var column = createProductionDailyReportTemplateListDataColumn(arrColumns);
+                    var newColumns = Ext.JSON.decode(column);
+                    gridPanel = Ext.create('Ext.grid.Panel', {
+                        id: "ProductionDailyReportGridPanel_Id",
+                        border: false,
+                        autoLoad: false,
+                        columnLines: true,
+                        forceFit: true,
+                        viewConfig: {
+                        	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                        },
+                        store: store,
+                        columns: newColumns,
+                        listeners: {
+                        	selectionchange: function (view, selected, o) {
+                        	},
+                        	select: function(grid, record, index, eOpts) {
+                        		Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").setValue(index);
+                        		CreateProductionDailyReportTable();
+                        		CreateProductionDailyReportCurve();
+                            }
                         }
+                    });
+                    var ProductionDailyReportInstanceListPanel = Ext.getCmp("ProductionDailyReportInstanceListPanel_Id");
+                    
+                    if(isNotVal(ProductionDailyReportInstanceListPanel)){
+                    	ProductionDailyReportInstanceListPanel.add(gridPanel);
                     }
-                });
-                var ProductionDailyReportInstanceListPanel = Ext.getCmp("ProductionDailyReportInstanceListPanel_Id");
-                
-                if(isNotVal(ProductionDailyReportInstanceListPanel)){
-                	ProductionDailyReportInstanceListPanel.add(gridPanel);
+                }
+                if(get_rawData.totalCount>0){
+                	gridPanel.getSelectionModel().deselectAll(true);
+                	gridPanel.getSelectionModel().select(0, true);
+                	if(get_rawData.totalCount==1){
+                		Ext.getCmp("ProductionDailyReportInstanceListPanel_Id").hide();
+                	}else{
+                		Ext.getCmp("ProductionDailyReportInstanceListPanel_Id").show();
+                	}
+                }else{
+                	Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").setValue(-1);
+                	if(productionDailyReportHelper!=null){
+            			if(productionDailyReportHelper.hot!=undefined){
+            				productionDailyReportHelper.hot.destroy();
+            			}
+            			productionDailyReportHelper=null;
+            		}
+                	$("#ProductionDailyReportDiv_id").html('');
+                    $("#ProductionDailyReportCurveDiv_Id").html('');
                 }
             }
-            if(get_rawData.totalCount>0){
-            	gridPanel.getSelectionModel().deselectAll(true);
-            	gridPanel.getSelectionModel().select(0, true);
-            	if(get_rawData.totalCount==1){
-            		Ext.getCmp("ProductionDailyReportInstanceListPanel_Id").hide();
-            	}else{
-            		Ext.getCmp("ProductionDailyReportInstanceListPanel_Id").show();
-            	}
-            }else{
-            	Ext.getCmp("ProductionDailyReportInstanceListSelectRow_Id").setValue(-1);
-            	if(productionDailyReportHelper!=null){
-        			if(productionDailyReportHelper.hot!=undefined){
-        				productionDailyReportHelper.hot.destroy();
-        			}
-        			productionDailyReportHelper=null;
-        		}
-            	$("#ProductionDailyReportDiv_id").html('');
-                $("#ProductionDailyReportCurveDiv_Id").html('');
-            }
-            Ext.getCmp("ProductionReportRootTabPanel").getEl().unmask();
+        	if(Ext.getCmp("ProductionReportRootTabPanel")!=undefined){
+                Ext.getCmp("ProductionReportRootTabPanel").getEl().unmask();
+        	}
         },
         beforeload: function (store, options) {
         	Ext.getCmp("ProductionDailyReportInstanceListPanel_Id").show();

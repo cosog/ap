@@ -815,13 +815,17 @@ function readWaterCutRawData(){
 		var wellId = _record[0].data.id;
 		var signinId = _record[0].data.signinId;
 		var slave = _record[0].data.slave;
-		Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").el.mask("含水数据读取中...").show();
+		if(Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id")!=undefined){
+			Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").el.mask("含水数据读取中...").show();
+    	}
 		Ext.Ajax.timeout=180000;
     	Ext.Ajax.request({
     		method:'POST',
     		url:context + '/wellInformationManagerController/getWaterCutRawData2',
     		success:function(response) {
-    			Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").getEl().unmask();
+    			if(Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id")!=undefined){
+        			Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").getEl().unmask();
+    	    	}
     			var result=null;
     			if(isNotVal(response.responseText)){
     				result=Ext.decode(response.responseText);
@@ -959,6 +963,9 @@ function readWaterCutRawData(){
     			showWaterCutRawDataCurve2(result);
     		},
     		failure:function(){
+    			if(Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id")!=undefined){
+        			Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").getEl().unmask();
+    	    	}
     			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
     		},
     		params: {

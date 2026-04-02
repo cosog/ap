@@ -19,115 +19,118 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-        	Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel").getEl().unmask();
-        	allCheck=false;
-        	allNotCheck=false;
-            var get_rawData = store.proxy.reader.rawData;
-            if(get_rawData.outOfMemory){
-            	Ext.MessageBox.alert(loginUserLanguageResource.message, "数据过大，加载失败，请缩小区间重新查询！");
-            }
-            Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(get_rawData.AlarmShowStyle));
-            var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
-            if (!isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
-            	var arrColumns = get_rawData.columns;
-                var column = createHistoryQueryDiagramOverlayTableColumn(arrColumns)
-                Ext.getCmp("HistoryQueryDiagramOverlayColumnStr_Id").setValue(column);
-                var newColumns = Ext.JSON.decode(column);
-                HistoryQueryFSdiagramOverlayGrid = Ext.create('Ext.grid.Panel', {
-                    id: "HistoryQueryFSdiagramOverlayGrid_Id",
-                    border: false,
-                    forceFit: false,
-                    autoScroll: true,
-                    columnLines: true,
-                    layout: "fit",
-                    selModel:{
-                    	selType: 'checkboxmodel',
-                    	mode:'MULTI',
-                    	checkOnly:true,
-                    	onHdMouseDown:function(e,t){
-                    		
-                    	}
-                    },
-                    viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
-                    },
-                    store: store,
-                    columns: newColumns,
-                    listeners: {
-                    	headerclick:function( ct, column, e, t, eOpts ) {
-                    		if(column.isCheckerHd){
-                    			if(column.allChecked){
-                    				allCheck=false;
-                    				var store=Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id").getStore();
-                    				var get_rawData = store.proxy.reader.rawData;
-                    				showFSDiagramOverlayChart(get_rawData,"HistoryQueryOverlayDiv_Id",false,0);
-                    				showFSDiagramOverlayChart(get_rawData,"HistoryQueryPowerOverlayDiv_Id",false,1);
-                    				showFSDiagramOverlayChart(get_rawData,"HistoryQueryCurrentOverlayDiv_Id",false,2);
-                                	allNotCheck=true;
-                    			}else{
-                    				allNotCheck=false;
-                    				var store=Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id").getStore();
-                    				var get_rawData = store.proxy.reader.rawData;
-                    				showFSDiagramOverlayChart(get_rawData,"HistoryQueryOverlayDiv_Id",true,0);
-                    				showFSDiagramOverlayChart(get_rawData,"HistoryQueryPowerOverlayDiv_Id",true,1);
-                    				showFSDiagramOverlayChart(get_rawData,"HistoryQueryCurrentOverlayDiv_Id",true,2);
-                    	            allCheck=true;
-                    			}
-                    		}
-                    	},
-                    	itemclick:function( view , record , item , index , e , eOpts ) {
-                    	},
-                    	selectionchange:function(grid, record , eOpts) {
-                    	},
-                    	afterlayout: function (t, o) {
-                        },
-                        deselect: function (v, o, index, p) {
-                        	if(!allNotCheck){
-                        		allCheck=false;
-                            	var chart = $("#HistoryQueryOverlayDiv_Id").highcharts(); 
-                            	var series=chart.series;
-                            	series[index].hide();
-                            	var powerchart = $("#HistoryQueryPowerOverlayDiv_Id").highcharts(); 
-                            	var powerseries=powerchart.series;
-                            	powerseries[index].hide();
-                            	
-                            	var currentchart = $("#HistoryQueryCurrentOverlayDiv_Id").highcharts(); 
-                            	var currentseries=currentchart.series;
-                            	currentseries[index].hide();
-                        	}
-                        },
-                        select: function (v, o, index, p) {
-                        	if(!allCheck){
-                        		allNotCheck=false;
-                        		var chart = $("#HistoryQueryOverlayDiv_Id").highcharts(); 
-                            	var series=chart.series;
-                            	series[index].show();
-                            	var powerchart = $("#HistoryQueryPowerOverlayDiv_Id").highcharts(); 
-                            	var powerseries=powerchart.series;
-                            	powerseries[index].show();
-                            	
-                            	var currentchart = $("#HistoryQueryCurrentOverlayDiv_Id").highcharts(); 
-                            	var currentseries=currentchart.series;
-                            	currentseries[index].show();
-                        	}
-                        }
-                    }
-                });
-                var HistoryQueryFSdiagramOverlayTable = Ext.getCmp("HistoryQueryFSdiagramOverlayTable_Id");
-                if(isNotVal(HistoryQueryFSdiagramOverlayTable)){
-                	HistoryQueryFSdiagramOverlayTable.add(HistoryQueryFSdiagramOverlayGrid);
+        	if(Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel")!=undefined){
+        		Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel").getEl().unmask();
+        		
+        		allCheck=false;
+            	allNotCheck=false;
+                var get_rawData = store.proxy.reader.rawData;
+                if(get_rawData.outOfMemory){
+                	Ext.MessageBox.alert(loginUserLanguageResource.message, "数据过大，加载失败，请缩小区间重新查询！");
                 }
+                Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(get_rawData.AlarmShowStyle));
+                var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");
+                if (!isNotVal(HistoryQueryFSdiagramOverlayGrid)) {
+                	var arrColumns = get_rawData.columns;
+                    var column = createHistoryQueryDiagramOverlayTableColumn(arrColumns)
+                    Ext.getCmp("HistoryQueryDiagramOverlayColumnStr_Id").setValue(column);
+                    var newColumns = Ext.JSON.decode(column);
+                    HistoryQueryFSdiagramOverlayGrid = Ext.create('Ext.grid.Panel', {
+                        id: "HistoryQueryFSdiagramOverlayGrid_Id",
+                        border: false,
+                        forceFit: false,
+                        autoScroll: true,
+                        columnLines: true,
+                        layout: "fit",
+                        selModel:{
+                        	selType: 'checkboxmodel',
+                        	mode:'MULTI',
+                        	checkOnly:true,
+                        	onHdMouseDown:function(e,t){
+                        		
+                        	}
+                        },
+                        viewConfig: {
+                        	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                        },
+                        store: store,
+                        columns: newColumns,
+                        listeners: {
+                        	headerclick:function( ct, column, e, t, eOpts ) {
+                        		if(column.isCheckerHd){
+                        			if(column.allChecked){
+                        				allCheck=false;
+                        				var store=Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id").getStore();
+                        				var get_rawData = store.proxy.reader.rawData;
+                        				showFSDiagramOverlayChart(get_rawData,"HistoryQueryOverlayDiv_Id",false,0);
+                        				showFSDiagramOverlayChart(get_rawData,"HistoryQueryPowerOverlayDiv_Id",false,1);
+                        				showFSDiagramOverlayChart(get_rawData,"HistoryQueryCurrentOverlayDiv_Id",false,2);
+                                    	allNotCheck=true;
+                        			}else{
+                        				allNotCheck=false;
+                        				var store=Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id").getStore();
+                        				var get_rawData = store.proxy.reader.rawData;
+                        				showFSDiagramOverlayChart(get_rawData,"HistoryQueryOverlayDiv_Id",true,0);
+                        				showFSDiagramOverlayChart(get_rawData,"HistoryQueryPowerOverlayDiv_Id",true,1);
+                        				showFSDiagramOverlayChart(get_rawData,"HistoryQueryCurrentOverlayDiv_Id",true,2);
+                        	            allCheck=true;
+                        			}
+                        		}
+                        	},
+                        	itemclick:function( view , record , item , index , e , eOpts ) {
+                        	},
+                        	selectionchange:function(grid, record , eOpts) {
+                        	},
+                        	afterlayout: function (t, o) {
+                            },
+                            deselect: function (v, o, index, p) {
+                            	if(!allNotCheck){
+                            		allCheck=false;
+                                	var chart = $("#HistoryQueryOverlayDiv_Id").highcharts(); 
+                                	var series=chart.series;
+                                	series[index].hide();
+                                	var powerchart = $("#HistoryQueryPowerOverlayDiv_Id").highcharts(); 
+                                	var powerseries=powerchart.series;
+                                	powerseries[index].hide();
+                                	
+                                	var currentchart = $("#HistoryQueryCurrentOverlayDiv_Id").highcharts(); 
+                                	var currentseries=currentchart.series;
+                                	currentseries[index].hide();
+                            	}
+                            },
+                            select: function (v, o, index, p) {
+                            	if(!allCheck){
+                            		allNotCheck=false;
+                            		var chart = $("#HistoryQueryOverlayDiv_Id").highcharts(); 
+                                	var series=chart.series;
+                                	series[index].show();
+                                	var powerchart = $("#HistoryQueryPowerOverlayDiv_Id").highcharts(); 
+                                	var powerseries=powerchart.series;
+                                	powerseries[index].show();
+                                	
+                                	var currentchart = $("#HistoryQueryCurrentOverlayDiv_Id").highcharts(); 
+                                	var currentseries=currentchart.series;
+                                	currentseries[index].show();
+                            	}
+                            }
+                        }
+                    });
+                    var HistoryQueryFSdiagramOverlayTable = Ext.getCmp("HistoryQueryFSdiagramOverlayTable_Id");
+                    if(isNotVal(HistoryQueryFSdiagramOverlayTable)){
+                    	HistoryQueryFSdiagramOverlayTable.add(HistoryQueryFSdiagramOverlayGrid);
+                    }
+                }
+                
+                var slectModel=HistoryQueryFSdiagramOverlayGrid.getSelectionModel();
+                slectModel.deselectAll(true);
+                slectModel.selectAll(true);
+                
+                updateVacuateRecords(get_rawData.totalCount,get_rawData.vacuateCount,"HistoryFESDiagramVacuateCount_Id");
+                
+                showFSDiagramOverlayChart(get_rawData,"HistoryQueryOverlayDiv_Id",true,0);
+                showFSDiagramOverlayChart(get_rawData,"HistoryQueryPowerOverlayDiv_Id",true,1);
+                showFSDiagramOverlayChart(get_rawData,"HistoryQueryCurrentOverlayDiv_Id",true,2);
             }
-            
-            var slectModel=HistoryQueryFSdiagramOverlayGrid.getSelectionModel();
-            slectModel.deselectAll(true);
-            slectModel.selectAll(true);
-            
-            updateVacuateRecords(get_rawData.totalCount,get_rawData.vacuateCount,"HistoryFESDiagramVacuateCount_Id");
-            
-            showFSDiagramOverlayChart(get_rawData,"HistoryQueryOverlayDiv_Id",true,0);
-            showFSDiagramOverlayChart(get_rawData,"HistoryQueryPowerOverlayDiv_Id",true,1);
-            showFSDiagramOverlayChart(get_rawData,"HistoryQueryCurrentOverlayDiv_Id",true,2);
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
@@ -161,7 +164,10 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
         		selectedResult.push(statSelection[index].data.resultCode);
         	});
         	
-        	Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel").el.mask(loginUserLanguageResource.loading).show();
+        	if(Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel")!=undefined){
+        		Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel").el.mask(loginUserLanguageResource.loading).show();
+            }
+        	
         	var new_params = {
         			orgId: orgId,
             		deviceType:deviceType,

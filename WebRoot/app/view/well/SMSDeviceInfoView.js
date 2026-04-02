@@ -288,12 +288,16 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
     }
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceName = Ext.getCmp('SMSDeviceListComb_Id').getValue();
-    Ext.getCmp("SMSDeviceTablePanel_id").el.mask(loginUserLanguageResource.loading).show();
+    if(Ext.getCmp("SMSDeviceTablePanel_id")!=undefined){
+        Ext.getCmp("SMSDeviceTablePanel_id").el.mask(loginUserLanguageResource.loading).show();
+	}
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doWellInformationShow',
         success: function (response) {
-            Ext.getCmp("SMSDeviceTablePanel_id").getEl().unmask();
+            if(Ext.getCmp("SMSDeviceTablePanel_id")!=undefined){
+                Ext.getCmp("SMSDeviceTablePanel_id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (smsDeviceInfoHandsontableHelper == null || smsDeviceInfoHandsontableHelper.hot == null || smsDeviceInfoHandsontableHelper.hot == undefined) {
                 smsDeviceInfoHandsontableHelper = SMSDeviceInfoHandsontableHelper.createNew("SMSDeviceTableDiv_id");
@@ -359,7 +363,9 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
             });
         },
         failure: function () {
-        	Ext.getCmp("SMSDeviceTablePanel_id").getEl().unmask();
+        	if(Ext.getCmp("SMSDeviceTablePanel_id")!=undefined){
+                Ext.getCmp("SMSDeviceTablePanel_id").getEl().unmask();
+        	}
             Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {

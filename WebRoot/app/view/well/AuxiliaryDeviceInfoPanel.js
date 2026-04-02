@@ -1027,12 +1027,16 @@ function CreateAndLoadPumpingUnitPTFTable(deviceId,deviceName){
 	
 	var stroke=Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").rawValue;
 	
-	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").el.mask(cosog.string.loading).show();
+	if(Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id")!=undefined){
+		Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").el.mask(cosog.string.loading).show();
+	}
 	Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/getPumpingPRTFData',
         success: function (response) {
-        	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id")!=undefined){
+            	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").getEl().unmask();
+        	}
         	var result = Ext.JSON.decode(response.responseText);
         	if(!isNotVal(stroke)){
         		Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id").getStore().loadData(result.strokeList);
@@ -1074,7 +1078,9 @@ function CreateAndLoadPumpingUnitPTFTable(deviceId,deviceName){
             }
         },
         failure: function () {
-        	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id")!=undefined){
+            	Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFPanel_Id").getEl().unmask();
+        	}
         	Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
         },
         params: {

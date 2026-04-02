@@ -98,7 +98,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
 
 
 function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceType,calculateType){
-	Ext.getCmp("HistoryQueryDataDetailsPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("HistoryQueryDataDetailsPanel_Id")!=undefined){
+		Ext.getCmp("HistoryQueryDataDetailsPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
 	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
 	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
@@ -112,7 +114,9 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 		method:'POST',
 		url:context + '/historyQueryController/getDeviceHistoryDetailsData',
 		success:function(response) {
-			Ext.getCmp("HistoryQueryDataDetailsPanel_Id").getEl().unmask();
+			if(Ext.getCmp("HistoryQueryDataDetailsPanel_Id")!=undefined){
+				Ext.getCmp("HistoryQueryDataDetailsPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceHistoryQueryDataHandsontableHelper==null || deviceHistoryQueryDataHandsontableHelper.hot==undefined){
 				deviceHistoryQueryDataHandsontableHelper = DeviceHistoryQueryDataHandsontableHelper.createNew("HistoryQueryDataDetailsDiv_Id");
@@ -150,7 +154,9 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 			}
 		},
 		failure:function(){
-			Ext.getCmp("HistoryQueryDataDetailsPanel_Id").getEl().unmask();
+			if(Ext.getCmp("HistoryQueryDataDetailsPanel_Id")!=undefined){
+				Ext.getCmp("HistoryQueryDataDetailsPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

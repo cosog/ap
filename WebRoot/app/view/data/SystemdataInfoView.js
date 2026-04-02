@@ -28,8 +28,9 @@ Ext.define("AP.view.data.SystemdataInfoView", {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        				Ext.getCmp("DictItemRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-        	        				
+        	        				if(Ext.getCmp("DictItemRootTabPanel")!=undefined){
+            	        				Ext.getCmp("DictItemRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        		        			}
         	        				if(oldCard!=undefined){
         	        					oldCard.setIconCls(null);
         	        					oldCard.removeAll();
@@ -49,7 +50,9 @@ Ext.define("AP.view.data.SystemdataInfoView", {
                                 		Ext.create("AP.store.data.DataDictionaryItemInfoStore");
                                 	}
                                 	
-                                	Ext.getCmp("DictItemRootTabPanel").getEl().unmask();
+                                	if(Ext.getCmp("DictItemRootTabPanel")!=undefined){
+                                    	Ext.getCmp("DictItemRootTabPanel").getEl().unmask();
+        		        			}
         	        			},
         	        			afterrender: function (panel, eOpts) {
         	        				
@@ -126,8 +129,9 @@ Ext.define("AP.view.data.SystemdataInfoView", {
         		items: items,
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-    					Ext.getCmp("DictItemRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-    					
+    					if(Ext.getCmp("DictItemRootTabPanel")!=undefined){
+        					Ext.getCmp("DictItemRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+	        			}
         				if(oldCard!=undefined){
         					oldCard.setIconCls(null);
         					if(oldCard.xtype=='tabpanel'){
@@ -157,7 +161,9 @@ Ext.define("AP.view.data.SystemdataInfoView", {
                     		Ext.create("AP.store.data.DataDictionaryItemInfoStore");
                     	}
                     	
-                    	Ext.getCmp("DictItemRootTabPanel").getEl().unmask();
+                    	if(Ext.getCmp("DictItemRootTabPanel")!=undefined){
+                        	Ext.getCmp("DictItemRootTabPanel").getEl().unmask();
+	        			}
     				}
     			}
         	}]

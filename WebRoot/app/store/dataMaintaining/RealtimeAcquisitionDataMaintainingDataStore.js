@@ -21,7 +21,9 @@ Ext.define('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore
     },
     listeners: {
         load: function (store, options, eOpts) {
-        	Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel").getEl().unmask();
+        	if(Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel")!=undefined){
+        		Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel").getEl().unmask();
+        	}
         	var get_rawData = store.proxy.reader.rawData;
         	var bbar=Ext.getCmp("RealtimeAcquisitionDataMaintainingBbar");
 			if (isNotVal(bbar)) {
@@ -90,7 +92,9 @@ Ext.define('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore
                     calculateType:calculateType
             };
             Ext.apply(store.proxy.extraParams, new_params);
-            Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            if(Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel")!=undefined){
+            	Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            }
         },
         datachanged: function (v, o) {
 //            onStoreSizeChange(v, o, "ProductionOutTotalCount_Id");

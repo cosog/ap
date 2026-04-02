@@ -185,13 +185,17 @@ function CreateReportUnitContentConfigTable() {
     
     var sort=parseInt(row)+1;
 	
-	Ext.getCmp("ReportUnitContentConfigPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("ReportUnitContentConfigPanel_Id")!=undefined){
+		Ext.getCmp("ReportUnitContentConfigPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		async: false,
 		url:context + '/acquisitionUnitManagerController/getReportUnitContentConfigItemsData',
 		success:function(response) {
-			Ext.getCmp("ReportUnitContentConfigPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ReportUnitContentConfigPanel_Id")!=undefined){
+				Ext.getCmp("ReportUnitContentConfigPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(reportUnitContentConfigHandsontableHelper==null || reportUnitContentConfigHandsontableHelper.hot==undefined){
 				reportUnitContentConfigHandsontableHelper = ReportUnitContentConfigHandsontableHelper.createNew("ReportUnitContentConfigDiv_Id");
@@ -315,7 +319,9 @@ function CreateReportUnitContentConfigTable() {
 			
 		},
 		failure:function(){
-			Ext.getCmp("ReportUnitContentConfigPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ReportUnitContentConfigPanel_Id")!=undefined){
+				Ext.getCmp("ReportUnitContentConfigPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

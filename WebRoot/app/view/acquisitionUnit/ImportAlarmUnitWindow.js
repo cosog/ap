@@ -552,12 +552,17 @@ function saveAllImportedAlarmUnit(){
 }
 
 function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
-	Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportAlarmUnitItemsData',
 		success:function(response) {
-			Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.getCmp("importAlarmUnitItemsConfigTabPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.numericValue);
 			
 			var result =  Ext.JSON.decode(response.responseText);
@@ -602,7 +607,9 @@ function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,protocolDevic
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -717,12 +724,16 @@ var ImportAlarmUnitConfigNumItemsHandsontableHelper = {
 };
 
 function CreateImportAlarmUnitSwitchItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
-	Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id")!=undefined){
+		Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportAlarmUnitItemsData',
 		success:function(response) {
-			Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id")!=undefined){
+				Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
+		    }
 			Ext.getCmp("importAlarmUnitItemsConfigTabPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.switchingValue);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigSwitchItemsHandsontableHelper==null || importAlarmUnitConfigSwitchItemsHandsontableHelper.hot==undefined){
@@ -755,7 +766,9 @@ function CreateImportAlarmUnitSwitchItemsConfigInfoTable(protocolName,protocolDe
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id")!=undefined){
+				Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -870,12 +883,16 @@ var ImportAlarmUnitConfigSwitchItemsHandsontableHelper = {
 };
 
 function CreateImportAlarmUnitEnumItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
-	Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id")!=undefined){
+		Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportAlarmUnitItemsData',
 		success:function(response) {
-			Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id")!=undefined){
+				Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
+		    }
 			Ext.getCmp("importAlarmUnitItemsConfigTabPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.enumValue);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigEnumItemsHandsontableHelper==null || importAlarmUnitConfigEnumItemsHandsontableHelper.hot==undefined){
@@ -907,7 +924,9 @@ function CreateImportAlarmUnitEnumItemsConfigInfoTable(protocolName,protocolDevi
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id")!=undefined){
+				Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1022,12 +1041,16 @@ var ImportAlarmUnitConfigEnumItemsHandsontableHelper = {
 };
 
 function CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
-	Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportAlarmUnitItemsData',
 		success:function(response) {
-			Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.getCmp("importAlarmUnitItemsConfigTabPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.workType);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper==null || importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot==undefined){
@@ -1057,7 +1080,9 @@ function CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(protocolName,
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1172,12 +1197,16 @@ var ImportAlarmUnitConfigFESDiagramResultItemsHandsontableHelper = {
 };
 
 function CreateImportAlarmUnitRunStatusItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
-	Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportAlarmUnitItemsData',
 		success:function(response) {
-			Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.getCmp("importAlarmUnitItemsConfigTabPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.runStatus);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigRunStatusItemsHandsontableHelper==null || importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot==undefined){
@@ -1207,7 +1236,9 @@ function CreateImportAlarmUnitRunStatusItemsConfigInfoTable(protocolName,protoco
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1322,12 +1353,16 @@ var ImportAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 };
 
 function CreateImportAlarmUnitCommStatusItemsConfigInfoTable(protocolName,protocolDeviceType,unitName,calculateType){
-	Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportAlarmUnitItemsData',
 		success:function(response) {
-			Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.getCmp("importAlarmUnitItemsConfigTabPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.commStatus);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAlarmUnitConfigCommStatusItemsHandsontableHelper==null || importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot==undefined){
@@ -1358,7 +1393,9 @@ function CreateImportAlarmUnitCommStatusItemsConfigInfoTable(protocolName,protoc
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

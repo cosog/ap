@@ -789,13 +789,16 @@ function CreateProtocolAlarmUnitContentConfigInfoTable(record){
 
 
 function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolCode,classes,code,calculateType){
-	Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
-	Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id")!=undefined){
+		Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolNumAlarmItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").getEl().unmask();
+		    }
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigNumItemsHandsontableHelper==null || protocolAlarmUnitConfigNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigNumItemsHandsontableHelper = ProtocolAlarmUnitConfigNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitItemsConfigTableInfoDiv_id");
@@ -841,7 +844,9 @@ function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolCode,classes,cod
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1233,12 +1238,16 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 };
 
 function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr,itemHighLowByte,itemTitle,itemCode){
-	Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id")!=undefined){
+		Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolEnumAlarmItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
+		    }
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigEnumItemsHandsontableHelper==null || protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigEnumItemsHandsontableHelper = ProtocolAlarmUnitConfigEnumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitEnumItemsConfigTableInfoDiv_id");
@@ -1261,7 +1270,9 @@ function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolCode,classes,un
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1447,12 +1458,16 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolCode,classes,unitCode,itemAddr,itemHighLowByte,itemTitle,itemCode){
-	Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id")!=undefined){
+		Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolEnumAlarmItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
+		    }
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper==null || protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigSwitchItemsHandsontableHelper = ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoDiv_id");
@@ -1486,7 +1501,9 @@ function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolCode,classes,
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1682,12 +1699,16 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 
 
 function CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(protocolName,classes,code){
-	Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolCommStatusAlarmItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper==null || protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigCommStatusItemsHandsontableHelper = ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoDiv_id");
@@ -1718,7 +1739,9 @@ function CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(protocolName,clas
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1898,7 +1921,9 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(protocolName,classes,code,calculateType){
-	Ext.getCmp("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolFESDiagramConditionsAlarmItemsConfigData',
@@ -1938,7 +1963,9 @@ function CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(protocolName
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -2118,12 +2145,16 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(protocolName,classes,code){
-	Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolRunStatusAlarmItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper==null || protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigRunStatusItemsHandsontableHelper = ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitRunStatusItemsConfigTableInfoDiv_id");
@@ -2144,7 +2175,9 @@ function CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(protocolName,class
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

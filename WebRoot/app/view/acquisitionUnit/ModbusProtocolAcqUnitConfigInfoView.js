@@ -291,7 +291,9 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolCode,classes,code,typ
     Ext.getCmp("AcqUnitConfigInformationLabel_Id").show();
 	
 	
-	Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	if(protocolAcqUnitConfigItemsHandsontableHelper!=null){
 		if(protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
 			protocolAcqUnitConfigItemsHandsontableHelper.hot.destroy();
@@ -302,7 +304,9 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolCode,classes,code,typ
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolAcqUnitItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAcqUnitConfigItemsHandsontableHelper==null || protocolAcqUnitConfigItemsHandsontableHelper.hot==undefined){
 				protocolAcqUnitConfigItemsHandsontableHelper = ProtocolAcqUnitConfigItemsHandsontableHelper.createNew("ModbusProtocolAcqGroupItemsConfigTableInfoDiv_id");
@@ -341,7 +345,9 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolCode,classes,code,typ
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

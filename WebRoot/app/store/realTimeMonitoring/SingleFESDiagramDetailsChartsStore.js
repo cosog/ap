@@ -17,64 +17,66 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
     },
     listeners: {
         load: function (store, options, eOpts) {
-        	var get_rawData=store.proxy.reader.rawData;   // 获取store数据
-        	var powerData=get_rawData.powerCurveData;
-        	var currentData=get_rawData.currentCurveData;
-        	
-        	var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
-            var activeId = '';
-            if(tabPanel!=undefined && tabPanel.getActiveTab()!=undefined){
-            	activeId = tabPanel.getActiveTab().id;
-            }
-            if(isNotVal(Ext.getCmp(activeId))){
-            	Ext.getCmp(activeId).getEl().unmask();
-            }
-            
-            if(activeId=="RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){
-            	showFSDiagramFromPumpcard(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
-            	showRodPress(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id");    // 调用画杆柱应力的函数
-            	showPumpCard(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv3_id"); // 调用画泵功图的函数
-            	showPumpEfficiency(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv4_id");    // 调用画泵效组成的函数
-            }else if(activeId=="RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){
-            	var deltaRadius=parseFloat(get_rawData.deltaRadius);
-            	var expectedTorqueChartTitle=loginUserLanguageResource.torqueCurve;
-            	if(Math.abs(deltaRadius)>0){
-            		if(deltaRadius>0){
-            			expectedTorqueChartTitle=loginUserLanguageResource.moveTowardOutside+' '+deltaRadius+"cm "+loginUserLanguageResourceFirstLower.torqueCurve;
-            		}else{
-            			expectedTorqueChartTitle=loginUserLanguageResource.moveTowardInside+' '+Math.abs(deltaRadius)+"cm "+loginUserLanguageResourceFirstLower.torqueCurve;
-            		}
-            	}else {
-            		expectedTorqueChartTitle=loginUserLanguageResource.expectTorqueCurve;
-            	}
+        	if(Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel")!=undefined){
+            	var get_rawData=store.proxy.reader.rawData;   // 获取store数据
+            	var powerData=get_rawData.powerCurveData;
+            	var currentData=get_rawData.currentCurveData;
             	
-            	
-            	showPSDiagram(get_rawData, "FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
-            	showASDiagram(get_rawData, "FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
-            	showBalanceAnalysisCurveChart(
-            			get_rawData.crankAngle,
-            			get_rawData.loadRorque,
-            			get_rawData.crankTorque,
-            			get_rawData.currentBalanceTorque,
-            			get_rawData.currentNetTorque,
-            			loginUserLanguageResource.currentTorqueCurve,
-            			get_rawData.deviceName,
-            			get_rawData.acqTime,
-            			"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id"
-            		);
-            	showBalanceAnalysisCurveChart(
-            			get_rawData.crankAngle,
-            			get_rawData.loadRorque,
-            			get_rawData.crankTorque,
-            			get_rawData.expectedBalanceTorque,
-            			get_rawData.expectedNetTorque,
-            			expectedTorqueChartTitle,
-            			get_rawData.deviceName,
-            			get_rawData.acqTime,
-            			"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id"
-            		);
-//            	showBalanceAnalysisMotionCurveChart(get_rawData.crankAngle,get_rawData.positionCurveData,get_rawData.polishrodV,get_rawData.polishrodA,
-//            			"运动特性曲线",get_rawData.deviceName+' ['+get_rawData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id",2);
+            	var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
+                var activeId = '';
+                if(tabPanel!=undefined && tabPanel.getActiveTab()!=undefined){
+                	activeId = tabPanel.getActiveTab().id;
+                }
+                if(isNotVal(Ext.getCmp(activeId))){
+                	Ext.getCmp(activeId).getEl().unmask();
+                }
+                
+                if(activeId=="RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){
+                	showFSDiagramFromPumpcard(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
+                	showRodPress(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id");    // 调用画杆柱应力的函数
+                	showPumpCard(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv3_id"); // 调用画泵功图的函数
+                	showPumpEfficiency(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv4_id");    // 调用画泵效组成的函数
+                }else if(activeId=="RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){
+                	var deltaRadius=parseFloat(get_rawData.deltaRadius);
+                	var expectedTorqueChartTitle=loginUserLanguageResource.torqueCurve;
+                	if(Math.abs(deltaRadius)>0){
+                		if(deltaRadius>0){
+                			expectedTorqueChartTitle=loginUserLanguageResource.moveTowardOutside+' '+deltaRadius+"cm "+loginUserLanguageResourceFirstLower.torqueCurve;
+                		}else{
+                			expectedTorqueChartTitle=loginUserLanguageResource.moveTowardInside+' '+Math.abs(deltaRadius)+"cm "+loginUserLanguageResourceFirstLower.torqueCurve;
+                		}
+                	}else {
+                		expectedTorqueChartTitle=loginUserLanguageResource.expectTorqueCurve;
+                	}
+                	
+                	
+                	showPSDiagram(get_rawData, "FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
+                	showASDiagram(get_rawData, "FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
+                	showBalanceAnalysisCurveChart(
+                			get_rawData.crankAngle,
+                			get_rawData.loadRorque,
+                			get_rawData.crankTorque,
+                			get_rawData.currentBalanceTorque,
+                			get_rawData.currentNetTorque,
+                			loginUserLanguageResource.currentTorqueCurve,
+                			get_rawData.deviceName,
+                			get_rawData.acqTime,
+                			"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id"
+                		);
+                	showBalanceAnalysisCurveChart(
+                			get_rawData.crankAngle,
+                			get_rawData.loadRorque,
+                			get_rawData.crankTorque,
+                			get_rawData.expectedBalanceTorque,
+                			get_rawData.expectedNetTorque,
+                			expectedTorqueChartTitle,
+                			get_rawData.deviceName,
+                			get_rawData.acqTime,
+                			"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id"
+                		);
+//                	showBalanceAnalysisMotionCurveChart(get_rawData.crankAngle,get_rawData.positionCurveData,get_rawData.polishrodV,get_rawData.polishrodA,
+//                			"运动特性曲线",get_rawData.deviceName+' ['+get_rawData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id",2);
+                }
             }
         },
         beforeload: function (store, options) {

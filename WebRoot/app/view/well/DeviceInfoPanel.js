@@ -1082,229 +1082,237 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 		}
 		deviceInfoHandsontableHelper = null;
 	}
-    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-    var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
-    var dictDeviceType=deviceType;
-	if(dictDeviceType.includes(",")){
-		dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
-	}
-    var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
-    var signInId = Ext.getCmp('signInIdListComb_Id').getValue();
-    
-    
-    Ext.getCmp("DeviceTablePanel_id").el.mask(loginUserLanguageResource.loading).show();
-    Ext.Ajax.request({
-        method: 'POST',
-        url: context + '/wellInformationManagerController/doWellInformationShow',
-        success: function (response) {
-        	Ext.getCmp("DeviceTablePanel_id").getEl().unmask();
-        	var result = Ext.JSON.decode(response.responseText);
-        	var fixedColumnsStart=0;
-            if (deviceInfoHandsontableHelper == null || deviceInfoHandsontableHelper.hot == null || deviceInfoHandsontableHelper.hot == undefined) {
-                deviceInfoHandsontableHelper = DeviceInfoHandsontableHelper.createNew("DeviceTableDiv_id");
-                deviceInfoHandsontableHelper.dataLength=result.totalCount;
-                var colHeaders = "[";
-                var columns = "[";
+	if(Ext.getCmp("DeviceTablePanel_id")!=undefined){
+		var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+	    var deviceType=getDeviceTypeFromTabId("DeviceManagerTabPanel");
+	    var dictDeviceType=deviceType;
+		if(dictDeviceType.includes(",")){
+			dictDeviceType=getDeviceTypeFromTabId_first("DeviceManagerTabPanel");
+		}
+	    var deviceName = Ext.getCmp('deviceListComb_Id').getValue();
+	    var signInId = Ext.getCmp('signInIdListComb_Id').getValue();
+	    
+	    
+	    if(Ext.getCmp("DeviceTablePanel_id")!=undefined){
+		    Ext.getCmp("DeviceTablePanel_id").el.mask(loginUserLanguageResource.loading).show();
+    	}
+	    Ext.Ajax.request({
+	        method: 'POST',
+	        url: context + '/wellInformationManagerController/doWellInformationShow',
+	        success: function (response) {
+	        	if(Ext.getCmp("DeviceTablePanel_id")!=undefined){
+		        	Ext.getCmp("DeviceTablePanel_id").getEl().unmask();
+	        	}
+	        	var result = Ext.JSON.decode(response.responseText);
+	        	var fixedColumnsStart=0;
+	            if (deviceInfoHandsontableHelper == null || deviceInfoHandsontableHelper.hot == null || deviceInfoHandsontableHelper.hot == undefined) {
+	                deviceInfoHandsontableHelper = DeviceInfoHandsontableHelper.createNew("DeviceTableDiv_id");
+	                deviceInfoHandsontableHelper.dataLength=result.totalCount;
+	                var colHeaders = "[";
+	                var columns = "[";
 
-                for (var i = 0; i < result.columns.length; i++) {
-                    colHeaders += "'" + result.columns[i].header + "'";
-                    if (result.columns[i].dataIndex.toUpperCase() === "id".toUpperCase() || result.columns[i].dataIndex.toUpperCase() === "deviceName".toUpperCase()) {
-                    	fixedColumnsStart++;
-                    }
-                    
-                    
-                    if (result.columns[i].dataIndex.toUpperCase() === "orgName".toUpperCase()) {
-                        columns += "{data:'" + result.columns[i].dataIndex + "',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,deviceInfoHandsontableHelper);}}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "liftingTypeName".toUpperCase()) {
-                        if (pcpHidden) {
-                            columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机井']}";
-                        } else {
-                            columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机井', '螺杆泵井']}";
-                        }
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "deviceTypeName".toUpperCase()) {
-                        var source = "[";
-                        for (var j = 0; j < result.deviceTypeDropdownData.length; j++) {
-                            source += "\'" + result.deviceTypeDropdownData[j] + "\'";
-                            if (j < result.deviceTypeDropdownData.length - 1) {
-                                source += ",";
-                            }
-                        }
-                        source += "]";
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "deviceTabInstance".toUpperCase()) {
-                        var source = "[";
-                        for (var j = 0; j < result.tabInstanceDropdownData.length; j++) {
-                            source += "\'" + result.tabInstanceDropdownData[j] + "\'";
-                            if (j < result.tabInstanceDropdownData.length - 1) {
-                                source += ",";
-                            }
-                        }
-                        source += "]";
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "instanceName".toUpperCase()) {
-                        var source = "[";
-                        for (var j = 0; j < result.instanceDropdownData.length; j++) {
-                            source += "\'" + result.instanceDropdownData[j] + "\'";
-                            if (j < result.instanceDropdownData.length - 1) {
-                                source += ",";
-                            }
-                        }
-                        source += "]";
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "displayInstanceName".toUpperCase()) {
-                        var source = "[";
-                        for (var j = 0; j < result.displayInstanceDropdownData.length; j++) {
-                            source += "\'" + result.displayInstanceDropdownData[j] + "\'";
-                            if (j < result.displayInstanceDropdownData.length - 1) {
-                                source += ",";
-                            }
-                        }
-                        source += "]";
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "reportInstanceName".toUpperCase()) {
-                        var source = "[";
-                        for (var j = 0; j < result.reportInstanceDropdownData.length; j++) {
-                            source += "\'" + result.reportInstanceDropdownData[j] + "\'";
-                            if (j < result.reportInstanceDropdownData.length - 1) {
-                                source += ",";
-                            }
-                        }
-                        source += "]";
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "alarmInstanceName".toUpperCase()) {
-                        var source = "[";
-                        for (var j = 0; j < result.alarmInstanceDropdownData.length; j++) {
-                            source += "\'" + result.alarmInstanceDropdownData[j] + "\'";
-                            if (j < result.alarmInstanceDropdownData.length - 1) {
-                                source += ",";
-                            }
-                        }
-                        source += "]";
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
-                    }else if (result.columns[i].dataIndex.toUpperCase() === "applicationScenariosName".toUpperCase()) {
-                        var source = "[";
-                        for (var j = 0; j < result.applicationScenariosDropdownData.length; j++) {
-                            source += "\'" + result.applicationScenariosDropdownData[j] + "\'";
-                            if (j < result.applicationScenariosDropdownData.length - 1) {
-                                source += ",";
-                            }
-                        }
-                        source += "]";
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
-                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"', '"+loginUserLanguageResource.disable+"']}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "tcpType".toUpperCase()) {
-                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['', 'TCP Client','TCP Server']}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase() 
-                    		||result.columns[i].dataIndex.toUpperCase() === "slave".toUpperCase()
-                    		||result.columns[i].dataIndex.toUpperCase() === "peakDelay".toUpperCase()) {
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceInfoHandsontableHelper);}}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "ipPort".toUpperCase()) {
-                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_IpPort_Nullable(val, callback,this.row, this.col,deviceInfoHandsontableHelper);}}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "commissioningDate".toUpperCase()) {
-                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'date',dateFormat: 'YYYY-MM-DD'}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "calculateTypeName".toUpperCase()) {
-                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.nothing+"','"+loginUserLanguageResource.SRPCalculate+"', '"+loginUserLanguageResource.PCPCalculate+"']}";
-                    }  else {
-                        columns += "{data:'" + result.columns[i].dataIndex + "'}";
-                    }
-                    if (i < result.columns.length - 1) {
-                        colHeaders += ",";
-                        columns += ",";
-                    }
-                }
-                colHeaders += "]";
-                columns += "]";
-                deviceInfoHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
-                deviceInfoHandsontableHelper.columns = Ext.JSON.decode(columns);
-                deviceInfoHandsontableHelper.fixedColumnsStart=fixedColumnsStart;
-                if(result.totalRoot.length==0){
-                	deviceInfoHandsontableHelper.hiddenRows = [0];
-                	deviceInfoHandsontableHelper.createTable([{}]);
-                }else{
-                	deviceInfoHandsontableHelper.hiddenRows = [];
-                	deviceInfoHandsontableHelper.createTable(result.totalRoot);
-                }
-            } else {
-            	deviceInfoHandsontableHelper.hot.deselectCell();
-            	deviceInfoHandsontableHelper.dataLength=result.totalCount;
-            	if(result.totalRoot.length==0){
-            		deviceInfoHandsontableHelper.hiddenRows = [0];
-            		deviceInfoHandsontableHelper.hot.loadData([{}]);
-            	}else{
-            		deviceInfoHandsontableHelper.hiddenRows = [];
-            		deviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
-            	}
-            }
-            if(deviceInfoHandsontableHelper.hiddenRows.length>0){
-            	const plugin = deviceInfoHandsontableHelper.hot.getPlugin('hiddenRows');
-            	plugin.hideRows(deviceInfoHandsontableHelper.hiddenRows);
-            	deviceInfoHandsontableHelper.hot.render();
-            }
-            if(result.totalRoot.length==0){
-            	Ext.getCmp("DeviceSelectRow_Id").setValue('');
-            	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
-            	deviceInfoHandsontableHelper.hot.selectCell(0,'deviceName');
-            	
-            	updateDeviceAdditionalInformationTabPaneContent({});
-            	CreateDeviceAdditionalInformationTable(0,'',0,0);
-            }else{
-            	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
-            	var selectRow=0;
-            	for(var i=0;i<result.totalRoot.length;i++){
-            		if(result.totalRoot[i].id==selectedDeviceId){
-            			selectRow=i;
-            			break;
-            		}
-            	}
-            	Ext.getCmp("DeviceSelectRow_Id").setValue(selectRow);
-            	deviceInfoHandsontableHelper.hot.selectCell(selectRow,'deviceName');
-        		
-        		var recordId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'id');
-            	var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'deviceName');
-            	
-            	var deviceTabInstance= deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'deviceTabInstance');
-        		var deviceTabInstanceInfo=getDeviceTabInstanceInfo(deviceTabInstance);
-        		var calculateType=deviceTabInstanceInfo.calculateType;
-            	
-            	var applicationScenarios=0;
-            	var applicationScenariosName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'applicationScenariosName');
-            	if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
-    				applicationScenarios=1;
-    			}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
-    				applicationScenarios=2;
-    			}
-            	
-            	var combDeviceName=Ext.getCmp('deviceListComb_Id').getValue();
-        		if(combDeviceName!=''){
-            		Ext.getCmp("selectedDeviceId_global").setValue(recordId);
-        		}
-        		updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo);
-        		CreateDeviceAdditionalInformationTable(recordId,deviceName,applicationScenarios,calculateType);
-            }
-            deviceInfoHandsontableHelper.hot.render();
-            Ext.getCmp("DeviceTotalCount_Id").update({
-                count: result.totalCount
-            });
-            
-            
-            deviceInfoHandsontableHelper.initSignInIdAndSlaveMap(result.totalRoot);
-        },
-        failure: function () {
-        	Ext.getCmp("DeviceTablePanel_id").getEl().unmask();
-        	Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
-        },
-        params: {
-        	deviceName: deviceName,
-        	signInId : signInId,
-            deviceType: deviceType,
-            dictDeviceType: dictDeviceType,
-            recordCount: 50,
-            orgId: leftOrg_Id,
-            page: 1,
-            limit: 10000
-        }
-    });
+	                for (var i = 0; i < result.columns.length; i++) {
+	                    colHeaders += "'" + result.columns[i].header + "'";
+	                    if (result.columns[i].dataIndex.toUpperCase() === "id".toUpperCase() || result.columns[i].dataIndex.toUpperCase() === "deviceName".toUpperCase()) {
+	                    	fixedColumnsStart++;
+	                    }
+	                    
+	                    
+	                    if (result.columns[i].dataIndex.toUpperCase() === "orgName".toUpperCase()) {
+	                        columns += "{data:'" + result.columns[i].dataIndex + "',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,deviceInfoHandsontableHelper);}}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "liftingTypeName".toUpperCase()) {
+	                        if (pcpHidden) {
+	                            columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机井']}";
+	                        } else {
+	                            columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机井', '螺杆泵井']}";
+	                        }
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "deviceTypeName".toUpperCase()) {
+	                        var source = "[";
+	                        for (var j = 0; j < result.deviceTypeDropdownData.length; j++) {
+	                            source += "\'" + result.deviceTypeDropdownData[j] + "\'";
+	                            if (j < result.deviceTypeDropdownData.length - 1) {
+	                                source += ",";
+	                            }
+	                        }
+	                        source += "]";
+	                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "deviceTabInstance".toUpperCase()) {
+	                        var source = "[";
+	                        for (var j = 0; j < result.tabInstanceDropdownData.length; j++) {
+	                            source += "\'" + result.tabInstanceDropdownData[j] + "\'";
+	                            if (j < result.tabInstanceDropdownData.length - 1) {
+	                                source += ",";
+	                            }
+	                        }
+	                        source += "]";
+	                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "instanceName".toUpperCase()) {
+	                        var source = "[";
+	                        for (var j = 0; j < result.instanceDropdownData.length; j++) {
+	                            source += "\'" + result.instanceDropdownData[j] + "\'";
+	                            if (j < result.instanceDropdownData.length - 1) {
+	                                source += ",";
+	                            }
+	                        }
+	                        source += "]";
+	                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "displayInstanceName".toUpperCase()) {
+	                        var source = "[";
+	                        for (var j = 0; j < result.displayInstanceDropdownData.length; j++) {
+	                            source += "\'" + result.displayInstanceDropdownData[j] + "\'";
+	                            if (j < result.displayInstanceDropdownData.length - 1) {
+	                                source += ",";
+	                            }
+	                        }
+	                        source += "]";
+	                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "reportInstanceName".toUpperCase()) {
+	                        var source = "[";
+	                        for (var j = 0; j < result.reportInstanceDropdownData.length; j++) {
+	                            source += "\'" + result.reportInstanceDropdownData[j] + "\'";
+	                            if (j < result.reportInstanceDropdownData.length - 1) {
+	                                source += ",";
+	                            }
+	                        }
+	                        source += "]";
+	                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "alarmInstanceName".toUpperCase()) {
+	                        var source = "[";
+	                        for (var j = 0; j < result.alarmInstanceDropdownData.length; j++) {
+	                            source += "\'" + result.alarmInstanceDropdownData[j] + "\'";
+	                            if (j < result.alarmInstanceDropdownData.length - 1) {
+	                                source += ",";
+	                            }
+	                        }
+	                        source += "]";
+	                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+	                    }else if (result.columns[i].dataIndex.toUpperCase() === "applicationScenariosName".toUpperCase()) {
+	                        var source = "[";
+	                        for (var j = 0; j < result.applicationScenariosDropdownData.length; j++) {
+	                            source += "\'" + result.applicationScenariosDropdownData[j] + "\'";
+	                            if (j < result.applicationScenariosDropdownData.length - 1) {
+	                                source += ",";
+	                            }
+	                        }
+	                        source += "]";
+	                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
+	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.enable+"', '"+loginUserLanguageResource.disable+"']}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "tcpType".toUpperCase()) {
+	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['', 'TCP Client','TCP Server']}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase() 
+	                    		||result.columns[i].dataIndex.toUpperCase() === "slave".toUpperCase()
+	                    		||result.columns[i].dataIndex.toUpperCase() === "peakDelay".toUpperCase()) {
+	                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceInfoHandsontableHelper);}}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "ipPort".toUpperCase()) {
+	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_IpPort_Nullable(val, callback,this.row, this.col,deviceInfoHandsontableHelper);}}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "commissioningDate".toUpperCase()) {
+	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'date',dateFormat: 'YYYY-MM-DD'}";
+	                    } else if (result.columns[i].dataIndex.toUpperCase() === "calculateTypeName".toUpperCase()) {
+	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.nothing+"','"+loginUserLanguageResource.SRPCalculate+"', '"+loginUserLanguageResource.PCPCalculate+"']}";
+	                    }  else {
+	                        columns += "{data:'" + result.columns[i].dataIndex + "'}";
+	                    }
+	                    if (i < result.columns.length - 1) {
+	                        colHeaders += ",";
+	                        columns += ",";
+	                    }
+	                }
+	                colHeaders += "]";
+	                columns += "]";
+	                deviceInfoHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
+	                deviceInfoHandsontableHelper.columns = Ext.JSON.decode(columns);
+	                deviceInfoHandsontableHelper.fixedColumnsStart=fixedColumnsStart;
+	                if(result.totalRoot.length==0){
+	                	deviceInfoHandsontableHelper.hiddenRows = [0];
+	                	deviceInfoHandsontableHelper.createTable([{}]);
+	                }else{
+	                	deviceInfoHandsontableHelper.hiddenRows = [];
+	                	deviceInfoHandsontableHelper.createTable(result.totalRoot);
+	                }
+	            } else {
+	            	deviceInfoHandsontableHelper.hot.deselectCell();
+	            	deviceInfoHandsontableHelper.dataLength=result.totalCount;
+	            	if(result.totalRoot.length==0){
+	            		deviceInfoHandsontableHelper.hiddenRows = [0];
+	            		deviceInfoHandsontableHelper.hot.loadData([{}]);
+	            	}else{
+	            		deviceInfoHandsontableHelper.hiddenRows = [];
+	            		deviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
+	            	}
+	            }
+	            if(deviceInfoHandsontableHelper.hiddenRows.length>0){
+	            	const plugin = deviceInfoHandsontableHelper.hot.getPlugin('hiddenRows');
+	            	plugin.hideRows(deviceInfoHandsontableHelper.hiddenRows);
+	            }
+	            if(result.totalRoot.length==0){
+	            	Ext.getCmp("DeviceSelectRow_Id").setValue('');
+	            	Ext.getCmp("DeviceSelectEndRow_Id").setValue('');
+	            	deviceInfoHandsontableHelper.hot.selectCell(0,'deviceName');
+	            	
+	            	updateDeviceAdditionalInformationTabPaneContent({});
+	            	CreateDeviceAdditionalInformationTable(0,'',0,0);
+	            }else{
+	            	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
+	            	var selectRow=0;
+	            	for(var i=0;i<result.totalRoot.length;i++){
+	            		if(result.totalRoot[i].id==selectedDeviceId){
+	            			selectRow=i;
+	            			break;
+	            		}
+	            	}
+	            	Ext.getCmp("DeviceSelectRow_Id").setValue(selectRow);
+	            	deviceInfoHandsontableHelper.hot.selectCell(selectRow,'deviceName');
+	        		
+	        		var recordId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'id');
+	            	var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'deviceName');
+	            	
+	            	var deviceTabInstance= deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'deviceTabInstance');
+	        		var deviceTabInstanceInfo=getDeviceTabInstanceInfo(deviceTabInstance);
+	        		var calculateType=deviceTabInstanceInfo.calculateType;
+	            	
+	            	var applicationScenarios=0;
+	            	var applicationScenariosName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow,'applicationScenariosName');
+	            	if(applicationScenariosName==loginUserLanguageResource.applicationScenarios1){
+	    				applicationScenarios=1;
+	    			}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
+	    				applicationScenarios=2;
+	    			}
+	            	
+	            	var combDeviceName=Ext.getCmp('deviceListComb_Id').getValue();
+	        		if(combDeviceName!=''){
+	            		Ext.getCmp("selectedDeviceId_global").setValue(recordId);
+	        		}
+	        		updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo);
+	        		CreateDeviceAdditionalInformationTable(recordId,deviceName,applicationScenarios,calculateType);
+	            }
+	            
+	            Ext.getCmp("DeviceTotalCount_Id").update({
+	                count: result.totalCount
+	            });
+	            
+	            deviceInfoHandsontableHelper.initSignInIdAndSlaveMap(result.totalRoot);
+	            
+	            deviceInfoHandsontableHelper.hot.render();
+	        },
+	        failure: function () {
+	        	if(Ext.getCmp("DeviceTablePanel_id")!=undefined){
+		        	Ext.getCmp("DeviceTablePanel_id").getEl().unmask();
+	        	}
+	        	Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+	        },
+	        params: {
+	        	deviceName: deviceName,
+	        	signInId : signInId,
+	            deviceType: deviceType,
+	            dictDeviceType: dictDeviceType,
+	            recordCount: 50,
+	            orgId: leftOrg_Id,
+	            page: 1,
+	            limit: 10000
+	        }
+	    });
+    }
 };
 
 var DeviceInfoHandsontableHelper = {
@@ -2784,13 +2792,16 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 		productionHandsontableHelper=null;
 	}
 	if(deviceCalculateDataType!=0){
-		Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
-		
+		if(Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id")!=undefined){
+			Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+    	}
 		Ext.Ajax.request({
 			method:'POST',
 			url:context + '/wellInformationManagerController/getDeviceProductionDataInfo',
 			success:function(response) {
-				Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").getEl().unmask();
+				if(Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id")!=undefined){
+					Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").getEl().unmask();
+		    	}
 				var result =  Ext.JSON.decode(response.responseText);
 				
 				if(productionHandsontableHelper==null || productionHandsontableHelper.hot==undefined){
@@ -2843,7 +2854,9 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 	        	productionHandsontableHelper.hot.render();
 			},
 			failure:function(){
-				Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").getEl().unmask();
+				if(Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id")!=undefined){
+					Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").getEl().unmask();
+		    	}
 				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 			},
 			params: {
@@ -3102,13 +3115,17 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 		}
 		pumpingInfoHandsontableHelper=null;
 	}
-	Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+		Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		async :  false,
 		url:context + '/wellInformationManagerController/getDevicePumpingInfo',
 		success:function(response) {
-			Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+				Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(pumpingInfoHandsontableHelper==null || pumpingInfoHandsontableHelper.hot==undefined){
 				pumpingInfoHandsontableHelper = PumpingInfoHandsontableHelper.createNew("PumpingInfoTableDiv_id");
@@ -3144,6 +3161,9 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 			}
 		},
 		failure:function(){
+			if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+				Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -4613,7 +4633,9 @@ function deviceProductionDataDownlink(){
 		}
 		
 		if(deviceCalculateDataType==1 || deviceCalculateDataType==2){
-			Ext.getCmp("DeviceCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+			if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+			}
 			Ext.Ajax.request({
 	            url: context + '/wellInformationManagerController/deviceProductionDataDownlink',
 	            method: "POST",
@@ -4627,8 +4649,9 @@ function deviceProductionDataDownlink(){
 	            	applicationScenarios:applicationScenarios
 	            },
 	            success: function (response, action) {
-	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
-	            	
+	            	if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
+		            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+	    			}
 	            	var result =  Ext.JSON.decode(response.responseText);
 	            	
 	            	if (result.flag == false) {
@@ -4663,7 +4686,9 @@ function deviceProductionDataDownlink(){
 	                } 
 	            },
 	            failure: function () {
-	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+	            	if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
+		            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+	    			}
 	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
 	            }
 	        });
@@ -4702,7 +4727,9 @@ function devicePumpingUnitDataDownlink(){
         	}
         }
 
-        Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+        if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+            Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		}
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/devicePumpingUnitDataDownlink',
             method: "POST",
@@ -4715,7 +4742,9 @@ function devicePumpingUnitDataDownlink(){
             	balanceInfo:JSON.stringify(balanceInfo)
             },
             success: function (response, action) {
-            	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+                	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+        		}
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -4795,7 +4824,9 @@ function devicePumpingUnitDataDownlink(){
                 } 
             },
             failure: function () {
-            	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+                	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+        		}
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -4891,7 +4922,9 @@ function deviceFSDiagramConstructionDataDownlink(){
 			}
 		}
 
-		Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+			Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		}
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceFSDiagramConstructionDataDownlink',
             method: "POST",
@@ -4901,7 +4934,9 @@ function deviceFSDiagramConstructionDataDownlink(){
             	data: JSON.stringify(FSDiagramConstructionData)
             },
             success: function (response, action) {
-            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+        		}
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -4935,7 +4970,9 @@ function deviceFSDiagramConstructionDataDownlink(){
                 } 
             },
             failure: function () {
-            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+        		}
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -4959,7 +4996,9 @@ function deviceSystemParameterDataDownlink(){
 			applicationScenarios=2;
 		}
 
-		Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+			Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		}
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceSystemParameterDataDownlink',
             method: "POST",
@@ -4968,7 +5007,9 @@ function deviceSystemParameterDataDownlink(){
             	deviceName: deviceName
             },
             success: function (response, action) {
-            	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+        		}
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -5001,7 +5042,9 @@ function deviceSystemParameterDataDownlink(){
                 } 
             },
             failure: function () {
-            	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+        		}
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -5026,7 +5069,9 @@ function deviceProductionDataUplink(){
 		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
 		
 		if(deviceCalculateDataType==1 || deviceCalculateDataType==2){
-			Ext.getCmp("DeviceCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+			if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+    		}
 			Ext.Ajax.request({
 	            url: context + '/wellInformationManagerController/deviceProductionDataUplink',
 	            method: "POST",
@@ -5036,7 +5081,9 @@ function deviceProductionDataUplink(){
 	            	deviceCalculateDataType: deviceCalculateDataType
 	            },
 	            success: function (response, action) {
-	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+	            	if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
+		            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+	        		}
 	            	var result =  Ext.JSON.decode(response.responseText);
 	            	
 	            	if (result.flag == false) {
@@ -5070,7 +5117,9 @@ function deviceProductionDataUplink(){
 	                } 
 	            },
 	            failure: function () {
-	            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+	            	if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
+		            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+	        		}
 	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
 	            }
 	        });
@@ -5089,7 +5138,9 @@ function devicePumpingUnitDataUplink(){
 		var deviceId=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'id');
 		var deviceName=deviceInfoHandsontableHelper.hot.getDataAtRowProp(DeviceSelectRow,'deviceName');
 
-		Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+			Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		}
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/devicePumpingUnitDataUplink',
             method: "POST",
@@ -5097,7 +5148,9 @@ function devicePumpingUnitDataUplink(){
             	deviceId: deviceId
             },
             success: function (response, action) {
-            	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+                	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+        		}
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -5218,7 +5271,9 @@ function devicePumpingUnitDataUplink(){
                 } 
             },
             failure: function () {
-            	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+                	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+        		}
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -5242,7 +5297,9 @@ function deviceFSDiagramConstructionDataUplink(){
 			applicationScenarios=2;
 		}
 
-		Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+			Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		}
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceFSDiagramConstructionDataUplink',
             method: "POST",
@@ -5250,7 +5307,9 @@ function deviceFSDiagramConstructionDataUplink(){
             	deviceId: deviceId
             },
             success: function (response, action) {
-            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+        		}
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -5284,7 +5343,9 @@ function deviceFSDiagramConstructionDataUplink(){
                 } 
             },
             failure: function () {
-            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+        		}
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -5307,7 +5368,9 @@ function deviceSystemParameterDataUplink(){
 			applicationScenarios=2;
 		}
 
-		Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+			Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		}
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceSystemParameterDataUplink',
             method: "POST",
@@ -5315,7 +5378,9 @@ function deviceSystemParameterDataUplink(){
             	deviceId: deviceId
             },
             success: function (response, action) {
-            	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+        		}
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -5348,7 +5413,9 @@ function deviceSystemParameterDataUplink(){
                 } 
             },
             failure: function () {
-            	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+        		}
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -5372,7 +5439,9 @@ function deviceIntelligentFrequencyConversionDataUplink(){
 			applicationScenarios=2;
 		}
 
-		Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+			Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		}
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceIntelligentFrequencyConversionDataUplink',
             method: "POST",
@@ -5380,7 +5449,9 @@ function deviceIntelligentFrequencyConversionDataUplink(){
             	deviceId: deviceId
             },
             success: function (response, action) {
-            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+        		}
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -5443,7 +5514,9 @@ function deviceIntelligentFrequencyConversionDataUplink(){
                 } 
             },
             failure: function () {
-            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+        		}
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -5466,7 +5539,9 @@ function deviceInterlockProtectionDataUplink(){
 			applicationScenarios=2;
 		}
 
-		Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+			Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		}
 		Ext.Ajax.request({
             url: context + '/wellInformationManagerController/deviceInterlockProtectionDataUplink',
             method: "POST",
@@ -5474,7 +5549,9 @@ function deviceInterlockProtectionDataUplink(){
             	deviceId: deviceId
             },
             success: function (response, action) {
-            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+        		}
             	var result =  Ext.JSON.decode(response.responseText);
             	
             	if (result.flag == false) {
@@ -5537,7 +5614,9 @@ function deviceInterlockProtectionDataUplink(){
                 } 
             },
             failure: function () {
-            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+            	if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+                	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+        		}
                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
             }
         });
@@ -5785,12 +5864,16 @@ function CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,application
 		}
 		deviceSystemParameterHandsontableHelper=null;
 	}
-	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
+	if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+		Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getSystemParameterInfo',
 		success:function(response) {
-			Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceSystemParameterHandsontableHelper==null || deviceSystemParameterHandsontableHelper.hot==undefined){
 				deviceSystemParameterHandsontableHelper = DeviceSystemParameterHandsontableHelper.createNew("DeviceSystemParameterConfigurationInfoTableDiv_id");;
@@ -5818,7 +5901,9 @@ function CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,application
 			}
 		},
 		failure:function(){
-			Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -6008,12 +6093,16 @@ function CreateAndLoadDevicePumpingUnitPTFTable(){
         stroke = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(3, 'itemValue2');
     }
 	
-	Ext.getCmp("DevicePumpingUnitPRTFPanel_Id").el.mask(cosog.string.loading).show();
+	if(Ext.getCmp("DevicePumpingUnitPRTFPanel_Id")!=undefined){
+		Ext.getCmp("DevicePumpingUnitPRTFPanel_Id").el.mask(cosog.string.loading).show();
+	}
 	Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/getDevicePumpingPRTFData',
         success: function (response) {
-        	Ext.getCmp("DevicePumpingUnitPRTFPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("DevicePumpingUnitPRTFPanel_Id")!=undefined){
+            	Ext.getCmp("DevicePumpingUnitPRTFPanel_Id").getEl().unmask();
+        	}
         	var result = Ext.JSON.decode(response.responseText);
             
             if (devicePumpingUnitPRTFHandsontableHelper == null || devicePumpingUnitPRTFHandsontableHelper.hot == null || devicePumpingUnitPRTFHandsontableHelper.hot == undefined) {
@@ -6054,7 +6143,9 @@ function CreateAndLoadDevicePumpingUnitPTFTable(){
             }
         },
         failure: function () {
-        	Ext.getCmp("DevicePumpingUnitPRTFPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("DevicePumpingUnitPRTFPanel_Id")!=undefined){
+            	Ext.getCmp("DevicePumpingUnitPRTFPanel_Id").getEl().unmask();
+        	}
         	Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
         },
         params: {
@@ -6187,12 +6278,16 @@ function CreatePumpingUnitDetailedInformationTable(){
 	    model = pumpingInfoHandsontableHelper.hot.getDataAtRowProp(2, 'itemValue2');
 	}
 	
-	Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id").el.mask(cosog.string.loading).show();
+	if(Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id")!=undefined){
+		Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id").el.mask(cosog.string.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getPumpingUnitDetailsInfo',
 		success:function(response) {
-			Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id").getEl().unmask();
+			if(Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id")!=undefined){
+				Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(devicePumpingUnitDetailedInformationHandsontableHelper==null || devicePumpingUnitDetailedInformationHandsontableHelper.hot==undefined){
 				devicePumpingUnitDetailedInformationHandsontableHelper = DevicePumpingUnitDetailedInformationHandsontableHelper.createNew("DevicePumpingUnitDetailedInformationTableDiv_id");			
@@ -6220,7 +6315,9 @@ function CreatePumpingUnitDetailedInformationTable(){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id").getEl().unmask();
+			if(Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id")!=undefined){
+				Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -6335,13 +6432,17 @@ function CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId,deviceN
 			deviceIntelligentFrequencyConversionHandsontableHelper.hot.destroy();
 		}
 		deviceIntelligentFrequencyConversionHandsontableHelper=null;
+	}	
+	if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+		Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	}
-	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getIntelligentFrequencyConversionInfo',
 		success:function(response) {
-			Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceIntelligentFrequencyConversionHandsontableHelper==null || deviceIntelligentFrequencyConversionHandsontableHelper.hot==undefined){
 				deviceIntelligentFrequencyConversionHandsontableHelper = DeviceIntelligentFrequencyConversionHandsontableHelper.createNew("DeviceIntelligentFrequencyConversionInfoTableDiv_id");;
@@ -6373,7 +6474,9 @@ function CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId,deviceN
 			}
 		},
 		failure:function(){
-			Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -6793,13 +6896,17 @@ function CreateAndLoadDeviceInterlockProtectionTable(deviceId,deviceName,applica
 			deviceInterlockProtectionHandsontableHelper.hot.destroy();
 		}
 		deviceInterlockProtectionHandsontableHelper=null;
+	}	
+	if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+		Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	}
-	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getInterlockProtectionInfo',
 		success:function(response) {
-			Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceInterlockProtectionHandsontableHelper==null || deviceInterlockProtectionHandsontableHelper.hot==undefined){
 				deviceInterlockProtectionHandsontableHelper = DeviceInterlockProtectionHandsontableHelper.createNew("DeviceInterlockProtectionInfoTableDiv_id");;
@@ -6828,7 +6935,9 @@ function CreateAndLoadDeviceInterlockProtectionTable(deviceId,deviceName,applica
 			}
 		},
 		failure:function(){
-			Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -7122,7 +7231,9 @@ function deviceIntelligentFrequencyConversionDataDownlink(){
         	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=frequencyConversionHandsontableData[40][4]?1:0;
         	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=frequencyConversionHandsontableData[41][4]?1:0;
         	
-			Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+			if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+			}
 			Ext.Ajax.request({
 	            url: context + '/wellInformationManagerController/deviceIntelligentFrequencyConversionDataDownlink',
 	            method: "POST",
@@ -7132,8 +7243,9 @@ function deviceIntelligentFrequencyConversionDataDownlink(){
 	            	data:JSON.stringify(frequencyConversionData)
 	            },
 	            success: function (response, action) {
-	            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
-	            	
+	            	if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+		            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+	    			}
 	            	var result =  Ext.JSON.decode(response.responseText);
 	            	
 	            	if (result.flag == false) {
@@ -7167,7 +7279,9 @@ function deviceIntelligentFrequencyConversionDataDownlink(){
 	                } 
 	            },
 	            failure: function () {
-	            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+	            	if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+		            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+	    			}
 	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
 	            }
 	        });
@@ -7229,7 +7343,9 @@ function deviceInterlockProtectionDataDownlink(){
         	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=interlockProtectionHandsontableData[28][3]?1:0;
         	
         	
-			Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+			if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+			}
 			Ext.Ajax.request({
 	            url: context + '/wellInformationManagerController/deviceInterlockProtectionDataDownlink',
 	            method: "POST",
@@ -7239,7 +7355,9 @@ function deviceInterlockProtectionDataDownlink(){
 	            	data:JSON.stringify(interlockProtectionData)
 	            },
 	            success: function (response, action) {
-	            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+	            	if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+		            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+	    			}
 	            	var result =  Ext.JSON.decode(response.responseText);
 	            	
 	            	if (result.flag == false) {
@@ -7272,7 +7390,9 @@ function deviceInterlockProtectionDataDownlink(){
 	                } 
 	            },
 	            failure: function () {
-	            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+	            	if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+		            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+	    			}
 	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
 	            }
 	        });

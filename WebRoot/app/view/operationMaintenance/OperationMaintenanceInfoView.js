@@ -2062,12 +2062,16 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 });
 
 function loadOemOperationConfigInfo(){
-	Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/operationMaintenanceController/loadOemConfigInfo',
 		success:function(response) {
-			Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id")!=undefined){
+				Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").getEl().unmask();
+			}
 			var data=Ext.JSON.decode(response.responseText);
 			if (data.success) {
 				var configFile=data.configFile;
@@ -2078,7 +2082,9 @@ function loadOemOperationConfigInfo(){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id")!=undefined){
+				Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {
@@ -2088,12 +2094,16 @@ function loadOemOperationConfigInfo(){
 }
 
 function loadOemConfigInfo(){
-	Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/operationMaintenanceController/loadOemConfigInfo',
 		success:function(response) {
-			Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").getEl().unmask();
+			if(Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id")!=undefined){
+				Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").getEl().unmask();
+			}
 			var data=Ext.JSON.decode(response.responseText);
 			if (data.success) {
 				var configFile=data.configFile;
@@ -2103,7 +2113,9 @@ function loadOemConfigInfo(){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").getEl().unmask();
+			if(Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id")!=undefined){
+				Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {
@@ -3148,7 +3160,9 @@ function saveBackupsData(){
 }
 
 function saveBackupModuleFile(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/moduleManagerController/saveAllImportedModule',
         method: "POST",
@@ -3156,7 +3170,9 @@ function saveBackupModuleFile(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3169,14 +3185,18 @@ function saveBackupModuleFile(){
             
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveBackupDataDictionaryFile(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/systemdataInfoController/saveAllImportedDataDictionary',
         method: "POST",
@@ -3184,7 +3204,9 @@ function saveBackupDataDictionaryFile(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3195,14 +3217,18 @@ function saveBackupDataDictionaryFile(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveBackupOrganizationFile(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/orgManagerController/saveAllImportedOrganization',
         method: "POST",
@@ -3210,7 +3236,9 @@ function saveBackupOrganizationFile(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3223,14 +3251,18 @@ function saveBackupOrganizationFile(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveBackupImportedRoleFile(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/roleManagerController/saveAllImportedRole',
         method: "POST",
@@ -3238,7 +3270,9 @@ function saveBackupImportedRoleFile(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3249,14 +3283,18 @@ function saveBackupImportedRoleFile(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveBackupUserFile(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/userManagerController/saveAllImportedUser',
         method: "POST",
@@ -3264,7 +3302,9 @@ function saveBackupUserFile(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3275,14 +3315,18 @@ function saveBackupUserFile(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveProtocolBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveProtocolBackupData',
         method: "POST",
@@ -3290,7 +3334,9 @@ function saveProtocolBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3301,14 +3347,18 @@ function saveProtocolBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveAcqUnitBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveAcqUnitBackupData',
         method: "POST",
@@ -3316,7 +3366,9 @@ function saveAcqUnitBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3327,14 +3379,18 @@ function saveAcqUnitBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveDisplayUnitBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveDisplayUnitBackupData',
         method: "POST",
@@ -3342,7 +3398,9 @@ function saveDisplayUnitBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3353,14 +3411,18 @@ function saveDisplayUnitBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveAlarmUnitBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveAlarmUnitBackupData',
         method: "POST",
@@ -3368,7 +3430,9 @@ function saveAlarmUnitBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3379,14 +3443,18 @@ function saveAlarmUnitBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveReportUnitBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveReportUnitBackupData',
         method: "POST",
@@ -3394,7 +3462,9 @@ function saveReportUnitBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3405,14 +3475,18 @@ function saveReportUnitBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveAcqInstanceBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveAcqInstanceBackupData',
         method: "POST",
@@ -3420,7 +3494,9 @@ function saveAcqInstanceBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3431,14 +3507,18 @@ function saveAcqInstanceBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveDisplayInstanceBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveDisplayInstanceBackupData',
         method: "POST",
@@ -3446,7 +3526,9 @@ function saveDisplayInstanceBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3457,14 +3539,18 @@ function saveDisplayInstanceBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveAlarmInstanceBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveAlarmInstanceBackupData',
         method: "POST",
@@ -3472,7 +3558,9 @@ function saveAlarmInstanceBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3483,14 +3571,18 @@ function saveAlarmInstanceBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveReportInstanceBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveReportInstanceBackupData',
         method: "POST",
@@ -3498,7 +3590,9 @@ function saveReportInstanceBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3509,14 +3603,18 @@ function saveReportInstanceBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function saveAuxiliaryDeviceBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/wellInformationManagerController/saveAuxiliaryDeviceBackupData',
         method: "POST",
@@ -3524,7 +3622,9 @@ function saveAuxiliaryDeviceBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3535,14 +3635,18 @@ function saveAuxiliaryDeviceBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
 }
 
 function savePrimaryDeviceBackupData(){
-	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
         url: context + '/wellInformationManagerController/savePrimaryDeviceBackupData',
         method: "POST",
@@ -3550,7 +3654,9 @@ function savePrimaryDeviceBackupData(){
         	
         },
         success: function (response) {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
@@ -3561,7 +3667,9 @@ function savePrimaryDeviceBackupData(){
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
         },
         failure: function () {
-        	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceDataImportPanel_Id").getEl().unmask();
+        	}
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】" + loginUserLanguageResource.contactAdmin);
         }
     });
@@ -3648,12 +3756,17 @@ function getOperationMaintenanceMonitorCurveData(){
 	var endTime_Minute=Ext.getCmp(endMinuteId).getValue();
 	var endTime_Second=0;
 	
-	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+
+	if(Ext.getCmp(panelId)!=undefined){
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/operationMaintenanceController/getOperationMaintenanceMonitorCurveData',
 		success:function(response) {
-			Ext.getCmp(panelId).getEl().unmask();
+			if(Ext.getCmp(panelId)!=undefined){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			
@@ -3758,7 +3871,9 @@ function getOperationMaintenanceMonitorCurveData(){
 		    initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId, title, '', '', yAxis, color,true,timeFormat);
 		},
 		failure:function(){
-			Ext.getCmp(panelId).getEl().unmask();
+			if(Ext.getCmp(panelId)!=undefined){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -3769,92 +3884,98 @@ function getOperationMaintenanceMonitorCurveData(){
 }
 
 function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
-	Highcharts.setOptions({
-        global: {
-            useUTC: false
-        }
-    });
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		Highcharts.setOptions({
+	        global: {
+	            useUTC: false
+	        }
+	    });
 
-    var mychart = new Highcharts.Chart({
-        chart: {
-            renderTo: divId,
-            type: 'spline',
-            shadow: true,
-            borderWidth: 0,
-            zoomType: 'xy'
-        },
-        credits: {
-            enabled: false
-        },
-        title: {
-            text: title
-        },
-        subtitle: {
-            text: subtitle
-        },
-        colors: color,
-        xAxis: {
-            type: 'datetime',
-            title: {
-                text: xtitle
-            },
-            tickPixelInterval:tickInterval,
-            labels: {
-                formatter: function () {
-                    return Highcharts.dateFormat(timeFormat, this.value);
-                },
-                autoRotation:true,//自动旋转
-                rotation: -45 //倾斜度，防止数量过多显示不全  
-            }
-        },
-        yAxis: yAxis,
-        tooltip: {
-            crosshairs: true, //十字准线
-            shared: true,
-            style: {
-                color: '#333333',
-                fontSize: '12px',
-                padding: '8px'
-            },
-            dateTimeLabelFormats: {
-                millisecond: '%Y-%m-%d %H:%M:%S.%L',
-                second: '%Y-%m-%d %H:%M:%S',
-                minute: '%Y-%m-%d %H:%M',
-                hour: '%Y-%m-%d %H',
-                day: '%Y-%m-%d',
-                week: '%m-%d',
-                month: '%Y-%m',
-                year: '%Y'
-            }
-        },
-        plotOptions: {
-            spline: {
-                fillOpacity: 0.3,
-                shadow: true,
-                events: {
-                	legendItemClick: function(e){
-                	}
-                }
-            }
-        },
-        legend: {
-            layout: 'horizontal',//horizontal水平 vertical 垂直
-            align: 'center',  //left，center 和 right
-            verticalAlign: 'bottom',//top，middle 和 bottom
-            enabled: legend,
-            borderWidth: 0
-        },
-        series: series
-    });
+	    var mychart = new Highcharts.Chart({
+	        chart: {
+	            renderTo: divId,
+	            type: 'spline',
+	            shadow: true,
+	            borderWidth: 0,
+	            zoomType: 'xy'
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        title: {
+	            text: title
+	        },
+	        subtitle: {
+	            text: subtitle
+	        },
+	        colors: color,
+	        xAxis: {
+	            type: 'datetime',
+	            title: {
+	                text: xtitle
+	            },
+	            tickPixelInterval:tickInterval,
+	            labels: {
+	                formatter: function () {
+	                    return Highcharts.dateFormat(timeFormat, this.value);
+	                },
+	                autoRotation:true,//自动旋转
+	                rotation: -45 //倾斜度，防止数量过多显示不全  
+	            }
+	        },
+	        yAxis: yAxis,
+	        tooltip: {
+	            crosshairs: true, //十字准线
+	            shared: true,
+	            style: {
+	                color: '#333333',
+	                fontSize: '12px',
+	                padding: '8px'
+	            },
+	            dateTimeLabelFormats: {
+	                millisecond: '%Y-%m-%d %H:%M:%S.%L',
+	                second: '%Y-%m-%d %H:%M:%S',
+	                minute: '%Y-%m-%d %H:%M',
+	                hour: '%Y-%m-%d %H',
+	                day: '%Y-%m-%d',
+	                week: '%m-%d',
+	                month: '%Y-%m',
+	                year: '%Y'
+	            }
+	        },
+	        plotOptions: {
+	            spline: {
+	                fillOpacity: 0.3,
+	                shadow: true,
+	                events: {
+	                	legendItemClick: function(e){
+	                	}
+	                }
+	            }
+	        },
+	        legend: {
+	            layout: 'horizontal',//horizontal水平 vertical 垂直
+	            align: 'center',  //left，center 和 right
+	            verticalAlign: 'bottom',//top，middle 和 bottom
+	            enabled: legend,
+	            borderWidth: 0
+	        },
+	        series: series
+	    });
+	}
 };
 
 function initDeviceTabManagerInstance(instanceId){
-	Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/operationMaintenanceController/loadDeviceTabManagerInstance',
 		success:function(response) {
-			Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id").getEl().unmask();
+			if(Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id")!=undefined){
+				Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id").getEl().unmask();
+			}
 			var data=Ext.JSON.decode(response.responseText);
 			if (data.success) {
 				var instanceConfig=data.config;
@@ -3864,7 +3985,9 @@ function initDeviceTabManagerInstance(instanceId){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id").getEl().unmask();
+			if(Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id")!=undefined){
+				Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {
@@ -3931,12 +4054,16 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 }
 
 function initDeviceTypeContentConfig(deviceTypeId,deviceTypeName){
-	Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/operationMaintenanceController/loadDeviceTypeContentConfig',
 		success:function(response) {
-			Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id").getEl().unmask();
+			if(Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id")!=undefined){
+				Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id").getEl().unmask();
+			}
 			var data=Ext.JSON.decode(response.responseText);
 			if (data.success) {
 				var deviceTypeContentConfig=data.config;
@@ -3946,7 +4073,9 @@ function initDeviceTypeContentConfig(deviceTypeId,deviceTypeName){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id").getEl().unmask();
+			if(Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id")!=undefined){
+				Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {

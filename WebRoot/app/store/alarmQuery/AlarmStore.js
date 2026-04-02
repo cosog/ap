@@ -19,59 +19,62 @@ Ext.define('AP.store.alarmQuery.AlarmStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-            //获得列表数
-            var get_rawData = store.proxy.reader.rawData;
-            var arrColumns = get_rawData.columns;
-            var column = createAlarmQueryColumn(arrColumns);
-            Ext.getCmp("AlarmDetailsColumnStr_Id").setValue(column);
-            var gridPanel = Ext.getCmp("AlarmGridPanel_Id");
-            if (!isNotVal(gridPanel)) {
-                var newColumns = Ext.JSON.decode(column);
-                var bbar = new Ext.PagingToolbar({
-                	store: store,
-//                	displayMsg: '当前 {0}~{1}条  共 {2} 条',
-                	displayInfo: true
-    	        });
-                
-                gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "AlarmGridPanel_Id",
-                    border: false,
-                    autoLoad: false,
-                    bbar: bbar,
-                    columnLines: true,
-                    forceFit: false,
-                    viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
-                    },
-                    store: store,
-                    columns: newColumns,
-                    listeners: {
-                    	selectionchange: function (view, selected, o) {
-                    		
-                    	},
-                    	select: function(grid, record, index, eOpts) {}
+        	var panel = Ext.getCmp(getAlarmDetailsDataPanIdFromTabActive());
+        	if(panel!=undefined){
+                //获得列表数
+                var get_rawData = store.proxy.reader.rawData;
+                var arrColumns = get_rawData.columns;
+                var column = createAlarmQueryColumn(arrColumns);
+                Ext.getCmp("AlarmDetailsColumnStr_Id").setValue(column);
+                var gridPanel = Ext.getCmp("AlarmGridPanel_Id");
+                if (!isNotVal(gridPanel)) {
+                    var newColumns = Ext.JSON.decode(column);
+                    var bbar = new Ext.PagingToolbar({
+                    	store: store,
+//                    	displayMsg: '当前 {0}~{1}条  共 {2} 条',
+                    	displayInfo: true
+        	        });
+                    
+                    gridPanel = Ext.create('Ext.grid.Panel', {
+                        id: "AlarmGridPanel_Id",
+                        border: false,
+                        autoLoad: false,
+                        bbar: bbar,
+                        columnLines: true,
+                        forceFit: false,
+                        viewConfig: {
+                        	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                        },
+                        store: store,
+                        columns: newColumns,
+                        listeners: {
+                        	selectionchange: function (view, selected, o) {
+                        		
+                        	},
+                        	select: function(grid, record, index, eOpts) {}
+                        }
+                    });
+                    
+                    
+                    if (isNotVal(panel)) {
+                    	panel.add(gridPanel);
                     }
-                });
-                var panel = Ext.getCmp(getAlarmDetailsDataPanIdFromTabActive());
-                
-                if (isNotVal(panel)) {
-                	panel.add(gridPanel);
                 }
-            }
-            
-            var startDate=Ext.getCmp('AlarmQueryStartDate_Id');
-            if(startDate.rawValue==''||null==startDate.rawValue){
-            	startDate.setValue(get_rawData.start_date.split(' ')[0]);
-            	Ext.getCmp('AlarmQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
-            	Ext.getCmp('AlarmQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-//            	Ext.getCmp('AlarmQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
-            }
-            var endDate=Ext.getCmp('AlarmQueryEndDate_Id');
-            if(endDate.rawValue==''||null==endDate.rawValue){
-            	endDate.setValue(get_rawData.end_date.split(' ')[0]);
-            	Ext.getCmp('AlarmQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
-            	Ext.getCmp('AlarmQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-//            	Ext.getCmp('AlarmQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+                
+                var startDate=Ext.getCmp('AlarmQueryStartDate_Id');
+                if(startDate.rawValue==''||null==startDate.rawValue){
+                	startDate.setValue(get_rawData.start_date.split(' ')[0]);
+                	Ext.getCmp('AlarmQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
+                	Ext.getCmp('AlarmQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
+//                	Ext.getCmp('AlarmQueryStartTime_Second_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[2]);
+                }
+                var endDate=Ext.getCmp('AlarmQueryEndDate_Id');
+                if(endDate.rawValue==''||null==endDate.rawValue){
+                	endDate.setValue(get_rawData.end_date.split(' ')[0]);
+                	Ext.getCmp('AlarmQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
+                	Ext.getCmp('AlarmQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
+//                	Ext.getCmp('AlarmQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
+                }
             }
         },
         beforeload: function (store, options) {

@@ -1374,16 +1374,23 @@ function ReTotalFESDiagramData(){
     		reCalculateData+=_record[index].data.id+","+_record[index].data.deviceId+","+_record[index].data.deviceName+","+_record[index].data.calDate+";"
     	});
     	reCalculateData = reCalculateData.substring(0, reCalculateData.length - 1);
-    	Ext.getCmp("SRPTotalCalculateMaintainingPanel").el.mask(loginUserLanguageResource.recalculating+'...').show();
+    	if(Ext.getCmp("SRPTotalCalculateMaintainingPanel")!=undefined){
+        	Ext.getCmp("SRPTotalCalculateMaintainingPanel").el.mask(loginUserLanguageResource.recalculating+'...').show();
+		}
     	Ext.Ajax.request({
     		method:'POST',
     		url:context + '/calculateManagerController/reTotalCalculate',
     		success:function(response) {
-    			Ext.getCmp("SRPTotalCalculateMaintainingPanel").getEl().unmask();
+    			if(Ext.getCmp("SRPTotalCalculateMaintainingPanel")!=undefined){
+        			Ext.getCmp("SRPTotalCalculateMaintainingPanel").getEl().unmask();
+    			}
     			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.recalculationComplete);
                 Ext.getCmp("SRPTotalCalculateMaintainingDataGridPanel_Id").getStore().loadPage(1);
     		},
     		failure:function(){
+    			if(Ext.getCmp("SRPTotalCalculateMaintainingPanel")!=undefined){
+        			Ext.getCmp("SRPTotalCalculateMaintainingPanel").getEl().unmask();
+    			}
     			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
     		},
     		params: {

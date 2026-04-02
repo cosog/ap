@@ -18,84 +18,85 @@ Ext.define('AP.store.realTimeMonitoring.DeviceControlEnumValueStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
-        	var get_rawData = store.proxy.reader.rawData;
-
-            var controlGridPanel = Ext.getCmp("RealTimeMonitoringEnumValueControlDataGridPanel_Id");
-            if (!isNotVal(controlGridPanel)) {
-                controlGridPanel = Ext.create('Ext.grid.Panel', {
-                    id: 'RealTimeMonitoringEnumValueControlDataGridPanel_Id',
-                    border: false,
-                    columnLines: true,
-                    forceFit: false,
-                    store: store,
-                    scrollOffset: 0,
-                    columns: [{
-                        header: loginUserLanguageResource.idx,
-                        lockable: true,
-                        align: 'center',
-                        sortable: true,
-                        flex:1,
-                        width: getLabelWidth(loginUserLanguageResource.idx,loginUserLanguage)+'px',
-                        xtype: 'rownumberer'
-                    },{
-			        	text: loginUserLanguageResource.action,
-			            align: 'center',
-			            stopSelection: true,
-			            xtype: 'widgetcolumn',
-			            flex:9,
-			            widget: {
-			                xtype: 'toolbar',
-			                layout: {
-			                    type: 'hbox',
-			                    pack: 'center'
-			                },
-			                style: {
-			                    margin: '0 auto',
-			                    padding: '0'
-			                },
-			                ui: 'footer',
-			                height: 20,
-			                minWidth: 120,
-			            	
-			            	items:[{
-				            	  xtype: 'button',
-				                   text:loginUserLanguageResource.set,
-				                   height: 20,
-				                   width: 80,
-				                   defaultBindProperty: null, //important
-				                   handler: function(btn) {
-				                	   enumValueControlBtnHandler(btn);
-				                   },
-				                   listeners: {
-				                         beforerender: function(btn){
-				                        	 renderEnumValueControlBtn(btn);
-				                         }
-				                    }
-			            	}],
-			            	listeners: {
-		                         beforerender: function(widgetColumn){
-		                         }
-		                    }
-			            }
-			        },{
-                        header: loginUserLanguageResource.value,
-                        lockable: true,
-                        align: 'center',
-                        sortable: true,
-                        flex: 1,
-                        dataIndex: 'value',
-                        hidden: true
+        	if(Ext.getCmp("DeviceControlValueTablePanel_Id")!=undefined){
+            	var get_rawData = store.proxy.reader.rawData;
+                var controlGridPanel = Ext.getCmp("RealTimeMonitoringEnumValueControlDataGridPanel_Id");
+                if (!isNotVal(controlGridPanel)) {
+                    controlGridPanel = Ext.create('Ext.grid.Panel', {
+                        id: 'RealTimeMonitoringEnumValueControlDataGridPanel_Id',
+                        border: false,
+                        columnLines: true,
+                        forceFit: false,
+                        store: store,
+                        scrollOffset: 0,
+                        columns: [{
+                            header: loginUserLanguageResource.idx,
+                            lockable: true,
+                            align: 'center',
+                            sortable: true,
+                            flex:1,
+                            width: getLabelWidth(loginUserLanguageResource.idx,loginUserLanguage)+'px',
+                            xtype: 'rownumberer'
+                        },{
+    			        	text: loginUserLanguageResource.action,
+    			            align: 'center',
+    			            stopSelection: true,
+    			            xtype: 'widgetcolumn',
+    			            flex:9,
+    			            widget: {
+    			                xtype: 'toolbar',
+    			                layout: {
+    			                    type: 'hbox',
+    			                    pack: 'center'
+    			                },
+    			                style: {
+    			                    margin: '0 auto',
+    			                    padding: '0'
+    			                },
+    			                ui: 'footer',
+    			                height: 20,
+    			                minWidth: 120,
+    			            	
+    			            	items:[{
+    				            	  xtype: 'button',
+    				                   text:loginUserLanguageResource.set,
+    				                   height: 20,
+    				                   width: 80,
+    				                   defaultBindProperty: null, //important
+    				                   handler: function(btn) {
+    				                	   enumValueControlBtnHandler(btn);
+    				                   },
+    				                   listeners: {
+    				                         beforerender: function(btn){
+    				                        	 renderEnumValueControlBtn(btn);
+    				                         }
+    				                    }
+    			            	}],
+    			            	listeners: {
+    		                         beforerender: function(widgetColumn){
+    		                         }
+    		                    }
+    			            }
+    			        },{
+                            header: loginUserLanguageResource.value,
+                            lockable: true,
+                            align: 'center',
+                            sortable: true,
+                            flex: 1,
+                            dataIndex: 'value',
+                            hidden: true
+                        }
+    			        ],
+    			        listeners: {
+    			        	columnresize: function ( ct, column, width, eOpts ) {
+    			        		
+    			        	}
+    			        }
+                    });
+                    
+                    if(isNotVal(Ext.getCmp("DeviceControlValueTablePanel_Id"))){
+                    	Ext.getCmp("DeviceControlValueTablePanel_Id").add(controlGridPanel);
                     }
-			        ],
-			        listeners: {
-			        	columnresize: function ( ct, column, width, eOpts ) {
-			        		
-			        	}
-			        }
-                });
-                
-                if(isNotVal(Ext.getCmp("DeviceControlValueTablePanel_Id"))){
-                	Ext.getCmp("DeviceControlValueTablePanel_Id").add(controlGridPanel);
                 }
             }
         },

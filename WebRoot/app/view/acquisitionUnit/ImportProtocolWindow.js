@@ -283,12 +283,16 @@ function submitImportedProtocolFile() {
 };
 
 function CreateUploadedProtocolContentInfoTable(protocolName,classes,code){
-	Ext.getCmp("importedProtocolItemInfoTablePanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importedProtocolItemInfoTablePanel_Id")!=undefined){
+		Ext.getCmp("importedProtocolItemInfoTablePanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getUploadedProtocolItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").getEl().unmask();
+			if(Ext.getCmp("importedProtocolItemInfoTablePanel_Id")!=undefined){
+				Ext.getCmp("importedProtocolItemInfoTablePanel_Id").getEl().unmask();
+		    }
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importProtocolContentHandsontableHelper==null || importProtocolContentHandsontableHelper.hot==undefined){
 				importProtocolContentHandsontableHelper = ImportProtocolContentHandsontableHelper.createNew("importedProtocolItemInfoTableDiv_Id");
@@ -328,7 +332,9 @@ function CreateUploadedProtocolContentInfoTable(protocolName,classes,code){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importedProtocolItemInfoTablePanel_Id").getEl().unmask();
+			if(Ext.getCmp("importedProtocolItemInfoTablePanel_Id")!=undefined){
+				Ext.getCmp("importedProtocolItemInfoTablePanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -440,7 +446,9 @@ var ImportProtocolContentHandsontableHelper = {
 };
 
 function CreateUploadedProtocolExtendedFieldInfoTable(protocolName,classes,code){
-	Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id")!=undefined){
+		Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	if(importProtocolExtendedFieldHandsontableHelper!=null){
 		if(importProtocolExtendedFieldHandsontableHelper.hot!=undefined){
 			importProtocolExtendedFieldHandsontableHelper.hot.destroy();
@@ -451,7 +459,9 @@ function CreateUploadedProtocolExtendedFieldInfoTable(protocolName,classes,code)
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getUploadedProtocolExtendedFieldsConfigData',
 		success:function(response) {
-			Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id")!=undefined){
+				Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id").getEl().unmask();
+		    }
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importProtocolExtendedFieldHandsontableHelper==null || importProtocolExtendedFieldHandsontableHelper.hot==undefined){
 				importProtocolExtendedFieldHandsontableHelper = ImportProtocolExtendedFieldHandsontableHelper.createNew("importedProtocolExtendedFieldInfoTableDiv_Id");
@@ -525,7 +535,9 @@ function CreateUploadedProtocolExtendedFieldInfoTable(protocolName,classes,code)
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id")!=undefined){
+				Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

@@ -214,12 +214,18 @@ function submitImportedAcqUnitFile() {
 
 function CreateUploadedAcqUnitContentInfoTable(protocolName,protocolDeviceType,classes,unitName,groupName,groupType){
 	clearImportAcqUnitHandsontable();
-	Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id")!=undefined){
+		Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getUploadedAcqUnitItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").getEl().unmask();
+			if(Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id")!=undefined){
+				Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").getEl().unmask();
+		    }
+			
 			Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").setTitle(unitName);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(importAcqUnitContentHandsontableHelper==null || importAcqUnitContentHandsontableHelper.hot==undefined){
@@ -255,7 +261,9 @@ function CreateUploadedAcqUnitContentInfoTable(protocolName,protocolDeviceType,c
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").getEl().unmask();
+			if(Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id")!=undefined){
+				Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

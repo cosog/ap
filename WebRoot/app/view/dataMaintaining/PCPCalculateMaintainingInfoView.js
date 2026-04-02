@@ -1166,16 +1166,23 @@ function ReTotalRPMData(){
     		reCalculateData+=_record[index].data.id+","+_record[index].data.deviceId+","+_record[index].data.deviceName+","+_record[index].data.calDate+";"
     	});
     	reCalculateData = reCalculateData.substring(0, reCalculateData.length - 1);
-    	Ext.getCmp("PCPTotalCalculateMaintainingPanel").el.mask(loginUserLanguageResource.recalculating+'...').show();
+    	if(Ext.getCmp("PCPTotalCalculateMaintainingPanel")!=undefined){
+        	Ext.getCmp("PCPTotalCalculateMaintainingPanel").el.mask(loginUserLanguageResource.recalculating+'...').show();
+		}
     	Ext.Ajax.request({
     		method:'POST',
     		url:context + '/calculateManagerController/reTotalCalculate',
     		success:function(response) {
-    			Ext.getCmp("PCPTotalCalculateMaintainingPanel").getEl().unmask();
+    			if(Ext.getCmp("PCPTotalCalculateMaintainingPanel")!=undefined){
+        			Ext.getCmp("PCPTotalCalculateMaintainingPanel").getEl().unmask();
+    			}
     			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.recalculationComplete);
                 Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id").getStore().loadPage(1);
     		},
     		failure:function(){
+    			if(Ext.getCmp("PCPTotalCalculateMaintainingPanel")!=undefined){
+        			Ext.getCmp("PCPTotalCalculateMaintainingPanel").getEl().unmask();
+    			}
     			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
     		},
     		params: {

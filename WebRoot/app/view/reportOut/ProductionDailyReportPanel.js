@@ -448,12 +448,16 @@ function CreateProductionDailyReportTable(){
     	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
     }
     
-    Ext.getCmp("ProductionDailyReportPanel_id").el.mask(loginUserLanguageResource.loading).show();
+    if(Ext.getCmp("ProductionDailyReportPanel_id")!=undefined){
+        Ext.getCmp("ProductionDailyReportPanel_id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getProductionDailyReportData',
 		success:function(response) {
-			Ext.getCmp("ProductionDailyReportPanel_id").getEl().unmask();
+			if(Ext.getCmp("ProductionDailyReportPanel_id")!=undefined){
+				Ext.getCmp("ProductionDailyReportPanel_id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			var startDate=Ext.getCmp('ProductionDailyReportStartDate_Id');
@@ -486,6 +490,9 @@ function CreateProductionDailyReportTable(){
 			Ext.getCmp("ProductionDailyReportTotalCount_Id").update({count: result.data.length});
 		},
 		failure:function(){
+			if(Ext.getCmp("ProductionDailyReportPanel_id")!=undefined){
+				Ext.getCmp("ProductionDailyReportPanel_id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -944,12 +951,16 @@ function CreateProductionDailyReportCurve(){
     	unitId=Ext.getCmp("ProductionDailyReportGridPanel_Id").getSelectionModel().getSelection()[0].data.unitId;
     }
     
-    Ext.getCmp("ProductionDailyReportCurvePanel_id").el.mask(loginUserLanguageResource.loading).show();
+    if(Ext.getCmp("ProductionDailyReportCurvePanel_id")!=undefined){
+        Ext.getCmp("ProductionDailyReportCurvePanel_id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getProductionDailyReportCurveData',
 		success:function(response) {
-			Ext.getCmp("ProductionDailyReportCurvePanel_id").getEl().unmask();
+			if(Ext.getCmp("ProductionDailyReportCurvePanel_id")!=undefined){
+				Ext.getCmp("ProductionDailyReportCurvePanel_id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			var startDate=Ext.getCmp('ProductionDailyReportStartDate_Id');
@@ -1098,6 +1109,9 @@ function CreateProductionDailyReportCurve(){
 		    initProductionDailyReportCurveChartFn(series, tickInterval, 'ProductionDailyReportCurveDiv_Id', title, '', '', yAxis, color_all,true,timeFormat);
 		},
 		failure:function(){
+			if(Ext.getCmp("ProductionDailyReportCurvePanel_id")!=undefined){
+				Ext.getCmp("ProductionDailyReportCurvePanel_id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1115,119 +1129,121 @@ function CreateProductionDailyReportCurve(){
 };
 
 function initProductionDailyReportCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
-	var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
-	Highcharts.setOptions({
-        global: {
-            useUTC: false
-        }
-    });
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
+		Highcharts.setOptions({
+	        global: {
+	            useUTC: false
+	        }
+	    });
 
-    var mychart = new Highcharts.Chart({
-        chart: {
-            renderTo: divId,
-            type: 'spline',
-            shadow: true,
-            borderWidth: 0,
-            zoomType: 'xy'
-        },
-        credits: {
-            enabled: false
-        },
-        title: {
-            text: title
-        },
-        subtitle: {
-            text: subtitle
-        },
-        colors: color,
-        xAxis: {
-            type: 'datetime',
-            title: {
-                text: xtitle
-            },
-//            tickInterval: tickInterval,
-            tickPixelInterval:tickInterval,
-            labels: {
-                formatter: function () {
-                    return Highcharts.dateFormat(timeFormat, this.value);
-                },
-                autoRotation:true,//自动旋转
-                rotation: -45 //倾斜度，防止数量过多显示不全  
-//                step: 2
-            }
-        },
-        yAxis: yAxis,
-        tooltip: {
-            crosshairs: true, //十字准线
-            shared: true,
-            style: {
-                color: '#333333',
-                fontSize: '12px',
-                padding: '8px'
-            },
-            dateTimeLabelFormats: {
-                millisecond: '%Y-%m-%d %H:%M:%S.%L',
-                second: '%Y-%m-%d %H:%M:%S',
-                minute: '%Y-%m-%d %H:%M',
-                hour: '%Y-%m-%d %H',
-                day: '%Y-%m-%d',
-                week: '%m-%d',
-                month: '%Y-%m',
-                year: '%Y'
-            }
-        },
-        exporting: {
-            enabled: true,
-            filename: title,
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight,
-            buttons: {
-            	contextButton: {
-            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
-//            			,dafaultMenuItem[2],{
-//            				text: loginUserLanguageResource.diagramSet,
-//            				onclick: function() {
-//            					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
-//                                    title: '报表曲线设置'
-//                                });
-//                                window.show();
-//            				}
-//            			}
-            		]
-            	}
-            }
-        },
-        plotOptions: {
-            spline: {
-//                lineWidth: 1,
-                fillOpacity: 0.3,
-                marker: {
-                    enabled: true,
-                    radius: 3, //曲线点半径，默认是4
-                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
-                    states: {
-                        hover: {
-                            enabled: true,
-                            radius: 6
-                        }
-                    }
-                },
-                shadow: true,
-                events: {
-                	legendItemClick: function(e){
-//                		alert("第"+this.index+"个图例被点击，是否可见："+!this.visible);
-//                		return true;
-                	}
-                }
-            }
-        },
-        legend: {
-            layout: 'horizontal',//horizontal水平 vertical 垂直
-            align: 'center',  //left，center 和 right
-            verticalAlign: 'bottom',//top，middle 和 bottom
-            enabled: legend,
-            borderWidth: 0
-        },
-        series: series
-    });
+	    var mychart = new Highcharts.Chart({
+	        chart: {
+	            renderTo: divId,
+	            type: 'spline',
+	            shadow: true,
+	            borderWidth: 0,
+	            zoomType: 'xy'
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        title: {
+	            text: title
+	        },
+	        subtitle: {
+	            text: subtitle
+	        },
+	        colors: color,
+	        xAxis: {
+	            type: 'datetime',
+	            title: {
+	                text: xtitle
+	            },
+//	            tickInterval: tickInterval,
+	            tickPixelInterval:tickInterval,
+	            labels: {
+	                formatter: function () {
+	                    return Highcharts.dateFormat(timeFormat, this.value);
+	                },
+	                autoRotation:true,//自动旋转
+	                rotation: -45 //倾斜度，防止数量过多显示不全  
+//	                step: 2
+	            }
+	        },
+	        yAxis: yAxis,
+	        tooltip: {
+	            crosshairs: true, //十字准线
+	            shared: true,
+	            style: {
+	                color: '#333333',
+	                fontSize: '12px',
+	                padding: '8px'
+	            },
+	            dateTimeLabelFormats: {
+	                millisecond: '%Y-%m-%d %H:%M:%S.%L',
+	                second: '%Y-%m-%d %H:%M:%S',
+	                minute: '%Y-%m-%d %H:%M',
+	                hour: '%Y-%m-%d %H',
+	                day: '%Y-%m-%d',
+	                week: '%m-%d',
+	                month: '%Y-%m',
+	                year: '%Y'
+	            }
+	        },
+	        exporting: {
+	            enabled: true,
+	            filename: title,
+	            sourceWidth: $("#"+divId)[0].offsetWidth,
+	            sourceHeight: $("#"+divId)[0].offsetHeight,
+	            buttons: {
+	            	contextButton: {
+	            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
+//	            			,dafaultMenuItem[2],{
+//	            				text: loginUserLanguageResource.diagramSet,
+//	            				onclick: function() {
+//	            					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
+//	                                    title: '报表曲线设置'
+//	                                });
+//	                                window.show();
+//	            				}
+//	            			}
+	            		]
+	            	}
+	            }
+	        },
+	        plotOptions: {
+	            spline: {
+//	                lineWidth: 1,
+	                fillOpacity: 0.3,
+	                marker: {
+	                    enabled: true,
+	                    radius: 3, //曲线点半径，默认是4
+	                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+	                    states: {
+	                        hover: {
+	                            enabled: true,
+	                            radius: 6
+	                        }
+	                    }
+	                },
+	                shadow: true,
+	                events: {
+	                	legendItemClick: function(e){
+//	                		alert("第"+this.index+"个图例被点击，是否可见："+!this.visible);
+//	                		return true;
+	                	}
+	                }
+	            }
+	        },
+	        legend: {
+	            layout: 'horizontal',//horizontal水平 vertical 垂直
+	            align: 'center',  //left，center 和 right
+	            verticalAlign: 'bottom',//top，middle 和 bottom
+	            enabled: legend,
+	            borderWidth: 0
+	        },
+	        series: series
+	    });
+	}
 };

@@ -21,7 +21,10 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore', {
     },
     listeners: {
         load: function (store, options, eOpts) {
-        	Ext.getCmp("PCPCalculateMaintainingPanel").getEl().unmask();
+        	if(Ext.getCmp("PCPCalculateMaintainingPanel")!=undefined){
+        		Ext.getCmp("PCPCalculateMaintainingPanel").getEl().unmask();
+        	}
+        	
         	var get_rawData = store.proxy.reader.rawData;
         	var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
 			if (isNotVal(bbar)) {
@@ -88,7 +91,9 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore', {
                     calculateType:calculateType
             };
             Ext.apply(store.proxy.extraParams, new_params);
-            Ext.getCmp("PCPCalculateMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            if(Ext.getCmp("PCPCalculateMaintainingPanel")!=undefined){
+            	Ext.getCmp("PCPCalculateMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            }
         },
         datachanged: function (v, o) {
             onStoreSizeChange(v, o, "ProductionOutTotalCount_Id");

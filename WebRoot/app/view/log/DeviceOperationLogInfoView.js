@@ -27,8 +27,9 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        				Ext.getCmp("DeviceOperationLogRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-        	        				
+        	        				if(Ext.getCmp("DeviceOperationLogRootTabPanel")!=undefined){
+            	        				Ext.getCmp("DeviceOperationLogRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        	        				}
         	        				if(oldCard!=undefined){
         	        					oldCard.setIconCls(null);
         	        					oldCard.removeAll();
@@ -112,8 +113,9 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         		items: items,
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-    					Ext.getCmp("DeviceOperationLogRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-    					
+    					if(Ext.getCmp("DeviceOperationLogRootTabPanel")!=undefined){
+        					Ext.getCmp("DeviceOperationLogRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        				}
         				if(oldCard!=undefined){
         					oldCard.setIconCls(null);
         					if(oldCard.xtype=='tabpanel'){

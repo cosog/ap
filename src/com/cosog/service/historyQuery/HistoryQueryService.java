@@ -68,7 +68,6 @@ import com.google.gson.reflect.TypeToken;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import oracle.sql.CLOB;
-import redis.clients.jedis.Jedis;
 
 @Service("historyQueryService")
 public class HistoryQueryService<T> extends BaseService<T>  {
@@ -8209,7 +8208,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		String allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.stroke,t.spm,"
-				+ " t.fmax,t.fmin,t.position_curve,t.load_curve,"
+				+ " t.fmax,t.fmin,t.deltaF,"//7
+				+ " t.position_curve,t.load_curve,"
 				+ " t.resultcode,"
 				+ " t.upperloadline,t.lowerloadline,t.liquidvolumetricproduction "
 				+ " from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
@@ -8240,23 +8240,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String DiagramXData="";
 	        String DiagramYData="";
 	        String pointCount="";
-	        String resultCode=obj[9]+"";
+	        String resultCode=obj[10]+"";
 	        
 	        WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(resultCode,language);
 	        
-	        
-	        if(obj[7]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[7]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				DiagramXData=StringManagerUtils.CLOBtoString(realClob);
+	        if(obj[8] instanceof CLOB || obj[8] instanceof Clob){
+	        	DiagramXData=StringManagerUtils.CLOBObjectToString(obj[8]);
 			}
 	        if(StringManagerUtils.isNotNull(DiagramXData)){
 				pointCount=DiagramXData.split(",").length+"";
 			}
-	        if(obj[8]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[8]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				DiagramYData=StringManagerUtils.CLOBtoString(realClob);
+	        
+	        if(obj[9] instanceof CLOB || obj[9] instanceof Clob){
+	        	DiagramYData=StringManagerUtils.CLOBObjectToString(obj[9]);
 			}
 	        
 			dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
@@ -8266,14 +8262,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			dynSbf.append("\"spm\":\""+obj[4]+"\",");
 			dynSbf.append("\"fmax\":\""+obj[5]+"\",");
 			dynSbf.append("\"fmin\":\""+obj[6]+"\",");
+			dynSbf.append("\"deltaF\":\""+obj[7]+"\",");
 			
 			dynSbf.append("\"resultName\":\""+(workType!=null?workType.getResultName():"")+"\",");
 			dynSbf.append("\"optimizationSuggestion\":\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");
 			
 			
-			dynSbf.append("\"upperLoadLine\":\"" + obj[10] + "\",");
-			dynSbf.append("\"lowerLoadLine\":\"" + obj[11] + "\",");
-			dynSbf.append("\"liquidProduction\":\""+obj[12]+"\",");
+			dynSbf.append("\"upperLoadLine\":\"" + obj[11] + "\",");
+			dynSbf.append("\"lowerLoadLine\":\"" + obj[12] + "\",");
+			dynSbf.append("\"liquidProduction\":\""+obj[13]+"\",");
 			
 			dynSbf.append("\"pointCount\":\""+pointCount+"\","); 
 			dynSbf.append("\"positionCurveData\":\""+DiagramXData+"\",");
@@ -8378,14 +8375,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " and t.id in (select v.id from ("+distinctSql+") v ) "
 					+ " order by t.fesdiagramacqtime desc";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
-//			int totals = getTotalCountRows(sql);//获取总记录数
-//			int rarefy=0;
-//			if(vacuate && vacuateRecord>0){
-//				rarefy=totals/vacuateRecord+1;
-//				if(rarefy>1){
-//					finalSql="select v2.* from  (select v.*, rownum as rn from ("+finalSql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
-//				}
-//			}
 			List<?> list=this.findCallSql(finalSql);
 			List<Object> record=null;
 			JSONObject jsonObject=null;
@@ -8402,30 +8391,23 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		        String powerCurveData="";
 		        String currentCurveData="";
 		        String pointCount="";
-		        if(obj[7]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[7]);
-					realClob = (CLOB) proxy.getWrappedClob(); 
-					positionCurveData=StringManagerUtils.CLOBtoString(realClob);
+		        if(obj[7] instanceof CLOB || obj[7] instanceof Clob){
+		        	positionCurveData=StringManagerUtils.CLOBObjectToString(obj[7]);
 				}
 		        if(StringManagerUtils.isNotNull(positionCurveData)){
 					pointCount=positionCurveData.split(",").length+"";
 				}
-		        if(obj[8]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[8]);
-					realClob = (CLOB) proxy.getWrappedClob(); 
-					loadCurveData=StringManagerUtils.CLOBtoString(realClob);
+		        
+		        if(obj[8] instanceof CLOB || obj[8] instanceof Clob){
+		        	loadCurveData=StringManagerUtils.CLOBObjectToString(obj[8]);
 				}
 		        
-		        if(obj[9]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[9]);
-					realClob = (CLOB) proxy.getWrappedClob(); 
-					powerCurveData=StringManagerUtils.CLOBtoString(realClob);
+		        if(obj[9] instanceof CLOB || obj[9] instanceof Clob){
+		        	powerCurveData=StringManagerUtils.CLOBObjectToString(obj[9]);
 				}
 		        
-		        if(obj[10]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[10]);
-					realClob = (CLOB) proxy.getWrappedClob(); 
-					currentCurveData=StringManagerUtils.CLOBtoString(realClob);
+		        if(obj[10] instanceof CLOB || obj[10] instanceof Clob){
+		        	currentCurveData=StringManagerUtils.CLOBObjectToString(obj[10]);
 				}
 				
 		        result_json.append("{ \"id\":\"" + (i+1) + "\",");
@@ -8564,25 +8546,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		for (int i = 0; i < list.size(); i++) {
 			Object[] obj = (Object[]) list.get(i);
-			CLOB realClob=null;
 			SerializableClobProxy   proxy=null;
 			String DiagramXData="";
 	        String DiagramYData="";
 	        String pointCount="";
 	        
-	        
-	        if(obj[7]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[7]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				DiagramXData=StringManagerUtils.CLOBtoString(realClob);
+	        if(obj[7] instanceof CLOB || obj[7] instanceof Clob){
+	        	DiagramXData=StringManagerUtils.CLOBObjectToString(obj[7]);
 			}
 	        if(StringManagerUtils.isNotNull(DiagramXData)){
 				pointCount=DiagramXData.split(",").length+"";
 			}
-	        if(obj[8]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[8]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				DiagramYData=StringManagerUtils.CLOBtoString(realClob);
+	        if(obj[8] instanceof CLOB || obj[8] instanceof Clob){
+	        	DiagramYData=StringManagerUtils.CLOBObjectToString(obj[8]);
 			}
 	        
 			dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
@@ -8701,25 +8677,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		for (int i = 0; i < list.size(); i++) {
 			Object[] obj = (Object[]) list.get(i);
-			CLOB realClob=null;
 			SerializableClobProxy   proxy=null;
 			String DiagramXData="";
 	        String DiagramYData="";
 	        String pointCount="";
 	        
-	        
-	        if(obj[7]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[7]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				DiagramXData=StringManagerUtils.CLOBtoString(realClob);
+	        if(obj[7] instanceof CLOB || obj[7] instanceof Clob){
+	        	DiagramXData=StringManagerUtils.CLOBObjectToString(obj[7]);
 			}
 	        if(StringManagerUtils.isNotNull(DiagramXData)){
 				pointCount=DiagramXData.split(",").length+"";
 			}
-	        if(obj[8]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[8]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				DiagramYData=StringManagerUtils.CLOBtoString(realClob);
+	        if(obj[8] instanceof CLOB || obj[8] instanceof Clob){
+	        	DiagramYData=StringManagerUtils.CLOBObjectToString(obj[8]);
 			}
 	        
 			dynSbf.append("{ \"id\":\"" + obj[0] + "\",");

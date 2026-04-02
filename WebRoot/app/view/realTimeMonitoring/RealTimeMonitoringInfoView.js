@@ -33,7 +33,9 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        				Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        	        				if(Ext.getCmp("RealTimeMonitoringTabPanel")!=undefined){
+            	        				Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        	        				}
         	        				cleanDeviceAddInfoAndControlInfo();
         	        				
         	        				if(oldCard!=undefined){
@@ -226,8 +228,9 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         		items: items,
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-    					Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loading).show();
-    					
+    					if(Ext.getCmp("RealTimeMonitoringTabPanel")!=undefined){
+        					Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        				}
     					if(oldCard!=undefined){
     						if(oldCard.xtype=='tabpanel'){
             					oldCard.activeTab.removeAll();
@@ -262,10 +265,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
 
 function realTimeDataRefresh(){
 	
-	if(videoPlayrHelper!=null && videoPlayrHelper!=null && videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+	if(videoPlayrHelper!=null && videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus!=undefined && videoPlayrHelper.player1.pluginStatus.state.play){
 		videoPlayrHelper.player1.stop();
 	}
-	if(videoPlayrHelper!=null && videoPlayrHelper!=null && videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+	if(videoPlayrHelper!=null && videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus!=undefined && videoPlayrHelper.player2.pluginStatus.state.play){
 		videoPlayrHelper.player2.stop();
 	}
 	
@@ -666,106 +669,108 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
 };
 
 function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, ytitle, color,legend,timeFormat) {
-    
-    Highcharts.setOptions({
-        global: {
-            useUTC: false
-        }
-    });
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		 Highcharts.setOptions({
+		        global: {
+		            useUTC: false
+		        }
+		    });
 
-    mychart = new Highcharts.Chart({
-        chart: {
-            renderTo: divId,
-            type: 'spline',
-            shadow: true,
-            borderWidth: 0,
-            zoomType: 'xy'
-        },
-        credits: {
-            enabled: false
-        },
-        title: {
-            text: title
-        },
-        subtitle: {
-            text: subtitle
-        },
-        colors: color,
-        xAxis: {
-            type: 'datetime',
-            title: {
-                text: xtitle
-            },labels: {
-                formatter: function () {
-                    return Highcharts.dateFormat(timeFormat, this.value);
-                },
-                autoRotation:true,//自动旋转
-                rotation: -45 //倾斜度，防止数量过多显示不全  
-//                step: 2
-            }
-        },
-        yAxis: [{
-            lineWidth: 1,
-            title: {
-                text: ytitle,
-                style: {
-                    color: '#000000',
-                    fontWeight: 'bold'
-                }
-            }
-      }],
-        tooltip: {
-            crosshairs: true, //十字准线
-            shared: true,
-            style: {
-                color: '#333333',
-                fontSize: '12px',
-                padding: '8px'
-            },
-            dateTimeLabelFormats: {
-                millisecond: '%Y-%m-%d %H:%M:%S.%L',
-                second: '%Y-%m-%d %H:%M:%S',
-                minute: '%Y-%m-%d %H:%M',
-                hour: '%Y-%m-%d %H',
-                day: '%Y-%m-%d',
-                week: '%m-%d',
-                month: '%Y-%m',
-                year: '%Y'
-            }
-        },
-        exporting: {
-            enabled: true,
-            filename: title,
-            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
-        },
-        plotOptions: {
-            spline: {
-                lineWidth: 1,
-                fillOpacity: 0.3,
-                marker: {
-                    enabled: true,
-                    radius: 3, //曲线点半径，默认是4
-                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
-                    states: {
-                        hover: {
-                            enabled: true,
-                            radius: 6
-                        }
-                    }
-                },
-                shadow: true
-            }
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            enabled: legend,
-            borderWidth: 0
-        },
-        series: series
-    });
+		    mychart = new Highcharts.Chart({
+		        chart: {
+		            renderTo: divId,
+		            type: 'spline',
+		            shadow: true,
+		            borderWidth: 0,
+		            zoomType: 'xy'
+		        },
+		        credits: {
+		            enabled: false
+		        },
+		        title: {
+		            text: title
+		        },
+		        subtitle: {
+		            text: subtitle
+		        },
+		        colors: color,
+		        xAxis: {
+		            type: 'datetime',
+		            title: {
+		                text: xtitle
+		            },labels: {
+		                formatter: function () {
+		                    return Highcharts.dateFormat(timeFormat, this.value);
+		                },
+		                autoRotation:true,//自动旋转
+		                rotation: -45 //倾斜度，防止数量过多显示不全  
+//		                step: 2
+		            }
+		        },
+		        yAxis: [{
+		            lineWidth: 1,
+		            title: {
+		                text: ytitle,
+		                style: {
+		                    color: '#000000',
+		                    fontWeight: 'bold'
+		                }
+		            }
+		      }],
+		        tooltip: {
+		            crosshairs: true, //十字准线
+		            shared: true,
+		            style: {
+		                color: '#333333',
+		                fontSize: '12px',
+		                padding: '8px'
+		            },
+		            dateTimeLabelFormats: {
+		                millisecond: '%Y-%m-%d %H:%M:%S.%L',
+		                second: '%Y-%m-%d %H:%M:%S',
+		                minute: '%Y-%m-%d %H:%M',
+		                hour: '%Y-%m-%d %H',
+		                day: '%Y-%m-%d',
+		                week: '%m-%d',
+		                month: '%Y-%m',
+		                year: '%Y'
+		            }
+		        },
+		        exporting: {
+		            enabled: true,
+		            filename: title,
+		            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+		    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+		        },
+		        plotOptions: {
+		            spline: {
+		                lineWidth: 1,
+		                fillOpacity: 0.3,
+		                marker: {
+		                    enabled: true,
+		                    radius: 3, //曲线点半径，默认是4
+		                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+		                    states: {
+		                        hover: {
+		                            enabled: true,
+		                            radius: 6
+		                        }
+		                    }
+		                },
+		                shadow: true
+		            }
+		        },
+		        legend: {
+		            layout: 'vertical',
+		            align: 'right',
+		            verticalAlign: 'middle',
+		            enabled: legend,
+		            borderWidth: 0
+		        },
+		        series: series
+		    });
+	}
+   
 };
 
 
@@ -887,18 +892,24 @@ function loadAndInitFESdiagramResultStat(all){
 		deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
 		commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
 	}
-	Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id")!=undefined && Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el!=undefined){
+		Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringFESDiagramResultStatData',
 		success:function(response) {
-			Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").getEl().unmask();
+			if(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id")!=undefined && Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el!=undefined){
+				Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initRealTimeMonitoringFESDiagramResultStatPieOrColChat(result);
 		},
 		failure:function(){
-			Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").getEl().unmask();
+			if(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id")!=undefined && Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el!=undefined){
+				Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1012,12 +1023,14 @@ function loadAndInitCommStatusStat(all){
 		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
 	}
 
-	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringCommStatusStatData',
 		success:function(response) {
-			if(isNotVal(Ext.getCmp(panelId))){
+			if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
 			
@@ -1026,7 +1039,9 @@ function loadAndInitCommStatusStat(all){
 			initRealTimeMonitoringStatPieOrColChat(result);
 		},
 		failure:function(){
-			Ext.getCmp(panelId).getEl().unmask();
+			if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1167,7 +1182,7 @@ function loadAndInitRunStatusStat(all){
 		deviceTypeStatValue=Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").getValue();
 	}
 
-	if(isNotVal(Ext.getCmp(panelId))){
+	if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
 		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
 	}
 	
@@ -1175,7 +1190,7 @@ function loadAndInitRunStatusStat(all){
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringRunStatusStatData',
 		success:function(response) {
-			if(isNotVal(Ext.getCmp(panelId))){
+			if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
 			
@@ -1184,7 +1199,7 @@ function loadAndInitRunStatusStat(all){
 			initRealTimeMonitoringRunStatusStatPieOrColChat(result);
 		},
 		failure:function(){
-			if(isNotVal(Ext.getCmp(panelId))){
+			if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
@@ -1323,14 +1338,14 @@ function loadAndInitNumStatusStat(all){
 		Ext.getCmp("RealTimeMonitoringStatSelectNumStatus_Id").setValue('');
 		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
 	}
-	if(isNotVal(Ext.getCmp(panelId))){
+	if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
 		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringNumStatusStatData',
 		success:function(response) {
-			if(isNotVal(Ext.getCmp(panelId))){
+			if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
 			
@@ -1339,7 +1354,7 @@ function loadAndInitNumStatusStat(all){
 			initRealTimeMonitoringNumStatusStatPieOrColChat(result);
 		},
 		failure:function(){
-			if(isNotVal(Ext.getCmp(panelId))){
+			if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
@@ -1617,7 +1632,9 @@ function deviceRealtimeMonitoringCurve(deviceType){
 	var eastPanelId="RealTimeMonitoringCurveAndTableTabPanel";
 	var panelId="RealTimeMonitoringCurveTabPanel_Id";
 	
-	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp(panelId)!=undefined){
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	}
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceName='';
 	var deviceId=0;
@@ -1758,7 +1775,9 @@ function deviceRealtimeMonitoringCurve(deviceType){
             }
 		},
 		failure:function(){
-			Ext.getCmp(panelId).getEl().unmask();
+			if(Ext.getCmp(panelId)!=undefined){
+				Ext.getCmp(panelId).getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1912,10 +1931,10 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 function clearVideo(deviceType){
 	var panelId1='RealTimeMonitoringRightVideoPanel1';
 	var panelId2='RealTimeMonitoringRightVideoPanel2';
-	if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+	if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus!=undefined && videoPlayrHelper.player1.pluginStatus.state.play){
 		videoPlayrHelper.player1.stop();
 	}
-	if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+	if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus!=undefined && videoPlayrHelper.player2.pluginStatus.state.play){
 		videoPlayrHelper.player2.stop();
 	}
 	
@@ -2029,14 +2048,14 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 		}
 	}else{
 		if(videoNo==1){
-			if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus.state.play){
+			if(videoPlayrHelper.player1!=null && videoPlayrHelper.player1.pluginStatus!=undefined && videoPlayrHelper.player1.pluginStatus.state.play){
 				videoPlayrHelper.player1.stop();
 			}
 			if(!videoPanel.isHidden() ){
 				videoPanel.hide();
 			}
 		}else if(videoNo==2){
-			if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus.state.play){
+			if(videoPlayrHelper.player2!=null && videoPlayrHelper.player2.pluginStatus!=undefined && videoPlayrHelper.player2.pluginStatus.state.play){
 				videoPlayrHelper.player2.stop();
 			}
 			if(!videoPanel.isHidden() ){

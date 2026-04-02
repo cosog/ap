@@ -27,8 +27,9 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        				Ext.getCmp("ProductionReportRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-        	        				
+        	        				if(Ext.getCmp("ProductionReportRootTabPanel")!=undefined){
+            	        				Ext.getCmp("ProductionReportRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        	        				}
         	        				if(oldCard!=undefined){
         	        					oldCard.setIconCls(null);
         	        					oldCard.removeAll();
@@ -112,8 +113,9 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
                 items: items,
                 listeners: {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-                		Ext.getCmp("ProductionReportRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-                		
+                		if(Ext.getCmp("ProductionReportRootTabPanel")!=undefined){
+                    		Ext.getCmp("ProductionReportRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        				}
                 		if(oldCard!=undefined){
                 			oldCard.setIconCls(null);
                 			if(oldCard.xtype=='tabpanel'){

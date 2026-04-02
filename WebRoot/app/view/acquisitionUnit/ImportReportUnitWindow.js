@@ -632,12 +632,16 @@ function saveAllImportedReportUnit(){
 }
 
 function CreateImportReportUnitSingleWellDailyReportTemplateInfoTable(unitName){
-	Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitTemplateData',
 		success:function(response) {
-			Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.deviceHourlyReportTemplate);
 			var result =  Ext.JSON.decode(response.responseText);
 			
@@ -654,7 +658,9 @@ function CreateImportReportUnitSingleWellDailyReportTemplateInfoTable(unitName){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -880,12 +886,16 @@ var ImportReportUnitSingleWellDailyReportTemplateHandsontableHelper = {
 	};
 
 function CreateImportReportUnitSingleWellDailyTotalItemsInfoTable(unitName){
-	Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(unitName)){
 				Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.deviceHourlyReportContent);
@@ -917,7 +927,9 @@ function CreateImportReportUnitSingleWellDailyTotalItemsInfoTable(unitName){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1053,12 +1065,16 @@ var ImportReportUnitSingleWellDailyReportContentHandsontableHelper = {
 };
 
 function CreateImportReportUnitSingleWellRangeReportTemplateInfoTable(unitName){
-	Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitTemplateData',
 		success:function(response) {
-			Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.deviceDailyReportTemplate);
 			var result =  Ext.JSON.decode(response.responseText);
 			
@@ -1075,7 +1091,9 @@ function CreateImportReportUnitSingleWellRangeReportTemplateInfoTable(unitName){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1301,12 +1319,16 @@ var ImportReportUnitSingleWellRangeReportTemplateHandsontableHelper = {
 	};
 
 function CreateImportReportUnitSingleWellRangeTotalItemsInfoTable(unitName){
-	Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(unitName)){
 				Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.deviceDailyReportContent);
@@ -1338,7 +1360,9 @@ function CreateImportReportUnitSingleWellRangeTotalItemsInfoTable(unitName){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1471,12 +1495,16 @@ var ImportReportUnitSingleWellRangeReportContentHandsontableHelper = {
 };
 
 function CreateImportReportUnitProductionReportTemplateInfoTable(unitName){
-	Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitTemplateData',
 		success:function(response) {
-			Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.areaDailyReportTemplate);
 			var result =  Ext.JSON.decode(response.responseText);
 			
@@ -1492,7 +1520,9 @@ function CreateImportReportUnitProductionReportTemplateInfoTable(unitName){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1718,12 +1748,16 @@ var ImportReportUnitProductionTemplateHandsontableHelper = {
 	};
 
 function CreateImportReportUnitProductionTotalItemsInfoTable(unitName){
-	Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportReportUnitItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			var result =  Ext.JSON.decode(response.responseText);
 			if(isNotVal(unitName)){
 				Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.areaDailyReportContent);
@@ -1764,7 +1798,9 @@ function CreateImportReportUnitProductionTotalItemsInfoTable(unitName){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

@@ -866,7 +866,9 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 		deviceRealTimeMonitoringDataHandsontableHelper=null;
 	}
 	
-	Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id")!=undefined){
+		Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getDeviceRealTimeMonitoringData',

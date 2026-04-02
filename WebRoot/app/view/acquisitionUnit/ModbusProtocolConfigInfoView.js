@@ -527,7 +527,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
 });
 
 function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classes,code){
-	Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id")!=undefined){
+		Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
 	var tabPanel = Ext.getCmp("ProtocolConfigRightTabPanel_Id");
 	var showInfo=tabPanel.getActiveTab().title;
 	if(isNotVal(protocolName)){
@@ -540,7 +542,9 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			var dataLength=result.totalRoot.length;
 			var defultNullData=[];
@@ -636,7 +640,9 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 			protocolItemsConfigHandsontableHelper.initAddressDataMap(protocolItemsConfigHandsontableHelper.Data);
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -1691,15 +1697,19 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 };
 
 function saveModbusProtocolAddrMappingConfigData(configInfo,saveType){
-	Ext.getCmp("modbusProtocolConfigInfoViewId").el.mask(loginUserLanguageResource.updateWait).show();
+	if(Ext.getCmp("modbusProtocolConfigInfoViewId")!=undefined){
+		Ext.getCmp("modbusProtocolConfigInfoViewId").el.mask(loginUserLanguageResource.updateWait).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/saveModbusProtocolAddrMappingConfigData',
 		success:function(response) {
+			if(Ext.getCmp("modbusProtocolConfigInfoViewId")!=undefined){
+				Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
+			}
 			var data=Ext.JSON.decode(response.responseText);
 			protocolItemsConfigHandsontableHelper.clearContainer();
 			if (data.success) {
-				Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
 				if(configInfo.delidslist!=undefined && configInfo.delidslist.length>0){
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
 				}else{
@@ -1715,12 +1725,13 @@ function saveModbusProtocolAddrMappingConfigData(configInfo,saveType){
 				
             	Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
             	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }
 		},
 		failure:function(){
-			Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
+			if(Ext.getCmp("modbusProtocolConfigInfoViewId")!=undefined){
+				Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
 		},
 		params: {

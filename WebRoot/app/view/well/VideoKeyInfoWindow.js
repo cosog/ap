@@ -169,13 +169,17 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
 
 
 function CreateDeviceKeyDataTable(){
-	Ext.getCmp("VideoKeyPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("VideoKeyPanel_Id")!=undefined){
+		Ext.getCmp("VideoKeyPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getVideoKeyData',
 		success:function(response) {
-			Ext.getCmp("VideoKeyPanel_Id").getEl().unmask();
+			if(Ext.getCmp("VideoKeyPanel_Id")!=undefined){
+				Ext.getCmp("VideoKeyPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(videoKeyDataHandsontableHelper==null || videoKeyDataHandsontableHelper.hot==undefined){
 				videoKeyDataHandsontableHelper = VideoKeyDataHandsontableHelper.createNew("VideoKeyDiv_Id");
@@ -213,7 +217,9 @@ function CreateDeviceKeyDataTable(){
             }
 		},
 		failure:function(){
-			Ext.getCmp("VideoKeyPanel_Id").getEl().unmask();
+			if(Ext.getCmp("VideoKeyPanel_Id")!=undefined){
+				Ext.getCmp("VideoKeyPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

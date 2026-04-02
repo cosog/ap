@@ -385,12 +385,16 @@ function saveAllImportedDisplayUnit(){
 }
 
 function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,protocolDeviceType,acqUnitName,unitName,calculateType){
-	Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportDisplayUnitItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			if(unitName!=''){
 				Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.acquisitionItem);
 			}else{
@@ -464,7 +468,9 @@ function CreateImportDisplayUnitAcqItemsInfoTable(protocolName,protocolDeviceTyp
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
@@ -674,12 +680,16 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 };
 
 function CreateImportDisplayUnitCtrlItemsInfoTable(protocolName,protocolDeviceType,acqUnitName,unitName,calculateType){
-	Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+    }
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getImportDisplayUnitItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			if(unitName!=''){
 				Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+"/"+loginUserLanguageResource.controlItem);
 			}else{
@@ -713,7 +723,9 @@ function CreateImportDisplayUnitCtrlItemsInfoTable(protocolName,protocolDeviceTy
 			}
 		},
 		failure:function(){
-			Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("importDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+		    }
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

@@ -21,7 +21,10 @@ Ext.define('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore'
     },
     listeners: {
         load: function (store, options, eOpts) {
-        	Ext.getCmp("HistoryAcquisitionDataMaintainingPanel").getEl().unmask();
+        	if(Ext.getCmp("HistoryAcquisitionDataMaintainingPanel")!=undefined){
+        		Ext.getCmp("HistoryAcquisitionDataMaintainingPanel").getEl().unmask();
+        	}
+        	
         	var get_rawData = store.proxy.reader.rawData;
         	var bbar=Ext.getCmp("HistoryAcquisitionDataMaintainingBbar");
 			if (isNotVal(bbar)) {
@@ -90,7 +93,10 @@ Ext.define('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore'
                     calculateType:calculateType
             };
             Ext.apply(store.proxy.extraParams, new_params);
-            Ext.getCmp("HistoryAcquisitionDataMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            if(Ext.getCmp("HistoryAcquisitionDataMaintainingPanel")!=undefined){
+            	Ext.getCmp("HistoryAcquisitionDataMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            }
+            
         },
         datachanged: function (v, o) {
 //            onStoreSizeChange(v, o, "ProductionOutTotalCount_Id");

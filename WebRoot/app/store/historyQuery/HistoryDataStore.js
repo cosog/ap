@@ -21,83 +21,83 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
         load: function (store, record, f, op, o) {
         	if(Ext.getCmp("HistoryQueryDataInfoPanel_Id")!=undefined){
         		Ext.getCmp("HistoryQueryDataInfoPanel_Id").getEl().unmask();
-        	}
-        	
-            //获得列表数
-            var get_rawData = store.proxy.reader.rawData;
-            var arrColumns = get_rawData.columns;
-            var column = createHistoryQueryColumn(arrColumns);
-            Ext.getCmp("HistoryQueryDataColumnStr_Id").setValue(column);
-            Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(get_rawData.AlarmShowStyle));
-            var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
-            if (!isNotVal(gridPanel)) {
-                var newColumns = Ext.JSON.decode(column);
-                var clickColumn={
-                		text: loginUserLanguageResource.details, 
-                		dataIndex: 'details',
-                		locked:true,
-                		align:'center',
-                		width:50,
-                		renderer :function(value,e,o){
-                			return iconHistoryQueryDetailsData(value,e,o)
-                		} 
-                };
-                
-                
-                newColumns.splice(1, 0, clickColumn);
-                var bbar = new Ext.PagingToolbar({
-                	store: store,
-//                	displayMsg: '当前 {0}~{1}条  共 {2} 条',
-                	displayInfo: true
-    	        });
-                
-                gridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "HistoryQueryDataGridPanel_Id",
-                    border: false,
-                    autoLoad: false,
-                    bbar: bbar,
-                    columnLines: true,
-                    forceFit: false,
-                    viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
-                    },
-                    store: store,
-                    columns: newColumns,
-                    listeners: {
-                    	selectionchange: function (view, selected, o) {},
-                    	itemdblclick: function (view,record,item,index,e,eOpts) {
-                    		var HistoryQueryDataDetailsWindow = Ext.create("AP.view.historyQuery.HistoryQueryDataDetailsWindow");
-                    		Ext.getCmp("HistoryQueryDataDetailsWindowRecord_Id").setValue(record.data.id);
-                    		Ext.getCmp("HistoryQueryDataDetailsWindowDeviceId_Id").setValue(record.data.deviceId);
-                    		Ext.getCmp("HistoryQueryDataDetailsWindowDeviceName_Id").setValue(record.data.wellName);
-                    		HistoryQueryDataDetailsWindow.show();
-//                    		CreateDeviceHistoryQueryDataTable(record.data.id,record.data.wellName);
-                    	},
-                    	select: function(grid, record, index, eOpts) {}
+        		
+        		//获得列表数
+                var get_rawData = store.proxy.reader.rawData;
+                var arrColumns = get_rawData.columns;
+                var column = createHistoryQueryColumn(arrColumns);
+                Ext.getCmp("HistoryQueryDataColumnStr_Id").setValue(column);
+                Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(get_rawData.AlarmShowStyle));
+                var gridPanel = Ext.getCmp("HistoryQueryDataGridPanel_Id");
+                if (!isNotVal(gridPanel)) {
+                    var newColumns = Ext.JSON.decode(column);
+                    var clickColumn={
+                    		text: loginUserLanguageResource.details, 
+                    		dataIndex: 'details',
+                    		locked:true,
+                    		align:'center',
+                    		width:50,
+                    		renderer :function(value,e,o){
+                    			return iconHistoryQueryDetailsData(value,e,o)
+                    		} 
+                    };
+                    
+                    
+                    newColumns.splice(1, 0, clickColumn);
+                    var bbar = new Ext.PagingToolbar({
+                    	store: store,
+//                    	displayMsg: '当前 {0}~{1}条  共 {2} 条',
+                    	displayInfo: true
+        	        });
+                    
+                    gridPanel = Ext.create('Ext.grid.Panel', {
+                        id: "HistoryQueryDataGridPanel_Id",
+                        border: false,
+                        autoLoad: false,
+                        bbar: bbar,
+                        columnLines: true,
+                        forceFit: false,
+                        viewConfig: {
+                        	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                        },
+                        store: store,
+                        columns: newColumns,
+                        listeners: {
+                        	selectionchange: function (view, selected, o) {},
+                        	itemdblclick: function (view,record,item,index,e,eOpts) {
+                        		var HistoryQueryDataDetailsWindow = Ext.create("AP.view.historyQuery.HistoryQueryDataDetailsWindow");
+                        		Ext.getCmp("HistoryQueryDataDetailsWindowRecord_Id").setValue(record.data.id);
+                        		Ext.getCmp("HistoryQueryDataDetailsWindowDeviceId_Id").setValue(record.data.deviceId);
+                        		Ext.getCmp("HistoryQueryDataDetailsWindowDeviceName_Id").setValue(record.data.wellName);
+                        		Ext.getCmp("HistoryQueryDataDetailsWindowDeviceCalculateType_Id").setValue(record.data.calculateType);
+                        		HistoryQueryDataDetailsWindow.show();
+                        	},
+                        	select: function(grid, record, index, eOpts) {}
+                        }
+                    });
+                    var panel = Ext.getCmp("HistoryQueryDataInfoPanel_Id");
+                    if(isNotVal(panel)){
+                    	panel.add(gridPanel);
                     }
-                });
-                var panel = Ext.getCmp("HistoryQueryDataInfoPanel_Id");
-                if(isNotVal(panel)){
-                	panel.add(gridPanel);
                 }
-            }
-            
-            var startDate=Ext.getCmp('HistoryQueryStartDate_Id');
-            if(startDate.rawValue==''||null==startDate.rawValue){
-            	startDate.setValue(get_rawData.start_date.split(' ')[0]);
-            	Ext.getCmp('HistoryQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
-            	Ext.getCmp('HistoryQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
-            }
-            var endDate=Ext.getCmp('HistoryQueryEndDate_Id');
-            if(endDate.rawValue==''||null==endDate.rawValue){
-            	endDate.setValue(get_rawData.end_date.split(' ')[0]);
-            	Ext.getCmp('HistoryQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
-            	Ext.getCmp('HistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
-            }
-            if(store.currentPage==1){
-            	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
-                deviceHistoryQueryCurve(deviceType);
-            }
+                
+                var startDate=Ext.getCmp('HistoryQueryStartDate_Id');
+                if(startDate.rawValue==''||null==startDate.rawValue){
+                	startDate.setValue(get_rawData.start_date.split(' ')[0]);
+                	Ext.getCmp('HistoryQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
+                	Ext.getCmp('HistoryQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
+                }
+                var endDate=Ext.getCmp('HistoryQueryEndDate_Id');
+                if(endDate.rawValue==''||null==endDate.rawValue){
+                	endDate.setValue(get_rawData.end_date.split(' ')[0]);
+                	Ext.getCmp('HistoryQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
+                	Ext.getCmp('HistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
+                }
+                if(store.currentPage==1){
+                	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+                    deviceHistoryQueryCurve(deviceType);
+                }
+        	}
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
@@ -121,7 +121,10 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
         	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
         	var endTime_Second=0;
         	
-        	Ext.getCmp("HistoryQueryDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+        	if(Ext.getCmp("HistoryQueryDataInfoPanel_Id")!=undefined && Ext.getCmp("HistoryQueryDataInfoPanel_Id").el!=undefined){
+        		Ext.getCmp("HistoryQueryDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+            }
+        	
         	
         	var hours=getHistoryQueryHours();
         	

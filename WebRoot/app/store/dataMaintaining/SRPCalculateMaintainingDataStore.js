@@ -21,7 +21,10 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
     },
     listeners: {
         load: function (store, options, eOpts) {
-        	Ext.getCmp("SRPCalculateMaintainingPanel").getEl().unmask();
+        	if(Ext.getCmp("SRPCalculateMaintainingPanel")!=undefined){
+        		Ext.getCmp("SRPCalculateMaintainingPanel").getEl().unmask();
+            }
+        	
         	var get_rawData = store.proxy.reader.rawData;
         	var bbar=Ext.getCmp("SRPFESDiagramCalculateMaintainingBbar");
 			if (isNotVal(bbar)) {
@@ -100,7 +103,10 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
                     calculateType:calculateType
             };
             Ext.apply(store.proxy.extraParams, new_params);
-            Ext.getCmp("SRPCalculateMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            if(Ext.getCmp("SRPCalculateMaintainingPanel")!=undefined){
+            	Ext.getCmp("SRPCalculateMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            }
+            
         },
         datachanged: function (v, o) {
             onStoreSizeChange(v, o, "ProductionOutTotalCount_Id");

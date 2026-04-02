@@ -27,8 +27,9 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         	        		items:[],
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        				Ext.getCmp("CalculateMaintainingRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-        	        				
+        	        				if(Ext.getCmp("CalculateMaintainingRootTabPanel")!=undefined){
+            	        				Ext.getCmp("CalculateMaintainingRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        		        			}
         	        				if(oldCard!=undefined){
         	        					oldCard.setIconCls(null);
         	        					oldCard.removeAll();
@@ -127,8 +128,9 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         		items: items,
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-    					Ext.getCmp("CalculateMaintainingRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-    					
+    					if(Ext.getCmp("CalculateMaintainingRootTabPanel")!=undefined){
+        					Ext.getCmp("CalculateMaintainingRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+	        			}
     					if(oldCard!=undefined){
     						oldCard.setIconCls(null);
     						if(oldCard.xtype=='tabpanel'){

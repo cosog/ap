@@ -28,8 +28,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         	        	items:[],
         	        	listeners: {
         	        		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        			Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-        	        			
+        	        			if(Ext.getCmp("HistoryQueryRootTabPanel")!=undefined){
+            	        			Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        	        			}
     	        				if(oldCard!=undefined){
     	        					oldCard.removeAll();
             	        			oldCard.setIconCls(null);
@@ -114,8 +115,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         		items: items,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
-        				
+        				if(Ext.getCmp("HistoryQueryRootTabPanel")!=undefined){
+            				Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+	        			}
         				if(oldCard!=undefined){
         					if(oldCard.xtype=='tabpanel'){
             					oldCard.activeTab.removeAll();
@@ -770,7 +772,9 @@ function deviceHistoryQueryCurve(deviceType){
 	var endTime_Minute=Ext.getCmp(endMinuteId).getValue();
 	var endTime_Second=0;
 	var hours=getHistoryQueryHours();
-	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp(panelId)!=undefined){
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/historyQueryController/getHistoryQueryCurveData',
@@ -958,108 +962,110 @@ function deviceHistoryQueryCurve(deviceType){
 };
 
 function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
-	var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
-	Highcharts.setOptions({
-        global: {
-            useUTC: false
-        }
-    });
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
+		Highcharts.setOptions({
+	        global: {
+	            useUTC: false
+	        }
+	    });
 
-    var mychart = new Highcharts.Chart({
-        chart: {
-            renderTo: divId,
-            type: 'spline',
-            shadow: true,
-            borderWidth: 0,
-            zoomType: 'xy'
-        },
-        credits: {
-            enabled: false
-        },
-        title: {
-            text: title
-        },
-        subtitle: {
-            text: subtitle
-        },
-        colors: color,
-        xAxis: {
-            type: 'datetime',
-            title: {
-                text: xtitle
-            },
-//            tickInterval: tickInterval,
-            tickPixelInterval:tickInterval,
-            labels: {
-                formatter: function () {
-                    return Highcharts.dateFormat(timeFormat, this.value);
-                },
-                autoRotation:true,//自动旋转
-                rotation: -45 //倾斜度，防止数量过多显示不全  
-//                step: 2
-            }
-        },
-        yAxis: yAxis,
-        tooltip: {
-            crosshairs: true, //十字准线
-            shared: true,
-            style: {
-                color: '#333333',
-                fontSize: '12px',
-                padding: '8px'
-            },
-            dateTimeLabelFormats: {
-                millisecond: '%Y-%m-%d %H:%M:%S.%L',
-                second: '%Y-%m-%d %H:%M:%S',
-                minute: '%Y-%m-%d %H:%M',
-                hour: '%Y-%m-%d %H',
-                day: '%Y-%m-%d',
-                week: '%m-%d',
-                month: '%Y-%m',
-                year: '%Y'
-            }
-        },
-        exporting: {
-            enabled: true,
-            filename: title,
-            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
-            buttons: {
-            	contextButton: {
-            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
-            			,dafaultMenuItem[2],{
-            				text: loginUserLanguageResource.diagramSet,
-            				onclick: function() {
-            					var window = Ext.create("AP.view.historyQuery.HistoryCurveSetWindow", {
-                                    title: loginUserLanguageResource.historyDiagramSet
-                                });
-                                window.show();
-            				}
-            			}]
-            	}
-            }
-        },
-        plotOptions: {
-            spline: {
-                fillOpacity: 0.3,
-                shadow: true,
-                events: {
-                	legendItemClick: function(e){
-//                		alert("第"+this.index+"个图例被点击，是否可见："+!this.visible);
-//                		return true;
-                	}
-                }
-            }
-        },
-        legend: {
-            layout: 'horizontal',//horizontal水平 vertical 垂直
-            align: 'center',  //left，center 和 right
-            verticalAlign: 'bottom',//top，middle 和 bottom
-            enabled: legend,
-            borderWidth: 0
-        },
-        series: series
-    });
+	    var mychart = new Highcharts.Chart({
+	        chart: {
+	            renderTo: divId,
+	            type: 'spline',
+	            shadow: true,
+	            borderWidth: 0,
+	            zoomType: 'xy'
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        title: {
+	            text: title
+	        },
+	        subtitle: {
+	            text: subtitle
+	        },
+	        colors: color,
+	        xAxis: {
+	            type: 'datetime',
+	            title: {
+	                text: xtitle
+	            },
+//	            tickInterval: tickInterval,
+	            tickPixelInterval:tickInterval,
+	            labels: {
+	                formatter: function () {
+	                    return Highcharts.dateFormat(timeFormat, this.value);
+	                },
+	                autoRotation:true,//自动旋转
+	                rotation: -45 //倾斜度，防止数量过多显示不全  
+//	                step: 2
+	            }
+	        },
+	        yAxis: yAxis,
+	        tooltip: {
+	            crosshairs: true, //十字准线
+	            shared: true,
+	            style: {
+	                color: '#333333',
+	                fontSize: '12px',
+	                padding: '8px'
+	            },
+	            dateTimeLabelFormats: {
+	                millisecond: '%Y-%m-%d %H:%M:%S.%L',
+	                second: '%Y-%m-%d %H:%M:%S',
+	                minute: '%Y-%m-%d %H:%M',
+	                hour: '%Y-%m-%d %H',
+	                day: '%Y-%m-%d',
+	                week: '%m-%d',
+	                month: '%Y-%m',
+	                year: '%Y'
+	            }
+	        },
+	        exporting: {
+	            enabled: true,
+	            filename: title,
+	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	            buttons: {
+	            	contextButton: {
+	            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
+	            			,dafaultMenuItem[2],{
+	            				text: loginUserLanguageResource.diagramSet,
+	            				onclick: function() {
+	            					var window = Ext.create("AP.view.historyQuery.HistoryCurveSetWindow", {
+	                                    title: loginUserLanguageResource.historyDiagramSet
+	                                });
+	                                window.show();
+	            				}
+	            			}]
+	            	}
+	            }
+	        },
+	        plotOptions: {
+	            spline: {
+	                fillOpacity: 0.3,
+	                shadow: true,
+	                events: {
+	                	legendItemClick: function(e){
+//	                		alert("第"+this.index+"个图例被点击，是否可见："+!this.visible);
+//	                		return true;
+	                	}
+	                }
+	            }
+	        },
+	        legend: {
+	            layout: 'horizontal',//horizontal水平 vertical 垂直
+	            align: 'center',  //left，center 和 right
+	            verticalAlign: 'bottom',//top，middle 和 bottom
+	            enabled: legend,
+	            borderWidth: 0
+	        },
+	        series: series
+	    });
+	}
 };
 
 function loadAndInitHistoryQueryCommStatusStat(all){
@@ -1075,7 +1081,9 @@ function loadAndInitHistoryQueryCommStatusStat(all){
 		Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").setValue('');
 	}
 
-	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp(panelId)!=undefined){
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringCommStatusStatData',
@@ -1218,7 +1226,9 @@ function loadAndInitHistoryQueryRunStatusStat(all){
 		Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").setValue('');
 	}
 
-	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp(panelId)!=undefined){
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringRunStatusStatData',
@@ -1362,7 +1372,9 @@ function loadAndInitHistoryQueryNumStatusStat(all){
 		Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").setValue('');
 	}
 
-	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp(panelId)!=undefined){
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringNumStatusStatData',
@@ -1516,12 +1528,14 @@ function loadAndInitHistoryQueryFESdiagramResultStat(all){
 		Ext.getCmp("HistoryQueryStatSelectNumStatus_Id").setValue('');
 		Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").setValue('');
 	}
-	Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id")!=undefined && Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").el!=undefined){
+		Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringFESDiagramResultStatData',
 		success:function(response) {
-			if(isNotVal(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id"))){
+			if(isNotVal(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id")) && Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl()!=undefined){
 				Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl().unmask();
 			}
 			
@@ -1530,7 +1544,7 @@ function loadAndInitHistoryQueryFESdiagramResultStat(all){
 			initHistoryQueryFESDiagramResultStatPieOrColChat(result);
 		},
 		failure:function(){
-			if(isNotVal(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id"))){
+			if(isNotVal(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id")) && Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl()!=undefined){
 				Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl().unmask();
 			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
@@ -1650,7 +1664,9 @@ function loadAndInitHistoryQueryDeviceTypeStat(all){
 		Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").setValue('');
 	}
 
-	Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp(panelId)!=undefined){
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringDeviceTypeStatData',
@@ -2347,13 +2363,6 @@ function updateDeviceHistoryQueryData(record){
 		showHistoryDiagramOverlay=deviceTabInstanceConfig.DeviceHistoryQuery.DiagramOverlay!=undefined?deviceTabInstanceConfig.DeviceHistoryQuery.DiagramOverlay:false;
 	}
 	
-//	if(showHistoryTrendCurve==false && showHistoryTiledDiagram==false && showHistoryDiagramOverlay==false){
-//		showHistoryTrendCurve=true;
-//	}
-	
-	
-	
-	
 	var combDeviceName=Ext.getCmp('HistoryQueryDeviceListComb_Id').getValue();
 	if(combDeviceName!=undefined || combDeviceName!=''){
 		Ext.getCmp("selectedDeviceId_global").setValue(deviceId);
@@ -2382,10 +2391,8 @@ function updateDeviceHistoryQueryData(record){
 	var tabChange=false;
 	var showHistoryQueryCenterTabPanel=true;
 	if(showHistoryTrendCurve==false && showHistoryTiledDiagram==false && showHistoryDiagramOverlay==false){
-//		Ext.getCmp('HistoryQueryCenterToolbar_id').hide();
 		showHistoryQueryCenterTabPanel=false;
 	}else{
-//		Ext.getCmp('HistoryQueryCenterToolbar_id').show();
 		showHistoryQueryCenterTabPanel=true;
 	}
 	
@@ -2401,8 +2408,6 @@ function updateDeviceHistoryQueryData(record){
 		var HistoryDataTabPanel = tabPanel.getComponent("HistoryDataTabPanel");
 		if(HistoryDataTabPanel==undefined){
 			tabPanel.insert(0,historyQueryCenterTabPanelItems[0]);
-//			tabPanel.setActiveTab(0);
-//			tabChange=true;
 		}
 	}
 	//图形平铺标签处理

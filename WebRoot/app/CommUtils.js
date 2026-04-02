@@ -680,389 +680,395 @@ onTreeEnterKeyDownFN = function(field, e, panelId) {
 
 var mychart = "";
 function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle, ytitle1) {
-	mychart = new Highcharts.Chart({
-				chart : {
-					type : 'spline',
-					renderTo : divId,
-					shadow : true,
-					borderWidth : 0,
-					zoomType : 'xy'
-				},
-				credits : {
-					enabled : false
-				},
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		mychart = new Highcharts.Chart({
+			chart : {
+				type : 'spline',
+				renderTo : divId,
+				shadow : true,
+				borderWidth : 0,
+				zoomType : 'xy'
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title,
+				x : -20
+			},
+			xAxis : {
+				categories : catagories,
+				tickInterval : tickInterval,
 				title : {
-					text : title,
-					x : -20
-				},
-				xAxis : {
-					categories : catagories,
-					tickInterval : tickInterval,
-					title : {
-						text : loginUserLanguageResource.date
-					}
-				},
-				yAxis : [{
-							lineWidth : 1,
-							min:0,
-							title : {
-								text : ytitle,
-								style : {
-									color : '#000000',
-									fontWeight : 'bold'
-								}
-							},
-							labels : {
-								formatter : function() {
-									return Highcharts.numberFormat(this.value,
-											2);
-								}
-							},
-							plotLines : [{
-										value : 0,
-										width : 1,
-										zIndex:2,
-										color : '#808080'
-									}]
-						}, {
-							lineWidth : 1,
-							min:0,
-							max:100,
-							opposite : true,
-							labels : {
-								formatter : function() {
-									return Highcharts.numberFormat(this.value,
-											2);
-								}
-							},
-							title : {
-								text : ytitle1,
-								style : {
-									color : '#000000',
-									fontWeight : 'bold'
-								}
+					text : loginUserLanguageResource.date
+				}
+			},
+			yAxis : [{
+						lineWidth : 1,
+						min:0,
+						title : {
+							text : ytitle,
+							style : {
+								color : '#000000',
+								fontWeight : 'bold'
 							}
-						}],
-				tooltip : {
-					crosshairs : true,
-					enabled : true,
-					style : {
-						color : '#333333',
-						fontSize : '12px',
-						padding : '8px'
-					},
-					formatter : function() {
-						return '<b>' + this.series.name + '</b><br/>' + this.x
-								+ ': ' + this.y;
-					},
-					valueSuffix : ''
+						},
+						labels : {
+							formatter : function() {
+								return Highcharts.numberFormat(this.value,
+										2);
+							}
+						},
+						plotLines : [{
+									value : 0,
+									width : 1,
+									zIndex:2,
+									color : '#808080'
+								}]
+					}, {
+						lineWidth : 1,
+						min:0,
+						max:100,
+						opposite : true,
+						labels : {
+							formatter : function() {
+								return Highcharts.numberFormat(this.value,
+										2);
+							}
+						},
+						title : {
+							text : ytitle1,
+							style : {
+								color : '#000000',
+								fontWeight : 'bold'
+							}
+						}
+					}],
+			tooltip : {
+				crosshairs : true,
+				enabled : true,
+				style : {
+					color : '#333333',
+					fontSize : '12px',
+					padding : '8px'
 				},
-//				  exporting: {
-//			            buttons: {
-//			                contextButton: {
-//			                    menuItems: [{
-//			                        separator: true
-//			                    }]
-//			                    .concat(Highcharts.getOptions().exporting.buttons.contextButton.menuItems)
-//			                    .concat([{
-//			                        separator: true
-//			                    }
-//			                    ])
-//			                }
-//			            }
-//			        },
-				exporting:{    
-                    enabled:true,    
-                    filename:title,    
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-				plotOptions : {
-					 spline: {  
-				            lineWidth: 1,  
-				            fillOpacity: 0.3,  
-				             marker: {  
-				             enabled: true,  
-				              radius: 3,  //曲线点半径，默认是4
-				                states: {  
-				                   hover: {  
-				                        enabled: true,  
-				                        radius: 6
-				                    }  
-				                }  
-			            },  
-			            shadow: true  
-			        } 
+				formatter : function() {
+					return '<b>' + this.series.name + '</b><br/>' + this.x
+							+ ': ' + this.y;
 				},
-				legend : {
-					layout : 'vertical',
-					align : 'right',
-					verticalAlign : 'middle',
-					borderWidth : 1
-				},
-				series : series
-			});
+				valueSuffix : ''
+			},
+//			  exporting: {
+//		            buttons: {
+//		                contextButton: {
+//		                    menuItems: [{
+//		                        separator: true
+//		                    }]
+//		                    .concat(Highcharts.getOptions().exporting.buttons.contextButton.menuItems)
+//		                    .concat([{
+//		                        separator: true
+//		                    }
+//		                    ])
+//		                }
+//		            }
+//		        },
+			exporting:{    
+                enabled:true,    
+                filename:title,    
+                sourceWidth: $("#"+divId)[0].offsetWidth,
+                sourceHeight: $("#"+divId)[0].offsetHeight
+           },
+			plotOptions : {
+				 spline: {  
+			            lineWidth: 1,  
+			            fillOpacity: 0.3,  
+			             marker: {  
+			             enabled: true,  
+			              radius: 3,  //曲线点半径，默认是4
+			                states: {  
+			                   hover: {  
+			                        enabled: true,  
+			                        radius: 6
+			                    }  
+			                }  
+		            },  
+		            shadow: true  
+		        } 
+			},
+			legend : {
+				layout : 'vertical',
+				align : 'right',
+				verticalAlign : 'middle',
+				borderWidth : 1
+			},
+			series : series
+		});
+}
 }
 function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitle, ytitle1) {
-	mychart = new Highcharts.Chart({
-				chart : {
-					type : 'spline',
-					renderTo : divId,
-					shadow : true,
-					borderWidth : 0,
-					zoomType : 'xy'
-				},
-				credits : {
-					enabled : false
-				},
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		mychart = new Highcharts.Chart({
+			chart : {
+				type : 'spline',
+				renderTo : divId,
+				shadow : true,
+				borderWidth : 0,
+				zoomType : 'xy'
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text : title,
+				x : -20
+			},
+			xAxis : {
+				categories : catagories,
+				tickInterval : tickInterval,
 				title : {
-					text : title,
-					x : -20
-				},
-				xAxis : {
-					categories : catagories,
-					tickInterval : tickInterval,
-					title : {
-						text : loginUserLanguageResource.date
-					}
-				},
-				yAxis : [{
-							lineWidth : 1,
-							min:0,
-							title : {
-								text : ytitle,
-								style : {
-									color : '#000000',
-									fontWeight : 'bold'
-								}
-							},
-							labels : {
-								formatter : function() {
-									return Highcharts.numberFormat(this.value,
-											2);
-								}
-							},
-							plotLines : [{
-										value : 0,
-										width : 1,
-										zIndex:2,
-										color : '#808080'
-									}]
-						}, {
-							lineWidth : 1,
-							min:0,
-							max:1,
-							opposite : true,
-							labels : {
-								formatter : function() {
-									return Highcharts.numberFormat(this.value,
-											2);
-								}
-							},
-							title : {
-								text : ytitle1,
-								style : {
-									color : '#000000',
-									fontWeight : 'bold'
-								}
+					text : loginUserLanguageResource.date
+				}
+			},
+			yAxis : [{
+						lineWidth : 1,
+						min:0,
+						title : {
+							text : ytitle,
+							style : {
+								color : '#000000',
+								fontWeight : 'bold'
 							}
-						}],
-				tooltip : {
-					crosshairs : true,
-					enabled : true,
-					style : {
-						color : '#333333',
-						fontSize : '12px',
-						padding : '8px'
-					},
-					formatter : function() {
-						return '<b>' + this.series.name + '</b><br/>' + this.x
-								+ ': ' + this.y;
-					},
-					valueSuffix : ''
+						},
+						labels : {
+							formatter : function() {
+								return Highcharts.numberFormat(this.value,
+										2);
+							}
+						},
+						plotLines : [{
+									value : 0,
+									width : 1,
+									zIndex:2,
+									color : '#808080'
+								}]
+					}, {
+						lineWidth : 1,
+						min:0,
+						max:1,
+						opposite : true,
+						labels : {
+							formatter : function() {
+								return Highcharts.numberFormat(this.value,
+										2);
+							}
+						},
+						title : {
+							text : ytitle1,
+							style : {
+								color : '#000000',
+								fontWeight : 'bold'
+							}
+						}
+					}],
+			tooltip : {
+				crosshairs : true,
+				enabled : true,
+				style : {
+					color : '#333333',
+					fontSize : '12px',
+					padding : '8px'
 				},
-//				  exporting: {
-//			            buttons: {
-//			                contextButton: {
-//			                    menuItems: [{
-//			                        separator: true
-//			                    }]
-//			                    .concat(Highcharts.getOptions().exporting.buttons.contextButton.menuItems)
-//			                    .concat([{
-//			                        separator: true
-//			                    }
-//			                    ])
-//			                }
-//			            }
-//			        },
-				exporting:{    
-                    enabled:true,    
-                    filename:title,    
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-				plotOptions : {
-					 spline: {  
-				            lineWidth: 1,  
-				            fillOpacity: 0.3,  
-				             marker: {  
-				             enabled: true,  
-				              radius: 3,  //曲线点半径，默认是4
-				                states: {  
-				                   hover: {  
-				                        enabled: true,  
-				                        radius: 6
-				                    }  
-				                }  
-			            },  
-			            shadow: true  
-			        } 
+				formatter : function() {
+					return '<b>' + this.series.name + '</b><br/>' + this.x
+							+ ': ' + this.y;
 				},
-				legend : {
-					layout : 'vertical',
-					align : 'right',
-					verticalAlign : 'middle',
-					borderWidth : 1
-				},
-				series : series
-			});
+				valueSuffix : ''
+			},
+//			  exporting: {
+//		            buttons: {
+//		                contextButton: {
+//		                    menuItems: [{
+//		                        separator: true
+//		                    }]
+//		                    .concat(Highcharts.getOptions().exporting.buttons.contextButton.menuItems)
+//		                    .concat([{
+//		                        separator: true
+//		                    }
+//		                    ])
+//		                }
+//		            }
+//		        },
+			exporting:{    
+                enabled:true,    
+                filename:title,    
+                sourceWidth: $("#"+divId)[0].offsetWidth,
+                sourceHeight: $("#"+divId)[0].offsetHeight
+           },
+			plotOptions : {
+				 spline: {  
+			            lineWidth: 1,  
+			            fillOpacity: 0.3,  
+			             marker: {  
+			             enabled: true,  
+			              radius: 3,  //曲线点半径，默认是4
+			                states: {  
+			                   hover: {  
+			                        enabled: true,  
+			                        radius: 6
+			                    }  
+			                }  
+		            },  
+		            shadow: true  
+		        } 
+			},
+			legend : {
+				layout : 'vertical',
+				align : 'right',
+				verticalAlign : 'middle',
+				borderWidth : 1
+			},
+			series : series
+		});
+}
 }
 
 // 生产曲线初始化函数
 function initCurveChart(years, values, tickInterval, divId) {
-	mychart = new Highcharts.Chart({
-				chart : {
-					renderTo : divId,
-					type : 'spline',
-					shadow : true,
-					//alignTicks: false,
-					borderWidth : 0,
-					zoomType : 'xy'
-				},
-				credits : {
-					enabled : false
-				},
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		mychart = new Highcharts.Chart({
+			chart : {
+				renderTo : divId,
+				type : 'spline',
+				shadow : true,
+				//alignTicks: false,
+				borderWidth : 0,
+				zoomType : 'xy'
+			},
+			credits : {
+				enabled : false
+			},
+			title : {
+				text :cosog.string.clqx,
+				x : -20
+				// center
+			},
+			colors : ['#800000',// 红
+					'#008C00',// 绿
+					'#000000',// 黑
+					'#0000FF',// 蓝
+					'#F4BD82',// 黄
+					'#FF00FF'// 紫
+			],
+			xAxis : {
+				categories : years,
+				tickInterval : tickInterval,
 				title : {
-					text :cosog.string.clqx,
-					x : -20
-					// center
-				},
-				colors : ['#800000',// 红
-						'#008C00',// 绿
-						'#000000',// 黑
-						'#0000FF',// 蓝
-						'#F4BD82',// 黄
-						'#FF00FF'// 紫
-				],
-				xAxis : {
-					categories : years,
-					tickInterval : tickInterval,
-					title : {
-						text : loginUserLanguageResource.date
-					}
-				},
-				yAxis : [{
-							lineWidth : 1,
-							min:0,
-							//max:200,
-							title : {
-								text : cosog.string.cl,
-								style : {
-									color : '#000000',
-									fontWeight : 'bold'
-								}
-							},
-							labels : {
-								formatter : function() {
-									return Highcharts.numberFormat(this.value,
-											2);
-								}
-							},
-							plotLines : [{
-										value : 0,
-										width : 1,
-										zIndex:2,
-										color : '#808080'
-									}]
-						}, {
-							lineWidth : 1,
-							min:0,
-							max:100,
-							opposite : true,
-							labels : {
-								formatter : function() {
-									return Highcharts.numberFormat(this.value,
-											2);
-								}
-							},
-							title : {
-								text : cosog.string.hsl,
-								style : {
-									color : '#000000',
-									fontWeight : 'bold'
-								}
+					text : loginUserLanguageResource.date
+				}
+			},
+			yAxis : [{
+						lineWidth : 1,
+						min:0,
+						//max:200,
+						title : {
+							text : cosog.string.cl,
+							style : {
+								color : '#000000',
+								fontWeight : 'bold'
 							}
-						}],
-				tooltip : {
-					crosshairs : true,
-					enabled : true,
-					style : {
-						color : '#333333',
-						fontSize : '12px',
-						padding : '8px'
-					},
-					formatter : function() {
-						return '<b>' + this.series.name + '</b><br/>' + this.x
-								+ ': ' + this.y;
-					},
-					valueSuffix : ''
+						},
+						labels : {
+							formatter : function() {
+								return Highcharts.numberFormat(this.value,
+										2);
+							}
+						},
+						plotLines : [{
+									value : 0,
+									width : 1,
+									zIndex:2,
+									color : '#808080'
+								}]
+					}, {
+						lineWidth : 1,
+						min:0,
+						max:100,
+						opposite : true,
+						labels : {
+							formatter : function() {
+								return Highcharts.numberFormat(this.value,
+										2);
+							}
+						},
+						title : {
+							text : cosog.string.hsl,
+							style : {
+								color : '#000000',
+								fontWeight : 'bold'
+							}
+						}
+					}],
+			tooltip : {
+				crosshairs : true,
+				enabled : true,
+				style : {
+					color : '#333333',
+					fontSize : '12px',
+					padding : '8px'
 				},
-//				  exporting: {
-//			            buttons: {
-//			                contextButton: {
-//			                    menuItems: [{
-//			                        separator: true
-//			                    }]
-//			                    .concat(Highcharts.getOptions().exporting.buttons.contextButton.menuItems)
-//			                    .concat([{
-//			                        separator: true
-//			                    }
-//			                    ])
-//			                }
-//			            }
-//			        },
-				exporting:{    
-                    enabled:true,    
-                    filename:title,    
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-				plotOptions : {
-					 spline: {  
-				            lineWidth: 1,  
-				            fillOpacity: 0.3,  
-				             marker: {  
-				             enabled: true,  
-				              radius: 3,  //曲线点半径，默认是4
-                             //symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
-				                states: {  
-				                   hover: {  
-				                        enabled: true,  
-				                        radius: 6
-				                    }  
-				                }  
-			            },  
-			            shadow: true  
-			        } 
+				formatter : function() {
+					return '<b>' + this.series.name + '</b><br/>' + this.x
+							+ ': ' + this.y;
 				},
-				legend : {
-					layout : 'vertical',
-					align : 'right',
-					verticalAlign : 'middle',
-					borderWidth : 1
-				},
-				series : values
-			});
+				valueSuffix : ''
+			},
+//			  exporting: {
+//		            buttons: {
+//		                contextButton: {
+//		                    menuItems: [{
+//		                        separator: true
+//		                    }]
+//		                    .concat(Highcharts.getOptions().exporting.buttons.contextButton.menuItems)
+//		                    .concat([{
+//		                        separator: true
+//		                    }
+//		                    ])
+//		                }
+//		            }
+//		        },
+			exporting:{    
+                enabled:true,    
+                filename:title,    
+                sourceWidth: $("#"+divId)[0].offsetWidth,
+                sourceHeight: $("#"+divId)[0].offsetHeight
+           },
+			plotOptions : {
+				 spline: {  
+			            lineWidth: 1,  
+			            fillOpacity: 0.3,  
+			             marker: {  
+			             enabled: true,  
+			              radius: 3,  //曲线点半径，默认是4
+                         //symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+			                states: {  
+			                   hover: {  
+			                        enabled: true,  
+			                        radius: 6
+			                    }  
+			                }  
+		            },  
+		            shadow: true  
+		        } 
+			},
+			legend : {
+				layout : 'vertical',
+				align : 'right',
+				verticalAlign : 'middle',
+				borderWidth : 1
+			},
+			series : values
+		});
+}
 }
 /**
  * Curve chart
@@ -2232,97 +2238,99 @@ function URLencode(sStr){
 }
 
 function initContinuousDiagramChart(pointdata, divId,title,subtitle,xtext,ytext,color) {
-	mychart = new Highcharts.Chart({
-				chart: {                                                                             
-		            type: 'scatter',     // 散点图   
-		            renderTo : divId,
-		            borderWidth : 0,
-		            zoomType: 'xy',
-		            reflow: true
-		        },                                                                                   
-		        title: {
-		        	text: title          
-		        },                                                                                   
-		        subtitle: {
-		        	text: subtitle                                                      
-		        },
-		        credits: {
-		            enabled: false
-		        },
-		        xAxis: {                                                                             
-		            title: {                                                                         
-		                text: xtext,    // 坐标+显示文字
-		                useHTML: false,
-		                margin:5,
-                        style: {
-                        	fontSize: '12px',
-                            padding: '5px'
-                        }
-		            }, 
-		            startOnTick: false,      //是否强制轴线在标线处开始
-		            endOnTick: false,        //是否强制轴线在标线处结束                                                        
-		            showLastLabel: true,
-		            allowDecimals: false,    // 刻度值是否为小数
-//		            min:0,
-		            minorTickInterval: ''    // 最小刻度间隔
-		        },                                                                                   
-		        yAxis: {                                                                             
-		            title: {                                                                         
-		                text: ytext   // 载荷（kN） 
-                    },
-		            allowDecimals: false,    // 刻度值是否为小数
-		            minorTickInterval: ''   // 不显示次刻度线
-//		            min: 0                  // 最小值
-		        },
-		        exporting:{
-                    enabled:true,    
-                    filename:title,    
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-		        legend: {
-		        	itemStyle:{
-		        		fontSize: '8px'
-		        	},
-		            enabled: false,
-		            layout: 'vertical',
-					align: 'right',
-					verticalAlign: 'top',
-					x: 0,
-					y: 55,
-					floating: true
-		        },                                                                                   
-		        plotOptions: {                                                                       
-		            scatter: {                                                                       
-		                marker: {                                                                    
-		                    radius: 0,                                                               
-		                    states: {                                                                
-		                        hover: {                                                             
-		                            enabled: true,                                                   
-		                            lineColor: '#646464'                                    
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                states: {                                                                    
-		                    hover: {                                                                 
-		                        marker: {                                                            
-		                            enabled: false                                                   
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                tooltip: {                                                                   
-		                    headerFormat: '',                                
-		                    pointFormat: '{point.x},{point.y}'                                
-		                }                                                                            
-		            }                                                                                
-		        },
-		        series: [{                                                                           
-		            name: '',                                                                  
-		            color: color,   
-		            lineWidth:3,
-		            data:  pointdata                                                                                  
-		        }]
-	});
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		mychart = new Highcharts.Chart({
+			chart: {                                                                             
+	            type: 'scatter',     // 散点图   
+	            renderTo : divId,
+	            borderWidth : 0,
+	            zoomType: 'xy',
+	            reflow: true
+	        },                                                                                   
+	        title: {
+	        	text: title          
+	        },                                                                                   
+	        subtitle: {
+	        	text: subtitle                                                      
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        xAxis: {                                                                             
+	            title: {                                                                         
+	                text: xtext,    // 坐标+显示文字
+	                useHTML: false,
+	                margin:5,
+                    style: {
+                    	fontSize: '12px',
+                        padding: '5px'
+                    }
+	            }, 
+	            startOnTick: false,      //是否强制轴线在标线处开始
+	            endOnTick: false,        //是否强制轴线在标线处结束                                                        
+	            showLastLabel: true,
+	            allowDecimals: false,    // 刻度值是否为小数
+//	            min:0,
+	            minorTickInterval: ''    // 最小刻度间隔
+	        },                                                                                   
+	        yAxis: {                                                                             
+	            title: {                                                                         
+	                text: ytext   // 载荷（kN） 
+                },
+	            allowDecimals: false,    // 刻度值是否为小数
+	            minorTickInterval: ''   // 不显示次刻度线
+//	            min: 0                  // 最小值
+	        },
+	        exporting:{
+                enabled:true,    
+                filename:title,    
+                sourceWidth: $("#"+divId)[0].offsetWidth,
+                sourceHeight: $("#"+divId)[0].offsetHeight
+           },
+	        legend: {
+	        	itemStyle:{
+	        		fontSize: '8px'
+	        	},
+	            enabled: false,
+	            layout: 'vertical',
+				align: 'right',
+				verticalAlign: 'top',
+				x: 0,
+				y: 55,
+				floating: true
+	        },                                                                                   
+	        plotOptions: {                                                                       
+	            scatter: {                                                                       
+	                marker: {                                                                    
+	                    radius: 0,                                                               
+	                    states: {                                                                
+	                        hover: {                                                             
+	                            enabled: true,                                                   
+	                            lineColor: '#646464'                                    
+	                        }                                                                    
+	                    }                                                                        
+	                },                                                                           
+	                states: {                                                                    
+	                    hover: {                                                                 
+	                        marker: {                                                            
+	                            enabled: false                                                   
+	                        }                                                                    
+	                    }                                                                        
+	                },                                                                           
+	                tooltip: {                                                                   
+	                    headerFormat: '',                                
+	                    pointFormat: '{point.x},{point.y}'                                
+	                }                                                                            
+	            }                                                                                
+	        },
+	        series: [{                                                                           
+	            name: '',                                                                  
+	            color: color,   
+	            lineWidth:3,
+	            data:  pointdata                                                                                  
+	        }]
+});
+}
 }
 
 function SetEveryOnePointColor(chart) {      // 设置每一个数据点的颜色横向渐变
@@ -2649,110 +2657,112 @@ function getBaseUrl(){
 };
 
 function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, ytitle, color,legend,timeFormat) {
-    Highcharts.setOptions({
-        global: {
-            useUTC: false
-        }
-    });
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+	    Highcharts.setOptions({
+	        global: {
+	            useUTC: false
+	        }
+	    });
 
-    var mychart = new Highcharts.Chart({
-        chart: {
-            renderTo: divId,
-            type: 'spline',
-            shadow: true,
-            borderWidth: 0,
-            zoomType: 'xy'
-        },
-        credits: {
-            enabled: false
-        },
-        title: {
-            text: title
-        },
-        subtitle: {
-            text: subtitle
-        },
-        colors: color,
-        xAxis: {
-            type: 'datetime',
-            title: {
-                text: xtitle
-            },
-            tickPixelInterval: tickInterval,
-            labels: {
-                formatter: function () {
-                    return Highcharts.dateFormat(timeFormat, this.value);
-                },
-                rotation: 0, //倾斜度，防止数量过多显示不全  
-                step: 2
-            }
-        },
-        yAxis: [{
-            lineWidth: 1,
-            title: {
-                text: ytitle,
-                style: {
-                    color: '#000000',
-                    fontWeight: 'bold'
-                }
-            },
-            labels: {
-                formatter: function () {
-                    return Highcharts.numberFormat(this.value, 2);
-                }
-            }
-      }],
-        tooltip: {
-            crosshairs: true, //十字准线
-            style: {
-                color: '#333333',
-                fontSize: '12px',
-                padding: '8px'
-            },
-            dateTimeLabelFormats: {
-                millisecond: '%Y-%m-%d %H:%M:%S.%L',
-                second: '%Y-%m-%d %H:%M:%S',
-                minute: '%Y-%m-%d %H:%M',
-                hour: '%Y-%m-%d %H',
-                day: '%Y-%m-%d',
-                week: '%m-%d',
-                month: '%Y-%m',
-                year: '%Y'
-            }
-        },
-        exporting: {
-            enabled: true,
-            filename: title,
-            sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
-        },
-        plotOptions: {
-            spline: {
-                lineWidth: 1,
-                fillOpacity: 0.3,
-                marker: {
-                    enabled: true,
-                    radius: 3, //曲线点半径，默认是4
-                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
-                    states: {
-                        hover: {
-                            enabled: true,
-                            radius: 6
-                        }
-                    }
-                },
-                shadow: true
-            }
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            enabled: legend,
-            borderWidth: 0
-        },
-        series: series
-    });
+	    var mychart = new Highcharts.Chart({
+	        chart: {
+	            renderTo: divId,
+	            type: 'spline',
+	            shadow: true,
+	            borderWidth: 0,
+	            zoomType: 'xy'
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        title: {
+	            text: title
+	        },
+	        subtitle: {
+	            text: subtitle
+	        },
+	        colors: color,
+	        xAxis: {
+	            type: 'datetime',
+	            title: {
+	                text: xtitle
+	            },
+	            tickPixelInterval: tickInterval,
+	            labels: {
+	                formatter: function () {
+	                    return Highcharts.dateFormat(timeFormat, this.value);
+	                },
+	                rotation: 0, //倾斜度，防止数量过多显示不全  
+	                step: 2
+	            }
+	        },
+	        yAxis: [{
+	            lineWidth: 1,
+	            title: {
+	                text: ytitle,
+	                style: {
+	                    color: '#000000',
+	                    fontWeight: 'bold'
+	                }
+	            },
+	            labels: {
+	                formatter: function () {
+	                    return Highcharts.numberFormat(this.value, 2);
+	                }
+	            }
+	      }],
+	        tooltip: {
+	            crosshairs: true, //十字准线
+	            style: {
+	                color: '#333333',
+	                fontSize: '12px',
+	                padding: '8px'
+	            },
+	            dateTimeLabelFormats: {
+	                millisecond: '%Y-%m-%d %H:%M:%S.%L',
+	                second: '%Y-%m-%d %H:%M:%S',
+	                minute: '%Y-%m-%d %H:%M',
+	                hour: '%Y-%m-%d %H',
+	                day: '%Y-%m-%d',
+	                week: '%m-%d',
+	                month: '%Y-%m',
+	                year: '%Y'
+	            }
+	        },
+	        exporting: {
+	            enabled: true,
+	            filename: title,
+	            sourceWidth: $("#"+divId)[0].offsetWidth,
+	            sourceHeight: $("#"+divId)[0].offsetHeight
+	        },
+	        plotOptions: {
+	            spline: {
+	                lineWidth: 1,
+	                fillOpacity: 0.3,
+	                marker: {
+	                    enabled: true,
+	                    radius: 3, //曲线点半径，默认是4
+	                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+	                    states: {
+	                        hover: {
+	                            enabled: true,
+	                            radius: 6
+	                        }
+	                    }
+	                },
+	                shadow: true
+	            }
+	        },
+	        legend: {
+	            layout: 'vertical',
+	            align: 'right',
+	            verticalAlign: 'middle',
+	            enabled: legend,
+	            borderWidth: 0
+	        },
+	        series: series
+	    });
+}
 };
 
 function isExist(arr,data){
@@ -3072,127 +3082,130 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
     if(isNaN(upperlimit)){
     	upperlimit=null;
     }
-	mychart = new Highcharts.Chart({
-				chart: {
-		            renderTo : divId,
-		            zoomType: 'xy',
-		            borderWidth : 0,
-		            reflow: true
-		        },                                                                                   
-		        title: {
-		        	text: loginUserLanguageResource.FSDiagram  // 光杆功图                        
-		        },                                                                                   
-		        subtitle: {
-		        	text: deviceName+' ['+acqTime+']'                                                      
-		        },
-		        credits: {
-		            enabled: false
-		        },
-		        xAxis: {                                                                           
-		            title: {                                                                         
-		                text: xtext,    // 坐标+显示文字
-		                useHTML: false,
-		                margin:5,
-                        style: {
-                        	fontSize: '12px',
-                            padding: '5px'
-                        }
-		            },                                                                               
-		            startOnTick: false,      //是否强制轴线在标线处开始
-		            endOnTick: false,        //是否强制轴线在标线处结束                                                        
-		            showLastLabel: true,
-		            allowDecimals: false,    // 刻度值是否为小数
-		            minorTickInterval: ''    // 最小刻度间隔
-		        },                                                                                   
-		        yAxis: {                                                                             
-		            title: {                                                                         
-		                text: loginUserLanguageResource.load+'(kN)'   // 载荷（kN） 
-                    },
-		            allowDecimals: false,    // 刻度值是否为小数
-		            minorTickInterval: '',   // 不显示次刻度线
-		            min: yAxisMin                  // 最小值
-		        },
-		        exporting:{
-                    enabled:true,    
-                    filename:deviceName+loginUserLanguageResource.FSDiagram+'-'+acqTime,    
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-		        legend: {                                                                            
-		            layout: 'vertical',                                                              
-		            align: 'left',                                                                   
-		            verticalAlign: 'top',                                                            
-		            x: 100,                                                                          
-		            y: 70,                                                                           
-		            floating: true,                                                                  
-		            backgroundColor: '#FFFFFF',                                                      
-		            borderWidth: 1  ,
-		            enabled: false
-		        },                                                                                   
-		        plotOptions: {                                                                       
-		            scatter: {                                                                       
-		                marker: {                                                                    
-		                    radius: 0,                                                               
-		                    states: {                                                                
-		                        hover: {                                                             
-		                            enabled: true,                                                   
-		                            lineColor: '#646464'                                    
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                states: {                                                                    
-		                    hover: {                                                                 
-		                        marker: {                                                            
-		                            enabled: false                                                   
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                tooltip: {                                                                   
-		                    headerFormat: '',                                
-		                    pointFormat: '{point.x},{point.y}'                                
-		                }                                                                            
-		            }                                                                                
-		        }, 
-		        series: [{
-		    		type: 'line',
-		    		color: '#d12',
-		    		dashStyle: 'Dash', //Dash,Dot,Solid,shortdash,默认Solid
-		    		lineWidth:2,
-		    		name: loginUserLanguageResource.upperLoadLine,
-		    		data: [[0, parseFloat(upperLoadLine)], [parseFloat(stroke), parseFloat(upperLoadLine)]],
-		    		marker: {
-		    			enabled: false
-		    		},
-		    		states: {
-		    			hover: {
-		    				lineWidth: 0
-		    			}
-		    		},
-		    		enableMouseTracking: true
-		    	},{
-		    		type: 'line',
-		    		color: '#d12',
-		    		dashStyle: 'Dash', //Dash,Dot,Solid,shortdash,默认Solid
-		    		lineWidth:2,
-		    		name: loginUserLanguageResource.lowerLoadLine,
-		    		data: [[0, parseFloat(lowerLoadLine)], [parseFloat(stroke), parseFloat(lowerLoadLine)]],
-		    		marker: {
-		    			enabled: false
-		    		},
-		    		states: {
-		    			hover: {
-		    				lineWidth: 0
-		    			}
-		    		},
-		    		enableMouseTracking: true
-		    	},{                                                                           
-		            name: '',   
-		            type: 'scatter',     // 散点图   
-		            color: '#00ff00',   
-		            lineWidth:3,
-		            data:  pointdata                                                                                  
-		        }]
-	});
+    if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+    	mychart = new Highcharts.Chart({
+			chart: {
+	            renderTo : divId,
+	            zoomType: 'xy',
+	            borderWidth : 0,
+	            reflow: true
+	        },                                                                                   
+	        title: {
+	        	text: loginUserLanguageResource.FSDiagram  // 光杆功图                        
+	        },                                                                                   
+	        subtitle: {
+	        	text: deviceName+' ['+acqTime+']'                                                      
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        xAxis: {                                                                           
+	            title: {                                                                         
+	                text: xtext,    // 坐标+显示文字
+	                useHTML: false,
+	                margin:5,
+                    style: {
+                    	fontSize: '12px',
+                        padding: '5px'
+                    }
+	            },                                                                               
+	            startOnTick: false,      //是否强制轴线在标线处开始
+	            endOnTick: false,        //是否强制轴线在标线处结束                                                        
+	            showLastLabel: true,
+	            allowDecimals: false,    // 刻度值是否为小数
+	            minorTickInterval: ''    // 最小刻度间隔
+	        },                                                                                   
+	        yAxis: {                                                                             
+	            title: {                                                                         
+	                text: loginUserLanguageResource.load+'(kN)'   // 载荷（kN） 
+                },
+	            allowDecimals: false,    // 刻度值是否为小数
+	            minorTickInterval: '',   // 不显示次刻度线
+	            min: yAxisMin                  // 最小值
+	        },
+	        exporting:{
+                enabled:true,    
+                filename:deviceName+loginUserLanguageResource.FSDiagram+'-'+acqTime,    
+                sourceWidth: $("#"+divId)[0].offsetWidth,
+                sourceHeight: $("#"+divId)[0].offsetHeight
+           },
+	        legend: {                                                                            
+	            layout: 'vertical',                                                              
+	            align: 'left',                                                                   
+	            verticalAlign: 'top',                                                            
+	            x: 100,                                                                          
+	            y: 70,                                                                           
+	            floating: true,                                                                  
+	            backgroundColor: '#FFFFFF',                                                      
+	            borderWidth: 1  ,
+	            enabled: false
+	        },                                                                                   
+	        plotOptions: {                                                                       
+	            scatter: {                                                                       
+	                marker: {                                                                    
+	                    radius: 0,                                                               
+	                    states: {                                                                
+	                        hover: {                                                             
+	                            enabled: true,                                                   
+	                            lineColor: '#646464'                                    
+	                        }                                                                    
+	                    }                                                                        
+	                },                                                                           
+	                states: {                                                                    
+	                    hover: {                                                                 
+	                        marker: {                                                            
+	                            enabled: false                                                   
+	                        }                                                                    
+	                    }                                                                        
+	                },                                                                           
+	                tooltip: {                                                                   
+	                    headerFormat: '',                                
+	                    pointFormat: '{point.x},{point.y}'                                
+	                }                                                                            
+	            }                                                                                
+	        }, 
+	        series: [{
+	    		type: 'line',
+	    		color: '#d12',
+	    		dashStyle: 'Dash', //Dash,Dot,Solid,shortdash,默认Solid
+	    		lineWidth:2,
+	    		name: loginUserLanguageResource.upperLoadLine,
+	    		data: [[0, parseFloat(upperLoadLine)], [parseFloat(stroke), parseFloat(upperLoadLine)]],
+	    		marker: {
+	    			enabled: false
+	    		},
+	    		states: {
+	    			hover: {
+	    				lineWidth: 0
+	    			}
+	    		},
+	    		enableMouseTracking: true
+	    	},{
+	    		type: 'line',
+	    		color: '#d12',
+	    		dashStyle: 'Dash', //Dash,Dot,Solid,shortdash,默认Solid
+	    		lineWidth:2,
+	    		name: loginUserLanguageResource.lowerLoadLine,
+	    		data: [[0, parseFloat(lowerLoadLine)], [parseFloat(stroke), parseFloat(lowerLoadLine)]],
+	    		marker: {
+	    			enabled: false
+	    		},
+	    		states: {
+	    			hover: {
+	    				lineWidth: 0
+	    			}
+	    		},
+	    		enableMouseTracking: true
+	    	},{                                                                           
+	            name: '',   
+	            type: 'scatter',     // 散点图   
+	            color: '#00ff00',   
+	            lineWidth:3,
+	            data:  pointdata                                                                                  
+	        }]
+    	});
+    }
+	
 }
 
 showRodPress = function(result, divId) {
@@ -3273,190 +3286,133 @@ showRodPress = function(result, divId) {
 }
 
 function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, acqTime, divId,showMaxRodStress,showRodStressRange) {
-	var yAxisMax=100;
-	for(var i=0;i<seriesData1.length;i++){
-		if(parseFloat(seriesData1[i])>=100 || parseFloat(seriesData2[i])>=100){
-			yAxisMax=null;
-			break;
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		var yAxisMax=100;
+		for(var i=0;i<seriesData1.length;i++){
+			if(parseFloat(seriesData1[i])>=100 || parseFloat(seriesData2[i])>=100){
+				yAxisMax=null;
+				break;
+			}
 		}
-	}
-	var rodStressChart = new Highcharts.Chart({
-				chart: {                                                                             
-		            type: 'column',                      // 柱状图
-		            renderTo : divId,                    // 图形放置的位置
-		            zoomType: 'xy',                    // 沿xy轴放大
-		            borderWidth : 0,
-		            options3d: {                         // 3D效果
-		                enabled: false,                   // 是否显示3D效果
-		                alpha: 0,                        // 内旋角度
-		                beta: 0,                         // 外旋角度
-		                depth: 100,                       // 图形的全深比
-		                frame: {
-		                	back: {                      // X与Y形成的背面面板
-		                		color: 'transparent',    // 面板颜色
-		                		size: 1                  // 面板厚度
-		                	},
-		                	bottom: {                    // X与Z形成的底部面板
-		                		color: '#fdfdfd',        // 面板颜色
-		                		size: 0                  // 面板厚度
-		                	},
-		                	side: {                      // Y与Z形成的侧面面板
-		                		color: '#fdfdfd',        // 面板颜色
-		                		size: 2                  // 面板厚度
-		                	}
-		                },
-		                viewDistance: 10                 // 图形前面看图的距离
-		            }
-//					,events: {
-//                        load: function() {
-//                            const chart = this;
-//                            const renderer = chart.renderer;
-//
-//                            // 创建模式1文本
-//                            const mode1Text = renderer.text('模式1', 10, 20)
-//                                .attr(normalStyle)   // 使用 attr 设置样式
-//                                .add()
-//                                .toFront()
-//                                .on('click', function() {
-////                                    if (currentMode === 'mode1') return;
-////                                    currentMode = 'mode1';
-////                                    // 更新数据
-////                                    chart.series[0].setData(datasets.mode1);
-////                                    chart.setTitle({ text: '模式1数据展示' });
-//                                    // 切换样式
-//                                    mode1Text.attr(activeStyle);
-//                                    mode2Text.attr(normalStyle);
-//                                    alert('模式1');
-//                                });
-//
-//                            // 分隔符 "/"
-//                            const separator = renderer.text('/', 10 + 35, 20)
-//                                .attr({ fill: '#ccc', fontSize: '12px' })
-//                                .add()
-//                                .toFront();
-//
-//                            // 创建模式2文本
-//                            const mode2Text = renderer.text('模式2', 10 + 35 + 8, 20)
-//                                .attr(normalStyle)
-//                                .add()
-//                                .toFront()
-//                                .on('click', function() {
-////                                    if (currentMode === 'mode2') return;
-////                                    currentMode = 'mode2';
-////                                    chart.series[0].setData(datasets.mode2);
-////                                    chart.setTitle({ text: '模式2数据展示' });
-//                                    mode2Text.attr(activeStyle);
-//                                    mode1Text.attr(normalStyle);
-//                                    alert('模式2');
-//                                });
-//
-//                            // 初始高亮当前模式（mode1）
-//                            mode1Text.attr(activeStyle);
-//                            mode2Text.attr(normalStyle);
-//
-//                            // 添加半透明背景框（可选，提升视觉和点击区域）
-////                            renderer.rect(5, 5, 70, 22, 3)
-////                                .attr({ fill: 'rgba(255,255,255,0.8)', stroke: '#ddd', 'stroke-width': 1, zIndex: 5 })
-////                                .add()
-////                                .toFront();  // 背景也要置于上层，但不要盖住文字，所以文字单独 toFront 后会在背景之上
-//
-//                            // 确保文字在背景之上
-//                            mode1Text.toFront();
-//                            separator.toFront();
-//                            mode2Text.toFront();
-//                        }
-//                    }
-		        },                                                                                   
-		        title: {                                                                             
-		            text: loginUserLanguageResource.rodStress,              // 杆柱应力      
-		            style: {
-		            	fontSize: '13px'
-		            }
-		        },                                                                                   
-		        subtitle: {                                                                          
-		            text: deviceName+' ['+acqTime+']'
-		        },
-//		        colors: ['#00bc00','#006837', '#00FF00','#006837', '#00FF00','#006837', '#00FF00','#006837'],
-		        colors: ['#00e272','#fe6a35','#028142','#a22b01'],
-//		        colors: ['#2caffe','#544fc5','#2caffe','#544fc5'],
-		        credits: {
-		            enabled: false
-		        },
-		        xAxis: { 
-		        	categories: categories_X,
-		            labels: {
-		                rotation: 0,
-		                align: 'center',
-		                style: {
-		                    fontSize: '12px',
-		                    fontFamily: 'Verdana, sans-serif'
-		                }
-		            },
-		            gridLineWidth: 0          // 网格线宽度
-		        },                                                                                   
-		        yAxis: {    
-		        	min: 0,
-		        	max: yAxisMax,
-		            title: {                                                                         
-		                text: loginUserLanguageResource.percent+'(%)'  // 应力百分比(%)                                                          
-		            },
-		            allowDecimals: false,    // 刻度值是否为小数
-		            minorTickInterval: ''    // 不显示次刻度线
-		        },
-		        exporting:{    
-                    enabled:true,    
-                    filename:deviceName+loginUserLanguageResource.rodStress+"-"+acqTime,    
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-		        legend: {                                                                            
-		            enabled: true
-		        }, 
-		        plotOptions : {
-		        	column: {  
-//		        		pointWidth: 40,                     // 柱子宽度
-		        		maxPointWidth:40,
-		        		borderWidth: 2
-//		        		color: '#000000'
-			        } 
-				},
-		        series: [{
-		            name: loginUserLanguageResource.maxRodStress,  // 应力百分比(%)
-		            data: seriesData1,
-		            visible: showMaxRodStress,
-		            dataLabels: {
-		                enabled: true,
-		                rotation: 0,
-		                color: '#0066cc',
-		                align: 'center',
-		                x: 0,
-		                y: 0,
-//		                zIndex:0,
-		                style: {
-		                    fontSize: '13px',
-		                    fontFamily: 'SimSun'
-		                }
-		            }
-		        },{
-		            name: loginUserLanguageResource.rodStressRange,  // 应力范围百分比(%)
-		            data: seriesData2,
-		            visible: showRodStressRange,
-		            dataLabels: {
-		                enabled: true,
-		                rotation: 0,
-		                color: '#0066cc',
-		                align: 'center',
-		                x: 0,
-		                y: 0,
-//		                zIndex:0,
-		                style: {
-		                    fontSize: '13px',
-		                    fontFamily: 'SimSun'
-		                }
-		            }
-		        }] 
-	});
-	SetRodStressEveryOnePointColor(rodStressChart);           //设置每一个数据点的颜色值
+		var rodStressChart = new Highcharts.Chart({
+					chart: {                                                                             
+			            type: 'column',                      // 柱状图
+			            renderTo : divId,                    // 图形放置的位置
+			            zoomType: 'xy',                    // 沿xy轴放大
+			            borderWidth : 0,
+			            options3d: {                         // 3D效果
+			                enabled: false,                   // 是否显示3D效果
+			                alpha: 0,                        // 内旋角度
+			                beta: 0,                         // 外旋角度
+			                depth: 100,                       // 图形的全深比
+			                frame: {
+			                	back: {                      // X与Y形成的背面面板
+			                		color: 'transparent',    // 面板颜色
+			                		size: 1                  // 面板厚度
+			                	},
+			                	bottom: {                    // X与Z形成的底部面板
+			                		color: '#fdfdfd',        // 面板颜色
+			                		size: 0                  // 面板厚度
+			                	},
+			                	side: {                      // Y与Z形成的侧面面板
+			                		color: '#fdfdfd',        // 面板颜色
+			                		size: 2                  // 面板厚度
+			                	}
+			                },
+			                viewDistance: 10                 // 图形前面看图的距离
+			            }
+			        },                                                                                   
+			        title: {                                                                             
+			            text: loginUserLanguageResource.rodStress,              // 杆柱应力      
+			            style: {
+			            	fontSize: '13px'
+			            }
+			        },                                                                                   
+			        subtitle: {                                                                          
+			            text: deviceName+' ['+acqTime+']'
+			        },
+//			        colors: ['#00bc00','#006837', '#00FF00','#006837', '#00FF00','#006837', '#00FF00','#006837'],
+			        colors: ['#00e272','#fe6a35','#028142','#a22b01'],
+//			        colors: ['#2caffe','#544fc5','#2caffe','#544fc5'],
+			        credits: {
+			            enabled: false
+			        },
+			        xAxis: { 
+			        	categories: categories_X,
+			            labels: {
+			                rotation: 0,
+			                align: 'center',
+			                style: {
+			                    fontSize: '12px',
+			                    fontFamily: 'Verdana, sans-serif'
+			                }
+			            },
+			            gridLineWidth: 0          // 网格线宽度
+			        },                                                                                   
+			        yAxis: {    
+			        	min: 0,
+			        	max: yAxisMax,
+			            title: {                                                                         
+			                text: loginUserLanguageResource.percent+'(%)'  // 应力百分比(%)                                                          
+			            },
+			            allowDecimals: false,    // 刻度值是否为小数
+			            minorTickInterval: ''    // 不显示次刻度线
+			        },
+			        exporting:{    
+	                    enabled:true,    
+	                    filename:deviceName+loginUserLanguageResource.rodStress+"-"+acqTime,    
+	                    sourceWidth: $("#"+divId)[0].offsetWidth,
+	                    sourceHeight: $("#"+divId)[0].offsetHeight
+	               },
+			        legend: {                                                                            
+			            enabled: true
+			        }, 
+			        plotOptions : {
+			        	column: {  
+//			        		pointWidth: 40,                     // 柱子宽度
+			        		maxPointWidth:40,
+			        		borderWidth: 2
+//			        		color: '#000000'
+				        } 
+					},
+			        series: [{
+			            name: loginUserLanguageResource.maxRodStress,  // 应力百分比(%)
+			            data: seriesData1,
+			            visible: showMaxRodStress,
+			            dataLabels: {
+			                enabled: true,
+			                rotation: 0,
+			                color: '#0066cc',
+			                align: 'center',
+			                x: 0,
+			                y: 0,
+//			                zIndex:0,
+			                style: {
+			                    fontSize: '13px',
+			                    fontFamily: 'SimSun'
+			                }
+			            }
+			        },{
+			            name: loginUserLanguageResource.rodStressRange,  // 应力范围百分比(%)
+			            data: seriesData2,
+			            visible: showRodStressRange,
+			            dataLabels: {
+			                enabled: true,
+			                rotation: 0,
+			                color: '#0066cc',
+			                align: 'center',
+			                x: 0,
+			                y: 0,
+//			                zIndex:0,
+			                style: {
+			                    fontSize: '13px',
+			                    fontFamily: 'SimSun'
+			                }
+			            }
+			        }] 
+		});
+		SetRodStressEveryOnePointColor(rodStressChart);           //设置每一个数据点的颜色值
+}
 }
 
 function SetRodStressEveryOnePointColor(chart) {      // 设置每一个数据点的颜色横向渐变
@@ -3542,112 +3498,114 @@ showPumpCard = function(result,divId) {
 }
 
 function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine) {
-	mychart = new Highcharts.Chart({
-				chart: {                                                                             
-		            type: 'scatter',
-		            renderTo : divId,
-		            borderWidth : 0,
-		            zoomType: 'xy'
-		        },                                                                                   
-		        title: {  
-		        	text: title
-		        },                                                                                   
-		        subtitle: {                                                                          
-		            text: deviceName+' ['+acqTime+']'                                                      
-		        },
-		        credits: {
-		            enabled: false
-		        },
-		        xAxis: {                                                                             
-		            title: {                                                                         
-		                enabled: true,                                                               
-		                text: loginUserLanguageResource.displacement+'(m)',    // 位移（m）
-		                align:'middle',//"low"，"middle" 和 "high"，分别表示于最小值对齐、居中对齐、与最大值对齐
-		                style: {
-		                	fontSize: '12px',
-		                	padding: '5px'
-                      }
-		            },  
-		            startOnTick: false,      //是否强制轴线在标线处开始
-		            endOnTick: false,        //是否强制轴线在标线处结束                                                                  
-		            showLastLabel: true,
-		            minorTickInterval: ''    // 最小刻度间隔
-		            //min:0                                                            
-		        },                                                                                   
-		        yAxis: {                                                                             
-		            title: {                                                                         
-		                text: loginUserLanguageResource.load+'(kN)'
-		            },
-		            allowDecimals: false, 
-		            minorTickInterval: '',
-//		            min:0,
-		            plotLines: [{
-	                    color: '#d12',
-	                    dashStyle: 'Dash', //Dash,Dot,Solid,默认Solid
-	                    label: {
-	                        text: upperLoadLine,
-	                        align: 'right',
-	                        x: -10
-	                    },
-	                    width: 3,
-	                    value: upperLoadLine,  //y轴显示位置
-	                    zIndex: 10
-	                },{
-	                    color: '#d12',
-	                    dashStyle: 'Dash',
-	                    label: {
-	                        text: lowerLoadLine,
-	                        align: 'right',
-	                        x: -10
-	                    },
-	                    width: 3,
-	                    value: lowerLoadLine,  //y轴显示位置
-	                    zIndex: 10
-	                }]
-		        },
-		        exporting:{    
-                    enabled:true,    
-                    filename:deviceName+loginUserLanguageResource.pumpFSDiagram+"-"+acqTime,    
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-		        legend: {                                                                            
-		            layout: 'vertical',                                                              
-		            align: 'left',                                                                   
-		            verticalAlign: 'top',                                                            
-		            x: 100,                                                                          
-		            y: 70,                                                                           
-		            floating: true,                                                                  
-		            backgroundColor: '#FFFFFF',                                                      
-		            borderWidth: 1  ,
-		            enabled: false
-		        },                                                                                   
-		        plotOptions: {                                                                       
-		            scatter: {                                                                       
-		                marker: {                                                                    
-		                    radius: 0,                                                               
-		                    states: {                                                                
-		                        hover: {                                                             
-		                            enabled: true,                                                   
-		                            lineColor: '#646464'                                    
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                states: {                                                                    
-		                    hover: {                                                                 
-		                        marker: {                                                            
-		                            enabled: false                                                   
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                tooltip: {                                                                   
-		                    headerFormat: '',                                
-		                    pointFormat: '{point.x}, {point.y}'                                
-		                }                                                                            
-		            }                                                                                
-		        }, 
-		        series: series 
-	});
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		mychart = new Highcharts.Chart({
+			chart: {                                                                             
+	            type: 'scatter',
+	            renderTo : divId,
+	            borderWidth : 0,
+	            zoomType: 'xy'
+	        },                                                                                   
+	        title: {  
+	        	text: title
+	        },                                                                                   
+	        subtitle: {                                                                          
+	            text: deviceName+' ['+acqTime+']'                                                      
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        xAxis: {                                                                             
+	            title: {                                                                         
+	                enabled: true,                                                               
+	                text: loginUserLanguageResource.displacement+'(m)',    // 位移（m）
+	                align:'middle',//"low"，"middle" 和 "high"，分别表示于最小值对齐、居中对齐、与最大值对齐
+	                style: {
+	                	fontSize: '12px',
+	                	padding: '5px'
+                  }
+	            },  
+	            startOnTick: false,      //是否强制轴线在标线处开始
+	            endOnTick: false,        //是否强制轴线在标线处结束                                                                  
+	            showLastLabel: true,
+	            minorTickInterval: ''    // 最小刻度间隔
+	            //min:0                                                            
+	        },                                                                                   
+	        yAxis: {                                                                             
+	            title: {                                                                         
+	                text: loginUserLanguageResource.load+'(kN)'
+	            },
+	            allowDecimals: false, 
+	            minorTickInterval: '',
+//	            min:0,
+	            plotLines: [{
+                    color: '#d12',
+                    dashStyle: 'Dash', //Dash,Dot,Solid,默认Solid
+                    label: {
+                        text: upperLoadLine,
+                        align: 'right',
+                        x: -10
+                    },
+                    width: 3,
+                    value: upperLoadLine,  //y轴显示位置
+                    zIndex: 10
+                },{
+                    color: '#d12',
+                    dashStyle: 'Dash',
+                    label: {
+                        text: lowerLoadLine,
+                        align: 'right',
+                        x: -10
+                    },
+                    width: 3,
+                    value: lowerLoadLine,  //y轴显示位置
+                    zIndex: 10
+                }]
+	        },
+	        exporting:{    
+                enabled:true,    
+                filename:deviceName+loginUserLanguageResource.pumpFSDiagram+"-"+acqTime,    
+                sourceWidth: $("#"+divId)[0].offsetWidth,
+                sourceHeight: $("#"+divId)[0].offsetHeight
+           },
+	        legend: {                                                                            
+	            layout: 'vertical',                                                              
+	            align: 'left',                                                                   
+	            verticalAlign: 'top',                                                            
+	            x: 100,                                                                          
+	            y: 70,                                                                           
+	            floating: true,                                                                  
+	            backgroundColor: '#FFFFFF',                                                      
+	            borderWidth: 1  ,
+	            enabled: false
+	        },                                                                                   
+	        plotOptions: {                                                                       
+	            scatter: {                                                                       
+	                marker: {                                                                    
+	                    radius: 0,                                                               
+	                    states: {                                                                
+	                        hover: {                                                             
+	                            enabled: true,                                                   
+	                            lineColor: '#646464'                                    
+	                        }                                                                    
+	                    }                                                                        
+	                },                                                                           
+	                states: {                                                                    
+	                    hover: {                                                                 
+	                        marker: {                                                            
+	                            enabled: false                                                   
+	                        }                                                                    
+	                    }                                                                        
+	                },                                                                           
+	                tooltip: {                                                                   
+	                    headerFormat: '',                                
+	                    pointFormat: '{point.x}, {point.y}'                                
+	                }                                                                            
+	            }                                                                                
+	        }, 
+	        series: series 
+		});
+	}
 }
 
 showPumpEfficiency = function(bxzcData, divId) {
@@ -3830,104 +3788,106 @@ showPSDiagram = function(result, divId,title) {
 }
 
 function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId,title,xtext,ytext,color,yAxisMin) {
-	var deviceName=gtdata.deviceName;         // 井名
-	var acqTime=gtdata.acqTime;     // 采集时间
-	mychart = new Highcharts.Chart({
-				chart: {                                                                             
-		            type: 'scatter',     // 散点图   
-		            renderTo : divId,
-		            borderWidth : 0,
-		            zoomType: 'xy',
-		            reflow: true
-		        },                                                                                   
-		        title: {
-		        	text: title          
-		        },                                                                                   
-		        subtitle: {
-		        	text: deviceName+' ['+acqTime+']'                                                      
-		        },
-		        credits: {
-		            enabled: false
-		        },
-		        xAxis: {                                                                             
-		            title: {                                                                         
-		                text: xtext,    // 坐标+显示文字
-		                useHTML: false,
-		                margin:5,
-                        style: {
-                        	fontSize: '12px',
-                            padding: '5px'
-                        }
-		            }, 
-		            startOnTick: false,      //是否强制轴线在标线处开始
-		            endOnTick: false,        //是否强制轴线在标线处结束                                                        
-		            showLastLabel: true,
-		            allowDecimals: false,    // 刻度值是否为小数
-//		            min:0,
-		            minorTickInterval: ''    // 最小刻度间隔
-		        },                                                                                   
-		        yAxis: {                                                                             
-		            title: {                                                                         
-		                text: ytext   // 载荷（kN） 
-                    },
-		            allowDecimals: false,    // 刻度值是否为小数
-//		            min: yAxisMin<0?null:0,                  // 最小值
-		            minorTickInterval: ''   // 不显示次刻度线
-		        },
-		        exporting:{
-                    enabled:true,    
-                    filename: deviceName+''+title+'-'+acqTime,
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-		        legend: {
-		        	itemStyle:{
-		        		fontSize: '8px'
-		        	},
-		            enabled: true,
-		            layout: 'vertical',
-					align: 'right',
-					verticalAlign: 'top',
-					x: 0,
-					y: 55,
-					floating: true
-		        },                                                                                   
-		        plotOptions: {                                                                       
-		            scatter: {                                                                       
-		                marker: {                                                                    
-		                    radius: 0,                                                               
-		                    states: {                                                                
-		                        hover: {                                                             
-		                            enabled: true,                                                   
-		                            lineColor: '#646464'                                    
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                states: {                                                                    
-		                    hover: {                                                                 
-		                        marker: {                                                            
-		                            enabled: false                                                   
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                tooltip: {                                                                   
-		                    headerFormat: '',                                
-		                    pointFormat: '{point.x},{point.y}'                                
-		                }                                                                            
-		            }                                                                                
-		        },
-		        series: [{                                                                           
-		            name: loginUserLanguageResource.upStroke,                                                                  
-		            color: color[0],   
-		            lineWidth:3,
-		            data:  upStrokePointdata                                                                                  
-		        },{                                                                           
-		            name: loginUserLanguageResource.downStroke,                                                                  
-		            color: color[1],   
-		            lineWidth:3,
-		            data:  downStrokePointdata                                                                                  
-		        }]
-	});
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		var deviceName=gtdata.deviceName;         // 井名
+		var acqTime=gtdata.acqTime;     // 采集时间
+		mychart = new Highcharts.Chart({
+					chart: {                                                                             
+			            type: 'scatter',     // 散点图   
+			            renderTo : divId,
+			            borderWidth : 0,
+			            zoomType: 'xy',
+			            reflow: true
+			        },                                                                                   
+			        title: {
+			        	text: title          
+			        },                                                                                   
+			        subtitle: {
+			        	text: deviceName+' ['+acqTime+']'                                                      
+			        },
+			        credits: {
+			            enabled: false
+			        },
+			        xAxis: {                                                                             
+			            title: {                                                                         
+			                text: xtext,    // 坐标+显示文字
+			                useHTML: false,
+			                margin:5,
+	                        style: {
+	                        	fontSize: '12px',
+	                            padding: '5px'
+	                        }
+			            }, 
+			            startOnTick: false,      //是否强制轴线在标线处开始
+			            endOnTick: false,        //是否强制轴线在标线处结束                                                        
+			            showLastLabel: true,
+			            allowDecimals: false,    // 刻度值是否为小数
+//			            min:0,
+			            minorTickInterval: ''    // 最小刻度间隔
+			        },                                                                                   
+			        yAxis: {                                                                             
+			            title: {                                                                         
+			                text: ytext   // 载荷（kN） 
+	                    },
+			            allowDecimals: false,    // 刻度值是否为小数
+//			            min: yAxisMin<0?null:0,                  // 最小值
+			            minorTickInterval: ''   // 不显示次刻度线
+			        },
+			        exporting:{
+	                    enabled:true,    
+	                    filename: deviceName+''+title+'-'+acqTime,
+	                    sourceWidth: $("#"+divId)[0].offsetWidth,
+	                    sourceHeight: $("#"+divId)[0].offsetHeight
+	               },
+			        legend: {
+			        	itemStyle:{
+			        		fontSize: '8px'
+			        	},
+			            enabled: true,
+			            layout: 'vertical',
+						align: 'right',
+						verticalAlign: 'top',
+						x: 0,
+						y: 55,
+						floating: true
+			        },                                                                                   
+			        plotOptions: {                                                                       
+			            scatter: {                                                                       
+			                marker: {                                                                    
+			                    radius: 0,                                                               
+			                    states: {                                                                
+			                        hover: {                                                             
+			                            enabled: true,                                                   
+			                            lineColor: '#646464'                                    
+			                        }                                                                    
+			                    }                                                                        
+			                },                                                                           
+			                states: {                                                                    
+			                    hover: {                                                                 
+			                        marker: {                                                            
+			                            enabled: false                                                   
+			                        }                                                                    
+			                    }                                                                        
+			                },                                                                           
+			                tooltip: {                                                                   
+			                    headerFormat: '',                                
+			                    pointFormat: '{point.x},{point.y}'                                
+			                }                                                                            
+			            }                                                                                
+			        },
+			        series: [{                                                                           
+			            name: loginUserLanguageResource.upStroke,                                                                  
+			            color: color[0],   
+			            lineWidth:3,
+			            data:  upStrokePointdata                                                                                  
+			        },{                                                                           
+			            name: loginUserLanguageResource.downStroke,                                                                  
+			            color: color[1],   
+			            lineWidth:3,
+			            data:  downStrokePointdata                                                                                  
+			        }]
+		});
+	}
 }
 
 showASDiagram = function(result, divId,title) {
@@ -4027,104 +3987,106 @@ showASDiagram = function(result, divId,title) {
 }
 
 function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId,title,xtext,ytext,color) {
-	var deviceName=gtdata.deviceName;         // 井名
-	var acqTime=gtdata.acqTime;     // 采集时间
-	mychart = new Highcharts.Chart({
-				chart: {                                                                             
-		            type: 'scatter',     // 散点图   
-		            renderTo : divId,
-		            borderWidth : 0,
-		            zoomType: 'xy',
-		            reflow: true
-		        },                                                                                   
-		        title: {
-		        	text: title          
-		        },                                                                                   
-		        subtitle: {
-		        	text: deviceName+' ['+acqTime+']'                                                      
-		        },
-		        credits: {
-		            enabled: false
-		        },
-		        xAxis: {                                                                             
-		            title: {                                                                         
-		                text: xtext,    // 坐标+显示文字
-		                useHTML: false,
-		                margin:5,
-                        style: {
-                        	fontSize: '12px',
-                            padding: '5px'
-                        }
-		            }, 
-		            startOnTick: false,      //是否强制轴线在标线处开始
-		            endOnTick: false,        //是否强制轴线在标线处结束                                                        
-		            showLastLabel: true,
-		            allowDecimals: false,    // 刻度值是否为小数
-//		            min:0,
-		            minorTickInterval: ''    // 最小刻度间隔
-		        },                                                                                   
-		        yAxis: {                                                                             
-		            title: {                                                                         
-		                text: ytext   // 载荷（kN） 
-                    },
-		            allowDecimals: false,    // 刻度值是否为小数
-		            minorTickInterval: ''   // 不显示次刻度线
-//		            min: 0                  // 最小值
-		        },
-		        exporting:{
-                    enabled:true,    
-                    filename: deviceName+''+title+'-'+acqTime,   
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-		        legend: {
-		        	itemStyle:{
-		        		fontSize: '8px'
-		        	},
-		            enabled: true,
-		            layout: 'vertical',
-					align: 'right',
-					verticalAlign: 'top',
-					x: 0,
-					y: 55,
-					floating: true
-		        },                                                                                   
-		        plotOptions: {                                                                       
-		            scatter: {                                                                       
-		                marker: {                                                                    
-		                    radius: 0,                                                               
-		                    states: {                                                                
-		                        hover: {                                                             
-		                            enabled: true,                                                   
-		                            lineColor: '#646464'                                    
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                states: {                                                                    
-		                    hover: {                                                                 
-		                        marker: {                                                            
-		                            enabled: false                                                   
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                tooltip: {                                                                   
-		                    headerFormat: '',                                
-		                    pointFormat: '{point.x},{point.y}'                                
-		                }                                                                            
-		            }                                                                                
-		        },
-		        series: [{                                                                           
-		            name: loginUserLanguageResource.upStroke,                                                                  
-		            color: color[0],   
-		            lineWidth:3,
-		            data:  upStrokePointdata                                                                                  
-		        },{                                                                           
-		            name: loginUserLanguageResource.downStroke,                                                                  
-		            color: color[1],   
-		            lineWidth:3,
-		            data:  downStrokePointdata                                                                                  
-		        }]
-	});
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		var deviceName=gtdata.deviceName;         // 井名
+		var acqTime=gtdata.acqTime;     // 采集时间
+		mychart = new Highcharts.Chart({
+					chart: {                                                                             
+			            type: 'scatter',     // 散点图   
+			            renderTo : divId,
+			            borderWidth : 0,
+			            zoomType: 'xy',
+			            reflow: true
+			        },                                                                                   
+			        title: {
+			        	text: title          
+			        },                                                                                   
+			        subtitle: {
+			        	text: deviceName+' ['+acqTime+']'                                                      
+			        },
+			        credits: {
+			            enabled: false
+			        },
+			        xAxis: {                                                                             
+			            title: {                                                                         
+			                text: xtext,    // 坐标+显示文字
+			                useHTML: false,
+			                margin:5,
+	                        style: {
+	                        	fontSize: '12px',
+	                            padding: '5px'
+	                        }
+			            }, 
+			            startOnTick: false,      //是否强制轴线在标线处开始
+			            endOnTick: false,        //是否强制轴线在标线处结束                                                        
+			            showLastLabel: true,
+			            allowDecimals: false,    // 刻度值是否为小数
+//			            min:0,
+			            minorTickInterval: ''    // 最小刻度间隔
+			        },                                                                                   
+			        yAxis: {                                                                             
+			            title: {                                                                         
+			                text: ytext   // 载荷（kN） 
+	                    },
+			            allowDecimals: false,    // 刻度值是否为小数
+			            minorTickInterval: ''   // 不显示次刻度线
+//			            min: 0                  // 最小值
+			        },
+			        exporting:{
+	                    enabled:true,    
+	                    filename: deviceName+''+title+'-'+acqTime,   
+	                    sourceWidth: $("#"+divId)[0].offsetWidth,
+	                    sourceHeight: $("#"+divId)[0].offsetHeight
+	               },
+			        legend: {
+			        	itemStyle:{
+			        		fontSize: '8px'
+			        	},
+			            enabled: true,
+			            layout: 'vertical',
+						align: 'right',
+						verticalAlign: 'top',
+						x: 0,
+						y: 55,
+						floating: true
+			        },                                                                                   
+			        plotOptions: {                                                                       
+			            scatter: {                                                                       
+			                marker: {                                                                    
+			                    radius: 0,                                                               
+			                    states: {                                                                
+			                        hover: {                                                             
+			                            enabled: true,                                                   
+			                            lineColor: '#646464'                                    
+			                        }                                                                    
+			                    }                                                                        
+			                },                                                                           
+			                states: {                                                                    
+			                    hover: {                                                                 
+			                        marker: {                                                            
+			                            enabled: false                                                   
+			                        }                                                                    
+			                    }                                                                        
+			                },                                                                           
+			                tooltip: {                                                                   
+			                    headerFormat: '',                                
+			                    pointFormat: '{point.x},{point.y}'                                
+			                }                                                                            
+			            }                                                                                
+			        },
+			        series: [{                                                                           
+			            name: loginUserLanguageResource.upStroke,                                                                  
+			            color: color[0],   
+			            lineWidth:3,
+			            data:  upStrokePointdata                                                                                  
+			        },{                                                                           
+			            name: loginUserLanguageResource.downStroke,                                                                  
+			            color: color[1],   
+			            lineWidth:3,
+			            data:  downStrokePointdata                                                                                  
+			        }]
+		});
+	}
 }
 
 showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balanceTorque,netTorque,title,deviceName,acqTime,divId) {
@@ -4780,170 +4742,174 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 }
 
 function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,xAxisMin,yAxisMin) {
-	mychart = new Highcharts.Chart({
-				chart: {                                                                             
-		            type: 'scatter',      // 散点图   
-		            renderTo : divId,
-		            borderWidth : 0,
-		            zoomType: 'xy'
-		        },                                                                                   
-		        title: {  
-		        	text: title
-		        },                                                                                   
-		        subtitle: {                                                                          
-		            text: subtitle//+' ['+acqTime+']'                                                      
-		        },
-		        credits: {
-		            enabled: false
-		        },
-		        xAxis: {                                                                             
-		            title: {                                                                         
-		                enabled: true,                                                               
-		                text: loginUserLanguageResource.displacement+'(m)',    // 位移（m）
-		                align:'middle',//"low"，"middle" 和 "high"，分别表示于最小值对齐、居中对齐、与最大值对齐
-		                style: {
-//                          color: '#000',
-//                          fontWeight: 'normal',
-		                	fontSize: '12px',
-		                	padding: '5px'
-                      }
-		            },  
-		            startOnTick: false,      //是否强制轴线在标线处开始
-		            endOnTick: false,        //是否强制轴线在标线处结束                                                                  
-		            showLastLabel: true,
-		            minorTickInterval: '',    // 最小刻度间隔
-		            min:xAxisMin                                                            
-		        },                                                                                   
-		        yAxis: {                                                                             
-		            title: {                                                                         
-		                text: ytext    // 载荷（kN）                                                          
-		            },
-		            allowDecimals: false,    // 刻度值是否为小数
-		            //endOnTick: false,        //是否强制轴线在标线处结束   
-		            minorTickInterval: '',    // 不显示次刻度线
-		            min:yAxisMin
-		        },
-		        exporting:{    
-                    enabled:true,    
-                    filename:title,    
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-		        legend: {                                                                            
-		            layout: 'vertical',                                                              
-		            align: 'left',                                                                   
-		            verticalAlign: 'top',                                                            
-		            x: 100,                                                                          
-		            y: 70,                                                                           
-		            floating: true,                                                                  
-		            backgroundColor: '#FFFFFF',                                                      
-		            borderWidth: 1  ,
-		            enabled: false
-		        },                                                                                   
-		        plotOptions: {                                                                       
-		            scatter: {                                                                       
-		                marker: {                                                                    
-		                    radius: 0,                                                               
-		                    states: {                                                                
-		                        hover: {                                                             
-		                            enabled: true,                                                   
-		                            lineColor: '#646464'                                    
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                states: {                                                                    
-		                    hover: {                                                                 
-		                        marker: {                                                            
-		                            enabled: false                                                   
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                tooltip: {                                                                   
-		                    headerFormat: '',                                
-		                    pointFormat: '{point.x}, {point.y}'                                
-		                }                                                                            
-		            }                                                                                
-		        }, 
-		        series: series 
-	});
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		mychart = new Highcharts.Chart({
+			chart: {                                                                             
+	            type: 'scatter',      // 散点图   
+	            renderTo : divId,
+	            borderWidth : 0,
+	            zoomType: 'xy'
+	        },                                                                                   
+	        title: {  
+	        	text: title
+	        },                                                                                   
+	        subtitle: {                                                                          
+	            text: subtitle//+' ['+acqTime+']'                                                      
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        xAxis: {                                                                             
+	            title: {                                                                         
+	                enabled: true,                                                               
+	                text: loginUserLanguageResource.displacement+'(m)',    // 位移（m）
+	                align:'middle',//"low"，"middle" 和 "high"，分别表示于最小值对齐、居中对齐、与最大值对齐
+	                style: {
+//                      color: '#000',
+//                      fontWeight: 'normal',
+	                	fontSize: '12px',
+	                	padding: '5px'
+                  }
+	            },  
+	            startOnTick: false,      //是否强制轴线在标线处开始
+	            endOnTick: false,        //是否强制轴线在标线处结束                                                                  
+	            showLastLabel: true,
+	            minorTickInterval: '',    // 最小刻度间隔
+	            min:xAxisMin                                                            
+	        },                                                                                   
+	        yAxis: {                                                                             
+	            title: {                                                                         
+	                text: ytext    // 载荷（kN）                                                          
+	            },
+	            allowDecimals: false,    // 刻度值是否为小数
+	            //endOnTick: false,        //是否强制轴线在标线处结束   
+	            minorTickInterval: '',    // 不显示次刻度线
+	            min:yAxisMin
+	        },
+	        exporting:{    
+                enabled:true,    
+                filename:title,    
+                sourceWidth: $("#"+divId)[0].offsetWidth,
+                sourceHeight: $("#"+divId)[0].offsetHeight
+           },
+	        legend: {                                                                            
+	            layout: 'vertical',                                                              
+	            align: 'left',                                                                   
+	            verticalAlign: 'top',                                                            
+	            x: 100,                                                                          
+	            y: 70,                                                                           
+	            floating: true,                                                                  
+	            backgroundColor: '#FFFFFF',                                                      
+	            borderWidth: 1  ,
+	            enabled: false
+	        },                                                                                   
+	        plotOptions: {                                                                       
+	            scatter: {                                                                       
+	                marker: {                                                                    
+	                    radius: 0,                                                               
+	                    states: {                                                                
+	                        hover: {                                                             
+	                            enabled: true,                                                   
+	                            lineColor: '#646464'                                    
+	                        }                                                                    
+	                    }                                                                        
+	                },                                                                           
+	                states: {                                                                    
+	                    hover: {                                                                 
+	                        marker: {                                                            
+	                            enabled: false                                                   
+	                        }                                                                    
+	                    }                                                                        
+	                },                                                                           
+	                tooltip: {                                                                   
+	                    headerFormat: '',                                
+	                    pointFormat: '{point.x}, {point.y}'                                
+	                }                                                                            
+	            }                                                                                
+	        }, 
+	        series: series 
+		});
+	}
 }
 
 function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,xAxisMin,yAxisMin) {
-	mychart = new Highcharts.Chart({
-				chart: {                                                                             
-		            type: 'scatter',      // 散点图   
-		            renderTo : divId,
-		            borderWidth : 0,
-		            zoomType: 'xy'
-		        },                                                                                   
-		        title: {  
-		        	text: title
-		        },                                                                                   
-		        subtitle: {                                                                          
-		            text: subtitle//+' ['+acqTime+']'                                                      
-		        },
-		        credits: {
-		            enabled: false
-		        },
-		        xAxis: {                                                                             
-		            title: {                                                                         
-		                enabled: true,                                                               
-		                text: loginUserLanguageResource.displacement+'(m)',    // 位移（m）
-		                align:'middle',//"low"，"middle" 和 "high"，分别表示于最小值对齐、居中对齐、与最大值对齐
-		                style: {
-		                	fontSize: '12px',
-		                	padding: '5px'
-                      }
-		            },  
-		            startOnTick: false,      //是否强制轴线在标线处开始
-		            endOnTick: false,        //是否强制轴线在标线处结束                                                                  
-		            showLastLabel: true,
-		            minorTickInterval: '',    // 最小刻度间隔
-		            min:xAxisMin                                                            
-		        },                                                                                   
-		        yAxis: {                                                                             
-		            title: {                                                                         
-		                text: ytext                                             
-		            },
-		            allowDecimals: false,    // 刻度值是否为小数
-		            //endOnTick: false,        //是否强制轴线在标线处结束   
-		            minorTickInterval: ''    // 不显示次刻度线
-		        },
-		        exporting:{    
-                    enabled:true,    
-                    filename:title,    
-                    sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
-               },
-		        legend: {
-		            enabled: false
-		        },                                                                                   
-		        plotOptions: {                                                                       
-		            scatter: {                                                                       
-		                marker: {                                                                    
-		                    radius: 0,                                                               
-		                    states: {                                                                
-		                        hover: {                                                             
-		                            enabled: true,                                                   
-		                            lineColor: '#646464'                                    
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                states: {                                                                    
-		                    hover: {                                                                 
-		                        marker: {                                                            
-		                            enabled: false                                                   
-		                        }                                                                    
-		                    }                                                                        
-		                },                                                                           
-		                tooltip: {                                                                   
-		                    headerFormat: '',                                
-		                    pointFormat: '{point.x}, {point.y}'                                
-		                }                                                                            
-		            }                                                                                
-		        }, 
-		        series: series 
-	});
+	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
+		mychart = new Highcharts.Chart({
+			chart: {                                                                             
+	            type: 'scatter',      // 散点图   
+	            renderTo : divId,
+	            borderWidth : 0,
+	            zoomType: 'xy'
+	        },                                                                                   
+	        title: {  
+	        	text: title
+	        },                                                                                   
+	        subtitle: {                                                                          
+	            text: subtitle//+' ['+acqTime+']'                                                      
+	        },
+	        credits: {
+	            enabled: false
+	        },
+	        xAxis: {                                                                             
+	            title: {                                                                         
+	                enabled: true,                                                               
+	                text: loginUserLanguageResource.displacement+'(m)',    // 位移（m）
+	                align:'middle',//"low"，"middle" 和 "high"，分别表示于最小值对齐、居中对齐、与最大值对齐
+	                style: {
+	                	fontSize: '12px',
+	                	padding: '5px'
+                  }
+	            },  
+	            startOnTick: false,      //是否强制轴线在标线处开始
+	            endOnTick: false,        //是否强制轴线在标线处结束                                                                  
+	            showLastLabel: true,
+	            minorTickInterval: '',    // 最小刻度间隔
+	            min:xAxisMin                                                            
+	        },                                                                                   
+	        yAxis: {                                                                             
+	            title: {                                                                         
+	                text: ytext                                             
+	            },
+	            allowDecimals: false,    // 刻度值是否为小数
+	            //endOnTick: false,        //是否强制轴线在标线处结束   
+	            minorTickInterval: ''    // 不显示次刻度线
+	        },
+	        exporting:{    
+                enabled:true,    
+                filename:title,    
+                sourceWidth: $("#"+divId)[0].offsetWidth,
+                sourceHeight: $("#"+divId)[0].offsetHeight
+           },
+	        legend: {
+	            enabled: false
+	        },                                                                                   
+	        plotOptions: {                                                                       
+	            scatter: {                                                                       
+	                marker: {                                                                    
+	                    radius: 0,                                                               
+	                    states: {                                                                
+	                        hover: {                                                             
+	                            enabled: true,                                                   
+	                            lineColor: '#646464'                                    
+	                        }                                                                    
+	                    }                                                                        
+	                },                                                                           
+	                states: {                                                                    
+	                    hover: {                                                                 
+	                        marker: {                                                            
+	                            enabled: false                                                   
+	                        }                                                                    
+	                    }                                                                        
+	                },                                                                           
+	                tooltip: {                                                                   
+	                    headerFormat: '',                                
+	                    pointFormat: '{point.x}, {point.y}'                                
+	                }                                                                            
+	            }                                                                                
+	        }, 
+	        series: series 
+		});
+	}
 };
 
 function jsonFormat(txt, compress /*是否为压缩模式*/ ) {
@@ -5150,13 +5116,17 @@ function refreshHistoryDeviceListDataByPage(selectedDeviceId,deviceType,gridPane
 
 function exportDataMask(key,panelId,info){
 	var flagUrl=context + '/reportDataMamagerController/getSessionFlag?key='+key;
-	Ext.getCmp(panelId).el.mask(info).show();
+	if(Ext.getCmp(panelId)!=undefined){
+		Ext.getCmp(panelId).el.mask(info).show();
+	}
 	var exportFlatTime = setInterval(function () {
 	    $.post(flagUrl, null, function (result) {
 	            var flag = result.flag;
 	            if (flag == "1") {
 	                clearInterval(exportFlatTime);
-	            	Ext.getCmp(panelId).getEl().unmask();
+	            	if(Ext.getCmp(panelId)!=undefined){
+		            	Ext.getCmp(panelId).getEl().unmask();
+	            	}
 	            }
 	        },"json");
 	}, 1000);

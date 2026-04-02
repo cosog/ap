@@ -28,7 +28,9 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         	        	items:[],
         	        	listeners: {
         	        		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        	        			Ext.getCmp("AlarmQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        	        			if(Ext.getCmp("AlarmQueryRootTabPanel")!=undefined){
+            	        			Ext.getCmp("AlarmQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        	        			}
                 				if(oldCard!=undefined){
                 					oldCard.setIconCls(null);
                     				oldCard.removeAll();
@@ -111,7 +113,9 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         		items: items,
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				Ext.getCmp("AlarmQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        				if(Ext.getCmp("AlarmQueryRootTabPanel")!=undefined){
+    	        			Ext.getCmp("AlarmQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+	        			}
         				if(oldCard!=undefined){
         					oldCard.setIconCls(null);
         					if(oldCard.xtype=='tabpanel'){

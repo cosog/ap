@@ -312,6 +312,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
 });
 
 function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes, code, unitId, acqUnitId, unitName,calculateType) {
+    if(Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id")!=undefined){
+        Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
 	var tabPanel = Ext.getCmp("ModbusProtocolDisplayUnitConfigRightTabPanel_Id");
 	var showInfo=tabPanel.getActiveTab().title;
 	if(isNotVal(unitName)){
@@ -319,12 +322,13 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
 	}
 	Ext.getCmp("DisplayUnitConfigInformationLabel_Id").setHtml(showInfo);
     Ext.getCmp("DisplayUnitConfigInformationLabel_Id").show();
-    Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/getProtocolDisplayUnitAcqItemsConfigData',
         success: function (response) {
-            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+            if(Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id")!=undefined){
+                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+        	}
             var result = Ext.JSON.decode(response.responseText);
             if (classes == 2) {
                 Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.acquisitionItemConfig);
@@ -394,7 +398,9 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
             }
         },
         failure: function () {
-            Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+        	if(Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id")!=undefined){
+                Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
+        	}
             Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
         },
         params: {
@@ -735,12 +741,16 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 };
 
 function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolCode,classes,code,unitId,acqUnitId,unitName){
-	Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	if(Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitCtrlItemsConfigData',
 		success:function(response) {
-			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+			}
 			var result =  Ext.JSON.decode(response.responseText);
 			if(classes==2){
 				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.controlItemConfig);
@@ -774,7 +784,9 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolCode,classes,
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+			if(Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id")!=undefined){
+				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
+			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

@@ -407,19 +407,17 @@ function websocketOnMessage(evt) {
                     	}
                     }
                     if (commStatusChange) {
-                    	if(!Ext.getCmp("RealTimeMonitoringRightTabPanel").isHidden() ){
-                    		var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
-                        	if(isNotVal(rightTabPanel)){
-                        		var rightTabPanelActiveTabId=rightTabPanel.getActiveTab().id;
-                        		if(rightTabPanelActiveTabId=='RealTimeMonitoringRightControlAndVideoPanel' ){
-                        			var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
-                        			if(isNotVal(controlGridPanel)){
-                        				controlGridPanel.getStore().load();
-                        			}
-                        		}
-                        	}
-                    	}
-                    }
+                		var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
+                    	if(isNotVal(rightTabPanel) && !rightTabPanel.isHidden() ){
+                			var rightTabPanelActiveTabId=rightTabPanel.getActiveTab().id;
+                    		if(rightTabPanelActiveTabId=='RealTimeMonitoringRightControlAndVideoPanel' ){
+                    			var controlGridPanel=Ext.getCmp("RealTimeMonitoringControlDataGridPanel_Id");
+                    			if(isNotVal(controlGridPanel)){
+                    				controlGridPanel.getStore().load();
+                    			}
+                    		}
+                		}
+                	}
                 }
         	}
         } else if (activeId.toUpperCase() == "UpstreamAndDownstreamInteraction".toUpperCase()) {

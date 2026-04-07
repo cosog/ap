@@ -453,9 +453,9 @@ var RealTimeMonitoringRightTabPanelItems=[{
     		region: 'center',
             id: 'RealTimeMonitoringRightControlPanel',
             border: false,
-            layout: 'fit',
-            autoScroll: true,
-            scrollable: true
+            layout: 'fit'
+//            autoScroll: true,
+//            scrollable: true
     	}]
     }]
 },{

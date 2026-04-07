@@ -60,7 +60,7 @@ public class RedisUtil implements Serializable{
         JedisPoolConfig config = new JedisPoolConfig();
         config.setMaxTotal(maxActive); 
         config.setMaxIdle(maxIdle); 
-        config.setMinIdle(maxIdle);
+        config.setMinIdle(20);
         config.setMaxWaitMillis(maxWait); 
         config.setTestOnBorrow(testOnBorrow);
         config.setTestOnReturn(true);

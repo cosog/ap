@@ -100,25 +100,24 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
         	}
         },
         beforeload: function (store, options) {
-        	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+        	var orgId = Ext.getCmp('leftOrg_Id')!=undefined?Ext.getCmp('leftOrg_Id').getValue():'0';
         	var deviceName='';
         	var deviceId=0;
         	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
         	var calculateType=0;
-        	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
-        	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+        	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id")!=undefined && Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
         		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
         		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		calculateType = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
         	}
-        	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
-        	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
-        	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
+        	var startDate=Ext.getCmp('HistoryQueryStartDate_Id')!=undefined?Ext.getCmp('HistoryQueryStartDate_Id').rawValue:'';
+        	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id')!=undefined?Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue():'';
+        	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id')!=undefined?Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue():'';
         	var startTime_Second=0;
 
-            var endDate=Ext.getCmp('HistoryQueryEndDate_Id').rawValue;
-            var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
-        	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
+            var endDate=Ext.getCmp('HistoryQueryEndDate_Id')!=undefined?Ext.getCmp('HistoryQueryEndDate_Id').rawValue:'';
+            var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id')!=undefined?Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue():'';
+        	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id')!=undefined?Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue():'';
         	var endTime_Second=0;
         	
         	if(Ext.getCmp("HistoryQueryDataInfoPanel_Id")!=undefined && Ext.getCmp("HistoryQueryDataInfoPanel_Id").el!=undefined){

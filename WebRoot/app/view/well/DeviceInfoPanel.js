@@ -2571,10 +2571,10 @@ var DeviceInfoHandsontableHelper = {
                     		frequencyConversionData.RodStressModel.RodStressRangeRatio=parseFloat(frequencyConversionHandsontableData[11][4]);
                 		}
                     	if(isNumber(parseFloat(frequencyConversionHandsontableData[12][4]))){
-                    		frequencyConversionData.RodStressModel.StepSize=parseFloat(frequencyConversionHandsontableData[12][4]);
+                    		frequencyConversionData.RodStressModel.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[12][4]);
                 		}
                     	if(isNumber(parseFloat(frequencyConversionHandsontableData[13][4]))){
-                    		frequencyConversionData.RodStressModel.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[13][4]);
+                    		frequencyConversionData.RodStressModel.StepSize=parseFloat(frequencyConversionHandsontableData[13][4]);
                 		}
                     	
                     	frequencyConversionData.FSDiagramWorkTypeEnable={};
@@ -2899,7 +2899,7 @@ var ProductionHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(isNotVal(productionHandsontableHelper.hot)){
 	            	var itemValue=productionHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
-		            if(isNotVal(itemValue) && isNotVal(value)){
+		            if(isNotVal(value)){
 		            	if (value === loginUserLanguageResource.uplinkFailed) {
 		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}else if (value === loginUserLanguageResource.noUplink) {
@@ -3199,7 +3199,7 @@ var PumpingInfoHandsontableHelper = {
 	            if(isNotVal(pumpingInfoHandsontableHelper.hot)){
 	            	if(row==3 && prop.toUpperCase()=='uplinkStatus'.toUpperCase()){
 		            	var itemValue=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(row, 'itemValue2');
-		            	if (isNotVal(itemValue) && isNotVal(value)) {
+		            	if (isNotVal(value)) {
 		            		if (value === loginUserLanguageResource.uplinkFailed) {
 			            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
 			            	}else if (value === loginUserLanguageResource.noUplink) {
@@ -5501,7 +5501,7 @@ function deviceIntelligentFrequencyConversionDataUplink(){
 
                 				// 如果目标是 checkbox，确保值是布尔型
                 				if (targetType === 'checkbox' && typeof newStatus !== 'boolean') {
-                				    newStatus = (newStatus === true || newStatus === 'true');
+                				    newStatus = (newStatus === true || newStatus === 'true' || newStatus == 1);
                 				}
 
                 				deviceIntelligentFrequencyConversionHandsontableHelper.hot.setDataAtRowProp(i, 'uplinkStatus', newStatus);
@@ -5601,7 +5601,7 @@ function deviceInterlockProtectionDataUplink(){
 
                 				// 如果目标是 checkbox，确保值是布尔型
                 				if (targetType === 'checkbox' && typeof newStatus !== 'boolean') {
-                				    newStatus = (newStatus === true || newStatus === 'true');
+                				    newStatus = (newStatus === true || newStatus === 'true' || newStatus == 1);
                 				}
 
                 				deviceInterlockProtectionHandsontableHelper.hot.setDataAtRowProp(i, 'uplinkStatus', newStatus);
@@ -5706,7 +5706,7 @@ var FSDiagramConstructionHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(isNotVal(fsDiagramConstructionHandsontableHelper.hot)){
 	            	var itemValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
-		            if(isNotVal(itemValue) && isNotVal(value)){
+		            if(isNotVal(value)){
 		            	if (value === loginUserLanguageResource.uplinkFailed) {
 		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}else if (value === loginUserLanguageResource.noUplink) {
@@ -5937,7 +5937,7 @@ var DeviceSystemParameterHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(isNotVal(deviceSystemParameterHandsontableHelper.hot)){
 	            	var itemValue=deviceSystemParameterHandsontableHelper.hot.getDataAtRowProp(row,'itemValue');
-		            if(isNotVal(itemValue) && isNotVal(value)){
+		            if(isNotVal(value)){
 		            	if (value === loginUserLanguageResource.uplinkFailed) {
 		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}else if (value === loginUserLanguageResource.noUplink) {
@@ -6185,7 +6185,7 @@ var DevicePumpingUnitPRTFHandsontableHelper = {
 	            			itemValueCol='TF';
 	            		}
 	            		var itemValue = devicePumpingUnitPRTFHandsontableHelper.hot.getDataAtRowProp(row, itemValueCol);
-			            if (isNotVal(itemValue) && isNotVal(value)) {
+			            if (isNotVal(value)) {
 			            	if (value === loginUserLanguageResource.uplinkFailed) {
 			            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
 			            	}else if (value === loginUserLanguageResource.noUplink) {
@@ -6354,7 +6354,7 @@ var DevicePumpingUnitDetailedInformationHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(isNotVal(devicePumpingUnitDetailedInformationHandsontableHelper.hot)){
 	            	var itemValue = devicePumpingUnitDetailedInformationHandsontableHelper.hot.getDataAtRowProp(row, 'itemValue');
-		            if (isNotVal(itemValue) && isNotVal(value)) {
+		            if (isNotVal(value)) {
 		            	if (value === loginUserLanguageResource.uplinkFailed) {
 		            	    td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}else if (value === loginUserLanguageResource.noUplink) {
@@ -6545,7 +6545,7 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	            
 	            if(isNotVal(instance)){
 	            	var itemValue=instance.getDataAtRowProp(row,'itemValue');
-		            if(isNotVal(itemValue+"") && isNotVal(value+"")){
+		            if(isNotVal(value+"")){
 		            	if(value===loginUserLanguageResource.uplinkFailed){
 		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}else if(value===loginUserLanguageResource.noUplink){
@@ -6659,24 +6659,9 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	                },{
 	                    "row": 10,
 	                    "col": 2,
-	                    "rowspan": 1,
-	                    "colspan": 2
-	                },{
-	                    "row": 11,
-	                    "col": 2,
-	                    "rowspan": 1,
-	                    "colspan": 2
-	                },{
-	                    "row": 12,
-	                    "col": 2,
-	                    "rowspan": 1,
-	                    "colspan": 2
-	                },{
-	                    "row": 13,
-	                    "col": 2,
-	                    "rowspan": 1,
-	                    "colspan": 2
-	                },{
+	                    "rowspan": 4,
+	                    "colspan": 1
+	                }, {
 	                    "row": 14,
 	                    "col": 2,
 	                    "rowspan": 1,
@@ -6976,7 +6961,7 @@ var DeviceInterlockProtectionHandsontableHelper = {
 	            
 	            if(isNotVal(instance)){
 	            	var itemValue=instance.getDataAtRowProp(row,'itemValue');
-		            if(isNotVal(itemValue+"") && isNotVal(value+"")){
+		            if(isNotVal(value+"")){
 		            	if(value===loginUserLanguageResource.uplinkFailed){
 		            		td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            	}else if(value===loginUserLanguageResource.noUplink){
@@ -7194,10 +7179,10 @@ function deviceIntelligentFrequencyConversionDataDownlink(){
         		frequencyConversionData.RodStressModel.RodStressRangeRatio=parseFloat(frequencyConversionHandsontableData[11][4]);
     		}
         	if(isNumber(parseFloat(frequencyConversionHandsontableData[12][4]))){
-        		frequencyConversionData.RodStressModel.StepSize=parseFloat(frequencyConversionHandsontableData[12][4]);
+        		frequencyConversionData.RodStressModel.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[12][4]);
     		}
         	if(isNumber(parseFloat(frequencyConversionHandsontableData[13][4]))){
-        		frequencyConversionData.RodStressModel.FrequencyLowerLimit=parseFloat(frequencyConversionHandsontableData[13][4]);
+        		frequencyConversionData.RodStressModel.StepSize=parseFloat(frequencyConversionHandsontableData[13][4]);
     		}
         	
         	frequencyConversionData.FSDiagramWorkTypeEnable={};

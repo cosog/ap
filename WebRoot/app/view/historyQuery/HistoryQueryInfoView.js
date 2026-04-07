@@ -757,19 +757,18 @@ function deviceHistoryQueryCurve(deviceType){
 	var deviceName='';
 	var deviceId=0;
 	var calculateType=0;
-	var selectRow= Ext.getCmp(selectRowId).getValue();
 	if(Ext.getCmp(gridPanelId)!=undefined && Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
 		calculateType=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
 	}
-	var startDate=Ext.getCmp(startDateId).rawValue;
-	var startTime_Hour=Ext.getCmp(startHourId).getValue();
-	var startTime_Minute=Ext.getCmp(startMinuteId).getValue();
+	var startDate=Ext.getCmp(startDateId)!=undefined?Ext.getCmp(startDateId).rawValue:"";
+	var startTime_Hour=Ext.getCmp(startHourId)!=undefined?Ext.getCmp(startHourId).getValue():"";
+	var startTime_Minute=Ext.getCmp(startMinuteId)!=undefined?Ext.getCmp(startMinuteId).getValue():"";
 	var startTime_Second=0;
-    var endDate=Ext.getCmp(endDateId).rawValue;
-    var endTime_Hour=Ext.getCmp(endHourId).getValue();
-	var endTime_Minute=Ext.getCmp(endMinuteId).getValue();
+    var endDate=Ext.getCmp(endDateId)!=undefined?Ext.getCmp(endDateId).rawValue:"";
+    var endTime_Hour=Ext.getCmp(endHourId)!=undefined?Ext.getCmp(endHourId).getValue():"";
+	var endTime_Minute=Ext.getCmp(endMinuteId)!=undefined?Ext.getCmp(endMinuteId).getValue():"";
 	var endTime_Second=0;
 	var hours=getHistoryQueryHours();
 	if(Ext.getCmp(panelId)!=undefined){
@@ -1881,7 +1880,6 @@ loadSurfaceCardList = function (page) {
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceName='';
 	var deviceId=0;
-	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
 	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
@@ -2009,7 +2007,6 @@ loadPSDiagramTiledList = function (page) {
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceName='';
 	var deviceId=0;
-	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
 	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
@@ -2119,7 +2116,6 @@ loadISDiagramTiledList = function (page) {
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceName='';
 	var deviceId=0;
-	var selectRow= Ext.getCmp("HistoryQueryInfoDeviceListSelectRow_Id").getValue();
 	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
 		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
 		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
@@ -2303,14 +2299,14 @@ function refreshDeviceHistoryData(){
 function getHistoryQueryHours(){
 	var hours='';
 	var hourList=[];
-	var timeRangeCheckAllStatus=Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').getValue();
+	var timeRangeCheckAllStatus=Ext.getCmp('HistoryDataTimeRangeCheck_All_Id')!=undefined?Ext.getCmp('HistoryDataTimeRangeCheck_All_Id').getValue():false;
 	if(timeRangeCheckAllStatus){
 		hours='all';
 	}else{
-		var timeRangeCheckStatus1=Ext.getCmp('HistoryDataTimeRangeCheck1_Id').getValue();
-    	var timeRangeCheckStatus2=Ext.getCmp('HistoryDataTimeRangeCheck2_Id').getValue();
-    	var timeRangeCheckStatus3=Ext.getCmp('HistoryDataTimeRangeCheck3_Id').getValue();
-    	var timeRangeCheckStatus4=Ext.getCmp('HistoryDataTimeRangeCheck4_Id').getValue();
+		var timeRangeCheckStatus1=Ext.getCmp('HistoryDataTimeRangeCheck1_Id')!=undefined?Ext.getCmp('HistoryDataTimeRangeCheck1_Id').getValue():false;
+    	var timeRangeCheckStatus2=Ext.getCmp('HistoryDataTimeRangeCheck2_Id')!=undefined?Ext.getCmp('HistoryDataTimeRangeCheck2_Id').getValue():false;
+    	var timeRangeCheckStatus3=Ext.getCmp('HistoryDataTimeRangeCheck3_Id')!=undefined?Ext.getCmp('HistoryDataTimeRangeCheck3_Id').getValue():false;
+    	var timeRangeCheckStatus4=Ext.getCmp('HistoryDataTimeRangeCheck4_Id')!=undefined?Ext.getCmp('HistoryDataTimeRangeCheck4_Id').getValue():false;
     	
     	if(timeRangeCheckStatus1 && timeRangeCheckStatus2 && timeRangeCheckStatus3 && timeRangeCheckStatus4){
     		hours='all';

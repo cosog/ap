@@ -1391,6 +1391,78 @@ public class StringManagerUtils {
         return flag;
     }
     
+    public static boolean uplinkDataColumnFiter(String value) {
+        boolean flag = false;
+        String arrays[] = {
+        	"write_PumpGrade",
+            "write_FrequencyConversionWithFullnessCoefficientEnable",
+            "write_FrequencyConversionWithRodStressExceedingEnable",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1201",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1202",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1203",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1204",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1205",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1206",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1207",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1208",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1209",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1210",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1212",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1213",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1214",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1215",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1216",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1217",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1218",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1219",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1220",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1221",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1222",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1223",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1224",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1225",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1226",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1227",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1230",
+            "write_FrequencyConversionEnable_FSDiagramWorkType1232",
+            "write_InterlockProtectionEnable",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1201",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1202",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1203",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1204",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1205",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1206",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1207",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1208",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1209",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1210",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1212",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1213",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1214",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1215",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1216",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1217",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1218",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1219",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1220",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1221",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1222",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1223",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1224",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1225",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1226",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1227",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1230",
+            "write_InterlockProtectionEnable_FSDiagramWorkType1232"
+        };
+        for (String str: arrays) {
+            if (str.equalsIgnoreCase(value)) {
+                flag = true;
+            }
+        }
+        return flag;
+    }
+    
     public static boolean rodCalColumnFiter(String value) {
         boolean flag = false;
         String arrays[] = {

@@ -308,10 +308,10 @@ public class CalculateDataController extends BaseController{
 		
 //		StringManagerUtils.printLog("功图数据定时汇总前内存情况,时间:"+timeStr);
 //		StringManagerUtils.printLog(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
-		
+		long t1 = System.nanoTime();
 		calculateDataService.SRPTimingTotalCalculation(timeStr);
-		
-		StringManagerUtils.printLog("功图定时汇总完成",0);
+		long t2 = System.nanoTime();
+		StringManagerUtils.printLog("功图定时汇总完成"+ ",总耗时:" + StringManagerUtils.getTimeDiff(t1, t2),0);
 		
 //		StringManagerUtils.printLog("功图数据定时汇总后内存情况,时间:"+timeStr);
 //		StringManagerUtils.printLog(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
@@ -399,8 +399,10 @@ public class CalculateDataController extends BaseController{
 //		StringManagerUtils.printLog(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());
 		
 //		timeStr="2024-11-04 18:00:00";
+		long t1 = System.nanoTime();
 		calculateDataService.PCPTimingTotalCalculation(timeStr);
-		StringManagerUtils.printLog("转速数据定时汇总完成",0);
+		long t2 = System.nanoTime();
+		StringManagerUtils.printLog("转速数据定时汇总完成"+ ",总耗时:" + StringManagerUtils.getTimeDiff(t1, t2),0);
 		
 //		StringManagerUtils.printLog("转速数据定时汇总后内存情况,时间:"+timeStr);
 //		StringManagerUtils.printLog(AdvancedMemoryMonitorUtils.getFormattedMemoryUsageKB());

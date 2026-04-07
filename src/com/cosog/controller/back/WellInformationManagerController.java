@@ -5430,7 +5430,7 @@ public class WellInformationManagerController extends BaseController {
 					AcqAddrData acqAddrData=gson.fromJson(responseStr, type);
 					if(acqAddrData.getResultStatus()==1){
 						result=StringManagerUtils.objectListToString(acqAddrData.getValue(), item);
-						if(!"write_PumpGrade".equalsIgnoreCase(calColumn)){
+						if(!StringManagerUtils.uplinkDataColumnFiter(calColumn)){
 							if(item.getResolutionMode()==1 && item.getMeaning()!=null && item.getMeaning().size()>0){//枚举量显示转换
 								for(int i=0;i<item.getMeaning().size();i++){
 									if(result.equalsIgnoreCase(item.getMeaning().get(i).getValue()+"")){

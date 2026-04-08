@@ -566,4 +566,25 @@ public class OperationMaintenanceController  extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/loadLowerComputerProgramUpgradeDeviceList")
+	public String loadLowerComputerProgramUpgradeDeviceList() throws IOException, SQLException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		if(!StringManagerUtils.isNotNull(orgId)){
+			orgId=user.getUserOrgIds();
+		}
+		
+		String json = deviceTabManagerMaintenanceService.loadLowerComputerProgramUpgradeDeviceList(orgId,deviceName,user);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 }

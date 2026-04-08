@@ -6415,6 +6415,11 @@ public class MemoryDataManagerTask {
 		
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("RPM"),"RPM",index++) );
 		
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("boxVersion"),"BoxVersion",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("acVersion"),"ACVersion",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("adVersion"),"ADVersion",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("deviceId"),"LowerComputerDeviceId",index++) );
+		
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("realtimeLiquidVolumetricProduction"),"RealtimeLiquidVolumetricProduction",index++) );
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("realtimeOilVolumetricProduction"),"RealtimeOilVolumetricProduction",index++) );
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("realtimeOilVolumetricProduction"),"RealtimeOilVolumetricProduction",index++) );

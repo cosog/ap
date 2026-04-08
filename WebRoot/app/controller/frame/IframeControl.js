@@ -174,6 +174,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "AlarmSet"
 		&& module_Code != "UpstreamAndDownstreamInteraction"
 		&& module_Code != "CalculateMaintaining"
+		&& module_Code != "OperationMaintenance"
 //		&& module_Code != "RoleManagement"
 			) {
 		if (modules.length > 2) {
@@ -445,6 +446,11 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			}
 		}else{
 			refreshCalculateMaintainingData();
+		}
+	}else if(module_Code == "OperationMaintenance"){
+		var tabPanel = Ext.getCmp("OperationMaintenanceTabPanel_Id");
+		if(tabPanel.getActiveTab().id=='OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id'){
+			loadLowerComputerProgramUpgradeDeviceList();
 		}
 	}
 	if(module_Code != "DeviceRealTimeMonitoring"){

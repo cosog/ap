@@ -204,17 +204,29 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                             Ext.Array.each(buttonsToShow, function (btnConfig) {
                                 var btnClass = 'x-btn x-btn-default-small';
                                 if (disabled) btnClass += ' x-btn-disabled';
+//                                btnsHtml.push(
+//                                    '<button class="' + btnClass + '" ' +
+//                                    'data-index="' + btnConfig.index + '" ' +
+//                                    'data-value="' + Ext.util.Format.htmlEncode(String(btnConfig.value)) + '" ' +
+//                                    'data-bit-index="' + (btnConfig.bitIndex !== undefined ? btnConfig.bitIndex : '') + '" ' +
+//                                    (disabled ? 'disabled="disabled"' : '') +
+//                                    ' onclick="window.handleControlButtonClick(this)" ' +
+//                                    ' style="height:24px; width:auto; min-width:60px; margin:2px auto; display:block;">' +
+//                                    '<span class="x-btn-inner">' + Ext.util.Format.htmlEncode(btnConfig.text) + '</span>' +
+//                                    '</button>'
+//                                );
+                                
                                 btnsHtml.push(
-                                    '<button class="' + btnClass + '" ' +
-                                    'data-index="' + btnConfig.index + '" ' +
-                                    'data-value="' + Ext.util.Format.htmlEncode(String(btnConfig.value)) + '" ' +
-                                    'data-bit-index="' + (btnConfig.bitIndex !== undefined ? btnConfig.bitIndex : '') + '" ' +
-                                    (disabled ? 'disabled="disabled"' : '') +
-                                    ' onclick="window.handleControlButtonClick(this)" ' +
-                                    ' style="height:24px; width:auto; min-width:60px; margin:2px auto; display:block;">' +
-                                    '<span class="x-btn-inner">' + Ext.util.Format.htmlEncode(btnConfig.text) + '</span>' +
-                                    '</button>'
-                                );
+                                	    '<button class="' + btnClass + '" ' +
+                                	    'data-index="' + btnConfig.index + '" ' +
+                                	    'data-value="' + Ext.util.Format.htmlEncode(String(btnConfig.value)) + '" ' +
+                                	    'data-bit-index="' + (btnConfig.bitIndex !== undefined ? btnConfig.bitIndex : '') + '" ' +
+                                	    (disabled ? 'disabled="disabled"' : '') +
+                                	    ' onclick="window.handleControlButtonClick(this)" ' +
+                                	    ' style="height:22px; width:auto; min-width:60px; margin:2px auto; display:block; font-size:11px;">' +
+                                	    '<span class="x-btn-inner">' + Ext.util.Format.htmlEncode(btnConfig.text) + '</span>' +
+                                	    '</button>'
+                                	);
                             });
                             return '<div style="text-align:center;">' + btnsHtml.join('') + '</div>';
                         }

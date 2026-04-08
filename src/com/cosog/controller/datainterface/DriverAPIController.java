@@ -1340,6 +1340,57 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
+	@RequestMapping("/upgrade/result")
+	public String ProgramUpgradeResultPushURL(){
+		CounterUtils.incr();
+		ServletInputStream ss=null;
+		String json = "{\"ResultStatus\":1}";
+		PrintWriter pw=null;
+		StringBuffer webSocketSendData = new StringBuffer();
+		String functionCode="lowerComputerProgramUpgradeResult";
+		try {
+			ss = request.getInputStream();
+			Gson gson=new Gson();
+			String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+			StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送下位机程序升级结果数据："+data,0);
+//			java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
+//			AcqGroup acqGroup=gson.fromJson(data, type);
+//			data="{\"ID\":\"1904c9d76920b324\",\"Name\":\"box\",\"ResultStatus\":1}";
+			if(StringManagerUtils.isNotNull(data)){
+				webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
+				webSocketSendData.append("\"data\":"+data+"");
+				webSocketSendData.append("}");
+				if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
+					infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
+				}
+			}else{
+				json = "{\"ResultStatus\":0}";
+			}
+			response.setContentType("application/json;charset=utf-8");
+			response.setHeader("Cache-Control", "no-cache");
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+		
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} finally{
+			CounterUtils.decr();
+			if(ss!=null){
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if(pw!=null){
+				pw.close();
+			}
+		}
+		
+		return null;
+	}
+	
 	public List<AcquisitionItemInfo> DataAlarmProcessing(List<ProtocolItemResolutionData> protocolItemResolutionDataList,
 			AlarmInstanceOwnItem alarmInstanceOwnItem,List<AcquisitionItemInfo> acquisitionItemInfoList,
 			DeviceInfo deviceInfo,String acqTime){

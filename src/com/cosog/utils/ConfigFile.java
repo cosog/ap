@@ -531,7 +531,15 @@ public class ConfigFile {
 	    
 	    private Ad_srp srp;
 	    
-	    public void setProbe(AdProbe probe){
+	    private Ad_Upgrade upgrade;
+	    
+	    public Ad_Upgrade getUpgrade() {
+			return upgrade;
+		}
+		public void setUpgrade(Ad_Upgrade upgrade) {
+			this.upgrade = upgrade;
+		}
+		public void setProbe(AdProbe probe){
 	        this.probe = probe;
 	    }
 	    public AdProbe getProbe(){
@@ -554,6 +562,18 @@ public class ConfigFile {
 		}
 		public void setSrp(Ad_srp srp) {
 			this.srp = srp;
+		}
+	}
+	
+	public static class Ad_Upgrade{
+		private String programUpgrade;
+
+		public String getProgramUpgrade() {
+			return programUpgrade;
+		}
+
+		public void setProgramUpgrade(String programUpgrade) {
+			this.programUpgrade = programUpgrade;
 		}
 	}
 	
@@ -594,6 +614,13 @@ public class ConfigFile {
 		private String idAcqGroupDataPushURL;
 		private String ipPortOnlineStatusPushURL;
 		private String ipPortAcqGroupDataPushURL;
+		private String programUpgradeResultPushURL;
+		public String getProgramUpgradeResultPushURL() {
+			return programUpgradeResultPushURL;
+		}
+		public void setProgramUpgradeResultPushURL(String programUpgradeResultPushURL) {
+			this.programUpgradeResultPushURL = programUpgradeResultPushURL;
+		}
 		public String getIdOnlineStatusPushURL() {
 			return idOnlineStatusPushURL;
 		}

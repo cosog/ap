@@ -74,7 +74,6 @@ ad:                                                          #AD程序配置
             idAcqGroupDataPushURL: http://127.0.0.1:80/ap/api/acq/id/group       #ID采集组数据推送URL
             ipPortOnlineStatusPushURL: http://127.0.0.1:80/ap/api/acq/ipport/online       #IPPort在线状态推送URL
             ipPortAcqGroupDataPushURL: http://127.0.0.1:80/ap/api/acq/ipport/group        #IPPort采集组数据推送URL
-            programUpgradeResultPushURL: http://127.0.0.1:80/ap/api/upgrade/result        #下位机程序升级结果推送URL
       protocol: http://121.43.57.177:19200/api/init/protocol                            #协议初始化
       instance: http://121.43.57.177:19200/api/init/instance                            #实例初始化
       id: http://121.43.57.177:19200/api/init/id                                        #id初始化 下位机为tcp client模式

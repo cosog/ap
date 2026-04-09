@@ -55,6 +55,73 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                     }
                 });
         
+        var deviceListCombStore = new Ext.data.JsonStore({
+            pageSize: defaultWellComboxSize,
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/wellInformationManagerController/loadWellComboxList',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+            },
+            autoLoad: true,
+            listeners: {
+                beforeload: function (store, options) {
+                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+                    var deviceName='';
+                    if(isNotVal(Ext.getCmp('lowerComputerProgramUpgradeDeviceListComb_Id'))){
+                    	deviceName = Ext.getCmp('lowerComputerProgramUpgradeDeviceListComb_Id').getValue();
+                    }
+                    var new_params = {
+                        orgId: leftOrg_Id,
+                        deviceName: deviceName
+                    };
+                    Ext.apply(store.proxy.extraParams, new_params);
+                }
+            }
+        });
+
+        var deviceListDeviceCombo = Ext.create(
+            'Ext.form.field.ComboBox', {
+                fieldLabel: loginUserLanguageResource.deviceName,
+                id: "lowerComputerProgramUpgradeDeviceListComb_Id",
+                labelWidth: getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage),
+                width: (getLabelWidth(loginUserLanguageResource.deviceName,loginUserLanguage)+110),
+                labelAlign: 'left',
+                queryMode: 'remote',
+                typeAhead: true,
+                store: deviceListCombStore,
+                autoSelect: false,
+                editable: true,
+                triggerAction: 'all',
+                displayField: "boxval",
+                valueField: "boxkey",
+                pageSize: comboxPagingStatus,
+                minChars: 0,
+                emptyText: '--'+loginUserLanguageResource.all+'--',
+                blankText: '--'+loginUserLanguageResource.all+'--',
+                listeners: {
+                    expand: function (sm, selections) {
+                    	deviceListDeviceCombo.getStore().loadPage(1); // 加载井下拉框的store
+                    },
+                    select: function (combo, record, index) {
+                    	loadLowerComputerProgramUpgradeDeviceList();
+                    }
+                }
+            });
+        
         Ext.apply(me, {
         	items:[{
         		xtype: 'tabpanel',
@@ -2006,7 +2073,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                         handler: function (v, o) {
                         	loadLowerComputerProgramUpgradeDeviceList();
                         }
-            		},'->',{
+            		},'-',deviceListDeviceCombo,'->',{
             			xtype: 'button',
             			text:loginUserLanguageResource.downlink,
             			iconCls: 'downlink',
@@ -4177,6 +4244,108 @@ function updateDeviceTypeContentConfig(deviceTypeContentConfig){
 	}
 }
 
+function lowerComputerProgramVersionDataUplink(instance, td, row, col, prop, value, cellProperties){
+	var deviceId=instance.getDataAtRowProp(row,'deviceId');
+	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+	}
+	
+	Ext.Ajax.request({
+        url: context + '/wellInformationManagerController/lowerComputerProgramVersionDataUplink',
+        method: "POST",
+        params: {
+        	deviceId: deviceId
+        },
+        success: function (response, action) {
+        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
+    		}
+        	var result =  Ext.JSON.decode(response.responseText);
+        	
+        	if (result.flag == false) {
+                Ext.MessageBox.show({
+                    title: loginUserLanguageResource.tip,
+                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                    icon: Ext.MessageBox.INFO,
+                    buttons: Ext.Msg.OK,
+                    fn: function () {
+                        window.location.href = context + "/login";
+                    }
+                });
+            } else if (result.flag == true && result.error == false) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+            }  else if (result.flag == true && result.error == true) {
+            	instance.setDataAtRowProp(row,'boxVersion',result.boxVersion);
+            	instance.setDataAtRowProp(row,'acVersion',result.acVersion);
+            	instance.setDataAtRowProp(row,'adVersion',result.adVersion);
+            	instance.setDataAtRowProp(row,'lowerComputerDeviceId',result.lowerComputerDeviceId);
+            	const plugin = instance.getPlugin('hiddenColumns');
+            	plugin.showColumns([5,8,11]);
+            	instance.render();
+            } 
+        },
+        failure: function () {
+        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
+    		}
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+        }
+    });
+}
+
+function lowerComputerProgramUpgrade(instance, td, row, col, prop, value, cellProperties,name){
+	var deviceId=instance.getDataAtRowProp(row,'deviceId');
+	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+		Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+	}
+	
+	instance.setDataAtRowProp(row,'downlinkStatus',loginUserLanguageResource.downlinking);
+	const plugin = instance.getPlugin('hiddenColumns');
+	plugin.showColumns([13]);
+	instance.render();
+	
+	Ext.Ajax.request({
+        url: context + '/wellInformationManagerController/lowerComputerProgramUpgrade',
+        method: "POST",
+        timeout: 10*60*1000, //超时时间 10分钟
+        params: {
+        	deviceId: deviceId,
+        	name:name
+        },
+        success: function (response, action) {
+        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
+    		}
+        	var result =  Ext.JSON.decode(response.responseText);
+        	
+        	if (result.flag == false) {
+                Ext.MessageBox.show({
+                    title: loginUserLanguageResource.tip,
+                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                    icon: Ext.MessageBox.INFO,
+                    buttons: Ext.Msg.OK,
+                    fn: function () {
+                        window.location.href = context + "/login";
+                    }
+                });
+            } else if (result.flag == true && result.error == false) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+            }  else if (result.flag == true && result.error == true) {
+            	instance.setDataAtRowProp(row,'downlinkStatus',result.msg);
+            	const plugin = instance.getPlugin('hiddenColumns');
+            	plugin.showColumns([13]);
+            	instance.render();
+            } 
+        },
+        failure: function () {
+        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
+    		}
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+        }
+    });
+}
+
 function loadLowerComputerProgramUpgradeDeviceList(){
 	if(lowerComputerProgramUpgradeHandsontableHelper!=null){
 		if(lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
@@ -4185,6 +4354,10 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 		lowerComputerProgramUpgradeHandsontableHelper=null;
 	}
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+	var deviceName='';
+    if(isNotVal(Ext.getCmp('lowerComputerProgramUpgradeDeviceListComb_Id'))){
+    	deviceName = Ext.getCmp('lowerComputerProgramUpgradeDeviceListComb_Id').getValue();
+    }
 	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
 		Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	}
@@ -4202,19 +4375,110 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 				var colHeaders=['',
 					loginUserLanguageResource.idx,
 					loginUserLanguageResource.deviceName,
+					'box上次更新状态',
+					'box上次更新时间',
 					loginUserLanguageResource.boxVersion,
+					'ac上次更新状态',
+					'ac上次更新时间',
 					loginUserLanguageResource.acVersion,
+					'ad上次更新状态',
+					'ad上次更新时间',
 					loginUserLanguageResource.adVersion,
-					loginUserLanguageResource.downlinkStatus];
+					'lowerComputerDeviceId',
+					loginUserLanguageResource.downlinkStatus,
+					'deviceId',
+					loginUserLanguageResource.uplink,
+					loginUserLanguageResource.downlink
+					];
+				
 				var columns=[{data:'checked',type:'checkbox'},
-					{data:'id'}, 
+		        	{data:'id'}, 
 					{data:'deviceName'}, 
+					{data:'boxUpdateStatus'}, 
+					{data:'boxUpdateTime'}, 
 					{data:'boxVersion'},
+					{data:'acUpdateStatus'}, 
+					{data:'acUpdateTime'}, 
 					{data:'acVersion'},
+					{data:'adUpdateStatus'}, 
+					{data:'adUpdateTime'},
 					{data:'adVersion'},
 					{data:'lowerComputerDeviceId'},
-					{data:'downlinkStatus'}
+					{data:'downlinkStatus'},
+					{data:'deviceId'},
+					{
+                        data: 'uplink',
+                        renderer: function(instance, td, row, col, prop, value, cellProperties) {
+                            // 清空单元格
+                            td.innerHTML = '';
+                            
+                            // 创建按钮容器
+                            const buttonContainer = document.createElement('div');
+                            buttonContainer.style.display = 'flex';
+                            buttonContainer.style.justifyContent = 'center';
+                            buttonContainer.style.gap = '5px';
+                            
+                            //按钮
+                            const uplinkButton = document.createElement('button');
+                            uplinkButton.className = 'action-btn view';
+                            uplinkButton.textContent = loginUserLanguageResource.uplink;
+                            uplinkButton.onclick = function() {
+                            	lowerComputerProgramVersionDataUplink(instance, td, row, col, prop, value, cellProperties);
+                            };
+                            // 添加按钮到容器
+                            buttonContainer.appendChild(uplinkButton);
+                            // 添加容器到单元格
+                            td.appendChild(buttonContainer);
+                            return td;
+                        },
+                        readOnly: true
+                    },
+                    {
+                        data: 'downlink',
+                        renderer: function(instance, td, row, col, prop, value, cellProperties) {
+                            // 清空单元格
+                            td.innerHTML = '';
+                            
+                            // 创建按钮容器
+                            const buttonContainer = document.createElement('div');
+                            buttonContainer.style.display = 'flex';
+                            buttonContainer.style.justifyContent = 'center';
+                            buttonContainer.style.gap = '5px';
+                            
+                            //按钮
+                            const boxDownlinkButton = document.createElement('button');
+                            boxDownlinkButton.className = 'action-btn view';
+                            boxDownlinkButton.textContent = loginUserLanguageResource.boxProgramUpgrade;
+                            boxDownlinkButton.onclick = function() {
+                            	lowerComputerProgramUpgrade(instance, td, row, col, prop, value, cellProperties,'box');
+                            };
+                            const acDownlinkButton = document.createElement('button');
+                            acDownlinkButton.className = 'action-btn view';
+                            acDownlinkButton.textContent = loginUserLanguageResource.acProgramUpgrade;
+                            acDownlinkButton.onclick = function() {
+                            	lowerComputerProgramUpgrade(instance, td, row, col, prop, value, cellProperties,'ac');
+                            };
+                            const adDownlinkButton = document.createElement('button');
+                            adDownlinkButton.className = 'action-btn view';
+                            adDownlinkButton.textContent = loginUserLanguageResource.adProgramUpgrade;
+                            adDownlinkButton.onclick = function() {
+                            	lowerComputerProgramUpgrade(instance, td, row, col, prop, value, cellProperties,'ad');
+                            };
+                            
+                            // 添加按钮到容器
+                            buttonContainer.appendChild(boxDownlinkButton);
+                            buttonContainer.appendChild(acDownlinkButton);
+                            buttonContainer.appendChild(adDownlinkButton);
+                            // 添加容器到单元格
+                            td.appendChild(buttonContainer);
+                            return td;
+                        },
+                        readOnly: true
+                    }
 					];
+				
+				
+				
 				lowerComputerProgramUpgradeHandsontableHelper.colHeaders=colHeaders;
 				lowerComputerProgramUpgradeHandsontableHelper.columns=columns;
 				if(result.totalRoot.length==0){
@@ -4241,7 +4505,8 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {
-			orgId: leftOrg_Id
+			orgId: leftOrg_Id,
+			deviceName: deviceName
         }
 	});
 
@@ -4303,16 +4568,16 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
-
+	        
 	        lowerComputerProgramUpgradeHandsontableHelper.createTable = function (data) {
 	            $('#' + lowerComputerProgramUpgradeHandsontableHelper.divid).empty();
 	            var hotElement = document.querySelector('#' + lowerComputerProgramUpgradeHandsontableHelper.divid);
 	            lowerComputerProgramUpgradeHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	            	data: data,
-	            	colWidths: [1,10],
+	            	colWidths: [2,3,10,10,10,5,10,10,5,10,10,5,10,10,10,8,15],
 	                hiddenColumns: {
-	                    columns: [1,3,4,5,6,7],
+	                    columns: [5,8,11,12,13,14],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -4324,7 +4589,7 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	                columns: lowerComputerProgramUpgradeHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: true, //显示行头
+	                rowHeaders: false, //显示行头
 	                colHeaders: lowerComputerProgramUpgradeHandsontableHelper.colHeaders, //显示列头
 	                columnSorting: true, //允许排序
 	                sortIndicator: true,
@@ -4355,9 +4620,9 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    
-	                    if(prop!='checked'){
-	                    	cellProperties.renderer = lowerComputerProgramUpgradeHandsontableHelper.addCellStyle;
-	                    }
+//	                    if(prop!='checked'){
+//	                    	cellProperties.renderer = lowerComputerProgramUpgradeHandsontableHelper.addCellStyle;
+//	                    }
 			                    
 	                    
 	                    return cellProperties;

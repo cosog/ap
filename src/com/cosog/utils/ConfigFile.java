@@ -614,13 +614,6 @@ public class ConfigFile {
 		private String idAcqGroupDataPushURL;
 		private String ipPortOnlineStatusPushURL;
 		private String ipPortAcqGroupDataPushURL;
-		private String programUpgradeResultPushURL;
-		public String getProgramUpgradeResultPushURL() {
-			return programUpgradeResultPushURL;
-		}
-		public void setProgramUpgradeResultPushURL(String programUpgradeResultPushURL) {
-			this.programUpgradeResultPushURL = programUpgradeResultPushURL;
-		}
 		public String getIdOnlineStatusPushURL() {
 			return idOnlineStatusPushURL;
 		}

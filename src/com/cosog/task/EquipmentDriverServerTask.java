@@ -1524,8 +1524,7 @@ public class EquipmentDriverServerTask {
 			json_buff.append("\"IDOnlineStatusPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdOnlineStatusPushURL()+"\",");
 			json_buff.append("\"IDAcqGroupDataPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIdAcqGroupDataPushURL()+"\",");
 			json_buff.append("\"IPPortOnlineStatusPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIpPortOnlineStatusPushURL()+"\",");
-			json_buff.append("\"IPPortAcqGroupDataPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIpPortAcqGroupDataPushURL()+"\",");
-			json_buff.append("\"ProgramUpgradeResultPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getProgramUpgradeResultPushURL()+"\"");
+			json_buff.append("\"IPPortAcqGroupDataPushURL\":\""+Config.getInstance().configFile.getAd().getInit().getServer().getContent().getIpPortAcqGroupDataPushURL()+"\"");
 			json_buff.append("}");
 			StringManagerUtils.printLog("服务初始化："+json_buff.toString(),1);
 			if(initEnable){

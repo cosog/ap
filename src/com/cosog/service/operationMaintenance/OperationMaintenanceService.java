@@ -609,7 +609,12 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 	
 	public String loadLowerComputerProgramUpgradeDeviceList(String orgId,String deviceName,User user) throws IOException, SQLException {
 		StringBuffer result_json = new StringBuffer();
-		String sql="select t.id,t.devicename,t.signinid,t.slave from viw_device t"
+		String sql="select t.id,t.devicename,t.signinid,t.slave,"
+				+ " t2.boxversion,t2.boxupdatestatus,to_char(t2.boxupdatetime,'yyyy-mm-dd hh24:mi:ss') as boxupdatetime,"
+				+ " t2.acversion,t2.acupdatestatus,to_char(t2.acupdatetime,'yyyy-mm-dd hh24:mi:ss') as acupdatetime,"
+				+ " t2.adversion,t2.adupdatestatus,to_char(t2.adupdatetime,'yyyy-mm-dd hh24:mi:ss') as adupdatetime "
+				+ " from viw_device t"
+				+ " left outer join tbl_lowercomputerprogramupgrade t2 on t.id=t2.deviceid"
 				+ " where t.orgid in ("+orgId+")";
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.devicename like '%"+deviceName+"%'";
@@ -618,19 +623,32 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"totalRoot\":[");
-		for (Object o : list) {
-			Object[] obj = (Object[]) o;
+		for (int i=0;i<list.size();i++) {
+			Object[] obj = (Object[])list.get(i);
 			result_json.append("{\"checked\":false,");
-			result_json.append("\"id\":"+obj[0]+",");
+			result_json.append("\"id\":"+(i+1)+",");
+			result_json.append("\"deviceId\":"+obj[0]+",");
 			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"signinid\":\""+obj[2]+"\",");
-			result_json.append("\"slave\":\""+obj[3]+"\"},");
+			result_json.append("\"slave\":\""+obj[3]+"\",");
+			
+			result_json.append("\"boxVersion\":\""+obj[4]+"\",");
+			result_json.append("\"boxUpdateStatus\":\""+obj[5]+"\",");
+			result_json.append("\"boxUpdateTime\":\""+obj[6]+"\",");
+			
+			result_json.append("\"acVersion\":\""+obj[7]+"\",");
+			result_json.append("\"acUpdateStatus\":\""+obj[8]+"\",");
+			result_json.append("\"acUpdateTime\":\""+obj[9]+"\",");
+			
+			result_json.append("\"adVersion\":\""+obj[10]+"\",");
+			result_json.append("\"adUpdateStatus\":\""+obj[11]+"\",");
+			result_json.append("\"adUpdateTime\":\""+obj[12]+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
 		
-		return result_json.toString();
+		return result_json.toString().replaceAll("null", "");
 	}
 }

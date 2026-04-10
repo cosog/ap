@@ -136,6 +136,62 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
     }
 });
 
+function createDeviceControlButtonRenderer(buttonText, clickHandler, bgColor, hoverColor = null) {
+    if (!hoverColor) {
+        // 简单提亮颜色（或者手动传参）
+        hoverColor = bgColor === '#409eff' ? '#66b1ff' :
+                     bgColor === '#67c23a' ? '#85ce61' :
+                     bgColor === '#e6a23c' ? '#ebb563' : '#909399';
+    }
+    return function(instance, td, row, col, prop, value, cellProperties) {
+        td.innerHTML = '';
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.justifyContent = 'center';
+        container.style.gap = '8px';
+        
+        const btn = document.createElement('button');
+        btn.textContent = buttonText;
+        
+        // 公共样式
+        btn.style.padding = '2px 14px';
+        btn.style.fontSize = '12px';
+        btn.style.fontWeight = '500';
+        btn.style.border = 'none';
+        btn.style.borderRadius = '20px';
+        btn.style.cursor = 'pointer';
+        btn.style.backgroundColor = bgColor;
+        btn.style.color = 'white';
+        btn.style.transition = 'all 0.2s';
+        btn.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+        
+        // 悬停效果
+        btn.addEventListener('mouseenter', () => {
+            btn.style.backgroundColor = hoverColor;
+            btn.style.transform = 'translateY(-1px)';
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.backgroundColor = bgColor;
+            btn.style.transform = 'translateY(0)';
+        });
+        
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            clickHandler(instance, td, row, col, prop, value, cellProperties);
+        };
+        
+        container.appendChild(btn);
+        td.appendChild(container);
+        return td;
+    };
+}
+
+function deviceControlFunRenderer(){
+	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
+	if(resolutionMode!=1){
+		deviceControlFun();
+	}
+}
 
 function CreateDeviceControlValueTable(){
 	var deviceId= Ext.getCmp('DeviceControlDeviceId_Id').getValue();
@@ -196,35 +252,41 @@ function CreateDeviceControlValueTable(){
 					
 					var actionColumn={
 	                        data: 'id',
-	                        renderer: function(instance, td, row, col, prop, value, cellProperties) {
-	                            // 清空单元格
-	                            td.innerHTML = '';
-	                            
-	                            // 创建按钮容器
-	                            const buttonContainer = document.createElement('div');
-	                            buttonContainer.style.display = 'flex';
-	                            buttonContainer.style.justifyContent = 'center';
-	                            buttonContainer.style.gap = '5px';
-	                            
-	                            //按钮
-	                            const controlButton = document.createElement('button');
-	                            controlButton.className = 'action-btn view';
-	                            controlButton.textContent = loginUserLanguageResource.downwardCommand;
-	                            controlButton.onclick = function() {
-	                            	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
-	                        		if(resolutionMode!=1){
-	                        			deviceControlFun();
-	                        		}
-	                            };
-	                            
-	                            // 添加按钮到容器
-	                            buttonContainer.appendChild(controlButton);
-	                            
-	                            // 添加容器到单元格
-	                            td.appendChild(buttonContainer);
-	                            
-	                            return td;
-	                        },
+	                        renderer: createDeviceControlButtonRenderer(
+	                        		loginUserLanguageResource.downwardCommand,
+	                                (instance, td, row, col, prop, value, cellProperties) => 
+	                                deviceControlFunRenderer(),
+	                                '#409eff'  // 蓝色
+	                            ),
+//	                        renderer: function(instance, td, row, col, prop, value, cellProperties) {
+//	                            // 清空单元格
+//	                            td.innerHTML = '';
+//	                            
+//	                            // 创建按钮容器
+//	                            const buttonContainer = document.createElement('div');
+//	                            buttonContainer.style.display = 'flex';
+//	                            buttonContainer.style.justifyContent = 'center';
+//	                            buttonContainer.style.gap = '5px';
+//	                            
+//	                            //按钮
+//	                            const controlButton = document.createElement('button');
+//	                            controlButton.className = 'action-btn view';
+//	                            controlButton.textContent = loginUserLanguageResource.downwardCommand;
+//	                            controlButton.onclick = function() {
+//	                            	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
+//	                        		if(resolutionMode!=1){
+//	                        			deviceControlFun();
+//	                        		}
+//	                            };
+//	                            
+//	                            // 添加按钮到容器
+//	                            buttonContainer.appendChild(controlButton);
+//	                            
+//	                            // 添加容器到单元格
+//	                            td.appendChild(buttonContainer);
+//	                            
+//	                            return td;
+//	                        },
 	                        readOnly: true
 	                    };
 					columnList.push(actionColumn);

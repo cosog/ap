@@ -5457,7 +5457,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/lowerComputerProgramVersionDataUplink")
 	public String lowerComputerProgramVersionDataUplink() throws Exception {
 		String deviceId = request.getParameter("deviceId");
-		
+		String name = request.getParameter("name");
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
 		// 用户不存在
@@ -5487,33 +5487,127 @@ public class WellInformationManagerController extends BaseController {
 					if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
 						if (commStatus > 0) {
 							Map<String,String> statusMap=new LinkedHashMap<>();
-							statusMap.put("BoxVersion", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"BoxVersion",userInfo.getLanguageName()));
-							statusMap.put("ACVersion", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"ACVersion",userInfo.getLanguageName()));
-							statusMap.put("ADVersion", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"ADVersion",userInfo.getLanguageName()));
+							if(!StringManagerUtils.isNotNull(name)){
+								statusMap.put("BoxVersion", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"BoxVersion",userInfo.getLanguageName()));
+								statusMap.put("ACVersion", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"ACVersion",userInfo.getLanguageName()));
+							}else if("box".equalsIgnoreCase(name)){
+								statusMap.put("BoxVersion", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"BoxVersion",userInfo.getLanguageName()));
+							}else if("ac".equalsIgnoreCase(name)){
+								statusMap.put("ACVersion", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"BoxVersion",userInfo.getLanguageName()));
+							}
+							
+//							statusMap.put("ADVersion", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"ADVersion",userInfo.getLanguageName()));
 							statusMap.put("LowerComputerDeviceId", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"LowerComputerDeviceId",userInfo.getLanguageName()));
 							
 						
 							
 							StringBuffer result_json = new StringBuffer();
 							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\","
-									+ "\"boxVersion\":\""+statusMap.get("BoxVersion")+"\","
-									+ "\"acVersion\":\""+statusMap.get("ACVersion")+"\","
-									+ "\"adVersion\":\""+statusMap.get("ADVersion")+"\","
+									+ "\"boxVersion\":\""+(statusMap.containsKey("BoxVersion")?statusMap.get("BoxVersion"):"")+"\","
+									+ "\"acVersion\":\""+(statusMap.containsKey("ACVersion")?statusMap.get("ACVersion"):"")+"\","
+									+ "\"adVersion\":\""+(statusMap.containsKey("ADVersion")?statusMap.get("ADVersion"):"")+"\","
 									+ "\"lowerComputerDeviceId\":\""+statusMap.get("LowerComputerDeviceId")+"\"");
 							
 							result_json.append("}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{success:true,flag:true,error:false,msg:\"" + languageResourceMap.get("deviceOffline") + "\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("protocolConfigurationError")+"\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("deviceNotExist")+"\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("inputDataError")+"\"}";
+			}
+
+		} else {
+			jsonLogin = "{success:true,flag:false}";
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonLogin);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/lowerComputerProgramVersionDataBatchUplink")
+	public String lowerComputerProgramVersionDataBatchUplink() throws Exception {
+		String deviceIds = request.getParameter("deviceIds");
+		String name = request.getParameter("name");
+		String jsonLogin = "";
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		// 用户不存在
+		if (null != userInfo) {
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+			if (StringManagerUtils.isNotNull(deviceIds)) {
+				String sql = "select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType,t4.commstatus," 
+						+ " t6.allpath_zh_cn,t.id"
+					    + " from tbl_device t" 
+					    + " left outer join tbl_protocolinstance t2 on t.instancecode=t2.code" 
+					    + " left outer join tbl_acq_unit_conf t3 on t2.unitid=t3.id" 
+					    + " left outer join tbl_acqdata_latest t4 on t4.deviceid=t.id" 
+					    + " left outer join tbl_protocol t5 on t3.protocol=t5.code"
+					    + " left outer join viw_devicetypeinfo t6 on t5.devicetype=t6.id" 
+					    + " where t.id in ("+deviceIds+")";
+				List<?> list = this.service.findCallSql(sql);
+				
+				StringBuffer result_json = new StringBuffer();
+				result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"uplinkData\":[");
+				if(list.size()>0){
+					for(int i=0;i<list.size();i++){
+						Object[] obj=(Object[]) list.get(i);
+						String protocolCode=obj[0]+"";
+						String tcpType=obj[1]+"";
+						String signinid=obj[2]+"";
+						String ipPort=obj[3]+"";
+						String slave=obj[4]+"";
+						String deviceType=obj[5]+"";
+						int commStatus = StringManagerUtils.stringToInteger(obj[6] + "");
+						String deviceId=obj[obj.length-1]+"";
+						
+						String boxVersion="",acVersion="",lowerComputerDeviceId="";
+						
+						result_json.append("{\"deviceId\":"+deviceId+",");
+						
+						ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
+						if(protocol!=null && StringManagerUtils.isNotNull(tcpType) && (StringManagerUtils.isNotNull(signinid)||StringManagerUtils.isNotNull(ipPort) )  &&StringManagerUtils.isNotNull(slave)){
+							if (commStatus > 0) {
+								if(!StringManagerUtils.isNotNull(name)){
+									boxVersion=dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"BoxVersion",userInfo.getLanguageName());
+									acVersion=dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"ACVersion",userInfo.getLanguageName());
+								}else if("box".equalsIgnoreCase(name)){
+									boxVersion=dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"BoxVersion",userInfo.getLanguageName());
+								}else if("ac".equalsIgnoreCase(name)){
+									acVersion=dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"ACVersion",userInfo.getLanguageName());
+								}
+								lowerComputerDeviceId=dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"LowerComputerDeviceId",userInfo.getLanguageName());
+							} else {
+								boxVersion=languageResourceMap.get("deviceOffline");
+								acVersion=languageResourceMap.get("deviceOffline");
+								lowerComputerDeviceId=languageResourceMap.get("deviceOffline");
+							}
+						}else{
+							boxVersion=languageResourceMap.get("protocolConfigurationError");
+							acVersion=languageResourceMap.get("protocolConfigurationError");
+							lowerComputerDeviceId=languageResourceMap.get("protocolConfigurationError");
+						}
+						result_json.append("\"boxVersion\":\""+boxVersion+"\",\"acVersion\":\""+acVersion+"\",\"lowerComputerDeviceId\":\""+lowerComputerDeviceId+"\"},");
+					}
+					if(result_json.toString().endsWith(",")){
+						result_json.deleteCharAt(result_json.length() - 1);
+					}
+					result_json.append("]}");
+					jsonLogin=result_json.toString();
+				}else{
+					jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("deviceNotExist")+"\"}";
+				}
+			}else {
+				jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("inputDataError")+"\"}";
 			}
 
 		} else {
@@ -5563,6 +5657,7 @@ public class WellInformationManagerController extends BaseController {
 						if (commStatus > 0) {
 							Map<String,String> statusMap=new LinkedHashMap<>();
 							String uplinkLowerComputerDeviceId=dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"LowerComputerDeviceId",userInfo.getLanguageName());
+//							uplinkLowerComputerDeviceId="10101010101010101010";
 							if(StringManagerUtils.isNotNull(uplinkLowerComputerDeviceId) 
 									&& !languageResourceMap.get("noUplink").equalsIgnoreCase(uplinkLowerComputerDeviceId)
 									&& !languageResourceMap.get("uplinkFailed").equalsIgnoreCase(uplinkLowerComputerDeviceId)){
@@ -5576,7 +5671,7 @@ public class WellInformationManagerController extends BaseController {
 								int resultStatus=resultStatusData!=null?resultStatusData.getResultStatus():0;
 								String resultStatusStr=resultStatus==1?languageResourceMap.get("downlinkSuccessfully"):languageResourceMap.get("downlinkFailed");
 								StringBuffer result_json = new StringBuffer();
-								result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\""+resultStatusStr+"\"}");
+								result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\""+resultStatusStr+"\",\"updateStatus\":\""+resultStatus+"\",\"updateTime\":\""+currentTime+"\"}");
 								jsonLogin=result_json.toString();
 								
 								String updateTimeCol="boxupdatetime";
@@ -5593,31 +5688,34 @@ public class WellInformationManagerController extends BaseController {
 								String updateSql="update tbl_lowercomputerprogramupgrade t "
 										+ " set t."+updateTimeCol+"=to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),t."+updateStatusCol+"= "+resultStatus
 										+ " where t.deviceid="+deviceId;
-								int r=this.wellInformationManagerService.getBaseDao().updateOrDeleteBySql(sql);
+								int r=this.wellInformationManagerService.getBaseDao().updateOrDeleteBySql(updateSql);
 								if(r==0){
 									updateSql="insert into tbl_lowercomputerprogramupgrade(deviceid,"+updateTimeCol+","+updateStatusCol+") "
 											+ "values("+deviceId+",to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),"+resultStatus+")";
-									r=this.wellInformationManagerService.getBaseDao().updateOrDeleteBySql(sql);
+									r=this.wellInformationManagerService.getBaseDao().updateOrDeleteBySql(updateSql);
 								}
 							}else{
 								jsonLogin="{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"设备ID上行失败\"}";
 							}
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{success:true,flag:true,error:false,msg:\"" + languageResourceMap.get("deviceOffline") + "\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("protocolConfigurationError")+"\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("deviceNotExist")+"\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("inputDataError")+"\"}";
 			}
 
 		} else {
 			jsonLogin = "{success:true,flag:false}";
 		}
+		
+//		Thread.sleep(5*60*1000);
+		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

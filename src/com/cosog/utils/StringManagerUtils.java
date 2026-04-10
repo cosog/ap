@@ -2128,7 +2128,7 @@ public class StringManagerUtils {
                 }
             } else if (conn.getResponseCode() >= 400) {
                 String errorInfo = "";
-                is = new InputStreamReader(conn.getInputStream(), encoding); in = new BufferedReader(is);
+                is = new InputStreamReader(conn.getErrorStream(), encoding); in = new BufferedReader(is);
                 String line;
                 while ((line = in .readLine()) != null) {
                     errorInfo += line;

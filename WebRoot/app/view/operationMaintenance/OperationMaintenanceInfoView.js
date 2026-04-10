@@ -2075,19 +2075,57 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                         }
             		},'-',deviceListDeviceCombo,'->',{
             			xtype: 'button',
-            			text:loginUserLanguageResource.downlink,
+            			text:'采控程序下行',
             			iconCls: 'downlink',
             			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
             			handler: function (v, o) {
-            				
+            				selectList=[];
+                        	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
+                        		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
+                            	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
+                                    if (checkedArr[index]) {
+                                    	selectList.push(index);
+                                    	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(index,'boxDownlinkStatus',loginUserLanguageResource.waitingForDownlink);
+                                    }
+                                });
+                        	}
+                        	lowerComputerProgramBatchUpgrade(selectList,'box');
             			}
             		},'-',{
             			xtype: 'button',
-            			text:loginUserLanguageResource.uplink,
+            			text:'计算程序下行',
+            			iconCls: 'downlink',
+            			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+            			handler: function (v, o) {
+            				selectList=[];
+                        	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
+                        		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
+                            	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
+                                    if (checkedArr[index]) {
+                                    	selectList.push(index);
+                                    	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(index,'acDownlinkStatus',loginUserLanguageResource.waitingForDownlink);
+                                    }
+                                });
+                        	}
+                        	lowerComputerProgramBatchUpgrade(selectList,'ac');
+            			}
+            		},'-',{
+            			xtype: 'button',
+            			text:'版本号上行',
             			iconCls: 'uplink',
             			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
             			handler: function (v, o) {
-            				
+            				deviceIdList=[];
+                        	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
+                        		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
+                            	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
+                                    if (checkedArr[index]) {
+                                    	var deviceId=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(index,'deviceId');
+                                    	deviceIdList.push(deviceId);
+                                    }
+                                });
+                        	}
+                        	lowerComputerProgramVersionDataBatchUplink(deviceIdList,'');
             			}
             		}],
         		    html: '<div class="OperationMaintenanceLowerComputerProgramUpgradeContainer" style="width:100%;height:100%;"><div class="con" id="OperationMaintenanceLowerComputerProgramUpgradeDiv_Id"></div></div>',
@@ -4244,8 +4282,82 @@ function updateDeviceTypeContentConfig(deviceTypeContentConfig){
 	}
 }
 
-function lowerComputerProgramVersionDataUplink(instance, td, row, col, prop, value, cellProperties){
-	var deviceId=instance.getDataAtRowProp(row,'deviceId');
+function lowerComputerProgramVersionDataBatchUplink(deviceIdList,name){
+	if(deviceIdList.length>0){
+		if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+			Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+		}
+		Ext.Ajax.request({
+	        url: context + '/wellInformationManagerController/lowerComputerProgramVersionDataBatchUplink',
+	        method: "POST",
+	        params: {
+	        	deviceIds: deviceIdList.join(","),
+	        	name:name
+	        },
+	        success: function (response, action) {
+	        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+	            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
+	    		}
+	        	var result =  Ext.JSON.decode(response.responseText);
+	        	
+	        	if (result.flag == false) {
+	                Ext.MessageBox.show({
+	                    title: loginUserLanguageResource.tip,
+	                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+	                    icon: Ext.MessageBox.INFO,
+	                    buttons: Ext.Msg.OK,
+	                    fn: function () {
+	                        window.location.href = context + "/login";
+	                    }
+	                });
+	            } else if (result.flag == true && result.error == false) {
+	                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+	            }  else if (result.flag == true && result.error == true) {
+	            	var deviceIdArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('deviceId');
+                	for(var i=0;i<deviceIdArr.length;i++){
+                		for(var j=0;j<result.uplinkData.length;j++){
+                			if(result.uplinkData[j].deviceId==deviceIdArr[i]){
+                				lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(i,'lowerComputerDeviceId',result.uplinkData[j].lowerComputerDeviceId);
+                				if(name=='box'){
+            	            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(i,'boxVersion',result.uplinkData[j].boxVersion);
+            	            	}else if(name=='ac'){
+            	            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(i,'acVersion',result.uplinkData[j].acVersion);
+            	            	}else if(name==''){
+            	            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(i,'boxVersion',result.uplinkData[j].boxVersion);
+            	            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(i,'acVersion',result.uplinkData[j].acVersion);
+            	            	}
+                				break;
+                			}
+                		}
+                	}
+	            	
+	            	
+	            	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
+	            	if(name=='box'){
+	            		plugin.showColumns([4]);
+	            	}else if(name=='ac'){
+	            		plugin.showColumns([9]);
+	            	}else if(name==''){
+	            		plugin.showColumns([4,9]);
+	            	}
+	            	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
+	            } 
+	        },
+	        failure: function () {
+	        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+	            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
+	    		}
+	            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+	        }
+	    });
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+	}
+	
+}
+
+function lowerComputerProgramVersionDataUplink(row,name){
+	var deviceId=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(row,'deviceId');
 	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
 		Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 	}
@@ -4253,61 +4365,6 @@ function lowerComputerProgramVersionDataUplink(instance, td, row, col, prop, val
 	Ext.Ajax.request({
         url: context + '/wellInformationManagerController/lowerComputerProgramVersionDataUplink',
         method: "POST",
-        params: {
-        	deviceId: deviceId
-        },
-        success: function (response, action) {
-        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
-            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
-    		}
-        	var result =  Ext.JSON.decode(response.responseText);
-        	
-        	if (result.flag == false) {
-                Ext.MessageBox.show({
-                    title: loginUserLanguageResource.tip,
-                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
-                    icon: Ext.MessageBox.INFO,
-                    buttons: Ext.Msg.OK,
-                    fn: function () {
-                        window.location.href = context + "/login";
-                    }
-                });
-            } else if (result.flag == true && result.error == false) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-            }  else if (result.flag == true && result.error == true) {
-            	instance.setDataAtRowProp(row,'boxVersion',result.boxVersion);
-            	instance.setDataAtRowProp(row,'acVersion',result.acVersion);
-            	instance.setDataAtRowProp(row,'adVersion',result.adVersion);
-            	instance.setDataAtRowProp(row,'lowerComputerDeviceId',result.lowerComputerDeviceId);
-            	const plugin = instance.getPlugin('hiddenColumns');
-            	plugin.showColumns([5,8,11]);
-            	instance.render();
-            } 
-        },
-        failure: function () {
-        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
-            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
-    		}
-            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-        }
-    });
-}
-
-function lowerComputerProgramUpgrade(instance, td, row, col, prop, value, cellProperties,name){
-	var deviceId=instance.getDataAtRowProp(row,'deviceId');
-	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
-	}
-	
-	instance.setDataAtRowProp(row,'downlinkStatus',loginUserLanguageResource.downlinking);
-	const plugin = instance.getPlugin('hiddenColumns');
-	plugin.showColumns([13]);
-	instance.render();
-	
-	Ext.Ajax.request({
-        url: context + '/wellInformationManagerController/lowerComputerProgramUpgrade',
-        method: "POST",
-        timeout: 10*60*1000, //超时时间 10分钟
         params: {
         	deviceId: deviceId,
         	name:name
@@ -4329,12 +4386,38 @@ function lowerComputerProgramUpgrade(instance, td, row, col, prop, value, cellPr
                     }
                 });
             } else if (result.flag == true && result.error == false) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+                lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'lowerComputerDeviceId',result.msg);
+            	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
+            	if(name=='box'){
+            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxVersion',result.msg);
+            		plugin.showColumns([4]);
+            	}else if(name=='ac'){
+            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acVersion',result.msg);
+            		plugin.showColumns([9]);
+            	}else if(name==''){
+            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxVersion',result.msg);
+            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acVersion',result.msg);
+            		plugin.showColumns([4,9]);
+            	}
+            	
+            	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
+                
             }  else if (result.flag == true && result.error == true) {
-            	instance.setDataAtRowProp(row,'downlinkStatus',result.msg);
-            	const plugin = instance.getPlugin('hiddenColumns');
-            	plugin.showColumns([13]);
-            	instance.render();
+            	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'lowerComputerDeviceId',result.lowerComputerDeviceId);
+            	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
+            	if(name=='box'){
+            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxVersion',result.boxVersion);
+            		plugin.showColumns([4]);
+            	}else if(name=='ac'){
+            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acVersion',result.acVersion);
+            		plugin.showColumns([9]);
+            	}else if(name==''){
+            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxVersion',result.boxVersion);
+            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acVersion',result.acVersion);
+            		plugin.showColumns([4,9]);
+            	}
+            	
+            	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
             } 
         },
         failure: function () {
@@ -4344,6 +4427,232 @@ function lowerComputerProgramUpgrade(instance, td, row, col, prop, value, cellPr
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
         }
     });
+}
+
+function lowerComputerProgramBatchUpgrade(selectList,name) {
+    var i = 0;
+    function next() {
+        if (i >= selectList.length) {
+            console.log("所有升级任务执行完毕");
+            return;
+        }
+        lowerComputerProgramUpgrade(selectList[i],name)
+            .then(function(result) {
+                console.log("第 " + (i+1) + " 次升级完成，结果：", result);
+                i++;
+                next();
+            })
+            .catch(function(error) {
+                console.error("第 " + (i+1) + " 次升级失败：", error);
+                // 根据需求决定是否继续
+                i++;
+                next();  // 继续下一次；若想中断则改为 return
+            });
+    }
+    next();
+}
+
+
+function lowerComputerProgramUpgrade(row, name) {
+    return new Promise((resolve, reject) => {
+        // 原有遮罩显示逻辑...
+    	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+    		Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.downlinking+'...').show();
+    	}
+    	var deviceId=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(row,'deviceId');
+    	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
+    	if(name=='box'){
+    		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',loginUserLanguageResource.downlinking+'...');
+    		plugin.showColumns([7]);
+    	}else if(name=='ac'){
+    		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',loginUserLanguageResource.downlinking+'...');
+    		plugin.showColumns([12]);
+    	}
+    	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
+    	Ext.Ajax.request({
+            url: context + '/wellInformationManagerController/lowerComputerProgramUpgrade',
+            method: "POST",
+            timeout: 10*60*1000, //超时时间 10分钟
+            params: {
+            	deviceId: deviceId,
+            	name:name
+            },
+            success: function (response, action) {
+            	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+                	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
+        		}
+            	var result =  Ext.JSON.decode(response.responseText);
+            	
+            	if (result.flag == false) {
+                    const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
+                	if(name=='box'){
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',loginUserLanguageResource.sessionInvalid);
+                	}else if(name=='ac'){
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',loginUserLanguageResource.sessionInvalid);
+                	}
+                	reject(new Error(loginUserLanguageResource.sessionInvalid));  // 让批处理进入 catch，不再继续
+                    return;
+                } else if (result.flag == true && result.error == false) {
+                    const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
+                	if(name=='box'){
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',result.msg);
+                	}else if(name=='ac'){
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',result.msg);
+                	}
+                	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
+                    
+                }  else if (result.flag == true && result.error == true) {
+                	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
+                	if(name=='box'){
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',result.msg);
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxUpdateStatus',result.updateStatus);
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxUpdateTime',result.updateTime);
+                	}else if(name=='ac'){
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',result.msg);
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acUpdateStatus',result.updateStatus);
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acUpdateTime',result.updateTime);
+                	}
+                } 
+            	resolve(result);
+            },
+            failure: function () {
+            	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+                	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
+        		}
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin);
+                reject(new Error("请求失败"));
+            }
+        });
+    });
+}
+
+//function lowerComputerProgramUpgrade(row,name){
+//	var deviceId=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(row,'deviceId');
+//	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+//		Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+//	}
+//	
+//	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
+//	if(name=='box'){
+//		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',loginUserLanguageResource.downlinking);
+//		plugin.showColumns([7]);
+//	}else if(name=='ac'){
+//		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',loginUserLanguageResource.downlinking);
+//		plugin.showColumns([12]);
+//	}
+//	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
+//	
+//	Ext.Ajax.request({
+//        url: context + '/wellInformationManagerController/lowerComputerProgramUpgrade',
+//        method: "POST",
+//        timeout: 10*60*1000, //超时时间 10分钟
+//        params: {
+//        	deviceId: deviceId,
+//        	name:name
+//        },
+//        success: function (response, action) {
+//        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+//            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
+//    		}
+//        	var result =  Ext.JSON.decode(response.responseText);
+//        	
+//        	if (result.flag == false) {
+//                Ext.MessageBox.show({
+//                    title: loginUserLanguageResource.tip,
+//                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+//                    icon: Ext.MessageBox.INFO,
+//                    buttons: Ext.Msg.OK,
+//                    fn: function () {
+//                        window.location.href = context + "/login";
+//                    }
+//                });
+//            } else if (result.flag == true && result.error == false) {
+//                const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
+//            	if(name=='box'){
+//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',result.msg);
+//            		plugin.showColumns([7]);
+//            	}else if(name=='ac'){
+//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',result.msg);
+//            		plugin.showColumns([12]);
+//            	}
+//            	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
+//                
+//            }  else if (result.flag == true && result.error == true) {
+//            	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
+//            	if(name=='box'){
+//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',result.msg);
+//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxUpdateStatus',result.updateStatus);
+//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxUpdateTime',result.updateTime);
+//            		
+//            		plugin.showColumns([7]);
+//            	}else if(name=='ac'){
+//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',result.msg);
+//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acUpdateStatus',result.updateStatus);
+//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acUpdateTime',result.updateTime);
+//            		plugin.showColumns([12]);
+//            	}
+//            	
+//            	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
+//            } 
+//        },
+//        failure: function () {
+//        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
+//            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
+//    		}
+//            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+//        }
+//    });
+//}
+
+//通用按钮渲染器工厂
+function createLowerComputerProgramUpgradeButtonRenderer(buttonText, clickHandler, bgColor, hoverColor = null) {
+    if (!hoverColor) {
+        // 简单提亮颜色（或者手动传参）
+        hoverColor = bgColor === '#409eff' ? '#66b1ff' :
+                     bgColor === '#67c23a' ? '#85ce61' :
+                     bgColor === '#e6a23c' ? '#ebb563' : '#909399';
+    }
+    return function(instance, td, row, col, prop, value, cellProperties) {
+        td.innerHTML = '';
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.justifyContent = 'center';
+        container.style.gap = '8px';
+        
+        const btn = document.createElement('button');
+        btn.textContent = buttonText;
+        
+        // 公共样式
+        btn.style.padding = '2px 14px';
+        btn.style.fontSize = '12px';
+        btn.style.fontWeight = '500';
+        btn.style.border = 'none';
+        btn.style.borderRadius = '20px';
+        btn.style.cursor = 'pointer';
+        btn.style.backgroundColor = bgColor;
+        btn.style.color = 'white';
+        btn.style.transition = 'all 0.2s';
+        btn.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+        
+        // 悬停效果
+        btn.addEventListener('mouseenter', () => {
+            btn.style.backgroundColor = hoverColor;
+            btn.style.transform = 'translateY(-1px)';
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.backgroundColor = bgColor;
+            btn.style.transform = 'translateY(0)';
+        });
+        
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            clickHandler(instance, td, row, col, prop, value, cellProperties);
+        };
+        
+        container.appendChild(btn);
+        td.appendChild(container);
+        return td;
+    };
 }
 
 function loadLowerComputerProgramUpgradeDeviceList(){
@@ -4372,110 +4681,61 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 			
 			if(lowerComputerProgramUpgradeHandsontableHelper==null || lowerComputerProgramUpgradeHandsontableHelper.hot==undefined){
 				lowerComputerProgramUpgradeHandsontableHelper = LowerComputerProgramUpgradeHandsontableHelper.createNew("OperationMaintenanceLowerComputerProgramUpgradeDiv_Id");
-				var colHeaders=['',
-					loginUserLanguageResource.idx,
-					loginUserLanguageResource.deviceName,
-					'box上次更新状态',
-					'box上次更新时间',
-					loginUserLanguageResource.boxVersion,
-					'ac上次更新状态',
-					'ac上次更新时间',
-					loginUserLanguageResource.acVersion,
-					'ad上次更新状态',
-					'ad上次更新时间',
-					loginUserLanguageResource.adVersion,
-					'lowerComputerDeviceId',
-					loginUserLanguageResource.downlinkStatus,
-					'deviceId',
+				var colHeaders=[
+					['','','','',{label: '采控程序', colspan: 5},{label:'计算程序', colspan: 5},'',''],
+					['',loginUserLanguageResource.idx,loginUserLanguageResource.deviceName,
 					loginUserLanguageResource.uplink,
-					loginUserLanguageResource.downlink
-					];
+					'边缘版本','更新状态','更新时间',loginUserLanguageResource.downlinkStatus,loginUserLanguageResource.downlink,
+					'边缘版本','更新状态','更新时间',loginUserLanguageResource.downlinkStatus,loginUserLanguageResource.downlink,
+					'lowerComputerDeviceId',
+					'deviceId']
+				];
 				
 				var columns=[{data:'checked',type:'checkbox'},
 		        	{data:'id'}, 
 					{data:'deviceName'}, 
-					{data:'boxUpdateStatus'}, 
-					{data:'boxUpdateTime'}, 
-					{data:'boxVersion'},
-					{data:'acUpdateStatus'}, 
-					{data:'acUpdateTime'}, 
-					{data:'acVersion'},
-					{data:'adUpdateStatus'}, 
-					{data:'adUpdateTime'},
-					{data:'adVersion'},
-					{data:'lowerComputerDeviceId'},
-					{data:'downlinkStatus'},
-					{data:'deviceId'},
 					{
                         data: 'uplink',
-                        renderer: function(instance, td, row, col, prop, value, cellProperties) {
-                            // 清空单元格
-                            td.innerHTML = '';
-                            
-                            // 创建按钮容器
-                            const buttonContainer = document.createElement('div');
-                            buttonContainer.style.display = 'flex';
-                            buttonContainer.style.justifyContent = 'center';
-                            buttonContainer.style.gap = '5px';
-                            
-                            //按钮
-                            const uplinkButton = document.createElement('button');
-                            uplinkButton.className = 'action-btn view';
-                            uplinkButton.textContent = loginUserLanguageResource.uplink;
-                            uplinkButton.onclick = function() {
-                            	lowerComputerProgramVersionDataUplink(instance, td, row, col, prop, value, cellProperties);
-                            };
-                            // 添加按钮到容器
-                            buttonContainer.appendChild(uplinkButton);
-                            // 添加容器到单元格
-                            td.appendChild(buttonContainer);
-                            return td;
-                        },
+                        renderer: createLowerComputerProgramUpgradeButtonRenderer(
+                                '版本号上行',
+                                (instance, td, row, col, prop, value, cellProperties) => 
+                                    lowerComputerProgramVersionDataUplink(row, ''),
+                                '#409eff'  // 蓝色
+                            ),
                         readOnly: true
                     },
-                    {
-                        data: 'downlink',
-                        renderer: function(instance, td, row, col, prop, value, cellProperties) {
-                            // 清空单元格
-                            td.innerHTML = '';
-                            
-                            // 创建按钮容器
-                            const buttonContainer = document.createElement('div');
-                            buttonContainer.style.display = 'flex';
-                            buttonContainer.style.justifyContent = 'center';
-                            buttonContainer.style.gap = '5px';
-                            
-                            //按钮
-                            const boxDownlinkButton = document.createElement('button');
-                            boxDownlinkButton.className = 'action-btn view';
-                            boxDownlinkButton.textContent = loginUserLanguageResource.boxProgramUpgrade;
-                            boxDownlinkButton.onclick = function() {
-                            	lowerComputerProgramUpgrade(instance, td, row, col, prop, value, cellProperties,'box');
-                            };
-                            const acDownlinkButton = document.createElement('button');
-                            acDownlinkButton.className = 'action-btn view';
-                            acDownlinkButton.textContent = loginUserLanguageResource.acProgramUpgrade;
-                            acDownlinkButton.onclick = function() {
-                            	lowerComputerProgramUpgrade(instance, td, row, col, prop, value, cellProperties,'ac');
-                            };
-                            const adDownlinkButton = document.createElement('button');
-                            adDownlinkButton.className = 'action-btn view';
-                            adDownlinkButton.textContent = loginUserLanguageResource.adProgramUpgrade;
-                            adDownlinkButton.onclick = function() {
-                            	lowerComputerProgramUpgrade(instance, td, row, col, prop, value, cellProperties,'ad');
-                            };
-                            
-                            // 添加按钮到容器
-                            buttonContainer.appendChild(boxDownlinkButton);
-                            buttonContainer.appendChild(acDownlinkButton);
-                            buttonContainer.appendChild(adDownlinkButton);
-                            // 添加容器到单元格
-                            td.appendChild(buttonContainer);
-                            return td;
-                        },
+                    {data:'boxVersion'},
+					{data:'boxUpdateStatus'}, 
+					{data:'boxUpdateTime'}, 
+					{data:'boxDownlinkStatus'},
+					{
+                        data: 'uplink',
+                        renderer: createLowerComputerProgramUpgradeButtonRenderer(
+                                '程序下行',
+                                (instance, td, row, col, prop, value, cellProperties) => 
+                                    lowerComputerProgramUpgrade(row,'box'),
+                                '#67c23a'  // 绿色
+                            ),
                         readOnly: true
-                    }
-					];
+                    },
+
+					{data:'acVersion'},
+                    {data:'acUpdateStatus'}, 
+					{data:'acUpdateTime'}, 
+					{data:'acDownlinkStatus'},
+					{
+                        data: 'uplink',
+                        renderer: createLowerComputerProgramUpgradeButtonRenderer(
+                                '程序下行',
+                                (instance, td, row, col, prop, value, cellProperties) => 
+                                    lowerComputerProgramUpgrade(row,'ac'),
+                                '#e6a23c'  // 橙色
+                            ),
+                        readOnly: true
+                    },
+					{data:'lowerComputerDeviceId'},
+					{data:'deviceId'}
+				];
 				
 				
 				
@@ -4532,7 +4792,17 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
 	        }
-	        
+	        lowerComputerProgramUpgradeHandsontableHelper.addDownlinkStatusCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	if(value==loginUserLanguageResource.downlinking+'...'){
+	        		td.style.backgroundColor = "#13f500";
+	        	}else if(value==loginUserLanguageResource.waitingForDownlink){
+	        		td.style.backgroundColor = "#f09614";
+	        	}
+	        	td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
 	        lowerComputerProgramUpgradeHandsontableHelper.addUplinkStatusCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            if(isNotVal(lowerComputerProgramUpgradeHandsontableHelper.hot)){
@@ -4575,9 +4845,8 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	            lowerComputerProgramUpgradeHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	            	data: data,
-	            	colWidths: [2,3,10,10,10,5,10,10,5,10,10,5,10,10,10,8,15],
 	                hiddenColumns: {
-	                    columns: [5,8,11,12,13,14],
+	                    columns: [4,7,9,12,14,15],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -4586,11 +4855,13 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
+	            	colWidths: [2,3,10,5,10,10,10,10,5,10,10,10,10,5,10,10],
 	                columns: lowerComputerProgramUpgradeHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false, //显示行头
-	                colHeaders: lowerComputerProgramUpgradeHandsontableHelper.colHeaders, //显示列头
+	                nestedHeaders: lowerComputerProgramUpgradeHandsontableHelper.colHeaders, //显示列头
+	                columnHeaderHeight: 28,
 	                columnSorting: true, //允许排序
 	                sortIndicator: true,
 	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
@@ -4620,10 +4891,9 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    
-//	                    if(prop!='checked'){
-//	                    	cellProperties.renderer = lowerComputerProgramUpgradeHandsontableHelper.addCellStyle;
-//	                    }
-			                    
+	                    if(prop=='boxDownlinkStatus' || prop=='acDownlinkStatus'){
+	                    	cellProperties.renderer = lowerComputerProgramUpgradeHandsontableHelper.addDownlinkStatusCellStyle;
+	                    }   
 	                    
 	                    return cellProperties;
 	                },

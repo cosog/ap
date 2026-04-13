@@ -19,8 +19,6 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
         load: function (store, options, eOpts) {
         	if(Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel")!=undefined){
             	var get_rawData=store.proxy.reader.rawData;   // 获取store数据
-            	var powerData=get_rawData.powerCurveData;
-            	var currentData=get_rawData.currentCurveData;
             	
             	var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
                 var activeId = '';

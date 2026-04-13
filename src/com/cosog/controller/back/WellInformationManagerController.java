@@ -5422,9 +5422,10 @@ public class WellInformationManagerController extends BaseController {
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+item.getAddr()+""
 						+ "}";
-				StringManagerUtils.printLog("读地址数据:"+item.getTitle()+":"+readJson,1);
+				
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(readUrl, readJson,"utf-8",0,0);
+				StringManagerUtils.printLog("读地址数据:"+item.getTitle()+",request:"+readJson+",response:"+responseStr,1);
 				if(StringManagerUtils.isNotNull(responseStr)){
 					type = new TypeToken<AcqAddrData>() {}.getType();
 					AcqAddrData acqAddrData=gson.fromJson(responseStr, type);

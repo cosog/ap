@@ -27,6 +27,7 @@ import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cosog.controller.datainterface.DriverAPIController.SRPCalculateReturnData;
 import com.cosog.model.AccessToken;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DeviceAddInfo;
@@ -43,6 +44,7 @@ import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.SRPCalculateRequestData;
+import com.cosog.model.calculate.SRPCalculateResponseData;
 import com.cosog.model.calculate.SRPProductionData;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
@@ -6595,11 +6597,150 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		dynSbf.append("],\"minAcqTime\":\""+minAcqTime+"\",\"maxAcqTime\":\""+maxAcqTime+"\"}");
 		return dynSbf.toString().replaceAll("null", "");
 	}
+	public String querySingleDetailsWellBoreChartsData(int id,String deviceName,String language){
+		String result="";
+		try {
+			result = querySingleDetailsWellBoreChartsDataFromMem(id,deviceName,language);
+		} catch (Exception e) {
+			result="";
+			e.printStackTrace();
+		}
+		if(!StringManagerUtils.isNotNull(result)){
+			try {
+				result="";
+				result=querySingleDetailsWellBoreChartsDataFromDB(id,deviceName,language);
+			} catch (SQLException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
 	
-	public String querySingleDetailsWellBoreChartsData(int id,String deviceName,String language) throws SQLException, IOException{
-		byte[] bytes; 
+	public String querySingleDetailsWellBoreChartsDataFromMem(int id,String deviceName,String language) throws SQLException, IOException{
+		StringBuffer wellBoreChartsData = new StringBuffer();
+		SRPCalculateReturnData calculateReturnData=MemoryDataManagerTask.getSRPWellFESDIagramCalculateData(id);
+		if(calculateReturnData!=null){
+			String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
+			SRPCalculateResponseData srpCalculateResponseData=calculateReturnData.getSrpCalculateResponseData();
+			SRPCalculateRequestData srpCalculateRequestData=calculateReturnData.getSrpCalculateRequestData();
+			StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
+			
+			WorkType workType=null;
+			if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
+				workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",language);
+			}
+			
+			int rodCNT=0;
+			String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
+			String rodStressRangeRatio1="0",rodStressRangeRatio2="0",rodStressRangeRatio3="0",rodStressRangeRatio4="0";
+			if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
+				int curvecount=srpCalculateResponseData.getFESDiagram().getS().get(0).size();
+				int pointcount=srpCalculateResponseData.getFESDiagram().getS().size();
+				if(pointcount<srpCalculateResponseData.getFESDiagram().getF().size()){
+					pointcount=srpCalculateResponseData.getFESDiagram().getF().size();
+				}
+				for(int i=0;i<curvecount;i++){
+					for(int j=0;j<pointcount;j++){
+						pumpFSDiagramStrBuff.append(srpCalculateResponseData.getFESDiagram().getS().get(j).get(i)+",");//位移
+						pumpFSDiagramStrBuff.append(srpCalculateResponseData.getFESDiagram().getF().get(j).get(i)+",");//载荷
+					}
+					if(pumpFSDiagramStrBuff.toString().endsWith(",")){
+						pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
+					}
+					pumpFSDiagramStrBuff.append("#");
+				}
+				if(pumpFSDiagramStrBuff.toString().endsWith("#")){
+					pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
+				}
+			}
+			
+			if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
+				rodCNT=srpCalculateResponseData.getRodString().getCNT();
+				for(int i=0;i<srpCalculateResponseData.getRodString().getEveryRod().size();i++){
+					if(i==0){
+		        		rodStressRatio1=srpCalculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()+"";
+		        		rodStressRangeRatio1=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
+		        	}else if(i==1){
+		        		rodStressRatio2=srpCalculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()+"";
+		        		rodStressRangeRatio2=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
+		        	}else if(i==2){
+		        		rodStressRatio3=srpCalculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()+"";
+		        		rodStressRangeRatio3=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
+		        	}else if(i==3){
+		        		rodStressRatio4=srpCalculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()+"";
+		        		rodStressRangeRatio4=srpCalculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()+"";
+		        	}
+				}
+			}
+			int resultStatus=0;
+			if(srpCalculateResponseData!=null && srpCalculateResponseData.getCalculationStatus()!=null){
+				resultStatus=srpCalculateResponseData.getCalculationStatus().getResultStatus();
+			}
+			
+			wellBoreChartsData.append("{");
+			wellBoreChartsData.append("\"success\":true,");
+			wellBoreChartsData.append("\"resultStatus\":"+resultStatus+",");
+			wellBoreChartsData.append("\"deviceId\":"+id+",");
+			wellBoreChartsData.append("\"deviceName\":\""+deviceName+"\",");
+			wellBoreChartsData.append("\"acqTime\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
+			
+			wellBoreChartsData.append("\"pointCount\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getS().size():"")+"\",");
+			wellBoreChartsData.append("\"upperLoadLine\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
+			wellBoreChartsData.append("\"lowerLoadLine\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getFESDiagram().getLowerLoadLine():"")+"\",");
+			
+			String fmax="",fmin="",deltaF="";
+			if(srpCalculateResponseData!=null&&(srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
+				if(srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getFMax()!=null&&srpCalculateResponseData.getFESDiagram().getFMax().size()>0){
+					fmax=srpCalculateResponseData.getFESDiagram().getFMax().get(0)+"";
+				}
+				if(srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getFMin()!=null&&srpCalculateResponseData.getFESDiagram().getFMin().size()>0){
+					fmin=srpCalculateResponseData.getFESDiagram().getFMin().get(0)+"";
+				}
+				if(srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getDeltaF()!=null&&srpCalculateResponseData.getFESDiagram().getDeltaF().size()>0){
+					deltaF=srpCalculateResponseData.getFESDiagram().getDeltaF().get(0)+"";
+				}
+			}
+			
+			wellBoreChartsData.append("\"fmax\":\""+fmax+"\",");
+			wellBoreChartsData.append("\"fmin\":\""+fmin+"\",");
+			wellBoreChartsData.append("\"deltaF\":\""+deltaF+"\",");
+			
+			wellBoreChartsData.append("\"stroke\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getStroke():"")+"\",");
+			wellBoreChartsData.append("\"spm\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getSPM():"")+"\",");
+			
+			wellBoreChartsData.append("\"liquidProduction\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?(productionUnit.equalsIgnoreCase("ton")?srpCalculateResponseData.getProduction().getLiquidWeightProduction():srpCalculateResponseData.getProduction().getLiquidVolumetricProduction()):"")+"\",");
+			wellBoreChartsData.append("\"resultName\":\""+(workType!=null?workType.getResultName():"")+"\",");
+			wellBoreChartsData.append("\"optimizationSuggestion\":\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");
+			wellBoreChartsData.append("\"resultCode\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getCalculationStatus().getResultCode():"")+"\",");
+			
+			wellBoreChartsData.append("\"rodCNT\":"+rodCNT+",");
+			wellBoreChartsData.append("\"rodStressRatio1\":\""+rodStressRatio1+"\",");
+			wellBoreChartsData.append("\"rodStressRatio2\":\""+rodStressRatio2+"\",");
+			wellBoreChartsData.append("\"rodStressRatio3\":\""+rodStressRatio3+"\",");
+			wellBoreChartsData.append("\"rodStressRatio4\":\""+rodStressRatio4+"\",");
+			wellBoreChartsData.append("\"rodStressRangeRatio1\":"+rodStressRangeRatio1+",");
+			wellBoreChartsData.append("\"rodStressRangeRatio2\":"+rodStressRangeRatio2+",");
+			wellBoreChartsData.append("\"rodStressRangeRatio3\":"+rodStressRangeRatio3+",");
+			wellBoreChartsData.append("\"rodStressRangeRatio4\":"+rodStressRangeRatio4+",");
+			
+			wellBoreChartsData.append("\"pumpEff1\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getPumpEfficiency().getPumpEff1()*100+"",2):"")+"\",");
+			wellBoreChartsData.append("\"pumpEff2\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getPumpEfficiency().getPumpEff2()*100+"",2):"")+"\",");
+			wellBoreChartsData.append("\"pumpEff3\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getPumpEfficiency().getPumpEff3()*100+"",2):"")+"\",");
+			wellBoreChartsData.append("\"pumpEff4\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getPumpEfficiency().getPumpEff4()*100+"",2):"")+"\",");
+			wellBoreChartsData.append("\"pumpEff\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getPumpEfficiency().getPumpEff()*100+"",2):"")+"\",");
+			
+			wellBoreChartsData.append("\"pumpFSDiagramData\":\""+pumpFSDiagramStrBuff.toString()+"\",");
+			wellBoreChartsData.append("\"positionCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getS()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getS(), ",")):"")+"\",");
+			wellBoreChartsData.append("\"loadCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getF()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getF(), ",")):"")+"\"");
+			
+			wellBoreChartsData.append("}");
+		}
+		return wellBoreChartsData.toString();
+	}
+	
+	
+	public String querySingleDetailsWellBoreChartsDataFromDB(int id,String deviceName,String language) throws SQLException, IOException{
 		ConfigFile configFile=Config.getInstance().configFile;
-		BufferedInputStream bis = null;
         StringBuffer dataSbf = new StringBuffer();
         StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
         String tableName="tbl_srpacqdata_latest";
@@ -6628,31 +6769,24 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String positionCurveData="";
 			String loadCurveData="";
 			String pumpFSDiagram="";
-			SerializableClobProxy   proxy=null;
-			CLOB realClob=null;
+			
 			String resultCode=obj[11]+"";
 			WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(resultCode+"",language);
-			if(obj[2]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[2]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				pumpFSDiagram=StringManagerUtils.CLOBtoString(realClob);
+			
+			if(obj[2]!=null && obj[2] instanceof CLOB || obj[2] instanceof Clob){
+				pumpFSDiagram=StringManagerUtils.CLOBObjectToString(obj[2]);
 			}
 			
-			if(obj[17]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				positionCurveData=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[17]!=null && obj[17] instanceof CLOB || obj[17] instanceof Clob){
+				positionCurveData=StringManagerUtils.CLOBObjectToString(obj[17]);
 				if(StringManagerUtils.isNotNull(positionCurveData)){
 					pointCount=positionCurveData.split(",").length+"";
 				}
 			}
 			
-			if(obj[18]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				loadCurveData=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[18]!=null && obj[18] instanceof CLOB || obj[18] instanceof Clob){
+				loadCurveData=StringManagerUtils.CLOBObjectToString(obj[18]);
 			}
-			
 			
 			int rodCNT=0;
 			String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
@@ -6790,13 +6924,72 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		return dataSbf.toString().replaceAll("null", "");
 	}
+	
+	public String querySingleDetailsSurfaceData(int id,String deviceName,String language){
+		String result="";
+		try {
+			result = querySingleDetailsSurfaceDataFromMem(id,deviceName,language);
+		} catch (Exception e) {
+			result="";
+			e.printStackTrace();
+		}
+		if(!StringManagerUtils.isNotNull(result)){
+			try {
+				result="";
+				result=querySingleDetailsSurfaceDataFromDB(id,deviceName,language);
+			} catch (SQLException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public String querySingleDetailsSurfaceDataFromMem(int id,String deviceName,String language) throws SQLException, IOException{
+		StringBuffer surfaceChartsData = new StringBuffer();
+		SRPCalculateReturnData calculateReturnData=MemoryDataManagerTask.getSRPWellFESDIagramCalculateData(id);
+		if(calculateReturnData!=null){
+			SRPCalculateResponseData srpCalculateResponseData=calculateReturnData.getSrpCalculateResponseData();
+			SRPCalculateRequestData srpCalculateRequestData=calculateReturnData.getSrpCalculateRequestData();
+			int resultStatus=0;
+			if(srpCalculateResponseData!=null && srpCalculateResponseData.getCalculationStatus()!=null){
+				resultStatus=srpCalculateResponseData.getCalculationStatus().getResultStatus();
+			}
+			surfaceChartsData.append("{");
+			surfaceChartsData.append("\"success\":true,");
+			surfaceChartsData.append("\"resultStatus\":"+resultStatus+",");
+			surfaceChartsData.append("\"deviceName\":\""+deviceName+"\",");
+			surfaceChartsData.append("\"acqTime\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null)?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
+			
+			surfaceChartsData.append("\"upStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getUpStrokeWattMax():"")+"\",");
+			surfaceChartsData.append("\"downStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getDownStrokeWattMax():"")+"\",");
+			surfaceChartsData.append("\"wattDegreeBalance\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getWattDegreeBalance():"")+"\",");
+			surfaceChartsData.append("\"upStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getUpStrokeIMax():"")+"\",");
+			surfaceChartsData.append("\"downStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getDownStrokeIMax():"")+"\",");
+			surfaceChartsData.append("\"iDegreeBalance\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
+			surfaceChartsData.append("\"deltaRadius\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
+			
+			surfaceChartsData.append("\"positionCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getS()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getS(), ",")):"")+"\",");
+			surfaceChartsData.append("\"loadCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getF()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getF(), ",")):"")+"\",");
+			surfaceChartsData.append("\"powerCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getWatt()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getWatt(), ",")):"")+"\",");
+			surfaceChartsData.append("\"currentCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getI()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getI(), ",")):"")+"\",");
+			
+			surfaceChartsData.append("\"crankAngle\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCrankAngle(), ","):"")+"\",");
+			surfaceChartsData.append("\"loadRorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getLoadTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"crankTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCrankTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"currentBalanceTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"currentNetTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCurrentNetTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"expectedBalanceTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"expectedNetTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getExpectedNetTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"polishrodV\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getV(), ","):"")+"\",");
+			surfaceChartsData.append("\"polishrodA\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getA(), ","):"")+"\"");
+			
+			surfaceChartsData.append("}");
+		}
+		return surfaceChartsData.toString();
+	}
 
-	public String querySingleDetailsSurfaceData(int id,String deviceName,String language) throws SQLException, IOException{
-		byte[] bytes; 
-		ConfigFile configFile=Config.getInstance().configFile;
-		BufferedInputStream bis = null;
+	public String querySingleDetailsSurfaceDataFromDB(int id,String deviceName,String language) throws SQLException, IOException{
         StringBuffer dataSbf = new StringBuffer();
-        StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
         String tableName="tbl_srpacqdata_latest";
         
         String sql="select well.deviceName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
@@ -6818,74 +7011,46 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String iCurveData="";
 			String crankAngle="",loadRorque="",crankTorque="",currentBalanceTorque="",currentNetTorque="",expectedBalanceTorque="",expectedNetTorque="";
 			String polishrodV="",polishrodA="";
-			SerializableClobProxy   proxy=null;
-			CLOB realClob=null;
 			
-			if(obj[9]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[9]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				positionCurveData=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[9]!=null && obj[9] instanceof CLOB || obj[9] instanceof Clob){
+				positionCurveData=StringManagerUtils.CLOBObjectToString(obj[9]);
 			}
-			if(obj[10]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[10]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				loadCurveData=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[10]!=null && obj[10] instanceof CLOB || obj[10] instanceof Clob){
+				loadCurveData=StringManagerUtils.CLOBObjectToString(obj[10]);
 			}
-			if(obj[11]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[11]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				wattCurveData=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[11]!=null && obj[11] instanceof CLOB || obj[11] instanceof Clob){
+				wattCurveData=StringManagerUtils.CLOBObjectToString(obj[11]);
 			}
-			if(obj[12]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[12]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				iCurveData=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[12]!=null && obj[12] instanceof CLOB || obj[12] instanceof Clob){
+				iCurveData=StringManagerUtils.CLOBObjectToString(obj[12]);
 			}
 			
-			if(obj[13]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[13]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				crankAngle=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[13]!=null && obj[13] instanceof CLOB || obj[13] instanceof Clob){
+				crankAngle=StringManagerUtils.CLOBObjectToString(obj[12]);
 			}
-			if(obj[14]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[14]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				loadRorque=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[14]!=null && obj[14] instanceof CLOB || obj[14] instanceof Clob){
+				loadRorque=StringManagerUtils.CLOBObjectToString(obj[14]);
 			}
-			if(obj[15]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[15]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				crankTorque=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[15]!=null && obj[15] instanceof CLOB || obj[15] instanceof Clob){
+				crankTorque=StringManagerUtils.CLOBObjectToString(obj[15]);
 			}
-			if(obj[16]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[16]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				currentBalanceTorque=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[16]!=null && obj[16] instanceof CLOB || obj[16] instanceof Clob){
+				currentBalanceTorque=StringManagerUtils.CLOBObjectToString(obj[16]);
 			}
-			if(obj[17]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				currentNetTorque=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[17]!=null && obj[17] instanceof CLOB || obj[17] instanceof Clob){
+				currentNetTorque=StringManagerUtils.CLOBObjectToString(obj[17]);
 			}
-			if(obj[18]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				expectedBalanceTorque=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[18]!=null && obj[18] instanceof CLOB || obj[18] instanceof Clob){
+				expectedBalanceTorque=StringManagerUtils.CLOBObjectToString(obj[18]);
 			}
-			if(obj[19]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[19]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				expectedNetTorque=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[19]!=null && obj[19] instanceof CLOB || obj[19] instanceof Clob){
+				expectedNetTorque=StringManagerUtils.CLOBObjectToString(obj[19]);
 			}
-			if(obj[20]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[20]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				polishrodV=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[20]!=null && obj[20] instanceof CLOB || obj[20] instanceof Clob){
+				polishrodV=StringManagerUtils.CLOBObjectToString(obj[20]);
 			}
-			if(obj[21]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[21]);
-				realClob = (CLOB) proxy.getWrappedClob(); 
-				polishrodA=StringManagerUtils.CLOBtoString(realClob);
+			if(obj[21]!=null && obj[21] instanceof CLOB || obj[21] instanceof Clob){
+				polishrodA=StringManagerUtils.CLOBObjectToString(obj[21]);
 			}
 			
 	        dataSbf.append("{success:true,");

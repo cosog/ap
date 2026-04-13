@@ -1,6 +1,9 @@
 package com.cosog.model.calculate;
 
-public class TotalAnalysisResponseData {
+import java.io.Serializable;
+
+public class TotalAnalysisResponseData  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private String WellName;
     private int ResultStatus;
     private Verification Verification;
@@ -33,6 +36,8 @@ public class TotalAnalysisResponseData {
     private Item FMax; //最大载荷					kN
     private Item FMin; //最小载荷					kN
     private Item DeltaF; //载荷差					kN
+    private Item MaxStressRatio; ///最大应力比  小数
+    private Item StressRangeRatio; //应力范围比  小数
     private Item Area; //功图面积					kN·m
     private Item PlungerStroke; //柱塞冲程					m
     private Item AvailablePlungerStroke; //柱塞有效冲程
@@ -117,8 +122,9 @@ public class TotalAnalysisResponseData {
     private Item VA3; //视在功率					kVA
     private Item PF3; //功率因数					小数
 
-	public static class Verification
-	{
+	public static class Verification implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
 	    private int ErrorCounter;
 
 	    private String ErrorString;
@@ -169,8 +175,10 @@ public class TotalAnalysisResponseData {
 	    }
 	}
 	
-	public static class Item
-	{
+	public static class Item implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private float Value;
 
 	    private float Max;
@@ -1128,6 +1136,22 @@ public class TotalAnalysisResponseData {
 
 	public void setPumpBoreDiameter2(Item pumpBoreDiameter2) {
 		PumpBoreDiameter2 = pumpBoreDiameter2;
+	}
+
+	public Item getMaxStressRatio() {
+		return MaxStressRatio;
+	}
+
+	public void setMaxStressRatio(Item maxStressRatio) {
+		MaxStressRatio = maxStressRatio;
+	}
+
+	public Item getStressRangeRatio() {
+		return StressRangeRatio;
+	}
+
+	public void setStressRangeRatio(Item stressRangeRatio) {
+		StressRangeRatio = stressRangeRatio;
 	}
 
 	

@@ -2,6 +2,7 @@ package com.cosog.controller.datainterface;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -3563,6 +3564,10 @@ public class DriverAPIController extends BaseController{
 					
 					//放入内存数据库中
 					MemoryDataManagerTask.updateDeviceInfo(deviceInfo);
+					if(deviceInfo.getCalculateType()==1){
+						MemoryDataManagerTask.updateSRPWellFESDIagramCalculateData(deviceInfo.getId(),srpCalculateReturnData);
+					}
+					
 					
 					//实时汇总放入内存数据库中
 					realtimeTotalInfo.setDeviceId(deviceInfo.getId());
@@ -5897,7 +5902,9 @@ public class DriverAPIController extends BaseController{
 		this.printInfo = printInfo;
 	}
 	
-	public static class SRPCalculateReturnData{
+	public static class SRPCalculateReturnData  implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
 		private boolean FESDiagramCalculate;
 		private boolean isAcqCalResultData;
 		private boolean fesDiagramEnabled;

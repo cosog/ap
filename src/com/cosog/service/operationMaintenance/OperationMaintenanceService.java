@@ -609,10 +609,17 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 	
 	public String loadLowerComputerProgramUpgradeDeviceList(String orgId,String deviceName,User user) throws IOException, SQLException {
 		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user!=null?user.getLanguageName():"");
 		String sql="select t.id,t.devicename,t.signinid,t.slave,"
-				+ " t2.boxversion,t2.boxupdatestatus,to_char(t2.boxupdatetime,'yyyy-mm-dd hh24:mi:ss') as boxupdatetime,"
-				+ " t2.acversion,t2.acupdatestatus,to_char(t2.acupdatetime,'yyyy-mm-dd hh24:mi:ss') as acupdatetime,"
-				+ " t2.adversion,t2.adupdatestatus,to_char(t2.adupdatetime,'yyyy-mm-dd hh24:mi:ss') as adupdatetime "
+				+ " t2.boxversion,"
+				+ " decode(t2.boxupdatestatus,1,'"+languageResourceMap.get("downlinkSuccessfully")+"',0,'"+languageResourceMap.get("downlinkFailed")+"','') as boxupdatestatus,"
+				+ " to_char(t2.boxupdatetime,'yyyy-mm-dd hh24:mi:ss') as boxupdatetime,"
+				+ " t2.acversion,"
+				+ " decode(t2.acupdatestatus,1,'"+languageResourceMap.get("downlinkSuccessfully")+"',0,'"+languageResourceMap.get("downlinkFailed")+"','') as acupdatestatus,"
+				+ " to_char(t2.acupdatetime,'yyyy-mm-dd hh24:mi:ss') as acupdatetime,"
+				+ " t2.adversion,"
+				+ " decode(t2.adupdatestatus,1,'"+languageResourceMap.get("downlinkSuccessfully")+"',0,'"+languageResourceMap.get("downlinkFailed")+"','') as adupdatestatus,"
+				+ " to_char(t2.adupdatetime,'yyyy-mm-dd hh24:mi:ss') as adupdatetime "
 				+ " from viw_device t"
 				+ " left outer join tbl_lowercomputerprogramupgrade t2 on t.id=t2.deviceid"
 				+ " where t.orgid in ("+orgId+")";

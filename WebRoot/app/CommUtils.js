@@ -5075,11 +5075,12 @@ function highchartsResize(divId){
 	}
 }
 
+let _refreshRealtimeRequestId = 0;
 function refreshRealtimeDeviceListDataByPage(selectedDeviceId,deviceType,gridPanel,storeName){
 	var loadPage=1;
 	var pageSize=50;
 	var gridStore=null;
-	
+	var currentRequestId = ++_refreshRealtimeRequestId ;
 	if (isNotVal(gridPanel)) {
 		gridStore=gridPanel.getStore();
 		gridPanel.getSelectionModel().deselectAll(true);
@@ -5087,18 +5088,35 @@ function refreshRealtimeDeviceListDataByPage(selectedDeviceId,deviceType,gridPan
 		gridStore=Ext.create(storeName);
 	}
 	pageSize=gridStore.getPageSize();
-	if(selectedDeviceId>0){
-		loadPage=getDeviceRealTimeOverviewDataPage(selectedDeviceId,deviceType,pageSize);
-	}
-	if(gridStore!=null){
-		gridStore.loadPage(loadPage);
+	if (selectedDeviceId > 0) {
+	    getDeviceRealTimeOverviewDataPage(selectedDeviceId, deviceType, pageSize)
+	        .then(loadPage => {
+	        	if (currentRequestId !== _refreshRealtimeRequestId ) return; // 过期忽略
+	            if (gridStore != null) {
+	                gridStore.loadPage(loadPage);
+	            }
+	        })
+	        .catch(error => {
+	            console.error("获取分页数据失败", error);
+	            if (currentRequestId !== _refreshRealtimeRequestId ) return; // 过期忽略
+	            if (gridStore != null) {
+	    	        gridStore.loadPage(1);
+	    	    }
+	        });
+	} else {
+	    // 如果没有 selectedDeviceId，直接加载默认分页（比如第1页）
+	    if (gridStore != null) {
+	        gridStore.loadPage(loadPage);
+	    }
 	}
 }
 
+let _refreshHistoryRequestId  = 0;
 function refreshHistoryDeviceListDataByPage(selectedDeviceId,deviceType,gridPanel,storeName){
 	var loadPage=1;
 	var pageSize=50;
 	var gridStore=null;
+	var currentRequestId = ++_refreshHistoryRequestId ;
 	
 	if (isNotVal(gridPanel)) {
 		gridStore=gridPanel.getStore();
@@ -5106,11 +5124,27 @@ function refreshHistoryDeviceListDataByPage(selectedDeviceId,deviceType,gridPane
 		gridStore=Ext.create(storeName);
 	}
 	pageSize=gridStore.getPageSize();
-	if(selectedDeviceId>0){
-		loadPage=getHistoryQueryDeviceListDataPage(selectedDeviceId,deviceType,pageSize);
-	}
-	if(gridStore!=null){
-		gridStore.loadPage(loadPage);
+	if (selectedDeviceId > 0) {
+	    getDeviceRealTimeOverviewDataPage(selectedDeviceId, deviceType, pageSize)
+	        .then(loadPage => {
+	        	if (currentRequestId !== _refreshHistoryRequestId ) return; // 过期忽略
+	        	if (gridStore != null) {
+	                gridStore.loadPage(loadPage);
+	            }
+	        })
+	        .catch(error => {
+	        	if (currentRequestId !== _refreshHistoryRequestId ) return;
+                console.error("获取分页数据失败", error);
+                // 可选：失败后加载第1页
+                if (gridStore != null) {
+                    gridStore.loadPage(1);
+                }
+	        });
+	} else {
+	    // 如果没有 selectedDeviceId，直接加载默认分页（比如第1页）
+	    if (gridStore != null) {
+	        gridStore.loadPage(loadPage);
+	    }
 	}
 }
 

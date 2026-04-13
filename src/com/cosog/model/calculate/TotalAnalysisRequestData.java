@@ -1,8 +1,11 @@
 package com.cosog.model.calculate;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class TotalAnalysisRequestData {
+public class TotalAnalysisRequestData  implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private String AKString;
 
     private String WellName;
@@ -106,6 +109,10 @@ public class TotalAnalysisRequestData {
     private List<Float> FMin;
 
     private List<Float> DeltaF;
+    
+    private List<Float> MaxStressRatio;
+    
+    private List<Float> StressRangeRatio;
 
     private List<Float> Area;
 
@@ -120,6 +127,8 @@ public class TotalAnalysisRequestData {
     private List<Float> NoLiquidFullnessCoefficient;
 
     private List<Float> PumpBoreDiameter;
+    
+    private List<Float> PumpBoreDiameter2;
 
     private List<Float> ProducingfluidLevel;
 
@@ -1065,6 +1074,30 @@ public class TotalAnalysisRequestData {
 
 	public void setRunTimeEfficiency(float runTimeEfficiency) {
 		RunTimeEfficiency = runTimeEfficiency;
+	}
+
+	public List<Float> getMaxStressRatio() {
+		return MaxStressRatio;
+	}
+
+	public void setMaxStressRatio(List<Float> maxStressRatio) {
+		MaxStressRatio = maxStressRatio;
+	}
+
+	public List<Float> getStressRangeRatio() {
+		return StressRangeRatio;
+	}
+
+	public void setStressRangeRatio(List<Float> stressRangeRatio) {
+		StressRangeRatio = stressRangeRatio;
+	}
+
+	public List<Float> getPumpBoreDiameter2() {
+		return PumpBoreDiameter2;
+	}
+
+	public void setPumpBoreDiameter2(List<Float> pumpBoreDiameter2) {
+		PumpBoreDiameter2 = pumpBoreDiameter2;
 	}
 
     

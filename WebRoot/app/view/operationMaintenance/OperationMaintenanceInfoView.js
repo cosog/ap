@@ -135,7 +135,15 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				iconCls: 'check3',
     				layout: 'border',
     				bodyStyle: 'background-color:#ffffff;',
-    				tbar: ['->',{
+    				tbar: [{
+                        xtype: 'button',
+                        name: 'RoleNameBtn_Id',
+                        text: loginUserLanguageResource.refresh,
+                        iconCls: 'note-refresh',
+                        handler: function () {
+                        	loadOemOperationConfigInfo();
+                        }
+            		},'->',{
     	                xtype: 'button',
     	                text: loginUserLanguageResource.save,
     	                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
@@ -1143,7 +1151,20 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        			id:'OperationMaintenanceDeviceTypeMaintenancePanel_Id',
 	        			iconCls: 'check3',
 	        			layout: 'border',
-	        			tbar: ['->',{
+	        			tbar: [{
+	                        xtype: 'button',
+	                        name: 'RoleNameBtn_Id',
+	                        text: loginUserLanguageResource.refresh,
+	                        iconCls: 'note-refresh',
+	                        handler: function () {
+	                        	var deviceTypeMaintenanceTreeGridView = Ext.getCmp("deviceTypeMaintenanceTreeGridView_Id");
+                                if (isNotVal(deviceTypeMaintenanceTreeGridView)) {
+                                	deviceTypeMaintenanceTreeGridView.getStore().load();
+                                }else{
+                                	Ext.create("AP.store.operationMaintenance.TabManagerInfoStore");
+                                }
+	                        }
+	            		},'->',{
 	    	                xtype: 'button',
 	    	                text: loginUserLanguageResource.save,
 	    	                disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
@@ -1183,23 +1204,6 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                		contentConfig.DeviceRealTimeMonitoring={};
 		                		contentConfig.DeviceHistoryQuery={};
 		                		contentConfig.AlarmQuery={};
-		                		
-//		                		contentConfig.DeviceRealTimeMonitoring.FESDiagramStatPie=Ext.getCmp('calculationModel_showRealtimeFESDiagramStatPie_Id').getValue();
-//		                		contentConfig.DeviceRealTimeMonitoring.CommStatusStatPie=Ext.getCmp('calculationModel_showRealtimeCommStatusStatPie_Id').getValue();
-//		                		contentConfig.DeviceRealTimeMonitoring.RunStatusStatPie=Ext.getCmp('calculationModel_showRealtimeRunStatusStatPie_Id').getValue();
-//		                		contentConfig.DeviceRealTimeMonitoring.NumStatusStatPie=Ext.getCmp('calculationModel_showRealtimeNumStatusStatPie_Id').getValue();
-//		                		
-//		                		contentConfig.DeviceHistoryQuery.FESDiagramStatPie=Ext.getCmp('calculationModel_showHistoryFESDiagramStatPie_Id').getValue();
-//		                		contentConfig.DeviceHistoryQuery.CommStatusStatPie=Ext.getCmp('calculationModel_showHistoryCommStatusStatPie_Id').getValue();
-//		                		contentConfig.DeviceHistoryQuery.RunStatusStatPie=Ext.getCmp('calculationModel_showHistoryRunStatusStatPie_Id').getValue();
-//		                		contentConfig.DeviceHistoryQuery.NumStatusStatPie=Ext.getCmp('calculationModel_showHistoryNumStatusStatPie_Id').getValue();
-//		                		
-//		                		contentConfig.AlarmQuery.FESDiagramResultAlarm=Ext.getCmp('calculationModel_showAlarmQueryFESDiagramResultAlarm_Id').getValue();
-//		                		contentConfig.AlarmQuery.RunStatusAlarm=Ext.getCmp('calculationModel_showAlarmQueryRunStatusAlarm_Id').getValue();
-//		                		contentConfig.AlarmQuery.CommStatusAlarm=Ext.getCmp('calculationModel_showAlarmQueryCommStatusAlarm_Id').getValue();
-//		                		contentConfig.AlarmQuery.NumericValueAlarm=Ext.getCmp('calculationModel_showAlarmQueryNumericValueAlarm_Id').getValue();
-//		                		contentConfig.AlarmQuery.EnumValueAlarm=Ext.getCmp('calculationModel_showAlarmQueryEnumValueAlarm_Id').getValue();
-//		                		contentConfig.AlarmQuery.SwitchingValueAlarm=Ext.getCmp('calculationModel_showAlarmQuerySwitchingValueAlarm_Id').getValue();
 		                		
 		                		contentConfig.DeviceRealTimeMonitoring.FESDiagramStatPie=false;
 		                		contentConfig.DeviceRealTimeMonitoring.CommStatusStatPie=false;
@@ -1300,165 +1304,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        		        region: 'center',
 	        		        title: loginUserLanguageResource.displayContentConfig,
 	        		        id: 'OperationMaintenanceDeviceTypeContentConfigPanel_Id',
-	        		        layout: 'fit',
-//	        		        layout: 'border',
-//	        		        bodyStyle: 'background-color:#ffffff;',
-//	        		        items:[{
-//	                            region: 'center',
-//	                            height: '1500px',
-//	                            xtype: 'form',
-//	                            border: false,
-//	                            id: "OperationMaintenanceDeviceTypeContentSubFormId",
-//	                            bodyPadding: 10,
-//	                            items: [{
-//	                                xtype: 'form',
-//	                                bodyPadding: 10,
-//	                                fieldDefaults: {
-//	                                    labelAlign: 'right',
-//	                                    labelWidth: 100,
-//	                                    msgTarget: 'side'
-//	                                },
-//	                                items: [
-//	        				            // 第一个 FieldSet
-//	                                    {
-//	                                        xtype: 'fieldset',
-//	                                        title: loginUserLanguageResource.realtimeMonitoringModule,
-//	                                        layout: 'column',
-//	                                        defaults: {
-//	                                            layout: 'form',
-//	                                            xtype: 'container',
-//	                                            defaultType: 'textfield',
-//	                                            style: 'width: 33%'
-//	                                        },
-//	                                        items: [{
-//	                                            items: [{
-//	                                            	    xtype: 'checkboxfield',
-//	                                            	    fieldLabel: loginUserLanguageResource.FESResultStatisticsPieChart,
-//	                                            	    name: 'calculationModel.showRealtimeFESDiagramStatPie',
-//	                                            	    id: 'calculationModel_showRealtimeFESDiagramStatPie_Id',
-//	                                            	    checked: false
-//	                                            },{
-//                                            	    xtype: 'checkboxfield',
-//                                            	    fieldLabel: loginUserLanguageResource.numStatusStatisticsPieChart,
-//                                            	    name: 'calculationModel.showRealtimeNumStatusStatPie',
-//                                            	    id: 'calculationModel_showRealtimeNumStatusStatPie_Id',
-//                                            	    checked: false
-//	                                            }]
-//	        				                }, {
-//	                                            items: [{
-//	                                            	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.commStatusStatisticsPieChart,
-//	                                        	    name: 'calculationModel.showRealtimeCommStatusStatPie',
-//	                                        	    id: 'calculationModel_showRealtimeCommStatusStatPie_Id',
-//	                                        	    checked: false
-//	                                            }]
-//	        				                }, {
-//	                                            items: [{
-//	                                            	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.runStatusStatisticsPieChart,
-//	                                        	    name: 'calculationModel.showRealtimeRunStatusStatPie',
-//	                                        	    id: 'calculationModel_showRealtimeRunStatusStatPie_Id',
-//	                                        	    checked: false
-//	    				                        }]
-//	        				                }]
-//	        				            },{
-//	                                        xtype: 'fieldset',
-//	                                        title: loginUserLanguageResource.historyQueryModule,
-//	                                        layout: 'column',
-//	                                        defaults: {
-//	                                            layout: 'form',
-//	                                            xtype: 'container',
-//	                                            defaultType: 'textfield',
-//	                                            style: 'width: 33%'
-//	                                        },
-//	                                        items: [{
-//	                                            items: [{
-//	                                            	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.FESResultStatisticsPieChart,
-//	                                        	    name: 'calculationModel.showHistoryFESDiagramStatPie',
-//	                                        	    id: 'calculationModel_showHistoryFESDiagramStatPie_Id',
-//	                                        	    checked: false
-//	    				                        },{
-//                                            	    xtype: 'checkboxfield',
-//                                            	    fieldLabel: loginUserLanguageResource.numStatusStatisticsPieChart,
-//                                            	    name: 'calculationModel.showHistoryNumStatusStatPie',
-//                                            	    id: 'calculationModel_showHistoryNumStatusStatPie_Id',
-//                                            	    checked: false
-//	                                            }]
-//	        				                }, {
-//	                                            items: [{
-//	                                            	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.commStatusStatisticsPieChart,
-//	                                        	    name: 'calculationModel.showHistoryCommStatusStatPie',
-//	                                        	    id: 'calculationModel_showHistoryCommStatusStatPie_Id',
-//	                                        	    checked: false
-//	    				                        }]
-//	        				                }, {
-//	                                            items: [{
-//	                                            	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.runStatusStatisticsPieChart,
-//	                                        	    name: 'calculationModel.showHistoryRunStatusStatPie',
-//	                                        	    id: 'calculationModel_showHistoryRunStatusStatPie_Id',
-//	                                        	    checked: false
-//	    				                        }]
-//	        				                }]
-//	        				            },{
-//	                                        xtype: 'fieldset',
-//	                                        title: loginUserLanguageResource.alarmQueryModule,
-//	                                        layout: 'column',
-//	                                        defaults: {
-//	                                            layout: 'form',
-//	                                            xtype: 'container',
-//	                                            defaultType: 'textfield',
-//	                                            style: 'width: 33%'
-//	                                        },
-//	                                        items: [{
-//	                                            items: [{
-//	    				                        	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.numericValueAlarm,
-//	                                        	    name: 'calculationModel.showAlarmQueryNumericValueAlarm',
-//	                                        	    id: 'calculationModel_showAlarmQueryNumericValueAlarm_Id',
-//	                                        	    checked: false
-//	    				                        },{
-//	                                            	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.commStatusAlarm,
-//	                                        	    name: 'calculationModel.showAlarmQueryCommStatusAlarm',
-//	                                        	    id: 'calculationModel_showAlarmQueryCommStatusAlarm_Id',
-//	                                        	    checked: false
-//	    				                        }]
-//	        				                }, {
-//	                                            items: [{
-//	    				                        	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.enumValueAlarm,
-//	                                        	    name: 'calculationModel.showAlarmQueryEnumValueAlarm',
-//	                                        	    id: 'calculationModel_showAlarmQueryEnumValueAlarm_Id',
-//	                                        	    checked: false
-//	    				                        },{
-//	                                            	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.runStatusAlarm,
-//	                                        	    name: 'calculationModel.showAlarmQueryRunStatusAlarm',
-//	                                        	    id: 'calculationModel_showAlarmQueryRunStatusAlarm_Id',
-//	                                        	    checked: false
-//	    				                        }]
-//	        				                }, {
-//	                                            items: [{
-//	    				                        	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.switchingValueAlarm,
-//	                                        	    name: 'calculationModel.showAlarmQuerySwitchingValueAlarm',
-//	                                        	    id: 'calculationModel_showAlarmQuerySwitchingValueAlarm_Id',
-//	                                        	    checked: false
-//	    				                        },{
-//	                                            	xtype: 'checkboxfield',
-//	                                        	    fieldLabel: loginUserLanguageResource.FESDiagramResultAlarm,
-//	                                        	    name: 'calculationModel.showAlarmQueryFESDiagramResultAlarm',
-//	                                        	    id: 'calculationModel_showAlarmQueryFESDiagramResultAlarm_Id',
-//	                                        	    checked: false
-//	    				                        }]
-//	        				                }]
-//	        				            }
-//	        				        ]
-//	        				    }]
-//	        	            }]
+	        		        layout: 'fit'
 	        		    }]
 	        		},{
 	        			title: loginUserLanguageResource.deviceTag,
@@ -2065,69 +1911,105 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         			title: loginUserLanguageResource.lowerComputerProgramUpgrade,
         			id:'OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id',
         			layout: 'fit',
-        		    tbar: [{
-                        xtype: 'button',
-                        text: loginUserLanguageResource.refresh,
-                        iconCls: 'note-refresh',
-                        hidden:false,
-                        handler: function (v, o) {
-                        	loadLowerComputerProgramUpgradeDeviceList();
-                        }
-            		},'-',deviceListDeviceCombo,'->',{
-            			xtype: 'button',
-            			text:'采控程序下行',
-            			iconCls: 'downlink',
-            			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-            			handler: function (v, o) {
-            				selectList=[];
-                        	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
-                        		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
-                            	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
-                                    if (checkedArr[index]) {
-                                    	selectList.push(index);
-                                    	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(index,'boxDownlinkStatus',loginUserLanguageResource.waitingForDownlink);
-                                    }
-                                });
-                        	}
-                        	lowerComputerProgramBatchUpgrade(selectList,'box');
-            			}
-            		},'-',{
-            			xtype: 'button',
-            			text:'计算程序下行',
-            			iconCls: 'downlink',
-            			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-            			handler: function (v, o) {
-            				selectList=[];
-                        	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
-                        		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
-                            	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
-                                    if (checkedArr[index]) {
-                                    	selectList.push(index);
-                                    	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(index,'acDownlinkStatus',loginUserLanguageResource.waitingForDownlink);
-                                    }
-                                });
-                        	}
-                        	lowerComputerProgramBatchUpgrade(selectList,'ac');
-            			}
-            		},'-',{
-            			xtype: 'button',
-            			text:'版本号上行',
-            			iconCls: 'uplink',
-            			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
-            			handler: function (v, o) {
-            				deviceIdList=[];
-                        	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
-                        		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
-                            	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
-                                    if (checkedArr[index]) {
-                                    	var deviceId=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(index,'deviceId');
-                                    	deviceIdList.push(deviceId);
-                                    }
-                                });
-                        	}
-                        	lowerComputerProgramVersionDataBatchUplink(deviceIdList,'');
-            			}
-            		}],
+            		tbar:{
+            			xtype:"container",
+            			border:false,
+            			items:[{
+            				xtype:"toolbar",
+            				items:[{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.refresh,
+                                iconCls: 'note-refresh',
+                                hidden:false,
+                                handler: function (v, o) {
+                                	loadLowerComputerProgramUpgradeDeviceList();
+                                }
+                    		},'-',deviceListDeviceCombo,'->',{
+                    			xtype: 'button',
+                    			text:'采控程序下行',
+                    			iconCls: 'downlink',
+                    			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                    			handler: function (v, o) {
+                    				selectList=[];
+                                	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
+                                		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
+                                    	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
+                                            if (checkedArr[index]) {
+                                            	selectList.push(index);
+                                            	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(index,'boxDownlinkStatus',loginUserLanguageResource.waitingForDownlink);
+                                            }
+                                        });
+                                	}
+                                	
+                                	if(selectList.length>0){
+                                		lowerComputerProgramBatchUpgrade(selectList,'box');
+                                	}else{
+                                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+                                	}
+                    			}
+                    		},'-',{
+                    			xtype: 'button',
+                    			text:'计算程序下行',
+                    			iconCls: 'downlink',
+                    			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                    			handler: function (v, o) {
+                    				selectList=[];
+                                	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
+                                		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
+                                    	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
+                                            if (checkedArr[index]) {
+                                            	selectList.push(index);
+                                            	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(index,'acDownlinkStatus',loginUserLanguageResource.waitingForDownlink);
+                                            }
+                                        });
+                                	}
+                                	
+                                	if(selectList.length>0){
+                                		lowerComputerProgramBatchUpgrade(selectList,'ac');
+                                	}else{
+                                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+                                	}
+                    			}
+                    		},'-',{
+                    			xtype: 'button',
+                    			text:'版本号上行',
+                    			iconCls: 'uplink',
+                    			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
+                    			handler: function (v, o) {
+                    				deviceIdList=[];
+                                	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
+                                		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
+                                    	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
+                                            if (checkedArr[index]) {
+                                            	var deviceId=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(index,'deviceId');
+                                            	deviceIdList.push(deviceId);
+                                            }
+                                        });
+                                	}
+                                	lowerComputerProgramVersionDataBatchUplink(deviceIdList,'');
+                    			}
+                    		}]
+            			},{
+            				xtype:"toolbar",
+            				items:[{
+            				    xtype: 'button',
+            				    text: loginUserLanguageResource.selectAll,
+            				    disabled: loginUserOperationMaintenanceModuleRight.editFlag != 1,
+            				    pressed: false,
+            				    handler: function (v, o) {
+            				        lowerComputerProgramUpgradeSelectAll(true);
+            				    }
+            				}, {
+            				    xtype: 'button',
+            				    text: loginUserLanguageResource.deselectAll,
+            				    disabled: loginUserOperationMaintenanceModuleRight.editFlag != 1,
+            				    pressed: false,
+            				    handler: function (v, o) {
+            				        lowerComputerProgramUpgradeSelectAll(false);
+            				    }
+            				}]
+            			}]
+            		},
         		    html: '<div class="OperationMaintenanceLowerComputerProgramUpgradeContainer" style="width:100%;height:100%;"><div class="con" id="OperationMaintenanceLowerComputerProgramUpgradeDiv_Id"></div></div>',
         	        listeners: {
         	            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
@@ -4505,11 +4387,11 @@ function lowerComputerProgramUpgrade(row, name) {
                 	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
                 	if(name=='box'){
                 		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',result.msg);
-                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxUpdateStatus',result.updateStatus);
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxUpdateStatus',result.msg);
                 		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxUpdateTime',result.updateTime);
                 	}else if(name=='ac'){
                 		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',result.msg);
-                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acUpdateStatus',result.updateStatus);
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acUpdateStatus',result.msg);
                 		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acUpdateTime',result.updateTime);
                 	}
                 } 
@@ -4942,3 +4824,15 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	        return lowerComputerProgramUpgradeHandsontableHelper;
 	    }
 	};
+
+function lowerComputerProgramUpgradeSelectAll(selected) {
+	if(lowerComputerProgramUpgradeHandsontableHelper!=undefined && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
+		var rowCount = lowerComputerProgramUpgradeHandsontableHelper.hot.countRows();
+    	var updateData=[];
+        for(var i=0;i<rowCount;i++){
+        	var data=[i,'checked',selected];
+        	updateData.push(data);
+        }
+        lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(updateData);
+	}
+}

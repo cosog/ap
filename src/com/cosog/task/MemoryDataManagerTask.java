@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.cosog.controller.datainterface.DriverAPIController.SRPCalculateReturnData;
 import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.AuxiliaryDeviceAddInfo;
@@ -378,6 +379,9 @@ public class MemoryDataManagerTask {
 		cleanData("SRPDeviceTodayData");
 		cleanData("PCPDeviceTodayData");
 		cleanData("DeviceInfo");
+		
+		cleanData("SRPWellFESDIagramCalculateData");
+		
 	}
 	
 	public static boolean existsKey(String key){
@@ -852,6 +856,43 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 		}
+	}
+	
+	
+	public static void updateSRPWellFESDIagramCalculateData(int deviceId,SRPCalculateReturnData srpCalculateReturnData){
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			
+			if(jedis!=null){
+				jedis.hset("SRPWellFESDIagramCalculateData".getBytes(), (deviceId+"").getBytes(), SerializeObjectUnils.serialize(srpCalculateReturnData));
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+	}
+	
+	public static SRPCalculateReturnData getSRPWellFESDIagramCalculateData(int deviceId){
+		Jedis jedis=null;
+		SRPCalculateReturnData calculateReturnData=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(jedis.hexists("SRPWellFESDIagramCalculateData".getBytes(), (deviceId+"").getBytes())){
+				calculateReturnData=(SRPCalculateReturnData)SerializeObjectUnils.unserizlize(jedis.hget("SRPWellFESDIagramCalculateData".getBytes(), (deviceId+"").getBytes()));
+			}
+		}catch (Exception e) {
+			calculateReturnData=null;
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return calculateReturnData;
 	}
 	
 	public static void updateDeviceInfo(DeviceInfo deviceInfo){

@@ -1926,7 +1926,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                 }
                     		},'-',deviceListDeviceCombo,'->',{
                     			xtype: 'button',
-                    			text:'采控程序下行',
+                    			text: loginUserLanguageResource.boxProgramUpgrade,
                     			iconCls: 'downlink',
                     			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     			handler: function (v, o) {
@@ -1949,7 +1949,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                     			}
                     		},'-',{
                     			xtype: 'button',
-                    			text:'计算程序下行',
+                    			text: loginUserLanguageResource.boxProgramUpgrade,
                     			iconCls: 'downlink',
                     			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     			handler: function (v, o) {
@@ -1972,7 +1972,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                     			}
                     		},'-',{
                     			xtype: 'button',
-                    			text:'版本号上行',
+                    			text: loginUserLanguageResource.versionUplink,
                     			iconCls: 'uplink',
                     			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     			handler: function (v, o) {
@@ -4408,84 +4408,6 @@ function lowerComputerProgramUpgrade(row, name) {
     });
 }
 
-//function lowerComputerProgramUpgrade(row,name){
-//	var deviceId=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(row,'deviceId');
-//	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
-//		Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
-//	}
-//	
-//	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
-//	if(name=='box'){
-//		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',loginUserLanguageResource.downlinking);
-//		plugin.showColumns([7]);
-//	}else if(name=='ac'){
-//		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',loginUserLanguageResource.downlinking);
-//		plugin.showColumns([12]);
-//	}
-//	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
-//	
-//	Ext.Ajax.request({
-//        url: context + '/wellInformationManagerController/lowerComputerProgramUpgrade',
-//        method: "POST",
-//        timeout: 10*60*1000, //超时时间 10分钟
-//        params: {
-//        	deviceId: deviceId,
-//        	name:name
-//        },
-//        success: function (response, action) {
-//        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
-//            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
-//    		}
-//        	var result =  Ext.JSON.decode(response.responseText);
-//        	
-//        	if (result.flag == false) {
-//                Ext.MessageBox.show({
-//                    title: loginUserLanguageResource.tip,
-//                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
-//                    icon: Ext.MessageBox.INFO,
-//                    buttons: Ext.Msg.OK,
-//                    fn: function () {
-//                        window.location.href = context + "/login";
-//                    }
-//                });
-//            } else if (result.flag == true && result.error == false) {
-//                const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
-//            	if(name=='box'){
-//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',result.msg);
-//            		plugin.showColumns([7]);
-//            	}else if(name=='ac'){
-//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',result.msg);
-//            		plugin.showColumns([12]);
-//            	}
-//            	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
-//                
-//            }  else if (result.flag == true && result.error == true) {
-//            	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
-//            	if(name=='box'){
-//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',result.msg);
-//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxUpdateStatus',result.updateStatus);
-//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxUpdateTime',result.updateTime);
-//            		
-//            		plugin.showColumns([7]);
-//            	}else if(name=='ac'){
-//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',result.msg);
-//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acUpdateStatus',result.updateStatus);
-//            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acUpdateTime',result.updateTime);
-//            		plugin.showColumns([12]);
-//            	}
-//            	
-//            	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
-//            } 
-//        },
-//        failure: function () {
-//        	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
-//            	Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
-//    		}
-//            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-//        }
-//    });
-//}
-
 //通用按钮渲染器工厂
 function createLowerComputerProgramUpgradeButtonRenderer(buttonText, clickHandler, bgColor, hoverColor = null) {
     if (!hoverColor) {
@@ -4579,7 +4501,7 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 					{
                         data: 'uplink',
                         renderer: createLowerComputerProgramUpgradeButtonRenderer(
-                                '版本号上行',
+                        		loginUserLanguageResource.versionUplink,
                                 (instance, td, row, col, prop, value, cellProperties) => 
                                     lowerComputerProgramVersionDataUplink(row, ''),
                                 '#409eff'  // 蓝色
@@ -4593,9 +4515,15 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 					{
                         data: 'uplink',
                         renderer: createLowerComputerProgramUpgradeButtonRenderer(
-                                '程序下行',
+                        		loginUserLanguageResource.programDownlink,
                                 (instance, td, row, col, prop, value, cellProperties) => 
-                                    lowerComputerProgramUpgrade(row,'box'),
+                                    lowerComputerProgramUpgrade(row,'box')
+                                    .then(function(result) {
+                                        console.log("升级完成，结果：", result);
+                                    })
+                                    .catch(function(error) {
+                                        console.error("升级失败：", error);
+                                    }),
                                 '#67c23a'  // 绿色
                             ),
                         readOnly: true
@@ -4608,9 +4536,15 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 					{
                         data: 'uplink',
                         renderer: createLowerComputerProgramUpgradeButtonRenderer(
-                                '程序下行',
+                        		loginUserLanguageResource.programDownlink,
                                 (instance, td, row, col, prop, value, cellProperties) => 
-                                    lowerComputerProgramUpgrade(row,'ac'),
+                                    lowerComputerProgramUpgrade(row,'ac')
+                                    .then(function(result) {
+                                        console.log("升级完成，结果：", result);
+                                    })
+                                    .catch(function(error) {
+                                        console.error("升级失败：", error);
+                                    }),
                                 '#e6a23c'  // 橙色
                             ),
                         readOnly: true

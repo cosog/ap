@@ -4698,9 +4698,10 @@ public class WellInformationManagerController extends BaseController {
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+""
 						+ "}";
-				StringManagerUtils.printLog("写地址数据:"+itemName+":"+ctrlJson,1);
+				
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
+				StringManagerUtils.printLog("写地址数据,"+itemName+",request:"+ctrlJson+",response:"+responseStr,1);
 				if(StringManagerUtils.isNotNull(responseStr)){
 					type = new TypeToken<ResultStatusData>() {}.getType();
 					ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
@@ -5666,6 +5667,9 @@ public class WellInformationManagerController extends BaseController {
 								String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 								String responseData=StringManagerUtils.sendPostMethod(Config.getInstance().configFile.getAd().getUpgrade().getProgramUpgrade(), 
 										requestData, "utf-8",10*60,10*60);
+								
+								StringManagerUtils.printLog("程序下行,设备ID:"+uplinkLowerComputerDeviceId+",request:"+requestData+",response:"+responseData,1);
+								
 								Gson gson = new Gson();
 								java.lang.reflect.Type reflectType = new TypeToken<ResultStatusData>() {}.getType();
 								ResultStatusData resultStatusData=gson.fromJson(responseData, reflectType);
@@ -5696,26 +5700,26 @@ public class WellInformationManagerController extends BaseController {
 									r=this.wellInformationManagerService.getBaseDao().updateOrDeleteBySql(updateSql);
 								}
 							}else{
-								jsonLogin="{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"设备ID上行失败\"}";
+								jsonLogin="{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("deviceIdUplinkFailure")+"\"}";
 							}
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:\"" + languageResourceMap.get("deviceOffline") + "\"}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"" + languageResourceMap.get("deviceOffline") + "\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("protocolConfigurationError")+"\"}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("protocolConfigurationError")+"\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("deviceNotExist")+"\"}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("deviceNotExist")+"\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("inputDataError")+"\"}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("inputDataError")+"\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		
-//		Thread.sleep(5*60*1000);
+//		Thread.sleep(30*1000);
 		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

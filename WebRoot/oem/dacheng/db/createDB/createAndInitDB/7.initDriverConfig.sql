@@ -822,8 +822,8 @@ values (81, null, '定降液-D参数', 'C_CLOUMN61', 1, null, null, null, null, null,
 /*==============================================================*/
 /* 初始化TBL_REPORT_UNIT_CONF数据                                          */
 /*==============================================================*/
-insert into TBL_REPORT_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, SINGLEWELLRANGEREPORTTEMPLATE, PRODUCTIONREPORTTEMPLATE, SORT, SINGLEWELLDAILYREPORTTEMPLATE, CALCULATETYPE)
-values (1, 'unit1', '煤层气井报表单元', 'CBMWell_heichao', 'CBMWell_heichaoProductionReport', 1, 'CBMWell_heichaoDailyReport', 0);
+insert into TBL_REPORT_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, SINGLEWELLRANGEREPORTTEMPLATE, PRODUCTIONREPORTTEMPLATE, SORT, SINGLEWELLDAILYREPORTTEMPLATE, CALCULATETYPE, CLASSES)
+values (1, 'unit1', '煤层气井报表单元', 'CBMWell_heichao', 'CBMWell_heichaoProductionReport', 1, 'CBMWell_heichaoDailyReport', 0, 0);
 
 /*==============================================================*/
 /* 初始化TBL_REPORT_ITEMS2UNIT_CONF数据                                          */

@@ -323,7 +323,7 @@ t.runstatus,t.runtime,t.runtimeefficiency,t.runrange,
 t.productiondata,
 t.resultcode,
 t.stroke,t.spm,
-t.fmax,t.fmin,
+t.fmax,t.fmin,t.deltaf,
 t.upstrokeimax,t.downstrokeimax,t.upstrokewattmax,t.downstrokewattmax,t.idegreebalance,t.wattdegreebalance,
 t.deltaradius,
 t.fullnesscoefficient,t.noliquidfullnesscoefficient,
@@ -344,7 +344,8 @@ t.energyper100mlift,t.area,
 t.rodflexlength,t.tubingflexlength,t.inertialength,
 t.pumpeff1 as pumpeff1,t.pumpeff2 as pumpeff2,t.pumpeff3 as pumpeff3,t.pumpeff4 as pumpeff4,t.pumpeff as pumpeff,
 t.pumpintakep,t.pumpintaket,t.pumpintakegol,t.pumpintakevisl,t.pumpintakebo,
-t.pumpoutletp,t.pumpoutlett,t.pumpoutletgol,t.pumpoutletvisl,t.pumpoutletbo
+t.pumpoutletp,t.pumpoutlett,t.pumpoutletgol,t.pumpoutletvisl,t.pumpoutletbo,
+t.rodstring
 from tbl_device device,tbl_srpacqdata_hist t,tbl_tabmanager_device t2
 where device.id=t.deviceid and device.calculatetype=t2.id and t2.calculatetype=1;
 /

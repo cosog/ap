@@ -490,6 +490,7 @@ create table TBL_ACQ_ITEM2GROUP_CONF
   bitindex                NUMBER(3),
   dailytotalcalculate     NUMBER(1) default 0,
   dailytotalcalculatename VARCHAR2(100),
+  itemenable              NUMBER(1) default 1,
   matrix                  VARCHAR2(8)
 )
 tablespace AP_DATA
@@ -638,6 +639,7 @@ create table TBL_DISPLAY_ITEMS2UNIT_CONF
   realtimeoverviewsort NUMBER(10),
   historyoverviewsort  NUMBER(10),
   switchingvalueshowtype NUMBER(1) default 0,
+  itemenable           NUMBER(1) default 1,
   matrix            VARCHAR2(8)
 )
 tablespace AP_DATA
@@ -663,7 +665,8 @@ create table TBL_REPORT_UNIT_CONF
   productionreporttemplate      VARCHAR2(200),
   sort                          NUMBER(10),
   singlewelldailyreporttemplate VARCHAR2(200),
-  calculatetype                 NUMBER(2) default 0
+  calculatetype                 NUMBER(2) default 0,
+  classes                       NUMBER(2) default 0
 )
 tablespace AP_DATA
   storage
@@ -865,6 +868,8 @@ create table TBL_DEVICE
   sortnum                  NUMBER(10) default 9999,
   calculatetype            NUMBER(2) default 0,
   constructiondata         VARCHAR2(4000) default '{}',
+  frequencyconversiondata  VARCHAR2(4000) default '{}',
+  interlockprotectiondata  VARCHAR2(4000) default '{}',
   commissioningdate        DATE
 )
 tablespace AP_DATA
@@ -1398,6 +1403,7 @@ create table TBL_SRPACQDATA_LATEST
   spm                                NUMBER(8,2),
   fmax                               NUMBER(8,2),
   fmin                               NUMBER(8,2),
+  deltaf                             NUMBER(8,2),
   position_curve                     CLOB,
   angle_curve                        CLOB,
   load_curve                         CLOB,
@@ -1540,6 +1546,7 @@ create table TBL_SRPACQDATA_HIST
   spm                                NUMBER(8,2),
   fmax                               NUMBER(8,2),
   fmin                               NUMBER(8,2),
+  deltaf                             NUMBER(8,2),
   position_curve                     CLOB,
   angle_curve                        CLOB,
   load_curve                         CLOB,
@@ -1681,6 +1688,7 @@ create table TBL_SRPACQDATA_VACUATE
   spm                                NUMBER(8,2),
   fmax                               NUMBER(8,2),
   fmin                               NUMBER(8,2),
+  deltaf                             NUMBER(8,2),
   position_curve                     CLOB,
   angle_curve                        CLOB,
   load_curve                         CLOB,
@@ -2352,7 +2360,7 @@ create table TBL_DEVICEOPERATIONLOG
   loginip    VARCHAR2(20),
   action     NUMBER(2),
   devicetype NUMBER(3),
-  remark     VARCHAR2(200)
+  remark     VARCHAR2(4000)
 )
 tablespace AP_DATA
   storage
@@ -2470,7 +2478,77 @@ tablespace AP_DATA
 alter table TBL_VIDEOKEY add constraint PK_VIDEOKEY primary key (ID)
 /
 
+/*==============================================================*/
+/* Table: TBL_TIMINGRECORDDATA                                   */
+/*==============================================================*/
+create table TBL_TIMINGRECORDDATA
+(
+  id                 NUMBER(10) not null,
+  deviceid           NUMBER(10),
+  acqtime            DATE,
+  savetime           DATE,
+  commstatus         NUMBER(2) default 0,
+  commtime           NUMBER(8,2) default 0,
+  commtimeefficiency NUMBER(10,4) default 0,
+  commrange          CLOB,
+  runstatus          NUMBER(2) default 0,
+  runtimeefficiency  NUMBER(10,4) default 0,
+  runtime            NUMBER(8,2) default 0,
+  runrange           CLOB,
+  acqdata            CLOB,
+  checksign          NUMBER(2) default 1,
+  alarminfo          CLOB,
+  alarmlevel1        NUMBER(5),
+  alarmlevel2        NUMBER(5),
+  alarmlevel3        NUMBER(5),
+  remark             VARCHAR2(4000),
+  reservedcol1       VARCHAR2(4000),
+  reservedcol2       VARCHAR2(4000),
+  reservedcol3       VARCHAR2(4000),
+  reservedcol4       VARCHAR2(4000),
+  reservedcol5       VARCHAR2(4000)
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_TIMINGRECORDDATA add constraint PK_TIMINGRECORDDATA primary key (ID)
+/
+
 create or replace package MYPACKAGE as
    type MY_CURSOR is REF CURSOR;
 end MYPACKAGE;
+/
+
+/*==============================================================*/
+/* Table: TBL_LOWERCOMPUTERPROGRAMUPGRADE                                   */
+/*==============================================================*/
+create table TBL_LOWERCOMPUTERPROGRAMUPGRADE
+(
+  id              NUMBER(10) not null,
+  deviceid        NUMBER(10) not null,
+  boxversion      NVARCHAR2(50),
+  boxupdatestatus NUMBER(1),
+  boxupdatetime   DATE,
+  acversion       NVARCHAR2(50),
+  acupdatestatus  NUMBER(1),
+  acupdatetime    DATE,
+  adversion       NVARCHAR2(50),
+  adupdatestatus  NUMBER(1),
+  adupdatetime    DATE
+)
+tablespace AP_DATA
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_LOWERCOMPUTERPROGRAMUPGRADE add constraint PK_LOWERCOMPUTERPROGRAMUPGRADE primary key (ID)
 /

@@ -1441,7 +1441,7 @@ CREATE OR REPLACE PROCEDURE prd_save_srp_diagram (
        v_POWER_CURVE in tbl_srpacqdata_hist.POWER_CURVE%TYPE,
        v_CURRENT_CURVE in tbl_srpacqdata_hist.CURRENT_CURVE%TYPE,
        v_ResultStatus in NUMBER,
-       v_Fmax in NUMBER,v_Fmin in NUMBER,
+       v_Fmax in NUMBER,v_Fmin in NUMBER,v_Deltaf in NUMBER,
        v_UpStrokeIMax in NUMBER,v_DownStrokeIMax in NUMBER,v_UPStrokeWattMax in NUMBER,v_DownStrokeWattMax in NUMBER,v_IDegreeBalance in NUMBER,v_WattDegreeBalance in NUMBER,
        v_DeltaRadius in NUMBER,
        v_ResultCode in NUMBER,
@@ -1458,11 +1458,8 @@ CREATE OR REPLACE PROCEDURE prd_save_srp_diagram (
        v_LiquidWeightProduction in NUMBER,v_OilWeightProduction in NUMBER,v_WaterWeightProduction in NUMBER,
        v_AvailablePlungerStrokeProd_W in NUMBER,v_PumpClearanceLeakProd_W in NUMBER,
        v_TVLeakWeightProduction in NUMBER,v_SVLeakWeightProduction in NUMBER,v_GasInfluenceProd_W in NUMBER,
-
        v_LevelDifferenceValue in NUMBER,v_CalcProducingfluidLevel in NUMBER,
-
        v_Submergence in NUMBER,
-
        v_averagewatt in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
        v_SurfaceSystemEfficiency in NUMBER,v_WellDownSystemEfficiency in NUMBER,v_SystemEfficiency in NUMBER,
        v_energyper100mlift in NUMBER,v_area in NUMBER,
@@ -1494,7 +1491,7 @@ begin
           t.position_curve=v_POSITION_CURVE,t.load_curve=v_LOAD_CURVE,
           t.power_curve=v_POWER_CURVE,t.current_curve=v_CURRENT_CURVE,
           t.resultstatus=v_ResultStatus,
-          t.fmax=v_Fmax,t.fmin=v_Fmin,
+          t.fmax=v_Fmax,t.fmin=v_Fmin,t.deltaf=v_Deltaf,
           t.upstrokeimax=v_UpStrokeIMax,t.downstrokeimax=v_DownStrokeIMax,t.upstrokewattmax=v_UPStrokeWattMax,t.downstrokewattmax=v_DownStrokeWattMax,t.idegreebalance=v_IDegreeBalance,t.wattdegreebalance=v_WattDegreeBalance,
           t.deltaradius=v_DeltaRadius,
           t.resultcode=v_ResultCode,
@@ -1531,8 +1528,7 @@ begin
           t.realtimeliquidweightproduction=v_LiquidWeightProduction,
           t.realtimeoilweightproduction=v_OilWeightProduction,t.realtimewaterweightproduction=v_WaterWeightProduction
       where t.deviceid=v_wellId;
-  commit;
-
+    commit;
   update tbl_srpacqdata_hist t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
           t.fesdiagramsrc=v_fesdiagramSrc,
@@ -1541,7 +1537,7 @@ begin
           t.position_curve=v_POSITION_CURVE,t.load_curve=v_LOAD_CURVE,
           t.power_curve=v_POWER_CURVE,t.current_curve=v_CURRENT_CURVE,
           t.resultstatus=v_ResultStatus,
-          t.fmax=v_Fmax,t.fmin=v_Fmin,
+          t.fmax=v_Fmax,t.fmin=v_Fmin,t.deltaf=v_Deltaf,
           t.upstrokeimax=v_UpStrokeIMax,t.downstrokeimax=v_DownStrokeIMax,t.upstrokewattmax=v_UPStrokeWattMax,t.downstrokewattmax=v_DownStrokeWattMax,t.idegreebalance=v_IDegreeBalance,t.wattdegreebalance=v_WattDegreeBalance,
           t.deltaradius=v_DeltaRadius,
           t.resultcode=v_ResultCode,
@@ -1591,7 +1587,7 @@ end prd_save_srp_diagram;
 CREATE OR REPLACE PROCEDURE prd_save_srp_diagramcaldata (
        v_recordId in NUMBER,
        v_ResultStatus in NUMBER,
-       v_Fmax in NUMBER,v_Fmin in NUMBER,
+       v_Fmax in NUMBER,v_Fmin in NUMBER,v_Deltaf in NUMBER,
        v_UpStrokeIMax in NUMBER,v_DownStrokeIMax in NUMBER,v_UPStrokeWattMax in NUMBER,v_DownStrokeWattMax in NUMBER,v_IDegreeBalance in NUMBER,v_WattDegreeBalance in NUMBER,
        v_DeltaRadius in NUMBER,
        v_ResultCode in NUMBER,
@@ -1608,11 +1604,8 @@ CREATE OR REPLACE PROCEDURE prd_save_srp_diagramcaldata (
        v_LiquidWeightProduction in NUMBER,v_OilWeightProduction in NUMBER,v_WaterWeightProduction in NUMBER,
        v_AvailablePlungerStrokeProd_W in NUMBER,v_PumpClearanceLeakProd_W in NUMBER,
        v_TVLeakWeightProduction in NUMBER,v_SVLeakWeightProduction in NUMBER,v_GasInfluenceProd_W in NUMBER,
-
        v_LevelDifferenceValue in NUMBER,v_CalcProducingfluidLevel in NUMBER,
-
        v_Submergence in NUMBER,
-
        v_averagewatt in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
        v_SurfaceSystemEfficiency in NUMBER,v_WellDownSystemEfficiency in NUMBER,v_SystemEfficiency in NUMBER,
        v_energyper100mlift in NUMBER,v_area in NUMBER,
@@ -1637,7 +1630,7 @@ CREATE OR REPLACE PROCEDURE prd_save_srp_diagramcaldata (
 begin
   update tbl_srpacqdata_hist t
       set t.resultstatus=v_ResultStatus,
-          t.fmax=v_Fmax,t.fmin=v_Fmin,
+          t.fmax=v_Fmax,t.fmin=v_Fmin,t.deltaf=v_Deltaf,
           t.upstrokeimax=v_UpStrokeIMax,t.downstrokeimax=v_DownStrokeIMax,t.upstrokewattmax=v_UPStrokeWattMax,t.downstrokewattmax=v_DownStrokeWattMax,t.idegreebalance=v_IDegreeBalance,t.wattdegreebalance=v_WattDegreeBalance,
           t.deltaradius=v_DeltaRadius,
           t.resultcode=v_ResultCode,
@@ -1992,7 +1985,7 @@ CREATE OR REPLACE PROCEDURE prd_save_srp_diagram_vacuate (
        v_POWER_CURVE in tbl_srpacqdata_vacuate.POWER_CURVE%TYPE,
        v_CURRENT_CURVE in tbl_srpacqdata_vacuate.CURRENT_CURVE%TYPE,
        v_ResultStatus in NUMBER,
-       v_Fmax in NUMBER,v_Fmin in NUMBER,
+       v_Fmax in NUMBER,v_Fmin in NUMBER,v_Deltaf in NUMBER,
        v_UpStrokeIMax in NUMBER,v_DownStrokeIMax in NUMBER,v_UPStrokeWattMax in NUMBER,v_DownStrokeWattMax in NUMBER,v_IDegreeBalance in NUMBER,v_WattDegreeBalance in NUMBER,
        v_DeltaRadius in NUMBER,
        v_ResultCode in NUMBER,
@@ -2009,11 +2002,8 @@ CREATE OR REPLACE PROCEDURE prd_save_srp_diagram_vacuate (
        v_LiquidWeightProduction in NUMBER,v_OilWeightProduction in NUMBER,v_WaterWeightProduction in NUMBER,
        v_AvailablePlungerStrokeProd_W in NUMBER,v_PumpClearanceLeakProd_W in NUMBER,
        v_TVLeakWeightProduction in NUMBER,v_SVLeakWeightProduction in NUMBER,v_GasInfluenceProd_W in NUMBER,
-
        v_LevelDifferenceValue in NUMBER,v_CalcProducingfluidLevel in NUMBER,
-
        v_Submergence in NUMBER,
-
        v_averagewatt in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
        v_SurfaceSystemEfficiency in NUMBER,v_WellDownSystemEfficiency in NUMBER,v_SystemEfficiency in NUMBER,
        v_energyper100mlift in NUMBER,v_area in NUMBER,
@@ -2045,7 +2035,7 @@ begin
           t.position_curve=v_POSITION_CURVE,t.load_curve=v_LOAD_CURVE,
           t.power_curve=v_POWER_CURVE,t.current_curve=v_CURRENT_CURVE,
           t.resultstatus=v_ResultStatus,
-          t.fmax=v_Fmax,t.fmin=v_Fmin,
+          t.fmax=v_Fmax,t.fmin=v_Fmin,t.deltaf=v_Deltaf,
           t.upstrokeimax=v_UpStrokeIMax,t.downstrokeimax=v_DownStrokeIMax,t.upstrokewattmax=v_UPStrokeWattMax,t.downstrokewattmax=v_DownStrokeWattMax,t.idegreebalance=v_IDegreeBalance,t.wattdegreebalance=v_WattDegreeBalance,
           t.deltaradius=v_DeltaRadius,
           t.resultcode=v_ResultCode,
@@ -2175,14 +2165,17 @@ CREATE OR REPLACE PROCEDURE prd_update_device ( v_recordId in NUMBER,
                                                     v_commissioningDate in varchar2,
                                                     v_sortNum  in NUMBER,
                                                     v_result out NUMBER,
-                                                    v_resultstr out varchar2) as
+                                                    v_resultstr out varchar2,
+                                                    v_collisionDeviceId out NUMBER,
+                                                    v_isCheckout in NUMBER) as
   wellcount number :=0;
   othercount number :=0;
   otherDeviceAllPath varchar2(3000) := '';
   p_msg varchar2(3000) := 'error';
 begin
   --验证权限
-  select count(1) into wellcount from tbl_device t
+  if v_isCheckout=1 then
+    select count(1) into wellcount from tbl_device t
   where t.devicename=v_deviceName and t.id<>v_recordId
   and t.orgid=( select t2.orgid from tbl_device t2 where t2.id=v_recordId);
     if wellcount=0 then
@@ -2209,6 +2202,7 @@ begin
            commit;
            v_result:=1;
            v_resultstr := '修改成功';
+           v_collisionDeviceId:=0;
            p_msg := '修改成功';
         elsif othercount>0 then
           select substr(v.path_zh_cn||'/'||t.devicename,2) into otherDeviceAllPath
@@ -2226,8 +2220,13 @@ begin
               and to_number(t2.slave)=to_number(v_slave)
               and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
               and t2.id<>v_recordId);
+          select t2.id into v_collisionDeviceId from tbl_device t2
+              where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+              and to_number(t2.slave)=to_number(v_slave)
+              and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
+              and t2.id<>v_recordId;
           v_result:=-22;
-          v_resultstr :='设备'||v_deviceName||'注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
+          v_resultstr :=otherDeviceAllPath;
           p_msg := '设备'||v_deviceName||'注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
         end if;
     else
@@ -2235,6 +2234,27 @@ begin
       v_resultstr :='同组织下已存在设备'||v_deviceName||'，保存无效';
       p_msg := '同组织下已存在设备'||v_deviceName||'，保存无效';
     end if;
+  elsif v_isCheckout=0 then
+    Update tbl_device t
+           Set t.devicename=v_deviceName,
+               t.applicationscenarios=v_applicationScenarios,
+               t.calculatetype=(select t2.id from tbl_tabmanager_device t2 where t2.name=v_deviceTabInstance and rownum=1),
+               t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and rownum=1),
+               t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and rownum=1),
+               t.reportinstancecode=(select t2.code from tbl_protocolreportinstance t2 where t2.name=v_reportInstance and rownum=1),
+               t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and rownum=1),
+               t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
+               t.status=v_status,
+               t.commissioningdate=to_date(v_commissioningDate,'yyyy-mm-dd'),
+               t.sortnum=v_sortNum,
+               t.productiondataupdatetime=sysdate
+           Where t.id=v_recordId;
+           commit;
+           v_result:=1;
+           v_resultstr := '修改成功';
+           v_collisionDeviceId:=0;
+           p_msg := '修改成功';
+  end if;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then

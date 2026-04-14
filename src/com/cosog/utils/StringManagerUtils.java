@@ -963,9 +963,6 @@ public class StringManagerUtils {
 
     public static boolean isNum(String str) {
         return isNotNull(str) && str != null && (str.matches("^[-+]?(([0-9]+)([.]([0-9]+))?|([.]([0-9]+))?)$") || str.matches("^[+-]?(\\d+(\\.\\d*)?|\\.\\d+)([eE][+-]?\\d+)?$"));
-        
-        
-        
     }
     
     /**
@@ -4011,31 +4008,37 @@ public class StringManagerUtils {
     public static String objectListToString(List < Object > list, ModbusProtocolConfig.Items item) {
         StringBuffer jsonBuffer = new StringBuffer();
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) == null) {
+            if (list.get(i) == null && !StringManagerUtils.isNotNull(list.get(i)+"")) {
                 jsonBuffer.append(",");
             } else if ("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")) {
                 String value=list.get(i) + "";
-                if(value.toUpperCase().contains("E")){
-                	value=StringManagerUtils.scientificNotationToNormal(value);
-                }else{
-                	value=dataFormat(value,item.getPrec());
+                if(StringManagerUtils.isNum(value)){
+                	if(value.toUpperCase().contains("E")){
+                    	value=StringManagerUtils.scientificNotationToNormal(value);
+                    }else{
+                    	value=dataFormat(value,item.getPrec());
+                    }
                 }
             	jsonBuffer.append(value + ",");
             } else if ("float32".equalsIgnoreCase(item.getIFDataType())) {
             	String value=list.get(i) + "";
-                if(value.toUpperCase().contains("E")){
-                	value=StringManagerUtils.scientificNotationToNormal(value);
-                }else{
-                 	value=dataFormat(value,item.getPrec());
-                }
+            	if(StringManagerUtils.isNum(value)){
+            		if(value.toUpperCase().contains("E")){
+                    	value=StringManagerUtils.scientificNotationToNormal(value);
+                    }else{
+                     	value=dataFormat(value,item.getPrec());
+                    }
+            	}
              	jsonBuffer.append(value + ",");
             } else if ("float64".equalsIgnoreCase(item.getIFDataType())) {
             	 String value=list.get(i) + "";
-                 if(value.toUpperCase().contains("E")){
-                 	value=StringManagerUtils.scientificNotationToNormal(value);
-                 }else{
-                  	value=dataFormat(value,item.getPrec());
-                 }
+            	 if(StringManagerUtils.isNum(value)){
+            		 if(value.toUpperCase().contains("E")){
+                      	value=StringManagerUtils.scientificNotationToNormal(value);
+                      }else{
+                       	value=dataFormat(value,item.getPrec());
+                      }
+            	 }
              	 jsonBuffer.append(value + ",");
             } else if ("string".equalsIgnoreCase(item.getIFDataType())) {
                 jsonBuffer.append(list.get(i) + ",");

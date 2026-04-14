@@ -374,3 +374,15 @@ BEGIN
   SELECT seq_tabmanager_device.nextval INTO :new.id FROM dual;
 end;
 /
+
+CREATE OR REPLACE TRIGGER trg_b_timingrecorddata_i   before  insert on tbl_timingrecorddata FOR EACH ROW
+BEGIN
+  SELECT seq_timingrecorddata.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_lowercomputerprogramupgrade_i   before  insert on TBL_LOWERCOMPUTERPROGRAMUPGRADE FOR EACH ROW
+BEGIN
+  SELECT SEQ_LOWERCOMPUTERPROGRAMUPGRADE.nextval INTO :new.id FROM dual;
+end;
+/

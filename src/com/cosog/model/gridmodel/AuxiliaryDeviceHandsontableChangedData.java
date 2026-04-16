@@ -37,6 +37,8 @@ public class AuxiliaryDeviceHandsontableChangedData {
 
 	    private String type="";
 
+	    private String manufacturer="";
+	    
 	    private String model="";
 	    
 	    private String remark="";
@@ -109,6 +111,14 @@ public class AuxiliaryDeviceHandsontableChangedData {
 
 		public void setSaveStr(String saveStr) {
 			this.saveStr = saveStr;
+		}
+
+		public String getManufacturer() {
+			return manufacturer;
+		}
+
+		public void setManufacturer(String manufacturer) {
+			this.manufacturer = manufacturer;
 		}
 	}
 }

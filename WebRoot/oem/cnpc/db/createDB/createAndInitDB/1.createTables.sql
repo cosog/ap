@@ -940,7 +940,7 @@ create table TBL_AUXILIARYDEVICE
   name         VARCHAR2(200),
   type         NUMBER(2) default 0,
   model        VARCHAR2(200),
-  sort         NUMBER(10) not null,
+  sort         NUMBER(10),
   remark       VARCHAR2(2000),
   manufacturer VARCHAR2(200),
   specifictype NUMBER(2) default 0,

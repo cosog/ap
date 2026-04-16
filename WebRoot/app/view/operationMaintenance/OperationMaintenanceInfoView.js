@@ -1949,7 +1949,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                     			}
                     		},'-',{
                     			xtype: 'button',
-                    			text: loginUserLanguageResource.boxProgramUpgrade,
+                    			text: loginUserLanguageResource.acProgramUpgrade,
                     			iconCls: 'downlink',
                     			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     			handler: function (v, o) {

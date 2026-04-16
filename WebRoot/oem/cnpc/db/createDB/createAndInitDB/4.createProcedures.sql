@@ -2114,6 +2114,7 @@ CREATE OR REPLACE PROCEDURE prd_update_auxiliarydevice (
                                                        v_id in number,
                                                        v_name in varchar2,
                                                        v_type in number,
+                                                       v_manufacturer in varchar2,
                                                        v_model in varchar2,
                                                        v_remark in varchar2,
                                                        v_sort in number,
@@ -2126,7 +2127,7 @@ CREATE OR REPLACE PROCEDURE prd_update_auxiliarydevice (
 begin
   select count(1) into counts from tbl_auxiliarydevice t where t.name=v_name and t.type=v_type and t.model=v_model and t.id<>v_id;
   if counts=0 then
-    update tbl_auxiliarydevice t set t.remark=v_remark,t.sort=v_sort,t.name=v_name,t.model=v_model,t.type=v_type
+    update tbl_auxiliarydevice t set t.remark=v_remark,t.sort=v_sort,t.name=v_name,t.manufacturer=v_manufacturer, t.model=v_model,t.type=v_type
     where t.id=v_id;
     commit;
     v_result:=1;

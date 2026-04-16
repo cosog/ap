@@ -4537,21 +4537,22 @@ public class BaseDao extends HibernateDaoSupport {
 		PreparedStatement ps=null;
 		List<AuxiliaryDeviceHandsontableChangedData.Updatelist> collisionList=new ArrayList<AuxiliaryDeviceHandsontableChangedData.Updatelist>();
 		try {
-			cs = conn.prepareCall("{call prd_update_auxiliarydevice(?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_update_auxiliarydevice(?,?,?,?,?,?,?,?,?)}");
 			if(auxiliaryDeviceHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<auxiliaryDeviceHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getName())){
 						cs.setString(1, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getId());
 						cs.setString(2, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getName());
 						cs.setInt(3, deviceType);
-						cs.setString(4, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getModel());
-						cs.setString(5, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getRemark());
-						cs.setString(6, StringManagerUtils.isInteger(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getSort())?auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getSort():"9999");
-						cs.registerOutParameter(7, Types.INTEGER);
-						cs.registerOutParameter(8,Types.VARCHAR);
+						cs.setString(4, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getManufacturer());
+						cs.setString(5, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getModel());
+						cs.setString(6, auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getRemark());
+						cs.setString(7, StringManagerUtils.isInteger(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getSort())?auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).getSort():"9999");
+						cs.registerOutParameter(8, Types.INTEGER);
+						cs.registerOutParameter(9,Types.VARCHAR);
 						cs.executeUpdate();
-						int saveSign=cs.getInt(7);
-						String saveResultStr=cs.getString(8);
+						int saveSign=cs.getInt(8);
+						String saveResultStr=cs.getString(9);
 						auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
 						auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
 						collisionList.add(auxiliaryDeviceHandsontableChangedData.getUpdatelist().get(i));
@@ -4568,14 +4569,15 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(1, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getId());
 						cs.setString(2, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getName());
 						cs.setInt(3, deviceType);
-						cs.setString(4, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getModel());
-						cs.setString(5, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getRemark());
-						cs.setString(6, StringManagerUtils.isInteger(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getSort())?auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getSort():"9999");
-						cs.registerOutParameter(7, Types.INTEGER);
-						cs.registerOutParameter(8,Types.VARCHAR);
+						cs.setString(4, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getManufacturer());
+						cs.setString(5, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getModel());
+						cs.setString(6, auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getRemark());
+						cs.setString(7, StringManagerUtils.isInteger(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getSort())?auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).getSort():"9999");
+						cs.registerOutParameter(8, Types.INTEGER);
+						cs.registerOutParameter(9,Types.VARCHAR);
 						cs.executeUpdate();
-						int saveSign=cs.getInt(7);
-						String saveResultStr=cs.getString(8);
+						int saveSign=cs.getInt(8);
+						String saveResultStr=cs.getString(9);
 						auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
 						auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
 						collisionList.add(auxiliaryDeviceHandsontableChangedData.getInsertlist().get(i));

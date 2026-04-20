@@ -88,13 +88,20 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore', {
                         			classes=record.childNodes[0].data.classes;
                         		}
                         	}
-                        	CreateDatabaseColumnMappingTable(classes,record.data.deviceType,protocolCode,protocolName);
                         	
-                        	var databaseColumnMappingTableRunStatusItemsGridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id");
-                        	if (isNotVal(databaseColumnMappingTableRunStatusItemsGridPanel)) {
-                        		databaseColumnMappingTableRunStatusItemsGridPanel.getStore().load();
-                        	}else{
-                        		Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsStore');
+                        	
+                        	var tabPanel = Ext.getCmp("DatabaseColumnMappingCalculateConfigTabPanel_Id");
+                        	if(tabPanel){
+                        		if(tabPanel.getActiveTab().id=='DatabaseColumnMappingTablePanel_Id'){
+                        			CreateDatabaseColumnMappingTable(classes,record.data.deviceType,protocolCode,protocolName);
+                        		}else if(tabPanel.getActiveTab().id=="DatabaseColumnMappingTableRunStatusConfigPanel_Id"){
+                        			var databaseColumnMappingTableRunStatusItemsGridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id");
+                                	if (isNotVal(databaseColumnMappingTableRunStatusItemsGridPanel)) {
+                                		databaseColumnMappingTableRunStatusItemsGridPanel.getStore().load();
+                                	}else{
+                                		Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsStore');
+                                	}
+                            	}
                         	}
                         }
                     }

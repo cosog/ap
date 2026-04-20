@@ -91,11 +91,13 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsSto
             		}
             	}
         	}
+        	var tabPanel = Ext.getCmp("DatabaseColumnMappingCalculateConfigTabPanel_Id");
+        	var showInfo=tabPanel.getActiveTab().title;
         	if(isNotVal(protocolName)){
-				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle("【<font color=red>"+protocolName+"</font>】"+"/"+loginUserLanguageResource.runStatusConfig);
-			}else{
-				Ext.getCmp("DatabaseColumnMappingTableRunStatusConfigPanel_Id").setTitle(loginUserLanguageResource.runStatusConfig);
-			}
+        		showInfo="【<font color=red>"+protocolName+"</font>】"+showInfo+"&nbsp;"
+        	}
+        	Ext.getCmp("DatabaseColumnMappingCalculateConfigLabel_Id").setHtml(showInfo);
+            Ext.getCmp("DatabaseColumnMappingCalculateConfigLabel_Id").show();
             
             
             gridPanel.getSelectionModel().deselectAll(true);

@@ -245,9 +245,6 @@ public class DriverAPIController extends BaseController{
 							realtimeTotalInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 							realtimeTotalInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 							realtimeTotalInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-							
-							
-							
 						}
 						String key=deviceInfo.getId()+"";
 						

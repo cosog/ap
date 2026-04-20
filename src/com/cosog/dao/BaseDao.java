@@ -1144,9 +1144,6 @@ public class BaseDao extends HibernateDaoSupport {
 				}
 			}
 			
-			
-			
-			
 			if(wellHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
 					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceName())){

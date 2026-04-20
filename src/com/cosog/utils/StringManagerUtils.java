@@ -119,14 +119,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.mail.util.MailSSLSocketFactory;
 
-//import org.apache.commons.lang.xwork.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.web.multipart.MultipartFile;
 
 import net.sf.json.JSONObject;
-import oracle.sql.CLOB;
 
 /**
  * <p>
@@ -1175,13 +1173,7 @@ public class StringManagerUtils {
 
     public static String replaceAll(String str) {
         String newStr = str.replaceAll("\"", "");
-        // String s = "\"aasd\"a\"";
         String result = null;
-        // Pattern p = Pattern.compile("(?m)^\"(.+)\"$");
-        // Matcher m = p.matcher(newStr);
-        // if (m.find()) {
-        // result = m.group(1);
-        // }
         result = newStr.trim();
         return result;
 

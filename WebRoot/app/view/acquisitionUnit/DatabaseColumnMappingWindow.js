@@ -13,9 +13,9 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: '90%',
-    minWidth: 1200,
-    height: '90%',
+    width: '65%',
+    minWidth: 800,
+    height: '80%',
     minHeight: 700,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
@@ -26,20 +26,38 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
             layout: "border",
             items: [{
             	region: 'west',
-            	width:'15%',
+            	width:'20%',
             	layout: 'fit',
             	split: true,
                 collapsible: true,
             	id:"DatabaseColumnMappingTableLeftTreePanel_Id"
             },{
             	region: 'center',
-            	layout: "border",
+            	xtype: 'tabpanel',
             	border: false,
-            	items: [{
-            		region: 'center',
-                	title:loginUserLanguageResource.generalCaclualteConfig,
-                	id:'DatabaseColumnMappingTablePanel_Id',
-                	layout: 'fit',
+            	header: false,
+            	id:"DatabaseColumnMappingCalculateConfigTabPanel_Id",
+                activeTab: 0,
+                tabBar:{
+            		items: [{
+                        xtype: 'tbfill'
+                    },{
+                    	xtype: 'label',
+                    	id: 'DatabaseColumnMappingCalculateConfigLabel_Id',
+                    	hidden:true,
+                    	html: ''
+                    },{
+                    	xtype: 'label',
+                    	hidden:false,
+                    	html: '&nbsp;'
+                    }]
+            	},
+            	items:[{
+                	border: false,
+                	iconCls: 'check3',
+                	id:"DatabaseColumnMappingTablePanel_Id",
+                    title:loginUserLanguageResource.generalCaclualteConfig,
+                    layout: 'fit',
                 	header:true,
                 	tbar: ['->',{
                     	xtype: 'button',
@@ -68,8 +86,6 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                         }
                 	}
             	},{
-                	region: 'east',
-                	width:'50%',
                 	title:loginUserLanguageResource.runStatusConfig,
                 	id:'DatabaseColumnMappingTableRunStatusConfigPanel_Id',
                 	layout: "border",
@@ -106,7 +122,51 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                         	id:"DatabaseColumnMappingTableRunStatusMeaningPanel2_Id"
                     	}]
                 	}]
-            	}]
+            	}],
+            	listeners: {
+                	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+                		if(oldCard!=undefined){
+                			oldCard.setIconCls(null);
+                		}
+                		if(newCard!=undefined){
+                			newCard.setIconCls('check3');
+                		}
+        			},
+        			tabchange: function (tabPanel, newCard, oldCard, obj) {
+        				var selectionModel=Ext.getCmp("DatabaseColumnProtocolTreeGridPanel_Id").getSelectionModel();
+        				if(selectionModel!=undefined && selectionModel.getSelection().length>0){
+        					var record= selectionModel.getSelection()[0];
+        					var protocolName='';
+                        	var protocolCode="";
+                        	var classes=1;
+                        	if(record.data.classes==1){
+                        		protocolCode=record.data.code;
+                        		protocolName=record.data.text;
+                        		classes=record.data.classes;
+                        	}else{
+                        		if(record.childNodes.length>0){
+                        			protocolCode=record.childNodes[0].data.code;
+                        			protocolName=record.childNodes[0].data.text;
+                        			classes=record.childNodes[0].data.classes;
+                        		}
+                        	}
+                        	
+                        	if(newCard.id=="DatabaseColumnMappingTablePanel_Id"){
+                    			CreateDatabaseColumnMappingTable(classes,record.data.deviceType,protocolCode,protocolName);
+                        	}else if(newCard.id=="DatabaseColumnMappingTableRunStatusConfigPanel_Id"){
+                        		var databaseColumnMappingTableRunStatusItemsGridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusItemsGridPanel_Id");
+                            	if (isNotVal(databaseColumnMappingTableRunStatusItemsGridPanel)) {
+                            		databaseColumnMappingTableRunStatusItemsGridPanel.getStore().load();
+                            	}else{
+                            		Ext.create('AP.store.acquisitionUnit.DatabaseColumnMappingTableRunStatusItemsStore');
+                            	}
+                        	}
+        				}
+        				
+        				
+                    	
+                    }
+                }
             }],
             listeners: {
                 beforeclose: function ( panel, eOpts) {
@@ -127,16 +187,25 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
 });
 
 function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protocolName){
+	var tabPanel = Ext.getCmp("DatabaseColumnMappingCalculateConfigTabPanel_Id");
+	var showInfo=tabPanel.getActiveTab().title;
+	if(isNotVal(protocolName)){
+		showInfo="【<font color=red>"+protocolName+"</font>】"+showInfo+"&nbsp;"
+	}
+	Ext.getCmp("DatabaseColumnMappingCalculateConfigLabel_Id").setHtml(showInfo);
+    Ext.getCmp("DatabaseColumnMappingCalculateConfigLabel_Id").show();
+	
+	
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getDatabaseColumnMappingTable',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-			if(isNotVal(protocolName)){
-				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle("【<font color=red>"+protocolName+"</font>】"+"/"+loginUserLanguageResource.generalCaclualteConfig);
-			}else{
-				Ext.getCmp("DatabaseColumnMappingTablePanel_Id").setTitle(loginUserLanguageResource.generalCaclualteConfig);
-			}
+			
+			
+			
+			
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");
 				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.protocolFieldName+"','"+loginUserLanguageResource.dataColumn+"','"+loginUserLanguageResource.calculationColumn+"','"+loginUserLanguageResource.enable+"']";

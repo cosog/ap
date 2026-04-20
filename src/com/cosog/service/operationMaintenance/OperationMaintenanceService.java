@@ -639,6 +639,8 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 			result_json.append("\"signinid\":\""+obj[2]+"\",");
 			result_json.append("\"slave\":\""+obj[3]+"\",");
 			
+			result_json.append("\"RPCStatus\":\""+languageResourceMap.get("unknown")+"\",");
+			
 			result_json.append("\"boxVersion\":\""+obj[4]+"\",");
 			result_json.append("\"boxUpdateStatus\":\""+obj[5]+"\",");
 			result_json.append("\"boxUpdateTime\":\""+obj[6]+"\",");

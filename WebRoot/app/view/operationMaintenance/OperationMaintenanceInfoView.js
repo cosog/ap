@@ -1972,7 +1972,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                     			}
                     		},'-',{
                     			xtype: 'button',
-                    			text: loginUserLanguageResource.versionUplink,
+                    			text: loginUserLanguageResource.statusDetection,
                     			iconCls: 'uplink',
                     			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     			handler: function (v, o) {
@@ -4200,6 +4200,7 @@ function lowerComputerProgramVersionDataBatchUplink(deviceIdList,name){
                 		for(var j=0;j<result.uplinkData.length;j++){
                 			if(result.uplinkData[j].deviceId==deviceIdArr[i]){
                 				lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(i,'lowerComputerDeviceId',result.uplinkData[j].lowerComputerDeviceId);
+                				lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(i,'RPCStatus',result.uplinkData[j].RPCStatus);
                 				if(name=='box'){
             	            		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(i,'boxVersion',result.uplinkData[j].boxVersion);
             	            	}else if(name=='ac'){
@@ -4216,11 +4217,11 @@ function lowerComputerProgramVersionDataBatchUplink(deviceIdList,name){
 	            	
 	            	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
 	            	if(name=='box'){
-	            		plugin.showColumns([4]);
+	            		plugin.showColumns([5]);
 	            	}else if(name=='ac'){
-	            		plugin.showColumns([9]);
+	            		plugin.showColumns([10]);
 	            	}else if(name==''){
-	            		plugin.showColumns([4,9]);
+	            		plugin.showColumns([5,10]);
 	            	}
 	            	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
 	            } 
@@ -4272,15 +4273,17 @@ function lowerComputerProgramVersionDataUplink(row,name){
             	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
             	if(name=='box'){
             		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxVersion',result.msg);
-            		plugin.showColumns([4]);
+            		plugin.showColumns([5]);
             	}else if(name=='ac'){
             		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acVersion',result.msg);
-            		plugin.showColumns([9]);
+            		plugin.showColumns([10]);
             	}else if(name==''){
             		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxVersion',result.msg);
             		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acVersion',result.msg);
-            		plugin.showColumns([4,9]);
+            		plugin.showColumns([5,10]);
             	}
+            	
+            	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'RPCStatus',loginUserLanguageResource.unknown);
             	
             	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
                 
@@ -4289,16 +4292,16 @@ function lowerComputerProgramVersionDataUplink(row,name){
             	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
             	if(name=='box'){
             		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxVersion',result.boxVersion);
-            		plugin.showColumns([4]);
+            		plugin.showColumns([5]);
             	}else if(name=='ac'){
             		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acVersion',result.acVersion);
-            		plugin.showColumns([9]);
+            		plugin.showColumns([10]);
             	}else if(name==''){
             		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxVersion',result.boxVersion);
             		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acVersion',result.acVersion);
-            		plugin.showColumns([4,9]);
+            		plugin.showColumns([5,10]);
             	}
-            	
+            	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'RPCStatus',result.RPCStatus);
             	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
             } 
         },
@@ -4345,10 +4348,10 @@ function lowerComputerProgramUpgrade(row, name) {
     	const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
     	if(name=='box'){
     		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',loginUserLanguageResource.downlinking+'...');
-    		plugin.showColumns([7]);
+    		plugin.showColumns([8]);
     	}else if(name=='ac'){
     		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',loginUserLanguageResource.downlinking+'...');
-    		plugin.showColumns([12]);
+    		plugin.showColumns([13]);
     	}
     	lowerComputerProgramUpgradeHandsontableHelper.hot.render();
     	Ext.Ajax.request({
@@ -4486,11 +4489,12 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 			if(lowerComputerProgramUpgradeHandsontableHelper==null || lowerComputerProgramUpgradeHandsontableHelper.hot==undefined){
 				lowerComputerProgramUpgradeHandsontableHelper = LowerComputerProgramUpgradeHandsontableHelper.createNew("OperationMaintenanceLowerComputerProgramUpgradeDiv_Id");
 				var colHeaders=[
-					['','','','',{label: '采控程序', colspan: 5},{label:'计算程序', colspan: 5},'',''],
+					['','','','','',{label: loginUserLanguageResource.boxProgram, colspan: 5},{label:loginUserLanguageResource.acProgram, colspan: 5},'',''],
 					['',loginUserLanguageResource.idx,loginUserLanguageResource.deviceName,
 					loginUserLanguageResource.uplink,
-					'边缘版本','更新状态','更新时间',loginUserLanguageResource.downlinkStatus,loginUserLanguageResource.downlink,
-					'边缘版本','更新状态','更新时间',loginUserLanguageResource.downlinkStatus,loginUserLanguageResource.downlink,
+					loginUserLanguageResource.RPCStatus,
+					loginUserLanguageResource.boxProgramVersion,loginUserLanguageResource.updateStatus,loginUserLanguageResource.updateTime,loginUserLanguageResource.downlinkStatus,loginUserLanguageResource.downlink,
+					loginUserLanguageResource.boxProgramVersion,loginUserLanguageResource.updateStatus,loginUserLanguageResource.updateTime,loginUserLanguageResource.downlinkStatus,loginUserLanguageResource.downlink,
 					'lowerComputerDeviceId',
 					'deviceId']
 				];
@@ -4501,13 +4505,14 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 					{
                         data: 'uplink',
                         renderer: createLowerComputerProgramUpgradeButtonRenderer(
-                        		loginUserLanguageResource.versionUplink,
+                        		loginUserLanguageResource.statusDetection,
                                 (instance, td, row, col, prop, value, cellProperties) => 
                                     lowerComputerProgramVersionDataUplink(row, ''),
                                 '#409eff'  // 蓝色
                             ),
                         readOnly: true
                     },
+					{data:'RPCStatus'}, 
                     {data:'boxVersion'},
 					{data:'boxUpdateStatus'}, 
 					{data:'boxUpdateTime'}, 
@@ -4565,6 +4570,7 @@ function loadLowerComputerProgramUpgradeDeviceList(){
                 	lowerComputerProgramUpgradeHandsontableHelper.createTable(result.totalRoot);
                 }
 			}else{
+				lowerComputerProgramUpgradeHandsontableHelper.hot.deselectCell();
 				if(result.totalRoot.length==0){
                 	lowerComputerProgramUpgradeHandsontableHelper.hiddenRows = [0];
                 	lowerComputerProgramUpgradeHandsontableHelper.createTable([{}]);
@@ -4572,6 +4578,24 @@ function loadLowerComputerProgramUpgradeDeviceList(){
                 	lowerComputerProgramUpgradeHandsontableHelper.hiddenRows = [];
                 	lowerComputerProgramUpgradeHandsontableHelper.createTable(result.totalRoot);
                 }
+			}
+			
+			
+			if(result.totalRoot.length>0){
+				var selectRow=0;
+				var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
+				for(var i=0;i<result.totalRoot.length;i++){
+					if(result.totalRoot[i].deviceId==selectedDeviceId){
+						selectRow=i;
+						break;
+					}
+				}
+				lowerComputerProgramUpgradeHandsontableHelper.hot.selectCell(selectRow,'deviceName');
+				var recordDeviceId=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(selectRow,'deviceId');
+				var combDeviceName=Ext.getCmp('lowerComputerProgramUpgradeDeviceListComb_Id').getValue();
+        		if(combDeviceName!=''){
+            		Ext.getCmp("selectedDeviceId_global").setValue(recordDeviceId);
+        		}
 			}
 		},
 		failure:function(){
@@ -4662,7 +4686,7 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	            	data: data,
 	                hiddenColumns: {
-	                    columns: [4,7,9,12,14,15],
+	                    columns: [5,8,10,13,15,16],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -4671,7 +4695,7 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	            	colWidths: [2,3,10,5,10,10,10,10,5,10,10,10,10,5,10,10],
+	            	colWidths: [2,3,10,5,5,10,10,10,10,5,10,10,10,10,5,10,10],
 	                columns: lowerComputerProgramUpgradeHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -4685,6 +4709,7 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                outsideClickDeselects:false,
 	                contextMenu: {
 	                    items: {
 	                        "copy": {
@@ -4712,6 +4737,26 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	                    }   
 	                    
 	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                	if(row<0 && row2<0){//只选中表头
+	                		
+	                	}else{
+	                		if(row<0){
+	                    		row=0;
+	                    	}
+	                    	if(row2<0){
+	                    		row2=0;
+	                    	}
+	                    	var startRow=row;
+	                    	var endRow=row2;
+	                    	if(row>row2){
+	                    		startRow=row2;
+	                        	endRow=row;
+	                    	}
+	                    	var recordDeviceId=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(startRow,'deviceId');
+	                    	Ext.getCmp("selectedDeviceId_global").setValue(recordDeviceId);
+	                	}
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(coords.col>=0 && coords.row>=0 && lowerComputerProgramUpgradeHandsontableHelper!=null&&lowerComputerProgramUpgradeHandsontableHelper.hot!=''&&lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined && lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtCell!=undefined){

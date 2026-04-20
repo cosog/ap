@@ -5500,18 +5500,29 @@ public class WellInformationManagerController extends BaseController {
 							
 //							statusMap.put("ADVersion", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"ADVersion",userInfo.getLanguageName()));
 							statusMap.put("LowerComputerDeviceId", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"LowerComputerDeviceId",userInfo.getLanguageName()));
+							String RPCStatus=languageResourceMap.get("unknown");
 							
+//							statusMap.put("LowerComputerDeviceId", "101010101010");
+							if(StringManagerUtils.isNotNull(statusMap.get("LowerComputerDeviceId")) 
+									&& !languageResourceMap.get("noUplink").equalsIgnoreCase(statusMap.get("LowerComputerDeviceId"))
+									&& !languageResourceMap.get("uplinkFailed").equalsIgnoreCase(statusMap.get("LowerComputerDeviceId"))){
+								
+								String requestData="{\"ID\": \""+statusMap.get("LowerComputerDeviceId")+"\",\"Topic\": \"id\"}";
+								String responseData=StringManagerUtils.sendPostMethod(Config.getInstance().configFile.getAd().getSrp().getReadTopicReq(), requestData, "utf-8",10*60,10*60);
+								StringManagerUtils.printLog("RPC状态探测,设备ID:"+statusMap.get("LowerComputerDeviceId")+",request:"+requestData+",response:"+responseData,1);
+								
+								Gson gson = new Gson();
+								java.lang.reflect.Type reflectType = new TypeToken<ResultStatusData>() {}.getType();
+								ResultStatusData resultStatusData=gson.fromJson(responseData, reflectType);
+								RPCStatus=resultStatusData!=null&&resultStatusData.getResultStatus()==1?languageResourceMap.get("online"):languageResourceMap.get("offline");
+							}
 						
-							
-							StringBuffer result_json = new StringBuffer();
-							result_json.append("{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\","
+							jsonLogin="{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\","
 									+ "\"boxVersion\":\""+(statusMap.containsKey("BoxVersion")?statusMap.get("BoxVersion"):"")+"\","
 									+ "\"acVersion\":\""+(statusMap.containsKey("ACVersion")?statusMap.get("ACVersion"):"")+"\","
 									+ "\"adVersion\":\""+(statusMap.containsKey("ADVersion")?statusMap.get("ADVersion"):"")+"\","
-									+ "\"lowerComputerDeviceId\":\""+statusMap.get("LowerComputerDeviceId")+"\"");
-							
-							result_json.append("}");
-							jsonLogin=result_json.toString();
+									+ "\"lowerComputerDeviceId\":\""+statusMap.get("LowerComputerDeviceId")+"\","
+									+ "\"RPCStatus\":\""+RPCStatus+"\"}";
 						} else {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:\"" + languageResourceMap.get("deviceOffline") + "\"}";
 						}
@@ -5573,6 +5584,7 @@ public class WellInformationManagerController extends BaseController {
 						String deviceId=obj[obj.length-1]+"";
 						
 						String boxVersion="",acVersion="",lowerComputerDeviceId="";
+						String RPCStatus=languageResourceMap.get("unknown");
 						
 						result_json.append("{\"deviceId\":"+deviceId+",");
 						
@@ -5588,6 +5600,20 @@ public class WellInformationManagerController extends BaseController {
 									acVersion=dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"ACVersion",userInfo.getLanguageName());
 								}
 								lowerComputerDeviceId=dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"LowerComputerDeviceId",userInfo.getLanguageName());
+								
+								if(StringManagerUtils.isNotNull(lowerComputerDeviceId) 
+										&& !languageResourceMap.get("noUplink").equalsIgnoreCase(lowerComputerDeviceId)
+										&& !languageResourceMap.get("uplinkFailed").equalsIgnoreCase(lowerComputerDeviceId)){
+									
+									String requestData="{\"ID\": \""+lowerComputerDeviceId+"\",\"Topic\": \"id\"}";
+									String responseData=StringManagerUtils.sendPostMethod(Config.getInstance().configFile.getAd().getSrp().getReadTopicReq(), requestData, "utf-8",10*60,10*60);
+									StringManagerUtils.printLog("RPC状态探测,设备ID:"+lowerComputerDeviceId+",request:"+requestData+",response:"+responseData,1);
+									
+									Gson gson = new Gson();
+									java.lang.reflect.Type reflectType = new TypeToken<ResultStatusData>() {}.getType();
+									ResultStatusData resultStatusData=gson.fromJson(responseData, reflectType);
+									RPCStatus=resultStatusData!=null&&resultStatusData.getResultStatus()==1?languageResourceMap.get("online"):languageResourceMap.get("offline");
+								}
 							} else {
 								boxVersion=languageResourceMap.get("deviceOffline");
 								acVersion=languageResourceMap.get("deviceOffline");
@@ -5598,7 +5624,7 @@ public class WellInformationManagerController extends BaseController {
 							acVersion=languageResourceMap.get("protocolConfigurationError");
 							lowerComputerDeviceId=languageResourceMap.get("protocolConfigurationError");
 						}
-						result_json.append("\"boxVersion\":\""+boxVersion+"\",\"acVersion\":\""+acVersion+"\",\"lowerComputerDeviceId\":\""+lowerComputerDeviceId+"\"},");
+						result_json.append("\"boxVersion\":\""+boxVersion+"\",\"acVersion\":\""+acVersion+"\",\"lowerComputerDeviceId\":\""+lowerComputerDeviceId+"\",\"RPCStatus\":\""+RPCStatus+"\"},");
 					}
 					if(result_json.toString().endsWith(",")){
 						result_json.deleteCharAt(result_json.length() - 1);

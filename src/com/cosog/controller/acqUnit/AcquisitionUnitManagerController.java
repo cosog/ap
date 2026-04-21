@@ -4639,6 +4639,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String saveDatabaseColumnMappingTable() throws Exception {
 		String data = ParamUtils.getParameter(request, "data");
 		String protocolType = ParamUtils.getParameter(request, "protocolType");
+		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
 		protocolType="0";
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -4651,7 +4652,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<DatabaseMappingProHandsontableChangedData>() {}.getType();
 		DatabaseMappingProHandsontableChangedData databaseMappingProHandsontableChangedData=gson.fromJson(data, type);
 		if(databaseMappingProHandsontableChangedData!=null){
-			this.acquisitionUnitManagerService.saveDatabaseColumnMappingTable(databaseMappingProHandsontableChangedData,protocolType,language);
+			this.acquisitionUnitManagerService.saveDatabaseColumnMappingTable(databaseMappingProHandsontableChangedData,protocolCode,language);
+			MemoryDataManagerTask.loadProtocolCalculateColumnConfig();
 			EquipmentDriverServerTask.syncDataMappingTable();
 			if(user!=null){
 				this.service.saveSystemLog(user,2,languageResourceMap.get("updateColumnMapping"));

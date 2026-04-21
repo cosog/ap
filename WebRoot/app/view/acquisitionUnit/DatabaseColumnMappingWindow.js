@@ -202,10 +202,6 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 		url:context + '/acquisitionUnitManagerController/getDatabaseColumnMappingTable',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-			
-			
-			
-			
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");
 				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.protocolFieldName+"','"+loginUserLanguageResource.dataColumn+"','"+loginUserLanguageResource.calculationColumn+"','"+loginUserLanguageResource.enable+"']";
@@ -219,6 +215,7 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 				databaseColumnMappingHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				databaseColumnMappingHandsontableHelper.columns=Ext.JSON.decode(columns);
 				databaseColumnMappingHandsontableHelper.calColumnDropdown=result.calColumnNameList;
+				databaseColumnMappingHandsontableHelper.protocolCode=protocolCode;
 				if(result.totalRoot.length==0){
 					databaseColumnMappingHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
@@ -226,6 +223,7 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 				}
 			}else{
 				databaseColumnMappingHandsontableHelper.calColumnDropdown=result.calColumnNameList;
+				databaseColumnMappingHandsontableHelper.protocolCode=protocolCode;
 				databaseColumnMappingHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 		},
@@ -252,6 +250,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 	        databaseColumnMappingHandsontableHelper.delidslist=[];
 	        databaseColumnMappingHandsontableHelper.insertlist=[];
 	        databaseColumnMappingHandsontableHelper.calColumnDropdown=[];
+	        databaseColumnMappingHandsontableHelper.protocolCode=null;
 	        
 	        databaseColumnMappingHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -465,7 +464,8 @@ var DatabaseColumnMappingHandsontableHelper = {
 		            		},
 		            		params: {
 		                    	data: JSON.stringify(databaseColumnMappingHandsontableHelper.AllData),
-		                    	protocolType: protocolType
+		                    	protocolType: protocolType,
+		                    	protocolCode: databaseColumnMappingHandsontableHelper.protocolCode
 		                    }
 		            	}); 
 		            } else {

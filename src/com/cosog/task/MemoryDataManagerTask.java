@@ -30,6 +30,7 @@ import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.AuxiliaryDeviceAddInfo;
 import com.cosog.model.Code;
 import com.cosog.model.DataMapping;
+import com.cosog.model.DataMappingColumnCalculateConfig;
 import com.cosog.model.DataSourceConfig;
 import com.cosog.model.DataWriteBackConfig;
 import com.cosog.model.KeyValue;
@@ -106,6 +107,9 @@ public class MemoryDataManagerTask {
 		
 		loadProtocolRunStatusConfig();
 		System.out.println("加载协议运行状态配置完成");
+		
+		loadProtocolCalculateColumnConfig();
+		System.out.println("加载协议计算字段配置完成");
 		
 		loadReportTemplateConfig();
 		System.out.println("加载报表模板完成");
@@ -306,6 +310,7 @@ public class MemoryDataManagerTask {
 		cleanData("ProtocolMappingColumnByTitle");
 		cleanData("CalculateColumnInfo");
 		cleanData("ProtocolRunStatusConfig");
+		cleanData("ProtocolCalculateColumnConfig");
 		
 		cleanData("AcqInstanceOwnItem");
 		cleanData("DisplayInstanceOwnItem");
@@ -759,7 +764,10 @@ public class MemoryDataManagerTask {
 					+ " t.resolutionmode,t.runvalue,t.stopvalue,t.runcondition,t.stopcondition,"
 					+ " t.protocoltype,"
 					+ " t.bitindex "
-					+ " from tbl_runstatusconfig t order by t.protocoltype,t.id";
+					+ " from tbl_runstatusconfig t "
+					+ " where 1=1"
+					+ " order by t.id";
+			
 			List<Object[]> list=OracleJdbcUtis.query(sql);
 			for(Object[] obj:list){
 				ProtocolRunStatusConfig protocolRunStatusConfig=new ProtocolRunStatusConfig();
@@ -848,6 +856,55 @@ public class MemoryDataManagerTask {
 				
 				String key=(protocolRunStatusConfig.getProtocol()+"_"+protocolRunStatusConfig.getItemMappingColumn()).toUpperCase();
 				jedis.hset("ProtocolRunStatusConfig".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(protocolRunStatusConfig));//哈希(Hash)
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+	}
+	
+	public static DataMappingColumnCalculateConfig getProtocolCalculateColumnConfig(String key){
+		DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=null;
+		Jedis jedis=null;
+		if(!existsKey("ProtocolCalculateColumnConfig")){
+			MemoryDataManagerTask.loadProtocolCalculateColumnConfig();
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(jedis.hget("ProtocolCalculateColumnConfig".getBytes(), key.getBytes())!=null){
+				dataMappingColumnCalculateConfig=(DataMappingColumnCalculateConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolCalculateColumnConfig".getBytes(), key.getBytes()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return dataMappingColumnCalculateConfig;
+	}
+	
+	public static void loadProtocolCalculateColumnConfig(){
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			jedis.del("ProtocolCalculateColumnConfig".getBytes());
+			String sql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.calcolumn,t.calculateenable from tbl_calculatecolumnconfig t order by t.protocol,t.id";
+			
+			List<Object[]> list=OracleJdbcUtis.query(sql);
+			for(Object[] obj:list){
+				DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=new DataMappingColumnCalculateConfig();
+				dataMappingColumnCalculateConfig.setId(StringManagerUtils.stringTransferInteger(obj[0]+""));
+				dataMappingColumnCalculateConfig.setProtocol(obj[1]+"");
+				dataMappingColumnCalculateConfig.setItemName(obj[2]+"");
+				dataMappingColumnCalculateConfig.setItemMappingColumn(obj[3]+"");
+				dataMappingColumnCalculateConfig.setCalColumn(obj[4]+"");
+				dataMappingColumnCalculateConfig.setCalculateEnable(StringManagerUtils.stringTransferInteger(obj[5]+""));
+				String key=(dataMappingColumnCalculateConfig.getProtocol()+"_"+dataMappingColumnCalculateConfig.getItemMappingColumn()).toUpperCase();
+				jedis.hset("ProtocolCalculateColumnConfig".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(dataMappingColumnCalculateConfig));//哈希(Hash)
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

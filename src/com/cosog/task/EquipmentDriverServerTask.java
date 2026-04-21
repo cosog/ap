@@ -631,26 +631,25 @@ public class EquipmentDriverServerTask {
 		return result;
 	}
 	
-	public static int syncProtocolRunStatusConfig(){
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		if(modbusProtocolConfig==null){
-			return 0;
-		}
-		int result=0;
-		try {
-			String deleteRunStatusConfigSql="delete from tbl_runstatusconfig t where t.id not in"
-					+ "( select t2.id from tbl_runstatusconfig t2,tbl_datamapping t3 "
-					+ " where t2.protocoltype=t3.protocoltype and t2.itemname=t3.name "
-					+ " and t2.itemmappingcolumn=t3.mappingcolumn "
-//					+ "and upper(t3.calcolumn)='RUNSTATUS'"
-					+ ")";
-			result=OracleJdbcUtis.executeSqlUpdate(deleteRunStatusConfigSql);
-			MemoryDataManagerTask.loadProtocolRunStatusConfig();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
+//	public static int syncProtocolRunStatusConfig(){
+//		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+//		if(modbusProtocolConfig==null){
+//			return 0;
+//		}
+//		int result=0;
+//		try {
+//			String deleteRunStatusConfigSql="delete from tbl_runstatusconfig t where t.id not in"
+//					+ "( select t2.id from tbl_runstatusconfig t2,tbl_datamapping t3 "
+//					+ " where t2.itemname=t3.name "
+//					+ " and t2.itemmappingcolumn=t3.mappingcolumn "
+//					+ ")";
+//			result=OracleJdbcUtis.executeSqlUpdate(deleteRunStatusConfigSql);
+//			MemoryDataManagerTask.loadProtocolRunStatusConfig();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return result;
+//	}
 	
 
 	public static int loadAcquisitionItemColumns(){

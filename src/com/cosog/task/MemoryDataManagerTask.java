@@ -108,7 +108,7 @@ public class MemoryDataManagerTask {
 		loadProtocolRunStatusConfig();
 		System.out.println("加载协议运行状态配置完成");
 		
-		loadProtocolCalculateColumnConfig();
+		loadProtocolCalculateColumnConfig("");
 		System.out.println("加载协议计算字段配置完成");
 		
 		loadReportTemplateConfig();
@@ -310,7 +310,6 @@ public class MemoryDataManagerTask {
 		cleanData("ProtocolMappingColumnByTitle");
 		cleanData("CalculateColumnInfo");
 		cleanData("ProtocolRunStatusConfig");
-		cleanData("ProtocolCalculateColumnConfig");
 		
 		cleanData("AcqInstanceOwnItem");
 		cleanData("DisplayInstanceOwnItem");
@@ -587,27 +586,27 @@ public class MemoryDataManagerTask {
 //		return list;
 //	}
 	
-	public static DataMapping getDataMappingByCalColumn(String protocolCode,String calColumn){
-		DataMapping dataMapping=null;
-		try{
-			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
-			if(protocol!=null){
-				Map<String,DataMapping> loadProtocolMappingColumnMap=getProtocolMappingColumn();
-				for (String key : loadProtocolMappingColumnMap.keySet()) {
-					if(calColumn.equalsIgnoreCase(loadProtocolMappingColumnMap.get(key).getCalColumn())){
-						ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(key).getName());
-						if(item!=null){
-							dataMapping=loadProtocolMappingColumnMap.get(key);
-							break;
-						}
-					}
-		        }
-			}
-		}catch(Exception e){
-			
-		}
-		return dataMapping;
-	}
+//	public static DataMapping getDataMappingByCalColumn(String protocolCode,String calColumn){
+//		DataMapping dataMapping=null;
+//		try{
+//			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
+//			if(protocol!=null){
+//				Map<String,DataMapping> loadProtocolMappingColumnMap=getProtocolMappingColumn();
+//				for (String key : loadProtocolMappingColumnMap.keySet()) {
+//					if(calColumn.equalsIgnoreCase(loadProtocolMappingColumnMap.get(key).getCalColumn())){
+//						ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, loadProtocolMappingColumnMap.get(key).getName());
+//						if(item!=null){
+//							dataMapping=loadProtocolMappingColumnMap.get(key);
+//							break;
+//						}
+//					}
+//		        }
+//			}
+//		}catch(Exception e){
+//			
+//		}
+//		return dataMapping;
+//	}
 	
 	public static Map<String,DataMapping> getProtocolMappingColumn(){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
@@ -629,7 +628,8 @@ public class MemoryDataManagerTask {
 			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 			Map<String,DataMapping> loadProtocolMappingColumnMap=new LinkedHashMap<String,DataMapping>();
 			
-			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes,t.calculateEnable "
+			String sql="select t.id,t.name,t.mappingcolumn,"
+					+ "t.protocoltype,t.mappingmode,t.repetitiontimes "
 					+ "from TBL_DATAMAPPING t "
 					+ "order by t.protocoltype,t.id";
 			List<Object[]> list=OracleJdbcUtis.query(sql);
@@ -638,11 +638,9 @@ public class MemoryDataManagerTask {
 				dataMapping.setId(StringManagerUtils.stringToInteger(obj[0]+""));
 				dataMapping.setName(obj[1]+"");
 				dataMapping.setMappingColumn(obj[2]+"");
-				dataMapping.setCalColumn(obj[3]+"");
-				dataMapping.setProtocolType(StringManagerUtils.stringToInteger(obj[4]+""));
-				dataMapping.setMappingMode(StringManagerUtils.stringToInteger(obj[5]+""));
-				dataMapping.setRepetitionTimes(StringManagerUtils.stringToInteger(obj[6]+""));
-				dataMapping.setCalculateEnable(StringManagerUtils.stringToInteger(obj[7]+""));
+				dataMapping.setProtocolType(StringManagerUtils.stringToInteger(obj[3]+""));
+				dataMapping.setMappingMode(StringManagerUtils.stringToInteger(obj[4]+""));
+				dataMapping.setRepetitionTimes(StringManagerUtils.stringToInteger(obj[5]+""));
 				loadProtocolMappingColumnMap.put(dataMapping.getMappingColumn(), dataMapping);
 			}
 			dataModelMap.put("ProtocolMappingColumn", loadProtocolMappingColumnMap);
@@ -692,7 +690,8 @@ public class MemoryDataManagerTask {
 				rootKey="ProtocolExtendedFieldMappingColumnByTitle";
 			}
 			
-			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes,t.calculateEnable "
+			String sql="select t.id,t.name,t.mappingcolumn,"
+					+ "t.protocoltype,t.mappingmode,t.repetitiontimes "
 					+ "from TBL_DATAMAPPING t "
 					+ "where 1=1";
 			if(type==1){
@@ -708,11 +707,9 @@ public class MemoryDataManagerTask {
 				dataMapping.setId(StringManagerUtils.stringToInteger(obj[0]+""));
 				dataMapping.setName(obj[1]+"");
 				dataMapping.setMappingColumn(obj[2]+"");
-				dataMapping.setCalColumn(obj[3]+"");
-				dataMapping.setProtocolType(StringManagerUtils.stringToInteger(obj[4]+""));
-				dataMapping.setMappingMode(StringManagerUtils.stringToInteger(obj[5]+""));
-				dataMapping.setRepetitionTimes(StringManagerUtils.stringToInteger(obj[6]+""));
-				dataMapping.setCalculateEnable(StringManagerUtils.stringToInteger(obj[7]+""));
+				dataMapping.setProtocolType(StringManagerUtils.stringToInteger(obj[3]+""));
+				dataMapping.setMappingMode(StringManagerUtils.stringToInteger(obj[4]+""));
+				dataMapping.setRepetitionTimes(StringManagerUtils.stringToInteger(obj[5]+""));
 				loadProtocolMappingColumnByTitleMap.put(dataMapping.getName(), dataMapping);
 			}
 			dataModelMap.put(rootKey, loadProtocolMappingColumnByTitleMap);
@@ -866,33 +863,166 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static DataMappingColumnCalculateConfig getProtocolCalculateColumnConfig(String key){
+	public static DataMappingColumnCalculateConfig getDataMappingColumnCalculateConfig(int protocolId,String itemMappingColumn){
 		DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=null;
-		Jedis jedis=null;
-		if(!existsKey("ProtocolCalculateColumnConfig")){
-			MemoryDataManagerTask.loadProtocolCalculateColumnConfig();
-		}
-		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			if(jedis.hget("ProtocolCalculateColumnConfig".getBytes(), key.getBytes())!=null){
-				dataMappingColumnCalculateConfig=(DataMappingColumnCalculateConfig)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolCalculateColumnConfig".getBytes(), key.getBytes()));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolById(protocolId);
+		if(protocol!=null){
+			dataMappingColumnCalculateConfig=getDataMappingColumnCalculateConfig(protocol.getCode(),itemMappingColumn);
 		}
 		return dataMappingColumnCalculateConfig;
 	}
 	
-	public static void loadProtocolCalculateColumnConfig(){
-		Jedis jedis=null;
+	public static DataMappingColumnCalculateConfig getDataMappingColumnCalculateConfig(String protocol,String itemMappingColumn){
+		DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=null;
+		Map<String,DataMappingColumnCalculateConfig> map=getProtocolCalculateColumnConfig(protocol);
+		if(map!=null && map.containsKey(itemMappingColumn.toUpperCase())){
+			dataMappingColumnCalculateConfig=map.get(itemMappingColumn.toUpperCase());
+		}
+		return dataMappingColumnCalculateConfig;
+	}
+	
+	public static Map<String,DataMappingColumnCalculateConfig> DataMappingColumnCalculateConfig(int protocolId){
+		Map<String,DataMappingColumnCalculateConfig> map=new HashMap<>();
+		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolById(protocolId);
+		if(protocol!=null){
+			map=getProtocolCalculateColumnConfig(protocol.getCode());
+		}
+		return map;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Map<String,DataMappingColumnCalculateConfig> getProtocolCalculateColumnConfig(String protocol){
+		Map<String,DataMappingColumnCalculateConfig> map=new HashMap<>();
+		
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		if(!dataModelMap.containsKey("ProtocolCalculateColumnConfig")){
+			loadProtocolCalculateColumnConfig("");
+		}
 		try {
-			jedis = RedisUtil.jedisPool.getResource();
-			jedis.del("ProtocolCalculateColumnConfig".getBytes());
-			String sql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.calcolumn,t.calculateenable from tbl_calculatecolumnconfig t order by t.protocol,t.id";
+			Map<String,Map<String,DataMappingColumnCalculateConfig>> calColumnMap=(Map<String, Map<String,DataMappingColumnCalculateConfig>>) dataModelMap.get("ProtocolCalculateColumnConfig");
+			if(calColumnMap!=null){
+				map=calColumnMap.get(protocol);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			
+		}
+		return map;
+	
+	}
+	
+	public static DataMappingColumnCalculateConfig getDataMappingColumnCalculateConfigByCal(int protocolId,String itemCalColumn){
+		DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=null;
+		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolById(protocolId);
+		if(protocol!=null){
+			dataMappingColumnCalculateConfig=getDataMappingColumnCalculateConfigByCal(protocol.getCode(),itemCalColumn);
+		}
+		return dataMappingColumnCalculateConfig;
+	}
+	
+	public static DataMappingColumnCalculateConfig getDataMappingColumnCalculateConfigByCal(String protocol,String itemCalColumn){
+		DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=null;
+		Map<String,DataMappingColumnCalculateConfig> map=getProtocolCalculateColumnConfigByCal(protocol);
+		if(map!=null && map.containsKey(itemCalColumn.toUpperCase())){
+			dataMappingColumnCalculateConfig=map.get(itemCalColumn.toUpperCase());
+		}
+		return dataMappingColumnCalculateConfig;
+	}
+	
+	public static Map<String,DataMappingColumnCalculateConfig> getProtocolCalculateColumnConfigByCal(int protocolId){
+		Map<String,DataMappingColumnCalculateConfig> map=new HashMap<>();
+		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolById(protocolId);
+		if(protocol!=null){
+			map=getProtocolCalculateColumnConfigByCal(protocol.getCode());
+		}
+		return map;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Map<String,DataMappingColumnCalculateConfig> getProtocolCalculateColumnConfigByCal(String protocol){
+		Map<String,DataMappingColumnCalculateConfig> map=new HashMap<>();
+		
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		if(!dataModelMap.containsKey("ProtocolCalculateColumnConfigByCal")){
+			loadProtocolCalculateColumnConfig("");
+		}
+		try {
+			Map<String,Map<String,DataMappingColumnCalculateConfig>> calColumnMap=(Map<String, Map<String,DataMappingColumnCalculateConfig>>) dataModelMap.get("ProtocolCalculateColumnConfigByCal");
+			if(calColumnMap!=null){
+				map=calColumnMap.get(protocol);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			
+		}
+		return map;
+	}
+	
+	public static void delProtocolCalculateColumnConfig(int protocolId){
+		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolById(protocolId);
+		if(protocol!=null){
+			delProtocolCalculateColumnConfig(protocol.getCode());
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void delProtocolCalculateColumnConfig(String protocol){
+		try {
+			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			if(dataModelMap.containsKey("ProtocolCalculateColumnConfig")){
+				Map<String,Map<String,DataMappingColumnCalculateConfig>> map=(Map<String, Map<String,DataMappingColumnCalculateConfig>>) dataModelMap.get("ProtocolCalculateColumnConfig");
+				map.remove(protocol);
+			}
+			if(dataModelMap.containsKey("ProtocolCalculateColumnConfigByCal")){
+				Map<String,Map<String,DataMappingColumnCalculateConfig>> map=(Map<String, Map<String,DataMappingColumnCalculateConfig>>) dataModelMap.get("ProtocolCalculateColumnConfigByCal");
+				map.remove(protocol);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			
+		}
+	}
+	
+	public static void loadProtocolCalculateColumnConfig(int protocolId){
+		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolById(protocolId);
+		if(protocol!=null){
+			loadProtocolCalculateColumnConfig(protocol.getCode());
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void loadProtocolCalculateColumnConfig(String protocol){
+//		Jedis jedis=null;
+		try {
+			Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+			if(!dataModelMap.containsKey("ProtocolCalculateColumnConfig")){
+				dataModelMap.put("ProtocolCalculateColumnConfig", new HashMap<String,Map<String,DataMappingColumnCalculateConfig>>());
+			}
+			if(!dataModelMap.containsKey("ProtocolCalculateColumnConfigByCal")){
+				dataModelMap.put("ProtocolCalculateColumnConfigByCal", new HashMap<String,Map<String,DataMappingColumnCalculateConfig>>());
+			}
+			
+			Map<String,Map<String,DataMappingColumnCalculateConfig>> map=(Map<String, Map<String,DataMappingColumnCalculateConfig>>) dataModelMap.get("ProtocolCalculateColumnConfig");
+			Map<String,Map<String,DataMappingColumnCalculateConfig>> calColumnMap=(Map<String, Map<String,DataMappingColumnCalculateConfig>>) dataModelMap.get("ProtocolCalculateColumnConfigByCal");
+			
+			//清除已有内容
+			if(StringManagerUtils.isNotNull(protocol)){
+				map.remove(protocol);
+				calColumnMap.remove(protocol);
+			}else{
+				map.clear();
+				calColumnMap.clear();
+			}
+			
+			String sql="select t.id,t.protocol,t.itemname,t.itemmappingcolumn,t.calcolumn,t.calculateenable from tbl_calculatecolumnconfig t "
+					+ " where 1=1";
+			if(StringManagerUtils.isNotNull(protocol)){
+				sql+=" and t.protocol='"+protocol+"'";
+			}
+			sql+= "order by t.protocol,t.id";
 			
 			List<Object[]> list=OracleJdbcUtis.query(sql);
 			for(Object[] obj:list){
@@ -903,15 +1033,39 @@ public class MemoryDataManagerTask {
 				dataMappingColumnCalculateConfig.setItemMappingColumn(obj[3]+"");
 				dataMappingColumnCalculateConfig.setCalColumn(obj[4]+"");
 				dataMappingColumnCalculateConfig.setCalculateEnable(StringManagerUtils.stringTransferInteger(obj[5]+""));
-				String key=(dataMappingColumnCalculateConfig.getProtocol()+"_"+dataMappingColumnCalculateConfig.getItemMappingColumn()).toUpperCase();
-				jedis.hset("ProtocolCalculateColumnConfig".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(dataMappingColumnCalculateConfig));//哈希(Hash)
+				
+				if(!map.containsKey(dataMappingColumnCalculateConfig.getProtocol())){
+					map.put(dataMappingColumnCalculateConfig.getProtocol(), new HashMap<>());
+				}
+				map.get(dataMappingColumnCalculateConfig.getProtocol()).put(dataMappingColumnCalculateConfig.getItemMappingColumn().toUpperCase(), dataMappingColumnCalculateConfig);
+				
+				if(!calColumnMap.containsKey(dataMappingColumnCalculateConfig.getProtocol())){
+					calColumnMap.put(dataMappingColumnCalculateConfig.getProtocol(), new HashMap<>());
+				}
+				calColumnMap.get(dataMappingColumnCalculateConfig.getProtocol()).put(dataMappingColumnCalculateConfig.getCalColumn().toUpperCase(), dataMappingColumnCalculateConfig);
 			}
+			
+			
+			
+//			jedis = RedisUtil.jedisPool.getResource();
+//			if(jedis!=null){
+//				Iterator<Map.Entry<String,Map<String,DataMappingColumnCalculateConfig>>> it = map.entrySet().iterator();
+//				while(it.hasNext()){
+//					Map.Entry<String,Map<String,DataMappingColumnCalculateConfig>> entry = it.next();
+//					jedis.hset("ProtocolCalculateColumnConfig".getBytes(), entry.getKey().getBytes(), SerializeObjectUnils.serialize(entry.getValue()));
+//				}
+//				Iterator<Map.Entry<String,Map<String,DataMappingColumnCalculateConfig>>> it2 = calColumnMap.entrySet().iterator();
+//				while(it2.hasNext()){
+//					Map.Entry<String,Map<String,DataMappingColumnCalculateConfig>> entry = it2.next();
+//					jedis.hset("ProtocolCalculateColumnConfigByCal".getBytes(), entry.getKey().getBytes(), SerializeObjectUnils.serialize(entry.getValue()));
+//				}
+//			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
-			if(jedis!=null){
-				jedis.close();
-			}
+//			if(jedis!=null){
+//				jedis.close();
+//			}
 		}
 	}
 	

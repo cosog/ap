@@ -53,43 +53,11 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                     }]
             	},
             	items:[{
-                	border: false,
-                	iconCls: 'check3',
-                	id:"DatabaseColumnMappingTablePanel_Id",
-                    title:loginUserLanguageResource.generalCaclualteConfig,
-                    layout: 'fit',
-                	header:true,
-                	tbar: ['->',{
-                    	xtype: 'button',
-            			text: loginUserLanguageResource.save,
-            			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
-            			iconCls: 'save',
-            			handler: function (v, o) {
-            				databaseColumnMappingHandsontableHelper.saveData();
-            			}
-                    }],
-                	html: '<div id="DatabaseColumnMappingTableDiv_Id" style="width:100%;height:100%;"></div>',
-                	listeners: {
-                		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(databaseColumnMappingHandsontableHelper!=null&&databaseColumnMappingHandsontableHelper.hot!=null&&databaseColumnMappingHandsontableHelper.hot!=undefined){
-                        		var newWidth=width;
-                        		var newHeight=height-22-1;
-                        		var header=thisPanel.getHeader();
-                        		if(header){
-                        			newHeight=newHeight-header.lastBox.height-2;
-                        		}
-                        		databaseColumnMappingHandsontableHelper.hot.updateSettings({
-                        			width:newWidth,
-                        			height:newHeight
-                        		});
-                        	}
-                        }
-                	}
-            	},{
                 	title:loginUserLanguageResource.runStatusConfig,
                 	id:'DatabaseColumnMappingTableRunStatusConfigPanel_Id',
                 	layout: "border",
                 	split: true,
+                	iconCls: 'check3',
                     collapsible: true,
                 	tbar: ['->',{
                     	xtype: 'button',
@@ -122,6 +90,38 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                         	id:"DatabaseColumnMappingTableRunStatusMeaningPanel2_Id"
                     	}]
                 	}]
+            	},{
+                	border: false,
+                	id:"DatabaseColumnMappingTablePanel_Id",
+                    title:loginUserLanguageResource.generalCaclualteConfig,
+                    layout: 'fit',
+                	header:true,
+                	tbar: ['->',{
+                    	xtype: 'button',
+            			text: loginUserLanguageResource.save,
+            			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
+            			iconCls: 'save',
+            			handler: function (v, o) {
+            				databaseColumnMappingHandsontableHelper.saveData();
+            			}
+                    }],
+                	html: '<div id="DatabaseColumnMappingTableDiv_Id" style="width:100%;height:100%;"></div>',
+                	listeners: {
+                		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+                        	if(databaseColumnMappingHandsontableHelper!=null&&databaseColumnMappingHandsontableHelper.hot!=null&&databaseColumnMappingHandsontableHelper.hot!=undefined){
+                        		var newWidth=width;
+                        		var newHeight=height-22-1;
+                        		var header=thisPanel.getHeader();
+                        		if(header){
+                        			newHeight=newHeight-header.lastBox.height-2;
+                        		}
+                        		databaseColumnMappingHandsontableHelper.hot.updateSettings({
+                        			width:newWidth,
+                        			height:newHeight
+                        		});
+                        	}
+                        }
+                	}
             	}],
             	listeners: {
                 	beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {

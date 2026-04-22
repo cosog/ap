@@ -441,7 +441,7 @@ function createHistoryQueryColumn(columnInfo) {
         if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
             myColumns += ",xtype: 'rownumberer',sortable : false,locked:true";
         }
-        else if (attr.dataIndex.toUpperCase()=='wellName'.toUpperCase()) {
+        else if (attr.dataIndex.toUpperCase()=='wellName'.toUpperCase() || attr.dataIndex.toUpperCase()=='deviceName'.toUpperCase()) {
             myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
         }
         else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
@@ -451,7 +451,7 @@ function createHistoryQueryColumn(columnInfo) {
             myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRunStatusColor(value,o,p,e);}";
         }
         else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
-            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
+            myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
         }
 //        else if (attr.dataIndex.toUpperCase()=='resultName'.toUpperCase()) {
 //            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceResultStatusColor(value,o,p,e);}";

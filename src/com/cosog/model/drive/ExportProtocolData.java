@@ -38,10 +38,6 @@ public class ExportProtocolData {
 		private String ItemName;
 		
 		private String ItemMappingColumn;
-		
-		private String ItemCalculateColumn;
-		
-		private int CalculateEnable;
 
 		public String getItemName() {
 			return ItemName;
@@ -57,22 +53,6 @@ public class ExportProtocolData {
 
 		public void setItemMappingColumn(String itemMappingColumn) {
 			ItemMappingColumn = itemMappingColumn;
-		}
-
-		public String getItemCalculateColumn() {
-			return ItemCalculateColumn;
-		}
-
-		public void setItemCalculateColumn(String itemCalculateColumn) {
-			ItemCalculateColumn = itemCalculateColumn;
-		}
-
-		public int getCalculateEnable() {
-			return CalculateEnable;
-		}
-
-		public void setCalculateEnable(int calculateEnable) {
-			CalculateEnable = calculateEnable;
 		}
 	}
 	

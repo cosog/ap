@@ -40,6 +40,7 @@ import com.cosog.model.AuxiliaryDeviceAddInfo;
 import com.cosog.model.AuxiliaryDeviceDetailsSaveData;
 import com.cosog.model.AuxiliaryDeviceInformation;
 import com.cosog.model.DataMapping;
+import com.cosog.model.DataMappingColumnCalculateConfig;
 import com.cosog.model.DeviceInformation;
 import com.cosog.model.ExportAuxiliaryDeviceData;
 import com.cosog.model.ExportPrimaryDeviceData;
@@ -4600,11 +4601,11 @@ public class WellInformationManagerController extends BaseController {
 	
 	public String dataDownlink(String protocolCode,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String writeValue,String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(protocolCode,calColumn);
+		DataMappingColumnCalculateConfig  dataMappingColumnCalculateConfig=MemoryDataManagerTask.getDataMappingColumnCalculateConfigByCal(protocolCode,calColumn);
 		String status=languageResourceMap.get("noDownlink");
 		int reslut=0;
-		if(dataMapping!=null){
-			reslut=deviceControlOperation_Mdubus(protocolCode,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),writeValue);
+		if(dataMappingColumnCalculateConfig!=null){
+			reslut=deviceControlOperation_Mdubus(protocolCode,tcpType,signinid,ipPort,Slave,dataMappingColumnCalculateConfig.getItemMappingColumn(),writeValue);
 			if(reslut==1){
 				status=languageResourceMap.get("downlinkSuccessfully");
 			}else{
@@ -5372,10 +5373,10 @@ public class WellInformationManagerController extends BaseController {
 	
 	public String dataUplink(String protocolCode,String tcpType,String signinid,String ipPort,String Slave,String calColumn,String language){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		DataMapping dataMapping=MemoryDataManagerTask.getDataMappingByCalColumn(protocolCode,calColumn);
+		DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=MemoryDataManagerTask.getDataMappingColumnCalculateConfigByCal(protocolCode,calColumn);
 		String result=languageResourceMap.get("noUplink");
-		if(dataMapping!=null){
-			result=readAddr(protocolCode,tcpType,signinid,ipPort,Slave,dataMapping.getMappingColumn(),language);
+		if(dataMappingColumnCalculateConfig!=null){
+			result=readAddr(protocolCode,tcpType,signinid,ipPort,Slave,dataMappingColumnCalculateConfig.getItemMappingColumn(),language);
 		}
 		return result;
 	}
@@ -5388,6 +5389,8 @@ public class WellInformationManagerController extends BaseController {
 			java.lang.reflect.Type type=null;
 			
 			DataMapping dataMapping=null;
+			DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=null;
+			
 			String col="";
 			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 			HttpSession session=request.getSession();
@@ -5400,6 +5403,7 @@ public class WellInformationManagerController extends BaseController {
 				if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(i).getTitle())){
 					dataMapping=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(i).getTitle());
 					col=dataMapping.getMappingColumn();
+					dataMappingColumnCalculateConfig=MemoryDataManagerTask.getDataMappingColumnCalculateConfig(protocolCode, col);
 					
 				}
 				if(itemCode.equalsIgnoreCase(col)){
@@ -5408,7 +5412,7 @@ public class WellInformationManagerController extends BaseController {
 					break;
 				}
 			}
-			String calColumn=dataMapping!=null?dataMapping.getCalColumn():"";
+			String calColumn=dataMappingColumnCalculateConfig!=null?dataMappingColumnCalculateConfig.getCalColumn():"";
 			String IDOrIPPortKey="ID";
 			String IDOrIPPort=ID;
 			if("TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", ""))){

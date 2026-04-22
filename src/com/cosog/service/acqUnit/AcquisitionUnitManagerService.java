@@ -6492,7 +6492,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
-		String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn from tbl_datamapping t where 1=1 ";
+		String sql="select t.id,t.name,t.mappingcolumn from tbl_datamapping t where 1=1 ";
 		if(StringManagerUtils.stringToInteger(classes)==1){//如果选中的是协议
 			List<String> protocolMappingColumnList=new ArrayList<String>();
 			if(modbusProtocolConfig!=null){
@@ -6550,7 +6550,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<String> itemNameList=new ArrayList<>();
 		List<String> itemShowNameList=new ArrayList<>();
 		List<String> itemColumnList=new ArrayList<>();
-		List<String> calColumnList=new ArrayList<>();
 		List<Integer> resolutionModeList=new ArrayList<>();
 		List<String> bitIndexList=new ArrayList<>();
 		if(modbusProtocolConfig!=null){
@@ -6574,7 +6573,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											itemNameList.add(obj[1]+"");
 											itemShowNameList.add(obj[1]+"/"+itemsMeaning.getMeaning());
 											itemColumnList.add(obj[2]+"");
-											calColumnList.add(obj[3]+"");
 											bitIndexList.add(itemsMeaning.getValue()+"");
 										}
 									}else{
@@ -6585,7 +6583,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										itemNameList.add(obj[1]+"");
 										itemShowNameList.add(obj[1]+"");
 										itemColumnList.add(obj[2]+"");
-										calColumnList.add(obj[3]+"");
 										bitIndexList.add("");
 									}
 									
@@ -6614,7 +6611,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												itemNameList.add(obj[1]+"");
 												itemShowNameList.add(obj[1]+"/"+itemsMeaning.getMeaning());
 												itemColumnList.add(obj[2]+"");
-												calColumnList.add(obj[3]+"");
 												bitIndexList.add(itemsMeaning.getValue()+"");
 											}
 										}else{
@@ -6629,7 +6625,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											itemNameList.add(obj[1]+"");
 											itemShowNameList.add(obj[1]+"");
 											itemColumnList.add(obj[2]+"");
-											calColumnList.add(obj[3]+"");
 											bitIndexList.add("");
 										}
 										
@@ -6657,7 +6652,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										itemNameList.add(obj[1]+"");
 										itemShowNameList.add(obj[1]+"/"+itemsMeaning.getMeaning());
 										itemColumnList.add(obj[2]+"");
-										calColumnList.add(obj[3]+"");
 										bitIndexList.add(itemsMeaning.getValue()+"");
 									}
 								}else{
@@ -6668,7 +6662,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									itemNameList.add(obj[1]+"");
 									itemShowNameList.add(obj[1]+"");
 									itemColumnList.add(obj[2]+"");
-									calColumnList.add(obj[3]+"");
 									bitIndexList.add("");
 								}
 							}
@@ -6696,7 +6689,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											itemNameList.add(obj[1]+"");
 											itemShowNameList.add(obj[1]+"/"+itemsMeaning.getMeaning());
 											itemColumnList.add(obj[2]+"");
-											calColumnList.add(obj[3]+"");
 											bitIndexList.add(itemsMeaning.getValue()+"");
 										}
 									}else{
@@ -6711,7 +6703,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 										itemNameList.add(obj[1]+"");
 										itemShowNameList.add(obj[1]+"");
 										itemColumnList.add(obj[2]+"");
-										calColumnList.add(obj[3]+"");
 										bitIndexList.add("");
 									}
 									
@@ -6733,8 +6724,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			result_json.append("\"itemName\":\""+itemNameList.get(i)+"\",");
 			result_json.append("\"itemShowName\":\""+itemShowNameList.get(i)+"\",");
 			result_json.append("\"itemColumn\":\""+itemColumnList.get(i)+"\",");
-			result_json.append("\"bitIndex\":\""+bitIndexList.get(i)+"\",");
-			result_json.append("\"calColumn\":\""+calColumnList.get(i)+"\"},");
+			result_json.append("\"bitIndex\":\""+bitIndexList.get(i)+"\"},");
 			
 			if(configedRunStatusCol.equalsIgnoreCase(itemColumnList.get(i)) && configedRunStatusBitIndex.equalsIgnoreCase(bitIndexList.get(i))){
 				configedRunStatusIndex=i;
@@ -7303,7 +7293,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						itemNameList.add(exportProtocolConfig.getProtocol().getItems().get(i).getTitle());
 					}
 					if(itemNameList.size()>0){
-						String mappingSql="select t.id,t.name,t.mappingcolumn,t.mappingmode,t.calcolumn,t.repetitiontimes,t.protocoltype "
+						String mappingSql="select t.id,t.name,t.mappingcolumn,t.mappingmode,t.repetitiontimes,t.protocoltype "
 								+ " from TBL_DATAMAPPING t "
 								+ " where t.name in ("+StringManagerUtils.joinStringArr2(itemNameList, ",")+") "
 								+ " order by t.id";
@@ -7316,12 +7306,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									dataMapping.setId(StringManagerUtils.stringToInteger(mappingObj[0]+""));
 									dataMapping.setName(mappingObj[1]+"");
 									dataMapping.setMappingColumn(mappingObj[2]+"");
-									dataMapping.setCalColumn(mappingObj[4]==null?"":(mappingObj[4]+""));
-									dataMapping.setProtocolType(StringManagerUtils.stringToInteger(mappingObj[5]+""));
 									dataMapping.setMappingMode(StringManagerUtils.stringToInteger(mappingObj[3]+""));
-									if(mappingObj[6]!=null){
-										dataMapping.setRepetitionTimes(StringManagerUtils.stringToInteger(mappingObj[6]+""));
+									if(mappingObj[4]!=null){
+										dataMapping.setRepetitionTimes(StringManagerUtils.stringToInteger(mappingObj[4]+""));
 									}
+									dataMapping.setProtocolType(StringManagerUtils.stringToInteger(mappingObj[5]+""));
 									exportProtocolConfig.getDataMappingList().add(dataMapping);
 								}
 							}
@@ -7725,7 +7714,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " and t2.devicetype in ("+allDeviceIds+")"
 				+ " and t2.language in ("+allLanguages+")";
 		
-		String dataMappingSql="select t.name,t.mappingcolumn,t.calcolumn,t.calculateenable from TBL_DATAMAPPING t order by t.id";
+		String dataMappingSql="select t.name,t.mappingcolumn from TBL_DATAMAPPING t order by t.id";
 		
 		List<?> queryProtocolList=this.findCallSql(sql.toString());
 		List<?> queryRunStatusConfigList=this.findCallSql(runStatusConfigSql);
@@ -7736,8 +7725,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			ExportProtocolData.DataMapping dataMapping=new ExportProtocolData.DataMapping();
 			dataMapping.setItemName(obj[0]+"");
 			dataMapping.setItemMappingColumn(obj[1]+"");
-			dataMapping.setItemCalculateColumn(obj[2]+"");
-			dataMapping.setCalculateEnable(StringManagerUtils.stringToInteger(obj[3]+""));
 			dataMappingList.add(dataMapping);
 		}
 		
@@ -9905,11 +9892,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ " and t.mappingcolumn='"+exportProtocolConfig.getDataMappingList().get(i).getMappingColumn()+"' ";
 					List<?> mappingItemList=this.findCallSql(mappingItemSql);
 					if(mappingItemList.size()==0){
-						String addSql="insert into tbl_datamapping(name,mappingcolumn,calcolumn,mappingmode) "
+						String addSql="insert into tbl_datamapping(name,mappingcolumn,mappingmode) "
 								+ " values("
 								+ "'"+exportProtocolConfig.getDataMappingList().get(i).getName()+"',"
 								+ "'"+exportProtocolConfig.getDataMappingList().get(i).getMappingColumn()+"',"
-								+ "'"+exportProtocolConfig.getDataMappingList().get(i).getCalColumn()+"',"
 								+1+")";
 						this.getBaseDao().updateOrDeleteBySql(addSql);
 					}
@@ -10396,6 +10382,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from TBL_PROTOCOL t where t.id in ("+protocolIds+") ";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		//删除运行状态字段关联
+		sql="delete from tbl_runstatusconfig t where t.protocol not in (select t2.code from tbl_protocol t2 )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		//删除计算字段关联
+		sql="delete from tbl_calculatecolumnconfig t where t.protocol not in (select t2.code from tbl_protocol t2 )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
@@ -12051,11 +12045,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(dataMappingList!=null){
 			String updateSql="";
 			for(ExportProtocolData.DataMapping dataMapping:dataMappingList){
-				if(StringManagerUtils.isNotNull(dataMapping.getItemCalculateColumn())){
+				if(StringManagerUtils.isNotNull(dataMapping.getItemMappingColumn())){
 					updateSql="update TBL_DATAMAPPING t set "
-							+ " t.mappingcolumn='"+dataMapping.getItemMappingColumn()+"',"
-							+ " t.calcolumn='"+dataMapping.getItemCalculateColumn()+"',"
-							+ " t.calculateenable= "+dataMapping.getCalculateEnable()
+							+ " t.mappingcolumn='"+dataMapping.getItemMappingColumn()+"'"
 							+ " where t.name='"+dataMapping.getItemName()+"'";
 					r+=this.getBaseDao().updateOrDeleteBySql(updateSql);
 				}
@@ -12311,7 +12303,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				int result=getBaseDao().updateOrDeleteBySql(sql);
 			}
 			MemoryDataManagerTask.loadProtocolRunStatusConfig();
-			MemoryDataManagerTask.loadProtocolCalculateColumnConfig();
+			MemoryDataManagerTask.loadProtocolCalculateColumnConfig(protocol.getCode());
 		}
 		return r;
 	}

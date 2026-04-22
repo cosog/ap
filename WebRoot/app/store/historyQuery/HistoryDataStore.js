@@ -42,7 +42,6 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
                     		} 
                     };
                     
-                    
                     newColumns.splice(1, 0, clickColumn);
                     var bbar = new Ext.PagingToolbar({
                     	store: store,

@@ -291,10 +291,12 @@ var alarmUnitConfigRightTabPanelItems=[{
         items:[{
         	region: 'west',
         	width:'25%',
+            id: 'ModbusProtocolAlarmUnitEnumItemsPanel_Id',
+        	title:loginUserLanguageResource.enumValueList,
         	collapsible: true,
             split: true,
-            id: 'ModbusProtocolAlarmUnitEnumItemsPanel_Id',
-        	title:loginUserLanguageResource.enumValueList
+    		autoScroll: true,
+            layout: "fit"
         },{
         	region: 'center',
             title:loginUserLanguageResource.alarmItemConfig,
@@ -364,10 +366,12 @@ var alarmUnitConfigRightTabPanelItems=[{
         items:[{
         	region: 'west',
         	width:'25%',
+            id: 'ModbusProtocolAlarmUnitSwitchItemsPanel_Id',
+        	title:loginUserLanguageResource.switchingValueList,
         	collapsible: true,
             split: true,
-            id: 'ModbusProtocolAlarmUnitSwitchItemsPanel_Id',
-        	title:loginUserLanguageResource.switchingValueList
+        	autoScroll: true,
+            layout: "fit"
         },{
         	region: 'center',
             title:loginUserLanguageResource.alarmItemConfig,

@@ -2749,6 +2749,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 								
 								this.acquisitionUnitManagerService.doDeleteProtocolAssociation(modbusProtocolConfig.getProtocol().get(j).getId()+"");
 								
+								MemoryDataManagerTask.delProtocolCalculateColumnConfig(modbusProtocolConfig.getProtocol().get(j).getId());
 								modbusProtocolConfig.getProtocol().remove(j);
 								
 								EquipmentDriverServerTask.loadAcquisitionItemColumns();
@@ -3060,8 +3061,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 										+ "where t.type in (0,2,5) "
 										+ "and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolCode()+"'  )"
 										+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+")";
-								service.updateSql(delSql);
-								service.updateSql(delDisplayItemSql);
+								service.getBaseDao().updateOrDeleteBySql(delSql);
+								service.getBaseDao().updateOrDeleteBySql(delDisplayItemSql);
+								
+								delSql="delete from tbl_calculatecolumnconfig t where t.itemname in("+StringManagerUtils.joinStringArr2(delItemList, ",")+") and t.protocol='"+modbusDriverSaveData.getProtocolCode()+"'";
+								service.getBaseDao().updateOrDeleteBySql(delSql);
+								delSql="delete from tbl_runstatusconfig t where t.itemname in("+StringManagerUtils.joinStringArr2(delItemList, ",")+") and t.protocol='"+modbusDriverSaveData.getProtocolCode()+"'";
+								service.getBaseDao().updateOrDeleteBySql(delSql);
 							}
 							
 							if(delSwitchingValueList.size()>0){
@@ -3073,7 +3079,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 											+ " and t.bitindex is not null"
 											+ " and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolCode()+"'  )"
 											+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(delItemTitleList, ",")+")";
-									service.updateSql(delDisplayItemSql);
+									service.getBaseDao().updateOrDeleteBySql(delDisplayItemSql);
 								}
 							}
 							
@@ -3086,7 +3092,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 											+ " and t.bitindex is not null"
 											+ " and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolCode()+"'  )"
 											+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(delItemTitleList, ",")+")";
-									service.updateSql(delDisplayItemSql);
+									service.getBaseDao().updateOrDeleteBySql(delDisplayItemSql);
 								}
 							}
 							
@@ -3106,7 +3112,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 									if(itemBitIndexList.size()>0){
 										delDisplayItemSql+=" and t.bitindex not in ("+StringUtils.join(itemBitIndexList, ",")+")";
 									}
-									service.updateSql(delDisplayItemSql);
+									service.getBaseDao().updateOrDeleteBySql(delDisplayItemSql);
 								}
 							}
 							
@@ -3126,7 +3132,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 									if(itemBitIndexList.size()>0){
 										delDisplayItemSql+=" and t.bitindex not in ("+StringUtils.join(itemBitIndexList, ",")+")";
 									}
-									service.updateSql(delDisplayItemSql);
+									service.getBaseDao().updateOrDeleteBySql(delDisplayItemSql);
 								}
 							}
 							
@@ -3136,7 +3142,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 								String updateSql="update TBL_PROTOCOL t set t.name='"+modbusProtocolConfig.getProtocol().get(i).getName()+"',"
 										+ " t.sort="+modbusProtocolConfig.getProtocol().get(i).getSort()
 										+" where t.code='"+modbusProtocolConfig.getProtocol().get(i).getCode()+"'";
-								service.updateSql(updateSql);
+								service.getBaseDao().updateOrDeleteBySql(updateSql);
 							}else if(saveType==1){
 								String updateProtocolItemsClobSql="update TBL_PROTOCOL t set t.items=? where t.code='"+modbusProtocolConfig.getProtocol().get(i).getCode()+"'";
 								List<String> clobCont=new ArrayList<String>();
@@ -3166,6 +3172,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 					MemoryDataManagerTask.loadAcqInstanceOwnItemByProtocolNameAndType(param1,param2,method);
 					MemoryDataManagerTask.loadAlarmInstanceOwnItemByProtocolNameAndType(param1,param2,method);
 					MemoryDataManagerTask.loadDisplayInstanceOwnItemByProtocolNameAndType(param1,param2,method);
+					
+					MemoryDataManagerTask.loadProtocolCalculateColumnConfig(modbusDriverSaveData.getProtocolCode());
+					
 					
 					EquipmentDriverServerTask.initProtocolConfig(param1,param2,method);
 					EquipmentDriverServerTask.initInstanceConfigByProtocolNameAndType(param1,param2,method);
@@ -4653,7 +4662,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		DatabaseMappingProHandsontableChangedData databaseMappingProHandsontableChangedData=gson.fromJson(data, type);
 		if(databaseMappingProHandsontableChangedData!=null){
 			this.acquisitionUnitManagerService.saveDatabaseColumnMappingTable(databaseMappingProHandsontableChangedData,protocolCode,language);
-			MemoryDataManagerTask.loadProtocolCalculateColumnConfig();
+			MemoryDataManagerTask.loadProtocolCalculateColumnConfig(protocolCode);
 			EquipmentDriverServerTask.syncDataMappingTable();
 			if(user!=null){
 				this.service.saveSystemLog(user,2,languageResourceMap.get("updateColumnMapping"));

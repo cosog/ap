@@ -3904,7 +3904,7 @@ public class DriverAPIController extends BaseController{
 								String value="";
 								DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(j).getTitle());
 								String columnName=dataMappingColumn.getMappingColumn();
-								DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=MemoryDataManagerTask.getProtocolCalculateColumnConfig((protocol.getCode()+"_"+columnName).toUpperCase());
+								DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=MemoryDataManagerTask.getDataMappingColumnCalculateConfig(protocolCode, columnName);
 								String calColumn=dataMappingColumnCalculateConfig!=null?dataMappingColumnCalculateConfig.getCalColumn():"";
 								int calculateEnable=dataMappingColumnCalculateConfig!=null?dataMappingColumnCalculateConfig.getCalculateEnable():0;
 								
@@ -4766,7 +4766,7 @@ public class DriverAPIController extends BaseController{
 								String value="";
 								DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(j).getTitle());
 								String columnName=dataMappingColumn.getMappingColumn();
-								DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=MemoryDataManagerTask.getProtocolCalculateColumnConfig((protocol.getCode()+"_"+columnName).toUpperCase());
+								DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=MemoryDataManagerTask.getDataMappingColumnCalculateConfig(protocolCode, columnName);
 								String calColumn=dataMappingColumnCalculateConfig!=null?dataMappingColumnCalculateConfig.getCalColumn():"";
 								int calculateEnable=dataMappingColumnCalculateConfig!=null?dataMappingColumnCalculateConfig.getCalculateEnable():0;
 								if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null){

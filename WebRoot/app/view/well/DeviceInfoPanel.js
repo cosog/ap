@@ -2015,11 +2015,11 @@ var DeviceInfoHandsontableHelper = {
                     		if(isNumber(parseInt(productionHandsontableData[14][2]))){
                     			deviceProductionData.Pump.PumpGrade=parseInt(productionHandsontableData[14][2]);
                     		}
-                    		if(isNumber(parseInt(productionHandsontableData[15][2]))){
-                    			deviceProductionData.Pump.PumpBoreDiameter=parseInt(productionHandsontableData[15][2])*0.001;
+                    		if(isNumber(parseFloat(productionHandsontableData[15][2]))){
+                    			deviceProductionData.Pump.PumpBoreDiameter=parseFloat(productionHandsontableData[15][2])*0.001;
                     		}
-                    		if(isNumber(parseInt(productionHandsontableData[16][2]))){
-                    			deviceProductionData.Pump.PumpBoreDiameter2=parseInt(productionHandsontableData[16][2])*0.001;
+                    		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
+                    			deviceProductionData.Pump.PumpBoreDiameter2=parseFloat(productionHandsontableData[16][2])*0.001;
                     		}
                     		if(isNumber(parseFloat(productionHandsontableData[17][2]))){
                     			deviceProductionData.Pump.PlungerLength=parseFloat(productionHandsontableData[17][2]);
@@ -2028,16 +2028,16 @@ var DeviceInfoHandsontableHelper = {
                     		deviceProductionData.TubingString={};
                     		deviceProductionData.TubingString.EveryTubing=[];
                     		var EveryTubing={};
-                    		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-                    			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+                    		if(isNumber(parseFloat(productionHandsontableData[18][2]))){
+                    			EveryTubing.InsideDiameter=parseFloat(productionHandsontableData[18][2])*0.001;
                     		}
                     		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
                     		
                     		deviceProductionData.CasingString={};
                     		deviceProductionData.CasingString.EveryCasing=[];
                     		var EveryCasing={};
-                    		if(isNumber(parseInt(productionHandsontableData[19][2]))){
-                    			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[19][2])*0.001;
+                    		if(isNumber(parseFloat(productionHandsontableData[19][2]))){
+                    			EveryCasing.InsideDiameter=parseFloat(productionHandsontableData[19][2])*0.001;
                     		}
                     		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
                     		
@@ -2046,9 +2046,9 @@ var DeviceInfoHandsontableHelper = {
                     		
                     		if(isNotVal(productionHandsontableData[20][2]) 
                     				&& isNotVal(productionHandsontableData[21][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[22][2])) 
-                    				&& (productionHandsontableData[23][2]=='' || isNumber(parseInt(productionHandsontableData[23][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[24][2]))){
+                    				&& isNumber(parseFloat(productionHandsontableData[22][2])) 
+                    				&& (productionHandsontableData[23][2]=='' || isNumber(parseFloat(productionHandsontableData[23][2])) )
+                    				&& isNumber(parseFloat(productionHandsontableData[24][2]))){
                     			var Rod1={};
                     			if(isNotVal(productionHandsontableData[20][2])){
                         			if(productionHandsontableData[20][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -2062,13 +2062,13 @@ var DeviceInfoHandsontableHelper = {
                         		if(isNotVal(productionHandsontableData[21][2])){
                         			Rod1.Grade=productionHandsontableData[21][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-                        			Rod1.OutsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[22][2]))){
+                        			Rod1.OutsideDiameter=parseFloat(productionHandsontableData[22][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[23][2]))){
-                        			Rod1.InsideDiameter=parseInt(productionHandsontableData[23][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[23][2]))){
+                        			Rod1.InsideDiameter=parseFloat(productionHandsontableData[23][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[24][2]))){
+                        		if(isNumber(parseFloat(productionHandsontableData[24][2]))){
                         			Rod1.Length=parseFloat(productionHandsontableData[24][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod1);
@@ -2076,9 +2076,9 @@ var DeviceInfoHandsontableHelper = {
                     		
                     		if(isNotVal(productionHandsontableData[25][2]) 
                     				&& isNotVal(productionHandsontableData[26][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[27][2])) 
-                    				&& (productionHandsontableData[28][2]=='' || isNumber(parseInt(productionHandsontableData[28][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[29][2]))){
+                    				&& isNumber(parseFloat(productionHandsontableData[27][2])) 
+                    				&& (productionHandsontableData[28][2]=='' || isNumber(parseFloat(productionHandsontableData[28][2])) )
+                    				&& isNumber(parseFloat(productionHandsontableData[29][2]))){
                     			var Rod2={};
                     			if(isNotVal(productionHandsontableData[25][2])){
                     				if(productionHandsontableData[25][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -2092,13 +2092,13 @@ var DeviceInfoHandsontableHelper = {
                         		if(isNotVal(productionHandsontableData[26][2])){
                         			Rod2.Grade=productionHandsontableData[26][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[27][2]))){
-                        			Rod2.OutsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[27][2]))){
+                        			Rod2.OutsideDiameter=parseFloat(productionHandsontableData[27][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[28][2]))){
-                        			Rod2.InsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[28][2]))){
+                        			Rod2.InsideDiameter=parseFloat(productionHandsontableData[28][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[29][2]))){
+                        		if(isNumber(parseFloat(productionHandsontableData[29][2]))){
                         			Rod2.Length=parseFloat(productionHandsontableData[29][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod2);
@@ -2106,9 +2106,9 @@ var DeviceInfoHandsontableHelper = {
                     		
                     		if(isNotVal(productionHandsontableData[30][2]) 
                     				&& isNotVal(productionHandsontableData[31][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[32][2])) 
-                    				&& (productionHandsontableData[33][2]=='' || isNumber(parseInt(productionHandsontableData[33][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[34][2]))){
+                    				&& isNumber(parseFloat(productionHandsontableData[32][2])) 
+                    				&& (productionHandsontableData[33][2]=='' || isNumber(parseFloat(productionHandsontableData[33][2])) )
+                    				&& isNumber(parseFloat(productionHandsontableData[34][2]))){
                     			var Rod3={};
                         		if(isNotVal(productionHandsontableData[30][2])){
                         			if(productionHandsontableData[30][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -2122,13 +2122,13 @@ var DeviceInfoHandsontableHelper = {
                         		if(isNotVal(productionHandsontableData[31][2])){
                         			Rod3.Grade=productionHandsontableData[31][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-                        			Rod3.OutsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[32][2]))){
+                        			Rod3.OutsideDiameter=parseFloat(productionHandsontableData[32][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[33][2]))){
-                        			Rod3.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[33][2]))){
+                        			Rod3.InsideDiameter=parseFloat(productionHandsontableData[33][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[34][2]))){
+                        		if(isNumber(parseFloat(productionHandsontableData[34][2]))){
                         			Rod3.Length=parseFloat(productionHandsontableData[34][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod3);
@@ -2136,9 +2136,9 @@ var DeviceInfoHandsontableHelper = {
                     		
                     		if(isNotVal(productionHandsontableData[35][2]) 
                     				&& isNotVal(productionHandsontableData[36][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[37][2])) 
-                    				&& (productionHandsontableData[38][2]=='' || isNumber(parseInt(productionHandsontableData[38][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[39][2]))){
+                    				&& isNumber(parseFloat(productionHandsontableData[37][2])) 
+                    				&& (productionHandsontableData[38][2]=='' || isNumber(parseFloat(productionHandsontableData[38][2])) )
+                    				&& isNumber(parseFloat(productionHandsontableData[39][2]))){
                     			var Rod4={};
                         		if(isNotVal(productionHandsontableData[35][2])){
                         			if(productionHandsontableData[35][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -2152,13 +2152,13 @@ var DeviceInfoHandsontableHelper = {
                         		if(isNotVal(productionHandsontableData[36][2])){
                         			Rod4.Grade=productionHandsontableData[36][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[37][2]))){
-                        			Rod4.OutsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[37][2]))){
+                        			Rod4.OutsideDiameter=parseFloat(productionHandsontableData[37][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[38][2]))){
-                        			Rod4.InsideDiameter=parseInt(productionHandsontableData[38][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[38][2]))){
+                        			Rod4.InsideDiameter=parseFloat(productionHandsontableData[38][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[39][2]))){
+                        		if(isNumber(parseFloat(productionHandsontableData[39][2]))){
                         			Rod4.Length=parseFloat(productionHandsontableData[39][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod4);
@@ -2248,8 +2248,8 @@ var DeviceInfoHandsontableHelper = {
                     		if(isNumber(parseFloat(productionHandsontableData[13][2]))){
                     			deviceProductionData.Pump.BarrelLength=parseFloat(productionHandsontableData[13][2]);
                     		}
-                    		if(isNumber(parseInt(productionHandsontableData[14][2]))){
-                    			deviceProductionData.Pump.BarrelSeries=parseInt(productionHandsontableData[14][2]);
+                    		if(isNumber(parseFloat(productionHandsontableData[14][2]))){
+                    			deviceProductionData.Pump.BarrelSeries=parseFloat(productionHandsontableData[14][2]);
                     		}
                     		if(isNumber(parseFloat(productionHandsontableData[15][2]))){
                     			deviceProductionData.Pump.RotorDiameter=parseFloat(productionHandsontableData[15][2])*0.001;
@@ -2263,16 +2263,16 @@ var DeviceInfoHandsontableHelper = {
                     		deviceProductionData.TubingString={};
                     		deviceProductionData.TubingString.EveryTubing=[];
                     		var EveryTubing={};
-                    		if(isNumber(parseInt(productionHandsontableData[17][2]))){
-                    			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
+                    		if(isNumber(parseFloat(productionHandsontableData[17][2]))){
+                    			EveryTubing.InsideDiameter=parseFloat(productionHandsontableData[17][2])*0.001;
                     		}
                     		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
                     		
                     		deviceProductionData.CasingString={};
                     		deviceProductionData.CasingString.EveryCasing=[];
                     		var EveryCasing={};
-                    		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-                    			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+                    		if(isNumber(parseFloat(productionHandsontableData[18][2]))){
+                    			EveryCasing.InsideDiameter=parseFloat(productionHandsontableData[18][2])*0.001;
                     		}
                     		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
                     		
@@ -2281,9 +2281,9 @@ var DeviceInfoHandsontableHelper = {
                     		
                     		if(isNotVal(productionHandsontableData[19][2]) 
                     				&& isNotVal(productionHandsontableData[20][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[21][2])) 
-                    				&& (productionHandsontableData[22][2]=='' || isNumber(parseInt(productionHandsontableData[22][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[23][2]))){
+                    				&& isNumber(parseFloat(productionHandsontableData[21][2])) 
+                    				&& (productionHandsontableData[22][2]=='' || isNumber(parseFloat(productionHandsontableData[22][2])) )
+                    				&& isNumber(parseFloat(productionHandsontableData[23][2]))){
                     			var Rod1={};
                     			if(isNotVal(productionHandsontableData[19][2])){
                         			if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -2297,23 +2297,23 @@ var DeviceInfoHandsontableHelper = {
                         		if(isNotVal(productionHandsontableData[20][2])){
                         			Rod1.Grade=productionHandsontableData[20][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-                        			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[21][2]))){
+                        			Rod1.OutsideDiameter=parseFloat(productionHandsontableData[21][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-                        			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[22][2]))){
+                        			Rod1.InsideDiameter=parseFloat(productionHandsontableData[22][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[23][2]))){
-                        			Rod1.Length=parseInt(productionHandsontableData[23][2]);
+                        		if(isNumber(parseFloat(productionHandsontableData[23][2]))){
+                        			Rod1.Length=parseFloat(productionHandsontableData[23][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod1);
                     		}
                     		
                     		if(isNotVal(productionHandsontableData[24][2]) 
                     				&& isNotVal(productionHandsontableData[25][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[26][2])) 
-                    				&& (productionHandsontableData[27][2]=='' || isNumber(parseInt(productionHandsontableData[27][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[28][2]))){
+                    				&& isNumber(parseFloat(productionHandsontableData[26][2])) 
+                    				&& (productionHandsontableData[27][2]=='' || isNumber(parseFloat(productionHandsontableData[27][2])) )
+                    				&& isNumber(parseFloat(productionHandsontableData[28][2]))){
                     			var Rod2={};
                     			if(isNotVal(productionHandsontableData[24][2])){
                     				if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -2327,23 +2327,23 @@ var DeviceInfoHandsontableHelper = {
                         		if(isNotVal(productionHandsontableData[25][2])){
                         			Rod2.Grade=productionHandsontableData[25][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-                        			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[26][2]))){
+                        			Rod2.OutsideDiameter=parseFloat(productionHandsontableData[26][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[27][2]))){
-                        			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[27][2]))){
+                        			Rod2.InsideDiameter=parseFloat(productionHandsontableData[27][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[28][2]))){
-                        			Rod2.Length=parseInt(productionHandsontableData[28][2]);
+                        		if(isNumber(parseFloat(productionHandsontableData[28][2]))){
+                        			Rod2.Length=parseFloat(productionHandsontableData[28][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod2);
                     		}
                     		
                     		if(isNotVal(productionHandsontableData[29][2]) 
                     				&& isNotVal(productionHandsontableData[30][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[31][2])) 
-                    				&& (productionHandsontableData[32][2]=='' || isNumber(parseInt(productionHandsontableData[32][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[33][2]))){
+                    				&& isNumber(parseFloat(productionHandsontableData[31][2])) 
+                    				&& (productionHandsontableData[32][2]=='' || isNumber(parseFloat(productionHandsontableData[32][2])) )
+                    				&& isNumber(parseFloat(productionHandsontableData[33][2]))){
                     			var Rod3={};
                         		if(isNotVal(productionHandsontableData[29][2])){
                         			if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -2357,23 +2357,23 @@ var DeviceInfoHandsontableHelper = {
                         		if(isNotVal(productionHandsontableData[30][2])){
                         			Rod3.Grade=productionHandsontableData[30][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[31][2]))){
-                        			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[31][2]))){
+                        			Rod3.OutsideDiameter=parseFloat(productionHandsontableData[31][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-                        			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[32][2]))){
+                        			Rod3.InsideDiameter=parseFloat(productionHandsontableData[32][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[33][2]))){
-                        			Rod3.Length=parseInt(productionHandsontableData[33][2]);
+                        		if(isNumber(parseFloat(productionHandsontableData[33][2]))){
+                        			Rod3.Length=parseFloat(productionHandsontableData[33][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod3);
                     		}
                     		
                     		if(isNotVal(productionHandsontableData[34][2]) 
                     				&& isNotVal(productionHandsontableData[35][2]) 
-                    				&& isNumber(parseInt(productionHandsontableData[36][2])) 
-                    				&& (productionHandsontableData[37][2]=='' || isNumber(parseInt(productionHandsontableData[37][2])) )
-                    				&& isNumber(parseInt(productionHandsontableData[38][2]))){
+                    				&& isNumber(parseFloat(productionHandsontableData[36][2])) 
+                    				&& (productionHandsontableData[37][2]=='' || isNumber(parseFloat(productionHandsontableData[37][2])) )
+                    				&& isNumber(parseFloat(productionHandsontableData[38][2]))){
                     			var Rod4={};
                         		if(isNotVal(productionHandsontableData[34][2])){
                         			if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -2387,14 +2387,14 @@ var DeviceInfoHandsontableHelper = {
                         		if(isNotVal(productionHandsontableData[35][2])){
                         			Rod4.Grade=productionHandsontableData[35][2];
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[36][2]))){
-                        			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[36][2]))){
+                        			Rod4.OutsideDiameter=parseFloat(productionHandsontableData[36][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[37][2]))){
-                        			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+                        		if(isNumber(parseFloat(productionHandsontableData[37][2]))){
+                        			Rod4.InsideDiameter=parseFloat(productionHandsontableData[37][2])*0.001;
                         		}
-                        		if(isNumber(parseInt(productionHandsontableData[38][2]))){
-                        			Rod4.Length=parseInt(productionHandsontableData[38][2]);
+                        		if(isNumber(parseFloat(productionHandsontableData[38][2]))){
+                        			Rod4.Length=parseFloat(productionHandsontableData[38][2]);
                         		}
                         		deviceProductionData.RodString.EveryRod.push(Rod4);
                     		}
@@ -4232,11 +4232,11 @@ function deviceProductionDataDownlink(){
         		if(isNumber(parseInt(productionHandsontableData[14][2]))){
         			deviceProductionData.Pump.PumpGrade=parseInt(productionHandsontableData[14][2]);
         		}
-        		if(isNumber(parseInt(productionHandsontableData[15][2]))){
-        			deviceProductionData.Pump.PumpBoreDiameter=parseInt(productionHandsontableData[15][2])*0.001;
+        		if(isNumber(parseFloat(productionHandsontableData[15][2]))){
+        			deviceProductionData.Pump.PumpBoreDiameter=parseFloat(productionHandsontableData[15][2])*0.001;
         		}
-        		if(isNumber(parseInt(productionHandsontableData[16][2]))){
-        			deviceProductionData.Pump.PumpBoreDiameter2=parseInt(productionHandsontableData[16][2])*0.001;
+        		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
+        			deviceProductionData.Pump.PumpBoreDiameter2=parseFloat(productionHandsontableData[16][2])*0.001;
         		}
         		if(isNumber(parseFloat(productionHandsontableData[17][2]))){
         			deviceProductionData.Pump.PlungerLength=parseFloat(productionHandsontableData[17][2]);
@@ -4245,16 +4245,16 @@ function deviceProductionDataDownlink(){
         		deviceProductionData.TubingString={};
         		deviceProductionData.TubingString.EveryTubing=[];
         		var EveryTubing={};
-        		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+        		if(isNumber(parseFloat(productionHandsontableData[18][2]))){
+        			EveryTubing.InsideDiameter=parseFloat(productionHandsontableData[18][2])*0.001;
         		}
         		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
         		
         		deviceProductionData.CasingString={};
         		deviceProductionData.CasingString.EveryCasing=[];
         		var EveryCasing={};
-        		if(isNumber(parseInt(productionHandsontableData[19][2]))){
-        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[19][2])*0.001;
+        		if(isNumber(parseFloat(productionHandsontableData[19][2]))){
+        			EveryCasing.InsideDiameter=parseFloat(productionHandsontableData[19][2])*0.001;
         		}
         		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
         		
@@ -4263,9 +4263,9 @@ function deviceProductionDataDownlink(){
         		
         		if(isNotVal(productionHandsontableData[20][2]) 
         				&& isNotVal(productionHandsontableData[21][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[22][2])) 
-        				&& (productionHandsontableData[23][2]=='' || isNumber(parseInt(productionHandsontableData[23][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[24][2]))){
+        				&& isNumber(parseFloat(productionHandsontableData[22][2])) 
+        				&& (productionHandsontableData[23][2]=='' || isNumber(parseFloat(productionHandsontableData[23][2])) )
+        				&& isNumber(parseFloat(productionHandsontableData[24][2]))){
         			var Rod1={};
         			if(isNotVal(productionHandsontableData[20][2])){
             			if(productionHandsontableData[20][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -4279,13 +4279,13 @@ function deviceProductionDataDownlink(){
             		if(isNotVal(productionHandsontableData[21][2])){
             			Rod1.Grade=productionHandsontableData[21][2];
             		}
-            		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[22][2]))){
+            			Rod1.OutsideDiameter=parseFloat(productionHandsontableData[22][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[23][2]))){
-            			Rod1.InsideDiameter=parseInt(productionHandsontableData[23][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[23][2]))){
+            			Rod1.InsideDiameter=parseFloat(productionHandsontableData[23][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[24][2]))){
+            		if(isNumber(parseFloat(productionHandsontableData[24][2]))){
             			Rod1.Length=parseFloat(productionHandsontableData[24][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod1);
@@ -4293,9 +4293,9 @@ function deviceProductionDataDownlink(){
         		
         		if(isNotVal(productionHandsontableData[25][2]) 
         				&& isNotVal(productionHandsontableData[26][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[27][2])) 
-        				&& (productionHandsontableData[28][2]=='' || isNumber(parseInt(productionHandsontableData[28][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[29][2]))){
+        				&& isNumber(parseFloat(productionHandsontableData[27][2])) 
+        				&& (productionHandsontableData[28][2]=='' || isNumber(parseFloat(productionHandsontableData[28][2])) )
+        				&& isNumber(parseFloat(productionHandsontableData[29][2]))){
         			var Rod2={};
         			if(isNotVal(productionHandsontableData[25][2])){
         				if(productionHandsontableData[25][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -4309,13 +4309,13 @@ function deviceProductionDataDownlink(){
             		if(isNotVal(productionHandsontableData[26][2])){
             			Rod2.Grade=productionHandsontableData[26][2];
             		}
-            		if(isNumber(parseInt(productionHandsontableData[27][2]))){
-            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[27][2]))){
+            			Rod2.OutsideDiameter=parseFloat(productionHandsontableData[27][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[28][2]))){
-            			Rod2.InsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[28][2]))){
+            			Rod2.InsideDiameter=parseFloat(productionHandsontableData[28][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[29][2]))){
+            		if(isNumber(parseFloat(productionHandsontableData[29][2]))){
             			Rod2.Length=parseFloat(productionHandsontableData[29][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod2);
@@ -4323,9 +4323,9 @@ function deviceProductionDataDownlink(){
         		
         		if(isNotVal(productionHandsontableData[30][2]) 
         				&& isNotVal(productionHandsontableData[31][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[32][2])) 
-        				&& (productionHandsontableData[33][2]=='' || isNumber(parseInt(productionHandsontableData[33][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[34][2]))){
+        				&& isNumber(parseFloat(productionHandsontableData[32][2])) 
+        				&& (productionHandsontableData[33][2]=='' || isNumber(parseFloat(productionHandsontableData[33][2])) )
+        				&& isNumber(parseFloat(productionHandsontableData[34][2]))){
         			var Rod3={};
             		if(isNotVal(productionHandsontableData[30][2])){
             			if(productionHandsontableData[30][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -4339,13 +4339,13 @@ function deviceProductionDataDownlink(){
             		if(isNotVal(productionHandsontableData[31][2])){
             			Rod3.Grade=productionHandsontableData[31][2];
             		}
-            		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[32][2]))){
+            			Rod3.OutsideDiameter=parseFloat(productionHandsontableData[32][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[33][2]))){
-            			Rod3.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[33][2]))){
+            			Rod3.InsideDiameter=parseFloat(productionHandsontableData[33][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[34][2]))){
+            		if(isNumber(parseFloat(productionHandsontableData[34][2]))){
             			Rod3.Length=parseFloat(productionHandsontableData[34][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod3);
@@ -4353,9 +4353,9 @@ function deviceProductionDataDownlink(){
         		
         		if(isNotVal(productionHandsontableData[35][2]) 
         				&& isNotVal(productionHandsontableData[36][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[37][2])) 
-        				&& (productionHandsontableData[38][2]=='' || isNumber(parseInt(productionHandsontableData[38][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[39][2]))){
+        				&& isNumber(parseFloat(productionHandsontableData[37][2])) 
+        				&& (productionHandsontableData[38][2]=='' || isNumber(parseFloat(productionHandsontableData[38][2])) )
+        				&& isNumber(parseFloat(productionHandsontableData[39][2]))){
         			var Rod4={};
             		if(isNotVal(productionHandsontableData[35][2])){
             			if(productionHandsontableData[35][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -4369,13 +4369,13 @@ function deviceProductionDataDownlink(){
             		if(isNotVal(productionHandsontableData[36][2])){
             			Rod4.Grade=productionHandsontableData[36][2];
             		}
-            		if(isNumber(parseInt(productionHandsontableData[37][2]))){
-            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[37][2]))){
+            			Rod4.OutsideDiameter=parseFloat(productionHandsontableData[37][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[38][2]))){
-            			Rod4.InsideDiameter=parseInt(productionHandsontableData[38][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[38][2]))){
+            			Rod4.InsideDiameter=parseFloat(productionHandsontableData[38][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[39][2]))){
+            		if(isNumber(parseFloat(productionHandsontableData[39][2]))){
             			Rod4.Length=parseFloat(productionHandsontableData[39][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod4);
@@ -4472,8 +4472,8 @@ function deviceProductionDataDownlink(){
         		if(isNumber(parseFloat(productionHandsontableData[13][2]))){
         			deviceProductionData.Pump.BarrelLength=parseFloat(productionHandsontableData[13][2]);
         		}
-        		if(isNumber(parseInt(productionHandsontableData[14][2]))){
-        			deviceProductionData.Pump.BarrelSeries=parseInt(productionHandsontableData[14][2]);
+        		if(isNumber(parseFloat(productionHandsontableData[14][2]))){
+        			deviceProductionData.Pump.BarrelSeries=parseFloat(productionHandsontableData[14][2]);
         		}
         		if(isNumber(parseFloat(productionHandsontableData[15][2]))){
         			deviceProductionData.Pump.RotorDiameter=parseFloat(productionHandsontableData[15][2])*0.001;
@@ -4487,16 +4487,16 @@ function deviceProductionDataDownlink(){
         		deviceProductionData.TubingString={};
         		deviceProductionData.TubingString.EveryTubing=[];
         		var EveryTubing={};
-        		if(isNumber(parseInt(productionHandsontableData[17][2]))){
-        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
+        		if(isNumber(parseFloat(productionHandsontableData[17][2]))){
+        			EveryTubing.InsideDiameter=parseFloat(productionHandsontableData[17][2])*0.001;
         		}
         		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
         		
         		deviceProductionData.CasingString={};
         		deviceProductionData.CasingString.EveryCasing=[];
         		var EveryCasing={};
-        		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+        		if(isNumber(parseFloat(productionHandsontableData[18][2]))){
+        			EveryCasing.InsideDiameter=parseFloat(productionHandsontableData[18][2])*0.001;
         		}
         		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
         		
@@ -4505,9 +4505,9 @@ function deviceProductionDataDownlink(){
         		
         		if(isNotVal(productionHandsontableData[19][2]) 
         				&& isNotVal(productionHandsontableData[20][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[21][2])) 
-        				&& (productionHandsontableData[22][2]=='' || isNumber(parseInt(productionHandsontableData[22][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[23][2]))){
+        				&& isNumber(parseFloat(productionHandsontableData[21][2])) 
+        				&& (productionHandsontableData[22][2]=='' || isNumber(parseFloat(productionHandsontableData[22][2])) )
+        				&& isNumber(parseFloat(productionHandsontableData[23][2]))){
         			var Rod1={};
         			if(isNotVal(productionHandsontableData[19][2])){
             			if(productionHandsontableData[19][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -4521,23 +4521,23 @@ function deviceProductionDataDownlink(){
             		if(isNotVal(productionHandsontableData[20][2])){
             			Rod1.Grade=productionHandsontableData[20][2];
             		}
-            		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[21][2]))){
+            			Rod1.OutsideDiameter=parseFloat(productionHandsontableData[21][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-            			Rod1.InsideDiameter=parseInt(productionHandsontableData[22][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[22][2]))){
+            			Rod1.InsideDiameter=parseFloat(productionHandsontableData[22][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[23][2]))){
-            			Rod1.Length=parseInt(productionHandsontableData[23][2]);
+            		if(isNumber(parseFloat(productionHandsontableData[23][2]))){
+            			Rod1.Length=parseFloat(productionHandsontableData[23][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod1);
         		}
         		
         		if(isNotVal(productionHandsontableData[24][2]) 
         				&& isNotVal(productionHandsontableData[25][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[26][2])) 
-        				&& (productionHandsontableData[27][2]=='' || isNumber(parseInt(productionHandsontableData[27][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[28][2]))){
+        				&& isNumber(parseFloat(productionHandsontableData[26][2])) 
+        				&& (productionHandsontableData[27][2]=='' || isNumber(parseFloat(productionHandsontableData[27][2])) )
+        				&& isNumber(parseFloat(productionHandsontableData[28][2]))){
         			var Rod2={};
         			if(isNotVal(productionHandsontableData[24][2])){
         				if(productionHandsontableData[24][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -4551,23 +4551,23 @@ function deviceProductionDataDownlink(){
             		if(isNotVal(productionHandsontableData[25][2])){
             			Rod2.Grade=productionHandsontableData[25][2];
             		}
-            		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[26][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[26][2]))){
+            			Rod2.OutsideDiameter=parseFloat(productionHandsontableData[26][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[27][2]))){
-            			Rod2.InsideDiameter=parseInt(productionHandsontableData[27][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[27][2]))){
+            			Rod2.InsideDiameter=parseFloat(productionHandsontableData[27][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[28][2]))){
-            			Rod2.Length=parseInt(productionHandsontableData[28][2]);
+            		if(isNumber(parseFloat(productionHandsontableData[28][2]))){
+            			Rod2.Length=parseFloat(productionHandsontableData[28][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod2);
         		}
         		
         		if(isNotVal(productionHandsontableData[29][2]) 
         				&& isNotVal(productionHandsontableData[30][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[31][2])) 
-        				&& (productionHandsontableData[32][2]=='' || isNumber(parseInt(productionHandsontableData[32][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[33][2]))){
+        				&& isNumber(parseFloat(productionHandsontableData[31][2])) 
+        				&& (productionHandsontableData[32][2]=='' || isNumber(parseFloat(productionHandsontableData[32][2])) )
+        				&& isNumber(parseFloat(productionHandsontableData[33][2]))){
         			var Rod3={};
             		if(isNotVal(productionHandsontableData[29][2])){
             			if(productionHandsontableData[29][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -4581,23 +4581,23 @@ function deviceProductionDataDownlink(){
             		if(isNotVal(productionHandsontableData[30][2])){
             			Rod3.Grade=productionHandsontableData[30][2];
             		}
-            		if(isNumber(parseInt(productionHandsontableData[31][2]))){
-            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[31][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[31][2]))){
+            			Rod3.OutsideDiameter=parseFloat(productionHandsontableData[31][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-            			Rod3.InsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[32][2]))){
+            			Rod3.InsideDiameter=parseFloat(productionHandsontableData[32][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[33][2]))){
-            			Rod3.Length=parseInt(productionHandsontableData[33][2]);
+            		if(isNumber(parseFloat(productionHandsontableData[33][2]))){
+            			Rod3.Length=parseFloat(productionHandsontableData[33][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod3);
         		}
         		
         		if(isNotVal(productionHandsontableData[34][2]) 
         				&& isNotVal(productionHandsontableData[35][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[36][2])) 
-        				&& (productionHandsontableData[37][2]=='' || isNumber(parseInt(productionHandsontableData[37][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[38][2]))){
+        				&& isNumber(parseFloat(productionHandsontableData[36][2])) 
+        				&& (productionHandsontableData[37][2]=='' || isNumber(parseFloat(productionHandsontableData[37][2])) )
+        				&& isNumber(parseFloat(productionHandsontableData[38][2]))){
         			var Rod4={};
             		if(isNotVal(productionHandsontableData[34][2])){
             			if(productionHandsontableData[34][2]==loginUserLanguageResource.rodStringTypeValue1){
@@ -4611,14 +4611,14 @@ function deviceProductionDataDownlink(){
             		if(isNotVal(productionHandsontableData[35][2])){
             			Rod4.Grade=productionHandsontableData[35][2];
             		}
-            		if(isNumber(parseInt(productionHandsontableData[36][2]))){
-            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[36][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[36][2]))){
+            			Rod4.OutsideDiameter=parseFloat(productionHandsontableData[36][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[37][2]))){
-            			Rod4.InsideDiameter=parseInt(productionHandsontableData[37][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[37][2]))){
+            			Rod4.InsideDiameter=parseFloat(productionHandsontableData[37][2])*0.001;
             		}
-            		if(isNumber(parseInt(productionHandsontableData[38][2]))){
-            			Rod4.Length=parseInt(productionHandsontableData[38][2]);
+            		if(isNumber(parseFloat(productionHandsontableData[38][2]))){
+            			Rod4.Length=parseFloat(productionHandsontableData[38][2]);
             		}
             		deviceProductionData.RodString.EveryRod.push(Rod4);
         		}

@@ -5387,31 +5387,13 @@ public class WellInformationManagerController extends BaseController {
 		try {
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
-			
-			DataMapping dataMapping=null;
-			DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=null;
-			
-			String col="";
-			Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
-			HttpSession session=request.getSession();
-			User user = (User) session.getAttribute("userLogin");
 			String readUrl=Config.getInstance().configFile.getAd().getRw().getReadAddr();
 			
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
-			ModbusProtocolConfig.Items item=null;
-			for(int i=0;i<protocol.getItems().size();i++){
-				if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(i).getTitle())){
-					dataMapping=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(i).getTitle());
-					col=dataMapping.getMappingColumn();
-					dataMappingColumnCalculateConfig=MemoryDataManagerTask.getDataMappingColumnCalculateConfig(protocolCode, col);
-					
-				}
-				if(itemCode.equalsIgnoreCase(col)){
-					item=protocol.getItems().get(i);
-					
-					break;
-				}
-			}
+			ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItemByMappingColumn(protocol, itemCode);
+			DataMapping dataMapping=MemoryDataManagerTask.getDataMapping(itemCode);
+			DataMappingColumnCalculateConfig dataMappingColumnCalculateConfig=MemoryDataManagerTask.getDataMappingColumnCalculateConfig(protocolCode, itemCode);
+			
 			String calColumn=dataMappingColumnCalculateConfig!=null?dataMappingColumnCalculateConfig.getCalColumn():"";
 			String IDOrIPPortKey="ID";
 			String IDOrIPPort=ID;

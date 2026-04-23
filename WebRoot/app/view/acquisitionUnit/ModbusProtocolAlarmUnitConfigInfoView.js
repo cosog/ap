@@ -289,8 +289,8 @@ var alarmUnitConfigRightTabPanelItems=[{
     	layout: "border",
         border: true,
         items:[{
-        	region: 'west',
-        	width:'25%',
+        	region: 'north',
+        	height:'50%',
             id: 'ModbusProtocolAlarmUnitEnumItemsPanel_Id',
         	title:loginUserLanguageResource.enumValueList,
         	collapsible: true,
@@ -364,8 +364,8 @@ var alarmUnitConfigRightTabPanelItems=[{
     	layout: "border",
         border: true,
         items:[{
-        	region: 'west',
-        	width:'25%',
+        	region: 'north',
+        	height:'50%',
             id: 'ModbusProtocolAlarmUnitSwitchItemsPanel_Id',
         	title:loginUserLanguageResource.switchingValueList,
         	collapsible: true,
@@ -420,7 +420,7 @@ var alarmUnitConfigRightTabPanelItems=[{
                 	if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null && protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
 //                		protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.refreshDimensions();
                 		var newHeight=height-22-1;//减去tbar
-                		var newHeight=height;
+                		var newWidth=width;
                 		var header=thisPanel.getHeader();
                 		if(header){
                 			newHeight=newHeight-header.lastBox.height-2;
@@ -2691,7 +2691,11 @@ function createModbusProtocolAddrMappingEnumOrSwitchItemsColumn(columnInfo) {
         if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
             myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
         }else {
-            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
+            var flex=1;
+        	if(attr.dataIndex.toUpperCase() == 'title'.toUpperCase()){
+        		flex=8;
+            }
+        	myColumns += hidden_ + lock_ + ",flex:"+flex+",sortable:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
             //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
         }
         myColumns += "}";

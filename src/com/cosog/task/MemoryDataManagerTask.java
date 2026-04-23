@@ -608,6 +608,15 @@ public class MemoryDataManagerTask {
 //		return dataMapping;
 //	}
 	
+	public static DataMapping getDataMapping(String mappingColumn){
+		DataMapping dataMapping=null;
+		Map<String,DataMapping> loadProtocolMappingColumnMap=getProtocolMappingColumn();
+		if(loadProtocolMappingColumnMap!=null && loadProtocolMappingColumnMap.containsKey(mappingColumn)){
+			dataMapping=loadProtocolMappingColumnMap.get(mappingColumn);
+		}
+		return dataMapping;
+	}
+	
 	public static Map<String,DataMapping> getProtocolMappingColumn(){
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		if(!dataModelMap.containsKey("ProtocolMappingColumn")){
@@ -660,6 +669,15 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 		}
+	}
+	
+	public static DataMapping getDataMappingByTitle(int type,String title){
+		DataMapping dataMapping=null;
+		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=getProtocolMappingColumnByTitle(type);
+		if(loadProtocolMappingColumnByTitleMap!=null && loadProtocolMappingColumnByTitleMap.containsKey(title)){
+			dataMapping=loadProtocolMappingColumnByTitleMap.get(title);
+		}
+		return dataMapping;
 	}
 	
 	

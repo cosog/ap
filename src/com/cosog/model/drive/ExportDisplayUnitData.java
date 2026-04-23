@@ -155,6 +155,8 @@ public class ExportDisplayUnitData {
 	    private int HistoryData;
 	    
 	    private int SwitchingValueShowType;
+	    
+	    private int ItemEnable;
 
 	    public void setId(int Id){
 	        this.Id = Id;
@@ -293,6 +295,12 @@ public class ExportDisplayUnitData {
 		}
 		public void setSwitchingValueShowType(int switchingValueShowType) {
 			SwitchingValueShowType = switchingValueShowType;
+		}
+		public int getItemEnable() {
+			return ItemEnable;
+		}
+		public void setItemEnable(int itemEnable) {
+			ItemEnable = itemEnable;
 		}
 	}
 

@@ -573,12 +573,13 @@ function websocketOnMessage(evt) {
     	if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
     		if (data.dbConnStatus == 1) {
                 Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtgreen");
+                var showInfo=loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent+";"+data.undoTableSpaceUsedPercent;
                 if (data.tableSpaceUsedPercentAlarmLevel == 1) {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >"+loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent + "</font>");
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >"+showInfo + "</font>");
                 } else if (data.tableSpaceUsedPercentAlarmLevel == 2) {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >"+loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent + "</font>");
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >"+showInfo + "</font>");
                 } else {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent);
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText(showInfo);
                 }
             } else {
                 Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtyellow");
@@ -605,12 +606,13 @@ function websocketOnMessage(evt) {
 
             if (data.dbConnStatus == 1) {
                 Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtgreen");
+                var showInfo=loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent+";"+data.undoTableSpaceUsedPercent;
                 if (data.tableSpaceUsedPercentAlarmLevel == 1) {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >"+loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent + "</font>");
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >"+showInfo + "</font>");
                 } else if (data.tableSpaceUsedPercentAlarmLevel == 2) {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >"+loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent + "</font>");
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >"+showInfo + "</font>");
                 } else {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent);
+                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText(showInfo);
                 }
             } else {
                 Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtyellow");

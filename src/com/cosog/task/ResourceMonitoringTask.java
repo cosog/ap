@@ -68,6 +68,7 @@ public class ResourceMonitoringTask {
     private static String redisVersion="";
     
     private static String tableSpaceName="";
+    private static String undoTableSpaceName="";
     
     private static TableSpaceInfo tableSpaceInfo=null;
     private static int dataBaseStatus=1; 
@@ -79,22 +80,20 @@ public class ResourceMonitoringTask {
 //    @Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@Scheduled(cron = "0 30 23 * * ?")
 	public void checkAndSendDBMonitoring(){
-    	tableSpaceInfo=new TableSpaceInfo("","",0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>());
+    	tableSpaceInfo=new TableSpaceInfo("","",0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>(),"",0,0,0);
 		try{
 			tableSpaceInfo= getTableSpaceInfo();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
-		
-		
 		if(tableSpaceInfo.getConnStatus()==1){
 			TableSpaceInfo lastTableSpaceInfo=getNewestTableSpaceInfo();
 			
 			Gson gson=new Gson();
-			String sql="insert into tbl_dbmonitoring(acqTime,connstatus,tablespaceusedsize,tablespaceusedpercent,tablesize) "
+			String sql="insert into tbl_dbmonitoring(acqTime,connstatus,tablespaceusedsize,tablespaceusedpercent,undotablespaceusedsize,undotablespaceusedpercent,tablesize) "
 					+ "values "
-					+ "(to_date('"+tableSpaceInfo.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss'),"+tableSpaceInfo.getConnStatus()+","+tableSpaceInfo.getUsed()+","+tableSpaceInfo.getUsedPercent()+",?)";
+					+ "(to_date('"+tableSpaceInfo.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss'),"+tableSpaceInfo.getConnStatus()+","+tableSpaceInfo.getUsed()+","+tableSpaceInfo.getUsedPercent()+","+tableSpaceInfo.getUndoTableSpaceUsed()+","+tableSpaceInfo.getUndoTableSpaceUsedPercent()+",?)";
 			List<String> clobDataList=new ArrayList<>();
 			clobDataList.add(gson.toJson(tableSpaceInfo.getTableSizeList()));
 			try {
@@ -115,6 +114,14 @@ public class ResourceMonitoringTask {
 				result_json.append("\"currentUsedPercent\":"+tableSpaceInfo.getUsedPercent()+",");
 				result_json.append("\"lastUsedPercent\":"+lastTableSpaceInfo.getUsedPercent()+",");
 				result_json.append("\"usedPercentDiff\":"+StringManagerUtils.doubleToString(tableSpaceInfo.getUsedPercent()-lastTableSpaceInfo.getUsedPercent(),2)+",");
+				
+				result_json.append("\"currentUndoTableSpaceUsed\":"+lastTableSpaceInfo.getUndoTableSpaceUsed()+",");
+				result_json.append("\"lastUndoTableSpaceUsed\":"+tableSpaceInfo.getUndoTableSpaceUsed()+",");
+				result_json.append("\"undoTableSpaceUsedDiff\":"+StringManagerUtils.doubleToString(tableSpaceInfo.getUndoTableSpaceUsed()-lastTableSpaceInfo.getUndoTableSpaceUsed(),2)+",");
+				
+				result_json.append("\"currentUndoTableSpaceUsedPercent\":"+tableSpaceInfo.getUndoTableSpaceUsedPercent()+",");
+				result_json.append("\"lastUndoTableSpaceUsedPercent\":"+lastTableSpaceInfo.getUndoTableSpaceUsedPercent()+",");
+				result_json.append("\"undoTableSpaceUsedPercentDiff\":"+StringManagerUtils.doubleToString(tableSpaceInfo.getUndoTableSpaceUsedPercent()-lastTableSpaceInfo.getUndoTableSpaceUsedPercent(),2)+",");
 				
 				double currentTableSizeSum=0;
 				double lastTableSizeSum=0;
@@ -161,6 +168,8 @@ public class ResourceMonitoringTask {
 				+ "\"dbConnStatus\":"+tableSpaceInfo.getConnStatus()+","
 				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
 				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent()+"%")+"\","
+				+ "\"undoTableSpaceSize\":\""+(tableSpaceInfo.getUndoTableSpaceUsed()+"Mb")+"\","
+				+ "\"undoTableSpaceUsedPercent\":\""+(tableSpaceInfo.getUndoTableSpaceUsedPercent()+"%")+"\","
 				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+""
 				+ "}";
 		try {
@@ -201,16 +210,17 @@ public class ResourceMonitoringTask {
 		
 		
 		if(tableSpaceInfo==null || tableSpaceInfo.getConnStatus()==0 || tableSpaceInfo.getUsedPercent()==0){
-			tableSpaceInfo=new TableSpaceInfo("","",0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>());
+			tableSpaceInfo=new TableSpaceInfo("","",0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>(),"",0,0,0);
 			try{
 				tableSpaceInfo= getTableSpaceInfo();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			if(tableSpaceInfo.getConnStatus()==1){
-				String sql="insert into tbl_dbmonitoring(acqTime,connstatus,tablespaceusedsize,tablespaceusedpercent,tablesize) "
+				String sql="insert into tbl_dbmonitoring(acqTime,connstatus,tablespaceusedsize,tablespaceusedpercent,undotablespaceusedsize,undotablespaceusedpercent,tablesize) "
 						+ "values "
-						+ "(to_date('"+tableSpaceInfo.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss'),"+tableSpaceInfo.getConnStatus()+","+tableSpaceInfo.getUsed()+","+tableSpaceInfo.getUsedPercent()+",?)";
+						+ "(to_date('"+tableSpaceInfo.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss'),"+tableSpaceInfo.getConnStatus()+","+tableSpaceInfo.getUsed()+","+tableSpaceInfo.getUsedPercent()+","+tableSpaceInfo.getUndoTableSpaceUsed()+","+tableSpaceInfo.getUndoTableSpaceUsedPercent()+",?)";
+				
 				List<String> clobDataList=new ArrayList<>();
 				clobDataList.add(gson.toJson(tableSpaceInfo.getTableSizeList()));
 				try {
@@ -425,6 +435,10 @@ public class ResourceMonitoringTask {
 				+ "\"dbConnStatus\":"+tableSpaceInfo.getConnStatus()+","
 				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
 				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent()+"%")+"\","
+				
+				+ "\"undoTableSpaceSize\":\""+(tableSpaceInfo.getUndoTableSpaceUsed()+"Mb")+"\","
+				+ "\"undoTableSpaceUsedPercent\":\""+(tableSpaceInfo.getUndoTableSpaceUsedPercent()+"%")+"\","
+				
 				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+","
 				+ "\"licenseSign\":"+licenseSign+","
 				+ "\"deviceAmount\":"+deviceAmount+","
@@ -486,12 +500,12 @@ public class ResourceMonitoringTask {
 	public static  TableSpaceInfo getTableSpaceInfo(){
 		String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		Connection conn=null;
-		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("","", 0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>());
+		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("","", 0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>(),"",0,0,0);
 		String userName=Config.getInstance().configFile.getAp().getDatasource().getUser();
         try{
         	conn=OracleJdbcUtis.getConnection();
             if(conn==null){
-            	tableSpaceInfo=new TableSpaceInfo("","", 0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>());
+            	tableSpaceInfo=new TableSpaceInfo("","", 0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>(),"",0,0,0);
             	return tableSpaceInfo;
             }else{
             	conn.close();  
@@ -512,6 +526,18 @@ public class ResourceMonitoringTask {
     	        	
     	        }
     		}
+    		
+    		try{
+    			String tableSpaceSql="SELECT VALUE FROM V$PARAMETER WHERE NAME = 'undo_tablespace'";
+    			List<Object[]> tableSpaceObjList=OracleJdbcUtis.query(tableSpaceSql);
+    			if(tableSpaceObjList.size()>0){
+    				undoTableSpaceName=tableSpaceObjList.get(0)[0].toString();
+    			}
+			}catch(Exception e){
+	        	e.printStackTrace();
+	        }finally{
+	        	
+	        }
             
             try{
             	String sql="select usedsize_mb,maxsize_mb,used_percent2 from ( "
@@ -556,41 +582,82 @@ public class ResourceMonitoringTask {
 	        }
     		
             
+//            try{
+//            	String tableSizeSql="SELECT t.owner,t.table_name,"
+//                		+ " ROUND(SUM(CASE WHEN s.segment_type IN ('TABLE', 'TABLE PARTITION') THEN s.bytes ELSE 0 END) / 1024 / 1024, 2) AS table_data_mb,"
+//                		+ " ROUND(SUM(CASE WHEN s.segment_type IN ('LOBSEGMENT', 'LOB PARTITION') THEN s.bytes ELSE 0 END) / 1024 / 1024, 2) AS lob_segment_mb,"
+//                		+ " ROUND(SUM(CASE WHEN s.segment_type IN ('INDEX', 'INDEX PARTITION', 'LOBINDEX') THEN s.bytes ELSE 0 END) / 1024 / 1024, 2) AS index_mb,"
+//                		+ " ROUND(SUM(decode(s.bytes,null,0,s.bytes) ) / 1024 / 1024, 2) AS total_mb"
+//                		+ " FROM dba_tables t"
+//                		+ " LEFT JOIN "
+//                		+ " dba_segments s ON (s.owner = t.owner AND s.segment_name = t.table_name)"
+//                		+ " OR (s.owner = t.owner AND s.segment_name IN (SELECT segment_name FROM dba_lobs WHERE owner = t.owner AND table_name = t.table_name))"
+//                		+ " OR (s.owner = t.owner AND s.segment_name IN (SELECT index_name FROM dba_indexes WHERE owner = t.owner AND table_name = t.table_name UNION SELECT index_name FROM dba_lobs WHERE owner = t.owner AND table_name = t.table_name))"
+//                		+ " WHERE t.owner = upper('"+userName+"')"
+//                		+ " GROUP BY t.owner, t.table_name"
+//                		+ " ORDER BY table_name";
+//            	
+//            	List<Object[]> tableSizeObjList=OracleJdbcUtis.query(tableSizeSql);
+//            	for(int i=0;i<tableSizeObjList.size();i++){
+//            		TableSize tableSize=new TableSize();
+//        			tableSize.setTableName(tableSizeObjList.get(i)[1]+"");
+//        			tableSize.setTableDataSize(StringManagerUtils.stringToDouble(tableSizeObjList.get(i)[2]+""));
+//        			tableSize.setTableLobSize(StringManagerUtils.stringToDouble(tableSizeObjList.get(i)[3]+""));
+//        			tableSize.setTableIndexSize(StringManagerUtils.stringToDouble(tableSizeObjList.get(i)[4]+""));
+//        			tableSize.setTableTotalSize(StringManagerUtils.stringToDouble(tableSizeObjList.get(i)[5]+""));
+//        			tableSize.setCount(DatabaseMaintenanceTask.getDataBaseTableCount(tableSize.getTableName()));
+//        			if(tableSpaceInfo.getTableSizeList()==null){
+//        				tableSpaceInfo.setTableSizeList(new ArrayList<>());
+//        			}
+//        			tableSpaceInfo.getTableSizeList().add(tableSize);
+//        			
+//        			if(tableSpaceInfo.getTableSizeMap()==null){
+//        				tableSpaceInfo.setTableSizeMap(new HashMap<>());
+//        			}
+//        			tableSpaceInfo.getTableSizeMap().put(tableSize.getTableName(), tableSize);
+//        			Thread.yield();
+//            	}
+//			}catch(Exception e){
+//	        	e.printStackTrace();
+//	        }finally{
+//	        	
+//	        }
+            
+            //查询撤销表空间信息
             try{
-            	String tableSizeSql="SELECT t.owner,t.table_name,"
-                		+ " ROUND(SUM(CASE WHEN s.segment_type IN ('TABLE', 'TABLE PARTITION') THEN s.bytes ELSE 0 END) / 1024 / 1024, 2) AS table_data_mb,"
-                		+ " ROUND(SUM(CASE WHEN s.segment_type IN ('LOBSEGMENT', 'LOB PARTITION') THEN s.bytes ELSE 0 END) / 1024 / 1024, 2) AS lob_segment_mb,"
-                		+ " ROUND(SUM(CASE WHEN s.segment_type IN ('INDEX', 'INDEX PARTITION', 'LOBINDEX') THEN s.bytes ELSE 0 END) / 1024 / 1024, 2) AS index_mb,"
-                		+ " ROUND(SUM(decode(s.bytes,null,0,s.bytes) ) / 1024 / 1024, 2) AS total_mb"
-                		+ " FROM dba_tables t"
-                		+ " LEFT JOIN "
-                		+ " dba_segments s ON (s.owner = t.owner AND s.segment_name = t.table_name)"
-                		+ " OR (s.owner = t.owner AND s.segment_name IN (SELECT segment_name FROM dba_lobs WHERE owner = t.owner AND table_name = t.table_name))"
-                		+ " OR (s.owner = t.owner AND s.segment_name IN (SELECT index_name FROM dba_indexes WHERE owner = t.owner AND table_name = t.table_name UNION SELECT index_name FROM dba_lobs WHERE owner = t.owner AND table_name = t.table_name))"
-                		+ " WHERE t.owner = upper('"+userName+"')"
-                		+ " GROUP BY t.owner, t.table_name"
-                		+ " ORDER BY table_name";
-            	
-            	List<Object[]> tableSizeObjList=OracleJdbcUtis.query(tableSizeSql);
-            	for(int i=0;i<tableSizeObjList.size();i++){
-            		TableSize tableSize=new TableSize();
-        			tableSize.setTableName(tableSizeObjList.get(i)[1]+"");
-        			tableSize.setTableDataSize(StringManagerUtils.stringToDouble(tableSizeObjList.get(i)[2]+""));
-        			tableSize.setTableLobSize(StringManagerUtils.stringToDouble(tableSizeObjList.get(i)[3]+""));
-        			tableSize.setTableIndexSize(StringManagerUtils.stringToDouble(tableSizeObjList.get(i)[4]+""));
-        			tableSize.setTableTotalSize(StringManagerUtils.stringToDouble(tableSizeObjList.get(i)[5]+""));
-        			tableSize.setCount(DatabaseMaintenanceTask.getDataBaseTableCount(tableSize.getTableName()));
-        			if(tableSpaceInfo.getTableSizeList()==null){
-        				tableSpaceInfo.setTableSizeList(new ArrayList<>());
-        			}
-        			tableSpaceInfo.getTableSizeList().add(tableSize);
+            	String sql="SELECT"
+            			+ " df.tablespace_name,"
+            			+ " ROUND(SUM(df.bytes)/1024/1024, 2) AS allocated_mb,"
+            			+ " ROUND(SUM(NVL(df.maxbytes, df.bytes))/1024/1024, 2) AS max_allowed_mb,"
+            			+ " ROUND((SUM(df.bytes) - SUM(NVL(fs.free_bytes, 0)))/1024/1024, 2) AS used_mb,"
+            			+ " ROUND((SUM(df.bytes) - SUM(NVL(fs.free_bytes, 0))) / SUM(df.bytes) * 100, 2) AS pct_used_of_alloc,"
+            			+ " ROUND((SUM(df.bytes) - SUM(NVL(fs.free_bytes, 0))) / SUM(NVL(df.maxbytes, df.bytes)) * 100, 2) AS pct_used_of_max"
+            			+ " FROM dba_data_files df"
+            			+ " LEFT JOIN ("
+            			+ "   SELECT file_id, SUM(bytes) AS free_bytes"
+            			+ "   FROM dba_free_space"
+            			+ "   WHERE tablespace_name = '"+undoTableSpaceName+"'"
+            			+ "   GROUP BY file_id"
+            			+ " ) fs ON df.file_id = fs.file_id "
+            			+ " WHERE df.tablespace_name = '"+undoTableSpaceName+"'"
+            			+ " GROUP BY df.tablespace_name";
+            	List<Object[]> tableSpaceObjList=OracleJdbcUtis.query(sql);
+    			if(tableSpaceObjList.size()>0){
+    				tableSpaceInfo.setUndoTableSpaceName(tableSpaceObjList.get(0)[0]+"");
+    				tableSpaceInfo.setUndoTableSpaceUsed(StringManagerUtils.stringToFloat(tableSpaceObjList.get(0)[1]+""));
+    				tableSpaceInfo.setUndoTableSpaceTotal(StringManagerUtils.stringToFloat(tableSpaceObjList.get(0)[3]+""));
+    				tableSpaceInfo.setUndoTableSpaceUsedPercent(StringManagerUtils.stringToFloat(tableSpaceObjList.get(0)[5]+""));
         			
-        			if(tableSpaceInfo.getTableSizeMap()==null){
-        				tableSpaceInfo.setTableSizeMap(new HashMap<>());
+        			if(tableSpaceInfo.getUndoTableSpaceUsedPercent()>=60 && tableSpaceInfo.getUndoTableSpaceUsedPercent()<80){
+        				if(tableSpaceInfo.getAlarmLevel()<1){
+        					tableSpaceInfo.setAlarmLevel(1);
+        				}
+        			}else if(tableSpaceInfo.getUndoTableSpaceUsedPercent()>=80){
+        				if(tableSpaceInfo.getAlarmLevel()<2){
+        					tableSpaceInfo.setAlarmLevel(2);
+        				}
         			}
-        			tableSpaceInfo.getTableSizeMap().put(tableSize.getTableName(), tableSize);
-        			Thread.yield();
-            	}
+    			}
 			}catch(Exception e){
 	        	e.printStackTrace();
 	        }finally{
@@ -606,7 +673,7 @@ public class ResourceMonitoringTask {
 	
 	
 	public static  TableSpaceInfo getNewestTableSpaceInfo(){
-		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("","", 0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>());
+		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("","", 0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>(),"",0,0,0);
 		
 		if(!StringManagerUtils.isNotNull(tableSpaceName)){
 			try{
@@ -623,7 +690,25 @@ public class ResourceMonitoringTask {
 	        }
 		}
 		
-		String sql="select to_char(acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,connstatus,tablespaceusedsize,tablespaceusedpercent,tablesize from(select t.acqtime,t.connstatus,t.tablespaceusedsize,t.tablespaceusedpercent,t.tablesize from TBL_DBMONITORING t order by t.acqtime desc ) where rownum=1";
+		try{
+			String tableSpaceSql="SELECT VALUE FROM V$PARAMETER WHERE NAME = 'undo_tablespace'";
+			List<Object[]> tableSpaceObjList=OracleJdbcUtis.query(tableSpaceSql);
+			if(tableSpaceObjList.size()>0){
+				undoTableSpaceName=tableSpaceObjList.get(0)[0].toString();
+			}
+		}catch(Exception e){
+        	e.printStackTrace();
+        }finally{
+        	
+        }
+		
+		String sql="select to_char(acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,connstatus,tablespaceusedsize,tablespaceusedpercent,tablesize,undotablespaceusedsize,undotablespaceusedpercent "
+				+ " from ("
+				+ " select t.acqtime,t.connstatus,t.tablespaceusedsize,t.tablespaceusedpercent,t.tablesize,undotablespaceusedsize,undotablespaceusedpercent "
+				+ " from TBL_DBMONITORING t "
+				+ " order by t.acqtime desc "
+				+ " ) "
+				+ "where rownum=1";
 		List<Object[]> list=OracleJdbcUtis.query(sql);
 		if(list.size()>0){
 			tableSpaceInfo.setAcqTime(list.get(0)[0]+"");
@@ -632,6 +717,8 @@ public class ResourceMonitoringTask {
 			tableSpaceInfo.setUsed(StringManagerUtils.stringToFloat(list.get(0)[2]+""));
 			tableSpaceInfo.setUsedPercent(StringManagerUtils.stringToFloat(list.get(0)[3]+""));
 			String tableSizeStr=list.get(0)[4]+"";
+			tableSpaceInfo.setUndoTableSpaceUsed(StringManagerUtils.stringToFloat(list.get(0)[5]+""));
+			tableSpaceInfo.setUndoTableSpaceUsedPercent(StringManagerUtils.stringToFloat(list.get(0)[6]+""));
 			
 			if(tableSpaceInfo.getUsedPercent()>=60 && tableSpaceInfo.getUsedPercent()<80){
 				tableSpaceInfo.setAlarmLevel(1);
@@ -639,6 +726,16 @@ public class ResourceMonitoringTask {
 				tableSpaceInfo.setAlarmLevel(2);
 			}else{
 				tableSpaceInfo.setAlarmLevel(0);
+			}
+			
+			if(tableSpaceInfo.getUndoTableSpaceUsedPercent()>=60 && tableSpaceInfo.getUndoTableSpaceUsedPercent()<80){
+				if(tableSpaceInfo.getAlarmLevel()<1){
+					tableSpaceInfo.setAlarmLevel(1);
+				}
+			}else if(tableSpaceInfo.getUndoTableSpaceUsedPercent()>=80){
+				if(tableSpaceInfo.getAlarmLevel()<2){
+					tableSpaceInfo.setAlarmLevel(2);
+				}
 			}
 			
 			if(tableSpaceInfo.getTableSizeList()==null){
@@ -754,10 +851,18 @@ public class ResourceMonitoringTask {
 		public int connStatus=0;
 		public List<TableSize> tableSizeList;
 		public Map<String,TableSize> tableSizeMap;
+		
+		public String undoTableSpaceName="";
+		public float  undoTableSpaceUsed=0;
+		public float  undoTableSpaceTotal=0;
+		public float undoTableSpaceUsedPercent=0;
+		
 		public TableSpaceInfo() {
 			super();
 		}
-		public TableSpaceInfo(String acqTime,String tableSpaceName,int connStatus, float total, float free, float used, float usedPercent,int alarmLevel,List<TableSize> tableSizeList,Map<String,TableSize> tableSizeMap) {
+		public TableSpaceInfo(String acqTime,String tableSpaceName,int connStatus, float total, float free, float used, float usedPercent,
+				int alarmLevel,List<TableSize> tableSizeList,Map<String,TableSize> tableSizeMap,
+				String undoTableSpaceName,float  undoTableSpaceUsed,float  undoTableSpaceTotal,float undoTableSpaceUsedPercent) {
 			super();
 			this.acqTime = acqTime;
 			this.tableSpaceName = tableSpaceName;
@@ -769,6 +874,11 @@ public class ResourceMonitoringTask {
 			this.alarmLevel = alarmLevel;
 			this.tableSizeList = tableSizeList;
 			this.tableSizeMap = tableSizeMap;
+			
+			this.undoTableSpaceName = undoTableSpaceName;
+			this.undoTableSpaceUsed = undoTableSpaceUsed;
+			this.undoTableSpaceTotal = undoTableSpaceTotal;
+			this.undoTableSpaceUsedPercent = undoTableSpaceUsedPercent;
 		}
 		public String getTableSpaceName() {
 			return tableSpaceName;
@@ -829,6 +939,30 @@ public class ResourceMonitoringTask {
 		}
 		public void setTableSizeMap(Map<String, TableSize> tableSizeMap) {
 			this.tableSizeMap = tableSizeMap;
+		}
+		public String getUndoTableSpaceName() {
+			return undoTableSpaceName;
+		}
+		public void setUndoTableSpaceName(String undoTableSpaceName) {
+			this.undoTableSpaceName = undoTableSpaceName;
+		}
+		public float getUndoTableSpaceUsed() {
+			return undoTableSpaceUsed;
+		}
+		public void setUndoTableSpaceUsed(float undoTableSpaceUsed) {
+			this.undoTableSpaceUsed = undoTableSpaceUsed;
+		}
+		public float getUndoTableSpaceTotal() {
+			return undoTableSpaceTotal;
+		}
+		public void setUndoTableSpaceTotal(float undoTableSpaceTotal) {
+			this.undoTableSpaceTotal = undoTableSpaceTotal;
+		}
+		public float getUndoTableSpaceUsedPercent() {
+			return undoTableSpaceUsedPercent;
+		}
+		public void setUndoTableSpaceUsedPercent(float undoTableSpaceUsedPercent) {
+			this.undoTableSpaceUsedPercent = undoTableSpaceUsedPercent;
 		}
 	}
 	

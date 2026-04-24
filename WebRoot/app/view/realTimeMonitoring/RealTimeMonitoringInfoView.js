@@ -592,6 +592,11 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     	legendName.push("maxmemory(m)");
     	legendName.push("usedmemory(m)");
     	legend=true;
+    }else if(itemCode.toUpperCase()=='tableSpaceSize'.toUpperCase()){
+    	legendName = [];
+    	legendName.push(loginUserLanguageResource.dataTablespace+"(%)");
+    	legendName.push(loginUserLanguageResource.undoTablespace+"(%)");
+    	legend=true;
     }
     
     
@@ -623,6 +628,21 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
             		series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
             	}
             }else if(itemCode.toUpperCase()=='jedisStatus'.toUpperCase()){
+            	if(isNotVal(data[j].value)){
+            		var values=data[j].value.split(";");
+            		if(values.length>i){
+            			if(isNumber(values[i])){
+            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
+            			}else{
+            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            			}
+            		}else{
+            			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            		}
+            	}else{
+            		series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            	}
+            }else if(itemCode.toUpperCase()=='tableSpaceSize'.toUpperCase()){
             	if(isNotVal(data[j].value)){
             		var values=data[j].value.split(";");
             		if(values.length>i){

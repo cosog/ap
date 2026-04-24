@@ -31,7 +31,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitEnumItemsStore', {
                     border: false,
                     autoLoad: false,
                     columnLines: true,
-                    forceFit: true,
+                    forceFit: false,
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
                     },
@@ -68,9 +68,11 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitEnumItemsStore', {
                 }
             }
             if(get_rawData.totalRoot.length>0){
+            	var selectRow= Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsSelectRow_Id").getValue();
             	gridPanel.getSelectionModel().deselectAll(true);
-            	gridPanel.getSelectionModel().select(0, true);
+            	gridPanel.getSelectionModel().select(parseInt(selectRow), true);
             }else{
+            	Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsSelectRow_Id").setValue(0);
             	if (isNotVal(get_rawData.protocolCode)) {
             		if(protocolAlarmUnitConfigEnumItemsHandsontableHelper!=null && protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined){
                 		protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.loadData([]);

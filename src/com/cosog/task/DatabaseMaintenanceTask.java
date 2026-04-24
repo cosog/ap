@@ -42,7 +42,7 @@ public class DatabaseMaintenanceTask {
 	public static void timingShrinkSpace(){
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",shrink space start！");
 		
-		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("","",0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>());
+		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("","",0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>(),"",0,0,0);
 		try{
 			tableSpaceInfo= ResourceMonitoringTask.getTableSpaceInfo();
 		}catch(Exception e){
@@ -68,7 +68,7 @@ public class DatabaseMaintenanceTask {
 		shrinkSpace("TBL_PCPACQDATA_VACUATE");
 		long t2=System.nanoTime();
 		
-		tableSpaceInfo=new TableSpaceInfo("","",0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>());
+		tableSpaceInfo=new TableSpaceInfo("","",0, 0, 0, 0, 0,0,new ArrayList<>(),new HashMap<>(),"",0,0,0);
 		try{
 			tableSpaceInfo= ResourceMonitoringTask.getTableSpaceInfo();
 		}catch(Exception e){

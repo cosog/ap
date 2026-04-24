@@ -25,6 +25,8 @@ public class ExportProtocolData {
     
     private RunStatusConfig RunStatus;
     
+    private List<CalculateColumnConfig> CalculateColumn;
+    
     private List<DataMapping> DataMappingList;
     
     private int saveSign=0;
@@ -32,6 +34,48 @@ public class ExportProtocolData {
 	private String msg="";
 	
 	private int saveId=0;
+	
+	public static class CalculateColumnConfig{
+		private String ItemName;
+		
+		private String ItemMappingColumn;
+		
+		private String CalculateColumn;
+		
+		private Integer CalculateEnable;
+
+		public String getItemName() {
+			return ItemName;
+		}
+
+		public void setItemName(String itemName) {
+			ItemName = itemName;
+		}
+
+		public String getItemMappingColumn() {
+			return ItemMappingColumn;
+		}
+
+		public void setItemMappingColumn(String itemMappingColumn) {
+			ItemMappingColumn = itemMappingColumn;
+		}
+
+		public String getCalculateColumn() {
+			return CalculateColumn;
+		}
+
+		public void setCalculateColumn(String calculateColumn) {
+			CalculateColumn = calculateColumn;
+		}
+
+		public Integer getCalculateEnable() {
+			return CalculateEnable;
+		}
+
+		public void setCalculateEnable(Integer calculateEnable) {
+			CalculateEnable = calculateEnable;
+		}
+	}
 	
 	public static class DataMapping{
 		
@@ -217,5 +261,11 @@ public class ExportProtocolData {
 	}
 	public void setDataMappingList(List<DataMapping> dataMappingList) {
 		DataMappingList = dataMappingList;
+	}
+	public List<CalculateColumnConfig> getCalculateColumn() {
+		return CalculateColumn;
+	}
+	public void setCalculateColumn(List<CalculateColumnConfig> calculateColumn) {
+		CalculateColumn = calculateColumn;
 	}
 }

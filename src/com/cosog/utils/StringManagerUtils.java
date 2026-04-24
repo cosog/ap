@@ -3947,6 +3947,28 @@ public class StringManagerUtils {
         }
         return result;
     }
+    
+    public static String multiplyDecimal(String a, String b) {
+        BigDecimal result = new BigDecimal(a).multiply(new BigDecimal(b));
+        return result.stripTrailingZeros().toPlainString();
+    }
+    
+    public static float multiplyDecimal(float a,float b){
+    	BigDecimal bd = new BigDecimal(Float.toString(a));
+    	float result = bd.multiply(BigDecimal.valueOf(b)).floatValue();
+    	return result;
+    }
+    
+    public static String divideDecimal(String a, String b) {
+        BigDecimal result = new BigDecimal(a).divide(new BigDecimal(b));
+        return result.stripTrailingZeros().toPlainString();
+    }
+    
+    public static float divideDecimal(float a,float b){
+    	BigDecimal bd = new BigDecimal(Float.toString(a));
+    	float result = bd.divide(BigDecimal.valueOf(b)).floatValue();
+    	return result;
+    }
 
     public static String objectToString(Object obj, String dataType) {
         String result = "";

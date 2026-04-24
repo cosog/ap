@@ -3025,13 +3025,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 						result_json.append("\"barrelTypeName\":\""+barrelType+"\",");
 						result_json.append("\"pumpGrade\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPumpGrade():"")+"\",");
-						result_json.append("\"pumpboreDiameter\":\""+(srpProductionData.getPump()!=null?(srpProductionData.getPump().getPumpBoreDiameter()*1000):"")+"\",");
-						result_json.append("\"pumpboreDiameter2\":\""+(srpProductionData.getPump()!=null?(srpProductionData.getPump().getPumpBoreDiameter2()*1000):"")+"\",");
+						result_json.append("\"pumpboreDiameter\":\""+(srpProductionData.getPump()!=null?StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000):"")+"\",");
+						result_json.append("\"pumpboreDiameter2\":\""+(srpProductionData.getPump()!=null?StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000):"")+"\",");
 						
 						result_json.append("\"plungerLength\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPlungerLength():"")+"\",");
 						
-						result_json.append("\"tubingStringInsideDiameter\":\""+(srpProductionData.getTubingString()!=null&&srpProductionData.getTubingString().getEveryTubing()!=null&&srpProductionData.getTubingString().getEveryTubing().size()>0?(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\",");
-						result_json.append("\"casingStringInsideDiameter\":\""+(srpProductionData.getCasingString()!=null&&srpProductionData.getCasingString().getEveryCasing()!=null&&srpProductionData.getCasingString().getEveryCasing().size()>0?(srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\",");
+						result_json.append("\"tubingStringInsideDiameter\":\""+(srpProductionData.getTubingString()!=null&&srpProductionData.getTubingString().getEveryTubing()!=null&&srpProductionData.getTubingString().getEveryTubing().size()>0?StringManagerUtils.multiplyDecimal(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter(), 1000):"")+"\",");
+						result_json.append("\"casingStringInsideDiameter\":\""+(srpProductionData.getCasingString()!=null&&srpProductionData.getCasingString().getEveryCasing()!=null&&srpProductionData.getCasingString().getEveryCasing().size()>0?StringManagerUtils.multiplyDecimal(srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter(), 1000):"")+"\",");
 						
 						String rodType1="",rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
 						String rodType2="",rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
@@ -3157,11 +3157,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						result_json.append("\"pumpSettingDepth\":\""+(pcpProductionData.getProduction()!=null?pcpProductionData.getProduction().getPumpSettingDepth():"")+"\",");
 						
 						result_json.append("\"barrelSeries\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelSeries():"")+"\",");
-						result_json.append("\"rotorDiameter\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getRotorDiameter()*1000):"")+"\",");
-						result_json.append("\"qpr\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getQPR()*1000*1000):"")+"\",");
+						result_json.append("\"rotorDiameter\":\""+(pcpProductionData.getPump()!=null?StringManagerUtils.multiplyDecimal(pcpProductionData.getPump().getRotorDiameter(), 1000):"")+"\",");
+						result_json.append("\"qpr\":\""+(pcpProductionData.getPump()!=null?StringManagerUtils.multiplyDecimal(pcpProductionData.getPump().getQPR(), 1000*1000):"")+"\",");
 						
-						result_json.append("\"tubingStringInsideDiameter\":\""+(pcpProductionData.getTubingString()!=null&&pcpProductionData.getTubingString().getEveryTubing()!=null&&pcpProductionData.getTubingString().getEveryTubing().size()>0?(pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\",");
-						result_json.append("\"casingStringInsideDiameter\":\""+(pcpProductionData.getCasingString()!=null&&pcpProductionData.getCasingString().getEveryCasing()!=null&&pcpProductionData.getCasingString().getEveryCasing().size()>0?(pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\",");
+						result_json.append("\"tubingStringInsideDiameter\":\""+(pcpProductionData.getTubingString()!=null&&pcpProductionData.getTubingString().getEveryTubing()!=null&&pcpProductionData.getTubingString().getEveryTubing().size()>0?StringManagerUtils.multiplyDecimal(pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter(), 1000):"")+"\",");
+						result_json.append("\"casingStringInsideDiameter\":\""+(pcpProductionData.getCasingString()!=null&&pcpProductionData.getCasingString().getEveryCasing()!=null&&pcpProductionData.getCasingString().getEveryCasing().size()>0?StringManagerUtils.multiplyDecimal(pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter(), 1000):"")+"\",");
 						
 						String rodType1="",rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
 						String rodType2="",rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";

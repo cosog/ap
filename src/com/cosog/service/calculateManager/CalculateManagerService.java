@@ -264,15 +264,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						}
 						result_json.append("\"barrelTypeName\":\""+barrelType+"\",");
 						result_json.append("\"pumpGrade\":\""+srpProductionData.getPump().getPumpGrade()+"\",");
-						result_json.append("\"pumpboreDiameter\":\""+srpProductionData.getPump().getPumpBoreDiameter()*1000+"\",");
-						result_json.append("\"pumpboreDiameter2\":\""+srpProductionData.getPump().getPumpBoreDiameter2()*1000+"\",");
+						result_json.append("\"pumpboreDiameter\":\""+StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"\",");
+						result_json.append("\"pumpboreDiameter2\":\""+StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"\",");
 						result_json.append("\"plungerLength\":\""+srpProductionData.getPump().getPlungerLength()+"\",");
 					}
 					if(srpProductionData.getTubingString()!=null&&srpProductionData.getTubingString().getEveryTubing()!=null&&srpProductionData.getTubingString().getEveryTubing().size()>0){
-						result_json.append("\"tubingStringInsideDiameter\":\""+srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"\",");
+						result_json.append("\"tubingStringInsideDiameter\":\""+StringManagerUtils.multiplyDecimal(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter(), 1000)+"\",");
 					}
 					if(srpProductionData.getCasingString()!=null&&srpProductionData.getCasingString().getEveryCasing()!=null&&srpProductionData.getCasingString().getEveryCasing().size()>0){
-						result_json.append("\"casingStringInsideDiameter\":\""+srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"\",");
+						result_json.append("\"casingStringInsideDiameter\":\""+StringManagerUtils.multiplyDecimal(srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter(), 1000)+"\",");
 					}
 					
 					if(srpProductionData.getRodString()!=null && srpProductionData.getRodString().getEveryRod()!=null){
@@ -287,8 +287,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 							}
 							result_json.append("\"rodTypeName"+(j+1)+"\":\""+rodType+"\",");
 							result_json.append("\"rodGrade"+(j+1)+"\":\""+srpProductionData.getRodString().getEveryRod().get(j).getGrade()+"\",");
-							result_json.append("\"rodOutsideDiameter"+(j+1)+"\":\""+srpProductionData.getRodString().getEveryRod().get(j).getOutsideDiameter()*1000+"\",");
-							result_json.append("\"rodInsideDiameter"+(j+1)+"\":\""+srpProductionData.getRodString().getEveryRod().get(j).getInsideDiameter()*1000+"\",");
+							result_json.append("\"rodOutsideDiameter"+(j+1)+"\":\""+StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(j).getOutsideDiameter(), 1000)+"\",");
+							result_json.append("\"rodInsideDiameter"+(j+1)+"\":\""+StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(j).getInsideDiameter(), 1000)+"\",");
 							result_json.append("\"rodLength"+(j+1)+"\":\""+srpProductionData.getRodString().getEveryRod().get(j).getLength()+"\",");
 						}
 					}
@@ -431,14 +431,14 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					result_json.append("\"barrelLength\":\""+calculateRequestData.getPump().getBarrelLength()+"\",");
 					result_json.append("\"barrelSeries\":\""+calculateRequestData.getPump().getBarrelSeries()+"\",");
-					result_json.append("\"rotorDiameter\":\""+calculateRequestData.getPump().getRotorDiameter()*1000+"\",");
-					result_json.append("\"qpr\":\""+calculateRequestData.getPump().getQPR()*1000*1000+"\",");
+					result_json.append("\"rotorDiameter\":\""+StringManagerUtils.multiplyDecimal(calculateRequestData.getPump().getRotorDiameter(), 1000)+"\",");
+					result_json.append("\"qpr\":\""+StringManagerUtils.multiplyDecimal(calculateRequestData.getPump().getQPR(), 1000*1000)+"\",");
 				}
 				if(calculateRequestData.getTubingString()!=null&&calculateRequestData.getTubingString().getEveryTubing()!=null&&calculateRequestData.getTubingString().getEveryTubing().size()>0){
-					result_json.append("\"tubingStringInsideDiameter\":\""+calculateRequestData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"\",");
+					result_json.append("\"tubingStringInsideDiameter\":\""+StringManagerUtils.multiplyDecimal(calculateRequestData.getTubingString().getEveryTubing().get(0).getInsideDiameter(), 1000)+"\",");
 				}
 				if(calculateRequestData.getCasingString()!=null&&calculateRequestData.getCasingString().getEveryCasing()!=null&&calculateRequestData.getCasingString().getEveryCasing().size()>0){
-					result_json.append("\"casingStringInsideDiameter\":\""+calculateRequestData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"\",");
+					result_json.append("\"casingStringInsideDiameter\":\""+StringManagerUtils.multiplyDecimal(calculateRequestData.getCasingString().getEveryCasing().get(0).getInsideDiameter(), 1000)+"\",");
 				}
 				
 				if(calculateRequestData.getRodString()!=null && calculateRequestData.getRodString().getEveryRod()!=null){
@@ -453,8 +453,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						}
 						result_json.append("\"rodTypeName"+(j+1)+"\":\""+rodType+"\",");
 						result_json.append("\"rodGrade"+(j+1)+"\":\""+calculateRequestData.getRodString().getEveryRod().get(j).getGrade()+"\",");
-						result_json.append("\"rodOutsideDiameter"+(j+1)+"\":\""+calculateRequestData.getRodString().getEveryRod().get(j).getOutsideDiameter()*1000+"\",");
-						result_json.append("\"rodInsideDiameter"+(j+1)+"\":\""+calculateRequestData.getRodString().getEveryRod().get(j).getInsideDiameter()*1000+"\",");
+						result_json.append("\"rodOutsideDiameter"+(j+1)+"\":\""+StringManagerUtils.multiplyDecimal(calculateRequestData.getRodString().getEveryRod().get(j).getOutsideDiameter(), 1000)+"\",");
+						result_json.append("\"rodInsideDiameter"+(j+1)+"\":\""+StringManagerUtils.multiplyDecimal(calculateRequestData.getRodString().getEveryRod().get(j).getInsideDiameter(), 1000)+"\",");
 						result_json.append("\"rodLength"+(j+1)+"\":\""+calculateRequestData.getRodString().getEveryRod().get(j).getLength()+"\",");
 					}
 				}
@@ -1421,7 +1421,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"deviceId\":\""+obj[1]+"\",");
 			result_json.append("\"deviceName\":\""+obj[2]+"\",");
 			result_json.append("\"calDate\":\""+obj[3]+"\",");
-			result_json.append("\"resultName\":\""+MemoryDataManagerTask.getWorkTypeByCode(obj[4]+"",language).getResultName()+"\",");
+			result_json.append("\"resultName\":\""+(MemoryDataManagerTask.getWorkTypeByCode(obj[4]+"",language)!=null?MemoryDataManagerTask.getWorkTypeByCode(obj[4]+"",language).getResultName():"")+"\",");
 			result_json.append("\"resultString\":\""+obj[5]+"\",");
 			
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){

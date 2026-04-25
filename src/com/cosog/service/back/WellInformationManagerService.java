@@ -2740,12 +2740,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						}
 						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("barrelType")+"\",\"itemCode\":\"barrelType\",\"itemValue\":\""+barrelType+"\"},");
 						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("pumpGrade")+"\",\"itemCode\":\"pumpGrade\",\"itemValue\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPumpGrade():"")+"\"},");
-						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter")+"(mm)\",\"itemCode\":\"pumpBoreDiameter\",\"itemValue\":\""+(srpProductionData.getPump()!=null?(srpProductionData.getPump().getPumpBoreDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter2")+"(mm)\",\"itemCode\":\"pumpBoreDiameter2\",\"itemValue\":\""+(srpProductionData.getPump()!=null?(srpProductionData.getPump().getPumpBoreDiameter2()*1000):"")+"\"},");
+						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter")+"(mm)\",\"itemCode\":\"pumpBoreDiameter\",\"itemValue\":\""+(srpProductionData.getPump()!=null?StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000):"")+"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter2")+"(mm)\",\"itemCode\":\"pumpBoreDiameter2\",\"itemValue\":\""+(srpProductionData.getPump()!=null?StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000):"")+"\"},");
 						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("plungerLength")+"(m)\",\"itemCode\":\"plungerLength\",\"itemValue\":\""+(srpProductionData.getPump()!=null?srpProductionData.getPump().getPlungerLength():"")+"\"},");
 						
-						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemCode\":\"tubingStringInsideDiameter\",\"itemValue\":\""+(srpProductionData.getTubingString()!=null&&srpProductionData.getTubingString().getEveryTubing()!=null&&srpProductionData.getTubingString().getEveryTubing().size()>0?(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("casingStringOutsideDiameter")+"(mm)\",\"itemCode\":\"casingStringOutsideDiameter\",\"itemValue\":\""+(srpProductionData.getCasingString()!=null&&srpProductionData.getCasingString().getEveryCasing()!=null&&srpProductionData.getCasingString().getEveryCasing().size()>0?(srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemCode\":\"tubingStringInsideDiameter\",\"itemValue\":\""+(srpProductionData.getTubingString()!=null&&srpProductionData.getTubingString().getEveryTubing()!=null&&srpProductionData.getTubingString().getEveryTubing().size()>0?StringManagerUtils.multiplyDecimal(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter(), 1000):"")+"\"},");
+						result_json.append("{\"id\":20,\"itemName\":\""+languageResourceMap.get("casingStringOutsideDiameter")+"(mm)\",\"itemCode\":\"casingStringOutsideDiameter\",\"itemValue\":\""+(srpProductionData.getCasingString()!=null&&srpProductionData.getCasingString().getEveryCasing()!=null&&srpProductionData.getCasingString().getEveryCasing().size()>0?StringManagerUtils.multiplyDecimal(srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter(), 1000):"")+"\"},");
 						
 						String rodType1="",rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
 						String rodType2="",rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
@@ -2763,8 +2763,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 									rodType1=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade1=srpProductionData.getRodString().getEveryRod().get(0).getGrade();
-								rodOutsideDiameter1=srpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
-								rodInsideDiameter1=srpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
+								rodOutsideDiameter1=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter1=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter(), 1000)+"";
 								rodLength1=srpProductionData.getRodString().getEveryRod().get(0).getLength()+"";
 							}
 							if(srpProductionData.getRodString().getEveryRod().size()>1){
@@ -2778,8 +2778,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 									rodType2=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade2=srpProductionData.getRodString().getEveryRod().get(1).getGrade();
-								rodOutsideDiameter2=srpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
-								rodInsideDiameter2=srpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
+								rodOutsideDiameter2=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter2=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter(), 1000)+"";
 								rodLength2=srpProductionData.getRodString().getEveryRod().get(1).getLength()+"";
 							}
 							if(srpProductionData.getRodString().getEveryRod().size()>2){
@@ -2793,8 +2793,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 									rodType3=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade3=srpProductionData.getRodString().getEveryRod().get(2).getGrade();
-								rodOutsideDiameter3=srpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
-								rodInsideDiameter3=srpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
+								rodOutsideDiameter3=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter3=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter(), 1000)+"";
 								rodLength3=srpProductionData.getRodString().getEveryRod().get(2).getLength()+"";
 							}
 							if(srpProductionData.getRodString().getEveryRod().size()>3){
@@ -2808,8 +2808,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 									rodType4=languageResourceMap.get("rodStringTypeValue4");
 								}
 								rodGrade4=srpProductionData.getRodString().getEveryRod().get(3).getGrade();
-								rodOutsideDiameter4=srpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
-								rodInsideDiameter4=srpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
+								rodOutsideDiameter4=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter4=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter(), 1000)+"";
 								rodLength4=srpProductionData.getRodString().getEveryRod().get(3).getLength()+"";
 							}
 						}
@@ -2931,11 +2931,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 						
 						result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("BarrelLength")+"(m)\",\"itemCode\":\"BarrelLength\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelLength():"")+"\"},");
 						result_json.append("{\"id\":15,\"itemName\":\""+languageResourceMap.get("BarrelSeries")+"\",\"itemCode\":\"BarrelSeries\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelSeries():"")+"\"},");
-						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("RotorDiameter")+"(mm)\",\"itemCode\":\"RotorDiameter\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getRotorDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("QPR")+"(ml/r)\",\"itemCode\":\"QPR\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getQPR()*1000*1000):"")+"\"},");
+						result_json.append("{\"id\":16,\"itemName\":\""+languageResourceMap.get("RotorDiameter")+"(mm)\",\"itemCode\":\"RotorDiameter\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?StringManagerUtils.multiplyDecimal(pcpProductionData.getPump().getRotorDiameter(), 1000):"")+"\"},");
+						result_json.append("{\"id\":17,\"itemName\":\""+languageResourceMap.get("QPR")+"(ml/r)\",\"itemCode\":\"QPR\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?StringManagerUtils.multiplyDecimal(pcpProductionData.getPump().getQPR(), 1000*1000):"")+"\"},");
 						
-						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemCode\":\"tubingStringInsideDiameter\",\"itemValue\":\""+(pcpProductionData.getTubingString()!=null&&pcpProductionData.getTubingString().getEveryTubing()!=null&&pcpProductionData.getTubingString().getEveryTubing().size()>0?(pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
-						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("casingStringOutsideDiameter")+"(mm)\",\"itemCode\":\"casingStringOutsideDiameter\",\"itemValue\":\""+(pcpProductionData.getCasingString()!=null&&pcpProductionData.getCasingString().getEveryCasing()!=null&&pcpProductionData.getCasingString().getEveryCasing().size()>0?(pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
+						result_json.append("{\"id\":18,\"itemName\":\""+languageResourceMap.get("tubingStringInsideDiameter")+"(mm)\",\"itemCode\":\"tubingStringInsideDiameter\",\"itemValue\":\""+(pcpProductionData.getTubingString()!=null&&pcpProductionData.getTubingString().getEveryTubing()!=null&&pcpProductionData.getTubingString().getEveryTubing().size()>0?StringManagerUtils.multiplyDecimal(pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter(), 1000):"")+"\"},");
+						result_json.append("{\"id\":19,\"itemName\":\""+languageResourceMap.get("casingStringOutsideDiameter")+"(mm)\",\"itemCode\":\"casingStringOutsideDiameter\",\"itemValue\":\""+(pcpProductionData.getCasingString()!=null&&pcpProductionData.getCasingString().getEveryCasing()!=null&&pcpProductionData.getCasingString().getEveryCasing().size()>0?StringManagerUtils.multiplyDecimal(pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter(), 1000):"")+"\"},");
 						
 						String rodType1="",rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
 						String rodType2="",rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
@@ -2953,8 +2953,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 									rodType1=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade1=pcpProductionData.getRodString().getEveryRod().get(0).getGrade();
-								rodOutsideDiameter1=pcpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
-								rodInsideDiameter1=pcpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
+								rodOutsideDiameter1=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter1=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter(), 1000)+"";
 								rodLength1=pcpProductionData.getRodString().getEveryRod().get(0).getLength()+"";
 							}
 							if(pcpProductionData.getRodString().getEveryRod().size()>1){
@@ -2968,8 +2968,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 									rodType2=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade2=pcpProductionData.getRodString().getEveryRod().get(1).getGrade();
-								rodOutsideDiameter2=pcpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
-								rodInsideDiameter2=pcpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
+								rodOutsideDiameter2=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter2=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter(), 1000)+"";
 								rodLength2=pcpProductionData.getRodString().getEveryRod().get(1).getLength()+"";
 							}
 							if(pcpProductionData.getRodString().getEveryRod().size()>2){
@@ -2983,8 +2983,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 									rodType3=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade3=pcpProductionData.getRodString().getEveryRod().get(2).getGrade();
-								rodOutsideDiameter3=pcpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
-								rodInsideDiameter3=pcpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
+								rodOutsideDiameter3=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter3=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter(), 1000)+"";
 								rodLength3=pcpProductionData.getRodString().getEveryRod().get(2).getLength()+"";
 							}
 							if(pcpProductionData.getRodString().getEveryRod().size()>3){
@@ -2998,8 +2998,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 									rodType4=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade4=pcpProductionData.getRodString().getEveryRod().get(3).getGrade();
-								rodOutsideDiameter4=pcpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
-								rodInsideDiameter4=pcpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
+								rodOutsideDiameter4=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter4=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter(), 1000)+"";
 								rodLength4=pcpProductionData.getRodString().getEveryRod().get(3).getLength()+"";
 							}
 						}

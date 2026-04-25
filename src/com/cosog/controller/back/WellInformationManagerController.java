@@ -3159,26 +3159,26 @@ public class WellInformationManagerController extends BaseController {
 									if(downStatusMap.get("PumpGrade").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
 										downlinkSuccessList.add(languageResourceMap.get("pumpGrade")+":"+srpProductionData.getPump().getPumpGrade()+"");
 									}
-									downStatusMap.put("PumpBoreDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",srpProductionData.getPump().getPumpBoreDiameter()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpBoreDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter",StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"",userInfo.getLanguageName()));
 									if(downStatusMap.get("PumpBoreDiameter").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-										downlinkSuccessList.add(languageResourceMap.get("pumpBoreDiameter")+":"+srpProductionData.getPump().getPumpBoreDiameter()*1000+"");
+										downlinkSuccessList.add(languageResourceMap.get("pumpBoreDiameter")+":"+StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"");
 									}
-									downStatusMap.put("PumpBoreDiameter2", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter2",srpProductionData.getPump().getPumpBoreDiameter2()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("PumpBoreDiameter2", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PumpBoreDiameter2",StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"",userInfo.getLanguageName()));
 									if(downStatusMap.get("PumpBoreDiameter2").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-										downlinkSuccessList.add(languageResourceMap.get("pumpBoreDiameter2")+":"+srpProductionData.getPump().getPumpBoreDiameter2()*1000+"");
+										downlinkSuccessList.add(languageResourceMap.get("pumpBoreDiameter2")+":"+StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"");
 									}
 									downStatusMap.put("PlungerLength", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_PlungerLength",srpProductionData.getPump().getPlungerLength()+"",userInfo.getLanguageName()));
 									if(downStatusMap.get("PlungerLength").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
 										downlinkSuccessList.add(languageResourceMap.get("plungerLength")+":"+srpProductionData.getPump().getPlungerLength()+"");
 									}
 									
-									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",StringManagerUtils.multiplyDecimal(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter(), 1000)+"",userInfo.getLanguageName()));
 									if(downStatusMap.get("TubingStringInsideDiameter").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-										downlinkSuccessList.add(languageResourceMap.get("tubingStringInsideDiameter")+":"+srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"");
+										downlinkSuccessList.add(languageResourceMap.get("tubingStringInsideDiameter")+":"+StringManagerUtils.multiplyDecimal(srpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter(), 1000)+"");
 									}
-									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",StringManagerUtils.multiplyDecimal(srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter(), 1000)+"",userInfo.getLanguageName()));
 									if(downStatusMap.get("CasingStringOutsideDiameter").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-										downlinkSuccessList.add(languageResourceMap.get("casingStringOutsideDiameter")+":"+srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"");
+										downlinkSuccessList.add(languageResourceMap.get("casingStringOutsideDiameter")+":"+StringManagerUtils.multiplyDecimal(srpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter(), 1000)+"");
 									}
 									
 									for(int i=0;i<srpProductionData.getRodString().getEveryRod().size();i++){
@@ -3206,13 +3206,13 @@ public class WellInformationManagerController extends BaseController {
 										if(downStatusMap.get("RodGrade"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
 											downlinkSuccessList.add(languageResourceMap.get("rodGrade"+(i+1))+":"+rodGrade+"");
 										}
-										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter(), 1000)+"",userInfo.getLanguageName()));
 										if(downStatusMap.get("RodStringOutsideDiameter"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-											downlinkSuccessList.add(languageResourceMap.get("rodStringOutsideDiameter"+(i+1))+":"+srpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"");
+											downlinkSuccessList.add(languageResourceMap.get("rodStringOutsideDiameter"+(i+1))+":"+StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter(), 1000)+"");
 										}
-										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter(), 1000)+"",userInfo.getLanguageName()));
 										if(downStatusMap.get("RodStringInsideDiameter"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-											downlinkSuccessList.add(languageResourceMap.get("rodStringInsideDiameter"+(i+1))+":"+srpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"");
+											downlinkSuccessList.add(languageResourceMap.get("rodStringInsideDiameter"+(i+1))+":"+StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter(), 1000)+"");
 										}
 										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),srpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
 										if(downStatusMap.get("RodStringLength"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
@@ -3333,13 +3333,13 @@ public class WellInformationManagerController extends BaseController {
 										downlinkSuccessList.add(languageResourceMap.get("pumpSettingDepth")+":"+pcpProductionData.getProduction().getPumpSettingDepth()+"");
 									}
 									
-									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
-									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+									downStatusMap.put("TubingStringInsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingStringInsideDiameter",StringManagerUtils.multiplyDecimal(pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter(), 1000)+"",userInfo.getLanguageName()));
+									downStatusMap.put("CasingStringOutsideDiameter", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CasingStringOutsideDiameter",StringManagerUtils.multiplyDecimal(pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter(), 1000)+"",userInfo.getLanguageName()));
 									if(downStatusMap.get("TubingStringInsideDiameter").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-										downlinkSuccessList.add(languageResourceMap.get("tubingStringInsideDiameter")+":"+pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"");
+										downlinkSuccessList.add(languageResourceMap.get("tubingStringInsideDiameter")+":"+StringManagerUtils.multiplyDecimal(pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter(), 1000)+"");
 									}
 									if(downStatusMap.get("CasingStringOutsideDiameter").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-										downlinkSuccessList.add(languageResourceMap.get("casingStringOutsideDiameter")+":"+pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"");
+										downlinkSuccessList.add(languageResourceMap.get("casingStringOutsideDiameter")+":"+StringManagerUtils.multiplyDecimal(pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter(), 1000)+"");
 									}
 									
 									
@@ -3364,18 +3364,18 @@ public class WellInformationManagerController extends BaseController {
 											rodGrade=8;
 										}
 										downStatusMap.put("RodGrade"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodGrade"+(i+1),rodGrade+"",userInfo.getLanguageName()));
-										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"",userInfo.getLanguageName()));
-										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringOutsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringOutsideDiameter"+(i+1),StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter(), 1000)+"",userInfo.getLanguageName()));
+										downStatusMap.put("RodStringInsideDiameter"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringInsideDiameter"+(i+1),StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter(), 1000)+"",userInfo.getLanguageName()));
 										downStatusMap.put("RodStringLength"+(i+1), dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_RodStringLength"+(i+1),pcpProductionData.getRodString().getEveryRod().get(i).getLength()+"",userInfo.getLanguageName()));
 										
 										if(downStatusMap.get("RodGrade"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
 											downlinkSuccessList.add(languageResourceMap.get("rodGrade"+(i+1))+":"+rodGrade+"");
 										}
 										if(downStatusMap.get("RodStringOutsideDiameter"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-											downlinkSuccessList.add(languageResourceMap.get("rodStringOutsideDiameter"+(i+1))+":"+pcpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter()*1000+"");
+											downlinkSuccessList.add(languageResourceMap.get("rodStringOutsideDiameter"+(i+1))+":"+StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(i).getOutsideDiameter(), 1000)+"");
 										}
 										if(downStatusMap.get("RodStringInsideDiameter"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-											downlinkSuccessList.add(languageResourceMap.get("rodStringInsideDiameter"+(i+1))+":"+pcpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter()*1000+"");
+											downlinkSuccessList.add(languageResourceMap.get("rodStringInsideDiameter"+(i+1))+":"+StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(i).getInsideDiameter(), 1000)+"");
 										}
 										if(downStatusMap.get("RodStringLength"+(i+1)).equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
 											downlinkSuccessList.add(languageResourceMap.get("rodStringLength"+(i+1))+":"+pcpProductionData.getRodString().getEveryRod().get(i).getLength()+"");
@@ -4633,6 +4633,7 @@ public class WellInformationManagerController extends BaseController {
 			float ratio=1;
 			int quantity=1;
 			String itemName="";
+			int prec=0;
 			for(int i=0;i<protocol.getItems().size();i++){
 				String col="";
 				if(loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(i).getTitle())){
@@ -4647,7 +4648,7 @@ public class WellInformationManagerController extends BaseController {
 					quantity=protocol.getItems().get(i).getQuantity();
 					
 					itemName=protocol.getItems().get(i).getTitle();
-					
+					prec=protocol.getItems().get(i).getPrec();
 					break;
 				}
 			}

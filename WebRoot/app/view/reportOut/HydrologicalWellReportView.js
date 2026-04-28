@@ -1475,6 +1475,7 @@ function initHydrologicalWellReportCurveChartFn(series, tickInterval, divId, tit
 	        exporting: {
 	            enabled: true,
 	            filename: title,
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0].offsetWidth,
 	            sourceHeight: $("#"+divId)[0].offsetHeight,
 	            buttons: {

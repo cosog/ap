@@ -1025,6 +1025,7 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
 	        },
 	        exporting: {
 	            enabled: true,
+	            fallbackToExportServer: false,
 	            filename: title,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
@@ -1199,6 +1200,7 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 			exporting:{ 
 	            enabled:true,    
 	            filename:title,
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 			},
@@ -1344,6 +1346,7 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 			},
 			exporting:{ 
 	            enabled:true,    
+	            fallbackToExportServer: false,
 	            filename:title,    
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
@@ -1502,7 +1505,8 @@ function ShowHistoryQueryNumStatusStatPieOrColChat(title,divId, name, data,color
 				}
 			},
 			exporting:{ 
-	            enabled:true,    
+	            enabled:true,  
+	            fallbackToExportServer: false,
 	            filename:title,    
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
@@ -1639,7 +1643,8 @@ function ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, name, dat
 			},
 			exporting:{ 
 	            enabled:true,    
-	            filename:title,    
+	            filename:title,   
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 			},
@@ -1770,7 +1775,8 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 			},
 			exporting:{ 
 	            enabled:true,    
-	            filename:title,    
+	            filename:title,   
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 			},

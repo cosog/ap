@@ -1933,7 +1933,7 @@ public class WellInformationManagerController extends BaseController {
 							if(srpProductionData.getManualIntervention()!=null){
 								int manualInterventionResultCode=0;
 								if(!languageResourceMap.get("noIntervention").equalsIgnoreCase(manualInterventionResultName)){
-									manualInterventionResultCode=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName, language).getResultCode();
+									manualInterventionResultCode=MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName, language)!=null?MemoryDataManagerTask.getWorkTypeByName(manualInterventionResultName, language).getResultCode():0;
 								}
 								srpProductionData.getManualIntervention().setCode(manualInterventionResultCode);
 							}
@@ -2976,6 +2976,7 @@ public class WellInformationManagerController extends BaseController {
 		String productionData = request.getParameter("productionData");
 		String pumpingUnitInfo = request.getParameter("pumpingUnitInfo");
 		String manualInterventionResultName=request.getParameter("manualInterventionResultName");
+		String FESDiagramSrcName=request.getParameter("FESDiagramSrcName");
 		String applicationScenarios=request.getParameter("applicationScenarios");
 		String jsonLogin = "";
 		User userInfo = (User) request.getSession().getAttribute("userLogin");
@@ -3239,6 +3240,10 @@ public class WellInformationManagerController extends BaseController {
 									}
 									
 									srpProductionData.getManualIntervention().setCode(w!=null?w.getResultCode():0);
+									
+									if(srpProductionData.getFESDiagram()!=null){
+										srpProductionData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(MemoryDataManagerTask.getCodeValue("FESDIAGRAMSRC", FESDiagramSrcName, userInfo.getLanguageName())));
+									}
 									
 									if(srpProductionData.getPumpingUnit()!=null){
 										downStatusMap.put("CrankRotationDirection", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CrankRotationDirection","Clockwise".equalsIgnoreCase(srpProductionData.getPumpingUnit().getCrankRotationDirection())?"1":"0",userInfo.getLanguageName()));
@@ -5177,8 +5182,8 @@ public class WellInformationManagerController extends BaseController {
 							statusMap.put("write_FrequencyConversionWithRodStressExceedingEnable", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStressExceedingEnable",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversionWithRodStress_MaxRodStressRatio", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_MaxRodStressRatio",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversionWithRodStress_RodStressRangeRatio", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_RodStressRangeRatio",userInfo.getLanguageName()));
-							statusMap.put("write_FrequencyConversionWithRodStress_StepSize", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_StepSize",userInfo.getLanguageName()));
 							statusMap.put("write_FrequencyConversionWithRodStress_FrequencyLowerLimit", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_FrequencyLowerLimit",userInfo.getLanguageName()));
+							statusMap.put("write_FrequencyConversionWithRodStress_StepSize", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionWithRodStress_StepSize",userInfo.getLanguageName()));
 							
 							
 							statusMap.put("write_FrequencyConversionEnable_FSDiagramWorkType1201", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_FrequencyConversionEnable_FSDiagramWorkType1201",userInfo.getLanguageName()));

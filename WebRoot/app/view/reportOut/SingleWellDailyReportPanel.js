@@ -1809,6 +1809,7 @@ function initSingleWellDailyReportCurveChartFn(series, tickInterval, divId, titl
 	        exporting: {
 	            enabled: true,
 	            filename: title,
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0].offsetWidth,
 	            sourceHeight: $("#"+divId)[0].offsetHeight,
 	            buttons: {

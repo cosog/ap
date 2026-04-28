@@ -1,6 +1,8 @@
 package com.cosog.model;
 
 public class CurveConf {
+	private int groupId;
+	private String groupName;
 	private int sort;
 	private String color;
 	private int lineWidth;
@@ -9,13 +11,15 @@ public class CurveConf {
 	public CurveConf() {
 		super();
 	}
-	public CurveConf(int sort, String color, int lineWidth, String dashStyle, boolean yAxisOpposite) {
+	public CurveConf(int sort, String color, int lineWidth, String dashStyle, boolean yAxisOpposite,int groupId,String groupName) {
 		super();
 		this.sort = sort;
 		this.color = color;
 		this.lineWidth = lineWidth;
 		this.dashStyle = dashStyle;
 		this.yAxisOpposite = yAxisOpposite;
+		this.groupId = groupId;
+		this.groupName = groupName;
 	}
 	public int getSort() {
 		return sort;
@@ -47,4 +51,17 @@ public class CurveConf {
 	public void setYAxisOpposite(boolean yAxisOpposite) {
 		this.yAxisOpposite = yAxisOpposite;
 	}
+	public int getGroupId() {
+		return groupId;
+	}
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
+	}
+	public String getGroupName() {
+		return groupName;
+	}
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+	
 }

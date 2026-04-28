@@ -759,6 +759,7 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 		        exporting: {
 		            enabled: true,
 		            filename: title,
+		            fallbackToExportServer: false,
 		            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 		    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 		        },
@@ -1014,7 +1015,8 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, nam
 			},
 			exporting:{ 
 	            enabled:true,    
-	            filename:title,   
+	            filename:title,
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 			},
@@ -1170,7 +1172,8 @@ function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) 
 			},
 			exporting:{ 
 	            enabled:true,    
-	            filename:title,  
+	            filename:title, 
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 			},
@@ -1335,6 +1338,7 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 			exporting:{ 
 	            enabled:true,    
 	            filename:title,
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 			},
@@ -1497,6 +1501,7 @@ function ShowRealTimeMonitoringNumStatusStatPieOrColChat(title,divId, name, data
 			exporting:{ 
 	            enabled:true,    
 	            filename:title,
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 			},
@@ -1629,7 +1634,8 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 			},
 			exporting:{ 
 	            enabled:true,    
-	            filename:title,    
+	            filename:title,   
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 			},
@@ -1915,6 +1921,7 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	        exporting: {
 	            enabled: true,
 	            filename: title,
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 	        },

@@ -774,7 +774,8 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 //		        },
 			exporting:{    
                 enabled:true,    
-                filename:title,    
+                filename:title,  
+                fallbackToExportServer: false,
                 sourceWidth: $("#"+divId)[0].offsetWidth,
                 sourceHeight: $("#"+divId)[0].offsetHeight
            },
@@ -900,7 +901,8 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 //		        },
 			exporting:{    
                 enabled:true,    
-                filename:title,    
+                filename:title,  
+                fallbackToExportServer: false,
                 sourceWidth: $("#"+divId)[0].offsetWidth,
                 sourceHeight: $("#"+divId)[0].offsetHeight
            },
@@ -1037,7 +1039,8 @@ function initCurveChart(years, values, tickInterval, divId) {
 //		            }
 //		        },
 			exporting:{    
-                enabled:true,    
+                enabled:true,   
+                fallbackToExportServer: false,
                 filename:title,    
                 sourceWidth: $("#"+divId)[0].offsetWidth,
                 sourceHeight: $("#"+divId)[0].offsetHeight
@@ -2283,7 +2286,8 @@ function initContinuousDiagramChart(pointdata, divId,title,subtitle,xtext,ytext,
 	        },
 	        exporting:{
                 enabled:true,    
-                filename:title,    
+                filename:title,
+                fallbackToExportServer: false,
                 sourceWidth: $("#"+divId)[0].offsetWidth,
                 sourceHeight: $("#"+divId)[0].offsetHeight
            },
@@ -2732,6 +2736,7 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
 	        exporting: {
 	            enabled: true,
 	            filename: title,
+	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0].offsetWidth,
 	            sourceHeight: $("#"+divId)[0].offsetHeight
 	        },
@@ -3124,7 +3129,8 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	            min: yAxisMin                  // 最小值
 	        },
 	        exporting:{
-                enabled:true,    
+                enabled:true, 
+                fallbackToExportServer: false,
                 filename:deviceName+loginUserLanguageResource.FSDiagram+'-'+acqTime,    
                 sourceWidth: $("#"+divId)[0].offsetWidth,
                 sourceHeight: $("#"+divId)[0].offsetHeight
@@ -3359,7 +3365,8 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 			            minorTickInterval: ''    // 不显示次刻度线
 			        },
 			        exporting:{    
-	                    enabled:true,    
+	                    enabled:true, 
+	                    fallbackToExportServer: false,
 	                    filename:deviceName+loginUserLanguageResource.rodStress+"-"+acqTime,    
 	                    sourceWidth: $("#"+divId)[0].offsetWidth,
 	                    sourceHeight: $("#"+divId)[0].offsetHeight
@@ -3563,7 +3570,8 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upp
                 }]
 	        },
 	        exporting:{    
-                enabled:true,    
+                enabled:true,
+                fallbackToExportServer: false,
                 filename:deviceName+loginUserLanguageResource.pumpFSDiagram+"-"+acqTime,    
                 sourceWidth: $("#"+divId)[0].offsetWidth,
                 sourceHeight: $("#"+divId)[0].offsetHeight
@@ -3661,7 +3669,8 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 		            minorTickInterval: ''
 		        },
 		        exporting:{    
-                    enabled:true,    
+                    enabled:true, 
+                    fallbackToExportServer: false,
                     filename:deviceName+loginUserLanguageResource.pumpEfficiencyComposition+"-"+acqTime,    
                     sourceWidth: $("#"+divId)[0].offsetWidth,
                     sourceHeight: $("#"+divId)[0].offsetHeight
@@ -3834,7 +3843,8 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			            minorTickInterval: ''   // 不显示次刻度线
 			        },
 			        exporting:{
-	                    enabled:true,    
+	                    enabled:true,  
+	                    fallbackToExportServer: false,
 	                    filename: deviceName+''+title+'-'+acqTime,
 	                    sourceWidth: $("#"+divId)[0].offsetWidth,
 	                    sourceHeight: $("#"+divId)[0].offsetHeight
@@ -4033,7 +4043,8 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 //			            min: 0                  // 最小值
 			        },
 			        exporting:{
-	                    enabled:true,    
+	                    enabled:true,
+	                    fallbackToExportServer: false,
 	                    filename: deviceName+''+title+'-'+acqTime,   
 	                    sourceWidth: $("#"+divId)[0].offsetWidth,
 	                    sourceHeight: $("#"+divId)[0].offsetHeight
@@ -4144,7 +4155,8 @@ function initBalanceCurveChart(catagories,series,divId,title,deviceName,acqTime,
 					zoomType : 'xy'
 				},
 				exporting:{ 
-		            enabled:true,    
+		            enabled:true, 
+		            fallbackToExportServer: false,
 		            filename: deviceName+''+title+'-'+acqTime,   
 		            sourceWidth: $("#"+divId)[0].offsetWidth,
 		            sourceHeight: $("#"+divId)[0].offsetHeight
@@ -4788,7 +4800,8 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	        },
 	        exporting:{    
                 enabled:true,    
-                filename:title,    
+                filename:title,  
+                fallbackToExportServer: false,
                 sourceWidth: $("#"+divId)[0].offsetWidth,
                 sourceHeight: $("#"+divId)[0].offsetHeight
            },
@@ -4876,7 +4889,8 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	        },
 	        exporting:{    
                 enabled:true,    
-                filename:title,    
+                filename:title,  
+                fallbackToExportServer: false,
                 sourceWidth: $("#"+divId)[0].offsetWidth,
                 sourceHeight: $("#"+divId)[0].offsetHeight
            },

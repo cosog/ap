@@ -2166,7 +2166,7 @@ var DeviceInfoHandsontableHelper = {
                     		
                     		
                     		deviceProductionData.ManualIntervention={};
-                    		manualInterventionResultName=productionHandsontableData[40][2];
+                    		manualInterventionResultName=isNotVal(productionHandsontableData[40][2])?productionHandsontableData[40][2]:'';
                     		if(isNumber(parseFloat(productionHandsontableData[41][2]))){
                     			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[41][2]);
                     		}
@@ -2179,7 +2179,7 @@ var DeviceInfoHandsontableHelper = {
                     		
                     		deviceProductionData.FESDiagram={};
                     		deviceProductionData.FESDiagram.Src=0;
-                    		FESDiagramSrcName=productionHandsontableData[44][2];
+                    		FESDiagramSrcName=isNotVal(productionHandsontableData[44][2])?productionHandsontableData[44][2]:'';
                     	}
                         
                         
@@ -2988,7 +2988,7 @@ var ProductionHandsontableHelper = {
 		                    
 		                    if (visualColIndex === 2 && visualRowIndex===13 && deviceCalculateDataType==1) {
 		                    	this.type = 'dropdown';
-		                    	this.source = [loginUserLanguageResource.barrelType_H,loginUserLanguageResource.barrelType_L];
+		                    	this.source = ['',loginUserLanguageResource.barrelType_H,loginUserLanguageResource.barrelType_L];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
@@ -3000,9 +3000,9 @@ var ProductionHandsontableHelper = {
 		                    	}else{
 		                    		barrelType=productionHandsontableHelper.pumpGrade;
 		                    	}
-		                    	var pumpGradeList=['1','2','3','4','5'];
+		                    	var pumpGradeList=['','1','2','3','4','5'];
 		                    	if(barrelType===loginUserLanguageResource.barrelType_L){
-		                    		pumpGradeList=['1','2','3'];
+		                    		pumpGradeList=['','1','2','3'];
 		                    	}
 		                    	this.type = 'dropdown';
 		                    	this.source = pumpGradeList;
@@ -3013,28 +3013,28 @@ var ProductionHandsontableHelper = {
 		                    if(deviceCalculateDataType==1){
 		                    	if (visualColIndex === 2 && (visualRowIndex===20 || visualRowIndex===25||visualRowIndex===30||visualRowIndex===35)) {
 			                    	this.type = 'dropdown';
-			                    	this.source = [loginUserLanguageResource.rodStringTypeValue1,loginUserLanguageResource.rodStringTypeValue2,loginUserLanguageResource.rodStringTypeValue3];
+			                    	this.source = ['',loginUserLanguageResource.rodStringTypeValue1,loginUserLanguageResource.rodStringTypeValue2,loginUserLanguageResource.rodStringTypeValue3];
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }
 			                    
 			                    if (visualColIndex === 2 && (visualRowIndex===21 || visualRowIndex===26||visualRowIndex===31||visualRowIndex===36)) {
 			                    	this.type = 'dropdown';
-			                    	this.source = ['A','B','C','K','D','KD','HL','HY'];
+			                    	this.source = ['','A','B','C','K','D','KD','HL','HY'];
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }
 		                    }else{
 		                    	if (visualColIndex === 2 && (visualRowIndex===19 || visualRowIndex===24||visualRowIndex===29||visualRowIndex===34)) {
 			                    	this.type = 'dropdown';
-			                    	this.source = [loginUserLanguageResource.rodStringTypeValue1,loginUserLanguageResource.rodStringTypeValue2,loginUserLanguageResource.rodStringTypeValue3];
+			                    	this.source = ['',loginUserLanguageResource.rodStringTypeValue1,loginUserLanguageResource.rodStringTypeValue2,loginUserLanguageResource.rodStringTypeValue3];
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }
 			                    
 			                    if (visualColIndex === 2 && (visualRowIndex===20 || visualRowIndex===25||visualRowIndex===30||visualRowIndex===35)) {
 			                    	this.type = 'dropdown';
-			                    	this.source = ['A','B','C','K','D','KD','HL','HY'];
+			                    	this.source = ['','A','B','C','K','D','KD','HL','HY'];
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }
@@ -4161,9 +4161,10 @@ function deviceProductionDataDownlink(){
 		var deviceProductionData={};
 		var pumpingUnitInfo={};
 		var deviceCalculateDataType=Ext.getCmp("DeviceCalculateDataType_Id").getValue().deviceCalculateDataType;
+		var FESDiagramSrcName='';
+		var manualInterventionResultName='';
 		if(deviceCalculateDataType==1){
-            var manualInterventionResultName=loginUserLanguageResource.noIntervention;
-            var FESDiagramSrcName='';
+            manualInterventionResultName=loginUserLanguageResource.noIntervention;
             if(productionHandsontableHelper!=null && productionHandsontableHelper.hot!=undefined){
             	var productionHandsontableData=productionHandsontableHelper.hot.getData();
         		deviceProductionData.FluidPVT={};
@@ -4381,9 +4382,8 @@ function deviceProductionDataDownlink(){
             		deviceProductionData.RodString.EveryRod.push(Rod4);
         		}
         		
-        		
         		deviceProductionData.ManualIntervention={};
-        		manualInterventionResultName=productionHandsontableData[40][2];
+        		manualInterventionResultName=isNotVal(productionHandsontableData[40][2])?productionHandsontableData[40][2]:'';
         		if(isNumber(parseFloat(productionHandsontableData[41][2]))){
         			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[41][2]);
         		}
@@ -4396,7 +4396,7 @@ function deviceProductionDataDownlink(){
         		
         		deviceProductionData.FESDiagram={};
         		deviceProductionData.FESDiagram.Src=0;
-        		FESDiagramSrcName=productionHandsontableData[44][2];
+        		FESDiagramSrcName=isNotVal(productionHandsontableData[44][2])?productionHandsontableData[44][2]:'';
             }
             
             pumpingUnitInfo.Balance={};
@@ -4646,6 +4646,7 @@ function deviceProductionDataDownlink(){
 	            	productionData:JSON.stringify(deviceProductionData),
 	            	pumpingUnitInfo:JSON.stringify(pumpingUnitInfo),
 	            	manualInterventionResultName:manualInterventionResultName,
+	            	FESDiagramSrcName:FESDiagramSrcName,
 	            	applicationScenarios:applicationScenarios
 	            },
 	            success: function (response, action) {

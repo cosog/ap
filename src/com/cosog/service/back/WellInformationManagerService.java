@@ -2698,7 +2698,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				if(StringManagerUtils.stringToInteger(deviceCalculateDataType)==1){
 					resultNameBuff.append("\""+languageResourceMap.get("noIntervention")+"\"");
 					
-					FESdiagramSrcBuff.append("\""+MemoryDataManagerTask.getCodeName("FESDIAGRAMSRC", "0", language)+"\",\""+MemoryDataManagerTask.getCodeName("FESDIAGRAMSRC", "1", language)+"\"");
+					FESdiagramSrcBuff.append("\"\",\""+MemoryDataManagerTask.getCodeName("FESDIAGRAMSRC", "0", language)+"\",\""+MemoryDataManagerTask.getCodeName("FESDIAGRAMSRC", "1", language)+"\"");
 					
 //					List<?> resultList = this.findCallSql(resultSql);
 					

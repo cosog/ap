@@ -26,7 +26,9 @@ import com.cosog.model.AlarmUnit;
 import com.cosog.model.AlarmUnitItem;
 import com.cosog.model.Code;
 import com.cosog.model.CurveConf;
+import com.cosog.model.CurveGroup;
 import com.cosog.model.DataMapping;
+import com.cosog.model.DeviceTabManager;
 import com.cosog.model.DisplayUnit;
 import com.cosog.model.DisplayUnitItem;
 import com.cosog.model.ProtocolAlarmInstance;
@@ -1799,10 +1801,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												}
 												
 												if(realtimeCurveConfObj!=null){
-													realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+													realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+															realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 												}
 												if(historyCurveConfObj!=null){
-													historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+													historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+															historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 												}
 												
 												realtimeOverview=realtimeOverviewList.get(m);
@@ -1891,12 +1895,22 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											historyCurveConfObj=gson.fromJson(historyCurveConf, type);
 										}
 										
+//										if(realtimeCurveConfObj!=null){
+//											realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+//										}
+//										if(historyCurveConfObj!=null){
+//											historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+//										}
+										
 										if(realtimeCurveConfObj!=null){
-											realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+											realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+													realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 										}
 										if(historyCurveConfObj!=null){
-											historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+											historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+													historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 										}
+										
 										break;
 									}
 								}
@@ -2124,11 +2138,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									historyCurveConfObj=gson.fromJson(historyCurveConf, type);
 								}
 								
+//								if(realtimeCurveConfObj!=null){
+//									realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+//								}
+//								if(historyCurveConfObj!=null){
+//									historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+//								}
+								
 								if(realtimeCurveConfObj!=null){
-									realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+									realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+											realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 								}
 								if(historyCurveConfObj!=null){
-									historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+									historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+											historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 								}
 								
 								realtimeOverview=realtimeOverviewList.get(m);
@@ -2206,11 +2229,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									historyCurveConfObj=gson.fromJson(historyCurveConf, type);
 								}
 								
+//								if(realtimeCurveConfObj!=null){
+//									realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+//								}
+//								if(historyCurveConfObj!=null){
+//									historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+//								}
+								
 								if(realtimeCurveConfObj!=null){
-									realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+									realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+											realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 								}
 								if(historyCurveConfObj!=null){
-									historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+									historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+											historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 								}
 								
 								realtimeOverview=realtimeOverviewList.get(k);
@@ -2412,11 +2444,20 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
 						}
 						
+//						if(realtimeCurveConfObj!=null){
+//							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+//						}
+//						if(historyCurveConfObj!=null){
+//							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+//						}
+						
 						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+							realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+									realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 						}
 						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+							historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+									historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 						}
 						
 						realtimeOverview=realtimeOverviewList.get(k);
@@ -2586,11 +2627,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
 						}
 						
+//						if(realtimeCurveConfObj!=null){
+//							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+//						}
+//						if(historyCurveConfObj!=null){
+//							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+//						}
 						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
+							realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+									realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 						}
 						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
+							historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+									historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 						}
 						
 						realtimeOverview=realtimeOverviewList.get(k);
@@ -14064,6 +14113,64 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]}");
 		
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getCurveGroupData(String type,User user) throws IOException, SQLException {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer language_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		
+		String columns=	"[]";
+		
+		String sql="select t.id,t.name,t.sort,t.type from TBL_CURVEGROUP t "
+				+ " where t.type="+StringManagerUtils.stringToInteger(type)+" "
+				+ " order by t.sort,t.id";
+
+
+		
+		List<?> list = this.findCallSql(sql);
+		language_json.append("[");
+		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",");
+		
+		result_json.append("\"totalRoot\":[");
+		for (Object o : list) {
+			Object[] obj = (Object[]) o;
+			result_json.append("{\"groupId\":"+obj[0]+",");
+			result_json.append("\"name\":\""+obj[1]+"\",");
+			result_json.append("\"sort\":"+(StringManagerUtils.isNum(obj[2]+"")?StringManagerUtils.stringToInteger(obj[2]+""):"\"\"")+",");
+			result_json.append("\"type\":"+StringManagerUtils.stringToInteger(obj[3]+"")+"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public int updateCurveGroupData(CurveGroup curveGroup) throws Exception {
+		String sql="update TBL_CURVEGROUP t "
+				+ " set t.name='"+curveGroup.getName()+"',"
+				+ " t.sort="+curveGroup.getSort()+" "
+				+ " where t.id="+curveGroup.getId();
+		int r=getBaseDao().updateOrDeleteBySql(sql);
+		return r;
+	}
+	
+	public String getCurveGroupCombList(String type,User user){
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.id,t.name from TBL_CURVEGROUP t where t.type="+StringManagerUtils.stringToInteger(type)+" order by t.sort,t.id";
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{\"totals\":"+list.size()+",\"list\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{boxkey:\"" + obj[0] + "\",");
+			result_json.append("boxval:\"" + obj[1] + "\"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	

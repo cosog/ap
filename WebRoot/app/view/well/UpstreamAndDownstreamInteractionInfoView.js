@@ -767,6 +767,7 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
         exporting: {
             enabled: true,
             filename: title,
+            fallbackToExportServer: false,
             sourceWidth: $("#"+divId)[0].offsetWidth,
             sourceHeight: $("#"+divId)[0].offsetHeight
         },

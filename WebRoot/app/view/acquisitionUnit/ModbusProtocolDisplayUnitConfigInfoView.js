@@ -428,8 +428,8 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             if (value!=null && value!="") {
                 var arr = (value+"").split(';');
-                if (arr.length == 3) {
-                    td.style.backgroundColor = '#' + arr[2];
+                if (arr.length == 4) {
+                    td.style.backgroundColor = '#' + arr[3];
                 }
             }
             td.style.whiteSpace = 'nowrap'; //文本不换行
@@ -442,8 +442,8 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
             var bg='rgb(245, 245, 245)';
             if (value!=null && value!="") {
                 var arr = (value+"").split(';');
-                if (arr.length == 3) {
-                	bg = '#' + arr[2];
+                if (arr.length == 4) {
+                	bg = '#' + arr[3];
                 }
             }
             td.style.backgroundColor = bg;
@@ -523,7 +523,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                     indicators: false,
                     copyPasteEnabled: false
                 },
-                colWidths: [25, 50, 200, 80, 80, 80, 80, 80, 60, 80, 80, 80, 80, 80, 80, 100, 80, 80, 80, 100, 100],
+                colWidths: [25, 50, 200, 80, 80, 80, 80, 80, 60, 80, 80, 80, 180, 80, 80, 100, 80, 80, 80, 180, 100],
                 columns: protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns,
                 fixedColumnsStart:3,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -604,22 +604,29 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                         if (ScadaDriverModbusConfigSelectRow != '') {
                             var selectedItem = Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
                             if (selectedItem.data.classes == 2) {
-                                var CurveConfigWindow = Ext.create("AP.view.acquisitionUnit.CurveConfigWindow");
-
+                                var CurveConfigWindow = Ext.create("AP.view.acquisitionUnit.CurveGroupAndPropertiesConfigWindow");
                                 Ext.getCmp("curveConfigSelectedTableType_Id").setValue(0); //采集项表
                                 Ext.getCmp("curveConfigSelectedRow_Id").setValue(row);
                                 Ext.getCmp("curveConfigSelectedCol_Id").setValue(column);
-
-                                CurveConfigWindow.show();
-
+                                
+                                
                                 var curveConfig = null;
                                 if (column == 12 && isNotVal(row1[21])) {
                                     curveConfig = row1[21];
+                                    Ext.getCmp("curveConfigCurveType_Id").setValue(1);
                                 } else if (column == 19 && isNotVal(row1[22])) {
                                     curveConfig = row1[22];
+                                    Ext.getCmp("curveConfigCurveType_Id").setValue(2);
                                 }
+                                if(curveConfig.groupId!=undefined){
+                                	Ext.getCmp("curveGroupComb_Id").setValue(curveConfig.groupId);
+                                	Ext.getCmp("curveGroupComb_Id").setRawValue(curveConfig.groupName);
+                                }
+                                
+                                
+                                CurveConfigWindow.show();
+                                
                                 var value = 'ff0000';
-
                                 if (isNotVal(curveConfig)) {
                                     Ext.getCmp("curveConfigSort_Id").setValue(curveConfig.sort);
                                     Ext.getCmp("curveConfigLineWidth_Id").setValue(curveConfig.lineWidth);
@@ -705,25 +712,28 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                 	if (!changes) return;
                 	changes.forEach(([row, prop, oldValue, newValue]) => {
                         if (source=="CopyPaste.paste" && (prop === 'historyCurveConfShowValue' || prop === 'realtimeCurveConfShowValue')) {
-                        	if(newValue.split(";").length==3){
+                        	if(newValue.split(";").length==4){
                         		var curveConfigArr=newValue.split(";");
                             	var curveConfig={};
-                    			curveConfig.sort=curveConfigArr[0];
+                            	
+                            	curveConfig.group=curveConfigArr[0].replace("曲线组:","");
+                            	
+                    			curveConfig.sort=curveConfigArr[1];
                     			curveConfig.lineWidth=3;
                     			curveConfig.dashStyle='Solid';
-                    			curveConfig.yAxisOpposite=curveConfigArr[1]==loginUserLanguageResource.right?true:false;
-                    			curveConfig.color=curveConfigArr[2];
+                    			curveConfig.yAxisOpposite=curveConfigArr[2]==loginUserLanguageResource.right?true:false;
+                    			curveConfig.color=curveConfigArr[3];
                     			
                     			if(prop === 'realtimeCurveConfShowValue'){
                     				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'realtimeCurveConf',curveConfig);
                     			}else if(prop === 'historyCurveConfShowValue'){
-                    				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'historyCurveConf',curveConfig);                                                 
+                    				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'historyCurveConf',curveConfig);
                     			}
                         	}else{
                         		if(prop === 'realtimeCurveConfShowValue'){
                     				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'realtimeCurveConf','');
                     			}else if(prop === 'historyCurveConfShowValue'){
-                    				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'historyCurveConf','');                                                 
+                    				protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(row,'historyCurveConf','');
                     			}
                         	}
                         }

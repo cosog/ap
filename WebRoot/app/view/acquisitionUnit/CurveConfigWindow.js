@@ -35,6 +35,17 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
 				id : 'curveConfigSelectedCol_Id',
 				value:-1
 			},{
+//            	xtype: 'numberfield',
+            	id: "curveConfigGroup_Id",
+                fieldLabel: '曲线组',
+                value:'',
+                allowBlank: true,
+//                editable : false,
+                hidden: true,
+//                minValue: 1,
+                anchor: '100%',
+                msgTarget: 'side'
+            },{
             	xtype: 'numberfield',
             	id: "curveConfigSort_Id",
                 fieldLabel: loginUserLanguageResource.curveSort,
@@ -147,6 +158,8 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
             	text: loginUserLanguageResource.save,
                 iconCls: 'save',
                 handler: function () {
+                	var group=Ext.getCmp("curveConfigGroup_Id").getValue();
+                	
                 	var sort=Ext.getCmp("curveConfigSort_Id").getValue();
 					var lineWidth=Ext.getCmp("curveConfigLineWidth_Id").getValue();
 					var dashStyle=Ext.getCmp("curveConfigDashStyleComb_Id").getValue();
@@ -158,8 +171,11 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 	var tableType=Ext.getCmp('curveConfigSelectedTableType_Id').getValue();
                 	if(parseInt(row)>=0 && parseInt(col)>=0){
                 		if(tableType==0){
-                			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+";"+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
+                			var showValue='曲线组:'+(isNotVal(group)?group:loginUserLanguageResource.nothing)+";"+
+                				sort+";"+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color;
+                			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),showValue);
                 			var curveConfig={};
+                			curveConfig.group=group;
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
                 			curveConfig.dashStyle=dashStyle;
@@ -173,6 +189,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 		}else if(tableType==21){//单井区间报表汇总计算项
                 			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
                 			var curveConfig={};
+                			curveConfig.group=group;
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
                 			curveConfig.dashStyle=dashStyle;
@@ -184,6 +201,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 		}else if(tableType==22){//区域报表汇总计算项
                 			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
                 			var curveConfig={};
+                			curveConfig.group=group;
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
                 			curveConfig.dashStyle=dashStyle;
@@ -195,6 +213,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 		}else if(tableType==23){//单井单日报表汇总计算项
                 			reportUnitContentConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),sort+';'+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color);
                 			var curveConfig={};
+                			curveConfig.group=group;
                 			curveConfig.sort=sort;
                 			curveConfig.lineWidth=lineWidth;
                 			curveConfig.dashStyle=dashStyle;

@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +46,9 @@ import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.AcquisitionUnitGroup;
 import com.cosog.model.AlarmUnit;
 import com.cosog.model.AlarmUnitItem;
+import com.cosog.model.CurveGroup;
 import com.cosog.model.DataMapping;
+import com.cosog.model.DeviceTabManager;
 import com.cosog.model.DisplayUnit;
 import com.cosog.model.DisplayUnitItem;
 import com.cosog.model.Module;
@@ -8332,6 +8335,75 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = this.acquisitionUnitManagerService.getProtocolExtendedFieldItems(protocolCode,protocolExtendedFieldType,language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getCurveGroupData")
+	public String getCurveGroupData() throws IOException, SQLException {
+		HttpSession session=request.getSession();
+		String type = ParamUtils.getParameter(request, "type");
+		User user = (User) session.getAttribute("userLogin");
+		
+		String json = this.acquisitionUnitManagerService.getCurveGroupData(type,user);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	
+	@RequestMapping("/saveCurveGroupData")
+	public String saveCurveGroupData() throws Exception {
+		String result ="{success:true,msg:false}";
+		HttpSession session=request.getSession();
+		Gson gson=new Gson();
+		java.lang.reflect.Type type=null;
+		String data = ParamUtils.getParameter(request, "data");
+		
+		type = new TypeToken<List<CurveGroup>>() {}.getType();
+		List<CurveGroup> list=gson.fromJson(data, type);
+		
+		if(list!=null){
+			List<String> updateIds=new ArrayList<>();
+			for(CurveGroup curveGroup:list){
+				this.acquisitionUnitManagerService.updateCurveGroupData(curveGroup);
+				updateIds.add(curveGroup.getId()+"");
+			}
+			if(updateIds.size()>0){
+				MemoryDataManagerTask.loadDeviceInfoByTabInstanceId(StringUtils.join(updateIds, ","),"update");
+			}
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result);
+		log.debug("saveDeviceTypeMaintenanceData json==" + result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getCurveGroupCombList")
+	public String getCurveGroupCombList() throws IOException {
+		String type=ParamUtils.getParameter(request, "type");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json=acquisitionUnitItemManagerService.getCurveGroupCombList(type,user);
+		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);

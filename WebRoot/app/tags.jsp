@@ -79,7 +79,7 @@ request.setAttribute("showVideo", showVideo);
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-more.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <!--<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-3d.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>-->
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/exporting.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
-<!--<script type="text/javascript" src="<%=path%>/scripts/highcharts/offline-exporting.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>-->
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/offline-exporting.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <%if(!"en".equalsIgnoreCase(browserLang)){ %>
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-<%=browserLang%>.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <%} %>

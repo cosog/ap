@@ -3835,6 +3835,7 @@ function getOperationMaintenanceMonitorCurveData(){
 		    	tickInterval=100;
 		    }
 		    var title = loginUserLanguageResource.memoryCurve;
+		    var subtitle=result.startDate+'~'+result.endDate;
 		    var xTitle=loginUserLanguageResource.acqTime;
 		    var legendName =result.curveItems;
 		    var legendCode =result.curveItemCodes;
@@ -3904,7 +3905,7 @@ function getOperationMaintenanceMonitorCurveData(){
 		        
 		    }
 		   
-		    initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId, title, '', '', yAxis, color,true,timeFormat);
+		    initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId, title, subtitle, '', yAxis, color,true,timeFormat);
 		},
 		failure:function(){
 			if(Ext.getCmp(panelId)!=undefined){
@@ -3996,7 +3997,20 @@ function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId
 	            enabled: legend,
 	            borderWidth: 0
 	        },
-	        series: series
+	        series: series,
+	        exporting: {
+                fallbackToExportServer: false,   // 禁止回退到官方服务器
+                // 可选：自定义文件名
+                filename: title+'-'+subtitle,
+                sourceWidth: $("#" + divId).width(),   // 容器当前宽度(px)
+                sourceHeight: $("#" + divId).height(), // 容器当前高度(px)
+                // 可选：让导出的图片就是 sourceWidth/sourceHeight 的大小，不缩放
+                scale: 1,
+                // 可选：导出失败时的回调
+                error: function (err) {
+                    console.error('导出失败:', err);
+                }
+            }
 	    });
 	}
 };

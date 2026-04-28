@@ -6881,8 +6881,8 @@ public class MemoryDataManagerTask {
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FrequencyConversionWithRodStressExceedingEnable"),"write_FrequencyConversionWithRodStressExceedingEnable",index++) );
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FrequencyConversionWithRodStress_MaxRodStressRatio"),"write_FrequencyConversionWithRodStress_MaxRodStressRatio",index++) );
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FrequencyConversionWithRodStress_RodStressRangeRatio"),"write_FrequencyConversionWithRodStress_RodStressRangeRatio",index++) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FrequencyConversionWithRodStress_StepSize"),"write_FrequencyConversionWithRodStress_StepSize",index++) );
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FrequencyConversionWithRodStress_FrequencyLowerLimit"),"write_FrequencyConversionWithRodStress_FrequencyLowerLimit",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FrequencyConversionWithRodStress_StepSize"),"write_FrequencyConversionWithRodStress_StepSize",index++) );
 		
 		
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_FrequencyConversionEnable_FSDiagramWorkType1201"),"write_FrequencyConversionEnable_FSDiagramWorkType1201",index++) );

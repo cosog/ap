@@ -55,7 +55,7 @@ Ext.define("AP.view.acquisitionUnit.CurveGroupAndPropertiesConfigWindow", {
         
         var curveGroupComb = Ext.create(
 				'Ext.form.field.ComboBox', {
-					fieldLabel : '曲线组'+'<font color=red>*</font>',
+					fieldLabel : loginUserLanguageResource.curveGroup+'<font color=red>*</font>',
 					id : 'curveGroupComb_Id',
 					anchor : '100%',
 					store: curveGroupStore,
@@ -219,7 +219,7 @@ Ext.define("AP.view.acquisitionUnit.CurveGroupAndPropertiesConfigWindow", {
                 	var tableType=Ext.getCmp('curveConfigSelectedTableType_Id').getValue();
                 	if(parseInt(row)>=0 && parseInt(col)>=0){
                 		if(tableType==0){
-                			var showValue='曲线组:'+(isNotVal(groupName)?groupName:loginUserLanguageResource.nothing)+";"+
+                			var showValue=loginUserLanguageResource.curveGroup+':'+(isNotVal(groupName)?groupName:loginUserLanguageResource.nothing)+";"+
                 				sort+";"+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color;
                 			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),showValue);
                 			var curveConfig={};
@@ -300,7 +300,7 @@ Ext.define("AP.view.acquisitionUnit.CurveGroupAndPropertiesConfigWindow", {
     				value:0
     			}],
             	items:[{
-                	title:'曲线组',
+                	title:loginUserLanguageResource.curveGroup,
                 	id:'curveGroupConfigPanel_Id',
                 	layout: "border",
                 	tbar: ['->',{
@@ -443,7 +443,7 @@ function saveCurveGroupData(){
             	    			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(j,'realtimeCurveConf',realtimeCurveConfArr[j]);
             	    			
             	    			
-            	    			var showValue='曲线组:'+(isNotVal(realtimeCurveConfArr[j].groupName)?realtimeCurveConfArr[j].groupName:loginUserLanguageResource.nothing)+";"+
+            	    			var showValue=loginUserLanguageResource.curveGroup+':'+(isNotVal(realtimeCurveConfArr[j].groupName)?realtimeCurveConfArr[j].groupName:loginUserLanguageResource.nothing)+";"+
             	    			realtimeCurveConfArr[j].sort+";"+(realtimeCurveConfArr[j].yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+realtimeCurveConfArr[j].color;
             	    			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(j,'realtimeCurveConfShowValue',showValue);
             	    			
@@ -456,7 +456,7 @@ function saveCurveGroupData(){
             	    			historyCurveConfArr[j].groupName=record.name;
             	    			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(j,'historyCurveConf',historyCurveConfArr[j]);
             	    			
-            	    			var showValue='曲线组:'+(isNotVal(historyCurveConfArr[j].groupName)?historyCurveConfArr[j].groupName:loginUserLanguageResource.nothing)+";"+
+            	    			var showValue=loginUserLanguageResource.curveGroup+':'+(isNotVal(historyCurveConfArr[j].groupName)?historyCurveConfArr[j].groupName:loginUserLanguageResource.nothing)+";"+
             	    			historyCurveConfArr[j].sort+";"+(historyCurveConfArr[j].yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+historyCurveConfArr[j].color;
             	    			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtRowProp(j,'historyCurveConfShowValue',showValue);
             	    			break;

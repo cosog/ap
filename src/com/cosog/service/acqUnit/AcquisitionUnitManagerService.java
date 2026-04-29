@@ -1574,6 +1574,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",width:80 ,children:[] }"
 				+ "]";
 		
+		
+		Map<Integer,CurveGroup> curveGroupMap=getCurveGroupInfo();
+		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
 		
@@ -1801,11 +1804,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 												}
 												
 												if(realtimeCurveConfObj!=null){
-													realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+													if(curveGroupMap.containsKey(realtimeCurveConfObj.getGroupId())){
+														realtimeCurveConfObj.setGroupName(curveGroupMap.get(realtimeCurveConfObj.getGroupId()).getName());
+													}else{
+														realtimeCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+													}
+													realtimeCurveConf=gson.toJson(realtimeCurveConfObj);
+													realtimeCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 															realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 												}
 												if(historyCurveConfObj!=null){
-													historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+													if(curveGroupMap.containsKey(historyCurveConfObj.getGroupId())){
+														historyCurveConfObj.setGroupName(curveGroupMap.get(historyCurveConfObj.getGroupId()).getName());
+													}else{
+														historyCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+													}
+													historyCurveConf=gson.toJson(historyCurveConfObj);
+													historyCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 															historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 												}
 												
@@ -1895,19 +1910,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 											historyCurveConfObj=gson.fromJson(historyCurveConf, type);
 										}
 										
-//										if(realtimeCurveConfObj!=null){
-//											realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-//										}
-//										if(historyCurveConfObj!=null){
-//											historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-//										}
-										
 										if(realtimeCurveConfObj!=null){
-											realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+											if(curveGroupMap.containsKey(realtimeCurveConfObj.getGroupId())){
+												realtimeCurveConfObj.setGroupName(curveGroupMap.get(realtimeCurveConfObj.getGroupId()).getName());
+											}else{
+												realtimeCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+											}
+											realtimeCurveConf=gson.toJson(realtimeCurveConfObj);
+											realtimeCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 													realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 										}
 										if(historyCurveConfObj!=null){
-											historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+											if(curveGroupMap.containsKey(historyCurveConfObj.getGroupId())){
+												historyCurveConfObj.setGroupName(curveGroupMap.get(historyCurveConfObj.getGroupId()).getName());
+											}else{
+												historyCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+											}
+											historyCurveConf=gson.toJson(historyCurveConfObj);
+											historyCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 													historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 										}
 										
@@ -2138,19 +2158,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									historyCurveConfObj=gson.fromJson(historyCurveConf, type);
 								}
 								
-//								if(realtimeCurveConfObj!=null){
-//									realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-//								}
-//								if(historyCurveConfObj!=null){
-//									historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-//								}
-								
 								if(realtimeCurveConfObj!=null){
-									realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+									if(curveGroupMap.containsKey(realtimeCurveConfObj.getGroupId())){
+										realtimeCurveConfObj.setGroupName(curveGroupMap.get(realtimeCurveConfObj.getGroupId()).getName());
+									}else{
+										realtimeCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+									}
+									realtimeCurveConf=gson.toJson(realtimeCurveConfObj);
+									realtimeCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 											realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 								}
 								if(historyCurveConfObj!=null){
-									historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+									if(curveGroupMap.containsKey(historyCurveConfObj.getGroupId())){
+										historyCurveConfObj.setGroupName(curveGroupMap.get(historyCurveConfObj.getGroupId()).getName());
+									}else{
+										historyCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+									}
+									historyCurveConf=gson.toJson(historyCurveConfObj);
+									historyCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 											historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 								}
 								
@@ -2229,19 +2254,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									historyCurveConfObj=gson.fromJson(historyCurveConf, type);
 								}
 								
-//								if(realtimeCurveConfObj!=null){
-//									realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-//								}
-//								if(historyCurveConfObj!=null){
-//									historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-//								}
-								
 								if(realtimeCurveConfObj!=null){
-									realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+									if(curveGroupMap.containsKey(realtimeCurveConfObj.getGroupId())){
+										realtimeCurveConfObj.setGroupName(curveGroupMap.get(realtimeCurveConfObj.getGroupId()).getName());
+									}else{
+										realtimeCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+									}
+									realtimeCurveConf=gson.toJson(realtimeCurveConfObj);
+									realtimeCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 											realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 								}
 								if(historyCurveConfObj!=null){
-									historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+									if(curveGroupMap.containsKey(historyCurveConfObj.getGroupId())){
+										historyCurveConfObj.setGroupName(curveGroupMap.get(historyCurveConfObj.getGroupId()).getName());
+									}else{
+										historyCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+									}
+									historyCurveConf=gson.toJson(historyCurveConfObj);
+									historyCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 											historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 								}
 								
@@ -2444,19 +2474,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
 						}
 						
-//						if(realtimeCurveConfObj!=null){
-//							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-//						}
-//						if(historyCurveConfObj!=null){
-//							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-//						}
-						
 						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+							if(curveGroupMap.containsKey(realtimeCurveConfObj.getGroupId())){
+								realtimeCurveConfObj.setGroupName(curveGroupMap.get(realtimeCurveConfObj.getGroupId()).getName());
+							}else{
+								realtimeCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+							}
+							realtimeCurveConf=gson.toJson(realtimeCurveConfObj);
+							realtimeCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 									realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 						}
 						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+							if(curveGroupMap.containsKey(historyCurveConfObj.getGroupId())){
+								historyCurveConfObj.setGroupName(curveGroupMap.get(historyCurveConfObj.getGroupId()).getName());
+							}else{
+								historyCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+							}
+							historyCurveConf=gson.toJson(historyCurveConfObj);
+							historyCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 									historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 						}
 						
@@ -2627,18 +2662,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							historyCurveConfObj=gson.fromJson(historyCurveConf, type);
 						}
 						
-//						if(realtimeCurveConfObj!=null){
-//							realtimeCurveConfShowValue=realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
-//						}
-//						if(historyCurveConfObj!=null){
-//							historyCurveConfShowValue=historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
-//						}
 						if(realtimeCurveConfObj!=null){
-							realtimeCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+							if(curveGroupMap.containsKey(realtimeCurveConfObj.getGroupId())){
+								realtimeCurveConfObj.setGroupName(curveGroupMap.get(realtimeCurveConfObj.getGroupId()).getName());
+							}else{
+								realtimeCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+							}
+							realtimeCurveConf=gson.toJson(realtimeCurveConfObj);
+							realtimeCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(realtimeCurveConfObj.getGroupName())?realtimeCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 									realtimeCurveConfObj.getSort()+";"+(realtimeCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+realtimeCurveConfObj.getColor();
 						}
 						if(historyCurveConfObj!=null){
-							historyCurveConfShowValue="曲线组:"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
+							if(curveGroupMap.containsKey(historyCurveConfObj.getGroupId())){
+								historyCurveConfObj.setGroupName(curveGroupMap.get(historyCurveConfObj.getGroupId()).getName());
+							}else{
+								historyCurveConfObj.setGroupName(languageResourceMap.get("nothing"));
+							}
+							historyCurveConf=gson.toJson(historyCurveConfObj);
+							historyCurveConfShowValue=languageResourceMap.get("curveGroup")+":"+(StringManagerUtils.isNotNull(historyCurveConfObj.getGroupName())?historyCurveConfObj.getGroupName():languageResourceMap.get("nothing") )+";"+
 									historyCurveConfObj.getSort()+";"+(historyCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+historyCurveConfObj.getColor();
 						}
 						
@@ -14230,4 +14271,29 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		return protocolType;
 	}
+	
+	public Map<Integer,CurveGroup> getCurveGroupInfo(){
+		Map<Integer,CurveGroup> curveGroupMap=new HashMap<>();
+		String groupCurveSql="select t.id,t.name,t.sort,t.type from tbl_curvegroup t order by t.id";
+		List<?> curveGroupeList=this.findCallSql(groupCurveSql);
+		for(int i=0;i<curveGroupeList.size();i++){
+			Object[] obj=(Object[])curveGroupeList.get(i);
+			CurveGroup curveGroup=new CurveGroup(StringManagerUtils.stringTransferInteger(obj[0]+""), obj[1]+"", StringManagerUtils.stringTransferInteger(obj[2]+""), StringManagerUtils.stringTransferInteger(obj[3]+""));
+			curveGroupMap.put(curveGroup.getId(), curveGroup);
+		}
+		return curveGroupMap;
+	}
+	
+	public Map<String,CurveGroup> getCurveGroupInfoByName(int type){
+		Map<String,CurveGroup> curveGroupMap=new HashMap<>();
+		String groupCurveSql="select t.id,t.name,t.sort,t.type from tbl_curvegroup t where t.type="+type+" order by t.id";
+		List<?> curveGroupeList=this.findCallSql(groupCurveSql);
+		for(int i=0;i<curveGroupeList.size();i++){
+			Object[] obj=(Object[])curveGroupeList.get(i);
+			CurveGroup curveGroup=new CurveGroup(StringManagerUtils.stringTransferInteger(obj[0]+""), obj[1]+"", StringManagerUtils.stringTransferInteger(obj[2]+""), StringManagerUtils.stringTransferInteger(obj[3]+""));
+			curveGroupMap.put(curveGroup.getName(), curveGroup);
+		}
+		return curveGroupMap;
+	}
+	
 }

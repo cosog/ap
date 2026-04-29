@@ -611,14 +611,18 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                 
                                 
                                 var curveConfig = null;
-                                if (column == 12 && isNotVal(row1[21])) {
-                                    curveConfig = row1[21];
+                                if (column == 12) {
+                                	if(isNotVal(row1[21])){
+                                		curveConfig = row1[21];
+                                	}
                                     Ext.getCmp("curveConfigCurveType_Id").setValue(1);
-                                } else if (column == 19 && isNotVal(row1[22])) {
-                                    curveConfig = row1[22];
+                                } else if (column == 19) {
+                                	if(isNotVal(row1[22])){
+                                		curveConfig = row1[22];
+                                	}
                                     Ext.getCmp("curveConfigCurveType_Id").setValue(2);
                                 }
-                                if(curveConfig.groupId!=undefined){
+                                if(isNotVal(curveConfig) && curveConfig.groupId!=undefined && curveConfig.groupId!=-1){
                                 	Ext.getCmp("curveGroupComb_Id").setValue(curveConfig.groupId);
                                 	Ext.getCmp("curveGroupComb_Id").setRawValue(curveConfig.groupName);
                                 }
@@ -716,7 +720,8 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                         		var curveConfigArr=newValue.split(";");
                             	var curveConfig={};
                             	
-                            	curveConfig.group=curveConfigArr[0].replace("曲线组:","");
+                            	curveConfig.groupId=-1;
+                            	curveConfig.groupName=curveConfigArr[0].replace(loginUserLanguageResource.curveGroup+":","");
                             	
                     			curveConfig.sort=curveConfigArr[1];
                     			curveConfig.lineWidth=3;

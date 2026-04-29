@@ -37,7 +37,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
 			},{
 //            	xtype: 'numberfield',
             	id: "curveConfigGroup_Id",
-                fieldLabel: '曲线组',
+                fieldLabel: loginUserLanguageResource.curveGroup,
                 value:'',
                 allowBlank: true,
 //                editable : false,
@@ -171,7 +171,7 @@ Ext.define("AP.view.acquisitionUnit.CurveConfigWindow", {
                 	var tableType=Ext.getCmp('curveConfigSelectedTableType_Id').getValue();
                 	if(parseInt(row)>=0 && parseInt(col)>=0){
                 		if(tableType==0){
-                			var showValue='曲线组:'+(isNotVal(group)?group:loginUserLanguageResource.nothing)+";"+
+                			var showValue=loginUserLanguageResource.curveGroup+':'+(isNotVal(group)?group:loginUserLanguageResource.nothing)+";"+
                 				sort+";"+(yAxisOpposite?loginUserLanguageResource.right:loginUserLanguageResource.left)+';'+color;
                 			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),showValue);
                 			var curveConfig={};

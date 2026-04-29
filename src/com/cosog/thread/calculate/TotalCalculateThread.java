@@ -238,7 +238,7 @@ public class TotalCalculateThread extends Thread{
 				dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
 				dataSbf.append("\"CalcProducingfluidLevel\":["+StringUtils.join(calcProducingfluidLevelList, ",")+"],");
 				dataSbf.append("\"LevelDifferenceValue\":["+StringUtils.join(levelDifferenceValueList, ",")+"],");
-				dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
+				dataSbf.append("\"InputLevelSubmergence\":["+StringUtils.join(submergenceList, ",")+"],");
 				dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
 				dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"],");
 				dataSbf.append("\"RPM\":["+StringUtils.join(rpmList, ",")+"]");
@@ -393,7 +393,7 @@ public class TotalCalculateThread extends Thread{
 				dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"],");
 				dataSbf.append("\"PumpSettingDepth\":["+StringUtils.join(pumpSettingDepthList, ",")+"],");
 				dataSbf.append("\"ProducingfluidLevel\":["+StringUtils.join(producingfluidLevelList, ",")+"],");
-				dataSbf.append("\"Submergence\":["+StringUtils.join(submergenceList, ",")+"],");
+				dataSbf.append("\"InputLevelSubmergence\":["+StringUtils.join(submergenceList, ",")+"],");
 				dataSbf.append("\"TubingPressure\":["+StringUtils.join(tubingPressureList, ",")+"],");
 				dataSbf.append("\"CasingPressure\":["+StringUtils.join(casingPressureList, ",")+"]");
 				dataSbf.append("}");

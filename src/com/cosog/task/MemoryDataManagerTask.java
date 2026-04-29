@@ -5544,7 +5544,7 @@ public class MemoryDataManagerTask {
 				
 				responseData.getProduction().setCalcProducingfluidLevel(rs.getFloat(30));
 				responseData.getProduction().setLevelDifferenceValue(rs.getFloat(31));
-				responseData.getProduction().setSubmergence(rs.getFloat(32));
+				responseData.getProduction().setInputLevelSubmergence(rs.getFloat(32));
 				
 				if(jedis.hexists("SRPDeviceTodayData".getBytes(), key.getBytes())){
 					SRPDeviceTodayData deviceTodayData =(SRPDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("SRPDeviceTodayData".getBytes(), key.getBytes()));
@@ -5701,7 +5701,7 @@ public class MemoryDataManagerTask {
 						responseData.getProduction().setProducingfluidLevel(pcpProductionData.getProduction().getProducingfluidLevel());
 					}
 				}
-				responseData.getProduction().setSubmergence(rs.getFloat(18));
+				responseData.getProduction().setInputLevelSubmergence(rs.getFloat(18));
 				
 				if(jedis.hexists("PCPDeviceTodayData".getBytes(), key.getBytes())){
 					PCPDeviceTodayData deviceTodayData =(PCPDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceTodayData".getBytes(), key.getBytes()));

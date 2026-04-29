@@ -555,7 +555,9 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 
 	    private float PumpSettingDepth;
 
-	    private float Submergence;
+	    private float InputLevelSubmergence;
+	    
+	    private float CalcLevelSubmergence;
 
 	    private float PumpIntakeP;
 
@@ -652,12 +654,6 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 	    }
 	    public float getPumpSettingDepth(){
 	        return this.PumpSettingDepth;
-	    }
-	    public void setSubmergence(float Submergence){
-	        this.Submergence = Submergence;
-	    }
-	    public float getSubmergence(){
-	        return this.Submergence;
 	    }
 	    public void setPumpIntakeP(float PumpIntakeP){
 	        this.PumpIntakeP = PumpIntakeP;
@@ -844,6 +840,18 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 		}
 		public void setWellHeadTemperature(float wellHeadTemperature) {
 			WellHeadTemperature = wellHeadTemperature;
+		}
+		public float getInputLevelSubmergence() {
+			return InputLevelSubmergence;
+		}
+		public void setInputLevelSubmergence(float inputLevelSubmergence) {
+			InputLevelSubmergence = inputLevelSubmergence;
+		}
+		public float getCalcLevelSubmergence() {
+			return CalcLevelSubmergence;
+		}
+		public void setCalcLevelSubmergence(float calcLevelSubmergence) {
+			CalcLevelSubmergence = calcLevelSubmergence;
 		}
 	}
 

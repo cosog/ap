@@ -2581,7 +2581,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(index++,calculateResponseData.getProduction().getCalcProducingfluidLevel());
 				
 				//沉没度
-				cs.setFloat(index++,calculateResponseData.getProduction().getSubmergence());
+				cs.setFloat(index++,calculateResponseData.getProduction().getInputLevelSubmergence());
 				
 				//系统效率
 				cs.setFloat(index++,calculateResponseData.getFESDiagram().getAvgWatt());
@@ -2967,7 +2967,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(index++,calculateResponseData.getProduction().getCalcProducingfluidLevel());
 				
 				//沉没度
-				cs.setFloat(index++,calculateResponseData.getProduction().getSubmergence());
+				cs.setFloat(index++,calculateResponseData.getProduction().getInputLevelSubmergence());
 				
 				//系统效率
 				cs.setFloat(index++,calculateResponseData.getFESDiagram().getAvgWatt());
@@ -3360,7 +3360,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(index++,calculateResponseData.getProduction().getCalcProducingfluidLevel());
 				
 				//沉没度
-				cs.setFloat(index++,calculateResponseData.getProduction().getSubmergence());
+				cs.setFloat(index++,calculateResponseData.getProduction().getInputLevelSubmergence());
 				
 				//系统效率
 				cs.setFloat(index++,calculateResponseData.getFESDiagram().getAvgWatt());
@@ -3694,7 +3694,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(index++,calculateResponseData.getProduction().getLevelDifferenceValue());
 				cs.setFloat(index++,calculateResponseData.getProduction().getCalcProducingfluidLevel());
 				//沉没度
-				cs.setFloat(index++,calculateResponseData.getProduction().getSubmergence());
+				cs.setFloat(index++,calculateResponseData.getProduction().getInputLevelSubmergence());
 				//系统效率
 				cs.setFloat(index++,calculateResponseData.getFESDiagram().getAvgWatt());
 				cs.setFloat(index++,calculateResponseData.getSystemEfficiency().getPolishRodPower());
@@ -3865,7 +3865,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(11,calculateResponseData.getProduction().getLiquidWeightProduction());
 				cs.setFloat(12,calculateResponseData.getProduction().getOilWeightProduction());
 				cs.setFloat(13,calculateResponseData.getProduction().getWaterWeightProduction());
-				cs.setFloat(14,calculateResponseData.getProduction().getSubmergence());
+				cs.setFloat(14,calculateResponseData.getProduction().getInputLevelSubmergence());
 				//系统效率
 				cs.setFloat(15,calculateResponseData.getSystemEfficiency().getMotorInputWatt());
 				cs.setFloat(16,calculateResponseData.getSystemEfficiency().getWaterPower());
@@ -3956,7 +3956,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(11,calculateResponseData.getProduction().getLiquidWeightProduction());
 				cs.setFloat(12,calculateResponseData.getProduction().getOilWeightProduction());
 				cs.setFloat(13,calculateResponseData.getProduction().getWaterWeightProduction());
-				cs.setFloat(14,calculateResponseData.getProduction().getSubmergence());
+				cs.setFloat(14,calculateResponseData.getProduction().getInputLevelSubmergence());
 				//系统效率
 				cs.setFloat(15,calculateResponseData.getSystemEfficiency().getMotorInputWatt());
 				cs.setFloat(16,calculateResponseData.getSystemEfficiency().getWaterPower());
@@ -4044,7 +4044,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(8,calculateResponseData.getProduction().getLiquidWeightProduction());
 				cs.setFloat(9,calculateResponseData.getProduction().getOilWeightProduction());
 				cs.setFloat(10,calculateResponseData.getProduction().getWaterWeightProduction());
-				cs.setFloat(11,calculateResponseData.getProduction().getSubmergence());
+				cs.setFloat(11,calculateResponseData.getProduction().getInputLevelSubmergence());
 				//系统效率
 				cs.setFloat(12,calculateResponseData.getSystemEfficiency().getMotorInputWatt());
 				cs.setFloat(13,calculateResponseData.getSystemEfficiency().getWaterPower());
@@ -4111,7 +4111,7 @@ public class BaseDao extends HibernateDaoSupport {
 	public Boolean saveFESDiagramTotalCalculateData(DeviceInfo srpDeviceInfo,
 			TotalAnalysisResponseData totalAnalysisResponseData,
 			TotalAnalysisRequestData totalAnalysisRequestData,
-			String date,int recordCount) throws SQLException, ParseException {
+			String date,int recordCount) throws Exception {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		Clob resultStrClob = conn.createClob();
@@ -4184,7 +4184,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(33, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(34, totalAnalysisResponseData.getCalcProducingfluidLevel().getValue());
 			cs.setFloat(35, totalAnalysisResponseData.getLevelDifferenceValue().getValue());
-			cs.setFloat(36, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(36, totalAnalysisResponseData.getInputLevelSubmergence().getValue());
 			cs.setFloat(37, totalAnalysisResponseData.getCasingPressure().getValue());
 			cs.setFloat(38, totalAnalysisResponseData.getTubingPressure().getValue());
 			
@@ -4292,7 +4292,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(33, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(34, totalAnalysisResponseData.getCalcProducingfluidLevel().getValue());
 			cs.setFloat(35, totalAnalysisResponseData.getLevelDifferenceValue().getValue());
-			cs.setFloat(36, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(36, totalAnalysisResponseData.getInputLevelSubmergence().getValue());
 			cs.setFloat(37, totalAnalysisResponseData.getCasingPressure().getValue());
 			cs.setFloat(38, totalAnalysisResponseData.getTubingPressure().getValue());
 			
@@ -4400,7 +4400,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(33, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(34, totalAnalysisResponseData.getCalcProducingfluidLevel().getValue());
 			cs.setFloat(35, totalAnalysisResponseData.getLevelDifferenceValue().getValue());
-			cs.setFloat(36, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(36, totalAnalysisResponseData.getInputLevelSubmergence().getValue());
 			cs.setFloat(37, totalAnalysisResponseData.getCasingPressure().getValue());
 			cs.setFloat(38, totalAnalysisResponseData.getTubingPressure().getValue());
 			
@@ -4494,7 +4494,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(33, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 			cs.setFloat(34, totalAnalysisResponseData.getCalcProducingfluidLevel().getValue());
 			cs.setFloat(35, totalAnalysisResponseData.getLevelDifferenceValue().getValue());
-			cs.setFloat(36, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(36, totalAnalysisResponseData.getInputLevelSubmergence().getValue());
 			
 			cs.setFloat(37, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(38, totalAnalysisResponseData.getCasingPressure().getValue());
@@ -4569,7 +4569,7 @@ public class BaseDao extends HibernateDaoSupport {
 			
 			cs.setFloat(19, totalAnalysisResponseData.getPumpSettingDepth().getValue());
 			cs.setFloat(20, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(21, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(21, totalAnalysisResponseData.getInputLevelSubmergence().getValue());
 			cs.setFloat(22, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(23, totalAnalysisResponseData.getCasingPressure().getValue());
 			
@@ -4653,7 +4653,7 @@ public class BaseDao extends HibernateDaoSupport {
 			
 			cs.setFloat(19, totalAnalysisResponseData.getPumpSettingDepth().getValue());
 			cs.setFloat(20, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(21, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(21, totalAnalysisResponseData.getInputLevelSubmergence().getValue());
 			cs.setFloat(22, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(23, totalAnalysisResponseData.getCasingPressure().getValue());
 			
@@ -4736,7 +4736,7 @@ public class BaseDao extends HibernateDaoSupport {
 			
 			cs.setFloat(19, totalAnalysisResponseData.getPumpSettingDepth().getValue());
 			cs.setFloat(20, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(21, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(21, totalAnalysisResponseData.getInputLevelSubmergence().getValue());
 			cs.setFloat(22, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(23, totalAnalysisResponseData.getCasingPressure().getValue());
 			
@@ -4809,7 +4809,7 @@ public class BaseDao extends HibernateDaoSupport {
 			
 			cs.setFloat(19, totalAnalysisResponseData.getPumpSettingDepth().getValue());
 			cs.setFloat(20, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(21, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(21, totalAnalysisResponseData.getInputLevelSubmergence().getValue());
 			cs.setFloat(22, totalAnalysisResponseData.getTubingPressure().getValue());
 			cs.setFloat(23, totalAnalysisResponseData.getCasingPressure().getValue());
 			cs.setInt(24, recordCount);

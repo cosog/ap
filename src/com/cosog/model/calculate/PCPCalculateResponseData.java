@@ -353,7 +353,7 @@ public  class PCPCalculateResponseData implements Serializable , Comparable<PCPC
 
 	    private float NetGrossRatio;
 	    
-	    private float Submergence;
+	    private float InputLevelSubmergence;
 
 	    private float PumpIntakeP;
 
@@ -457,12 +457,6 @@ public  class PCPCalculateResponseData implements Serializable , Comparable<PCPC
 	    public float getNetGrossRatio(){
 	        return this.NetGrossRatio;
 	    }
-	    public float getSubmergence() {
-			return Submergence;
-		}
-		public void setSubmergence(float submergence) {
-			Submergence = submergence;
-		}
 		public void setPumpIntakeP(float PumpIntakeP){
 	        this.PumpIntakeP = PumpIntakeP;
 	    }
@@ -636,6 +630,12 @@ public  class PCPCalculateResponseData implements Serializable , Comparable<PCPC
 		}
 		public void setWeightWaterCut(float weightWaterCut) {
 			WeightWaterCut = weightWaterCut;
+		}
+		public float getInputLevelSubmergence() {
+			return InputLevelSubmergence;
+		}
+		public void setInputLevelSubmergence(float inputLevelSubmergence) {
+			InputLevelSubmergence = inputLevelSubmergence;
 		}
 	}
 

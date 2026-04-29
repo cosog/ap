@@ -597,7 +597,7 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 								String value="null";
 								if(this.srpCalculateResponseData!=null&&(this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==1||this.srpCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){
 									if(this.srpCalculateResponseData.getProduction()!=null){
-										value=getOperaValue(this.srpCalculateResponseData.getProduction().getSubmergence()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getRatio());
+										value=getOperaValue(this.srpCalculateResponseData.getProduction().getInputLevelSubmergence()+"",dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getType(),dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getRatio());
 									}	
 								}
 								updateSql+= dataWriteBackConfig.getDiagramResult().getColumns().getSubmergence().getColumn()+ "="+value+",";

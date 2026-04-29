@@ -1,10 +1,7 @@
 package com.cosog.controller.datainterface;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,14 +9,10 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +41,9 @@ import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.EnergyCalculateResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPCalculateResponseData;
-import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPDeviceTodayData;
 import com.cosog.model.calculate.SRPCalculateRequestData;
 import com.cosog.model.calculate.SRPCalculateResponseData;
-import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.SRPDeviceTodayData;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TotalAnalysisRequestData;
@@ -63,36 +54,26 @@ import com.cosog.model.drive.AcqGroup;
 import com.cosog.model.drive.AcqOnline;
 import com.cosog.model.drive.AcquisitionItemInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
-import com.cosog.model.drive.ModbusProtocolConfig.Items;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.datainterface.CalculateDataService;
 import com.cosog.service.mobile.MobileService;
 import com.cosog.service.right.RoleManagerService;
 import com.cosog.service.right.UserManagerService;
-import com.cosog.task.CalculateDataManagerTask;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.MemoryDataManagerTask.CalItem;
 import com.cosog.task.OuterDatabaseSyncTask;
-import com.cosog.task.OuterDatabaseSyncTask.SRPWellDataSyncThread;
 import com.cosog.thread.calculate.ThreadPool;
-import com.cosog.utils.AcquisitionItemColumnsMap;
-import com.cosog.utils.AdvancedMemoryMonitorUtils;
-import com.cosog.utils.AlarmInfoMap;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.CounterUtils;
-import com.cosog.utils.DataModelMap;
 import com.cosog.utils.DeviceAlarmInfo;
 import com.cosog.utils.DeviceAlarmInfoMap;
 import com.cosog.utils.DeviceTypeInfoRecursion;
-import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.ProtocolItemResolutionData;
 import com.cosog.utils.Recursion;
-import com.cosog.utils.RedisUtil;
-import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.DeviceAlarmInfo.AlarmInfo;
 import com.cosog.websocket.config.WebSocketByJavax;
@@ -100,7 +81,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import net.sf.json.JSONObject;
-import redis.clients.jedis.Jedis;
 
 @Controller
 @RequestMapping("/api")
@@ -743,7 +723,7 @@ public class DriverAPIController extends BaseController{
 			if(ss!=null){
 				try {
 					ss.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -1213,7 +1193,7 @@ public class DriverAPIController extends BaseController{
 			if(ss!=null){
 				try {
 					ss.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -1270,7 +1250,7 @@ public class DriverAPIController extends BaseController{
 			if(ss!=null){
 				try {
 					ss.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -1327,7 +1307,7 @@ public class DriverAPIController extends BaseController{
 			if(ss!=null){
 				try {
 					ss.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -1378,7 +1358,7 @@ public class DriverAPIController extends BaseController{
 			if(ss!=null){
 				try {
 					ss.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -1934,7 +1914,7 @@ public class DriverAPIController extends BaseController{
 			    DeviceInfo.DailyTotalItem dailyTotalItem = entry.getValue();
 			    try {
 					commonDataService.getBaseDao().saveDailyTotalData(deviceInfo.getId(), dailyTotalItem);
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -3756,9 +3736,7 @@ public class DriverAPIController extends BaseController{
 			
 			try {
 				commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,srpCalculateReturnData.getSrpCalculateRequestData(),srpCalculateReturnData.getSrpCalculateResponseData(),srpCalculateReturnData.getFesDiagramEnabled());
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -3810,9 +3788,7 @@ public class DriverAPIController extends BaseController{
 			if(srpCalculateReturnData.getFESDiagramCalculate() || srpCalculateReturnData.getIsAcqCalResultData()){
 				try {
 					commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(deviceInfo,srpCalculateReturnData.getSrpCalculateRequestData(),srpCalculateReturnData.getSrpCalculateResponseData(),srpCalculateReturnData.getFesDiagramEnabled());
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} catch (ParseException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -3821,9 +3797,7 @@ public class DriverAPIController extends BaseController{
 				int recordCount=srpCalculateReturnData.getTotalAnalysisRequestData().getAcqTime()!=null?srpCalculateReturnData.getTotalAnalysisRequestData().getAcqTime().size():0;
 				try {
 					commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(deviceInfo,srpCalculateReturnData.getTotalAnalysisResponseData(),srpCalculateReturnData.getTotalAnalysisRequestData(),date,recordCount);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} catch (ParseException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -3845,9 +3819,7 @@ public class DriverAPIController extends BaseController{
 				if(srpCalculateReturnData.getFESDiagramCalculate() || srpCalculateReturnData.getIsAcqCalResultData()){
 					try {
 						commonDataService.getBaseDao().saveVacuateFESDiagramAndCalculateData(deviceInfo,srpCalculateReturnData.getSrpCalculateRequestData(),srpCalculateReturnData.getSrpCalculateResponseData(),srpCalculateReturnData.getFesDiagramEnabled());
-					} catch (SQLException e) {
-						e.printStackTrace();
-					} catch (ParseException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
@@ -4340,7 +4312,7 @@ public class DriverAPIController extends BaseController{
 							srpCalculateResponseData.getFESDiagram().setIDegreeBalance(acqIDegreeBalance);
 							srpCalculateResponseData.getFESDiagram().setDeltaRadius(acqDeltaRadius);
 							
-							srpCalculateResponseData.getProduction().setSubmergence(acqSubmergence);
+							srpCalculateResponseData.getProduction().setInputLevelSubmergence(acqSubmergence);
 							
 							if(srpCalculateReturnData.getSrpCalculateRequestData().getProduction()!=null){
 								srpCalculateResponseData.getProduction().setWaterCut(srpCalculateReturnData.getSrpCalculateRequestData().getProduction().getWaterCut());
@@ -4455,7 +4427,7 @@ public class DriverAPIController extends BaseController{
 								responseResultData.getProduction().setProducingfluidLevel(srpCalculateResponseData.getProduction().getProducingfluidLevel());
 								responseResultData.getProduction().setCalcProducingfluidLevel(srpCalculateResponseData.getProduction().getCalcProducingfluidLevel());
 								responseResultData.getProduction().setLevelDifferenceValue(srpCalculateResponseData.getProduction().getLevelDifferenceValue());
-								responseResultData.getProduction().setSubmergence(srpCalculateResponseData.getProduction().getSubmergence());
+								responseResultData.getProduction().setInputLevelSubmergence(srpCalculateResponseData.getProduction().getInputLevelSubmergence());
 								
 								responseResultData.getProduction().setTubingPressure(srpCalculateResponseData.getProduction().getTubingPressure());
 								responseResultData.getProduction().setCasingPressure(srpCalculateResponseData.getProduction().getCasingPressure());
@@ -4642,9 +4614,7 @@ public class DriverAPIController extends BaseController{
 			
 			try {
 				commonDataService.getBaseDao().saveAcqRPMAndCalculateData(deviceInfo,calculateReturnData.getCalculateRequestData(),calculateReturnData.getCalculateResponseData());
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			} catch (ParseException e1) {
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		}
@@ -4694,18 +4664,14 @@ public class DriverAPIController extends BaseController{
 			
 			try {
 				commonDataService.getBaseDao().saveAcqRPMAndCalculateData(deviceInfo,calculateReturnData.getCalculateRequestData(),calculateReturnData.getCalculateResponseData());
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			} catch (ParseException e1) {
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 			if(calculateReturnData.getTotalAnalysisResponseData()!=null && calculateReturnData.getTotalAnalysisResponseData().getResultStatus()==1){//保存汇总数据
 				int recordCount=calculateReturnData.getTotalAnalysisRequestData().getAcqTime()!=null?calculateReturnData.getTotalAnalysisRequestData().getAcqTime().size():0;
 				try {
 					commonDataService.getBaseDao().saveRPMTotalCalculateData(deviceInfo,calculateReturnData.getTotalAnalysisResponseData(),calculateReturnData.getTotalAnalysisRequestData(),date,recordCount);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} catch (ParseException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -4725,9 +4691,7 @@ public class DriverAPIController extends BaseController{
 				}
 				try {
 					commonDataService.getBaseDao().saveVacuateRPMAndCalculateData(deviceInfo,calculateReturnData.getCalculateRequestData(),calculateReturnData.getCalculateResponseData());
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} catch (ParseException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				
@@ -4925,7 +4889,7 @@ public class DriverAPIController extends BaseController{
 								
 								responseResultData.getProduction().setPumpSettingDepth(pcpCalculateResponseData.getProduction().getPumpSettingDepth());
 								responseResultData.getProduction().setProducingfluidLevel(pcpCalculateResponseData.getProduction().getProducingfluidLevel());
-								responseResultData.getProduction().setSubmergence(pcpCalculateResponseData.getProduction().getSubmergence());
+								responseResultData.getProduction().setInputLevelSubmergence(pcpCalculateResponseData.getProduction().getInputLevelSubmergence());
 								responseResultData.getProduction().setTubingPressure(pcpCalculateResponseData.getProduction().getTubingPressure());
 								responseResultData.getProduction().setCasingPressure(pcpCalculateResponseData.getProduction().getCasingPressure());
 								
@@ -5230,7 +5194,7 @@ public class DriverAPIController extends BaseController{
 			//液面校正差值、反演动液面、沉没度
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("液面校正差值","液面校正差值",calculateResponseData.getProduction().getLevelDifferenceValue()+"",calculateResponseData.getProduction().getLevelDifferenceValue()+"","","LEVELDIFFERENCEVALUE","","","","m",1,1,0));
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("反演动液面","反演动液面",calculateResponseData.getProduction().getCalcProducingfluidLevel()+"",calculateResponseData.getProduction().getCalcProducingfluidLevel()+"","","CALCPRODUCINGFLUIDLEVEL","","","","m",1,1,0));
-			FESDiagramCalItemList.add(new ProtocolItemResolutionData("沉没度","沉没度",calculateResponseData.getProduction().getSubmergence()+"",calculateResponseData.getProduction().getSubmergence()+"","","SUBMERGENCE","","","","m",1,1,0));
+			FESDiagramCalItemList.add(new ProtocolItemResolutionData("沉没度","沉没度",calculateResponseData.getProduction().getInputLevelSubmergence()+"",calculateResponseData.getProduction().getInputLevelSubmergence()+"","","SUBMERGENCE","","","","m",1,1,0));
 			
 			//系统效率
 			FESDiagramCalItemList.add(new ProtocolItemResolutionData("有功功率","有功功率",calculateResponseData.getFESDiagram().getAvgWatt()+"",calculateResponseData.getFESDiagram().getAvgWatt()+"","","AVERAGEWATT","","","","kW",1,1,0));
@@ -5598,14 +5562,14 @@ public class DriverAPIController extends BaseController{
 			pw.print(result);
 			pw.flush();
 			pw.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			if(ss!=null){
 				try {
 					ss.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -5643,7 +5607,7 @@ public class DriverAPIController extends BaseController{
 			if(ss!=null){
 				try {
 					ss.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -5710,7 +5674,7 @@ public class DriverAPIController extends BaseController{
 			if(ss!=null){
 				try {
 					ss.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -5765,14 +5729,14 @@ public class DriverAPIController extends BaseController{
 			pw.print(json);
 			pw.flush();
 			pw.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			if(ss!=null){
 				try {
 					ss.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -5818,7 +5782,7 @@ public class DriverAPIController extends BaseController{
 			pw.print(json);
 			pw.flush();
 			pw.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -5844,7 +5808,7 @@ public class DriverAPIController extends BaseController{
 			pw.print(json);
 			pw.flush();
 			pw.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -5913,7 +5877,7 @@ public class DriverAPIController extends BaseController{
 			pw.print(json);
 			pw.flush();
 			pw.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -5935,7 +5899,7 @@ public class DriverAPIController extends BaseController{
 			pw.print(json);
 			pw.flush();
 			pw.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

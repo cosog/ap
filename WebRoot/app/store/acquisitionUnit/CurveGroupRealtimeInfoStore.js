@@ -97,6 +97,39 @@ Ext.define('AP.store.acquisitionUnit.CurveGroupRealtimeInfoStore', {
                     	},select( v, record, index, eOpts ){
                     		
                     	}
+//                    	,validateedit: function(editor, context, eOpts) {
+//                            // context 包含以下关键属性：
+//                            //   record   - 当前编辑的记录
+//                            //   field    - 被编辑的字段名 (这里是 'name')
+//                            //   value    - 编辑后的新值
+//                            //   original - 编辑前的原始值
+//                            if (context.field === 'name') {
+//                                var newName = context.value;
+//                                var oldName = context.originalValue;
+//                                // 如果新值与旧值相同，无需校验
+//                                if (newName === oldName) {
+//                                    return true;
+//                                }
+//                                var contextStore = context.grid.getStore();
+//                                // 检查 store 中是否存在相同 name 的其他记录（排除当前记录）
+//                                var existingRecord = contextStore.findRecord('name', newName, 0, false, true, true);
+//                                if (existingRecord && existingRecord !== context.record) {
+//                                	// 获取主窗口的 zIndex
+//                                    var mainWindow = Ext.getCmp('curveGroupAndPropertiesConfigWindow_Id');
+//                                    var winZIndex = mainWindow ? mainWindow.getZIndex() : 30000;
+//                                    Ext.Msg.hide();
+//                                    Ext.Msg.show({
+//                                        title: loginUserLanguageResource.tip,
+//                                        message: "<font color=blue>" + '曲线组已存在，请重新输入' + "</font>",
+//                                        buttons: Ext.Msg.OK,
+//                                        icon: Ext.Msg.WARNING,
+//                                        zIndex: winZIndex + 5000
+//                                    });
+//                                    return false; // 校验失败，不保存编辑
+//                                }
+//                            }
+//                            return true;
+//                        }
                     }
                 });
                 var panel = Ext.getCmp("realtimeCurveGroupConfigPanel_Id");

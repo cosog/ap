@@ -134,7 +134,9 @@ public class TotalAnalysisRequestData  implements Serializable {
 
     private List<Float> PumpSettingDepth;
 
-    private List<Float> Submergence;
+    private List<Float> InputLevelSubmergence;
+    
+    private List<Float> CalcLevelSubmergence;
 
     private List<Float> LevelCorrectValue;
 
@@ -712,14 +714,6 @@ public class TotalAnalysisRequestData  implements Serializable {
 		PumpSettingDepth = pumpSettingDepth;
 	}
 
-	public List<Float> getSubmergence() {
-		return Submergence;
-	}
-
-	public void setSubmergence(List<Float> submergence) {
-		Submergence = submergence;
-	}
-
 	public List<Float> getLevelCorrectValue() {
 		return LevelCorrectValue;
 	}
@@ -1098,6 +1092,22 @@ public class TotalAnalysisRequestData  implements Serializable {
 
 	public void setPumpBoreDiameter2(List<Float> pumpBoreDiameter2) {
 		PumpBoreDiameter2 = pumpBoreDiameter2;
+	}
+
+	public List<Float> getInputLevelSubmergence() {
+		return InputLevelSubmergence;
+	}
+
+	public void setInputLevelSubmergence(List<Float> inputLevelSubmergence) {
+		InputLevelSubmergence = inputLevelSubmergence;
+	}
+
+	public List<Float> getCalcLevelSubmergence() {
+		return CalcLevelSubmergence;
+	}
+
+	public void setCalcLevelSubmergence(List<Float> calcLevelSubmergence) {
+		CalcLevelSubmergence = calcLevelSubmergence;
 	}
 
     

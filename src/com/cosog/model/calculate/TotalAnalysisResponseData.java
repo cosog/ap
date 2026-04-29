@@ -75,7 +75,8 @@ public class TotalAnalysisResponseData  implements Serializable {
     private Item PumpBoreDiameter2;
     private Item PumpSettingDepth;
     private Item ProducingfluidLevel;
-    private Item Submergence;
+    private Item InputLevelSubmergence;
+    private Item CalcLevelSubmergence;
     private Item CalcProducingfluidLevel;
     private Item LevelDifferenceValue;
     private Item PumpIntakeP; //泵入口压力				MPa
@@ -467,14 +468,6 @@ public class TotalAnalysisResponseData  implements Serializable {
 
 	public void setProducingfluidLevel(Item producingfluidLevel) {
 		ProducingfluidLevel = producingfluidLevel;
-	}
-
-	public Item getSubmergence() {
-		return Submergence;
-	}
-
-	public void setSubmergence(Item submergence) {
-		Submergence = submergence;
 	}
 
 	public int getETResultCode() {
@@ -1152,6 +1145,22 @@ public class TotalAnalysisResponseData  implements Serializable {
 
 	public void setStressRangeRatio(Item stressRangeRatio) {
 		StressRangeRatio = stressRangeRatio;
+	}
+
+	public Item getInputLevelSubmergence() {
+		return InputLevelSubmergence;
+	}
+
+	public void setInputLevelSubmergence(Item inputLevelSubmergence) {
+		InputLevelSubmergence = inputLevelSubmergence;
+	}
+
+	public Item getCalcLevelSubmergence() {
+		return CalcLevelSubmergence;
+	}
+
+	public void setCalcLevelSubmergence(Item calcLevelSubmergence) {
+		CalcLevelSubmergence = calcLevelSubmergence;
 	}
 
 	

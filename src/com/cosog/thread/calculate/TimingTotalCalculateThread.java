@@ -361,7 +361,7 @@ public class TimingTotalCalculateThread extends Thread {
 
                         calcProducingfluidLevelList.add(responseData.getProduction().getCalcProducingfluidLevel());
                         levelDifferenceValueList.add(responseData.getProduction().getLevelDifferenceValue());
-                        submergenceList.add(responseData.getProduction().getSubmergence());
+                        submergenceList.add(responseData.getProduction().getInputLevelSubmergence());
             		}
             	}
             }
@@ -413,7 +413,7 @@ public class TimingTotalCalculateThread extends Thread {
             dataSbf.append("\"ProducingfluidLevel\":[" + StringUtils.join(producingfluidLevelList, ",") + "],");
             dataSbf.append("\"CalcProducingfluidLevel\":[" + StringUtils.join(calcProducingfluidLevelList, ",") + "],");
             dataSbf.append("\"LevelDifferenceValue\":[" + StringUtils.join(levelDifferenceValueList, ",") + "],");
-            dataSbf.append("\"Submergence\":[" + StringUtils.join(submergenceList, ",") + "],");
+            dataSbf.append("\"InputLevelSubmergence\":[" + StringUtils.join(submergenceList, ",") + "],");
             dataSbf.append("\"TubingPressure\":[" + StringUtils.join(tubingPressureList, ",") + "],");
             dataSbf.append("\"CasingPressure\":[" + StringUtils.join(casingPressureList, ",") + "],");
             dataSbf.append("\"RPM\":[" + StringUtils.join(rpmList, ",") + "]");
@@ -693,7 +693,7 @@ public class TimingTotalCalculateThread extends Thread {
                         casingPressureList.add(responseData.getProduction().getCasingPressure());
                         pumpSettingDepthList.add(responseData.getProduction().getPumpSettingDepth());
                         producingfluidLevelList.add(responseData.getProduction().getProducingfluidLevel());
-                        submergenceList.add(responseData.getProduction().getSubmergence());
+                        submergenceList.add(responseData.getProduction().getInputLevelSubmergence());
             		}
                 }
             }
@@ -717,7 +717,7 @@ public class TimingTotalCalculateThread extends Thread {
             dataSbf.append("\"RPM\":[" + StringUtils.join(rpmList, ",") + "],");
             dataSbf.append("\"PumpSettingDepth\":[" + StringUtils.join(pumpSettingDepthList, ",") + "],");
             dataSbf.append("\"ProducingfluidLevel\":[" + StringUtils.join(producingfluidLevelList, ",") + "],");
-            dataSbf.append("\"Submergence\":[" + StringUtils.join(submergenceList, ",") + "],");
+            dataSbf.append("\"InputLevelSubmergence\":[" + StringUtils.join(submergenceList, ",") + "],");
             dataSbf.append("\"TubingPressure\":[" + StringUtils.join(tubingPressureList, ",") + "],");
             dataSbf.append("\"CasingPressure\":[" + StringUtils.join(casingPressureList, ",") + "],");
             dataSbf.append("\"TheoreticalProduction\":[" + StringUtils.join(theoreticalProductionList, ",") + "],");
@@ -1372,7 +1372,7 @@ public class TimingTotalCalculateThread extends Thread {
 				cs.setFloat(33, totalAnalysisResponseData.getProducingfluidLevel().getValue());
 				cs.setFloat(34, totalAnalysisResponseData.getCalcProducingfluidLevel().getValue());
 				cs.setFloat(35, totalAnalysisResponseData.getLevelDifferenceValue().getValue());
-				cs.setFloat(36, totalAnalysisResponseData.getSubmergence().getValue());
+				cs.setFloat(36, totalAnalysisResponseData.getInputLevelSubmergence().getValue());
 				cs.setFloat(37, totalAnalysisResponseData.getCasingPressure().getValue());
 				cs.setFloat(38, totalAnalysisResponseData.getTubingPressure().getValue());
 				
@@ -1459,7 +1459,7 @@ public class TimingTotalCalculateThread extends Thread {
 				
 				cs.setFloat(19, totalAnalysisResponseData.getPumpSettingDepth().getValue());
 				cs.setFloat(20, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-				cs.setFloat(21, totalAnalysisResponseData.getSubmergence().getValue());
+				cs.setFloat(21, totalAnalysisResponseData.getInputLevelSubmergence().getValue());
 				cs.setFloat(22, totalAnalysisResponseData.getTubingPressure().getValue());
 				cs.setFloat(23, totalAnalysisResponseData.getCasingPressure().getValue());
 				

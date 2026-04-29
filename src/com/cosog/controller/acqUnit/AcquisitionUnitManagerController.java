@@ -46,6 +46,7 @@ import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.AcquisitionUnitGroup;
 import com.cosog.model.AlarmUnit;
 import com.cosog.model.AlarmUnitItem;
+import com.cosog.model.CurveConf;
 import com.cosog.model.CurveGroup;
 import com.cosog.model.DataMapping;
 import com.cosog.model.DeviceTabManager;
@@ -718,7 +719,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String unitId = ParamUtils.getParameter(request, "unitId");
 			String protocolCode = ParamUtils.getParameter(request, "protocol");
 //			String itemType = ParamUtils.getParameter(request, "itemType");
-			
+			Gson gson = new Gson();
+			java.lang.reflect.Type reflectType=null;
 			ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 			
 			HttpSession session=request.getSession();
@@ -729,8 +731,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
+			
 			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId);
+				Map<String,CurveGroup> realtimeCurveGroupMap=this.displayUnitItemManagerService.getCurveGroupInfoByName(1);
+				Map<String,CurveGroup> historyCurveGroupMap=this.displayUnitItemManagerService.getCurveGroupInfoByName(2);
 				
 				if (StringManagerUtils.isNotNull(matrixCodes)) {
 					String module_matrix[] = matrixCodes.split("\\|");
@@ -788,8 +793,29 @@ public class AcquisitionUnitManagerController extends BaseController {
 							displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[13])?StringManagerUtils.stringToInteger(module_[13]):null);
 							
 							
-							displayUnitItem.setRealtimeCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[14]:"");
-							displayUnitItem.setHistoryCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[15]:"");
+							String realtimeCurveConf="";
+							if(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode) && StringManagerUtils.isNotNull(module_[14])){
+								reflectType = new TypeToken<CurveConf>() {}.getType();
+								CurveConf curveConf=gson.fromJson(module_[14], reflectType);
+								if(curveConf!=null && curveConf.getGroupId()==-1 && realtimeCurveGroupMap.containsKey(curveConf.getGroupName())){
+									curveConf.setGroupId(realtimeCurveGroupMap.get(curveConf.getGroupName()).getId());
+								}
+								realtimeCurveConf=gson.toJson(curveConf);
+							}
+							displayUnitItem.setRealtimeCurveConf(realtimeCurveConf);
+							
+							String historyCurveConf="";
+							if(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode) && StringManagerUtils.isNotNull(module_[15])){
+								reflectType = new TypeToken<CurveConf>() {}.getType();
+								CurveConf curveConf=gson.fromJson(module_[15], reflectType);
+								if(curveConf!=null && curveConf.getGroupId()==-1 && historyCurveGroupMap.containsKey(curveConf.getGroupName())){
+									curveConf.setGroupId(historyCurveGroupMap.get(curveConf.getGroupName()).getId());
+								}
+								historyCurveConf=gson.toJson(curveConf);
+							}
+							displayUnitItem.setHistoryCurveConf(historyCurveConf);
+							
+							
 							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[21])?StringManagerUtils.stringToInteger(module_[22]):0);
 							displayUnitItem.setMatrix(module_[23]);
 							displayUnitItem.setItemEnable(StringManagerUtils.stringToInteger(module_[24]));
@@ -819,8 +845,29 @@ public class AcquisitionUnitManagerController extends BaseController {
 							displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[13])?StringManagerUtils.stringToInteger(module_[13]):null);
 							
 							
-							displayUnitItem.setRealtimeCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[14]:"");
-							displayUnitItem.setHistoryCurveConf(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode)?module_[15]:"");
+							String realtimeCurveConf="";
+							if(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode) && StringManagerUtils.isNotNull(module_[14])){
+								reflectType = new TypeToken<CurveConf>() {}.getType();
+								CurveConf curveConf=gson.fromJson(module_[14], reflectType);
+								if(curveConf!=null && curveConf.getGroupId()==-1 && realtimeCurveGroupMap.containsKey(curveConf.getGroupName())){
+									curveConf.setGroupId(realtimeCurveGroupMap.get(curveConf.getGroupName()).getId());
+								}
+								realtimeCurveConf=gson.toJson(curveConf);
+							}
+							displayUnitItem.setRealtimeCurveConf(realtimeCurveConf);
+							
+							String historyCurveConf="";
+							if(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode) && StringManagerUtils.isNotNull(module_[15])){
+								reflectType = new TypeToken<CurveConf>() {}.getType();
+								CurveConf curveConf=gson.fromJson(module_[15], reflectType);
+								if(curveConf!=null && curveConf.getGroupId()==-1 && historyCurveGroupMap.containsKey(curveConf.getGroupName())){
+									curveConf.setGroupId(historyCurveGroupMap.get(curveConf.getGroupName()).getId());
+								}
+								historyCurveConf=gson.toJson(curveConf);
+							}
+							displayUnitItem.setHistoryCurveConf(historyCurveConf);
+							
+							
 							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[21])?StringManagerUtils.stringToInteger(module_[22]):0);
 							displayUnitItem.setMatrix(module_[23]);
 							displayUnitItem.setItemEnable(StringManagerUtils.stringToInteger(module_[24]));
@@ -849,8 +896,29 @@ public class AcquisitionUnitManagerController extends BaseController {
 							displayUnitItem.setHistoryBgColor(module_[12]);
 							
 							displayUnitItem.setShowLevel(StringManagerUtils.isNumber(module_[13])?StringManagerUtils.stringToInteger(module_[13]):null);
-							displayUnitItem.setRealtimeCurveConf(module_[14]);
-							displayUnitItem.setHistoryCurveConf(module_[15]);
+							
+							String realtimeCurveConf="";
+							if(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode) && StringManagerUtils.isNotNull(module_[14])){
+								reflectType = new TypeToken<CurveConf>() {}.getType();
+								CurveConf curveConf=gson.fromJson(module_[14], reflectType);
+								if(curveConf!=null && curveConf.getGroupId()==-1 && realtimeCurveGroupMap.containsKey(curveConf.getGroupName())){
+									curveConf.setGroupId(realtimeCurveGroupMap.get(curveConf.getGroupName()).getId());
+								}
+								realtimeCurveConf=gson.toJson(curveConf);
+							}
+							displayUnitItem.setRealtimeCurveConf(realtimeCurveConf);
+							
+							String historyCurveConf="";
+							if(!languageResourceMap.get("switchingValue").equalsIgnoreCase(resolutionMode) && StringManagerUtils.isNotNull(module_[15])){
+								reflectType = new TypeToken<CurveConf>() {}.getType();
+								CurveConf curveConf=gson.fromJson(module_[15], reflectType);
+								if(curveConf!=null && curveConf.getGroupId()==-1 && historyCurveGroupMap.containsKey(curveConf.getGroupName())){
+									curveConf.setGroupId(historyCurveGroupMap.get(curveConf.getGroupName()).getId());
+								}
+								historyCurveConf=gson.toJson(curveConf);
+							}
+							displayUnitItem.setHistoryCurveConf(historyCurveConf);
+							
 							displayUnitItem.setSwitchingValueShowType(0);
 							displayUnitItem.setMatrix(module_[23]);
 							displayUnitItem.setItemEnable(StringManagerUtils.stringToInteger(module_[24]));

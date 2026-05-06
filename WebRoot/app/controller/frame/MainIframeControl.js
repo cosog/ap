@@ -15,11 +15,11 @@ Ext.define('AP.controller.frame.MainIframeControl', {
 });
 
 function extFuncTreeItemsClk(view, rec, item, index, e) {
+	var module_Id_='';
     try {
         if (rec.isLeaf()) {
         	Ext.getCmp("frame_center_ids").el.mask(loginUserLanguageResource.loading).show();
-        	
-        	var module_Id_ = rec.data.id;
+        	module_Id_ = rec.data.id;
             var tabPanel = Ext.getCmp("frame_center_ids");
             if (module_Id_ == "backAdmin") {
                 if (user_Type == 1 || user_Type == 2 || user_Type == 3) {
@@ -74,6 +74,19 @@ function extFuncTreeItemsClk(view, rec, item, index, e) {
     } catch (e) {
         Ext.Msg.alert("exception", " name: " + e.name + "\n message: " + e.message + " \n lineNumber: " + e.lineNumber + " \n fileName: " + e.fileName + " \n stack: " + e.stack);
         all_loading.hide();
+        
+        console.log('module_Id:'+module_Id_+"-"+getCurrentTime());
+        console.log('rec:'+rec+"-"+getCurrentTime());
+        if(rec!=undefined){
+        	console.log('rec.data:'+rec.data+"-"+getCurrentTime());
+        }
+        if(rec.data!=undefined){
+        	console.log('rec.data.viewsrc:'+rec.data.viewsrc+"-"+getCurrentTime());
+        	console.log('rec.data.md_icon:'+rec.data.md_icon+"-"+getCurrentTime());
+        	console.log('rec.data.text:'+rec.data.text+"-"+getCurrentTime());
+        	console.log('rec.data.mdCode:'+rec.data.mdCode+"-"+getCurrentTime());
+        }
+        
         return false;
     }
 }

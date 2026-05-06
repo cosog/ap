@@ -606,12 +606,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else if("MaxRodStressRatio1".equalsIgnoreCase(code) && rodDataArr.length>1){
 													String everyRodData[]=rodDataArr[1].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio1".equalsIgnoreCase(code) && rodDataArr.length>1){
 													String everyRodData[]=rodDataArr[1].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
@@ -641,12 +641,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else if("MaxRodStressRatio2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
@@ -676,12 +676,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else if("MaxRodStressRatio3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
@@ -711,12 +711,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else if("MaxRodStressRatio4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}
 												deviceCalDataMap.put(code.toUpperCase(), value);
@@ -1282,9 +1282,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -1769,12 +1769,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else if("MaxRodStressRatio1".equalsIgnoreCase(code) && rodDataArr.length>1){
 													String everyRodData[]=rodDataArr[1].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio1".equalsIgnoreCase(code) && rodDataArr.length>1){
 													String everyRodData[]=rodDataArr[1].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
@@ -1804,12 +1804,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else if("MaxRodStressRatio2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
@@ -1839,12 +1839,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else if("MaxRodStressRatio3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
@@ -1874,12 +1874,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else if("MaxRodStressRatio4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}
 												deviceCalDataMap.put(code.toUpperCase(), value);
@@ -2358,9 +2358,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -2745,10 +2745,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				if(rodCalItemList!=null){
 					for(CalItem calItem:rodCalItemList){
-						if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0,1)){
+						if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0,2)){
 							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==1
-										&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
+										&& displayInstanceOwnItem.getItemList().get(k).getHistoryData()==1
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 									displayRodCalItemList.add(calItem);
@@ -3455,12 +3455,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 									String everyRodData[]=rodDataArr[1].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 									String everyRodData[]=rodDataArr[1].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}else if("RodFMax2".equalsIgnoreCase(column) && rodDataArr.length>2){
 									String everyRodData[]=rodDataArr[2].split(",");
@@ -3490,12 +3490,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 									String everyRodData[]=rodDataArr[2].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 									String everyRodData[]=rodDataArr[2].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}else if("RodFMax3".equalsIgnoreCase(column) && rodDataArr.length>3){
 									String everyRodData[]=rodDataArr[3].split(",");
@@ -3525,12 +3525,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 									String everyRodData[]=rodDataArr[3].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 									String everyRodData[]=rodDataArr[3].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}else if("RodFMax4".equalsIgnoreCase(column) && rodDataArr.length>4){
 									String everyRodData[]=rodDataArr[4].split(",");
@@ -3560,12 +3560,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 									String everyRodData[]=rodDataArr[4].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 									String everyRodData[]=rodDataArr[4].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}
 								for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
@@ -3673,9 +3673,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -4006,10 +4006,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				if(rodCalItemList!=null){
 					for(CalItem calItem:rodCalItemList){
-						if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0,1)){
+						if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), calItem.getCode(), false,0,2)){
 							for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(k).getType()==1
-										&& displayInstanceOwnItem.getItemList().get(k).getRealtimeData()==1
+										&& displayInstanceOwnItem.getItemList().get(k).getHistoryData()==1
 										&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
 										&& calItem.getCode().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode())){
 									displayRodCalItemList.add(calItem);
@@ -4671,12 +4671,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 									String everyRodData[]=rodDataArr[1].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 									String everyRodData[]=rodDataArr[1].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}else if("RodFMax2".equalsIgnoreCase(column) && rodDataArr.length>2){
 									String everyRodData[]=rodDataArr[2].split(",");
@@ -4706,12 +4706,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 									String everyRodData[]=rodDataArr[2].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 									String everyRodData[]=rodDataArr[2].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}else if("RodFMax3".equalsIgnoreCase(column) && rodDataArr.length>3){
 									String everyRodData[]=rodDataArr[3].split(",");
@@ -4741,12 +4741,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 									String everyRodData[]=rodDataArr[3].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 									String everyRodData[]=rodDataArr[3].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}else if("RodFMax4".equalsIgnoreCase(column) && rodDataArr.length>4){
 									String everyRodData[]=rodDataArr[4].split(",");
@@ -4776,12 +4776,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 									String everyRodData[]=rodDataArr[4].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 									String everyRodData[]=rodDataArr[4].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}
 								for(int l=0;l<displayInstanceOwnItem.getItemList().size();l++){
@@ -4896,9 +4896,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -5545,12 +5545,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													}else if("MaxRodStressRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 														String everyRodData[]=rodDataArr[1].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 														String everyRodData[]=rodDataArr[1].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
@@ -5580,12 +5580,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													}else if("MaxRodStressRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
@@ -5615,12 +5615,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													}else if("MaxRodStressRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
@@ -5650,12 +5650,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													}else if("MaxRodStressRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}
 													
@@ -5793,9 +5793,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 													value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 												}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-													value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+													value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 												}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-													value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+													value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 												}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 													value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 												}
@@ -6526,12 +6526,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													}else if("MaxRodStressRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 														String everyRodData[]=rodDataArr[1].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 														String everyRodData[]=rodDataArr[1].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
@@ -6561,12 +6561,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													}else if("MaxRodStressRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
@@ -6596,12 +6596,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													}else if("MaxRodStressRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
@@ -6631,12 +6631,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 													}else if("MaxRodStressRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}
 													
@@ -6772,9 +6772,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 												}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 													value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 												}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-													value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+													value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 												}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-													value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+													value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 												}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 													value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 												}
@@ -7674,12 +7674,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio1".equalsIgnoreCase(itemCode) && rodDataArr.length>1){
 									String everyRodData[]=rodDataArr[1].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio1".equalsIgnoreCase(itemCode) && rodDataArr.length>1){
 									String everyRodData[]=rodDataArr[1].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}else if("RodFMax2".equalsIgnoreCase(itemCode) && rodDataArr.length>2){
 									String everyRodData[]=rodDataArr[2].split(",");
@@ -7709,12 +7709,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio2".equalsIgnoreCase(itemCode) && rodDataArr.length>2){
 									String everyRodData[]=rodDataArr[2].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio2".equalsIgnoreCase(itemCode) && rodDataArr.length>2){
 									String everyRodData[]=rodDataArr[2].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}else if("RodFMax3".equalsIgnoreCase(itemCode) && rodDataArr.length>3){
 									String everyRodData[]=rodDataArr[3].split(",");
@@ -7744,12 +7744,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio3".equalsIgnoreCase(itemCode) && rodDataArr.length>3){
 									String everyRodData[]=rodDataArr[3].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio3".equalsIgnoreCase(itemCode) && rodDataArr.length>3){
 									String everyRodData[]=rodDataArr[3].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}else if("RodFMax4".equalsIgnoreCase(itemCode) && rodDataArr.length>4){
 									String everyRodData[]=rodDataArr[4].split(",");
@@ -7779,12 +7779,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 								}else if("MaxRodStressRatio4".equalsIgnoreCase(itemCode) && rodDataArr.length>4){
 									String everyRodData[]=rodDataArr[4].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 						        	}
 								}else if("RodStressRangeRatio4".equalsIgnoreCase(itemCode) && rodDataArr.length>4){
 									String everyRodData[]=rodDataArr[4].split(",");
 									if(everyRodData.length>=7){
-										value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 						        	}
 								}
 				        	}
@@ -7832,9 +7832,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 									}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 										inputItemValue=srpProductionData.getProduction().getPumpSettingDepth()+"";
 									}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-										inputItemValue=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+										inputItemValue=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 									}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-										inputItemValue=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+										inputItemValue=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 									}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 										inputItemValue=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 									}
@@ -8196,9 +8196,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+=" and 1=2";
 		}	
 		
-		distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
+		distinctSql+= " "
+//				+ " and resultstatus=1 "
+				+ " and deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
-			distinctSql+=" and resultcode in ("+resultCodeStr+")";
+			distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
 		}else{
 			distinctSql+=" and 1=2";
 		}
@@ -8359,9 +8361,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				distinctSql+=" and 1=2";
 			}	
 			
-			distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
+			distinctSql+= " "
+//					+ "and resultstatus=1 "
+					+ "and deviceId="+deviceId+" ";
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
-				distinctSql+=" and resultcode in ("+resultCodeStr+")";
+				distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
 			}else{
 				distinctSql+=" and 1=2";
 			}
@@ -8507,9 +8511,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+=" and 1=2";
 		}	
 		
-		distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
+		distinctSql+= " "
+//				+ " and resultstatus=1 "
+				+ " and deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
-			distinctSql+=" and resultcode in ("+resultCodeStr+")";
+			distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
 		}else{
 			distinctSql+=" and 1=2";
 		}
@@ -8639,9 +8645,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+=" and 1=2";
 		}	
 		
-		distinctSql+= " and resultstatus=1 and deviceId="+deviceId+" ";
+		distinctSql+= " "
+//				+ " and resultstatus=1 "
+				+ " and deviceId="+deviceId+" ";
 		if(StringManagerUtils.isNotNull(resultCodeStr)){
-			distinctSql+=" and resultcode in ("+resultCodeStr+")";
+			distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
 		}else{
 			distinctSql+=" and 1=2";
 		}
@@ -8777,7 +8785,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			
 			String distinctSql="select fesdiagramacqtime,max(id) as id from "+queryTableName+" "
-					+ " where deviceId="+deviceId+" and resultstatus=1 "
+					+ " where deviceId="+deviceId+" "
+//							+ " and resultstatus=1 "
 					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
@@ -8804,7 +8813,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				distinctSql+=" and 1=2";
 			}
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
-				distinctSql+=" and resultcode in ("+resultCodeStr+")";
+				distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
 			}else{
 				distinctSql+=" and 1=2";
 			}
@@ -8853,7 +8862,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//50~52
 					+ " t.deltaradius*100 as deltaradius,"//53
 					+ " t.todayKWattH,"//54
-					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"//55~58
+					+ " t.availableplungerstrokeprod_w,t.availableplungerstrokeprod_v,"//55~56
+					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"//57~60
 					+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " t2.alarminfo"
 					+ " from "+queryTableName+" t,tbl_device well,"+queryAcqTableName+" t2 "
@@ -8869,41 +8879,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			t1=System.nanoTime();
 			List<?> list=this.findCallSql(sql);
 			t2=System.nanoTime();
-//			StringManagerUtils.printLog("设备"+deviceId+"功图叠加数据查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
-			
-//			Map<String,Integer> alarmDataMap=new HashMap<>();
-//			if(alarmInstanceOwnItem!=null){
-//				String acqtimeFinalSql="select t.acqTime "
-//						+ " from "+queryTableName+" t"
-//						+ " where t.id in (select id from ("+distinctSql+")  ) ";
-//				String alarmQuerySql="select alarm.deviceid,to_char(alarm.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,alarm.alarmtype,alarm.itemname,alarm.alarmvalue,alarm.alarmlevel,alarm.itemCode,alarm.bitindex  "
-//						+ " from tbl_alarminfo_hist alarm "
-//						+ " where alarm.acqTime in ("+acqtimeFinalSql+")"
-//						+ " and alarm.deviceid="+deviceId;
-//				List<?> alarmQueryList = this.findCallSql(alarmQuerySql);
-//				
-//				for(int i=0;i<alarmQueryList.size();i++){
-//					Object[] obj=(Object[]) alarmQueryList.get(i);
-//					
-//					String alarmTime=obj[1]+"";
-//					int alarmType=StringManagerUtils.stringToInteger(obj[2]+"");
-//					String alarmItemName=obj[3]+"";
-//					String alarmValue=obj[4]+"";
-//					int alarmLevel=StringManagerUtils.stringToInteger(obj[5]+"");
-//					String alarmItemCode=obj[6]+"";
-//					String bitIndex=obj[7]!=null?(obj[7]+""):"";
-//					if(StringManagerUtils.isNotNull(bitIndex)){
-//						alarmItemCode+="_"+bitIndex;
-//					}
-//					if(StringManagerUtils.isNotNull(alarmItemCode) && alarmLevel>0){
-//						String key=alarmItemCode+"_"+alarmTime+"_"+alarmType;
-//						alarmDataMap.put(key.toUpperCase(), alarmLevel);
-//					}
-//				}
-//			}
-			
-			
-			
 			
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("historyQuery_FESDiagramOverlay",dictDeviceType,language);
 			String columns = ddic.getTableHeader();
@@ -8937,8 +8912,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
 						String productionDataStr=(obj[35]+"").replaceAll("null", "");
 						
-						String acqTime=obj[59]+"";
-						String deviceAlarmInfo=StringManagerUtils.CLOBObjectToString(obj[60]);
+						String acqTime=obj[61]+"";
+						String deviceAlarmInfo=StringManagerUtils.CLOBObjectToString(obj[62]);
 						if(!StringManagerUtils.isNotNull(deviceAlarmInfo)){
 							deviceAlarmInfo="[]";
 						}
@@ -8963,10 +8938,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 							}
 						}
 						
-						positionCurveData=StringManagerUtils.CLOBObjectToString(obj[55]);
-						loadCurveData=StringManagerUtils.CLOBObjectToString(obj[56]);
-						powerCurveData=StringManagerUtils.CLOBObjectToString(obj[57]);
-						currentCurveData=StringManagerUtils.CLOBObjectToString(obj[58]);
+						positionCurveData=StringManagerUtils.CLOBObjectToString(obj[57]);
+						loadCurveData=StringManagerUtils.CLOBObjectToString(obj[58]);
+						powerCurveData=StringManagerUtils.CLOBObjectToString(obj[59]);
+						currentCurveData=StringManagerUtils.CLOBObjectToString(obj[60]);
 						
 						dataBuff.append("{ \"id\":\"" + obj[0] + "\",");
 						dataBuff.append("\"deviceName\":\"" + obj[1] + "\",");
@@ -8985,8 +8960,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						dataBuff.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 						
 						dataBuff.append("\"resultCode\":\""+resultCode+"\",");
-						dataBuff.append("\"resultName\":\""+workType.getResultName()+"\",");
-						dataBuff.append("\"optimizationSuggestion\":\""+workType.getOptimizationSuggestion()+"\",");
+						dataBuff.append("\"resultName\":\""+(workType!=null?workType.getResultName():languageResourceMap.get("emptyMsg"))+"\",");
+						dataBuff.append("\"optimizationSuggestion\":\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");
 						dataBuff.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
 						
 						dataBuff.append("\"stroke\":\""+obj[14]+"\",");
@@ -9042,6 +9017,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						
 						dataBuff.append("\"deltaradius\":\""+obj[53]+"\",");
 						dataBuff.append("\"todayKWattH\":\""+obj[54]+"\",");
+						
+						dataBuff.append("\"availablePlungerStrokeProd_w\":\""+obj[55]+"\",");
+						dataBuff.append("\"availablePlungerStrokeProd_v\":\""+obj[56]+"\",");
 						
 						dataBuff.append("\"positionCurveData\":\"" + positionCurveData + "\",");
 						dataBuff.append("\"loadCurveData\":\"" + loadCurveData + "\",");
@@ -9207,7 +9185,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    sheetDataList.add(headRow);
 			
 			String distinctSql="select fesdiagramacqtime,max(id) as id from "+queryTableName+" "
-					+ " where deviceId="+deviceId+" and resultstatus=1 "
+					+ " where deviceId="+deviceId+" "
+//						+ " and resultstatus=1 "
 					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
@@ -9235,7 +9214,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}	
 			
 			if(StringManagerUtils.isNotNull(resultCodeStr)){
-				distinctSql+=" and resultcode in ("+resultCodeStr+")";
+				distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
 			}else{
 				distinctSql+=" and 1=2";
 			}
@@ -9279,7 +9258,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.UpStrokeIMax,t.DownStrokeIMax,t.iDegreeBalance,"//47~49
 					+ " t.UpStrokeWattMax,t.DownStrokeWattMax,t.wattDegreeBalance,"//50~52
 					+ " t.deltaradius*100 as deltaradius,"//53
-					+ " t.todayKWattH"//54
+					+ " t.todayKWattH,"//54
+					+ " t.availableplungerstrokeprod_w,t.availableplungerstrokeprod_v"//55~56
 					+ " from "+queryTableName+" t,tbl_device well "
 					+ " where well.id=t.deviceId"
 					+ " and t.id in (select id from ("+distinctSql+")  ) ";
@@ -9323,8 +9303,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				dataBuff.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 				
 				dataBuff.append("\"resultCode\":\""+resultCode+"\",");
-				dataBuff.append("\"resultName\":\""+workType.getResultName()+"\",");
-				dataBuff.append("\"optimizationSuggestion\":\""+workType.getOptimizationSuggestion()+"\",");
+				dataBuff.append("\"resultName\":\""+(workType!=null?workType.getResultName():languageResourceMap.get("emptyMsg"))+"\",");
+				dataBuff.append("\"optimizationSuggestion\":\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");
 				dataBuff.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
 				
 				dataBuff.append("\"stroke\":\""+obj[14]+"\",");
@@ -9379,7 +9359,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				dataBuff.append("\"wattDegreeBalance\":\""+obj[52]+"\",");
 				
 				dataBuff.append("\"deltaradius\":\""+obj[53]+"\",");
-				dataBuff.append("\"todayKWattH\":\""+obj[54]+"\"}");
+				dataBuff.append("\"todayKWattH\":\""+obj[54]+"\",");
+				
+				dataBuff.append("\"availablePlungerStrokeProd_w\":\""+obj[55]+"\",");
+				dataBuff.append("\"availablePlungerStrokeProd_v\":\""+obj[56]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(dataBuff.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {
@@ -9468,8 +9451,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}	
 		
 		distinctSql+=" and deviceId="+deviceId+" "
-		+ " and resultstatus=1";
-		distinctSql+=" group by fesdiagramacqtime";
+//		+ " and resultstatus=1 "
+		+ "group by fesdiagramacqtime";
 		
 		String sql="select t.resultcode,count(1) "
 				+ " from "+calAndInputTableName+" t"
@@ -9483,9 +9466,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		count=list.size();
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String resultCode=obj[0]+"";
-			WorkType w=workTypeMap.get(resultCode);
-			data_json.append("{\"id\":"+(i+1)+",\"resultCode\":"+resultCode+",\"resultName\":\""+(w!=null?w.getResultName():languageResourceMap.get("emptyMsg"))+"\",\"count\":\""+obj[1]+"\"},");
+			int resultCode=StringManagerUtils.stringToInteger(obj[0]+"");
+			WorkType w=workTypeMap.get(resultCode+"");
+			String resultName="";
+			if(w!=null){
+				resultName=w.getResultName();
+			}else{
+				resultName=languageResourceMap.get("emptyMsg");
+			}
+			data_json.append("{\"id\":"+(i+1)+",\"resultCode\":"+resultCode+",\"resultName\":\""+resultName+"\",\"count\":\""+obj[1]+"\"},");
 		}
 		
 		if(data_json.toString().endsWith(",")){

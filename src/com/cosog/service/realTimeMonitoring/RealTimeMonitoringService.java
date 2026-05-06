@@ -933,12 +933,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else if("MaxRodStressRatio1".equalsIgnoreCase(code) && rodDataArr.length>1){
 													String everyRodData[]=rodDataArr[1].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio1".equalsIgnoreCase(code) && rodDataArr.length>1){
 													String everyRodData[]=rodDataArr[1].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
@@ -968,12 +968,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else if("MaxRodStressRatio2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
@@ -1003,12 +1003,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else if("MaxRodStressRatio3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
@@ -1038,12 +1038,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else if("MaxRodStressRatio4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}
 												deviceCalDataMap.put(code.toUpperCase(), value);
@@ -1566,9 +1566,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -2072,12 +2072,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else if("MaxRodStressRatio1".equalsIgnoreCase(code) && rodDataArr.length>1){
 													String everyRodData[]=rodDataArr[1].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio1".equalsIgnoreCase(code) && rodDataArr.length>1){
 													String everyRodData[]=rodDataArr[1].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
@@ -2107,12 +2107,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else if("MaxRodStressRatio2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio2".equalsIgnoreCase(code) && rodDataArr.length>2){
 													String everyRodData[]=rodDataArr[2].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
@@ -2142,12 +2142,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else if("MaxRodStressRatio3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio3".equalsIgnoreCase(code) && rodDataArr.length>3){
 													String everyRodData[]=rodDataArr[3].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}else if("RodFMax4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
@@ -2177,12 +2177,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else if("MaxRodStressRatio4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[5])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 										        	}
 												}else if("RodStressRangeRatio4".equalsIgnoreCase(code) && rodDataArr.length>4){
 													String everyRodData[]=rodDataArr[4].split(",");
 													if(everyRodData.length>=7){
-														value=StringManagerUtils.dataFormat(StringManagerUtils.stringToFloat(everyRodData[6])*100+"",2);
+														value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 										        	}
 												}
 												deviceCalDataMap.put(code.toUpperCase(), value);
@@ -2656,9 +2656,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 									value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 								}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 								}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-									value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+									value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 								}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 									value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 								}
@@ -3049,8 +3049,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									rodType1=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade1=srpProductionData.getRodString().getEveryRod().get(0).getGrade();
-								rodOutsideDiameter1=srpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
-								rodInsideDiameter1=srpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
+								rodOutsideDiameter1=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter1=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter(), 1000)+"";
 								rodLength1=srpProductionData.getRodString().getEveryRod().get(0).getLength()+"";
 							}
 							if(srpProductionData.getRodString().getEveryRod().size()>1){
@@ -3064,8 +3064,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									rodType2=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade2=srpProductionData.getRodString().getEveryRod().get(1).getGrade();
-								rodOutsideDiameter2=srpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
-								rodInsideDiameter2=srpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
+								rodOutsideDiameter2=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter2=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter(), 1000)+"";
 								rodLength2=srpProductionData.getRodString().getEveryRod().get(1).getLength()+"";
 							}
 							if(srpProductionData.getRodString().getEveryRod().size()>2){
@@ -3079,8 +3079,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									rodType3=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade3=srpProductionData.getRodString().getEveryRod().get(2).getGrade();
-								rodOutsideDiameter3=srpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
-								rodInsideDiameter3=srpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
+								rodOutsideDiameter3=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter3=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter(), 1000)+"";
 								rodLength3=srpProductionData.getRodString().getEveryRod().get(2).getLength()+"";
 							}
 							if(srpProductionData.getRodString().getEveryRod().size()>3){
@@ -3094,8 +3094,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									rodType4=languageResourceMap.get("rodStringTypeValue4");
 								}
 								rodGrade4=srpProductionData.getRodString().getEveryRod().get(3).getGrade();
-								rodOutsideDiameter4=srpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
-								rodInsideDiameter4=srpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
+								rodOutsideDiameter4=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter4=StringManagerUtils.multiplyDecimal(srpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter(), 1000)+"";
 								rodLength4=srpProductionData.getRodString().getEveryRod().get(3).getLength()+"";
 							}
 						}
@@ -3179,8 +3179,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									rodType1=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade1=pcpProductionData.getRodString().getEveryRod().get(0).getGrade();
-								rodOutsideDiameter1=pcpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
-								rodInsideDiameter1=pcpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
+								rodOutsideDiameter1=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter1=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter(), 1000)+"";
 								rodLength1=pcpProductionData.getRodString().getEveryRod().get(0).getLength()+"";
 							}
 							if(pcpProductionData.getRodString().getEveryRod().size()>1){
@@ -3194,8 +3194,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									rodType2=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade2=pcpProductionData.getRodString().getEveryRod().get(1).getGrade();
-								rodOutsideDiameter2=pcpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
-								rodInsideDiameter2=pcpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
+								rodOutsideDiameter2=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter2=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter(), 1000)+"";
 								rodLength2=pcpProductionData.getRodString().getEveryRod().get(1).getLength()+"";
 							}
 							if(pcpProductionData.getRodString().getEveryRod().size()>2){
@@ -3209,8 +3209,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									rodType3=languageResourceMap.get("rodStringTypeValue1");
 								}
 								rodGrade3=pcpProductionData.getRodString().getEveryRod().get(2).getGrade();
-								rodOutsideDiameter3=pcpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
-								rodInsideDiameter3=pcpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
+								rodOutsideDiameter3=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter3=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter(), 1000)+"";
 								rodLength3=pcpProductionData.getRodString().getEveryRod().get(2).getLength()+"";
 							}
 							if(pcpProductionData.getRodString().getEveryRod().size()>3){
@@ -3224,8 +3224,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									rodType4=languageResourceMap.get("rodStringTypeValue4");
 								}
 								rodGrade4=pcpProductionData.getRodString().getEveryRod().get(3).getGrade();
-								rodOutsideDiameter4=pcpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
-								rodInsideDiameter4=pcpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
+								rodOutsideDiameter4=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter(), 1000)+"";
+								rodInsideDiameter4=StringManagerUtils.multiplyDecimal(pcpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter(), 1000)+"";
 								rodLength4=pcpProductionData.getRodString().getEveryRod().get(3).getLength()+"";
 							}
 						}
@@ -3902,12 +3902,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													}else if("MaxRodStressRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 														String everyRodData[]=rodDataArr[1].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 														String everyRodData[]=rodDataArr[1].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
@@ -3937,12 +3937,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													}else if("MaxRodStressRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
@@ -3972,12 +3972,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													}else if("MaxRodStressRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
@@ -4007,12 +4007,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													}else if("MaxRodStressRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}
 													
@@ -4150,9 +4150,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 													value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 												}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-													value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+													value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 												}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-													value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+													value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 												}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 													value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 												}
@@ -4860,12 +4860,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													}else if("MaxRodStressRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 														String everyRodData[]=rodDataArr[1].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio1".equalsIgnoreCase(column) && rodDataArr.length>1){
 														String everyRodData[]=rodDataArr[1].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
@@ -4895,12 +4895,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													}else if("MaxRodStressRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio2".equalsIgnoreCase(column) && rodDataArr.length>2){
 														String everyRodData[]=rodDataArr[2].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
@@ -4930,12 +4930,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													}else if("MaxRodStressRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio3".equalsIgnoreCase(column) && rodDataArr.length>3){
 														String everyRodData[]=rodDataArr[3].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}else if("RodFMax4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
@@ -4965,12 +4965,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													}else if("MaxRodStressRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[5])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
 											        	}
 													}else if("RodStressRangeRatio4".equalsIgnoreCase(column) && rodDataArr.length>4){
 														String everyRodData[]=rodDataArr[4].split(",");
 														if(everyRodData.length>=7){
-															value=StringManagerUtils.stringToFloat(everyRodData[6])*100+"";
+															value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
 											        	}
 													}
 													
@@ -5106,9 +5106,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 													value=srpProductionData.getProduction().getPumpSettingDepth()+"";
 												}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-													value=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+													value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 												}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-													value=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+													value=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 												}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 													value=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 												}
@@ -6092,9 +6092,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 											inputItemValue=srpProductionData.getProduction().getPumpSettingDepth()+"";
 										}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-											inputItemValue=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+											inputItemValue=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 										}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-											inputItemValue=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+											inputItemValue=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 										}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 											inputItemValue=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 										}
@@ -6475,9 +6475,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									}else if("PumpSettingDepth".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 										inputItemValue=srpProductionData.getProduction().getPumpSettingDepth()+"";
 									}else if("PumpBoreDiameter".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-										inputItemValue=srpProductionData.getPump().getPumpBoreDiameter()*1000+"";
+										inputItemValue=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter(), 1000)+"";
 									}else if("PumpBoreDiameter2".equalsIgnoreCase(column) && srpProductionData.getPump()!=null ){
-										inputItemValue=srpProductionData.getPump().getPumpBoreDiameter2()*1000+"";
+										inputItemValue=StringManagerUtils.multiplyDecimal(srpProductionData.getPump().getPumpBoreDiameter2(), 1000)+"";
 									}else if("LevelCorrectValue".equalsIgnoreCase(column) && srpProductionData.getManualIntervention()!=null ){
 										inputItemValue=srpProductionData.getManualIntervention().getLevelCorrectValue()+"";
 									}
@@ -6651,6 +6651,18 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 				if(pumpFSDiagramStrBuff.toString().endsWith("#")){
 					pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
+				}
+			}else{
+				if(srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null 
+						&& srpCalculateRequestData.getFESDiagram().getS()!=null 
+						&& srpCalculateRequestData.getFESDiagram().getF()!=null
+						){
+					for(int i=0;i<srpCalculateRequestData.getFESDiagram().getS().size() && i<srpCalculateRequestData.getFESDiagram().getF().size();i++){
+						pumpFSDiagramStrBuff.append(srpCalculateRequestData.getFESDiagram().getS().get(i)+",").append(srpCalculateRequestData.getFESDiagram().getF().get(i)+",");
+					}
+					if(pumpFSDiagramStrBuff.toString().endsWith(",")){
+			        	pumpFSDiagramStrBuff=pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
+			        }
 				}
 			}
 			

@@ -75,6 +75,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                         	if(Ext.getCmp("ProtocolConfigRightTabPanel_Id").getActiveTab().id=='ProtocolPropertiesConfigRightTabPanel_Id'){
                         		CreateProtocolConfigAddrMappingPropertiesInfoTable(record.data);
                         	}else if(Ext.getCmp("ProtocolConfigRightTabPanel_Id").getActiveTab().id=='ProtocolContentConfigRightTabPanel_Id'){
+                        		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
                         		if(record.data.classes==0){
                             		if(protocolItemsConfigHandsontableHelper!=null){
                     					if(protocolItemsConfigHandsontableHelper.hot!=undefined){

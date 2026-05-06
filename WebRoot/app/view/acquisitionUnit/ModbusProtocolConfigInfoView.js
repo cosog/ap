@@ -617,9 +617,14 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 				Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue('');
 				CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable('','','','','','',true);
 			}else{
-				protocolItemsConfigHandsontableHelper.hot.selectCell(0,'title');
+				var selectedRow=Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").getValue();
+				if(dataLength>parseInt(selectedRow)){
+					protocolItemsConfigHandsontableHelper.hot.selectCell(parseInt(selectedRow),'title');
+				}else{
+					protocolItemsConfigHandsontableHelper.hot.selectCell(0,'title');
+					Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
+				}
 				
-				Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
 				var protocolTreeGridPanelSelectRow= Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").getValue();
 				var protocolCode="";
         		if(protocolTreeGridPanelSelectRow!=''){
@@ -1716,14 +1721,16 @@ function saveModbusProtocolAddrMappingConfigData(configInfo,saveType){
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
 				}
 				
-				
 				if(configInfo.delidslist!=undefined && configInfo.delidslist.length>0){//如果删除
 					Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(0);
             		Ext.getCmp("ModbusProtocolAddrMappingItemsSelectRow_Id").setValue(0);
             		Ext.getCmp("ModbusProtocolAddrMappingConfigSelectProtocolId_Id").setValue(0);
+            		Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
+				}else{
+					if(saveType==0){
+						Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
+					}
 				}
-				
-            	Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
             } else {
             	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
             }

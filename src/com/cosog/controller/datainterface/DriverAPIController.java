@@ -3746,7 +3746,7 @@ public class DriverAPIController extends BaseController{
 			CommResponseData commResponseData,TimeEffResponseData timeEffResponseData,
 			SRPCalculateReturnData srpCalculateReturnData,boolean saveVacuateData
 			){
-		if(srpCalculateReturnData!=null && srpCalculateReturnData.getSrpCalculateResponseData()!=null){
+		if(srpCalculateReturnData!=null){
 			String SRPRealtimeTable="tbl_srpacqdata_latest";
 			String SRPHistoryTable="tbl_srpacqdata_hist";
 			String SRPTotalDataTable="tbl_srpdailycalculationdata";
@@ -4399,6 +4399,7 @@ public class DriverAPIController extends BaseController{
 							
 							responseResultData.setWellName(srpCalculateResponseData.getWellName());
 							responseResultData.setRPM(srpCalculateResponseData.getRPM());
+							responseResultData.getCalculationStatus().setResultStatus(srpCalculateResponseData.getCalculationStatus().getResultStatus());
 							responseResultData.getCalculationStatus().setResultCode(srpCalculateResponseData.getCalculationStatus().getResultCode());
 							if(responseResultData.getFESDiagram()!=null && srpCalculateResponseData.getFESDiagram()!=null){
 								responseResultData.getFESDiagram().setAcqTime(srpCalculateResponseData.getFESDiagram().getAcqTime());
@@ -4875,6 +4876,7 @@ public class DriverAPIController extends BaseController{
 							responseResultData.setWellName(pcpCalculateResponseData.getWellName());
 							responseResultData.setAcqTime(pcpCalculateResponseData.getAcqTime());
 							responseResultData.setRPM(pcpCalculateResponseData.getRPM());
+							responseResultData.getCalculationStatus().setResultStatus(pcpCalculateResponseData.getCalculationStatus().getResultStatus());
 							responseResultData.getCalculationStatus().setResultCode(pcpCalculateResponseData.getCalculationStatus().getResultCode());
 							
 							if(responseResultData.getProduction()!=null && pcpCalculateResponseData.getProduction()!=null){

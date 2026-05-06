@@ -90,7 +90,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramTiledStatStore', {
                 var slectModel=HistoryQueryFSdiagramTiledStatGrid.getSelectionModel();
                 var selected=[];
                 for(var i=0;i<store.data.items.length;i++){
-        			if(1232!=store.data.items[i].data.resultCode){
+        			if(1232!=store.data.items[i].data.resultCode && 0!=store.data.items[i].data.resultCode){
         				selected.push(store.data.items[i]);
         			}
         		}

@@ -369,7 +369,8 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
     				html:'<div class=AcquisitionDataMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionDataMaintainingDiv_id"></div></div>',
     				listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(realtimeAcquisitionDataMaintainingHandsontableHelper!=null && realtimeAcquisitionDataMaintainingHandsontableHelper.hot!=undefined){
+                        	if(realtimeAcquisitionDataMaintainingHandsontableHelper!=null && realtimeAcquisitionDataMaintainingHandsontableHelper.hot!=undefined
+                        			 && realtimeAcquisitionDataMaintainingHandsontableHelper.hot.updateSettings!=undefined){
                         		var newWidth=width;
                         		var newHeight=height;
                         		var newHeight=height-22-1;//减去tbar

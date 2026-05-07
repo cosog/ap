@@ -292,7 +292,8 @@ public class CalculateUtils {
 		
 		for(SRPCalculateResponseData responseData:deviceTodayData.getSRPCalculateList()){
 			try{
-				if(StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour()) && !StringManagerUtils.existOrNot(acqTimeList, responseData.getFESDiagram().getAcqTime(), false)){
+				if(StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour()) 
+						&& !StringManagerUtils.existOrNot(acqTimeList, responseData.getFESDiagram().getAcqTime(), false)){
 					acqTimeList.add(responseData.getFESDiagram().getAcqTime());
 					commStatusList.add(deviceInfo.getCommStatus());
 					runStatusList.add(deviceInfo.getRunStatus());

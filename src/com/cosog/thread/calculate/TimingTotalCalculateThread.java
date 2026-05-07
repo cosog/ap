@@ -344,7 +344,10 @@ public class TimingTotalCalculateThread extends Thread {
                 	for (int i = 0; i <deviceTodayData.getSRPCalculateList().size(); i++) {
                 		try{
                     		SRPCalculateResponseData responseData =deviceTodayData.getSRPCalculateList().get(i);
-                    		if(responseData!=null && StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, offsetHour)){
+                    		if(responseData!=null 
+                    				&& responseData.getCalculationStatus().getResultStatus()==1
+                    				&& StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, offsetHour) 
+                    				&& !StringManagerUtils.existOrNot(acqTimeList, responseData.getFESDiagram().getAcqTime(), false)){
                                 acqTimeList.add(responseData.getFESDiagram().getAcqTime());
                                 commStatusList.add(commStatus>= 1 ? 1 : 0);
                                 runStatusList.add(runStatus>= 1 ? 1 : 0);
@@ -732,7 +735,11 @@ public class TimingTotalCalculateThread extends Thread {
                 	for (int i = 0; i <deviceTodayData.getPCPCalculateList().size(); i++) {
                 		try{
                     		PCPCalculateResponseData responseData =deviceTodayData.getPCPCalculateList().get(i);
-                    		if(responseData!=null && StringManagerUtils.timeMatchDate(responseData.getAcqTime(), date, offsetHour)){
+                    		if(responseData!=null 
+                    				&& responseData.getCalculationStatus().getResultStatus()==1
+                    				&& StringManagerUtils.timeMatchDate(responseData.getAcqTime(), date, offsetHour)
+                    				&& responseData.getCalculationStatus().getResultStatus()==1
+                    				&& !StringManagerUtils.existOrNot(acqTimeList, responseData.getAcqTime(), false)){
                     			acqTimeList.add(responseData.getAcqTime());
                                 commStatusList.add(commStatus>= 1 ? 1 : 0);
                                 runStatusList.add(runStatus>= 1 ? 1 : 0);

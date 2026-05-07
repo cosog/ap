@@ -8786,7 +8786,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String distinctSql="select fesdiagramacqtime,max(id) as id from "+queryTableName+" "
 					+ " where deviceId="+deviceId+" "
-//							+ " and resultstatus=1 "
+					+ " and acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
@@ -9186,7 +9186,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String distinctSql="select fesdiagramacqtime,max(id) as id from "+queryTableName+" "
 					+ " where deviceId="+deviceId+" "
-//						+ " and resultstatus=1 "
+					+ " and acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){

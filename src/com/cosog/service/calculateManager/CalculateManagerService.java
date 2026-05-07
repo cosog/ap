@@ -1691,6 +1691,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		StringBuffer dataSbf= new StringBuffer();
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
 				+ " from tbl_srpdailycalculationdata t,tbl_device t2 "
 				+ " where t.deviceId=t2.id "
@@ -1708,9 +1709,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "t.rpm "
 				+ " from tbl_srpacqdata_hist t "
 				+ " where t.deviceId="+deviceId+" "
-				+ " and t.acqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
+				+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+calDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 "
 				+ " order by t.acqtime";
+		
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] totalObj=(Object[])list.get(0);

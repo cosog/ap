@@ -992,7 +992,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				
 				for(int j=0;j<singleresultlist.size();j++){
 					Object[] resuleObj=(Object[]) singleresultlist.get(j);
-					if(deviceId.toString().equals(resuleObj[0].toString())){
+					if(deviceId.toString().equals(resuleObj[0].toString()) && !StringManagerUtils.existOrNot(acqTimeList, resuleObj[1]+"", false)){
 						String productionData=resuleObj[15].toString();
 						type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 						SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);

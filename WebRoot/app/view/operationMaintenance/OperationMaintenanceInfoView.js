@@ -1407,7 +1407,9 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                			var tabDisplayInstance={};
 		                			tabDisplayInstance.id=record.data.instanceId;
 		                			tabDisplayInstance.name=record.data.name;
-		                			tabDisplayInstance.sort=record.data.sort;
+		                			if(isNumber(record.data.sort)){
+		                				tabDisplayInstance.sort=record.data.sort;
+		                			}
 		                			tabDisplayInstance.calculateType=0;
 		                			if(record.data.calculateType==loginUserLanguageResource.SRPCalculate){
 		                				tabDisplayInstance.calculateType=1;

@@ -1117,6 +1117,10 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"RPM\":["+StringUtils.join(rpmList, ",")+"]");
 				dataSbf.append("}");
 				requestDataList.add(dataSbf.toString());
+				
+				if(StringManagerUtils.stringToInteger(deviceId)==262){
+					System.out.println("抽油机井跨天汇总,井名:"+deviceName+",日期:"+date+",请求数据:"+dataSbf.toString());
+				}
 			}catch(Exception e){
 				e.printStackTrace();
 				continue;

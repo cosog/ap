@@ -404,6 +404,22 @@ public class MemoryDataManagerTask {
 		return r;
 	}
 	
+	public static boolean hexists(String key,String field ){
+		boolean r=false;
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			r=jedis.hexists(key.getBytes(), field.getBytes());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return r;
+	}
+	
 	public static void updateProtocolConfig(ModbusProtocolConfig modbusProtocolConfig){
 		Jedis jedis=null;
 		try {
@@ -5205,8 +5221,10 @@ public class MemoryDataManagerTask {
 		SRPDeviceTodayData deviceTodayData=null;
 		Jedis jedis=null;
 		String key=deviceId+"";
-		if(!existsKey("SRPDeviceTodayData")){
-			MemoryDataManagerTask.loadTodayFESDiagram(null,0);
+		if(!hexists("SRPDeviceTodayData",deviceId+"") ){
+			List<String> list=new ArrayList<>();
+			list.add(deviceId+"");
+			MemoryDataManagerTask.loadTodayFESDiagram(list,0);
 		}
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -5226,9 +5244,9 @@ public class MemoryDataManagerTask {
 	public static void updateSRPDeviceTodayDataDeviceInfo(SRPDeviceTodayData deviceTodayData){
 		if(deviceTodayData!=null){
 			Jedis jedis=null;
-			if(!existsKey("SRPDeviceTodayData")){
-				MemoryDataManagerTask.loadTodayFESDiagram(null,0);
-			}
+//			if(!existsKey("SRPDeviceTodayData")){
+//				MemoryDataManagerTask.loadTodayFESDiagram(null,0);
+//			}
 			try {
 				jedis = RedisUtil.jedisPool.getResource();
 				jedis.hset("SRPDeviceTodayData".getBytes(), (deviceTodayData.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
@@ -5474,7 +5492,8 @@ public class MemoryDataManagerTask {
 					+ " t.productiondata, "//29
 					+"  t.calcProducingfluidLevel, "//30
 					+"  t.levelDifferenceValue, "//31
-					+ " t.submergence "//32
+					+ " t.submergence, "//32
+					+ " t.resultstatus "//33
 					+ " from tbl_srpacqdata_hist t,viw_device t2 "
 					+ " where t.deviceid=t2.id  "
 					+ " and t2.calculateType=1"
@@ -5504,6 +5523,7 @@ public class MemoryDataManagerTask {
 				responseData.getFESDiagram().getFMin().add(rs.getFloat(7));
 				responseData.getFESDiagram().setFullnessCoefficient(rs.getFloat(8));
 				responseData.getCalculationStatus().setResultCode(rs.getInt(9));
+				responseData.getCalculationStatus().setResultStatus(rs.getInt(33));
 				
 				responseData.getProduction().setTheoreticalProduction(rs.getFloat(10));
 				responseData.getProduction().setLiquidVolumetricProduction(rs.getFloat(11));

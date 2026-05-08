@@ -416,6 +416,187 @@ function createRealTimeMonitoringStatColumn(columnInfo) {
     return myColumns;
 };
 
+function createAlarmSmartDot(color, number, options) {
+    options = options || {};
+    var height = options.height || 10;
+    var numberStr = number.toString();
+    var textLength = numberStr.length;
+    var width = textLength === 1 ? height : height + (textLength - 1) * 5;
+    var radius = height / 2;
+    var capsulePath = Ext.String.format(
+        'M {0},0 a {0},{0} 0 0 1 0,{1} h {2} a {0},{0} 0 0 1 0,-{1} z',
+        radius, height, width - height
+    );
+    var textX = width / 2;
+    var textY = height / 2 + 3;
+    var fontSize = Math.floor(height * 0.7);
+    return Ext.String.format(
+        '<svg width="{0}" height="{1}" style="display: inline-block; vertical-align: middle; margin-right: 2px;">' +
+        '  <path d="{2}" fill="{3}" stroke="{4}" stroke-width="1"/>' +
+        '  <text x="{5}" y="{6}" text-anchor="middle" font-size="{7}" font-weight="normal" fill="white">{8}</text>' +
+        '</svg>',
+        width, height, capsulePath, color,
+        Ext.isIE ? 'none' : 'rgba(0,0,0,0.2)',
+        textX, textY, fontSize, numberStr
+    );
+}
+
+adviceRealtimeDeviceOverviewDeviceNameColor = function (val, o, p, e) {
+    var alarmInfo = p.data.alarmInfo;
+    var maxAlarmLevel = 0;
+    var alarmCount_Level1 = 0;
+    var alarmCount_Level2 = 0;
+    var alarmCount_Level3 = 0;
+    var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+    if (isNotVal(alarmShowStyle) && alarmShowStyle != {}) {
+        if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
+            for (var i = 0; i < alarmInfo.length; i++) {
+                if (alarmInfo[i].alarmLevel == 100) {
+                    alarmCount_Level1++;
+                } else if (alarmInfo[i].alarmLevel == 200) {
+                    alarmCount_Level2++;
+                } else if (alarmInfo[i].alarmLevel == 300) {
+                    alarmCount_Level3++;
+                }
+
+                if (alarmInfo[i].alarmLevel > 0 && (maxAlarmLevel == 0 || alarmInfo[i].alarmLevel < maxAlarmLevel)) {
+                    maxAlarmLevel = alarmInfo[i].alarmLevel;
+                }
+            }
+        }
+    }
+
+    if (val == undefined) {
+        val = '';
+    }
+    var returnInfo = '';
+    if (isNotVal(val)) {
+        if (maxAlarmLevel == 0) {
+            returnInfo = '<span data-qtip="' + val + '" data-dismissDelay=10000>' + val + '</span>';
+        } else {
+            var color = '';
+            if (maxAlarmLevel == 100) {
+                color = '#' + alarmShowStyle.Data.FirstLevel.Color;
+            } else if (maxAlarmLevel == 200) {
+                color = '#' + alarmShowStyle.Data.SecondLevel.Color;
+            } else if (maxAlarmLevel == 300) {
+                color = '#' + alarmShowStyle.Data.ThirdLevel.Color;
+            }
+
+            var rtn = '';
+            if (alarmCount_Level1 > 0) {
+                var level1SvgDot = createAlarmSmartDot('#' + alarmShowStyle.Data.FirstLevel.Color, alarmCount_Level1);
+                rtn += level1SvgDot;
+            }
+            if (alarmCount_Level2 > 0) {
+                var level2SvgDot = createAlarmSmartDot('#' + alarmShowStyle.Data.SecondLevel.Color, alarmCount_Level2);
+                rtn += level2SvgDot;
+            }
+            if (alarmCount_Level3 > 0) {
+                var level3SvgDot = createAlarmSmartDot('#' + alarmShowStyle.Data.ThirdLevel.Color, alarmCount_Level3);
+                rtn += level3SvgDot;
+            }
+            var content = rtn + Ext.util.Format.htmlEncode(val);
+            return '<span style="display: inline-block; white-space: nowrap;">' + content + '</span>';
+        }
+        return returnInfo;
+    }
+}
+
+
+/**
+ * 创建报警数量徽章（CSS 实现，高度固定，避免锁定列行高问题）
+ * @param {number} number 报警数量（如 3, 12, 105）
+ * @param {string} bgColor 背景色（支持 "dc2828" 或 "#dc2828" 格式）
+ * @param {string} textColor 文本颜色（可选，默认白色）
+ * @returns {string} HTML 字符串
+ */
+function createAlarmBadge(number, bgColor, textColor) {
+    if (!number || number <= 0) return '';
+    
+    // 统一格式：确保 # 前缀
+    bgColor = (bgColor && bgColor.charAt(0) === '#') ? bgColor : '#' + bgColor;
+    textColor = (textColor && textColor.charAt(0) === '#') ? textColor : (textColor ? '#' + textColor : '#ffffff');
+    
+    // 固定高度 10px，line-height 相等，边框半径设为 10px 可保证圆形/胶囊自适应
+    // 内边距左右各 3px，最小宽度 10px，数字字体 7px（可读性）
+    var style = 'display: inline-block;' +
+                'background-color: ' + bgColor + ';' +
+                'color: ' + textColor + ';' +
+                'border-radius: 10px;' +           // 高度一半，单数圆形多数胶囊
+                'padding: 0 3px;' +
+                'min-width: 10px;' +               // 最小宽度等于高度
+                'height: 10px;' +
+                'line-height: 10px;' +
+                'text-align: center;' +
+                'font-size: 7px;' +                // 字体缩小适应 10px 高度
+                'font-weight: normal;' +
+                'margin-right: 3px;' +
+                'vertical-align: middle;' +
+                'box-sizing: border-box;';
+    
+    return '<span style="' + style + '">' + number + '</span>';
+}
+
+adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
+    var alarmInfo = p.data.alarmInfo;
+    var maxAlarmLevel = 0;
+    var alarmCount_Level1 = 0;
+    var alarmCount_Level2 = 0;
+    var alarmCount_Level3 = 0;
+    var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+    
+    if (isNotVal(alarmShowStyle) && alarmShowStyle != {}) {
+        if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
+            for (var i = 0; i < alarmInfo.length; i++) {
+                if (alarmInfo[i].alarmLevel == 100) {
+                    alarmCount_Level1++;
+                } else if (alarmInfo[i].alarmLevel == 200) {
+                    alarmCount_Level2++;
+                } else if (alarmInfo[i].alarmLevel == 300) {
+                    alarmCount_Level3++;
+                }
+                if (alarmInfo[i].alarmLevel > 0 && (maxAlarmLevel == 0 || alarmInfo[i].alarmLevel < maxAlarmLevel)) {
+                    maxAlarmLevel = alarmInfo[i].alarmLevel;
+                }
+            }
+        }
+    }
+
+    if (val == undefined) val = '';
+    if (!isNotVal(val)) return '';
+
+    // 无报警时：直接返回设备名称（可加 tooltip）
+    if (maxAlarmLevel == 0) {
+        return '<span data-qtip="' + val + '" data-dismissDelay=10000>' + Ext.util.Format.htmlEncode(val) + '</span>';
+    }
+
+    // 有报警时：拼接徽章 + 设备名称
+    var rtn = '';
+    
+    // 一级报警（Level 100）
+    if (alarmCount_Level1 > 0) {
+        var bg1 = alarmShowStyle.Data.FirstLevel.Color || 'dc2828';
+        var text1 = alarmShowStyle.Data.FirstLevel.ColorText || 'ffffff';
+        rtn += createAlarmBadge(alarmCount_Level1, bg1, text1);
+    }
+    // 二级报警（Level 200）
+    if (alarmCount_Level2 > 0) {
+        var bg2 = alarmShowStyle.Data.SecondLevel.Color || 'f09614';
+        var text2 = alarmShowStyle.Data.SecondLevel.ColorText || 'ffffff';
+        rtn += createAlarmBadge(alarmCount_Level2, bg2, text2);
+    }
+    // 三级报警（Level 300）
+    if (alarmCount_Level3 > 0) {
+        var bg3 = alarmShowStyle.Data.ThirdLevel.Color || 'fae600';
+        var text3 = alarmShowStyle.Data.ThirdLevel.ColorText || '333333'; // 黄底建议深色字
+        rtn += createAlarmBadge(alarmCount_Level3, bg3, text3);
+    }
+    
+    var content = rtn + Ext.util.Format.htmlEncode(val);
+    return content;
+};
+
 function createRealTimeMonitoringColumnObject(columnInfo) {
     var myArr = columnInfo;
     var myColumns = [];
@@ -468,7 +649,7 @@ function createRealTimeMonitoringColumnObject(columnInfo) {
         	thisColumn.dataIndex=attr.dataIndex;
         	thisColumn.locked=true;
         	thisColumn.renderer=function(value,o,p,e){
-        		return adviceDeviceOverviewDeviceNameColor(value,o,p,e);
+        		return adviceDeviceOverviewDeviceNameShowInfo(value,o,p,e);
         	};
         }
         else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {

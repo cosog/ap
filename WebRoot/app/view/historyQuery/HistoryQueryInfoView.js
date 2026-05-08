@@ -326,7 +326,7 @@ function createHistoryDeviceOverviewColumnObject(columnInfo) {
         	thisColumn.dataIndex=attr.dataIndex;
         	thisColumn.locked=true;
         	thisColumn.renderer=function(value,o,p,e){
-        		return adviceDeviceOverviewDeviceNameColor(value,o,p,e);
+        		return adviceDeviceOverviewDeviceNameShowInfo(value,o,p,e);
         	};
         }
         else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {

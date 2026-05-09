@@ -1768,9 +1768,23 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			List<Float> tubingPressureList=new ArrayList<Float>();
 			List<Float> casingPressureList=new ArrayList<Float>();
 			
+			Map<String,Integer> map=new LinkedHashMap<>();
+			
 			for(int j=0;j<fesDiagramList.size();j++){
 				Object[] obj=(Object[])fesDiagramList.get(j);
-				if(!StringManagerUtils.existOrNot(acqTimeList, obj[0]+"",false)){
+				
+				boolean add=false;
+				if(map.containsKey(obj[0]+"")){
+					if(map.get(obj[0]+"")==1232 && StringManagerUtils.stringToInteger(obj[1]+"")!=1232){
+						add=true;
+					}
+				}else{
+					add=true;
+				}
+				
+				if(add){
+					map.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
+					
 					String productionData=obj[14].toString();
 					type = new TypeToken<SRPCalculateRequestData>() {}.getType();
 					SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);

@@ -3,7 +3,9 @@ package com.cosog.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -239,6 +241,8 @@ public class CalculateUtils {
 	public static String getFESDiagramTotalRequestData(String date,DeviceInfo deviceInfo,SRPDeviceTodayData deviceTodayData){
 		StringBuffer dataSbf= new StringBuffer();
 		
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		
 		List<String> acqTimeList=new ArrayList<String>();
 		List<Integer> commStatusList=new ArrayList<Integer>();
 		List<Integer> runStatusList=new ArrayList<Integer>();
@@ -290,69 +294,92 @@ public class CalculateUtils {
 		List<Float> tubingPressureList=new ArrayList<Float>();
 		List<Float> casingPressureList=new ArrayList<Float>();
 		
-		for(SRPCalculateResponseData responseData:deviceTodayData.getSRPCalculateList()){
+		
+		Map<String,SRPCalculateResponseData> map=new LinkedHashMap<>();
+    	for(int i = 0; i <deviceTodayData.getSRPCalculateList().size(); i++){
+    		try{
+    			SRPCalculateResponseData responseData =deviceTodayData.getSRPCalculateList().get(i);
+    			if(responseData!=null 
+        				&& responseData.getCalculationStatus().getResultStatus()==1
+        				&& responseData.getFESDiagram()!=null
+        				&& StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, offsetHour) ){
+    				if(map.containsKey(responseData.getFESDiagram().getAcqTime()) ){
+    					if(map.get(responseData.getFESDiagram().getAcqTime()).getCalculationStatus().getResultCode()==1232 && responseData.getCalculationStatus().getResultCode()!=1232){
+    						map.put(responseData.getFESDiagram().getAcqTime(), responseData);
+    					}
+    				}else{
+    					map.put(responseData.getFESDiagram().getAcqTime(), responseData);
+    				}
+    			}
+    		}catch(Exception e){
+        		e.printStackTrace();
+        	}
+    	}
+		
+		
+    	for (Map.Entry<String,SRPCalculateResponseData> entry : map.entrySet()) {
 			try{
-				if(StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour()) 
-						&& !StringManagerUtils.existOrNot(acqTimeList, responseData.getFESDiagram().getAcqTime(), false)){
-					acqTimeList.add(responseData.getFESDiagram().getAcqTime());
-					commStatusList.add(deviceInfo.getCommStatus());
-					runStatusList.add(deviceInfo.getRunStatus());
-					
-					rpmList.add(responseData.getRPM());
-					
-					ResultCodeList.add(responseData.getCalculationStatus().getResultCode());
-					strokeList.add(responseData.getFESDiagram().getStroke());
-					spmList.add(responseData.getFESDiagram().getSPM());
-					
-					if(responseData.getFESDiagram().getFMax()!=null&&responseData.getFESDiagram().getFMax().size()>0){
-						FMaxList.add(responseData.getFESDiagram().getFMax().get(0));
-					}else{
-						FMaxList.add(0.0f);
-					}
-					
-					if(responseData.getFESDiagram().getFMin()!=null&&responseData.getFESDiagram().getFMin().size()>0){
-						FMinList.add(responseData.getFESDiagram().getFMin().get(0));
-					}else{
-						FMinList.add(0.0f);
-					}
-					
-					fullnessCoefficientList.add(responseData.getFESDiagram().getFullnessCoefficient());
-					
-					theoreticalProductionList.add(responseData.getProduction().getTheoreticalProduction());
-					liquidVolumetricProductionList.add(responseData.getProduction().getLiquidVolumetricProduction());
-					oilVolumetricProductionList.add(responseData.getProduction().getOilVolumetricProduction());
-					waterVolumetricProductionList.add(responseData.getProduction().getWaterVolumetricProduction());
-					volumeWaterCutList.add(responseData.getProduction().getWaterCut());
-					
-					liquidWeightProductionList.add(responseData.getProduction().getLiquidWeightProduction());
-					oilWeightProductionList.add(responseData.getProduction().getOilWeightProduction());
-					waterWeightProductionList.add(responseData.getProduction().getWaterWeightProduction());
-					weightWaterCutList.add(responseData.getProduction().getWeightWaterCut());
-					
-					
-					pumpSettingDepthList.add(responseData.getProduction().getPumpSettingDepth());
-					producingfluidLevelList.add(responseData.getProduction().getProducingfluidLevel());
-					calcProducingfluidLevelList.add(responseData.getProduction().getCalcProducingfluidLevel());
-					levelDifferenceValueList.add(responseData.getProduction().getLevelDifferenceValue());
-					submergenceList.add(responseData.getProduction().getInputLevelSubmergence());
-					tubingPressureList.add(responseData.getProduction().getTubingPressure());
-					casingPressureList.add(responseData.getProduction().getCasingPressure());
-					
-					pumpEffList.add(responseData.getPumpEfficiency().getPumpEff());
-					pumpEff1List.add(responseData.getPumpEfficiency().getPumpEff1());
-					pumpEff2List.add(responseData.getPumpEfficiency().getPumpEff2());
-					pumpEff3List.add(responseData.getPumpEfficiency().getPumpEff3());
-					pumpEff4List.add(responseData.getPumpEfficiency().getPumpEff4());
-					
-					wattDegreeBalanceList.add(responseData.getFESDiagram().getWattDegreeBalance());
-					iDegreeBalanceList.add(responseData.getFESDiagram().getIDegreeBalance());
-					deltaRadiusList.add(responseData.getFESDiagram().getDeltaRadius());
-					
-					surfaceSystemEfficiencyList.add(responseData.getSystemEfficiency().getSurfaceSystemEfficiency());
-					wellDownSystemEfficiencyList.add(responseData.getSystemEfficiency().getWellDownSystemEfficiency());
-					systemEfficiencyList.add(responseData.getSystemEfficiency().getSystemEfficiency());
-					energyPer100mLiftList.add(responseData.getSystemEfficiency().getEnergyPer100mLift());
+				SRPCalculateResponseData responseData =entry.getValue();
+				
+				acqTimeList.add(responseData.getFESDiagram().getAcqTime());
+				commStatusList.add(deviceInfo.getCommStatus());
+				runStatusList.add(deviceInfo.getRunStatus());
+				
+				rpmList.add(responseData.getRPM());
+				
+				ResultCodeList.add(responseData.getCalculationStatus().getResultCode());
+				strokeList.add(responseData.getFESDiagram().getStroke());
+				spmList.add(responseData.getFESDiagram().getSPM());
+				
+				if(responseData.getFESDiagram().getFMax()!=null&&responseData.getFESDiagram().getFMax().size()>0){
+					FMaxList.add(responseData.getFESDiagram().getFMax().get(0));
+				}else{
+					FMaxList.add(0.0f);
 				}
+				
+				if(responseData.getFESDiagram().getFMin()!=null&&responseData.getFESDiagram().getFMin().size()>0){
+					FMinList.add(responseData.getFESDiagram().getFMin().get(0));
+				}else{
+					FMinList.add(0.0f);
+				}
+				
+				fullnessCoefficientList.add(responseData.getFESDiagram().getFullnessCoefficient());
+				
+				theoreticalProductionList.add(responseData.getProduction().getTheoreticalProduction());
+				liquidVolumetricProductionList.add(responseData.getProduction().getLiquidVolumetricProduction());
+				oilVolumetricProductionList.add(responseData.getProduction().getOilVolumetricProduction());
+				waterVolumetricProductionList.add(responseData.getProduction().getWaterVolumetricProduction());
+				volumeWaterCutList.add(responseData.getProduction().getWaterCut());
+				
+				liquidWeightProductionList.add(responseData.getProduction().getLiquidWeightProduction());
+				oilWeightProductionList.add(responseData.getProduction().getOilWeightProduction());
+				waterWeightProductionList.add(responseData.getProduction().getWaterWeightProduction());
+				weightWaterCutList.add(responseData.getProduction().getWeightWaterCut());
+				
+				
+				pumpSettingDepthList.add(responseData.getProduction().getPumpSettingDepth());
+				producingfluidLevelList.add(responseData.getProduction().getProducingfluidLevel());
+				calcProducingfluidLevelList.add(responseData.getProduction().getCalcProducingfluidLevel());
+				levelDifferenceValueList.add(responseData.getProduction().getLevelDifferenceValue());
+				submergenceList.add(responseData.getProduction().getInputLevelSubmergence());
+				tubingPressureList.add(responseData.getProduction().getTubingPressure());
+				casingPressureList.add(responseData.getProduction().getCasingPressure());
+				
+				pumpEffList.add(responseData.getPumpEfficiency().getPumpEff());
+				pumpEff1List.add(responseData.getPumpEfficiency().getPumpEff1());
+				pumpEff2List.add(responseData.getPumpEfficiency().getPumpEff2());
+				pumpEff3List.add(responseData.getPumpEfficiency().getPumpEff3());
+				pumpEff4List.add(responseData.getPumpEfficiency().getPumpEff4());
+				
+				wattDegreeBalanceList.add(responseData.getFESDiagram().getWattDegreeBalance());
+				iDegreeBalanceList.add(responseData.getFESDiagram().getIDegreeBalance());
+				deltaRadiusList.add(responseData.getFESDiagram().getDeltaRadius());
+				
+				surfaceSystemEfficiencyList.add(responseData.getSystemEfficiency().getSurfaceSystemEfficiency());
+				wellDownSystemEfficiencyList.add(responseData.getSystemEfficiency().getWellDownSystemEfficiency());
+				systemEfficiencyList.add(responseData.getSystemEfficiency().getSystemEfficiency());
+				energyPer100mLiftList.add(responseData.getSystemEfficiency().getEnergyPer100mLift());
+			
 			}catch(Exception e){
 				e.printStackTrace();
 			}

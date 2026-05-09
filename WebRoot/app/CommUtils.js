@@ -3000,7 +3000,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	var optimizationSuggestion=gtdata.optimizationSuggestion;     // 优化建议
 	var xtext='<span style="text-align:center;">'+loginUserLanguageResource.displacement+'(m)'+'<br />';
 	var productionUnitStr='t/d';
-    if(productionUnit!=0){
+    if(productionUnit.toUpperCase()=='stere'.toUpperCase()){
     	productionUnitStr='m^3/d';
     }
     xtext+=loginUserLanguageResource.pointCount+':'+pointCount+" ";

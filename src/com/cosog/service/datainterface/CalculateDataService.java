@@ -990,77 +990,91 @@ public class CalculateDataService<T> extends BaseService<T> {
 				List<Float> tubingPressureList=new ArrayList<Float>();
 				List<Float> casingPressureList=new ArrayList<Float>();
 				
+				Map<String,Integer> map=new LinkedHashMap<>();
+				
 				for(int j=0;j<singleresultlist.size();j++){
 					Object[] resuleObj=(Object[]) singleresultlist.get(j);
 					if(deviceId.toString().equals(resuleObj[0].toString()) && !StringManagerUtils.existOrNot(acqTimeList, resuleObj[1]+"", false)){
-						String productionData=resuleObj[15].toString();
-						type = new TypeToken<SRPCalculateRequestData>() {}.getType();
-						SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
-						
-						acqTimeList.add(resuleObj[1]+"");
-						commStatusList.add(commStatus?1:0);
-						runStatusList.add(runStatus?1:0);
-					
-						ResultCodeList.add(StringManagerUtils.stringToInteger(resuleObj[2]+""));
-						strokeList.add(StringManagerUtils.stringToFloat(resuleObj[3]+""));
-						spmList.add(StringManagerUtils.stringToFloat(resuleObj[4]+""));
-						FMaxList.add(StringManagerUtils.stringToFloat(resuleObj[5]+""));
-						FMinList.add(StringManagerUtils.stringToFloat(resuleObj[6]+""));
-						fullnessCoefficientList.add(StringManagerUtils.stringToFloat(resuleObj[7]+""));
-						
-						theoreticalProductionList.add(StringManagerUtils.stringToFloat(resuleObj[8]+""));
-						liquidVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[9]+""));
-						oilVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[10]+""));
-						waterVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[11]+""));
-						
-						if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
-							volumeWaterCutList.add(srpProductionData.getProduction().getWaterCut());
+						boolean add=false;
+						if(map.containsKey(resuleObj[1]+"")){
+							if(map.get(resuleObj[1]+"")==1232 && StringManagerUtils.stringToInteger(resuleObj[2]+"")!=1232){
+								add=true;
+							}
 						}else{
-							volumeWaterCutList.add(0.0f);
+							add=true;
 						}
 						
-						liquidWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[12]+""));
-						oilWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[13]+""));
-						waterWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[14]+""));
-						if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
-							weightWaterCutList.add(srpProductionData.getProduction().getWeightWaterCut());
-						}else{
-							weightWaterCutList.add(0.0f);
+						if(add){
+							map.put(resuleObj[1]+"", StringManagerUtils.stringToInteger(resuleObj[2]+""));
+							
+							String productionData=resuleObj[15].toString();
+							type = new TypeToken<SRPCalculateRequestData>() {}.getType();
+							SRPCalculateRequestData srpProductionData=gson.fromJson(productionData, type);
+							
+							acqTimeList.add(resuleObj[1]+"");
+							commStatusList.add(commStatus?1:0);
+							runStatusList.add(runStatus?1:0);
+						
+							ResultCodeList.add(StringManagerUtils.stringToInteger(resuleObj[2]+""));
+							strokeList.add(StringManagerUtils.stringToFloat(resuleObj[3]+""));
+							spmList.add(StringManagerUtils.stringToFloat(resuleObj[4]+""));
+							FMaxList.add(StringManagerUtils.stringToFloat(resuleObj[5]+""));
+							FMinList.add(StringManagerUtils.stringToFloat(resuleObj[6]+""));
+							fullnessCoefficientList.add(StringManagerUtils.stringToFloat(resuleObj[7]+""));
+							
+							theoreticalProductionList.add(StringManagerUtils.stringToFloat(resuleObj[8]+""));
+							liquidVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[9]+""));
+							oilVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[10]+""));
+							waterVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[11]+""));
+							
+							if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+								volumeWaterCutList.add(srpProductionData.getProduction().getWaterCut());
+							}else{
+								volumeWaterCutList.add(0.0f);
+							}
+							
+							liquidWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[12]+""));
+							oilWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[13]+""));
+							waterWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[14]+""));
+							if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+								weightWaterCutList.add(srpProductionData.getProduction().getWeightWaterCut());
+							}else{
+								weightWaterCutList.add(0.0f);
+							}
+							
+							if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
+								tubingPressureList.add(srpProductionData.getProduction().getTubingPressure());
+								casingPressureList.add(srpProductionData.getProduction().getCasingPressure());
+								pumpSettingDepthList.add(srpProductionData.getProduction().getPumpSettingDepth());
+								producingfluidLevelList.add(srpProductionData.getProduction().getProducingfluidLevel());
+							}else{
+								tubingPressureList.add(0.0f);
+								casingPressureList.add(0.0f);
+								pumpSettingDepthList.add(0.0f);
+								producingfluidLevelList.add(0.0f);
+							}
+							
+							pumpEffList.add(StringManagerUtils.stringToFloat(resuleObj[16]+""));
+							pumpEff1List.add(StringManagerUtils.stringToFloat(resuleObj[17]+""));
+							pumpEff2List.add(StringManagerUtils.stringToFloat(resuleObj[18]+""));
+							pumpEff3List.add(StringManagerUtils.stringToFloat(resuleObj[19]+""));
+							pumpEff4List.add(StringManagerUtils.stringToFloat(resuleObj[20]+""));
+							
+							wattDegreeBalanceList.add(StringManagerUtils.stringToFloat(resuleObj[21]+""));
+							iDegreeBalanceList.add(StringManagerUtils.stringToFloat(resuleObj[22]+""));
+							deltaRadiusList.add(StringManagerUtils.stringToFloat(resuleObj[23]+""));
+							
+							surfaceSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[24]+""));
+							wellDownSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[25]+""));
+							systemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[26]+""));
+							energyPer100mLiftList.add(StringManagerUtils.stringToFloat(resuleObj[27]+""));
+							
+							calcProducingfluidLevelList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
+							levelDifferenceValueList.add(StringManagerUtils.stringToFloat(resuleObj[29]+""));
+							submergenceList.add(StringManagerUtils.stringToFloat(resuleObj[30]+""));
+							
+							rpmList.add(StringManagerUtils.stringToFloat(resuleObj[31]+""));
 						}
-						
-						if(srpProductionData!=null&&srpProductionData.getProduction()!=null){
-							tubingPressureList.add(srpProductionData.getProduction().getTubingPressure());
-							casingPressureList.add(srpProductionData.getProduction().getCasingPressure());
-							pumpSettingDepthList.add(srpProductionData.getProduction().getPumpSettingDepth());
-							producingfluidLevelList.add(srpProductionData.getProduction().getProducingfluidLevel());
-						}else{
-							tubingPressureList.add(0.0f);
-							casingPressureList.add(0.0f);
-							pumpSettingDepthList.add(0.0f);
-							producingfluidLevelList.add(0.0f);
-						}
-						
-						
-						pumpEffList.add(StringManagerUtils.stringToFloat(resuleObj[16]+""));
-						pumpEff1List.add(StringManagerUtils.stringToFloat(resuleObj[17]+""));
-						pumpEff2List.add(StringManagerUtils.stringToFloat(resuleObj[18]+""));
-						pumpEff3List.add(StringManagerUtils.stringToFloat(resuleObj[19]+""));
-						pumpEff4List.add(StringManagerUtils.stringToFloat(resuleObj[20]+""));
-						
-						wattDegreeBalanceList.add(StringManagerUtils.stringToFloat(resuleObj[21]+""));
-						iDegreeBalanceList.add(StringManagerUtils.stringToFloat(resuleObj[22]+""));
-						deltaRadiusList.add(StringManagerUtils.stringToFloat(resuleObj[23]+""));
-						
-						surfaceSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[24]+""));
-						wellDownSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[25]+""));
-						systemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[26]+""));
-						energyPer100mLiftList.add(StringManagerUtils.stringToFloat(resuleObj[27]+""));
-						
-						calcProducingfluidLevelList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
-						levelDifferenceValueList.add(StringManagerUtils.stringToFloat(resuleObj[29]+""));
-						submergenceList.add(StringManagerUtils.stringToFloat(resuleObj[30]+""));
-						
-						rpmList.add(StringManagerUtils.stringToFloat(resuleObj[31]+""));
 					}
 				}
 				

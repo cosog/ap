@@ -2992,6 +2992,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 			List<String> dataTypeList=new ArrayList<String>();
 			
+			List<String> itemsUnitList=new ArrayList<String>();
+			
 			if("1".equalsIgnoreCase(classes)){
 				String sql="select t.itemname,t.itemcode,t.sort,t.showlevel,t.sumsign,t.averagesign,t.reportCurveconf,t.curvestattype,t.prec,"
 						+ " decode(t.totalType,1,'"+languageResourceMap.get("maxValue")+"',2,'"+languageResourceMap.get("minValue")+"',3,'"+languageResourceMap.get("avgValue")+"',4,'"+languageResourceMap.get("newestValue")+"',5,'"+languageResourceMap.get("oldestValue")+"',6,'"+languageResourceMap.get("dailyTotalValue")+"',''),"
@@ -3007,19 +3009,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					Object[] obj=(Object[])list.get(i);
 					String itemName=obj[0]+"";
 					String itemCode=obj[1]+"";
+					String unit="";
 					if(itemCode.toUpperCase().startsWith("C_")){
 						if(loadProtocolMappingColumnMap.containsKey(itemCode)){
 							itemName=loadProtocolMappingColumnMap.get(itemCode).getName();
 						}
 					}else{
 						if(StringManagerUtils.stringToInteger(reportType)==2){
-							itemName=MemoryDataManagerTask.getTimingTotalCalItemNameByCode(itemName,itemCode,language);
+							CalItem calItem=MemoryDataManagerTask.getTimingTotalCalItemByCode(itemCode, language);
+							if(calItem!=null){
+								itemName=calItem.getName();
+								unit=calItem.getUnit();
+							}
+							
 						}else{
-							itemName=MemoryDataManagerTask.getTotalCalItemNameByCode(itemName,itemCode,language);
+							CalItem calItem=MemoryDataManagerTask.getTotalCalItemByCode(itemCode, language);
+							if(calItem!=null){
+								itemName=calItem.getName();
+								unit=calItem.getUnit();
+							}
 						}
 					}
 					itemsList.add(itemName);
 					itemsCodeList.add(itemCode);
+					itemsUnitList.add(unit);
 					itemsBitIndexList.add((obj[12]+"").replace("null", ""));
 					itemsSortList.add(obj[2]+"");
 					itemsShowLevelList.add(obj[3]+"");
@@ -3059,6 +3072,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_ru().get(i);
 						}
 					}
+					
+					String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
+					if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode()) ||
+						    "oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode()) ||
+						    "oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())
+						){
+						if ("stere".equalsIgnoreCase(productionUnit)) {
+						    headerName = headerName.replaceAll("t/d", "m^3/d");
+						} else if ("ton".equalsIgnoreCase(productionUnit)) {
+						    headerName = headerName.replaceAll("m^3/d", "t/d");
+						}
+					}
 				}
 				
 				String itemName="";
@@ -3091,6 +3116,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==index){
 						itemName=itemsList.get(k);
 						itemCode=itemsCodeList.get(k);
+						unit=itemsUnitList.get(k);
 						itemBitIndex=itemsBitIndexList.get(k);
 						
 						sort=itemsSortList.get(k);
@@ -3212,6 +3238,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		
+		String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 		
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
@@ -3362,6 +3390,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_ru().get(i);
 						}
 					}
+					
+					if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode()) ||
+						    "oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode()) ||
+						    "oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())
+						){
+						if ("stere".equalsIgnoreCase(productionUnit)) {
+						    headerName = headerName.replaceAll("t/d", "m^3/d");
+						} else if ("ton".equalsIgnoreCase(productionUnit)) {
+						    headerName = headerName.replaceAll("m^3/d", "t/d");
+						}
+					}
+					
 				}
 				
 				String itemName="";
@@ -5588,7 +5628,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public String getReportTemplateData(String reportType,String code,String calculateType){
 		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
 		String result="{}";
-		
+		String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 		if(reportTemplate!=null){
 			List<Template> templateList=null;
 			if(StringManagerUtils.stringToInteger(reportType)==0){
@@ -5607,6 +5647,18 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						}else{
 							result=gson.toJson(templateList.get(i)).replaceAll("deviceNameLabel", "label").replaceAll("label", "***");
 						}
+						
+						if ("oilWell_PumpingProductionReport".equalsIgnoreCase(templateList.get(i).getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(templateList.get(i).getTemplateCode())
+								|| "oilWell_PumpingDailyReport".equalsIgnoreCase(templateList.get(i).getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(templateList.get(i).getTemplateCode())
+								|| "oilWell_Pumping".equalsIgnoreCase(templateList.get(i).getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(templateList.get(i).getTemplateCode())
+								) {
+						    if ("stere".equalsIgnoreCase(productionUnit)) {
+						    	result = result.replaceAll("t/d", "m^3/d");
+						    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+						    	result = result.replaceAll("m^3/d", "t/d");
+						    }
+						}
+						
 						break;
 					}
 				}

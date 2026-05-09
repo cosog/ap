@@ -87,6 +87,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+		String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 		String timeEfficiencyUnit=languageResourceMap.get("decimals");
 		int timeEfficiencyZoom=1;
 		if(timeEfficiencyUnitType==2){
@@ -233,6 +234,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}else{
 				templateStr=templateStr.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
 			}
+			
+			if ("oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())) {
+			    if ("stere".equalsIgnoreCase(productionUnit)) {
+			        templateStr = templateStr.replaceAll("t/d", "m^3/d");
+			    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+			        templateStr = templateStr.replaceAll("m^3/d", "t/d");
+			    }
+			}
+			
 			result_json.append("{\"success\":true,\"template\":"+templateStr+",");
 			
 			List<List<String>> dataList=new ArrayList<>();
@@ -322,8 +332,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			sqlBuff.append(" and t.org_id in ("+orgId+") and t.deviceId="+deviceId+" ");
 			sqlBuff.append(" and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')");
 			sqlBuff.append(" order by t.calDate");
-			
-			
 			
 			
 			List<String> allColList=new ArrayList<String>();;
@@ -463,6 +471,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 			String timeEfficiencyUnit=languageResourceMap.get("decimals");
 			int timeEfficiencyZoom=1;
 			if(timeEfficiencyUnitType==2){
@@ -609,6 +618,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 										}
 									}
+									if ("oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())) {
+									    if ("stere".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("t/d", "m^3/d"));
+									    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("m^3/d", "t/d"));
+									    }
+									}
 								}
 							}
 						}else if("en".equalsIgnoreCase(language)){
@@ -624,6 +640,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 										}
 									}
+									
+									if ("oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())) {
+									    if ("stere".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("t/d", "m^3/d"));
+									    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("m^3/d", "t/d"));
+									    }
+									}
 								}
 							}
 						}else if("ru".equalsIgnoreCase(language)){
@@ -638,6 +662,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										}else{
 											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 										}
+									}
+									
+									if ("oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())) {
+									    if ("stere".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("t/d", "m^3/d"));
+									    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("m^3/d", "t/d"));
+									    }
 									}
 								}
 							}
@@ -902,6 +934,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
+			String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 			String fileName=deviceTypeName+"日报表-"+startDate+"~"+endDate;
 			
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -946,7 +979,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				int reportUnitCalculateType=StringManagerUtils.stringToInteger(obj[5]+"");
 				int calculateType=StringManagerUtils.stringToInteger(obj[4]+"");
 				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(obj[6]+"");
-				String sheetName=deviceName+StringManagerUtils.timeFormatConverter(startDate, "yyyy-MM-dd", "MM.dd")+"~"+StringManagerUtils.timeFormatConverter(endDate, "yyyy-MM-dd", "MM.dd");
+				String sheetName=deviceName+"-"+StringManagerUtils.timeFormatConverter(startDate, "yyyy-MM-dd", "MM.dd")+"~"+StringManagerUtils.timeFormatConverter(endDate, "yyyy-MM-dd", "MM.dd");
 				String title="";
 				
 				String viewName="VIW_DAILYCALCULATIONDATA";
@@ -1081,6 +1114,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 												template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 											}
 										}
+										
+										if ("oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())) {
+										    if ("stere".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("t/d", "m^3/d"));
+										    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("m^3/d", "t/d"));
+										    }
+										}
 									}
 								}
 							}else if("en".equalsIgnoreCase(language)){
@@ -1096,6 +1137,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 												template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 											}
 										}
+										
+										if ("oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())) {
+										    if ("stere".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("t/d", "m^3/d"));
+										    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("m^3/d", "t/d"));
+										    }
+										}
 									}
 								}
 							}else if("ru".equalsIgnoreCase(language)){
@@ -1110,6 +1159,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											}else{
 												template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 											}
+										}
+										
+										if ("oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())) {
+										    if ("stere".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("t/d", "m^3/d"));
+										    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("m^3/d", "t/d"));
+										    }
 										}
 									}
 								}
@@ -1367,6 +1424,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int userNo,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+		String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 		Gson gson =new Gson();
 		java.lang.reflect.Type type=null;
 		String reportTemplateCode="";
@@ -1520,6 +1578,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				templateStr=templateStr.replace("在线时率(小数)", "在线时率(%)").replace("运行时率(小数)", "运行时率(%)");
 			}else{
 				templateStr=templateStr.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
+			}
+			
+			if("oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode())){
+				if("stere".equalsIgnoreCase(productionUnit)){
+					templateStr=templateStr.replaceAll("t/d", "m^3/d");
+				}else if("ton".equalsIgnoreCase(productionUnit)){
+					templateStr=templateStr.replaceAll("m^3/d", "t/d");
+				}
 			}
 			
 			result_json.append("{\"success\":true,\"template\":"+templateStr+",");
@@ -1775,6 +1841,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			List<List<Object>> sheetDataList = new ArrayList<>();
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
+			String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 			int headerRowCount=0;
 			String title=deviceName+"单日生产报表";
 			String fileName=deviceName+"单日生产报表";
@@ -1939,6 +2006,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 										}
 									}
+									
+									
+									if ("oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode())) {
+									    if ("stere".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("t/d", "m^3/d"));
+									    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("m^3/d", "t/d"));
+									    }
+									}
 								}
 							}
 						}else if("en".equalsIgnoreCase(language)){
@@ -1954,6 +2030,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 										}
 									}
+									
+									if ("oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode())) {
+									    if ("stere".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("t/d", "m^3/d"));
+									    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("m^3/d", "t/d"));
+									    }
+									}
 								}
 							}
 						}else if("ru".equalsIgnoreCase(language)){
@@ -1968,6 +2052,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										}else{
 											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 										}
+									}
+									
+									if ("oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode())) {
+									    if ("stere".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("t/d", "m^3/d"));
+									    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("m^3/d", "t/d"));
+									    }
 									}
 								}
 							}
@@ -2277,6 +2369,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
+			String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 			
 			List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
@@ -2324,7 +2417,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				
 				
-				String sheetName=deviceName+StringManagerUtils.timeFormatConverter(reportDate, "yyyy-MM-dd", "MM.dd");
+				String sheetName=deviceName+"-"+StringManagerUtils.timeFormatConverter(reportDate, "yyyy-MM-dd", "MM.dd");
 				String title="";
 				
 				List<List<Object>> sheetDataList = new ArrayList<>();
@@ -2450,6 +2543,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 												template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 											}
 										}
+										
+										if ("oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode())) {
+										    if ("stere".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("t/d", "m^3/d"));
+										    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("m^3/d", "t/d"));
+										    }
+										}
 									}
 								}
 							}else if("en".equalsIgnoreCase(language)){
@@ -2465,6 +2566,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 												template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 											}
 										}
+										
+										if ("oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode())) {
+										    if ("stere".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("t/d", "m^3/d"));
+										    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("m^3/d", "t/d"));
+										    }
+										}
 									}
 								}
 							}else if("ru".equalsIgnoreCase(language)){
@@ -2479,6 +2588,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											}else{
 												template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 											}
+										}
+										
+										if ("oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode())) {
+										    if ("stere".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("t/d", "m^3/d"));
+										    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+										        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("m^3/d", "t/d"));
+										    }
 										}
 									}
 								}
@@ -2785,6 +2902,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		
 		int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+		String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 		String timeEfficiencyUnit=languageResourceMap.get("decimals");
 		int timeEfficiencyZoom=1;
 		if(timeEfficiencyUnitType==2){
@@ -2854,6 +2972,15 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}else{
 				templateStr=templateStr.replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)");
 			}
+			
+			if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode())) {
+			    if ("stere".equalsIgnoreCase(productionUnit)) {
+			        templateStr = templateStr.replaceAll("t/d", "m^3/d");
+			    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+			        templateStr = templateStr.replaceAll("m^3/d", "t/d");
+			    }
+			}
+			
 			result_json.append("{\"success\":true,\"template\":"+templateStr+",");
 			
 			List<List<String>> dataList=new ArrayList<>();
@@ -3175,6 +3302,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 			String timeEfficiencyUnit=languageResourceMap.get("decimals");
 			int timeEfficiencyZoom=1;
 			if(timeEfficiencyUnitType==2){
@@ -3233,6 +3361,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 									}
 								}
+								
+								if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode())) {
+								    if ("stere".equalsIgnoreCase(productionUnit)) {
+								        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("t/d", "m^3/d"));
+								    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+								        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("m^3/d", "t/d"));
+								    }
+								}
 							}
 						}
 					}
@@ -3258,6 +3394,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 									}
 								}
+								
+								if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode())) {
+								    if ("stere".equalsIgnoreCase(productionUnit)) {
+								        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("t/d", "m^3/d"));
+								    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+								        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("m^3/d", "t/d"));
+								    }
+								}
 							}
 						}
 					}
@@ -3282,6 +3426,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									}else{
 										template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 									}
+								}
+								
+								if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode())) {
+								    if ("stere".equalsIgnoreCase(productionUnit)) {
+								        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("t/d", "m^3/d"));
+								    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+								        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("m^3/d", "t/d"));
+								    }
 								}
 							}
 						}
@@ -3403,9 +3555,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				sqlBuff.append(" where t.org_id in ("+orgId+")");
 				if(StringManagerUtils.isNum(deviceType)){
-					sqlBuff.append("and t.deviceType="+deviceType);
+					sqlBuff.append(" and t.deviceType="+deviceType);
 				}else{
-					sqlBuff.append("and t.deviceType in("+deviceType+")");
+					sqlBuff.append(" and t.deviceType in("+deviceType+")");
 				}
 				sqlBuff.append(" and t.reportinstancecode='"+instanceCode+"' ");
 				
@@ -3639,6 +3791,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
+			String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 			String timeEfficiencyUnit=languageResourceMap.get("decimals");
 			int timeEfficiencyZoom=1;
 			if(timeEfficiencyUnitType==2){
@@ -3669,7 +3822,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 				}
 				
-				String sheetName=reportInstanceName+""+StringManagerUtils.timeFormatConverter(reportDate, "yyyy-MM-dd", "MM.dd");
+				String sheetName=reportInstanceName+"-"+StringManagerUtils.timeFormatConverter(reportDate, "yyyy-MM-dd", "MM.dd");
 				String title="";
 				
 				List<List<Object>> sheetDataList = new ArrayList<>();
@@ -3706,6 +3859,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 										}
 									}
+									
+									if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode())) {
+									    if ("stere".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("t/d", "m^3/d"));
+									    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_zh_CN().set(k, template.getHeader().get(j).getTitle_zh_CN().get(k).replaceAll("m^3/d", "t/d"));
+									    }
+									}
 								}
 							}
 						}
@@ -3730,6 +3891,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 											template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 										}
 									}
+									
+									if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode())) {
+									    if ("stere".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("t/d", "m^3/d"));
+									    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_en().set(k, template.getHeader().get(j).getTitle_en().get(k).replaceAll("m^3/d", "t/d"));
+									    }
+									}
 								}
 							}
 						}
@@ -3753,6 +3922,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 										}else{
 											template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replace("在线时率(%)", "在线时率(小数)").replace("运行时率(%)", "运行时率(小数)"));
 										}
+									}
+									
+									if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode())) {
+									    if ("stere".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("t/d", "m^3/d"));
+									    } else if ("ton".equalsIgnoreCase(productionUnit)) {
+									        template.getHeader().get(j).getTitle_ru().set(k, template.getHeader().get(j).getTitle_ru().get(k).replaceAll("m^3/d", "t/d"));
+									    }
 									}
 								}
 							}
@@ -3863,26 +4040,25 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						}else{
 							if("commtimeEfficiency".equalsIgnoreCase(column) || "runtimeEfficiency".equalsIgnoreCase(column)){
 								column=column+"*"+timeEfficiencyZoom;
+							}else if("resultName".equalsIgnoreCase(column)){
+								column="resultCode as resultName";
+							}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+								column="resultCode as optimizationSuggestion";
 							}
 							sqlBuff.append(","+tableAlias+"."+column+"");
 						}
+						
+						
 					}
 					sqlBuff.append(" from "+viewName+" t");
 					if(reportUnitCalculateType>0){
-						sqlBuff.append(","+calTotalTableName+" t2");
-						
+						sqlBuff.append(" left outer join "+calTotalTableName+" t2 on t.deviceId=t2.deviceId and t.calDate=t2.calDate");
 					}
-					sqlBuff.append(" where 1=1");
-					
-					if(reportUnitCalculateType>0){
-						sqlBuff.append(" and t.deviceId=t2.deviceId and t.calDate=t2.calDate");
-					}
-					
-					sqlBuff.append(" and t.org_id in ("+orgId+")");
+					sqlBuff.append(" where t.org_id in ("+orgId+")");
 					if(StringManagerUtils.isNum(deviceType)){
-						sqlBuff.append("and t.deviceType="+deviceType);
+						sqlBuff.append(" and t.deviceType="+deviceType);
 					}else{
-						sqlBuff.append("and t.deviceType in("+deviceType+")");
+						sqlBuff.append(" and t.deviceType in("+deviceType+")");
 					}
 					sqlBuff.append(" and t.reportinstancecode='"+reportInstanceCode+"' ");
 					
@@ -3897,7 +4073,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						for(int j=0;j<columnCount;j++){
 							everyDaya.add("");
 						}
-						everyDaya.set(0, (i+1)+"");
+						everyDaya.set(0, (k+1)+"");
 						
 						int startIndex=1;
 						if(reportAcqItemList.size()>0){
@@ -3979,16 +4155,23 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						for(int j=0;j<reportOtherItemList.size();j++){
 							if(reportOtherItemList.get(j).getSort()>=1){
 								String addValue="";
+								String column=reportOtherItemList.get(j).getItemCode();
 								if(reportDataObj[j+startIndex] instanceof CLOB || reportDataObj[j+startIndex] instanceof Clob){
 									addValue=StringManagerUtils.CLOBObjectToString(reportDataObj[j+startIndex]);
 								}else{
 									addValue=reportDataObj[j+startIndex]+"";
 								}
 								
-								if(reportOtherItemList.get(j).getItemCode().equalsIgnoreCase("ProducingfluidLevel")){
+								if(column.equalsIgnoreCase("ProducingfluidLevel")){
 									if(StringManagerUtils.isNumber(addValue) && StringManagerUtils.stringToFloat(addValue)<0){
 										addValue="";
 									}
+								}
+								
+								if("resultName".equalsIgnoreCase(column)){
+									addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getResultName():"";
+								}else if("optimizationSuggestion".equalsIgnoreCase(column)){
+									addValue=MemoryDataManagerTask.getWorkTypeByCode(addValue,language)!=null?MemoryDataManagerTask.getWorkTypeByCode(addValue,language).getOptimizationSuggestion():"";
 								}
 								
 								everyDaya.set(reportOtherItemList.get(j).getSort()-1, addValue.replaceAll("null", ""));

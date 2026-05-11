@@ -115,7 +115,7 @@ others:
    expandedAll: true
    defaultComboxSize: 10000
    defaultGraghSize: 60            #图形平铺每页图形数量
-   productionUnit: ton           #产量单位 stere-立方米 ton-吨
+   productionUnit: stere           #产量单位 stere-立方米 ton-吨
    resourceMonitoringSaveData: 50000 #资源检测保存历史记录数
    resourceMonitoringVacuateThreshold: 5000           #资源监测曲线抽稀阈值
    iot: true                      #是否为物联网模式

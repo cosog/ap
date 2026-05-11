@@ -8169,7 +8169,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		
 		
-		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from "+calAndInputTableName+" "
+		String distinctSql="select deviceid,fesdiagramacqtime,min(id) as id from "+calAndInputTableName+" "
 				+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
@@ -8196,16 +8196,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+=" and 1=2";
 		}	
 		
-		distinctSql+= " "
-//				+ " and resultstatus=1 "
-				+ " and deviceId="+deviceId+" ";
-		if(StringManagerUtils.isNotNull(resultCodeStr)){
-			distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
-		}else{
-			distinctSql+=" and 1=2";
-		}
-		
-		
+		distinctSql+=" and deviceId="+deviceId+" ";
 		distinctSql+=" group by deviceid,fesdiagramacqtime";
 		
 		String allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
@@ -8216,13 +8207,22 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " t.upperloadline,t.lowerloadline,t.liquidvolumetricproduction "
 				+ " from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
-		
 		String totalSql="select count(1) from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
+		
+		
+		if(StringManagerUtils.isNotNull(resultCodeStr)){
+			allsql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+			totalSql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+		}else{
+			allsql+=" and 1=2";
+			totalSql+=" and 1=2";
+		}
+		
+		
 		long t1=System.nanoTime();
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		long t2=System.nanoTime();
-//		StringManagerUtils.printLog("设备"+deviceId+"功图平铺总记录数查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",totalSql:"+totalSql,0);
 		String totalShow=totals+"";
 		
 		allsql+= " order by t.fesdiagramacqtime desc";
@@ -8230,7 +8230,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		t1=System.nanoTime();
 		List<?> list=this.findCallSql(sql);
 		t2=System.nanoTime();
-//		StringManagerUtils.printLog("设备"+deviceId+"功图平铺分页查询耗时:"+StringManagerUtils.getTimeDiff(t1, t2)+",sql:"+sql,0);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
 		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalShow\":\""+totalShow+"\",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
@@ -8334,7 +8333,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 			}
 		    
-		    String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from "+calAndInputTableName+" "
+		    String distinctSql="select deviceid,fesdiagramacqtime,min(id) as id from "+calAndInputTableName+" "
 					+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
@@ -8361,14 +8360,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				distinctSql+=" and 1=2";
 			}	
 			
-			distinctSql+= " "
-//					+ "and resultstatus=1 "
-					+ "and deviceId="+deviceId+" ";
-			if(StringManagerUtils.isNotNull(resultCodeStr)){
-				distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
-			}else{
-				distinctSql+=" and 1=2";
-			}
+			distinctSql+="and deviceId="+deviceId+" ";
 			distinctSql+=" group by deviceid,fesdiagramacqtime";
 			
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy/mm/dd hh24:mi:ss') as acqTime,"
@@ -8376,8 +8368,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " t.fmax,t.fmin,"
 					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"
 					+ " from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
-					+ " and t.id in (select v.id from ("+distinctSql+") v ) "
-					+ " order by t.fesdiagramacqtime desc";
+					+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
+			if(StringManagerUtils.isNotNull(resultCodeStr)){
+				sql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+			}else{
+				sql+=" and 1=2";
+			}
+					
+			sql+= " order by t.fesdiagramacqtime desc";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			List<?> list=this.findCallSql(finalSql);
 			List<Object> record=null;
@@ -8484,7 +8482,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 		}
 		
-		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from "+calAndInputTableName+" "
+		String distinctSql="select deviceid,fesdiagramacqtime,min(id) as id from "+calAndInputTableName+" "
 				+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
@@ -8511,14 +8509,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+=" and 1=2";
 		}	
 		
-		distinctSql+= " "
-//				+ " and resultstatus=1 "
-				+ " and deviceId="+deviceId+" ";
-		if(StringManagerUtils.isNotNull(resultCodeStr)){
-			distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
-		}else{
-			distinctSql+=" and 1=2";
-		}
+		distinctSql+=" and deviceId="+deviceId+" ";
 		distinctSql+=" group by deviceid,fesdiagramacqtime";
 		
 		String allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
@@ -8526,23 +8517,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " t.position_curve,t.power_curve"
 				+ " from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
-		
 		String totalSql="select count(1) from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
+		if(StringManagerUtils.isNotNull(resultCodeStr)){
+			allsql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+			totalSql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+		}else{
+			allsql+=" and 1=2";
+			totalSql+=" and 1=2";
+		}
+		
 		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		String totalShow=totals+"";
-		
-//		int rarefy=totals/vacuateRecord+1;
-//		if(rarefy>1){
-//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
-//			totals = getTotalCountRows(totalSql);
-//		}
-//		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
-//		if(rarefy>1){
-//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
-//		}
 		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
 		List<?> list=this.findCallSql(sql);
@@ -8618,7 +8606,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 		}
 		
-		String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from "+calAndInputTableName+" "
+		String distinctSql="select deviceid,fesdiagramacqtime,min(id) as id from "+calAndInputTableName+" "
 				+ " where fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
@@ -8645,14 +8633,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			distinctSql+=" and 1=2";
 		}	
 		
-		distinctSql+= " "
-//				+ " and resultstatus=1 "
-				+ " and deviceId="+deviceId+" ";
-		if(StringManagerUtils.isNotNull(resultCodeStr)){
-			distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
-		}else{
-			distinctSql+=" and 1=2";
-		}
+		distinctSql+=" and deviceId="+deviceId+" ";
 		distinctSql+=" group by deviceid,fesdiagramacqtime";
 		
 		String allsql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
@@ -8660,22 +8641,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " t.position_curve,t.current_curve"
 				+ " from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
-		
 		String totalSql="select count(1) from "+calAndInputTableName+" t,tbl_device well where well.id=t.deviceId"
 				+ " and t.id in (select v.id from ("+distinctSql+") v ) ";
+		if(StringManagerUtils.isNotNull(resultCodeStr)){
+			allsql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+			totalSql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+		}else{
+			allsql+=" and 1=2";
+			totalSql+=" and 1=2";
+		}
 		
 		int totals = getTotalCountRows(totalSql);//获取总记录数
 		String totalShow=totals+"";
-//		int rarefy=totals/vacuateRecord+1;
-//		if(rarefy>1){
-//			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
-//			totals = getTotalCountRows(totalSql);
-//		}
-//		totalShow=totals+"/"+totalShow;
 		allsql+= " order by t.fesdiagramacqtime desc";
-//		if(rarefy>1){
-//			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateRecord+","+totals+")<"+vacuateRecord+"";
-//		}
 		String sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
 		List<?> list=this.findCallSql(sql);
@@ -8784,9 +8762,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			
-			String distinctSql="select fesdiagramacqtime,max(id) as id from "+queryTableName+" "
+			String distinctSql="select fesdiagramacqtime,min(id) as id from "+queryTableName+" "
 					+ " where deviceId="+deviceId+" "
-					+ " and acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+//					+ " and acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
@@ -8812,14 +8790,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}else{
 				distinctSql+=" and 1=2";
 			}
-			if(StringManagerUtils.isNotNull(resultCodeStr)){
-				distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
-			}else{
-				distinctSql+=" and 1=2";
-			}
+			
 			distinctSql+=" group by fesdiagramacqtime";
 			
-			String countSql="select count(1) from ("+distinctSql+") ";
+			String countSql="select count(1) from "+queryTableName+" t where t.id in (select id from ("+distinctSql+") v)";
+			if(StringManagerUtils.isNotNull(resultCodeStr)){
+				countSql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+			}else{
+				countSql+=" and 1=2";
+			}
 			
 			long t1=System.nanoTime();
 			int total=this.getTotalCountRows(countSql);
@@ -8870,6 +8849,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " where well.id=t.deviceId"
 					+ " and t.deviceId=t2.deviceId and t.acqtime=t2.acqtime"
 					+ " and t.id in (select id from ("+distinctSql+")  ) ";
+			
+			if(StringManagerUtils.isNotNull(resultCodeStr)){
+				sql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+			}else{
+				sql+=" and 1=2";
+			}
 			sql+= " order by t.fesdiagramacqtime desc";
 			
 			if(total>vacuateThreshold){
@@ -9184,9 +9169,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String distinctSql="select fesdiagramacqtime,max(id) as id from "+queryTableName+" "
+			String distinctSql="select fesdiagramacqtime,min(id) as id from "+queryTableName+" "
 					+ " where deviceId="+deviceId+" "
-					+ " and acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+//					+ " and acqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
 			if(StringManagerUtils.isNotNull(hours)){
 				if(!"all".equalsIgnoreCase(hours)){
@@ -9213,14 +9198,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				distinctSql+=" and 1=2";
 			}	
 			
-			if(StringManagerUtils.isNotNull(resultCodeStr)){
-				distinctSql+=" and decode(resultcode,null,0,resultcode) in ("+resultCodeStr+")";
-			}else{
-				distinctSql+=" and 1=2";
-			}
 			distinctSql+=" group by fesdiagramacqtime";
 			
-			String countSql="select count(1) from ("+distinctSql+") ";
+			String countSql="select count(1) from "+queryTableName+" t where t.id in (select id from ("+distinctSql+") v)";
+			if(StringManagerUtils.isNotNull(resultCodeStr)){
+				countSql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+			}else{
+				countSql+=" and 1=2";
+			}
 			int total=this.getTotalCountRows(countSql);
 			
 			if(total>vacuateThreshold){
@@ -9234,8 +9219,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			
-			
-			distinctSql="select id from  (select v.*, rownum as rn from ("+distinctSql+") v ) v2 where mod(rn*"+vacuateRecord+","+total+")<"+vacuateRecord+"";
 			String sql="select t.id,well.devicename,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//0~2
 					+ "t.commstatus,decode(t.commstatus,1,'"+languageResourceMap.get("online")+"',2,'"+languageResourceMap.get("goOnline")+"','"+languageResourceMap.get("offline")+"') as commStatusName,"//3~4
 					+ "t.commtime,t.commtimeefficiency*"+timeEfficiencyZoom+",t.commrange,"//5~7
@@ -9263,6 +9246,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from "+queryTableName+" t,tbl_device well "
 					+ " where well.id=t.deviceId"
 					+ " and t.id in (select id from ("+distinctSql+")  ) ";
+			if(StringManagerUtils.isNotNull(resultCodeStr)){
+				sql+=" and decode(t.resultcode,null,0,t.resultcode) in ("+resultCodeStr+")";
+			}else{
+				sql+=" and 1=2";
+			}
 			sql+= " order by t.fesdiagramacqtime desc";
 			if(total>vacuateThreshold){
 				sql=sql.replaceAll(tableName, vacuateTableName);
@@ -9423,7 +9411,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}	
 		
 		
-		String distinctSql="select fesdiagramacqtime,max(id) as id from "+calAndInputTableName+" "
+		String distinctSql="select fesdiagramacqtime,min(id) as id from "+calAndInputTableName+" "
 				+ " where fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
 		if(StringManagerUtils.isNotNull(hours)){
 			if(!"all".equalsIgnoreCase(hours)){
@@ -9451,7 +9439,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}	
 		
 		distinctSql+=" and deviceId="+deviceId+" "
-//		+ " and resultstatus=1 "
 		+ "group by fesdiagramacqtime";
 		
 		String sql="select t.resultcode,count(1) "
@@ -9499,7 +9486,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
 			
-			String distinctSql="select deviceid,fesdiagramacqtime,max(id) as id from TBL_SRPACQDATA_HIST "
+			String distinctSql="select deviceid,fesdiagramacqtime,min(id) as id from TBL_SRPACQDATA_HIST "
 					+ " where fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and deviceId="+deviceId+" and resultstatus=1"
 					+ " group by deviceid,fesdiagramacqtime";

@@ -1711,7 +1711,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " where t.deviceId="+deviceId+" "
 				+ " and t.fesdiagramacqtime between to_date('"+calDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+calDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1 "
 				+ " and t.resultstatus=1 "
-				+ " order by t.acqtime";
+				+ " order by t.fesdiagramacqtime,t.acqtime";
 		
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0){
@@ -1768,22 +1768,27 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			List<Float> tubingPressureList=new ArrayList<Float>();
 			List<Float> casingPressureList=new ArrayList<Float>();
 			
-			Map<String,Integer> map=new LinkedHashMap<>();
-			
+			Map<String,Object[]> resultMap=new LinkedHashMap<>();
 			for(int j=0;j<fesDiagramList.size();j++){
-				Object[] obj=(Object[])fesDiagramList.get(j);
-				
-				boolean add=false;
-				if(map.containsKey(obj[0]+"")){
-					if(map.get(obj[0]+"")==1232 && StringManagerUtils.stringToInteger(obj[1]+"")!=1232){
-						add=true;
+				Object[] obj=(Object[]) fesDiagramList.get(j);
+
+				if(resultMap.containsKey(obj[0]+"") ){
+					if(StringManagerUtils.stringToInteger(resultMap.get(obj[0]+"")[1]+"")==1232){
+						if(StringManagerUtils.stringToInteger(obj[1]+"")!=1232){
+							resultMap.put(obj[0]+"", obj);
+						}
+					}
+					else if(StringManagerUtils.stringToFloat(resultMap.get(obj[0]+"")[11]+"")<StringManagerUtils.stringToFloat(obj[11]+"")){
+						resultMap.put(obj[0]+"", obj);
 					}
 				}else{
-					add=true;
+					resultMap.put(obj[0]+"", obj);
 				}
-				
-				if(add){
-					map.put(obj[0]+"", StringManagerUtils.stringToInteger(obj[1]+""));
+			}
+			
+			for (Map.Entry<String,Object[]> entry : resultMap.entrySet()) {
+				try{
+					Object[] obj=entry.getValue();
 					
 					String productionData=obj[14].toString();
 					type = new TypeToken<SRPCalculateRequestData>() {}.getType();
@@ -1854,8 +1859,12 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					submergenceList.add(StringManagerUtils.stringToFloat(obj[29]+""));
 					
 					rpmList.add(StringManagerUtils.stringToFloat(obj[30]+""));
-				}
+				
+				}catch(Exception e){
+            		e.printStackTrace();
+            	}
 			}
+			
 			dataSbf.append("{\"AKString\":\"\",");
 			dataSbf.append("\"WellName\":\""+deviceName+"\",");
 			dataSbf.append("\"Date\":\""+calDate+"\",");

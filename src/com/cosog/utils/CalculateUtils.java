@@ -304,7 +304,12 @@ public class CalculateUtils {
         				&& responseData.getFESDiagram()!=null
         				&& StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, offsetHour) ){
     				if(map.containsKey(responseData.getFESDiagram().getAcqTime()) ){
-    					if(map.get(responseData.getFESDiagram().getAcqTime()).getCalculationStatus().getResultCode()==1232 && responseData.getCalculationStatus().getResultCode()!=1232){
+    					if(map.get(responseData.getFESDiagram().getAcqTime()).getCalculationStatus().getResultCode()==1232){
+    						if(responseData.getCalculationStatus().getResultCode()!=1232){
+    							map.put(responseData.getFESDiagram().getAcqTime(), responseData);
+    						}
+    					}
+    					else if(map.get(responseData.getFESDiagram().getAcqTime()).getProduction().getLiquidWeightProduction()<responseData.getProduction().getLiquidWeightProduction()){
     						map.put(responseData.getFESDiagram().getAcqTime(), responseData);
     					}
     				}else{

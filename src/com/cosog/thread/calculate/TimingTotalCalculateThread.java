@@ -346,6 +346,7 @@ public class TimingTotalCalculateThread extends Thread {
                 		try{
                 			SRPCalculateResponseData responseData =deviceTodayData.getSRPCalculateList().get(i);
                 			if(responseData!=null 
+                					&& responseData.getSaveHistory()==1
                     				&& responseData.getCalculationStatus().getResultStatus()==1
                     				&& responseData.getFESDiagram()!=null
                     				&& StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, offsetHour) ){
@@ -480,8 +481,7 @@ public class TimingTotalCalculateThread extends Thread {
                 TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(dataSbf.toString(), new TypeToken <TotalAnalysisRequestData> () {}.getType());
                 TotalAnalysisResponseData totalAnalysisResponseData = CalculateUtils.totalCalculate(dataSbf.toString());
                 
-                if(deviceId==262){
-                	System.out.println("抽油机井定时汇总,井名:"+deviceName+",时间:"+timeStr+",时率请求数据:"+runTotalRequestData+",时率响应数据:"+gson.toJson(timeEffResponseData));
+                if(deviceId==262 || deviceId==1){
                 	System.out.println("抽油机井定时汇总,井名:"+deviceName+",时间:"+timeStr+",请求数据:"+dataSbf.toString()+",响应数据:"+gson.toJson(totalAnalysisResponseData));
                 }
                 
@@ -757,7 +757,7 @@ public class TimingTotalCalculateThread extends Thread {
                 		try{
                     		PCPCalculateResponseData responseData =deviceTodayData.getPCPCalculateList().get(i);
                     		if(responseData!=null 
-                    				&& responseData.getCalculationStatus().getResultStatus()==1
+                    				&& responseData.getSaveHistory()==1
                     				&& StringManagerUtils.timeMatchDate(responseData.getAcqTime(), date, offsetHour)
                     				&& responseData.getCalculationStatus().getResultStatus()==1
                     				&& !StringManagerUtils.existOrNot(acqTimeList, responseData.getAcqTime(), false)){
@@ -836,6 +836,10 @@ public class TimingTotalCalculateThread extends Thread {
 
                 TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(dataSbf.toString(), new TypeToken <TotalAnalysisRequestData> () {}.getType());
                 TotalAnalysisResponseData totalAnalysisResponseData = CalculateUtils.totalCalculate(dataSbf.toString());
+                
+                if(deviceId==5){
+                	System.out.println("螺杆泵井定时汇总,井名:"+deviceName+",时间:"+timeStr+",请求数据:"+dataSbf.toString()+",响应数据:"+gson.toJson(totalAnalysisResponseData));
+                }
 
                 updateSql += " where t.deviceId=" + deviceId + " and t.caltime=to_date('" + timeStr + "','yyyy-mm-dd hh24:mi:ss')";
                 try {

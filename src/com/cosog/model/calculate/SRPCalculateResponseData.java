@@ -17,6 +17,10 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 	 private String Scene;
 	 
 	 private float RPM;
+	 
+	 private String AcqTime;
+	 
+	 private int SaveHistory;
 
 	 private CalculationStatus CalculationStatus;
 
@@ -1488,5 +1492,21 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 
 	public void setRPM(float RPM) {
 		this.RPM = RPM;
+	}
+
+	public String getAcqTime() {
+		return AcqTime;
+	}
+
+	public void setAcqTime(String acqTime) {
+		AcqTime = acqTime;
+	}
+
+	public int getSaveHistory() {
+		return SaveHistory;
+	}
+
+	public void setSaveHistory(int saveHistory) {
+		SaveHistory = saveHistory;
 	}
 }

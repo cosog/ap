@@ -1143,7 +1143,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("}");
 				requestDataList.add(dataSbf.toString());
 				
-				if(StringManagerUtils.stringToInteger(deviceId)==262){
+				if(StringManagerUtils.stringToInteger(deviceId)==262 || StringManagerUtils.stringToInteger(deviceId)==1){
 					System.out.println("抽油机井跨天汇总,井名:"+deviceName+",日期:"+date+",请求数据:"+dataSbf.toString());
 				}
 			}catch(Exception e){

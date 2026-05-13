@@ -3431,11 +3431,31 @@ public class DriverAPIController extends BaseController{
 									commResponseData,timeEffResponseData,
 									srpCalculateReturnData,saveVacuateData
 									);
+							SRPDeviceTodayData deviceTodayData=MemoryDataManagerTask.getSRPDeviceTodayDataById(deviceInfo.getId());
+							if(deviceTodayData!=null && deviceTodayData.getSRPCalculateList()!=null){
+								for(int i=0;i<deviceTodayData.getSRPCalculateList().size();i++){
+									if(acqTime.equalsIgnoreCase(deviceTodayData.getSRPCalculateList().get(i).getAcqTime())){
+										deviceTodayData.getSRPCalculateList().get(i).setSaveHistory(1);
+										break;
+									}
+								}
+								MemoryDataManagerTask.updateSRPDeviceTodayDataDeviceInfo(deviceTodayData);
+							}
 						}else if(deviceInfo.getCalculateType()==2){
 							savePCPCalculateData(deviceInfo,acqTime,
 									commResponseData,timeEffResponseData,
 									pcpCalculateReturnData,saveVacuateData
 									);
+							PCPDeviceTodayData deviceTodayData=MemoryDataManagerTask.getPCPDeviceTodayDataById(deviceInfo.getId());
+							if(deviceTodayData!=null && deviceTodayData.getPCPCalculateList()!=null){
+								for(int i=0;i<deviceTodayData.getPCPCalculateList().size();i++){
+									if(acqTime.equalsIgnoreCase(deviceTodayData.getPCPCalculateList().get(i).getAcqTime())){
+										deviceTodayData.getPCPCalculateList().get(i).setSaveHistory(1);
+										break;
+									}
+								}
+								MemoryDataManagerTask.updatePCPDeviceTodayDataDeviceInfo(deviceTodayData);
+							}
 						}
 						
 						if(Config.getInstance().configFile.getAp().getOthers().getSaveAcqRawData()){
@@ -4252,6 +4272,8 @@ public class DriverAPIController extends BaseController{
 							srpCalculateResponseData=new SRPCalculateResponseData();
 							srpCalculateResponseData.init();
 							
+							srpCalculateResponseData.setSaveHistory(0);
+							srpCalculateResponseData.setAcqTime(acqTime);
 							srpCalculateResponseData.getFESDiagram().setAcqTime(acqTime);
 							srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setAcqTime(acqTime);
 							
@@ -4373,7 +4395,10 @@ public class DriverAPIController extends BaseController{
 							}
 							
 							srpCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(srpCalculateReturnData.getSrpCalculateRequestData()));
-							
+							if(srpCalculateResponseData!=null){
+								srpCalculateResponseData.setSaveHistory(0);
+								srpCalculateResponseData.setAcqTime(acqTime);
+							}
 							if(srpCalculateResponseData!=null && isAcqRPMData){
 								srpCalculateResponseData.setRPM(acqRPM);
 							}
@@ -4397,6 +4422,8 @@ public class DriverAPIController extends BaseController{
 							SRPCalculateResponseData responseResultData =new SRPCalculateResponseData(); 
 							responseResultData.init();
 							
+							responseResultData.setSaveHistory(0);
+							responseResultData.setAcqTime(acqTime);
 							responseResultData.setWellName(srpCalculateResponseData.getWellName());
 							responseResultData.setRPM(srpCalculateResponseData.getRPM());
 							responseResultData.getCalculationStatus().setResultStatus(srpCalculateResponseData.getCalculationStatus().getResultStatus());
@@ -4869,10 +4896,14 @@ public class DriverAPIController extends BaseController{
 							calculateReturnData.getCalculateRequestData().getProduction().setWeightWaterCut(weightWaterCut);
 						}
 						pcpCalculateResponseData=CalculateUtils.rpmCalculate(gson.toJson(calculateReturnData.getCalculateRequestData()));
+						if(pcpCalculateResponseData!=null){
+							pcpCalculateResponseData.setSaveHistory(0);
+						}
 						if(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 							PCPCalculateResponseData responseResultData =new PCPCalculateResponseData(); 
 							responseResultData.init();
 							
+							responseResultData.setSaveHistory(0);
 							responseResultData.setWellName(pcpCalculateResponseData.getWellName());
 							responseResultData.setAcqTime(pcpCalculateResponseData.getAcqTime());
 							responseResultData.setRPM(pcpCalculateResponseData.getRPM());

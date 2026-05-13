@@ -36,6 +36,56 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
+	public String getAlarmStatData(String orgId,String deviceType,Page pager,String language){
+		StringBuffer result_json = new StringBuffer();
+		int diagramResultAlarmDeviceCount=0,commStatusAlarmDeviceCount=0,runStatusAlarmDeviceCount=0,numericValueAlarmDeviceCount=0,enumValueAlarmDeviceCount=0,switchingValueAlarmDeviceCount=0;
+		
+		String sql="select alarmtype,count(1) from ( "
+				+ " select t.deviceid,t.alarmtype,max(t.alarmtime) from VIW_ALARMINFO_LATEST t  "
+				+ " where t.orgid in ("+orgId+")"
+				+ " and t.devicetype in ("+deviceType+")"
+				+ " group by t.deviceid,t.alarmtype"
+				+ " ) v"
+				+ " group by v.alarmtype"
+				+ " order by v.alarmtype";
+		
+		List<?> list=this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			Object[]obj=(Object[]) list.get(i);
+			int alarmType=StringManagerUtils.stringToInteger(obj[0]+"");
+			int deviceCount=StringManagerUtils.stringToInteger(obj[1]+"");
+			
+			if(alarmType==4){
+				diagramResultAlarmDeviceCount+=deviceCount;
+			}else if(alarmType==3){
+				commStatusAlarmDeviceCount+=deviceCount;
+			}else if(alarmType==6){
+				runStatusAlarmDeviceCount+=deviceCount;
+			}else if(alarmType==2 || alarmType==5 || alarmType==7){
+				numericValueAlarmDeviceCount+=deviceCount;
+			}else if(alarmType==0){
+				switchingValueAlarmDeviceCount+=deviceCount;
+			}else if(alarmType==1){
+				enumValueAlarmDeviceCount+=deviceCount;
+			}
+		}
+		
+		
+		result_json.append("{\"success\":true,"
+				+ "\"totalCount\":"+6+","
+				+ "\"start_date\":\""+pager.getStart_date()+"\","
+				+ "\"end_date\":\""+pager.getEnd_date()+"\","
+				+ "\"diagramResultAlarmDeviceCount\":"+diagramResultAlarmDeviceCount+","
+				+ "\"commStatusAlarmDeviceCount\":"+commStatusAlarmDeviceCount+","
+				+ "\"runStatusAlarmDeviceCount\":"+runStatusAlarmDeviceCount+","
+				+ "\"numericValueAlarmDeviceCount\":"+numericValueAlarmDeviceCount+","
+				+ "\"enumValueAlarmDeviceCount\":"+enumValueAlarmDeviceCount+","
+				+ "\"switchingValueAlarmDeviceCount\":"+switchingValueAlarmDeviceCount
+				+"}");
+		
+		return result_json.toString();
+	}
+	
 	public String getAlarmData(String orgId,String deviceType,String deviceId,String deviceName,String dictDeviceType,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="alarmQuery_CommStatusAlarm";
@@ -356,11 +406,14 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			sql+= " and t.devicetype in ("+deviceType+")";
 		}
 		
-		if(StringManagerUtils.stringToInteger(alarmType)==2){
-			sql+=" and t.alarmType in(2,5,7)";
-		}else {
-			sql+= " and t.alarmtype="+alarmType;
+		if(StringManagerUtils.isNotNull(alarmType)){
+			if(StringManagerUtils.stringToInteger(alarmType)==2){
+				sql+=" and t.alarmType in(2,5,7)";
+			}else {
+				sql+= " and t.alarmtype="+alarmType;
+			}
 		}
+		
 		
 		if(StringManagerUtils.isNotNull(alarmLevel)){
 			sql+=" and t.alarmLevel="+alarmLevel+"";

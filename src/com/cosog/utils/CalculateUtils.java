@@ -302,7 +302,9 @@ public class CalculateUtils {
     			if(responseData!=null 
         				&& responseData.getCalculationStatus().getResultStatus()==1
         				&& responseData.getFESDiagram()!=null
-        				&& StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, offsetHour) ){
+        				&& StringManagerUtils.timeMatchDate(responseData.getFESDiagram().getAcqTime(), date, offsetHour)
+        				&& (responseData.getSaveHistory()==1 || i==deviceTodayData.getSRPCalculateList().size()-1)
+    					){
     				if(map.containsKey(responseData.getFESDiagram().getAcqTime()) ){
     					if(map.get(responseData.getFESDiagram().getAcqTime()).getCalculationStatus().getResultCode()==1232){
     						if(responseData.getCalculationStatus().getResultCode()!=1232){
@@ -449,7 +451,7 @@ public class CalculateUtils {
 	
 	public static String getRPMTotalRequestData(String date,DeviceInfo deviceInfo,PCPDeviceTodayData deviceTodayData){
 		StringBuffer dataSbf= new StringBuffer();
-		
+		int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 		List<String> acqTimeList=new ArrayList<String>();
 		List<Integer> commStatusList=new ArrayList<Integer>();
 		List<Integer> runStatusList=new ArrayList<Integer>();
@@ -481,8 +483,14 @@ public class CalculateUtils {
 		List<Float> tubingPressureList=new ArrayList<Float>();
 		List<Float> casingPressureList=new ArrayList<Float>();
 		
-		for(PCPCalculateResponseData responseData:deviceTodayData.getPCPCalculateList()){
-			if(StringManagerUtils.timeMatchDate(responseData.getAcqTime(), date, Config.getInstance().configFile.getAp().getReport().getOffsetHour()) && !StringManagerUtils.existOrNot(acqTimeList, responseData.getAcqTime(), false)){
+		for(int i = 0; i <deviceTodayData.getPCPCalculateList().size(); i++){
+			PCPCalculateResponseData responseData=deviceTodayData.getPCPCalculateList().get(i);
+			if(responseData!=null 
+    				&& responseData.getCalculationStatus().getResultStatus()==1
+    				&& StringManagerUtils.timeMatchDate(responseData.getAcqTime(), date, offsetHour)
+    				&& (!StringManagerUtils.existOrNot(acqTimeList, responseData.getAcqTime(), false))
+    				&& (responseData.getSaveHistory()==1 || i==deviceTodayData.getPCPCalculateList().size()-1)
+					){
 				acqTimeList.add(responseData.getAcqTime());
 				commStatusList.add(deviceInfo.getCommStatus());
 				runStatusList.add(deviceInfo.getRunStatus());

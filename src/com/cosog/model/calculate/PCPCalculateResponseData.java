@@ -11,6 +11,7 @@ public  class PCPCalculateResponseData implements Serializable , Comparable<PCPC
 	private String WellName;
 	private String Scene;
 	private String AcqTime;
+	private int SaveHistory;
 	private float RPM;
 	private int RunStatus;
 	private RodString RodString;
@@ -828,6 +829,14 @@ public  class PCPCalculateResponseData implements Serializable , Comparable<PCPC
 
 	public void setScene(String scene) {
 		Scene = scene;
+	}
+
+	public int getSaveHistory() {
+		return SaveHistory;
+	}
+
+	public void setSaveHistory(int saveHistory) {
+		SaveHistory = saveHistory;
 	}
 
 }

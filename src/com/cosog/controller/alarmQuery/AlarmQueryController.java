@@ -47,6 +47,57 @@ public class AlarmQueryController extends BaseController{
 	private String isSendMessage;
 	private int totals;
 	
+	@RequestMapping("/getAlarmStatData")
+	public String getAlarmStatData() throws Exception {
+		String json = "";
+		orgId = ParamUtils.getParameter(request, "orgId");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		
+		startDate = ParamUtils.getParameter(request, "startDate");
+		endDate = ParamUtils.getParameter(request, "endDate");
+		this.pager = new Page("pagerForm", request);
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		if(!StringManagerUtils.isNotNull(orgId)){
+			if (user != null) {
+				orgId=user.getUserOrgIds();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(endDate)){
+			String sql = "select to_char(max(t.alarmtime)+1/(24*60),'yyyy-mm-dd hh24:mi:ss') as alarmtime  "
+					+ " from VIW_ALARMINFO_LATEST t "
+					+ " where t.orgid in ("+orgId+") "
+					+ " and t.devicetype in ("+deviceType+")";
+			List<?> list = this.service.reportDateJssj(sql);
+			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			}
+			if(!StringManagerUtils.isNotNull(startDate)){
+				startDate=endDate.split(" ")[0]+" 00:00:00";
+			}
+		}
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		json = alarmQueryService.getAlarmStatData(orgId,deviceType,pager,language);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getAlarmData")
 	public String getAlarmData() throws Exception {
 		String json = "";

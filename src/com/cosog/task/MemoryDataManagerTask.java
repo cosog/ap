@@ -5481,7 +5481,7 @@ public class MemoryDataManagerTask {
 			}	
 					
 			String sql=" select t2.id as wellId,t2.devicename,"//2
-					+ " to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"//3
+					+ " to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqtime,"//3
 					+ " t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,t.resultcode,"//9
 					+ " t.theoreticalproduction,"//10
 					+ " t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"//13
@@ -5493,7 +5493,8 @@ public class MemoryDataManagerTask {
 					+"  t.calcProducingfluidLevel, "//30
 					+"  t.levelDifferenceValue, "//31
 					+ " t.submergence, "//32
-					+ " t.resultstatus "//33
+					+ " t.resultstatus, "//33
+					+ " to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime"//34
 					+ " from tbl_srpacqdata_hist t,viw_device t2 "
 					+ " where t.deviceid=t2.id  "
 					+ " and t2.calculateType=1"
@@ -5515,6 +5516,8 @@ public class MemoryDataManagerTask {
 				SRPCalculateResponseData responseData =new SRPCalculateResponseData(); 
 				responseData.init();
 				
+				responseData.setSaveHistory(1);
+				responseData.setAcqTime(rs.getString(34));
 				responseData.setWellName(rs.getString(2));
 				responseData.getFESDiagram().setAcqTime(rs.getString(3));
 				responseData.getFESDiagram().setStroke(rs.getFloat(4));
@@ -5615,11 +5618,11 @@ public class MemoryDataManagerTask {
 	public static void updatePCPDeviceTodayDataDeviceInfo(PCPDeviceTodayData deviceTodayData){
 		if(deviceTodayData!=null){
 			Jedis jedis=null;
+//			if(!existsKey("PCPDeviceTodayData")){
+//				MemoryDataManagerTask.loadTodayRPMData(null,0);
+//			}
 			try {
 				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("PCPDeviceTodayData".getBytes())){
-					MemoryDataManagerTask.loadTodayRPMData(null,0);
-				}
 				jedis.hset("PCPDeviceTodayData".getBytes(), (deviceTodayData.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
 			}catch (Exception e) {
 				e.printStackTrace();
@@ -5665,7 +5668,8 @@ public class MemoryDataManagerTask {
 					+ "t.systemefficiency,"
 					+ "t.pumpeff1,t.pumpeff2,t.pumpeff,"
 					+ "t.productiondata,"
-					+ "t.submergence "
+					+ "t.submergence, "
+					+ "t.resultstatus "//33
 					+ " from tbl_pcpacqdata_hist t,tbl_device t2 "
 					+ " where t.deviceid=t2.id and t.resultstatus=1 "
 					+ " and t.acqtime between to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24 and to_date('"+currentDate+"','yyyy-mm-dd')+"+offsetHour+"/24+1";
@@ -5687,11 +5691,13 @@ public class MemoryDataManagerTask {
 				PCPCalculateResponseData responseData =new PCPCalculateResponseData(); 
 				responseData.init();
 				
+				responseData.setSaveHistory(1);
 				responseData.setWellName(rs.getString(2));
 				responseData.setAcqTime(rs.getString(3));
 				
 				responseData.setRPM(rs.getFloat(4));
 				responseData.getCalculationStatus().setResultCode(rs.getInt(5));
+				responseData.getCalculationStatus().setResultStatus(rs.getInt(19));
 				
 				responseData.getProduction().setTheoreticalProduction(rs.getFloat(6));
 				responseData.getProduction().setLiquidVolumetricProduction(rs.getFloat(7));

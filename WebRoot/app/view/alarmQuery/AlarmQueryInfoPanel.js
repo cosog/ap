@@ -6,18 +6,7 @@ var AlarmQuerySecondTabPanelItems=[{
 	iconCls: 'check3',
 	layout: 'border',
 	items: [{
-    	region: 'west',
-    	width: '30%',
-		title: loginUserLanguageResource.deviceList,
-		id: 'FESDiagramResultAlarmOverviewPanel_Id',
-		autoScroll: false,
-        scrollable: false,
-        split: true,
-        collapsible: true,
-		layout: 'fit'
-	},{
 		region: 'center',
-		title: loginUserLanguageResource.alarmData,
 		id: 'FESDiagramResultAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
@@ -28,18 +17,7 @@ var AlarmQuerySecondTabPanelItems=[{
 	id:'CommunicationAlarmInfoTabPanel_Id',
 	layout: "border",
 	items: [{
-    	region: 'west',
-    	width: '30%',
-		title: loginUserLanguageResource.deviceList,
-		id: 'CommunicationAlarmOverviewPanel_Id',
-		autoScroll: false,
-        scrollable: false,
-        split: true,
-        collapsible: true,
-		layout: 'fit'
-	},{
 		region: 'center',
-		title: loginUserLanguageResource.alarmData,
 		id: 'CommunicationAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
@@ -51,18 +29,7 @@ var AlarmQuerySecondTabPanelItems=[{
 	layout: "border",
 //	iconCls: onlyMonitor?'check3':null,
 	items: [{
-		region: 'west',
-    	width: '30%',
-		title: loginUserLanguageResource.deviceList,
-		id: 'RunStatusAlarmOverviewPanel_Id',
-		autoScroll: false,
-        scrollable: false,
-        split: true,
-        collapsible: true,
-		layout: 'fit'
-	},{
         region: 'center',
-		title: loginUserLanguageResource.alarmData,
 		id: 'RunStatusAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
@@ -73,18 +40,7 @@ var AlarmQuerySecondTabPanelItems=[{
 //	iconCls: 'check3',
 	layout: "border",
 	items: [{
-    	region: 'west',
-    	width: '30%',
-		title: loginUserLanguageResource.deviceList,
-		id: 'NumericValueAlarmOverviewPanel_Id',
-		autoScroll: false,
-        scrollable: false,
-        split: true,
-        collapsible: true,
-		layout: 'fit'
-	},{
 		region: 'center',
-		title: loginUserLanguageResource.alarmData,
 		id: 'NumericValueAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
@@ -94,18 +50,7 @@ var AlarmQuerySecondTabPanelItems=[{
 	id:'EnumValueAlarmInfoTabPanel_Id',
 	layout: "border",
 	items: [{
-    	region: 'west',
-    	width: '30%',
-		title: loginUserLanguageResource.deviceList,
-		id: 'EnumValueAlarmOverviewPanel_Id',
-		autoScroll: false,
-        scrollable: false,
-        split: true,
-        collapsible: true,
-		layout: 'fit'
-	},{
 		region: 'center',
-		title: loginUserLanguageResource.alarmData,
 		id: 'EnumValueAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
@@ -115,18 +60,7 @@ var AlarmQuerySecondTabPanelItems=[{
 	id:'SwitchingValueAlarmInfoTabPanel_Id',
 	layout: "border",
 	items: [{
-    	region: 'west',
-    	width: '30%',
-		title: loginUserLanguageResource.deviceList,
-		id: 'SwitchingValueAlarmOverviewPanel_Id',
-		autoScroll: false,
-        scrollable: false,
-        split: true,
-        collapsible: true,
-		layout: 'fit'
-	},{
 		region: 'center',
-		title: loginUserLanguageResource.alarmData,
 		id: 'SwitchingValueAlarmDetailsPanel_Id',
         autoScroll: false,
         layout: 'fit'
@@ -207,14 +141,9 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                 });
         Ext.apply(me, {
         	items: [{
-        		xtype: 'tabpanel',
-        		id:"AlarmQuerySecondTabPanel",
-//        		activeTab: onlyMonitor?1:0,
-        		activeTab: 0,
         		border: false,
-//        		tabPosition: 'left',
-        		tabPosition: 'top',
-        		tbar: [{
+                layout: 'border',
+                tbar: [{
                     id: 'AlarmOverviewColumnStr_Id',
                     xtype: 'textfield',
                     value: '',
@@ -228,6 +157,11 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     id: 'AlarmOverviewSelectRow_Id',
                     xtype: 'textfield',
                     value: 0,
+                    hidden: true
+                },{
+                    id: 'SelectedAlarmStatCode_Id',
+                    xtype: 'textfield',
+                    value: '',
                     hidden: true
                 },{
                     xtype: 'button',
@@ -603,55 +537,78 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                    	 	exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                     }
                 }],
-//        		items: AlarmQuerySecondTabPanelItems,
-                items: [],
-        		listeners: {
-        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
-        				if(oldCard!=undefined){
-                			oldCard.setIconCls(null);
-                			var alarmOverViewPanelId='';
-            				var alarmDetailsPanelId='';
-            				if(oldCard.id=="FESDiagramResultAlarmInfoTabPanel_Id"){
-            					alarmOverViewPanelId='FESDiagramResultAlarmOverviewPanel_Id';
-            					alarmDetailsPanelId='FESDiagramResultAlarmDetailsPanel_Id';
-                			}else if(oldCard.id=="RunStatusAlarmInfoTabPanel_Id"){
-                				alarmOverViewPanelId='RunStatusAlarmOverviewPanel_Id';
-                				alarmDetailsPanelId='RunStatusAlarmDetailsPanel_Id';
-                			}else if(oldCard.id=="CommunicationAlarmInfoTabPanel_Id"){
-                				alarmOverViewPanelId='CommunicationAlarmOverviewPanel_Id';
-                				alarmDetailsPanelId='CommunicationAlarmDetailsPanel_Id';
-                			}else if(oldCard.id=="NumericValueAlarmInfoTabPanel_Id"){
-                				alarmOverViewPanelId='NumericValueAlarmOverviewPanel_Id';
-                				alarmDetailsPanelId='NumericValueAlarmDetailsPanel_Id';
-                			}else if(oldCard.id=="EnumValueAlarmInfoTabPanel_Id"){
-                				alarmOverViewPanelId='EnumValueAlarmOverviewPanel_Id';
-                				alarmDetailsPanelId='EnumValueAlarmDetailsPanel_Id';
-                			}else if(oldCard.id=="SwitchingValueAlarmInfoTabPanel_Id"){
-                				alarmOverViewPanelId='SwitchingValueAlarmOverviewPanel_Id';
-                				alarmDetailsPanelId='SwitchingValueAlarmDetailsPanel_Id';
-                			}
-            				Ext.getCmp(alarmOverViewPanelId).removeAll();
-            				Ext.getCmp(alarmDetailsPanelId).removeAll();
-                	    }
-                	    if(newCard!=undefined){
-                	    	newCard.setIconCls('check3');
-                	    }
-	        		},
-	        		tabchange: function (tabPanel, newCard,oldCard, obj) {
-	        			Ext.getCmp("AlarmOverviewSelectRow_Id").setValue(0);
-	        			Ext.getCmp("AlarmDeviceListComb_Id").setValue('');
-	        			Ext.getCmp("AlarmDeviceListComb_Id").setRawValue('');
-	        			Ext.getCmp("AlarmLevelComb_Id").setValue('');
-	        			Ext.getCmp("AlarmLevelComb_Id").setRawValue('');
-	        			var gridPanel = Ext.getCmp("AlarmOverviewGridPanel_Id");
-	        			if (isNotVal(gridPanel)) {
-	        				gridPanel.getStore().loadPage(1);
-	        			}else{
-	        				Ext.create('AP.store.alarmQuery.AlarmOverviewStore');
-	        			}
-	        		}
-        		}
-            	}]
+                items:[{
+                	region: 'center',
+                	layout: 'border',
+                	border: false,
+                	items:[{
+                    	region: 'center',
+                    	title:loginUserLanguageResource.deviceOverview,
+                    	id:'AlarmQueryDeviceOverviewPanel_Id',
+                        border: false,
+                        layout: 'fit'
+                    },{
+                    	region: 'south',
+                    	title:'报警概览',
+                    	split: true,
+                        collapsible: true,
+                    	height: '50%',
+                    	layout: 'fit',
+                    	id:'AlarmQueryStatGraphPanel_Id',
+                    	html: '<div id="AlarmQueryStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+                    	listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            	if(isNotVal($("#AlarmQueryStatGraphPanelPieDiv_Id"))){
+                            		if ($("#AlarmQueryStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+                            			highchartsResize("AlarmQueryStatGraphPanelPieDiv_Id");
+                                    }else{
+                                    	var toolTip=Ext.getCmp("AlarmQueryStatGraphGraphPanelPieToolTip_Id");
+                                    	if(!isNotVal(toolTip)){
+                                    		Ext.create('Ext.tip.ToolTip', {
+                                                id:'AlarmQueryStatGraphGraphPanelPieToolTip_Id',
+                                        		target: 'AlarmQueryStatGraphPanelPieDiv_Id',
+//                                                html: loginUserLanguageResource.statPieChartToolTip
+                                        		html:'点击图形查看相应统计数据'
+                                            });
+                                    	}
+                                    }
+                            	}
+                            }
+                        }
+                    }]
+                },{
+                	region: 'east',
+                    width: '60%',
+                    split: true,
+                    collapsible: true,
+            		title: loginUserLanguageResource.alarmData,
+                    xtype: 'tabpanel',
+                    id:"AlarmQuerySecondTabPanel",
+            		activeTab:0,
+            		border: false,
+            		tabPosition: 'top',
+            		items:[],
+            		listeners: {
+            			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
+            				if(oldCard!=undefined){
+            					oldCard.setIconCls(null);
+            				}
+            				if(newCard!=undefined){
+            					newCard.setIconCls('check3');
+            				}
+            			},
+            			tabchange: function (tabPanel, newCard,oldCard, obj) {
+            				
+            			},
+        				beforeCollapse: function (panel, eOpts) {
+        					
+        				},
+                        expand: function (panel, eOpts) {
+                        	
+                        }
+            		}
+                }]
+        	}]
         });
         me.callParent(arguments);
     }

@@ -36,37 +36,89 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
-	public String getAlarmStatData(String orgId,String deviceType,Page pager,String language){
+	public String getAlarmStatData(String orgId,String deviceType,String alarmQueryStatRangeType,Page pager,String language){
 		StringBuffer result_json = new StringBuffer();
-		int diagramResultAlarmDeviceCount=0,commStatusAlarmDeviceCount=0,runStatusAlarmDeviceCount=0,numericValueAlarmDeviceCount=0,enumValueAlarmDeviceCount=0,switchingValueAlarmDeviceCount=0;
+		int diagramResultAlarmDeviceCount=0,diagramResultAlarmLevel1DeviceCount=0,diagramResultAlarmLevel2DeviceCount=0,diagramResultAlarmLevel3DeviceCount=0;
+		int commStatusAlarmDeviceCount=0,commStatusAlarmLevel1DeviceCount=0,commStatusAlarmLevel2DeviceCount=0,commStatusAlarmLevel3DeviceCount=0;
+		int	runStatusAlarmDeviceCount=0,runStatusAlarmLevel1DeviceCount=0,runStatusAlarmLevel2DeviceCount=0,runStatusAlarmLevel3DeviceCount=0;
+		int numericValueAlarmDeviceCount=0,numericValueAlarmLevel1DeviceCount=0,numericValueAlarmLevel2DeviceCount=0,numericValueAlarmLevel3DeviceCount=0;
+		int enumValueAlarmDeviceCount=0,enumValueAlarmLevel1DeviceCount=0,enumValueAlarmLevel2DeviceCount=0,enumValueAlarmLevel3DeviceCount=0;
+		int switchingValueAlarmDeviceCount=0,switchingValueAlarmLevel1DeviceCount=0,switchingValueAlarmLevel2DeviceCount=0,switchingValueAlarmLevel3DeviceCount=0;
 		
-		String sql="select alarmtype,count(1) from ( "
-				+ " select t.deviceid,t.alarmtype,max(t.alarmtime) from VIW_ALARMINFO_LATEST t  "
+		String sql="select t2.alarmtype,t2.alarmlevel,count(1) from VIW_ALARMINFO_LATEST t2,"
+				+ " (select t.deviceid,t.alarmtype,max(t.id) as id from VIW_ALARMINFO_LATEST t  "
 				+ " where t.orgid in ("+orgId+")"
-				+ " and t.devicetype in ("+deviceType+")"
-				+ " group by t.deviceid,t.alarmtype"
+				+ " and t.devicetype in ("+deviceType+")";
+		if("0".equalsIgnoreCase(alarmQueryStatRangeType)){
+			String date=StringManagerUtils.getCurrentTime();
+			sql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+		}
+				sql+= " group by t.deviceid,t.alarmtype"
 				+ " ) v"
-				+ " group by v.alarmtype"
-				+ " order by v.alarmtype";
+				+ " where t2.deviceid=v.deviceid and t2.alarmtype=v.alarmtype and t2.id=v.id"
+				+ " group by t2.alarmtype,t2.alarmlevel";
 		
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[]obj=(Object[]) list.get(i);
 			int alarmType=StringManagerUtils.stringToInteger(obj[0]+"");
-			int deviceCount=StringManagerUtils.stringToInteger(obj[1]+"");
+			int alarmLevel=StringManagerUtils.stringToInteger(obj[1]+"");
+			int deviceCount=StringManagerUtils.stringToInteger(obj[2]+"");
 			
 			if(alarmType==4){
 				diagramResultAlarmDeviceCount+=deviceCount;
+				if(alarmLevel==100){
+					diagramResultAlarmLevel1DeviceCount+=deviceCount;
+				}else if(alarmLevel==200){
+					diagramResultAlarmLevel2DeviceCount+=deviceCount;
+				}else if(alarmLevel==300){
+					diagramResultAlarmLevel3DeviceCount+=deviceCount;
+				}
 			}else if(alarmType==3){
 				commStatusAlarmDeviceCount+=deviceCount;
+				if(alarmLevel==100){
+					commStatusAlarmLevel1DeviceCount+=deviceCount;
+				}else if(alarmLevel==200){
+					commStatusAlarmLevel2DeviceCount+=deviceCount;
+				}else if(alarmLevel==300){
+					commStatusAlarmLevel3DeviceCount+=deviceCount;
+				}
 			}else if(alarmType==6){
 				runStatusAlarmDeviceCount+=deviceCount;
+				if(alarmLevel==100){
+					runStatusAlarmLevel1DeviceCount+=deviceCount;
+				}else if(alarmLevel==200){
+					runStatusAlarmLevel2DeviceCount+=deviceCount;
+				}else if(alarmLevel==300){
+					runStatusAlarmLevel3DeviceCount+=deviceCount;
+				}
 			}else if(alarmType==2 || alarmType==5 || alarmType==7){
 				numericValueAlarmDeviceCount+=deviceCount;
+				if(alarmLevel==100){
+					numericValueAlarmLevel1DeviceCount+=deviceCount;
+				}else if(alarmLevel==200){
+					numericValueAlarmLevel2DeviceCount+=deviceCount;
+				}else if(alarmLevel==300){
+					numericValueAlarmLevel3DeviceCount+=deviceCount;
+				}
 			}else if(alarmType==0){
 				switchingValueAlarmDeviceCount+=deviceCount;
+				if(alarmLevel==100){
+					switchingValueAlarmLevel1DeviceCount+=deviceCount;
+				}else if(alarmLevel==200){
+					switchingValueAlarmLevel2DeviceCount+=deviceCount;
+				}else if(alarmLevel==300){
+					switchingValueAlarmLevel3DeviceCount+=deviceCount;
+				}
 			}else if(alarmType==1){
 				enumValueAlarmDeviceCount+=deviceCount;
+				if(alarmLevel==100){
+					enumValueAlarmLevel1DeviceCount+=deviceCount;
+				}else if(alarmLevel==200){
+					enumValueAlarmLevel2DeviceCount+=deviceCount;
+				}else if(alarmLevel==300){
+					enumValueAlarmLevel3DeviceCount+=deviceCount;
+				}
 			}
 		}
 		
@@ -76,11 +128,38 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				+ "\"start_date\":\""+pager.getStart_date()+"\","
 				+ "\"end_date\":\""+pager.getEnd_date()+"\","
 				+ "\"diagramResultAlarmDeviceCount\":"+diagramResultAlarmDeviceCount+","
+				+ "\"diagramResultAlarmLevel1DeviceCount\":"+diagramResultAlarmLevel1DeviceCount+","
+				+ "\"diagramResultAlarmLevel2DeviceCount\":"+diagramResultAlarmLevel2DeviceCount+","
+				+ "\"diagramResultAlarmLevel3DeviceCount\":"+diagramResultAlarmLevel3DeviceCount+","
+				
 				+ "\"commStatusAlarmDeviceCount\":"+commStatusAlarmDeviceCount+","
+				+ "\"commStatusAlarmLevel1DeviceCount\":"+commStatusAlarmLevel1DeviceCount+","
+				+ "\"commStatusAlarmLevel2DeviceCount\":"+commStatusAlarmLevel2DeviceCount+","
+				+ "\"commStatusAlarmLevel3DeviceCount\":"+commStatusAlarmLevel3DeviceCount+","
+				
 				+ "\"runStatusAlarmDeviceCount\":"+runStatusAlarmDeviceCount+","
+				+ "\"runStatusAlarmLevel1DeviceCount\":"+runStatusAlarmLevel1DeviceCount+","
+				+ "\"runStatusAlarmLevel2DeviceCount\":"+runStatusAlarmLevel2DeviceCount+","
+				+ "\"runStatusAlarmLevel3DeviceCount\":"+runStatusAlarmLevel3DeviceCount+","
+				
 				+ "\"numericValueAlarmDeviceCount\":"+numericValueAlarmDeviceCount+","
+				+ "\"numericValueAlarmLevel1DeviceCount\":"+numericValueAlarmLevel1DeviceCount+","
+				+ "\"numericValueAlarmLevel2DeviceCount\":"+numericValueAlarmLevel2DeviceCount+","
+				+ "\"numericValueAlarmLevel3DeviceCount\":"+numericValueAlarmLevel3DeviceCount+","
+				
 				+ "\"enumValueAlarmDeviceCount\":"+enumValueAlarmDeviceCount+","
-				+ "\"switchingValueAlarmDeviceCount\":"+switchingValueAlarmDeviceCount
+				+ "\"enumValueAlarmLevel1DeviceCount\":"+enumValueAlarmLevel1DeviceCount+","
+				+ "\"enumValueAlarmLevel2DeviceCount\":"+enumValueAlarmLevel2DeviceCount+","
+				+ "\"enumValueAlarmLevel3DeviceCount\":"+enumValueAlarmLevel3DeviceCount+","
+				
+				+ "\"switchingValueAlarmDeviceCount\":"+switchingValueAlarmDeviceCount+","
+				+ "\"switchingValueAlarmLevel1DeviceCount\":"+switchingValueAlarmLevel1DeviceCount+","
+				+ "\"switchingValueAlarmLevel2DeviceCount\":"+switchingValueAlarmLevel2DeviceCount+","
+				+ "\"switchingValueAlarmLevel3DeviceCount\":"+switchingValueAlarmLevel3DeviceCount+","
+				
+				+ "\"alarmLevel1DeviceCount\":"+(diagramResultAlarmLevel1DeviceCount+commStatusAlarmLevel1DeviceCount+runStatusAlarmLevel1DeviceCount+numericValueAlarmLevel1DeviceCount+enumValueAlarmLevel1DeviceCount+switchingValueAlarmLevel1DeviceCount)+","
+				+ "\"alarmLevel2DeviceCount\":"+(diagramResultAlarmLevel2DeviceCount+commStatusAlarmLevel2DeviceCount+runStatusAlarmLevel2DeviceCount+numericValueAlarmLevel2DeviceCount+enumValueAlarmLevel2DeviceCount+switchingValueAlarmLevel2DeviceCount)+","
+				+ "\"alarmLevel3DeviceCount\":"+(diagramResultAlarmLevel3DeviceCount+commStatusAlarmLevel3DeviceCount+runStatusAlarmLevel3DeviceCount+numericValueAlarmLevel3DeviceCount+enumValueAlarmLevel3DeviceCount+switchingValueAlarmLevel3DeviceCount)
 				+"}");
 		
 		return result_json.toString();
@@ -386,7 +465,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getAlarmOverviewData(String orgId,String deviceType,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language) throws IOException, SQLException{
+	public String getAlarmOverviewData(String orgId,String deviceType,String deviceName,
+			String alarmType,String alarmLevel,String alarmQueryStatRangeType,
+			String isSendMessage,Page pager,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		String tableName="viw_alarminfo_latest";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
@@ -424,6 +505,11 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.deviceName='"+deviceName+"'";
+		}
+		
+		if("0".equalsIgnoreCase(alarmQueryStatRangeType)){
+			String date=StringManagerUtils.getCurrentTime();
+			sql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 		}
 		
 		sql+= " group by t.orgid,t.deviceid,t.devicename,t.devicetypename_"+language+") v ";
@@ -502,7 +588,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	}
 	
 	public boolean exportAlarmOverviewData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
-			String orgId,String deviceType,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language){
+			String orgId,String deviceType,String deviceName,String alarmType,String alarmLevel,String alarmQueryStatRangeType,String isSendMessage,Page pager,String language){
 		try{
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			String tableName="viw_alarminfo_latest";
@@ -520,34 +606,46 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 		    
-			String sql="select v.deviceid,v.devicename,v.devicetypename_"+language+",v.alarmtype,v.alarmtime from "
-					+ " (select t.orgid,t.deviceid,t.devicename,t.devicetypename_"+language+",t.alarmtype,max(t.alarmtime) as alarmtime "
-					+ " from "+tableName+" t"
-					+ " where 1=1";
+		    String sql="select v.deviceid,v.devicename,v.devicetypename_"+language+",v.alarmtime from ("
+					+ " select t.orgid,t.deviceid,t.devicename,t.devicetypename_"+language+",max(t.alarmtime) as alarmtime  "
+					+ " from "+tableName+" t "
+					+ " where t.orgid in("+orgId+")";
 			if(StringManagerUtils.isNum(deviceType)){
 				sql+= " and t.devicetype="+deviceType;
 			}else{
 				sql+= " and t.devicetype in ("+deviceType+")";
 			}
+			
+			if(StringManagerUtils.isNotNull(alarmType)){
+				if(StringManagerUtils.stringToInteger(alarmType)==2){
+					sql+=" and t.alarmType in(2,5,7)";
+				}else {
+					sql+= " and t.alarmtype="+alarmType;
+				}
+			}
+			
+			
 			if(StringManagerUtils.isNotNull(alarmLevel)){
 				sql+=" and t.alarmLevel="+alarmLevel+"";
 			}
 			if(StringManagerUtils.isNotNull(isSendMessage)){
 				sql+=" and t.isSendMessage="+isSendMessage+"";
 			}
-			sql+= " group by t.orgid,t.deviceid,t.devicename,t.devicetypename_"+language+",t.alarmtype) v "
-					+ " where v.orgid in("+orgId+") ";
-			
-			if(StringManagerUtils.stringToInteger(alarmType)==2){
-				sql+=" and v.alarmType in(2,5)";
-			}else {
-				sql+= " and v.alarmtype="+alarmType;
-			}
 			
 			if(StringManagerUtils.isNotNull(deviceName)){
-				sql+=" and v.deviceName='"+deviceName+"'";
+				sql+=" and t.deviceName='"+deviceName+"'";
 			}
+			
+			if("0".equalsIgnoreCase(alarmQueryStatRangeType)){
+				String date=StringManagerUtils.getCurrentTime();
+				sql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+			}
+			
+			sql+= " group by t.orgid,t.deviceid,t.devicename,t.devicetypename_"+language+") v ";
+			
 			sql+=" order by v.alarmtime desc";
+		    
+			
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			List<?> list=this.findCallSql(finalSql);
 			List<Object> record=null;
@@ -561,8 +659,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				result_json.append("{\"id\":"+(i+1)+",");
 				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"deviceTypeName\":\""+obj[2]+"\",");
-				result_json.append("\"alarmType\":\""+obj[3]+"\",");
-				result_json.append("\"alarmTime\":\""+obj[4]+"\"}");
+				result_json.append("\"alarmTime\":\""+obj[3]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {

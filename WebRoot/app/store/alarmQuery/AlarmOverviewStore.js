@@ -71,12 +71,18 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
                             	Ext.getCmp('AlarmQueryEndTime_Hour_Id').setValue('');
                             	Ext.getCmp('AlarmQueryEndTime_Minute_Id').setValue('');
 //                            	Ext.getCmp('AlarmQueryEndTime_Second_Id').setValue('');
-                        		var gridPanel = Ext.getCmp("AlarmGridPanel_Id");
-                				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().loadPage(1);
-                				}else{
-                					Ext.create('AP.store.alarmQuery.AlarmStore');
-                				}
+                        		
+                            	var tabPanel = Ext.getCmp("AlarmQuerySecondTabPanel");
+                            	if(tabPanel!=undefined && tabPanel.getActiveTab()==undefined && tabPanel.items.length>0){
+                            		tabPanel.setActiveTab(0);
+                        		}else{
+                                	var gridPanel = Ext.getCmp("AlarmGridPanel_Id");
+                    				if (isNotVal(gridPanel)) {
+                    					gridPanel.getStore().loadPage(1);
+                    				}else{
+                    					Ext.create('AP.store.alarmQuery.AlarmStore');
+                    				}
+                        		}
                         	}
                         }
                     });
@@ -86,34 +92,40 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
                     }
                     
                 }
-//                if(get_rawData.totalCount>0){
-//                	var selectRow=0;
-//                	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
-//        			if(selectedDeviceId>0){
-//        				for(var i=0;i<store.data.items.length;i++){
-//                			if(selectedDeviceId==store.data.items[i].data.id){
-//                				selectRow=i;
-//                				break;
-//                			}
-//                		}
-//        			}
-//                	if(gridPanel.getSelectionModel().getSelection().length>0){
-//                		gridPanel.getSelectionModel().deselectAll(true);
-//                	}
-//                	gridPanel.getSelectionModel().select(selectRow, true);
-//                }else{
-//                	var gridPanel = Ext.getCmp("AlarmGridPanel_Id");
-//                    if (isNotVal(gridPanel)) {
-//                    	gridPanel.getStore().loadPage(1);
-//                    }else{
-//                    	Ext.create('AP.store.alarmQuery.AlarmStore');
-//                    }
-//                }
+                if(get_rawData.totalCount>0){
+                	var selectRow=0;
+                	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());
+        			if(selectedDeviceId>0){
+        				for(var i=0;i<store.data.items.length;i++){
+                			if(selectedDeviceId==store.data.items[i].data.id){
+                				selectRow=i;
+                				break;
+                			}
+                		}
+        			}
+                	if(gridPanel.getSelectionModel().getSelection().length>0){
+                		gridPanel.getSelectionModel().deselectAll(true);
+                	}
+                	gridPanel.getSelectionModel().select(selectRow, true);
+                }else{
+                	var tabPanel = Ext.getCmp("AlarmQuerySecondTabPanel");
+                	if(tabPanel!=undefined && tabPanel.getActiveTab()==undefined && tabPanel.items.length>0){
+                		tabPanel.setActiveTab(0);
+            		}else{
+            			var gridPanel = Ext.getCmp("AlarmGridPanel_Id");
+                        if (isNotVal(gridPanel)) {
+                        	gridPanel.getStore().loadPage(1);
+                        }else{
+                        	Ext.create('AP.store.alarmQuery.AlarmStore');
+                        }
+            		}
+                	
+                }
             }
             
-//            if (isNotVal(Ext.getCmp("AlarmQueryRootTabPanel"))) {
-//            	Ext.getCmp("AlarmQueryRootTabPanel").getEl().unmask();
-//            }
+            if (isNotVal(Ext.getCmp("AlarmQueryRootTabPanel"))) {
+            	Ext.getCmp("AlarmQueryRootTabPanel").getEl().unmask();
+            }
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
@@ -122,28 +134,17 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
         	var alarmLevel=Ext.getCmp('AlarmLevelComb_Id').getValue();
         	var isSendMessage=Ext.getCmp('AlarmIsSendMessageComb_Id').getValue();
 //        	var alarmType=getAlarmTypeFromTabActive();
-        	var alarmType='';
-        	var selectedAlarmStatCode= Ext.getCmp('SelectedAlarmStatCode_Id').getValue();
-        	if(selectedAlarmStatCode=='FESDiagramResultAlarm'){
-        		alarmType=4;
-        	}else if(selectedAlarmStatCode=='commStatusAlarm'){
-        		alarmType=3;
-        	}else if(selectedAlarmStatCode=='runStatusAlarm'){
-        		alarmType=6;
-        	}else if(selectedAlarmStatCode=='numericValueAlarm'){
-        		alarmType=2;
-        	}else if(selectedAlarmStatCode=='enumValueAlarm'){
-        		alarmType=1;
-        	}else if(selectedAlarmStatCode=='switchingValueAlarm'){
-        		alarmType=0;
-        	}
+        	var alarmType=Ext.getCmp('SelectedAlarmStatType_Id').getValue();
+        	var alarmLevel=Ext.getCmp('SelectedAlarmStatLevel_Id').getValue();
+        	var alarmQueryStatRangeType=Ext.getCmp("AlarmQueryStatRangeType_Id").getValue().alarmQueryStatRangeType;
             var new_params = {
                     orgId: orgId,
                     deviceType:deviceType,
                     deviceName:deviceName,
-                    alarmLevel:alarmLevel,
                     isSendMessage:isSendMessage,
-                    alarmType:alarmType
+                    alarmType:alarmType,
+                    alarmLevel:alarmLevel,
+                    alarmQueryStatRangeType:alarmQueryStatRangeType
                 };
             Ext.apply(store.proxy.extraParams, new_params);
         },

@@ -231,15 +231,15 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                                 		if ($("#AlarmTypeStatGraphPanelPieDiv_Id").highcharts() != undefined) {
                                 			highchartsResize("AlarmTypeStatGraphPanelPieDiv_Id");
                                         }else{
-                                        	var toolTip=Ext.getCmp("AlarmTypeStatGraphGraphPanelPieToolTip_Id");
-                                        	if(!isNotVal(toolTip)){
-                                        		Ext.create('Ext.tip.ToolTip', {
-                                                    id:'AlarmTypeStatGraphGraphPanelPieToolTip_Id',
-                                            		target: 'AlarmTypeStatGraphPanelPieDiv_Id',
-//                                                    html: loginUserLanguageResource.statPieChartToolTip
-                                            		html:'点击图形查看相应统计数据'
-                                                });
-                                        	}
+//                                        	var toolTip=Ext.getCmp("AlarmTypeStatGraphGraphPanelPieToolTip_Id");
+//                                        	if(!isNotVal(toolTip)){
+//                                        		Ext.create('Ext.tip.ToolTip', {
+//                                                    id:'AlarmTypeStatGraphGraphPanelPieToolTip_Id',
+//                                            		target: 'AlarmTypeStatGraphPanelPieDiv_Id',
+////                                                    html: loginUserLanguageResource.statPieChartToolTip
+//                                            		html:'点击图形查看相应统计数据'
+//                                                });
+//                                        	}
                                         }
                                 	}
                                 }
@@ -255,15 +255,15 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                                 		if ($("#AlarmLevelStatGraphPanelPieDiv_Id").highcharts() != undefined) {
                                 			highchartsResize("AlarmLevelStatGraphPanelPieDiv_Id");
                                         }else{
-                                        	var toolTip=Ext.getCmp("AlarmLevelStatGraphGraphPanelPieToolTip_Id");
-                                        	if(!isNotVal(toolTip)){
-                                        		Ext.create('Ext.tip.ToolTip', {
-                                                    id:'AlarmLevelStatGraphGraphPanelPieToolTip_Id',
-                                            		target: 'AlarmLevelStatGraphPanelPieDiv_Id',
-//                                                    html: loginUserLanguageResource.statPieChartToolTip
-                                            		html:'点击图形查看相应统计数据'
-                                                });
-                                        	}
+//                                        	var toolTip=Ext.getCmp("AlarmLevelStatGraphGraphPanelPieToolTip_Id");
+//                                        	if(!isNotVal(toolTip)){
+//                                        		Ext.create('Ext.tip.ToolTip', {
+//                                                    id:'AlarmLevelStatGraphGraphPanelPieToolTip_Id',
+//                                            		target: 'AlarmLevelStatGraphPanelPieDiv_Id',
+////                                                    html: loginUserLanguageResource.statPieChartToolTip
+//                                            		html:'点击图形查看相应统计数据'
+//                                                });
+//                                        	}
                                         }
                                 	}
                                 }

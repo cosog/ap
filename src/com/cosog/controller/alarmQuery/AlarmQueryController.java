@@ -52,6 +52,7 @@ public class AlarmQueryController extends BaseController{
 		String json = "";
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
+		String statType = ParamUtils.getParameter(request, "statType");
 		String alarmQueryStatRangeType=ParamUtils.getParameter(request, "alarmQueryStatRangeType");
 		
 		startDate = ParamUtils.getParameter(request, "startDate");
@@ -87,7 +88,7 @@ public class AlarmQueryController extends BaseController{
 //		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = alarmQueryService.getAlarmStatData(orgId,deviceType,alarmQueryStatRangeType,pager,language);
+		json = alarmQueryService.getAlarmStatData(orgId,deviceType,statType,alarmQueryStatRangeType,pager,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -230,6 +231,7 @@ public class AlarmQueryController extends BaseController{
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		alarmType = ParamUtils.getParameter(request, "alarmType");
 		alarmLevel = ParamUtils.getParameter(request, "alarmLevel");
+		String statType = ParamUtils.getParameter(request, "statType");
 		String alarmQueryStatRangeType = ParamUtils.getParameter(request, "alarmQueryStatRangeType");
 		isSendMessage = ParamUtils.getParameter(request, "isSendMessage");
 		this.pager = new Page("pagerForm", request);
@@ -246,7 +248,7 @@ public class AlarmQueryController extends BaseController{
 				orgId=user.getUserOrgIds();
 			}
 		}
-		json = alarmQueryService.getAlarmOverviewData(orgId,deviceType,deviceName,alarmType,alarmLevel,alarmQueryStatRangeType,isSendMessage,pager,language);
+		json = alarmQueryService.getAlarmOverviewData(orgId,deviceType,statType,deviceName,alarmType,alarmLevel,alarmQueryStatRangeType,isSendMessage,pager,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -267,6 +269,7 @@ public class AlarmQueryController extends BaseController{
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		alarmType = ParamUtils.getParameter(request, "alarmType");
 		alarmLevel = ParamUtils.getParameter(request, "alarmLevel");
+		String statType = ParamUtils.getParameter(request, "statType");
 		String alarmQueryStatRangeType = ParamUtils.getParameter(request, "alarmQueryStatRangeType");
 		isSendMessage = ParamUtils.getParameter(request, "isSendMessage");
 		
@@ -288,7 +291,7 @@ public class AlarmQueryController extends BaseController{
 				orgId=user.getUserOrgIds();
 			}
 		}
-		boolean bool = alarmQueryService.exportAlarmOverviewData(user,response,fileName,title, heads, fields,orgId,deviceType,deviceName,alarmType,alarmLevel,alarmQueryStatRangeType,isSendMessage,pager,language);
+		boolean bool = alarmQueryService.exportAlarmOverviewData(user,response,fileName,title, heads, fields,orgId,deviceType,statType,deviceName,alarmType,alarmLevel,alarmQueryStatRangeType,isSendMessage,pager,language);
 		return null;
 	}
 	

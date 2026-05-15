@@ -137,6 +137,13 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
         	var alarmType=Ext.getCmp('SelectedAlarmStatType_Id').getValue();
         	var alarmLevel=Ext.getCmp('SelectedAlarmStatLevel_Id').getValue();
         	var alarmQueryStatRangeType=Ext.getCmp("AlarmQueryStatRangeType_Id").getValue().alarmQueryStatRangeType;
+        	var statType=0;
+        	var statTabPanel=Ext.getCmp('AlarmQueryStatGraphPanel_Id');
+        	if(statTabPanel.getActiveTab().id=='AlarmTypeStatGraphPanel_Id'){
+        		statType=0;
+        	}else if(statTabPanel.getActiveTab().id=='AlarmLevelStatGraphPanel_Id'){
+        		statType=1;
+        	}
             var new_params = {
                     orgId: orgId,
                     deviceType:deviceType,
@@ -144,6 +151,7 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
                     isSendMessage:isSendMessage,
                     alarmType:alarmType,
                     alarmLevel:alarmLevel,
+                    statType:statType,
                     alarmQueryStatRangeType:alarmQueryStatRangeType
                 };
             Ext.apply(store.proxy.extraParams, new_params);

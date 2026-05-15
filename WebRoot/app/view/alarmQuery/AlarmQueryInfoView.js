@@ -249,8 +249,15 @@ function exportAlarmOverviewDataExcel() {
 	var alarmType=Ext.getCmp('SelectedAlarmStatType_Id').getValue();
 	var alarmLevel=Ext.getCmp('SelectedAlarmStatLevel_Id').getValue();
 	var alarmQueryStatRangeType=Ext.getCmp("AlarmQueryStatRangeType_Id").getValue().alarmQueryStatRangeType;
+	var statType=0;
+	var statTabPanel=Ext.getCmp('AlarmQueryStatGraphPanel_Id');
+	if(statTabPanel.getActiveTab().id=='AlarmTypeStatGraphPanel_Id'){
+		statType=0;
+	}else if(statTabPanel.getActiveTab().id=='AlarmLevelStatGraphPanel_Id'){
+		statType=1;
+	}
 	 	
-	var fileName=alarmTypeName+loginUserLanguageResource.deviceList;
+	var fileName='报警查询'+loginUserLanguageResource.deviceList;
 	 	
 	if(deviceType.indexOf(",")<0){
 	 	fileName=deviceTypeName+fileName;
@@ -302,6 +309,7 @@ function exportAlarmOverviewDataExcel() {
     + "&deviceName=" + URLencode(URLencode(deviceName))
     + "&alarmType=" + alarmType
     + "&alarmLevel=" + alarmLevel
+    + "&statType=" + statType
     + "&alarmQueryStatRangeType=" + alarmQueryStatRangeType
     + "&isSendMessage=" + isSendMessage
     + "&fileName=" + URLencode(URLencode(fileName)) 
@@ -366,6 +374,8 @@ function alarmQueryDataRefresh(){
 	if (isNotVal(Ext.getCmp("AlarmQueryRootTabPanel"))) {
     	Ext.getCmp("AlarmQueryRootTabPanel").getEl().unmask();
     }
+	Ext.getCmp('SelectedAlarmStatType_Id').setValue('');
+	Ext.getCmp('SelectedAlarmStatLevel_Id').setValue('');
 	
 	updateAlarmQueryTabpanelContent();
 	
@@ -380,8 +390,6 @@ function alarmQueryDataRefresh(){
 }
 
 function loadAlarmQueryStatData(){
-	Ext.getCmp('SelectedAlarmStatType_Id').setValue('');
-	Ext.getCmp('SelectedAlarmStatType_Id').setValue('');
 	var alarmQueryStatRangeType=Ext.getCmp("AlarmQueryStatRangeType_Id").getValue().alarmQueryStatRangeType;
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceType=getDeviceTypeFromTabId("AlarmQueryRootTabPanel");
@@ -389,6 +397,13 @@ function loadAlarmQueryStatData(){
 	Ext.getCmp("selectedDeviceType_global").setValue(deviceType);
 	Ext.getCmp("selectedFirstDeviceType_global").setValue(firstDeviceType); 
 	var projectTabConfig=getProjectTabInstanceInfoByDeviceType(deviceType);
+	var statType=0;
+	var statTabPanel=Ext.getCmp('AlarmQueryStatGraphPanel_Id');
+	if(statTabPanel.getActiveTab().id=='AlarmTypeStatGraphPanel_Id'){
+		statType=0;
+	}else if(statTabPanel.getActiveTab().id=='AlarmLevelStatGraphPanel_Id'){
+		statType=1;
+	}
 	
 	if(Ext.getCmp("AlarmQueryStatGraphPanel_Id")!=undefined && Ext.getCmp("AlarmQueryStatGraphPanel_Id").el!=undefined){
 		Ext.getCmp("AlarmQueryStatGraphPanel_Id").el.mask(loginUserLanguageResource.loading).show();
@@ -405,12 +420,12 @@ function loadAlarmQueryStatData(){
 			
 			var statTabPanel=Ext.getCmp('AlarmQueryStatGraphPanel_Id');
 			if(statTabPanel.getActiveTab().id=='AlarmTypeStatGraphPanel_Id'){
-				initAlarmTypeStatData(result,projectTabConfig);
+//				initAlarmTypeStatData(result,projectTabConfig);
+				initAlarmTypeStatDrillDownChartData(result,projectTabConfig);
 			}else if(statTabPanel.getActiveTab().id=='AlarmLevelStatGraphPanel_Id'){
-				initAlarmLevelStatData(result,projectTabConfig);
+//				initAlarmLevelStatData(result,projectTabConfig);
+				initAlarmLeveStatDrillDownChartData(result,projectTabConfig);
 			}
-			
-			
 		},
 		failure:function(){
 			if(Ext.getCmp("AlarmQueryStatGraphPanel_Id")!=undefined && Ext.getCmp("AlarmQueryStatGraphPanel_Id").el!=undefined){
@@ -421,10 +436,445 @@ function loadAlarmQueryStatData(){
 		params: {
 			orgId:orgId,
 			deviceType:deviceType,
+			statType:statType,
 			alarmQueryStatRangeType:alarmQueryStatRangeType
         }
 	});
 }
+
+function initAlarmTypeStatDrillDownChartData(result,projectTabConfig){
+	var divId="AlarmTypeStatGraphPanelPieDiv_Id";
+	var title='报警类型';
+	var subtitle='点击图形查看报警级别';
+	var yAxisTitle=loginUserLanguageResource.deviceCount;
+	var rawSeriesData=[];
+	var drilldownSeriesData=[];
+	if(projectTabConfig.AlarmQuery.FESDiagramResultAlarm && result.diagramResultAlarmDeviceCount>0){
+		rawSeriesData.push({
+			name: loginUserLanguageResource.FESDiagramResultAlarm, 
+			y: result.diagramResultAlarmDeviceCount, 
+			drilldown: 'FESDiagramResultAlarm', 
+			code: 'FESDiagramResultAlarm',
+			alarmType:4,
+			alarmLevel:'' 
+		});
+		
+		var singleSeriesData={name: loginUserLanguageResource.FESDiagramResultAlarm, id: 'FESDiagramResultAlarm', data: [] }
+		if(result.diagramResultAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel1, y: result.diagramResultAlarmLevel1DeviceCount, code: 'FESDiagramResultAlarm_Level1',alarmType:4,alarmLevel:100 });
+		}
+		if(result.diagramResultAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel2, y: result.diagramResultAlarmLevel2DeviceCount, code: 'FESDiagramResultAlarm_Level2',alarmType:4,alarmLevel:200 });
+		}
+		if(result.diagramResultAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel3, y: result.diagramResultAlarmLevel3DeviceCount, code: 'FESDiagramResultAlarm_Level3',alarmType:4,alarmLevel:300 });
+		}
+		drilldownSeriesData.push(singleSeriesData);
+	}
+
+	if(projectTabConfig.AlarmQuery.CommStatusAlarm && result.commStatusAlarmDeviceCount>0){
+		rawSeriesData.push({
+			name: loginUserLanguageResource.commStatusAlarm, 
+			y: result.commStatusAlarmDeviceCount, 
+			drilldown: 'commStatusAlarm', 
+			code: 'commStatusAlarm',
+			alarmType:3,
+			alarmLevel:'' 
+		});
+		
+		var singleSeriesData={name: loginUserLanguageResource.commStatusAlarm, id: 'commStatusAlarm', data: [] }
+		if(result.commStatusAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel1, y: result.commStatusAlarmLevel1DeviceCount, code: 'commStatusAlarm_Level1',alarmType:3,alarmLevel:100 });
+		}
+		if(result.commStatusAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel2, y: result.commStatusAlarmLevel2DeviceCount, code: 'commStatusAlarm_Level2',alarmType:3,alarmLevel:200 });
+		}
+		if(result.commStatusAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel3, y: result.commStatusAlarmLevel3DeviceCount, code: 'commStatusAlarm_Level3',alarmType:3,alarmLevel:300 });
+		}
+		drilldownSeriesData.push(singleSeriesData);
+	}
+	
+	if(projectTabConfig.AlarmQuery.RunStatusAlarm && result.runStatusAlarmDeviceCount>0){
+		rawSeriesData.push({
+			name: loginUserLanguageResource.runStatusAlarm, 
+			y: result.runStatusAlarmDeviceCount, 
+			drilldown: 'runStatusAlarm', 
+			code: 'runStatusAlarm',
+			alarmType:6,
+			alarmLevel:'' 
+		});
+		
+		var singleSeriesData={name: loginUserLanguageResource.runStatusAlarm, id: 'runStatusAlarm', data: [] }
+		if(result.runStatusAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel1, y: result.runStatusAlarmLevel1DeviceCount, code: 'runStatusAlarm_Level1',alarmType:6,alarmLevel:100 });
+		}
+		if(result.runStatusAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel2, y: result.runStatusAlarmLevel2DeviceCount, code: 'runStatusAlarm_Level2',alarmType:6,alarmLevel:200 });
+		}
+		if(result.runStatusAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel3, y: result.runStatusAlarmLevel3DeviceCount, code: 'runStatusAlarm_Level3',alarmType:6,alarmLevel:300 });
+		}
+		drilldownSeriesData.push(singleSeriesData);
+	}
+	if(projectTabConfig.AlarmQuery.NumericValueAlarm && result.numericValueAlarmDeviceCount>0){
+		rawSeriesData.push({
+			name: loginUserLanguageResource.numericValueAlarm, 
+			y: result.numericValueAlarmDeviceCount, 
+			drilldown: 'numericValueAlarm', 
+			code: 'numericValueAlarm',
+			alarmType:2,
+			alarmLevel:'' 
+		});
+		
+		var singleSeriesData={name: loginUserLanguageResource.numericValueAlarm, id: 'numericValueAlarm', data: [] }
+		if(result.numericValueAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel1, y: result.numericValueAlarmLevel1DeviceCount, code: 'numericValueAlarm_Level1',alarmType:2,alarmLevel:100 });
+		}
+		if(result.numericValueAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel2, y: result.numericValueAlarmLevel2DeviceCount, code: 'numericValueAlarm_Level2',alarmType:2,alarmLevel:200 });
+		}
+		if(result.numericValueAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel3, y: result.numericValueAlarmLevel3DeviceCount, code: 'numericValueAlarm_Level3',alarmType:2,alarmLevel:300 });
+		}
+		drilldownSeriesData.push(singleSeriesData);
+	}
+	if(projectTabConfig.AlarmQuery.EnumValueAlarm && result.enumValueAlarmDeviceCount>0){
+		rawSeriesData.push({
+			name: loginUserLanguageResource.enumValueAlarm, 
+			y: result.enumValueAlarmDeviceCount, 
+			drilldown: 'enumValueAlarm', 
+			code: 'enumValueAlarm',
+			alarmType:1,
+			alarmLevel:'' 
+		});
+		
+		var singleSeriesData={name: loginUserLanguageResource.enumValueAlarm, id: 'enumValueAlarm', data: [] }
+		if(result.enumValueAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel1, y: result.enumValueAlarmLevel1DeviceCount, code: 'enumValueAlarm_Level1',alarmType:1,alarmLevel:100 });
+		}
+		if(result.enumValueAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel2, y: result.enumValueAlarmLevel2DeviceCount, code: 'enumValueAlarm_Level2',alarmType:1,alarmLevel:200 });
+		}
+		if(result.enumValueAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel3, y: result.enumValueAlarmLevel3DeviceCount, code: 'enumValueAlarm_Level3',alarmType:1,alarmLevel:300 });
+		}
+		drilldownSeriesData.push(singleSeriesData);
+	}
+	if(projectTabConfig.AlarmQuery.SwitchingValueAlarm && result.switchingValueAlarmDeviceCount>0){
+		rawSeriesData.push({
+			name: loginUserLanguageResource.switchingValueAlarm, 
+			y: result.switchingValueAlarmDeviceCount, 
+			drilldown: 'switchingValueAlarm', 
+			code: 'switchingValueAlarm',
+			alarmType:0,
+			alarmLevel:'' 
+		});
+		
+		var singleSeriesData={name: loginUserLanguageResource.switchingValueAlarm, id: 'switchingValueAlarm', data: [] }
+		if(result.switchingValueAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel1, y: result.switchingValueAlarmLevel1DeviceCount, code: 'switchingValueAlarm_Level1',alarmType:0,alarmLevel:100 });
+		}
+		if(result.switchingValueAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel2, y: result.switchingValueAlarmLevel2DeviceCount, code: 'switchingValueAlarm_Level2',alarmType:0,alarmLevel:200 });
+		}
+		if(result.switchingValueAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.alarmLevel3, y: result.switchingValueAlarmLevel3DeviceCount, code: 'switchingValueAlarm_Level3',alarmType:0,alarmLevel:300 });
+		}
+		drilldownSeriesData.push(singleSeriesData);
+	}
+	
+	showAlarmStatDrillDownChart(title,divId, subtitle,yAxisTitle,rawSeriesData,drilldownSeriesData);
+}
+
+function initAlarmLeveStatDrillDownChartData(result,projectTabConfig){
+	var divId="AlarmLevelStatGraphPanelPieDiv_Id";
+	var title=loginUserLanguageResource.alarmLevel;
+	var subtitle='点击图形查看报警类型';
+	var yAxisTitle=loginUserLanguageResource.deviceCount;
+	var rawSeriesData=[];
+	var drilldownSeriesData=[];
+	
+	var alarmLevel1DeviceCount=0,alarmLevel2DeviceCount=0,alarmLevel3DeviceCount=0;
+	if(projectTabConfig.AlarmQuery.FESDiagramResultAlarm){
+		alarmLevel1DeviceCount+=result.diagramResultAlarmLevel1DeviceCount;
+		alarmLevel2DeviceCount+=result.diagramResultAlarmLevel2DeviceCount;
+		alarmLevel3DeviceCount+=result.diagramResultAlarmLevel3DeviceCount;
+	}
+	if(projectTabConfig.AlarmQuery.CommStatusAlarm){
+		alarmLevel1DeviceCount+=result.commStatusAlarmLevel1DeviceCount;
+		alarmLevel2DeviceCount+=result.commStatusAlarmLevel2DeviceCount;
+		alarmLevel3DeviceCount+=result.commStatusAlarmLevel3DeviceCount;
+	}
+	if(projectTabConfig.AlarmQuery.RunStatusAlarm){
+		alarmLevel1DeviceCount+=result.runStatusAlarmLevel1DeviceCount;
+		alarmLevel2DeviceCount+=result.runStatusAlarmLevel2DeviceCount;
+		alarmLevel3DeviceCount+=result.runStatusAlarmLevel3DeviceCount;
+	}
+	if(projectTabConfig.AlarmQuery.NumericValueAlarm){
+		alarmLevel1DeviceCount+=result.numericValueAlarmLevel1DeviceCount;
+		alarmLevel2DeviceCount+=result.numericValueAlarmLevel2DeviceCount;
+		alarmLevel3DeviceCount+=result.numericValueAlarmLevel3DeviceCount;
+	}
+	if(projectTabConfig.AlarmQuery.EnumValueAlarm){
+		alarmLevel1DeviceCount+=result.enumValueAlarmLevel1DeviceCount;
+		alarmLevel2DeviceCount+=result.enumValueAlarmLevel2DeviceCount;
+		alarmLevel3DeviceCount+=result.enumValueAlarmLevel3DeviceCount;
+	}
+	if(projectTabConfig.AlarmQuery.SwitchingValueAlarm){
+		alarmLevel1DeviceCount+=result.switchingValueAlarmLevel1DeviceCount;
+		alarmLevel2DeviceCount+=result.switchingValueAlarmLevel2DeviceCount;
+		alarmLevel3DeviceCount+=result.switchingValueAlarmLevel3DeviceCount;
+	}
+	
+	
+	if(alarmLevel1DeviceCount>0){
+		rawSeriesData.push({
+			name: loginUserLanguageResource.alarmLevel1, 
+			y: result.alarmLevel1DeviceCount, 
+			drilldown: 'alarmLevel1', 
+			code: 'alarmLevel1',
+			alarmType:'',
+			alarmLevel:100
+		});
+		
+		var singleSeriesData={name: loginUserLanguageResource.alarmLevel1, id: 'alarmLevel1', data: [] }
+		if(projectTabConfig.AlarmQuery.FESDiagramResultAlarm && result.diagramResultAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.FESDiagramResultAlarm, y: result.diagramResultAlarmLevel1DeviceCount, code: 'FESDiagramResultAlarm_Level1',alarmType:4,alarmLevel:100 });
+		}
+		if(projectTabConfig.AlarmQuery.CommStatusAlarm && result.commStatusAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.commStatusAlarm, y: result.commStatusAlarmLevel1DeviceCount, code: 'commStatusAlarm_Level1',alarmType:3,alarmLevel:100 });
+		}
+		if(projectTabConfig.AlarmQuery.RunStatusAlarm && result.runStatusAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.runStatusAlarm, y: result.runStatusAlarmLevel1DeviceCount, code: 'runStatusAlarm_Level1',alarmType:6,alarmLevel:100 });
+		}
+		if(projectTabConfig.AlarmQuery.NumericValueAlarm && result.numericValueAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.numericValueAlarm, y: result.numericValueAlarmLevel1DeviceCount, code: 'numericValueAlarm_Level1',alarmType:2,alarmLevel:100 });
+		}
+		if(projectTabConfig.AlarmQuery.EnumValueAlarm && result.enumValueAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.enumValueAlarm, y: result.enumValueAlarmLevel1DeviceCount, code: 'enumValueAlarm_Level1',alarmType:1,alarmLevel:100 });
+		}
+		if(projectTabConfig.AlarmQuery.SwitchingValueAlarm && result.switchingValueAlarmLevel1DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.switchingValueAlarm, y: result.switchingValueAlarmLevel1DeviceCount, code: 'switchingValueAlarm_Level1',alarmType:0,alarmLevel:100 });
+		}
+		drilldownSeriesData.push(singleSeriesData);
+		
+	}
+	if(alarmLevel2DeviceCount>0){
+		rawSeriesData.push({
+			name: loginUserLanguageResource.alarmLevel2, 
+			y: result.alarmLevel2DeviceCount, 
+			drilldown: 'alarmLevel2', 
+			code: 'alarmLevel2',
+			alarmType:'',
+			alarmLevel:200
+		});
+		
+		var singleSeriesData={name: loginUserLanguageResource.alarmLevel2, id: 'alarmLevel2', data: [] }
+		if(projectTabConfig.AlarmQuery.FESDiagramResultAlarm && result.diagramResultAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.FESDiagramResultAlarm, y: result.diagramResultAlarmLevel2DeviceCount, code: 'FESDiagramResultAlarm_Level2',alarmType:4,alarmLevel:200 });
+		}
+		if(projectTabConfig.AlarmQuery.CommStatusAlarm && result.commStatusAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.commStatusAlarm, y: result.commStatusAlarmLevel2DeviceCount, code: 'commStatusAlarm_Level2',alarmType:3,alarmLevel:200 });
+		}
+		if(projectTabConfig.AlarmQuery.RunStatusAlarm && result.runStatusAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.runStatusAlarm, y: result.runStatusAlarmLevel2DeviceCount, code: 'runStatusAlarm_Level2',alarmType:6,alarmLevel:200 });
+		}
+		if(projectTabConfig.AlarmQuery.NumericValueAlarm && result.numericValueAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.numericValueAlarm, y: result.numericValueAlarmLevel2DeviceCount, code: 'numericValueAlarm_Level2',alarmType:2,alarmLevel:200 });
+		}
+		if(projectTabConfig.AlarmQuery.EnumValueAlarm && result.enumValueAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.enumValueAlarm, y: result.enumValueAlarmLevel2DeviceCount, code: 'enumValueAlarm_Level2',alarmType:1,alarmLevel:200 });
+		}
+		if(projectTabConfig.AlarmQuery.SwitchingValueAlarm && result.switchingValueAlarmLevel2DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.switchingValueAlarm, y: result.switchingValueAlarmLevel2DeviceCount, code: 'switchingValueAlarm_Level2',alarmType:0,alarmLevel:200 });
+		}
+		drilldownSeriesData.push(singleSeriesData);
+	}
+	if(alarmLevel3DeviceCount>0){
+		rawSeriesData.push({
+			name: loginUserLanguageResource.alarmLevel3, 
+			y: result.alarmLevel3DeviceCount, 
+			drilldown: 'alarmLevel3', 
+			code: 'alarmLevel3',
+			alarmType:'',
+			alarmLevel:300
+		});
+		
+		var singleSeriesData={name: loginUserLanguageResource.alarmLevel3, id: 'alarmLevel3', data: [] }
+		if(projectTabConfig.AlarmQuery.FESDiagramResultAlarm && result.diagramResultAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.FESDiagramResultAlarm, y: result.diagramResultAlarmLevel3DeviceCount, code: 'FESDiagramResultAlarm_Level3',alarmType:4,alarmLevel:300 });
+		}
+		if(projectTabConfig.AlarmQuery.CommStatusAlarm && result.commStatusAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.commStatusAlarm, y: result.commStatusAlarmLevel3DeviceCount, code: 'commStatusAlarm_Level3',alarmType:3,alarmLevel:300 });
+		}
+		if(projectTabConfig.AlarmQuery.RunStatusAlarm && result.runStatusAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.runStatusAlarm, y: result.runStatusAlarmLevel3DeviceCount, code: 'runStatusAlarm_Level3',alarmType:6,alarmLevel:300 });
+		}
+		if(projectTabConfig.AlarmQuery.NumericValueAlarm && result.numericValueAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.numericValueAlarm, y: result.numericValueAlarmLevel3DeviceCount, code: 'numericValueAlarm_Level3',alarmType:2,alarmLevel:300 });
+		}
+		if(projectTabConfig.AlarmQuery.EnumValueAlarm && result.enumValueAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.enumValueAlarm, y: result.enumValueAlarmLevel3DeviceCount, code: 'enumValueAlarm_Level3',alarmType:1,alarmLevel:300 });
+		}
+		if(projectTabConfig.AlarmQuery.SwitchingValueAlarm && result.switchingValueAlarmLevel3DeviceCount>0){
+			singleSeriesData.data.push({ name: loginUserLanguageResource.switchingValueAlarm, y: result.switchingValueAlarmLevel3DeviceCount, code: 'switchingValueAlarm_Level3',alarmType:0,alarmLevel:300 });
+		}
+		drilldownSeriesData.push(singleSeriesData);
+	}
+	
+	showAlarmStatDrillDownChart(title,divId, subtitle,yAxisTitle,rawSeriesData,drilldownSeriesData);
+}
+
+function showAlarmStatDrillDownChart(title,divId, subtitle,yAxisTitle,rawSeriesData,drilldownSeriesData){
+	$('#'+divId).highcharts({
+		chart: {
+            type: 'column',
+            events: {
+                drilldown: function(e) {
+                    var point = e.point;
+                    var opt = point.options || {};
+                    var name = opt.name || point.name;
+                    var code = opt.code || point.code;
+                    var alarmType = opt.alarmType || point.alarmType;
+                    var alarmLevel = opt.alarmLevel || point.alarmLevel;
+//                    console.log('🔔 [DRILLDOWN] 点击柱子:', name, '| code:', code, '| alarmType:', alarmType, '| alarmLevel:', alarmLevel);
+                    
+                    Ext.getCmp('SelectedAlarmStatType_Id').setValue(alarmType);
+                	Ext.getCmp('SelectedAlarmStatLevel_Id').setValue(alarmLevel);
+                	var gridPanel = Ext.getCmp("AlarmOverviewGridPanel_Id");
+                	if (isNotVal(gridPanel)) {
+                		gridPanel.getStore().loadPage(1);
+                	}else{
+                		Ext.create('AP.store.alarmQuery.AlarmOverviewStore');
+                	}
+                    
+                    window.lastDrillCode = code;
+                    alarmStatDrillDownChartResetAllPoints(this);
+                },
+                drillup: function() {
+//                    console.log('🔙 返回第一层');
+                    alarmStatDrillDownChartResetAllPoints(this);
+                    
+                    Ext.getCmp('SelectedAlarmStatType_Id').setValue('');
+                	Ext.getCmp('SelectedAlarmStatLevel_Id').setValue('');
+                	var gridPanel = Ext.getCmp("AlarmOverviewGridPanel_Id");
+                	if (isNotVal(gridPanel)) {
+                		gridPanel.getStore().loadPage(1);
+                	}else{
+                		Ext.create('AP.store.alarmQuery.AlarmOverviewStore');
+                	}
+                }
+            }
+        },
+        title: { text: title },
+        subtitle: { text: subtitle },
+        xAxis: { type: 'category' },
+        yAxis: { title: { text: yAxisTitle } },
+        legend: { enabled: false },
+        credits: { enabled: false },
+        tooltip: {
+            headerFormat: '<b><span style="font-size:11px">{series.name}</span></b><br>',
+            pointFormat: '<b><span style="color:{point.color}">{point.name}</span></b>: {point.y}'
+        },
+        plotOptions: {
+            column: {
+                maxPointWidth: 70
+            },
+            series: {
+                borderWidth: 0,
+                cursor: 'pointer',
+                dataLabels: { enabled: true, format: '{point.y:.0f}' },
+                point: {
+                    events: {
+                        mouseOver: function() {
+                            if (this.series && this.series.chart) {
+                                alarmStatDrillDownChartDimOtherPoints(this, this.series.chart);
+                            }
+                        },
+                        mouseOut: function() {
+                            if (this.series && this.series.chart) {
+                                alarmStatDrillDownChartRestoreAllPointsOpacity(this.series.chart);
+                            }
+                        },
+                        click: function(e) {
+                            var point = this;
+                            // 如果有 drilldown，直接返回让 Highcharts 处理下钻
+                            if (point.drilldown || (point.options && point.options.drilldown)) {
+                                return true;
+                            }
+                            // 第二层逻辑
+                            if (!point.series || !point.series.chart) return false;
+                            var opt = point.options || {};
+                            var name = opt.name || point.name;
+                            var code = opt.code || point.code;
+                            var alarmType = opt.alarmType || point.alarmType;
+                            var alarmLevel = opt.alarmLevel || point.alarmLevel;
+                            console.log('🔔 [CLICK] 第二层柱子:', name, '| code:', code, '| alarmType:', alarmType, '| alarmLevel:', alarmLevel);
+                            var isSelected = point.selected;
+                            if (isSelected) {
+                                point.select(false);
+                                alarmStatDrillDownChartResetPointStyle(point);
+//                                console.log('❌ 取消选中:', point.series.name, point.y, 'code:', code);
+                                
+                                var statTabPanel=Ext.getCmp('AlarmQueryStatGraphPanel_Id');
+                    			if(statTabPanel.getActiveTab().id=='AlarmTypeStatGraphPanel_Id'){
+                    				Ext.getCmp('SelectedAlarmStatLevel_Id').setValue('');
+                    			}else if(statTabPanel.getActiveTab().id=='AlarmLevelStatGraphPanel_Id'){
+                    				Ext.getCmp('SelectedAlarmStatType_Id').setValue('');
+                    			}
+                            } else {
+                                alarmStatDrillDownChartResetAllPoints(point.series.chart);
+                                point.select(true);
+                                alarmStatDrillDownChartApplyHighlightEffect(point);
+//                                console.log('✅ 选中:', point.series.name, point.y, 'code:', code);
+                                
+                                var statTabPanel=Ext.getCmp('AlarmQueryStatGraphPanel_Id');
+                    			if(statTabPanel.getActiveTab().id=='AlarmTypeStatGraphPanel_Id'){
+                    				Ext.getCmp('SelectedAlarmStatLevel_Id').setValue(alarmLevel);
+                    			}else if(statTabPanel.getActiveTab().id=='AlarmLevelStatGraphPanel_Id'){
+                    				Ext.getCmp('SelectedAlarmStatType_Id').setValue(alarmType);
+                    			}
+                            }
+                            e.stopPropagation();
+                            var gridPanel = Ext.getCmp("AlarmOverviewGridPanel_Id");
+                        	if (isNotVal(gridPanel)) {
+                        		gridPanel.getStore().loadPage(1);
+                        	}else{
+                        		Ext.create('AP.store.alarmQuery.AlarmOverviewStore');
+                        	}
+                           
+                            
+                            return false;
+                        }
+                    }
+                },
+                states: {
+                    select: {
+                        color: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [[0, '#f59e0b'], [1, '#b45309']]
+                        },
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }
+                }
+            }
+        },
+        series: [{
+            name: title,
+            colorByPoint: true,
+            data: rawSeriesData
+        }],
+        drilldown: {
+            breadcrumbs: { position: { align: 'right' } },
+            series: drilldownSeriesData
+        }
+	});
+	
+	
+}
+
 
 function initAlarmLevelStatData(result,projectTabConfig){
 	var divId="AlarmLevelStatGraphPanelPieDiv_Id";
@@ -830,6 +1280,7 @@ function showAlarmQueryStatDataColChat(title,divId,name,categories,seriesData){
             column: {
                 stacking: 'normal',
                 cursor: 'pointer',
+                maxPointWidth:70,
                 states: {
                     select: {
                         // 选中时的渐变颜色（琥珀色渐变）
@@ -1335,4 +1786,71 @@ function getAlarmDetailsDataPanIdFromTabActiveId(alarmTypeTabActiveId){
 		alarmDetailsPanelId='SwitchingValueAlarmDetailsPanel_Id';
 	}
 	return alarmDetailsPanelId;
+}
+
+function alarmStatDrillDownChartSafeForEachSeries(chart, callback) {
+    if (chart && chart.series && Array.isArray(chart.series)) {
+        for (var i = 0; i < chart.series.length; i++) {
+            callback(chart.series[i]);
+        }
+    }
+}
+
+function alarmStatDrillDownChartRestoreAllPointsOpacity(chart) {
+    alarmStatDrillDownChartSafeForEachSeries(chart, function(series) {
+        if (series.points && Array.isArray(series.points)) {
+            for (var i = 0; i < series.points.length; i++) {
+                var point = series.points[i];
+                if (point.graphic && point.graphic.element) {
+                    point.graphic.element.style.opacity = '';
+                }
+            }
+        }
+    });
+}
+
+function alarmStatDrillDownChartDimOtherPoints(currentPoint, chart) {
+    alarmStatDrillDownChartSafeForEachSeries(chart, function(series) {
+        if (!series.points) return;
+        for (var i = 0; i < series.points.length; i++) {
+            var point = series.points[i];
+            var el = point.graphic && point.graphic.element;
+            if (!el) continue;
+            if (point === currentPoint || point.selected) {
+                el.style.opacity = '';
+            } else {
+                el.style.opacity = '0.4';
+            }
+        }
+    });
+}
+
+function alarmStatDrillDownChartResetAllPoints(chart) {
+    alarmStatDrillDownChartSafeForEachSeries(chart, function(series) {
+        if (!series.points) return;
+        for (var i = 0; i < series.points.length; i++) {
+            var point = series.points[i];
+            if (point.graphic && point.graphic.element) {
+                point.graphic.element.style.transform = '';
+                point.graphic.element.style.filter = '';
+            }
+            if (point.selected) {
+                point.select(false);
+            }
+        }
+    });
+}
+
+function alarmStatDrillDownChartResetPointStyle(point) {
+    if (point && point.graphic && point.graphic.element) {
+        point.graphic.element.style.transform = '';
+        point.graphic.element.style.filter = '';
+    }
+}
+
+function alarmStatDrillDownChartApplyHighlightEffect(point) {
+    if (point && point.graphic && point.graphic.element) {
+        point.graphic.element.style.transform = 'translateY(-6px)';
+        point.graphic.element.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))';
+    }
 }

@@ -44,28 +44,52 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		int numericValueAlarmDeviceCount=0,numericValueAlarmLevel1DeviceCount=0,numericValueAlarmLevel2DeviceCount=0,numericValueAlarmLevel3DeviceCount=0;
 		int enumValueAlarmDeviceCount=0,enumValueAlarmLevel1DeviceCount=0,enumValueAlarmLevel2DeviceCount=0,enumValueAlarmLevel3DeviceCount=0;
 		int switchingValueAlarmDeviceCount=0,switchingValueAlarmLevel1DeviceCount=0,switchingValueAlarmLevel2DeviceCount=0,switchingValueAlarmLevel3DeviceCount=0;
+		int alarmLevel1DeviceCount=0,alarmLevel2DeviceCount=0,alarmLevel3DeviceCount=0;
 		
-		String statColumn="alarmType";
-		if(StringManagerUtils.stringToInteger(statType)==1){
-			statColumn="alarmLevel";
-		}
+//		String statColumn="alarmType";
+//		if(StringManagerUtils.stringToInteger(statType)==1){
+//			statColumn="alarmLevel";
+//		}
 		
-		String sql="select t2.alarmtype,t2.alarmlevel,count(1) from VIW_ALARMINFO_LATEST t2,"
-				+ " (select t.deviceid,t."+statColumn+",max(t.id) as id from VIW_ALARMINFO_LATEST t  "
+		String alarmTypeStatSql="select t2.alarmtype,t2.alarmlevel,count(1) from VIW_ALARMINFO_LATEST t2,"
+				+ " (select t.deviceid,t.alarmType,max(t.id) as id from VIW_ALARMINFO_LATEST t  "
+				+ " where t.orgid in ("+orgId+")"
+				+ " and t.devicetype in ("+deviceType+")";
+		String alarmLevelStatSql="select t2.alarmtype,t2.alarmlevel,count(1) from VIW_ALARMINFO_LATEST t2,"
+				+ " (select t.deviceid,t.alarmLevel,max(t.id) as id from VIW_ALARMINFO_LATEST t  "
 				+ " where t.orgid in ("+orgId+")"
 				+ " and t.devicetype in ("+deviceType+")";
 		if("0".equalsIgnoreCase(alarmQueryStatRangeType)){
 			String date=StringManagerUtils.getCurrentTime();
-			sql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+			alarmTypeStatSql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+			alarmLevelStatSql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 		}
-				sql+= " group by t.deviceid,t."+statColumn+""
+		alarmTypeStatSql+= " group by t.deviceid,t.alarmtype"
+				+ " ) v"
+				+ " where t2.id=v.id"
+				+ " group by t2.alarmtype,t2.alarmlevel";
+		alarmLevelStatSql+= " group by t.deviceid,t.alarmLevel"
 				+ " ) v"
 				+ " where t2.id=v.id"
 				+ " group by t2.alarmtype,t2.alarmlevel";
 		
-		List<?> list=this.findCallSql(sql);
-		for(int i=0;i<list.size();i++){
-			Object[]obj=(Object[]) list.get(i);
+		List<?> alarmTypeStatList=this.findCallSql(alarmTypeStatSql);
+		List<?> alarmLevelStatList=this.findCallSql(alarmLevelStatSql);
+		for(int i=0;i<alarmLevelStatList.size();i++){
+			Object[]obj=(Object[]) alarmLevelStatList.get(i);
+			int alarmType=StringManagerUtils.stringToInteger(obj[0]+"");
+			int alarmLevel=StringManagerUtils.stringToInteger(obj[1]+"");
+			int deviceCount=StringManagerUtils.stringToInteger(obj[2]+"");
+			if(alarmLevel==100){
+				alarmLevel1DeviceCount+=deviceCount;
+			}else if(alarmLevel==200){
+				alarmLevel2DeviceCount+=deviceCount;
+			}else if(alarmLevel==300){
+				alarmLevel3DeviceCount+=deviceCount;
+			}
+		}
+		for(int i=0;i<alarmTypeStatList.size();i++){
+			Object[]obj=(Object[]) alarmTypeStatList.get(i);
 			int alarmType=StringManagerUtils.stringToInteger(obj[0]+"");
 			int alarmLevel=StringManagerUtils.stringToInteger(obj[1]+"");
 			int deviceCount=StringManagerUtils.stringToInteger(obj[2]+"");
@@ -162,9 +186,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				+ "\"switchingValueAlarmLevel2DeviceCount\":"+switchingValueAlarmLevel2DeviceCount+","
 				+ "\"switchingValueAlarmLevel3DeviceCount\":"+switchingValueAlarmLevel3DeviceCount+","
 				
-				+ "\"alarmLevel1DeviceCount\":"+(diagramResultAlarmLevel1DeviceCount+commStatusAlarmLevel1DeviceCount+runStatusAlarmLevel1DeviceCount+numericValueAlarmLevel1DeviceCount+enumValueAlarmLevel1DeviceCount+switchingValueAlarmLevel1DeviceCount)+","
-				+ "\"alarmLevel2DeviceCount\":"+(diagramResultAlarmLevel2DeviceCount+commStatusAlarmLevel2DeviceCount+runStatusAlarmLevel2DeviceCount+numericValueAlarmLevel2DeviceCount+enumValueAlarmLevel2DeviceCount+switchingValueAlarmLevel2DeviceCount)+","
-				+ "\"alarmLevel3DeviceCount\":"+(diagramResultAlarmLevel3DeviceCount+commStatusAlarmLevel3DeviceCount+runStatusAlarmLevel3DeviceCount+numericValueAlarmLevel3DeviceCount+enumValueAlarmLevel3DeviceCount+switchingValueAlarmLevel3DeviceCount)
+				+ "\"alarmLevel1DeviceCount\":"+alarmLevel1DeviceCount+","
+				+ "\"alarmLevel2DeviceCount\":"+alarmLevel2DeviceCount+","
+				+ "\"alarmLevel3DeviceCount\":"+alarmLevel3DeviceCount
 				+"}");
 		
 		return result_json.toString();
@@ -483,60 +507,150 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		String columns="["
 				+ "{\"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[]},"
 				+ "{\"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\",flex:8,children:[]},"
-				+ "{\"header\":\""+languageResourceMap.get("alarmTime")+"\",\"dataIndex\":\"alarmTime\",flex:10,children:[]},"
-				+ "{ \"header\":\""+languageResourceMap.get("deviceType")+"\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] }"
+				+ "{\"header\":\""+languageResourceMap.get("alarmTime")+"\",\"dataIndex\":\"alarmTime\",flex:12,children:[]},"
+				+ "{\"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevelAgg\",flex:20,children:[]},"
+				+ "{\"header\":\""+languageResourceMap.get("alarmType")+"\",\"dataIndex\":\"alarmTypeAgg\",flex:20,children:[]}"
+//				+ "{ \"header\":\""+languageResourceMap.get("deviceType")+"\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] }"
 				+ "]";
 		
 
+//		result_json.append("\"alarmTypeAgg\":\""+alarmTypeAgg+"\",");
+//		result_json.append("\"alarmLevelAgg\":\""+alarmLevelAgg+"\",");
+		
 		String sql="select t.deviceid,t."+statColumn+",max(t.id) as id from VIW_ALARMINFO_LATEST t  "
 				+ " where t.orgid in ("+orgId+")"
 				+ " and t.devicetype in ("+deviceType+")";
+		
+		String alarmLevelStatSql="select t.deviceid,t.alarmLevel,max(t.id) as id from VIW_ALARMINFO_LATEST t  "
+				+ " where t.orgid in ("+orgId+")"
+				+ " and t.devicetype in ("+deviceType+")";
+		String alarmTypelStatSql="select t.deviceid,t.alarmType,max(t.id) as id from VIW_ALARMINFO_LATEST t  "
+				+ " where t.orgid in ("+orgId+")"
+				+ " and t.devicetype in ("+deviceType+")";
+		
 		if("0".equalsIgnoreCase(alarmQueryStatRangeType)){
 			String date=StringManagerUtils.getCurrentTime();
 			sql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+			alarmLevelStatSql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+			alarmTypelStatSql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+		}
+		sql+= " group by t.deviceid,t."+statColumn+"";
+		alarmLevelStatSql+= " group by t.deviceid,t.alarmLevel";
+		alarmTypelStatSql+= " group by t.deviceid,t.alarmType";
+		
+		if(StringManagerUtils.isNotNull(alarmType)){
+			sql=alarmTypelStatSql;
 		}
 		
-		sql+= " group by t.deviceid,t."+statColumn+"";
+		List<?> alarmTypeLatestStatusList = this.findCallSql(alarmTypelStatSql);
+		List<?> alarmLevelLatestStatusList = this.findCallSql(alarmLevelStatSql);
 		
+		String alarmCountSql="select count(1) "
+				+ " from "+tableName+" t2,("+alarmTypelStatSql+") v "
+				+ " where t2.id=v.id";
 		
-		sql="select t2.deviceid,t2.devicename,t2.devicetypename_"+language+",t2.alarmtime "
+		sql="select t2.deviceid as deviceid,t2.devicename,t2.devicetypename_zh_CN,to_char(max(t2.alarmtime ) ,'yyyy-mm-dd hh24:mi:ss') as alarmtime"
 				+ " from "+tableName+" t2,("+sql+") v "
 				+ " where t2.id=v.id";
+		
 		
 		if(StringManagerUtils.isNotNull(alarmType)){
 			if(StringManagerUtils.stringToInteger(alarmType)==2){
 				sql+=" and t2.alarmType in(2,5,7)";
+				alarmCountSql+=" and t2.alarmType in(2,5,7)";
 			}else {
 				sql+= " and t2.alarmtype="+alarmType;
+				alarmCountSql+= " and t2.alarmtype="+alarmType;
 			}
 		}
 		
 		
 		if(StringManagerUtils.isNotNull(alarmLevel)){
 			sql+=" and t2.alarmLevel="+alarmLevel+"";
+			alarmCountSql+=" and t2.alarmLevel="+alarmLevel+"";
 		}
 		if(StringManagerUtils.isNotNull(isSendMessage)){
 			sql+=" and t2.isSendMessage="+isSendMessage+"";
+			alarmCountSql+=" and t2.isSendMessage="+isSendMessage+"";
 		}
 		
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t2.deviceName='"+deviceName+"'";
+			alarmCountSql+=" and t2.deviceName='"+deviceName+"'";
 		}
-		sql+=" order by t2.alarmtime desc";
+		sql+=" group by t2.deviceid,t2.devicename,t2.devicetypename_zh_CN";
+		sql+=" ORDER BY max(t2.alarmtime) DESC";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		
 		int totals=this.getTotalCountRows(sql);
+		int alarmCount=this.getTotalCountRows(alarmCountSql);
 		List<?> list = this.findCallSql(finalSql);
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"alarmCount\":"+alarmCount+",");
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
+			String alarmTypeAgg="";
+			String alarmLevelAgg="";
+			List<Integer> deviceAlarmTypeList=new ArrayList<>();
+			List<Integer> deviceAlarmLevelList=new ArrayList<>();
+			for(int j=0;j<alarmTypeLatestStatusList.size();j++){
+				Object[] alarmTypeLatestStatusObj=(Object[]) alarmTypeLatestStatusList.get(j);
+				if(StringManagerUtils.stringToInteger(obj[0]+"") == StringManagerUtils.stringToInteger(alarmTypeLatestStatusObj[0]+"")){
+					deviceAlarmTypeList.add(StringManagerUtils.stringToInteger(alarmTypeLatestStatusObj[1]+""));
+				}
+			}
+			for(int j=0;j<alarmLevelLatestStatusList.size();j++){
+				Object[] alarmLevelLatestStatusObj=(Object[]) alarmLevelLatestStatusList.get(j);
+				if(StringManagerUtils.stringToInteger(obj[0]+"") == StringManagerUtils.stringToInteger(alarmLevelLatestStatusObj[0]+"")){
+					deviceAlarmLevelList.add(StringManagerUtils.stringToInteger(alarmLevelLatestStatusObj[1]+""));
+				}
+			}
+			
+			if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 4)){
+				alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","4",language)+";";
+			}
+			if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 3)){
+				alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","3",language)+";";
+			}
+			if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 6)){
+				alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","6",language)+";";
+			}
+			if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 2)){
+				alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","2",language)+";";
+			}
+			if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 1)){
+				alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","1",language)+";";
+			}
+			if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 0)){
+				alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","0",language)+";";
+			}
+			
+			if(StringManagerUtils.existOrNot(deviceAlarmLevelList, 100)){
+				alarmLevelAgg+=MemoryDataManagerTask.getCodeName("ALARMLEVEL","100",language)+";";
+			}
+			if(StringManagerUtils.existOrNot(deviceAlarmLevelList, 200)){
+				alarmLevelAgg+=MemoryDataManagerTask.getCodeName("ALARMLEVEL","200",language)+";";
+			}
+			if(StringManagerUtils.existOrNot(deviceAlarmLevelList, 300)){
+				alarmLevelAgg+=MemoryDataManagerTask.getCodeName("ALARMLEVEL","300",language)+";";
+			}
+			
+			if(alarmTypeAgg.endsWith(";")){
+				alarmTypeAgg=alarmTypeAgg.substring(0, alarmTypeAgg.length()-1);
+			}
+			if(alarmLevelAgg.endsWith(";")){
+				alarmLevelAgg=alarmLevelAgg.substring(0, alarmLevelAgg.length()-1);
+			}
+			
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"deviceName\":\""+obj[1]+"\",");
 			result_json.append("\"deviceTypeName\":\""+obj[2]+"\",");
+			result_json.append("\"alarmTypeAgg\":\""+alarmTypeAgg+"\",");
+			result_json.append("\"alarmLevelAgg\":\""+alarmLevelAgg+"\",");
 			result_json.append("\"alarmTime\":\""+obj[3]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
@@ -573,18 +687,33 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		    String sql="select t.deviceid,t."+statColumn+",max(t.id) as id from VIW_ALARMINFO_LATEST t  "
 					+ " where t.orgid in ("+orgId+")"
 					+ " and t.devicetype in ("+deviceType+")";
+			String alarmLevelStatSql="select t.deviceid,t.alarmLevel,max(t.id) as id from VIW_ALARMINFO_LATEST t  "
+					+ " where t.orgid in ("+orgId+")"
+					+ " and t.devicetype in ("+deviceType+")";
+			String alarmTypelStatSql="select t.deviceid,t.alarmType,max(t.id) as id from VIW_ALARMINFO_LATEST t  "
+					+ " where t.orgid in ("+orgId+")"
+					+ " and t.devicetype in ("+deviceType+")";
 			if("0".equalsIgnoreCase(alarmQueryStatRangeType)){
 				String date=StringManagerUtils.getCurrentTime();
 				sql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+				alarmLevelStatSql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+				alarmTypelStatSql+=" and t.alarmtime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+			}
+			sql+= " group by t.deviceid,t."+statColumn+"";
+			alarmLevelStatSql+= " group by t.deviceid,t.alarmLevel";
+			alarmTypelStatSql+= " group by t.deviceid,t.alarmType";
+			
+			if(StringManagerUtils.isNotNull(alarmType)){
+				sql=alarmTypelStatSql;
 			}
 			
-			sql+= " group by t.deviceid,t."+statColumn+"";
+			List<?> alarmTypeLatestStatusList = this.findCallSql(alarmTypelStatSql);
+			List<?> alarmLevelLatestStatusList = this.findCallSql(alarmLevelStatSql);
 			
 			
-			sql="select t2.deviceid,t2.devicename,t2.devicetypename_"+language+",t2.alarmtime "
+			sql="select t2.deviceid as deviceid,t2.devicename,t2.devicetypename_zh_CN,to_char(max(t2.alarmtime ) ,'yyyy-mm-dd hh24:mi:ss') as alarmtime"
 					+ " from "+tableName+" t2,("+sql+") v "
 					+ " where t2.id=v.id";
-			
 			if(StringManagerUtils.isNotNull(alarmType)){
 				if(StringManagerUtils.stringToInteger(alarmType)==2){
 					sql+=" and t2.alarmType in(2,5,7)";
@@ -592,19 +721,17 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 					sql+= " and t2.alarmtype="+alarmType;
 				}
 			}
-			
-			
 			if(StringManagerUtils.isNotNull(alarmLevel)){
 				sql+=" and t2.alarmLevel="+alarmLevel+"";
 			}
 			if(StringManagerUtils.isNotNull(isSendMessage)){
 				sql+=" and t2.isSendMessage="+isSendMessage+"";
 			}
-			
 			if(StringManagerUtils.isNotNull(deviceName)){
 				sql+=" and t2.deviceName='"+deviceName+"'";
 			}
-			sql+=" order by t2.alarmtime desc";
+			sql+=" group by t2.deviceid,t2.devicename,t2.devicetypename_zh_CN";
+			sql+=" ORDER BY max(t2.alarmtime) DESC";
 		    
 			
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
@@ -617,10 +744,66 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				obj=(Object[]) list.get(i);
 				result_json = new StringBuffer();
 				record = new ArrayList<>();
+				
+				String alarmTypeAgg="";
+				String alarmLevelAgg="";
+				List<Integer> deviceAlarmTypeList=new ArrayList<>();
+				List<Integer> deviceAlarmLevelList=new ArrayList<>();
+				for(int j=0;j<alarmTypeLatestStatusList.size();j++){
+					Object[] alarmTypeLatestStatusObj=(Object[]) alarmTypeLatestStatusList.get(j);
+					if(StringManagerUtils.stringToInteger(obj[0]+"") == StringManagerUtils.stringToInteger(alarmTypeLatestStatusObj[0]+"")){
+						deviceAlarmTypeList.add(StringManagerUtils.stringToInteger(alarmTypeLatestStatusObj[1]+""));
+					}
+				}
+				for(int j=0;j<alarmLevelLatestStatusList.size();j++){
+					Object[] alarmLevelLatestStatusObj=(Object[]) alarmLevelLatestStatusList.get(j);
+					if(StringManagerUtils.stringToInteger(obj[0]+"") == StringManagerUtils.stringToInteger(alarmLevelLatestStatusObj[0]+"")){
+						deviceAlarmLevelList.add(StringManagerUtils.stringToInteger(alarmLevelLatestStatusObj[1]+""));
+					}
+				}
+				
+				if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 4)){
+					alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","4",language)+";";
+				}
+				if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 3)){
+					alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","3",language)+";";
+				}
+				if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 6)){
+					alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","6",language)+";";
+				}
+				if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 2)){
+					alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","2",language)+";";
+				}
+				if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 1)){
+					alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","1",language)+";";
+				}
+				if(StringManagerUtils.existOrNot(deviceAlarmTypeList, 0)){
+					alarmTypeAgg+=MemoryDataManagerTask.getCodeName("ALARMTYPE","0",language)+";";
+				}
+				
+				if(StringManagerUtils.existOrNot(deviceAlarmLevelList, 100)){
+					alarmLevelAgg+=MemoryDataManagerTask.getCodeName("ALARMLEVEL","100",language)+";";
+				}
+				if(StringManagerUtils.existOrNot(deviceAlarmLevelList, 200)){
+					alarmLevelAgg+=MemoryDataManagerTask.getCodeName("ALARMLEVEL","200",language)+";";
+				}
+				if(StringManagerUtils.existOrNot(deviceAlarmLevelList, 300)){
+					alarmLevelAgg+=MemoryDataManagerTask.getCodeName("ALARMLEVEL","300",language)+";";
+				}
+				
+				if(alarmTypeAgg.endsWith(";")){
+					alarmTypeAgg=alarmTypeAgg.substring(0, alarmTypeAgg.length()-1);
+				}
+				if(alarmLevelAgg.endsWith(";")){
+					alarmLevelAgg=alarmLevelAgg.substring(0, alarmLevelAgg.length()-1);
+				}
+				
 				result_json.append("{\"id\":"+(i+1)+",");
 				result_json.append("\"deviceName\":\""+obj[1]+"\",");
 				result_json.append("\"deviceTypeName\":\""+obj[2]+"\",");
-				result_json.append("\"alarmTime\":\""+obj[3]+"\"}");
+				result_json.append("\"alarmTypeAgg\":\""+alarmTypeAgg+"\",");
+				result_json.append("\"alarmLevelAgg\":\""+alarmLevelAgg+"\",");
+				result_json.append("\"alarmTime\":\""+obj[3]+"\"},");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {

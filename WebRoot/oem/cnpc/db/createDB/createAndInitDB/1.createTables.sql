@@ -866,7 +866,7 @@ create table TBL_DEVICE
   balanceinfo              VARCHAR2(400),
   status                   NUMBER(1) default 1,
   sortnum                  NUMBER(10) default 9999,
-  calculatetype            NUMBER(2) default 0,
+  calculatetype            NUMBER(10) default 0,
   constructiondata         VARCHAR2(4000) default '{}',
   frequencyconversiondata  VARCHAR2(4000) default '{}',
   interlockprotectiondata  VARCHAR2(4000) default '{}',

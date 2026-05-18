@@ -147,63 +147,86 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                 	region: 'center',
                 	layout: 'border',
                 	border: false,
-                	tbar: [{
-                        id: 'AlarmOverviewColumnStr_Id',
-                        xtype: 'textfield',
-                        value: '',
-                        hidden: true
-                    },{
-                        id: 'AlarmDetailsColumnStr_Id',
-                        xtype: 'textfield',
-                        value: '',
-                        hidden: true
-                    },{
-                        id: 'AlarmOverviewSelectRow_Id',
-                        xtype: 'textfield',
-                        value: 0,
-                        hidden: true
-                    },{
-                        id: 'SelectedAlarmStatType_Id',
-                        xtype: 'textfield',
-                        value: '',
-                        hidden: true
-                    },{
-                        id: 'SelectedAlarmStatLevel_Id',
-                        xtype: 'textfield',
-                        value: '',
-                        hidden: true
-                    },{
-                        xtype: 'button',
-                        text: loginUserLanguageResource.refresh,
-                        iconCls: 'note-refresh',
-                        hidden:false,
-                        handler: function (v, o) {
-            				alarmQueryDataRefresh();
-                        }
-            		},'-',{
-            	        xtype: 'radiogroup',
-            	        fieldLabel: '统计范围',
-            	        labelWidth: getLabelWidth('统计范围',loginUserLanguage),
-            	        id: 'AlarmQueryStatRangeType_Id',
-            	        cls: 'x-check-group-alt',
-            	        items: [
-            	            {boxLabel: '实时',name: 'alarmQueryStatRangeType',width: getLabelWidth('实时',loginUserLanguage)+20, inputValue: 0,checked:true},
-            	            {boxLabel: '历史',name: 'alarmQueryStatRangeType',width: getLabelWidth('历史',loginUserLanguage)+20, inputValue: 1}
-            	        ],
-            	        listeners: {
-            	        	change: function (radiogroup, newValue, oldValue, eOpts) {
-            	        		alarmQueryDataRefresh();
-            	        	}
-            	        }
-            	    },'-',deviceCombo,'-',{
-                        xtype: 'button',
-                        text: loginUserLanguageResource.exportDeviceList,
-                        iconCls: 'export',
-                        hidden:false,
-                        handler: function (v, o) {
-                       	 	exportAlarmOverviewDataExcel();
-                        }
-                    }],
+                	tbar:{
+                		xtype:"container",
+            			id:'AlarmQueryDeviceOverviewToolbar_id',
+            			border:false,
+            			items:[{
+            				xtype:"toolbar",
+            				items:[{
+                                id: 'AlarmOverviewColumnStr_Id',
+                                xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                            },{
+                                id: 'AlarmDetailsColumnStr_Id',
+                                xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                            },{
+                                id: 'AlarmOverviewSelectRow_Id',
+                                xtype: 'textfield',
+                                value: 0,
+                                hidden: true
+                            },{
+                                id: 'SelectedAlarmStatType_Id',
+                                xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                            },{
+                                id: 'SelectedAlarmStatLevel_Id',
+                                xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                            },{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.refresh,
+                                iconCls: 'note-refresh',
+                                hidden:false,
+                                handler: function (v, o) {
+                    				alarmQueryDataRefresh();
+                                }
+                    		},'-',{
+                    	        xtype: 'radiogroup',
+                    	        fieldLabel: loginUserLanguageResource.statisticsType,
+                    	        labelWidth: getLabelWidth(loginUserLanguageResource.statisticsType,loginUserLanguage),
+                    	        id: 'AlarmQueryStatRangeType_Id',
+                    	        cls: 'x-check-group-alt',
+                    	        items: [
+                    	            {boxLabel: loginUserLanguageResource.realtime,name: 'alarmQueryStatRangeType',width: getLabelWidth(loginUserLanguageResource.realtime,loginUserLanguage)+20, inputValue: 0,checked:true},
+                    	            {boxLabel: loginUserLanguageResource.history,name: 'alarmQueryStatRangeType',width: getLabelWidth(loginUserLanguageResource.history,loginUserLanguage)+20, inputValue: 1}
+                    	        ],
+                    	        listeners: {
+                    	        	change: function (radiogroup, newValue, oldValue, eOpts) {
+                    	        		alarmQueryDataRefresh();
+                    	        	}
+                    	        }
+                    	    },'-',deviceCombo,'-',{
+                                xtype: 'button',
+                                text: loginUserLanguageResource.exportDeviceList,
+                                iconCls: 'export',
+                                hidden:false,
+                                handler: function (v, o) {
+                               	 	exportAlarmOverviewDataExcel();
+                                }
+                            }]
+            			},{
+            				xtype:"toolbar",
+            				items:['->',{
+                                id: 'AlarmQueryDeviceTotalCount_Id',
+                                xtype: 'component',
+                                tpl: loginUserLanguageResource.deviceCount + ': {count}', // 总记录数
+                                hidden: false,
+                                style: 'margin-right:10px'
+                            },{
+                                id: 'AlarmQueryAlarmTotalCount_Id',
+                                xtype: 'component',
+                                tpl: loginUserLanguageResource.alarmCount + ': {count}', // 总记录数
+                                hidden: false,
+                                style: 'margin-right:2px'
+                            }]
+            			}]
+                	},
                 	items:[{
                     	region: 'center',
                     	title:loginUserLanguageResource.deviceOverview,
@@ -212,7 +235,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                         layout: 'fit'
                     },{
                     	region: 'south',
-                    	title:'报警统计',
+                    	title:loginUserLanguageResource.alarmSstatistics,
                     	split: true,
                         collapsible: true,
                     	height: '50%',
@@ -220,31 +243,6 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     	id:'AlarmQueryStatGraphPanel_Id',
                     	activeTab:0,
                     	items:[{
-                    		title:'报警类型',
-                    		id:'AlarmTypeStatGraphPanel_Id',
-                    		iconCls:'check3',
-                    		layout: 'fit',
-                        	html: '<div id="AlarmTypeStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if(isNotVal($("#AlarmTypeStatGraphPanelPieDiv_Id"))){
-                                		if ($("#AlarmTypeStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                			highchartsResize("AlarmTypeStatGraphPanelPieDiv_Id");
-                                        }else{
-//                                        	var toolTip=Ext.getCmp("AlarmTypeStatGraphGraphPanelPieToolTip_Id");
-//                                        	if(!isNotVal(toolTip)){
-//                                        		Ext.create('Ext.tip.ToolTip', {
-//                                                    id:'AlarmTypeStatGraphGraphPanelPieToolTip_Id',
-//                                            		target: 'AlarmTypeStatGraphPanelPieDiv_Id',
-////                                                    html: loginUserLanguageResource.statPieChartToolTip
-//                                            		html:'点击图形查看相应统计数据'
-//                                                });
-//                                        	}
-                                        }
-                                	}
-                                }
-                            }
-                    	},{
                     		title: loginUserLanguageResource.alarmLevel,
                     		id:'AlarmLevelStatGraphPanel_Id',
                     		layout: 'fit',
@@ -260,6 +258,31 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
 //                                        		Ext.create('Ext.tip.ToolTip', {
 //                                                    id:'AlarmLevelStatGraphGraphPanelPieToolTip_Id',
 //                                            		target: 'AlarmLevelStatGraphPanelPieDiv_Id',
+////                                                    html: loginUserLanguageResource.statPieChartToolTip
+//                                            		html:'点击图形查看相应统计数据'
+//                                                });
+//                                        	}
+                                        }
+                                	}
+                                }
+                            }
+                    	},{
+                    		title:loginUserLanguageResource.alarmType,
+                    		id:'AlarmTypeStatGraphPanel_Id',
+                    		iconCls:'check3',
+                    		layout: 'fit',
+                        	html: '<div id="AlarmTypeStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+                        	listeners: {
+                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                	if(isNotVal($("#AlarmTypeStatGraphPanelPieDiv_Id"))){
+                                		if ($("#AlarmTypeStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+                                			highchartsResize("AlarmTypeStatGraphPanelPieDiv_Id");
+                                        }else{
+//                                        	var toolTip=Ext.getCmp("AlarmTypeStatGraphGraphPanelPieToolTip_Id");
+//                                        	if(!isNotVal(toolTip)){
+//                                        		Ext.create('Ext.tip.ToolTip', {
+//                                                    id:'AlarmTypeStatGraphGraphPanelPieToolTip_Id',
+//                                            		target: 'AlarmTypeStatGraphPanelPieDiv_Id',
 ////                                                    html: loginUserLanguageResource.statPieChartToolTip
 //                                            		html:'点击图形查看相应统计数据'
 //                                                });
@@ -643,6 +666,16 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
             				}
             				if(newCard!=undefined){
             					newCard.setIconCls('check3');
+            					
+            					Ext.getCmp('AlarmQueryStartDate_Id').setValue('');
+                            	Ext.getCmp('AlarmQueryStartTime_Hour_Id').setValue('');
+                            	Ext.getCmp('AlarmQueryStartTime_Minute_Id').setValue('');
+//                            	Ext.getCmp('AlarmQueryStartTime_Second_Id').setValue('');
+                            	Ext.getCmp('AlarmQueryEndDate_Id').setValue('');
+                            	Ext.getCmp('AlarmQueryEndTime_Hour_Id').setValue('');
+                            	Ext.getCmp('AlarmQueryEndTime_Minute_Id').setValue('');
+//                            	Ext.getCmp('AlarmQueryEndTime_Second_Id').setValue('');
+            					
                             	var gridPanel = Ext.getCmp("AlarmGridPanel_Id");
                 				if (isNotVal(gridPanel)) {
                 					gridPanel.getStore().loadPage(1);

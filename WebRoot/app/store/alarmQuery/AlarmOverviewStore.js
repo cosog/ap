@@ -92,6 +92,10 @@ Ext.define('AP.store.alarmQuery.AlarmOverviewStore', {
                     }
                     
                 }
+                
+                updateTotalRecords(get_rawData.totalCount,"AlarmQueryDeviceTotalCount_Id");
+                updateTotalRecords(get_rawData.alarmCount,"AlarmQueryAlarmTotalCount_Id");
+                
                 if(get_rawData.totalCount>0){
                 	var selectRow=0;
                 	var selectedDeviceId=parseInt(Ext.getCmp("selectedDeviceId_global").getValue());

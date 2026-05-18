@@ -444,8 +444,8 @@ function loadAlarmQueryStatData(){
 
 function initAlarmTypeStatDrillDownChartData(result,projectTabConfig){
 	var divId="AlarmTypeStatGraphPanelPieDiv_Id";
-	var title='报警类型';
-	var subtitle='点击图形查看报警级别';
+	var title=loginUserLanguageResource.alarmType;
+	var subtitle=loginUserLanguageResource.alarmStatisticsChartSubtitle1;
 	var yAxisTitle=loginUserLanguageResource.deviceCount;
 	var rawSeriesData=[];
 	var drilldownSeriesData=[];
@@ -590,7 +590,7 @@ function initAlarmTypeStatDrillDownChartData(result,projectTabConfig){
 function initAlarmLeveStatDrillDownChartData(result,projectTabConfig){
 	var divId="AlarmLevelStatGraphPanelPieDiv_Id";
 	var title=loginUserLanguageResource.alarmLevel;
-	var subtitle='点击图形查看报警类型';
+	var subtitle=loginUserLanguageResource.alarmStatisticsChartSubtitle2;
 	var yAxisTitle=loginUserLanguageResource.deviceCount;
 	var rawSeriesData=[];
 	var drilldownSeriesData=[];
@@ -1068,7 +1068,7 @@ function initAlarmLevelStatData(result,projectTabConfig){
 
 function initAlarmTypeStatData(result,projectTabConfig){
 	var divId="AlarmTypeStatGraphPanelPieDiv_Id";
-	var title='报警类型';
+	var title=loginUserLanguageResource.alarmType;
 	var categories=[];
 	var seriesData=[]
 	var level1Data={

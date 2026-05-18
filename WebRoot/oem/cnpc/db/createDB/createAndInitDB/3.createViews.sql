@@ -31,11 +31,12 @@ and t3.id=t.devicetype;
 /*==============================================================*/
 /* View: viw_alarminfo_hist                                         */
 /*==============================================================*/
-create or replace force view viw_alarminfo_hist as
+ create or replace view viw_alarminfo_hist as
 select t2.id,t2.deviceid,t.devicename,
 t.devicetype,
 t4.name_zh_cn as deviceTypeName_zh_CN,t4.name_en as deviceTypeName_en,t4.name_ru as deviceTypeName_ru,
-t2.alarmtime,t2.itemname,t2.alarmtype,
+t2.alarmtime,t2.itemname,
+decode(t2.alarmtype,5,2,7,2,t2.alarmtype) as alarmtype,
 t2.alarmvalue,t2.alarminfo,t2.alarmlimit,t2.hystersis,t2.delay,t2.retriggertime,
 t2.alarmlevel,
 t2.issendmessage,t2.issendmail,
@@ -49,11 +50,12 @@ t2.recoverytime,t.orgid
 /*==============================================================*/
 /* View: viw_alarminfo_latest                                         */
 /*==============================================================*/
-create or replace force view viw_alarminfo_latest as
+create or replace view viw_alarminfo_latest as
 select t2.id,t2.deviceid,t.devicename,
 t.devicetype,
 t4.name_zh_cn as deviceTypeName_zh_CN,t4.name_en as deviceTypeName_en,t4.name_ru as deviceTypeName_ru,
-t2.alarmtime,t2.itemname,t2.alarmtype,
+t2.alarmtime,t2.itemname,
+decode(t2.alarmtype,5,2,7,2,t2.alarmtype) as alarmtype,
 t2.alarmvalue,t2.alarminfo,t2.alarmlimit,t2.hystersis,t2.delay,t2.retriggertime,
 t2.alarmlevel,
 t2.issendmessage,t2.issendmail,

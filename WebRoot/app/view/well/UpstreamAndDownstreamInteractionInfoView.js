@@ -677,7 +677,6 @@ function showWaterCutRawDataCurve2(result){
 }
 
 function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
-	var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
 	Highcharts.setOptions({
         global: {
             useUTC: false

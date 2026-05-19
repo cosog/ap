@@ -431,6 +431,25 @@
             //        window.location.href = loginUrl;
             //    }
             //});
+            
+            (function(H) {
+                if (H && H.wrap) {
+                    H.wrap(H.Chart.prototype, 'getDataRows', function(proceed, multiLevelHeaders) {
+                        var rows = proceed.call(this, multiLevelHeaders);
+                        var xAxis = this.xAxis && this.xAxis[0];
+                        if (xAxis && typeof xAxis.min === 'number' && typeof xAxis.max === 'number') {
+                            var min = xAxis.min, max = xAxis.max;
+                            rows = rows.filter(function(row, idx) {
+                                if (idx === 0) return true;
+                                var xVal = (row.x !== undefined) ? row.x : row[0];
+                                if (typeof xVal === 'string') xVal = Date.parse(xVal);
+                                return typeof xVal === 'number' && !isNaN(xVal) && xVal >= min && xVal <= max;
+                            });
+                        }
+                        return rows;
+                    });
+                }
+            })(Highcharts);
         });
         
      // 工具函数：从 URL 获取参数

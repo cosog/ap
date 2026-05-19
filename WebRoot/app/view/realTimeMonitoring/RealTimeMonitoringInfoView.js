@@ -1934,37 +1934,55 @@ function deviceRealtimeMonitoringCurve(deviceType){
     		        
     		        var yAxisOpposite=curveConf[i].yAxisOpposite;
         		    
-        		    var series = "[";
-    		        series += "{\"name\":\"" + legendName[i] + "\"," 
-    		        +"\"lineWidth\":"+curveConf[i].lineWidth+"," 
-    		        +"\"dashStyle\":\""+curveConf[i].dashStyle+"\"," 
-    		        +"\"marker\":{\"enabled\": true}," 
-    		        +"\"dataGrouping\":{\"enabled\": false},";
-    		        series += "\"data\":[";
+//        		    var series = "[";
+//    		        series += "{\"name\":\"" + legendName[i] + "\"," 
+//    		        +"\"lineWidth\":"+curveConf[i].lineWidth+"," 
+//    		        +"\"dashStyle\":\""+curveConf[i].dashStyle+"\"," 
+//    		        +"\"marker\":{\"enabled\": true}," 
+//    		        +"\"dataGrouping\":{\"enabled\": false},";
+//    		        series += "\"data\":[";
+    		        
+    		        
+    		        var series = [];  // 直接定义为数组
+    		        var seriesItem = {
+    		            name: legendName[i],
+    		            lineWidth: curveConf[i].lineWidth,
+    		            dashStyle: curveConf[i].dashStyle,
+    		            marker: { enabled: true },
+    		            dataGrouping: { enabled: false },
+    		            data: []  // 空数组，下面填充
+    		        };
+    		        
+    		        
     		        for (var j = 0; j < data.length; j++) {
-    		        	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].data[i] + "]";
-    		            if (j != data.length - 1) {
-    		                series += ",";
-    		            }
+//    		        	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].data[i] + "]";
+//    		            if (j != data.length - 1) {
+//    		                series += ",";
+//    		            }
+    		            
+    		            var timestamp = Date.parse(data[j].acqTime.replace(/-/g, '/'));
+    		            var value = parseFloat(data[j].data[i]);
+    		            seriesItem.data.push([timestamp, value]);
+    		            
     		            if(parseFloat(data[j].data[i])<0){
     		            	allPositive=false;
     		            }else if(parseFloat(data[j].data[i])>=0){
     		            	allNegative=false;
     		            }
     		        }
-    		        series += "]}";
-        		    series += "]";
-        		    
+//    		        series += "]}";
+//        		    series += "]";
+    		        series.push(seriesItem);
         		    if(allNegative){
     		        	maxValue=0;
     		        }else if(allPositive){
     		        	minValue=0;
     		        }
         		    
-        		    var ser = Ext.JSON.decode(series);
+//        		    var ser = Ext.JSON.decode(series);
         		    
         		    var timeFormat='%H:%M';
-        		    initDeviceRealtimeMonitoringStockChartFn(ser, tickInterval, divId, title, subtitle, xTitle, yTitle,color,false,true,false,timeFormat,maxValue,minValue,yAxisOpposite);
+        		    initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, title, subtitle, xTitle, yTitle,color,false,true,false,timeFormat,maxValue,minValue,yAxisOpposite);
                 }
             }
             
@@ -2010,6 +2028,22 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	            shadow: true,
 	            borderWidth: 0,
 	            zoomType: 'xy'
+//	            events: {
+//		            exportData: function(event) {
+//		            	console.log('exportData 事件已触发');
+//		            	console.log('第一行数据:', event.dataRows[0]);
+//		                console.log('第二行数据:', event.dataRows[1]);
+//		                var xAxis = this.xAxis[0],
+//		                    min = xAxis.min,
+//		                    max = xAxis.max;
+//		                if (min === null || max === null) return;
+//		                event.dataRows = event.dataRows.filter(function(row, idx) {
+//		                    if (idx === 0) return true; // 表头
+//		                    var xVal = row[0];
+//		                    return typeof xVal === 'number' && xVal >= min && xVal <= max;
+//		                });
+//		            }
+//		        }
 	        },
 	        credits: {
 	            enabled: false
@@ -2033,6 +2067,10 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	    			count: 12,
 	    			type: 'hour',
 	    			text: '12'+loginUserLanguageResource.hour
+	    		}, {
+	    			count: 24,
+	    			type: 'hour',
+	    			text: '24'+loginUserLanguageResource.hour
 	    		}, {
 	    			type: 'all',
 	    			text: loginUserLanguageResource.all

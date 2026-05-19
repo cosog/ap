@@ -1700,10 +1700,14 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			String key="DeviceRealtimeAcqData_"+deviceId;
 			Set<byte[]> keySet=jedis.hkeys(key.getBytes());
+			int realtimeDataRetentionTime=Config.getInstance().configFile.getAp().getOthers().getRealtimeDataRetentionTime();
+			if(realtimeDataRetentionTime<=0){
+				realtimeDataRetentionTime=1;
+			}
 			if(keySet!=null && keySet.size()>0){
 				for(byte[] arr:keySet){
 					String acqTime=new String(arr);
-					if(!StringManagerUtils.timeMatchDate(acqTime, date, 0)){
+					if(!StringManagerUtils.timeMatchDate(acqTime, date,1-realtimeDataRetentionTime, 0)){
 						jedis.hdel(key.getBytes(), acqTime.getBytes());
 						r++;
 					}
@@ -1843,13 +1847,19 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			int realtimeDataRetentionTime=Config.getInstance().configFile.getAp().getOthers().getRealtimeDataRetentionTime();
+			if(realtimeDataRetentionTime<=0){
+				realtimeDataRetentionTime=1;
+			}
+			String date=StringManagerUtils.getCurrentTime();
+			String startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date), 1-realtimeDataRetentionTime);
+			
 			List<CalItem> srpCalItemList=MemoryDataManagerTask.getSRPCalculateItemWithoutRodData(language);
 			List<CalItem> pcpCalItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
-			String date=StringManagerUtils.getCurrentTime();
 			
 			String sql="select t.deviceId,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.acqdata,t.commStatus,t.checksign,t.id";
 			sql+=" from tbl_acqdata_hist t "
-				+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+				+ " where t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
 				if(deviceIdList.size()==1){
 					sql+=" and t.deviceId="+deviceIdList.get(0);
@@ -1902,7 +1912,7 @@ public class MemoryDataManagerTask {
 				sql+=",t."+columnCode;
 			}	
 			sql+= " from viw_srpacqdata_hist t"
-					+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+					+ " where t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
 				if(deviceIdList.size()==1){
 					sql+=" and t.deviceId="+deviceIdList.get(0);
@@ -2032,7 +2042,7 @@ public class MemoryDataManagerTask {
 			}
 			
 			sql+= " from viw_pcpacqdata_hist t"
-					+ " where t.acqTime between to_date('"+date+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
+					+ " where t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+date+"','yyyy-mm-dd')+1";
 			if(deviceIdList!=null && deviceIdList.size()>0){
 				if(deviceIdList.size()==1){
 					sql+=" and t.deviceId="+deviceIdList.get(0);

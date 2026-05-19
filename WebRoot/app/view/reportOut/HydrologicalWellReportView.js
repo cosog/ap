@@ -1481,7 +1481,8 @@ function initHydrologicalWellReportCurveChartFn(series, tickInterval, divId, tit
 	            buttons: {
 	            	contextButton: {
 	            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
-	            			,dafaultMenuItem[2],{
+	            			dafaultMenuItem[8],dafaultMenuItem[9],
+	            			dafaultMenuItem[2],{
 	            				text: loginUserLanguageResource.diagramSet,
 	            				onclick: function() {
 	            					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {

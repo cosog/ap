@@ -4614,6 +4614,44 @@ public class StringManagerUtils {
     	return result;
     }
     
+    public static CommResponseData.Range getTimeRange(String dateStr,int offsetDay,int offsetHour){
+    	DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    	DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	Date date = StringManagerUtils.stringToDate(dateStr);
+    	Date startTime = new Date(date.getTime()+(1000 * 60 * 60 * 24 * offsetDay)  + (1000 * 60 * 60 * offsetHour));
+    	Date endTime = new Date(date.getTime() + 1000 * 60 * 60 * 24 + (1000 * 60 * 60 * offsetHour));
+    	
+    	String startTimeStr = format2.format(startTime);
+    	String endTimeStr = format2.format(endTime);
+    	
+    	CommResponseData.Range range = new CommResponseData.Range();
+    	range.setStartTime(startTimeStr);
+    	range.setEndTime(endTimeStr);
+    	return range;
+    }
+    
+    public static boolean timeMatchDate(String timeStr,String dateStr,int offsetDay,int offsetHour){
+    	boolean result=false;
+    	if(isNotNull(timeStr)){
+    		try {
+    			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    	    	DateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	    	
+    	    	CommResponseData.Range range= getTimeRange(dateStr,offsetDay,offsetHour);
+    			Date currentTime = (Date) format2.parse(timeStr);
+    			Date startTime=(Date) format2.parse(range.getStartTime());
+    	    	Date endTime=(Date) format2.parse(range.getEndTime());
+    	    	
+    	    	if(currentTime.getTime()>startTime.getTime() && startTime.getTime()<=endTime.getTime()){
+    	    		result=true;
+    	    	}
+    		} catch (ParseException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    	return result;
+    }
+    
     
     public static boolean timeMatchDate(String timeStr,String startStr,String endStr,String formatStr){
     	boolean result=false;

@@ -2513,6 +2513,18 @@ public class DriverAPIController extends BaseController{
 			if(pumpFSDiagramStrBuff.toString().endsWith("#")){
 				pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
 			}
+		}else{
+			if(srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null 
+					&& srpCalculateRequestData.getFESDiagram().getS()!=null 
+					&& srpCalculateRequestData.getFESDiagram().getF()!=null
+					){
+				for(int i=0;i<srpCalculateRequestData.getFESDiagram().getS().size() && i<srpCalculateRequestData.getFESDiagram().getF().size();i++){
+					pumpFSDiagramStrBuff.append(srpCalculateRequestData.getFESDiagram().getS().get(i)+",").append(srpCalculateRequestData.getFESDiagram().getF().get(i)+",");
+				}
+				if(pumpFSDiagramStrBuff.toString().endsWith(",")){
+		        	pumpFSDiagramStrBuff=pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
+		        }
+			}
 		}
 		
 		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232){

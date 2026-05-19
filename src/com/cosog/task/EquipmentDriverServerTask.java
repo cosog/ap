@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import com.cosog.model.DataMapping;
 import com.cosog.model.calculate.AdOnlineProbeResponseData;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
+import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.drive.AcqGroup;
 import com.cosog.model.drive.InitId;

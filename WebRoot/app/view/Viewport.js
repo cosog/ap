@@ -356,7 +356,9 @@ function websocketOnMessage(evt) {
                         }
                     } else if (activeId == "RealTimeMonitoringFSDiagramAnalysisTabPanel_Id") {
                         //井筒分析
-                    	if(data.wellBoreChartsData!=undefined && data.wellBoreChartsData.resultStatus==1){
+                    	if(data.wellBoreChartsData!=undefined 
+//                    			&& data.wellBoreChartsData.resultStatus==1
+                    			){
                     		if(isNotVal(data.wellBoreChartsData.pumpFSDiagramData)){
                         		showFSDiagramFromPumpcard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
                         	}else{
@@ -368,7 +370,9 @@ function websocketOnMessage(evt) {
                     	}
                     } else if (activeId == "RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id") {
                         //地面分析
-                    	if(data.surfaceChartsData!=undefined && data.surfaceChartsData.resultStatus==1){
+                    	if(data.surfaceChartsData!=undefined 
+//                    			&& data.surfaceChartsData.resultStatus==1
+                    			){
                     		var deltaRadius = parseFloat(data.surfaceChartsData.deltaRadius);
                             var expectedTorqueChartTitle = "扭矩曲线";
                             if (Math.abs(deltaRadius) > 0) {

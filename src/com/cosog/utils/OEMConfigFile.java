@@ -294,6 +294,8 @@ public class OEMConfigFile {
 	    
 	    private int timeDifference;
 	    
+	    private int realtimeDataRetentionTime;
+	    
 	    private String otherStaticResourceTimestamp;
 
 	    public void setCache(boolean cache){
@@ -464,6 +466,12 @@ public class OEMConfigFile {
 		}
 		public void setSaveAcqRawData(boolean saveAcqRawData) {
 			this.saveAcqRawData = saveAcqRawData;
+		}
+		public int getRealtimeDataRetentionTime() {
+			return realtimeDataRetentionTime;
+		}
+		public void setRealtimeDataRetentionTime(int realtimeDataRetentionTime) {
+			this.realtimeDataRetentionTime = realtimeDataRetentionTime;
 		}
 	}
 	

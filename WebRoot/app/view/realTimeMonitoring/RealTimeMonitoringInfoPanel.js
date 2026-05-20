@@ -858,6 +858,97 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
     }
 });
 
+function viewItemRealTimeCurve(itemName,itemValue,cellInfo){
+	var ItemRealtimeCurveWindow=Ext.create("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow");
+	Ext.getCmp('RealtimeCurveItemName_Id').setValue(itemName);
+	Ext.getCmp('RealtimeCurveItemCode_Id').setValue(cellInfo.column);
+	Ext.getCmp('RealtimeCurveItemType_Id').setValue(cellInfo.type);
+	Ext.getCmp('RealtimeCurveItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
+	ItemRealtimeCurveWindow.show();
+}
+
+function viewItemRealTimeDataTable(itemName,itemValue,cellInfo){
+	var ItemRealtimeDataWindow=Ext.create("AP.view.realTimeMonitoring.ItemRealtimeDataWindow");
+	Ext.getCmp('RealtimeDataItemCode_Id').setValue(cellInfo.column);
+	ItemRealtimeDataWindow.show();
+}
+
+function viewDeviceRealTimeMonitoringData(row,col){
+	if(deviceRealTimeMonitoringDataHandsontableHelper!=null && deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined && row>0){
+		if(col%2==1){
+			col=(col-1)/2;
+		}else{
+			col=col/2;
+		}
+		
+		var cellInfo=null;
+		for(var i=0;i<deviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length;i++){
+			if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row==row && deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col==col){
+				cellInfo=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i];
+			}
+		}
+		if(cellInfo!=null){
+			var itemName=deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(row,col*2);
+			var itemValue=deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(row,col*2+1);
+			var info=itemName+':'+itemValue;
+			if(cellInfo.type==0){
+				if(cellInfo.resolutionMode==2){
+					info+=',采集数据量';
+					if(isNumber(itemValue)){
+						viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+					}else{
+						viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+					}
+				}else if(cellInfo.resolutionMode==0){
+					info+=',采集开关量';
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}else if(cellInfo.resolutionMode==1){
+					info+=',采集枚举量';
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}
+			}else if(cellInfo.type==1){
+				info+=',计算项';
+				if(isNumber(itemValue)){
+					viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+				}else{
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}
+			}else if(cellInfo.type==3){
+				info+=',录入项';
+				if(isNumber(itemValue)){
+					viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+				}else{
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}
+			}else if(cellInfo.type==5){
+				if(cellInfo.resolutionMode==2){
+					info+=',协议拓展项数据量';
+					if(isNumber(itemValue)){
+						viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+					}else{
+						viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+					}
+				}else if(cellInfo.resolutionMode==0){
+					info+=',协议拓展项开关量';
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}else if(cellInfo.resolutionMode==1){
+					info+=',协议拓展项枚举量';
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}else if(cellInfo.resolutionMode==7){
+					info+=',协议拓展项数值运算项';
+					if(isNumber(itemValue)){
+						viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+					}else{
+						viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+					}
+				}	
+			}
+			console.log(info);
+		}
+	}
+	
+}
+
 function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,calculateType){
 	if(deviceRealTimeMonitoringDataHandsontableHelper!=null){
 		if(deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
@@ -892,6 +983,7 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 				deviceRealTimeMonitoringDataHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				deviceRealTimeMonitoringDataHandsontableHelper.columns=Ext.JSON.decode(columns);
 				deviceRealTimeMonitoringDataHandsontableHelper.CellInfo=result.CellInfo;
+				
 				if(result.totalRoot.length==0){
 					deviceRealTimeMonitoringDataHandsontableHelper.sourceData=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 					deviceRealTimeMonitoringDataHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
@@ -899,6 +991,30 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 					deviceRealTimeMonitoringDataHandsontableHelper.sourceData=result.totalRoot;
 					deviceRealTimeMonitoringDataHandsontableHelper.createTable(result.totalRoot);
 				}
+				
+				deviceRealTimeMonitoringDataHandsontableHelper.hot.addHook('afterOnCellMouseDown', function(event, coords, td) {
+				    // 检查是否为双击
+				    if (deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer != null 
+				    		&& deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow === coords.row 
+				    		&& deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol === coords.col) {
+				        clearTimeout(deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer);
+				        deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
+				        viewDeviceRealTimeMonitoringData(coords.row,coords.col);
+				        // TODO: 在这里调用打开弹窗的函数
+				        deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = -1;
+				        deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = -1;
+				    } else {
+				        // 如果是第一次点击，设置定时器
+				        deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = coords.row;
+				        deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = coords.col;
+				        if (deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer) {
+				            clearTimeout(deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer);
+				        }
+				        deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = setTimeout(() => {
+				            deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
+				        }, 250);
+				    }
+				});
 			}else{
 				deviceRealTimeMonitoringDataHandsontableHelper.CellInfo=result.CellInfo;
 				deviceRealTimeMonitoringDataHandsontableHelper.sourceData=result.totalRoot;
@@ -914,7 +1030,9 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 					deviceRealTimeMonitoringDataHandsontableHelper.hot.setCellMeta(row,col,'columnDataType',columnDataType);
 				}
 			}
-			
+			deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
+	        deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = -1;
+	        deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = -1;
 		},
 		failure:function(){
 			Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").getEl().unmask();
@@ -938,6 +1056,10 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	        deviceRealTimeMonitoringDataHandsontableHelper.columns=[];
 	        deviceRealTimeMonitoringDataHandsontableHelper.CellInfo=[];
 	        deviceRealTimeMonitoringDataHandsontableHelper.sourceData=[];
+	        
+	        deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
+	        deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = -1;
+	        deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = -1;
 	        
 	        deviceRealTimeMonitoringDataHandsontableHelper.addItenmNameColStyle = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);

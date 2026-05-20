@@ -1974,8 +1974,8 @@ public class MemoryDataManagerTask {
 						
 					}
 					if(productionData.getPump()!=null){
-						productionDataMap.put("PumpBoreDiameter".toUpperCase(), productionData.getPump().getPumpBoreDiameter()+"");
-						productionDataMap.put("PumpBoreDiameter2".toUpperCase(), productionData.getPump().getPumpBoreDiameter2()+"");
+						productionDataMap.put("PumpBoreDiameter".toUpperCase(), StringManagerUtils.dataFormat(productionData.getPump().getPumpBoreDiameter()*1000+"",2));
+						productionDataMap.put("PumpBoreDiameter2".toUpperCase(), StringManagerUtils.dataFormat(productionData.getPump().getPumpBoreDiameter2()*1000+"",2));
 					}
 					if(productionData.getManualIntervention()!=null){
 						productionDataMap.put("LevelCorrectValue".toUpperCase(), productionData.getManualIntervention().getLevelCorrectValue()+"");

@@ -481,6 +481,31 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getItemRealTimeCurveData")
+	public String getItemRealTimeCurveData() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String itemName = ParamUtils.getParameter(request, "itemName");
+		String itemCode = ParamUtils.getParameter(request, "itemCode");
+		String itemType = ParamUtils.getParameter(request, "itemType");
+		String itemResolutionMode = ParamUtils.getParameter(request, "itemResolutionMode");
+		this.pager = new Page("pagerForm", request);
+		if(user!=null){
+			json = realTimeMonitoringService.getItemRealTimeCurveData(deviceId,deviceName,calculateType,itemName,itemCode,itemType,itemResolutionMode,user.getUserNo(),user.getLanguageName());
+		}
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	public int DeviceControlOperation_Mdubus(String protocolCode,String deviceId,String deviceName,String deviceType,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue,String bitIndex){
 		int result=-1;
 		try {

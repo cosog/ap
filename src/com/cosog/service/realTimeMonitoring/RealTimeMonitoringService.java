@@ -4018,7 +4018,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 													
 													rawValue=value;
 													rawColumnName=columnName;
-													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,3,displayItem.getItemId());
+													ProtocolItemResolutionData protocolItemResolutionData =new ProtocolItemResolutionData(rawColumnName,columnName,value,rawValue,addr,column,columnDataType,resolutionMode,bitIndex,unit,sort,1,displayItem.getItemId());
 													protocolItemResolutionDataList.add(protocolItemResolutionData);
 													existData=true;
 													
@@ -4370,6 +4370,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		System.out.println(result_json.toString().replaceAll("null", ""));
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -6537,6 +6538,34 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		return result_json.toString();
+	}
+	
+	public String getItemRealTimeCurveData(String deviceId,String deviceName,String calculateType,
+			String itemName,String itemCode,String itemType,String itemResolutionMode,
+			int userNo,String language)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("{\"deviceName\":\""+deviceName+"\","
+				+ "\"curveCount\":1,"
+				+ "\"curveItems\":[\""+itemName+"\"],"
+				+ "\"list\":[");
+		
+		Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceId+"",language);
+		if(realtimeDataTimeMap!=null && realtimeDataTimeMap.size()>0){
+			Iterator<Map.Entry<String,Map<String,String>>> realtimeDataTimeMapIterator = realtimeDataTimeMap.entrySet().iterator();
+			while(realtimeDataTimeMapIterator.hasNext()){
+				Map.Entry<String,Map<String,String>> entry = realtimeDataTimeMapIterator.next();
+			    String key = entry.getKey();
+			    Map<String,String> everyDataMap = entry.getValue();
+			    result_json.append("{\"acqTime\":\"" + key + "\",\"data\":\""+(everyDataMap.containsKey(itemCode.toUpperCase())?everyDataMap.get(itemCode.toUpperCase()):"")+"\"},");
+			}
+		}
+		
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		
+		result_json.append("]}");
 		return result_json.toString();
 	}
 	

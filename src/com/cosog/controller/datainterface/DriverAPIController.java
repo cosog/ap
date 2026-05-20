@@ -2856,7 +2856,7 @@ public class DriverAPIController extends BaseController{
 					alarmLevel=finalAcquisitionItemInfoList.get(index).getAlarmLevel();
 					unit=finalAcquisitionItemInfoList.get(index).getUnit();
 					bitIndex=finalAcquisitionItemInfoList.get(index).getBitIndex();
-					
+					type=finalAcquisitionItemInfoList.get(index).getType();
 					if(
 							(finalAcquisitionItemInfoList.get(index).getType()==0 && "0".equalsIgnoreCase(resolutionMode))
 							|| (finalAcquisitionItemInfoList.get(index).getType()==5 && "0".equalsIgnoreCase(resolutionMode))
@@ -5102,7 +5102,7 @@ public class DriverAPIController extends BaseController{
 		
 		if(deviceInfo!=null && deviceInfo.getSrpCalculateRequestData()!=null && deviceInfo.getSrpCalculateRequestData().getPump()!=null){
 			srpInputItemList.add(new ProtocolItemResolutionData("泵径","泵径",StringManagerUtils.multiplyDecimal(deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter(), 1000)+"",StringManagerUtils.multiplyDecimal(deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter(), 1000)+"","","PumpBoreDiameter","","","","mm",1,3,0));
-			srpInputItemList.add(new ProtocolItemResolutionData("泵径2","泵径2",StringManagerUtils.multiplyDecimal(deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter2(), 1000)+"",StringManagerUtils.multiplyDecimal(deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter2(), 1000)+"","","PumpBoreDiameter","","","","mm",1,3,0));
+			srpInputItemList.add(new ProtocolItemResolutionData("泵径2","泵径2",StringManagerUtils.multiplyDecimal(deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter2(), 1000)+"",StringManagerUtils.multiplyDecimal(deviceInfo.getSrpCalculateRequestData().getPump().getPumpBoreDiameter2(), 1000)+"","","PumpBoreDiameter2","","","","mm",1,3,0));
 		}else{
 			srpInputItemList.add(new ProtocolItemResolutionData("泵径","泵径","","","","PumpBoreDiameter","","","","mm",1,3,0));
 			srpInputItemList.add(new ProtocolItemResolutionData("泵径2","泵径2","","","","PumpBoreDiameter2","","","","mm",1,3,0));

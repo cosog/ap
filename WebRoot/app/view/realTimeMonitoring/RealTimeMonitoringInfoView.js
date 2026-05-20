@@ -744,6 +744,7 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     var data = get_rawData.totalRoot;
     tickInterval = Math.floor(data.length / 10) + 1;
     var title = itemName.split("(")[0];
+    var subtitle="[" + get_rawData.startDate + "~" + get_rawData.endDate + "]";
     var legend=false;
     var legendName = [itemName];
     
@@ -781,81 +782,76 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     }
     
     
-    var series = "[";
+    var series = [];
     for (var i = 0; i < legendName.length; i++) {
-        series += "{\"name\":\"" + legendName[i] + "\",";
-        series += "\"data\":[";
+    	var seriesItem = {
+    	        name: legendName[i],
+    	        data: []
+    	    };
         for (var j = 0; j < data.length; j++) {
-        	
     		var year = parseInt(data[j].acqTime.split(" ")[0].split("-")[0]);
             var month = parseInt(data[j].acqTime.split(" ")[0].split("-")[1]);
             var day = parseInt(data[j].acqTime.split(" ")[0].split("-")[2]);
             var hour = parseInt(data[j].acqTime.split(" ")[1].split(":")[0]);
             var minute = parseInt(data[j].acqTime.split(" ")[1].split(":")[1]);
             var second = parseInt(data[j].acqTime.split(" ")[1].split(":")[2]);
+            var timestamp=Date.parse(data[j].acqTime.replace(/-/g, '/'));
             if(itemCode.toUpperCase()=='cpuUsedPercent'.toUpperCase()){
             	if(isNotVal(data[j].value)){
             		var values=data[j].value.split(";");
             		if(values.length>i){
             			if(isNumber(values[i])){
-            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
+            				seriesItem.data.push([timestamp, parseFloat(values[i])]);
             			}else{
-            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            				seriesItem.data.push([timestamp, null]);
             			}
             		}else{
-            			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            			seriesItem.data.push([timestamp, null]);
             		}
             	}else{
-            		series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            		seriesItem.data.push([timestamp, null]);
             	}
             }else if(itemCode.toUpperCase()=='jedisStatus'.toUpperCase()){
             	if(isNotVal(data[j].value)){
             		var values=data[j].value.split(";");
             		if(values.length>i){
             			if(isNumber(values[i])){
-            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
+            				seriesItem.data.push([timestamp, parseFloat(values[i])]);
             			}else{
-            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            				seriesItem.data.push([timestamp, null]);
             			}
             		}else{
-            			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            			seriesItem.data.push([timestamp, null]);
             		}
             	}else{
-            		series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            		seriesItem.data.push([timestamp, null]);
             	}
             }else if(itemCode.toUpperCase()=='tableSpaceSize'.toUpperCase()){
             	if(isNotVal(data[j].value)){
             		var values=data[j].value.split(";");
             		if(values.length>i){
             			if(isNumber(values[i])){
-            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
+            				seriesItem.data.push([timestamp, parseFloat(values[i])]);
             			}else{
-            				series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            				seriesItem.data.push([timestamp, null]);
             			}
             		}else{
-            			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            			seriesItem.data.push([timestamp, null]);
             		}
             	}else{
-            		series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            		seriesItem.data.push([timestamp, null]);
             	}
             }else{
             	if(isNotVal(data[j].value)){
-            		series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].value + "]";
+            		seriesItem.data.push([timestamp, parseFloat(data[j].value)]);
         		}else{
-        			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+        			seriesItem.data.push([timestamp, null]);
         		}
             }
-            if (j != data.length - 1) {
-                series += ",";
-            }
         }
-        series += "]}";
-        if (i != legendName.length - 1) {
-            series += ",";
-        }
+        series.push(seriesItem);  
     }
-    series += "]";
-    var ser = Ext.JSON.decode(series);
+    
     var color = ['#800000', // 红
        '#008C00', // 绿
        '#000000', // 黑
@@ -863,9 +859,7 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
        '#F4BD82', // 黄
        '#FF00FF' // 紫
      ];
-
-    initResourceProbeHistoryCurveChartFn(ser, tickInterval, divId, title, "[" + get_rawData.startDate + "~" + get_rawData.endDate + "]", "时间", itemName, color,legend,timeFormat);
-
+    initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title,subtitle , loginUserLanguageResource.time, itemName, color,legend,timeFormat);
     return false;
 };
 
@@ -877,7 +871,7 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 		        }
 		    });
 
-		    mychart = new Highcharts.Chart({
+		    var mychart = new Highcharts.Chart({
 		        chart: {
 		            renderTo: divId,
 		            type: 'spline',
@@ -972,7 +966,6 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 		        series: series
 		    });
 	}
-   
 };
 
 
@@ -1138,7 +1131,7 @@ function initRealTimeMonitoringFESDiagramResultStatPieOrColChat(get_rawData) {
 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
 	var colors=[];
 	
-	ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, "设备数占", pieData,colors);
+	ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, loginUserLanguageResource.deviceCount, pieData,colors);
 };
 
 function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, name, data,colors) {
@@ -1282,7 +1275,7 @@ function initRealTimeMonitoringStatPieOrColChat(get_rawData) {
 			}
 		}
 	}
-	ShowRealTimeMonitoringStatPieOrColChat(title,divId, "设备数占", pieData,colors);
+	ShowRealTimeMonitoringStatPieOrColChat(title,divId, loginUserLanguageResource.deviceCount, pieData,colors);
 };
 
 function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) {
@@ -1446,7 +1439,7 @@ function initRealTimeMonitoringRunStatusStatPieOrColChat(get_rawData) {
 			}
 		}
 	}
-	ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, "设备数占", pieData,colors);
+	ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId,loginUserLanguageResource.deviceCount, pieData,colors);
 };
 
 function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data,colors) {
@@ -1601,7 +1594,7 @@ function initRealTimeMonitoringNumStatusStatPieOrColChat(get_rawData) {
 			}
 		}
 	}
-	ShowRealTimeMonitoringNumStatusStatPieOrColChat(title,divId, "设备数占", pieData,colors);
+	ShowRealTimeMonitoringNumStatusStatPieOrColChat(title,divId, loginUserLanguageResource.data, pieData,colors);
 };
 
 function ShowRealTimeMonitoringNumStatusStatPieOrColChat(title,divId, name, data,colors) {
@@ -1743,7 +1736,7 @@ function initRealTimeMonitoringDeviceTypeStatPieOrColChat(get_rawData) {
 	pieDataStr+="]";
 	var pieData = Ext.JSON.decode(pieDataStr);
 	var colors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
-	ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, "设备数占", pieData,colors);
+	ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, loginUserLanguageResource.deviceCount, pieData,colors);
 };
 
 function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,colors) {
@@ -2028,22 +2021,6 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	            shadow: true,
 	            borderWidth: 0,
 	            zoomType: 'xy'
-//	            events: {
-//		            exportData: function(event) {
-//		            	console.log('exportData 事件已触发');
-//		            	console.log('第一行数据:', event.dataRows[0]);
-//		                console.log('第二行数据:', event.dataRows[1]);
-//		                var xAxis = this.xAxis[0],
-//		                    min = xAxis.min,
-//		                    max = xAxis.max;
-//		                if (min === null || max === null) return;
-//		                event.dataRows = event.dataRows.filter(function(row, idx) {
-//		                    if (idx === 0) return true; // 表头
-//		                    var xVal = row[0];
-//		                    return typeof xVal === 'number' && xVal >= min && xVal <= max;
-//		                });
-//		            }
-//		        }
 	        },
 	        credits: {
 	            enabled: false

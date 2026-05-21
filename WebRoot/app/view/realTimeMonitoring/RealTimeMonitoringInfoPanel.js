@@ -869,7 +869,15 @@ function viewItemRealTimeCurve(itemName,itemValue,cellInfo){
 
 function viewItemRealTimeDataTable(itemName,itemValue,cellInfo){
 	var ItemRealtimeDataWindow=Ext.create("AP.view.realTimeMonitoring.ItemRealtimeDataWindow");
+	Ext.getCmp('RealtimeDataItemName_Id').setValue(itemName);
 	Ext.getCmp('RealtimeDataItemCode_Id').setValue(cellInfo.column);
+	Ext.getCmp('RealtimeDataItemType_Id').setValue(cellInfo.type);
+	Ext.getCmp('RealtimeDataItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
+	if(cellInfo.type==0 && cellInfo.resolutionMode==0){
+    	Ext.getCmp('RealtimeDataItemBitIndex_Id').setValue(cellInfo.bitIndex);
+    }else{
+    	Ext.getCmp('RealtimeDataItemBitIndex_Id').setValue('');
+    }
 	ItemRealtimeDataWindow.show();
 }
 
@@ -894,7 +902,7 @@ function viewDeviceRealTimeMonitoringData(row,col){
 			if(cellInfo.type==0){
 				if(cellInfo.resolutionMode==2){
 					info+=',采集数据量';
-					if(isNumber(itemValue)){
+					if(cellInfo.columnDataType.toUpperCase()!='string'.toUpperCase() && isNumber(itemValue)){
 						viewItemRealTimeCurve(itemName,itemValue,cellInfo);
 					}else{
 						viewItemRealTimeDataTable(itemName,itemValue,cellInfo);

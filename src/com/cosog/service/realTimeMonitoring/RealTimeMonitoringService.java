@@ -6569,6 +6569,131 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
+	public String getItemRealTimeData(String deviceId,String deviceName,String calculateType,
+			String itemName,String itemCode,String itemType,String itemResolutionMode,String itemBitIndex,
+			int userNo,String language)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		int totalCount=0;
+		result_json.append("{ \"success\":true,\"columns\":\"\",\"totalRoot\":[");
+		Map<String,Map<String,String>> realtimeDataTimeMap=MemoryDataManagerTask.getDeviceRealtimeAcqDataById(deviceId+"",language,1);
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		
+		ModbusProtocolConfig.Protocol protocol=null;
+		List<CalItem> calItemList=null;
+		List<CalItem> inputItemList=null;
+		AcqInstanceOwnItem acqInstanceOwnItem=null;
+		String acqInstanceCode="";
+		
+		DeviceInfo deviceInfo=MemoryDataManagerTask.getDeviceInfo(deviceId);
+		if(deviceInfo!=null){
+			acqInstanceCode=deviceInfo.getInstanceCode();
+		}
+		acqInstanceOwnItem=MemoryDataManagerTask.getAcqInstanceOwnItemByCode(acqInstanceCode);
+		if(acqInstanceOwnItem!=null){
+			protocol=MemoryDataManagerTask.getProtocolByCode(acqInstanceOwnItem.getProtocolCode());
+		}
+		
+		
+		
+		if(realtimeDataTimeMap!=null && realtimeDataTimeMap.size()>0){
+			Iterator<Map.Entry<String,Map<String,String>>> realtimeDataTimeMapIterator = realtimeDataTimeMap.entrySet().iterator();
+			while(realtimeDataTimeMapIterator.hasNext()){
+				Map.Entry<String,Map<String,String>> entry = realtimeDataTimeMapIterator.next();
+			    String key = entry.getKey();
+			    Map<String,String> everyDataMap = entry.getValue();
+			    String value=everyDataMap.containsKey(itemCode.toUpperCase())?everyDataMap.get(itemCode.toUpperCase()):"";
+			    if("0".equalsIgnoreCase(itemType) && protocol!=null){//采集数据
+			    	ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItemByMappingColumn(protocol, itemCode);
+			    	if(item!=null && item.getMeaning()!=null && item.getMeaning().size()>0){
+			    		if("1".equalsIgnoreCase(itemResolutionMode) || "2".equalsIgnoreCase(itemResolutionMode)){//枚举量或数据量
+			    			ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(item,value);
+			    			if(itemsMeaning!=null){
+			    				value=itemsMeaning.getMeaning();
+			    			}
+			    		}else if("1".equalsIgnoreCase(itemResolutionMode)){//开关量
+			    			ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(item,itemBitIndex);
+			    			if(itemsMeaning!=null){
+			    				String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():languageResourceMap.get("switchingCloseValue");
+								String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():languageResourceMap.get("switchingOpenValue");
+								String[] valueArr=new String[item.getMeaning().size()];
+								if(StringManagerUtils.isNotNull(value)){
+									valueArr=value.split(",");
+								}
+								for(int m=0;valueArr!=null&&m<valueArr.length;m++){
+									if(m==itemsMeaning.getValue()){
+										
+										if("bool".equalsIgnoreCase(item.getIFDataType()) || "boolean".equalsIgnoreCase(item.getIFDataType())){
+											value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+										}else{
+											value=valueArr[m];
+										}
+										break;
+									}
+								}
+			    			}
+			    		}
+			    	}
+			    }else if("1".equalsIgnoreCase(itemType)){//计算项
+			    	if("ResultName".equalsIgnoreCase(itemCode)){
+			    		WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
+			    		if(workType!=null){
+			    			value=workType.getResultName();
+			    		}
+			    	}else if("RunStatusName".equalsIgnoreCase(itemCode)){
+			    		if("1".equalsIgnoreCase(value)){
+			    			value=languageResourceMap.get("run");
+			    		}else if("0".equalsIgnoreCase(value)){
+			    			value=languageResourceMap.get("stop");
+			    		}
+			    	}
+			    }else if("5".equalsIgnoreCase(itemType) && protocol!=null){
+			    	ModbusProtocolConfig.ExtendedField extendedField= MemoryDataManagerTask.getProtocolExtendedFieldByMappingColumn(protocol,itemCode);
+			    	if(extendedField!=null && extendedField.getType()==1){
+						if(extendedField.getResolutionMode()==1 || extendedField.getResolutionMode()==2){//如果是枚举量
+							if(StringManagerUtils.isNotNull(value) && extendedField.getMeaning()!=null && extendedField.getMeaning().size()>0){
+								for(int l=0;l<extendedField.getMeaning().size();l++){
+									if(StringManagerUtils.stringToFloat(value)==(extendedField.getMeaning().get(l).getValue())){
+										value=extendedField.getMeaning().get(l).getMeaning();
+										break;
+									}
+								}
+							}
+						}else if(extendedField.getResolutionMode()==0){//如果是开关量
+							ModbusProtocolConfig.ItemsMeaning itemsMeaning=MemoryDataManagerTask.getProtocolItemMeaning(extendedField, itemBitIndex);
+							if(itemsMeaning!=null){
+								String[] valueArr=new String[extendedField.getMeaning().size()];
+								if(StringManagerUtils.isNotNull(value)){
+									valueArr=value.split(",");
+								}
+								String status0=StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():"";
+								String status1=StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():"";
+								for(int m=0;valueArr!=null && m<valueArr.length;m++){
+									if(m==itemsMeaning.getValue()){
+										value=StringManagerUtils.isNotNull(valueArr[m])?(("true".equalsIgnoreCase(valueArr[m]) || "1".equalsIgnoreCase(valueArr[m]))?status1:status0):"";
+										break;
+									}
+								}
+							}
+						}
+					}
+			    }
+			    
+			    result_json.append("{\"acqTime\":\"" + key + "\",\"data\":\""+value+"\"},");
+			    totalCount++;
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("],");
+		result_json.append("\"totalCount\":"+totalCount+"");
+		result_json.append("}");
+		
+		
+		
+		return result_json.toString();
+	}
+	
 	public void saveDeviceControlLog(String deviceId,String deviceName,String deviceType,String remark,User user) throws SQLException{
 		getBaseDao().saveDeviceControlLog(deviceId,deviceName,deviceType,remark,user);
 	}

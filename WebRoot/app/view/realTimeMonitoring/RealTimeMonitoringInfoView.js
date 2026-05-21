@@ -1904,10 +1904,6 @@ function deviceRealtimeMonitoringCurve(deviceType){
                     htmlResult += '></div>';
             	}
                 $('#'+containerId).append(htmlResult);
-//                var aa=($('#'+containerId)[0]);
-//                var bb=aa.childElementCount;
-//                var cc=aa.children;
-//                var dd=cc[0].id;
                 //数据处理
                 for(var i=0;i<totals;i++){
                 	divId = divPrefix + i+"_Id";

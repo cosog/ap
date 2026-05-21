@@ -1787,6 +1787,47 @@ public class MemoryDataManagerTask {
 		return realtimeDataTimeMap;
 	}
 	
+	public static Map<String,Map<String,String>> getDeviceRealtimeAcqDataById(String deviceId,String language,int sortType){
+		Jedis jedis=null;
+		Map<String,Map<String,String>> realtimeDataTimeMap=new TreeMap<>();//默认升序
+		if(sortType==1){//降序
+			realtimeDataTimeMap=new TreeMap<>(Collections.reverseOrder());
+		}
+		
+		String key="DeviceRealtimeAcqData_"+deviceId;
+		if(!existsKey(key)){
+			List<String> deviceIdList=new ArrayList<>();
+			deviceIdList.add(deviceId);
+			long t1=System.nanoTime();
+			loadDeviceRealtimeAcqData(deviceIdList,language);
+			long t2=System.nanoTime();
+			String memoryUsage =getMemoryUsage(key);
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备"+deviceId+"当天数据至内存,数据大小:"+memoryUsage+",耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(jedis.exists(key.getBytes())){
+				Map<byte[], byte[]> memDataMap= jedis.hgetAll(key.getBytes());
+				if(memDataMap!=null && memDataMap.size()>0){
+					Iterator<Map.Entry<byte[], byte[]>> it = memDataMap.entrySet().iterator();
+					while(it.hasNext()){
+						Map.Entry<byte[], byte[]> entry = it.next();
+						String acqTime=new String(entry.getKey());
+						Map<String,String> everyDataMap=(Map<String,String>) SerializeObjectUnils.unserizlize(entry.getValue());
+						realtimeDataTimeMap.put(acqTime, everyDataMap);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return realtimeDataTimeMap;
+	}
+	
 	public static List<Map<String,String>> getDeviceRealtimeAcqDataListById(String deviceId,String startTime,String endTime,String language,int sortType){
 		Jedis jedis=null;
 		List<Map<String,String>> realtimeDataList=new ArrayList<>();
@@ -5107,7 +5148,7 @@ public class MemoryDataManagerTask {
 		ModbusProtocolConfig.ItemsMeaning rtnItemsMeaning=null;
 		if(StringManagerUtils.isNotNull(bitIndex) && item!=null && item.getMeaning()!=null && item.getMeaning().size()>0){
 			for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:item.getMeaning()){
-				if(itemsMeaning.getValue()==StringManagerUtils.stringToInteger(bitIndex)){
+				if(itemsMeaning.getValue()==StringManagerUtils.stringToInteger(bitIndex) || bitIndex.equalsIgnoreCase(itemsMeaning.getValue()+"")){
 					rtnItemsMeaning=itemsMeaning;
 					break;
 				}
@@ -5126,6 +5167,21 @@ public class MemoryDataManagerTask {
 				}
 			}
 		}
+		return rtnItemsMeaning;
+	}
+	
+	public static ModbusProtocolConfig.ItemsMeaning getProtocolItemMeaningByMappingColumn(ModbusProtocolConfig.Protocol protocol,String mappingColumn,String meaning){
+		ModbusProtocolConfig.ItemsMeaning rtnItemsMeaning=null;
+		ModbusProtocolConfig.Items item=getProtocolItemByMappingColumn(protocol, mappingColumn);
+		if(StringManagerUtils.isNotNull(meaning) && item!=null && item.getMeaning()!=null && item.getMeaning().size()>0){
+			for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:item.getMeaning()){
+				if(meaning.equalsIgnoreCase(itemsMeaning.getMeaning())){
+					rtnItemsMeaning=itemsMeaning;
+					break;
+				}
+			}
+		}
+		
 		return rtnItemsMeaning;
 	}
 	
@@ -5156,6 +5212,24 @@ public class MemoryDataManagerTask {
 		}
 		return r;
 	}
+	
+	public static ModbusProtocolConfig.ExtendedField getProtocolExtendedFieldByMappingColumn(ModbusProtocolConfig.Protocol protocol,String mappingColumn){
+		ModbusProtocolConfig.ExtendedField r=null;
+		Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+		if(StringManagerUtils.isNotNull(mappingColumn) && protocol!=null && protocol.getExtendedFields()!=null && protocol.getExtendedFields().size()>0 && loadProtocolMappingColumnMap.containsKey(mappingColumn)){
+			for(ModbusProtocolConfig.ExtendedField extendedField:protocol.getExtendedFields()){
+				DataMapping dataMapping=loadProtocolMappingColumnMap.get(mappingColumn);
+				if(dataMapping!=null && dataMapping.getName().equalsIgnoreCase(extendedField.getTitle())){
+					r=extendedField;
+					break;
+				}
+			}
+		}
+		return r;
+	}
+	
+	
+	
 	
 	public static ModbusProtocolConfig.ExtendedField getProtocolExtendedField(ModbusProtocolConfig.Protocol protocol,String itemName,int type){
 		ModbusProtocolConfig.ExtendedField r=null;

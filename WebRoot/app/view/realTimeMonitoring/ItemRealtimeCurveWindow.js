@@ -21,40 +21,58 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
     initComponent: function () {
         var me = this;
         Ext.apply(me, {
-        	tbar:[{
-                id: 'RealtimeCurveItemName_Id',
-                xtype: 'textfield',
-                value: '',
-                hidden: true
-            },{
-                id: 'RealtimeCurveItemCode_Id',
-                xtype: 'textfield',
-                value: '',
-                hidden: true
-            },{
-                id: 'RealtimeCurveItemType_Id',
-                xtype: 'textfield',
-                value: '',
-                hidden: true
-            },{
-                id: 'RealtimeCurveItemResolutionMode_Id',
-                xtype: 'textfield',
-                value: '',
-                hidden: true
-            }],
-        	html: '<div id="ItemRealtimeCurveDiv_Id" style="width:100%;height:100%;"></div>',
-            listeners: {
-                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    if ($("#ItemRealtimeCurveDiv_Id").highcharts() != undefined) {
-                    	highchartsResize("ItemRealtimeCurveDiv_Id");
-                    }else{
-                    	getItemRealTimeCurveData();
+        	layout: 'border',
+        	items: [{
+        		region: 'center',
+        		layout: 'fit',
+        		autoScroll: false,
+        		tbar:[{
+                    id: 'RealtimeCurveItemName_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
+                    id: 'RealtimeCurveItemCode_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
+                    id: 'RealtimeCurveItemType_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                },{
+                    id: 'RealtimeCurveItemResolutionMode_Id',
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
+                }],
+            	html: '<div id="ItemRealtimeCurveContainer" class="hbox" style="width:100%;height:100%;display:flex;flex-wrap:wrap;align-content:flex-start;"></div>',
+                listeners: {
+                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	var chartCreated=false;
+                    	var container=$('#ItemRealtimeCurveContainer');
+            			if(container!=undefined && container.length>0){
+            				var containerChildren=container[0].children;
+            				if(containerChildren!=undefined && containerChildren.length>0){
+            					for(var i=0;i<containerChildren.length;i++){
+            						var chart = $("#"+containerChildren[i].id).highcharts(); 
+            						if(isNotVal(chart)){
+            							chartCreated=true;
+            							highchartsResize(containerChildren[i].id);
+            						}
+            					}
+            				}
+            			}
+            			if(!chartCreated){
+            				getItemRealTimeCurveData();
+            			}
+                    },
+                    minimize: function (win, opts) {
+                        win.collapse();
                     }
-                },
-                minimize: function (win, opts) {
-                    win.collapse();
                 }
-            }
+        	}]
         });
         me.callParent(arguments);
     }
@@ -101,6 +119,8 @@ function getItemRealTimeCurveData(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
+		    
+		    $('#ItemRealtimeCurveContainer').append('<div id="ItemRealtimeCurveDiv_Id" style="width:100%;height:100%;"></div>');
             var divId = 'ItemRealtimeCurveDiv_Id';
 		    
         	var xTitle='';

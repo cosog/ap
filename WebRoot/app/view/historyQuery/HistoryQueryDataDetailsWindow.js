@@ -83,20 +83,22 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
                     		var calculateType=Ext.getCmp("HistoryQueryDataDetailsWindowDeviceCalculateType_Id").getValue();
                   			CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceType,calculateType);
                     	}
-                    },
-                    beforeclose: function ( panel, eOpts) {
-                    	if(deviceHistoryQueryDataHandsontableHelper!=null){
-        					if(deviceHistoryQueryDataHandsontableHelper.hot!=undefined){
-        						deviceHistoryQueryDataHandsontableHelper.hot.destroy();
-        					}
-        					deviceHistoryQueryDataHandsontableHelper=null;
-        				}
-                    },
-                    minimize: function (win, opts) {
-                        win.collapse();
                     }
                 }
-        	}]
+        	}],
+        	listeners: {
+        		beforeclose: function ( panel, eOpts) {
+                	if(deviceHistoryQueryDataHandsontableHelper!=null){
+    					if(deviceHistoryQueryDataHandsontableHelper.hot!=undefined){
+    						deviceHistoryQueryDataHandsontableHelper.hot.destroy();
+    					}
+    					deviceHistoryQueryDataHandsontableHelper=null;
+    				}
+                },
+                minimize: function (win, opts) {
+                    win.collapse();
+                }
+        	}
         });
         me.callParent(arguments);
     }
@@ -150,7 +152,7 @@ function viewItemHistoryDataTable(itemName,itemValue,cellInfo){
             Ext.getCmp('HistoryDataItemCode_Id').setValue(cellInfo.column);
             Ext.getCmp('HistoryDataItemType_Id').setValue(cellInfo.type);
             Ext.getCmp('HistoryDataItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
-            if(cellInfo.type==0 && cellInfo.resolutionMode==0){
+            if((cellInfo.type==0||cellInfo.type==5) && cellInfo.resolutionMode==0){
             	Ext.getCmp('HistoryDataItemBitIndex_Id').setValue(cellInfo.bitIndex);
             }else{
             	Ext.getCmp('HistoryDataItemBitIndex_Id').setValue('');
@@ -254,6 +256,13 @@ function viewItemHistoryData(row,col){
 }
 
 function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceType,calculateType){
+	if(deviceHistoryQueryDataHandsontableHelper!=null){
+		if(deviceHistoryQueryDataHandsontableHelper.hot!=undefined){
+			deviceHistoryQueryDataHandsontableHelper.hot.destroy();
+		}
+		deviceHistoryQueryDataHandsontableHelper=null;
+	}
+	
 	if(Ext.getCmp("HistoryQueryDataDetailsPanel_Id")!=undefined){
 		Ext.getCmp("HistoryQueryDataDetailsPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	}

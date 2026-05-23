@@ -3387,6 +3387,11 @@ public class DriverAPIController extends BaseController{
 					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
 						everyDataMap.put(acquisitionItemInfo.getColumn().toUpperCase(), acquisitionItemInfo.getRawValue());
 					}
+					for(KeyValue keyValue: acqDataList){
+						everyDataMap.put(keyValue.getKey().toUpperCase(), keyValue.getValue());
+					}
+					
+					
 					MemoryDataManagerTask.updateDeviceRealtimeAcqData(deviceInfo.getId()+"", acqTime, everyDataMap,language);
 					
 					//如果跨天,删除非当天采集的数据

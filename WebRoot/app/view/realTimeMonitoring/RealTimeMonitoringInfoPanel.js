@@ -859,26 +859,32 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
 });
 
 function viewItemRealTimeCurve(itemName,itemValue,cellInfo){
-	var ItemRealtimeCurveWindow=Ext.create("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow");
-	Ext.getCmp('RealtimeCurveItemName_Id').setValue(itemName);
-	Ext.getCmp('RealtimeCurveItemCode_Id').setValue(cellInfo.column);
-	Ext.getCmp('RealtimeCurveItemType_Id').setValue(cellInfo.type);
-	Ext.getCmp('RealtimeCurveItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
-	ItemRealtimeCurveWindow.show();
+    var curveWin = Ext.create('AP.view.realTimeMonitoring.ItemRealtimeCurveWindow');
+    // 设置子组件值（注意：窗口可能还没渲染，使用 afterrender 或直接 setValue 如果组件已存在）
+    curveWin.on('afterrender', function() {
+    	Ext.getCmp('RealtimeCurveItemName_Id').setValue(itemName);
+    	Ext.getCmp('RealtimeCurveItemCode_Id').setValue(cellInfo.column);
+    	Ext.getCmp('RealtimeCurveItemType_Id').setValue(cellInfo.type);
+    	Ext.getCmp('RealtimeCurveItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
+    }, { single: true });
+    curveWin.show();
 }
 
 function viewItemRealTimeDataTable(itemName,itemValue,cellInfo){
-	var ItemRealtimeDataWindow=Ext.create("AP.view.realTimeMonitoring.ItemRealtimeDataWindow");
-	Ext.getCmp('RealtimeDataItemName_Id').setValue(itemName);
-	Ext.getCmp('RealtimeDataItemCode_Id').setValue(cellInfo.column);
-	Ext.getCmp('RealtimeDataItemType_Id').setValue(cellInfo.type);
-	Ext.getCmp('RealtimeDataItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
-	if(cellInfo.type==0 && cellInfo.resolutionMode==0){
-    	Ext.getCmp('RealtimeDataItemBitIndex_Id').setValue(cellInfo.bitIndex);
-    }else{
-    	Ext.getCmp('RealtimeDataItemBitIndex_Id').setValue('');
-    }
-	ItemRealtimeDataWindow.show();
+	var dataWin = Ext.create('AP.view.realTimeMonitoring.ItemRealtimeDataWindow');
+    // 设置子组件值（注意：窗口可能还没渲染，使用 afterrender 或直接 setValue 如果组件已存在）
+    dataWin.on('afterrender', function() {
+    	Ext.getCmp('RealtimeDataItemName_Id').setValue(itemName);
+    	Ext.getCmp('RealtimeDataItemCode_Id').setValue(cellInfo.column);
+    	Ext.getCmp('RealtimeDataItemType_Id').setValue(cellInfo.type);
+    	Ext.getCmp('RealtimeDataItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
+    	if((cellInfo.type==0||cellInfo.type==5) && cellInfo.resolutionMode==0){
+        	Ext.getCmp('RealtimeDataItemBitIndex_Id').setValue(cellInfo.bitIndex);
+        }else{
+        	Ext.getCmp('RealtimeDataItemBitIndex_Id').setValue('');
+        }
+    }, { single: true });
+    dataWin.show();
 }
 
 function viewDeviceRealTimeMonitoringData(row,col){

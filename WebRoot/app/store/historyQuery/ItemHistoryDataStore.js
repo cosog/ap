@@ -91,7 +91,7 @@ Ext.define('AP.store.historyQuery.ItemHistoryDataStore', {
                 	panel.add(gridPanel);
                 }
             }
-            
+            updateTotalRecords(get_rawData.totalCount,"ItemHistoryDataCount_Id");
     	},
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id')!=undefined?Ext.getCmp('leftOrg_Id').getValue():'0';

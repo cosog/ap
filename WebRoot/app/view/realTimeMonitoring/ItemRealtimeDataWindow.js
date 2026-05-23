@@ -4,7 +4,7 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
     alias: 'widget.itemRealtimeDataWindow',
     id:'ItemRealtimeDataWindow_Id',
     layout: 'fit',
-    title: loginUserLanguageResource.data,
+    title: loginUserLanguageResource.dynamicData,
     border: false,
     hidden: false,
     collapsible: true,
@@ -48,9 +48,24 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
                 xtype: 'textfield',
                 value: '',
                 hidden: true
+            },'->',{
+                xtype: 'button',
+                text: loginUserLanguageResource.exportData,
+                iconCls: 'export',
+                hidden:false,
+                handler: function (v, o) {
+                	exportItemRealtimeDataTable();
+                }
+           },'-',{
+                id: 'ItemRealtimeDataCount_Id',
+                xtype: 'component',
+                tpl: loginUserLanguageResource.totalCount + ':{count}',
+                hidden: false,
+                style: 'margin-right:15px'
             }],
             items:[{
             	region: 'center',
+            	id:'ItemRealtimeDataPanel_Id',
         		layout: 'fit',
         		autoScroll: true,
         		layout: 'fit',
@@ -93,6 +108,42 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
     }
 });
 
+function exportItemRealtimeDataTable(){
+	var selectRowId="RealTimeMonitoringInfoDeviceListSelectRow_Id";
+	var gridPanelId="RealTimeMonitoringListGridPanel_Id";
+	var deviceName='';
+	var deviceId=0;
+	var calculateType=0;
+	var itemName=Ext.getCmp("RealtimeDataItemName_Id").getValue();
+	var itemCode=Ext.getCmp("RealtimeDataItemCode_Id").getValue();
+	var itemType=Ext.getCmp("RealtimeDataItemType_Id").getValue();
+	var itemResolutionMode=Ext.getCmp("RealtimeDataItemResolutionMode_Id").getValue();
+	var itemBitIndex=Ext.getCmp("RealtimeDataItemBitIndex_Id").getValue();
+	var selectRow= Ext.getCmp(selectRowId).getValue();
+	if(Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
+		calculateType=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
+		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
+		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
+	}
+	
+	var timestamp=new Date().getTime();
+	var key='exportItemRealTimeData_'+deviceId+'_'+itemCode+'_'+timestamp;
+	var maskPanelId='ItemRealtimeDataPanel_Id';
+	var url = context + '/realTimeMonitoringController/exportItemRealTimeData';
+    var param = "&deviceId=" + deviceId
+    + "&deviceName=" + URLencode(URLencode(deviceName))
+    + '&calculateType='+calculateType
+    + "&itemName=" + URLencode(URLencode(itemName))
+    + '&itemCode='+itemCode
+    + '&itemType='+itemType
+    + '&itemResolutionMode='+itemResolutionMode
+    + '&itemBitIndex='+itemBitIndex
+    + '&key='+key;
+    
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    openExcelWindow(url + '?flag=true' + param);
+}
+
 function CreateItemRealtimeDataTable(){
 	var selectRowId="RealTimeMonitoringInfoDeviceListSelectRow_Id";
 	var gridPanelId="RealTimeMonitoringListGridPanel_Id";
@@ -119,21 +170,24 @@ function CreateItemRealtimeDataTable(){
 		itemRealtimeDataHandsontableHelper=null;
 	}
 	
-	if(Ext.getCmp("ItemRealtimeDataWindow_Id")!=undefined){
-		Ext.getCmp("ItemRealtimeDataWindow_Id").el.mask(loginUserLanguageResource.loading).show();
+	if(Ext.getCmp("ItemRealtimeDataPanel_Id")!=undefined){
+		Ext.getCmp("ItemRealtimeDataPanel_Id").el.mask(loginUserLanguageResource.loading).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getItemRealTimeData',
 		success:function(response) {
-			if(isNotVal(Ext.getCmp("ItemRealtimeDataWindow_Id"))){
-				Ext.getCmp("ItemRealtimeDataWindow_Id").getEl().unmask();
+			if(isNotVal(Ext.getCmp("ItemRealtimeDataPanel_Id"))){
+				Ext.getCmp("ItemRealtimeDataPanel_Id").getEl().unmask();
             }
 			
 			var result =  Ext.JSON.decode(response.responseText);
+			
+			updateTotalRecords(result.totalCount,"ItemRealtimeDataCount_Id");
+			
 			if(itemRealtimeDataHandsontableHelper==null || itemRealtimeDataHandsontableHelper.hot==undefined){
 				itemRealtimeDataHandsontableHelper = ItemRealtimeDataHandsontableHelper.createNew("ItemRealtimeDataDiv_Id");
-				var colHeaders=[loginUserLanguageResource.time,itemName];
+				var colHeaders=[loginUserLanguageResource.acqTime,itemName];
 				var columns=[{
 					data:'acqTime'
 				},{
@@ -147,7 +201,7 @@ function CreateItemRealtimeDataTable(){
 			}
 		},
 		failure:function(){
-			Ext.getCmp("ItemRealtimeDataWindow_Id").getEl().unmask();
+			Ext.getCmp("ItemRealtimeDataPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
 		},
 		params: {

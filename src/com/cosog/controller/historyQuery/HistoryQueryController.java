@@ -335,7 +335,7 @@ public class HistoryQueryController extends BaseController  {
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = historyQueryService.getItemHistoryData(orgId,deviceId,deviceName,deviceType,calculateType,pager,
+		json = historyQueryService.getItemHistoryData(deviceId,deviceName,calculateType,pager,
 				itemName,itemCode,itemType,itemResolutionMode,bitIndex,
 				totalCount,user.getUserNo(),language);
 		
@@ -345,6 +345,40 @@ public class HistoryQueryController extends BaseController  {
 		pw.print(json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/exportItemHistoryData")
+	public String exportItemHistoryData() throws Exception {
+		boolean bool=false;
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		
+		String itemName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "itemName"),"utf-8");
+		String itemCode = ParamUtils.getParameter(request, "itemCode");
+		String itemType = ParamUtils.getParameter(request, "itemType");
+		String itemResolutionMode = ParamUtils.getParameter(request, "itemResolutionMode");
+		String itemBitIndex = ParamUtils.getParameter(request, "itemBitIndex");
+		
+		startDate = ParamUtils.getParameter(request, "startDate");
+		endDate = ParamUtils.getParameter(request, "endDate");
+		
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+			user = (User) session.getAttribute("userLogin");
+		}
+		bool = historyQueryService.exportItemHistoryData(user,response,
+				deviceId,deviceName,calculateType,
+				itemName,itemCode,itemType,itemResolutionMode,itemBitIndex,
+				startDate,endDate);
+		if(session!=null){
+			session.setAttribute(key, 1);
+		}
 		return null;
 	}
 	

@@ -6,8 +6,8 @@ Ext.define("AP.view.historyQuery.ItemHistoryDataWindow", {
     title: loginUserLanguageResource.historyData,
     iframe: true,
     closeAction: 'destroy',
-    width: 700,
-    minWidth: 700,
+    width: 800,
+    minWidth: 800,
     height: 600,
     shadow: 'sides',
     resizable: true,
@@ -196,11 +196,26 @@ Ext.define("AP.view.historyQuery.ItemHistoryDataWindow", {
                     		Ext.getCmp('ItemHistoryDataEndTime_Minute_Id').focus(true, 100);
                     		return;
                     	}
+                    	
+                    	var gridPanel = Ext.getCmp("ItemHistoryQueryDataGridPanel_Id");
+                        if(isNotVal(gridPanel)){
+                        	gridPanel.getStore().loadPage(1);
+                        }else{
+                        	Ext.create('AP.store.historyQuery.ItemHistoryDataStore');
+                        }
                     }
                 },'->',{
+                    xtype: 'button',
+                    text: loginUserLanguageResource.exportData,
+                    iconCls: 'export',
+                    hidden:false,
+                    handler: function (v, o) {
+                    	exportItemHistoryDataTable();
+                    }
+               },'-',{
                     id: 'ItemHistoryDataCount_Id',
                     xtype: 'component',
-                    tpl: loginUserLanguageResource.totalCount + ':{totalCount}',
+                    tpl: loginUserLanguageResource.totalCount + ':{count}',
                     hidden: false,
                     style: 'margin-right:15px'
                 }]
@@ -209,3 +224,49 @@ Ext.define("AP.view.historyQuery.ItemHistoryDataWindow", {
         me.callParent(arguments);
     }
 });
+
+function exportItemHistoryDataTable(){
+	var orgId = Ext.getCmp('leftOrg_Id')!=undefined?Ext.getCmp('leftOrg_Id').getValue():'0';
+	var deviceName='';
+	var deviceId=0;
+	var deviceType=getDeviceTypeFromTabId("HistoryQueryRootTabPanel");
+	var calculateType=0;
+	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id")!=undefined && Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+		calculateType = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
+	}
+	var startDate=Ext.getCmp('ItemHistoryDataStartDate_Id')!=undefined?Ext.getCmp('ItemHistoryDataStartDate_Id').rawValue:'';
+	var startTime_Hour=Ext.getCmp('ItemHistoryDataStartTime_Hour_Id')!=undefined?Ext.getCmp('ItemHistoryDataStartTime_Hour_Id').getValue():'';
+	var startTime_Minute=Ext.getCmp('ItemHistoryDataStartTime_Minute_Id')!=undefined?Ext.getCmp('ItemHistoryDataStartTime_Minute_Id').getValue():'';
+	var startTime_Second=0;
+
+    var endDate=Ext.getCmp('ItemHistoryDataEndDate_Id')!=undefined?Ext.getCmp('ItemHistoryDataEndDate_Id').rawValue:'';
+    var endTime_Hour=Ext.getCmp('ItemHistoryDataEndTime_Hour_Id')!=undefined?Ext.getCmp('ItemHistoryDataEndTime_Hour_Id').getValue():'';
+	var endTime_Minute=Ext.getCmp('ItemHistoryDataEndTime_Minute_Id')!=undefined?Ext.getCmp('ItemHistoryDataEndTime_Minute_Id').getValue():'';
+	var endTime_Second=0;
+	
+	var itemName=Ext.getCmp("HistoryDataItemName_Id").getValue();
+	var itemCode=Ext.getCmp("HistoryDataItemCode_Id").getValue();
+	var itemType=Ext.getCmp("HistoryDataItemType_Id").getValue();
+	var itemResolutionMode=Ext.getCmp("HistoryDataItemResolutionMode_Id").getValue();
+	var itemBitIndex=Ext.getCmp("HistoryDataItemBitIndex_Id").getValue();
+	
+	var timestamp=new Date().getTime();
+	var key='exportItemHistoryData_'+deviceId+'_'+itemCode+'_'+timestamp;
+	var maskPanelId='ItemHistoryDataPanel_Id';
+	var url = context + '/historyQueryController/exportItemHistoryData';
+    var param = "&deviceId=" + deviceId
+    + "&deviceName=" + URLencode(URLencode(deviceName))
+    + '&calculateType='+calculateType
+    + "&itemName=" + URLencode(URLencode(itemName))
+    + '&itemCode='+itemCode
+    + '&itemType='+itemType
+    + '&itemResolutionMode='+itemResolutionMode
+    + '&itemBitIndex='+itemBitIndex
+    + '&startDate='+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)
+    + '&endDate='+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)
+    + '&key='+key;
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    openExcelWindow(url + '?flag=true' + param);
+}

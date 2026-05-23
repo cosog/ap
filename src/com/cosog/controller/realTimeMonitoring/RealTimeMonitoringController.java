@@ -532,6 +532,34 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/exportItemRealTimeData")
+	public String exportItemRealTimeData() throws Exception {
+		boolean bool=false;
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		
+		String itemName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "itemName"),"utf-8");
+		String itemCode = ParamUtils.getParameter(request, "itemCode");
+		String itemType = ParamUtils.getParameter(request, "itemType");
+		String itemResolutionMode = ParamUtils.getParameter(request, "itemResolutionMode");
+		String itemBitIndex = ParamUtils.getParameter(request, "itemBitIndex");
+		
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		if(session!=null){
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+			user = (User) session.getAttribute("userLogin");
+		}
+		bool = realTimeMonitoringService.exportItemRealTimeData(user,response,deviceId,deviceName,calculateType,itemName,itemCode,itemType,itemResolutionMode,itemBitIndex);
+		if(session!=null){
+			session.setAttribute(key, 1);
+		}
+		return null;
+	}
+	
 	public int DeviceControlOperation_Mdubus(String protocolCode,String deviceId,String deviceName,String deviceType,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue,String bitIndex){
 		int result=-1;
 		try {

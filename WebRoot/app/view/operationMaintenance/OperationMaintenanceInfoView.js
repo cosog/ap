@@ -3901,6 +3901,7 @@ function getOperationMaintenanceMonitorCurveData(){
 		                        color: color[i],
 		                    }
 		                },
+		                lineWidth: 1,
 		                opposite:opposite
 		          };
 		        yAxis.push(singleAxis);
@@ -4011,7 +4012,22 @@ function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId
                 // 可选：导出失败时的回调
                 error: function (err) {
                     console.error('导出失败:', err);
-                }
+                },
+                buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
             }
 	    });
 	}

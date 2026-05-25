@@ -1358,7 +1358,8 @@ function CreateHydrologicalWellReportCurve(){
 		                        color: color[i],
 		                    }
 		                },
-		                opposite:opposite
+		                opposite:opposite,
+		                lineWidth: 1
 		          };
 		        if(curveConf[i].yAxisOpposite){
 		        	yAxis_r.push(singleAxis);
@@ -1411,7 +1412,6 @@ function CreateHydrologicalWellReportCurve(){
 
 function initHydrologicalWellReportCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-		var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
 		Highcharts.setOptions({
 	        global: {
 	            useUTC: false
@@ -1478,21 +1478,33 @@ function initHydrologicalWellReportCurveChartFn(series, tickInterval, divId, tit
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0].offsetWidth,
 	            sourceHeight: $("#"+divId)[0].offsetHeight,
+	            menuItemDefinitions: {
+	                chartConfig: {
+        				text: loginUserLanguageResource.diagramSet,
+        				onclick: function() {
+        					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
+                                title: loginUserLanguageResource.reportDiagramSet
+                            });
+                            window.show();
+        				}
+        			}
+	            },
 	            buttons: {
-	            	contextButton: {
-	            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
-	            			dafaultMenuItem[8],dafaultMenuItem[9],
-	            			dafaultMenuItem[2],{
-	            				text: loginUserLanguageResource.diagramSet,
-	            				onclick: function() {
-	            					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
-	                                    title: loginUserLanguageResource.reportDiagramSet
-	                                });
-	                                window.show();
-	            				}
-	            			}]
-	            	}
-	            }
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadXLS',
+	    	    			'separator',
+	    	    			'chartConfig'
+	    	    			]
+	    	    		}
+	    	    }
 	        },
 	        plotOptions: {
 	            spline: {

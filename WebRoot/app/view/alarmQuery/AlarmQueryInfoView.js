@@ -1345,7 +1345,22 @@ function showAlarmQueryStatDataColChat(title,divId,name,categories,seriesData){
             fallbackToExportServer: false,
             filename: title,    
             sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
+            sourceHeight: $("#"+divId)[0].offsetHeight,
+            buttons: {
+    	    	contextButton: {
+    	    		menuItems: [
+    	    			'viewFullscreen',
+    	    			'printChart',
+    	    			'separator',
+    	    			'downloadPNG',
+    	    			'downloadJPEG',
+    	    			'downloadSVG',
+    	    			'separator',
+    	    			'downloadCSV',
+    	    			'downloadXLS'
+    	    			]
+    	    		}
+    	    }
         },
         legend: {                                                                            
             enabled: false

@@ -176,6 +176,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                 	items:[{
                 		region:'north',
                 		height:'50%',
+                		layout:'fit',
                 		title:loginUserLanguageResource.reportCurve,
                 		collapsible: true, // 是否可折叠
                         collapsed:false,//是否折叠
@@ -1075,7 +1076,8 @@ function CreateProductionDailyReportCurve(){
 		                        color: color[i],
 		                    }
 		                },
-		                opposite:opposite
+		                opposite:opposite,
+		                lineWidth: 1      // Y 轴主线宽度
 		          };
 		        if(curveConf[i].yAxisOpposite){
 		        	yAxis_r.push(singleAxis);
@@ -1198,21 +1200,20 @@ function initProductionDailyReportCurveChartFn(series, tickInterval, divId, titl
 	            sourceWidth: $("#"+divId)[0].offsetWidth,
 	            sourceHeight: $("#"+divId)[0].offsetHeight,
 	            buttons: {
-	            	contextButton: {
-	            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
-	            			dafaultMenuItem[8],dafaultMenuItem[9]
-//	            			,dafaultMenuItem[2],{
-//	            				text: loginUserLanguageResource.diagramSet,
-//	            				onclick: function() {
-//	            					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
-//	                                    title: '报表曲线设置'
-//	                                });
-//	                                window.show();
-//	            				}
-//	            			}
-	            		]
-	            	}
-	            }
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
 	        },
 	        plotOptions: {
 	            spline: {

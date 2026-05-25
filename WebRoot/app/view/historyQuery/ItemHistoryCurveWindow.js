@@ -370,6 +370,7 @@ function getItemHistoryCurveData(){
 		                        color: color[i],
 		                    }
 		                },
+		                lineWidth: 1,
 		                opposite:opposite
 		          };
 		        yAxis_l.push(singleAxis);
@@ -488,7 +489,22 @@ function initItemHistoryCurveChartFn(series, tickInterval, divId, title, subtitl
 	            fallbackToExportServer: false,
 	            filename: title,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	            		buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 	        },
 	        plotOptions: {
 	            spline: {

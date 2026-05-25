@@ -573,6 +573,7 @@ function showWaterCutRawDataCurve(result){
                         color: color[i],
                     }
                 },
+                lineWidth: 1,
                 opposite:opposite
           };
         yAxis.push(singleAxis);
@@ -768,7 +769,22 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
             filename: title,
             fallbackToExportServer: false,
             sourceWidth: $("#"+divId)[0].offsetWidth,
-            sourceHeight: $("#"+divId)[0].offsetHeight
+            sourceHeight: $("#"+divId)[0].offsetHeight,
+            buttons: {
+    	    	contextButton: {
+    	    		menuItems: [
+    	    			'viewFullscreen',
+    	    			'printChart',
+    	    			'separator',
+    	    			'downloadPNG',
+    	    			'downloadJPEG',
+    	    			'downloadSVG',
+    	    			'separator',
+    	    			'downloadCSV',
+    	    			'downloadXLS'
+    	    			]
+    	    		}
+    	    }
         },
         plotOptions: {
             spline: {

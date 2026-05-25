@@ -245,6 +245,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     	items:[{
                     		title: loginUserLanguageResource.alarmLevel,
                     		id:'AlarmLevelStatGraphPanel_Id',
+                    		iconCls:'check3',
                     		layout: 'fit',
                         	html: '<div id="AlarmLevelStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {
@@ -269,7 +270,6 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     	},{
                     		title:loginUserLanguageResource.alarmType,
                     		id:'AlarmTypeStatGraphPanel_Id',
-                    		iconCls:'check3',
                     		layout: 'fit',
                         	html: '<div id="AlarmTypeStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {

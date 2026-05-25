@@ -191,6 +191,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 	items:[{
                 		region:'north',
                 		height:'50%',
+                		layout:'fit',
                 		title:loginUserLanguageResource.reportCurve,
                 		collapsible: true, // 是否可折叠
                         collapsed:false,//是否折叠
@@ -348,6 +349,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 	items:[{
                 		region:'north',
                 		height:'50%',
+                		layout:'fit',
                 		title:loginUserLanguageResource.reportCurve,
                 		collapsible: true, // 是否可折叠
                         collapsed:false,//是否折叠
@@ -1490,7 +1492,8 @@ function CreateSingleWellRangeReportCurve(){
 		                        color: color[i],
 		                    }
 		                },
-		                opposite:opposite
+		                opposite:opposite,
+		                lineWidth: 1      // Y 轴主线宽度
 		          };
 		        if(curveConf[i].yAxisOpposite){
 		        	yAxis_r.push(singleAxis);
@@ -1689,7 +1692,8 @@ function CreateSingleWellDailyReportCurve(){
 		                        color: color[i],
 		                    }
 		                },
-		                opposite:opposite
+		                opposite:opposite,
+		                lineWidth: 1      // Y 轴主线宽度
 		          };
 		        if(curveConf[i].yAxisOpposite){
 		        	yAxis_r.push(singleAxis);
@@ -1745,7 +1749,6 @@ function CreateSingleWellDailyReportCurve(){
 
 function initSingleWellDailyReportCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-		var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
 		Highcharts.setOptions({
 	        global: {
 	            useUTC: false
@@ -1812,21 +1815,33 @@ function initSingleWellDailyReportCurveChartFn(series, tickInterval, divId, titl
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0].offsetWidth,
 	            sourceHeight: $("#"+divId)[0].offsetHeight,
+	            menuItemDefinitions: {
+	                chartConfig: {
+        				text: loginUserLanguageResource.diagramSet,
+        				onclick: function() {
+        					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
+                                title: loginUserLanguageResource.reportDiagramSet
+                            });
+                            window.show();
+        				}
+        			}
+	            },
 	            buttons: {
-	            	contextButton: {
-	            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
-	            			dafaultMenuItem[8],dafaultMenuItem[9],
-	            			dafaultMenuItem[2],{
-	            				text: loginUserLanguageResource.diagramSet,
-	            				onclick: function() {
-	            					var window = Ext.create("AP.view.reportOut.ReportCurveSetWindow", {
-	                                    title: loginUserLanguageResource.reportDiagramSet
-	                                });
-	                                window.show();
-	            				}
-	            			}]
-	            	}
-	            }
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadXLS',
+	    	    			'separator',
+	    	    			'chartConfig'
+	    	    			]
+	    	    		}
+	    	    }
 	        },
 	        plotOptions: {
 	            spline: {

@@ -907,6 +907,7 @@ function deviceHistoryQueryCurve(deviceType){
 		                        color: color[i],
 		                    }
 		                },
+		                lineWidth: 1,
 		                opposite:opposite
 		          };
 		        if(curveConf[i].yAxisOpposite){
@@ -962,7 +963,6 @@ function deviceHistoryQueryCurve(deviceType){
 
 function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-		var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
 		Highcharts.setOptions({
 	        global: {
 	            useUTC: false
@@ -1029,11 +1029,8 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
 	            filename: title,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
 	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
-	            buttons: {
-	            	contextButton: {
-	            		menuItems:[dafaultMenuItem[0],dafaultMenuItem[1],dafaultMenuItem[2],dafaultMenuItem[3],dafaultMenuItem[4],dafaultMenuItem[5],dafaultMenuItem[6],dafaultMenuItem[7],
-	            			dafaultMenuItem[8],dafaultMenuItem[9],
-	            			dafaultMenuItem[2],{
+	            		menuItemDefinitions: {
+	    	                chartConfig: {
 	            				text: loginUserLanguageResource.diagramSet,
 	            				onclick: function() {
 	            					var window = Ext.create("AP.view.historyQuery.HistoryCurveSetWindow", {
@@ -1041,9 +1038,24 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
 	                                });
 	                                window.show();
 	            				}
-	            			}]
-	            	}
-	            }
+	            			}
+	    	            },
+	    	            buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadXLS',
+	    	    	    			'separator',
+	    	    	    			'chartConfig'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 	        },
 	        plotOptions: {
 	            spline: {
@@ -1203,7 +1215,22 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 	            filename:title,
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	            		buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 			},
 			series : [{
 						type : 'pie',
@@ -1350,7 +1377,22 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 	            fallbackToExportServer: false,
 	            filename:title,    
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	            		buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 			},
 			series : [{
 						type : 'pie',
@@ -1510,7 +1552,22 @@ function ShowHistoryQueryNumStatusStatPieOrColChat(title,divId, name, data,color
 	            fallbackToExportServer: false,
 	            filename:title,    
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	            		buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 			},
 			series : [{
 						type : 'pie',
@@ -1647,7 +1704,22 @@ function ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, name, dat
 	            filename:title,   
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	            		buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 			},
 			series : [{
 						type : 'pie',
@@ -1779,7 +1851,22 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 	            filename:title,   
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	            		buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 			},
 			series : [{
 						type : 'pie',

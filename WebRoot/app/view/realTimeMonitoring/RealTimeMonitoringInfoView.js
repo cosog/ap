@@ -936,7 +936,22 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 		            filename: title,
 		            fallbackToExportServer: false,
 		            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-		    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+		    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+		    	    		buttons: {
+		    	    	    	contextButton: {
+		    	    	    		menuItems: [
+		    	    	    			'viewFullscreen',
+		    	    	    			'printChart',
+		    	    	    			'separator',
+		    	    	    			'downloadPNG',
+		    	    	    			'downloadJPEG',
+		    	    	    			'downloadSVG',
+		    	    	    			'separator',
+		    	    	    			'downloadCSV',
+		    	    	    			'downloadXLS'
+		    	    	    			]
+		    	    	    		}
+		    	    	    }
 		        },
 		        plotOptions: {
 		            spline: {
@@ -1192,7 +1207,22 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, nam
 	            filename:title,
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	    	    	    buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 			},
 			series : [{
 						type : 'pie',
@@ -1349,7 +1379,22 @@ function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) 
 	            filename:title, 
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	            		buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 			},
 			series : [{
 						type : 'pie',
@@ -1514,7 +1559,22 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 	            filename:title,
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	            		buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 			},
 			series : [{
 						type : 'pie',
@@ -1677,7 +1737,22 @@ function ShowRealTimeMonitoringNumStatusStatPieOrColChat(title,divId, name, data
 	            filename:title,
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	            		buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 			},
 			series : [{
 						type : 'pie',
@@ -1811,7 +1886,23 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 	            filename:title,   
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	    	    buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadPDF',
+	    	    			'separator',
+	    	    			'downloadSVG',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
 			},
 			series : [{
 						type : 'pie',
@@ -2005,18 +2096,26 @@ function deviceRealtimeMonitoringCurve(deviceType){
 
 function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, title, subtitle, xtitle,yTitle, color,legend,navigator,scrollbar,timeFormat,maxValue,minValue,yAxisOpposite) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-		Highcharts.setOptions({
-	        global: {
-	            useUTC: false
-	        }
-	    });
+//		Highcharts.setOptions({
+//	        global: {
+//	            useUTC: false
+//	        }
+//	    });
 	    var mychart = new Highcharts.stockChart({
 	        chart: {
 	            renderTo: divId,
 	            type: 'spline',
 	            shadow: true,
 	            borderWidth: 0,
+//	            zooming: {
+//	                mouseWheel: {
+//	                    enabled: false // 禁用鼠标滚轮缩放
+//	                }
+//	            },
 	            zoomType: 'xy'
+	        },
+	        time: {
+	            useUTC: false   // 在图表配置中直接指定
 	        },
 	        credits: {
 	            enabled: false
@@ -2115,7 +2214,22 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	            filename: title,
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
+	    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+	    	    		buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 	        },
 	        plotOptions: {
 	            spline: {

@@ -777,7 +777,22 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
                 filename:title,  
                 fallbackToExportServer: false,
                 sourceWidth: $("#"+divId)[0].offsetWidth,
-                sourceHeight: $("#"+divId)[0].offsetHeight
+                sourceHeight: $("#"+divId)[0].offsetHeight,
+                buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
            },
 			plotOptions : {
 				 spline: {  
@@ -904,7 +919,22 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
                 filename:title,  
                 fallbackToExportServer: false,
                 sourceWidth: $("#"+divId)[0].offsetWidth,
-                sourceHeight: $("#"+divId)[0].offsetHeight
+                sourceHeight: $("#"+divId)[0].offsetHeight,
+                buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
            },
 			plotOptions : {
 				 spline: {  
@@ -1043,7 +1073,22 @@ function initCurveChart(years, values, tickInterval, divId) {
                 fallbackToExportServer: false,
                 filename:title,    
                 sourceWidth: $("#"+divId)[0].offsetWidth,
-                sourceHeight: $("#"+divId)[0].offsetHeight
+                sourceHeight: $("#"+divId)[0].offsetHeight,
+                buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
            },
 			plotOptions : {
 				 spline: {  
@@ -2213,6 +2258,7 @@ function initContinuousDiagramChart(pointdata, divId,title,subtitle,xtext,ytext,
 	            title: {                                                                         
 	                text: ytext   // 载荷（kN） 
                 },
+                lineWidth: 1,
 	            allowDecimals: false,    // 刻度值是否为小数
 	            minorTickInterval: ''   // 不显示次刻度线
 //	            min: 0                  // 最小值
@@ -2222,7 +2268,22 @@ function initContinuousDiagramChart(pointdata, divId,title,subtitle,xtext,ytext,
                 filename:title,
                 fallbackToExportServer: false,
                 sourceWidth: $("#"+divId)[0].offsetWidth,
-                sourceHeight: $("#"+divId)[0].offsetHeight
+                sourceHeight: $("#"+divId)[0].offsetHeight,
+                buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
            },
 	        legend: {
 	        	itemStyle:{
@@ -2671,7 +2732,22 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
 	            filename: title,
 	            fallbackToExportServer: false,
 	            sourceWidth: $("#"+divId)[0].offsetWidth,
-	            sourceHeight: $("#"+divId)[0].offsetHeight
+	            sourceHeight: $("#"+divId)[0].offsetHeight,
+	            buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
 	        },
 	        plotOptions: {
 	            spline: {
@@ -3057,6 +3133,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	            title: {                                                                         
 	                text: loginUserLanguageResource.load+'(kN)'   // 载荷（kN） 
                 },
+                lineWidth: 1,
 	            allowDecimals: false,    // 刻度值是否为小数
 	            minorTickInterval: '',   // 不显示次刻度线
 	            min: yAxisMin                  // 最小值
@@ -3066,7 +3143,22 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
                 fallbackToExportServer: false,
                 filename:deviceName+loginUserLanguageResource.FSDiagram+'-'+acqTime,    
                 sourceWidth: $("#"+divId)[0].offsetWidth,
-                sourceHeight: $("#"+divId)[0].offsetHeight
+                sourceHeight: $("#"+divId)[0].offsetHeight,
+                buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
            },
 	        legend: {                                                                            
 	            layout: 'vertical',                                                              
@@ -3294,6 +3386,7 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 			            title: {                                                                         
 			                text: loginUserLanguageResource.percent+'(%)'  // 应力百分比(%)                                                          
 			            },
+			            lineWidth: 1,
 			            allowDecimals: false,    // 刻度值是否为小数
 			            minorTickInterval: ''    // 不显示次刻度线
 			        },
@@ -3302,7 +3395,22 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 	                    fallbackToExportServer: false,
 	                    filename:deviceName+loginUserLanguageResource.rodStress+"-"+acqTime,    
 	                    sourceWidth: $("#"+divId)[0].offsetWidth,
-	                    sourceHeight: $("#"+divId)[0].offsetHeight
+	                    sourceHeight: $("#"+divId)[0].offsetHeight,
+	                    buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 	               },
 			        legend: {                                                                            
 			            enabled: true
@@ -3479,6 +3587,7 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upp
 	            title: {                                                                         
 	                text: loginUserLanguageResource.load+'(kN)'
 	            },
+	            lineWidth: 1,
 	            allowDecimals: false, 
 	            minorTickInterval: '',
 //	            min:0,
@@ -3511,7 +3620,22 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upp
                 fallbackToExportServer: false,
                 filename:deviceName+loginUserLanguageResource.pumpFSDiagram+"-"+acqTime,    
                 sourceWidth: $("#"+divId)[0].offsetWidth,
-                sourceHeight: $("#"+divId)[0].offsetHeight
+                sourceHeight: $("#"+divId)[0].offsetHeight,
+                buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
            },
 	        legend: {                                                                            
 	            layout: 'vertical',                                                              
@@ -3600,6 +3724,7 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 		        },
 		        yAxis: {    
 		        	min: 0,
+		        	lineWidth: 1,
 		            title: {                                                                         
 		                text: loginUserLanguageResource.percent+'(%)'                                          
 		            },
@@ -3610,7 +3735,22 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
                     fallbackToExportServer: false,
                     filename:deviceName+loginUserLanguageResource.pumpEfficiencyComposition+"-"+acqTime,    
                     sourceWidth: $("#"+divId)[0].offsetWidth,
-                    sourceHeight: $("#"+divId)[0].offsetHeight
+                    sourceHeight: $("#"+divId)[0].offsetHeight,
+                    buttons: {
+    	    	    	contextButton: {
+    	    	    		menuItems: [
+    	    	    			'viewFullscreen',
+    	    	    			'printChart',
+    	    	    			'separator',
+    	    	    			'downloadPNG',
+    	    	    			'downloadJPEG',
+    	    	    			'downloadSVG',
+    	    	    			'separator',
+    	    	    			'downloadCSV',
+    	    	    			'downloadXLS'
+    	    	    			]
+    	    	    		}
+    	    	    }
                },
 		        legend: {                                                                            
 		            enabled: false
@@ -3775,6 +3915,7 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			            title: {                                                                         
 			                text: ytext   // 载荷（kN） 
 	                    },
+	                    lineWidth: 1,
 			            allowDecimals: false,    // 刻度值是否为小数
 //			            min: yAxisMin<0?null:0,                  // 最小值
 			            minorTickInterval: ''   // 不显示次刻度线
@@ -3784,7 +3925,22 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 	                    fallbackToExportServer: false,
 	                    filename: deviceName+''+title+'-'+acqTime,
 	                    sourceWidth: $("#"+divId)[0].offsetWidth,
-	                    sourceHeight: $("#"+divId)[0].offsetHeight
+	                    sourceHeight: $("#"+divId)[0].offsetHeight,
+	                    buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 	               },
 			        legend: {
 			        	itemStyle:{
@@ -3975,6 +4131,7 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			            title: {                                                                         
 			                text: ytext   // 载荷（kN） 
 	                    },
+	                    lineWidth: 1,
 			            allowDecimals: false,    // 刻度值是否为小数
 			            minorTickInterval: ''   // 不显示次刻度线
 //			            min: 0                  // 最小值
@@ -3984,7 +4141,22 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 	                    fallbackToExportServer: false,
 	                    filename: deviceName+''+title+'-'+acqTime,   
 	                    sourceWidth: $("#"+divId)[0].offsetWidth,
-	                    sourceHeight: $("#"+divId)[0].offsetHeight
+	                    sourceHeight: $("#"+divId)[0].offsetHeight,
+	                    buttons: {
+	    	    	    	contextButton: {
+	    	    	    		menuItems: [
+	    	    	    			'viewFullscreen',
+	    	    	    			'printChart',
+	    	    	    			'separator',
+	    	    	    			'downloadPNG',
+	    	    	    			'downloadJPEG',
+	    	    	    			'downloadSVG',
+	    	    	    			'separator',
+	    	    	    			'downloadCSV',
+	    	    	    			'downloadXLS'
+	    	    	    			]
+	    	    	    		}
+	    	    	    }
 	               },
 			        legend: {
 			        	itemStyle:{
@@ -4096,7 +4268,22 @@ function initBalanceCurveChart(catagories,series,divId,title,deviceName,acqTime,
 		            fallbackToExportServer: false,
 		            filename: deviceName+''+title+'-'+acqTime,   
 		            sourceWidth: $("#"+divId)[0].offsetWidth,
-		            sourceHeight: $("#"+divId)[0].offsetHeight
+		            sourceHeight: $("#"+divId)[0].offsetHeight,
+		            buttons: {
+    	    	    	contextButton: {
+    	    	    		menuItems: [
+    	    	    			'viewFullscreen',
+    	    	    			'printChart',
+    	    	    			'separator',
+    	    	    			'downloadPNG',
+    	    	    			'downloadJPEG',
+    	    	    			'downloadSVG',
+    	    	    			'separator',
+    	    	    			'downloadCSV',
+    	    	    			'downloadXLS'
+    	    	    			]
+    	    	    		}
+    	    	    }
 				},
 				credits : {
 					enabled : false
@@ -4730,6 +4917,7 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	            title: {                                                                         
 	                text: ytext    // 载荷（kN）                                                          
 	            },
+	            lineWidth: 1,
 	            allowDecimals: false,    // 刻度值是否为小数
 	            //endOnTick: false,        //是否强制轴线在标线处结束   
 	            minorTickInterval: '',    // 不显示次刻度线
@@ -4740,7 +4928,22 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
                 filename:title,  
                 fallbackToExportServer: false,
                 sourceWidth: $("#"+divId)[0].offsetWidth,
-                sourceHeight: $("#"+divId)[0].offsetHeight
+                sourceHeight: $("#"+divId)[0].offsetHeight,
+                buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
            },
 	        legend: {                                                                            
 	            layout: 'vertical',                                                              
@@ -4820,6 +5023,7 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	            title: {                                                                         
 	                text: ytext                                             
 	            },
+	            lineWidth: 1,
 	            allowDecimals: false,    // 刻度值是否为小数
 	            //endOnTick: false,        //是否强制轴线在标线处结束   
 	            minorTickInterval: ''    // 不显示次刻度线
@@ -4829,7 +5033,22 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
                 filename:title,  
                 fallbackToExportServer: false,
                 sourceWidth: $("#"+divId)[0].offsetWidth,
-                sourceHeight: $("#"+divId)[0].offsetHeight
+                sourceHeight: $("#"+divId)[0].offsetHeight,
+                buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadCSV',
+	    	    			'downloadXLS'
+	    	    			]
+	    	    		}
+	    	    }
            },
 	        legend: {
 	            enabled: false

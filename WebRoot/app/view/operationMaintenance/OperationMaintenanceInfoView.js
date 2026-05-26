@@ -3902,6 +3902,8 @@ function getOperationMaintenanceMonitorCurveData(){
 		                    }
 		                },
 		                lineWidth: 1,
+			        	tickWidth: 1,      // 刻度线宽度
+		                tickLength: 5,     // 刻度线长度（可选）
 		                opposite:opposite
 		          };
 		        yAxis.push(singleAxis);
@@ -3935,7 +3937,7 @@ function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId
 	        chart: {
 	            renderTo: divId,
 	            type: 'spline',
-	            shadow: true,
+	            shadow: false,
 	            borderWidth: 0,
 	            zoomType: 'xy'
 	        },

@@ -1,4 +1,5 @@
 var diagramTiledPage=1;
+var diagramAspectRatio=1;
 Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.historyMonitoringInfoView', // 定义别名
@@ -908,6 +909,8 @@ function deviceHistoryQueryCurve(deviceType){
 		                    }
 		                },
 		                lineWidth: 1,
+			        	tickWidth: 1,      // 刻度线宽度
+		                tickLength: 5,     // 刻度线长度（可选）
 		                opposite:opposite
 		          };
 		        if(curveConf[i].yAxisOpposite){
@@ -973,7 +976,7 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
 	        chart: {
 	            renderTo: divId,
 	            type: 'spline',
-	            shadow: true,
+	            shadow: false,
 	            borderWidth: 0,
 	            zoomType: 'xy'
 	        },
@@ -1944,7 +1947,7 @@ function resizeTiledGraphs(panel,containerId) {
     var columnCount = parseInt(effectivePanelWidth / graghMinWidth);
     if (columnCount < 1) columnCount = 1;
     var gtWidth = effectivePanelWidth / columnCount - 1;
-    var gtHeight = gtWidth * 0.75;
+    var gtHeight = gtWidth * diagramAspectRatio;
 
     // 设置每个 div 的宽高
     for (var i = 0; i < containerChildren.length; i++) {
@@ -2059,7 +2062,7 @@ loadSurfaceCardList = function (page) {
             var effectivePanelWidth = panelWidth - scrollWidth;
             var columnCount = parseInt( effectivePanelWidth/graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
             var gtWidth = effectivePanelWidth/columnCount-1; // 有滚动条时图形宽度
-            var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
+            var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
             
             
             var gtWidth2 = gtWidth + 'px';
@@ -2171,7 +2174,7 @@ loadPSDiagramTiledList = function (page) {
             var scrollWidth = getScrollWidth(); // 滚动条的宽度
             var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
             var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
-            var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
+            var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
             var gtWidth2 = gtWidth + 'px';
             var gtHeight2 = gtHeight + 'px';
 //            gtWidth2 = (100/columnCount) + '%';
@@ -2279,7 +2282,7 @@ loadISDiagramTiledList = function (page) {
             var scrollWidth = getScrollWidth(); // 滚动条的宽度
             var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
             var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
-            var gtHeight = gtWidth * 0.75; // 有滚动条时图形高度
+            var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
             var gtWidth2 = gtWidth + 'px';
             var gtHeight2 = gtHeight + 'px';
 //            gtWidth2 = (100/columnCount) + '%';

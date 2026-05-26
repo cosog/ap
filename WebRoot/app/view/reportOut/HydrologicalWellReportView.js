@@ -1359,7 +1359,9 @@ function CreateHydrologicalWellReportCurve(){
 		                    }
 		                },
 		                opposite:opposite,
-		                lineWidth: 1
+		                lineWidth: 1,
+			        	tickWidth: 1,      // 刻度线宽度
+		                tickLength: 5     // 刻度线长度（可选）
 		          };
 		        if(curveConf[i].yAxisOpposite){
 		        	yAxis_r.push(singleAxis);
@@ -1422,7 +1424,7 @@ function initHydrologicalWellReportCurveChartFn(series, tickInterval, divId, tit
 	        chart: {
 	            renderTo: divId,
 	            type: 'spline',
-	            shadow: true,
+	            shadow: false,
 	            borderWidth: 0,
 	            zoomType: 'xy'
 	        },

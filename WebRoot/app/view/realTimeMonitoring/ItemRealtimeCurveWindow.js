@@ -26,6 +26,7 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
         		region: 'center',
         		layout: 'fit',
         		autoScroll: false,
+        		border: false,
         		tbar:[{
                     id: 'RealtimeCurveItemName_Id',
                     xtype: 'textfield',
@@ -140,7 +141,7 @@ function getItemRealTimeCurveData(){
 	        var series = [];  // 直接定义为数组
 	        var seriesItem = {
 	            name: legendName[0],
-	            lineWidth: 3,
+	            lineWidth: 2,
 	            marker: { enabled: true },
 	            dataGrouping: { enabled: false },
 	            data: []  // 空数组，下面填充

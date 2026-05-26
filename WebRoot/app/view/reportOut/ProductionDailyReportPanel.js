@@ -1077,7 +1077,9 @@ function CreateProductionDailyReportCurve(){
 		                    }
 		                },
 		                opposite:opposite,
-		                lineWidth: 1      // Y 轴主线宽度
+		                lineWidth: 1,      // Y 轴主线宽度
+			        	tickWidth: 1,      // 刻度线宽度
+		                tickLength: 5     // 刻度线长度（可选）
 		          };
 		        if(curveConf[i].yAxisOpposite){
 		        	yAxis_r.push(singleAxis);
@@ -1143,7 +1145,7 @@ function initProductionDailyReportCurveChartFn(series, tickInterval, divId, titl
 	        chart: {
 	            renderTo: divId,
 	            type: 'spline',
-	            shadow: true,
+	            shadow: false,
 	            borderWidth: 0,
 	            zoomType: 'xy'
 	        },

@@ -426,11 +426,11 @@ function getItemHistoryCurveData(){
 
 function initItemHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-		Highcharts.setOptions({
-	        global: {
-	            useUTC: false
-	        }
-	    });
+//		Highcharts.setOptions({
+//	        global: {
+//	            useUTC: false
+//	        }
+//	    });
 
 	    var mychart = new Highcharts.Chart({
 	        chart: {
@@ -439,6 +439,9 @@ function initItemHistoryCurveChartFn(series, tickInterval, divId, title, subtitl
 	            shadow: false,
 	            borderWidth: 0,
 	            zoomType: 'xy'
+	        },
+	        time: {
+	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区
 	        },
 	        credits: {
 	            enabled: false
@@ -458,8 +461,9 @@ function initItemHistoryCurveChartFn(series, tickInterval, divId, title, subtitl
 //	            tickInterval: tickInterval,
 	            tickPixelInterval:tickInterval,
 	            labels: {
-	                formatter: function () {
-	                    return Highcharts.dateFormat(timeFormat, this.value);
+	            	formatter: function () {
+	                    // 使用图表的 time 工具，而非全局 Highcharts.dateFormat
+	                    return this.axis.chart.time.dateFormat(timeFormat, this.value);
 	                },
 	                autoRotation:true,//自动旋转
 	                rotation: -45 //倾斜度，防止数量过多显示不全  

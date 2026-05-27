@@ -865,12 +865,12 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
 
 function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, ytitle, color,legend,timeFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-		 Highcharts.setOptions({
-		        global: {
-		            useUTC: false
-		        }
-		    });
-
+//		 Highcharts.setOptions({
+//		        global: {
+//		            useUTC: false
+//		        }
+//		    });
+//		var localOffset = new Date().getTimezoneOffset();
 		    var mychart = new Highcharts.Chart({
 		        chart: {
 		            renderTo: divId,
@@ -878,6 +878,9 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 		            shadow: false,
 		            borderWidth: 0,
 		            zoomType: 'xy'
+		        },
+		        time: {
+		            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区
 		        },
 		        credits: {
 		            enabled: false
@@ -894,8 +897,12 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 		            title: {
 		                text: xtitle
 		            },labels: {
-		                formatter: function () {
-		                    return Highcharts.dateFormat(timeFormat, this.value);
+//		                formatter: function () {
+//		                    return Highcharts.dateFormat(timeFormat, this.value);
+//		                },
+		            	formatter: function () {
+		                    // 使用图表的 time 工具，而非全局 Highcharts.dateFormat
+		                    return this.axis.chart.time.dateFormat(timeFormat, this.value);
 		                },
 		                autoRotation:true,//自动旋转
 		                rotation: -45 //倾斜度，防止数量过多显示不全  
@@ -907,11 +914,12 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 		        	tickWidth: 1,      // 刻度线宽度
 	                tickLength: 5,     // 刻度线长度（可选）
 		            title: {
-		                text: ytitle,
-		                style: {
-		                    color: '#000000',
-		                    fontWeight: 'bold'
-		                }
+		                text: ytitle
+//		                ,
+//		                style: {
+//		                    color: '#000000',
+//		                    fontWeight: 'bold'
+//		                }
 		            }
 		      }],
 		        tooltip: {
@@ -2117,7 +2125,7 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	            zoomType: 'xy'
 	        },
 	        time: {
-	            useUTC: false   // 在图表配置中直接指定
+	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区
 	        },
 	        credits: {
 	            enabled: false
@@ -2168,7 +2176,8 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	            tickPixelInterval:tickInterval,
 	            labels: {
 	                formatter: function () {
-	                    return Highcharts.dateFormat(timeFormat, this.value);
+//	                    return Highcharts.dateFormat(timeFormat, this.value);
+	                	return this.axis.chart.time.dateFormat(timeFormat, this.value);
 	                },
 	                autoRotation:true,//自动旋转
 	                rotation: -45 //倾斜度，防止数量过多显示不全  

@@ -680,11 +680,11 @@ function showWaterCutRawDataCurve2(result){
 }
 
 function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
-	Highcharts.setOptions({
-        global: {
-            useUTC: false
-        }
-    });
+//	Highcharts.setOptions({
+//        global: {
+//            useUTC: false
+//        }
+//    });
 
     var mychart = new Highcharts.stockChart({
         chart: {
@@ -693,6 +693,9 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
             shadow: true,
             borderWidth: 0,
             zoomType: 'xy'
+        },
+        time: {
+            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区
         },
         credits: {
             enabled: false
@@ -739,7 +742,7 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
             tickPixelInterval:tickInterval,
             labels: {
                 formatter: function () {
-                    return Highcharts.dateFormat(timeFormat, this.value);
+                	return this.axis.chart.time.dateFormat(timeFormat, this.value);
                 },
                 autoRotation:true,//自动旋转
                 rotation: -45 //倾斜度，防止数量过多显示不全  

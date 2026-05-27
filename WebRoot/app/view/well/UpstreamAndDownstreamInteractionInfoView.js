@@ -574,6 +574,8 @@ function showWaterCutRawDataCurve(result){
                     }
                 },
                 lineWidth: 1,
+	        	tickWidth: 1,      // 刻度线宽度
+                tickLength: 5,     // 刻度线长度（可选）
                 opposite:opposite
           };
         yAxis.push(singleAxis);

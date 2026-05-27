@@ -310,7 +310,7 @@ function getItemHistoryCurveData(){
 		        singleSeries.name=legendName[i];
 		        singleSeries.code=legendCode[i];
 		        singleSeries.type='spline';
-		        singleSeries.lineWidth=3;
+		        singleSeries.lineWidth=2;
 		        singleSeries.marker={enabled: false};
 		        singleSeries.yAxis=i;
 		        singleSeries.data=[];
@@ -371,6 +371,8 @@ function getItemHistoryCurveData(){
 		                    }
 		                },
 		                lineWidth: 1,
+			        	tickWidth: 1,      // 刻度线宽度
+		                tickLength: 5,     // 刻度线长度（可选）
 		                opposite:opposite
 		          };
 		        yAxis_l.push(singleAxis);
@@ -434,7 +436,7 @@ function initItemHistoryCurveChartFn(series, tickInterval, divId, title, subtitl
 	        chart: {
 	            renderTo: divId,
 	            type: 'spline',
-	            shadow: true,
+	            shadow: false,
 	            borderWidth: 0,
 	            zoomType: 'xy'
 	        },

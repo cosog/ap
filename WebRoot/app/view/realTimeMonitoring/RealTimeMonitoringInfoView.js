@@ -875,7 +875,7 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 		        chart: {
 		            renderTo: divId,
 		            type: 'spline',
-		            shadow: true,
+		            shadow: false,
 		            borderWidth: 0,
 		            zoomType: 'xy'
 		        },
@@ -904,6 +904,8 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
 		        },
 		        yAxis: [{
 		            lineWidth: 1,
+		        	tickWidth: 1,      // 刻度线宽度
+	                tickLength: 5,     // 刻度线长度（可选）
 		            title: {
 		                text: ytitle,
 		                style: {
@@ -2105,7 +2107,7 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	        chart: {
 	            renderTo: divId,
 	            type: 'spline',
-	            shadow: true,
+	            shadow: false,
 	            borderWidth: 0,
 //	            zooming: {
 //	                mouseWheel: {
@@ -2177,6 +2179,8 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	        	max:maxValue,
 	    		min:minValue,
 	        	lineWidth: 1,
+	        	tickWidth: 1,      // 刻度线宽度
+                tickLength: 5,     // 刻度线长度（可选）
 	            title: {
 	                text: yTitle,
 	                style: {

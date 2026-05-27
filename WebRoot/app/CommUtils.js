@@ -685,7 +685,7 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 			chart : {
 				type : 'spline',
 				renderTo : divId,
-				shadow : true,
+				shadow : false,
 				borderWidth : 0,
 				zoomType : 'xy'
 			},
@@ -827,7 +827,7 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 			chart : {
 				type : 'spline',
 				renderTo : divId,
-				shadow : true,
+				shadow : false,
 				borderWidth : 0,
 				zoomType : 'xy'
 			},
@@ -971,7 +971,7 @@ function initCurveChart(years, values, tickInterval, divId) {
 			chart : {
 				renderTo : divId,
 				type : 'spline',
-				shadow : true,
+				shadow : false,
 				//alignTicks: false,
 				borderWidth : 0,
 				zoomType : 'xy'
@@ -2259,6 +2259,8 @@ function initContinuousDiagramChart(pointdata, divId,title,subtitle,xtext,ytext,
 	                text: ytext   // 载荷（kN） 
                 },
                 lineWidth: 1,
+	        	tickWidth: 1,      // 刻度线宽度
+                tickLength: 5,     // 刻度线长度（可选）
 	            allowDecimals: false,    // 刻度值是否为小数
 	            minorTickInterval: ''   // 不显示次刻度线
 //	            min: 0                  // 最小值
@@ -2666,7 +2668,7 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
 	        chart: {
 	            renderTo: divId,
 	            type: 'spline',
-	            shadow: true,
+	            shadow: false,
 	            borderWidth: 0,
 	            zoomType: 'xy'
 	        },
@@ -2696,6 +2698,8 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
 	        },
 	        yAxis: [{
 	            lineWidth: 1,
+	        	tickWidth: 1,      // 刻度线宽度
+                tickLength: 5,     // 刻度线长度（可选）
 	            title: {
 	                text: ytitle,
 	                style: {
@@ -3134,6 +3138,8 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	                text: loginUserLanguageResource.load+'(kN)'   // 载荷（kN） 
                 },
                 lineWidth: 1,
+	        	tickWidth: 1,      // 刻度线宽度
+                tickLength: 5,     // 刻度线长度（可选）
 	            allowDecimals: false,    // 刻度值是否为小数
 	            minorTickInterval: '',   // 不显示次刻度线
 	            min: yAxisMin                  // 最小值
@@ -3387,6 +3393,8 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 			                text: loginUserLanguageResource.percent+'(%)'  // 应力百分比(%)                                                          
 			            },
 			            lineWidth: 1,
+			        	tickWidth: 1,      // 刻度线宽度
+		                tickLength: 5,     // 刻度线长度（可选）
 			            allowDecimals: false,    // 刻度值是否为小数
 			            minorTickInterval: ''    // 不显示次刻度线
 			        },
@@ -3544,6 +3552,9 @@ showPumpCard = function(result,divId) {
 	}
 	series+="]";
 	var pointdata = Ext.JSON.decode(series);
+	if(pointdata.length==0){
+		pointdata.push({});
+	}
 	title = loginUserLanguageResource.pumpFSDiagram;  // 泵功图
 	initMultiSurfaceCardChart(pointdata, title, deviceName, acqTime, divId);
 	return false;
@@ -3588,6 +3599,8 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upp
 	                text: loginUserLanguageResource.load+'(kN)'
 	            },
 	            lineWidth: 1,
+	        	tickWidth: 1,      // 刻度线宽度
+                tickLength: 5,     // 刻度线长度（可选）
 	            allowDecimals: false, 
 	            minorTickInterval: '',
 //	            min:0,
@@ -3725,6 +3738,8 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 		        yAxis: {    
 		        	min: 0,
 		        	lineWidth: 1,
+		        	tickWidth: 1,      // 刻度线宽度
+	                tickLength: 5,     // 刻度线长度（可选）
 		            title: {                                                                         
 		                text: loginUserLanguageResource.percent+'(%)'                                          
 		            },
@@ -3916,6 +3931,8 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			                text: ytext   // 载荷（kN） 
 	                    },
 	                    lineWidth: 1,
+	    	        	tickWidth: 1,      // 刻度线宽度
+	                    tickLength: 5,     // 刻度线长度（可选）
 			            allowDecimals: false,    // 刻度值是否为小数
 //			            min: yAxisMin<0?null:0,                  // 最小值
 			            minorTickInterval: ''   // 不显示次刻度线
@@ -4132,6 +4149,8 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			                text: ytext   // 载荷（kN） 
 	                    },
 	                    lineWidth: 1,
+	    	        	tickWidth: 1,      // 刻度线宽度
+	                    tickLength: 5,     // 刻度线长度（可选）
 			            allowDecimals: false,    // 刻度值是否为小数
 			            minorTickInterval: ''   // 不显示次刻度线
 //			            min: 0                  // 最小值
@@ -4304,13 +4323,17 @@ function initBalanceCurveChart(catagories,series,divId,title,deviceName,acqTime,
 				xAxis : {
 					categories : catagories,
 					tickInterval : 40,
+					tickWidth: 1,      // 刻度线宽度
+	                tickLength: 10,     // 刻度线长度（可选）
 					title : {
 						text :xtext
 					}
 				},
 				yAxis : {
 //					min: 0,
-					lineWidth : 1,
+					lineWidth: 1,      // Y 轴主线宽度
+	                tickWidth: 1,      // 刻度线宽度
+	                tickLength: 5,     // 刻度线长度（可选）
 					title : {
 						text :ytext,
 						style : {
@@ -4918,6 +4941,8 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	                text: ytext    // 载荷（kN）                                                          
 	            },
 	            lineWidth: 1,
+	        	tickWidth: 1,      // 刻度线宽度
+                tickLength: 5,     // 刻度线长度（可选）
 	            allowDecimals: false,    // 刻度值是否为小数
 	            //endOnTick: false,        //是否强制轴线在标线处结束   
 	            minorTickInterval: '',    // 不显示次刻度线
@@ -5024,6 +5049,8 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	                text: ytext                                             
 	            },
 	            lineWidth: 1,
+	        	tickWidth: 1,      // 刻度线宽度
+                tickLength: 5,     // 刻度线长度（可选）
 	            allowDecimals: false,    // 刻度值是否为小数
 	            //endOnTick: false,        //是否强制轴线在标线处结束   
 	            minorTickInterval: ''    // 不显示次刻度线

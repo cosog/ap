@@ -707,11 +707,12 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 						lineWidth : 1,
 						min:0,
 						title : {
-							text : ytitle,
-							style : {
-								color : '#000000',
-								fontWeight : 'bold'
-							}
+							text : ytitle
+//							,
+//							style : {
+//								color : '#000000',
+//								fontWeight : 'bold'
+//							}
 						},
 						labels : {
 							formatter : function() {
@@ -737,11 +738,12 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 							}
 						},
 						title : {
-							text : ytitle1,
-							style : {
-								color : '#000000',
-								fontWeight : 'bold'
-							}
+							text : ytitle1
+//							,
+//							style : {
+//								color : '#000000',
+//								fontWeight : 'bold'
+//							}
 						}
 					}],
 			tooltip : {
@@ -849,11 +851,12 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 						lineWidth : 1,
 						min:0,
 						title : {
-							text : ytitle,
-							style : {
-								color : '#000000',
-								fontWeight : 'bold'
-							}
+							text : ytitle
+//							,
+//							style : {
+//								color : '#000000',
+//								fontWeight : 'bold'
+//							}
 						},
 						labels : {
 							formatter : function() {
@@ -879,11 +882,12 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 							}
 						},
 						title : {
-							text : ytitle1,
-							style : {
-								color : '#000000',
-								fontWeight : 'bold'
-							}
+							text : ytitle1
+//							,
+//							style : {
+//								color : '#000000',
+//								fontWeight : 'bold'
+//							}
 						}
 					}],
 			tooltip : {
@@ -1003,11 +1007,12 @@ function initCurveChart(years, values, tickInterval, divId) {
 						min:0,
 						//max:200,
 						title : {
-							text : cosog.string.cl,
-							style : {
-								color : '#000000',
-								fontWeight : 'bold'
-							}
+							text : cosog.string.cl
+//							,
+//							style : {
+//								color : '#000000',
+//								fontWeight : 'bold'
+//							}
 						},
 						labels : {
 							formatter : function() {
@@ -1033,11 +1038,12 @@ function initCurveChart(years, values, tickInterval, divId) {
 							}
 						},
 						title : {
-							text : cosog.string.hsl,
-							style : {
-								color : '#000000',
-								fontWeight : 'bold'
-							}
+							text : cosog.string.hsl
+//							,
+//							style : {
+//								color : '#000000',
+//								fontWeight : 'bold'
+//							}
 						}
 					}],
 			tooltip : {
@@ -2701,11 +2707,12 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
 	        	tickWidth: 1,      // 刻度线宽度
                 tickLength: 5,     // 刻度线长度（可选）
 	            title: {
-	                text: ytitle,
-	                style: {
-	                    color: '#000000',
-	                    fontWeight: 'bold'
-	                }
+	                text: ytitle
+//	                ,
+//	                style: {
+//	                    color: '#000000',
+//	                    fontWeight: 'bold'
+//	                }
 	            },
 	            labels: {
 	                formatter: function () {
@@ -3552,15 +3559,20 @@ showPumpCard = function(result,divId) {
 	}
 	series+="]";
 	var pointdata = Ext.JSON.decode(series);
+	
+	var yAxisMax=null;
+	var yAxisMin=null;
 	if(pointdata.length==0){
 		pointdata.push({});
+		yAxisMax=100;
+		yAxisMin=0;
 	}
 	title = loginUserLanguageResource.pumpFSDiagram;  // 泵功图
-	initMultiSurfaceCardChart(pointdata, title, deviceName, acqTime, divId);
+	initMultiSurfaceCardChart(pointdata, title, deviceName, acqTime, divId,yAxisMax,yAxisMin);
 	return false;
 }
 
-function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine) {
+function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,yAxisMax,yAxisMin,upperLoadLine,lowerLoadLine) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
 		mychart = new Highcharts.Chart({
 			chart: {                                                                             
@@ -3603,7 +3615,8 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,upp
                 tickLength: 5,     // 刻度线长度（可选）
 	            allowDecimals: false, 
 	            minorTickInterval: '',
-//	            min:0,
+	            min:yAxisMin,
+	            max:yAxisMax,
 	            plotLines: [{
                     color: '#d12',
                     dashStyle: 'Dash', //Dash,Dot,Solid,默认Solid
@@ -3697,16 +3710,30 @@ showPumpEfficiency = function(bxzcData, divId) {
 	var pumpEff2=bxzcData.pumpEff2;       // 充满系数
 	var pumpEff3=bxzcData.pumpEff3;       // 漏失系数
 	var pumpEff4=bxzcData.pumpEff4;   // 液体收缩系数
-	var ydata="[" + pumpEff1 + "," + pumpEff2 + "," + pumpEff3 + "," + pumpEff4 + "]";
-	if(pumpEff1==0 && pumpEff2==0 && pumpEff3==0 && pumpEff4==0){
-		ydata="[]";
-	}
-	ydata = Ext.JSON.decode(ydata);
+	
+	var ydata=[];
+	ydata.push(isNumber(pumpEff1)?parseFloat(pumpEff1):0);
+	ydata.push(isNumber(pumpEff2)?parseFloat(pumpEff2):0);
+	ydata.push(isNumber(pumpEff3)?parseFloat(pumpEff3):0);
+	ydata.push(isNumber(pumpEff4)?parseFloat(pumpEff4):0);
+	
 	initPumpEfficiencyChart(ydata, deviceName, acqTime, divId);
 	return false;
 }
 
 function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname) {
+	var yAxisMax=100;
+	var dataLabelsEnable=false;
+	for(var i=0;i<ydata.length;i++){
+		if(parseFloat(ydata[i])>=100){
+			yAxisMax=null;
+		}
+		
+		if(parseFloat(ydata[i])>0){
+			dataLabelsEnable=true;
+		}
+	}
+	
 	$('#'+divId).highcharts({
 				chart: {                                                                             
 		            type: 'column',      
@@ -3737,6 +3764,7 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 		        },
 		        yAxis: {    
 		        	min: 0,
+		        	max: yAxisMax,
 		        	lineWidth: 1,
 		        	tickWidth: 1,      // 刻度线宽度
 	                tickLength: 5,     // 刻度线长度（可选）
@@ -3773,7 +3801,7 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 		        series: [{
 		            data: ydata,
 		            dataLabels: {
-		                enabled: true,
+		                enabled: dataLabelsEnable,
 		                rotation: 0,
 		                color: '#0066cc',
 		                align: 'center',
@@ -4335,11 +4363,12 @@ function initBalanceCurveChart(catagories,series,divId,title,deviceName,acqTime,
 	                tickWidth: 1,      // 刻度线宽度
 	                tickLength: 5,     // 刻度线长度（可选）
 					title : {
-						text :ytext,
-						style : {
-							color : '#000000',
-							fontWeight : 'bold'
-						}
+						text :ytext
+//						,
+//						style : {
+//							color : '#000000',
+//							fontWeight : 'bold'
+//						}
 					},
 					labels : {
 						formatter : function() {
@@ -4502,11 +4531,12 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,subtitle,
 					lineWidth : 1,
 					tickPosition:'inside',
 					title : {
-						text :'位移(m)',
-						style : {
-							color : '#000000',
-							fontWeight : 'bold'
-						}
+						text :'位移(m)'
+//						,
+//						style : {
+//							color : '#000000',
+//							fontWeight : 'bold'
+//						}
 					},
 					labels : {
 						formatter : function() {
@@ -4525,11 +4555,12 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,subtitle,
 					lineWidth : 1,
 					tickPosition:'inside',
 					title : {
-						text :'速度(m/s)',
-						style : {
-							color : '#000000',
-							fontWeight : 'bold'
-						}
+						text :'速度(m/s)'
+//						,
+//						style : {
+//							color : '#000000',
+//							fontWeight : 'bold'
+//						}
 					},
 					labels : {
 						formatter : function() {
@@ -4548,11 +4579,12 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,subtitle,
 					lineWidth : 1,
 					tickPosition:'inside',
 					title : {
-						text :'加速度(m/s²)',
-						style : {
-							color : '#000000',
-							fontWeight : 'bold'
-						}
+						text :'加速度(m/s²)'
+//							,
+//						style : {
+//							color : '#000000',
+//							fontWeight : 'bold'
+//						}
 					},
 					labels : {
 						formatter : function() {
@@ -4652,11 +4684,12 @@ function initBalanceCurveChartTowY(catagories,series,divId,titletext,subtitle,yt
 					lineWidth : 1,
 //					tickPosition:'inside',
 					title : {
-						text :'位移(m)',
-						style : {
-							color : '#000000',
-							fontWeight : 'bold'
-						}
+						text : loginUserLanguageResource.displacement+'(m)'
+//							,
+//						style : {
+//							color : '#000000',
+//							fontWeight : 'bold'
+//						}
 					},
 					labels : {
 						formatter : function() {
@@ -4676,11 +4709,12 @@ function initBalanceCurveChartTowY(catagories,series,divId,titletext,subtitle,yt
 //					tickPosition:'inside',
 					opposite:true,
 					title : {
-						text :'速度(m/s)',
-						style : {
-							color : '#000000',
-							fontWeight : 'bold'
-						}
+						text :'速度(m/s)'
+//							,
+//						style : {
+//							color : '#000000',
+//							fontWeight : 'bold'
+//						}
 					},
 					labels : {
 						formatter : function() {

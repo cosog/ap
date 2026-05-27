@@ -1134,12 +1134,12 @@ function CreateProductionDailyReportCurve(){
 
 function initProductionDailyReportCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-		var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
-		Highcharts.setOptions({
-	        global: {
-	            useUTC: false
-	        }
-	    });
+//		var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
+//		Highcharts.setOptions({
+//	        global: {
+//	            useUTC: false
+//	        }
+//	    });
 
 	    var mychart = new Highcharts.Chart({
 	        chart: {
@@ -1148,6 +1148,9 @@ function initProductionDailyReportCurveChartFn(series, tickInterval, divId, titl
 	            shadow: false,
 	            borderWidth: 0,
 	            zoomType: 'xy'
+	        },
+	        time: {
+	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区
 	        },
 	        credits: {
 	            enabled: false
@@ -1168,7 +1171,7 @@ function initProductionDailyReportCurveChartFn(series, tickInterval, divId, titl
 	            tickPixelInterval:tickInterval,
 	            labels: {
 	                formatter: function () {
-	                    return Highcharts.dateFormat(timeFormat, this.value);
+	                	return this.axis.chart.time.dateFormat(timeFormat, this.value);
 	                },
 	                autoRotation:true,//自动旋转
 	                rotation: -45 //倾斜度，防止数量过多显示不全  

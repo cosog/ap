@@ -257,10 +257,10 @@ function exportAlarmOverviewDataExcel() {
 		statType=1;
 	}
 	 	
-	var fileName='报警查询'+loginUserLanguageResource.deviceList;
+	var fileName=loginUserLanguageResource.alarmData+'-'+loginUserLanguageResource.deviceList;
 	 	
 	if(deviceType.indexOf(",")<0){
-	 	fileName=deviceTypeName+fileName;
+	 	fileName=deviceTypeName+'-'+fileName;
 	}
 	 	
 	var title=fileName;
@@ -770,7 +770,14 @@ function showAlarmStatDrillDownChart(title,divId, subtitle,yAxisTitle,rawSeriesD
         title: { text: title },
         subtitle: { text: subtitle },
         xAxis: { type: 'category' },
-        yAxis: { title: { text: yAxisTitle } },
+        yAxis: { 
+        	title: { 
+        		text: yAxisTitle 
+        	},
+        	lineWidth: 1,      // Y 轴主线宽度
+            tickWidth: 1,      // 刻度线宽度
+            tickLength: 5     // 刻度线长度（可选）
+        },
         legend: { enabled: false },
         credits: { enabled: false },
         tooltip: {
@@ -810,7 +817,7 @@ function showAlarmStatDrillDownChart(title,divId, subtitle,yAxisTitle,rawSeriesD
                             var code = opt.code || point.code;
                             var alarmType = opt.alarmType || point.alarmType;
                             var alarmLevel = opt.alarmLevel || point.alarmLevel;
-                            console.log('🔔 [CLICK] 第二层柱子:', name, '| code:', code, '| alarmType:', alarmType, '| alarmLevel:', alarmLevel);
+//                            console.log('🔔 [CLICK] 第二层柱子:', name, '| code:', code, '| alarmType:', alarmType, '| alarmLevel:', alarmLevel);
                             var isSelected = point.selected;
                             if (isSelected) {
                                 point.select(false);
@@ -1265,7 +1272,14 @@ function showAlarmQueryStatDataColChat(title,divId,name,categories,seriesData){
 		},
         title: { text: title },
         xAxis: { categories: categories },
-        yAxis: { title: { text: name } },
+        yAxis: { 
+        	title: { 
+        		text: name 
+        	},
+        	lineWidth: 1,      // Y 轴主线宽度
+            tickWidth: 1,      // 刻度线宽度
+            tickLength: 5     // 刻度线长度（可选）
+        },
         tooltip: {
 //            format: '<b>{point.name}</b><br/>{series.name}: {y}<br/>总报警数(该柱): {point.stackTotal}'
         	formatter: function() {
@@ -1318,12 +1332,12 @@ function showAlarmQueryStatDataColChat(title,divId,name,categories,seriesData){
                             	
                                 currentPoint.select(false);
                                 resetAlarmStatChartPointStyle(currentPoint);
-                                console.log('❌ 取消选中:', currentPoint.series.name, currentPoint.category, 'code:', currentPoint.code);
+//                                console.log('❌ 取消选中:', currentPoint.series.name, currentPoint.category, 'code:', currentPoint.code);
                             } else {
                                 resetAlarmStatChartAllPoints(chart);
                                 currentPoint.select(true);
                                 applyAlarmStatChartHighlightEffect(currentPoint);
-                                console.log('✅ 选中:', currentPoint.series.name, currentPoint.category, 'code:', currentPoint.code);
+//                                console.log('✅ 选中:', currentPoint.series.name, currentPoint.category, 'code:', currentPoint.code);
                                 
                                 Ext.getCmp('SelectedAlarmStatType_Id').setValue(currentPoint.alarmType);
                             	Ext.getCmp('SelectedAlarmStatLevel_Id').setValue(currentPoint.alarmLevel);

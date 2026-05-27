@@ -3927,11 +3927,11 @@ function getOperationMaintenanceMonitorCurveData(){
 
 function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-		Highcharts.setOptions({
-	        global: {
-	            useUTC: false
-	        }
-	    });
+//		Highcharts.setOptions({
+//	        global: {
+//	            useUTC: false
+//	        }
+//	    });
 
 	    var mychart = new Highcharts.Chart({
 	        chart: {
@@ -3940,6 +3940,9 @@ function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId
 	            shadow: false,
 	            borderWidth: 0,
 	            zoomType: 'xy'
+	        },
+	        time: {
+	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区
 	        },
 	        credits: {
 	            enabled: false
@@ -3959,7 +3962,7 @@ function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId
 	            tickPixelInterval:tickInterval,
 	            labels: {
 	                formatter: function () {
-	                    return Highcharts.dateFormat(timeFormat, this.value);
+	                	return this.axis.chart.time.dateFormat(timeFormat, this.value);
 	                },
 	                autoRotation:true,//自动旋转
 	                rotation: -45 //倾斜度，防止数量过多显示不全  

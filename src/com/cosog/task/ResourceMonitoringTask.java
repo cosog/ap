@@ -462,24 +462,10 @@ public class ResourceMonitoringTask {
     }
 	
 	public static int getDataBaseStatus(){
-		int r=0;
-		Connection conn=null;
-		try{
-			conn = OracleJdbcUtis.getConnection();
-			if(conn!=null){
-				r=1;
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			r=0;
-		}finally{
-			if(conn!=null){
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+		int r=OracleJdbcUtis.databaseStatus()?1:0;
+		if(r==0){
+			String dataSourceStats= OracleJdbcUtis.getDataSourceStats();
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-"+"连接池状态:"+dataSourceStats);
 		}
 		return r;
 	}

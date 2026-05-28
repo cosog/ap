@@ -107,6 +107,7 @@ public class DatabaseMaintenanceTask {
 	
 //	@Scheduled(cron = "0 0/5 * * * ?")
 	public static void timingDeleteDatabaseHistoryData(){
+		long t1=System.nanoTime();
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData start!");
 		
 		String currentDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
@@ -141,7 +142,8 @@ public class DatabaseMaintenanceTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData finished!");
+		long t2=System.nanoTime();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData finished!"+"耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 		
 //		long acqDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_ACQDATA_HIST");
 //		long acqRawDataDelCount= DatabaseMaintenanceCounterUtils.sum("TBL_ACQRAWDATA");

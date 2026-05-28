@@ -48,7 +48,13 @@ private static OuterDatabaseSyncTask instance=new OuterDatabaseSyncTask();
 			Connection conn = null;
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			conn=OracleJdbcUtis.getConnection();
+			try {
+				conn=OracleJdbcUtis.getConnection();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return;
+			}
 			if(conn!=null){
 				try {
 					do{

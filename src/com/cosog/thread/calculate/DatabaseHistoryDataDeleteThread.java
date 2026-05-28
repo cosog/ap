@@ -26,7 +26,7 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 	@Override
 	public void run(){
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData,device id:"+deviceId+" start!");
-		
+		long t1=System.nanoTime();
 		if(StringManagerUtils.isNotNull(acqTime)){
 			int cycle=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
 			String startTime=Config.getInstance().configFile.getAp().getDatabaseMaintenance().getStartTime();
@@ -130,13 +130,15 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 				}
 			}
 		}
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":timingDeleteDatabaseHistoryData,deviceId:"+deviceId+", finished!");
+		long t2=System.nanoTime();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":timingDeleteDatabaseHistoryData,deviceId:"+deviceId+", finished!"+"耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 		DatabaseMaintenanceCounterUtils.countDown();
 	}
 	
 	@SuppressWarnings("static-access")
 	public void deleteData(String table,String timeColumn,String deviceColumn,int deviceId,String newestTime,String timeFormat,int retentionTime){
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",timingDeleteDatabaseHistoryData,table:"+table+",device id:"+deviceId+" start!");
+		long t1=System.nanoTime();
 		int timeOut=60*10;//sql执行超时时间
 		int delCount=0;
 		int r=0;
@@ -224,7 +226,8 @@ public class DatabaseHistoryDataDeleteThread implements Runnable{
 				}while(!Thread.interrupted());
 			}
 		}
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":timingDeleteDatabaseHistoryData,deviceId:"+deviceId+",table:"+table+",delCount:"+delCount+", finished!");
+		long t2=System.nanoTime();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":timingDeleteDatabaseHistoryData,deviceId:"+deviceId+",table:"+table+",delCount:"+delCount+", finished!"+"耗时:"+StringManagerUtils.getTimeDiff(t1, t2));
 		DatabaseMaintenanceCounterUtils.add(delCount,table);
 	}
 

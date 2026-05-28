@@ -19,47 +19,48 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cosog.model.DataSourceConfig;
 import com.cosog.model.DataWriteBackConfig;
 import com.cosog.task.MemoryDataManagerTask;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 import oracle.sql.CLOB;
 
-public class OracleJdbcUtis {
+public class OracleJdbcUtis3 {
 
     private static final Logger logger = LoggerFactory.getLogger(OracleJdbcUtis.class);
 
-    // HikariCP 数据源单例（使用 volatile + 双重检查锁）
-    private static volatile HikariDataSource dataSource = null;
-    private static volatile HikariDataSource outerDataSource = null;
-    private static volatile HikariDataSource outerDataWriteBackDataSource = null;
+    // 数据源单例（使用 volatile + 双重检查锁）
+    private static volatile BasicDataSource dataSource = null;
+    private static volatile BasicDataSource outerDataSource = null;
+    private static volatile BasicDataSource outerDataWriteBackDataSource = null;
 
     // 超时配置（单位：毫秒）
     private static final int CONNECT_TIMEOUT_MS = 10 * 1000;      // 连接建立超时 10秒
     private static final int SOCKET_TIMEOUT_MS = 30 * 1000;       // socket读写超时 30秒
-    private static final int VALIDATION_TIMEOUT_MS = 5000;        // 验证查询超时 5秒（单位毫秒，HikariCP要求>=250ms）
+    private static final int VALIDATION_QUERY_TIMEOUT = 5;        // 验证查询超时 5秒（适度增加）
 
-    // 高并发重试配置（最多重试1次，无延迟，快速失败）
-    private static final int MAX_RETRY_COUNT = 1;
+    // 高并发重试配置：最多重试1次，无延迟（避免线程阻塞）
+    private static final int MAX_RETRY_COUNT = 1;                 // 只重试1次
+    private static final long INITIAL_RETRY_DELAY_MS = 0;         // 无延迟，立即重试
 
-    // 连接池默认参数（HikariCP 3.x 兼容配置）
-    private static final int DEFAULT_MAX_POOL_SIZE = 50;          // 最大连接数
-    private static final int DEFAULT_MIN_IDLE = 20;               // 最小空闲连接数
-    private static final long DEFAULT_CONNECTION_TIMEOUT_MS = 10000; // 获取连接超时10秒
-    private static final long DEFAULT_IDLE_TIMEOUT_MS = 300000;   // 空闲超时5分钟（300秒）
-    private static final long DEFAULT_MAX_LIFETIME_MS = 1800000;  // 最大生命周期30分钟（需小于数据库超时）
-    private static final long DEFAULT_LEAK_DETECTION_THRESHOLD_MS = 0; // 连接泄露检测10秒
+    // 连接池默认参数（针对高并发优化）
+    private static final int DEFAULT_MAX_TOTAL = 50;              // 最大连接数（根据实际负载调整）
+    private static final int DEFAULT_MAX_IDLE = 20;               // 最大空闲连接数
+    private static final int DEFAULT_MIN_IDLE = 5;                // 最小空闲连接数
+    private static final int DEFAULT_INITIAL_SIZE = 5;            // 初始连接数
+    private static final long DEFAULT_MAX_WAIT_MILLIS = 10000;    // 获取连接最大等待时间10秒
+    private static final int DEFAULT_REMOVE_ABANDONED_TIMEOUT = 180;   // 3分钟
+    private static final long DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MS = 20000; // 20秒
 
-    // 健康检查调度器（可选）
+    // 健康检查调度器
     private static volatile ScheduledExecutorService healthCheckScheduler = null;
-    private static final AtomicBoolean resetting = new AtomicBoolean(false);
+    private static final AtomicBoolean resetting = new AtomicBoolean(false); // 防止并发重置
 
-    // ---------- 初始化内部数据源（HikariCP 3.4.5）----------
+    // ---------- 初始化数据源（内部使用） ----------
     private static void initDataSource() {
         try {
             String driver = Config.getInstance().configFile.getAp().getDatasource().getDriver();
@@ -67,118 +68,121 @@ public class OracleJdbcUtis {
             String username = Config.getInstance().configFile.getAp().getDatasource().getUser();
             String password = Config.getInstance().configFile.getAp().getDatasource().getPassword();
 
-            HikariConfig config = new HikariConfig();
-            config.setDriverClassName(driver);
-            config.setJdbcUrl(url);
-            config.setUsername(username);
-            config.setPassword(password);
+            BasicDataSource ds = new BasicDataSource();
+            ds.setDriverClassName(driver);
+            ds.setUrl(url);
+            ds.setUsername(username);
+            ds.setPassword(password);
 
-            // 连接池核心配置（3.x 支持的参数）
-            config.setMaximumPoolSize(DEFAULT_MAX_POOL_SIZE);
-            config.setMinimumIdle(DEFAULT_MIN_IDLE);
-            config.setConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT_MS);
-            config.setIdleTimeout(DEFAULT_IDLE_TIMEOUT_MS);
-            config.setMaxLifetime(DEFAULT_MAX_LIFETIME_MS);
-            config.setLeakDetectionThreshold(DEFAULT_LEAK_DETECTION_THRESHOLD_MS);
+            // 连接池数量配置
+            ds.setInitialSize(DEFAULT_INITIAL_SIZE);
+            ds.setMaxIdle(DEFAULT_MAX_IDLE);
+            ds.setMinIdle(DEFAULT_MIN_IDLE);
+            ds.setMaxTotal(DEFAULT_MAX_TOTAL);
+            ds.setMaxWaitMillis(DEFAULT_MAX_WAIT_MILLIS);
 
-            // 连接有效性检查
+            // [MODIFIED] 高并发优化：关闭借出验证（testOnBorrow），改用空闲验证（testWhileIdle）
+            // 避免每次借连接都执行验证查询，降低数据库压力；空闲连接定期清理，极小概率拿到失效连接
             String validationQuery = getValidationQuery(url, driver);
             if (validationQuery != null) {
-                config.setConnectionTestQuery(validationQuery);
-                config.setValidationTimeout(VALIDATION_TIMEOUT_MS); // 单位毫秒，已修正
+                ds.setTestOnBorrow(false);           // 关闭借出验证
+                ds.setTestOnReturn(false);            // 关闭归还验证
+                ds.setTestWhileIdle(true);            // 开启空闲验证
+                ds.setValidationQuery(validationQuery);
+                ds.setValidationQueryTimeout(VALIDATION_QUERY_TIMEOUT);
             }
 
-            // 设置 JDBC 驱动级属性（连接超时、socket超时、tcp keepalive）
-            config.addDataSourceProperty("oracle.net.CONNECT_TIMEOUT", String.valueOf(CONNECT_TIMEOUT_MS));
-            config.addDataSourceProperty("oracle.net.SOCKET_TIMEOUT", String.valueOf(SOCKET_TIMEOUT_MS));
-            config.addDataSourceProperty("oracle.jdbc.defaultConnectionValidation", "SOCKET");
-            config.addDataSourceProperty("oracle.net.keepAlive", "true");
+            // 连接回收配置：空闲30秒以上且空闲检查时被驱逐
+            ds.setTimeBetweenEvictionRunsMillis(DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MS);
+            ds.setMinEvictableIdleTimeMillis(30000);  // 空闲30秒后驱逐（原60秒）
+            ds.setRemoveAbandonedOnBorrow(true);
+            ds.setRemoveAbandonedTimeout(DEFAULT_REMOVE_ABANDONED_TIMEOUT);
+            ds.setLogAbandoned(true);
 
-            // 其他性能优化配置
-            config.setPoolName("HikariPool-Main");
-            config.setRegisterMbeans(true);
-            config.setAllowPoolSuspension(false);
-            config.setAutoCommit(true);
+            // [FIXED] 修正连接属性设置格式
+            String connProps = "connectTimeout=" + CONNECT_TIMEOUT_MS +
+                               ";socketTimeout=" + SOCKET_TIMEOUT_MS +
+                               ";tcpKeepAlive=true";
+            ds.setConnectionProperties(connProps);
 
-            dataSource = new HikariDataSource(config);
-            logger.info("HikariCP 3.x data source initialized successfully. Url: {}, MaxPoolSize: {}",
-                    url, DEFAULT_MAX_POOL_SIZE);
+            dataSource = ds;
+            logger.info("Database data source initialized successfully. Url: {}", url);
         } catch (Exception e) {
-            logger.error("Failed to initialize HikariCP data source", e);
+            logger.error("Failed to initialize data source", e);
             dataSource = null;
         }
     }
 
-    // ---------- 初始化外部数据源（HikariCP 3.4.5）----------
     private static void initOuterDataSource() {
         DataSourceConfig dataSourceConfig = MemoryDataManagerTask.getDataSourceConfig();
         if (dataSourceConfig != null && dataSourceConfig.isEnable()) {
-            HikariConfig config = new HikariConfig();
-            config.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+            BasicDataSource ds = new BasicDataSource();
+            ds.setDriverClassName("oracle.jdbc.driver.OracleDriver");
             String url = "jdbc:oracle:thin:@" + dataSourceConfig.getIP() + ":" + dataSourceConfig.getPort()
                     + (dataSourceConfig.getVersion() >= 12 ? "/" : ":") + dataSourceConfig.getInstanceName();
-            config.setJdbcUrl(url);
-            config.setUsername(dataSourceConfig.getUser());
-            config.setPassword(dataSourceConfig.getPassword());
+            ds.setUrl(url);
+            ds.setUsername(dataSourceConfig.getUser());
+            ds.setPassword(dataSourceConfig.getPassword());
 
-            config.setMaximumPoolSize(100);
-            config.setMinimumIdle(DEFAULT_MIN_IDLE);
-            config.setConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT_MS);
-            config.setIdleTimeout(DEFAULT_IDLE_TIMEOUT_MS);
-            config.setMaxLifetime(DEFAULT_MAX_LIFETIME_MS);
-            config.setLeakDetectionThreshold(DEFAULT_LEAK_DETECTION_THRESHOLD_MS);
+            ds.setInitialSize(DEFAULT_INITIAL_SIZE);
+            ds.setMaxIdle(DEFAULT_MAX_IDLE);
+            ds.setMinIdle(DEFAULT_MIN_IDLE);
+            ds.setMaxTotal(100);
+            ds.setMaxWaitMillis(DEFAULT_MAX_WAIT_MILLIS);
+            ds.setTestOnBorrow(false);
+            ds.setTestWhileIdle(true);
+            ds.setValidationQuery("SELECT 1 FROM DUAL");
+            ds.setValidationQueryTimeout(VALIDATION_QUERY_TIMEOUT);
+            ds.setRemoveAbandonedOnBorrow(true);
+            ds.setRemoveAbandonedTimeout(DEFAULT_REMOVE_ABANDONED_TIMEOUT);
+            ds.setLogAbandoned(true);
 
-            config.setConnectionTestQuery("SELECT 1 FROM DUAL");
-            config.setValidationTimeout(VALIDATION_TIMEOUT_MS); // 修正单位
+            String connProps = "connectTimeout=" + CONNECT_TIMEOUT_MS +
+                               ";socketTimeout=" + SOCKET_TIMEOUT_MS +
+                               ";tcpKeepAlive=true";
+            ds.setConnectionProperties(connProps);
 
-            config.addDataSourceProperty("oracle.net.CONNECT_TIMEOUT", String.valueOf(CONNECT_TIMEOUT_MS));
-            config.addDataSourceProperty("oracle.net.SOCKET_TIMEOUT", String.valueOf(SOCKET_TIMEOUT_MS));
-            config.addDataSourceProperty("oracle.net.keepAlive", "true");
-
-            config.setPoolName("HikariPool-Outer");
-            config.setRegisterMbeans(true);
-
-            outerDataSource = new HikariDataSource(config);
-            logger.info("Outer HikariCP data source initialized. Url: {}", url);
+            outerDataSource = ds;
+            logger.info("Outer data source initialized. Url: {}", url);
         }
     }
 
-    // ---------- 初始化写回数据源（HikariCP 3.4.5）----------
     private static void initDataWriteBackDataSource() {
         DataWriteBackConfig dataWriteBackConfig = MemoryDataManagerTask.getDataWriteBackConfig();
         if (dataWriteBackConfig != null && dataWriteBackConfig.isEnable()) {
-            HikariConfig config = new HikariConfig();
-            config.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+            BasicDataSource ds = new BasicDataSource();
+            ds.setDriverClassName("oracle.jdbc.driver.OracleDriver");
             String url = "jdbc:oracle:thin:@" + dataWriteBackConfig.getIP() + ":" + dataWriteBackConfig.getPort()
                     + (dataWriteBackConfig.getVersion() >= 12 ? "/" : ":") + dataWriteBackConfig.getInstanceName();
-            config.setJdbcUrl(url);
-            config.setUsername(dataWriteBackConfig.getUser());
-            config.setPassword(dataWriteBackConfig.getPassword());
+            ds.setUrl(url);
+            ds.setUsername(dataWriteBackConfig.getUser());
+            ds.setPassword(dataWriteBackConfig.getPassword());
 
-            config.setMaximumPoolSize(100);
-            config.setMinimumIdle(DEFAULT_MIN_IDLE);
-            config.setConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT_MS);
-            config.setIdleTimeout(DEFAULT_IDLE_TIMEOUT_MS);
-            config.setMaxLifetime(DEFAULT_MAX_LIFETIME_MS);
-            config.setLeakDetectionThreshold(DEFAULT_LEAK_DETECTION_THRESHOLD_MS);
+            ds.setInitialSize(DEFAULT_INITIAL_SIZE);
+            ds.setMaxIdle(DEFAULT_MAX_IDLE);
+            ds.setMinIdle(DEFAULT_MIN_IDLE);
+            ds.setMaxTotal(100);
+            ds.setMaxWaitMillis(DEFAULT_MAX_WAIT_MILLIS);
+            ds.setTestOnBorrow(false);
+            ds.setTestWhileIdle(true);
+            ds.setValidationQuery("SELECT 1 FROM DUAL");
+            ds.setValidationQueryTimeout(VALIDATION_QUERY_TIMEOUT);
+            ds.setRemoveAbandonedOnBorrow(true);
+            ds.setRemoveAbandonedTimeout(DEFAULT_REMOVE_ABANDONED_TIMEOUT);
+            ds.setLogAbandoned(true);
 
-            config.setConnectionTestQuery("SELECT 1 FROM DUAL");
-            config.setValidationTimeout(VALIDATION_TIMEOUT_MS); // 修正单位
+            String connProps = "connectTimeout=" + CONNECT_TIMEOUT_MS +
+                               ";socketTimeout=" + SOCKET_TIMEOUT_MS +
+                               ";tcpKeepAlive=true";
+            ds.setConnectionProperties(connProps);
 
-            config.addDataSourceProperty("oracle.net.CONNECT_TIMEOUT", String.valueOf(CONNECT_TIMEOUT_MS));
-            config.addDataSourceProperty("oracle.net.SOCKET_TIMEOUT", String.valueOf(SOCKET_TIMEOUT_MS));
-            config.addDataSourceProperty("oracle.net.keepAlive", "true");
-
-            config.setPoolName("HikariPool-WriteBack");
-            config.setRegisterMbeans(true);
-
-            outerDataWriteBackDataSource = new HikariDataSource(config);
-            logger.info("Data write-back HikariCP data source initialized. Url: {}", url);
+            outerDataWriteBackDataSource = ds;
+            logger.info("Data write-back data source initialized. Url: {}", url);
         }
     }
 
-    // ---------- 获取数据源实例（线程安全）----------
-    private static HikariDataSource getDataSource() {
+    // ---------- 获取数据源实例（线程安全） ----------
+    private static BasicDataSource getDataSource() {
         if (dataSource == null) {
             synchronized (OracleJdbcUtis.class) {
                 if (dataSource == null) {
@@ -189,7 +193,7 @@ public class OracleJdbcUtis {
         return dataSource;
     }
 
-    private static HikariDataSource getOuterDataSource() {
+    private static BasicDataSource getOuterDataSource() {
         if (outerDataSource == null) {
             synchronized (OracleJdbcUtis.class) {
                 if (outerDataSource == null) {
@@ -200,7 +204,7 @@ public class OracleJdbcUtis {
         return outerDataSource;
     }
 
-    private static HikariDataSource getDataWriteBackDataSource() {
+    private static BasicDataSource getDataWriteBackDataSource() {
         if (outerDataWriteBackDataSource == null) {
             synchronized (OracleJdbcUtis.class) {
                 if (outerDataWriteBackDataSource == null) {
@@ -211,12 +215,13 @@ public class OracleJdbcUtis {
         return outerDataWriteBackDataSource;
     }
 
-    // ---------- 获取连接（高并发优化：快速重试，直接抛异常）----------
+    // ---------- 获取连接（高并发优化：直接抛出SQLException，快速失败，无阻塞重试） ----------
+    // [MODIFIED] 移除返回 null 和 sleep 重试，改为最多一次快速重试（无延迟）
     public static Connection getConnection() throws SQLException {
         SQLException lastException = null;
         for (int retry = 0; retry <= MAX_RETRY_COUNT; retry++) {
             try {
-                HikariDataSource ds = getDataSource();
+                BasicDataSource ds = getDataSource();
                 if (ds == null) {
                     throw new SQLException("DataSource is not available");
                 }
@@ -224,6 +229,7 @@ public class OracleJdbcUtis {
             } catch (SQLException e) {
                 lastException = e;
                 if (retry < MAX_RETRY_COUNT && isRetryableException(e)) {
+                    // 快速重试，不 sleep，避免线程阻塞
                     logger.warn("Retryable SQLException, immediate retry (attempt {})", retry + 1);
                     continue;
                 }
@@ -231,11 +237,10 @@ public class OracleJdbcUtis {
             }
         }
         logger.error("Failed to get connection after {} attempts", MAX_RETRY_COUNT + 1, lastException);
-        String dataSourceStats= getDataSourceStats();
-		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"-"+"连接池状态:"+dataSourceStats);
-        throw lastException;
+        throw lastException;  // 抛出异常，不再返回 null
     }
 
+    // 判断异常是否可重试（连接超时、网络中断、无效连接等）
     private static boolean isRetryableException(SQLException e) {
         if (e instanceof SQLRecoverableException || e instanceof SQLTimeoutException) {
             return true;
@@ -255,15 +260,15 @@ public class OracleJdbcUtis {
         return false;
     }
 
-    // 重置数据源（使用原子标志避免并发重置）
+    // [MODIFIED] 重置数据源时使用原子标志避免并发重置
     public static void resetDataSource() {
         if (resetting.compareAndSet(false, true)) {
             try {
                 if (dataSource != null) {
                     try {
                         dataSource.close();
-                        logger.info("HikariCP DataSource closed and will be reinitialized on next request");
-                    } catch (Exception e) {
+                        logger.info("DataSource closed and will be reinitialized on next request");
+                    } catch (SQLException e) {
                         logger.error("Error closing data source", e);
                     } finally {
                         dataSource = null;
@@ -277,7 +282,7 @@ public class OracleJdbcUtis {
         }
     }
 
-    // 可选：启动后台健康检查（不自动重置，仅记录日志）
+    // [MODIFIED] 启动健康检查（每30秒一次，只记录日志，不自动重置，避免“惊群”）
     public static void startHealthCheck() {
         if (healthCheckScheduler == null) {
             synchronized (OracleJdbcUtis.class) {
@@ -291,10 +296,11 @@ public class OracleJdbcUtis {
                         try (Connection conn = getConnection();
                              Statement st = conn.createStatement();
                              ResultSet rs = st.executeQuery("SELECT 1 FROM DUAL")) {
+                            // 健康
                             logger.debug("Health check succeeded");
                         } catch (Exception e) {
-                            logger.warn("Health check failed", e);
-                            // 不自动重置，避免惊群效应
+                            logger.warn("Health check failed, but won't auto-reset to avoid cascading issues", e);
+                            // 可选：如果连续失败多次再重置，这里简化处理只记录日志
                         }
                     }, 30, 30, TimeUnit.SECONDS);
                     logger.info("Database health check started");
@@ -305,7 +311,7 @@ public class OracleJdbcUtis {
 
     // ---------- 外部数据源连接 ----------
     public static Connection getOuterConnection() throws SQLException {
-        HikariDataSource ds = getOuterDataSource();
+        BasicDataSource ds = getOuterDataSource();
         if (ds == null) {
             throw new SQLException("Outer data source is not enabled or not available");
         }
@@ -313,23 +319,22 @@ public class OracleJdbcUtis {
     }
 
     public static Connection getDataWriteBackConnection() throws SQLException {
-        HikariDataSource ds = getDataWriteBackDataSource();
+        BasicDataSource ds = getDataWriteBackDataSource();
         if (ds == null) {
             throw new SQLException("Data write-back data source is not enabled or not available");
         }
         return ds.getConnection();
     }
 
-    // ---------- 原始的直接连接方式（保留兼容性）----------
+    // ---------- 原始的直接连接方式（保留兼容性） ----------
     public static Connection getConnection(String driver, String url, String username, String password) {
         try {
             Class.forName(driver).newInstance();
             Properties props = new Properties();
             props.setProperty("user", username);
             props.setProperty("password", password);
-            props.setProperty("oracle.net.CONNECT_TIMEOUT", String.valueOf(CONNECT_TIMEOUT_MS));
-            props.setProperty("oracle.net.SOCKET_TIMEOUT", String.valueOf(SOCKET_TIMEOUT_MS));
-            props.setProperty("oracle.net.keepAlive", "true");
+            props.setProperty("connectTimeout", String.valueOf(CONNECT_TIMEOUT_MS));
+            props.setProperty("socketTimeout", String.valueOf(SOCKET_TIMEOUT_MS));
             return DriverManager.getConnection(url, props);
         } catch (Exception e) {
             logger.error("Failed to create direct connection", e);
@@ -337,7 +342,7 @@ public class OracleJdbcUtis {
         }
     }
 
-    // ---------- 统一的资源关闭方法（支持变参）----------
+    // ---------- 统一的资源关闭方法（支持变参） ----------
     public static void closeQuietly(AutoCloseable... resources) {
         if (resources == null) return;
         for (AutoCloseable ac : resources) {
@@ -351,6 +356,7 @@ public class OracleJdbcUtis {
         }
     }
 
+    // 保留旧的重载方法以兼容现有调用（内部调用统一关闭）
     @Deprecated
     public static void closeDBConnection(Connection conn, PreparedStatement pstmt) {
         closeQuietly(pstmt, conn);
@@ -379,14 +385,14 @@ public class OracleJdbcUtis {
     // ---------- 数据库状态检查 ----------
     public static boolean databaseStatus() {
         try (Connection conn = getConnection()) {
-            return conn != null && conn.isValid(VALIDATION_TIMEOUT_MS / 1000); // isValid 参数单位秒，转换一下
+            return conn != null && conn.isValid(VALIDATION_QUERY_TIMEOUT);
         } catch (Exception e) {
             logger.debug("Database status check failed", e);
             return false;
         }
     }
 
-    // ---------- 执行更新（CLOB 支持）----------
+    // ---------- 执行更新（CLOB 支持） ----------
     public static int executeSqlUpdateClob(String sql, List<String> values) throws SQLException {
         return executeSqlUpdateClob(sql, values, 0);
     }
@@ -502,7 +508,8 @@ public class OracleJdbcUtis {
         return list;
     }
 
-    // ---------- 存储过程调用（移除了 synchronized）----------
+    // ---------- 存储过程调用 ----------
+    // [MODIFIED] 移除 synchronized，避免串行化（存储过程调用本身是线程安全的）
     public static int callProcedure(String procedure, List<Object> params) throws SQLException {
         try (Connection conn = getConnection();
              CallableStatement cs = conn.prepareCall(buildProcedureCall(procedure, params))) {
@@ -518,13 +525,14 @@ public class OracleJdbcUtis {
         }
     }
 
+    // Java 8 兼容的存储过程调用字符串构建
     private static String buildProcedureCall(String procedure, List<Object> params) {
         StringBuilder call = new StringBuilder("{call ").append(procedure).append("(");
         if (params != null && !params.isEmpty()) {
             for (int i = 0; i < params.size(); i++) {
                 call.append("?,");
             }
-            call.setLength(call.length() - 1);
+            call.setLength(call.length() - 1); // 删除最后一个逗号
         }
         call.append(")}");
         return call.toString();
@@ -544,61 +552,5 @@ public class OracleJdbcUtis {
             return "SELECT 1 FROM SYSIBM.SYSDUMMY1";
         }
         return null;
-    }
-    
-    /**
-     * 获取内部主数据源的连接池状态
-     * @return 包含各项指标的字符串，格式：Total=X, Active=Y, Idle=Z, Waiting=W
-     */
-    public static String getDataSourceStats() {
-        return getPoolStats(getDataSource());
-    }
-
-    /**
-     * 获取外部数据源的连接池状态
-     */
-    public static String getOuterDataSourceStats() {
-        return getPoolStats(getOuterDataSource());
-    }
-
-    /**
-     * 获取写回数据源的连接池状态
-     */
-    public static String getDataWriteBackDataSourceStats() {
-        return getPoolStats(getDataWriteBackDataSource());
-    }
-
-    /**
-     * 获取所有数据源的简要状态（用于整体监控）
-     */
-    public static String getAllDataSourcesStats() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Main: ").append(getDataSourceStats()).append("; ");
-        sb.append("Outer: ").append(getOuterDataSourceStats()).append("; ");
-        sb.append("WriteBack: ").append(getDataWriteBackDataSourceStats());
-        return sb.toString();
-    }
-
-    // 私有通用方法：从 HikariDataSource 获取 HikariPoolMXBean 并提取指标
-    private static String getPoolStats(HikariDataSource ds) {
-        if (ds == null) {
-            return "DataSource not initialized";
-        }
-        // HikariPoolMXBean 在 HikariCP 3.x 中位于 com.zaxxer.hikari 包下
-        com.zaxxer.hikari.HikariPoolMXBean poolBean = ds.getHikariPoolMXBean();
-        if (poolBean == null) {
-            // 可能由于未启用 JMX 或连接池尚未初始化完成
-            return "MXBean not available (enable registerMbeans or wait for initialization)";
-        }
-        try {
-            int total = poolBean.getTotalConnections();
-            int active = poolBean.getActiveConnections();
-            int idle = poolBean.getIdleConnections();
-            int waiting = poolBean.getThreadsAwaitingConnection();
-            return String.format("Total=%d, Active=%d, Idle=%d, Waiting=%d", total, active, idle, waiting);
-        } catch (Exception e) {
-            logger.warn("Failed to get pool stats", e);
-            return "Error retrieving stats: " + e.getMessage();
-        }
     }
 }

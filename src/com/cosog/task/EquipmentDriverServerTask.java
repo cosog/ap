@@ -1254,10 +1254,13 @@ public class EquipmentDriverServerTask {
 			Connection conn = null;   
 			PreparedStatement pstmt = null;   
 			ResultSet rs = null;
-			conn=OracleJdbcUtis.getConnection();
-			if(conn==null || modbusProtocolConfig==null){
-	        	return -1;
-	        }
+			try {
+				conn=OracleJdbcUtis.getConnection();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return -1;
+			}
 			try {
 				pstmt = conn.prepareStatement(sql);
 				rs=pstmt.executeQuery();

@@ -51,43 +51,76 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 		this.unit=unit;
 	}
 	
+//	@Override
+//	public int compareTo(ProtocolItemResolutionData protocolItemResolutionData) {//重写Comparable接口的compareTo方法   按照sort升序 addr升序 bitIndex升序
+//		int r=0;
+//		if(this.sort>protocolItemResolutionData.getSort()){
+//			r= 1;
+//		}else if(this.sort<protocolItemResolutionData.getSort()){
+//			r= -1;
+//		}else{
+//			if(this.displayItemId>protocolItemResolutionData.getDisplayItemId()){
+//				r= 1;
+//			}else if(this.displayItemId<protocolItemResolutionData.getDisplayItemId()){
+//				r= -1;
+//			}else{
+//				if(this.type>protocolItemResolutionData.getType()){
+//					r= 1;
+//				}else if(this.type<protocolItemResolutionData.getType()){
+//					r= -1;
+//				}else{
+//					if(this.type==0 && protocolItemResolutionData.getType()==0){
+//						if(StringManagerUtils.stringToInteger(this.addr)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
+//							r= 1;
+//						}else if(StringManagerUtils.stringToInteger(this.addr)<StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
+//							r= -1;
+//						}else{
+//							if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getBitIndex())){
+//								r= 1;
+//							}else if(StringManagerUtils.stringToInteger(this.bitIndex)<StringManagerUtils.stringToInteger(protocolItemResolutionData.getBitIndex())) {
+//							    r = -1;
+//							}else{
+//							    r = 0;   // 相等时返回 0
+//							}
+//						}
+//					}else{
+//						r=this.column.compareTo(protocolItemResolutionData.getColumn());
+//					}
+//				}
+//			}
+//		}
+//		return r;
+//	}
+	
 	@Override
-	public int compareTo(ProtocolItemResolutionData protocolItemResolutionData) {//重写Comparable接口的compareTo方法   按照sort升序 addr升序 bitIndex升序
-		int r=0;
-		if(this.sort>protocolItemResolutionData.getSort()){
-			r= 1;
-		}else if(this.sort<protocolItemResolutionData.getSort()){
-			r= -1;
-		}else{
-			if(this.displayItemId>protocolItemResolutionData.getDisplayItemId()){
-				r= 1;
-			}else if(this.displayItemId<protocolItemResolutionData.getDisplayItemId()){
-				r= -1;
-			}else{
-				if(this.type>protocolItemResolutionData.getType()){
-					r= 1;
-				}else if(this.type<protocolItemResolutionData.getType()){
-					r= -1;
-				}else{
-					if(this.type==0 && protocolItemResolutionData.getType()==0){
-						if(StringManagerUtils.stringToInteger(this.addr)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
-							r= 1;
-						}else if(StringManagerUtils.stringToInteger(this.addr)<StringManagerUtils.stringToInteger(protocolItemResolutionData.getAddr())){
-							r= -1;
-						}else{
-							if(StringManagerUtils.stringToInteger(this.bitIndex)>StringManagerUtils.stringToInteger(protocolItemResolutionData.getBitIndex())){
-								r= 1;
-							}else{
-								r= -1;
-							}
-						}
-					}else{
-						r=this.column.compareTo(protocolItemResolutionData.getColumn());
-					}
-				}
-			}
-		}
-		return r;
+	public int compareTo(ProtocolItemResolutionData o) {
+	    if (this.sort != o.sort) {
+	        return Integer.compare(this.sort, o.sort);
+	    }
+	    if (this.displayItemId != o.displayItemId) {
+	        return Integer.compare(this.displayItemId, o.displayItemId);
+	    }
+	    if (this.type != o.type) {
+	        return Integer.compare(this.type, o.type);
+	    }
+	    
+	    // type 相等的情况
+	    if (this.type == 0 && o.type == 0) {
+	        int thisAddr = StringManagerUtils.stringToInteger(this.addr);
+	        int otherAddr = StringManagerUtils.stringToInteger(o.addr);
+	        if (thisAddr != otherAddr) {
+	            return Integer.compare(thisAddr, otherAddr);
+	        }
+	        int thisBit = StringManagerUtils.stringToInteger(this.bitIndex);
+	        int otherBit = StringManagerUtils.stringToInteger(o.bitIndex);
+	        return Integer.compare(thisBit, otherBit);
+	    } else {
+	        // 处理 column 为 null 的情况
+	        if (this.column == null && o.column == null) return 0;
+	        if (this.column == null) return -1;
+	        if (o.column == null) return 1;
+	        return this.column.compareTo(o.column);
+	    }
 	}
 	
 	public String getColumnName() {

@@ -96,41 +96,44 @@ public class MemoryDataManagerTask {
 	
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public static void loadMemoryData(){
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"开始加载内存数据");
 		MemoryDataManagerTask.loadLanguageResource();
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"语言包完成");
 		
 		cleanData();
 		
 		loadUserInfo(null,0,"update");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载用户完成");
 		
 		loadProtocolConfig("","");
-		System.out.println("加载协议完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载协议完成");
 		
 		loadProtocolRunStatusConfig();
-		System.out.println("加载协议运行状态配置完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载协议运行状态配置完成");
 		
 		loadProtocolCalculateColumnConfig("");
-		System.out.println("加载协议计算字段配置完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载协议计算字段配置完成");
 		
 		loadReportTemplateConfig();
-		System.out.println("加载报表模板完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载报表模板完成");
 		
 		loadAcqInstanceOwnItemById("","update");
-		System.out.println("加载采控实例信息完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载采控实例信息完成");
 		loadAlarmInstanceOwnItemById("","update");
-		System.out.println("加载报警实例信息完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载报警实例信息完成");
 		loadDisplayInstanceOwnItemById("","update");
-		System.out.println("加载显示实例信息完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载显示实例信息完成");
 		
 		loadDeviceInfo(null,0,"update");
-		System.out.println("加载设备信息完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备信息完成");
 		
 		MemoryDataManagerTask.loadDeviceRealtimeTotalData(null,0);
-		System.out.println("加载实时汇总数据完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载实时汇总数据完成");
 		
 		loadTodayFESDiagram(null,0);
-		System.out.println("加载设备当天功图数据完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备当天功图数据完成");
 		loadTodayRPMData(null,0);
-		System.out.println("加载设备当天转速数据完成");
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备当天转速数据完成");
 	}
 	
 	public static String getMemoryUsage(String key){
@@ -2358,10 +2361,13 @@ public class MemoryDataManagerTask {
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
 		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
+		try {
+			conn=OracleJdbcUtis.getConnection();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2591,10 +2597,13 @@ public class MemoryDataManagerTask {
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
 		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
+		try {
+			conn=OracleJdbcUtis.getConnection();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -2865,10 +2874,13 @@ public class MemoryDataManagerTask {
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
 		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
+		try {
+			conn=OracleJdbcUtis.getConnection();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -4584,8 +4596,10 @@ public class MemoryDataManagerTask {
 	public static UserInfo getUserInfoByNo(String userNo){
 		UserInfo userInfo=null;
 		Jedis jedis=null;
-		if(!existsKey("UserInfo")){
-			MemoryDataManagerTask.loadUserInfo(null,0,"update");
+		if(!hexists("UserInfo",userNo)){
+			List<String> list=new ArrayList<>();
+			list.add(userNo+"");
+			MemoryDataManagerTask.loadUserInfo(list,0,"update");
 		}
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -4764,18 +4778,22 @@ public class MemoryDataManagerTask {
 				userInfo.setOrgChildrenNode(new ArrayList<>());
 				userInfo.setDeviceTypeChildrenNode(new ArrayList<>());
 				
-				String orgChildrenNodeSql="select org_id from tbl_org t start with t.org_id="+userInfo.getUserOrgid()+" connect by t.org_parent= prior t.org_id";
-				String deviceTypeChildrenNodeSql="select t.id "
-						+ "from tbl_devicetypeinfo t,tbl_role r,tbl_devicetype2role rd "
-						+ "where t.id=rd.rd_devicetypeid and rd.rd_roleid=r.role_id "
-						+ "and r.role_id="+userInfo.getUserType();
-				List<Object[]> orgChildrenNodeList=OracleJdbcUtis.query(orgChildrenNodeSql);
-				List<Object[]> deviceTypeChildrenNodeList=OracleJdbcUtis.query(deviceTypeChildrenNodeSql);
-				for(Object[] orgChildrenNodeObj:orgChildrenNodeList){
-					userInfo.getOrgChildrenNode().add(StringManagerUtils.stringToInteger(orgChildrenNodeObj[0]+""));
-				}
-				for(Object[] deviceTypeChildrenNodeObj:deviceTypeChildrenNodeList){
-					userInfo.getDeviceTypeChildrenNode().add(StringManagerUtils.stringToInteger(deviceTypeChildrenNodeObj[0]+""));
+				try{
+					String orgChildrenNodeSql="select org_id from tbl_org t start with t.org_id="+userInfo.getUserOrgid()+" connect by t.org_parent= prior t.org_id";
+					String deviceTypeChildrenNodeSql="select t.id "
+							+ "from tbl_devicetypeinfo t,tbl_role r,tbl_devicetype2role rd "
+							+ "where t.id=rd.rd_devicetypeid and rd.rd_roleid=r.role_id "
+							+ "and r.role_id="+userInfo.getUserType();
+					List<Object[]> orgChildrenNodeList=OracleJdbcUtis.query(orgChildrenNodeSql);
+					List<Object[]> deviceTypeChildrenNodeList=OracleJdbcUtis.query(deviceTypeChildrenNodeSql);
+					for(Object[] orgChildrenNodeObj:orgChildrenNodeList){
+						userInfo.getOrgChildrenNode().add(StringManagerUtils.stringToInteger(orgChildrenNodeObj[0]+""));
+					}
+					for(Object[] deviceTypeChildrenNodeObj:deviceTypeChildrenNodeList){
+						userInfo.getDeviceTypeChildrenNode().add(StringManagerUtils.stringToInteger(deviceTypeChildrenNodeObj[0]+""));
+					}
+				}catch (Exception e) {
+					e.printStackTrace();
 				}
 				
 				String key=userInfo.getUserNo()+"";
@@ -5543,10 +5561,13 @@ public class MemoryDataManagerTask {
 		ResultSet rs = null;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
+		try {
+			conn=OracleJdbcUtis.getConnection();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
@@ -5724,10 +5745,13 @@ public class MemoryDataManagerTask {
 		ResultSet rs = null;
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null){
-        	return;
-        }
+		try {
+			conn=OracleJdbcUtis.getConnection();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();

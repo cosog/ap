@@ -5380,6 +5380,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				if(protocol!=null){
 					for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
 						if(displayInstanceOwnItem.getItemList().get(j).getType()==2 
+								&& userInfo!=null 
 								&& displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
 							for(int k=0;k<protocol.getItems().size();k++){
 								if(displayInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(protocol.getItems().get(k).getTitle())){
@@ -5795,7 +5796,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						Gson gson = new Gson();
 						java.lang.reflect.Type reflectType=new TypeToken<CurveConf>() {}.getType();
 						CurveConf curveConfObj=gson.fromJson(displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf(), reflectType);
-						if(curveConfObj!=null && curveConfObj.getSort()>0 && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
+						if(curveConfObj!=null && curveConfObj.getSort()>0 && userInfo!=null && displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
 							String itemname=displayInstanceOwnItem.getItemList().get(j).getItemName();
 							String realtimecurveconf=displayInstanceOwnItem.getItemList().get(j).getRealtimeCurveConf();
 							String itemcode=displayInstanceOwnItem.getItemList().get(j).getItemCode();

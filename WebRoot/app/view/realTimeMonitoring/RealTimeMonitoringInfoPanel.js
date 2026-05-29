@@ -569,6 +569,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                         region: 'center',
                         layout: 'border',
                         id:'RealTimeMonitoringCenterPanel_Id',
+                        border: false,
                         items:[{
                         	region: 'center',
                         	title:loginUserLanguageResource.deviceOverview,

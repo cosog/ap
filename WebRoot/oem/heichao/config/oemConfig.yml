@@ -116,6 +116,7 @@ others:
    defaultComboxSize: 10000
    defaultGraghSize: 30            #图形平铺每页图形数量
    productionUnit: stere           #产量单位 stere-立方米 ton-吨
+   resourceMonitoringSaveCycle: 600 #资源检测保存周期 单位秒
    resourceMonitoringSaveData: 50000 #资源检测保存历史记录数
    resourceMonitoringVacuateThreshold: 5000           #资源监测曲线抽稀阈值
    iot: true                      #是否为物联网模式

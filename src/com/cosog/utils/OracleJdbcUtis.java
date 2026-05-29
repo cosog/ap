@@ -45,7 +45,8 @@ public class OracleJdbcUtis {
     private static final int VALIDATION_TIMEOUT_MS = 5000;        // 验证查询超时 5秒（单位毫秒，HikariCP要求>=250ms）
 
     // 高并发重试配置（最多重试1次，无延迟，快速失败）
-    private static final int MAX_RETRY_COUNT = 1;
+    private static final int MAX_RETRY_COUNT = 2;
+    private static final long RETRY_DELAY_MS = 100;
 
     // 连接池默认参数（HikariCP 3.x 兼容配置）
     private static final int DEFAULT_MAX_POOL_SIZE = 50;          // 最大连接数
@@ -225,6 +226,12 @@ public class OracleJdbcUtis {
                 lastException = e;
                 if (retry < MAX_RETRY_COUNT && isRetryableException(e)) {
                     logger.warn("Retryable SQLException, immediate retry (attempt {})", retry + 1);
+                    try {
+						Thread.sleep(RETRY_DELAY_MS);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
                     continue;
                 }
                 break;

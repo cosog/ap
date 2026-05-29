@@ -73,7 +73,6 @@ public class ResourceMonitoringTask {
     private static TableSpaceInfo tableSpaceInfo=null;
     private static int dataBaseStatus=1; 
     
-    private static int save_cycle=60*10;
     private static String lastSaveTime="";
     
     @SuppressWarnings("unused")
@@ -368,6 +367,7 @@ public class ResourceMonitoringTask {
 		long oraclePhysicalMemory=getOraclePhysicalMemory();
 		
 		boolean save=false;
+		int save_cycle=Config.getInstance().configFile.getAp().getOthers().getResourceMonitoringSaveCycle();
 		long timeDiff=StringManagerUtils.getTimeDifference(lastSaveTime, timeStr, "yyyy-MM-dd HH:mm:ss");
 		if(timeDiff>=save_cycle*1000){
 			save=true;

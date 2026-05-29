@@ -262,6 +262,8 @@ public class OEMConfigFile {
 
 	    private String productionUnit;
 	    
+	    private int resourceMonitoringSaveCycle;
+	    
 	    private int resourceMonitoringSaveData;
 	    
 	    private int resourceMonitoringVacuateThreshold;
@@ -472,6 +474,12 @@ public class OEMConfigFile {
 		}
 		public void setRealtimeDataRetentionTime(int realtimeDataRetentionTime) {
 			this.realtimeDataRetentionTime = realtimeDataRetentionTime;
+		}
+		public int getResourceMonitoringSaveCycle() {
+			return resourceMonitoringSaveCycle;
+		}
+		public void setResourceMonitoringSaveCycle(int resourceMonitoringSaveCycle) {
+			this.resourceMonitoringSaveCycle = resourceMonitoringSaveCycle;
 		}
 	}
 	

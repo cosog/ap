@@ -335,7 +335,7 @@ function CreateUploadedProtocolContentInfoTable(protocolName,classes,code){
 			if(Ext.getCmp("importedProtocolItemInfoTablePanel_Id")!=undefined){
 				Ext.getCmp("importedProtocolItemInfoTablePanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -538,7 +538,7 @@ function CreateUploadedProtocolExtendedFieldInfoTable(protocolName,classes,code)
 			if(Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id")!=undefined){
 				Ext.getCmp("importedProtocolExtendedFieldTabPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -688,9 +688,9 @@ function saveSingelImportedProtocol(protocolName,deviceType,saveSign,msg){
 					success : function(response) {
 						var result = Ext.JSON.decode(response.responseText);
 						if (result.success==true) {
-							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 						}else{
-							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 						}
 						Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
 						Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
@@ -712,9 +712,9 @@ function saveSingelImportedProtocol(protocolName,deviceType,saveSign,msg){
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 				}else{
-					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 				}
 				Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
 				Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
@@ -749,9 +749,9 @@ function saveAllImportedProtocol(){
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 				}else{
-					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 				}
 				Ext.getCmp("ImportProtocolContentTreeGridPanel_Id").getStore().load();
 				Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();

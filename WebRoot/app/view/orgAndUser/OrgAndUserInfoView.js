@@ -286,7 +286,7 @@ function exportOrganizationCompleteData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.organizationExportFileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
 //    openExcelWindow(url + '?flag=true' + param);
     downloadFile(url + '?flag=true' + param);
 }
@@ -302,7 +302,7 @@ function exportUserCompleteData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.userExportFileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
 //    openExcelWindow(url + '?flag=true' + param);
     downloadFile(url + '?flag=true' + param);
 }

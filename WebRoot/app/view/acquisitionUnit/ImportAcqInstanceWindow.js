@@ -230,9 +230,9 @@ function saveSingelImportedAcqInstance(instanceName,unitName,protocolName,protoc
 					success : function(response) {
 						var result = Ext.JSON.decode(response.responseText);
 						if (result.success==true) {
-							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 						}else{
-							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 						}
 						Ext.getCmp("ImportAcqInstanceContentTreeGridPanel_Id").getStore().load();
 
@@ -262,9 +262,9 @@ function saveSingelImportedAcqInstance(instanceName,unitName,protocolName,protoc
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 				}else{
-					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 				}
 				Ext.getCmp("ImportAcqInstanceContentTreeGridPanel_Id").getStore().load();
 
@@ -302,9 +302,9 @@ function saveAllImportedAcqInstance(){
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 				}else{
-					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 				}
 				Ext.getCmp("ImportAcqInstanceContentTreeGridPanel_Id").getStore().load();
 				

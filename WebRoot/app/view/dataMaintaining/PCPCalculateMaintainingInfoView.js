@@ -396,7 +396,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          }
                      },"-",{
                          xtype: 'button',
-                         text: loginUserLanguageResource.linkProductionDataCalculate,
+                         text: loginUserLanguageResource.productionDataCorrelationCalculation,
                          disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                          pressed: false,
                          iconCls: 'save',
@@ -483,12 +483,12 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                  	                            pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
                  	                            Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
                  	                        } else {
-                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.operationFailure);
+                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.operationFailed);
 
                  	                        }
                  	            		},
                  	            		failure:function(){
-                 	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+                 	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
                  	                        pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
                  	            		},
                  	            		params: {
@@ -769,8 +769,8 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
             			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
             		continue;
             	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
-            		colHeader=colHeader.replace(loginUserLanguageResource.reservoirDepth,loginUserLanguageResource.reservoirDepth_cbm);
-            		colHeader=colHeader.replace(loginUserLanguageResource.reservoirTemperature,loginUserLanguageResource.reservoirTemperature_cbm);
+            		colHeader=colHeader.replace(loginUserLanguageResource.reservoirDepth,loginUserLanguageResource.coalSeamDepth);
+            		colHeader=colHeader.replace(loginUserLanguageResource.reservoirTemperature,loginUserLanguageResource.coalSeamTemperature);
             	}else if(dataIndex.toUpperCase() === "TubingPressure".toUpperCase()){
             		colHeader=colHeader.replace(loginUserLanguageResource.tubingPressure,loginUserLanguageResource.tubingPressure_cbm);
                 }
@@ -1075,11 +1075,11 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                            Ext.MessageBox.alert(loginUserLanguageResource.message,successInfo);
 	                            Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
 	                        } else {
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 	                        }
 	            		},
 	            		failure:function(){
-	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 	                        pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
 	            		},
 	            		params: {
@@ -1091,7 +1091,7 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	            	}); 
 	            } else {
 	                if (!pcpRPMCalculateMaintainingHandsontableHelper.validresult) {
-	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.dataTypeError);
+	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.invalidDataType);
 	                } else {
 	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noDataChange);
 	                }
@@ -1183,7 +1183,7 @@ function ReTotalRPMData(){
     			if(Ext.getCmp("PCPTotalCalculateMaintainingPanel")!=undefined){
         			Ext.getCmp("PCPTotalCalculateMaintainingPanel").getEl().unmask();
     			}
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
     		},
     		params: {
     			deviceType: 1,

@@ -24,7 +24,7 @@ Ext.define('AP.view.data.DictItemGridPanel', {
     			    value:0,
     			    allowBlank: false,
     				editable : false,
-    				store : new Ext.data.SimpleStore({fields : ['value', 'text'],data: [[0, loginUserLanguageResource.dataColumnCode], [1, loginUserLanguageResource.dataColumnName]]}),
+    				store : new Ext.data.SimpleStore({fields : ['value', 'text'],data: [[0, loginUserLanguageResource.fieldCode], [1, loginUserLanguageResource.fiedName]]}),
     				displayField : 'text',
     				valueField : 'value',
     				queryMode : 'local',
@@ -63,7 +63,7 @@ Ext.define('AP.view.data.DictItemGridPanel', {
                     }
                 },'-',{
                 	xtype: 'button',
-                    text: loginUserLanguageResource.batchDeleteData,
+                    text: loginUserLanguageResource.bulkDelete,
                     iconCls: 'delete',
                     disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     handler: function () {

@@ -220,15 +220,15 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                params: {
     				                	configFile: JSON.stringify(configFile)
     				                },
-    				                waitMsg: loginUserLanguageResource.sendServer,
+    				                waitMsg: loginUserLanguageResource.submittingData,
     				                waitTitle: loginUserLanguageResource.wait,
     				                success: function (response, action) {
     				                    if (action.result.msg == true) {
-    				                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.saveSuccessfully + "</font>");
+    				                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.savedSuccessfully + "</font>");
     				                        loadOemOperationConfigInfo();
     				                    }
     				                    if (action.result.msg == false) {
-    				                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveFailure);
+    				                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveFailed);
     				                    }
     				                },
     				                failure: function () {
@@ -711,7 +711,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
             				collapsible: true,
             				tbar:[{
                                 xtype: 'button',
-                                text: loginUserLanguageResource.previous,
+                                text: loginUserLanguageResource.previousStep,
                                 iconCls: 'forward',
                                 id:'OperationMaintenanceImportDataForwardBtn_Id',
                                 disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
@@ -785,7 +785,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                 }
                     		},{
                                 xtype: 'button',
-                                text: loginUserLanguageResource.next,
+                                text: loginUserLanguageResource.nextStep,
                                 iconCls: 'backwards',
                                 id:'OperationMaintenanceImportDataBackwardBtn_Id',
                                 disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
@@ -1276,14 +1276,14 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     	                				var data=Ext.JSON.decode(response.responseText);
     	                				
     	                				if (data.success) {
-    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
     	                	            	store.commitChanges();
     	                	            } else {
-    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
     	                	            }
     	                			},
     	                			failure:function(){
-    	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+    	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
     	                			},
     	                			params: {
     	                				data:JSON.stringify(modifiedDeviceTypes),
@@ -1367,11 +1367,11 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	    	                					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
 	    	                	            	Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id").getStore().load();
 	    	                	            } else {
-	    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+	    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
 	    	                	            }
 	    	                			},
 	    	                			failure:function(){
-	    	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+	    	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 	    	                			},
 	    	                			params: {
 	    	                				instanceIds: selectInstanceId.join(",")
@@ -1458,16 +1458,16 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                				var data=Ext.JSON.decode(response.responseText);
 		                				
 		                				if (data.success) {
-		                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+		                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
 		                	            	store.commitChanges();
 		                	            	
 		                	            	Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id").getStore().load();
 		                	            } else {
-		                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+		                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 		                	            }
 		                			},
 		                			failure:function(){
-		                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+		                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 		                			},
 		                			params: {
 		                				data: JSON.stringify(modifiedTabDisplayInstance),
@@ -1567,7 +1567,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        				                    items: [
 	        				                        {
 	        				                            xtype: 'checkboxgroup',
-	        				                            fieldLabel: loginUserLanguageResource.rodStressChartContent,
+	        				                            fieldLabel: loginUserLanguageResource.rodStressChartDisplayContent,
 	        				                            labelWidth: 100,
 	        				                            // 使用 hbox 布局让选项强制在一行（或通过 columns 和宽度控制）
 	        				                            layout: {
@@ -2116,14 +2116,14 @@ function loadOemOperationConfigInfo(){
 				initOemOperationConfigInfo(configFile);
 //				alert(configFile.others.printLog);
 			} else {
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 			}
 		},
 		failure:function(){
 			if(Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id")!=undefined){
 				Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			
@@ -2147,14 +2147,14 @@ function loadOemConfigInfo(){
 				var configFile=data.configFile;
 				initOemConfigInfo(configFile);
 			} else {
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 			}
 		},
 		failure:function(){
 			if(Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id")!=undefined){
 				Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			
@@ -2379,7 +2379,7 @@ function exportModuleBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.moduleExportFileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2391,7 +2391,7 @@ function exportDataDictionaryBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.dataDictionaryExportFileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2404,7 +2404,7 @@ function exportOrganizationBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.organizationExportFileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2416,7 +2416,7 @@ function exportUserBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.userExportFileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2428,7 +2428,7 @@ function exportRoleBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.roleExportFileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2440,7 +2440,7 @@ function exportProtocolBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportProtocol)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2452,7 +2452,7 @@ function exportAcqUnitBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAcqUnit)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2464,7 +2464,7 @@ function exportDisplayUnitBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportDisplayUnit)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2476,7 +2476,7 @@ function exportAlarmUnitBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAlarmUnit)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2488,7 +2488,7 @@ function exportReportUnitBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportReportUnit)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2500,7 +2500,7 @@ function exportAcqInstanceBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAcqInstance)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2512,7 +2512,7 @@ function exportDisplayInstanceBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportDisplayInstance)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2524,7 +2524,7 @@ function exportAlarmInstanceBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportAlarmInstance)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2536,7 +2536,7 @@ function exportReportInstanceBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.exportReportInstance)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     downloadFile(url + '?flag=true' + param);
 }
 
@@ -2551,7 +2551,7 @@ function exportPrimaryDeviceBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.primaryDdeviceExportFileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
 //    openExcelWindow(url + '?flag=true' + param);
     downloadFile(url + '?flag=true' + param);
 }
@@ -2569,7 +2569,7 @@ function exportAuxiliaryDeviceBackupData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
 //    openExcelWindow(url + '?flag=true' + param);
     downloadFile(url + '?flag=true' + param);
 }
@@ -3199,7 +3199,7 @@ function saveBackupsData(){
 
 function saveBackupModuleFile(){
 	if(Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/moduleManagerController/saveAllImportedModule',
@@ -3213,9 +3213,9 @@ function saveBackupModuleFile(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3233,7 +3233,7 @@ function saveBackupModuleFile(){
 
 function saveBackupDataDictionaryFile(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/systemdataInfoController/saveAllImportedDataDictionary',
@@ -3247,9 +3247,9 @@ function saveBackupDataDictionaryFile(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3265,7 +3265,7 @@ function saveBackupDataDictionaryFile(){
 
 function saveBackupOrganizationFile(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/orgManagerController/saveAllImportedOrganization',
@@ -3279,9 +3279,9 @@ function saveBackupOrganizationFile(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             
@@ -3299,7 +3299,7 @@ function saveBackupOrganizationFile(){
 
 function saveBackupImportedRoleFile(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/roleManagerController/saveAllImportedRole',
@@ -3313,9 +3313,9 @@ function saveBackupImportedRoleFile(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3331,7 +3331,7 @@ function saveBackupImportedRoleFile(){
 
 function saveBackupUserFile(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/userManagerController/saveAllImportedUser',
@@ -3345,9 +3345,9 @@ function saveBackupUserFile(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3363,7 +3363,7 @@ function saveBackupUserFile(){
 
 function saveProtocolBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveProtocolBackupData',
@@ -3377,9 +3377,9 @@ function saveProtocolBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3395,7 +3395,7 @@ function saveProtocolBackupData(){
 
 function saveAcqUnitBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveAcqUnitBackupData',
@@ -3409,9 +3409,9 @@ function saveAcqUnitBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3427,7 +3427,7 @@ function saveAcqUnitBackupData(){
 
 function saveDisplayUnitBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveDisplayUnitBackupData',
@@ -3441,9 +3441,9 @@ function saveDisplayUnitBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3459,7 +3459,7 @@ function saveDisplayUnitBackupData(){
 
 function saveAlarmUnitBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveAlarmUnitBackupData',
@@ -3473,9 +3473,9 @@ function saveAlarmUnitBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3491,7 +3491,7 @@ function saveAlarmUnitBackupData(){
 
 function saveReportUnitBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveReportUnitBackupData',
@@ -3505,9 +3505,9 @@ function saveReportUnitBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3523,7 +3523,7 @@ function saveReportUnitBackupData(){
 
 function saveAcqInstanceBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveAcqInstanceBackupData',
@@ -3537,9 +3537,9 @@ function saveAcqInstanceBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3555,7 +3555,7 @@ function saveAcqInstanceBackupData(){
 
 function saveDisplayInstanceBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveDisplayInstanceBackupData',
@@ -3569,9 +3569,9 @@ function saveDisplayInstanceBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3587,7 +3587,7 @@ function saveDisplayInstanceBackupData(){
 
 function saveAlarmInstanceBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveAlarmInstanceBackupData',
@@ -3601,9 +3601,9 @@ function saveAlarmInstanceBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3619,7 +3619,7 @@ function saveAlarmInstanceBackupData(){
 
 function saveReportInstanceBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/acquisitionUnitManagerController/saveReportInstanceBackupData',
@@ -3633,9 +3633,9 @@ function saveReportInstanceBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3651,7 +3651,7 @@ function saveReportInstanceBackupData(){
 
 function saveAuxiliaryDeviceBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/wellInformationManagerController/saveAuxiliaryDeviceBackupData',
@@ -3665,9 +3665,9 @@ function saveAuxiliaryDeviceBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3683,7 +3683,7 @@ function saveAuxiliaryDeviceBackupData(){
 
 function savePrimaryDeviceBackupData(){
 	if(Ext.getCmp("OperationMaintenanceDataImportPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceDataImportPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
         url: context + '/wellInformationManagerController/savePrimaryDeviceBackupData',
@@ -3697,9 +3697,9 @@ function savePrimaryDeviceBackupData(){
         	}
             var result = Ext.JSON.decode(response.responseText);
             if (result.success == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             } else {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.saveFailed + "</font>");
             }
             Ext.getCmp("ImportBackupContentGridPanel_Id").getStore().load();
             Ext.getCmp('OperationMaintenanceImportDataSaveBtn_Id').disable();
@@ -3796,7 +3796,7 @@ function getOperationMaintenanceMonitorCurveData(){
 	
 
 	if(Ext.getCmp(panelId)!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -3916,7 +3916,7 @@ function getOperationMaintenanceMonitorCurveData(){
 			if(Ext.getCmp(panelId)!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
@@ -4054,14 +4054,14 @@ function initDeviceTabManagerInstance(instanceId){
 				var instanceConfig=data.config;
 				initDeviceTabManagerInstanceConfig(instanceConfig);
 			} else {
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 			}
 		},
 		failure:function(){
 			if(Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id")!=undefined){
 				Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			instanceId:instanceId
@@ -4142,14 +4142,14 @@ function initDeviceTypeContentConfig(deviceTypeId,deviceTypeName){
 				var deviceTypeContentConfig=data.config;
 				updateDeviceTypeContentConfig(deviceTypeContentConfig);
 			} else {
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 			}
 		},
 		failure:function(){
 			if(Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id")!=undefined){
 				Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			deviceTypeId:deviceTypeId
@@ -4222,7 +4222,7 @@ function lowerComputerProgramVersionDataBatchUplink(deviceIdList,name){
 	        	if (result.flag == false) {
 	                Ext.MessageBox.show({
 	                    title: loginUserLanguageResource.tip,
-	                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+	                    msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
 	                    icon: Ext.MessageBox.INFO,
 	                    buttons: Ext.Msg.OK,
 	                    fn: function () {
@@ -4298,7 +4298,7 @@ function lowerComputerProgramVersionDataUplink(row,name){
         	if (result.flag == false) {
                 Ext.MessageBox.show({
                     title: loginUserLanguageResource.tip,
-                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                    msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                     icon: Ext.MessageBox.INFO,
                     buttons: Ext.Msg.OK,
                     fn: function () {
@@ -4408,11 +4408,11 @@ function lowerComputerProgramUpgrade(row, name) {
             	if (result.flag == false) {
                     const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
                 	if(name=='box'){
-                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',loginUserLanguageResource.sessionInvalid);
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'boxDownlinkStatus',loginUserLanguageResource.sessionExpired);
                 	}else if(name=='ac'){
-                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',loginUserLanguageResource.sessionInvalid);
+                		lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(row,'acDownlinkStatus',loginUserLanguageResource.sessionExpired);
                 	}
-                	reject(new Error(loginUserLanguageResource.sessionInvalid));  // 让批处理进入 catch，不再继续
+                	reject(new Error(loginUserLanguageResource.sessionExpired));  // 让批处理进入 catch，不再继续
                     return;
                 } else if (result.flag == true && result.error == false) {
                     const plugin = lowerComputerProgramUpgradeHandsontableHelper.hot.getPlugin('hiddenColumns');
@@ -4512,7 +4512,7 @@ function loadLowerComputerProgramUpgradeDeviceList(){
     	deviceName = Ext.getCmp('lowerComputerProgramUpgradeDeviceListComb_Id').getValue();
     }
 	if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
-		Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -4639,7 +4639,7 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 			if(Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id")!=undefined){
 				Ext.getCmp("OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id").getEl().unmask();
 	    	}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId: leftOrg_Id,

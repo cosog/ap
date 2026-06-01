@@ -31,13 +31,13 @@ var SaveAlarmSetSubmitBtnForm = function () {
             url: context + '/AlarmSetController/addAlarmSet',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('AlarmSetWindow_Id').close();
                 Ext.getCmp("AlarmSet_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>】");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
@@ -74,7 +74,7 @@ function UpdateAlarmSetSubmitBtnForm() {
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip,
-                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailed);
                 }
             },
             failure: function () {
@@ -296,7 +296,7 @@ SelectAlarmSet = function () {
                 }
 	        	else {
                     Ext.Msg.alert(loginUserLanguageResource.tip,
-                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailed);
                 }
 	        },
 	        failure: function () {

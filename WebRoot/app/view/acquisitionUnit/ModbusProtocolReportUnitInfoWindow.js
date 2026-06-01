@@ -73,7 +73,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 				name : "reportUnit.calculateType"
 			},{
             	xtype : "combobox",
-				fieldLabel : loginUserLanguageResource.calculateType+'<font color=red>*</font>',
+				fieldLabel : loginUserLanguageResource.calculationType+'<font color=red>*</font>',
 				id : 'modbusProtocolReportUnitCalculateTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',

@@ -129,8 +129,8 @@ public class PageTurnController extends BaseController {
 			viewProjectName=languageResourceMap.get("projectName");
 		}
 		
-		if(languageResourceMap.containsKey("loadingTheUI")){
-			loadingUI=languageResourceMap.get("loadingTheUI");
+		if(languageResourceMap.containsKey("loadingInterface")){
+			loadingUI=languageResourceMap.get("loadingInterface");
 		}
 		
 		String tabInfoJson = "";
@@ -259,8 +259,8 @@ public class PageTurnController extends BaseController {
 					viewProjectName=languageResourceMap.get("projectName");
 				}
 				
-				if(languageResourceMap.containsKey("loadingTheUI")){
-					loadingUI=languageResourceMap.get("loadingTheUI");
+				if(languageResourceMap.containsKey("loadingInterface")){
+					loadingUI=languageResourceMap.get("loadingInterface");
 				}
 				
 				String tabInfoJson = "";

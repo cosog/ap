@@ -34,20 +34,20 @@ var SavewellInfoSubmitBtnForm = function () {
             url: context + '/wellInformationManagerController/doWellInformationAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('wellInfo_addwin_Id').close();
                 Ext.getCmp("wellPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.addSuccessfully, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.addedSuccessfully, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                     if(mapHelperWell!=null){
     					mapHelperWell.clearOverlays();
     					SaveBackMapData(mapHelperWell,"well",m_BackDefaultZoomLevel);
     				}
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.addSuccessfully, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
+                    Ext.Msg.alert(loginUserLanguageResource.addFailure, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
 
                 }
             },
@@ -56,7 +56,7 @@ var SavewellInfoSubmitBtnForm = function () {
             }
         });
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.addSuccessfully, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>");
+        Ext.Msg.alert(loginUserLanguageResource.invalidData, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -78,15 +78,15 @@ function UpdatewellInfoSubmitBtnForm() {
                 Ext.getCmp("wellPanel_Id").getStore().load();
 
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.addSuccessfully, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.updateSuccessfully, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                     if(mapHelperWell!=null){
     					mapHelperWell.clearOverlays();
     					SaveBackMapData(mapHelperWell,"well",m_BackDefaultZoomLevel);
     				}
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.addSuccessfully,
-                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
+                    Ext.Msg.alert(loginUserLanguageResource.updateFailed,
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailed);
                 }
             },
             failure: function () {
@@ -105,7 +105,7 @@ function addwellInfo() {
             win_Obj.destroy();
         }
         var WellInfoWindow = Ext.create("AP.view.well.WellInfoWindow", {
-            title: loginUserLanguageResource.addDevie
+            title: loginUserLanguageResource.addDevice
         });
         WellInfoWindow.show();
         var save_btn = Ext.getCmp("addFromwellBtn_Id");
@@ -129,7 +129,7 @@ function modifywellInfo() {
 	            win_Obj.destroy();
 	        }
 	        var wellInfoWindow = Ext.create("AP.view.well.WellInfoWindow", {
-	            title: loginUserLanguageResource.editDevie
+	            title: loginUserLanguageResource.editDevice
 	        });
 	        wellInfoWindow.show();
 	        Ext.getCmp("addFromwellBtn_Id").hide();
@@ -172,7 +172,7 @@ function saveWellEditerGridDataInfo() {
     			});
     		},
     		failure:function(){
-    			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+    			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
     		},
     		params: {
             	data: JSON.stringify(jsonArray)

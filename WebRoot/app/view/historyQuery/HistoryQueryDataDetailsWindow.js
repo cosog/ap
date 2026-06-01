@@ -264,7 +264,7 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 	}
 	
 	if(Ext.getCmp("HistoryQueryDataDetailsPanel_Id")!=undefined){
-		Ext.getCmp("HistoryQueryDataDetailsPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("HistoryQueryDataDetailsPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	var startDate=Ext.getCmp('HistoryQueryStartDate_Id').rawValue;
 	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
@@ -350,7 +350,7 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 			if(Ext.getCmp("HistoryQueryDataDetailsPanel_Id")!=undefined){
 				Ext.getCmp("HistoryQueryDataDetailsPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			recordId: recordId,
@@ -593,6 +593,6 @@ function exportDeviceHistoryQueryDetailsData(recordId,deviceId,deviceName,device
     + "&startDate=" + getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)
     + "&endDate=" + getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };

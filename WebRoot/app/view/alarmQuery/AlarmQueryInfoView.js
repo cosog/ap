@@ -29,7 +29,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         	        	listeners: {
         	        		beforetabchange:function( tabPanel, newCard, oldCard, eOpts ) {
         	        			if(Ext.getCmp("AlarmQueryRootTabPanel")!=undefined){
-            	        			Ext.getCmp("AlarmQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+            	        			Ext.getCmp("AlarmQueryRootTabPanel").el.mask(loginUserLanguageResource.loadingData).show();
         	        			}
                 				if(oldCard!=undefined){
                 					oldCard.setIconCls(null);
@@ -114,7 +114,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         		listeners: {
         			beforetabchange: function ( tabPanel, newCard, oldCard, eOpts ) {
         				if(Ext.getCmp("AlarmQueryRootTabPanel")!=undefined){
-    	        			Ext.getCmp("AlarmQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+    	        			Ext.getCmp("AlarmQueryRootTabPanel").el.mask(loginUserLanguageResource.loadingData).show();
 	        			}
         				if(oldCard!=undefined){
         					oldCard.setIconCls(null);
@@ -406,7 +406,7 @@ function loadAlarmQueryStatData(){
 	}
 	
 	if(Ext.getCmp("AlarmQueryStatGraphPanel_Id")!=undefined && Ext.getCmp("AlarmQueryStatGraphPanel_Id").el!=undefined){
-		Ext.getCmp("AlarmQueryStatGraphPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("AlarmQueryStatGraphPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -431,7 +431,7 @@ function loadAlarmQueryStatData(){
 			if(Ext.getCmp("AlarmQueryStatGraphPanel_Id")!=undefined && Ext.getCmp("AlarmQueryStatGraphPanel_Id").el!=undefined){
 				Ext.getCmp("AlarmQueryStatGraphPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,

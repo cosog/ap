@@ -65,7 +65,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow", {
     	        			url=context + '/acquisitionUnitManagerController/exportProtocolAcqInstanceInitData?key='+key+'&instanceList='+exportAcqInstanceList.join(",");
     	        		}
     	        		
-    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     	        	    openExcelWindow(url);
     				}else{
     					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);

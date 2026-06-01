@@ -151,10 +151,10 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
                         		success : function(response) {
                         			var result = Ext.JSON.decode(response.responseText);
                         			if (result.success == true) {
-                        				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.changeOwnerSuccess);
+                        				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.migrationSuccessful);
                         			}
                         			if (result.success == false) {
-                        				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.changeOwnerFail+"</font>");
+                        				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.migrationFailed+"</font>");
                         			}
                         		},
                         		failure : function() {
@@ -212,10 +212,10 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
                         		success : function(response) {
                         			var result = Ext.JSON.decode(response.responseText);
                         			if (result.success == true) {
-                        				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.changeOwnerSuccess);
+                        				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.migrationSuccessful);
                         			}
                         			if (result.success == false) {
-                        				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.changeOwnerFail+"</font>");
+                        				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.migrationFailed+"</font>");
                         			}
                         		},
                         		failure : function() {

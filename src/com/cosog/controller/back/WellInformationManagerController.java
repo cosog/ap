@@ -3103,13 +3103,13 @@ public class WellInformationManagerController extends BaseController {
 									if(downStatusMap.get("ReservoirTemperature").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
 										downlinkSuccessList.add(languageResourceMap.get("reservoirTemperature")+":"+srpProductionData.getReservoir().getTemperature()+"");
 									}
-									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",srpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CoalSeamDepth",srpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
 									if(downStatusMap.get("ReservoirDepth_cbm").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-										downlinkSuccessList.add(languageResourceMap.get("reservoirDepth_cbm")+":"+srpProductionData.getReservoir().getDepth()+"");
+										downlinkSuccessList.add(languageResourceMap.get("coalSeamDepth")+":"+srpProductionData.getReservoir().getDepth()+"");
 									}
-									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",srpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CoalSeamTemperature",srpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
 									if(downStatusMap.get("ReservoirTemperature_cbm").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-										downlinkSuccessList.add(languageResourceMap.get("reservoirTemperature_cbm")+":"+srpProductionData.getReservoir().getTemperature()+"");
+										downlinkSuccessList.add(languageResourceMap.get("coalSeamTemperature")+":"+srpProductionData.getReservoir().getTemperature()+"");
 									}
 									
 									downStatusMap.put("TubingPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure",srpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
@@ -3294,13 +3294,13 @@ public class WellInformationManagerController extends BaseController {
 									if(downStatusMap.get("ReservoirTemperature").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
 										downlinkSuccessList.add(languageResourceMap.get("reservoirTemperature")+":"+pcpProductionData.getReservoir().getTemperature()+"");
 									}
-									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",pcpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirDepth_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CoalSeamDepth",pcpProductionData.getReservoir().getDepth()+"",userInfo.getLanguageName()));
 									if(downStatusMap.get("ReservoirDepth_cbm").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-										downlinkSuccessList.add(languageResourceMap.get("reservoirDepth_cbm")+":"+pcpProductionData.getReservoir().getDepth()+"");
+										downlinkSuccessList.add(languageResourceMap.get("coalSeamDepth")+":"+pcpProductionData.getReservoir().getDepth()+"");
 									}
-									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",pcpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
+									downStatusMap.put("ReservoirTemperature_cbm", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_CoalSeamTemperature",pcpProductionData.getReservoir().getTemperature()+"",userInfo.getLanguageName()));
 									if(downStatusMap.get("ReservoirTemperature_cbm").equalsIgnoreCase(languageResourceMap.get("downlinkSuccessfully"))){
-										downlinkSuccessList.add(languageResourceMap.get("reservoirTemperature_cbm")+":"+pcpProductionData.getReservoir().getTemperature()+"");
+										downlinkSuccessList.add(languageResourceMap.get("coalSeamTemperature")+":"+pcpProductionData.getReservoir().getTemperature()+"");
 									}
 									
 									downStatusMap.put("TubingPressure", dataDownlink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure",pcpProductionData.getProduction().getTubingPressure()+"",userInfo.getLanguageName()));
@@ -3430,10 +3430,10 @@ public class WellInformationManagerController extends BaseController {
 							jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceOffline")+"</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -3682,10 +3682,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 				List<String> initWellList=new ArrayList<String>();
 				initWellList.add(deviceId);
@@ -4005,10 +4005,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -4282,10 +4282,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -4491,10 +4491,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -4583,10 +4583,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -4765,8 +4765,8 @@ public class WellInformationManagerController extends BaseController {
 								
 								statusMap.put("ReservoirDepth", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",userInfo.getLanguageName()));
 								statusMap.put("ReservoirTemperature", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",userInfo.getLanguageName()));
-								statusMap.put("ReservoirDepth_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",userInfo.getLanguageName()));
-								statusMap.put("ReservoirTemperature_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",userInfo.getLanguageName()));
+								statusMap.put("ReservoirDepth_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CoalSeamDepth",userInfo.getLanguageName()));
+								statusMap.put("ReservoirTemperature_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CoalSeamTemperature",userInfo.getLanguageName()));
 								
 								statusMap.put("TubingPressure", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure",userInfo.getLanguageName()));
 								statusMap.put("TubingPressure_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",userInfo.getLanguageName()));
@@ -4819,8 +4819,8 @@ public class WellInformationManagerController extends BaseController {
 								
 								statusMap.put("ReservoirDepth", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth",userInfo.getLanguageName()));
 								statusMap.put("ReservoirTemperature", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature",userInfo.getLanguageName()));
-								statusMap.put("ReservoirDepth_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirDepth_cbm",userInfo.getLanguageName()));
-								statusMap.put("ReservoirTemperature_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_ReservoirTemperature_cbm",userInfo.getLanguageName()));
+								statusMap.put("ReservoirDepth_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CoalSeamDepth",userInfo.getLanguageName()));
+								statusMap.put("ReservoirTemperature_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_CoalSeamTemperature",userInfo.getLanguageName()));
 								
 								statusMap.put("TubingPressure", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure",userInfo.getLanguageName()));
 								statusMap.put("TubingPressure_cbm", dataUplink(protocolCode,tcpType,signinid,ipPort,slave,"write_TubingPressure_cbm",userInfo.getLanguageName()));
@@ -4860,10 +4860,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -4952,10 +4952,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -5039,10 +5039,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -5111,10 +5111,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -5238,10 +5238,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -5356,10 +5356,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("protocolConfigurationError")+"</font>'}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotExist")+"</font>'}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
@@ -5519,10 +5519,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{success:true,flag:true,error:false,msg:\"" + languageResourceMap.get("deviceOffline") + "\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("protocolConfigurationError")+"\"}";
+						jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("invalidProtocolConfiguration")+"\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("deviceNotExist")+"\"}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("deviceNotFound")+"\"}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("inputDataError")+"\"}";
@@ -5612,9 +5612,9 @@ public class WellInformationManagerController extends BaseController {
 								lowerComputerDeviceId=languageResourceMap.get("deviceOffline");
 							}
 						}else{
-							boxVersion=languageResourceMap.get("protocolConfigurationError");
-							acVersion=languageResourceMap.get("protocolConfigurationError");
-							lowerComputerDeviceId=languageResourceMap.get("protocolConfigurationError");
+							boxVersion=languageResourceMap.get("invalidProtocolConfiguration");
+							acVersion=languageResourceMap.get("invalidProtocolConfiguration");
+							lowerComputerDeviceId=languageResourceMap.get("invalidProtocolConfiguration");
 						}
 						result_json.append("\"boxVersion\":\""+boxVersion+"\",\"acVersion\":\""+acVersion+"\",\"lowerComputerDeviceId\":\""+lowerComputerDeviceId+"\",\"RPCStatus\":\""+RPCStatus+"\"},");
 					}
@@ -5624,7 +5624,7 @@ public class WellInformationManagerController extends BaseController {
 					result_json.append("]}");
 					jsonLogin=result_json.toString();
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("deviceNotExist")+"\"}";
+					jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("deviceNotFound")+"\"}";
 				}
 			}else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("inputDataError")+"\"}";
@@ -5724,10 +5724,10 @@ public class WellInformationManagerController extends BaseController {
 						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"" + languageResourceMap.get("deviceOffline") + "\"}";
 						}
 					}else{
-						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("protocolConfigurationError")+"\"}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("invalidProtocolConfiguration")+"\"}";
 					}
 				}else{
-					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("deviceNotExist")+"\"}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("deviceNotFound")+"\"}";
 				}
 			}else {
 				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("inputDataError")+"\"}";

@@ -30,7 +30,7 @@
                 "backgroundColor": "rgb(242, 242, 242)"
             },
             "title_zh_CN": ["日期", "时刻", "", "", ""],
-            "title_en": ["Date", "Moment", "", "", ""],
+            "title_en": ["Date", "Timestamp", "", "", ""],
             "title_ru": ["дата", "момент", "", "", ""]
         }],
         "fixedRowsTop": 2,

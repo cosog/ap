@@ -257,7 +257,7 @@ Ext.define("AP.view.acquisitionUnit.DisplayUnitInfoWindow", {
 				name : "displayUnit.calculateType"
 			},{
             	xtype : "combobox",
-				fieldLabel : loginUserLanguageResource.calculateType+'<font color=red>*</font>',
+				fieldLabel : loginUserLanguageResource.calculationType+'<font color=red>*</font>',
 				id : 'formDisplayUnitCalculateTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',

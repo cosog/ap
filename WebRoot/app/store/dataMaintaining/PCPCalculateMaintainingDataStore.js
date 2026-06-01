@@ -92,7 +92,7 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore', {
             };
             Ext.apply(store.proxy.extraParams, new_params);
             if(Ext.getCmp("PCPCalculateMaintainingPanel")!=undefined){
-            	Ext.getCmp("PCPCalculateMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            	Ext.getCmp("PCPCalculateMaintainingPanel").el.mask(loginUserLanguageResource.loadingData).show();
             }
         },
         datachanged: function (v, o) {

@@ -14,7 +14,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
         var appEditDataItesmStore = Ext.create("AP.store.data.DataitemsInfoStore");
         var findtatimsstore = new Ext.data.SimpleStore({
             fields: ['findtatId', 'findtatName'],
-            data: [[0, loginUserLanguageResource.dataColumnCode], [1, loginUserLanguageResource.dataColumnName]]
+            data: [[0, loginUserLanguageResource.fieldCode], [1, loginUserLanguageResource.fiedName]]
         });
         var findtatsimp = new Ext.form.ComboBox({
             id: 'findtattxtcobmoxfield_Id',
@@ -91,28 +91,28 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
             bbar: bbar,
             columns: [
                 {
-                    header: loginUserLanguageResource.dataColumnName,
+                    header: loginUserLanguageResource.fiedName,
                     flex: 1,
                     hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                     dataIndex: 'name_zh_CN'
                 },{
-                    header: loginUserLanguageResource.dataColumnName,
+                    header: loginUserLanguageResource.fiedName,
                     flex: 1,
                     hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
                     dataIndex: 'name_en'
                 },{
-                    header: loginUserLanguageResource.dataColumnName,
+                    header: loginUserLanguageResource.fiedName,
                     flex: 1,
                     hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
                     dataIndex: 'name_ru'
                 },
                 {
-                    header: loginUserLanguageResource.dataColumnCode,
+                    header: loginUserLanguageResource.fieldCode,
                     flex: 1,
                     dataIndex: 'code'
                 },
                 {
-                    header: loginUserLanguageResource.dataColumnParams,
+                    header: loginUserLanguageResource.fieldParameter,
                     flex: 1,
                     dataIndex: 'datavalue'
                 },

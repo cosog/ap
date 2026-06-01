@@ -31,7 +31,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
             }),
             columns: [
                 {
-                    header: loginUserLanguageResource.dataColumnName,
+                    header: loginUserLanguageResource.fiedName,
                     align: 'center',
                     dataIndex: 'name_zh_CN',
                     hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
@@ -40,7 +40,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                     }
                 },
                 {
-                    header: loginUserLanguageResource.dataColumnName,
+                    header: loginUserLanguageResource.fiedName,
                     align: 'center',
                     dataIndex: 'name_en',
                     hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
@@ -49,7 +49,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                     }
                 },
                 {
-                    header: loginUserLanguageResource.dataColumnName,
+                    header: loginUserLanguageResource.fiedName,
                     align: 'center',
                     dataIndex: 'name_ru',
                     hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
@@ -58,7 +58,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                     }
                 },
                 {
-                    header: loginUserLanguageResource.dataColumnCode,
+                    header: loginUserLanguageResource.fieldCode,
                     align: 'center',
                     dataIndex: 'code',
                     field: {
@@ -66,7 +66,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                     }
                 },
                 {
-                    header: loginUserLanguageResource.dataColumnParams,
+                    header: loginUserLanguageResource.fieldParameter,
                     align: 'center',
                     dataIndex: 'datavalue',
                     field: {

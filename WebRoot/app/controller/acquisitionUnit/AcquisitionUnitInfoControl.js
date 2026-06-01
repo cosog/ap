@@ -64,7 +64,7 @@ var saveModbusProtocolSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 if (action.result.msg == true) {
@@ -72,7 +72,7 @@ var saveModbusProtocolSubmitBtnForm = function () {
                 	Ext.getCmp('ModbusProtocolAddNewProtocolName_Id').setValue(addProtocolName);
                 	Ext.getCmp('modbusProtocol_editWin_Id').close();
                 	Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
@@ -140,7 +140,7 @@ var SaveAcquisitionGroupSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doAcquisitionGroupAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
             	
@@ -151,7 +151,7 @@ var SaveAcquisitionGroupSubmitBtnForm = function () {
                 Ext.getCmp('acquisitionGroup_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>】");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
@@ -189,7 +189,7 @@ function UpdateAcquisitionGroupDataInfoSubmitBtnForm() {
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip,
-                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailed);
                 }
             },
             failure: function () {
@@ -264,7 +264,7 @@ var SaveAcquisitionUnitSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doAcquisitionUnitAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
             	Ext.getCmp('ModbusProtocolAcqGroupConfigAddObjectClasses_Id').setValue(2);
@@ -273,7 +273,7 @@ var SaveAcquisitionUnitSubmitBtnForm = function () {
                 Ext.getCmp('acquisitionUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>】");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
@@ -311,7 +311,7 @@ function UpdateAcquisitionUnitDataInfoSubmitBtnForm() {
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip,
-                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailed);
                 }
             },
             failure: function () {
@@ -450,7 +450,7 @@ showAcquisitionGroupOwnItems = function (selectedAcquisitionGroupCode) {
             }
         },
         failure: function (response, opts) {
-            Ext.Msg.alert(loginUserLanguageResource.Infotip, loginUserLanguageResource.dataQueryFailure);
+            Ext.Msg.alert(loginUserLanguageResource.information, loginUserLanguageResource.dataQueryFailure);
         }
     });
     return false;
@@ -490,7 +490,7 @@ showAcquisitionUnitOwnGroups = function (selectedAcquisitionUnitId) {
             }
         },
         failure: function (response, opts) {
-            Ext.Msg.alert(loginUserLanguageResource.Infotip, loginUserLanguageResource.dataQueryFailure);
+            Ext.Msg.alert(loginUserLanguageResource.information, loginUserLanguageResource.dataQueryFailure);
         }
     });
     return false;
@@ -579,10 +579,10 @@ var grantAcquisitionItemsPermission = function (groupType) {
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
                 if (result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
                 }
                 if (result.msg == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveFailure);
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveFailed);
                 }
             },
             failure: function () {
@@ -674,7 +674,7 @@ var saveModbusProtocolInstanceSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolInstanceAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
             	var addInstanceName = Ext.getCmp('formModbusProtocolInstanceName_Id').getValue();
@@ -684,7 +684,7 @@ var saveModbusProtocolInstanceSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
@@ -721,7 +721,7 @@ var SaveAlarmUnitSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doAlarmUnitAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
             	var addInstanceName = Ext.getCmp('formAlarmUnitName_Id').getValue();
@@ -730,7 +730,7 @@ var SaveAlarmUnitSubmitBtnForm = function () {
                 Ext.getCmp('alarmUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>】");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
@@ -767,7 +767,7 @@ var SaveDisplayUnitSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doDisplayUnitAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
             	var addInstanceName = Ext.getCmp('formDisplayUnitName_Id').getValue();
@@ -777,7 +777,7 @@ var SaveDisplayUnitSubmitBtnForm = function () {
                 Ext.getCmp('displayUnit_editWin_Id').close();
                 Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>】");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>】");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
@@ -833,7 +833,7 @@ var saveModbusProtocolReportUnitSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolReportUnitAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
             	var addInstanceName = Ext.getCmp('formModbusProtocolReportUnitName_Id').getValue();
@@ -842,7 +842,7 @@ var saveModbusProtocolReportUnitSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolReportUnitInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
@@ -869,7 +869,7 @@ var saveModbusProtocolDisplayInstanceSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolDisplayInstanceAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
             	var addInstanceName = Ext.getCmp('formModbusProtocolDisplayInstanceName_Id').getValue();
@@ -879,7 +879,7 @@ var saveModbusProtocolDisplayInstanceSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolDisplayInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
@@ -905,7 +905,7 @@ var saveModbusProtocolReportInstanceSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolReportInstanceAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
             	var addInstanceName = Ext.getCmp('formModbusProtocolReportInstanceName_Id').getValue();
@@ -914,7 +914,7 @@ var saveModbusProtocolReportInstanceSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolReportInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
@@ -951,7 +951,7 @@ var saveModbusProtocolAlarmInstanceSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolAlarmInstanceAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
             	var addInstanceName = Ext.getCmp('formModbusProtocolAlarmInstanceName_Id').getValue();
@@ -961,7 +961,7 @@ var saveModbusProtocolAlarmInstanceSubmitBtnForm = function () {
                 Ext.getCmp('modbusProtocolAlarmInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");
@@ -1038,13 +1038,13 @@ var saveModbusProtocolSMSInstanceSubmitBtnForm = function () {
             url: context + '/acquisitionUnitManagerController/doModbusProtocolSMSInstanceAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('modbusProtocolSMSInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");

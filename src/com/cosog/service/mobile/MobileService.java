@@ -792,12 +792,12 @@ public class MobileService<T> extends BaseService<T> {
 									}else if("ReservoirDepth".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
 										value=srpProductionData.getReservoir().getDepth()+"";
 										if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
-											itemName=languageResourceMap.get("reservoirDepth_cbm");
+											itemName=languageResourceMap.get("coalSeamDepth");
 										}
 									}else if("ReservoirTemperature".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
 										value=srpProductionData.getReservoir().getTemperature()+"";
 										if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
-											itemName=languageResourceMap.get("reservoirTemperature_cbm");
+											itemName=languageResourceMap.get("coalSeamTemperature");
 										}
 									}else if("TubingPressure".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 										value=srpProductionData.getProduction().getTubingPressure()+"";
@@ -849,12 +849,12 @@ public class MobileService<T> extends BaseService<T> {
 									}else if("ReservoirDepth".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
 										value=pcpProductionData.getReservoir().getDepth()+"";
 										if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
-											itemName=languageResourceMap.get("reservoirDepth_cbm");
+											itemName=languageResourceMap.get("coalSeamDepth");
 										}
 									}else if("ReservoirTemperature".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
 										value=pcpProductionData.getReservoir().getTemperature()+"";
 										if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
-											itemName=languageResourceMap.get("reservoirTemperature_cbm");
+											itemName=languageResourceMap.get("coalSeamTemperature");
 										}
 									}else if("TubingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
 										value=pcpProductionData.getProduction().getTubingPressure()+"";
@@ -1569,12 +1569,12 @@ public class MobileService<T> extends BaseService<T> {
 									}else if("ReservoirDepth".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
 										value=srpProductionData.getReservoir().getDepth()+"";
 										if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
-											itemName=languageResourceMap.get("reservoirDepth_cbm");
+											itemName=languageResourceMap.get("coalSeamDepth");
 										}
 									}else if("ReservoirTemperature".equalsIgnoreCase(column) && srpProductionData.getReservoir()!=null ){
 										value=srpProductionData.getReservoir().getTemperature()+"";
 										if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
-											itemName=languageResourceMap.get("reservoirTemperature_cbm");
+											itemName=languageResourceMap.get("coalSeamTemperature");
 										}
 									}else if("TubingPressure".equalsIgnoreCase(column) && srpProductionData.getProduction()!=null ){
 										value=srpProductionData.getProduction().getTubingPressure()+"";
@@ -1626,12 +1626,12 @@ public class MobileService<T> extends BaseService<T> {
 									}else if("ReservoirDepth".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
 										value=pcpProductionData.getReservoir().getDepth()+"";
 										if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
-											itemName=languageResourceMap.get("reservoirDepth_cbm");
+											itemName=languageResourceMap.get("coalSeamDepth");
 										}
 									}else if("ReservoirTemperature".equalsIgnoreCase(column) && pcpProductionData.getReservoir()!=null ){
 										value=pcpProductionData.getReservoir().getTemperature()+"";
 										if(deviceInfo!=null && deviceInfo.getApplicationScenarios()==0){
-											itemName=languageResourceMap.get("reservoirTemperature_cbm");
+											itemName=languageResourceMap.get("coalSeamTemperature");
 										}
 									}else if("TubingPressure".equalsIgnoreCase(column) && pcpProductionData.getProduction()!=null ){
 										value=pcpProductionData.getProduction().getTubingPressure()+"";

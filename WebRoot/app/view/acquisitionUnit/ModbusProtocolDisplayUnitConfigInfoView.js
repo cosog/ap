@@ -401,7 +401,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolCode, classes,
         	if(Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id")!=undefined){
                 Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
         	}
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
         	protocolCode: protocolCode,
@@ -802,7 +802,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolCode,classes,
 			if(Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolCode:protocolCode,
@@ -1052,7 +1052,7 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 
 				var item3={};
 				item3.id=3;
-				item3.title=loginUserLanguageResource.calculateType;
+				item3.title=loginUserLanguageResource.calculationType;
 				item3.value=data.calculateTypeName;
 				root.push(item3);
 				
@@ -1070,7 +1070,7 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 				root.push(item5);
 			},
 			failure:function(){
-//				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+//				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 			},
 			params: {
 				protocol: protocolList.join(",")
@@ -1324,15 +1324,15 @@ function saveDisplayUnitConfigData(displayUnitSaveData,protocol,deviceType){
             		Ext.getCmp("DisplayUnitTreeSelectUnitId_Id").setValue(0);
             		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
             	}else{
-            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
             	}
             	Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
             displayUnitConfigHandsontableHelper.clearContainer();
 		},
 		params: {
@@ -1494,10 +1494,10 @@ var grantDisplayAcqItemsPermission = function () {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             }
             if (result.msg == false) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailed + "</font>");
             }
         },
         failure: function () {
@@ -1589,10 +1589,10 @@ var grantDisplayCtrlItemsPermission = function () {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             }
             if (result.msg == false) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailed + "</font>");
             }
         },
         failure: function () {

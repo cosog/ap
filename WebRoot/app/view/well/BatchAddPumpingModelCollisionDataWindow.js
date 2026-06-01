@@ -62,15 +62,15 @@ Ext.define("AP.view.well.BatchAddPumpingModelCollisionDataWindow", {
                         	rdata = Ext.JSON.decode(response.responseText);
                             if (rdata.success&&rdata.overlayCount==0) {
                             	Ext.getCmp("BatchAddPumpingModelCollisionDataWindow_Id").close();
-                            	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                            	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                             }else if(rdata.success&&rdata.overlayCount>0){
                             	CreateAndLoadBatchAddPumpingModelOverlayDataTable(rdata);
                             } else {
-                                Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                                Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                             }
                         },
                         failure: function () {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                         },
                         params: {
                             data: JSON.stringify(saveDate),

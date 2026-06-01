@@ -182,13 +182,13 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
                             url: context + '/wellInformationManagerController/doAuxiliaryDeviceAdd',
                             clientValidation: true, // 进行客户端验证
                             method: "POST",
-                            waitMsg: loginUserLanguageResource.sendServer,
+                            waitMsg: loginUserLanguageResource.submittingData,
                             waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
                                 Ext.getCmp('AuxiliaryDeviceInfoWindow_Id').close();
                                 CreateAndLoadAuxiliaryDeviceInfoTable();
                                 if (action.result.msg == true) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                                 }
                                 if (action.result.msg == false) {
                                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.addFailure + "</font>");

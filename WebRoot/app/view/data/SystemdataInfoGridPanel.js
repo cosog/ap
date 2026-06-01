@@ -142,7 +142,7 @@ function exportDataDictionaryCompleteData(){
 	var param = "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(loginUserLanguageResource.dataDictionaryExportFileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
 //    openExcelWindow(url + '?flag=true' + param);
     downloadFile(url + '?flag=true' + param);
 }

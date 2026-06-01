@@ -544,9 +544,9 @@ function saveSingelImportedReportUnit(unitName,saveSign,msg){
 					success : function(response) {
 						var result = Ext.JSON.decode(response.responseText);
 						if (result.success==true) {
-							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 						}else{
-							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 						}
 						Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -573,9 +573,9 @@ function saveSingelImportedReportUnit(unitName,saveSign,msg){
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 				}else{
-					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 				}
 				Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -612,9 +612,9 @@ function saveAllImportedReportUnit(){
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 			}else{
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 			}
 			Ext.getCmp("ImportReportUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -661,7 +661,7 @@ function CreateImportReportUnitSingleWellDailyReportTemplateInfoTable(unitName){
 			if(Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("importReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			reportType:2,
@@ -930,7 +930,7 @@ function CreateImportReportUnitSingleWellDailyTotalItemsInfoTable(unitName){
 			if(Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("importReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			unitName:unitName,
@@ -1094,7 +1094,7 @@ function CreateImportReportUnitSingleWellRangeReportTemplateInfoTable(unitName){
 			if(Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("importReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			reportType:0,
@@ -1363,7 +1363,7 @@ function CreateImportReportUnitSingleWellRangeTotalItemsInfoTable(unitName){
 			if(Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("importReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			unitName:unitName,
@@ -1523,7 +1523,7 @@ function CreateImportReportUnitProductionReportTemplateInfoTable(unitName){
 			if(Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("importReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			reportType:1,
@@ -1801,7 +1801,7 @@ function CreateImportReportUnitProductionTotalItemsInfoTable(unitName){
 			if(Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("importReportUnitProductionReportContentConfigTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			unitName:unitName,

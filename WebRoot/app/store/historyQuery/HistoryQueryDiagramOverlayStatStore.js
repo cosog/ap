@@ -125,7 +125,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStatStore', {
         	var hours=getHistoryQueryHours();
         	
         	if(isNotVal(Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel"))){
-        		Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel").el.mask(loginUserLanguageResource.loading).show();
+        		Ext.getCmp("HistoryQueryFSdiagramOverlayStatPanel").el.mask(loginUserLanguageResource.loadingData).show();
 			}
         	
         	var new_params = {

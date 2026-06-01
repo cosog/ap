@@ -69,11 +69,11 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolWindow", {
     	        			key='exportProtocolInitData'+'_'+timestamp;
     	        			url=context + '/acquisitionUnitManagerController/exportProtocolInitData?key='+key+'&protocolList='+exportProtocolList.join(",");
     	        		}
-    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     	        	    openExcelWindow(url);
 //                    	document.location.href = url;
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的协议");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
     				}
     			}
             }],

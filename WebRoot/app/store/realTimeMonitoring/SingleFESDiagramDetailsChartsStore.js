@@ -93,7 +93,7 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
             	type=2;
             }
             if(isNotVal(Ext.getCmp(activeId))){
-            	Ext.getCmp(activeId).el.mask(loginUserLanguageResource.loading).show();
+            	Ext.getCmp(activeId).el.mask(loginUserLanguageResource.loadingData).show();
             }
             
             var new_params = { // 将图形数据id作为参数传给后台

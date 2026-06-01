@@ -98,13 +98,13 @@ var SaveroleDataInfoSubmitBtnForm = function () {
             url: context + '/roleManagerController/doRoleAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 
                 
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                     Ext.getCmp("addRoleFlag_Id").setValue(Ext.getCmp('role_Name_Id').getValue());
                 }
                 if (action.result.msg == false) {
@@ -152,7 +152,7 @@ function UpdateroleDataInfoSubmitBtnForm() {
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip,
-                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailed);
                 }
             },
             failure: function () {
@@ -563,7 +563,7 @@ function delRoleInfoByGridBtn(record) {
           					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
           				}
           				if (result.flag == false) {
-          					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+          					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
           				}
           				Ext.getCmp("selectedRoleId_Id").setValue(0);
           				Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
@@ -608,11 +608,11 @@ function updateRoleInfoByGridBtn(record) {
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true && result.flag == true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 			}else if (result.success==true && result.flag == false) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 			}else {
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 			}
 			Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
 		},

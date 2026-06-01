@@ -120,7 +120,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramTiledStatStore', {
         	var hours=getHistoryQueryHours();
         	
         	if(isNotVal(Ext.getCmp("HistoryQueryTiledDiagramPanel"))){
-        		Ext.getCmp("HistoryQueryTiledDiagramPanel").el.mask(loginUserLanguageResource.loading).show();
+        		Ext.getCmp("HistoryQueryTiledDiagramPanel").el.mask(loginUserLanguageResource.loadingData).show();
 			}
         	
         	var new_params = {

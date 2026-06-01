@@ -309,7 +309,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                             	+'&reportDate='+reportDate
                             	+'&orgId='+orgId
                             	+'&key='+key;
-                            	exportDataMask(key,"ProductionDailyReportPanel_view",loginUserLanguageResource.loading);
+                            	exportDataMask(key,"ProductionDailyReportPanel_view",loginUserLanguageResource.loadingData);
                             	document.location.href = url;
                             }
                         },'-',{
@@ -361,7 +361,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                             	+'&reportDate='+reportDate
                             	+'&orgId='+orgId
                             	+'&key='+key;
-                            	exportDataMask(key,"ProductionDailyReportPanel_view",loginUserLanguageResource.loading);
+                            	exportDataMask(key,"ProductionDailyReportPanel_view",loginUserLanguageResource.loadingData);
                             	document.location.href = url;
                             }
                         },'-', {
@@ -450,7 +450,7 @@ function CreateProductionDailyReportTable(){
     }
     
     if(Ext.getCmp("ProductionDailyReportPanel_id")!=undefined){
-        Ext.getCmp("ProductionDailyReportPanel_id").el.mask(loginUserLanguageResource.loading).show();
+        Ext.getCmp("ProductionDailyReportPanel_id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -494,7 +494,7 @@ function CreateProductionDailyReportTable(){
 			if(Ext.getCmp("ProductionDailyReportPanel_id")!=undefined){
 				Ext.getCmp("ProductionDailyReportPanel_id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId: orgId,
@@ -845,17 +845,17 @@ var ProductionDailyReportHelper = {
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
 	                        	productionDailyReportHelper.clearContainer();
 	                        	CreateProductionDailyReportTable();
 	                        	CreateProductionDailyReportCurve();
 	                        } else {
 	                        	productionDailyReportHelper.clearContainer();
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 	                        }
 	                    },
 	                    failure: function () {
-	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
 	                    },
 	                    params: {
 	                    	wellId:wellId,
@@ -953,7 +953,7 @@ function CreateProductionDailyReportCurve(){
     }
     
     if(Ext.getCmp("ProductionDailyReportCurvePanel_id")!=undefined){
-        Ext.getCmp("ProductionDailyReportCurvePanel_id").el.mask(loginUserLanguageResource.loading).show();
+        Ext.getCmp("ProductionDailyReportCurvePanel_id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1116,7 +1116,7 @@ function CreateProductionDailyReportCurve(){
 			if(Ext.getCmp("ProductionDailyReportCurvePanel_id")!=undefined){
 				Ext.getCmp("ProductionDailyReportCurvePanel_id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId: orgId,

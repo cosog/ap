@@ -379,8 +379,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.displayInstance,
 					labelWidth: labelWidth,
-					emptyText : loginUserLanguageResource.selectdisplayInstance,
-					blankText : loginUserLanguageResource.selectdisplayInstance,
+					emptyText : loginUserLanguageResource.selectDisplayInstance,
+					blankText : loginUserLanguageResource.selectDisplayInstance,
 					id : 'deviceDisplayInstanceComb_Id',
 					anchor : '95%',
 					store: displayInstanceStore,
@@ -634,7 +634,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             },deviceTabInstanceComb,
 //            {
 //            	xtype : "combobox",
-//				fieldLabel : loginUserLanguageResource.calculateType,
+//				fieldLabel : loginUserLanguageResource.calculationType,
 //				labelWidth: labelWidth,
 //				id : 'deviceCalculateTypeComb_Id',
 //				anchor : '95%',
@@ -662,7 +662,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
 //            },
             {
             	xtype: "hidden",
-                fieldLabel: loginUserLanguageResource.calculateType,
+                fieldLabel: loginUserLanguageResource.calculationType,
                 labelWidth: labelWidth,
                 id: 'deviceCalculateType_Id',
                 value: '0',
@@ -938,14 +938,14 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                             url: context + '/wellInformationManagerController/doDeviceAdd',
                             clientValidation: true, // 进行客户端验证
                             method: "POST",
-                            waitMsg: loginUserLanguageResource.sendServer,
+                            waitMsg: loginUserLanguageResource.submittingData,
                             waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
                                 Ext.getCmp('deviceInfoWindow_Id').close();
                                 CreateAndLoadDeviceInfoTable();
                                 
                                 if (action.result.msg == true && action.result.resultCode==1) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                                 }else if (action.result.msg == true && action.result.resultCode==-66) {
                                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>设备数许可超限</font>");
                                 }else if (action.result.msg == false) {
@@ -975,7 +975,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                             url: context + '/wellInformationManagerController/doDeviceEdit',
                             clientValidation: true, // 进行客户端验证
                             method: "POST",
-                            waitMsg: loginUserLanguageResource.sendServer,
+                            waitMsg: loginUserLanguageResource.submittingData,
                             waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
                                 Ext.getCmp('deviceInfoWindow_Id').close();

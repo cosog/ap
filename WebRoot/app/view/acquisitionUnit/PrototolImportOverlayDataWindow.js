@@ -87,7 +87,7 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
                             	}
                             },
                             failure: function () {
-                                Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                                Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                             },
                             params: {
                             	data: JSON.stringify(addContent),

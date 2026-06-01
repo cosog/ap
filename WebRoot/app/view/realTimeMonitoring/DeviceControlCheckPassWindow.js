@@ -300,7 +300,7 @@ function CreateDeviceControlValueTable(){
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId: deviceId,
@@ -432,7 +432,7 @@ function enumValueControlBtnHandler(btn){
 //        		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
                 Ext.MessageBox.show({
                     title: loginUserLanguageResource.tip,
-                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                    msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                     icon: Ext.MessageBox.INFO,
                     buttons: Ext.Msg.OK,
                     fn: function () {
@@ -506,7 +506,7 @@ function switchingValueControlBtnHandler(btn){
 //        		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
                 Ext.MessageBox.show({
                     title: loginUserLanguageResource.tip,
-                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                    msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                     icon: Ext.MessageBox.INFO,
                     buttons: Ext.Msg.OK,
                     fn: function () {
@@ -601,7 +601,7 @@ function deviceControlFun(){
 //            		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
                     Ext.MessageBox.show({
                         title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                         icon: Ext.MessageBox.INFO,
                         buttons: Ext.Msg.OK,
                         fn: function () {

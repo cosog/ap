@@ -118,7 +118,7 @@ function CreateAndLoadBatchAddAuxiliaryDeviceTable(isNew) {
             }
         },
         failure: function () {
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
             recordCount: 50
@@ -286,7 +286,7 @@ var BatchAddAuxiliaryDeviceHandsontableHelper = {
                     CreateAndLoadAuxiliaryDeviceInfoTable();
                 	rdata = Ext.JSON.decode(response.responseText);
                 	if (rdata.success&&rdata.overlayCount==0) {
-                    	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                    	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                         batchAddAuxiliaryDeviceHandsontableHelper.clearContainer();
                     }else if(rdata.success&&rdata.overlayCount>0){
                     	var window = Ext.create("AP.view.well.BatchAddAuxiliaryDeviceCollisionDataWindow", {
@@ -295,11 +295,11 @@ var BatchAddAuxiliaryDeviceHandsontableHelper = {
                         window.show();
                         CreateAndLoadBatchAddAuxiliaryDeviceOverlayDataTable(rdata);
                     } else {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                     }
                 },
                 failure: function () {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                     batchAddAuxiliaryDeviceHandsontableHelper.clearContainer();
                 },
                 params: {

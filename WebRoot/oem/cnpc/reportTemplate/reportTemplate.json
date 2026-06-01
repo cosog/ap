@@ -26,7 +26,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["序号", "日期", "通信", "", "", "时率", "", "", "工况", "", "日产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"],
-                "title_en": ["Index", "Date", "Comm", "", "", "Time Efficiency", "", "", "Diagnostic Result", "", "Daily Production", "", "", "Water Cut(%)", "Fullness Coefficient(dec)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Balance", "", "", "Efficiency", "", "", "", "Daily Energy(kW·h)", "Remark"],
+                "title_en": ["Index", "Date", "Communication", "", "", "Time Efficiency", "", "", "Operating Condition", "", "Daily Production", "", "", "Water Cut(%)", "Fullness Coefficient(dec)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Balance", "", "", "Efficiency", "", "", "", "Daily Energy(kW·h)", "Remark"],
                 "title_ru": ["индекс", "дата", "Статус связи", "", "", "Экономия времени", "", "", "Условия работы", "", "Выпуск", "", "", "водосодержание(%)", "Коэффициент заполнения(десятичная дробь)", "Глубина насоса(m)", "Производство жидких поверхностей(m)", "Глубина погружения(m)", "равновесие", "", "", "эффективность", "", "", "", "Ежедневное потребление электроэнергии(kW·h)", "замечание"]
         }, {
                 "tdStyle": {
@@ -38,7 +38,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
-                "title_en": ["", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Diagnostic Result", "Suggestion", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "Power Degree Balance(%)", "Current Degree Balance(%)", "Delta Radius(cm)", "System Efficiency(%)", "Surface Efficiency(%)", "Welldown Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+                "title_en": ["", "", "Online Time(h)", "Online Time Range", "Online Time Efficiency(dec)", "Runtime(h)", "Running Time Range", "Running Time Efficiency(dec)", "Operating Condition", "Suggestion", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "Power Balance Degree(%)", "Current Balance Degree(%)", "Travel Distance(cm)", "System Efficiency(%)", "Surface Efficiency(%)", "Downhole Efficiency(%)", "Energy Consumption per 100 m of lift(kW·h/100·t)", "", ""],
                 "title_ru": ["", "", "Время онлайн(h)", "Временные рамки онлайн", "Эффективность времени в Интернете(десятичная дробь)", "Продолжительность(h)", "Диапазон времени выполнения", "Эффективность во время выполнения(десятичная дробь)", "Условия работы", "Предложения по оптимизации", "жидкость(t/d)", "масло(t/d)", "Вода(t/d)", "", "", "", "", "", "Баланс мощности(%)", "Текущий баланс(%)", "Расстояние в пути(cm)", "Эффективность системы(%)", "Эффективность работы на грунте(%)", "Внутрискважинная эффективность(%)", "Потребляемая мощность на 100 метров подъема(kW·h/100·t)", "", ""]
         }],
             "fixedRowsTop": 3,
@@ -287,7 +287,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["序号", "日期", "通信", "", "", "时率", "", "", "日产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"],
-                "title_en": ["Index", "Date", "Comm", "", "", "Time Efficiency", "", "", "Daily Production", "", "", "Water Cut(%)", "RPM(r/min)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Efficiency", "", "Daily Energy(kW·h)", "Remark"],
+                "title_en": ["Index", "Date", "Communication", "", "", "Time Efficiency", "", "", "Daily Production", "", "", "Water Cut(%)", "RPM(r/min)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Efficiency", "", "Daily Energy(kW·h)", "Remark"],
                 "title_ru": ["индекс", "дата", "Статус связи", "", "", "Экономия времени", "", "", "Выпуск", "", "", "водосодержание(%)", "Скорость вращения(r/min)", "Глубина насоса(m)", "Производство жидких поверхностей(m)", "Глубина погружения(m)", "эффективность", "", "Ежедневное потребление электроэнергии(kW·h)", "замечание"]
         }, {
                 "tdStyle": {
@@ -299,7 +299,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
-                "title_en": ["", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "System Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+                "title_en": ["", "", "Online Time(h)", "Online Time Range", "Online Time Efficiency(dec)", "Runtime(h)", "Running Time Range", "Running Time Efficiency(dec)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "System Efficiency(%)", "Energy Consumption per 100 m of lift(kW·h/100·t)", "", ""],
                 "title_ru": ["", "", "Время онлайн(h)", "Временные рамки онлайн", "Эффективность времени в Интернете(десятичная дробь)", "Продолжительность(h)", "Диапазон времени выполнения", "Эффективность во время выполнения(десятичная дробь)", "жидкость(t/d)", "масло(t/d)", "Вода(t/d)", "", "", "", "", "", "Эффективность системы(%)", "Потребляемая мощность на 100 метров подъема(kW·h/100·t)", "", ""]
         }],
             "fixedRowsTop": 3,
@@ -412,7 +412,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["序号", "时间", "通信", "", "", "时率", "", "", "工况", "", "瞬时产量", "", "", "日累计产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"],
-                "title_en": ["Index", "Time", "Comm", "", "", "Time Efficiency", "", "", "Diagnostic Result", "", "Realtime Production", "", "", "Daily Production", "", "", "Water Cut(%)", "Fullness Coefficient(dec)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Balance", "", "", "Efficiency", "", "", "", "Daily Energy(kW·h)", "Remark"],
+                "title_en": ["Index", "Time", "Communication", "", "", "Time Efficiency", "", "", "Operating Condition", "", "Realtime Production", "", "", "Daily Production", "", "", "Water Cut(%)", "Fullness Coefficient(dec)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Balance", "", "", "Efficiency", "", "", "", "Daily Energy(kW·h)", "Remark"],
                 "title_ru": ["индекс", "Время", "Статус связи", "", "", "Экономия времени", "", "", "Условия работы", "", "Мгновенный выход продукции", "", "", "Выпуск", "", "", "водосодержание(%)", "Коэффициент заполнения(десятичная дробь)", "Глубина насоса(m)", "Производство жидких поверхностей(m)", "Глубина погружения(m)", "равновесие", "", "", "эффективность", "", "", "", "Ежедневное потребление электроэнергии(kW·h)", "замечание"]
         }, {
                 "tdStyle": {
@@ -424,7 +424,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
-                "title_en": ["", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Diagnostic Result", "Suggestion", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "Power Degree Balance(%)", "Current Degree Balance(%)", "Delta Radius(cm)", "System Efficiency(%)", "Surface Efficiency(%)", "Welldown Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+                "title_en": ["", "", "Online Time(h)", "Online Time Range", "Online Time Efficiency(dec)", "Runtime(h)", "Running Time Range", "Running Time Efficiency(dec)", "Operating Condition", "Suggestion", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "Power Balance Degree(%)", "Current Balance Degree(%)", "Travel Distance(cm)", "System Efficiency(%)", "Surface Efficiency(%)", "Downhole Efficiency(%)", "Energy Consumption per 100 m of lift(kW·h/100·t)", "", ""],
                 "title_ru": ["", "", "Время онлайн(h)", "Временные рамки онлайн", "Эффективность времени в Интернете(десятичная дробь)", "Продолжительность(h)", "Диапазон времени выполнения", "Эффективность во время выполнения(десятичная дробь)", "Условия работы", "Предложения по оптимизации", "жидкость(t/d)", "масло(t/d)", "Вода(t/d)", "жидкость(t/d)", "масло(t/d)", "Вода(t/d)", "", "", "", "", "", "Баланс мощности(%)", "Текущий баланс(%)", "Расстояние в пути(cm)", "Эффективность системы(%)", "Эффективность работы на грунте(%)", "Внутрискважинная эффективность(%)", "Потребляемая мощность на 100 метров подъема(kW·h/100·t)", "", ""]
         }],
             "fixedRowsTop": 3,
@@ -698,7 +698,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["序号", "时间", "通信", "", "", "时率", "", "", "瞬时产量", "", "", "日累计产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"],
-                "title_en": ["Index", "Time", "Comm", "", "", "Time Efficiency", "", "", "Realtime Production", "", "", "Daily Production", "", "", "Water Cut(%)", "RPM(r/min)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Efficiency", "", "Daily Energy(kW·h)", "Remark"],
+                "title_en": ["Index", "Time", "Communication", "", "", "Time Efficiency", "", "", "Realtime Production", "", "", "Daily Production", "", "", "Water Cut(%)", "RPM(r/min)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Efficiency", "", "Daily Energy(kW·h)", "Remark"],
                 "title_ru": ["индекс", "Время", "Статус связи", "", "", "Экономия времени", "", "", "Мгновенный выход продукции", "", "", "Выпуск", "", "", "водосодержание(%)", "Скорость вращения(r/min)", "Глубина насоса(m)", "Производство жидких поверхностей(m)", "Глубина погружения(m)", "эффективность", "", "Ежедневное потребление электроэнергии(kW·h)", "замечание"]
         }, {
                 "tdStyle": {
@@ -710,7 +710,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
-                "title_en": ["", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "System Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+                "title_en": ["", "", "Online Time(h)", "Online Time Range", "Online Time Efficiency(dec)", "Runtime(h)", "Running Time Range", "Running Time Efficiency(dec)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "System Efficiency(%)", "Energy Consumption per 100 m of lift(kW·h/100·t)", "", ""],
                 "title_ru": ["", "", "Время онлайн(h)", "Временные рамки онлайн", "Эффективность времени в Интернете(десятичная дробь)", "Продолжительность(h)", "Диапазон времени выполнения", "Эффективность во время выполнения(десятичная дробь)", "жидкость(t/d)", "масло(t/d)", "Вода(t/d)", "жидкость(t/d)", "масло(t/d)", "Вода(t/d)", "", "", "", "", "", "Эффективность системы(%)", "Потребляемая мощность на 100 метров подъема(kW·h/100·t)", "", ""]
         }],
             "fixedRowsTop": 3,
@@ -828,7 +828,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["序号", "井名", "日期", "通信", "", "", "时率", "", "", "工况", "", "累计产量", "", "", "含水率(%)", "充满系数(小数)", "泵挂(m)", "动液面(m)", "沉没度(m)", "平衡", "", "", "效率", "", "", "", "日用电量(kW·h)", "备注"],
-                "title_en": ["Index", "Well Name", "Date", "Comm", "", "", "Time Efficiency", "", "", "Diagnostic Result", "", "Daily Production", "", "", "Water Cut(%)", "Fullness Coefficient(dec)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Balance", "", "", "Efficiency", "", "", "", "Daily Energy(kW·h)", "Remark"],
+                "title_en": ["Index", "Well Name", "Date", "Communication", "", "", "Time Efficiency", "", "", "Operating Condition", "", "Daily Production", "", "", "Water Cut(%)", "Fullness Coefficient(dec)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Balance", "", "", "Efficiency", "", "", "", "Daily Energy(kW·h)", "Remark"],
                 "title_ru": ["индекс", "Название устройства", "дата", "Статус связи", "", "", "Экономия времени", "", "", "Условия работы", "", "Выпуск", "", "", "водосодержание(%)", "Коэффициент заполнения(десятичная дробь)", "Глубина насоса(m)", "Производство жидких поверхностей(m)", "Глубина погружения(m)", "равновесие", "", "", "эффективность", "", "", "", "Ежедневное потребление электроэнергии(kW·h)", "замечание"]
         }, {
                 "tdStyle": {
@@ -840,7 +840,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["", "", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "功图工况", "优化建议", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "功率平衡度(%)", "电流平衡度(%)", "移动距离(cm)", "系统效率(%)", "地面效率(%)", "井下效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
-                "title_en": ["", "", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Diagnostic Result", "Suggestion", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "Power Degree Balance(%)", "Current Degree Balance(%)", "Delta Radius(cm)", "System Efficiency(%)", "Surface Efficiency(%)", "Welldown Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+                "title_en": ["", "", "", "Online Time(h)", "Online Time Range", "Online Time Efficiency(dec)", "Runtime(h)", "Running Time Range", "Running Time Efficiency(dec)", "Operating Condition", "Suggestion", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "Power Balance Degree(%)", "Current Balance Degree(%)", "Travel Distance(cm)", "System Efficiency(%)", "Surface Efficiency(%)", "Downhole Efficiency(%)", "Energy Consumption per 100 m of lift(kW·h/100·t)", "", ""],
                 "title_ru": ["", "", "", "Время онлайн(h)", "Временные рамки онлайн", "Эффективность времени в Интернете(десятичная дробь)", "Продолжительность(h)", "Диапазон времени выполнения", "Эффективность во время выполнения(десятичная дробь)", "Условия работы", "Предложения по оптимизации", "жидкость(t/d)", "масло(t/d)", "Вода(t/d)", "", "", "", "", "", "Баланс мощности(%)", "Текущий баланс(%)", "Расстояние в пути(cm)", "Эффективность системы(%)", "Эффективность работы на грунте(%)", "Внутрискважинная эффективность(%)", "Потребляемая мощность на 100 метров подъема(kW·h/100·t)", "", ""]
         }],
             "fixedRowsTop": 3,
@@ -1076,7 +1076,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["序号", "井名", "日期", "通信", "", "", "时率", "", "", "累计产量", "", "", "含水率(%)", "转速(r/min)", "泵挂(m)", "动液面(m)", "沉没度(m)", "效率", "", "日用电量(kW·h)", "备注"],
-                "title_en": ["Index", "Well Name", "Date", "Comm", "", "", "Time Efficiency", "", "", "Daily Production", "", "", "Water Cut(%)", "RPM(r/min)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Efficiency", "", "Daily Energy(kW·h)", "Remark"],
+                "title_en": ["Index", "Well Name", "Date", "Communication", "", "", "Time Efficiency", "", "", "Daily Production", "", "", "Water Cut(%)", "RPM(r/min)", "Pump Setting Depth(m)", "Producing Fluid Level(m)", "Submergence(m)", "Efficiency", "", "Daily Energy(kW·h)", "Remark"],
                 "title_ru": ["индекс", "Название устройства", "дата", "Статус связи", "", "", "Экономия времени", "", "", "Выпуск", "", "", "водосодержание(%)", "Скорость вращения(r/min)", "Глубина насоса(m)", "Производство жидких поверхностей(m)", "Глубина погружения(m)", "эффективность", "", "Ежедневное потребление электроэнергии(kW·h)", "замечание"]
         }, {
                 "tdStyle": {
@@ -1088,7 +1088,7 @@
                     "backgroundColor": "rgb(242, 242, 242)"
                 },
                 "title_zh_CN": ["", "", "", "在线时间(h)", "在线区间", "在线时率(小数)", "运行时间(h)", "运行区间", "运行时率(小数)", "液(t/d)", "油(t/d)", "水(t/d)", "", "", "", "", "", "系统效率(%)", "吨液百米耗电量(kW·h/100·t)", "", ""],
-                "title_en": ["", "", "", "Comm Time(h)", "Comm Range", "Comm Time Efficiency(dec)", "Run Time(h)", "Run Range", "Run Time Efficiency(dec)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "System Efficiency(%)", "Energy Per 100m Lift(kW·h/100·t)", "", ""],
+                "title_en": ["", "", "", "Online Time(h)", "Online Time Range", "Online Time Efficiency(dec)", "Runtime(h)", "Running Time Range", "Running Time Efficiency(dec)", "Liquid(t/d)", "Oil(t/d)", "Water(t/d)", "", "", "", "", "", "System Efficiency(%)", "Energy Consumption per 100 m of lift(kW·h/100·t)", "", ""],
                 "title_ru": ["", "", "", "Время онлайн(h)", "Временные рамки онлайн", "Эффективность времени в Интернете(десятичная дробь)", "Продолжительность(h)", "Диапазон времени выполнения", "Эффективность во время выполнения(десятичная дробь)", "жидкость(t/d)", "масло(t/d)", "Вода(t/d)", "", "", "", "", "", "Эффективность системы(%)", "Потребляемая мощность на 100 метров подъема(kW·h/100·t)", "", ""]
         }],
             "fixedRowsTop": 3,
@@ -1207,7 +1207,7 @@
                 "backgroundColor": "rgb(242, 242, 242)"
             },
             "title_zh_CN": ["日期", "时刻", "", "", ""],
-            "title_en": ["Date", "Moment", "", "", ""],
+            "title_en": ["Date", "Timestamp", "", "", ""],
             "title_ru": ["дата", "момент", "", "", ""]
         }],
         "fixedRowsTop": 2,

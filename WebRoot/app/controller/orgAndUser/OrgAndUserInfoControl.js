@@ -31,14 +31,14 @@ var SaveOrgDataInfoSubmitBtnForm = function () {
             url: context + '/orgManagerController/doOrgAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('org_addwin_Id').close();
                 if (action.result.msg == true) {
                 	Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
 //                	Ext.getCmp("OrgInfoTreeGridView_Id").getStore().load();
-                	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.addFailure);
@@ -73,7 +73,7 @@ function UpdateOrgDataInfoSubmitBtnForm() {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip,loginUserLanguageResource.updateFailure);
+                    Ext.Msg.alert(loginUserLanguageResource.tip,loginUserLanguageResource.updateFailed);
                 }
             },
             failure: function () {
@@ -208,7 +208,7 @@ function delOrgInfo() {
         					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
         				}
         				if (result.flag == false) {
-        					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+        					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
         				}
         				Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
         			},
@@ -408,7 +408,7 @@ function delUserInfo() {
             					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
             				}
             				if (result.flag == false) {
-            					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+            					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
             				}
             				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
             			},
@@ -419,7 +419,7 @@ function delUserInfo() {
             	}else if(noDelete.length>0){
             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.cannotDeleteLoginUser+"</font>");
             	}else{
-            		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+            		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
             	}
                 
                 
@@ -463,7 +463,7 @@ function delUserInfoByGridBtn(record) {
       					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
       				}
       				if (result.flag == false) {
-      					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+      					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
       				}
       				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
       			},
@@ -474,7 +474,7 @@ function delUserInfoByGridBtn(record) {
       	}else if(noDelete.length>0){
       		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.cannotDeleteLoginUser+"</font>");
       	}else{
-      		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+      		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
       	}
       }
   });
@@ -513,11 +513,11 @@ function updateUserInfoByGridBtn(record) {
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true && result.flag == true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 			}else if (result.success==true && result.flag == false) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 			}else {
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 			}
 			Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
 		},
@@ -536,13 +536,13 @@ var SaveUserDataInfoSubmitBtnForm = function () {
             url: context + '/userManagerController/doUserAdd',
             clientValidation: false, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('user_addwin_Id').close();
                 Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.addFailure);
@@ -578,7 +578,7 @@ function UpdateUserDataInfoSubmitBtnForm() {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.updateFailure);
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.updateFailed);
                 }
             },
             failure: function () {
@@ -608,7 +608,7 @@ function EditUserPasswordSubmitBtnForm() {
                 	Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
                 	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 }else if (action.result.flag == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip,loginUserLanguageResource.updateFailure);
+                    Ext.Msg.alert(loginUserLanguageResource.tip,loginUserLanguageResource.updateFailed);
                 }
             },
             failure: function () {

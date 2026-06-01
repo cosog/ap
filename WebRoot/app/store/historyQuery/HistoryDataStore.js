@@ -120,7 +120,7 @@ Ext.define('AP.store.historyQuery.HistoryDataStore', {
         	var endTime_Second=0;
         	
         	if(Ext.getCmp("HistoryQueryDataInfoPanel_Id")!=undefined && Ext.getCmp("HistoryQueryDataInfoPanel_Id").el!=undefined){
-        		Ext.getCmp("HistoryQueryDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+        		Ext.getCmp("HistoryQueryDataInfoPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
             }
         	
         	

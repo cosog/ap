@@ -96,7 +96,7 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                             	if(rdata.overCount>0){
                             		Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+rdata.overCount+"</font>口井超限，保存失败");
                             	}else{
-                            		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                            		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                             	}
                             }else if(rdata.success&&(rdata.collisionCount>0 || rdata.overlayCount>0)){
                                 Ext.getCmp("batchAddCollisionDeviceType_Id").setValue(deviceType);
@@ -145,11 +145,11 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                                 }
                                 Ext.MessageBox.alert(loginUserLanguageResource.message, info);
                             } else {
-                                Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                                Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                             }
                         },
                         failure: function () {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                             batchAddDeviceHandsontableHelper.clearContainer();
                         },
                         params: {

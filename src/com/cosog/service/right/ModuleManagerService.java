@@ -461,7 +461,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 				if(exportModuleData.getSaveSign()==0){
 					try {
 						this.addImportedModule(module);
-						exportModuleData.setMsg(languageResourceMap.get("addSuccessfully"));
+						exportModuleData.setMsg(languageResourceMap.get("addedSuccessfully"));
 					} catch (Exception e) {
 						exportModuleData.setMsg(languageResourceMap.get("addFailure"));
 						e.printStackTrace();

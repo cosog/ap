@@ -58,11 +58,11 @@ Ext.define("AP.view.orgAndUser.OrgParentChangeWindow", {
                 			if (result.success == true && result.resultStatus>0) {
                 				Ext.getCmp('orgParentChangeWindow_Id').close();
                 				Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
-                				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.changeOwnerSuccess);
+                				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.migrationSuccessful);
                 			}else if (result.success == true && result.resultStatus==-1) {
                 				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.orgChangeOwnerFai+"</font>");
                 			}else if (result.success == false) {
-                				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.changeOwnerFail+"</font>");
+                				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.migrationFailed+"</font>");
                 			}
                 		},
                 		failure : function() {

@@ -34,7 +34,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         	        				if(Ext.getCmp("RealTimeMonitoringTabPanel")!=undefined){
-            	        				Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loading).show();
+            	        				Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loadingData).show();
         	        				}
         	        				cleanDeviceAddInfoAndControlInfo();
         	        				
@@ -245,7 +245,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
     					if(Ext.getCmp("RealTimeMonitoringTabPanel")!=undefined){
-        					Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        					Ext.getCmp("RealTimeMonitoringTabPanel").el.mask(loginUserLanguageResource.loadingData).show();
         				}
     					if(oldCard!=undefined){
     						if(oldCard.xtype=='tabpanel'){
@@ -281,16 +281,18 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
     		    	var maxWidth = myTabPanel.getWidth() - totalTabsWidth - 10; // 预留少量边距
     		    	var newWidth = Math.min(parseInt((myTabPanel.getWidth() - totalTabsWidth) * 0.95), maxWidth);
     		    	
-    		    	Ext.getCmp('ResourceMonitoringToolbar_Id').setWidth(newWidth);
+    		    	var newWidthPercent=parseInt(newWidth/myTabPanel.getWidth()*100)+'%';
+    		    	
+    		    	Ext.getCmp('ResourceMonitoringToolbar_Id').setWidth(newWidthPercent);
     			},
     			resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-    				var myTabPanel = Ext.getCmp('RealTimeMonitoringTabPanel');
-    			    if (myTabPanel && myTabPanel.rendered) {
-    			        var totalTabsWidth = getTotalTabsWidth(myTabPanel);
-    			        var maxWidth = myTabPanel.getWidth() - totalTabsWidth - 10; // 预留少量边距
-        		    	var newWidth = Math.min(parseInt((myTabPanel.getWidth() - totalTabsWidth) * 0.95), maxWidth);
-    			        Ext.getCmp('ResourceMonitoringToolbar_Id').setWidth(newWidth);
-    			    }
+//    				var myTabPanel = Ext.getCmp('RealTimeMonitoringTabPanel');
+//    			    if (myTabPanel && myTabPanel.rendered) {
+//    			        var totalTabsWidth = getTotalTabsWidth(myTabPanel);
+//    			        var maxWidth = myTabPanel.getWidth() - totalTabsWidth - 10; // 预留少量边距
+//        		    	var newWidth = Math.min(parseInt((myTabPanel.getWidth() - totalTabsWidth) * 0.95), maxWidth);
+//    			        Ext.getCmp('ResourceMonitoringToolbar_Id').setWidth(newWidth);
+//    			    }
     			}
     		}
         });
@@ -1083,7 +1085,7 @@ function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,dictDevic
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };
 
@@ -1149,7 +1151,7 @@ function loadAndInitFESdiagramResultStat(all){
 		commStatusStatValue=Ext.getCmp("RealTimeMonitoringStatSelectCommStatus_Id").getValue();
 	}
 	if(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id")!=undefined && Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el!=undefined){
-		Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1166,7 +1168,7 @@ function loadAndInitFESdiagramResultStat(all){
 			if(Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id")!=undefined && Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").el!=undefined){
 				Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,
@@ -1296,7 +1298,7 @@ function loadAndInitCommStatusStat(all){
 	}
 
 	if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1314,7 +1316,7 @@ function loadAndInitCommStatusStat(all){
 			if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,
@@ -1471,7 +1473,7 @@ function loadAndInitRunStatusStat(all){
 	}
 
 	if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	
 	Ext.Ajax.request({
@@ -1490,7 +1492,7 @@ function loadAndInitRunStatusStat(all){
 			if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,
@@ -1643,7 +1645,7 @@ function loadAndInitNumStatusStat(all){
 		Ext.getCmp("RealTimeMonitoringStatSelectDeviceType_Id").setValue('');
 	}
 	if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1661,7 +1663,7 @@ function loadAndInitNumStatusStat(all){
 			if(Ext.getCmp(panelId)!=undefined && Ext.getCmp(panelId).el!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,
@@ -1831,7 +1833,7 @@ function loadAndInitDeviceTypeStat(all){
 			initRealTimeMonitoringDeviceTypeStatPieOrColChat(result);
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,
@@ -1970,7 +1972,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
 	var panelId="RealTimeMonitoringCurveTabPanel_Id";
 	
 	if(Ext.getCmp(panelId)!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceName='';
@@ -2129,7 +2131,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
 			if(Ext.getCmp(panelId)!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceName:deviceName,
@@ -2193,6 +2195,11 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	    			type: 'all',
 	    			text: loginUserLanguageResource.all
 	    		}],
+	    		buttonTheme: {
+	    	        width: getLabelWidth('24'+loginUserLanguageResource.hour,loginUserLanguage)  // 固定按钮宽度，完全掌控大小
+	    	    },
+//	    		buttonSpacing: 5, // 调整按钮之间的间距
+	    		dropdown: 'responsive', // 空间不足时自动折叠为下拉菜单
 	    		inputEnabled: false,
 	    		selected: 0
 	    	},
@@ -2480,7 +2487,7 @@ function initVideo(panelId,divId,videoUrl,videoKeyId,deviceType,videoNo,isNew){
 				showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew);
 			},
 			failure:function(){
-				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 			},
 			params: {
 				videoKeyId: videoKeyId
@@ -2614,7 +2621,7 @@ function exportDeviceRealTimeMonitoringData(deviceId,deviceName,calculateType) {
     + "&deviceName=" + URLencode(URLencode(deviceName))
     + '&calculateType='+calculateType
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };
 

@@ -267,6 +267,6 @@ function exportItemHistoryDataTable(){
     + '&startDate='+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)
     + '&endDate='+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 }

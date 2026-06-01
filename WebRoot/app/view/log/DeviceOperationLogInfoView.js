@@ -28,7 +28,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         	        		listeners: {
         	        			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         	        				if(Ext.getCmp("DeviceOperationLogRootTabPanel")!=undefined){
-            	        				Ext.getCmp("DeviceOperationLogRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+            	        				Ext.getCmp("DeviceOperationLogRootTabPanel").el.mask(loginUserLanguageResource.loadingData).show();
         	        				}
         	        				if(oldCard!=undefined){
         	        					oldCard.setIconCls(null);
@@ -114,7 +114,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
         		listeners: {
     				beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
     					if(Ext.getCmp("DeviceOperationLogRootTabPanel")!=undefined){
-        					Ext.getCmp("DeviceOperationLogRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+        					Ext.getCmp("DeviceOperationLogRootTabPanel").el.mask(loginUserLanguageResource.loadingData).show();
         				}
         				if(oldCard!=undefined){
         					oldCard.setIconCls(null);
@@ -264,6 +264,6 @@ function exportDeviceOperationLogExcel(orgId,deviceType,dictDeviceType,deviceNam
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };

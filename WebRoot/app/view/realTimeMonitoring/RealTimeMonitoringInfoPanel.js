@@ -973,7 +973,7 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 	}
 	
 	if(Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id")!=undefined){
-		Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1051,7 +1051,7 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 		},
 		failure:function(){
 			Ext.getCmp("RealTimeMonitoringInfoDataPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId:deviceId,
@@ -1309,7 +1309,7 @@ function realTimeMonitoringCurve(item){
 			    initTimeAndDataCurveChartFn(ser, tickInterval, "realTimeMonitoringCurveDiv_Id", title, '', xTitle, yTitle, color,false,'%H:%M:%S');
 			},
 			failure:function(){
-				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 			},
 			params: {
 				deviceName:deviceName,
@@ -1440,7 +1440,7 @@ function controlBtnHandler(btn,btnIndex,showButtonCount){
                     if (data.success == true && data.flag == false) {
                         Ext.MessageBox.show({
                             title: loginUserLanguageResource.tip,
-                            msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
+                            msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "</font>",
                             icon: Ext.MessageBox.INFO,
                             buttons: Ext.Msg.OK,
                             fn: function () {
@@ -1483,7 +1483,7 @@ function controlBtnHandler(btn,btnIndex,showButtonCount){
                     if (data.success == true && data.flag == false) {
                         Ext.MessageBox.show({
                             title: loginUserLanguageResource.tip,
-                            msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
+                            msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "</font>",
                             icon: Ext.MessageBox.INFO,
                             buttons: Ext.Msg.OK,
                             fn: function () {

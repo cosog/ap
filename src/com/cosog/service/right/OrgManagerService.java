@@ -595,7 +595,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 							if(org.getOrgParent()>=0){
 								try {
 									this.addOrganization(org);
-									e.setMsg(languageResourceMap.get("addSuccessfully"));
+									e.setMsg(languageResourceMap.get("addedSuccessfully"));
 								} catch (Exception e1) {
 									e.setMsg(languageResourceMap.get("addFailure"));
 									e1.printStackTrace();

@@ -356,7 +356,7 @@ Ext.define('AP.view.frame.IframeView', {
 
 });
 var logtOutallBack = function () {
-    LoadingWin(loginUserLanguageResource.signOutInfo);
+    LoadingWin(loginUserLanguageResource.loggingOut);
     // 动态返回当前用户拥有哪些角色信息
     Ext.Ajax.request({
         method: 'POST',

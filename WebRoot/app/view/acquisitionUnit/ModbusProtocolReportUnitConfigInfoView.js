@@ -274,7 +274,7 @@ function CreateSingleWellRangeReportTemplateInfoTable(name, calculateType, code)
         	if(Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id")!=undefined){
                 Ext.getCmp("ReportUnitSingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
         	}
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
             reportType: 0,
@@ -537,7 +537,7 @@ function CreateSingleWellDailyReportTemplateInfoTable(name, calculateType, code)
         	if(Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id")!=undefined){
                 Ext.getCmp("ReportUnitSingleWellDailyReportTemplateTableInfoPanel_Id").getEl().unmask();
         	}
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
             reportType: 2,
@@ -897,7 +897,7 @@ function CreateSingleWellRangeReportTotalItemsInfoTable() {
             }
             if (singleWellRangeReportTemplateContentHandsontableHelper == null || singleWellRangeReportTemplateContentHandsontableHelper.hot == undefined) {
                 singleWellRangeReportTemplateContentHandsontableHelper = SingleWellRangeReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id");
-                var colHeaders = [loginUserLanguageResource.idx, loginUserLanguageResource.dataColumnName,loginUserLanguageResource.dataColumn, loginUserLanguageResource.unit, loginUserLanguageResource.dataSource, loginUserLanguageResource.totalType, loginUserLanguageResource.showLevel, loginUserLanguageResource.prec, loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
+                var colHeaders = [loginUserLanguageResource.idx, loginUserLanguageResource.fiedName,loginUserLanguageResource.dataColumn, loginUserLanguageResource.unit, loginUserLanguageResource.dataSource, loginUserLanguageResource.totalType, loginUserLanguageResource.showLevel, loginUserLanguageResource.prec, loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
                 var columns = [
                     {
                         data: 'id'
@@ -942,7 +942,7 @@ function CreateSingleWellRangeReportTotalItemsInfoTable() {
         	if(Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id")!=undefined){
                 Ext.getCmp("ReportUnitSingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
         	}
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
             calculateType: calculateType,
@@ -1149,7 +1149,7 @@ function CreateSingleWellDailyReportTotalItemsInfoTable() {
             }
             if (singleWellDailyReportTemplateContentHandsontableHelper == null || singleWellDailyReportTemplateContentHandsontableHelper.hot == undefined) {
                 singleWellDailyReportTemplateContentHandsontableHelper = SingleWellDailyReportTemplateContentHandsontableHelper.createNew("ReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id");
-                var colHeaders = [loginUserLanguageResource.idx, loginUserLanguageResource.dataColumnName,loginUserLanguageResource.dataColumn, loginUserLanguageResource.unit, loginUserLanguageResource.dataSource, loginUserLanguageResource.totalType, loginUserLanguageResource.showLevel, loginUserLanguageResource.prec, loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
+                var colHeaders = [loginUserLanguageResource.idx, loginUserLanguageResource.fiedName,loginUserLanguageResource.dataColumn, loginUserLanguageResource.unit, loginUserLanguageResource.dataSource, loginUserLanguageResource.totalType, loginUserLanguageResource.showLevel, loginUserLanguageResource.prec, loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
                 var columns = [{
                         data: 'id'
                     },
@@ -1192,7 +1192,7 @@ function CreateSingleWellDailyReportTotalItemsInfoTable() {
         	if(Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id")!=undefined){
                 Ext.getCmp("ReportUnitSingleWellDailyReportContentConfigTableInfoPanel_Id").getEl().unmask();
         	}
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
             calculateType: calculateType,
@@ -1369,7 +1369,7 @@ function CreateProtocolReportUnitPropertiesInfoTable(data) {
 
         var item2 = {};
         item2.id = 2;
-        item2.title = loginUserLanguageResource.calculateType;
+        item2.title = loginUserLanguageResource.calculationType;
         item2.value = data.calculateTypeName;
         root.push(item2);
 
@@ -1574,7 +1574,7 @@ function CreateProductionReportTemplateInfoTable(name, calculateType, code) {
         	if(Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id")!=undefined){
                 Ext.getCmp("ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id").getEl().unmask();
         	}
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
             reportType: 1,
@@ -1859,7 +1859,7 @@ function CreateproductionReportTotalItemsInfoTable(calculateType, unitId, unitNa
             }
             if (productionReportTemplateContentHandsontableHelper == null || productionReportTemplateContentHandsontableHelper.hot == undefined) {
                 productionReportTemplateContentHandsontableHelper = ProductionReportTemplateContentHandsontableHelper.createNew("ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id");
-                var colHeaders = [loginUserLanguageResource.idx,loginUserLanguageResource.dataColumnName,loginUserLanguageResource.dataColumn,loginUserLanguageResource.unit,loginUserLanguageResource.dataSource,loginUserLanguageResource.totalType,loginUserLanguageResource.showLevel,loginUserLanguageResource.prec,loginUserLanguageResource.sumSign,loginUserLanguageResource.averageSign,loginUserLanguageResource.reportCurve,loginUserLanguageResource.curveStatType, loginUserLanguageResource.config];
+                var colHeaders = [loginUserLanguageResource.idx,loginUserLanguageResource.fiedName,loginUserLanguageResource.dataColumn,loginUserLanguageResource.unit,loginUserLanguageResource.dataSource,loginUserLanguageResource.totalType,loginUserLanguageResource.showLevel,loginUserLanguageResource.prec,loginUserLanguageResource.sumSign,loginUserLanguageResource.averageSign,loginUserLanguageResource.reportCurve,loginUserLanguageResource.curveStatType, loginUserLanguageResource.config];
                 var columns = [
                     {data:'id'},
                     {data:'headerName'},
@@ -1886,7 +1886,7 @@ function CreateproductionReportTotalItemsInfoTable(calculateType, unitId, unitNa
         	if(Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id")!=undefined){
                 Ext.getCmp("ModbusProtocolProductionReportUnitContentConfigTableInfoPanel_Id").getEl().unmask();
         	}
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
             calculateType: calculateType,
@@ -2117,15 +2117,15 @@ function SaveModbusProtocolReportUnitData(saveData) {
                     Ext.getCmp("ReportUnitTreeSelectUnitId_Id").setValue(0);
                     Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.deleteSuccessfully);
                 }else{
-                	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                 }
                 Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().load();
             } else {
-                Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
             }
         },
         failure: function () {
-            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
         },
         params: {
             data: JSON.stringify(saveData),
@@ -2303,7 +2303,7 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
                 if (reportType == 0) {
                     CreateReportUnitContentConfigColInfoTable();
                     CreateReportUnitContentConfigTable();
@@ -2317,7 +2317,7 @@ var grantReportUnitContentItemsPermission2 = function (unitId, reportType, calcu
 
             }
             if (result.msg == false) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailed + "</font>");
             }
         },
         failure: function () {
@@ -2529,10 +2529,10 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
         success: function (response) {
             var result = Ext.JSON.decode(response.responseText);
             if (result.msg == true) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
             }
             if (result.msg == false) {
-                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailed + "</font>");
             }
         },
         failure: function () {
@@ -2612,7 +2612,7 @@ function CreateHydrologicalWellDailyReportTemplateInfoTable() {
         	if(Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id")!=undefined){
                 Ext.getCmp("ReportUnitClasses1TemplateTableInfoPanel_Id").getEl().unmask();
         	}
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
         	
@@ -2889,7 +2889,7 @@ function CreateHydrologicalWellDailyReportConfigItemsInfoTable() {
             }
             if (hydrologicalWellDailyReportContentHandsontableHelper == null || hydrologicalWellDailyReportContentHandsontableHelper.hot == undefined) {
                 hydrologicalWellDailyReportContentHandsontableHelper = HydrologicalWellDailyReportContentHandsontableHelper.createNew("ReportUnitClasses1ContentConfigTableInfoDiv_id");
-                var colHeaders = [loginUserLanguageResource.idx, loginUserLanguageResource.dataColumnName,loginUserLanguageResource.dataColumn, loginUserLanguageResource.unit, loginUserLanguageResource.dataSource, loginUserLanguageResource.totalType, loginUserLanguageResource.showLevel, loginUserLanguageResource.prec, loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
+                var colHeaders = [loginUserLanguageResource.idx, loginUserLanguageResource.fiedName,loginUserLanguageResource.dataColumn, loginUserLanguageResource.unit, loginUserLanguageResource.dataSource, loginUserLanguageResource.totalType, loginUserLanguageResource.showLevel, loginUserLanguageResource.prec, loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
                 var columns = [{
                         data: 'id'
                     },
@@ -2932,7 +2932,7 @@ function CreateHydrologicalWellDailyReportConfigItemsInfoTable() {
         	if(Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id")!=undefined){
                 Ext.getCmp("ReportUnitClasses1ContentConfigTableInfoPanel_Id").getEl().unmask();
         	}
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
             calculateType: calculateType,

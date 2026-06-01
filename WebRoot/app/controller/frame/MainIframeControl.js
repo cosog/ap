@@ -18,7 +18,7 @@ function extFuncTreeItemsClk(view, rec, item, index, e) {
 	var module_Id_='';
     try {
         if (rec.isLeaf()) {
-        	Ext.getCmp("frame_center_ids").el.mask(loginUserLanguageResource.loading).show();
+        	Ext.getCmp("frame_center_ids").el.mask(loginUserLanguageResource.loadingData).show();
         	module_Id_ = rec.data.id;
             var tabPanel = Ext.getCmp("frame_center_ids");
             if (module_Id_ == "backAdmin") {
@@ -46,7 +46,7 @@ function extFuncTreeItemsClk(view, rec, item, index, e) {
                     }
                     if (ViewUrl != "#") {
                     	var all_loading = new Ext.LoadMask({
-                            msg: loginUserLanguageResource.loading,
+                            msg: loginUserLanguageResource.loadingData,
                             target: Ext.getBody().component
                         });
                         all_loading.show();

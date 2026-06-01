@@ -106,11 +106,11 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     	    	                        	Ext.getCmp("VideoKeySelectEndRow_Id").setValue(0);
     	    	                            CreateDeviceKeyDataTable();
     	    	                        } else {
-    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
     	    	                        }
     	    	                    },
     	    	                    failure: function () {
-    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
     	    	                        videoKeyDataHandsontableHelper.clearContainer();
     	    	                    },
     	    	                    params: {
@@ -170,7 +170,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
 
 function CreateDeviceKeyDataTable(){
 	if(Ext.getCmp("VideoKeyPanel_Id")!=undefined){
-		Ext.getCmp("VideoKeyPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("VideoKeyPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	Ext.Ajax.request({
@@ -220,7 +220,7 @@ function CreateDeviceKeyDataTable(){
 			if(Ext.getCmp("VideoKeyPanel_Id")!=undefined){
 				Ext.getCmp("VideoKeyPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId: leftOrg_Id
@@ -412,16 +412,16 @@ var VideoKeyDataHandsontableHelper = {
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
-	                        	var saveInfo=loginUserLanguageResource.saveSuccessfully;
+	                        	var saveInfo=loginUserLanguageResource.savedSuccessfully;
 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, saveInfo);
 	                        	videoKeyDataHandsontableHelper.clearContainer();
 	                        	CreateDeviceKeyDataTable();
 	                        } else {
-	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 	                        }
 	                    },
 	                    failure: function () {
-	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
 	                        videoKeyDataHandsontableHelper.clearContainer();
 	                    },
 	                    params: {

@@ -330,7 +330,7 @@ var ImportDeviceHandsontableHelper = {
                 	}
                 	rdata = Ext.JSON.decode(response.responseText);
                 	if (rdata.success&&rdata.collisionCount==0&&rdata.overlayCount==0) {
-                    	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                    	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                         //保存以后重置全局容器
                         importDeviceHandsontableHelper.clearContainer();
                     }else if(rdata.success&&(rdata.collisionCount>0 || rdata.overlayCount>0)){
@@ -354,11 +354,11 @@ var ImportDeviceHandsontableHelper = {
                         	CreateAndLoadBatchAddDeviceOverlayDataTable(rdata);
                         }
                     } else {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                     }
                 },
                 failure: function () {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                     importDeviceHandsontableHelper.clearContainer();
                 },
                 params: {

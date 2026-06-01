@@ -11,7 +11,7 @@ Ext.Ajax.on("requestexception", function(conn, response, options, eOpts) {
 			break;
 		case 404 :
 			if (httpError == 5) {
-				xxErrorMsg("session", loginUserLanguageResource.sessionTimeoutInfo);
+				xxErrorMsg("session", loginUserLanguageResource.sessionTimedOutInfo);
 			} else {
 				xxErrorMsg("404", loginUserLanguageResource.ajaxError404);
 			}
@@ -36,7 +36,7 @@ Ext.Ajax.on("requestexception", function(conn, response, options, eOpts) {
 		case 999 :
 			Ext.MessageBox.show({
 				title : loginUserLanguageResource.tip,
-				msg : "[<font color='red' font-weight=bold;>"+loginUserLanguageResource.sessionTimeoutInfo+"</font>]",
+				msg : "[<font color='red' font-weight=bold;>"+loginUserLanguageResource.sessionTimedOutInfo+"</font>]",
 				icon : Ext.MessageBox.WARNING,
 				buttons : Ext.Msg.OK,
 				fn : function() {

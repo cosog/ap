@@ -257,7 +257,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                                 + "&fileName=" + URLencode(URLencode(wellName+"含水数据")) 
                                 + "&title=" + URLencode(URLencode(wellName+"含水数据"))
                                 + '&key='+key;
-                                exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+                                exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
                                 openExcelWindow(url + '?flag=true' + param);
                             }
                         }, '-',{
@@ -418,7 +418,7 @@ function syncModelData(){
     			Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue(response.responseText);
     		},
     		failure:function(){
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
     		},
     		params: {
     			wellId:wellId,
@@ -469,7 +469,7 @@ function producerMsg(){
                         }
             		},
             		failure:function(){
-            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
             		},
             		params: {
             			type: type,
@@ -505,7 +505,7 @@ function requestConfigData(){
     			}
     		},
     		failure:function(){
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
     		},
     		params: {
     			type: type,
@@ -987,7 +987,7 @@ function readWaterCutRawData(){
     			if(Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id")!=undefined){
         			Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").getEl().unmask();
     	    	}
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
     		},
     		params: {
     			wellId:wellId,

@@ -117,7 +117,7 @@ function exportAuxiliaryDeviceCompleteData(){
     + "&recordCount=10000" 
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
 //    openExcelWindow(url + '?flag=true' + param);
     downloadFile(url + '?flag=true' + param);
 }

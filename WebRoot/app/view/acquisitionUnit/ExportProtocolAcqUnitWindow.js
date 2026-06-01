@@ -45,7 +45,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqUnitWindow", {
     					
     	        		var url=context + '/acquisitionUnitManagerController/exportProtocolAcqUnitData?key='+key+'&unitList='+exportAcqUnitList.join(",");
     	        		
-    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     	        	    openExcelWindow(url);
     				}else{
     					Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的采控单元");

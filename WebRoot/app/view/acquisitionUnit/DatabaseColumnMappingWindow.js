@@ -3,7 +3,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.databaseColumnMappingWindow',
     layout: 'fit',
-    title:loginUserLanguageResource.columnMappingTable,
+    title:loginUserLanguageResource.fieldMappingTable,
     border: false,
     hidden: false,
     collapsible: true,
@@ -53,7 +53,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                     }]
             	},
             	items:[{
-                	title:loginUserLanguageResource.runStatusConfig,
+                	title:loginUserLanguageResource.operatingStatusFieldMapping,
                 	id:'DatabaseColumnMappingTableRunStatusConfigPanel_Id',
                 	layout: "border",
                 	split: true,
@@ -93,7 +93,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
             	},{
                 	border: false,
                 	id:"DatabaseColumnMappingTablePanel_Id",
-                    title:loginUserLanguageResource.generalCaclualteConfig,
+                    title:loginUserLanguageResource.calculatedFieldMapping,
                     layout: 'fit',
                 	header:true,
                 	tbar: ['->',{
@@ -204,7 +204,7 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 			var result =  Ext.JSON.decode(response.responseText);
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("DatabaseColumnMappingTableDiv_Id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.protocolFieldName+"','"+loginUserLanguageResource.dataColumn+"','"+loginUserLanguageResource.calculationColumn+"','"+loginUserLanguageResource.enable+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.protocolFieldName+"','"+loginUserLanguageResource.dataColumn+"','"+loginUserLanguageResource.calculatedFieldName+"','"+loginUserLanguageResource.enable+"']";
 				var columns="[" 
 						+"{data:'id'}," 
 						+"{data:'itemName'}," 
@@ -228,7 +228,7 @@ function CreateDatabaseColumnMappingTable(classes,deviceType,protocolCode,protoc
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			classes: classes,
@@ -445,7 +445,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 		            		success:function(response) {
 		            			rdata=Ext.JSON.decode(response.responseText);
 		            			if (rdata.success) {
-		                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+		                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
 		                            databaseColumnMappingHandsontableHelper.clearContainer();
 		                            CreateDatabaseColumnMappingTable(classes,protocolType,protocolCode);
 		                            
@@ -455,11 +455,11 @@ var DatabaseColumnMappingHandsontableHelper = {
 		                            	gridPanel.getStore().load();
 		                            }
 		                        } else {
-		                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveFailure);
+		                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveFailed);
 		                        }
 		            		},
 		            		failure:function(){
-		            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+		            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 		                        databaseColumnMappingHandsontableHelper.clearContainer();
 		            		},
 		            		params: {
@@ -470,7 +470,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 		            	}); 
 		            } else {
 		                if (!databaseColumnMappingHandsontableHelper.validresult) {
-		                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.dataTypeError);
+		                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.invalidDataType);
 		                } else {
 		                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noDataChange);
 		                }
@@ -665,7 +665,7 @@ function saveProtocolRunStatusConfig(){
 			method:'POST',
 			url:context + '/acquisitionUnitManagerController/saveProtocolRunStatusConfig',
 			success:function(response) {
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
 				var gridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id");
                 if (isNotVal(gridPanel)) {
                 	gridPanel.getSelectionModel().deselectAll(true);
@@ -683,7 +683,7 @@ function saveProtocolRunStatusConfig(){
                 }
 			},
 			failure:function(){
-				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 			},
 			params: {
 				protocolCode: protocolCode,

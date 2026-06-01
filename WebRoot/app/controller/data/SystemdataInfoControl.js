@@ -128,7 +128,7 @@ function savesystemdataInfoSubmit() {
         adddtbFrom.getForm().submit({
             url: context + '/systemdataInfoController/addSystemdataInfo',
             clientValidation: true, // 进行客户端验证
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             method: "POST",
             params: {
@@ -139,7 +139,7 @@ function savesystemdataInfoSubmit() {
                 if (action.result.msg == true) {
                     adddtbwin.close();
                     reFreshg("SystemdataInfoGridPanelId");
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 } else {
                     Ext.Msg.msg(loginUserLanguageResource.tip, "<font color=red>" + action.result.error + "。</font> ");
                 }
@@ -316,7 +316,7 @@ function savetoSysDataItems() {
             sysdataForm.getForm().submit({
                 url: context + '/dataitemsInfoController/addDataitemsInfo',
                 clientValidation: true,
-                waitMsg: loginUserLanguageResource.sendServer,
+                waitMsg: loginUserLanguageResource.submittingData,
                 waitTitle: loginUserLanguageResource.wait,
                 method: "POST",
                 params: {
@@ -329,7 +329,7 @@ function savetoSysDataItems() {
                     if (action.result.msg == true) {
                         tosavedatawin.close();
                         reFreshg("dataDictionaryItemGridPanel_Id");
-                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                     }
                     if (action.result.msg == false) {
                         Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
@@ -364,7 +364,7 @@ function updateSysDataItems() {
             sysdataForm.getForm().submit({
                 url: context + '/dataitemsInfoController/updateDataitemsInfo',
                 clientValidation: true,
-                waitMsg: loginUserLanguageResource.sendServer,
+                waitMsg: loginUserLanguageResource.submittingData,
                 waitTitle: loginUserLanguageResource.wait,
                 method: "POST",
                 params: {
@@ -378,10 +378,10 @@ function updateSysDataItems() {
                     if (action.result.msg == true) {
                         tosavedatawin.close();
                         reFreshg("dataDictionaryItemGridPanel_Id");
-                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.saveSuccessfully + "</font>");
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.savedSuccessfully + "</font>");
                     }
                     if (action.result.msg == false) {
-                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.saveFailure);
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.saveFailed);
                     }
 
                 },
@@ -412,12 +412,12 @@ function edittoSysDatasItems() {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font> " + loginUserLanguageResource.updateFailure);
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font> " + loginUserLanguageResource.updateFailed);
                 }
             },
             failure: function () {
                 editsysdataForm.getEl().unmask();
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.saveFailure + "");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.saveFailed + "");
             }
         });
     }
@@ -446,7 +446,7 @@ function editsystemdataInfoUpdata() {
             },
             failure: function () {
                 editsysobjForm.getEl().unmask();
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.saveFailure + "");
+                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.saveFailed + "");
             }
         });
     }
@@ -472,11 +472,11 @@ function updateDataDictionaryInfoByGridBtn(record) {
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true && result.flag == true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 			}else if (result.success==true && result.flag == false) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 			}else {
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 			}
 			Ext.getCmp("SystemdataInfoGridPanelId").getStore().load();
 		},
@@ -514,11 +514,11 @@ function updateDataDictionaryItemInfoByGridBtn(record) {
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true && result.flag == true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 			}else if (result.success==true && result.flag == false) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 			}else {
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 			}
 			Ext.getCmp("SystemdataInfoGridPanelId").getStore().load();
 		},

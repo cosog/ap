@@ -45,10 +45,10 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolDisplayInstanceWindow", {
     					
     	        		var url=context + '/acquisitionUnitManagerController/exportProtocolDisplayInstanceData?key='+key+'&instanceList='+exportDisplayInstanceList.join(",");
     	        		
-    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     	        	    openExcelWindow(url);
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要导出的显示实例");
+    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
     				}
     			}
             }],

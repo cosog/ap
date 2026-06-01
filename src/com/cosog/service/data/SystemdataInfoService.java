@@ -534,7 +534,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 				}else if(exportDataDictionary.getSaveSign()==0){
 					try {
 						this.addDataDictionaryInfo(systemdataInfo);
-						exportDataDictionary.setMsg(languageResourceMap.get("addSuccessfully"));
+						exportDataDictionary.setMsg(languageResourceMap.get("addedSuccessfully"));
 					} catch (Exception e) {
 						exportDataDictionary.setMsg(languageResourceMap.get("addFailure"));
 						e.printStackTrace();

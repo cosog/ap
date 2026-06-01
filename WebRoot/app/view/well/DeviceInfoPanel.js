@@ -20,8 +20,8 @@ var deviceCalculateDataTabPanelItems=[{
 	iconCls: 'check3',
 	tbar:[{
         xtype: 'radiogroup',
-        fieldLabel: loginUserLanguageResource.calculateType,
-        labelWidth: getLabelWidth(loginUserLanguageResource.calculateType,loginUserLanguage),
+        fieldLabel: loginUserLanguageResource.calculationType,
+        labelWidth: getLabelWidth(loginUserLanguageResource.calculationType,loginUserLanguage),
         id: 'DeviceCalculateDataType_Id',
         hidden:true,
         cls: 'x-check-group-alt',
@@ -87,7 +87,7 @@ var deviceCalculateDataTabPanelItems=[{
         }
     }
 },{
-	title:loginUserLanguageResource.pumpingInfo,
+	title:loginUserLanguageResource.pumpingUnitData,
 	id:'PumpingInfoPanel_Id',
     layout: 'border',
     tbar:['->',{
@@ -114,7 +114,7 @@ var deviceCalculateDataTabPanelItems=[{
 		items: [{
 			region: 'center',
 			border:false,
-			title:loginUserLanguageResource.pumpingInfo,
+			title:loginUserLanguageResource.pumpingUnitData,
 			id:'DevicePumpingUnitPanel_Id',
 			html: '<div class="PumpingInfoContainer" style="width:100%;height:100%;"><div class="con" id="PumpingInfoTableDiv_id"></div></div>',
             listeners: {
@@ -657,7 +657,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 style: 'margin-right:15px'
             },'->', {
     			xtype: 'button',
-                text: loginUserLanguageResource.addDevie,
+                text: loginUserLanguageResource.addDevice,
                 iconCls: 'add',
                 disabled:loginUserDeviceManagerModuleRight.editFlag!=1,
                 handler: function (v, o) {
@@ -680,7 +680,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                 	}
                 	
                 	var window = Ext.create("AP.view.well.DeviceInfoWindow", {
-                        title: loginUserLanguageResource.addDevie
+                        title: loginUserLanguageResource.addDevice
                     });
                     window.show();
                     Ext.getCmp("deviceWinOgLabel_Id").setHtml(loginUserLanguageResource.owningOrg+"【<font color=red>"+selectedOrgName+"</font>】,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
@@ -736,11 +736,11 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     	    	                        	Ext.getCmp("DeviceSelectEndRow_Id").setValue(0);
     	    	                            CreateAndLoadDeviceInfoTable();
     	    	                        } else {
-    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
     	    	                        }
     	    	                    },
     	    	                    failure: function () {
-    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
     	    	                        deviceInfoHandsontableHelper.clearContainer();
     	    	                    },
     	    	                    params: {
@@ -1094,7 +1094,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 	    
 	    
 	    if(Ext.getCmp("DeviceTablePanel_id")!=undefined){
-		    Ext.getCmp("DeviceTablePanel_id").el.mask(loginUserLanguageResource.loading).show();
+		    Ext.getCmp("DeviceTablePanel_id").el.mask(loginUserLanguageResource.loadingData).show();
     	}
 	    Ext.Ajax.request({
 	        method: 'POST',
@@ -1299,7 +1299,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 	        	if(Ext.getCmp("DeviceTablePanel_id")!=undefined){
 		        	Ext.getCmp("DeviceTablePanel_id").getEl().unmask();
 	        	}
-	        	Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+	        	Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 	        },
 	        params: {
 	        	deviceName: deviceName,
@@ -1664,8 +1664,8 @@ var DeviceInfoHandsontableHelper = {
                                     	var hiddenRows=[0,3,9,10];
                                     	if(params[3] == loginUserLanguageResource.applicationScenarios0){
                                     		plugin.hideRows(hiddenRows);
-                                    		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth_cbm+'(m)');
-                                    		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature_cbm+'(℃)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.coalSeamDepth+'(m)');
+                                    		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.coalSeamTemperature+'(℃)');
                                     		productionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure_cbm+'(MPa)');
                                     	}else{
                                     		plugin.showRows(hiddenRows);
@@ -2655,9 +2655,9 @@ var DeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                        	var saveInfo=loginUserLanguageResource.saveSuccessfully;
+                        	var saveInfo=loginUserLanguageResource.savedSuccessfully;
                         	if(rdata.collisionCount>0){//数据冲突
-                        		saveInfo=loginUserLanguageResource.saveSuccessfully+":"+rdata.successCount+','+loginUserLanguageResource.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>';
+                        		saveInfo=loginUserLanguageResource.savedSuccessfully+":"+rdata.successCount+','+loginUserLanguageResource.saveFailed+':<font color="red">'+rdata.collisionCount+'</font>';
                         		for(var i=0;i<rdata.list.length;i++){
                         			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
                         		}
@@ -2668,11 +2668,11 @@ var DeviceInfoHandsontableHelper = {
                             	CreateAndLoadDeviceInfoTable();
                             }
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                         deviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -2698,15 +2698,15 @@ var DeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                             deviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                         deviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -2716,7 +2716,7 @@ var DeviceInfoHandsontableHelper = {
                 });
             } else {
                 if (!deviceInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.dataTypeError);
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.invalidDataType);
                 } else {
                     Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
                 }
@@ -2793,7 +2793,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 	}
 	if(deviceCalculateDataType!=0){
 		if(Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id")!=undefined){
-			Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+			Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
     	}
 		Ext.Ajax.request({
 			method:'POST',
@@ -2840,8 +2840,8 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 				const plugin = productionHandsontableHelper.hot.getPlugin('hiddenRows');
 				if(applicationScenarios==0){
             		plugin.hideRows(hiddenRows);
-            		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.reservoirDepth_cbm+'(m)');
-            		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.reservoirTemperature_cbm+'(℃)');
+            		productionHandsontableHelper.hot.setDataAtCell(4,1,loginUserLanguageResource.coalSeamDepth+'(m)');
+            		productionHandsontableHelper.hot.setDataAtCell(5,1,loginUserLanguageResource.coalSeamTemperature+'(℃)');
             		productionHandsontableHelper.hot.setDataAtCell(6,1,loginUserLanguageResource.tubingPressure_cbm+'(MPa)');
             	}else{
             		plugin.showRows(hiddenRows);
@@ -2857,7 +2857,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 				if(Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id")!=undefined){
 					Ext.getCmp("DeviceFSDiagramOrRPMCalculateDataInfoPanel_Id").getEl().unmask();
 		    	}
-				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 			},
 			params: {
 				deviceId:deviceId,
@@ -3116,7 +3116,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 		pumpingInfoHandsontableHelper=null;
 	}
 	if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
-		Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -3164,7 +3164,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 			if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
 				Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId:deviceId,
@@ -3539,7 +3539,7 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 	}
 	videoInfoHandsontableHelper=null;
 	if(Ext.getCmp("DeviceVideoInfoPanel_Id")!=undefined){
-		Ext.getCmp("DeviceVideoInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("DeviceVideoInfoPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
@@ -3601,7 +3601,7 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 			if(Ext.getCmp("DeviceVideoInfoPanel_Id")!=undefined){
 				Ext.getCmp("DeviceVideoInfoPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId:deviceId,
@@ -3806,7 +3806,7 @@ function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId:deviceId,
@@ -3996,7 +3996,7 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,calcula
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId:deviceId,
@@ -4658,7 +4658,7 @@ function deviceProductionDataDownlink(){
 	            	if (result.flag == false) {
 	                    Ext.MessageBox.show({
 	                        title: loginUserLanguageResource.tip,
-	                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
 	                        icon: Ext.MessageBox.INFO,
 	                        buttons: Ext.Msg.OK,
 	                        fn: function () {
@@ -4751,7 +4751,7 @@ function devicePumpingUnitDataDownlink(){
             	if (result.flag == false) {
                     Ext.MessageBox.show({
                         title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                         icon: Ext.MessageBox.INFO,
                         buttons: Ext.Msg.OK,
                         fn: function () {
@@ -4943,7 +4943,7 @@ function deviceFSDiagramConstructionDataDownlink(){
             	if (result.flag == false) {
                     Ext.MessageBox.show({
                         title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                         icon: Ext.MessageBox.INFO,
                         buttons: Ext.Msg.OK,
                         fn: function () {
@@ -5016,7 +5016,7 @@ function deviceSystemParameterDataDownlink(){
             	if (result.flag == false) {
                     Ext.MessageBox.show({
                         title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                         icon: Ext.MessageBox.INFO,
                         buttons: Ext.Msg.OK,
                         fn: function () {
@@ -5090,7 +5090,7 @@ function deviceProductionDataUplink(){
 	            	if (result.flag == false) {
 	                    Ext.MessageBox.show({
 	                        title: loginUserLanguageResource.tip,
-	                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
 	                        icon: Ext.MessageBox.INFO,
 	                        buttons: Ext.Msg.OK,
 	                        fn: function () {
@@ -5157,7 +5157,7 @@ function devicePumpingUnitDataUplink(){
             	if (result.flag == false) {
                     Ext.MessageBox.show({
                         title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                         icon: Ext.MessageBox.INFO,
                         buttons: Ext.Msg.OK,
                         fn: function () {
@@ -5316,7 +5316,7 @@ function deviceFSDiagramConstructionDataUplink(){
             	if (result.flag == false) {
                     Ext.MessageBox.show({
                         title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                         icon: Ext.MessageBox.INFO,
                         buttons: Ext.Msg.OK,
                         fn: function () {
@@ -5387,7 +5387,7 @@ function deviceSystemParameterDataUplink(){
             	if (result.flag == false) {
                     Ext.MessageBox.show({
                         title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                         icon: Ext.MessageBox.INFO,
                         buttons: Ext.Msg.OK,
                         fn: function () {
@@ -5458,7 +5458,7 @@ function deviceIntelligentFrequencyConversionDataUplink(){
             	if (result.flag == false) {
                     Ext.MessageBox.show({
                         title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                         icon: Ext.MessageBox.INFO,
                         buttons: Ext.Msg.OK,
                         fn: function () {
@@ -5558,7 +5558,7 @@ function deviceInterlockProtectionDataUplink(){
             	if (result.flag == false) {
                     Ext.MessageBox.show({
                         title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
                         icon: Ext.MessageBox.INFO,
                         buttons: Ext.Msg.OK,
                         fn: function () {
@@ -5634,7 +5634,7 @@ function CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applica
 		fsDiagramConstructionHandsontableHelper=null;
 	}
 	if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
-		Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
+		Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();	
 	}
 	
 	Ext.Ajax.request({
@@ -5674,7 +5674,7 @@ function CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applica
 			if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
 				Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId:deviceId
@@ -5866,7 +5866,7 @@ function CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,application
 		deviceSystemParameterHandsontableHelper=null;
 	}
 	if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
-		Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();	
+		Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();	
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -5905,7 +5905,7 @@ function CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,application
 			if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
 				Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId:deviceId
@@ -6319,7 +6319,7 @@ function CreatePumpingUnitDetailedInformationTable(){
 			if(Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id")!=undefined){
 				Ext.getCmp("DevicePumpingUnitDetailedInformationPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			manufacturer:manufacturer,
@@ -6435,7 +6435,7 @@ function CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId,deviceN
 		deviceIntelligentFrequencyConversionHandsontableHelper=null;
 	}	
 	if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
-		Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -6478,7 +6478,7 @@ function CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId,deviceN
 			if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
 				Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId:deviceId
@@ -6884,7 +6884,7 @@ function CreateAndLoadDeviceInterlockProtectionTable(deviceId,deviceName,applica
 		deviceInterlockProtectionHandsontableHelper=null;
 	}	
 	if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
-		Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -6924,7 +6924,7 @@ function CreateAndLoadDeviceInterlockProtectionTable(deviceId,deviceName,applica
 			if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
 				Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId:deviceId
@@ -7237,7 +7237,7 @@ function deviceIntelligentFrequencyConversionDataDownlink(){
 	            	if (result.flag == false) {
 	                    Ext.MessageBox.show({
 	                        title: loginUserLanguageResource.tip,
-	                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
 	                        icon: Ext.MessageBox.INFO,
 	                        buttons: Ext.Msg.OK,
 	                        fn: function () {
@@ -7349,7 +7349,7 @@ function deviceInterlockProtectionDataDownlink(){
 	            	if (result.flag == false) {
 	                    Ext.MessageBox.show({
 	                        title: loginUserLanguageResource.tip,
-	                        msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "。</font>",
+	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
 	                        icon: Ext.MessageBox.INFO,
 	                        buttons: Ext.Msg.OK,
 	                        fn: function () {

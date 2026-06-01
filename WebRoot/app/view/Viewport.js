@@ -773,7 +773,7 @@ function getDeviceFESDiagramResultTotal() {
 
             },
             failure: function () {
-                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
             },
             params: {
                 orgId: orgId,
@@ -828,7 +828,7 @@ function getDeviceCommStatusTotal() {
                 }
             },
             failure: function () {
-                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
             },
             params: {
                 orgId: orgId,
@@ -886,7 +886,7 @@ function getDeviceRunStatusTotal() {
                 }
             },
             failure: function () {
-                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
             },
             params: {
                 orgId: orgId,
@@ -943,7 +943,7 @@ function getDeviceNumStatusTotal() {
                 }
             },
             failure: function () {
-                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+                Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
             },
             params: {
                 orgId: orgId,
@@ -1024,7 +1024,7 @@ function invalidateSession() {
 
         },
         failure: function () {
-            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
         },
         params: {}
     });

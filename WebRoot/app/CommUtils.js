@@ -144,7 +144,7 @@ ExtDelspace_ObjectInfo=function(space,grid_id,row,data_id,action_name){
 					 	    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
 						}
 					 	if(result.flag ==false){		 		 
-					 		Ext.Msg.msg(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+					 		Ext.Msg.msg(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
 					 	}
 					 	  
 					},
@@ -440,7 +440,7 @@ closeWindow = function(o) {
 	if (isNotBank(winobj)) {
 		winobj.close();
 	} else {
-		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.exception+"</font> "+loginUserLanguageResource.noExist+"")
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.exception+"</font> "+loginUserLanguageResource.objectNotFound+"")
 	}
 };
 
@@ -453,8 +453,8 @@ reFreshg = function(grid_id) {
 // 等待信息框
 LoadingWin = function(msg) {
 	Ext.MessageBox.show({
-				msg : '<div style="padding-top:20px">' + msg + ','+loginUserLanguageResource.loading+'</div>',
-				progressText : loginUserLanguageResource.loading,
+				msg : '<div style="padding-top:20px">' + msg + ','+loginUserLanguageResource.loadingData+'</div>',
+				progressText : loginUserLanguageResource.loadingData,
 				width : 300,
 				wait : true,
 				waitConfig : {
@@ -494,7 +494,7 @@ ExtDel_ObjectInfo = function(grid_id, row, data_id, action_name) {
 					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
 				}
 				if (result.flag == false) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
 				}
 				if(grid_id=="OrgInfoTreeGridView_Id"){
 					var store=Ext.getCmp(grid_id).getStore()
@@ -508,7 +508,7 @@ ExtDel_ObjectInfo = function(grid_id, row, data_id, action_name) {
 			}
 		});
 	}else{
-		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailure+"</font>");
+		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
 	}
 	return false;
 };
@@ -1173,7 +1173,7 @@ function backLoginOut() {
 			+ context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
 	Ext.Msg.confirm(loginUserLanguageResource.tip, "是否确定退出后台管理系统？", function(btn) {
 		if (btn == "yes") {
-			LoadingWin(loginUserLanguageResource.signOutInfo);
+			LoadingWin(loginUserLanguageResource.loggingOut);
 			// 动态返回当前用户拥有哪些角色信息
 			// 动态返回当前用户拥有哪些角色信息
 			Ext.Ajax.request({
@@ -1206,7 +1206,7 @@ var userLoginOut = function() {
 			+ context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
 	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.exitConfirm, function(btn) {
 		if (btn == "yes") {
-			LoadingWin(loginUserLanguageResource.signOutInfo);
+			LoadingWin(loginUserLanguageResource.loggingOut);
 			// 动态返回当前用户拥有哪些角色信息
 			Ext.Ajax.request({
 						method : 'POST',

@@ -72,7 +72,7 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         width: 50,
                         xtype: 'rownumberer'
                     },{
-                    	header: loginUserLanguageResource.dataColumnName,
+                    	header: loginUserLanguageResource.fiedName,
                     	align: 'center',
                     	flex: 1,
                     	dataIndex: 'name',
@@ -102,7 +102,7 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         	}
                         }
                     },{
-                        header: loginUserLanguageResource.dataColumnCode,
+                        header: loginUserLanguageResource.fieldCode,
                         align: 'center',
                         flex: 1,
                         dataIndex: 'code',
@@ -133,7 +133,7 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                         	}
                         }
                     },{
-                    	header: loginUserLanguageResource.dataColumnParams,
+                    	header: loginUserLanguageResource.fieldParameter,
                     	align: 'center',
                     	flex: 1,
                     	dataIndex: 'datavalue',

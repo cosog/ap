@@ -165,7 +165,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
         	});
         	
         	if(Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel")!=undefined){
-        		Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel").el.mask(loginUserLanguageResource.loading).show();
+        		Ext.getCmp("HistoryQueryFESDiagramOverlayCenterPanel").el.mask(loginUserLanguageResource.loadingData).show();
             }
         	
         	var new_params = {

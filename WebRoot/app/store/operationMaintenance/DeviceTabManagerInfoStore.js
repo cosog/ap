@@ -73,7 +73,7 @@ Ext.define('AP.store.operationMaintenance.DeviceTabManagerInfoStore', {
                         	}
                         }
                     }, {
-                        header: loginUserLanguageResource.calculateType,
+                        header: loginUserLanguageResource.calculationType,
                         lockable: true,
                         align: 'center',
                         sortable: true,

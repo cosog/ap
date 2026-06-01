@@ -933,7 +933,7 @@ public class UserManagerService<T> extends BaseService<T> {
 			if(exportUserData.getSaveSign()==0){
 				try {
 					this.addUserInfo(u);
-					exportUserData.setMsg(languageResourceMap.get("addSuccessfully"));
+					exportUserData.setMsg(languageResourceMap.get("addedSuccessfully"));
 				} catch (Exception e) {
 					exportUserData.setMsg(languageResourceMap.get("addFailure"));
 					e.printStackTrace();

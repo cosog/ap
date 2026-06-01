@@ -140,7 +140,7 @@ function exportItemRealtimeDataTable(){
     + '&itemBitIndex='+itemBitIndex
     + '&key='+key;
     
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 }
 
@@ -171,7 +171,7 @@ function CreateItemRealtimeDataTable(){
 	}
 	
 	if(Ext.getCmp("ItemRealtimeDataPanel_Id")!=undefined){
-		Ext.getCmp("ItemRealtimeDataPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("ItemRealtimeDataPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -202,7 +202,7 @@ function CreateItemRealtimeDataTable(){
 		},
 		failure:function(){
 			Ext.getCmp("ItemRealtimeDataPanel_Id").getEl().unmask();
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceName:deviceName,

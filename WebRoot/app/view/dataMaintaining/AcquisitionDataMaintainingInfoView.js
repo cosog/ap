@@ -1028,11 +1028,11 @@ function deleteRealtimeAcquisitionData() {
 	        					Ext.create('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore');
 	        				}
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
     	    		failure:function(){
-    	    			Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+    	    			Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
     	    		},
     	    		params: {
     	    			deviceId: deviceId,
@@ -1087,11 +1087,11 @@ function deleteHistoryAcquisitionData() {
 	        					Ext.create('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore');
 	        				}
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
     	    		failure:function(){
-    	    			Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+    	    			Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
     	    		},
     	    		params: {
     	    			deviceId: deviceId,

@@ -254,7 +254,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
             }
         },
         failure: function () {
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
         	orgId: orgId,
@@ -485,7 +485,7 @@ var BatchAddDeviceHandsontableHelper = {
                     	if(rdata.overCount>0){
                     		Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+rdata.overCount+"</font>设备超限，保存失败");
                     	}else{
-                    		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                    		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                     	}
                         //保存以后重置全局容器
                         batchAddDeviceHandsontableHelper.clearContainer();
@@ -527,11 +527,11 @@ var BatchAddDeviceHandsontableHelper = {
                         }
                         Ext.MessageBox.alert(loginUserLanguageResource.message, info);
                     } else {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                     }
                 },
                 failure: function () {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                     batchAddDeviceHandsontableHelper.clearContainer();
                 },
                 params: {

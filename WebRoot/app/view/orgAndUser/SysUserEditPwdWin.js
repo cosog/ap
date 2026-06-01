@@ -127,7 +127,7 @@ Ext.define('AP.view.orgAndUser.SysUserEditPwdWin', {
                             if (action.result.flag == false) {
                                 Ext.MessageBox.show({
                                     title: loginUserLanguageResource.tip,
-                                    msg: "<font color=red>" + loginUserLanguageResource.sessionInvalid + "</font>",
+                                    msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "</font>",
                                     icon: Ext.MessageBox.INFO,
                                     buttons: Ext.Msg.OK,
                                     fn: function () {

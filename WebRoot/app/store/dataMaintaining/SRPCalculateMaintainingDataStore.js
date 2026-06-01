@@ -104,7 +104,7 @@ Ext.define('AP.store.dataMaintaining.SRPCalculateMaintainingDataStore', {
             };
             Ext.apply(store.proxy.extraParams, new_params);
             if(Ext.getCmp("SRPCalculateMaintainingPanel")!=undefined){
-            	Ext.getCmp("SRPCalculateMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            	Ext.getCmp("SRPCalculateMaintainingPanel").el.mask(loginUserLanguageResource.loadingData).show();
             }
             
         },

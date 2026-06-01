@@ -156,8 +156,8 @@ public class ExternalLoginController extends BaseController {
 					viewProjectName=languageResourceMap.get("projectName");
 				}
 				
-				if(languageResourceMap.containsKey("loadingTheUI")){
-					loadingUI=languageResourceMap.get("loadingTheUI");
+				if(languageResourceMap.containsKey("loadingInterface")){
+					loadingUI=languageResourceMap.get("loadingInterface");
 				}
 				
 				String tabInfoJson = "";

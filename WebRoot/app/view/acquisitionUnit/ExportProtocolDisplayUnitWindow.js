@@ -45,7 +45,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolDisplayUnitWindow", {
     					
     	        		var url=context + '/acquisitionUnitManagerController/exportProtocolDisplayUnitData?key='+key+'&unitList='+exportDisplayUnitList.join(",");
     	        		
-    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     	        	    openExcelWindow(url);
     				}else{
     					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);

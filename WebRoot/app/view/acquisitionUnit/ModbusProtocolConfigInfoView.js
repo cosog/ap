@@ -68,11 +68,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
         			}
                 },"-",{
                 	xtype: 'button',
-        			text: loginUserLanguageResource.columnMappingTable,
+        			text: loginUserLanguageResource.fieldMappingTable,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
-                            title: loginUserLanguageResource.columnMappingTable
+                            title: loginUserLanguageResource.fieldMappingTable
                         });
                         window.show();
         			}
@@ -648,7 +648,7 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 			if(Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id")!=undefined){
 				Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1718,7 +1718,7 @@ function saveModbusProtocolAddrMappingConfigData(configInfo,saveType){
 				if(configInfo.delidslist!=undefined && configInfo.delidslist.length>0){
 					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
 				}else{
-					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
 				}
 				
 				if(configInfo.delidslist!=undefined && configInfo.delidslist.length>0){//如果删除
@@ -1732,14 +1732,14 @@ function saveModbusProtocolAddrMappingConfigData(configInfo,saveType){
 					}
 				}
             } else {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
             }
 		},
 		failure:function(){
 			if(Ext.getCmp("modbusProtocolConfigInfoViewId")!=undefined){
 				Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			data:JSON.stringify(configInfo),
@@ -1898,7 +1898,7 @@ function CreateModbusProtocolAddrMappingItemsMeaningConfigInfoTable(protocolCode
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolCode:protocolCode,
@@ -2142,7 +2142,7 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -2352,7 +2352,7 @@ function CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode,itemT
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolCode:protocolCode,
@@ -2608,7 +2608,7 @@ function CreateProtocolExtendedFieldHighLowByteConfigInfoTable(protocolName,clas
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -2984,7 +2984,7 @@ function CreateProtocolExtendedFieldMeaningConfigInfoTable(protocolCode,itemTitl
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolCode:protocolCode,
@@ -3153,7 +3153,7 @@ function CreateProtocolExtendedFieldSwitchingValueBitStatusConfigInfoTable(proto
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolCode:protocolCode,

@@ -45,7 +45,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAlarmInstanceWindow", {
     					
     	        		var url=context + '/acquisitionUnitManagerController/exportProtocolAlarmInstanceData?key='+key+'&instanceList='+exportAlarmInstanceList.join(",");
     	        		
-    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     	        	    openExcelWindow(url);
     				}else{
     					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);

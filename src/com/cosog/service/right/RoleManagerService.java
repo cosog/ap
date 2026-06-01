@@ -563,7 +563,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 					if(exportRoleData.getSaveSign()==0){
 						try {
 							this.addRoleInfo(role);
-							exportRoleData.setMsg(languageResourceMap.get("addSuccessfully"));
+							exportRoleData.setMsg(languageResourceMap.get("addedSuccessfully"));
 						} catch (Exception e) {
 							exportRoleData.setMsg(languageResourceMap.get("addFailure"));
 							e.printStackTrace();

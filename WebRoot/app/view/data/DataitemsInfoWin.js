@@ -18,7 +18,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var sysdata_code = Ext.create("Ext.form.TextField", {
             id: "sysDataCode_Ids",
             name: 'dataitemsInfo.code',
-            fieldLabel: loginUserLanguageResource.dataColumnCode + '<font color=red>*</font>',
+            fieldLabel: loginUserLanguageResource.fieldCode + '<font color=red>*</font>',
             allowBlank: false,
             hidden:true,
             anchor: '95%',
@@ -41,7 +41,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var sysdata_datavalue = Ext.create("Ext.form.TextArea", {
             id: "sysdatadatavalue_Ids",
             name: 'dataitemsInfo.datavalue',
-            fieldLabel: loginUserLanguageResource.dataColumnParams,
+            fieldLabel: loginUserLanguageResource.fieldParameter,
             anchor: '95%',
             height: 100
         });
@@ -226,7 +226,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                 {
                     id: "sysDataName_zh_CN_Ids",
                     name: 'dataitemsInfo.name_zh_CN',
-                    fieldLabel: loginUserLanguageResource.dataColumnName + '<font color=red>*</font>',
+                    fieldLabel: loginUserLanguageResource.fiedName + '<font color=red>*</font>',
                     allowBlank: (loginUserLanguage.toUpperCase() == 'ZH_CN' ? false : true),
                     hidden: (loginUserLanguage.toUpperCase() == 'ZH_CN' ? false : true),
                     anchor: '95%',
@@ -236,7 +236,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                 {
                     id: "sysDataName_en_Ids",
                     name: 'dataitemsInfo.name_en',
-                    fieldLabel: loginUserLanguageResource.dataColumnName + '<font color=red>*</font>',
+                    fieldLabel: loginUserLanguageResource.fiedName + '<font color=red>*</font>',
                     allowBlank: (loginUserLanguage.toUpperCase() == 'EN' ? false : true),
                     hidden: (loginUserLanguage.toUpperCase() == 'EN' ? false : true),
                     anchor: '95%',
@@ -246,7 +246,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                 {
                     id: "sysDataName_ru_Ids",
                     name: 'dataitemsInfo.name_ru',
-                    fieldLabel: loginUserLanguageResource.dataColumnName + '<font color=red>*</font>',
+                    fieldLabel: loginUserLanguageResource.fiedName + '<font color=red>*</font>',
                     allowBlank: (loginUserLanguage.toUpperCase() == 'RU' ? false : true),
                     hidden: (loginUserLanguage.toUpperCase() == 'RU' ? false : true),
                     anchor: '95%',

@@ -198,11 +198,11 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="alarmQuery_CommStatusAlarm";
 		if(StringManagerUtils.stringToInteger(alarmType)==0){
-			ddicCode="alarmQuery_SwitchingValueAlarm";
+			ddicCode="alarmQuery_StatusAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==1){
-			ddicCode="alarmQuery_EnumValueAlarm";
+			ddicCode="alarmQuery_EnumeratedAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==2){
-			ddicCode="alarmQuery_NumericValueAlarm";
+			ddicCode="alarmQuery_DigitalAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==3){
 			ddicCode="alarmQuery_CommStatusAlarm";
 		}

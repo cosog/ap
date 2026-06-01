@@ -94,7 +94,7 @@ Ext.define('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore'
             };
             Ext.apply(store.proxy.extraParams, new_params);
             if(Ext.getCmp("HistoryAcquisitionDataMaintainingPanel")!=undefined){
-            	Ext.getCmp("HistoryAcquisitionDataMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            	Ext.getCmp("HistoryAcquisitionDataMaintainingPanel").el.mask(loginUserLanguageResource.loadingData).show();
             }
             
         },

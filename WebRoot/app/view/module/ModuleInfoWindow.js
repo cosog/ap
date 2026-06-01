@@ -34,7 +34,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
         var xltree=Ext.create('AP.view.well.TreePicker',{
         	id:'mdName_Parent_Id1',
         	anchor: '95%',
-        	fieldLabel: loginUserLanguageResource.superModule+'<font color=red>*</font>',
+        	fieldLabel: loginUserLanguageResource.parentModule+'<font color=red>*</font>',
             emptyText: '--'+loginUserLanguageResource.checkModule+'--',
             blankText: '--'+loginUserLanguageResource.checkModule+'--',
             displayField: 'text',
@@ -140,21 +140,21 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
     	 		anchor: '95%',
     	 		name: "module.mdName_ru"
      }, {
-                fieldLabel: loginUserLanguageResource.moduleMemo,
+                fieldLabel: loginUserLanguageResource.moduleIntroduction,
                 id: 'mdShowname_zh_CN_Id',
                 hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                 value: '',
                 anchor: '95%',
                 name: "module.mdShowname_zh_CN"
      }, {
-         		fieldLabel: loginUserLanguageResource.moduleMemo,
+         		fieldLabel: loginUserLanguageResource.moduleIntroduction,
          		id: 'mdShowname_en_Id',
          		hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
          		value: '',
          		anchor: '95%',
          		name: "module.mdShowname_en"
      }, {
-    	 		fieldLabel: loginUserLanguageResource.moduleMemo,
+    	 		fieldLabel: loginUserLanguageResource.moduleIntroduction,
     	 		id: 'mdShowname_ru_Id',
     	 		hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
     	 		value: '',

@@ -35,12 +35,12 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                 style: 'margin-right:15px'
             }, '->',{
     			xtype: 'button',
-                text: loginUserLanguageResource.addDevie,
+                text: loginUserLanguageResource.addDevice,
                 iconCls: 'add',
                 disabled:loginUserAuxiliaryDeviceManagerModuleRight.editFlag!=1,
                 handler: function (v, o) {
                 	var window = Ext.create("AP.view.well.AuxiliaryDeviceInfoWindow", {
-                        title: loginUserLanguageResource.addDevie
+                        title: loginUserLanguageResource.addDevice
                     });
                     window.show();
                     var deviceType=getDeviceTypeFromTabId("AuxiliaryDeviceManagerTabPanel");
@@ -87,11 +87,11 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     	    	                        	auxiliaryDeviceInfoHandsontableHelper.clearContainer();
     	    	                            CreateAndLoadAuxiliaryDeviceInfoTable();
     	    	                        } else {
-    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
     	    	                        }
     	    	                    },
     	    	                    failure: function () {
-    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
     	    	                        auxiliaryDeviceInfoHandsontableHelper.clearContainer();
     	    	                    },
     	    	                    params: {
@@ -361,7 +361,7 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             
         },
         failure: function () {
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
             deviceType: deviceType,
@@ -656,9 +656,9 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     success: function (response) {
                     	rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                        	var saveInfo=loginUserLanguageResource.saveSuccessfully;
+                        	var saveInfo=loginUserLanguageResource.savedSuccessfully;
                         	if(rdata.collisionCount>0){//数据冲突
-                        		saveInfo=loginUserLanguageResource.saveSuccessfully+":"+rdata.successCount+','+loginUserLanguageResourceFirstLower.saveFailure+':<font color="red">'+rdata.collisionCount+'</font>';
+                        		saveInfo=loginUserLanguageResource.savedSuccessfully+":"+rdata.successCount+','+loginUserLanguageResourceFirstLower.saveFailed+':<font color="red">'+rdata.collisionCount+'</font>';
                         		for(var i=0;i<rdata.list.length;i++){
                         			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
                         		}
@@ -667,11 +667,11 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                         	auxiliaryDeviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadAuxiliaryDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                         auxiliaryDeviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -696,15 +696,15 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                             auxiliaryDeviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadAuxiliaryDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                         auxiliaryDeviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -713,7 +713,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                 });
             } else {
                 if (!auxiliaryDeviceInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.dataTypeError);
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.invalidDataType);
                 } else {
                     Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
                 }
@@ -840,7 +840,7 @@ function CreateAuxiliaryDeviceDetailsTable(deviceId,name){
 			}
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceId:deviceId,
@@ -1188,13 +1188,13 @@ var PumpingUnitPRTFHandsontableHelper = {
                     success: function (response) {
                     	rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
                         } else {
-                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveFailure);
+                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveFailed);
                         }
                     },
                     failure: function () {
-                    	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+                    	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
                         pumpingUnitPRTFHandsontableHelper.clearContainer();
                     },
                     params: {

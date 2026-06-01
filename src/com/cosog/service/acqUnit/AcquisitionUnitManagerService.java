@@ -6578,7 +6578,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\" ,children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"\",\"dataIndex\":\"itemColumn\",children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("calculationColumn")+"\",\"dataIndex\":\"calColumn\",children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("calculatedFieldName")+"\",\"dataIndex\":\"calColumn\",children:[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("enable")+"\",\"dataIndex\":\"calculateEnable\",children:[] }"
 				+ "]";
 		
@@ -12003,7 +12003,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					MemoryDataManagerTask.loadProtocolConfig(protocol.getName(),protocol.getDeviceType()+"");
 					EquipmentDriverServerTask.initProtocolConfig(protocol.getName(),protocol.getDeviceType()+"","update");
 					
-					protocol.setMsg(languageResourceMap.get("addSuccessfully"));
+					protocol.setMsg(languageResourceMap.get("addedSuccessfully"));
 				}else{
 					protocol.setMsg(languageResourceMap.get("addFailure"));
 				}

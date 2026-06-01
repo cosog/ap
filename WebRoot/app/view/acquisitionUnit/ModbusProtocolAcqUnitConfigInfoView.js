@@ -348,7 +348,7 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolCode,classes,code,typ
 			if(Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolCode:protocolCode,
@@ -851,14 +851,14 @@ function saveModbusProtocolConfigData(configInfo){
 			var data=Ext.JSON.decode(response.responseText);
 			protocolAcqUnitConfigItemsHandsontableHelper.clearContainer();
 			if (data.success) {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
             	Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			data:JSON.stringify(configInfo)
@@ -880,15 +880,15 @@ function saveAcquisitionUnitConfigData(acqUnitSaveData,protocol,deviceType){
             		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowId_Id").setValue(0);
             		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
             	}else{
-            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
             	}
             	Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
             acquisitionUnitConfigHandsontableHelper.clearContainer();
 		},
 		params: {
@@ -912,15 +912,15 @@ function saveAcquisitionGroupConfigData(acqGroupSaveData,protocol,unitId){
             		Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRowId_Id").setValue(0);
             		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
             	}else{
-            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
             	}
             	Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 		},
 		params: {
         	data: JSON.stringify(acqGroupSaveData),

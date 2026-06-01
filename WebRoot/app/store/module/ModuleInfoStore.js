@@ -46,7 +46,7 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                         xtype: 'treecolumn',
                         dataIndex: 'text'
                     }, {
-                        header: loginUserLanguageResource.moduleMemo,
+                        header: loginUserLanguageResource.moduleIntroduction,
                         flex: 2,
                         dataIndex: 'mdShowname'
                     }, {

@@ -50,7 +50,7 @@ Ext.define("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
                 value: ''
             },{
                 xtype: "hidden",
-                fieldLabel: loginUserLanguageResource.calculateType,
+                fieldLabel: loginUserLanguageResource.calculationType,
                 id: 'ReportUnitContentConfig_CalculateType',
                 value: ''
             },{
@@ -322,7 +322,7 @@ function CreateReportUnitContentConfigTable() {
 			if(Ext.getCmp("ReportUnitContentConfigPanel_Id")!=undefined){
 				Ext.getCmp("ReportUnitContentConfigPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			unitId: unitId,
@@ -871,7 +871,7 @@ function CreateReportUnitContentConfigColInfoTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(reportUnitContentConfigColInfoHandsontableHelper==null || reportUnitContentConfigColInfoHandsontableHelper.hot==undefined){
 				reportUnitContentConfigColInfoHandsontableHelper = ReportUnitContentConfigColInfoHandsontableHelper.createNew("ReportUnitContentConfigColInfoDiv_Id");
-				var colHeaders=[loginUserLanguageResource.idx,loginUserLanguageResource.dataColumnName,loginUserLanguageResource.dataColumn,loginUserLanguageResource.unit,loginUserLanguageResource.dataSource,loginUserLanguageResource.totalType,loginUserLanguageResource.showLevel,'顺序',loginUserLanguageResource.prec,
+				var colHeaders=[loginUserLanguageResource.idx,loginUserLanguageResource.fiedName,loginUserLanguageResource.dataColumn,loginUserLanguageResource.unit,loginUserLanguageResource.dataSource,loginUserLanguageResource.totalType,loginUserLanguageResource.showLevel,'顺序',loginUserLanguageResource.prec,
 					loginUserLanguageResource.sumSign,loginUserLanguageResource.averageSign,loginUserLanguageResource.reportCurve,loginUserLanguageResource.curveConfig,loginUserLanguageResource.curveStatType,'数据类型','字段代码',loginUserLanguageResource.remark,'数据是否改变'];
 				var columns=[
 						{data:'id'},
@@ -908,7 +908,7 @@ function CreateReportUnitContentConfigColInfoTable(){
 			reportUnitContentConfigColInfoHandsontableHelper.hot.selectRows(parseInt(row));
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			calculateType: calculateType,
@@ -1322,7 +1322,7 @@ function grantReportUnitContentItemsPermission(unitId,reportType,calculateType,s
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
                 if (result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
                 	CreateReportUnitContentConfigColInfoTable();
                 	CreateReportUnitContentConfigTable();
                 	
@@ -1341,7 +1341,7 @@ function grantReportUnitContentItemsPermission(unitId,reportType,calculateType,s
                 	
                 }
                 if (result.msg == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailure + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailed + "</font>");
                 }
             },
             failure: function () {

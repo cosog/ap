@@ -6903,8 +6903,8 @@ public class MemoryDataManagerTask {
 		
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_ReservoirDepth"),"write_ReservoirDepth",index++) );
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_ReservoirTemperature"),"write_ReservoirTemperature",index++) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_ReservoirDepth_cbm"),"write_ReservoirDepth_cbm",index++) );
-		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_ReservoirTemperature_cbm"),"write_ReservoirTemperature_cbm",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CoalSeamDepth"),"write_CoalSeamDepth",index++) );
+		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_CoalSeamTemperature"),"write_CoalSeamTemperature",index++) );
 		
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_TubingPressure"),"write_TubingPressure",index++) );
 		calculateColumnInfo.getSRPCalculateColumnList().add( new CalculateColumn(languageResourceMap.get("write_TubingPressure_cbm"),"write_TubingPressure_cbm",index++) );

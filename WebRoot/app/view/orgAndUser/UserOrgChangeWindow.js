@@ -56,10 +56,10 @@ Ext.define("AP.view.orgAndUser.UserOrgChangeWindow", {
                 			var result = Ext.JSON.decode(response.responseText);
                 			Ext.getCmp("IframeView_Id").getStore().load();
                 			if (result.success == true) {
-                				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.changeOwnerSuccess);
+                				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.migrationSuccessful);
                 			}
                 			if (result.success == false) {
-                				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.changeOwnerFail+"</font>");
+                				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.migrationFailed+"</font>");
                 			}
                 		},
                 		failure : function() {

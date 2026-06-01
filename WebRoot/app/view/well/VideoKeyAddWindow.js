@@ -97,13 +97,13 @@ Ext.define("AP.view.well.VideoKeyAddWindow", {
                             url: context + '/wellInformationManagerController/doVideoKeyAdd',
                             clientValidation: true, // 进行客户端验证
                             method: "POST",
-                            waitMsg: loginUserLanguageResource.sendServer,
+                            waitMsg: loginUserLanguageResource.submittingData,
                             waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
                                 Ext.getCmp('VideoKeyAddWindow_Id').close();
                                 CreateDeviceKeyDataTable();
                                 
-                                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                             },
                             failure: function () {
                                 Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);

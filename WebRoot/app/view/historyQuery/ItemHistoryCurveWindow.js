@@ -250,7 +250,7 @@ function getItemHistoryCurveData(){
 	}
 	
 	if(Ext.getCmp(panelId)!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -408,7 +408,7 @@ function getItemHistoryCurveData(){
 			if(Ext.getCmp(panelId)!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceName:deviceName,

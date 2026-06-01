@@ -413,7 +413,7 @@ function saveCurveGroupData(){
 			var data=Ext.JSON.decode(response.responseText);
 			
 			if (data.success) {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveSuccessfully);
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
             	curveGroupConfigGridPanel.getStore().commitChanges();
             	curveGroupConfigGridPanel.getStore().load();
             	
@@ -466,11 +466,11 @@ function saveCurveGroupData(){
             	}
             	
             } else {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			data: JSON.stringify(modifiedData)

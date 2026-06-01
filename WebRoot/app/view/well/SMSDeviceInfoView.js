@@ -135,7 +135,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                     + "&fileName=" + URLencode(URLencode("短信设备")) 
                     + "&title=" + URLencode(URLencode("短信设备"))
                     + '&key='+key;
-                    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+                    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
                     openExcelWindow(url + '?flag=true' + param);
                 }
     		}, '-', {
@@ -146,7 +146,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 style: 'margin-right:15px'
     		}, '->', {
                 xtype: 'button',
-                text: loginUserLanguageResource.addDevie,
+                text: loginUserLanguageResource.addDevice,
                 iconCls: 'add',
                 handler: function (v, o) {
                     var selectedOrgName = "";
@@ -164,7 +164,7 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                         }
                     }
                     var window = Ext.create("AP.view.well.SMSDeviceInfoWindow", {
-                        title: loginUserLanguageResource.addDevie
+                        title: loginUserLanguageResource.addDevice
                     });
                     window.show();
                     Ext.getCmp("smsDeviceWinOgLabel_Id").setHtml(loginUserLanguageResource.owningOrg+"【<font color=red>" + selectedOrgName + "</font>】,"+loginUserLanguageResource.pleaseConfirm+"<br/>&nbsp;");
@@ -213,11 +213,11 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                                             smsDeviceInfoHandsontableHelper.clearContainer();
                                             CreateAndLoadSMSDeviceInfoTable();
                                         } else {
-                                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                                         }
                                     },
                                     failure: function () {
-                                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                                         smsDeviceInfoHandsontableHelper.clearContainer();
                                     },
                                     params: {
@@ -289,7 +289,7 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceName = Ext.getCmp('SMSDeviceListComb_Id').getValue();
     if(Ext.getCmp("SMSDeviceTablePanel_id")!=undefined){
-        Ext.getCmp("SMSDeviceTablePanel_id").el.mask(loginUserLanguageResource.loading).show();
+        Ext.getCmp("SMSDeviceTablePanel_id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
     Ext.Ajax.request({
         method: 'POST',
@@ -366,7 +366,7 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
         	if(Ext.getCmp("SMSDeviceTablePanel_id")!=undefined){
                 Ext.getCmp("SMSDeviceTablePanel_id").getEl().unmask();
         	}
-            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
         },
         params: {
         	deviceName: deviceName,
@@ -559,16 +559,16 @@ var SMSDeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                             //保存以后重置全局容器
                             smsDeviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadSMSDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                         smsDeviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -579,7 +579,7 @@ var SMSDeviceInfoHandsontableHelper = {
                 });
             } else {
                 if (!smsDeviceInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.dataTypeError);
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.invalidDataType);
                 } else {
                     Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
                 }
@@ -598,16 +598,16 @@ var SMSDeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                             smsDeviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadSMSDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
                         smsDeviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -617,7 +617,7 @@ var SMSDeviceInfoHandsontableHelper = {
                 });
             } else {
                 if (!smsDeviceInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.dataTypeError);
+                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.invalidDataType);
                 } else {
                     Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
                 }

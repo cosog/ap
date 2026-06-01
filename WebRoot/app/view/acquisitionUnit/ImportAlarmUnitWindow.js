@@ -463,9 +463,9 @@ function saveSingelImportedAlarmUnit(unitName,protocolName,protocolDeviceType,sa
 					success : function(response) {
 						var result = Ext.JSON.decode(response.responseText);
 						if (result.success==true) {
-							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 						}else{
-							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 						}
 						Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -494,9 +494,9 @@ function saveSingelImportedAlarmUnit(unitName,protocolName,protocolDeviceType,sa
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 				}else{
-					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 				}
 				Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -532,9 +532,9 @@ function saveAllImportedAlarmUnit(){
 		success : function(response) {
 			var result = Ext.JSON.decode(response.responseText);
 			if (result.success==true) {
-				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 			}else{
-				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 			}
 			Ext.getCmp("ImportAlarmUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -610,7 +610,7 @@ function CreateImportAlarmUnitNumItemsConfigInfoTable(protocolName,protocolDevic
 			if(Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("importAlarmUnitNumItemsConfigTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -769,7 +769,7 @@ function CreateImportAlarmUnitSwitchItemsConfigInfoTable(protocolName,protocolDe
 			if(Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id")!=undefined){
 				Ext.getCmp("importAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -927,7 +927,7 @@ function CreateImportAlarmUnitEnumItemsConfigInfoTable(protocolName,protocolDevi
 			if(Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id")!=undefined){
 				Ext.getCmp("importAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1083,7 +1083,7 @@ function CreateImportAlarmUnitFESDiagramResultItemsConfigInfoTable(protocolName,
 			if(Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("importAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1239,7 +1239,7 @@ function CreateImportAlarmUnitRunStatusItemsConfigInfoTable(protocolName,protoco
 			if(Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("importAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -1396,7 +1396,7 @@ function CreateImportAlarmUnitCommStatusItemsConfigInfoTable(protocolName,protoc
 			if(Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id")!=undefined){
 				Ext.getCmp("importAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,

@@ -23,8 +23,8 @@ Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.name,loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.calculateType,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.calculateType,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.calculationType,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.calculationType,loginUserLanguage);
         }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
@@ -55,7 +55,7 @@ Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
                 }
             },{
             	xtype : "combobox",
-				fieldLabel : loginUserLanguageResource.calculateType,
+				fieldLabel : loginUserLanguageResource.calculationType,
 				labelWidth: labelWidth,
 				id : 'addDeviceTabManagerInstanceCalculateTypeComb_Id',
 				anchor : '95%',
@@ -82,7 +82,7 @@ Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
 				}
             },{
             	xtype: "hidden",
-                fieldLabel: loginUserLanguageResource.calculateType,
+                fieldLabel: loginUserLanguageResource.calculationType,
                 labelWidth: labelWidth,
                 id: 'addDeviceTabManagerInstanceCalculateType_Id',
                 name: "deviceTabManager.calculateType"
@@ -109,14 +109,14 @@ Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
                             url: context + '/operationMaintenanceController/addDeviceTabManagerInstance',
                             clientValidation: false, // 进行客户端验证
                             method: "POST",
-                            waitMsg: loginUserLanguageResource.sendServer,
+                            waitMsg: loginUserLanguageResource.submittingData,
                             waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
                             	Ext.getCmp('addDeviceTabManagerInstanceSelectName_Id').setValue(Ext.getCmp('addDeviceTabManagerInstanceName_Id').getValue());
                                 Ext.getCmp('deviceTabManagerInfoWindow_Id').close();
                                 Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id").getStore().load();
                                 if (action.result.msg == true) {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                                 }
                                 if (action.result.msg == false) {
                                     Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.addFailure);

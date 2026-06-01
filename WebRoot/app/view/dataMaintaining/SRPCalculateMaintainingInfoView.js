@@ -518,7 +518,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          }
                      },"-",{
                          xtype: 'button',
-                         text: loginUserLanguageResource.linkProductionDataCalculate,
+                         text: loginUserLanguageResource.productionDataCorrelationCalculation,
                          disabled:loginUserCalculateMaintainingModuleRight.editFlag!=1,
                          pressed: false,
                          iconCls: 'save',
@@ -605,12 +605,12 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                  	                            srpFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
                  	                            Ext.getCmp("SRPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
                  	                        } else {
-                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.operationFailure);
+                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.operationFailed);
 
                  	                        }
                  	            		},
                  	            		failure:function(){
-                 	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+                 	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
                  	                        srpFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
                  	            		},
                  	            		params: {
@@ -902,8 +902,8 @@ function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
             			|| dataIndex.toUpperCase() === "productionGasOilRatio".toUpperCase() ){
             		continue;
             	}else if(dataIndex.toUpperCase() === "reservoirDepth".toUpperCase() || dataIndex.toUpperCase() === "reservoirTemperature".toUpperCase()){
-            		colHeader=colHeader.replace(loginUserLanguageResource.reservoirDepth,loginUserLanguageResource.reservoirDepth_cbm);
-            		colHeader=colHeader.replace(loginUserLanguageResource.reservoirTemperature,loginUserLanguageResource.reservoirTemperature_cbm);
+            		colHeader=colHeader.replace(loginUserLanguageResource.reservoirDepth,loginUserLanguageResource.coalSeamDepth);
+            		colHeader=colHeader.replace(loginUserLanguageResource.reservoirTemperature,loginUserLanguageResource.coalSeamTemperature);
             	}else if(dataIndex.toUpperCase() === "TubingPressure".toUpperCase()){
             		colHeader=colHeader.replace(loginUserLanguageResource.tubingPressure,loginUserLanguageResource.tubingPressure_cbm);
             	}
@@ -1283,11 +1283,11 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	                            Ext.MessageBox.alert(loginUserLanguageResource.message,successInfo);
 	                            Ext.getCmp("SRPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
 	                        } else {
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 	                        }
 	            		},
 	            		failure:function(){
-	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
 	                        srpFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
 	            		},
 	            		params: {
@@ -1299,7 +1299,7 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	            	}); 
 	            } else {
 	                if (!srpFESDiagramCalculateMaintainingHandsontableHelper.validresult) {
-	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.dataTypeError);
+	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.invalidDataType);
 	                } else {
 	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noDataChange);
 	                }
@@ -1391,7 +1391,7 @@ function ReTotalFESDiagramData(){
     			if(Ext.getCmp("SRPTotalCalculateMaintainingPanel")!=undefined){
         			Ext.getCmp("SRPTotalCalculateMaintainingPanel").getEl().unmask();
     			}
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailure);
+    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
     		},
     		params: {
     			deviceType: 0,
@@ -1442,11 +1442,11 @@ function deleteCalculateData(deviceId,recordIdList,calculateType){
                  				}
                         	}
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
     	    		failure:function(){
-    	    			Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+    	    			Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
     	    		},
     	    		params: {
     	    			deviceId: deviceId,

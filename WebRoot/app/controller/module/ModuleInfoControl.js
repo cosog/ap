@@ -31,13 +31,13 @@ var SavemoduleDataInfoSubmitBtnForm = function () {
             url: context + '/moduleManagerController/doModuleAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
-            waitMsg: loginUserLanguageResource.sendServer,
+            waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
                 Ext.getCmp('module_addwin_Id').close();
                 Ext.getCmp("moduleInfoTreeGridView_Id").getStore().load();
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addSuccessfully + "</font>");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
@@ -75,7 +75,7 @@ function UpdatemoduleDataInfoSubmitBtnForm() {
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip,
-                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailure);
+                        "<font color=red>SORRY！</font>" + loginUserLanguageResource.updateFailed);
                 }
                 
                 Ext.getCmp("MainIframeView_Id").getStore().load();//右侧模块导航数刷新

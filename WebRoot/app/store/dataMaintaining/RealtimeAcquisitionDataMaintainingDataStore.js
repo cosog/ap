@@ -93,7 +93,7 @@ Ext.define('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore
             };
             Ext.apply(store.proxy.extraParams, new_params);
             if(Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel")!=undefined){
-            	Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel").el.mask(loginUserLanguageResource.loading).show();
+            	Ext.getCmp("RealtimeAcquisitionDataMaintainingPanel").el.mask(loginUserLanguageResource.loadingData).show();
             }
         },
         datachanged: function (v, o) {

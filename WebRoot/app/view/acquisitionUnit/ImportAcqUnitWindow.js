@@ -264,7 +264,7 @@ function CreateUploadedAcqUnitContentInfoTable(protocolName,protocolDeviceType,c
 			if(Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id")!=undefined){
 				Ext.getCmp("importedAcqUnitItemInfoTablePanel_Id").getEl().unmask();
 		    }
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			protocolName:protocolName,
@@ -378,9 +378,9 @@ function saveSingelImportedAcqUnit(unitName,protocolName,protocolDeviceType,save
 					success : function(response) {
 						var result = Ext.JSON.decode(response.responseText);
 						if (result.success==true) {
-							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+							Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 						}else{
-							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+							Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 						}
 						Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -409,9 +409,9 @@ function saveSingelImportedAcqUnit(unitName,protocolName,protocolDeviceType,save
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 				}else{
-					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 				}
 				Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
 
@@ -448,9 +448,9 @@ function saveAllImportedAcqUnit(){
 			success : function(response) {
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.success==true) {
-					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveSuccessfully);
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 				}else{
-					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 				}
 				Ext.getCmp("ImportAcqUnitContentTreeGridPanel_Id").getStore().load();
     			var treePanel=Ext.getCmp("AcqUnitProtocolTreeGridPanel_Id");

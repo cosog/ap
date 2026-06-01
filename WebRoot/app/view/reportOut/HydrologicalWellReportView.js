@@ -741,7 +741,7 @@ function CreateHydrologicalWellReportTable(){
     
     
     if(Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id")!=undefined){
-        Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+        Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -796,7 +796,7 @@ function CreateHydrologicalWellReportTable(){
 			if(Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id")!=undefined){
 				Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId: orgId,
@@ -1129,17 +1129,17 @@ var HydrologicalWellReportHelper = {
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
 	                        	hydrologicalWellReportHelper.clearContainer();
 	                        	CreateHydrologicalWellReportTable();
 	                        	CreateHydrologicalWellReportCurve();
 	                        } else {
 	                        	hydrologicalWellReportHelper.clearContainer();
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 	                        }
 	                    },
 	                    failure: function () {
-	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
 	                    },
 	                    params: {
 	                    	deviceId:deviceId,
@@ -1215,7 +1215,7 @@ function CreateHydrologicalWellReportCurve(){
     
     
     if(Ext.getCmp(panelId)!=undefined){
-        Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+        Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1398,7 +1398,7 @@ function CreateHydrologicalWellReportCurve(){
 			if(Ext.getCmp(panelId)!=undefined){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId: orgId,
@@ -1597,7 +1597,7 @@ function ExportHydrologicalWellReportData(){
 	+'&endDate='+endDate
 	+'&reportDate='+reportDate
 	+'&key='+key;
-	exportDataMask(key,panelId,loginUserLanguageResource.loading);
+	exportDataMask(key,panelId,loginUserLanguageResource.loadingData);
 	document.location.href = url;
 }
 
@@ -1645,6 +1645,6 @@ function batchExportHydrologicalWellReportData(){
 	+'&reportDate='+reportDate
 	+'&orgId='+orgId
 	+'&key='+key;
-	exportDataMask(key,panelId,loginUserLanguageResource.loading);
+	exportDataMask(key,panelId,loginUserLanguageResource.loadingData);
 	document.location.href = url;
 }

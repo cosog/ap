@@ -30,7 +30,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         	        	listeners: {
         	        		beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         	        			if(Ext.getCmp("HistoryQueryRootTabPanel")!=undefined){
-            	        			Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+            	        			Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loadingData).show();
         	        			}
     	        				if(oldCard!=undefined){
     	        					oldCard.removeAll();
@@ -117,7 +117,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         		listeners: {
         			beforetabchange ( tabPanel, newCard, oldCard, eOpts ) {
         				if(Ext.getCmp("HistoryQueryRootTabPanel")!=undefined){
-            				Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loading).show();
+            				Ext.getCmp("HistoryQueryRootTabPanel").el.mask(loginUserLanguageResource.loadingData).show();
 	        			}
         				if(oldCard!=undefined){
         					if(oldCard.xtype=='tabpanel'){
@@ -577,7 +577,7 @@ function exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,dictDevic
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };
 
@@ -632,7 +632,7 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,calcul
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };
 
@@ -690,7 +690,7 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,dictDeviceTy
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };
 
@@ -735,7 +735,7 @@ function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceN
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + '&key='+key;
-    exportDataMask(key,maskPanelId,loginUserLanguageResource.loading);
+    exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };
 
@@ -773,7 +773,7 @@ function deviceHistoryQueryCurve(deviceType){
 	var endTime_Second=0;
 	var hours=getHistoryQueryHours();
 	if(Ext.getCmp(panelId)!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -950,7 +950,7 @@ function deviceHistoryQueryCurve(deviceType){
 			if(isNotVal(Ext.getCmp(panelId))){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceName:deviceName,
@@ -1101,7 +1101,7 @@ function loadAndInitHistoryQueryCommStatusStat(all){
 	}
 
 	if(Ext.getCmp(panelId)!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1119,7 +1119,7 @@ function loadAndInitHistoryQueryCommStatusStat(all){
 			if(isNotVal(Ext.getCmp(panelId))){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,
@@ -1262,7 +1262,7 @@ function loadAndInitHistoryQueryRunStatusStat(all){
 	}
 
 	if(Ext.getCmp(panelId)!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1280,7 +1280,7 @@ function loadAndInitHistoryQueryRunStatusStat(all){
 			if(isNotVal(Ext.getCmp(panelId))){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,
@@ -1424,7 +1424,7 @@ function loadAndInitHistoryQueryNumStatusStat(all){
 	}
 
 	if(Ext.getCmp(panelId)!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1442,7 +1442,7 @@ function loadAndInitHistoryQueryNumStatusStat(all){
 			if(isNotVal(Ext.getCmp(panelId))){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,
@@ -1596,7 +1596,7 @@ function loadAndInitHistoryQueryFESdiagramResultStat(all){
 		Ext.getCmp("HistoryQueryStatSelectDeviceType_Id").setValue('');
 	}
 	if(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id")!=undefined && Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").el!=undefined){
-		Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1614,7 +1614,7 @@ function loadAndInitHistoryQueryFESdiagramResultStat(all){
 			if(isNotVal(Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id")) && Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl()!=undefined){
 				Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,
@@ -1748,7 +1748,7 @@ function loadAndInitHistoryQueryDeviceTypeStat(all){
 	}
 
 	if(Ext.getCmp(panelId)!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loading).show();
+		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1765,7 +1765,7 @@ function loadAndInitHistoryQueryDeviceTypeStat(all){
 			if(isNotVal(Ext.getCmp(panelId))){
 				Ext.getCmp(panelId).getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId:orgId,
@@ -1972,7 +1972,7 @@ function resizeTiledGraphs(panel,containerId) {
 
 loadSurfaceCardList = function (page) {
 	diagramTiledPage=page;
-    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loading); // 数据加载中，请稍后
+    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loadingData); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
     if(page==1){
     	$("#surfaceCardContainer").html(''); // 将html内容清空
@@ -2022,7 +2022,7 @@ loadSurfaceCardList = function (page) {
         	if(page==1){
         		$("#surfaceCardContainer").html(''); // 将html内容清空
         	}
-            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loading); // 取消遮罩
+            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loadingData); // 取消遮罩
             var get_rawData = Ext.decode(response.responseText); // 获取返回数据
             var diagramList = get_rawData.list; // 获取功图数据
             
@@ -2099,7 +2099,7 @@ loadSurfaceCardList = function (page) {
 
 loadPSDiagramTiledList = function (page) {
 	diagramTiledPage=page;
-    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loading); // 数据加载中，请稍后
+    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loadingData); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
     if(page==1){
     	$("#PSDiagramTiledContainer").html(''); // 将html内容清空
@@ -2147,7 +2147,7 @@ loadPSDiagramTiledList = function (page) {
         	if(page==1){
         		$("#PSDiagramTiledContainer").html(''); // 将html内容清空
         	}
-            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loading); // 取消遮罩
+            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loadingData); // 取消遮罩
             var get_rawData = Ext.decode(response.responseText); // 获取返回数据
             var diagramList = get_rawData.list; // 获取功图数据
             
@@ -2208,7 +2208,7 @@ loadPSDiagramTiledList = function (page) {
 
 loadISDiagramTiledList = function (page) {
 	diagramTiledPage=page;
-    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loading); // 数据加载中，请稍后
+    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loadingData); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
     if(page==1){
     	$("#ISDiagramTiledContainer").html(''); // 将html内容清空
@@ -2256,7 +2256,7 @@ loadISDiagramTiledList = function (page) {
         	if(page==1){
         		$("#ISDiagramTiledContainer").html(''); // 将html内容清空
         	}
-            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loading); // 取消遮罩
+            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loadingData); // 取消遮罩
             var get_rawData = Ext.decode(response.responseText); // 获取返回数据
             var diagramList = get_rawData.list; // 获取功图数据
             

@@ -460,7 +460,7 @@ function CreateSingleWellRangeReportTable(){
     }
     
     if(Ext.getCmp("SingleWellRangeReportPanel_id")!=undefined){
-        Ext.getCmp("SingleWellRangeReportPanel_id").el.mask(loginUserLanguageResource.loading).show();
+        Ext.getCmp("SingleWellRangeReportPanel_id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -501,7 +501,7 @@ function CreateSingleWellRangeReportTable(){
 			if(Ext.getCmp("SingleWellRangeReportPanel_id")!=undefined){
 				Ext.getCmp("SingleWellRangeReportPanel_id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId: orgId,
@@ -836,17 +836,17 @@ var SingleWellRangeReportHelper = {
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
 	                        	singleWellRangeReportHelper.clearContainer();
 	                        	CreateSingleWellReportTable();
 	                        	CreateSingleWellReportCurve();
 	                        } else {
 	                        	singleWellRangeReportHelper.clearContainer();
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 	                        }
 	                    },
 	                    failure: function () {
-	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
 	                    },
 	                    params: {
 	                    	deviceId:deviceId,
@@ -892,7 +892,7 @@ function CreateSingleWellDailyReportTable(){
     }
     
     if(Ext.getCmp("SingleWellDailyReportPanel_id")!=undefined){
-        Ext.getCmp("SingleWellDailyReportPanel_id").el.mask(loginUserLanguageResource.loading).show();
+        Ext.getCmp("SingleWellDailyReportPanel_id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -937,7 +937,7 @@ function CreateSingleWellDailyReportTable(){
 			if(Ext.getCmp("SingleWellDailyReportPanel_id")!=undefined){
 				Ext.getCmp("SingleWellDailyReportPanel_id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId: orgId,
@@ -1268,17 +1268,17 @@ var SingleWellDailyReportHelper = {
 	                    success: function (response) {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
 	                        	singleWellDailyReportHelper.clearContainer();
 	                        	CreateSingleWellReportTable();
 	                        	CreateSingleWellReportCurve();
 	                        } else {
 	                        	singleWellDailyReportHelper.clearContainer();
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailure+"</font>");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 	                        }
 	                    },
 	                    failure: function () {
-	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailure);
+	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
 	                    },
 	                    params: {
 	                    	deviceId:deviceId,
@@ -1370,7 +1370,7 @@ function CreateSingleWellRangeReportCurve(){
     }
     
     if(Ext.getCmp("SingleWellRangeReportCurvePanel_id")!=undefined){
-        Ext.getCmp("SingleWellRangeReportCurvePanel_id").el.mask(loginUserLanguageResource.loading).show();
+        Ext.getCmp("SingleWellRangeReportCurvePanel_id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1533,7 +1533,7 @@ function CreateSingleWellRangeReportCurve(){
 			if(Ext.getCmp("SingleWellRangeReportCurvePanel_id")!=undefined){
 				Ext.getCmp("SingleWellRangeReportCurvePanel_id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId: orgId,
@@ -1567,7 +1567,7 @@ function CreateSingleWellDailyReportCurve(){
     }
     
     if(Ext.getCmp("SingleWellDailyReportCurvePanel_id")!=undefined){
-        Ext.getCmp("SingleWellDailyReportCurvePanel_id").el.mask(loginUserLanguageResource.loading).show();
+        Ext.getCmp("SingleWellDailyReportCurvePanel_id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
@@ -1735,7 +1735,7 @@ function CreateSingleWellDailyReportCurve(){
 			if(Ext.getCmp("SingleWellDailyReportCurvePanel_id")!=undefined){
 				Ext.getCmp("SingleWellDailyReportCurvePanel_id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			orgId: orgId,
@@ -1925,7 +1925,7 @@ function ExportSingleWellRangeReportData(){
 	+'&endDate='+endDate
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
-	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loading);
+	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loadingData);
 	document.location.href = url;
 }
 
@@ -1962,7 +1962,7 @@ function batchExportSingleWellRangeReportData(){
 	+'&reportDate='+reportDate
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
-	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loading);
+	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loadingData);
 	document.location.href = url;
 }
 
@@ -1999,7 +1999,7 @@ function ExportSingleWellDailyReportData(){
 	+'&interval='+interval
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
-	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loading);
+	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loadingData);
 	document.location.href = url;
 }
 
@@ -2026,6 +2026,6 @@ function batchExportSingleWellDailyReportData(){
 	+'&interval='+interval
 	+'&orgId='+leftOrg_Id
 	+'&key='+key;
-	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loading);
+	exportDataMask(key,"SingleWellDailyReportPanel_view",loginUserLanguageResource.loadingData);
 	document.location.href = url;
 }

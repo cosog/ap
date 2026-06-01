@@ -105,11 +105,11 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
                 			var result =  Ext.JSON.decode(response.responseText);
                 			if (result.success) {
                 				Ext.getCmp("HistoryCurveSetWindow_Id").close();
-                				Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.saveSuccessfully);
+                				Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
                 			}
                 		},
                 		failure:function(){
-                			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+                			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
                 		},
                 		params: {
                 			deviceName:deviceName,
@@ -263,7 +263,7 @@ function CreateDeviceHistoryCurveSetTable(){
 			
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.errorInfo);
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
 		params: {
 			deviceName:deviceName,

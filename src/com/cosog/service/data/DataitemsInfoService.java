@@ -118,6 +118,19 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 				columnDataSourceName+="/"+dataSourceName;
 			}
 			
+			String configItemName=obj[13]+"";
+			if(StringManagerUtils.stringToInteger(obj[5]+"")==1 && StringManagerUtils.stringToInteger(obj[7]+"")==1){
+				CalItem calItem=MemoryDataManagerTask.getCalItemByCode(obj[2]+"", user.getLanguageName());
+				if(calItem!=null){
+					configItemName=calItem.getName();
+				}
+			}else if(StringManagerUtils.stringToInteger(obj[5]+"")==1 && StringManagerUtils.stringToInteger(obj[7]+"")==2){
+				CalItem calItem=MemoryDataManagerTask.getInputItemByCode(obj[2]+"", user.getLanguageName());
+				if(calItem!=null){
+					configItemName=calItem.getName();
+				}
+			}
+			
 			result_json.append("{\"dataitemid\":\""+obj[0]+"\",");
 			result_json.append("\"name\":\""+obj[1]+"\",");
 			result_json.append("\"code\":\""+obj[2]+"\",");
@@ -135,7 +148,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 			result_json.append("\"status_cn\":"+(StringManagerUtils.stringToInteger(obj[10]+"")==1)+",");
 			result_json.append("\"status_en\":"+(StringManagerUtils.stringToInteger(obj[11]+"")==1)+",");
 			result_json.append("\"status_ru\":"+(StringManagerUtils.stringToInteger(obj[12]+"")==1)+",");
-			result_json.append("\"configItemName\":\""+obj[13]+"\",");
+			result_json.append("\"configItemName\":\""+configItemName+"\",");
 			result_json.append("\"configItemBitIndex\":\""+obj[14]+"\"");
 			result_json.append("},");
 		}

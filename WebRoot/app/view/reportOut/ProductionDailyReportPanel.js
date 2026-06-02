@@ -1156,7 +1156,10 @@ function initProductionDailyReportCurveChartFn(series, tickInterval, divId, titl
 	            enabled: false
 	        },
 	        title: {
-	            text: title
+	            text: title,
+	            style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },
 	        subtitle: {
 	            text: subtitle

@@ -987,7 +987,10 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
 	            enabled: false
 	        },
 	        title: {
-	            text: title
+	            text: title,
+	            style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },
 	        subtitle: {
 	            text: subtitle
@@ -1169,7 +1172,10 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 				enabled : false
 			},
 			title : {
-				text : title
+				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 			},
 			colors : colors,
 			tooltip : {
@@ -1333,7 +1339,10 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 				enabled : false
 			},
 			title : {
-				text : title
+				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 			},
 			colors : colors,
 			tooltip : {
@@ -1494,7 +1503,10 @@ function ShowHistoryQueryNumStatusStatPieOrColChat(title,divId, name, data,color
 				enabled : false
 			},
 			title : {
-				text : title
+				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 			},
 			colors : colors,
 			tooltip : {
@@ -1655,7 +1667,10 @@ function ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, name, dat
 				enabled : false
 			},
 			title : {
-				text : title
+				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 			},
 //			colors : colors,
 			tooltip : {
@@ -1806,7 +1821,10 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 				enabled : false
 			},
 			title : {
-				text : title
+				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 			},
 			colors : colors,
 			tooltip : {

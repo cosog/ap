@@ -214,10 +214,10 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         
         var deviceTabInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '设备标签实例',
+					fieldLabel :  loginUserLanguageResource.deviceTagInstance,
 					labelWidth: labelWidth,
-					emptyText : '选择设备标签实例',
-					blankText : '选择设备标签实例',
+					emptyText : loginUserLanguageResource.selectDeviceTagInstance,
+					blankText : loginUserLanguageResource.selectDeviceTagInstance,
 					id : 'deviceTabInstanceComb_Id',
 					anchor : '95%',
 					store: deviceTabInstanceStore,
@@ -1006,7 +1006,18 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             }]
         });
         Ext.apply(me, {
-            items: deviceEditForm
+            items: deviceEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("deviceInfoWindow_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("deviceInfoWindow_Id").setWidth(labelWidth*2.5);
+    				}
+    			},
+    			resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+    				
+    			}
+    		}
         });
         me.callParent(arguments);
     }

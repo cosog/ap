@@ -767,7 +767,12 @@ function showAlarmStatDrillDownChart(title,divId, subtitle,yAxisTitle,rawSeriesD
                 }
             }
         },
-        title: { text: title },
+        title: { 
+        	text: title,
+        	style: {
+            	fontSize: chartTitleFontSize
+            }
+        },
         subtitle: { text: subtitle },
         xAxis: { type: 'category' },
         yAxis: { 
@@ -1270,7 +1275,12 @@ function showAlarmQueryStatDataColChat(title,divId,name,categories,seriesData){
         credits : {
 			enabled : false
 		},
-        title: { text: title },
+        title: { 
+        	text: title,
+        	style: {
+            	fontSize: chartTitleFontSize
+            }
+        },
         xAxis: { categories: categories },
         yAxis: { 
         	title: { 

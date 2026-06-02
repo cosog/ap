@@ -704,7 +704,10 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
     		enabled: false
     	},
         title: {
-            text: title
+            text: title,
+            style: {
+            	fontSize: chartTitleFontSize
+            }
         },
         subtitle: {
             text: subtitle

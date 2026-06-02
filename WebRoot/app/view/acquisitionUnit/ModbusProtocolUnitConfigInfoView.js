@@ -11,7 +11,11 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
 //    	var ModbusProtocolDisplayUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView');
 //    	var ModbusProtocolReportUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView');
     	Ext.apply(me, {
-    		items: [{
+    		layout: 'border',
+    		border: false,
+    		items:[{
+    			region: 'center',
+    			border: false,
     			xtype: 'tabpanel',
                 id:"ModbusProtocolUnitConfigTabPanel_Id",
                 activeTab: 0,
@@ -112,11 +116,14 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                             	Ext.create('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore');
                             }
                     	}
-                    },afterrender: function (comp,eOpts) {
-                    	
                     }
                 }
-    		}]
+    		}],
+    		listeners: {
+            	afterrender: function (comp,eOpts) {
+                	
+                }
+            }
     	});
         this.callParent(arguments);
     }

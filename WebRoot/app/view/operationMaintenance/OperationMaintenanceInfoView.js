@@ -3948,7 +3948,10 @@ function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId
 	            enabled: false
 	        },
 	        title: {
-	            text: title
+	            text: title,
+	            style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },
 	        subtitle: {
 	            text: subtitle

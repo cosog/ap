@@ -1435,7 +1435,10 @@ function initHydrologicalWellReportCurveChartFn(series, tickInterval, divId, tit
 	            enabled: false
 	        },
 	        title: {
-	            text: title
+	            text: title,
+	            style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },
 	        subtitle: {
 	            text: subtitle

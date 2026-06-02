@@ -13,7 +13,8 @@ Ext.define("AP.view.historyQuery.ItemHistoryCurveWindow", {
     resizable: true,
     collapsible: true,
     constrain: true,
-    maximizable: false,
+    maximizable: true,
+    minimizable: true,
     plain: true,
     modal: true,
     border: false,
@@ -447,7 +448,10 @@ function initItemHistoryCurveChartFn(series, tickInterval, divId, title, subtitl
 	            enabled: false
 	        },
 	        title: {
-	            text: title
+	            text: title,
+	            style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },
 	        subtitle: {
 	            text: subtitle

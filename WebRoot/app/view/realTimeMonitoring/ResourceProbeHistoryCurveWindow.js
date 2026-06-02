@@ -26,6 +26,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
         		layout: 'fit',
         		autoScroll: false,
         		border: false,
+        		id:'ResourceProbeHistoryCurvePanel_Id',
         		tbar:[
             		{
                         xtype: 'datefield',

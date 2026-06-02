@@ -6,6 +6,7 @@ defaultWellComboxSize=10000;
 comboxPagingStatus=0;//0-不分页  大于0分页
 isShowMap=true;//是否显示地图 true-显示   false-不显示
 recordCount=1000;//后台电子表格总行数
+var chartTitleFontSize='14px';
 
 //普通样式（灰色，正常粗细）
 var normalStyle = {
@@ -694,6 +695,9 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 			},
 			title : {
 				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            },
 				x : -20
 			},
 			xAxis : {
@@ -838,6 +842,9 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 			},
 			title : {
 				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            },
 				x : -20
 			},
 			xAxis : {
@@ -985,7 +992,10 @@ function initCurveChart(years, values, tickInterval, divId) {
 			},
 			title : {
 				text :cosog.string.clqx,
-				x : -20
+				x : -20,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 				// center
 			},
 			colors : ['#800000',// 红
@@ -2235,7 +2245,10 @@ function initContinuousDiagramChart(pointdata, divId,title,subtitle,xtext,ytext,
 	            reflow: true
 	        },                                                                                   
 	        title: {
-	        	text: title          
+	        	text: title,
+	        	style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },                                                                                   
 	        subtitle: {
 	        	text: subtitle                                                      
@@ -2682,7 +2695,10 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
 	            enabled: false
 	        },
 	        title: {
-	            text: title
+	            text: title,
+	            style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },
 	        subtitle: {
 	            text: subtitle
@@ -3116,7 +3132,10 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	            reflow: true
 	        },                                                                                   
 	        title: {
-	        	text: loginUserLanguageResource.FSDiagram  // 光杆功图                        
+	        	text: loginUserLanguageResource.FSDiagram,  // 光杆功图       
+	        	style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },                                                                                   
 	        subtitle: {
 	        	text: deviceName+' ['+acqTime+']'                                                      
@@ -3369,7 +3388,7 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 			        title: {                                                                             
 			            text: loginUserLanguageResource.rodStress,              // 杆柱应力      
 			            style: {
-			            	fontSize: '13px'
+			            	fontSize: chartTitleFontSize
 			            }
 			        },                                                                                   
 			        subtitle: {                                                                          
@@ -3582,7 +3601,10 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,yAx
 	            zoomType: 'xy'
 	        },                                                                                   
 	        title: {  
-	        	text: title
+	        	text: title,
+	        	style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },                                                                                   
 	        subtitle: {                                                                          
 	            text: deviceName+' ['+acqTime+']'                                                      
@@ -3741,7 +3763,10 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 		            zoomType: 'xy'                   
 		        },                                                                                   
 		        title: {                                                                                      
-		            text: loginUserLanguageResource.pumpEfficiencyComposition
+		            text: loginUserLanguageResource.pumpEfficiencyComposition,
+		            style: {
+		            	fontSize: chartTitleFontSize
+		            }
 		        },
 		        subtitle: {                                                                                   
 		            text: deviceName+' ['+acqTime+']'                                                      
@@ -3929,7 +3954,10 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			            reflow: true
 			        },                                                                                   
 			        title: {
-			        	text: title          
+			        	text: title,
+			        	style: {
+			            	fontSize: chartTitleFontSize
+			            }
 			        },                                                                                   
 			        subtitle: {
 			        	text: deviceName+' ['+acqTime+']'                                                      
@@ -4147,7 +4175,10 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			            reflow: true
 			        },                                                                                   
 			        title: {
-			        	text: title          
+			        	text: title,
+			        	style: {
+			            	fontSize: chartTitleFontSize
+			            }
 			        },                                                                                   
 			        subtitle: {
 			        	text: deviceName+' ['+acqTime+']'                                                      
@@ -4336,7 +4367,10 @@ function initBalanceCurveChart(catagories,series,divId,title,deviceName,acqTime,
 					enabled : false
 				},
 				title : {
-					text : title
+					text : title,
+					style: {
+		            	fontSize: chartTitleFontSize
+		            }
 				},
 				subtitle: {
 					text: deviceName+' ['+acqTime+']'                                                  
@@ -4506,7 +4540,10 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,subtitle,
 					enabled : false
 				},
 				title : {
-					text : titletext
+					text : titletext,
+					style: {
+		            	fontSize: chartTitleFontSize
+		            }
 					// center
 				},
 				subtitle: {
@@ -4659,7 +4696,10 @@ function initBalanceCurveChartTowY(catagories,series,divId,titletext,subtitle,yt
 					enabled : false
 				},
 				title : {
-					text : titletext
+					text : titletext,
+					style: {
+		            	fontSize: chartTitleFontSize
+		            }
 					// center
 				},
 				subtitle: {
@@ -4944,7 +4984,10 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	            zoomType: 'xy'
 	        },                                                                                   
 	        title: {  
-	        	text: title
+	        	text: title,
+	        	style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },                                                                                   
 	        subtitle: {                                                                          
 	            text: subtitle//+' ['+acqTime+']'                                                      
@@ -5054,7 +5097,10 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	            zoomType: 'xy'
 	        },                                                                                   
 	        title: {  
-	        	text: title
+	        	text: title,
+	        	style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },                                                                                   
 	        subtitle: {                                                                          
 	            text: subtitle//+' ['+acqTime+']'                                                      
@@ -5577,14 +5623,39 @@ function getRoleModuleRight(moduleCode){
 	return moduleRight;
 }
 
-function getLabelWidth(str,language) {
-    var ratio=4;
-    if('zh_CN'.toUpperCase()==language.toUpperCase()){
-    	ratio=8;
-    }else if('en'.toUpperCase()==language.toUpperCase()){
-    	ratio=6;
+//function getLabelWidth(str,language) {
+//    var ratio=4;
+//    if('zh_CN'.toUpperCase()==language.toUpperCase()){
+//    	ratio=8;
+//    }else if('en'.toUpperCase()==language.toUpperCase()){
+//    	ratio=6;
+//    }
+//    return getStringLength(str)*ratio;
+//}
+
+function getLabelWidth(str, language) {
+    if (!str || str === '') return 0;
+    
+    // 优先使用 Canvas（最准确）
+    try {
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        ctx.font = '12px tahoma,arial,verdana,sans-serif';
+        var width = ctx.measureText(str).width;
+        
+        // 添加一点额外边距，避免文字贴边
+        return width + 5;
+    } catch(e) {
+        // 降级：使用原生 DOM 测量
+        var measureDiv = document.createElement('div');
+        measureDiv.style.cssText = 'position:absolute;visibility:hidden;height:auto;width:auto;white-space:nowrap;font-size:12px;font-family:tahoma,arial,verdana,sans-serif;';
+        measureDiv.textContent = str; // 使用 textContent 避免 HTML 转义
+        document.body.appendChild(measureDiv);
+        var width = measureDiv.offsetWidth;
+        document.body.removeChild(measureDiv);
+        
+        return width + 5;
     }
-    return getStringLength(str)*ratio;
 }
 
 function getStringLength(str) {

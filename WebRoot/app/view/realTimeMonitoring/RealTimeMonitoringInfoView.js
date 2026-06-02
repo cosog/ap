@@ -901,135 +901,171 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     return false;
 };
 
-function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, ytitle, color,legend,timeFormat) {
-	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-//		 Highcharts.setOptions({
-//		        global: {
-//		            useUTC: false
-//		        }
-//		    });
-//		var localOffset = new Date().getTimezoneOffset();
-		    var mychart = new Highcharts.Chart({
-		        chart: {
-		            renderTo: divId,
-		            type: 'spline',
-		            shadow: false,
-		            borderWidth: 0,
-		            zoomType: 'xy'
-		        },
-		        time: {
-		            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区
-		        },
-		        credits: {
-		            enabled: false
-		        },
-		        title: {
-		            text: title
-		        },
-		        subtitle: {
-		            text: subtitle
-		        },
-		        colors: color,
-		        xAxis: {
-		            type: 'datetime',
-		            title: {
-		                text: xtitle
-		            },labels: {
-//		                formatter: function () {
-//		                    return Highcharts.dateFormat(timeFormat, this.value);
-//		                },
-		            	formatter: function () {
-		                    // 使用图表的 time 工具，而非全局 Highcharts.dateFormat
-		                    return this.axis.chart.time.dateFormat(timeFormat, this.value);
-		                },
-		                autoRotation:true,//自动旋转
-		                rotation: -45 //倾斜度，防止数量过多显示不全  
-//		                step: 2
-		            }
-		        },
-		        yAxis: [{
-		            lineWidth: 1,
-		        	tickWidth: 1,      // 刻度线宽度
-	                tickLength: 5,     // 刻度线长度（可选）
-		            title: {
-		                text: ytitle
-//		                ,
-//		                style: {
-//		                    color: '#000000',
-//		                    fontWeight: 'bold'
-//		                }
-		            }
+function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, ytitle, color, legend, timeFormat) {
+    if ($("#" + divId) != undefined && $("#" + divId)[0] != undefined) {
+    	var isZooming = false;
+        var zoomTimer = null;
+        var $container = $("#" + divId);
+        var panelId = "ResourceProbeHistoryCurvePanel_Id";
+        
+    	var mychart = new Highcharts.Chart({
+            chart: {
+                renderTo: divId,
+                type: 'spline',
+                shadow: false,
+                borderWidth: 0,
+                zoomType: 'xy',
+                events: {
+                    // 监听缩放完成事件
+                    redraw: function() {
+                        // 缩放完成后隐藏遮罩
+                        if (isZooming) {
+                            setTimeout(function() {
+                                Ext.getCmp(panelId).getEl().unmask();
+                                isZooming = false;
+                                if (zoomTimer) clearTimeout(zoomTimer);
+                            }, 300);
+                        }
+                    }
+                }
+            },
+            time: {
+                timezoneOffset: new Date().getTimezoneOffset() // 用户本地时区
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: title,
+                style: {
+                    fontSize: chartTitleFontSize
+                }
+            },
+            subtitle: {
+                text: subtitle
+            },
+            colors: color,
+            xAxis: {
+                type: 'datetime',
+                title: {
+                    text: xtitle
+                },
+                labels: {
+                    formatter: function () {
+                        return this.axis.chart.time.dateFormat(timeFormat, this.value);
+                    },
+                    autoRotation: true, //自动旋转
+                    rotation: -45 //倾斜度，防止数量过多显示不全  
+                },
+                events: {
+                    // 当范围即将改变时触发（缩放前）
+                    setExtremes: function(e) {
+                        // 检查范围是否真的会改变
+                        var currentMin = this.min;
+                        var currentMax = this.max;
+                        var newMin = e.min;
+                        var newMax = e.max;
+                        
+                        // 如果范围没有实际变化，不显示遮罩
+                        if (currentMin === newMin && currentMax === newMax) {
+                            return;
+                        }
+                        
+                        // 实际发生了缩放，显示遮罩
+                        if (!isZooming) {
+                            isZooming = true;
+                            Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
+                        }
+                        
+                        // 设置超时保护
+                        if (zoomTimer) clearTimeout(zoomTimer);
+                        zoomTimer = setTimeout(function() {
+                            if (isZooming) {
+                                Ext.getCmp(panelId).getEl().unmask();
+                                isZooming = false;
+                            }
+                        }, 5000);
+                    }
+                }
+            },
+            yAxis: [{
+                lineWidth: 1,
+                tickWidth: 1, // 刻度线宽度
+                tickLength: 5, // 刻度线长度（可选）
+                title: {
+                    text: ytitle
+                }
 		      }],
-		        tooltip: {
-		            crosshairs: true, //十字准线
-		            shared: true,
-		            style: {
-		                color: '#333333',
-		                fontSize: '12px',
-		                padding: '8px'
-		            },
-		            dateTimeLabelFormats: {
-		                millisecond: '%Y-%m-%d %H:%M:%S.%L',
-		                second: '%Y-%m-%d %H:%M:%S',
-		                minute: '%Y-%m-%d %H:%M',
-		                hour: '%Y-%m-%d %H',
-		                day: '%Y-%m-%d',
-		                week: '%m-%d',
-		                month: '%Y-%m',
-		                year: '%Y'
-		            }
-		        },
-		        exporting: {
-		            enabled: true,
-		            filename: title,
-		            fallbackToExportServer: false,
-		            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-		    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
-		    	    		buttons: {
-		    	    	    	contextButton: {
-		    	    	    		menuItems: [
-		    	    	    			'viewFullscreen',
-		    	    	    			'printChart',
-		    	    	    			'separator',
-		    	    	    			'downloadPNG',
-		    	    	    			'downloadJPEG',
-		    	    	    			'downloadSVG',
-		    	    	    			'separator',
-		    	    	    			'downloadCSV',
-		    	    	    			'downloadXLS'
-		    	    	    			]
-		    	    	    		}
-		    	    	    }
-		        },
-		        plotOptions: {
-		            spline: {
-		                lineWidth: 1,
-		                fillOpacity: 0.3,
-		                marker: {
-		                    enabled: true,
-		                    radius: 3, //曲线点半径，默认是4
-		                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
-		                    states: {
-		                        hover: {
-		                            enabled: true,
-		                            radius: 6
-		                        }
-		                    }
-		                },
-		                shadow: true
-		            }
-		        },
-		        legend: {
-		            layout: 'vertical',
-		            align: 'right',
-		            verticalAlign: 'middle',
-		            enabled: legend,
-		            borderWidth: 0
-		        },
-		        series: series
-		    });
-	}
+            tooltip: {
+                crosshairs: true, //十字准线
+                shared: true,
+                style: {
+                    color: '#333333',
+                    fontSize: '12px',
+                    padding: '8px'
+                },
+                dateTimeLabelFormats: {
+                    millisecond: '%Y-%m-%d %H:%M:%S.%L',
+                    second: '%Y-%m-%d %H:%M:%S',
+                    minute: '%Y-%m-%d %H:%M',
+                    hour: '%Y-%m-%d %H',
+                    day: '%Y-%m-%d',
+                    week: '%m-%d',
+                    month: '%Y-%m',
+                    year: '%Y'
+                }
+            },
+            exporting: {
+                enabled: true,
+                filename: title,
+                fallbackToExportServer: false,
+                sourceWidth: $("#" + divId)[0] != undefined ? $("#" + divId)[0].offsetWidth : null,
+                sourceHeight: $("#" + divId)[0] != undefined ? $("#" + divId)[0].offsetHeight : null,
+                buttons: {
+                    contextButton: {
+                        menuItems: [
+                        	'viewFullscreen',
+                        	'printChart',
+                        	'separator',
+                        	'downloadPNG',
+                        	'downloadJPEG',
+                        	'downloadSVG',
+                        	'separator',
+                        	'downloadCSV',
+                        	'downloadXLS'
+                        ]
+                    }
+                }
+            },
+            plotOptions: {
+                spline: {
+                    lineWidth: 1,
+                    fillOpacity: 0.3,
+                    marker: {
+                        enabled: true,
+                        radius: 3, //曲线点半径，默认是4
+                        states: {
+                            hover: {
+                                enabled: true,
+                                radius: 6
+                            }
+                        }
+                    },
+                    shadow: true
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                enabled: legend,
+                borderWidth: 0
+            },
+            series: series
+        });
+    }
 };
+
 
 
 function exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,fileName,title,columnStr) {
@@ -1209,7 +1245,10 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, nam
 				enabled : false
 			},
 			title : {
-				text : title
+				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 			},
 //			colors : colors,
 			tooltip : {
@@ -1368,7 +1407,10 @@ function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) 
 				enabled : false
 			},
 			title : {
-				text : title
+				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 			},
 			colors : colors,
 			tooltip : {
@@ -1547,7 +1589,10 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 				enabled : false
 			},
 			title : {
-				text : title
+				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 			},
 			colors : colors,
 			tooltip : {
@@ -1717,7 +1762,10 @@ function ShowRealTimeMonitoringNumStatusStatPieOrColChat(title,divId, name, data
 				enabled : false
 			},
 			title : {
-				text : title
+				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 			},
 			colors : colors,
 			tooltip : {
@@ -1874,7 +1922,10 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 				enabled : false
 			},
 			title : {
-				text : title
+				text : title,
+				style: {
+	            	fontSize: chartTitleFontSize
+	            }
 			},
 			colors : colors,
 			tooltip : {
@@ -1962,6 +2013,37 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 	
 };
 
+function calculateTickInterval(data) {
+    if (!data || data.length < 2) return 3600 * 1000; // 默认1小时
+    
+    // 获取时间范围（毫秒）
+    var firstTime = Date.parse(data[0].acqTime.replace(/-/g, '/'));
+    var lastTime = Date.parse(data[data.length - 1].acqTime.replace(/-/g, '/'));
+    var timeRange = lastTime - firstTime;
+    var dataCount = data.length;
+    
+    // 目标：期望显示 5-10 个刻度
+    var targetTickCount = 8;
+    var tickInterval = Math.ceil(timeRange / targetTickCount);
+    
+    // 将间隔调整为合理的时间单位
+    var hourMs = 3600 * 1000;
+    var dayMs = 24 * hourMs;
+    
+    if (tickInterval <= hourMs) {
+        // 小于1小时，向上取整到小时或半小时
+        tickInterval = Math.ceil(tickInterval / (30 * 60 * 1000)) * (30 * 60 * 1000);
+    } else if (tickInterval <= dayMs) {
+        // 1小时到1天，向上取整到小时
+        tickInterval = Math.ceil(tickInterval / hourMs) * hourMs;
+    } else {
+        // 大于1天，向上取整到天
+        tickInterval = Math.ceil(tickInterval / dayMs) * dayMs;
+    }
+    
+    return tickInterval;
+}
+
 function deviceRealtimeMonitoringCurve(deviceType){
 	var selectRowId="RealTimeMonitoringInfoDeviceListSelectRow_Id";
 	var gridPanelId="RealTimeMonitoringListGridPanel_Id";
@@ -2007,11 +2089,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
 		    	}
 		    }
 		   
-		    var tickInterval = 1;
-		    tickInterval = Math.floor(data.length / 2) + 1;
-		    if(tickInterval<100){
-		    	tickInterval=100;
-		    }
+		    var tickInterval = calculateTickInterval(data);
             
 		    var columnCount = 2;
 		    var rowCount = (totals%columnCount==0)?(totals/columnCount):(parseInt(totals/columnCount)+1);
@@ -2204,27 +2282,69 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	    		selected: 0
 	    	},
 	        title: {
-	            text: title
+	            text: title,
+	            style: {
+	            	fontSize: chartTitleFontSize
+	            }
 	        },
 	        subtitle: {
 	            text: subtitle
 	        },
 	        colors: color,
+//	        xAxis: {
+//	            type: 'datetime',
+//	            title: {
+//	                text: xtitle
+//	            },
+////	            tickInterval: tickInterval,
+////	            tickPixelInterval:tickInterval,
+////	            tickPixelInterval:100,
+//	            labels: {
+//	                formatter: function () {
+////	                    return Highcharts.dateFormat(timeFormat, this.value);
+//	                	return this.axis.chart.time.dateFormat(timeFormat, this.value);
+//	                },
+//	                autoRotation:true,//自动旋转
+//	                rotation: -45 //倾斜度，防止数量过多显示不全  
+////	                step: 2
+//	            }
+//	        },
 	        xAxis: {
 	            type: 'datetime',
 	            title: {
 	                text: xtitle
 	            },
-//	            tickInterval: tickInterval,
-	            tickPixelInterval:tickInterval,
+	            // 核心配置：控制刻度密度
+	            tickPixelInterval: 120,      // 每120像素一个刻度，值越小刻度越密
+	            minTickInterval: 5 * 60 * 1000,  // 最小5分钟间隔，防止1小时视图下过密
 	            labels: {
 	                formatter: function () {
-//	                    return Highcharts.dateFormat(timeFormat, this.value);
-	                	return this.axis.chart.time.dateFormat(timeFormat, this.value);
+	                	var minTime = this.axis.min;
+	                    var maxTime = this.axis.max;
+	                    
+	                    // 判断是否跨天：比较最小值和最大值的日期部分
+	                    var minDate = new Date(minTime);
+	                    var maxDate = new Date(maxTime);
+	                    
+	                    // 重置时间为0点进行比较
+	                    minDate.setHours(0, 0, 0, 0);
+	                    maxDate.setHours(0, 0, 0, 0);
+	                    
+	                    var isCrossDay = minDate.getTime() !== maxDate.getTime();
+	                    
+	                    if (isCrossDay) {
+	                        // 跨天：显示月-日 时:分
+	                        return this.axis.chart.time.dateFormat('%m-%d %H:%M', this.value);
+	                    } else {
+	                        // 没跨天：只显示时分
+	                        return this.axis.chart.time.dateFormat('%H:%M', this.value);
+	                    }
 	                },
-	                autoRotation:true,//自动旋转
-	                rotation: -45 //倾斜度，防止数量过多显示不全  
-//	                step: 2
+	                autoRotation: true,
+	                rotation: -45,
+	                style: {
+//	                    fontSize: '11px'
+	                }
 	            }
 	        },
 	        yAxis: {

@@ -17,6 +17,16 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var labelWidth=getLabelWidth(loginUserLanguageResource.unitName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.reportClasses+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.reportClasses+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.calculationType+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.calculationType+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        }
         var postModbusProtocolEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             defaultType: 'textfield',
@@ -30,6 +40,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
                 id: 'formModbusProtocolReportUnitName_Id',
                 name: "reportUnit.unitName",
                 fieldLabel: loginUserLanguageResource.unitName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -74,6 +85,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 			},{
             	xtype : "combobox",
 				fieldLabel : loginUserLanguageResource.calculationType+'<font color=red>*</font>',
+				labelWidth: labelWidth,
 				id : 'modbusProtocolReportUnitCalculateTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -100,6 +112,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
             },{
             	xtype : "combobox",
 				fieldLabel : loginUserLanguageResource.reportClasses+'<font color=red>*</font>',
+				labelWidth: labelWidth,
 				id : 'modbusProtocolReportUnitCalculateClassesComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -133,6 +146,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
             	id: "modbusProtocolReportUnitSort_Id",
                 name: 'reportUnit.sort',
                 fieldLabel: loginUserLanguageResource.sortNum,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',
@@ -165,7 +179,15 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
          }]
         });
         Ext.apply(me, {
-            items: postModbusProtocolEditForm
+            items: postModbusProtocolEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("modbusProtocolReportUnitInfoWindow_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("modbusProtocolReportUnitInfoWindow_Id").setWidth(labelWidth*2);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

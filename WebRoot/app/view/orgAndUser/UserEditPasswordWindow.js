@@ -27,7 +27,16 @@ Ext.define("AP.view.orgAndUser.UserEditPasswordWindow", {
             }
         });
         var me = this;
-        
+        var labelWidth=getLabelWidth(loginUserLanguageResource.userName,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.userAccount,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.userAccount,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.userPassword+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.userPassword+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.enterPasswordAgain+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.enterPasswordAgain+'*',loginUserLanguage);
+        }
         var postEditUserForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             defaultType: 'textfield',
@@ -38,6 +47,7 @@ Ext.define("AP.view.orgAndUser.UserEditPasswordWindow", {
                     name: "user.userNo"
             },{
                     fieldLabel: loginUserLanguageResource.userName,
+                    labelWidth: labelWidth,
                     id: 'userEditPassword_UserName_Id',
                     anchor: '100%',
                     allowBlank: false,
@@ -46,6 +56,7 @@ Ext.define("AP.view.orgAndUser.UserEditPasswordWindow", {
                     blankText: loginUserLanguageResource.required
             },{
                     fieldLabel: loginUserLanguageResource.userAccount,
+                    labelWidth: labelWidth,
                     allowBlank: false,
                     editable: false,
                     anchor: '100%',
@@ -59,8 +70,8 @@ Ext.define("AP.view.orgAndUser.UserEditPasswordWindow", {
                     inputType: 'password',
                     anchor: '100%',
                     fieldLabel: loginUserLanguageResource.userPassword + '<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     emptyText: loginUserLanguageResource.enterPassword,
-                    labelWidth: 100,
                     allowBlank: false,
                     msgTarget: 'side',
                     blankText: loginUserLanguageResource.required
@@ -73,8 +84,8 @@ Ext.define("AP.view.orgAndUser.UserEditPasswordWindow", {
                     confirmTo: "userEditPassword_UserPwd_Id",
                     anchor: '100%',
                     fieldLabel: loginUserLanguageResource.enterPasswordAgain + '<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     allowBlank: false,
-                    labelWidth: 100,
                     msgTarget: 'side',
                     blankText: loginUserLanguageResource.required
             }],
@@ -95,7 +106,15 @@ Ext.define("AP.view.orgAndUser.UserEditPasswordWindow", {
             }]
         });
         Ext.apply(me, {
-            items: postEditUserForm
+            items: postEditUserForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("userEditPasswordWindow_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("userEditPasswordWindow_Id").setWidth(labelWidth*2.5);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

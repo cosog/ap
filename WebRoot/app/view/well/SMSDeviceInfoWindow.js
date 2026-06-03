@@ -18,6 +18,16 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var labelWidth=getLabelWidth(loginUserLanguageResource.deviceName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.SMSInstance,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.SMSInstance,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.signInId,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.signInId,loginUserLanguage);
+        }
         /**短信实例*/
         var smsInstanceStore = new Ext.data.SimpleStore({
         	fields: [{
@@ -51,9 +61,10 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
         
         var smsDeviceSMSInstanceComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  loginUserLanguageResource.SMSInstance,
-					emptyText : '请选择短信实例',
-					blankText : '请选择短信实例',
+					fieldLabel: loginUserLanguageResource.SMSInstance,
+					labelWidth: labelWidth,
+					emptyText: loginUserLanguageResource.selectSMSInstance,
+					blankText: loginUserLanguageResource.selectSMSInstance,
 					id : 'smsDeviceSMSInstanceComb_Id',
 					anchor : '95%',
 					store: smsInstanceStore,
@@ -91,6 +102,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
                 name: "smsDeviceInformation.orgId"
             },{
                 fieldLabel: loginUserLanguageResource.deviceName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 id: 'smsDeviceName_Id',
                 allowBlank: false,
                 anchor: '95%',
@@ -104,6 +116,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
             },{
                 xtype: "textfield",
                 fieldLabel: loginUserLanguageResource.signInId,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 id: 'smsDeviceSignInId_Id',
                 anchor: '95%',
@@ -114,6 +127,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
             	id: "smsDeviceSortNum_Id",
             	name: "smsDeviceInformation.sortNum",
                 fieldLabel: loginUserLanguageResource.sortNum,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '95%',
@@ -171,7 +185,15 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
             }]
         });
         Ext.apply(me, {
-            items: smsDeviceEditForm
+            items: smsDeviceEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("SMSDeviceInfoWindow_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("SMSDeviceInfoWindow_Id").setWidth(labelWidth*2.5);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

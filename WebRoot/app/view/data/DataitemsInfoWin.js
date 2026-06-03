@@ -2,10 +2,8 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
     extend: 'Ext.Window',
     alias: 'widget.dataitemsInfoWin',
     id: "DataitemsInfoWinId",
-    width: '50%',
-    minWidth: 800,
-    height: '90%',
-    minHeight: 600,
+    width: 900,
+    height: 700,
     layout: 'border',
     closeAction: 'destroy',
     resizable: true,
@@ -15,10 +13,40 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
     initComponent: function () {
         var me = this;
         //英文名称
+        var labelWidth=getLabelWidth(loginUserLanguageResource.fiedName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.columnDataSource+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.columnDataSource+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.dataSource+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.dataSource+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.configureField,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.configureField,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.language_zh_CN+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.language_zh_CN+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.language_en+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.language_en+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.language_ru+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.language_ru+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.enable+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.enable+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.fieldParameter,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.fieldParameter,loginUserLanguage);
+        }
+        
         var sysdata_code = Ext.create("Ext.form.TextField", {
             id: "sysDataCode_Ids",
             name: 'dataitemsInfo.code',
             fieldLabel: loginUserLanguageResource.fieldCode + '<font color=red>*</font>',
+            labelWidth: labelWidth,
             allowBlank: false,
             hidden:true,
             anchor: '95%',
@@ -31,6 +59,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             id: "sysdatasorts_Ids",
             name: 'dataitemsInfo.sorts',
             fieldLabel: loginUserLanguageResource.sortNum + '<font color=red>*</font>',
+            labelWidth: labelWidth,
             allowBlank: false,
             minValue: 0,
             anchor: '95%',
@@ -42,6 +71,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
             id: "sysdatadatavalue_Ids",
             name: 'dataitemsInfo.datavalue',
             fieldLabel: loginUserLanguageResource.fieldParameter,
+            labelWidth: labelWidth,
             anchor: '95%',
             height: 100
         });
@@ -82,6 +112,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var columnDataSourceComb = Ext.create(
             'Ext.form.field.ComboBox', {
                 fieldLabel: loginUserLanguageResource.columnDataSource + '<font color=red>*</font>',
+                labelWidth: labelWidth,
                 anchor: '95%',
                 id: 'dictItemColumnDataSourceComb_Id',
                 store: columnDataSourceStore,
@@ -180,6 +211,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var dataSourceComb = Ext.create(
             'Ext.form.field.ComboBox', {
                 fieldLabel: loginUserLanguageResource.dataSource,
+                labelWidth: labelWidth,
                 anchor: '95%',
                 id: 'dictItemDataSourceComb_Id',
                 store: dataSourceStore,
@@ -227,6 +259,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     id: "sysDataName_zh_CN_Ids",
                     name: 'dataitemsInfo.name_zh_CN',
                     fieldLabel: loginUserLanguageResource.fiedName + '<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     allowBlank: (loginUserLanguage.toUpperCase() == 'ZH_CN' ? false : true),
                     hidden: (loginUserLanguage.toUpperCase() == 'ZH_CN' ? false : true),
                     anchor: '95%',
@@ -237,6 +270,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     id: "sysDataName_en_Ids",
                     name: 'dataitemsInfo.name_en',
                     fieldLabel: loginUserLanguageResource.fiedName + '<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     allowBlank: (loginUserLanguage.toUpperCase() == 'EN' ? false : true),
                     hidden: (loginUserLanguage.toUpperCase() == 'EN' ? false : true),
                     anchor: '95%',
@@ -247,6 +281,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     id: "sysDataName_ru_Ids",
                     name: 'dataitemsInfo.name_ru',
                     fieldLabel: loginUserLanguageResource.fiedName + '<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     allowBlank: (loginUserLanguage.toUpperCase() == 'RU' ? false : true),
                     hidden: (loginUserLanguage.toUpperCase() == 'RU' ? false : true),
                     anchor: '95%',
@@ -272,6 +307,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                 },{
                 	id: "dictItemConfigItemName_Id",
                     fieldLabel: loginUserLanguageResource.configureField,
+                    labelWidth: labelWidth,
                     anchor: '95%',
                     msgTarget: 'side',
                     readOnly: true,
@@ -279,6 +315,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                 },{
                 	id: "dictItemConfigItemBitIndex_Id",
                     fieldLabel: loginUserLanguageResource.configureField,
+                    labelWidth: labelWidth,
                     anchor: '95%',
                     msgTarget: 'side',
                     readOnly: true,
@@ -289,6 +326,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     value: '',
                     name: "dataitemsInfo.dataUnit",
                     fieldLabel: loginUserLanguageResource.unit,
+                    labelWidth: labelWidth,
                     hidden: true,
                     anchor: '95%',
                     msgTarget: 'side',
@@ -299,6 +337,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     anchor: '95%',
                     id: "dataitemsInfo_status_cn_id",
                     fieldLabel: loginUserLanguageResource.language_zh_CN + '<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     items: [
                         {
                             checked: true,
@@ -318,6 +357,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     anchor: '95%',
                     id: "dataitemsInfo_status_en_id",
                     fieldLabel: loginUserLanguageResource.language_en + '<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     items: [
                         {
                             checked: true,
@@ -337,6 +377,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     anchor: '95%',
                     id: "dataitemsInfo_status_ru_id",
                     fieldLabel: loginUserLanguageResource.language_ru + '<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     items: [
                         {
                             checked: true,
@@ -356,6 +397,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     anchor: '95%',
                     id: "dataitemsInfo_status_id",
                     fieldLabel: loginUserLanguageResource.enable + '<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     items: [
                         {
                             checked: true,
@@ -394,42 +436,42 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                 items: [addtenaorgLevfromname]
             }, {
                 region: 'east',
-                width: '50%',
+                width: '55%',
                 id: 'dictItemSelectPanel_Id',
                 autoScroll: false,
                 split: true,
                 collapsible: true,
                 layout: 'fit',
                 header: false
+            }],
+            buttons: [{
+                id: "oktosysfordataFormBtnId",
+                text: loginUserLanguageResource.confirm,
+                iconCls: 'save',
+                disabled: loginUserDataDictionaryManagementModuleRight.editFlag != 1,
+                action: 'oktosysfordataAction'
+            },{
+                id: "savettosysfordataFormBtnId",
+                text: loginUserLanguageResource.save,
+                iconCls: 'save',
+                disabled: loginUserDataDictionaryManagementModuleRight.editFlag != 1,
+                action: 'savetosysfordatasAction',
+                hidden: true
+            },{
+                id: "editttosysfordataFormBtnId",
+                text: loginUserLanguageResource.save,
+                iconCls: 'save',
+                disabled: loginUserDataDictionaryManagementModuleRight.editFlag != 1,
+                action: 'edittosysfordatasAction',
+                hidden: true
+            },{
+                id: "cancltosysfordataBtnId",
+                text: loginUserLanguageResource.cancel,
+                iconCls: 'cancel',
+                closewin: 'DataitemsInfoWinId',
+                handler: closeWindow
             }]
         });
         me.callParent(arguments);
-    },
-    buttons: [{
-        id: "oktosysfordataFormBtnId",
-        text: loginUserLanguageResource.confirm,
-        iconCls: 'save',
-        disabled: loginUserDataDictionaryManagementModuleRight.editFlag != 1,
-        action: 'oktosysfordataAction'
-    },{
-        id: "savettosysfordataFormBtnId",
-        text: loginUserLanguageResource.save,
-        iconCls: 'save',
-        disabled: loginUserDataDictionaryManagementModuleRight.editFlag != 1,
-        action: 'savetosysfordatasAction',
-        hidden: true
-    },{
-        id: "editttosysfordataFormBtnId",
-        text: loginUserLanguageResource.save,
-        iconCls: 'save',
-        disabled: loginUserDataDictionaryManagementModuleRight.editFlag != 1,
-        action: 'edittosysfordatasAction',
-        hidden: true
-    },{
-        id: "cancltosysfordataBtnId",
-        text: loginUserLanguageResource.cancel,
-        iconCls: 'cancel',
-        closewin: 'DataitemsInfoWinId',
-        handler: closeWindow
-    }]
+    }
 });

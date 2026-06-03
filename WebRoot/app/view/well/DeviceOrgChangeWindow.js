@@ -12,8 +12,8 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 750,
-    minWidth: 750,
+    width: 900,
+    minWidth: 900,
     height: 600,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口

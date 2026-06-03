@@ -20,7 +20,10 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
-
+        var labelWidth=getLabelWidth(loginUserLanguageResource.orgName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        }
         var postOrgEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             id: 'addOrgForm_Id',
@@ -40,6 +43,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
 
             },{
                 fieldLabel: loginUserLanguageResource.orgName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 id: 'orgName_zh_CN_Id',
                 allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                 hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
@@ -47,6 +51,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
                 name: "org.orgName_zh_CN"
             },{
                 fieldLabel: loginUserLanguageResource.orgName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 id: 'orgName_en_Id',
                 allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
                 hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
@@ -54,6 +59,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
                 name: "org.orgName_en"
             },{
                 fieldLabel: loginUserLanguageResource.orgName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 id: 'orgName_ru_Id',
                 allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
                 hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
@@ -61,6 +67,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
                 name: "org.orgName_ru"
             }, {
                 fieldLabel: loginUserLanguageResource.remark,
+                labelWidth: labelWidth,
                 id: 'orgMemo_Id',
                 hidden: true,
                 anchor: '95%',
@@ -72,6 +79,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
             	id: "orgSeq_Id",
             	name: "org.orgSeq",
                 fieldLabel: loginUserLanguageResource.sortNum,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: '',
                 anchor: '95%',
@@ -99,7 +107,15 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
             }]
         });
         Ext.apply(me, {
-            items: postOrgEditForm
+            items: postOrgEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("org_addwin_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("org_addwin_Id").setWidth(labelWidth*2);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

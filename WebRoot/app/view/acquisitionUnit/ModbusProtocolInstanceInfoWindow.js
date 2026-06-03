@@ -17,6 +17,45 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        
+        var labelWidth=getLabelWidth(loginUserLanguageResource.acqUnit+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.acqProtocolType+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.acqProtocolType+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.ctrlProtocolType+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.ctrlProtocolType+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.signInPrefixSuffixHex+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.signInPrefixSuffixHex+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.signInPrefix,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.signInPrefix,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.signInSuffix,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.signInSuffix,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.signInIDHex+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.signInIDHex+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.heartbeatPrefixSuffixHex+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.heartbeatPrefixSuffixHex+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.heartbeatPrefix,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.heartbeatPrefix,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.heartbeatSuffix,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.heartbeatSuffix,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.packetSendInterval+'(ms)',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.packetSendInterval+'(ms)',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        }
+        
         var ProtocolAndAcqUnitTreeStore=Ext.create('Ext.data.TreeStore', {
             fields: ['orgId', 'text', 'leaf'],
             autoLoad: true,
@@ -92,7 +131,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
         	id:'modbusInstanceProtocolAndAcqUnit_Id',
         	anchor: '100%',
         	fieldLabel: loginUserLanguageResource.acqUnit+'<font color=red>*</font>',
-        	labelWidth: 135,
+        	labelWidth: labelWidth,
             emptyText: loginUserLanguageResource.selectAcqUnit+'...',
             blankText: loginUserLanguageResource.selectAcqUnit+'...',
             displayField: 'text',
@@ -114,8 +153,6 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 }
             }
         });
-        
-        
         
         var postModbusProtocolEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
@@ -141,7 +178,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 id: 'formModbusProtocolInstanceName_Id',
                 name: "protocolInstance.name",
                 fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
-                labelWidth: 135,
+                labelWidth: labelWidth,
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -183,7 +220,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 			},{
             	xtype : "combobox",
 				fieldLabel : loginUserLanguageResource.acqProtocolType+'<font color=red>*</font>',
-				labelWidth: 135,
+				labelWidth: labelWidth,
 				id : 'modbusInstanceAcqProtocolTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -235,7 +272,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 			},{
             	xtype : "combobox",
 				fieldLabel : loginUserLanguageResource.ctrlProtocolType+'<font color=red>*</font>',
-				labelWidth: 135,
+				labelWidth: labelWidth,
 				id : 'modbusInstanceCtrlProtocolTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -262,7 +299,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
             	xtype: 'fieldcontainer',
             	id:'modbusInstanceSignInPrefixSuffixHex_Id',
                 fieldLabel : loginUserLanguageResource.signInPrefixSuffixHex+'<font color=red>*</font>',
-                labelWidth: 135,
+                labelWidth: labelWidth,
                 defaultType: 'radiofield',
                 anchor: '100%',
                 defaults: {
@@ -287,21 +324,21 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 id: 'formModbusProtocolInstanceSignInPrefix_Id',
                 name: "protocolInstance.signInPrefix",
                 fieldLabel: loginUserLanguageResource.signInPrefix,
-                labelWidth: 135,
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: ''
             }, {
             	id: 'modbusProtocolInstanceSignInSuffix_Id',
             	name: "protocolInstance.signInSuffix",
                 fieldLabel: loginUserLanguageResource.signInSuffix,
-                labelWidth: 135,
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: ''
             },{
             	xtype: 'fieldcontainer',
             	id: 'modbusProtocolInstanceSignInIDHex_Id',
                 fieldLabel : loginUserLanguageResource.signInIDHex+'<font color=red>*</font>',
-                labelWidth: 135,
+                labelWidth: labelWidth,
                 defaultType: 'radiofield',
                 anchor: '100%',
                 defaults: {
@@ -326,7 +363,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
             	xtype: 'fieldcontainer',
             	id: 'modbusProtocolInstanceHeartbeatPrefixSuffixHex_Id',
                 fieldLabel : loginUserLanguageResource.heartbeatPrefixSuffixHex+'<font color=red>*</font>',
-                labelWidth: 135,
+                labelWidth: labelWidth,
                 defaultType: 'radiofield',
                 anchor: '100%',
                 defaults: {
@@ -351,21 +388,21 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
             	id: 'modbusProtocolInstanceHeartbeatPrefix_Id',
             	name: "protocolInstance.heartbeatPrefix",
                 fieldLabel: loginUserLanguageResource.heartbeatPrefix,
-                labelWidth: 135,
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: ''
             }, {
             	id: 'modbusProtocolInstanceHeartbeatSuffix_Id',
             	name: "protocolInstance.heartbeatSuffix",
                 fieldLabel: loginUserLanguageResource.heartbeatSuffix,
-                labelWidth: 135,
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: ''
             }, {
                 id: 'modbusProtocolInstancePacketSendInterval_Id',
                 name: "protocolInstance.packetSendInterval",
                 fieldLabel: loginUserLanguageResource.packetSendInterval+'(ms)',
-                labelWidth: 135,
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: ''
             }, {
@@ -373,7 +410,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
             	id: "modbusProtocolInstanceSort_Id",
                 name: 'protocolInstance.sort',
                 fieldLabel: loginUserLanguageResource.sortNum,
-                labelWidth: 135,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',
@@ -406,7 +443,15 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
          }]
         });
         Ext.apply(me, {
-            items: postModbusProtocolEditForm
+            items: postModbusProtocolEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("modbusProtocolInstanceInfoWindow_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("modbusProtocolInstanceInfoWindow_Id").setWidth(labelWidth*2);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

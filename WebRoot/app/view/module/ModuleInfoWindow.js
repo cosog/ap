@@ -18,6 +18,24 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        
+        var labelWidth=getLabelWidth(loginUserLanguageResource.parentModule,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleName,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.moduleName,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleIntroduction,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.moduleIntroduction,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleIcon,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.moduleIcon,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleType,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.moduleType,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleSort,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.moduleSort,loginUserLanguage);
+        }
+        
         var ModTreeStore=Ext.create('Ext.data.TreeStore', {
             fields: ['id', 'text', 'leaf'],
             autoLoad: false,
@@ -35,6 +53,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
         	id:'mdName_Parent_Id1',
         	anchor: '95%',
         	fieldLabel: loginUserLanguageResource.parentModule+'<font color=red>*</font>',
+        	labelWidth: labelWidth,
             emptyText: '--'+loginUserLanguageResource.checkModule+'--',
             blankText: '--'+loginUserLanguageResource.checkModule+'--',
             displayField: 'text',
@@ -83,6 +102,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
         var moduleTypeCombox = Ext.create(
             'Ext.form.field.ComboBox', {
                 fieldLabel: loginUserLanguageResource.moduleType+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 id: 'mdType_Id',
                 name: 'module.mdType',
                 anchor: '95%',
@@ -120,6 +140,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
                 name: 'module.mdParentid'
      }, xltree, {
                 fieldLabel: loginUserLanguageResource.moduleName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 id: 'mdName_zh_CN_Id',
                 allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                 hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
@@ -127,6 +148,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
                 name: "module.mdName_zh_CN"
      }, {
          		fieldLabel: loginUserLanguageResource.moduleName+'<font color=red>*</font>',
+         		labelWidth: labelWidth,
          		id: 'mdName_en_Id',
          		allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
          		hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
@@ -134,6 +156,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
          		name: "module.mdName_en"
      }, {
     	 		fieldLabel: loginUserLanguageResource.moduleName+'<font color=red>*</font>',
+    	 		labelWidth: labelWidth,
     	 		id: 'mdName_ru_Id',
     	 		allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
     	 		hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
@@ -141,6 +164,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
     	 		name: "module.mdName_ru"
      }, {
                 fieldLabel: loginUserLanguageResource.moduleIntroduction,
+                labelWidth: labelWidth,
                 id: 'mdShowname_zh_CN_Id',
                 hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                 value: '',
@@ -148,6 +172,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
                 name: "module.mdShowname_zh_CN"
      }, {
          		fieldLabel: loginUserLanguageResource.moduleIntroduction,
+         		labelWidth: labelWidth,
          		id: 'mdShowname_en_Id',
          		hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
          		value: '',
@@ -155,6 +180,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
          		name: "module.mdShowname_en"
      }, {
     	 		fieldLabel: loginUserLanguageResource.moduleIntroduction,
+    	 		labelWidth: labelWidth,
     	 		id: 'mdShowname_ru_Id',
     	 		hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
     	 		value: '',
@@ -163,6 +189,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
      }, {
                 id: 'mdCode_Id',
                 fieldLabel: loginUserLanguageResource.moduleCode+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 allowBlank: false,
                 hidden:true,
                 value: '',
@@ -171,6 +198,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
      }, {
                 xtype: "textfield",
                 fieldLabel: loginUserLanguageResource.moduleView+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 allowBlank: false,
                 hidden:true,
                 id: 'mdUrl_Id',
@@ -180,6 +208,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
      }, {
                 xtype: "textfield",
                 fieldLabel: loginUserLanguageResource.moduleControlller+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 allowBlank: false,
                 hidden:true,
                 anchor: '95%',
@@ -189,12 +218,14 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
      }, {
                 xtype: "textfield",
                 fieldLabel: loginUserLanguageResource.moduleIcon,
+                labelWidth: labelWidth,
                 anchor: '95%',
                 id: 'mdIcon_Id',
                 name: "module.mdIcon"
 
      }, moduleTypeCombox, {
                 fieldLabel: loginUserLanguageResource.moduleSort,
+                labelWidth: labelWidth,
                 id: 'mdSeq_Id',
                 anchor: '95%',
                 xtype: 'numberfield',
@@ -223,7 +254,18 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
      }]
         });
         Ext.apply(me, {
-            items: postmoduleEditForm
+            items: postmoduleEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("module_addwin_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("module_addwin_Id").setWidth(labelWidth*2.5);
+    				}
+    			},
+    			resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+    				
+    			}
+    		}
         });
         me.callParent(arguments);
     }

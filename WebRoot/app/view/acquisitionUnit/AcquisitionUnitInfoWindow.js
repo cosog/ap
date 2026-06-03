@@ -17,6 +17,16 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var labelWidth=getLabelWidth(loginUserLanguageResource.protocolName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.unitName+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.unitName+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.unitDescription,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.unitDescription,loginUserLanguage);
+        }
         var modbusProtocolStore = new Ext.data.SimpleStore({
         	fields: [{
                 name: "boxkey",
@@ -82,6 +92,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
         var modbusProtocolComb = Ext.create(
 				'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.protocolName+'<font color=red>*</font>',
+					labelWidth: labelWidth,
 					id : 'formAcquisitionUnitProtocolComb_Id',
 					anchor : '100%',
 					store: modbusProtocolStore,
@@ -124,6 +135,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
                 id: 'formAcquisitionUnitName_Id',
                 name: "acquisitionUnit.unitName",
                 fieldLabel: loginUserLanguageResource.unitName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -169,6 +181,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
             	id: "acquisitionUnitSort_Id",
                 name: 'acquisitionUnit.sort',
                 fieldLabel: loginUserLanguageResource.sortNum,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',
@@ -177,6 +190,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
             	id: 'acquisitionUnitRemark_Id',
             	name: "acquisitionUnit.remark",
                 fieldLabel: loginUserLanguageResource.unitDescription,
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: '',
                 xtype: 'textareafield'
@@ -208,7 +222,15 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
             }]
         });
         Ext.apply(me, {
-            items: postacquisitionUnitEditForm
+            items: postacquisitionUnitEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("acquisitionUnit_editWin_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("acquisitionUnit_editWin_Id").setWidth(labelWidth*2);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

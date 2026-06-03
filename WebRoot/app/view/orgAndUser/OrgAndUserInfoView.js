@@ -26,9 +26,9 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
             }],
         	items: [{
         		region:'west',
-        		width:'30%',
+        		width:'40%',
         		layout: "fit",
-        		title:'组织列表',
+        		title: loginUserOrgAndUserModuleRight.organizationList,
         		header:false,
         		split: true,
                 collapsible: true,

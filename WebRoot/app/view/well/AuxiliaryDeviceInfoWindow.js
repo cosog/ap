@@ -18,6 +18,19 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var labelWidth=getLabelWidth(loginUserLanguageResource.deviceName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.manufacturer,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.manufacturer,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.model,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.model,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.remark,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.remark,loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        }
         var auxiliaryDeviceEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             id: 'addAuxiliaryDeviceForm_Id',

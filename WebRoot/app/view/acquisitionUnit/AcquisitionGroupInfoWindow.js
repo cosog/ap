@@ -17,6 +17,22 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var labelWidth=getLabelWidth(loginUserLanguageResource.protocolName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.unitName+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.unitName+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.groupName+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.groupName+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.groupTimingInterval+'(s)',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.groupTimingInterval+'(s)',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.groupSavingInterval+'(s)',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.groupSavingInterval+'(s)',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.groupDescription,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.groupDescription,loginUserLanguage);
+        }
         var modbusProtocolStore = new Ext.data.SimpleStore({
         	fields: [{
                 name: "boxkey",
@@ -70,6 +86,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
         var modbusProtocolComb = Ext.create(
 				'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.protocolName+'<font color=red>*</font>',
+					labelWidth: labelWidth,
 					id : 'formAcquisitionGroupProtocolComb_Id',
 					anchor : '100%',
 					store: modbusProtocolStore,
@@ -142,6 +159,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
         var acqUnitComb = Ext.create(
         		'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.unitName+'<font color=red>*</font>',
+					labelWidth: labelWidth,
 					id : 'formAcquisitionGroupAcqUnitComb_Id',
 					anchor : '100%',
 					store: acqUnitStore,
@@ -186,6 +204,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                 id: 'formAcquisitionGroupName_Id',
                 name: "acquisitionGroup.groupName",
                 fieldLabel: loginUserLanguageResource.groupName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -269,6 +288,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                 id: 'formAcquisitionGroupGroupTimingInterval_Id',
                 name: "acquisitionGroup.groupTimingInterval",
                 fieldLabel: loginUserLanguageResource.groupTimingInterval+'(s)',
+                labelWidth: labelWidth,
                 anchor: '100%',
                 hidden: false,
                 value: ''
@@ -277,6 +297,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                 id: 'formAcquisitionGroupGroupSavingInterval_Id',
                 name: "acquisitionGroup.groupSavingInterval",
                 fieldLabel: loginUserLanguageResource.groupSavingInterval+'(s)',
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: ''
                 
@@ -284,6 +305,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
             	id: 'acquisitionGroupRemark_Id',
             	name: "acquisitionGroup.remark",
                 fieldLabel: loginUserLanguageResource.groupDescription,
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: '',
                 xtype: 'textareafield',
@@ -316,7 +338,15 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
          }]
         });
         Ext.apply(me, {
-            items: postAcquisitionGroupEditForm
+            items: postAcquisitionGroupEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("acquisitionGroup_editWin_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("acquisitionGroup_editWin_Id").setWidth(labelWidth*2);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

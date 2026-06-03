@@ -180,9 +180,9 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
         			html: '<div class="AuxiliaryDeviceDetailsContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceDetailsTableDiv_id"></div></div>',
             		tbar:onlyMonitor?null:[{
                         xtype: 'radiogroup',
-                        fieldLabel: loginUserLanguageResource.specificType,
+                        fieldLabel: loginUserLanguageResource.type,
                         hidden: onlyMonitor,
-                        labelWidth: getLabelWidth(loginUserLanguageResource.specificType,loginUserLanguage),
+                        labelWidth: getLabelWidth(loginUserLanguageResource.type,loginUserLanguage),
                         id: 'AuxiliaryDeviceSpecificType_Id',
                         cls: 'x-check-group-alt',
                         items: [

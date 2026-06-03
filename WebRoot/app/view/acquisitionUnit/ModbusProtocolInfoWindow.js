@@ -17,6 +17,13 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var labelWidth=getLabelWidth(loginUserLanguageResource.protocolName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.language+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.language+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        }
         var languageComboxStore = new Ext.data.SimpleStore({
             fields: [{
                 name: "boxkey",
@@ -41,6 +48,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
         var languageCombox = Ext.create(
             'Ext.form.field.ComboBox', {
                 fieldLabel: loginUserLanguageResource.language+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 id: 'protocolLanguage_Id1',
                 anchor: '100%',
                 value: '',
@@ -85,6 +93,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
                 id: 'formModbusProtocolName_Id',
                 name: "protocolModel.name",
                 fieldLabel: loginUserLanguageResource.protocolName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -123,6 +132,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
             	id: "modbusProtocolSort_Id",
                 name: 'protocolModel.sort',
                 fieldLabel: loginUserLanguageResource.sortNum,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',
@@ -155,7 +165,15 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
          }]
         });
         Ext.apply(me, {
-            items: postModbusProtocolEditForm
+            items: postModbusProtocolEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("modbusProtocol_editWin_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("modbusProtocol_editWin_Id").setWidth(labelWidth*2);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

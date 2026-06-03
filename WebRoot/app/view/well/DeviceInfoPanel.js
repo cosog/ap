@@ -897,8 +897,14 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
                     },{
                     	xtype: 'label',
                     	id: 'DeviceAdditionalInformationLabel_Id',
-                    	hidden:true,
-                    	html: ''
+                    	hidden:false,
+//                    	minWidth: 500,
+                    	html: '',
+                    	style: {
+                            display: 'flex',
+                            alignItems: 'center',  // 底部对齐flex-end
+                            height: '100%'
+                        }
                     },{
                     	xtype: 'label',
                     	hidden:false,
@@ -968,12 +974,14 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 	var tabPanel = Ext.getCmp("DeviceAdditionalInformationTabpanel_Id");
 	var activeId=tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().id:'';
 	var showInfo=tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().title:'';
+	var rawShowInfo=tabPanel.getActiveTab()!=undefined?tabPanel.getActiveTab().title:'';;
 	
 	if(isNotVal(deviceName)){
-		showInfo="【<font color=red>"+deviceName+"</font>】"+showInfo+"&nbsp;"
+		showInfo="【<font color=red>"+deviceName+"</font>】"+showInfo+"&nbsp;";
+		rawShowInfo="【"+deviceName+"】"+rawShowInfo;
 	}
 	Ext.getCmp("DeviceAdditionalInformationLabel_Id").setHtml(showInfo);
-    Ext.getCmp("DeviceAdditionalInformationLabel_Id").show();
+    Ext.getCmp("DeviceAdditionalInformationLabel_Id").setWidth(getLabelWidth(rawShowInfo,loginUserLanguage));
 	
 	if(activeId=='DeviceAdditionalInfoPanel_Id'){
 		CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew);
@@ -3973,7 +3981,7 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId,deviceName,calcula
 			}
 			if(deviceAuxiliaryDeviceInfoHandsontableHelper==null || deviceAuxiliaryDeviceInfoHandsontableHelper.hot==undefined){
 				deviceAuxiliaryDeviceInfoHandsontableHelper = DeviceAuxiliaryDeviceInfoHandsontableHelper.createNew("DeviceAuxiliaryDeviceTableDiv_id");
-				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.deviceName+"','"+loginUserLanguageResource.manufacturer+"','"+loginUserLanguageResource.model+"','"+loginUserLanguageResource.specificType+"','"+loginUserLanguageResource.specificType+"','ID']";
+				var colHeaders="['','"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.deviceName+"','"+loginUserLanguageResource.manufacturer+"','"+loginUserLanguageResource.model+"','"+loginUserLanguageResource.type+"','"+loginUserLanguageResource.type+"','ID']";
 				var columns="[{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
 						+"{data:'name'}," 

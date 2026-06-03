@@ -26,6 +26,9 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.applicationScenarios,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.applicationScenarios,loginUserLanguage);
         }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.deviceTagInstance,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.deviceTagInstance,loginUserLanguage);
+        }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.acqInstance,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.acqInstance,loginUserLanguage);
         }
@@ -1013,9 +1016,6 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
     				if(labelWidth>windowWidth*0.5){
     					Ext.getCmp("deviceInfoWindow_Id").setWidth(labelWidth*2.5);
     				}
-    			},
-    			resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-    				
     			}
     		}
         });

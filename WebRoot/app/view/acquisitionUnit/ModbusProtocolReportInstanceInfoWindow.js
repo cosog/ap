@@ -17,6 +17,13 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var labelWidth=getLabelWidth(loginUserLanguageResource.reportUnit+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        }
         var reportUnitStore = new Ext.data.SimpleStore({
         	fields: [{
                 name: "boxkey",
@@ -61,6 +68,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
         var reportUnitComb = Ext.create(
 				'Ext.form.field.ComboBox', {
 					fieldLabel :  loginUserLanguageResource.reportUnit+'<font color=red>*</font>',
+					labelWidth: labelWidth,
 					id : 'modbusProtocolReportInstanceTemplateComb_Id',
 					anchor : '100%',
 					store: reportUnitStore,
@@ -104,6 +112,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
                 id: 'formModbusProtocolReportInstanceName_Id',
                 name: "protocolReportInstance.name",
                 fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -145,6 +154,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
             	id: "modbusProtocolReportInstanceSort_Id",
                 name: 'protocolReportInstance.sort',
                 fieldLabel: loginUserLanguageResource.sortNum,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',
@@ -177,7 +187,15 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
          }]
         });
         Ext.apply(me, {
-            items: postModbusProtocolEditForm
+            items: postModbusProtocolEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("modbusProtocolReportInstanceInfoWindow_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("modbusProtocolReportInstanceInfoWindow_Id").setWidth(labelWidth*2);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

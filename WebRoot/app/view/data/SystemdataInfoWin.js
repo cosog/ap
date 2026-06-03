@@ -17,7 +17,16 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 	layout: 'border',
 	initComponent: function () {
 		var me = this;
-		
+		var labelWidth=getLabelWidth(loginUserLanguageResource.dataModuleName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.dataModuleCode+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.dataModuleCode+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.dictionaryBelongTo+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.dictionaryBelongTo+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.displayOrder+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.displayOrder+'*',loginUserLanguage);
+        }
 		var ModTreeStore=Ext.create('Ext.data.TreeStore', {
             fields: ['id', 'text', 'leaf'],
             autoLoad: false,
@@ -33,8 +42,8 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
         });
         var moduleTree=Ext.create('AP.view.well.TreePicker',{
         	id:'systemdataModule_Id1',
-        	labelWidth: 70,
-            width: 300,
+        	labelWidth: labelWidth,
+            width: 400,
         	fieldLabel: loginUserLanguageResource.dictionaryBelongTo+'<font color=red>*</font>',
             emptyText: '--'+loginUserLanguageResource.checkModule+'--',
             blankText: '--'+loginUserLanguageResource.checkModule+'--',
@@ -82,8 +91,8 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        fieldLabel: loginUserLanguageResource.dataModuleName+'<font color=red>*</font>',
 		                                        allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
 		                                        hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
-		                                        labelWidth: 70,
-		                                        width: 300,
+		                                        labelWidth: labelWidth,
+		                                        width: 400,
 		                                        msgTarget: 'side',
 		                                        disabled: loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        blankText: loginUserLanguageResource.required
@@ -94,8 +103,8 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        fieldLabel: loginUserLanguageResource.dataModuleName+'<font color=red>*</font>',
 		                                        allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
 		                                        hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
-		                                        labelWidth: 70,
-		                                        width: 300,
+		                                        labelWidth: labelWidth,
+		                                        width: 400,
 		                                        msgTarget: 'side',
 		                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        blankText: loginUserLanguageResource.required
@@ -106,8 +115,8 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        fieldLabel: loginUserLanguageResource.dataModuleName+'<font color=red>*</font>',
 		                                        allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
 		                                        hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
-		                                        labelWidth: 70,
-		                                        width: 300,
+		                                        labelWidth: labelWidth,
+		                                        width: 400,
 		                                        msgTarget: 'side',
 		                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        blankText: loginUserLanguageResource.required
@@ -117,8 +126,8 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        name: 'systemdataInfo.code',
 		                                        fieldLabel: loginUserLanguageResource.dataModuleCode+'<font color=red>*</font>',
 		                                        vtype: "alpha",
-		                                        labelWidth: 70,
-		                                        width: 300,
+		                                        labelWidth: labelWidth,
+		                                        width: 400,
 		                                        allowBlank: false,
 		                                        msgTarget: 'side',
 		                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
@@ -127,8 +136,8 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        xtype: "hidden",
 		                                        fieldLabel: '模块',
 		                                        id: 'sysmodule_Id',
-		                                        labelWidth: 70,
-		                                        width: 300,
+		                                        labelWidth: labelWidth,
+		                                        width: 400,
 		                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        name: 'systemdataInfo.moduleId'
 		                                    }, {
@@ -139,8 +148,8 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                        allowBlank: false,
 		                                        disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
 		                                        minValue: 0,
-		                                        labelWidth: 70,
-		                                        width: 300,
+		                                        labelWidth: labelWidth,
+		                                        width: 400,
 		                                        msgTarget: 'side',
 		                                        blankText: loginUserLanguageResource.required
 		                                    },
@@ -154,7 +163,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                                    xtype: 'textfield',
 		                                    name: 'hideSysDataValName',
 		                                    id: 'hideSysDataValName_Id',
-		                                    width: 300,
+		                                    width: 400,
 		                                    hidden: true
 		                                },
 		                                {

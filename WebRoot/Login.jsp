@@ -130,7 +130,7 @@
 		
 		$("#login_userlogin").html(loginLanguageResource.userLogin);
 		$("#login_loginInfo").html(loginLanguageResource.projectProfile);
-		$("#login_title").html(loginLanguageResource.projectName);
+		$("#login_title").html(loginLanguageResource.loginInterfaceProjectName);
 		$("#userSelectpicker").html(loginLanguageResource.myself);
 		$("#userId").attr("placeholder", loginLanguageResource.enterUserName);
 		$("#userPwd").attr("placeholder", loginLanguageResource.enterPassword);

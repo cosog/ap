@@ -675,7 +675,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                             }
                         },'->', {
                     		xtype: 'button',
-                    		text: loginUserLanguageResource.oneKeyBackup,
+                    		text: loginUserLanguageResource.exportData,
                     		iconCls: 'export',
                     		disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     		hidden: false,
@@ -4735,7 +4735,8 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
-	            	colWidths: [2,3,10,5,5,10,10,10,10,5,10,10,10,10,5,10,10],
+	            	colWidths: [20,30,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100],
+//	            	colWidths: [50,200,80,80,90,90,80,80,90,80,80,80,160],
 	                columns: lowerComputerProgramUpgradeHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

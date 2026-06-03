@@ -5,8 +5,8 @@ Ext.define("AP.view.role.RoleInfoWindow", {
     iframe: true,
     id: 'role_addwin_Id',
     closeAction: 'destroy',
-    width: 900,
-    minWidth: 900,
+    width: 1100,
+    minWidth: 1100,
     height: 700,
     shadow: 'sides',
     resizable: true,
@@ -21,6 +21,20 @@ Ext.define("AP.view.role.RoleInfoWindow", {
     initComponent: function () {
         var me = this;
         
+        var labelWidth=getLabelWidth(loginUserLanguageResource.roleName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.roleLevel+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.roleLevel+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.dataShowLevel+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.dataShowLevel+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.roleVideoKeyEdit+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.roleVideoKeyEdit+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.roleRemark,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.roleRemark,loginUserLanguage);
+        }
+        
         var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
         var tabStore = Ext.create("AP.store.role.RightTabTreeInfoStore");
         var rightLanguageTreeInfoStore = Ext.create("AP.store.role.RightLanguageTreeInfoStore");
@@ -29,7 +43,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             id: 'roleVideoKeyEditComboxfield_Id',
             value: 0,
             fieldLabel: loginUserLanguageResource.roleVideoKeyEdit+'<font color=red>*</font>',
-            labelWidth: 110,
+            labelWidth: labelWidth,
             typeAhead : true,
             allowBlank: false,
             autoSelect:true,
@@ -56,7 +70,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             id: 'roleLanguageEditComboxfield_Id',
             value: 0,
             fieldLabel: loginUserLanguageResource.roleLanguageEdit+'<font color=red>*</font>',
-            labelWidth: 110,
+            labelWidth: labelWidth,
             typeAhead : true,
             hidden: true,
             allowBlank: false,
@@ -101,7 +115,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 value: 0
             }, {
                 fieldLabel: loginUserLanguageResource.roleName+'<font color=red>*</font>',
-                labelWidth: 110,
+                labelWidth: labelWidth,
                 allowBlank: false,
                 anchor: '100%',
                 id: 'role_Name_Id',
@@ -133,7 +147,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             	id: "roleLevel_Id",
                 name: 'role.roleLevel',
                 fieldLabel: loginUserLanguageResource.roleLevel+'<font color=red>*</font>',
-                labelWidth: 110,
+                labelWidth: labelWidth,
                 allowBlank: false,
                 minValue: 1,
                 value:1,
@@ -144,14 +158,14 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             	id: "roleShowLevel_Id",
                 name: 'role.showLevel',
                 fieldLabel: loginUserLanguageResource.dataShowLevel+'<font color=red>*</font>',
-                labelWidth: 110,
+                labelWidth: labelWidth,
                 allowBlank: false,
                 minValue: 1,
                 anchor: '100%',
                 msgTarget: 'side'
             },RoleVideoKeyEditCombox, RoleLanguageEditCombox,{
                 fieldLabel: loginUserLanguageResource.roleRemark,
-                labelWidth: 110,
+                labelWidth: labelWidth,
                 id: 'roleRemark_Id',
                 anchor: '100',
                 xtype: 'textareafield',
@@ -192,7 +206,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         		items: postroleEditForm
             },{
             	region: 'east',
-        		width: '66%',
+        		width: '60%',
         		layout: 'border',
         		header:false,
         		border: true,

@@ -5,7 +5,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
     iframe: true,
     id: 'modbusProtocolDisplayInstanceInfoWindow_Id',
     closeAction: 'destroy',
-    width: 500,
+    width: 330,
     shadow: 'sides',
     resizable: true,
     collapsible: true,
@@ -17,6 +17,13 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var labelWidth=getLabelWidth(loginUserLanguageResource.displayUnit+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        }
         var ProtocolAndDisplayUnitTreeStore=Ext.create('Ext.data.TreeStore', {
             fields: ['orgId', 'text', 'leaf'],
             autoLoad: true,
@@ -80,6 +87,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
         	id:'modbusInstanceProtocolAndDisplayUnit_Id',
         	anchor: '100%',
         	fieldLabel: loginUserLanguageResource.displayUnit+'<font color=red>*</font>',
+        	labelWidth: labelWidth,
             emptyText: loginUserLanguageResource.selectDisplayUnit+'...',
             blankText: loginUserLanguageResource.selectDisplayUnit+'...',
             displayField: 'text',
@@ -156,6 +164,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
                 id: 'formModbusProtocolDisplayInstanceName_Id',
                 name: "protocolDisplayInstance.name",
                 fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -194,6 +203,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
             	id: "modbusProtocolDisplayInstanceSort_Id",
                 name: 'protocolDisplayInstance.sort',
                 fieldLabel: loginUserLanguageResource.sortNum,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',
@@ -226,7 +236,15 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
          }]
         });
         Ext.apply(me, {
-            items: postModbusProtocolEditForm
+            items: postModbusProtocolEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("modbusProtocolDisplayInstanceInfoWindow_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("modbusProtocolDisplayInstanceInfoWindow_Id").setWidth(labelWidth*2);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

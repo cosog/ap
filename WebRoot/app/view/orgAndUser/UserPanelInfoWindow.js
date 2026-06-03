@@ -29,18 +29,18 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
         var me = this;
         
         
-        var labelWidth=getLabelWidth(loginUserLanguageResource.userName,loginUserLanguage);
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.userAccount,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.userAccount,loginUserLanguage);
+        var labelWidth=getLabelWidth(loginUserLanguageResource.userName+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.userAccount+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.userAccount+'*',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.userPassword,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.userPassword,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.userPassword+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.userPassword+'*',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.enterPasswordAgain,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.enterPasswordAgain,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.enterPasswordAgain+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.enterPasswordAgain+'*',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.role,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.role,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.role+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.role+'*',loginUserLanguage);
         }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.phone,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.phone,loginUserLanguage);
@@ -48,8 +48,8 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.email,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.email,loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.userQuickLogin,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.userQuickLogin,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.userQuickLogin+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.userQuickLogin+'*',loginUserLanguage);
         }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.receiveAlarmSMS,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.receiveAlarmSMS,loginUserLanguage);
@@ -60,8 +60,8 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.language,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.language,loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.status,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.status,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.status+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.status+'*',loginUserLanguage);
         }
         
         var roleComboxStore = new Ext.data.SimpleStore({
@@ -393,7 +393,15 @@ Ext.define("AP.view.orgAndUser.UserPanelInfoWindow", {
             }]
         });
         Ext.apply(me, {
-            items: postEditUserForm
+            items: postEditUserForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("user_addwin_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("user_addwin_Id").setWidth(labelWidth*2);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

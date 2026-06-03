@@ -17,6 +17,13 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var labelWidth=getLabelWidth(loginUserLanguageResource.alarmUnit+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage);
+        }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        }
         var ProtocolAndAlarmUnitTreeStore=Ext.create('Ext.data.TreeStore', {
             fields: ['orgId', 'text', 'leaf'],
             autoLoad: true,
@@ -79,6 +86,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
         	id:'modbusInstanceProtocolAndAlarmUnit_Id',
         	anchor: '100%',
         	fieldLabel: loginUserLanguageResource.alarmUnit+'<font color=red>*</font>',
+        	labelWidth: labelWidth,
             emptyText: loginUserLanguageResource.selectAlarmUnit+'...',
             blankText: loginUserLanguageResource.selectAlarmUnit+'...',
             displayField: 'text',
@@ -155,6 +163,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
                 id: 'formModbusProtocolAlarmInstanceName_Id',
                 name: "protocolAlarmInstance.name",
                 fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -193,6 +202,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
             	id: "modbusProtocolAlarmInstanceSort_Id",
                 name: 'protocolAlarmInstance.sort',
                 fieldLabel: loginUserLanguageResource.sortNum,
+                labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',
@@ -225,7 +235,15 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
          }]
         });
         Ext.apply(me, {
-            items: postModbusProtocolEditForm
+            items: postModbusProtocolEditForm,
+            listeners: {
+    			afterrender: function ( panel, eOpts) {
+    				var windowWidth =Ext.getCmp("modbusProtocolAlarmInstanceInfoWindow_Id").getWidth();
+    				if(labelWidth>windowWidth*0.5){
+    					Ext.getCmp("modbusProtocolAlarmInstanceInfoWindow_Id").setWidth(labelWidth*2);
+    				}
+    			}
+    		}
         });
         me.callParent(arguments);
     }

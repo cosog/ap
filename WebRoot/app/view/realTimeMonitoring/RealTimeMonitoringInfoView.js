@@ -1059,7 +1059,10 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
                 align: 'right',
                 verticalAlign: 'middle',
                 enabled: legend,
-                borderWidth: 0
+                borderWidth: 0,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
             },
             series: series
         });
@@ -1254,10 +1257,13 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, nam
 			tooltip : {
 				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 			},
-			legend : {
+			legend :{
 				align : 'center',//center left
 				verticalAlign : 'bottom',//bottom middle
-				layout : 'horizontal' //vertical 竖直 horizontal-水平
+				layout : 'horizontal', //vertical 竖直 horizontal-水平
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			plotOptions : {
 				pie : {
@@ -1416,10 +1422,13 @@ function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) 
 			tooltip : {
 				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 			},
-			legend : {
+			legend: {
 				align : 'center',
 				verticalAlign : 'bottom',
-				layout : 'horizontal' //vertical 竖直 horizontal-水平
+				layout : 'horizontal', //vertical 竖直 horizontal-水平
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			plotOptions : {
 				pie : {
@@ -1598,10 +1607,13 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 			tooltip : {
 				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 			},
-			legend : {
+			legend: {
 				align : 'center',
 				verticalAlign : 'bottom',
-				layout : 'horizontal' //vertical 竖直 horizontal-水平
+				layout : 'horizontal', //vertical 竖直 horizontal-水平
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			plotOptions : {
 				pie : {
@@ -1784,10 +1796,13 @@ function ShowRealTimeMonitoringNumStatusStatPieOrColChat(title,divId, name, data
 			        return  pointName+'</br>'+showInfo+':'+count;
 			    }
 			},
-			legend : {
+			legend: {
 				align : 'center',
 				verticalAlign : 'bottom',
-				layout : 'horizontal' //vertical 竖直 horizontal-水平
+				layout : 'horizontal', //vertical 竖直 horizontal-水平
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			plotOptions : {
 				pie : {
@@ -1931,10 +1946,13 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 			tooltip : {
 				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 			},
-			legend : {
+			legend: {
 				align : 'center',
 				verticalAlign : 'bottom',
-				layout : 'horizontal' //vertical 竖直 horizontal-水平
+				layout : 'horizontal', //vertical 竖直 horizontal-水平
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			plotOptions : {
 				pie : {
@@ -2430,7 +2448,10 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	            align: 'center',  //left，center 和 right
 	            verticalAlign: 'bottom',//top，middle 和 bottom
 	            enabled: legend,
-	            borderWidth: 0
+	            borderWidth: 0,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 	        },
 	        series: series
 	    });

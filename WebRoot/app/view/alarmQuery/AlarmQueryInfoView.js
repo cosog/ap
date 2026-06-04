@@ -783,7 +783,12 @@ function showAlarmStatDrillDownChart(title,divId, subtitle,yAxisTitle,rawSeriesD
             tickWidth: 1,      // 刻度线宽度
             tickLength: 5     // 刻度线长度（可选）
         },
-        legend: { enabled: false },
+        legend: { 
+        	enabled: false,
+            itemHiddenStyle: {
+                textDecoration: 'none'
+            } 
+        },
         credits: { enabled: false },
         tooltip: {
             headerFormat: '<b><span style="font-size:11px">{series.name}</span></b><br>',
@@ -1387,7 +1392,10 @@ function showAlarmQueryStatDataColChat(title,divId,name,categories,seriesData){
     	    }
         },
         legend: {                                                                            
-            enabled: false
+            enabled: false,
+            itemHiddenStyle: {
+                textDecoration: 'none'
+            }
         },  
         series: seriesData
 	});

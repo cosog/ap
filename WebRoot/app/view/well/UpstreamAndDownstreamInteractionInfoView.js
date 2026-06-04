@@ -826,7 +826,10 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
             x: 0,
             y: -50,
             enabled: legend,
-            borderWidth: 0
+            borderWidth: 0,
+            itemHiddenStyle: {
+                textDecoration: 'none'
+            }
         },
         series: series
     });

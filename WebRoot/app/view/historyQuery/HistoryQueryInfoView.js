@@ -1083,7 +1083,10 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
 	            align: 'center',  //left，center 和 right
 	            verticalAlign: 'bottom',//top，middle 和 bottom
 	            enabled: legend,
-	            borderWidth: 0
+	            borderWidth: 0,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 	        },
 	        series: series
 	    });
@@ -1181,10 +1184,13 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 			tooltip : {
 				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 			},
-			legend : {
+			legend: {
 				align : 'center',
 				verticalAlign : 'bottom',
-				layout : 'horizontal' //vertical 竖直 horizontal-水平
+				layout : 'horizontal', //vertical 竖直 horizontal-水平
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			plotOptions : {
 				pie : {
@@ -1348,10 +1354,13 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 			tooltip : {
 				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 			},
-			legend : {
+			legend :{
 				align : 'center',
 				verticalAlign : 'bottom',
-				layout : 'horizontal' //vertical 竖直 horizontal-水平
+				layout : 'horizontal', //vertical 竖直 horizontal-水平
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			plotOptions : {
 				pie : {
@@ -1525,10 +1534,13 @@ function ShowHistoryQueryNumStatusStatPieOrColChat(title,divId, name, data,color
 			        return  pointName+'</br>'+showInfo+':'+count;
 			    }
 			},
-			legend : {
+			legend :{
 				align : 'center',
 				verticalAlign : 'bottom',
-				layout : 'horizontal' //vertical 竖直 horizontal-水平
+				layout : 'horizontal', //vertical 竖直 horizontal-水平
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			plotOptions : {
 				pie : {
@@ -1676,10 +1688,13 @@ function ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, name, dat
 			tooltip : {
 				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 			},
-			legend : {
+			legend: {
 				align : 'center',
 				verticalAlign : 'bottom',
-				layout : 'horizontal' //vertical 竖直 horizontal-水平
+				layout : 'horizontal', //vertical 竖直 horizontal-水平
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			plotOptions : {
 				pie : {
@@ -1830,10 +1845,13 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 			tooltip : {
 				pointFormat : loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
 			},
-			legend : {
+			legend: {
 				align : 'center',
 				verticalAlign : 'bottom',
-				layout : 'horizontal' //vertical 竖直 horizontal-水平
+				layout : 'horizontal', //vertical 竖直 horizontal-水平
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			plotOptions : {
 				pie : {

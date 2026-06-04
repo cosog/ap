@@ -1543,7 +1543,10 @@ function initHydrologicalWellReportCurveChartFn(series, tickInterval, divId, tit
 	            align: 'center',  //left，center 和 right
 	            verticalAlign: 'bottom',//top，middle 和 bottom
 	            enabled: legend,
-	            borderWidth: 0
+	            borderWidth: 0,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 	        },
 	        series: series
 	    });

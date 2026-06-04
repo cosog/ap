@@ -817,11 +817,14 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 		            shadow: true  
 		        } 
 			},
-			legend : {
+			legend: {
 				layout : 'vertical',
 				align : 'right',
 				verticalAlign : 'middle',
-				borderWidth : 1
+				borderWidth : 1,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			series : series
 		});
@@ -964,11 +967,14 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 		            shadow: true  
 		        } 
 			},
-			legend : {
+			legend: {
 				layout : 'vertical',
 				align : 'right',
 				verticalAlign : 'middle',
-				borderWidth : 1
+				borderWidth : 1,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			series : series
 		});
@@ -1124,11 +1130,14 @@ function initCurveChart(years, values, tickInterval, divId) {
 		            shadow: true  
 		        } 
 			},
-			legend : {
+			legend: {
 				layout : 'vertical',
 				align : 'right',
 				verticalAlign : 'middle',
-				borderWidth : 1
+				borderWidth : 1,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 			},
 			series : values
 		});
@@ -2316,7 +2325,10 @@ function initContinuousDiagramChart(pointdata, divId,title,subtitle,xtext,ytext,
 				verticalAlign: 'top',
 				x: 0,
 				y: 55,
-				floating: true
+				floating: true,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 	        },                                                                                   
 	        plotOptions: {                                                                       
 	            scatter: {                                                                       
@@ -2799,7 +2811,10 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
 	            align: 'right',
 	            verticalAlign: 'middle',
 	            enabled: legend,
-	            borderWidth: 0
+	            borderWidth: 0,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 	        },
 	        series: series
 	    });
@@ -3201,7 +3216,10 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	            floating: true,                                                                  
 	            backgroundColor: '#FFFFFF',                                                      
 	            borderWidth: 1  ,
-	            enabled: false
+	            enabled: false,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 	        },                                                                                   
 	        plotOptions: {                                                                       
 	            scatter: {                                                                       
@@ -3447,7 +3465,10 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 	    	    	    }
 	               },
 			        legend: {                                                                            
-			            enabled: true
+			            enabled: true,
+			            itemHiddenStyle: {
+			                textDecoration: 'none'
+			            }
 			        }, 
 			        plotOptions : {
 			        	column: {  
@@ -3694,7 +3715,10 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,yAx
 	            floating: true,                                                                  
 	            backgroundColor: '#FFFFFF',                                                      
 	            borderWidth: 1  ,
-	            enabled: false
+	            enabled: false,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 	        },                                                                                   
 	        plotOptions: {                                                                       
 	            scatter: {                                                                       
@@ -3821,7 +3845,10 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
     	    	    }
                },
 		        legend: {                                                                            
-		            enabled: false
+		            enabled: false,
+		            itemHiddenStyle: {
+		                textDecoration: 'none'
+		            }
 		        },  
 		        series: [{
 		            data: ydata,
@@ -4025,7 +4052,10 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 						verticalAlign: 'top',
 						x: 0,
 						y: 55,
-						floating: true
+						floating: true,
+			            itemHiddenStyle: {
+			                textDecoration: 'none'
+			            }
 			        },                                                                                   
 			        plotOptions: {                                                                       
 			            scatter: {                                                                       
@@ -4246,7 +4276,10 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 						verticalAlign: 'top',
 						x: 0,
 						y: 55,
-						floating: true
+						floating: true,
+			            itemHiddenStyle: {
+			                textDecoration: 'none'
+			            }
 			        },                                                                                   
 			        plotOptions: {                                                                       
 			            scatter: {                                                                       
@@ -4453,31 +4486,15 @@ function initBalanceCurveChart(catagories,series,divId,title,deviceName,acqTime,
 				        shadow: true  
 			        } 
 				},
-//				legend : {
-//					layout : 'vertical',
-//					align : 'right',
-//					verticalAlign : 'middle',
-//					borderWidth : 1
-//				},
-				
-				legend : {
+				legend: {
 					itemDistance:10,
 					align : 'center',
 					verticalAlign : 'bottom',
-					layout : 'horizontal' //vertical 竖直 horizontal-水平
+					layout : 'horizontal', //vertical 竖直 horizontal-水平
+		            itemHiddenStyle: {
+		                textDecoration: 'none'
+		            }
 				},
-//				legend: {
-//		        	itemStyle:{
-//		        		fontSize: '8px'
-//		        	},
-//		            enabled: true,
-//		            layout: 'vertical',
-//					align: 'right',
-//					verticalAlign: 'top',
-//					x: 0,
-//					y: 55,
-//					floating: true
-//		        },  
 				series : series
 			});
 }
@@ -4668,16 +4685,13 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,subtitle,
 			            shadow: true  
 			        } 
 				},
-//				legend : {
-//					layout : 'vertical',
-//					align : 'right',
-//					verticalAlign : 'middle',
-//					borderWidth : 1
-//				},
-				legend : {
+				legend: {
 					align : 'center',
 					verticalAlign : 'bottom',
-					layout : 'horizontal' //vertical 竖直 horizontal-水平
+					layout : 'horizontal', //vertical 竖直 horizontal-水平
+		            itemHiddenStyle: {
+		                textDecoration: 'none'
+		            }
 				},
 				series : series
 			});
@@ -4801,16 +4815,13 @@ function initBalanceCurveChartTowY(catagories,series,divId,titletext,subtitle,yt
 			            shadow: true  
 			        } 
 				},
-//				legend : {
-//					layout : 'vertical',
-//					align : 'right',
-//					verticalAlign : 'middle',
-//					borderWidth : 1
-//				},
-				legend : {
+				legend: {
 					align : 'center',
 					verticalAlign : 'bottom',
-					layout : 'horizontal' //vertical 竖直 horizontal-水平
+					layout : 'horizontal', //vertical 竖直 horizontal-水平
+		            itemHiddenStyle: {
+		                textDecoration: 'none'
+		            }
 				},
 				series : series
 			});
@@ -5056,7 +5067,10 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	            floating: true,                                                                  
 	            backgroundColor: '#FFFFFF',                                                      
 	            borderWidth: 1  ,
-	            enabled: false
+	            enabled: false,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 	        },                                                                                   
 	        plotOptions: {                                                                       
 	            scatter: {                                                                       
@@ -5158,7 +5172,10 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	    	    }
            },
 	        legend: {
-	            enabled: false
+	            enabled: false,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 	        },                                                                                   
 	        plotOptions: {                                                                       
 	            scatter: {                                                                       

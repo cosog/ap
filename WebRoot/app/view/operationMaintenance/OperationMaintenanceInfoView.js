@@ -3927,19 +3927,31 @@ function getOperationMaintenanceMonitorCurveData(){
 
 function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-//		Highcharts.setOptions({
-//	        global: {
-//	            useUTC: false
-//	        }
-//	    });
-
-	    var mychart = new Highcharts.Chart({
+		var isZooming = false;
+        var zoomTimer = null;
+        var $container = $("#" + divId);
+        var panelId = "OperationMaintenanceMonitorCurveTabPanel_Id";
+        
+        var mychart = new Highcharts.Chart({
 	        chart: {
 	            renderTo: divId,
 	            type: 'spline',
 	            shadow: false,
 	            borderWidth: 0,
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+	            events: {
+                    // 监听缩放完成事件
+                    redraw: function() {
+                        // 缩放完成后隐藏遮罩
+                        if (isZooming) {
+                            setTimeout(function() {
+                                Ext.getCmp(panelId).getEl().unmask();
+                                isZooming = false;
+                                if (zoomTimer) clearTimeout(zoomTimer);
+                            }, 300);
+                        }
+                    }
+                }
 	        },
 	        time: {
 	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区
@@ -3969,7 +3981,37 @@ function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId
 	                },
 	                autoRotation:true,//自动旋转
 	                rotation: -45 //倾斜度，防止数量过多显示不全  
-	            }
+	            },
+	            events: {
+                    // 当范围即将改变时触发（缩放前）
+                    setExtremes: function(e) {
+                        // 检查范围是否真的会改变
+                        var currentMin = this.min;
+                        var currentMax = this.max;
+                        var newMin = e.min;
+                        var newMax = e.max;
+                        
+                        // 如果范围没有实际变化，不显示遮罩
+                        if (currentMin === newMin && currentMax === newMax) {
+                            return;
+                        }
+                        
+                        // 实际发生了缩放，显示遮罩
+                        if (!isZooming) {
+                            isZooming = true;
+                            Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
+                        }
+                        
+                        // 设置超时保护
+                        if (zoomTimer) clearTimeout(zoomTimer);
+                        zoomTimer = setTimeout(function() {
+                            if (isZooming) {
+                                Ext.getCmp(panelId).getEl().unmask();
+                                isZooming = false;
+                            }
+                        }, 5000);
+                    }
+                }
 	        },
 	        yAxis: yAxis,
 	        tooltip: {
@@ -4006,7 +4048,10 @@ function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId
 	            align: 'center',  //left，center 和 right
 	            verticalAlign: 'bottom',//top，middle 和 bottom
 	            enabled: legend,
-	            borderWidth: 0
+	            borderWidth: 0,
+	            itemHiddenStyle: {
+	                textDecoration: 'none'
+	            }
 	        },
 	        series: series,
 	        exporting: {

@@ -5542,7 +5542,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				+ " where t.id=t2.deviceid and t.id="+deviceId
 				+ " order by t2.id";
 		
-		String auxiliaryDeviceDetailsSql="select t4.deviceid,t4.itemname,t4.itemvalue,t3.specifictype,t4.itemcode "
+		String auxiliaryDeviceDetailsSql="select t4.deviceid,t4.itemname,t4.itemvalue,t3.specifictype,t4.itemcode,t4.itemunit "
 				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3,tbl_auxiliarydeviceaddinfo t4 "
 				+ " where t.id=t2.masterid and t2.auxiliaryid=t3.id and t3.id=t4.deviceid "
 				+ " and t3.type= "+deviceType
@@ -5572,6 +5572,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				String itemValue=detailsObj[2]+"";
 				String specificType=detailsObj[3]+"";
 				String itemCode=detailsObj[4]+"";
+				String itemUnit=detailsObj[5]+"";
 				if("1".equalsIgnoreCase(specificType)){
 					if("stroke".equalsIgnoreCase(itemCode)){
 						itemName=languageResourceMap.get("stroke");
@@ -5583,7 +5584,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}else if(StringManagerUtils.stringToInteger(itemValue)==3){
 							itemValue=languageResourceMap.get("pumpingUnitStructureType3");
 						}
-						itemName=languageResourceMap.get("pumpingUnitStructureType");
+						itemName=languageResourceMap.get("pumpingUnitStructure");
 					}else if("crankRotationDirection".equalsIgnoreCase(itemCode)){
 						if("Clockwise".equalsIgnoreCase(itemValue)){
 							itemValue=languageResourceMap.get("clockwise");
@@ -5604,6 +5605,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					}else if("balanceWeight".equalsIgnoreCase(itemCode)){
 						itemName=languageResourceMap.get("balanceWeight");
 					}
+				}
+				if(StringManagerUtils.isNotNull(itemUnit) && StringManagerUtils.isNotNull(itemName)){
+					itemName+="("+itemUnit+")";
 				}
 				if((detailsObj[0]+"").equalsIgnoreCase(obj[0]+"")){
 					details+="<br/><h style='line-height:1.5;'>"+itemName+": "+itemValue+"</h>";

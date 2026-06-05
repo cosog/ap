@@ -301,7 +301,6 @@
                 <div class="vertical-align">
                     <div class="vertical-align-middle">
                         <div class="visible-xs text-center">
-                            Agile
                         </div>
                         <h3 class="hidden-xs" style="margin-bottom: 20px;"><span  id= "login_userlogin"></span> </h3>
                         <h4 class="hidden-xs" style="margin-bottom: 0px;"><span  id= "login_title"></span></h4>

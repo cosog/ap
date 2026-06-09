@@ -2708,6 +2708,9 @@ var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
 	                    if(protocolConfigModuleEditFlag!=1){
 	                    	cellProperties.readOnly = true;
 	                    }
+	                    if(prop.toUpperCase()!='highLowByte'.toUpperCase() && prop.toUpperCase()!='resolutionMode'.toUpperCase()){
+	                    	cellProperties.renderer = protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle;
+	                    }
 	                    return cellProperties;
 	                },
 	                afterBeginEditing: function (row, column) {

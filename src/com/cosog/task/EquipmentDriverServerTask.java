@@ -391,6 +391,12 @@ public class EquipmentDriverServerTask {
 	public static void exampleDataManage(){
 		if(Config.getInstance().configFile.getAp().getOthers().getSimulateAcqEnable()){
 			try {
+				try {
+					Thread.sleep(1000*60);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 				int sendCycle=Config.getInstance().configFile.getAp().getOthers().getSendCycle();
 				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
 //				sendCycle=60;

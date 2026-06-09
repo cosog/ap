@@ -13,9 +13,9 @@ Ext.define("AP.view.acquisitionUnit.ProtocolExtendedFieldSelectWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: '25%',
+    width: 600,
     minWidth: 400,
-    height: '90%',
+    height: 800,
     minHeight: 600,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口

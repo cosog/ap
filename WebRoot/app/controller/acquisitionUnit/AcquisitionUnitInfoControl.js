@@ -521,11 +521,11 @@ var grantAcquisitionItemsPermission = function (groupType) {
     }
     if (driverConfigItemsData.length > 0) {
         Ext.Array.each(driverConfigItemsData, function (name, index, countriesItSelf) {
-            if (protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'checked')
-            		|| protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculate')
+            if (protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'checked')+''=='true'
+            		|| protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculate')+''=='true'
             		|| isNotVal(protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculateName'))
             		) {
-            	var itemEnable=protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'checked')?1:0;
+            	var itemEnable=protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'checked')+''=='true'?1:0;
             	var itemName = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'title');
             	var itemAddr = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'addr');
             	var itemHighLowByte = protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'highLowByte');
@@ -533,7 +533,7 @@ var grantAcquisitionItemsPermission = function (groupType) {
             	var bitIndex=protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'bitIndex');
             	var dailyTotalCalculate=0;
             	var dailyTotalCalculateName='';
-            	if(protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculate')){
+            	if(protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculate')+''=='true'){
             		dailyTotalCalculate=1;
             		dailyTotalCalculateName=protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculateName');
             		if(!isNotVal(dailyTotalCalculateName)){

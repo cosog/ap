@@ -1391,6 +1391,10 @@ var grantDisplayAcqItemsPermission = function () {
     	var historyDataSign=protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'historyData');
     	var itemEnable= protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRowProp(i,'checked');
     	
+    	realtimeDataSign=realtimeDataSign && (realtimeDataSign+''=='true');
+    	historyDataSign=historyDataSign && (historyDataSign+''=='true');
+    	itemEnable=itemEnable && (itemEnable+''=='true');
+    	
         if (itemEnable || realtimeDataSign || historyDataSign) {
         	itemEnable= itemEnable?1:0;
         	itemEnable=1;

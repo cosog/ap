@@ -1960,6 +1960,7 @@ public class DriverAPIController extends BaseController{
 					String protocolItemHighLowByte=protocol.getItems().get(j).getHighLowByte()!=null?protocol.getItems().get(j).getHighLowByte():"";
 					if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr() 
 							&& acqItemHighLowByte.equalsIgnoreCase(protocolItemHighLowByte)
+							&& loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(j).getTitle())
 							){
 						String value="";
 						String title=protocol.getItems().get(j).getTitle();
@@ -3752,11 +3753,12 @@ public class DriverAPIController extends BaseController{
 				date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(date),-1);
 			}
 			
-			int result=commonDataService.getBaseDao().updateOrDeleteBySql(srpCalculateReturnData.getUpdateSRPRealtimeData());
-			if(result==0){
-				result=commonDataService.getBaseDao().updateOrDeleteBySql(srpCalculateReturnData.getInsertSRPHistSql().replace(SRPHistoryTable, SRPRealtimeTable));
+			if(srpCalculateReturnData.getUpdateSRPRealtimeData()!=null){
+				int result=commonDataService.getBaseDao().updateOrDeleteBySql(srpCalculateReturnData.getUpdateSRPRealtimeData());
+				if(result==0){
+					result=commonDataService.getBaseDao().updateOrDeleteBySql(srpCalculateReturnData.getInsertSRPHistSql().replace(SRPHistoryTable, SRPRealtimeTable));
+				}
 			}
-			
 			
 			
 			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
@@ -3962,7 +3964,7 @@ public class DriverAPIController extends BaseController{
 					boolean isAcqCalResultData=false;
 					for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
 						for(int j=0;j<protocol.getItems().size();j++){
-							if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
+							if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr() && loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(j).getTitle())){
 								String value="";
 								DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(j).getTitle());
 								String columnName=dataMappingColumn.getMappingColumn();
@@ -4814,7 +4816,7 @@ public class DriverAPIController extends BaseController{
 					
 					for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
 						for(int j=0;j<protocol.getItems().size();j++){
-							if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
+							if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr() && loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(j).getTitle())){
 								String value="";
 								DataMapping dataMappingColumn=loadProtocolMappingColumnByTitleMap.get(protocol.getItems().get(j).getTitle());
 								String columnName=dataMappingColumn.getMappingColumn();

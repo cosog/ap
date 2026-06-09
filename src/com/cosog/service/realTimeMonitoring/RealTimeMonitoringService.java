@@ -3868,6 +3868,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										CalItem calItem=MemoryDataManagerTask.getCalItemByCode(column, language);
 										if(calItem!=null){
 											unit=calItem.getUnit();
+											rawColumnName=calItem.getName();
+											columnName=calItem.getName();
 										}
 										
 										if(StringManagerUtils.rodCalColumnFiter(column)){//杆数据
@@ -4106,6 +4108,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									CalItem calItem=MemoryDataManagerTask.getInputItemByCode(column, language);
 									if(calItem!=null){
 										unit=calItem.getUnit();
+										rawColumnName=calItem.getName();
+										columnName=calItem.getName();
 									}
 									
 									if(displayInputItemList.size()>0){
@@ -4828,6 +4832,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										CalItem calItem=MemoryDataManagerTask.getCalItemByCode(column, language);
 										if(calItem!=null){
 											unit=calItem.getUnit();
+											rawColumnName=calItem.getName();
+											columnName=calItem.getName();
 										}
 										if(StringManagerUtils.rodCalColumnFiter(column)){//杆数据
 											if(StringManagerUtils.isNotNull(rodstring)){
@@ -5063,6 +5069,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									CalItem calItem=MemoryDataManagerTask.getInputItemByCode(column, language);
 									if(calItem!=null){
 										unit=calItem.getUnit();
+										rawColumnName=calItem.getName();
+										columnName=calItem.getName();
 									}
 									
 									if(displayInputItemList.size()>0){

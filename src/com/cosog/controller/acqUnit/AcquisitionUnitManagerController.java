@@ -2825,7 +2825,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 								
 								EquipmentDriverServerTask.loadAcquisitionItemColumns();
 								if(user!=null){
-									this.service.saveSystemLog(user,2,languageResourceMap.get("deleteProtocol")+":"+modbusDriverSaveData.getDelidslist().get(i));
+									this.service.saveSystemLog(user,2,languageResourceMap.get("deleteProtocol")+":"+param1);
 								}
 								break;
 							}

@@ -626,7 +626,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.devicename like '%"+deviceName+"%'";
 		}
-		sql+=" order by t.sortnum";
+		sql+=" order by t.sortnum,t.devicename";
 		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"totalRoot\":[");

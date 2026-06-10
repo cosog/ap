@@ -21,6 +21,9 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.unitName+'*',loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.unitName+'*',loginUserLanguage);
         }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.calculationType+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.calculationType+'*',loginUserLanguage);
+        }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
         }
@@ -204,7 +207,38 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
                 hidden:true,
                 anchor: '100%',
                 value: ''
-                
+            },{
+				xtype : "hidden",
+				id : 'formAlarmUnitCalculateType_Id',
+				value: 0,
+				name : "alarmUnit.calculateType"
+			},{
+            	xtype : "combobox",
+				fieldLabel : loginUserLanguageResource.calculationType+'<font color=red>*</font>',
+				labelWidth: labelWidth,
+				id : 'formAlarmUnitCalculateTypeComb_Id',
+				anchor : '100%',
+				triggerAction : 'all',
+				selectOnFocus : false,
+			    forceSelection : true,
+			    value:0,
+			    allowBlank: false,
+				editable : false,
+				store : new Ext.data.SimpleStore({
+							fields : ['value', 'text'],
+							data : [[0, loginUserLanguageResource.nothing],[1, loginUserLanguageResource.SRPCalculate],[2, loginUserLanguageResource.PCPCalculate]]
+						}),
+				displayField : 'text',
+				valueField : 'value',
+				queryMode : 'local',
+				emptyText : loginUserLanguageResource.selectCalculateType,
+				blankText : loginUserLanguageResource.selectCalculateType,
+				listeners : {
+					select:function(v,o){
+						Ext.getCmp("formAlarmUnitCalculateType_Id").setValue(this.value);
+						
+					}
+				}
             },{
             	xtype: 'numberfield',
             	id: "alarmUnitSort_Id",

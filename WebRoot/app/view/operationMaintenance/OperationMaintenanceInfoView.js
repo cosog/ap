@@ -1732,6 +1732,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         		},{
         			title: loginUserLanguageResource.memoryCurve,
         			id:'OperationMaintenanceMonitorCurveTabPanel_Id',
+        			hidden: true,
         			layout: 'fit',
         		    tbar: [{
                         xtype: 'button',

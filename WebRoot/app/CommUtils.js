@@ -5717,3 +5717,18 @@ function getExtjsModifiedCells(treePanel) {
     
     return modifiedCells;
 }
+function isNumByCalculateItemCode(code){
+	var r=false;
+	if(code.toUpperCase()=="CommRange".toUpperCase()
+			|| code.toUpperCase()=="RunRange".toUpperCase()
+			|| code.toUpperCase()=="RunStatus".toUpperCase()
+			|| code.toUpperCase()=="RunStatusName".toUpperCase()
+			|| code.toUpperCase()=="ResultName".toUpperCase()
+			|| code.toUpperCase()=="optimizationSuggestion".toUpperCase()
+	){
+		r=false;
+	}else{
+		r=true;
+	}
+	return r;
+}

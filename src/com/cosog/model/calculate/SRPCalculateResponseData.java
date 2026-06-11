@@ -153,14 +153,22 @@ public class SRPCalculateResponseData implements Serializable, Comparable<SRPCal
 							result.append(this.getFESDiagram().getFMax().get(i)+",");
 							result.append(this.getFESDiagram().getFMin().get(i)+",");
 						}else{
-							result.append(0+",");
-							result.append(0+",");
+							result.append(""+",");
+							result.append(""+",");
 						}
-						result.append(this.getRodString().getEveryRod().get(i).getMaxStress()+",");
-						result.append(this.getRodString().getEveryRod().get(i).getMinStress()+",");
-						result.append(this.getRodString().getEveryRod().get(i).getAllowableStress()+",");
-						result.append(this.getRodString().getEveryRod().get(i).getMaxStressRatio()+",");
-						result.append(this.getRodString().getEveryRod().get(i).getStressRangeRatio());
+						if(this.getCalculationStatus().getResultCode()!=1232){
+							result.append(this.getRodString().getEveryRod().get(i).getMaxStress()+",");
+							result.append(this.getRodString().getEveryRod().get(i).getMinStress()+",");
+							result.append(this.getRodString().getEveryRod().get(i).getAllowableStress()+",");
+							result.append(this.getRodString().getEveryRod().get(i).getMaxStressRatio()+",");
+							result.append(this.getRodString().getEveryRod().get(i).getStressRangeRatio());
+						}else{
+							result.append(""+",");
+							result.append(""+",");
+							result.append(""+",");
+							result.append(""+",");
+							result.append("");
+						}
 					}
 				}
 			}

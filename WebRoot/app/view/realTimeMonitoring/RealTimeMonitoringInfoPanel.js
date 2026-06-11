@@ -923,11 +923,16 @@ function viewDeviceRealTimeMonitoringData(row,col){
 				}
 			}else if(cellInfo.type==1){
 				info+=',计算项';
-				if(isNumber(itemValue)){
+				if(isNumByCalculateItemCode(cellInfo.column)){
 					viewItemRealTimeCurve(itemName,itemValue,cellInfo);
 				}else{
 					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
 				}
+//				if(isNumber(itemValue)){
+//					viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+//				}else{
+//					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+//				}
 			}else if(cellInfo.type==3){
 				info+=',录入项';
 				if(isNumber(itemValue)){

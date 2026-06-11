@@ -214,11 +214,16 @@ function viewItemHistoryData(row,col){
 				}
 			}else if(cellInfo.type==1){
 				info+=',计算项';
-				if(isNumber(itemValue)){
+				if(isNumByCalculateItemCode(cellInfo.column)){
 					viewItemHistoryCurve(itemName,itemValue,cellInfo);
 				}else{
 					viewItemHistoryDataTable(itemName,itemValue,cellInfo);
 				}
+//				if(isNumber(itemValue)){
+//					viewItemHistoryCurve(itemName,itemValue,cellInfo);
+//				}else{
+//					viewItemHistoryDataTable(itemName,itemValue,cellInfo);
+//				}
 			}else if(cellInfo.type==3){
 				info+=',录入项';
 				if(isNumber(itemValue)){

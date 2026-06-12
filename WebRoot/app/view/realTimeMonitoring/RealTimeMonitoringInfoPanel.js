@@ -350,7 +350,16 @@ var realtimeCurveAndTableTabPanelItems=[{
 	id:"RealTimeMonitoringTableTabPanel_Id",
 	layout: 'border',
     border: false,
-    tbar:['->',{
+    tbar:[{
+    	xtype: 'label',
+    	html: loginUserLanguageResource.viewCurveOrTableData,
+    	style: {
+            marginLeft: '10px',
+            fontSize: '11px',
+            fontFamily: 'tahoma,arial,verdana,sans-serif',
+            color: '#333333'
+        }
+    },'->',{
          xtype: 'button',
          text: loginUserLanguageResource.exportData,
          iconCls: 'export',
@@ -1090,7 +1099,6 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
 	        	td.style.fontWeight = 'bold';
 		        td.style.fontSize = '20px';
-//		        td.style.fontFamily = 'SimSun';
 		        td.style.height = '40px';
 	        }
 	        
@@ -1099,27 +1107,17 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 	            var AlarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue()); 
 	            if (row ==0) {
 	            	Handsontable.renderers.TextRenderer.apply(this, arguments);
-//		        	td.style.fontWeight = 'bold';
 			        td.style.fontSize = '20px';
-//			        td.style.fontFamily = 'SimSun';
 			        td.style.height = '40px';
 	            }
 	            if (row%2==1&&row>0) {
 	            	td.style.backgroundColor = '#f5f5f5';
-                }
-	            if (col%2==0) {
-//	            	td.style.fontWeight = 'bold';
-                }else{
-//                	td.style.fontFamily = 'SimHei';
                 }
 	            
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
             	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
             	
-//	            if(row>0){
-//	            	td.style.textAlign='left';//内容左对齐
-//	            }
 	            for(var i=0;i<deviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length;i++){
                 	if( isNotVal(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeColor) ){
                 		var row2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
@@ -1143,7 +1141,6 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
         				if(row==row2 && col==col2 ){
         					if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel>0){
         						td.style.fontWeight = 'bold';
-//       			             	td.style.fontFamily = 'SimHei';
         					}
    			             	if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel==0){
    			             		if(AlarmShowStyle.Data.Normal.Opacity!=0){
@@ -1177,6 +1174,7 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 		        	var hotElement = document.querySelector('#'+deviceRealTimeMonitoringDataHandsontableHelper.divid);
 		        	deviceRealTimeMonitoringDataHandsontableHelper.hot = new Handsontable(hotElement, {
 		        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+		        		theme: 'ht-theme-classic',
 		        		data: data,
 		        		colWidths: [30,20,30,20,30,20],
 		                columns:deviceRealTimeMonitoringDataHandsontableHelper.columns,
@@ -1203,9 +1201,8 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 		                	var cellProperties = {};
 		                    var visualRowIndex = this.instance.toVisualRow(row);
 		                    var visualColIndex = this.instance.toVisualColumn(col);
+		                    cellProperties.editor = false;
 		                    cellProperties.renderer = deviceRealTimeMonitoringDataHandsontableHelper.addCellStyle;
-		                    
-		                    cellProperties.readOnly = true;
 		                    return cellProperties;
 		                },
 		                afterOnCellMouseOver: function(event, coords, TD){

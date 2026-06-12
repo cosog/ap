@@ -887,6 +887,7 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+pcpRPMCalculateMaintainingHandsontableHelper.divid);
 	        	pcpRPMCalculateMaintainingHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		fixedColumnsLeft:4, //固定左侧多少列不能水平滚动
 	                hiddenColumns: {
@@ -929,11 +930,11 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                    var CalculateMaintainingModuleEditFlag=parseInt(Ext.getCmp("CalculateMaintainingModuleEditFlag").getValue());
 	                    if(CalculateMaintainingModuleEditFlag==1){
 	                    	if (visualColIndex >= 1 && visualColIndex <= 7) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 			                }
 	                    	cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addCellStyle;
 	                    }else{
-							cellProperties.readOnly = true;
+							cellProperties.editor = false;
 							cellProperties.renderer=pcpRPMCalculateMaintainingHandsontableHelper.addReadOnlyCellStyle;
 		                }
 	                    return cellProperties;

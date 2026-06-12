@@ -408,6 +408,7 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
             singleWellRangeReportTemplateHandsontableHelper.container.innerHTML = "";
             singleWellRangeReportTemplateHandsontableHelper.hot = new Handsontable(singleWellRangeReportTemplateHandsontableHelper.container, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
                 data: singleWellRangeReportTemplateHandsontableHelper.data,
                 fixedRowsTop: singleWellRangeReportTemplateHandsontableHelper.templateData.fixedRowsTop,
                 fixedRowsBottom: singleWellRangeReportTemplateHandsontableHelper.templateData.fixedRowsBottom,
@@ -447,7 +448,7 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
-                    cellProperties.readOnly = true;
+                    cellProperties.editor = false;
                     cellProperties.renderer = singleWellRangeReportTemplateHandsontableHelper.addStyle;
                     return cellProperties;
                 },
@@ -671,6 +672,7 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
             singleWellDailyReportTemplateHandsontableHelper.container.innerHTML = "";
             singleWellDailyReportTemplateHandsontableHelper.hot = new Handsontable(singleWellDailyReportTemplateHandsontableHelper.container, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
                 data: singleWellDailyReportTemplateHandsontableHelper.data,
                 fixedRowsTop: singleWellDailyReportTemplateHandsontableHelper.templateData.fixedRowsTop,
                 fixedRowsBottom: singleWellDailyReportTemplateHandsontableHelper.templateData.fixedRowsBottom,
@@ -712,7 +714,7 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
-                    cellProperties.readOnly = true;
+                    cellProperties.editor = false;
                     cellProperties.renderer = singleWellDailyReportTemplateHandsontableHelper.addStyle;
                     return cellProperties;
                 },
@@ -989,6 +991,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
             var hotElement = document.querySelector('#' + singleWellRangeReportTemplateContentHandsontableHelper.divid);
             singleWellRangeReportTemplateContentHandsontableHelper.hot = new Handsontable(hotElement, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
                 data: data,
                 hiddenColumns: {
                     columns: [],
@@ -1023,7 +1026,7 @@ var SingleWellRangeReportTemplateContentHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
-                    cellProperties.readOnly = true;
+                    cellProperties.editor = false;
                     if (visualColIndex == 8) {
                         cellProperties.renderer = singleWellRangeReportTemplateContentHandsontableHelper.addCurveBg;
                     }else{
@@ -1239,6 +1242,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
             var hotElement = document.querySelector('#' + singleWellDailyReportTemplateContentHandsontableHelper.divid);
             singleWellDailyReportTemplateContentHandsontableHelper.hot = new Handsontable(hotElement, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
                 data: data,
                 hiddenColumns: {
                     columns: [],
@@ -1274,7 +1278,7 @@ var SingleWellDailyReportTemplateContentHandsontableHelper = {
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
                     
-                    cellProperties.readOnly = true;
+                    cellProperties.editor = false;
                     if (visualColIndex == 8) {
                         cellProperties.renderer = singleWellDailyReportTemplateContentHandsontableHelper.addCurveBg;
                     }
@@ -1425,6 +1429,7 @@ var ReportUnitPropertiesHandsontableHelper = {
             var hotElement = document.querySelector('#' + reportUnitPropertiesHandsontableHelper.divid);
             reportUnitPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
                 data: data,
                 colWidths: [1, 8, 10],
                 columns: reportUnitPropertiesHandsontableHelper.columns,
@@ -1456,15 +1461,15 @@ var ReportUnitPropertiesHandsontableHelper = {
                     var protocolConfigModuleEditFlag = parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
                     if (protocolConfigModuleEditFlag == 1) {
                         if (visualColIndex == 0 || visualColIndex == 1) {
-                            cellProperties.readOnly = true;
+                            cellProperties.editor = false;
                             cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
                         }
                         if (reportUnitPropertiesHandsontableHelper.classes === 0) {
-                            cellProperties.readOnly = true;
+                            cellProperties.editor = false;
                             cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
                         } else if (reportUnitPropertiesHandsontableHelper.classes === 1) {
                         	if (visualColIndex === 0 || visualColIndex === 1) {
-                        		cellProperties.readOnly = true;
+                        		cellProperties.editor = false;
                                 cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
                         	}else if (visualColIndex === 2 && visualRowIndex === 1) {
                                 this.type = 'dropdown';
@@ -1485,7 +1490,7 @@ var ReportUnitPropertiesHandsontableHelper = {
                             }
                         }
                     } else {
-                        cellProperties.readOnly = true;
+                        cellProperties.editor = false;
                         cellProperties.renderer = reportUnitPropertiesHandsontableHelper.addBoldBg;
                     }
 
@@ -1709,6 +1714,7 @@ var ProductionReportTemplateHandsontableHelper = {
             productionReportTemplateHandsontableHelper.container.innerHTML = "";
             productionReportTemplateHandsontableHelper.hot = new Handsontable(productionReportTemplateHandsontableHelper.container, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
                 data: productionReportTemplateHandsontableHelper.data,
                 fixedRowsTop: productionReportTemplateHandsontableHelper.templateData.fixedRowsTop,
                 fixedRowsBottom: productionReportTemplateHandsontableHelper.templateData.fixedRowsBottom,
@@ -1747,7 +1753,7 @@ var ProductionReportTemplateHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
-                    cellProperties.readOnly = true;
+                    cellProperties.editor = false;
                     cellProperties.renderer = productionReportTemplateHandsontableHelper.addStyle;
                     return cellProperties;
                 },
@@ -1933,6 +1939,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
             var hotElement = document.querySelector('#' + productionReportTemplateContentHandsontableHelper.divid);
             productionReportTemplateContentHandsontableHelper.hot = new Handsontable(hotElement, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
                 data: data,
                 hiddenColumns: {
 //                    columns: [12, 13, 14, 15],
@@ -1976,7 +1983,7 @@ var ProductionReportTemplateContentHandsontableHelper = {
 	                    	cellProperties.renderer = productionReportTemplateContentHandsontableHelper.addCellStyle;
 	    	            }
                     }
-                    cellProperties.readOnly = true;
+                    cellProperties.editor = false;
                     return cellProperties;
                 },
                 afterOnCellMouseOver: function(event, coords, TD){
@@ -2744,6 +2751,7 @@ var HydrologicalWellDailyReportTemplateHandsontableHelper = {
             hydrologicalWellDailyReportTemplateHandsontableHelper.container.innerHTML = "";
             hydrologicalWellDailyReportTemplateHandsontableHelper.hot = new Handsontable(hydrologicalWellDailyReportTemplateHandsontableHelper.container, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
                 data: hydrologicalWellDailyReportTemplateHandsontableHelper.data,
                 fixedRowsTop: hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.fixedRowsTop,
                 fixedRowsBottom: hydrologicalWellDailyReportTemplateHandsontableHelper.templateData.fixedRowsBottom,
@@ -2785,7 +2793,7 @@ var HydrologicalWellDailyReportTemplateHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
-                    cellProperties.readOnly = true;
+                    cellProperties.editor = false;
                     cellProperties.renderer = hydrologicalWellDailyReportTemplateHandsontableHelper.addStyle;
                     return cellProperties;
                 },
@@ -2978,6 +2986,7 @@ var HydrologicalWellDailyReportContentHandsontableHelper = {
             var hotElement = document.querySelector('#' + hydrologicalWellDailyReportContentHandsontableHelper.divid);
             hydrologicalWellDailyReportContentHandsontableHelper.hot = new Handsontable(hotElement, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
                 data: data,
                 hiddenColumns: {
                     columns: [5],
@@ -3013,7 +3022,7 @@ var HydrologicalWellDailyReportContentHandsontableHelper = {
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
                     
-                    cellProperties.readOnly = true;
+                    cellProperties.editor = false;
                     if (visualColIndex == 8) {
                         cellProperties.renderer = hydrologicalWellDailyReportContentHandsontableHelper.addCurveBg;
                     }

@@ -955,6 +955,7 @@ var HydrologicalWellReportHelper = {
 	            hydrologicalWellReportHelper.container.innerHTML = "";
 	            hydrologicalWellReportHelper.hot = new Handsontable(hydrologicalWellReportHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: hydrologicalWellReportHelper.data,
 	            	hiddenColumns: {
 	                    columns: [hydrologicalWellReportHelper.columnCount-1],
@@ -1002,8 +1003,10 @@ var HydrologicalWellReportHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var colConfig = deviceInfoHandsontableHelper.columns[col];
+	                    var colType = colConfig.type || 'text';
 	                    cellProperties.renderer = hydrologicalWellReportHelper.addStyle;
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    if(hydrologicalWellReportHelper.templateData.editable!=null && hydrologicalWellReportHelper.templateData.editable.length>0){
 	                    	for(var i=0;i<hydrologicalWellReportHelper.templateData.editable.length;i++){
 	                    		if( row>=hydrologicalWellReportHelper.templateData.editable[i].startRow 
@@ -1011,7 +1014,7 @@ var HydrologicalWellReportHelper = {
 	                    				&& col>=hydrologicalWellReportHelper.templateData.editable[i].startColumn 
 	                    				&& col<=hydrologicalWellReportHelper.templateData.editable[i].endColumn
 	                    		){
-	                    			cellProperties.readOnly = false;
+	                    			cellProperties.editor = colType;
 	                    			cellProperties.renderer = hydrologicalWellReportHelper.addEditableColor;
 	                    		}
 	                    	}

@@ -1476,6 +1476,7 @@ var DeviceInfoHandsontableHelper = {
             var hotElement = document.querySelector('#' + deviceInfoHandsontableHelper.divid);
             deviceInfoHandsontableHelper.hot = new Handsontable(hotElement, {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
             	data: data,
 //            	theme: 'dark',
             	themeName: 'ht-theme-main',
@@ -1518,49 +1519,37 @@ var DeviceInfoHandsontableHelper = {
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
                     
+                    var colConfig = deviceInfoHandsontableHelper.columns[col];
+                    var colType = colConfig.type || 'text'; 
+                    
                     var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
                     if(DeviceManagerModuleEditFlag==1){
                     	if(deviceInfoHandsontableHelper.dataLength==0){
-                        	cellProperties.readOnly = true;
+                        	cellProperties.editor = false;
                         }else{
                         	if(prop.toUpperCase() === "allPath".toUpperCase() || prop.toUpperCase() === "productionDataUpdateTime".toUpperCase()){
-                        		cellProperties.readOnly = true;
+                        		cellProperties.editor = false;
                         	}else if(prop.toUpperCase() === "deviceTypeName".toUpperCase()){
                         		var deviceTypes=getDeviceTypeFromTabId("DeviceManagerTabPanel");
                         		if(isNumber(deviceTypes)){
-                        			cellProperties.readOnly = true;
+                        			cellProperties.editor = false;
                         		}
                         	}else if(prop.toUpperCase() === "signInId".toUpperCase() || prop.toUpperCase() === "ipPort".toUpperCase()){
                     			var tcpType=this.instance.getDataAtRowProp(row, 'tcpType');
                     			if(tcpType=='' || tcpType==null){
-                    				cellProperties.readOnly = false;
-//                    				cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
-//                    		            td.style.backgroundColor = 'rgb(245, 245, 245)';
-//                    		        };
+                    				cellProperties.editor = colType;
                     			}else{
                     				if(prop.toUpperCase() === "signInId".toUpperCase()){
                     					if(tcpType.toUpperCase() === "TCP Client".toUpperCase() || tcpType.toUpperCase() === "TCPClient".toUpperCase()){
-                    						cellProperties.readOnly = false;
-//                    						cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
-//                            		            td.style.backgroundColor = '';
-//                            		        };
+                    						cellProperties.editor = colType;
                     					}else{
-                    						cellProperties.readOnly = true;
-//                    						cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
-//                            		            td.style.backgroundColor = 'rgb(245, 245, 245)';
-//                            		        };
+                    						cellProperties.editor = false;
                     					}
                     				}else if(prop.toUpperCase() === "ipPort".toUpperCase()){
                     					if(tcpType.toUpperCase() === "TCP Server".toUpperCase() || tcpType.toUpperCase() === "TCPServer".toUpperCase()){
-                    						cellProperties.readOnly = false;
-//                    						cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
-//                            		            td.style.backgroundColor = '';
-//                            		        };
+                    						cellProperties.editor = colType;
                     					}else{
-                    						cellProperties.readOnly = true;
-//                    						cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
-//                            		            td.style.backgroundColor = 'rgb(245, 245, 245)';
-//                            		        };
+                    						cellProperties.editor = false;
                     					}
                     				}
                     			}
@@ -1572,7 +1561,7 @@ var DeviceInfoHandsontableHelper = {
                         	cellProperties.renderer = deviceInfoHandsontableHelper.addCellStyle;
                         }
                     }else{
-                    	cellProperties.readOnly = true;
+                    	cellProperties.editor = false;
                     	cellProperties.renderer = deviceInfoHandsontableHelper.addCellStyle;
                     }
                     return cellProperties;
@@ -2944,6 +2933,7 @@ var ProductionHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + productionHandsontableHelper.divid);
 	            productionHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	            	colWidths: [50,100,100],
 	                hiddenColumns: {
@@ -2987,10 +2977,10 @@ var ProductionHandsontableHelper = {
 	                    
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex !=2 && visualColIndex !=5) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = productionHandsontableHelper.addCellStyle;
 			                }else if (visualColIndex ==5) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = productionHandsontableHelper.addUplinkStatusCellStyle;
 			                }
 		                    
@@ -3063,7 +3053,7 @@ var ProductionHandsontableHelper = {
 		                    	this.allowInvalid = false;
 		                    }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	if (visualColIndex !=2) {
 	                    		cellProperties.renderer = productionHandsontableHelper.addCellStyle;
 	                    	}
@@ -3277,6 +3267,7 @@ var PumpingInfoHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + pumpingInfoHandsontableHelper.divid);
 	            pumpingInfoHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0,3,4,5],
@@ -3337,22 +3328,22 @@ var PumpingInfoHandsontableHelper = {
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if(visualColIndex>=3 || visualColIndex==0){
-	                    		cellProperties.readOnly = true;
+	                    		cellProperties.editor = false;
 								cellProperties.renderer = pumpingInfoHandsontableHelper.addCellStyle;
 	                    	}
 	                    	
-	                    	if (visualRowIndex<=2 || (visualRowIndex>=4&&visualRowIndex<=5) ||(visualRowIndex==3&&visualColIndex==1) ) {
-								cellProperties.readOnly = true;
+	                    	if ( (visualColIndex<=1&&visualRowIndex<=2) || (visualRowIndex>=4&&visualRowIndex<=5) ||(visualRowIndex==3&&visualColIndex==1) ) {
+								cellProperties.editor = false;
 								cellProperties.renderer = pumpingInfoHandsontableHelper.addCellStyle;
 			                }
 	                    	
 	                    	if( (visualRowIndex==3 || (row>=6 && row<=13) ) && prop.toUpperCase()=='uplinkStatus'.toUpperCase()){
-		                    	cellProperties.readOnly = true;
+		                    	cellProperties.editor = false;
 								cellProperties.renderer = pumpingInfoHandsontableHelper.addUplinkStatusCellStyle;
 		                    }
 	                    	
 	                    	if (visualColIndex === 2 && visualRowIndex===1) {
-	                    		cellProperties.readOnly = false;
+//	                    		cellProperties.readOnly = false;
 	                    		var listData=[];
 	                    		for(var i=0;i<pumpingInfoHandsontableHelper.pumpingUnitList.length;i++){
 	                    			listData.push(pumpingInfoHandsontableHelper.pumpingUnitList[i].manufacturer);
@@ -3365,7 +3356,7 @@ var PumpingInfoHandsontableHelper = {
 	                    	
 	                    	
 	                    	if (visualColIndex === 2 && visualRowIndex===2) {
-	                    		cellProperties.readOnly = false;
+//	                    		cellProperties.readOnly = false;
 	                    		var listData=[];
 	                    		if(isNotVal(pumpingInfoHandsontableHelper) && isNotVal(pumpingInfoHandsontableHelper.hot)){
 	                    			var manufacturer=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(1,'itemValue2');
@@ -3387,7 +3378,7 @@ var PumpingInfoHandsontableHelper = {
 	                    	}
 	                    	
 		                    if (visualColIndex === 2 && visualRowIndex===3) {
-		                    	cellProperties.readOnly = false;
+//		                    	cellProperties.readOnly = false;
 		                    	var listData=[];
 		                    	if(isNotVal(pumpingInfoHandsontableHelper) && isNotVal(pumpingInfoHandsontableHelper.hot)){
 		                    		var manufacturer=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(1,'itemValue2');
@@ -3414,7 +3405,7 @@ var PumpingInfoHandsontableHelper = {
 		                    }
 		                    
 		                    if (visualColIndex === 2 && visualRowIndex>=6 && visualRowIndex<=13) {
-		                    	cellProperties.readOnly = false;
+//		                    	cellProperties.readOnly = false;
 		                    	var listData=[];
 		                    	if(isNotVal(pumpingInfoHandsontableHelper) && isNotVal(pumpingInfoHandsontableHelper.hot)){
 		                    		var manufacturer=pumpingInfoHandsontableHelper.hot.getDataAtRowProp(1,'itemValue2');
@@ -3440,7 +3431,7 @@ var PumpingInfoHandsontableHelper = {
 		                    	this.allowInvalid = true;
 		                    }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	if (visualRowIndex<=2 || (visualRowIndex>=4&&visualRowIndex<=5) ||(visualRowIndex==3&&visualColIndex==1) ) {
 								cellProperties.renderer = pumpingInfoHandsontableHelper.addCellStyle;
 			                }
@@ -3669,6 +3660,7 @@ var VideoInfoHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + videoInfoHandsontableHelper.divid);
 	            videoInfoHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0],
@@ -3705,13 +3697,13 @@ var VideoInfoHandsontableHelper = {
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex < 2) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = videoInfoHandsontableHelper.addReadOnlyBg;
 			                }else{
 			                	cellProperties.renderer=videoInfoHandsontableHelper.addCellStyle;
 			                }
 	                    }else{
-							cellProperties.readOnly = true;
+							cellProperties.editor = false;
 							cellProperties.renderer = videoInfoHandsontableHelper.addReadOnlyBg;
 		                }
 	                    
@@ -3847,6 +3839,7 @@ var DeviceAdditionalInfoHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + deviceAdditionalInfoHandsontableHelper.divid);
 	            deviceAdditionalInfoHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0,4,5],
@@ -3909,7 +3902,7 @@ var DeviceAdditionalInfoHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
 	                    if(DeviceManagerModuleEditFlag!=1){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }
 	                    if(!prop.toUpperCase()=="overview".toUpperCase()){
 		                    cellProperties.renderer = deviceAdditionalInfoHandsontableHelper.addCellStyle;
@@ -4036,12 +4029,13 @@ var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+deviceAuxiliaryDeviceInfoHandsontableHelper.divid);
 	        	deviceAuxiliaryDeviceInfoHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [6,7],
 	                    indicators: false
 	                },
-	        		colWidths: [20,20,80,80,80,80],
+	        		colWidths: [20,30,70,70,70,70],
 	                columns:deviceAuxiliaryDeviceInfoHandsontableHelper.columns,
 	                columns:deviceAuxiliaryDeviceInfoHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -4062,10 +4056,10 @@ var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
 	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex >0) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 			                }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }
 	                    if (visualColIndex >0) {
 	                    	cellProperties.renderer = deviceAuxiliaryDeviceInfoHandsontableHelper.addCellStyle;
@@ -5752,6 +5746,7 @@ var FSDiagramConstructionHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + fsDiagramConstructionHandsontableHelper.divid);
 	            fsDiagramConstructionHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	            	colWidths: [50,100,100],
 	                hiddenColumns: {
@@ -5794,10 +5789,10 @@ var FSDiagramConstructionHandsontableHelper = {
 	                    
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex !=2 && visualColIndex !=5) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addCellStyle;
 			                }else if (visualColIndex ==5) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addUplinkStatusCellStyle;
 			                }
 	                    	if (visualColIndex === 2 && visualRowIndex===0) {
@@ -5813,7 +5808,7 @@ var FSDiagramConstructionHandsontableHelper = {
 		                    	this.allowInvalid = false;
 		                    }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	if (visualColIndex !=2) {
 	                    		cellProperties.renderer = fsDiagramConstructionHandsontableHelper.addCellStyle;
 	                    	}
@@ -5984,6 +5979,7 @@ var DeviceSystemParameterHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + deviceSystemParameterHandsontableHelper.divid);
 	            deviceSystemParameterHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	            	colWidths: [50,100,100],
 	                hiddenColumns: {
@@ -6026,11 +6022,11 @@ var DeviceSystemParameterHandsontableHelper = {
 	                    
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex !=2) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = deviceSystemParameterHandsontableHelper.addCellStyle;
 			                }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	if (visualColIndex !=2 && visualColIndex !=5) {
 	                    		cellProperties.renderer = deviceSystemParameterHandsontableHelper.addCellStyle;
 	                    	}else if (visualColIndex == 5) {
@@ -6233,6 +6229,7 @@ var DevicePumpingUnitPRTFHandsontableHelper = {
 	        	devicePumpingUnitPRTFHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	                hiddenColumns: {
 	                    columns: [1,2,4,5,7,8],
 	                    indicators: false,
@@ -6254,7 +6251,7 @@ var DevicePumpingUnitPRTFHandsontableHelper = {
 	                    var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-                    	cellProperties.readOnly = true;
+                    	cellProperties.editor = false;
                     	if(prop.toUpperCase()=='CrankAngleUplinkStatus'.toUpperCase() || prop.toUpperCase()=='PRUplinkStatus'.toUpperCase() || prop.toUpperCase()=='TFUplinkStatus'.toUpperCase()){
                     		cellProperties.renderer = devicePumpingUnitPRTFHandsontableHelper.addUplinkStatusCellStyle;
                     	}else{
@@ -6400,6 +6397,7 @@ var DevicePumpingUnitDetailedInformationHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + devicePumpingUnitDetailedInformationHandsontableHelper.divid);
 	            devicePumpingUnitDetailedInformationHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0,3,4,5],
@@ -6421,7 +6419,7 @@ var DevicePumpingUnitDetailedInformationHandsontableHelper = {
 	                    var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    if(prop.toUpperCase()=='uplinkStatus'.toUpperCase()){
 	                    	cellProperties.renderer = devicePumpingUnitDetailedInformationHandsontableHelper.addUplinkStatusCellStyle;
 	                    }else{
@@ -6819,14 +6817,14 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	                    
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex !=4 && visualColIndex !=7) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = deviceIntelligentFrequencyConversionHandsontableHelper.addCellStyle;
 			                }else if (visualColIndex ==7) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = deviceIntelligentFrequencyConversionHandsontableHelper.addUplinkStatusCellStyle;
 			                }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	if (visualColIndex !=4) {
 	                    		cellProperties.renderer = deviceIntelligentFrequencyConversionHandsontableHelper.addCellStyle;
 	                    	}
@@ -7008,6 +7006,7 @@ var DeviceInterlockProtectionHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + deviceInterlockProtectionHandsontableHelper.divid);
 	            deviceInterlockProtectionHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	            	colWidths: [50,100,100,50],
 	                hiddenColumns: {
@@ -7062,14 +7061,14 @@ var DeviceInterlockProtectionHandsontableHelper = {
 	                    
 	                    if(DeviceManagerModuleEditFlag==1){
 	                    	if (visualColIndex !=3 && visualColIndex !=6) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = deviceInterlockProtectionHandsontableHelper.addCellStyle;
 			                }else if (visualColIndex ==6) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = deviceInterlockProtectionHandsontableHelper.addUplinkStatusCellStyle;
 			                }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	if (visualColIndex !=3) {
 	                    		cellProperties.renderer = deviceInterlockProtectionHandsontableHelper.addCellStyle;
 	                    	}

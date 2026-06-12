@@ -4770,6 +4770,7 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + lowerComputerProgramUpgradeHandsontableHelper.divid);
 	            lowerComputerProgramUpgradeHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [5,8,10,13,15,16],
@@ -4813,10 +4814,10 @@ var LowerComputerProgramUpgradeHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if(loginUserOperationMaintenanceModuleRight.editFlag==1){
 	                    	if(prop!='checked'){
-	                    		cellProperties.readOnly = true;
+	                    		cellProperties.editor = false;
 	                    	}
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }
 	                    
 	                    if(prop=='boxDownlinkStatus' || prop=='acDownlinkStatus'){

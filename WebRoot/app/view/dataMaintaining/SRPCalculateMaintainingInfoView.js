@@ -1060,6 +1060,7 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+srpFESDiagramCalculateMaintainingHandsontableHelper.divid);
 	        	srpFESDiagramCalculateMaintainingHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		fixedColumnsLeft:4, //固定左侧多少列不能水平滚动
 	                hiddenColumns: {
@@ -1115,7 +1116,7 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	                    			||prop.toUpperCase()=='oilVolumetricProduction'.toUpperCase()
 	                    			||prop.toUpperCase()=='waterVolumetricProduction'.toUpperCase()
 	                    	) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 			                }else if(prop.toUpperCase()=='pumpGrade'.toUpperCase()
 			                		&& srpFESDiagramCalculateMaintainingHandsontableHelper.hot!=undefined 
 			                		&& srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell!=undefined){
@@ -1140,7 +1141,7 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 			                }
 	                    	cellProperties.renderer = srpFESDiagramCalculateMaintainingHandsontableHelper.addCellStyle;
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer=srpFESDiagramCalculateMaintainingHandsontableHelper.addReadOnlyCellStyle;
 	                    }
 	                    

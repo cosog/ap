@@ -605,6 +605,7 @@ var RealtimeAcquisitionDataMaintainingHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+realtimeAcquisitionDataMaintainingHandsontableHelper.divid);
 	        	realtimeAcquisitionDataMaintainingHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		fixedColumnsLeft:4, //固定左侧多少列不能水平滚动
 	                hiddenColumns: {
@@ -637,11 +638,11 @@ var RealtimeAcquisitionDataMaintainingHandsontableHelper = {
 	                    var CalculateMaintainingModuleEditFlag=parseInt(Ext.getCmp("CalculateMaintainingModuleEditFlag").getValue());
 	                    if(CalculateMaintainingModuleEditFlag==1){
 	                    	if (visualColIndex >= 1) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 			                }
 	                    	cellProperties.renderer = realtimeAcquisitionDataMaintainingHandsontableHelper.addCellStyle;
 	                    }else{
-							cellProperties.readOnly = true;
+							cellProperties.editor = false;
 							cellProperties.renderer=realtimeAcquisitionDataMaintainingHandsontableHelper.addReadOnlyCellStyle;
 		                }
 	                    return cellProperties;
@@ -832,6 +833,7 @@ var HistoryAcquisitionDataMaintainingHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+historyAcquisitionDataMaintainingHandsontableHelper.divid);
 	        	historyAcquisitionDataMaintainingHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		fixedColumnsLeft:4, //固定左侧多少列不能水平滚动
 	                hiddenColumns: {
@@ -864,11 +866,11 @@ var HistoryAcquisitionDataMaintainingHandsontableHelper = {
 	                    var CalculateMaintainingModuleEditFlag=parseInt(Ext.getCmp("CalculateMaintainingModuleEditFlag").getValue());
 	                    if(CalculateMaintainingModuleEditFlag==1){
 	                    	if (visualColIndex >= 1) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 			                }
 	                    	cellProperties.renderer = historyAcquisitionDataMaintainingHandsontableHelper.addCellStyle;
 	                    }else{
-							cellProperties.readOnly = true;
+							cellProperties.editor = false;
 							cellProperties.renderer=historyAcquisitionDataMaintainingHandsontableHelper.addReadOnlyCellStyle;
 		                }
 	                    return cellProperties;

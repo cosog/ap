@@ -644,6 +644,7 @@ var ImportAlarmUnitConfigNumItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importAlarmUnitConfigNumItemsHandsontableHelper.divid);
 	        	importAlarmUnitConfigNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [50,120,80,80,80,80,80,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigNumItemsHandsontableHelper.columns,
@@ -663,7 +664,7 @@ var ImportAlarmUnitConfigNumItemsHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    
 	                    if(importAlarmUnitConfigNumItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 	    	            	&& importAlarmUnitConfigNumItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
@@ -803,6 +804,7 @@ var ImportAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importAlarmUnitConfigSwitchItemsHandsontableHelper.divid);
 	        	importAlarmUnitConfigSwitchItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [50,50,120,80,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigSwitchItemsHandsontableHelper.columns,
@@ -822,7 +824,7 @@ var ImportAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    
 	                    if(importAlarmUnitConfigSwitchItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 	    	            	&& importAlarmUnitConfigSwitchItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
@@ -961,6 +963,7 @@ var ImportAlarmUnitConfigEnumItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importAlarmUnitConfigEnumItemsHandsontableHelper.divid);
 	        	importAlarmUnitConfigEnumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [50,50,120,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigEnumItemsHandsontableHelper.columns,
@@ -980,7 +983,7 @@ var ImportAlarmUnitConfigEnumItemsHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    
 	                    if(importAlarmUnitConfigEnumItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 	    	            	&& importAlarmUnitConfigEnumItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
@@ -1117,6 +1120,7 @@ var ImportAlarmUnitConfigFESDiagramResultItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.divid);
 	        	importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [50,80,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.columns,
@@ -1136,7 +1140,7 @@ var ImportAlarmUnitConfigFESDiagramResultItemsHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    
 	                    if(importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 	    	            	&& importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
@@ -1273,6 +1277,7 @@ var ImportAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importAlarmUnitConfigRunStatusItemsHandsontableHelper.divid);
 	        	importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [50,80,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigRunStatusItemsHandsontableHelper.columns,
@@ -1292,7 +1297,7 @@ var ImportAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    
 	                    if(importAlarmUnitConfigRunStatusItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 	    	            	&& importAlarmUnitConfigRunStatusItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
@@ -1430,6 +1435,7 @@ var ImportAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importAlarmUnitConfigCommStatusItemsHandsontableHelper.divid);
 	        	importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [50,80,100,100,120,120,120,120],
 	                columns:importAlarmUnitConfigCommStatusItemsHandsontableHelper.columns,
@@ -1449,7 +1455,7 @@ var ImportAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    if(importAlarmUnitConfigCommStatusItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 	    	            	&& importAlarmUnitConfigCommStatusItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){
 	                    	cellProperties.renderer = importAlarmUnitConfigCommStatusItemsHandsontableHelper.addCellStyle;

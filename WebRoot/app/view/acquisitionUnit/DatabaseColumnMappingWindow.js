@@ -269,6 +269,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+databaseColumnMappingHandsontableHelper.divid);
 	        	databaseColumnMappingHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [0,2],
@@ -302,7 +303,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if(visualColIndex<=2){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	
 	                    	if(databaseColumnMappingHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 		    	            	&& databaseColumnMappingHandsontableHelper.columns[visualColIndex].type!='checkbox'){
@@ -315,7 +316,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 	                    	this.allowInvalid = false;
 	                    	var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 		                    if(protocolConfigModuleEditFlag!=1){
-		                    	cellProperties.readOnly = true;
+		                    	cellProperties.editor = false;
 		                    }
 	                    }
 	                    return cellProperties;

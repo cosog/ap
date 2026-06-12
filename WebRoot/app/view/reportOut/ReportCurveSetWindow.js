@@ -388,6 +388,7 @@ var DeviceReportCurveSetHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+deviceReportCurveSetHandsontableHelper.divid);
 	        	deviceReportCurveSetHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [3,4],
@@ -422,7 +423,7 @@ var DeviceReportCurveSetHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if(visualColIndex==0){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }
 	                    cellProperties.renderer=deviceReportCurveSetHandsontableHelper.addCellStyle;
 	                    return cellProperties;

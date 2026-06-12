@@ -915,6 +915,7 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolAlarmUnitConfigNumItemsHandsontableHelper.divid);
 	        	protocolAlarmUnitConfigNumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: (emailConfig.enable?[13,14,15]:[11,12,13,14,15]),
@@ -956,11 +957,11 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	 	                	if(selectRow!=''){
 	 	                		var selectedItem=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);
 	 	                		if(selectedItem.data.classes!=3){
-	 	                			cellProperties.readOnly = true;
+	 	                			cellProperties.editor = false;
 	 	                			cellProperties.renderer=protocolAlarmUnitConfigNumItemsHandsontableHelper.addReadOnlyBg;
 	 	                		}else{
 	 	                			if (visualColIndex >=1 && visualColIndex <=4) {
-	 	    							cellProperties.readOnly = true;
+	 	    							cellProperties.editor = false;
 	 	    							cellProperties.renderer=protocolAlarmUnitConfigNumItemsHandsontableHelper.addReadOnlyBg;
 	 	    		                }else{
 	 	    		                	if(protocolAlarmUnitConfigNumItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
@@ -971,7 +972,7 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 	 	                		}
 	 	                	}
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer=protocolAlarmUnitConfigNumItemsHandsontableHelper.addReadOnlyBg;
 	                    }
 	                    return cellProperties;
@@ -1125,6 +1126,7 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolConfigAlarmUnitPropertiesHandsontableHelper.divid);
 	        	protocolConfigAlarmUnitPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [1,4,5],
 	                columns:protocolConfigAlarmUnitPropertiesHandsontableHelper.columns,
@@ -1157,11 +1159,11 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag==1){
 	                    	if(protocolConfigAlarmUnitPropertiesHandsontableHelper.classes===0 || protocolConfigAlarmUnitPropertiesHandsontableHelper.classes===1){
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = protocolConfigAlarmUnitPropertiesHandsontableHelper.addBoldBg;
 			                }else if(protocolConfigAlarmUnitPropertiesHandsontableHelper.classes===3){
 			                	if (visualColIndex ==0 || visualColIndex ==1) {
-									cellProperties.readOnly = true;
+									cellProperties.editor = false;
 									cellProperties.renderer = protocolConfigAlarmUnitPropertiesHandsontableHelper.addBoldBg;
 				                }else{
 				                	if(visualColIndex === 2 && visualRowIndex===0){
@@ -1185,7 +1187,7 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 				                }
 			                }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 							cellProperties.renderer = protocolConfigAlarmUnitPropertiesHandsontableHelper.addBoldBg;
 	                    }
 	                    
@@ -1345,6 +1347,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolAlarmUnitConfigEnumItemsHandsontableHelper.divid);
 	        	protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: (emailConfig.enable?[]:[7,8]),
@@ -1385,11 +1388,11 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 		                	if(selectRow!=''){
 		                		var selectedItem=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);
 		                		if(selectedItem.data.classes!=3){
-		                			cellProperties.readOnly = true;
+		                			cellProperties.editor = false;
 		                			cellProperties.renderer=protocolAlarmUnitConfigEnumItemsHandsontableHelper.addReadOnlyBg;
 		                		}else{
 		                			if (visualColIndex >=1 && visualColIndex <=3) {
-		    							cellProperties.readOnly = true;
+		    							cellProperties.editor = false;
 		    							cellProperties.renderer=protocolAlarmUnitConfigEnumItemsHandsontableHelper.addReadOnlyBg;
 		    		                }else{
 		    		                	if(protocolAlarmUnitConfigEnumItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
@@ -1400,7 +1403,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 		                		}
 		                	}
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer=protocolAlarmUnitConfigEnumItemsHandsontableHelper.addReadOnlyBg;
 	                    }
 	                    
@@ -1576,6 +1579,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolAlarmUnitConfigSwitchItemsHandsontableHelper.divid);
 	        	protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	                hiddenColumns: {
 	                    columns: (emailConfig.enable?[10,11]:[8,9,10,11]),
@@ -1616,7 +1620,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 		                	if(selectRow!=''){
 		                		var selectedItem=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);
 		                		if(selectedItem.data.classes!=3){
-		                			cellProperties.readOnly = true;
+		                			cellProperties.editor = false;
 		                			cellProperties.renderer=protocolAlarmUnitConfigSwitchItemsHandsontableHelper.addReadOnlyBg;
 		                		}else{
 		                			if(prop=='value'){
@@ -1629,7 +1633,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 		                                this.allowInvalid = false;
 		                			}
 		                			if (visualColIndex >=1 && visualColIndex <=3) {
-		    							cellProperties.readOnly = true;
+		    							cellProperties.editor = false;
 		    							cellProperties.renderer=protocolAlarmUnitConfigSwitchItemsHandsontableHelper.addReadOnlyBg;
 		    		                }else{
 		    		                	if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
@@ -1640,7 +1644,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 		                		}
 		                	}
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer=protocolAlarmUnitConfigSwitchItemsHandsontableHelper.addReadOnlyBg;
 	                    }
 	                    
@@ -1809,6 +1813,7 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.divid);
 	        	protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	                hiddenColumns: {
 	                    columns: (emailConfig.enable?[8,9]:[6,7,8,9]),
@@ -1848,11 +1853,11 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 		                	if(selectRow!=''){
 		                		var selectedItem=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);
 		                		if(selectedItem.data.classes!=3){
-		                			cellProperties.readOnly = true;
+		                			cellProperties.editor = false;
 		                			cellProperties.renderer=protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.addReadOnlyBg;
 		                		}else{
 		                			if (visualColIndex >=1 && visualColIndex <=2) {
-		    							cellProperties.readOnly = true;
+		    							cellProperties.editor = false;
 		    							cellProperties.renderer=protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.addReadOnlyBg;
 		    		                }else{
 		    		                	if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
@@ -1863,7 +1868,7 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 		                		}
 		                	}
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer=protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.addReadOnlyBg;
 	                    }
 	                    
@@ -2034,6 +2039,7 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.divid);
 	        	protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	                hiddenColumns: {
 	                    columns: (emailConfig.enable?[8]:[6,7,8]),
@@ -2073,11 +2079,11 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 		                	if(selectRow!=''){
 		                		var selectedItem=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);
 		                		if(selectedItem.data.classes!=3){
-		                			cellProperties.readOnly = true;
+		                			cellProperties.editor = false;
 		                			cellProperties.renderer=protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.addReadOnlyBg;
 		                		}else{
 		                			if (visualColIndex >=1 && visualColIndex <=2) {
-		    							cellProperties.readOnly = true;
+		    							cellProperties.editor = false;
 		    							cellProperties.renderer=protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.addReadOnlyBg;
 		    		                }else{
 		    		                	if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
@@ -2088,7 +2094,7 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 		                		}
 		                	}
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer=protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.addReadOnlyBg;
 	                    }
 	                    return cellProperties;
@@ -2245,6 +2251,7 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.divid);
 	        	protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	                hiddenColumns: {
 	                    columns: (emailConfig.enable?[8,9]:[6,7,8,9]),
@@ -2284,11 +2291,11 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 		                	if(selectRow!=''){
 		                		var selectedItem=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().getAt(selectRow);
 		                		if(selectedItem.data.classes!=3){
-		                			cellProperties.readOnly = true;
+		                			cellProperties.editor = false;
 		                			cellProperties.renderer=protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.addReadOnlyBg;
 		                		}else{
 		                			if (visualColIndex >=1 && visualColIndex <=2) {
-		    							cellProperties.readOnly = true;
+		    							cellProperties.editor = false;
 		    							cellProperties.renderer=protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.addReadOnlyBg;
 		    		                }else{
 		    		                	if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
@@ -2299,7 +2306,7 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 		                		}
 		                	}
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer=protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.addReadOnlyBg;
 	                    }
 	                    

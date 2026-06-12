@@ -174,6 +174,7 @@ var BatchAddAuxiliaryDeviceOverlayDataHandsontableHelper = {
             var hotElement = document.querySelector('#' + batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.divid);
             batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.hot = new Handsontable(hotElement, {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
             	data: data,
                 hiddenColumns: {
                     columns: [0],
@@ -236,7 +237,7 @@ var BatchAddAuxiliaryDeviceOverlayDataHandsontableHelper = {
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
                     if(batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='dataInfo'.toUpperCase()){
-                    	cellProperties.readOnly = true;
+                    	cellProperties.editor = false;
                     	cellProperties.renderer = batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.addBoldBg;
                     }else{
                     	if(batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.columns[visualColIndex].type == undefined || batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.columns[visualColIndex].type!='dropdown'){

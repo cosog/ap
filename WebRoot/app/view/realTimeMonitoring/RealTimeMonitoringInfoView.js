@@ -915,6 +915,12 @@ function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title
                 shadow: false,
                 borderWidth: 0,
                 zoomType: 'xy',
+             // 禁用鼠标滚轮缩放
+                zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                },
                 events: {
                     // 监听缩放完成事件
                     redraw: function() {

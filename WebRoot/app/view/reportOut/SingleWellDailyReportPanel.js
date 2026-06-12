@@ -661,6 +661,7 @@ var SingleWellRangeReportHelper = {
 	            singleWellRangeReportHelper.container.innerHTML = "";
 	            singleWellRangeReportHelper.hot = new Handsontable(singleWellRangeReportHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: singleWellRangeReportHelper.data,
 	            	hiddenColumns: {
 	                    columns: [singleWellRangeReportHelper.columnCount-1],
@@ -708,8 +709,10 @@ var SingleWellRangeReportHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var colConfig = singleWellRangeReportHelper.columns[col];
+	                    var colType = colConfig.type || 'text'; 
 	                    cellProperties.renderer = singleWellRangeReportHelper.addStyle;
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    if(singleWellRangeReportHelper.templateData.editable!=null && singleWellRangeReportHelper.templateData.editable.length>0){
 	                    	for(var i=0;i<singleWellRangeReportHelper.templateData.editable.length;i++){
 	                    		if( row>=singleWellRangeReportHelper.templateData.editable[i].startRow 
@@ -717,7 +720,7 @@ var SingleWellRangeReportHelper = {
 	                    				&& col>=singleWellRangeReportHelper.templateData.editable[i].startColumn 
 	                    				&& col<=singleWellRangeReportHelper.templateData.editable[i].endColumn
 	                    		){
-	                    			cellProperties.readOnly = false;
+	                    			cellProperties.editor = colType;
 	                    			cellProperties.renderer = singleWellRangeReportHelper.addEditableColor;
 	                    		}
 	                    	}
@@ -1101,6 +1104,7 @@ var SingleWellDailyReportHelper = {
 	            singleWellDailyReportHelper.container.innerHTML = "";
 	            singleWellDailyReportHelper.hot = new Handsontable(singleWellDailyReportHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: singleWellDailyReportHelper.data,
 	            	hiddenColumns: {
 	                    columns: [singleWellDailyReportHelper.columnCount-1],
@@ -1138,8 +1142,10 @@ var SingleWellDailyReportHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var colConfig = singleWellDailyReportHelper.columns[col];
+	                    var colType = colConfig.type || 'text'; 
 	                    cellProperties.renderer = singleWellDailyReportHelper.addStyle;
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    if(singleWellDailyReportHelper.templateData.editable!=null && singleWellDailyReportHelper.templateData.editable.length>0){
 	                    	for(var i=0;i<singleWellDailyReportHelper.templateData.editable.length;i++){
 	                    		if( row>=singleWellDailyReportHelper.templateData.editable[i].startRow 
@@ -1147,13 +1153,13 @@ var SingleWellDailyReportHelper = {
 	                    				&& col>=singleWellDailyReportHelper.templateData.editable[i].startColumn 
 	                    				&& col<=singleWellDailyReportHelper.templateData.editable[i].endColumn
 	                    		){
-	                    			cellProperties.readOnly = false;
+	                    			cellProperties.editor = colType;
 	                    			cellProperties.renderer = singleWellDailyReportHelper.addEditableColor;
 	                    		}
 	                    	}
 	                    }
 	                    if(row>=singleWellDailyReportHelper.templateData.header.length+singleWellDailyReportHelper.totalCount){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }
 	                    return cellProperties;
 	                },

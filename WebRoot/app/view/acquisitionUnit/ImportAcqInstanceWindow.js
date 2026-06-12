@@ -369,6 +369,7 @@ var ImportAcqInstanceConfigItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importAcqInstanceConfigItemsHandsontableHelper.divid);
 	        	importAcqInstanceConfigItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [50,130,80,90,90,80,80,90,80,80,80,80],
 	                columns:importAcqInstanceConfigItemsHandsontableHelper.columns,
@@ -389,7 +390,7 @@ var ImportAcqInstanceConfigItemsHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    
 	                    if(importAcqInstanceConfigItemsHandsontableHelper.columns[visualColIndex].type!='dropdown' 
 	    	            	&& importAcqInstanceConfigItemsHandsontableHelper.columns[visualColIndex].type!='checkbox'){

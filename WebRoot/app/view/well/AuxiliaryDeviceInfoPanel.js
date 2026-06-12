@@ -399,6 +399,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
             var hotElement = document.querySelector('#' + auxiliaryDeviceInfoHandsontableHelper.divid);
             auxiliaryDeviceInfoHandsontableHelper.hot = new Handsontable(hotElement, {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
             	data: data,
                 hiddenColumns: {
                     columns: [0,1],
@@ -436,7 +437,7 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                     
                     var AuxiliaryDeviceManagerModuleEditFlag=parseInt(Ext.getCmp("AuxiliaryDeviceManagerModuleEditFlag").getValue());
                     if(AuxiliaryDeviceManagerModuleEditFlag!=1){
-                    	cellProperties.readOnly = true;
+                    	cellProperties.editor = false;
                     }
                     cellProperties.renderer = auxiliaryDeviceInfoHandsontableHelper.addCellStyle;
                     return cellProperties;
@@ -871,6 +872,7 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + auxiliaryDeviceDetailsHandsontableHelper.divid);
 	            auxiliaryDeviceDetailsHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0,4],
@@ -943,7 +945,7 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var AuxiliaryDeviceManagerModuleEditFlag=parseInt(Ext.getCmp("AuxiliaryDeviceManagerModuleEditFlag").getValue());
 	                    if(AuxiliaryDeviceManagerModuleEditFlag!=1){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }else{
 	                    	var auxiliaryDeviceSpecificType=0;
 	                    	if(Ext.getCmp("AuxiliaryDeviceSpecificType_Id")!=undefined){
@@ -951,7 +953,7 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                    	}
 	                    	if(auxiliaryDeviceSpecificType==1){
 	                    		if(visualColIndex!=2){
-	                    			cellProperties.readOnly = true;
+	                    			cellProperties.editor = false;
 	                    			cellProperties.renderer = auxiliaryDeviceDetailsHandsontableHelper.addBoldBg;
 	                    		}
 	                    		
@@ -1103,6 +1105,7 @@ var PumpingUnitPRTFHandsontableHelper = {
 	        	pumpingUnitPRTFHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 //	                hiddenColumns: {
 //	                    columns: [0],
 //	                    indicators: false,

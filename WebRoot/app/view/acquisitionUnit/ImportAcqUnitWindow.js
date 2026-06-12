@@ -303,6 +303,7 @@ var ImportAcqUnitContentHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importAcqUnitContentHandsontableHelper.divid);
 	        	importAcqUnitContentHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: importAcqUnitContentHandsontableHelper.hiddenColumns,
@@ -329,7 +330,7 @@ var ImportAcqUnitContentHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    return cellProperties;
 	                }
 	        	});

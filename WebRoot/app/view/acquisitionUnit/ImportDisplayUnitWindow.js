@@ -587,6 +587,7 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + importDisplayUnitAcqItemsHandsontableHelper.divid);
 	            importDisplayUnitAcqItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	                data: data,
 	                hiddenColumns: {
 	                    columns: [0,6,7,13,14,21, 22, 23, 24, 25, 26,27],
@@ -612,7 +613,7 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 
-                        cellProperties.readOnly = true;
+                        cellProperties.editor = false;
                         if (visualColIndex == 12 || visualColIndex == 19) {
                             cellProperties.renderer = importDisplayUnitAcqItemsHandsontableHelper.addReadOnlyCurveBg;
                         } else if (visualColIndex == 10 || visualColIndex == 11 || visualColIndex == 17 || visualColIndex == 18) {
@@ -792,6 +793,7 @@ var ImportDisplayUnitCtrlItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importDisplayUnitCtrlItemsHandsontableHelper.divid);
 	        	importDisplayUnitCtrlItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [50,140,80,60,60,60],
 	                columns:importDisplayUnitCtrlItemsHandsontableHelper.columns,
@@ -810,7 +812,7 @@ var ImportDisplayUnitCtrlItemsHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    cellProperties.renderer = importDisplayUnitCtrlItemsHandsontableHelper.addReadOnlyBg;
 	                    return cellProperties;
 	                },

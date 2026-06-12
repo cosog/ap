@@ -179,6 +179,7 @@ var BatchAddPumpingModelOverlayDataHandsontableHelper = {
             var hotElement = document.querySelector('#' + batchAddPumpingModelOverlayDataHandsontableHelper.divid);
             batchAddPumpingModelOverlayDataHandsontableHelper.hot = new Handsontable(hotElement, {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
             	data: data,
                 hiddenColumns: {
                     columns: [0],
@@ -242,7 +243,7 @@ var BatchAddPumpingModelOverlayDataHandsontableHelper = {
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
                     if(batchAddPumpingModelOverlayDataHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='dataInfo'.toUpperCase()){
-                    	cellProperties.readOnly = true;
+                    	cellProperties.editor = false;
                     	cellProperties.renderer = batchAddPumpingModelOverlayDataHandsontableHelper.addBoldBg;
                     }
                     return cellProperties;

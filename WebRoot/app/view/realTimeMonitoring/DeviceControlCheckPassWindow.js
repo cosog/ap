@@ -343,6 +343,7 @@ var DeviceControlValueHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+deviceControlValueHandsontableHelper.divid);
 	        	deviceControlValueHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [],
@@ -368,7 +369,7 @@ var DeviceControlValueHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if(visualColIndex==0){
 	                    	cellProperties.renderer = deviceControlValueHandsontableHelper.addBoldBg;
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }
 	                    return cellProperties;
 	                }

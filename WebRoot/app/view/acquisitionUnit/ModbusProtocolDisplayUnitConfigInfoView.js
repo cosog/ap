@@ -517,6 +517,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
             var hotElement = document.querySelector('#' + protocolDisplayUnitAcqItemsConfigHandsontableHelper.divid);
             protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot = new Handsontable(hotElement, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
                 data: data,
                 hiddenColumns: {
                     columns: [0,6,7,13,14,21, 22, 23, 24, 25, 26, 27, 28, 29],
@@ -558,11 +559,11 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                         if (ScadaDriverModbusConfigSelectRow != '') {
                             var selectedItem = Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
                             if (selectedItem.data.classes != 2) {
-                                cellProperties.readOnly = true;
+                                cellProperties.editor = false;
                                 cellProperties.renderer=protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyBg;
                             } else {
                                 if (prop=='id'||prop=='showTitle'||prop=='dataSource'||prop=='unit') {
-                                    cellProperties.readOnly = true;
+                                    cellProperties.editor = false;
                                     cellProperties.renderer=protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyBg;
                                 }else if (prop=='realtimeCurveConfShowValue'||prop=='historyCurveConfShowValue') {
                                     cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCurveBg;
@@ -571,7 +572,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                                 } else if(prop=='switchingValueShowType'){
 	    		                    const resolutionMode = this.instance.getDataAtRowProp(row, 'resolutionMode');
 	    		                    if (resolutionMode!=loginUserLanguageResource.switchingValue) {
-	                                    cellProperties.readOnly = true;
+	                                    cellProperties.editor = false;
 	                                    cellProperties.renderer=protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyBg;
 	                                }
     		                	} else {
@@ -583,7 +584,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                             }
                         }
                     } else {
-                        cellProperties.readOnly = true;
+                        cellProperties.editor = false;
                         if (visualColIndex == 12 || visualColIndex == 19) {
                             cellProperties.renderer = protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyCurveBg;
                         } else if (visualColIndex == 10 || visualColIndex == 11 || visualColIndex == 17 || visualColIndex == 18) {
@@ -867,6 +868,7 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolDisplayUnitCtrlItemsConfigHandsontableHelper.divid);
 	        	protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [6,7,8,9,10,11],
@@ -906,17 +908,17 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 		                	if(ScadaDriverModbusConfigSelectRow!=''){
 		                		var selectedItem=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
 		                		if(selectedItem.data.classes!=2){
-		                			cellProperties.readOnly = true;
+		                			cellProperties.editor = false;
 		                			cellProperties.renderer=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addReadOnlyBg;
 		                		}else{
 		                			if (visualColIndex >=1 && visualColIndex<=3) {
-		    							cellProperties.readOnly = true;
+		    							cellProperties.editor = false;
 		    							cellProperties.renderer=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addReadOnlyBg;
 		    		                }else{
 		    		                	if(visualColIndex==6){
 			    		                    const resolutionMode = this.instance.getDataAtRowProp(row, 'resolutionMode'); // 状态在第3列
 			    		                    if (resolutionMode!=loginUserLanguageResource.switchingValue) {
-			    		                    	cellProperties.readOnly = true;
+			    		                    	cellProperties.editor = false;
 				    							cellProperties.renderer=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addReadOnlyBg;
 			    		                    }
 		    		                	}else{
@@ -929,7 +931,7 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 		                		}
 		                	}
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer=protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addReadOnlyBg;
 	                    }
 	                    
@@ -1129,6 +1131,7 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolDisplayUnitPropertiesHandsontableHelper.divid);
 	        	protocolDisplayUnitPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [1,4,5],
 	                columns:protocolDisplayUnitPropertiesHandsontableHelper.columns,
@@ -1160,11 +1163,11 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag==1){
 	                    	if(protocolDisplayUnitPropertiesHandsontableHelper.classes===0 || protocolDisplayUnitPropertiesHandsontableHelper.classes===1){
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = protocolDisplayUnitPropertiesHandsontableHelper.addBoldBg;
 			                }else if(protocolDisplayUnitPropertiesHandsontableHelper.classes===2){
 			                	if (visualColIndex ==0 || visualColIndex ==1) {
-									cellProperties.readOnly = true;
+									cellProperties.editor = false;
 									cellProperties.renderer = protocolDisplayUnitPropertiesHandsontableHelper.addBoldBg;
 				                }else{
 				                	if(visualColIndex === 2 && visualRowIndex===0){
@@ -1192,7 +1195,7 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 				                }
 			                }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 							cellProperties.renderer = protocolDisplayUnitPropertiesHandsontableHelper.addBoldBg;
 	                    }
 	                    

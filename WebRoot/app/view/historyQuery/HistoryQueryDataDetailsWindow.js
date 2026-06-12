@@ -46,6 +46,15 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
                     xtype: 'textfield',
                     value: '0',
                     hidden: true
+                },{
+                	xtype: 'label',
+                	html: loginUserLanguageResource.viewCurveOrTableData,
+                	style: {
+                        marginLeft: '10px',
+                        fontSize: '11px',
+                        fontFamily: 'tahoma,arial,verdana,sans-serif',
+                        color: '#333333'
+                    }
                 },'->',{
                     xtype: 'button',
                     text: loginUserLanguageResource.exportData,
@@ -486,6 +495,7 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+deviceHistoryQueryDataHandsontableHelper.divid);
 	        	deviceHistoryQueryDataHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [30,20,30,20,30,20],
 	                columns:deviceHistoryQueryDataHandsontableHelper.columns,
@@ -513,7 +523,7 @@ var DeviceHistoryQueryDataHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    cellProperties.renderer = deviceHistoryQueryDataHandsontableHelper.addCellStyle;
 	                    
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){

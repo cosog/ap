@@ -823,6 +823,7 @@ var ProtocolItemsConfigHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolItemsConfigHandsontableHelper.divid);
 	        	protocolItemsConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [0,3],
@@ -893,10 +894,10 @@ var ProtocolItemsConfigHandsontableHelper = {
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag==1){
 	                    	if (visualColIndex ==0) {
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 			                }
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }
 	                    
 	                    if (prop=='storeDataType') {
@@ -1271,6 +1272,7 @@ var ProtocolPropertiesHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolPropertiesHandsontableHelper.divid);
 	        	protocolPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [1,8,10],
 	                columns:protocolPropertiesHandsontableHelper.columns,
@@ -1303,11 +1305,11 @@ var ProtocolPropertiesHandsontableHelper = {
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag==1){
 	                    	if(protocolPropertiesHandsontableHelper.classes===0){
-								cellProperties.readOnly = true;
+								cellProperties.editor = false;
 								cellProperties.renderer = protocolPropertiesHandsontableHelper.addBoldBg;
 		                    }else if(protocolPropertiesHandsontableHelper.classes===1){
 		                    	if (visualColIndex ==0 || visualColIndex ==1) {
-									cellProperties.readOnly = true;
+									cellProperties.editor = false;
 									cellProperties.renderer = protocolPropertiesHandsontableHelper.addBoldBg;
 				                }else if(visualColIndex === 2 && visualRowIndex===0){
 			                    	this.validator=function (val, callback) {
@@ -1320,12 +1322,12 @@ var ProtocolPropertiesHandsontableHelper = {
 			                    	}
 			                    	cellProperties.renderer = protocolPropertiesHandsontableHelper.addCellStyle;
 			                    }else if (visualColIndex === 2 && (visualRowIndex===2||visualRowIndex===3) ) {
-			                    	cellProperties.readOnly = true;
+			                    	cellProperties.editor = false;
 			                    	cellProperties.renderer = protocolPropertiesHandsontableHelper.addBoldBg;
 			                    }
 		                    }
 	                    }else{
-							cellProperties.readOnly = true;
+							cellProperties.editor = false;
 							cellProperties.renderer = protocolPropertiesHandsontableHelper.addBoldBg;
 	                    }
 	                    
@@ -1943,6 +1945,7 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolItemsMeaningConfigHandsontableHelper.divid);
 	        	protocolItemsMeaningConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: protocolItemsMeaningConfigHandsontableHelper.hiddenColumns,
@@ -1969,11 +1972,11 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag!=1){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer = protocolItemsMeaningConfigHandsontableHelper.addCellStyle;
 	                    }else {
 	                    	if(protocolItemsMeaningConfigHandsontableHelper.itemResolutionMode==0 && prop=='title'){
-	                    		cellProperties.readOnly = true;
+	                    		cellProperties.editor = false;
 	                    		cellProperties.renderer = protocolItemsMeaningConfigHandsontableHelper.addBoldBg;
 	                    	}else{
 	                    		cellProperties.renderer = protocolItemsMeaningConfigHandsontableHelper.addCellStyle;
@@ -2184,6 +2187,7 @@ var ProtocolExtendedFieldConfigHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolExtendedFieldConfigHandsontableHelper.divid);
 	        	protocolExtendedFieldConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [0],
@@ -2248,7 +2252,7 @@ var ProtocolExtendedFieldConfigHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag!=1){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }
 	                    return cellProperties;
 	                },
@@ -2394,6 +2398,7 @@ var ProtocolSwitchingValueBitStatusConfigHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolSwitchingValueBitStatusConfigHandsontableHelper.divid);
 	        	protocolSwitchingValueBitStatusConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [2,3],
@@ -2419,11 +2424,11 @@ var ProtocolSwitchingValueBitStatusConfigHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag!=1){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer = protocolSwitchingValueBitStatusConfigHandsontableHelper.addCellStyle;
 	                    }else {
 	                    	if(prop=='title'){
-	                    		cellProperties.readOnly = true;
+	                    		cellProperties.editor = false;
 	                    		cellProperties.renderer = protocolSwitchingValueBitStatusConfigHandsontableHelper.addBoldBg;
 	                    	}else{
 	                    		cellProperties.renderer = protocolSwitchingValueBitStatusConfigHandsontableHelper.addCellStyle;
@@ -2650,6 +2655,7 @@ var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolExtendedFieldHighLowByteConfigHandsontableHelper.divid);
 	        	protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [0],
@@ -2706,7 +2712,7 @@ var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag!=1){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }
 	                    if(prop.toUpperCase()!='highLowByte'.toUpperCase() && prop.toUpperCase()!='resolutionMode'.toUpperCase()){
 	                    	cellProperties.renderer = protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle;
@@ -3031,6 +3037,7 @@ var ProtocolExtendedFieldMeaningConfigHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolExtendedFieldMeaningConfigHandsontableHelper.divid);
 	        	protocolExtendedFieldMeaningConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: protocolExtendedFieldMeaningConfigHandsontableHelper.hiddenColumns,
@@ -3057,11 +3064,11 @@ var ProtocolExtendedFieldMeaningConfigHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag!=1){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer = protocolExtendedFieldMeaningConfigHandsontableHelper.addCellStyle;
 	                    }else {
 	                    	if(protocolExtendedFieldMeaningConfigHandsontableHelper.itemResolutionMode==0 && prop=='title'){
-	                    		cellProperties.readOnly = true;
+	                    		cellProperties.editor = false;
 	                    		cellProperties.renderer = protocolExtendedFieldMeaningConfigHandsontableHelper.addBoldBg;
 	                    	}else{
 	                    		cellProperties.renderer = protocolExtendedFieldMeaningConfigHandsontableHelper.addCellStyle;
@@ -3197,6 +3204,7 @@ var ProtocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.divid);
 	        	protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [2,3],
@@ -3222,11 +3230,11 @@ var ProtocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag!=1){
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    	cellProperties.renderer = protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.addCellStyle;
 	                    }else {
 	                    	if(prop=='title'){
-	                    		cellProperties.readOnly = true;
+	                    		cellProperties.editor = false;
 	                    		cellProperties.renderer = protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.addBoldBg;
 	                    	}else{
 	                    		cellProperties.renderer = protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.addCellStyle;

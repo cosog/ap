@@ -279,6 +279,7 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolReportInstancePropertiesHandsontableHelper.divid);
 	        	protocolReportInstancePropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [1,4,7],
 	                columns:protocolReportInstancePropertiesHandsontableHelper.columns,
@@ -310,7 +311,7 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    if(protocolConfigModuleEditFlag==1){
 		                    if(protocolReportInstancePropertiesHandsontableHelper.classes===0 || protocolReportInstancePropertiesHandsontableHelper.classes===2){
-		                    	cellProperties.readOnly = true;
+		                    	cellProperties.editor = false;
 								cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
 		                    }else if(protocolReportInstancePropertiesHandsontableHelper.classes===1){
 		                    	if(visualColIndex === 2 && visualRowIndex===0){
@@ -330,14 +331,14 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 			                    }
 		                    	
 		                    	if (visualColIndex ==0 || visualColIndex ==1) {
-									cellProperties.readOnly = true;
+									cellProperties.editor = false;
 									cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
 				                }else if(visualColIndex === 2 && visualRowIndex!=1){
 				                	cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addCellStyle;
 				                }
 		                    }
 	                    }else{
-							cellProperties.readOnly = true;
+							cellProperties.editor = false;
 							cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
 	                    return cellProperties;

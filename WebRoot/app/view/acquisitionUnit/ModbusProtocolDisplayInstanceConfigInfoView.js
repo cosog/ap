@@ -264,6 +264,7 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolDisplayInstancePropertiesHandsontableHelper.divid);
 	        	protocolDisplayInstancePropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [1,4,5],
 	                columns:protocolDisplayInstancePropertiesHandsontableHelper.columns,
@@ -296,7 +297,7 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 	                    if(protocolConfigModuleEditFlag==1){
 	                    	
 		                    if(protocolDisplayInstancePropertiesHandsontableHelper.classes===0 || protocolDisplayInstancePropertiesHandsontableHelper.classes===2){
-		                    	cellProperties.readOnly = true;
+		                    	cellProperties.editor = false;
 								cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
 		                    }else if(protocolDisplayInstancePropertiesHandsontableHelper.classes===1){
 		                    	if(visualColIndex === 2 && visualRowIndex===0){
@@ -314,14 +315,14 @@ var ProtocolDisplayInstancePropertiesHandsontableHelper = {
 			                    	this.strict = true;
 			                    	this.allowInvalid = false;
 			                    }else if (visualColIndex ==0 || visualColIndex ==1) {
-									cellProperties.readOnly = true;
+									cellProperties.editor = false;
 									cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
 				                }else{
 				                	cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addCellStyle;
 				                }
 		                    }
 	                    }else{
-							cellProperties.readOnly = true;
+							cellProperties.editor = false;
 							cellProperties.renderer = protocolDisplayInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
 	                    

@@ -283,21 +283,21 @@ function CreateReportUnitContentConfigTable() {
 				reportUnitContentConfigHandsontableHelper.columns=columns;
 				
 				reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
-		        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
+		        reportUnitContentConfigHandsontableHelper.colWidths=[50,50,150,80,60,90,60,60,110,85];
 		        
 		        if(unitClasses==1){
 		        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[5,9,10,11,12,13,14];
-			        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
+			        reportUnitContentConfigHandsontableHelper.colWidths=[50,50,150,80,60,90,60,60,110,85];
 		        }else{
 		        	if(reportType==0){
 			        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
-				        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
+				        reportUnitContentConfigHandsontableHelper.colWidths=[50,50,150,80,60,90,60,60,110,85];
 			        }else if(reportType==1){
 			        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[12,13,14,15,16,17];
-			        	reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,100,60,60,40,40,100,85];
+			        	reportUnitContentConfigHandsontableHelper.colWidths=[50,50,150,80,60,100,60,60,40,40,100,85];
 			        }else if(reportType==2){
 			        	reportUnitContentConfigHandsontableHelper.hiddenColumns=[9,10,11,12,13,14];
-				        reportUnitContentConfigHandsontableHelper.colWidths=[25,30,150,80,60,90,60,60,110,85];
+				        reportUnitContentConfigHandsontableHelper.colWidths=[50,50,150,80,60,90,60,60,110,85];
 			        }
 		        }
 		        
@@ -372,6 +372,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+reportUnitContentConfigHandsontableHelper.divid);
 	        	reportUnitContentConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: reportUnitContentConfigHandsontableHelper.hiddenColumns,
@@ -408,6 +409,8 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
 	                    var reportType=Ext.getCmp("ReportUnitContentConfig_ReportType").getValue();
+	                    var colConfig = reportUnitContentConfigHandsontableHelper.columns[col];
+	                    var colType = colConfig.type || 'text'; 
 	                    
 	                    var readOnlyStartCol=1;
 	                    var readOnlyEndCol=4;
@@ -417,24 +420,24 @@ var ReportUnitContentConfigHandsontableHelper = {
 		                	if(reportUnitTreeSelectedRow!=''){
 		                		var selectedItem=Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getStore().getAt(reportUnitTreeSelectedRow);
 		                		if(selectedItem.data.classes==0){
-		                			cellProperties.readOnly = true;
+		                			cellProperties.editor = false;
 		                		}else{
 		                			var checked=this.instance.getDataAtRowProp(row,'checked');
 		                			if(checked){
 	                					if (visualColIndex >=readOnlyStartCol && visualColIndex<=readOnlyEndCol) {
-			    							cellProperties.readOnly = true;
+			    							cellProperties.editor = false;
 			    		                }else{
-			    		                	cellProperties.readOnly = false;
+			    		                	cellProperties.editor = colType;
 			    		                }
 	                				}else{
 	                					if (visualColIndex >=1) {
-			    							cellProperties.readOnly = true;
+			    							cellProperties.editor = false;
 			    		                }
 	                				}
 		                		}
 		                	}
 	                    }else{
-	                    	cellProperties.readOnly = true;
+	                    	cellProperties.editor = false;
 	                    }
 	                    
 	                    if(prop=='reportCurveConfShowValue'){
@@ -1026,6 +1029,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+reportUnitContentConfigColInfoHandsontableHelper.divid);
 	        	reportUnitContentConfigColInfoHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],
@@ -1060,7 +1064,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    if(visualColIndex==8){
 		                	cellProperties.renderer = reportUnitContentConfigColInfoHandsontableHelper.addCurveBg;
 		                }else if(visualColIndex==2){

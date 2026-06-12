@@ -497,6 +497,7 @@ var ProtocolImportOverlayHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolImportOverlayHandsontableHelper.divid);
 	        	protocolImportOverlayHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [2,3,4],
@@ -541,7 +542,7 @@ var ProtocolImportOverlayHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    return cellProperties;
 	                }
 	        	});
@@ -604,6 +605,7 @@ var ProtocolImportErrorHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolImportErrorHandsontableHelper.divid);
 	        	protocolImportErrorHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [3,4,5],
@@ -637,7 +639,7 @@ var ProtocolImportErrorHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    if(prop.toUpperCase()=='errorInfo'.toUpperCase()){
 	                    	cellProperties.renderer = protocolImportErrorHandsontableHelper.addBoldBg;
 	                    }

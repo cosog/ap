@@ -31,7 +31,6 @@ body {
     display: -ms-flex;
     -ms-flex-flow: row nowrap;
     -ms-align-items: center;
-}    -ms-align-items: center;
 }
 
 #bannerTitle{
@@ -69,7 +68,7 @@ body {
  	height:16px; 
  	display:inline-block;
  	position:absolute;
- 	right:70px;
+ 	right:100px;
  	color:white;
 }
 
@@ -84,7 +83,7 @@ body {
  	height:16px; 
  	display:inline-block;
  	position:absolute;
- 	right:130px;
+ 	right:180px;
  	color:white;
 }
 
@@ -93,7 +92,7 @@ body {
  	height:16px; 
  	display:inline-block;
  	position:absolute;
- 	right:210px;
+ 	right:260px;
  	color:white;
 }
 
@@ -102,7 +101,7 @@ body {
  	height:16px; 
  	display:inline-block;
  	position:absolute;
- 	right:290px;
+ 	right:370px;
  	color:white;
 }
 

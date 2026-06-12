@@ -371,6 +371,7 @@ var ImportProtocolContentHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importProtocolContentHandsontableHelper.divid);
 	        	importProtocolContentHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [50,130,80,90,90,80,80,90,80,80,80,80],
 	                columns:importProtocolContentHandsontableHelper.columns,
@@ -392,7 +393,7 @@ var ImportProtocolContentHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    return cellProperties;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
@@ -579,6 +580,7 @@ var ImportProtocolExtendedFieldHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+importProtocolExtendedFieldHandsontableHelper.divid);
 	        	importProtocolExtendedFieldHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		colWidths: [50,200,200,80,200,80,80,80,150],
 	                columns:importProtocolExtendedFieldHandsontableHelper.columns,
@@ -597,7 +599,7 @@ var ImportProtocolExtendedFieldHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    return cellProperties;
 	                },
 	                afterBeginEditing: function (row, column) {

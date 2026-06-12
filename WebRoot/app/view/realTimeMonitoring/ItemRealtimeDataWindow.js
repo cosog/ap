@@ -238,6 +238,7 @@ var ItemRealtimeDataHandsontableHelper = {
 		        	var hotElement = document.querySelector('#'+itemRealtimeDataHandsontableHelper.divid);
 		        	itemRealtimeDataHandsontableHelper.hot = new Handsontable(hotElement, {
 		        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+		        		theme: 'ht-theme-classic',
 		        		data: data,
 //		        		colWidths: [5,4],
 		                columns:itemRealtimeDataHandsontableHelper.columns,
@@ -260,7 +261,7 @@ var ItemRealtimeDataHandsontableHelper = {
 		                    var visualColIndex = this.instance.toVisualColumn(col);
 		                    cellProperties.renderer = itemRealtimeDataHandsontableHelper.addCellStyle;
 		                    
-		                    cellProperties.readOnly = true;
+		                    cellProperties.editor = false;
 		                    return cellProperties;
 		                },
 		                afterOnCellMouseOver: function(event, coords, TD){

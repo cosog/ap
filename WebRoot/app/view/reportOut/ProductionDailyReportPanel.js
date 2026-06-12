@@ -671,6 +671,7 @@ var ProductionDailyReportHelper = {
 	            productionDailyReportHelper.container.innerHTML = "";
 	            productionDailyReportHelper.hot = new Handsontable(productionDailyReportHelper.container, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: productionDailyReportHelper.data,
 	            	hiddenColumns: {
 	                    columns: [productionDailyReportHelper.columnCount-1],
@@ -718,8 +719,10 @@ var ProductionDailyReportHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var colConfig = productionDailyReportHelper.columns[col];
+	                    var colType = colConfig.type || 'text'; 
 	                    cellProperties.renderer = productionDailyReportHelper.addStyle;
-	                    cellProperties.readOnly = true;
+	                    cellProperties.editor = false;
 	                    if(productionDailyReportHelper.templateData.editable!=null && productionDailyReportHelper.templateData.editable.length>0){
 	                    	for(var i=0;i<productionDailyReportHelper.templateData.editable.length;i++){
 	                    		if( row>=productionDailyReportHelper.templateData.editable[i].startRow 
@@ -728,7 +731,7 @@ var ProductionDailyReportHelper = {
 	                    				&& col<=productionDailyReportHelper.templateData.editable[i].endColumn
 	                    				&& row<productionDailyReportHelper.templateData.header.length+productionDailyReportHelper.contentData.length
 	                    		){
-	                    			cellProperties.readOnly = false;
+	                    			cellProperties.editor = colType;
 	                    			cellProperties.renderer = productionDailyReportHelper.addEditableColor;
 	                    		}
 	                    	}

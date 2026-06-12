@@ -30,8 +30,8 @@ request.setAttribute("showVideo", showVideo);
 <link rel="stylesheet" href="<%=path%>/scripts/extjs/resources/classic/ext-theme-classic/theme-classic-all.css?timestamp=<%=otherStaticResourceTimestamp%>"  type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/scripts/extjs/ux/classic/resources/ux-all.css?timestamp=<%=otherStaticResourceTimestamp%>"  type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/scripts/extjs/ux/rowEditor/RowEditing.css?timestamp=<%=otherStaticResourceTimestamp%>"  type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/handsontable.full.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/ht-theme-main.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/handsontable.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/ht-theme-classic.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/table.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <!-- 样式区 （结束） --> 
 <!-- 定义Extjs常量 -->

@@ -246,6 +246,7 @@ var VideoKeyDataHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+videoKeyDataHandsontableHelper.divid);
 	        	videoKeyDataHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [0],

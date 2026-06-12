@@ -426,6 +426,7 @@ var BatchAddDeviceCollisionDataHandsontableHelper = {
             var hotElement = document.querySelector('#' + batchAddDeviceCollisionDataHandsontableHelper.divid);
             batchAddDeviceCollisionDataHandsontableHelper.hot = new Handsontable(hotElement, {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
             	data: data,
                 hiddenColumns: {
                     columns: [0],
@@ -489,7 +490,7 @@ var BatchAddDeviceCollisionDataHandsontableHelper = {
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
                     if(batchAddDeviceCollisionDataHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='dataInfo'.toUpperCase()){
-                    	cellProperties.readOnly = true;
+                    	cellProperties.editor = false;
                     	cellProperties.renderer = batchAddDeviceCollisionDataHandsontableHelper.addBoldBg;
                     }else{
                     	if(batchAddDeviceCollisionDataHandsontableHelper.hot!=undefined && batchAddDeviceCollisionDataHandsontableHelper.hot.getDataAtCell!=undefined){
@@ -813,6 +814,7 @@ var BatchAddDeviceOverlayDataHandsontableHelper = {
             var hotElement = document.querySelector('#' + batchAddDeviceOverlayDataHandsontableHelper.divid);
             batchAddDeviceOverlayDataHandsontableHelper.hot = new Handsontable(hotElement, {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
             	data: data,
                 hiddenColumns: {
                     columns: [0],
@@ -876,7 +878,7 @@ var BatchAddDeviceOverlayDataHandsontableHelper = {
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
                     if(batchAddDeviceOverlayDataHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='dataInfo'.toUpperCase()){
-                    	cellProperties.readOnly = true;
+                    	cellProperties.editor = false;
                     	cellProperties.renderer = batchAddDeviceOverlayDataHandsontableHelper.addBoldBg;
                     }else{
                     	if(batchAddDeviceOverlayDataHandsontableHelper.hot!=undefined && batchAddDeviceOverlayDataHandsontableHelper.hot.getDataAtCell!=undefined){

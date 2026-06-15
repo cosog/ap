@@ -62,6 +62,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                 },"-",{
                 	xtype: 'button',
         			text: loginUserLanguageResource.exportData,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'export',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow");
@@ -337,7 +338,13 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 	        protocolConfigInstancePropertiesHandsontableHelper.unitIdNameList=[];
 	        
 	        protocolConfigInstancePropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	if(cellProperties.type=='checkbox'){
+	        		Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+	        	}else if(cellProperties.type=='dropdown'){
+		            Handsontable.renderers.DropdownRenderer.apply(this, arguments);
+		        }else{
+		            Handsontable.renderers.TextRenderer.apply(this, arguments);
+		        }
 	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	            td.style.whiteSpace='nowrap'; //文本不换行
             	td.style.overflow='hidden';//超出部分隐藏
@@ -459,11 +466,24 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 			                    }
 		                    }
 	                    }else{
-							cellProperties.editor = false;
-							cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addBoldBg;
+	                    	if (visualColIndex === 2 && (visualRowIndex===4 ||visualRowIndex===7 || visualRowIndex===8) ) {
+	                    		this.type = 'checkbox';
+		                    }else{
+		                    	cellProperties.editor = false;
+		                    	
+		                    }
+	                    	cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
 	                    
 	                    return cellProperties;
+	                },
+	                beforeChange: function(changes, source) {
+	                    if (!changes) return true;
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if (protocolConfigModuleEditFlag === 0) {
+	                    	return false;
+	                    }
+	                    return true;
 	                },
 	                afterChange: function (changes, source) {
 	                	if (!changes) return;

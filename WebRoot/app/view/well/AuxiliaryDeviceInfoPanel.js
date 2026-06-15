@@ -946,6 +946,9 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                    var AuxiliaryDeviceManagerModuleEditFlag=parseInt(Ext.getCmp("AuxiliaryDeviceManagerModuleEditFlag").getValue());
 	                    if(AuxiliaryDeviceManagerModuleEditFlag!=1){
 	                    	cellProperties.editor = false;
+	                    	if(visualColIndex!=2){
+                    			cellProperties.renderer = auxiliaryDeviceDetailsHandsontableHelper.addBoldBg;
+                    		}
 	                    }else{
 	                    	var auxiliaryDeviceSpecificType=0;
 	                    	if(Ext.getCmp("AuxiliaryDeviceSpecificType_Id")!=undefined){
@@ -976,9 +979,7 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                afterChange: function (changes, source) {
 	                	if (!changes) return;
 	                	changes.forEach(([row, prop, oldValue, newValue]) => {
-	                		
 	                		var itemCode=auxiliaryDeviceDetailsHandsontableHelper.hot.getDataAtRowProp(row,'itemCode');
-	                	
 	                		if (prop === 'itemValue' && itemCode=='stroke') {
 	                			if(isNotVal(Ext.getCmp("AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id"))){
 	                				var strokeDataArr=newValue.split(",");
@@ -991,6 +992,46 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
 	                			}
 	                		}
 	                	});
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(coords.col>=0 && coords.row>=0 && auxiliaryDeviceDetailsHandsontableHelper!=null&&auxiliaryDeviceDetailsHandsontableHelper.hot!=''&&auxiliaryDeviceDetailsHandsontableHelper.hot!=undefined && auxiliaryDeviceDetailsHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=auxiliaryDeviceDetailsHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+	            				var showValue=rawValue;
+	        					var rowChar=90;
+	        					var maxWidth=rowChar*10;
+	        					if(rawValue.length>rowChar){
+	        						showValue='';
+	        						let arr = [];
+	        						let index = 0;
+	        						while(index<rawValue.length){
+	        							arr.push(rawValue.slice(index,index +=rowChar));
+	        						}
+	        						for(var i=0;i<arr.length;i++){
+	        							showValue+=arr[i];
+	        							if(i<arr.length-1){
+	        								showValue+='<br>';
+	        							}
+	        						}
+	        					}
+	            				if(!isNotVal(TD.tip)){
+	            					var height=28;
+	            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+	            				}else{
+	            					TD.tip.setHtml(showValue);
+	            				}
+	            			}
+	                	}
 	                }
 	            });
 	        }
@@ -1157,6 +1198,57 @@ var PumpingUnitPRTFHandsontableHelper = {
 //	                            name: loginUserLanguageResource.contextMenu_paste
 //	                        }
 	                    }
+	                },
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    
+	                    var AuxiliaryDeviceManagerModuleEditFlag=parseInt(Ext.getCmp("AuxiliaryDeviceManagerModuleEditFlag").getValue());
+	                    if(AuxiliaryDeviceManagerModuleEditFlag!=1){
+	                    	cellProperties.editor = false;
+	                    }
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(coords.col>=0 && coords.row>=0 && pumpingUnitPRTFHandsontableHelper!=null&&pumpingUnitPRTFHandsontableHelper.hot!=''&&pumpingUnitPRTFHandsontableHelper.hot!=undefined && pumpingUnitPRTFHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=pumpingUnitPRTFHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+	            				var showValue=rawValue;
+	        					var rowChar=90;
+	        					var maxWidth=rowChar*10;
+	        					if(rawValue.length>rowChar){
+	        						showValue='';
+	        						let arr = [];
+	        						let index = 0;
+	        						while(index<rawValue.length){
+	        							arr.push(rawValue.slice(index,index +=rowChar));
+	        						}
+	        						for(var i=0;i<arr.length;i++){
+	        							showValue+=arr[i];
+	        							if(i<arr.length-1){
+	        								showValue+='<br>';
+	        							}
+	        						}
+	        					}
+	            				if(!isNotVal(TD.tip)){
+	            					var height=28;
+	            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+	            				}else{
+	            					TD.tip.setHtml(showValue);
+	            				}
+	            			}
+	                	}
 	                }
 	        	});
 	        }

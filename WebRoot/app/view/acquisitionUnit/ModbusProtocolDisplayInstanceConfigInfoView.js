@@ -61,6 +61,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                 },"-",{
                 	xtype: 'button',
         			text: loginUserLanguageResource.exportData,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'export',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolDisplayInstanceWindow");

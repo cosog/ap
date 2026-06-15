@@ -1391,9 +1391,9 @@ var DeviceInfoHandsontableHelper = {
         }
         
         deviceInfoHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-        	if(deviceInfoHandsontableHelper.columns[col].type=='checkbox'){
+        	if(cellProperties.type=='checkbox'){
         		deviceInfoHandsontableHelper.addCheckboxCellStyle(instance, td, row, col, prop, value, cellProperties);
-        	}else if(deviceInfoHandsontableHelper.columns[col].type=='dropdown'){
+        	}else if(cellProperties.type=='dropdown'){
         		deviceInfoHandsontableHelper.addDropdownCellStyle(instance, td, row, col, prop, value, cellProperties);
         	}else{
         		deviceInfoHandsontableHelper.addTextCellStyle(instance, td, row, col, prop, value, cellProperties);
@@ -3432,7 +3432,7 @@ var PumpingInfoHandsontableHelper = {
 		                    }
 	                    }else{
 	                    	cellProperties.editor = false;
-	                    	if (visualRowIndex<=2 || (visualRowIndex>=4&&visualRowIndex<=5) ||(visualRowIndex==3&&visualColIndex==1) ) {
+	                    	if ( (visualColIndex<=1&&visualRowIndex<=2) || (visualRowIndex>=4&&visualRowIndex<=5) ||(visualRowIndex==3&&visualColIndex==1) ) {
 								cellProperties.renderer = pumpingInfoHandsontableHelper.addCellStyle;
 			                }
 	                    }
@@ -3620,10 +3620,10 @@ var VideoInfoHandsontableHelper = {
 	        videoInfoHandsontableHelper.colWidths=[];
 	        
 	        videoInfoHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	        	if(videoInfoHandsontableHelper.columns[col].type=='checkbox'){
+	        	if(cellProperties.type=='checkbox'){
 //	        		Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
 //		            td.style.backgroundColor = 'rgb(245, 245, 245)';
-	        	}else if(videoInfoHandsontableHelper.columns[col].type=='dropdown'){
+	        	}else if(cellProperties.type=='dropdown'){
 		            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
 		            td.style.whiteSpace='nowrap'; //文本不换行
 		        	td.style.overflow='hidden';//超出部分隐藏
@@ -3637,10 +3637,10 @@ var VideoInfoHandsontableHelper = {
 	        }
 	        
 	        videoInfoHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
-	        	if(videoInfoHandsontableHelper.columns[col].type=='checkbox'){
+	        	if(cellProperties.type=='checkbox'){
 	        		Handsontable.renderers.CheckboxRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
 		            td.style.backgroundColor = 'rgb(245, 245, 245)';
-	        	}else if(videoInfoHandsontableHelper.columns[col].type=='dropdown'){
+	        	}else if(cellProperties.type=='dropdown'){
 		            Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
 		            td.style.backgroundColor = 'rgb(245, 245, 245)';
 		            td.style.whiteSpace='nowrap'; //文本不换行
@@ -4066,6 +4066,20 @@ var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
 	                    }
 	                    
 	                    return cellProperties;
+	                },
+	                beforeChange: function(changes, source) {
+	                    if (!changes) return true;
+	                    var DeviceManagerModuleEditFlag = parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    // 非编辑模式下，禁止修改复选框列
+	                    if (DeviceManagerModuleEditFlag === 0) {
+	                        for (var i = 0; i < changes.length; i++) {
+	                            var prop = changes[i][1];
+	                            if (prop === 'checked') {
+	                                return false; // 阻止此次更改
+	                            }
+	                        }
+	                    }
+	                    return true;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
@@ -6535,20 +6549,11 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	        }
 	        
 	        deviceIntelligentFrequencyConversionHandsontableHelper.addUplinkStatusCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-//	        	if(protocolAcqUnitConfigItemsHandsontableHelper.columns[col].type=='checkbox'){
-//	        		protocolAcqUnitConfigItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
-//	        	}else if(protocolAcqUnitConfigItemsHandsontableHelper.columns[col].type=='dropdown'){
-//	        		protocolAcqUnitConfigItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
-//	        	}else{
-//	        		protocolAcqUnitConfigItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
-//	        	}
-	        	
 	            if (cellProperties.type === 'checkbox') {
 	                Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
 	            } else {
 	                Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            }
-	            
 	            
 	            if(isNotVal(instance)){
 	            	var itemValue=instance.getDataAtRowProp(row,'itemValue');
@@ -6591,6 +6596,7 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	            var hotElement = document.querySelector('#' + deviceIntelligentFrequencyConversionHandsontableHelper.divid);
 	            deviceIntelligentFrequencyConversionHandsontableHelper.hot = new Handsontable(hotElement, {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
 	            	data: data,
 	            	colWidths: [50,70,70,100,50],
 	                hiddenColumns: {
@@ -6836,6 +6842,14 @@ var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	                    
 	                    return cellProperties;
 	                },
+	                beforeChange: function(changes, source) {
+	                    if (!changes) return true;
+	                    var DeviceManagerModuleEditFlag = parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    if (DeviceManagerModuleEditFlag === 0) {
+	                    	return false;
+	                    }
+	                    return true;
+	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(coords.col>=0 && coords.row>=0 && deviceIntelligentFrequencyConversionHandsontableHelper!=null&&deviceIntelligentFrequencyConversionHandsontableHelper.hot!=''&&deviceIntelligentFrequencyConversionHandsontableHelper.hot!=undefined && deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtCell!=undefined){
 	                		var rawValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
@@ -7079,6 +7093,14 @@ var DeviceInterlockProtectionHandsontableHelper = {
 	                    }
 	                    
 	                    return cellProperties;
+	                },
+	                beforeChange: function(changes, source) {
+	                    if (!changes) return true;
+	                    var DeviceManagerModuleEditFlag = parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    if (DeviceManagerModuleEditFlag === 0) {
+	                    	return false;
+	                    }
+	                    return true;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(coords.col>=0 && coords.row>=0 && deviceInterlockProtectionHandsontableHelper!=null&&deviceInterlockProtectionHandsontableHelper.hot!=''&&deviceInterlockProtectionHandsontableHelper.hot!=undefined && deviceInterlockProtectionHandsontableHelper.hot.getDataAtCell!=undefined){

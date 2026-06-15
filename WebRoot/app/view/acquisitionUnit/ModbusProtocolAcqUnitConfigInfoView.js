@@ -174,6 +174,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                 },"-",{
                 	xtype: 'button',
         			text: loginUserLanguageResource.exportData,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'export',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolAcqUnitWindow");
@@ -384,9 +385,9 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	        }
 	        
 	        protocolAcqUnitConfigItemsHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
-	        	if(protocolAcqUnitConfigItemsHandsontableHelper.columns[col].type=='checkbox'){
+	        	if(cellProperties.type=='checkbox'){
 	        		protocolAcqUnitConfigItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
-	        	}else if(protocolAcqUnitConfigItemsHandsontableHelper.columns[col].type=='dropdown'){
+	        	}else if(cellProperties.type=='dropdown'){
 	        		protocolAcqUnitConfigItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
 	        	}else{
 	        		protocolAcqUnitConfigItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
@@ -479,6 +480,14 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	                    	cellProperties.renderer=protocolAcqUnitConfigItemsHandsontableHelper.addReadOnlyBg;
 	                    }
 	                    return cellProperties;
+	                },
+	                beforeChange: function(changes, source) {
+	                    if (!changes) return true;
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if (protocolConfigModuleEditFlag === 0) {
+	                    	return false;
+	                    }
+	                    return true;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(coords.col!=0 && coords.col!=7 && protocolAcqUnitConfigItemsHandsontableHelper!=null&&protocolAcqUnitConfigItemsHandsontableHelper.hot!=''&&protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined && protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtCell!=undefined){

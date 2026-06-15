@@ -202,6 +202,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                 },"-",{
                 	xtype: 'button',
         			text: loginUserLanguageResource.exportData,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'export',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolDisplayUnitWindow");
@@ -482,9 +483,9 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
         }
         
         protocolDisplayUnitAcqItemsConfigHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
-        	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[col].type=='checkbox'){
+        	if(cellProperties.type=='checkbox'){
         		protocolDisplayUnitAcqItemsConfigHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
-        	}else if(protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns[col].type=='dropdown'){
+        	}else if(cellProperties.type=='dropdown'){
         		protocolDisplayUnitAcqItemsConfigHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
         	}else{
         		protocolDisplayUnitAcqItemsConfigHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
@@ -595,6 +596,14 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                     }
 
                     return cellProperties;
+                },
+                beforeChange: function(changes, source) {
+                    if (!changes) return true;
+                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+                    if (protocolConfigModuleEditFlag === 0) {
+                    	return false;
+                    }
+                    return true;
                 },
                 afterBeginEditing: function (row, column) {
                     var row1 = protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.getDataAtRow(row);
@@ -833,9 +842,9 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 	        }
 	        
 	        protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
-	        	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns[col].type=='checkbox'){
+	        	if(cellProperties.type=='checkbox'){
 	        		protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
-	        	}else if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns[col].type=='dropdown'){
+	        	}else if(cellProperties.type=='dropdown'){
 	        		protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
 	        	}else{
 	        		protocolDisplayUnitCtrlItemsConfigHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
@@ -936,6 +945,14 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 	                    }
 	                    
 	                    return cellProperties;
+	                },
+	                beforeChange: function(changes, source) {
+	                    if (!changes) return true;
+	                    var protocolConfigModuleEditFlag=parseInt(Ext.getCmp("ProtocolConfigModuleEditFlag").getValue());
+	                    if (protocolConfigModuleEditFlag === 0) {
+	                    	return false;
+	                    }
+	                    return true;
 	                },
 	                afterOnCellMouseOver: function(event, coords, TD){
 	                	if(coords.col>=0 && coords.row>=0 && protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns[coords.col].type!='checkbox' 

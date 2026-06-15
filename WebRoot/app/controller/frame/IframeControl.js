@@ -74,6 +74,7 @@ function addPanelEps(o, mdCode, tab_url) {
 	var secondTab_Code=getSecondTapCode(mdCode);
 	
 	refreshPanel(leftOrg_Id,secondTab_Code);
+	saveAccessModuleLog(mdCode);
 	return false;
 }
 
@@ -462,7 +463,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 	}
 	
-	saveAccessModuleLog(module_Code);
+//	saveAccessModuleLog(module_Code);
 	
 	return false;
 	

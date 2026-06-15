@@ -79,6 +79,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                 },"-",{
                 	xtype: 'button',
         			text: loginUserLanguageResource.exportData,
+        			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'export',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.ExportProtocolWindow");
@@ -752,15 +753,15 @@ var ProtocolItemsConfigHandsontableHelper = {
 	        }
 	        
 	        protocolItemsConfigHandsontableHelper.uniqueTitleRenderer = function (instance, td, row, col, prop, value, cellProperties) {
-	        	if(protocolItemsConfigHandsontableHelper.columns[col].type=='checkbox'){
+	        	if(cellProperties.type=='checkbox'){
 	            	Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
-	        	}else if(protocolItemsConfigHandsontableHelper.columns[col].type=='dropdown'){
+	        	}else if(cellProperties.type=='dropdown'){
 	        		Handsontable.renderers.DropdownRenderer.apply(this, arguments);
 	        	}else{
 	        		Handsontable.renderers.TextRenderer.apply(this, arguments);
 	        	}
 	        	
-                if(protocolItemsConfigHandsontableHelper.columns[col].type!='checkbox'){
+                if(cellProperties.type!='checkbox'){
                 	td.style.whiteSpace='nowrap'; //文本不换行
                 	td.style.overflow='hidden';//超出部分隐藏
                 	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本

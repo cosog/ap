@@ -552,9 +552,9 @@ var ImportDisplayUnitAcqItemsHandsontableHelper = {
 	        }
 	        
 	        importDisplayUnitAcqItemsHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
-	        	if(importDisplayUnitAcqItemsHandsontableHelper.columns[col].type=='checkbox'){
+	        	if(cellProperties.type=='checkbox'){
 	        		importDisplayUnitAcqItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
-	        	}else if(importDisplayUnitAcqItemsHandsontableHelper.columns[col].type=='dropdown'){
+	        	}else if(cellProperties.type=='dropdown'){
 	        		importDisplayUnitAcqItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
 	        	}else{
 	        		importDisplayUnitAcqItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
@@ -758,9 +758,9 @@ var ImportDisplayUnitCtrlItemsHandsontableHelper = {
 	        }
 	        
 	        importDisplayUnitCtrlItemsHandsontableHelper.addReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
-	        	if(importDisplayUnitCtrlItemsHandsontableHelper.columns[col].type=='checkbox'){
+	        	if(cellProperties.type=='checkbox'){
 	        		importDisplayUnitCtrlItemsHandsontableHelper.addCheckboxReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
-	        	}else if(importDisplayUnitCtrlItemsHandsontableHelper.columns[col].type=='dropdown'){
+	        	}else if(cellProperties.type=='dropdown'){
 	        		importDisplayUnitCtrlItemsHandsontableHelper.addDropdownReadOnlyBg(instance, td, row, col, prop, value, cellProperties);
 	        	}else{
 	        		importDisplayUnitCtrlItemsHandsontableHelper.addTextReadOnlyBg(instance, td, row, col, prop, value, cellProperties);

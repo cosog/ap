@@ -122,7 +122,7 @@ others:
    iot: true                      #是否为物联网模式
    scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
    module: all                     #模块 ""-仅监测 srp-仅抽油机井功图计算 pcp-仅螺杆泵井转速计算 all-全部 
-   showLogo: false                  #是否显示图标
+   showLogo: true                  #是否显示图标
    printLog: true                  #是否打印调试日志
    printAdLog: true                #是否打印交互日志
    printExceptionLog: true         #是否打印异常日志

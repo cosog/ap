@@ -89,6 +89,7 @@ request.setAttribute("showVideo", showVideo);
 <!-- handsontable -->
 <script type="text/javascript" src="<%=path%>/scripts/handsontable/js/handsontable.full.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <script type="text/javascript" src="<%=path%>/scripts/handsontable/js/zh-CN.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<script type="text/javascript" src="<%=path%>/scripts/handsontable/js/accessibility.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 
 <!-- reconnecting-websocket -->
 <script type="text/javascript" src="<%=path%>/scripts/reconnecting-websocket/reconnecting-websocket.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>

@@ -493,13 +493,13 @@ function saveAccessModuleLog(module_Code){
 
 function getDeviceTabInstanceInfoByDeviceId(deviceId){
 	var r={};
-	console.log('getDeviceTabInstanceInfoByDeviceId请求,'+getCurrentTime());
+//	console.log('getDeviceTabInstanceInfoByDeviceId请求,'+getCurrentTime());
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/operationMaintenanceController/getDeviceTabInstanceInfoByDeviceId',
 		async:false,
 		success:function(response) {
-			console.log('getDeviceTabInstanceInfoByDeviceId响应,'+getCurrentTime());
+//			console.log('getDeviceTabInstanceInfoByDeviceId响应,'+getCurrentTime());
 			r=Ext.JSON.decode(response.responseText);
 		},
 		params: {
@@ -517,7 +517,7 @@ function getDefaultProjectTabInstanceInfoByDeviceType(){
 
 function getProjectTabInstanceInfoByDeviceType(deviceType){
 	var r={};
-	console.log('getProjectTabInstanceInfoByDeviceType请求,'+getCurrentTime());
+//	console.log('getProjectTabInstanceInfoByDeviceType请求,'+getCurrentTime());
 	r.DeviceRealTimeMonitoring={
 			FESDiagramStatPie: false,
             CommStatusStatPie: false,
@@ -546,7 +546,7 @@ function getProjectTabInstanceInfoByDeviceType(deviceType){
 		url:context + '/operationMaintenanceController/getProjectTabInstanceInfoByDeviceType',
 		async:false,
 		success:function(response) {
-			console.log('getProjectTabInstanceInfoByDeviceType响应,'+getCurrentTime());
+//			console.log('getProjectTabInstanceInfoByDeviceType响应,'+getCurrentTime());
 			var result=Ext.JSON.decode(response.responseText);
 			if(result.config.length>0){
 				for(var i=0;i<result.config.length;i++){

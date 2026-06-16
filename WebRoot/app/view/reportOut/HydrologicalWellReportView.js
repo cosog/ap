@@ -740,15 +740,15 @@ function CreateHydrologicalWellReportTable(){
 	}
     
     
-    if(Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id")!=undefined){
-        Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
+    if(Ext.getCmp("HydrologicalWellReportTabPanel_Id")!=undefined){
+        Ext.getCmp("HydrologicalWellReportTabPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
 	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getHydrologicalWellReportData',
 		success:function(response) {
-			if(Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id")!=undefined){
-				Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id").getEl().unmask();
+			if(Ext.getCmp("HydrologicalWellReportTabPanel_Id")!=undefined){
+				Ext.getCmp("HydrologicalWellReportTabPanel_Id").getEl().unmask();
 			}
 			var result =  Ext.JSON.decode(response.responseText);
 			
@@ -793,8 +793,8 @@ function CreateHydrologicalWellReportTable(){
 			Ext.getCmp(totalCountId).update({count: result.data.length});
 		},
 		failure:function(){
-			if(Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id")!=undefined){
-				Ext.getCmp("HydrologicalWellReportDeviceListPanel_Id").getEl().unmask();
+			if(Ext.getCmp("HydrologicalWellReportTabPanel_Id")!=undefined){
+				Ext.getCmp("HydrologicalWellReportTabPanel_Id").getEl().unmask();
 			}
 			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
 		},
@@ -1003,7 +1003,7 @@ var HydrologicalWellReportHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    var colConfig = deviceInfoHandsontableHelper.columns[col];
+	                    var colConfig = hydrologicalWellReportHelper.columns[col];
 	                    var colType = colConfig.type || 'text';
 	                    cellProperties.renderer = hydrologicalWellReportHelper.addStyle;
 	                    cellProperties.editor = false;

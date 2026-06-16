@@ -1083,6 +1083,32 @@ function getDeviceAdditionalInformationType(){
 	return type;
 }
 
+function customDateRenderer(instance, td, row, col, prop, value, cellProperties) {
+    // 先让 Handsontable 默认渲染器处理基础内容
+    Handsontable.renderers.TextRenderer.apply(this, arguments);
+    
+    // 检查值是否有效
+    if (value && typeof value === 'string') {
+        // 方法1：用 JavaScript 原生的 Date 对象
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            td.innerText = `${year}-${month}-${day}`; // 显示为 YYYY-MM-DD
+            // 也可用 td.innerText = `${year}/${month}/${day}`; // 显示为 YYYY/MM/DD
+        }
+        
+        // 方法2：用 moment.js 作为后备（如果你坚持用旧方式）
+        // if (typeof moment === 'function') {
+        //     const formattedDate = moment(value).format('YYYY-MM-DD');
+        //     if (formattedDate !== 'Invalid date') {
+        //         td.innerText = formattedDate;
+        //     }
+        // }
+    }
+}
+
 function CreateAndLoadDeviceInfoTable(isNew) {
 	if(isNew&&deviceInfoHandsontableHelper!=null){
 		if (deviceInfoHandsontableHelper.hot != undefined) {
@@ -1215,7 +1241,9 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 	                    } else if (result.columns[i].dataIndex.toUpperCase() === "ipPort".toUpperCase()) {
 	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_IpPort_Nullable(val, callback,this.row, this.col,deviceInfoHandsontableHelper);}}";
 	                    } else if (result.columns[i].dataIndex.toUpperCase() === "commissioningDate".toUpperCase()) {
-	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'date',dateFormat: 'YYYY-MM-DD'}";
+//	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'date',dateFormat: 'YYYY-MM-DD'}";
+	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'intl-date',dateFormat: {year:'numeric', month:'2-digit', day:'2-digit'}, locale: 'sv-SE'}";
+//	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'intl-date',renderer: customDateRenderer}";
 	                    } else if (result.columns[i].dataIndex.toUpperCase() === "calculateTypeName".toUpperCase()) {
 	                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.nothing+"','"+loginUserLanguageResource.SRPCalculate+"', '"+loginUserLanguageResource.PCPCalculate+"']}";
 	                    }  else {
@@ -1478,8 +1506,6 @@ var DeviceInfoHandsontableHelper = {
             	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
         		theme: 'ht-theme-classic',
             	data: data,
-//            	theme: 'dark',
-            	themeName: 'ht-theme-main',
                 hiddenColumns: {
                     columns: [0],
                     indicators: false,

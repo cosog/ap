@@ -168,3 +168,18 @@ input.page-login .login-form .form-control {
         width: auto
     }
 }
+
+/* 去掉默认的黑色轮廓并应用输入框的聚焦样式 */
+.bootstrap-select .dropdown-toggle:focus {
+    border-color: #66afe9 !important;
+    outline: 0 !important;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6) !important;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6) !important;
+}
+
+/* （可选）针对下拉菜单打开时的按钮状态，保持一致性 */
+.bootstrap-select.open .dropdown-toggle {
+    border-color: #66afe9 !important;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6) !important;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6) !important;
+}

@@ -74,7 +74,7 @@
     <!--<script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202303300850"></script>-->
     <meta name="description" content="">
     <meta name="keywords" content="">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <meta name="renderer" content="webkit">
     <!--默认360极速模式-->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -321,7 +321,7 @@
         						<div class="checkbox-custom checkbox-inline checkbox-primary pull-left">
             						
 					  				<input type="checkbox" id="flag" name="flag" value="0">
-            						<label for="remember" id="login_rememberpassword"></label>
+            						<label for="flag" id="login_rememberpassword"></label>
         						</div>
         						<a class="pull-right collapsed" data-toggle="collapse" href="#forgetPassword" aria-expanded="false" aria-controls="forgetPassword" id="login_forgerpassword">
         						</a>

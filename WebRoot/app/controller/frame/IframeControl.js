@@ -373,7 +373,18 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			Ext.create('AP.store.reportOut.HydrologicalWellReportDeviceListStore');
 		}
 	}else if(module_Code == 'SystemLogQuery'){
-		Ext.getCmp('systemLogUserListComb_Id').setValue("");
+		Ext.getCmp('SystemLogQueryStartDate_Id').setValue('');
+    	Ext.getCmp('SystemLogQueryStartDate_Id').setRawValue('');
+    	Ext.getCmp('SystemLogQueryStartTime_Hour_Id').setValue('');
+    	Ext.getCmp('SystemLogQueryStartTime_Minute_Id').setValue('');
+//    	Ext.getCmp('SystemLogQueryStartTime_Second_Id').setValue('');
+        Ext.getCmp('SystemLogQueryEndDate_Id').setValue('');
+        Ext.getCmp('SystemLogQueryEndDate_Id').setRawValue('');
+        Ext.getCmp('SystemLogQueryEndTime_Hour_Id').setValue('');
+    	Ext.getCmp('SystemLogQueryEndTime_Minute_Id').setValue('');
+//    	Ext.getCmp('SystemLogQueryEndTime_Second_Id').setValue('');
+    	
+    	Ext.getCmp('systemLogUserListComb_Id').setValue("");
 		Ext.getCmp('systemLogUserListComb_Id').setRawValue("");
 		
 		Ext.getCmp('systemLogActionListComb_Id').setValue("");

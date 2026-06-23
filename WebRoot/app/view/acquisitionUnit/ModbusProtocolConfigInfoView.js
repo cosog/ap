@@ -1218,7 +1218,7 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 		var tabPanel = Ext.getCmp("ProtocolConfigRightTabPanel_Id");
 		var showInfo=tabPanel.getActiveTab().title;
 		if(isNotVal(item1.title)){
-			showInfo="【<font color=red>"+item1.title+"</font>】"+showInfo+"&nbsp;"
+			showInfo="【<font color=red>"+item1.value+"</font>】"+showInfo+"&nbsp;"
 		}
 		Ext.getCmp("ProtocolConfigInformationLabel_Id").setHtml(showInfo);
 	    Ext.getCmp("ProtocolConfigInformationLabel_Id").show();

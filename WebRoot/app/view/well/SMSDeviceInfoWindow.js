@@ -19,8 +19,8 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
     initComponent: function () {
         var me = this;
         var labelWidth=getLabelWidth(loginUserLanguageResource.deviceName+'*',loginUserLanguage);
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.SMSInstance,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.SMSInstance,loginUserLanguage);
@@ -126,7 +126,7 @@ Ext.define("AP.view.well.SMSDeviceInfoWindow", {
             	xtype: 'numberfield',
             	id: "smsDeviceSortNum_Id",
             	name: "smsDeviceInformation.sortNum",
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,

@@ -397,6 +397,23 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			Ext.create('AP.store.log.SystemLogStore');
 		}
 	}else if(module_Code == "DeviceOperationLogQuery"){
+		Ext.getCmp('DeviceOperationLogDeviceListComb_Id').setValue('');
+    	Ext.getCmp('DeviceOperationLogDeviceListComb_Id').setRawValue('');
+    	Ext.getCmp('DeviceOperationLogOperationTypeListComb_Id').setValue('');
+    	Ext.getCmp('DeviceOperationLogOperationTypeListComb_Id').setRawValue('');
+    	
+    	Ext.getCmp('DeviceOperationLogQueryStartDate_Id').setValue('');
+    	Ext.getCmp('DeviceOperationLogQueryStartDate_Id').setRawValue('');
+    	Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').setValue('');
+    	Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').setValue('');
+//    	Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').setValue('');
+        Ext.getCmp('DeviceOperationLogQueryEndDate_Id').setValue('');
+        Ext.getCmp('DeviceOperationLogQueryEndDate_Id').setRawValue('');
+        Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').setValue('');
+    	Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').setValue('');
+//    	Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').setValue('');
+		
+		
 		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
 		var deviceType=getDeviceTypeFromTabId("DeviceOperationLogRootTabPanel");
 		var tabPanel = Ext.getCmp("DeviceOperationLogRootTabPanel");

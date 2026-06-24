@@ -1966,7 +1966,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\",\"columnDataSource\":0 ,\"children\":[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("SMSInstance")+"\",\"dataIndex\":\"instanceName\",\"columnDataSource\":0,\"width\":120 ,\"children\":[] },"
 				+ "{ \"header\":\""+languageResourceMap.get("signInId")+"\",\"dataIndex\":\"signInId\",\"columnDataSource\":0 ,\"children\":[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("sortNum")+"\",\"dataIndex\":\"sortNum\",\"columnDataSource\":0 ,\"children\":[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("sequenceNumber")+"\",\"dataIndex\":\"sortNum\",\"columnDataSource\":0 ,\"children\":[] }"
 				+ "]";
 		String sql = "select id,orgName_"+language+",deviceName,instanceName,signInId,sortNum"
 				+ " from "+tableName+" t where 1=1"

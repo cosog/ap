@@ -24,8 +24,8 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.calculationType+'*',loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.calculationType+'*',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.unitDescription,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.unitDescription,loginUserLanguage);
@@ -243,7 +243,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
             	xtype: 'numberfield',
             	id: "alarmUnitSort_Id",
                 name: 'alarmUnit.sort',
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,

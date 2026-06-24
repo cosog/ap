@@ -52,8 +52,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.packetSendInterval+'(ms)',loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.packetSendInterval+'(ms)',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         
         var ProtocolAndAcqUnitTreeStore=Ext.create('Ext.data.TreeStore', {
@@ -409,7 +409,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
             	xtype: 'numberfield',
             	id: "modbusProtocolInstanceSort_Id",
                 name: 'protocolInstance.sort',
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,

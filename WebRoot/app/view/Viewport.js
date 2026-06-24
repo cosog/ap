@@ -1,7 +1,4 @@
 var websocketClient = null;
-
-
-
 Ext.define('AP.view.Viewport', {
     extend: 'Ext.container.Viewport',
     id: 'frame_imivport_ids',

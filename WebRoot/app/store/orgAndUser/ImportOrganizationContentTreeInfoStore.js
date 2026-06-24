@@ -51,7 +51,7 @@ Ext.define('AP.store.orgAndUser.ImportOrganizationContentTreeInfoStore', {
                         xtype: 'treecolumn',
                         dataIndex: 'text'
                     }, {
-                        header: loginUserLanguageResource.sortNum,
+                        header: loginUserLanguageResource.sequenceNumber,
                         lockable: true,
                         align: 'left',
                         flex: 1,

@@ -83,7 +83,7 @@ Ext.define('AP.store.operationMaintenance.ImportBackupAuxiliaryDeviceContentTree
                         dataIndex: 'remark',
                         flex:2
                     }, {
-                        header: loginUserLanguageResource.sortNum,
+                        header: loginUserLanguageResource.sequenceNumber,
                         lockable: true,
                         align: 'center',
                         sortable: true,

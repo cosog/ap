@@ -279,7 +279,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				if(hiddenRows.length>0){
 					item13.id=item13.id-hiddenRows.length;
 				}
-				item13.title=loginUserLanguageResource.sortNum;
+				item13.title=loginUserLanguageResource.sequenceNumber;
 				item13.value=data.sort;
 				root.push(item13);
 			}else if(data.classes==2){

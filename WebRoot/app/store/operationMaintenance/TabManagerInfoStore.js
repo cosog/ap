@@ -86,12 +86,12 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
                             disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
                         }:"",
                     }, {
-                        header: loginUserLanguageResource.sortNum,
+                        header: loginUserLanguageResource.sequenceNumber,
                         lockable: true,
                         align: 'center',
                         sortable: true,
-                        flex: 1,
-//                        width: getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)+'px',
+                        flex: 3,
+//                        width: getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)+'px',
                         dataIndex: 'sortNum',
                         editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
                             allowBlank: false,

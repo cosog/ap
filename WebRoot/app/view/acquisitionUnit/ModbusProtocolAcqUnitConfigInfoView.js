@@ -576,7 +576,7 @@ function CreateProtocolAcqUnitConfigPropertiesInfoTable(data){
 		
 		var item2 = {};
         item2.id = 2;
-        item2.title = loginUserLanguageResource.sortNum;
+        item2.title = loginUserLanguageResource.sequenceNumber;
         item2.value = data.sort;
         root.push(item2);
 		

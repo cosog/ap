@@ -117,7 +117,7 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     dataIndex: 'datavalue'
                 },
                 {
-                    header: loginUserLanguageResource.sortNum,
+                    header: loginUserLanguageResource.sequenceNumber,
                     width: 40,
                     dataIndex: 'sorts'
                 },

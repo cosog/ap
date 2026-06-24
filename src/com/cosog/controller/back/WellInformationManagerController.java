@@ -2102,7 +2102,7 @@ public class WellInformationManagerController extends BaseController {
 				+ "{ \"header\":\""+languageResourceMap.get("signInId")+"\",\"dataIndex\":\"signInId\"},"
 				+ "{ \"header\":\""+languageResourceMap.get("slave")+"\",\"dataIndex\":\"slave\"},"
 				+ "{ \"header\":\""+languageResourceMap.get("status")+"\",\"dataIndex\":\"statusName\"},"
-				+ "{ \"header\":\""+languageResourceMap.get("sortNum")+"\",\"dataIndex\":\"sortNum\"},"
+				+ "{ \"header\":\""+languageResourceMap.get("sequenceNumber")+"\",\"dataIndex\":\"sortNum\"},"
 				+ "{ \"header\":\""+languageResourceMap.get("crudeOilDensity")+"(g/cm^3)\",\"dataIndex\":\"crudeOilDensity\"},"
 				+ "{ \"header\":\""+languageResourceMap.get("waterDensity")+"(g/cm^3)\",\"dataIndex\":\"waterDensity\"},"
 				+ "{ \"header\":\""+languageResourceMap.get("naturalGasRelativeDensity")+"\",\"dataIndex\":\"naturalGasRelativeDensity\"},"

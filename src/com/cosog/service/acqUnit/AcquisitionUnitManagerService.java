@@ -6493,7 +6493,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		+ "{ \"header\":\""+languageResourceMap.get("instanceName")+"\",\"dataIndex\":\"name\" ,children:[] },"
 		+ "{ \"header\":\""+languageResourceMap.get("acqProtocolType")+"\",\"dataIndex\":\"acqProtocolType\" ,children:[] },"
 		+ "{ \"header\":\""+languageResourceMap.get("ctrlProtocolType")+"\",\"dataIndex\":\"ctrlProtocolType\" ,children:[] },"
-		+ "{ \"header\":\""+languageResourceMap.get("sortNum")+"\",\"dataIndex\":\"sort\",children:[] }"
+		+ "{ \"header\":\""+languageResourceMap.get("sequenceNumber")+"\",\"dataIndex\":\"sort\",children:[] }"
 		+ "]";
 		
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,t.sort from tbl_protocolsmsinstance t where 1=1";

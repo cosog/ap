@@ -26,8 +26,8 @@ Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.calculationType,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.calculationType,loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         
         
@@ -90,7 +90,7 @@ Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
             	xtype: 'numberfield',
             	id: "addDeviceTabManagerInstanceSortNum_Id",
             	name: "deviceTabManager.sort",
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,

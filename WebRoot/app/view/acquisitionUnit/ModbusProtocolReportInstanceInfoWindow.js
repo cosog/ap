@@ -21,8 +21,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         var reportUnitStore = new Ext.data.SimpleStore({
         	fields: [{
@@ -153,7 +153,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
             	xtype: 'numberfield',
             	id: "modbusProtocolReportInstanceSort_Id",
                 name: 'protocolReportInstance.sort',
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,

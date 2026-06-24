@@ -73,7 +73,7 @@ Ext.define('AP.store.acquisitionUnit.CurveGroupRealtimeInfoStore', {
                         	}
                         }
                     },{
-                        header: loginUserLanguageResource.sortNum,
+                        header: loginUserLanguageResource.sequenceNumber,
                         lockable: true,
                         align: 'center',
                         sortable: true,

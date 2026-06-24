@@ -240,7 +240,7 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                             }
                     	}
                     },{
-                    	header: loginUserLanguageResource.sortNum,
+                    	header: loginUserLanguageResource.sequenceNumber,
                     	align: 'center',
                     	width: 40,
                     	dataIndex: 'sorts',

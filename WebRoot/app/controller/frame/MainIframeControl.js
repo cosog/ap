@@ -6,6 +6,7 @@ Ext.define('AP.controller.frame.MainIframeControl', {
         selector: 'mainIframeView'
      }],
     init: function () {
+    	console.log('MainIframeControl init called');
         this.control({
             'mainIframeView': {
                 itemclick: extFuncTreeItemsClk
@@ -39,10 +40,20 @@ function extFuncTreeItemsClk(view, rec, item, index, e) {
                     var ViewUrl=rec.data.viewsrc;
                     var controllerUrl = "";
                     if (getControlName != "#") {
-                        Ext.require(getControlName, function () {
-                            controllerUrl = app.getController(getControlName);
-                            controllerUrl.init(app);
-                        }, self);
+//                        Ext.require(getControlName, function () {
+//                            controllerUrl = app.getController(getControlName);
+//                            controllerUrl.init(app);
+//                        }, self);
+                        
+                     // 检查控制器是否已经加载（或已定义）
+                        if (!Ext.ClassManager.get(getControlName)) {
+                            Ext.require(getControlName, function () {
+                                var ctrl = app.getController(getControlName);
+                                if (ctrl) {
+                                    ctrl.init(app);
+                                }
+                            }, self);
+                        }
                     }
                     if (ViewUrl != "#") {
                     	var all_loading = new Ext.LoadMask({

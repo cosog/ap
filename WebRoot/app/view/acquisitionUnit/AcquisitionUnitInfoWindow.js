@@ -21,8 +21,8 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.unitName+'*',loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.unitName+'*',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.unitDescription,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.unitDescription,loginUserLanguage);
@@ -180,7 +180,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
             	xtype: 'numberfield',
             	id: "acquisitionUnitSort_Id",
                 name: 'acquisitionUnit.sort',
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,

@@ -28,8 +28,8 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.remark,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.remark,loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         var auxiliaryDeviceEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
@@ -176,7 +176,7 @@ Ext.define("AP.view.well.AuxiliaryDeviceInfoWindow", {
             	xtype: 'numberfield',
             	id: "auxiliaryDeviceSort_Id",
             	name: "auxiliaryDeviceInformation.sort",
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '95%',

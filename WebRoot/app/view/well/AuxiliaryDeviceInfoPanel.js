@@ -323,7 +323,7 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             var result = Ext.JSON.decode(response.responseText);
             if (auxiliaryDeviceInfoHandsontableHelper == null || auxiliaryDeviceInfoHandsontableHelper.hot == null || auxiliaryDeviceInfoHandsontableHelper.hot == undefined) {
                 auxiliaryDeviceInfoHandsontableHelper = AuxiliaryDeviceInfoHandsontableHelper.createNew("AuxiliaryDeviceTableDiv_id");
-                var colHeaders="['"+loginUserLanguageResource.idx+"','类型','"+loginUserLanguageResource.deviceName+"','"+loginUserLanguageResource.manufacturer+"','"+loginUserLanguageResource.model+"','"+loginUserLanguageResource.remark+"','"+loginUserLanguageResource.sortNum+"']";
+                var colHeaders="['"+loginUserLanguageResource.idx+"','类型','"+loginUserLanguageResource.deviceName+"','"+loginUserLanguageResource.manufacturer+"','"+loginUserLanguageResource.model+"','"+loginUserLanguageResource.remark+"','"+loginUserLanguageResource.sequenceNumber+"']";
                 var columns="[{data:'id'}," 
                 		+"{data:'specificType'}," 
                 		+"{data:'name'}," 

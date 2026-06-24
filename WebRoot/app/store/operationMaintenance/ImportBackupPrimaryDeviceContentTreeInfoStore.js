@@ -131,7 +131,7 @@ Ext.define('AP.store.operationMaintenance.ImportBackupPrimaryDeviceContentTreeIn
                         dataIndex: 'peakDelay',
                         flex:2
                     }, {
-                        header: loginUserLanguageResource.sortNum,
+                        header: loginUserLanguageResource.sequenceNumber,
                         lockable: true,
                         align: 'center',
                         sortable: true,

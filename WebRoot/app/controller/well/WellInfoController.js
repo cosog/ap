@@ -5,23 +5,26 @@ Ext.define('AP.controller.well.WellInfoController', {
         selector: 'wellInfoPanel'
    }],
     init: function () {
-        this.control({
-            'wellInfoPanel > toolbar button[action=addreWellInfoAction]': {
-                click: addwellInfo
-            },
-            'wellInfoPanel > toolbar button[action=editreWellInfoInfoAction]': {
-                click: modifywellInfo
-            },
-            'wellInfoPanel > toolbar button[action=delreWellInfoAction]': {
-                click: delectwellInfo
-            },
-            'wellInfoPanel > toolbar button[action=saveWellEditerGridDataAction]': {
-                click: saveWellEditerGridDataInfo
-            },
-            'wellInfoPanel': {
-                itemdblclick: modifywellInfo
-            }
-        })
+    	// 防止重复绑定事件
+        if (!this._initialized) {
+        	this.control({
+                'wellInfoPanel > toolbar button[action=addreWellInfoAction]': {
+                    click: addwellInfo
+                },
+                'wellInfoPanel > toolbar button[action=editreWellInfoInfoAction]': {
+                    click: modifywellInfo
+                },
+                'wellInfoPanel > toolbar button[action=delreWellInfoAction]': {
+                    click: delectwellInfo
+                },
+                'wellInfoPanel > toolbar button[action=saveWellEditerGridDataAction]': {
+                    click: saveWellEditerGridDataInfo
+                },
+                'wellInfoPanel': {
+                    itemdblclick: modifywellInfo
+                }
+            })
+        }
     }
 });
 

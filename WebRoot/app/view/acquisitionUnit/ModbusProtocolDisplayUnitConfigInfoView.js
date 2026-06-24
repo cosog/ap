@@ -1078,7 +1078,7 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 				
 				var item4={};
 				item4.id=4;
-				item4.title=loginUserLanguageResource.sortNum;
+				item4.title=loginUserLanguageResource.sequenceNumber;
 				item4.value=data.sort;
 				root.push(item4);
 				

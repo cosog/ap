@@ -197,7 +197,7 @@ function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 				
 				var item3={};
 				item3.id=3;
-				item3.title=loginUserLanguageResource.sortNum;
+				item3.title=loginUserLanguageResource.sequenceNumber;
 				item3.value=data.sort;
 				root.push(item3);
 			}else if(data.classes==2){

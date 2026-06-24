@@ -24,8 +24,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.calculationType+'*',loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.calculationType+'*',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         var postModbusProtocolEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
@@ -145,7 +145,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
             	xtype: 'numberfield',
             	id: "modbusProtocolReportUnitSort_Id",
                 name: 'reportUnit.sort',
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,

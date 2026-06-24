@@ -35,8 +35,8 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.enable+'*',loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.enable+'*',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum+'*',loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum+'*',loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber+'*',loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber+'*',loginUserLanguage);
         }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.fieldParameter,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.fieldParameter,loginUserLanguage);
@@ -58,7 +58,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
         var sysdata_sorts = Ext.create("Ext.form.NumberField", {
             id: "sysdatasorts_Ids",
             name: 'dataitemsInfo.sorts',
-            fieldLabel: loginUserLanguageResource.sortNum + '<font color=red>*</font>',
+            fieldLabel: loginUserLanguageResource.sequenceNumber + '<font color=red>*</font>',
             labelWidth: labelWidth,
             allowBlank: false,
             minValue: 0,

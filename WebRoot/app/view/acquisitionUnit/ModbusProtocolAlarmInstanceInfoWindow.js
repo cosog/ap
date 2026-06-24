@@ -21,8 +21,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.instanceName+'*',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         var ProtocolAndAlarmUnitTreeStore=Ext.create('Ext.data.TreeStore', {
             fields: ['orgId', 'text', 'leaf'],
@@ -201,7 +201,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
             	xtype: 'numberfield',
             	id: "modbusProtocolAlarmInstanceSort_Id",
                 name: 'protocolAlarmInstance.sort',
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,

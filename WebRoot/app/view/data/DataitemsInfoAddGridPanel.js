@@ -74,7 +74,7 @@ Ext.define('AP.view.data.DataitemsInfoAddGridPanel', {
                     }
                 },
                 {
-                    header: loginUserLanguageResource.sortNum,
+                    header: loginUserLanguageResource.sequenceNumber,
                     align: 'center',
                     dataIndex: 'sorts',
                     field: {

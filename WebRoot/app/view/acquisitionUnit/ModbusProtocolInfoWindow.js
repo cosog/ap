@@ -21,8 +21,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.language+'*',loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.language+'*',loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         var languageComboxStore = new Ext.data.SimpleStore({
             fields: [{
@@ -131,7 +131,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
             	xtype: 'numberfield',
             	id: "modbusProtocolSort_Id",
                 name: 'protocolModel.sort',
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,

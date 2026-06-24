@@ -73,7 +73,7 @@ Ext.define('AP.store.acquisitionUnit.CurveGroupHistoryInfoStore', {
                         	}
                         }
                     },{
-                        header: loginUserLanguageResource.sortNum,
+                        header: loginUserLanguageResource.sequenceNumber,
                         lockable: true,
                         align: 'center',
                         sortable: true,

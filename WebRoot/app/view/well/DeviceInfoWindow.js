@@ -59,8 +59,8 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.status,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.status,loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         var deviceTypeStore = new Ext.data.SimpleStore({
         	fields: [{
@@ -921,7 +921,7 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
             	xtype: 'numberfield',
             	id: "deviceSortNum_Id",
             	name: "deviceInformation.sortNum",
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: 1,

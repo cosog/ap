@@ -21,8 +21,8 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
     initComponent: function () {
         var me = this;
         var labelWidth=getLabelWidth(loginUserLanguageResource.orgName+'*',loginUserLanguage);
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.sortNum,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
         var postOrgEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
@@ -78,7 +78,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
             	xtype: 'numberfield',
             	id: "orgSeq_Id",
             	name: "org.orgSeq",
-                fieldLabel: loginUserLanguageResource.sortNum,
+                fieldLabel: loginUserLanguageResource.sequenceNumber,
                 labelWidth: labelWidth,
                 allowBlank: true,
                 minValue: '',

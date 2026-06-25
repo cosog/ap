@@ -108,8 +108,10 @@ public class WebSocketByJavax {
     @SuppressWarnings({ "static-access","static-access" })
 	@OnMessage
     public void onMessage(String message, Session session) throws IOException {
-        logger.debug("收到用户{}的消息{}",this.userId,message);
-        session.getBasicRemote().sendText("收到 "+this.userId+" 的消息: "+message); //回复用户
+        logger.debug("收到用户{}的消息{}", this.userId, message);
+        synchronized (session) {
+            session.getBasicRemote().sendText("收到 " + this.userId + " 的消息: " + message);//回复用户
+        }
     }
     
     //连接错误时执行
@@ -247,25 +249,5 @@ public class WebSocketByJavax {
 
     public static synchronized Map<String, WebSocketByJavax> getClients() {
         return clients;
-    }
-    
-    public static class SendMessageThread extends Thread{
-    	private Session session; 
-    	private String message;
-		public SendMessageThread(Session session, String message) {
-			super();
-			this.session = session;
-			this.message = message;
-		}
-		public void run(){
-			try {
-				if(session.isOpen()){
-					session.getBasicRemote().sendText(message);
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
     }
 }

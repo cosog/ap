@@ -28,7 +28,7 @@ Ext.define('AP.view.Viewport', {
             	+'<img id="bannerLogoImg" style="display:none;"/>'
             	+'<span id="bannerTitle">bannerTitle</span>' 
             	+'<div id="bannerToolbar"><a href="#" id="banner_exit" onclick="userLoginOut()"><span id="banner_exit_text"></span></a></div>'
-            	+'<div id="bannerToolbar"><a href="#" id="banner_help" onclick="showHelpDocumentWinFn()"><span id="banner_help_text"></span></a></div>' 
+            	+'<div id="bannerToolbar"><a href="#" id="banner_help" onclick="'+(showHelp?'showHelpDocumentWinFn()':'return false;')+'"><span id="banner_help_text"></span></a></div>' 
 //            	+'<div id="menu"><ul><li><a href="" class="drop">语言</a><div class="dropdown_1column"><div class="col_1"><ul class="simple"><li><a href="">中文</a></li><li><a href="">英文</a></li><li><a href="">俄文</a</li></ul></div></div></li></ul></div>'
             	+'</div>'
     }, {
@@ -992,23 +992,25 @@ function resetPwdFn() {
 
 //帮助文档窗口
 function showHelpDocumentWinFn() {
-    var tabPanel = Ext.getCmp("frame_center_ids");
-    var getTabId = tabPanel.getComponent("HelpDocPanel");
-    if (!getTabId) {
-        var url=context+'/readme/ap/ap.html';//\ap\readme\ap
-    	tabPanel.add(Ext.create("AP.view.help.HelpDocPanel", {
-            id: 'HelpDocPanel',
-            closable: true,
-            iconCls: 'help',
-            closeAction: 'destroy',
-            title: loginUserLanguageResource.help,
-            listeners: {
-                afterrender: function () {},
-                delay: 150
-            }
-        })).show();
-    }
-    tabPanel.setActiveTab("HelpDocPanel");
+	if(showHelp){
+		var tabPanel = Ext.getCmp("frame_center_ids");
+	    var getTabId = tabPanel.getComponent("HelpDocPanel");
+	    if (!getTabId) {
+	        var url=context+'/readme/ap/ap.html';//\ap\readme\ap
+	    	tabPanel.add(Ext.create("AP.view.help.HelpDocPanel", {
+	            id: 'HelpDocPanel',
+	            closable: true,
+	            iconCls: 'help',
+	            closeAction: 'destroy',
+	            title: loginUserLanguageResource.help,
+	            listeners: {
+	                afterrender: function () {},
+	                delay: 150
+	            }
+	        })).show();
+	    }
+	    tabPanel.setActiveTab("HelpDocPanel");
+	}
     return false;
 }
 

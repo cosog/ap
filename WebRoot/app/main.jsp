@@ -154,6 +154,7 @@
         var exportAdInitData = configFile.ap.others.exportAdInitData;
         
         var showLogo = configFile.ap.others.showLogo;
+        var showHelp = configFile.ap.others.showHelp;
         
         var oemStaticResourceTimestamp = configFile.ap.oem.staticResourceTimestamp;
         var otherStaticResourceTimestamp = configFile.ap.others.otherStaticResourceTimestamp;

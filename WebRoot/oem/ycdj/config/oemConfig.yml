@@ -123,6 +123,7 @@ others:
    scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
    module: all                     #模块 ""-仅监测 srp-仅抽油机井功图计算 pcp-仅螺杆泵井转速计算 all-全部 
    showLogo: true                  #是否显示图标
+   showHelp: true                  #是否显示帮助文档
    printLog: true                  #是否打印日志
    printAdLog: true                #是否打印ad交互日志
    printExceptionLog: true         #是否打印异常日志

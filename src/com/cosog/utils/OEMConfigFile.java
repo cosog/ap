@@ -275,6 +275,8 @@ public class OEMConfigFile {
 	    private String module;
 
 	    private boolean showLogo;
+	    
+	    private boolean showHelp;
 
 	    private boolean printLog;
 	    
@@ -480,6 +482,12 @@ public class OEMConfigFile {
 		}
 		public void setResourceMonitoringSaveCycle(int resourceMonitoringSaveCycle) {
 			this.resourceMonitoringSaveCycle = resourceMonitoringSaveCycle;
+		}
+		public boolean getShowHelp() {
+			return showHelp;
+		}
+		public void setShowHelp(boolean showHelp) {
+			this.showHelp = showHelp;
 		}
 	}
 	

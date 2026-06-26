@@ -405,6 +405,10 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		getBaseDao().updateObject(deviceType);
 	}
 	
+	public void modifyDeviceTabInstance(T deviceTabManager) throws Exception {
+		getBaseDao().updateObject(deviceTabManager);
+	}
+	
 	public String getDeviceTabManagerData(User user) throws IOException, SQLException {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer language_json = new StringBuffer();
@@ -412,7 +416,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		
 		String columns=	"[]";
 		
-		String sql="select t.id,t.name,"
+		String sql="select t.id,t.name_zh_CN,t.name_en,t.name_ru,"
 				+ " decode(t.calculatetype,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
 				+ " t.sort "
 				+ " from tbl_tabmanager_device t "
@@ -422,16 +426,23 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		
 		List<?> list = this.findCallSql(sql);
 		language_json.append("[");
-		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",");
+		result_json.append("{\"success\":true,"
+				+ "\"totalCount\":"+list.size()+","
+				+ "\"showChineseName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 1)+","
+				+ "\"showEnglishName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 2)+","
+				+ "\"showRussianName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 3)+","
+				+ "\"columns\":"+columns+",");
 		
 		result_json.append("\"calculateTypeList\":[['"+languageResourceMap.get("nothing")+"','"+languageResourceMap.get("nothing")+"'],['"+languageResourceMap.get("SRPCalculate")+"','"+languageResourceMap.get("SRPCalculate")+"'],['"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("PCPCalculate")+"']],");
 		result_json.append("\"totalRoot\":[");
 		for (Object o : list) {
 			Object[] obj = (Object[]) o;
 			result_json.append("{\"instanceId\":"+obj[0]+",");
-			result_json.append("\"name\":\""+obj[1]+"\",");
-			result_json.append("\"calculateType\":\""+obj[2]+"\",");
-			result_json.append("\"sort\":\""+obj[3]+"\"},");
+			result_json.append("\"name_zh_CN\":\""+obj[1]+"\",");
+			result_json.append("\"name_en\":\""+obj[2]+"\",");
+			result_json.append("\"name_ru\":\""+obj[3]+"\",");
+			result_json.append("\"calculateType\":\""+obj[4]+"\",");
+			result_json.append("\"sort\":\""+obj[5]+"\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -449,8 +460,10 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 	}
 	
 	public int updateDeviceTabManagerInstance(DeviceTabManager instance) throws Exception {
-		String sql="update tbl_tabmanager_device t "
-				+ " set t.name='"+instance.getName()+"',"
+		String sql="update tbl_tabmanager_device t set "
+				+ " t.name_zh_CN='"+instance.getName_zh_CN()+"',"
+				+ " t.name_en='"+instance.getName_en()+"',"
+				+ " t.name_ru='"+instance.getName_ru()+"',"
 				+ " t.calculatetype="+instance.getCalculateType()+","
 				+ " t.sort="+instance.getSort()+" "
 				+ " where t.id="+instance.getId();
@@ -469,9 +482,10 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		return result;
 	}
 	
-	public String getDeviceTabInstanceConfig(String name) throws IOException, SQLException {
+	public String getDeviceTabInstanceConfig(String name,User user) throws IOException, SQLException {
 		String config="{}";
-		String sql="select t.id,t.name,t.calculatetype,t.config from tbl_tabmanager_device t where t.name='"+name+"'";
+		String language=user!=null?user.getLanguageName():"zh_CN";
+		String sql="select t.id,t.name_"+language+",t.calculatetype,t.config from tbl_tabmanager_device t where t.name_"+language+"='"+name+"'";
 		String instanceId="0";
 		String instanceName="";
 		String calculateType="0";
@@ -493,26 +507,40 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 	
 	public String getDeviceTabInstanceInfoByDeviceId(String deviceId) throws IOException, SQLException {
 		String config="{}";
-		String sql="select t.id,t.name,t.calculatetype,t.config "
+		String sql="select t.id,t.name_zh_CN,t.name_en,t.name_ru,"
+				+ " t.calculatetype,t.config "
 				+ " from tbl_tabmanager_device t,tbl_device t2 "
 				+ " where t.id=t2.calculatetype "
 				+ " and t2.id="+deviceId;
+		
 		String instanceId="0";
-		String instanceName="";
+		String instanceName_zh_CN="";
+		String instanceName_en="";
+		String instanceName_ru="";
 		String calculateType="0";
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
 			instanceId=obj[0]+"";
-			instanceName=obj[1]+"";
-			calculateType=obj[2]+"";
+			instanceName_zh_CN=obj[1]+"";
+			instanceName_en=obj[2]+"";
+			instanceName_ru=obj[3]+"";
+			
+			calculateType=obj[4]+"";
 			if(obj[3]!=null){
-				config=(obj[3]+"").replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+				config=(obj[5]+"").replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
 			}else{
 				config="{}";
 			}
 		}
-		String result="{\"success\":true,\"instanceId\":"+instanceId+",\"instanceName\":\""+instanceName+"\",\"calculateType\":"+calculateType+",\"config\":"+config+"}";
+		String result="{\"success\":true,"
+			+ "\"instanceId\":"+instanceId+","
+			+ "\"instanceName_zh_CN\":\""+instanceName_zh_CN+"\","
+			+ "\"instanceName_en\":\""+instanceName_en+"\","
+			+ "\"instanceName_ru\":\""+instanceName_ru+"\","
+			+ "\"calculateType\":"+calculateType+","
+			+ "\"config\":"+config
+			+"}";
 		return result;
 	}
 	

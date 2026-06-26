@@ -1309,7 +1309,6 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	        		},{
 	        			title: loginUserLanguageResource.deviceTag,
 	        			id:'OperationMaintenanceDeviceTabManagerTabPanel_Id',
-	        			iconCls: 'check3',
 	        			layout: 'border',
 	        			tbar:[{
 	                        xtype: 'button',
@@ -1354,30 +1353,33 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	    	                	var selectionModel = operationMaintenanceDeviceTabManagerGridView.getSelectionModel();
 	    	                    var selectionRecord = selectionModel.getSelection();
 	    	                	if(selectionRecord.length>0){
-	    	                		selectionRecord.forEach(function(record) {
-	    	                			selectInstanceId.push(record.data.instanceId);
-	    	                	    });
-	    	                		
-	    	                		Ext.Ajax.request({
-	    	                			method:'POST',
-	    	                			url:context + '/operationMaintenanceController/deleteDeviceTabManagerInstance',
-	    	                			success:function(response) {
-	    	                				var data=Ext.JSON.decode(response.responseText);
-	    	                				if (data.success) {
-	    	                					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
-	    	                	            	Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id").getStore().load();
-	    	                	            } else {
-	    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
-	    	                	            }
-	    	                			},
-	    	                			failure:function(){
-	    	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
-	    	                			},
-	    	                			params: {
-	    	                				instanceIds: selectInstanceId.join(",")
-	    	                	        }
-	    	                		});
-	    	                		
+	    	                		Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete, function (btn) {
+	    	                            if (btn == "yes") {
+	    	                            	selectionRecord.forEach(function(record) {
+	    	    	                			selectInstanceId.push(record.data.instanceId);
+	    	    	                	    });
+	    	    	                		
+	    	    	                		Ext.Ajax.request({
+	    	    	                			method:'POST',
+	    	    	                			url:context + '/operationMaintenanceController/deleteDeviceTabManagerInstance',
+	    	    	                			success:function(response) {
+	    	    	                				var data=Ext.JSON.decode(response.responseText);
+	    	    	                				if (data.success) {
+	    	    	                					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
+	    	    	                	            	Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id").getStore().load();
+	    	    	                	            } else {
+	    	    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
+	    	    	                	            }
+	    	    	                			},
+	    	    	                			failure:function(){
+	    	    	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+	    	    	                			},
+	    	    	                			params: {
+	    	    	                				instanceIds: selectInstanceId.join(",")
+	    	    	                	        }
+	    	    	                		});
+	    	                            }
+	    	                        });
 	    	                	} else {
 	    	                        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
 	    	                    }
@@ -1406,7 +1408,9 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                		modifiedRecords.forEach(function(record) {
 		                			var tabDisplayInstance={};
 		                			tabDisplayInstance.id=record.data.instanceId;
-		                			tabDisplayInstance.name=record.data.name;
+		                			tabDisplayInstance.name_zh_CN=record.data.name_zh_CN;
+		                			tabDisplayInstance.name_en=record.data.name_en;
+		                			tabDisplayInstance.name_ru=record.data.name_ru;
 		                			if(isNumber(record.data.sort)){
 		                				tabDisplayInstance.sort=record.data.sort;
 		                			}

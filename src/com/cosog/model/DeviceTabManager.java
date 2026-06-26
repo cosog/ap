@@ -20,7 +20,9 @@ public class DeviceTabManager implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private String name;
+	private String name_zh_CN;
+	private String name_en;
+	private String name_ru;
 	private Integer calculateType;
 	private String config;
 	private Integer sort;
@@ -32,10 +34,12 @@ public class DeviceTabManager implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public DeviceTabManager(Integer id, String name, Integer calculateType, String config, Integer sort) {
+	public DeviceTabManager(Integer id, String name_zh_CN, String name_en, String name_ru, Integer calculateType, String config, Integer sort) {
 		super();
 		this.id = id;
-		this.name = name;
+		this.name_zh_CN = name_zh_CN;
+		this.name_en = name_en;
+		this.name_ru = name_ru;
 		this.calculateType = calculateType;
 		this.config = config;
 		this.sort = sort;
@@ -52,13 +56,31 @@ public class DeviceTabManager implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "name", nullable = false, length = 50)
-	public String getName() {
-		return this.name;
+	@Column(name = "name_zh_CN")
+	public String getName_zh_CN() {
+		return name_zh_CN;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setName_zh_CN(String name_zh_CN) {
+		this.name_zh_CN = name_zh_CN;
+	}
+
+	@Column(name = "name_en")
+	public String getName_en() {
+		return name_en;
+	}
+
+	public void setName_en(String name_en) {
+		this.name_en = name_en;
+	}
+
+	@Column(name = "name_ru")
+	public String getName_ru() {
+		return name_ru;
+	}
+
+	public void setName_ru(String name_ru) {
+		this.name_ru = name_ru;
 	}
 
 	@Column(name = "calculateType")

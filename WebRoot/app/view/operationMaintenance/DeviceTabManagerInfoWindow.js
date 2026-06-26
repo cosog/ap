@@ -19,10 +19,7 @@ Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
         var me = this;
         
         
-        var labelWidth=getLabelWidth(loginUserLanguageResource.name,loginUserLanguage);
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.name,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.name,loginUserLanguage);
-        }
+        var labelWidth=getLabelWidth(loginUserLanguageResource.name+'*',loginUserLanguage);
         if(labelWidth<getLabelWidth(loginUserLanguageResource.calculationType,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.calculationType,loginUserLanguage);
         }
@@ -46,10 +43,33 @@ Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
             },{
                 fieldLabel: loginUserLanguageResource.name+'<font color=red>*</font>',
                 labelWidth: labelWidth,
-                id: 'addDeviceTabManagerInstanceName_Id',
-                allowBlank: false,
+                id: 'addDeviceTabManagerInstanceName_zh_CN_Id',
+                allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                 anchor: '95%',
-                name: "deviceTabManager.name",
+                name: "deviceTabManager.name_zh_CN",
+                listeners: {
+                	
+                }
+            },{
+                fieldLabel: loginUserLanguageResource.name+'<font color=red>*</font>',
+                labelWidth: labelWidth,
+                id: 'addDeviceTabManagerInstanceName_en_Id',
+                allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                anchor: '95%',
+                name: "deviceTabManager.name_en",
+                listeners: {
+                	
+                }
+            },{
+                fieldLabel: loginUserLanguageResource.name+'<font color=red>*</font>',
+                labelWidth: labelWidth,
+                id: 'addDeviceTabManagerInstanceName_ru_Id',
+                allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                anchor: '95%',
+                name: "deviceTabManager.name_ru",
                 listeners: {
                 	
                 }
@@ -112,7 +132,14 @@ Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
                             waitMsg: loginUserLanguageResource.submittingData,
                             waitTitle: loginUserLanguageResource.wait,
                             success: function (response, action) {
-                            	Ext.getCmp('addDeviceTabManagerInstanceSelectName_Id').setValue(Ext.getCmp('addDeviceTabManagerInstanceName_Id').getValue());
+                            	if(loginUserLanguage.toUpperCase()=='ZH_CN'){
+                            		Ext.getCmp('addDeviceTabManagerInstanceSelectName_Id').setValue(Ext.getCmp('addDeviceTabManagerInstanceName_zh_CN_Id').getValue());
+                            	}else if(loginUserLanguage.toUpperCase()=='EN'){
+                            		Ext.getCmp('addDeviceTabManagerInstanceSelectName_Id').setValue(Ext.getCmp('addDeviceTabManagerInstanceName_en_Id').getValue());
+                            	}else if(loginUserLanguage.toUpperCase()=='RU'){
+                            		Ext.getCmp('addDeviceTabManagerInstanceSelectName_Id').setValue(Ext.getCmp('addDeviceTabManagerInstanceName_ru_Id').getValue());
+                            	}
+                            	
                                 Ext.getCmp('deviceTabManagerInfoWindow_Id').close();
                                 Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id").getStore().load();
                                 if (action.result.msg == true) {

@@ -579,9 +579,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getDeviceTabInstanceCombList(){
+	public String getDeviceTabInstanceCombList(User user ){
 		StringBuffer result_json = new StringBuffer();
-		String sql="select t.id,t.name from tbl_tabmanager_device t order by t.sort";
+		String language=user!=null?user.getLanguageName():"zh_CN";
+		String sql="select t.id,t.name_"+language+" from tbl_tabmanager_device t order by t.sort";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"\"},");
 		for(int i=0;i<list.size();i++){
@@ -1430,7 +1431,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	@SuppressWarnings("rawtypes")
 	public String getDeviceInfoList(Map map,Page pager,int recordCount,String dictDeviceType,User user) {
 		StringBuffer result_json = new StringBuffer();
-		String language=user!=null?user.getLanguageName():"";
+		String language=user!=null?user.getLanguageName():"zh_CN";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
 		StringBuffer deviceTypeDropdownData = new StringBuffer();
@@ -1456,7 +1457,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " allpath_"+language+","
 				+ " to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
 				+ " to_char(commissioningdate,'yyyy-mm-dd') as commissioningdate,"
-				+ " calculatetype,deviceTabInstance,"
+				+ " calculatetype,"
+				+ " deviceTabInstance_"+language+","
 				+ " sortNum"
 				+ " from "+tableName+" t "
 				+ " where 1=1";
@@ -1471,7 +1473,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		sql+= " order by t.sortnum,t.devicename ";
 		
 		String deviceTypeSql="select t.name_"+language+" from tbl_devicetypeinfo t where t.id in ("+deviceType+") order by t.id";
-		String deviceTabInstanceSql="select t.name from tbl_tabmanager_device t order by t.sort";
+		String deviceTabInstanceSql="select t.name_"+language+" from tbl_tabmanager_device t order by t.sort";
 		String instanceSql="select t.name "
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.unitid=t2.id and t2.protocol=t3.code "
@@ -1668,6 +1670,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					+ " to_char(productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') as productiondataupdatetime,"
 					+ " to_char(commissioningdate,'yyyy-mm-dd') as commissioningdate,"
 					+ " calculatetype,decode(t.calculatetype,1,'"+languageResourceMap.get("SRPCalculate")+"',2,'"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("nothing")+"') as calculateTypeName,"
+					+ " deviceTabInstance_"+language+","
 					+ " sortNum"
 					+ " from "+tableName+" t "
 					+ " where 1=1";
@@ -1713,7 +1716,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("\"commissioningDate\":\""+obj[18]+"\",");
 				result_json.append("\"calculateType\":\""+obj[19]+"\",");
 				result_json.append("\"calculateTypeName\":\""+obj[20]+"\",");
-				result_json.append("\"sortNum\":\""+obj[21]+"\"}");
+				result_json.append("\"deviceTabInstance\":\""+obj[21]+"\",");
+				result_json.append("\"sortNum\":\""+obj[22]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {

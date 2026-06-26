@@ -484,7 +484,7 @@ public class WellInformationManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String dictDeviceType=ParamUtils.getParameter(request, "dictDeviceType");
-		String json=wellInformationManagerService.getDeviceTabInstanceCombList();
+		String json=wellInformationManagerService.getDeviceTabInstanceCombList(user);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

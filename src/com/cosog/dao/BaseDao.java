@@ -1069,7 +1069,7 @@ public class BaseDao extends HibernateDaoSupport {
 		License license=LicenseMap.getMapObject().get(LicenseMap.SN);
 		
 		try {
-			cs = conn.prepareCall("{call prd_update_device(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_update_device(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			
 			Map<Integer,WellHandsontableChangedData.Updatelist> updateDeviceMap=new HashMap<>();
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
@@ -1110,15 +1110,17 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setInt(14, status);
 							cs.setString(15, wellHandsontableChangedData.getUpdatelist().get(i).getCommissioningDate().replaceAll("null", ""));
 							cs.setString(16, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
-							cs.registerOutParameter(17, Types.INTEGER);
-							cs.registerOutParameter(18,Types.VARCHAR);
-							cs.registerOutParameter(19, Types.INTEGER);
-							cs.setInt(20, isCheckout);
+							cs.setString(17, user.getLanguageName());
+							
+							cs.registerOutParameter(18, Types.INTEGER);
+							cs.registerOutParameter(19,Types.VARCHAR);
+							cs.registerOutParameter(20, Types.INTEGER);
+							cs.setInt(21, isCheckout);
 							cs.executeUpdate();
 							
-							int saveSign=cs.getInt(17);
-							String saveResultStr=cs.getString(18);
-							int collisionDeviceId=cs.getInt(19);
+							int saveSign=cs.getInt(18);
+							String saveResultStr=cs.getString(19);
+							int collisionDeviceId=cs.getInt(20);
 							wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
 							wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
 							wellHandsontableChangedData.getUpdatelist().get(i).setCollisionDeviceId(collisionDeviceId);
@@ -1182,15 +1184,16 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setInt(14, status);
 							cs.setString(15, wellHandsontableChangedData.getInsertlist().get(i).getCommissioningDate().replaceAll("null", ""));
 							cs.setString(16, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());
-							cs.registerOutParameter(17, Types.INTEGER);
-							cs.registerOutParameter(18,Types.VARCHAR);
-							cs.registerOutParameter(19, Types.INTEGER);
-							cs.setInt(20, isCheckout);
+							cs.setString(17, user.getLanguageName());
+							cs.registerOutParameter(18, Types.INTEGER);
+							cs.registerOutParameter(19,Types.VARCHAR);
+							cs.registerOutParameter(20, Types.INTEGER);
+							cs.setInt(21, isCheckout);
 							cs.executeUpdate();
 							
-							int saveSign=cs.getInt(17);
-							String saveResultStr=cs.getString(18);
-							int collisionDeviceId=cs.getInt(19);
+							int saveSign=cs.getInt(18);
+							String saveResultStr=cs.getString(19);
+							int collisionDeviceId=cs.getInt(20);
 							wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
 							wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
 							wellHandsontableChangedData.getInsertlist().get(i).setCollisionDeviceId(collisionDeviceId);

@@ -22,6 +22,9 @@ Ext.define('AP.store.operationMaintenance.DeviceTabManagerInfoStore', {
         load: function (store, options, eOpts) {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
+            var showChineseName=get_rawData.showChineseName;
+            var showEnglishName=get_rawData.showEnglishName;
+            var showRussianName=get_rawData.showRussianName;
             var gridPanel = Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id");
             if (!isNotVal(gridPanel)) {
                 gridPanel = Ext.create('Ext.grid.Panel', {
@@ -56,12 +59,49 @@ Ext.define('AP.store.operationMaintenance.DeviceTabManagerInfoStore', {
                         width: getLabelWidth(loginUserLanguageResource.idx,loginUserLanguage)+'px',
                         xtype: 'rownumberer'
                     }, {
-                        header: loginUserLanguageResource.name,
+                        header: loginUserLanguageResource.language_zh_CN,
                         lockable: true,
                         align: 'center',
                         sortable: true,
                         sortable: false,
-                        dataIndex: 'name',
+                        dataIndex: 'name_zh_CN',
+                        hidden:!showChineseName,
+                        flex:2,
+                        editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
+                            allowBlank: false,
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
+                        }:"",
+                        renderer: function (value, o, p, e) {
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
+                        }
+                    }, {
+                        header: loginUserLanguageResource.language_en,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        sortable: false,
+                        dataIndex: 'name_en',
+                        hidden:!showEnglishName,
+                        flex:2,
+                        editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
+                            allowBlank: false,
+                            disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
+                        }:"",
+                        renderer: function (value, o, p, e) {
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
+                        }
+                    }, {
+                        header: loginUserLanguageResource.language_ru,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        sortable: false,
+                        dataIndex: 'name_ru',
+                        hidden:!showRussianName,
                         flex:2,
                         editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
                             allowBlank: false,
@@ -172,14 +212,20 @@ Ext.define('AP.store.operationMaintenance.DeviceTabManagerInfoStore', {
             	var instanceCount=0;
             	
             	for(var i=0;i<store.data.length;i++){
-            		if(store.getAt(i).data.name==addDeviceTabManagerInstanceSelectName){
+            		if( (loginUserLanguage.toUpperCase()=='ZH_CN' && store.getAt(i).data.name_zh_CN==addDeviceTabManagerInstanceSelectName)
+            				|| (loginUserLanguage.toUpperCase()=='EN' && store.getAt(i).data.name_en==addDeviceTabManagerInstanceSelectName)
+            				|| (loginUserLanguage.toUpperCase()=='RU' && store.getAt(i).data.name_ru==addDeviceTabManagerInstanceSelectName)
+            		){
             			selectedRow=i;
             			instanceCount++;
             		}
             	}
             	if(instanceCount>1){
             		for(var i=0;i<store.data.length;i++){
-                		if(store.getAt(i).data.name==addDeviceTabManagerInstanceSelectName){
+                		if( (loginUserLanguage.toUpperCase()=='ZH_CN' && store.getAt(i).data.name_zh_CN==addDeviceTabManagerInstanceSelectName)
+                				|| (loginUserLanguage.toUpperCase()=='EN' && store.getAt(i).data.name_en==addDeviceTabManagerInstanceSelectName)
+                				|| (loginUserLanguage.toUpperCase()=='RU' && store.getAt(i).data.name_ru==addDeviceTabManagerInstanceSelectName)
+                		){
                 			if(store.getAt(i).data.instanceId>maxInstanceId){
                 				maxInstanceId=store.getAt(i).data.instanceId;
                 				selectedRow=i;

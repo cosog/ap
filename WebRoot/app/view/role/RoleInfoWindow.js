@@ -116,10 +116,11 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             }, {
                 fieldLabel: loginUserLanguageResource.roleName+'<font color=red>*</font>',
                 labelWidth: labelWidth,
-                allowBlank: false,
+                allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                 anchor: '100%',
-                id: 'role_Name_Id',
-                name: "role.roleName",
+                id: 'role_Name_zh_CN_Id',
+                name: "role.roleName_zh_CN",
                 listeners: {
                     blur: function (t, e) {
                         Ext.Ajax.request({
@@ -132,7 +133,67 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                                 var obj = Ext.decode(response.responseText);
                                 var msg_ = obj.msg;
                                 if (msg_ == "1") {
-                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.role+":" + t.value + "】</font>" + loginUserLanguageResource.exist);
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.role+":" + t.value + "】</font>" + loginUserLanguageResource.alreadyExist);
+                                    t.setValue("");
+                                }
+                            },
+                            failure: function (response, opts) {
+                                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+                            }
+                        });
+                    }
+                }
+            }, {
+                fieldLabel: loginUserLanguageResource.roleName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
+                allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                anchor: '100%',
+                id: 'role_Name_en_Id',
+                name: "role.roleName_en",
+                listeners: {
+                    blur: function (t, e) {
+                        Ext.Ajax.request({
+                            method: 'POST',
+                            params: {
+                            	roleName: t.value
+                            },
+                            url: context + '/roleManagerController/judgeRoleExistsOrNot',
+                            success: function (response, opts) {
+                                var obj = Ext.decode(response.responseText);
+                                var msg_ = obj.msg;
+                                if (msg_ == "1") {
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.role+":" + t.value + "】</font>" + loginUserLanguageResource.alreadyExist);
+                                    t.setValue("");
+                                }
+                            },
+                            failure: function (response, opts) {
+                                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+                            }
+                        });
+                    }
+                }
+            }, {
+                fieldLabel: loginUserLanguageResource.roleName+'<font color=red>*</font>',
+                labelWidth: labelWidth,
+                allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                anchor: '100%',
+                id: 'role_Name_ru_Id',
+                name: "role.roleName_ru",
+                listeners: {
+                    blur: function (t, e) {
+                        Ext.Ajax.request({
+                            method: 'POST',
+                            params: {
+                            	roleName: t.value
+                            },
+                            url: context + '/roleManagerController/judgeRoleExistsOrNot',
+                            success: function (response, opts) {
+                                var obj = Ext.decode(response.responseText);
+                                var msg_ = obj.msg;
+                                if (msg_ == "1") {
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>【"+loginUserLanguageResource.role+":" + t.value + "】</font>" + loginUserLanguageResource.alreadyExist);
                                     t.setValue("");
                                 }
                             },
@@ -161,16 +222,36 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 labelWidth: labelWidth,
                 allowBlank: false,
                 minValue: 1,
+                value:1,
                 anchor: '100%',
                 msgTarget: 'side'
             },RoleVideoKeyEditCombox, RoleLanguageEditCombox,{
                 fieldLabel: loginUserLanguageResource.roleRemark,
                 labelWidth: labelWidth,
-                id: 'roleRemark_Id',
+                hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                id: 'roleRemark_zh_CN_Id',
                 anchor: '100',
                 xtype: 'textareafield',
                 value: '',
-                name: "role.remark"
+                name: "role.remark_zh_CN"
+            },{
+                fieldLabel: loginUserLanguageResource.roleRemark,
+                labelWidth: labelWidth,
+                hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                id: 'roleRemark_en_Id',
+                anchor: '100',
+                xtype: 'textareafield',
+                value: '',
+                name: "role.remark_en"
+            },{
+                fieldLabel: loginUserLanguageResource.roleRemark,
+                labelWidth: labelWidth,
+                hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                id: 'roleRemark_ru_Id',
+                anchor: '100',
+                xtype: 'textareafield',
+                value: '',
+                name: "role.remark_ru"
             }]
         });
         Ext.apply(me, {

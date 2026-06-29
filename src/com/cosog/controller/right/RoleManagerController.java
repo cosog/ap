@@ -102,6 +102,8 @@ public class RoleManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		try {
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
 			String addModuleIds = ParamUtils.getParameter(request, "addModuleIds");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String addDeviceTypeIds = ParamUtils.getParameter(request, "addDeviceTypeIds");
@@ -110,7 +112,15 @@ public class RoleManagerController extends BaseController {
 			this.roleService.addRole(role);
 			
 			if(StringManagerUtils.isNotNull(addModuleIds) || StringManagerUtils.isNotNull(addDeviceTypeIds) || StringManagerUtils.isNotNull(addLanguageIds)){
-				String sql="select t.role_id from TBL_ROLE t where t.role_name='"+role.getRoleName()+"'";
+				String addRoleName="";
+				if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+					addRoleName=role.getRoleName_zh_CN();
+				}else if("en".equalsIgnoreCase(user.getLanguageName())){
+					addRoleName=role.getRoleName_en();
+				}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+					addRoleName=role.getRoleName_ru();
+				}
+				String sql="select t.role_id from TBL_ROLE t where t.role_name_"+user.getLanguageName()+"='"+addRoleName+"'";
 				List<?> list=this.roleService.findCallSql(sql);
 				if(list.size()>0){
 					int addRoleId=StringManagerUtils.stringToInteger(list.get(0)+"");
@@ -262,21 +272,29 @@ public class RoleManagerController extends BaseController {
 		try {
 			boolean isLoginedUserRole=false;
 			String roleId = ParamUtils.getParameter(request, "roleId");
-			String roleName = ParamUtils.getParameter(request, "roleName");
+			String roleName_zh_CN = ParamUtils.getParameter(request, "roleName_zh_CN");
+			String roleName_en = ParamUtils.getParameter(request, "roleName_en");
+			String roleName_ru = ParamUtils.getParameter(request, "roleName_ru");
 			String roleLevel = ParamUtils.getParameter(request, "roleLevel");
 			String roleVideoKeyEditName = ParamUtils.getParameter(request, "roleVideoKeyEditName");
 			String roleLanguageEditName = ParamUtils.getParameter(request, "roleLanguageEditName");
 			String showLevel = ParamUtils.getParameter(request, "showLevel");
-			String remark = ParamUtils.getParameter(request, "remark");
+			String remark_zh_CN = ParamUtils.getParameter(request, "remark_zh_CN");
+			String remark_en = ParamUtils.getParameter(request, "remark_en");
+			String remark_ru = ParamUtils.getParameter(request, "remark_ru");
 			
 			Role role=new Role();
 			role.setRoleId(StringManagerUtils.stringToInteger(roleId));
-			role.setRoleName(roleName);
+			role.setRoleName_zh_CN(roleName_zh_CN);
+			role.setRoleName_en(roleName_en);
+			role.setRoleName_ru(roleName_ru);
 			role.setRoleLevel(StringManagerUtils.stringToInteger(roleLevel));
 			role.setRoleVideoKeyEdit("true".equalsIgnoreCase(roleVideoKeyEditName)?1:0);
 			role.setRoleLanguageEdit("true".equalsIgnoreCase(roleLanguageEditName)?1:0);
 			role.setShowLevel(StringManagerUtils.stringToInteger(showLevel));
-			role.setRemark(remark);
+			role.setRemark_zh_CN(remark_zh_CN);
+			role.setRemark_en(remark_en);
+			role.setRemark_ru(remark_ru);
 			
 			log.debug("edit role ==" + role.getRoleId());
 			HttpSession session=request.getSession();
@@ -464,8 +482,10 @@ public class RoleManagerController extends BaseController {
 	
 	@RequestMapping("/judgeRoleExistsOrNot")
 	public String judgeRoleExistsOrNot() throws IOException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		roleName = ParamUtils.getParameter(request, "roleName");
-		boolean flag = this.roleService.judgeRoleExistsOrNot(roleName,"");
+		boolean flag = this.roleService.judgeRoleExistsOrNot(roleName,"",user);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";

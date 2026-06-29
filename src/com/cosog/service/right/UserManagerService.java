@@ -139,13 +139,13 @@ public class UserManagerService<T> extends BaseService<T> {
 		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",user.getLanguageName());
 		String columns=	"[]";
 		String userName = (String) map.get("userName");
-		String roleSql = " select t.role_id,t.role_name from tbl_role t"
+		String roleSql = " select t.role_id,t.role_name_"+user.getLanguageName()+" from tbl_role t"
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 				+ " order by t.role_id";
 		
 		String sql="select u.user_no as  userNo,u.user_name as userName,u.user_orgid as userOrgid,o.org_name_"+user.getLanguageName()+" as orgName,u.user_id as userId,"
 				+ " u.user_pwd as userPwd,"
-				+ " u.user_type as userType,r.role_name as userTypeName,"
+				+ " u.user_type as userType,r.role_name_"+user.getLanguageName()+" as userTypeName,"
 				+ " u.user_phone as userPhone,u.user_in_email as userInEmail,"
 				+ " to_char(u.user_regtime,'YYYY-MM-DD hh24:mi:ss') as userRegtime,"
 				+ " u.user_quicklogin as userQuickLogin,decode(u.user_quicklogin,0,'"+languageResourceMap.get("no")+"','"+languageResourceMap.get("yes")+"') as userQuickLoginName,"
@@ -158,8 +158,8 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ " left outer join  VIW_ORG o on u.user_orgid=o.org_id"
 				+ " left outer join tbl_role r on u.user_type=r.role_id"
 				+ " where u.user_orgid in (" + orgIds + ")"
-				+ " and ("
-				+ " r.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+				+ " and (r.role_level is null "
+				+ " or r.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 				+ " or u.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
 				+ ")";
 		if (!"".equals(userName) && null != userName && userName.length() > 0) {
@@ -241,7 +241,9 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ " u.user_enable as userEnable,"
 				+ " u.user_language as userLanguage,"
 				+ " r.role_level,"
-				+ " r.role_name"
+				+ " r.role_name_zh_CN,"
+				+ " r.role_name_en,"
+				+ " r.role_name_ru"
 				+ " from tbl_user u"
 				+ " left outer join tbl_role r on u.user_type=r.role_id"
 				+ " where u.user_orgid in (" + user.getUserOrgIds() + ")"
@@ -269,7 +271,9 @@ public class UserManagerService<T> extends BaseService<T> {
 			result_json.append("\"UserEnable\":"+obj[12]+",");
 			result_json.append("\"UserLanguage\":"+obj[13]+",");
 			result_json.append("\"RoleLevel\":"+obj[14]+",");
-			result_json.append("\"RoleName\":\""+obj[15]+"\"},");
+			result_json.append("\"RoleName_zh_CN\":\""+obj[15]+"\",");
+			result_json.append("\"RoleName_en\":\""+obj[16]+"\",");
+			result_json.append("\"RoleName_ru\":\""+obj[17]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -288,7 +292,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	public String loadUserType(User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.role_id,t.role_name from tbl_role t"
+		sql = " select t.role_id,t.role_name_"+user.getLanguageName()+" from tbl_role t"
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 				+ " order by t.role_id";
 		try {
@@ -356,7 +360,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getUserRoleModules(User user){
-		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name_"+user.getLanguageName()+",m.md_code,r.role_name "
+		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name_"+user.getLanguageName()+",m.md_code,r.role_name_"+user.getLanguageName()+" "
 				+ " from tbl_module m,tbl_module2role rm,tbl_role r,tbl_user u "
 				+ " where u.user_type=r.role_id and r.role_id=rm.rm_roleid and rm.rm_moduleid=m.md_id "
 				+ " and u.user_no= "+user.getUserNo()
@@ -546,7 +550,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public int updateUserInfo(User user,boolean isLoginedUser) throws Exception {
+	public int updateUserInfo(User user,boolean isLoginedUser,User loginUser) throws Exception {
 		int r=0;
 		boolean flag = this.judgeUserExistsOrNot(user.getUserId(),user.getUserNo()+"");
 		
@@ -555,8 +559,17 @@ public class UserManagerService<T> extends BaseService<T> {
 		}else{
 			String sql = "update tbl_user t set ";
 			if(!isLoginedUser){//当前登录用户不可修改账号、角色、使能状态
+				String roleName="";
+				if("zh_CN".equalsIgnoreCase(loginUser.getLanguageName())){
+					roleName=user.getUserTypeName_zh_CN();
+				}else if("en".equalsIgnoreCase(loginUser.getLanguageName())){
+					roleName=user.getUserTypeName_en();
+				}else if("ru".equalsIgnoreCase(loginUser.getLanguageName())){
+					roleName=user.getUserTypeName_ru();
+				}
+				
 				sql+= "t.user_id='"+user.getUserId()+"', "
-						+ "t.user_type=(select r.role_id from tbl_role r where r.role_name='"+user.getUserTypeName()+"'), "
+						+ "t.user_type=(select r.role_id from tbl_role r where r.role_name_"+loginUser.getLanguageName()+"='"+roleName+"'), "
 						+ "t.user_enable="+user.getUserEnable()+", ";
 			}	
 			sql+= "t.user_name='"+user.getUserName()+"', "
@@ -642,7 +655,7 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ " from tbl_role t,tbl_user t2 "
 				+ " where t2.user_type=t.role_id "
 				+ " and t2.user_no="+user.getUserNo();
-		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name_"+user.getLanguageName()+",m.md_code,r.role_name "
+		String userModuleSql="select rm.rm_id, rm.rm_moduleid,rm.rm_roleid,rm.rm_matrix,m.md_name_"+user.getLanguageName()+",m.md_code,r.role_name_"+user.getLanguageName()
 				+ " from tbl_module m,tbl_module2role rm,tbl_role r,tbl_user u "
 				+ " where u.user_type=r.role_id and r.role_id=rm.rm_roleid and rm.rm_moduleid=m.md_id "
 				+ " and u.user_no= "+user.getUserNo()
@@ -834,7 +847,7 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ ")";
 		
 		Map<String,Integer> roleMap=new HashMap<>();
-		String roleSql="select t.role_name,t.role_id from TBL_ROLE t where t.role_level>"+userRoleLevel+" or t.role_id="+user.getUserType();
+		String roleSql="select t.role_name_zh_CN,t.role_id from TBL_ROLE t where t.role_level>"+userRoleLevel+" or t.role_id="+user.getUserType();
 		List<?> roleList = this.findCallSql(roleSql);
 		for(int i=0;i<roleList.size();i++){
 			Object[] obj = (Object[]) roleList.get(i);

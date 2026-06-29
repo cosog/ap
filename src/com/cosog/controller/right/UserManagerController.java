@@ -380,6 +380,9 @@ public class UserManagerController extends BaseController {
 		String result = "{success:true,flag:true}";
 		try {
 			boolean isLoginedUser=false;
+			HttpSession session=request.getSession();
+			User loginUser = (User) session.getAttribute("userLogin");
+			
 			String userNo = ParamUtils.getParameter(request, "userNo");
 			String userName = ParamUtils.getParameter(request, "userName");
 			String userId = ParamUtils.getParameter(request, "userId");
@@ -396,7 +399,14 @@ public class UserManagerController extends BaseController {
 			user.setUserNo(StringManagerUtils.stringToInteger(userNo));
 			user.setUserName(userName);
 			user.setUserId(userId);
-			user.setUserTypeName(userTypeName);
+			if("zh_CN".equalsIgnoreCase(loginUser.getLanguageName())){
+				user.setUserTypeName_zh_CN(userTypeName);
+			}else if("en".equalsIgnoreCase(loginUser.getLanguageName())){
+				user.setUserTypeName_en(userTypeName);
+			}else if("ru".equalsIgnoreCase(loginUser.getLanguageName())){
+				user.setUserTypeName_ru(userTypeName);
+			}
+			
 			user.setLanguageName(userLanguageName);
 			user.setUserPhone(userPhone);
 			user.setUserInEmail(userInEmail);
@@ -411,9 +421,7 @@ public class UserManagerController extends BaseController {
 			List<String> receivingEMailAccount=new ArrayList<String>();
 			
 			
-//			this.userService.modifyUser(user);
-			HttpSession session=request.getSession();
-			User loginUser = (User) session.getAttribute("userLogin");
+			
 			//如果是当前登录用户
 			if(user.getUserNo()==loginUser.getUserNo()){
 				isLoginedUser=true;
@@ -430,7 +438,7 @@ public class UserManagerController extends BaseController {
 					}
 				}
 			}
-			int r=this.userService.updateUserInfo(user,isLoginedUser);
+			int r=this.userService.updateUserInfo(user,isLoginedUser,loginUser);
 			if(r==1){
 				List<String> userList=new ArrayList<String>();
 				userList.add(user.getUserNo()+"");

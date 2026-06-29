@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,11 +54,11 @@ public class RoleManagerService<T> extends BaseService<T> {
 		return getBaseDao().find(queryString);
 	}
 
-	public List<T> queryRoles(Class<T> clazz, String roleName) {
+	public List<T> queryRoles(Class<T> clazz, String roleName,User user) {
 		if (roleName == null || "".equals(roleName))
 			return loadRoles(clazz);
 
-		String queryString = "SELECT u FROM Role u WHERE u.roleName like '%"
+		String queryString = "SELECT u FROM Role u WHERE u.roleName_"+user.getLanguageName()+" like '%"
 				+ roleName + "%' order by u.roleId asc";
 		return getBaseDao().find(queryString);
 	}
@@ -83,17 +85,21 @@ public class RoleManagerService<T> extends BaseService<T> {
 		String currentLanguageEdit="";
 		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_videokeyedit,t3.role_languageedit "
 				+ "from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo();
-		String sql="select role_id as roleId,role_name as roleName,role_level as roleLevel,"
+		String sql="select role_id as roleId,"
+				+ " role_name_zh_CN,remark_zh_CN,"
+				+ " role_name_en,remark_en,"
+				+ " role_name_ru,remark_ru,"
+				+ " role_level as roleLevel,"
 				+ " role_videokeyedit as roleVideoKeyEdit,decode(t.role_videokeyedit,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as roleVideoKeyEditName,"
 				+ " role_languageedit as roleLanguageEdit,decode(t.role_languageedit,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as roleLanguageEditName,"
-				+ " showLevel,remark"
+				+ " showLevel"
 				+ " from  viw_role t"
 				+ " where 1=1 "
 				+ " and t.role_id not in ( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+currentTabs+") )"
 				+ " and ( t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+") )";
 		if (StringManagerUtils.isNotNull(roleName)) {
-			sql+=" and t.role_Name like '%" + roleName + "%' ";
+			sql+=" and t.role_Name_"+user.getLanguageName()+" like '%" + roleName + "%' ";
 		}
 		sql+=" order by t.role_id ";
 		String columns="[]";
@@ -108,25 +114,34 @@ public class RoleManagerService<T> extends BaseService<T> {
 			currentLanguageEdit=obj[4]+"";
 		}
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+","
-		+ "\"currentId\":"+currentId+","
-		+ "\"currentLevel\":"+currentLevel+","
-		+ "\"currentShowLevel\":"+currentShowLevel+","
-		+ "\"currentVideoKeyEdit\":"+currentVideoKeyEdit+","
-		+ "\"currentLanguageEdit\":"+currentLanguageEdit+","
-		+ "\"columns\":"+columns+","
-		+ "\"totalRoot\":[");
+				+ "\"showChineseName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 1)+","
+				+ "\"showEnglishName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 2)+","
+				+ "\"showRussianName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 3)+","
+				+ "\"currentId\":"+currentId+","
+				+ "\"currentLevel\":"+currentLevel+","
+				+ "\"currentShowLevel\":"+currentShowLevel+","
+				+ "\"currentVideoKeyEdit\":"+currentVideoKeyEdit+","
+				+ "\"currentLanguageEdit\":"+currentLanguageEdit+","
+				+ "\"columns\":"+columns+","
+				+ "\"totalRoot\":[");
 		
 		for (Object o : list) {
 			Object[] obj = (Object[]) o;
 			result_json.append("{\"roleId\":"+obj[0]+",");
-			result_json.append("\"roleName\":\""+obj[1]+"\",");
-			result_json.append("\"roleLevel\":\""+obj[2]+"\",");
-			result_json.append("\"roleVideoKeyEdit\":\""+obj[3]+"\",");
-			result_json.append("\"roleVideoKeyEditName\":"+(StringManagerUtils.stringToInteger(obj[3]+"")==1)+",");
-			result_json.append("\"roleLanguageEdit\":\""+obj[5]+"\",");
-			result_json.append("\"roleLanguageEditName\":"+(StringManagerUtils.stringToInteger(obj[5]+"")==1)+",");
-			result_json.append("\"showLevel\":\""+obj[7]+"\",");
-			result_json.append("\"remark\":\""+obj[8]+"\"},");
+			result_json.append("\"roleName_zh_CN\":\""+obj[1]+"\",");
+			result_json.append("\"remark_zh_CN\":\""+obj[2]+"\",");
+			result_json.append("\"roleName_en\":\""+obj[3]+"\",");
+			result_json.append("\"remark_en\":\""+obj[4]+"\",");
+			result_json.append("\"roleName_ru\":\""+obj[5]+"\",");
+			result_json.append("\"remark_ru\":\""+obj[6]+"\",");
+			
+			result_json.append("\"roleLevel\":\""+obj[7]+"\",");
+			result_json.append("\"roleVideoKeyEdit\":\""+obj[8]+"\",");
+			result_json.append("\"roleVideoKeyEditName\":"+(StringManagerUtils.stringToInteger(obj[8]+"")==1)+",");
+			result_json.append("\"roleLanguageEdit\":\""+obj[10]+"\",");
+			result_json.append("\"roleLanguageEditName\":"+(StringManagerUtils.stringToInteger(obj[10]+"")==1)+",");
+			result_json.append("\"showLevel\":\""+obj[12]+"\"},");
+			
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -139,10 +154,13 @@ public class RoleManagerService<T> extends BaseService<T> {
 	public String exportRoleCompleteData(User user) {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"Code\":\"Role\",");
-		String sql="select role_id as roleId,role_name as roleName,role_level as roleLevel,"
+		String sql="select role_id as roleId,"
+				+ " role_name_zh_CN,role_name_en,role_name_ru,"
+				+ " role_level as roleLevel,"
 				+ " role_videokeyedit as roleVideoKeyEdit,"
 				+ " role_languageedit as roleLanguageEdit,"
-				+ " showLevel,remark"
+				+ " showLevel,"
+				+ " remark_zh_CN,remark_en,remark_ru"
 				+ " from  viw_role t"
 				+ " where 1=1 "
 				+ " and t.role_id not in( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+user.getDeviceTypeIds()+") )"
@@ -169,12 +187,17 @@ public class RoleManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) list.get(i);
 			String roleId=obj[0]+"";
 			result_json.append("{\"RoleId\":"+roleId+",");
-			result_json.append("\"RoleName\":\""+obj[1]+"\",");
-			result_json.append("\"RoleLevel\":"+obj[2]+",");
-			result_json.append("\"RoleVideoKeyEdit\":"+obj[3]+",");
-			result_json.append("\"RoleLanguageEdit\":"+obj[4]+",");
-			result_json.append("\"ShowLevel\":"+obj[5]+",");
-			result_json.append("\"Remark\":\""+obj[6]+"\",");
+			result_json.append("\"RoleName_zh_CN\":\""+obj[1]+"\",");
+			result_json.append("\"RoleName_en\":\""+obj[2]+"\",");
+			result_json.append("\"RoleName_ru\":\""+obj[3]+"\",");
+			
+			result_json.append("\"RoleLevel\":"+obj[4]+",");
+			result_json.append("\"RoleVideoKeyEdit\":"+obj[5]+",");
+			result_json.append("\"RoleLanguageEdit\":"+obj[6]+",");
+			result_json.append("\"ShowLevel\":"+obj[7]+",");
+			result_json.append("\"Remark_zh_CN\":\""+obj[8]+"\",");
+			result_json.append("\"Remark_en\":\""+obj[9]+"\",");
+			result_json.append("\"Remark_ru\":\""+obj[10]+"\",");
 			result_json.append("\"ModuleRight\":[");
 			for(int j=0;j<moduleRightList.size();j++){
 				Object[] moduleRightObj = (Object[]) moduleRightList.get(j);
@@ -285,7 +308,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 	
 	public int updateRoleInfo(Role role,boolean isLoginedUserRole) throws Exception {
 		int r=0;
-		boolean flag = this.judgeRoleExistsOrNot(role.getRoleName(),role.getRoleId()+"");
+		boolean flag = this.judgeRoleExistsOrNot(role);
 		if(flag){
 			r=2;
 		}else{
@@ -296,8 +319,12 @@ public class RoleManagerService<T> extends BaseService<T> {
 						+ " t.role_languageedit="+role.getRoleLanguageEdit()+", "
 						+ " t.showlevel="+role.getShowLevel()+", ";
 			}	
-			sql+= " t.role_name='"+role.getRoleName()+"', "
-				+ " t.remark='"+role.getRemark()+"' "
+			sql+= " t.role_name_zh_CN='"+role.getRoleName_zh_CN()+"', "
+					+ " t.role_name_en='"+role.getRoleName_en()+"', "
+					+ " t.role_name_ru='"+role.getRoleName_ru()+"', "
+					+ " t.remark_zh_CN='"+role.getRemark_zh_CN()+"', "
+					+ " t.remark_en='"+role.getRemark_en()+"', "
+					+ " t.remark_ru='"+role.getRemark_ru()+"' "
 				+ " where t.role_id = "+role.getRoleId();
 			int result=this.getBaseDao().updateOrDeleteBySql(sql);
 			if(result>0){
@@ -307,14 +334,77 @@ public class RoleManagerService<T> extends BaseService<T> {
 		return r;
 	}
 	
-	public boolean judgeRoleExistsOrNot(String roleName,String roleId) {
+	@SuppressWarnings("unchecked")
+	public boolean judgeRoleExistsOrNot(Role role) {
+	    if (role == null) {
+	        return false;
+	    }
+
+	    // 构建基础 HQL，使用 1=1 方便追加条件
+	    StringBuilder hql = new StringBuilder("SELECT COUNT(r) FROM Role r WHERE 1=1");
+	    Map<String, Object> params = new HashMap<>();
+
+	    // 用于存放有效的名称条件（OR 关系）
+	    List<String> nameConds = new ArrayList<>();
+
+	    // 仅当中文名非空时加入条件
+	    String zh = role.getRoleName_zh_CN();
+	    if (zh != null && !zh.trim().isEmpty()) {
+	        nameConds.add("r.roleName_zh_CN = :zhName");
+	        params.put("zhName", zh);
+	    }
+
+	    // 英文名
+	    String en = role.getRoleName_en();
+	    if (en != null && !en.trim().isEmpty()) {
+	        nameConds.add("r.roleName_en = :enName");
+	        params.put("enName", en);
+	    }
+
+	    // 俄文名
+	    String ru = role.getRoleName_ru();
+	    if (ru != null && !ru.trim().isEmpty()) {
+	        nameConds.add("r.roleName_ru = :ruName");
+	        params.put("ruName", ru);
+	    }
+
+	    // 如果有名称条件，则用括号包裹并 AND 到 WHERE 中
+	    if (!nameConds.isEmpty()) {
+	        hql.append(" AND (");
+	        hql.append(String.join(" OR ", nameConds));
+	        hql.append(")");
+	    }
+
+	    // 排除指定的 roleId（假设 roleId 必须传入且合法，若可能为空则需额外判断）
+	    if (role.getRoleId() != null) {
+	        hql.append(" AND r.roleId != :roleId");
+	        params.put("roleId", role.getRoleId());
+	    }
+
+	    // 创建 Query 并设置参数（假定使用 Spring Data JPA 或 Hibernate Session）
+//	    Query query = getBaseDao().getSession().createQuery(hql.toString());
+	    
+	    
+	    Session session=getBaseDao().getSessionFactory().getCurrentSession();
+		Query query = session.createQuery(hql.toString());
+	    
+	    for (Map.Entry<String, Object> entry : params.entrySet()) {
+	        query.setParameter(entry.getKey(), entry.getValue());
+	    }
+
+	    // 执行计数查询，只取第一个结果
+	    Long count = (Long) query.uniqueResult();
+	    return count != null && count > 0;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean judgeRoleExistsOrNot(String roleName,String roleId,User user) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(roleName)) {
-			String queryString = "SELECT r.roleName FROM Role r where r.roleName='"+ roleName + "' ";
-			if(StringManagerUtils.isNotNull(roleId)){//当前是更新用户
+			String queryString = "SELECT r.roleId FROM Role r where r.roleName_"+user.getLanguageName()+"='"+roleName+"'";
+			if(StringManagerUtils.isNotNull(roleId)){
 				queryString+=" and r.roleId<>"+roleId;
 			}
-			queryString+= "order by r.roleId ";
 			List<User> list = getBaseDao().find(queryString);
 			if (list.size() > 0) {
 				flag = true;
@@ -431,8 +521,8 @@ public class RoleManagerService<T> extends BaseService<T> {
 		
 		String collisionSql="select role_id "
 				+ " from viw_role "
-				+ " where role_name not in("
-				+ " select role_name"
+				+ " where role_name_zh_CN not in("
+				+ " select role_name_zh_CN"
 				+ " from  viw_role t"
 				+ " where 1=1 "
 				+ " and t.role_id not in ( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+currentTabs+") )"
@@ -477,25 +567,37 @@ public class RoleManagerService<T> extends BaseService<T> {
 		+ "\"totalRoot\":[");
 		if(uploadRoleList!=null){
 			for(ExportRoleData exportRoleData:roleList){
+				String addRoleName="";
+				if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+					addRoleName=exportRoleData.getRoleName_zh_CN();
+				}else if("en".equalsIgnoreCase(user.getLanguageName())){
+					addRoleName=exportRoleData.getRoleName_en();
+				}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+					addRoleName=exportRoleData.getRoleName_ru();
+				}
 				
 				if(StringManagerUtils.existOrNot(overlayRoleList, exportRoleData.getRoleId()+"", true)){
 					exportRoleData.setSaveSign(1);
-					exportRoleData.setMsg(exportRoleData.getRoleName()+languageResourceMap.get("uploadCollisionInfo1"));
+					exportRoleData.setMsg(addRoleName+languageResourceMap.get("uploadCollisionInfo1"));
 				}else if(StringManagerUtils.existOrNot(collisionRoleList, exportRoleData.getRoleId()+"", true)){
 					exportRoleData.setSaveSign(2);
-					exportRoleData.setMsg(exportRoleData.getRoleName()+languageResourceMap.get("uploadCollisionInfo2"));
+					exportRoleData.setMsg(addRoleName+languageResourceMap.get("uploadCollisionInfo2"));
 				}
 				
 				
 				result_json.append("{\"roleId\":"+exportRoleData.getRoleId()+",");
-				result_json.append("\"roleName\":\""+exportRoleData.getRoleName()+"\",");
+				result_json.append("\"roleName_zh_CN\":\""+exportRoleData.getRoleName_zh_CN()+"\",");
+				result_json.append("\"roleName_en\":\""+exportRoleData.getRoleName_en()+"\",");
+				result_json.append("\"roleName_ru\":\""+exportRoleData.getRoleName_ru()+"\",");
 				result_json.append("\"roleLevel\":\""+exportRoleData.getRoleLevel()+"\",");
 				result_json.append("\"roleVideoKeyEdit\":\""+exportRoleData.getRoleVideoKeyEdit()+"\",");
 				result_json.append("\"roleVideoKeyEditName\":"+(exportRoleData.getRoleVideoKeyEdit()==1)+",");
 				result_json.append("\"roleLanguageEdit\":\""+exportRoleData.getRoleLanguageEdit()+"\",");
 				result_json.append("\"roleLanguageEditName\":"+(exportRoleData.getRoleLanguageEdit()==1)+",");
 				result_json.append("\"showLevel\":\""+exportRoleData.getShowLevel()+"\",");
-				result_json.append("\"remark\":\""+exportRoleData.getRemark()+"\",");
+				result_json.append("\"remark_zh_CN\":\""+exportRoleData.getRemark_zh_CN()+"\",");
+				result_json.append("\"remark_en\":\""+exportRoleData.getRemark_en()+"\",");
+				result_json.append("\"remark_ru\":\""+exportRoleData.getRemark_ru()+"\",");
 				result_json.append("\"msg\":\""+exportRoleData.getMsg()+"\",");
 				result_json.append("\"saveSign\":\""+exportRoleData.getSaveSign()+"\"},");
 			}
@@ -531,7 +633,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 		}
 		
 		Map<String,Integer> roleMap=new HashMap<>();
-		String roleSql="select t.role_name,t.role_id from TBL_ROLE t ";
+		String roleSql="select t.role_name_zh_CN,t.role_id from TBL_ROLE t ";
 		List<?> currentRoleList = this.findCallSql(roleSql);
 		for(int i=0;i<currentRoleList.size();i++){
 			Object[] obj = (Object[]) currentRoleList.get(i);
@@ -552,12 +654,16 @@ public class RoleManagerService<T> extends BaseService<T> {
 			if( deviceTypeRight && ( (exportRoleData.getRoleLevel()>StringManagerUtils.stringToInteger(currentRoleLevel)) || (exportRoleData.getRoleId()==StringManagerUtils.stringToInteger(currentId)) )  ){
 				if(exportRoleData.getSaveSign()!=2){
 					Role role=new Role();
-					role.setRoleName(exportRoleData.getRoleName());
+					role.setRoleName_zh_CN(exportRoleData.getRoleName_zh_CN());
+					role.setRoleName_en(exportRoleData.getRoleName_en());
+					role.setRoleName_ru(exportRoleData.getRoleName_ru());
 					role.setRoleLevel(exportRoleData.getRoleLevel());
 					role.setShowLevel(exportRoleData.getShowLevel());
 					role.setRoleVideoKeyEdit(exportRoleData.getRoleVideoKeyEdit());
 					role.setRoleLanguageEdit(exportRoleData.getRoleLanguageEdit());
-					role.setRemark(exportRoleData.getRemark());
+					role.setRemark_zh_CN(exportRoleData.getRemark_zh_CN());
+					role.setRemark_en(exportRoleData.getRemark_en());
+					role.setRemark_ru(exportRoleData.getRemark_ru());
 					role.setRoleId(exportRoleData.getRoleId());
 					
 					if(exportRoleData.getSaveSign()==0){
@@ -618,7 +724,9 @@ public class RoleManagerService<T> extends BaseService<T> {
 						}
 					}
 					
-					if(exportRoleData.getRoleName().equals(user.getUserTypeName())){
+					if(exportRoleData.getRoleName_zh_CN().equals(user.getUserTypeName_zh_CN()) 
+							|| exportRoleData.getRoleName_en().equals(user.getUserTypeName_en()) 
+							|| exportRoleData.getRoleName_ru().equals(user.getUserTypeName_ru())){
 						MemoryDataManagerTask.loadUserInfoByRoleId(role.getRoleId()+"", "update");
 					}
 				}

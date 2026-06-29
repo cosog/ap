@@ -20,12 +20,16 @@ public class Role implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer roleId;
-	private String roleName;
+	private String roleName_zh_CN;
+	private String roleName_en;
+	private String roleName_ru;
 	private Integer roleLevel;
 	private Integer roleVideoKeyEdit;
 	private Integer roleLanguageEdit;
 	private Integer showLevel;
-	private String remark;
+	private String remark_zh_CN;
+	private String remark_en;
+	private String remark_ru;
 
 	// Constructors
 
@@ -34,18 +38,25 @@ public class Role implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Role(Integer roleId,String roleName, Integer roleLevel,
+	public Role(Integer roleId,
+			String roleName_zh_CN, String roleName_en, String roleName_ru, 
+			Integer roleLevel,
 			Integer roleVideoKeyEdit,
 			Integer roleLanguageEdit,
-			Integer showLevel, String remark) {
+			Integer showLevel, 
+			String remark_zh_CN,String remark_en,String remark_ru) {
 		super();
 		this.roleId = roleId;
-		this.roleName = roleName;
+		this.roleName_zh_CN = roleName_zh_CN;
+		this.roleName_en = roleName_en;
+		this.roleName_ru = roleName_ru;
 		this.roleLevel = roleLevel;
 		this.roleVideoKeyEdit = roleVideoKeyEdit;
 		this.roleLanguageEdit = roleLanguageEdit;
 		this.showLevel = showLevel;
-		this.remark = remark;
+		this.remark_zh_CN = remark_zh_CN;
+		this.remark_en = remark_en;
+		this.remark_ru = remark_ru;
 	}
 
 	@Id
@@ -59,15 +70,6 @@ public class Role implements java.io.Serializable {
 		this.roleId = roleId;
 	}
 
-	@Column(name = "ROLE_NAME", nullable = false, length = 40)
-	public String getRoleName() {
-		return this.roleName;
-	}
-
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
-	}
-
 	@Column(name = "ROLE_LEVEL", nullable = false, length = 10)
 	public Integer getRoleLevel() {
 		return roleLevel;
@@ -76,17 +78,8 @@ public class Role implements java.io.Serializable {
 	public void setRoleLevel(Integer roleLevel) {
 		this.roleLevel = roleLevel;
 	}
-	
-	@Column(name = "REMARK", nullable = false, length = 10)
-	public String getRemark() {
-		return this.remark;
-	}
 
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
-	@Column(name = "showLevel", nullable = false, length = 10)
+	@Column(name = "SHOWLEVEL", nullable = false, length = 10)
 	public Integer getShowLevel() {
 		return showLevel;
 	}
@@ -111,6 +104,60 @@ public class Role implements java.io.Serializable {
 
 	public void setRoleLanguageEdit(Integer roleLanguageEdit) {
 		this.roleLanguageEdit = roleLanguageEdit;
+	}
+
+	@Column(name = "ROLE_NAME_ZH_CN", nullable = false, length = 40)
+	public String getRoleName_zh_CN() {
+		return roleName_zh_CN;
+	}
+
+	public void setRoleName_zh_CN(String roleName_zh_CN) {
+		this.roleName_zh_CN = roleName_zh_CN;
+	}
+
+	@Column(name = "ROLE_NAME_EN", nullable = false, length = 40)
+	public String getRoleName_en() {
+		return roleName_en;
+	}
+
+	public void setRoleName_en(String roleName_en) {
+		this.roleName_en = roleName_en;
+	}
+
+	@Column(name = "ROLE_NAME_RU", nullable = false, length = 40)
+	public String getRoleName_ru() {
+		return roleName_ru;
+	}
+
+	public void setRoleName_ru(String roleName_ru) {
+		this.roleName_ru = roleName_ru;
+	}
+
+	@Column(name = "REMARK_ZH_CN", nullable = false, length = 10)
+	public String getRemark_zh_CN() {
+		return remark_zh_CN;
+	}
+
+	public void setRemark_zh_CN(String remark_zh_CN) {
+		this.remark_zh_CN = remark_zh_CN;
+	}
+
+	@Column(name = "REMARK_EN", nullable = false, length = 10)
+	public String getRemark_en() {
+		return remark_en;
+	}
+
+	public void setRemark_en(String remark_en) {
+		this.remark_en = remark_en;
+	}
+
+	@Column(name = "REMARK_RU", nullable = false, length = 10)
+	public String getRemark_ru() {
+		return remark_ru;
+	}
+
+	public void setRemark_ru(String remark_ru) {
+		this.remark_ru = remark_ru;
 	}
 
 	

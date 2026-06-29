@@ -38,7 +38,9 @@ public class User implements java.io.Serializable {
 	private String picUrl;
 	private String pageSize;
 	private Integer userType;
-	private String userTypeName;
+	private String userTypeName_zh_CN;
+	private String userTypeName_ru;
+	private String userTypeName_en;
 	private Integer userQuickLogin;
 	private Integer userEnable;
 	private Integer receiveSMS;
@@ -338,15 +340,6 @@ public class User implements java.io.Serializable {
 	}
 
 	@Transient
-	public String getUserTypeName() {
-		return userTypeName;
-	}
-
-	public void setUserTypeName(String userTypeName) {
-		this.userTypeName = userTypeName;
-	}
-
-	@Transient
 	public Integer getRoleLevel() {
 		return roleLevel;
 	}
@@ -443,5 +436,32 @@ public class User implements java.io.Serializable {
 
 	public void setUserOrgIds(String userOrgIds) {
 		this.userOrgIds = userOrgIds;
+	}
+
+	@Transient
+	public String getUserTypeName_zh_CN() {
+		return userTypeName_zh_CN;
+	}
+
+	public void setUserTypeName_zh_CN(String userTypeName_zh_CN) {
+		this.userTypeName_zh_CN = userTypeName_zh_CN;
+	}
+
+	@Transient
+	public String getUserTypeName_ru() {
+		return userTypeName_ru;
+	}
+
+	public void setUserTypeName_ru(String userTypeName_ru) {
+		this.userTypeName_ru = userTypeName_ru;
+	}
+
+	@Transient
+	public String getUserTypeName_en() {
+		return userTypeName_en;
+	}
+
+	public void setUserTypeName_en(String userTypeName_en) {
+		this.userTypeName_en = userTypeName_en;
 	}
 }

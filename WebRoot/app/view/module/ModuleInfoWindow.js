@@ -19,9 +19,9 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
     initComponent: function () {
         var me = this;
         
-        var labelWidth=getLabelWidth(loginUserLanguageResource.parentModule,loginUserLanguage);
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleName,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.moduleName,loginUserLanguage);
+        var labelWidth=getLabelWidth(loginUserLanguageResource.parentModule+"*",loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleName+"*",loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.moduleName+"*",loginUserLanguage);
         }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleIntroduction,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.moduleIntroduction,loginUserLanguage);
@@ -29,8 +29,8 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleIcon,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.moduleIcon,loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleType,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.moduleType,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleType+"*",loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.moduleType+"*",loginUserLanguage);
         }
         if(labelWidth<getLabelWidth(loginUserLanguageResource.moduleSort,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.moduleSort,loginUserLanguage);

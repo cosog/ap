@@ -397,16 +397,16 @@ public class OperationMaintenanceController  extends BaseController {
 			User user = (User) session.getAttribute("userLogin");
 			deviceTabManager.setId(1);
 			
-			if(user.getLanguage()==1){
-				deviceTabManager.setName_en(deviceTabManager.getName_zh_CN());
-				deviceTabManager.setName_ru(deviceTabManager.getName_zh_CN());
-			}else if(user.getLanguage()==2){
-				deviceTabManager.setName_zh_CN(deviceTabManager.getName_en());
-				deviceTabManager.setName_ru(deviceTabManager.getName_en());
-			}else if(user.getLanguage()==3){
-				deviceTabManager.setName_zh_CN(deviceTabManager.getName_ru());
-				deviceTabManager.setName_en(deviceTabManager.getName_ru());
-			}
+//			if(user.getLanguage()==1){
+//				deviceTabManager.setName_en(deviceTabManager.getName_zh_CN());
+//				deviceTabManager.setName_ru(deviceTabManager.getName_zh_CN());
+//			}else if(user.getLanguage()==2){
+//				deviceTabManager.setName_zh_CN(deviceTabManager.getName_en());
+//				deviceTabManager.setName_ru(deviceTabManager.getName_en());
+//			}else if(user.getLanguage()==3){
+//				deviceTabManager.setName_zh_CN(deviceTabManager.getName_ru());
+//				deviceTabManager.setName_en(deviceTabManager.getName_ru());
+//			}
 			
 			this.deviceTabManagerMaintenanceService.addDeviceTabManagerInstance(deviceTabManager);
 			result = "{success:true,msg:true}";

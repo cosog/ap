@@ -4732,7 +4732,8 @@ public class MemoryDataManagerTask {
 					+ " t.user_in_email,t.user_phone,"
 					+ " t.user_quicklogin,t.user_enable,t.user_receivesms,t.user_receivemail,"
 					+ " t.user_type,"
-					+ " t2.role_name,t2.role_level,t2.showlevel,"
+					+ " t2.role_name_zh_CN,"
+					+ " t2.role_level,t2.showlevel,"
 					+ " t.user_language"
 					+ " from tbl_user t,tbl_role t2 "
 					+ " where t.user_type=t2.role_id ";
@@ -4762,7 +4763,7 @@ public class MemoryDataManagerTask {
 				userInfo.setReceiveMail(StringManagerUtils.stringToInteger(obj[10]+""));
 				
 				userInfo.setUserType(StringManagerUtils.stringToInteger(obj[11]+""));
-				userInfo.setRoleName(obj[12]+"");
+//				userInfo.setRoleName(obj[12]+"");
 				userInfo.setRoleLevel(StringManagerUtils.stringToInteger(obj[13]+""));
 				userInfo.setRoleShowLevel(StringManagerUtils.stringToInteger(obj[14]+""));
 				

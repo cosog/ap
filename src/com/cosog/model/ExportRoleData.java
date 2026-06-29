@@ -6,7 +6,9 @@ public class ExportRoleData {
 	
 	private int RoleId;
 	
-	private String RoleName;
+	private String RoleName_zh_CN;
+	private String RoleName_en;
+	private String RoleName_ru;
 	
 	private int RoleLevel;
 	
@@ -16,7 +18,9 @@ public class ExportRoleData {
 	
 	private int ShowLevel;
 	
-	private String Remark;
+	private String Remark_zh_CN;
+	private String Remark_en;
+	private String Remark_ru;
 	
 	private List<RoleRight> ModuleRight;
 	
@@ -63,14 +67,6 @@ public class ExportRoleData {
 		RoleId = roleId;
 	}
 
-	public String getRoleName() {
-		return RoleName;
-	}
-
-	public void setRoleName(String roleName) {
-		RoleName = roleName;
-	}
-
 	public int getRoleLevel() {
 		return RoleLevel;
 	}
@@ -101,14 +97,6 @@ public class ExportRoleData {
 
 	public void setShowLevel(int showLevel) {
 		ShowLevel = showLevel;
-	}
-
-	public String getRemark() {
-		return Remark;
-	}
-
-	public void setRemark(String remark) {
-		Remark = remark;
 	}
 
 	public List<RoleRight> getModuleRight() {
@@ -157,5 +145,53 @@ public class ExportRoleData {
 
 	public void setSaveId(int saveId) {
 		this.saveId = saveId;
+	}
+
+	public String getRoleName_zh_CN() {
+		return RoleName_zh_CN;
+	}
+
+	public void setRoleName_zh_CN(String roleName_zh_CN) {
+		RoleName_zh_CN = roleName_zh_CN;
+	}
+
+	public String getRoleName_en() {
+		return RoleName_en;
+	}
+
+	public void setRoleName_en(String roleName_en) {
+		RoleName_en = roleName_en;
+	}
+
+	public String getRoleName_ru() {
+		return RoleName_ru;
+	}
+
+	public void setRoleName_ru(String roleName_ru) {
+		RoleName_ru = roleName_ru;
+	}
+
+	public String getRemark_zh_CN() {
+		return Remark_zh_CN;
+	}
+
+	public void setRemark_zh_CN(String remark_zh_CN) {
+		Remark_zh_CN = remark_zh_CN;
+	}
+
+	public String getRemark_en() {
+		return Remark_en;
+	}
+
+	public void setRemark_en(String remark_en) {
+		Remark_en = remark_en;
+	}
+
+	public String getRemark_ru() {
+		return Remark_ru;
+	}
+
+	public void setRemark_ru(String remark_ru) {
+		Remark_ru = remark_ru;
 	}
 }

@@ -68,7 +68,7 @@ Ext.define('AP.store.operationMaintenance.DeviceTabManagerInfoStore', {
                         hidden:!showChineseName,
                         flex:2,
                         editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
-                            allowBlank: false,
+                            allowBlank: true,
                             disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
                         }:"",
                         renderer: function (value, o, p, e) {
@@ -86,7 +86,7 @@ Ext.define('AP.store.operationMaintenance.DeviceTabManagerInfoStore', {
                         hidden:!showEnglishName,
                         flex:2,
                         editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
-                            allowBlank: false,
+                            allowBlank: true,
                             disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
                         }:"",
                         renderer: function (value, o, p, e) {
@@ -104,7 +104,7 @@ Ext.define('AP.store.operationMaintenance.DeviceTabManagerInfoStore', {
                         hidden:!showRussianName,
                         flex:2,
                         editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
-                            allowBlank: false,
+                            allowBlank: true,
                             disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
                         }:"",
                         renderer: function (value, o, p, e) {

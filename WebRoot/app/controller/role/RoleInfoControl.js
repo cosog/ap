@@ -101,11 +101,16 @@ var SaveroleDataInfoSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
-                
-                
                 if (action.result.msg == true) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
-                    Ext.getCmp("addRoleFlag_Id").setValue(Ext.getCmp('role_Name_Id').getValue());
+
+                    if(loginUserLanguage.toUpperCase()=='ZH_CN'){
+                    	Ext.getCmp("addRoleFlag_Id").setValue(Ext.getCmp('role_Name_zh_CN_Id').getValue());
+                	}else if(loginUserLanguage.toUpperCase()=='EN'){
+                		Ext.getCmp("addRoleFlag_Id").setValue(Ext.getCmp('role_Name_en_Id').getValue());
+                	}else if(loginUserLanguage.toUpperCase()=='RU'){
+                		Ext.getCmp("addRoleFlag_Id").setValue(Ext.getCmp('role_Name_ru_Id').getValue());
+                	}
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！</font>" + loginUserLanguageResource.addFailure);
@@ -583,7 +588,13 @@ function delRoleInfoByGridBtn(record) {
 function updateRoleInfoByGridBtn(record) {
 
     var roleId=record.get("roleId");
-    var roleName=record.get("roleName");
+    var roleName_zh_CN=record.get("roleName_zh_CN");
+    var roleName_en=record.get("roleName_en");
+    var roleName_ru=record.get("roleName_ru");
+    var remark_zh_CN=record.get("remark_zh_CN");
+    var remark_en=record.get("remark_en");
+    var remark_ru=record.get("remark_ru");
+    
     var roleLevel=record.get("roleLevel");
 //    var roleFlagName=record.get("roleFlagName");
 //    var roleReportEditName=record.get("roleReportEditName");
@@ -596,10 +607,13 @@ function updateRoleInfoByGridBtn(record) {
 		method : "POST",
 		params : {
 			roleId:roleId,
-			roleName:roleName,
+			roleName_zh_CN:roleName_zh_CN,
+			roleName_en:roleName_en,
+			roleName_ru:roleName_ru,
+			remark_zh_CN:remark_zh_CN,
+			remark_en:remark_en,
+			remark_ru:remark_ru,
 			roleLevel:roleLevel,
-//			roleFlagName:roleFlagName,
-//			roleReportEditName:roleReportEditName,
 			roleVideoKeyEditName:roleVideoKeyEditName,
 			roleLanguageEditName:roleLanguageEditName,
 			showLevel:showLevel,

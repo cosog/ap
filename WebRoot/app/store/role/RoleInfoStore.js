@@ -24,6 +24,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
             
+            var showChineseName=get_rawData.showChineseName;
+            var showEnglishName=get_rawData.showEnglishName;
+            var showRussianName=get_rawData.showRussianName;
+            
             var currentId=get_rawData.currentId;
             var currentLevel=get_rawData.currentLevel;
             var currentShowLevel=get_rawData.currentShowLevel;
@@ -73,14 +77,55 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         width: getLabelWidth(loginUserLanguageResource.idx,loginUserLanguage)+'px',
                         xtype: 'rownumberer'
                     }, {
-                        header: loginUserLanguageResource.roleName,
+                        header: loginUserLanguageResource.language_zh_CN,
                         lockable: true,
                         align: 'center',
                         sortable: true,
                         flex: 1,
-                        dataIndex: 'roleName',
+                        dataIndex: 'roleName_zh_CN',
+                        hidden:!showChineseName,
                         editor: loginUserRoleManagerModuleRight.editFlag==1?{
-                            allowBlank: false,
+                            allowBlank: true,
+                            disabled:loginUserRoleManagerModuleRight.editFlag!=1
+                        }:"",
+                        renderer: function (value, o, p, e) {
+                            return adviceCurrentRoleName(value, o, p, e);
+                        },
+                        listeners: {
+                        	beforechange: function( cell, rowIndex, checked, record, e, eOpts){
+                        		alert(rowIndex);
+                        	}
+                        }
+                    }, {
+                        header: loginUserLanguageResource.language_en,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 1,
+                        dataIndex: 'roleName_en',
+                        hidden:!showEnglishName,
+                        editor: loginUserRoleManagerModuleRight.editFlag==1?{
+                            allowBlank: true,
+                            disabled:loginUserRoleManagerModuleRight.editFlag!=1
+                        }:"",
+                        renderer: function (value, o, p, e) {
+                            return adviceCurrentRoleName(value, o, p, e);
+                        },
+                        listeners: {
+                        	beforechange: function( cell, rowIndex, checked, record, e, eOpts){
+                        		alert(rowIndex);
+                        	}
+                        }
+                    }, {
+                        header: loginUserLanguageResource.language_ru,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 1,
+                        dataIndex: 'roleName_ru',
+                        hidden:!showRussianName,
+                        editor: loginUserRoleManagerModuleRight.editFlag==1?{
+                            allowBlank: true,
                             disabled:loginUserRoleManagerModuleRight.editFlag!=1
                         }:"",
                         renderer: function (value, o, p, e) {
@@ -186,7 +231,42 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         align: 'center',
                         sortable: true,
                         flex: 3,
-                        dataIndex: 'remark',
+                        dataIndex: 'remark_zh_CN',
+                        hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                        editor: loginUserRoleManagerModuleRight.editFlag==1?{
+                        	allowBlank: true,
+                        	disabled:loginUserRoleManagerModuleRight.editFlag!=1
+                        }:"",
+                        renderer: function (value) {
+                            if (isNotVal(value)) {
+                                return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                            }
+                        }
+                    },{
+                        header: loginUserLanguageResource.roleRemark,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 3,
+                        dataIndex: 'remark_en',
+                        hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                        editor: loginUserRoleManagerModuleRight.editFlag==1?{
+                        	allowBlank: true,
+                        	disabled:loginUserRoleManagerModuleRight.editFlag!=1
+                        }:"",
+                        renderer: function (value) {
+                            if (isNotVal(value)) {
+                                return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                            }
+                        }
+                    },{
+                        header: loginUserLanguageResource.roleRemark,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 3,
+                        dataIndex: 'remark_ru',
+                        hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
                         editor: loginUserRoleManagerModuleRight.editFlag==1?{
                         	allowBlank: true,
                         	disabled:loginUserRoleManagerModuleRight.editFlag!=1
@@ -321,16 +401,23 @@ Ext.define('AP.store.role.RoleInfoStore', {
             	if(isNotVal(addRoleFlag)){
             		Ext.getCmp("addRoleFlag_Id").setValue('');
             		for(var i=0;i<store.data.length;i++){
-                		if(store.getAt(i).data.roleName==addRoleFlag){
+                		if( (loginUserLanguage.toUpperCase()=='ZH_CN' && store.getAt(i).data.roleName_zh_CN==addRoleFlag)
+                				|| (loginUserLanguage.toUpperCase()=='EN' && store.getAt(i).data.roleName_en==addRoleFlag)
+                				|| (loginUserLanguage.toUpperCase()=='RU' && store.getAt(i).data.roleName_ru==addRoleFlag)
+                		){
                 			selectedRow=i;
                 			break;
                 		}
+                		
                 	}
             	}else{
             		var selectedRoleId= Ext.getCmp("selectedRoleId_Id").getValue();
             		if(selectedRoleId>0){
             			for(var i=0;i<store.data.length;i++){
-                    		if(store.getAt(i).data.roleId==selectedRoleId){
+                    		if( (loginUserLanguage.toUpperCase()=='ZH_CN' && store.getAt(i).data.roleName_zh_CN==addRoleFlag)
+                    				|| (loginUserLanguage.toUpperCase()=='EN' && store.getAt(i).data.roleName_en==addRoleFlag)
+                    				|| (loginUserLanguage.toUpperCase()=='RU' && store.getAt(i).data.roleName_ru==addRoleFlag)
+                    		){
                     			selectedRow=i;
                     			break;
                     		}

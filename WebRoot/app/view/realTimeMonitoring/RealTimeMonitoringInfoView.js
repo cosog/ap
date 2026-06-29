@@ -159,11 +159,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
     	                    }
     	            	},{
     	            		xtype: 'button',
-    	                    id:"tableSpaceSizeProbeLabel_id",
-    	                    text: loginUserLanguageResource.resourcesMonitoring_tablespaces+':',
+    	                    id:"redisRunStatusProbeLabel_id",
+    	                    text: loginUserLanguageResource.resourcesMonitoring_cache+'',
     	                    handler: function (v, o) {
-    	                    	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.tablespacesUsage+"(%)");
-    	                        Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("tableSpaceSize");
+    	                    	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.cacheDbMemory+"(m)");
+    	                        Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("jedisStatus");
     	                        var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
     	                    	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
     	        				    html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
@@ -172,11 +172,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
     	                    }
     	            	},{
     	            		xtype: 'button',
-    	                    id:"redisRunStatusProbeLabel_id",
-    	                    text: loginUserLanguageResource.resourcesMonitoring_cache+'',
+    	                    id:"tableSpaceSizeProbeLabel_id",
+    	                    text: loginUserLanguageResource.resourcesMonitoring_tablespaces+':',
     	                    handler: function (v, o) {
-    	                    	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.cacheDbMemory+"(m)");
-    	                        Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("jedisStatus");
+    	                    	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.tablespacesUsage+"(%)");
+    	                        Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("tableSpaceSize");
     	                        var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
     	                    	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
     	        				    html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'

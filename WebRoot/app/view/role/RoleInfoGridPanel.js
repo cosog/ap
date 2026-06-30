@@ -72,6 +72,72 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 text: loginUserLanguageResource.add,
                 disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                 iconCls: 'add'
+    		},'-',{
+                xtype: 'button',
+                text: loginUserLanguageResource.deleteData,
+                disabled:loginUserRoleManagerModuleRight.editFlag!=1,
+                iconCls: 'delete',
+                handler: function () {
+                	var selectRoleId=[];
+                	var RoleInfoGridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
+                	var selectionModel = RoleInfoGridPanel.getSelectionModel();
+                    var selectionRecord = selectionModel.getSelection();
+                	if(selectionRecord.length>0){
+                		Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete, function (btn) {
+                            if (btn == "yes") {
+                            	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
+                            	
+                            	if(selectionRecord.length==1 && parseInt(selectionRecord[0].data.roleId)==parseInt(currentId)){
+                            		Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.cannotDeleteLoginUserRole);
+                            	}else{
+                            		selectionRecord.forEach(function(record) {
+                                		if (parseInt(record.data.roleId)!=parseInt(currentId)){
+                                			selectRoleId.push(record.data.roleId);
+                                		}
+        	                	    });
+                            		if(selectRoleId.length>0){
+                            			Ext.Ajax.request({
+            	                			method:'POST',
+            	                			url : context + '/roleManagerController/doRoleBulkDelete',
+            	                			success:function(response) {
+            	                				var result = Ext.JSON.decode(response.responseText);
+            	                  				if (result.flag == true) {
+            	                  					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
+            	                  				}
+            	                  				if (result.flag == false) {
+            	                  					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
+            	                  				}
+            	                  				Ext.getCmp("selectedRoleId_Id").setValue(0);
+            	                  				Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
+            	                			},
+            	                			failure:function(){
+            	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+            	                			},
+            	                			params: {
+            	                				paramsId: selectRoleId.join(",")
+            	                	        }
+            	                		});
+                            		}
+                            		
+                            	}
+                            }
+                        });
+                	} else {
+                        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+                    }
+                	
+                }
+    		},'-',{
+                xtype: 'button',
+                text: loginUserLanguageResource.save,
+                disabled:loginUserRoleManagerModuleRight.editFlag!=1,
+                iconCls: 'save',
+                handler: function () {
+                	var RoleInfoGridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
+                	var store=RoleInfoGridPanel.getStore();
+                	var modifiedRecords = store.getModifiedRecords();
+                	updateRoleInfo(modifiedRecords);
+                }
     		},"-", {
                 xtype: 'button',
                 text: loginUserLanguageResource.exportData,

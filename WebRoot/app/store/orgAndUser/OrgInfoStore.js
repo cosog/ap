@@ -22,6 +22,9 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
         load: function (store, options, eOpts) {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
+            var showChineseName=get_rawData.showChineseName;
+            var showEnglishName=get_rawData.showEnglishName;
+            var showRussianName=get_rawData.showRussianName;
             var treeGridPanel = Ext.getCmp("OrgInfoTreeGridView_Id");
             if (!isNotVal(treeGridPanel)) {
                 var treeGridPanel = Ext.create('Ext.tree.Panel', {
@@ -35,7 +38,11 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
                     forceFit: false,
                     onlyLeafCheckable: false, // 所有结点可选，如果不需要checkbox,该属性去掉
                     singleExpand: false,
-//                    selType: 'checkboxmodel',
+                    selModel: 'cellmodel',//cellmodel rowmodel
+                    plugins: [{
+                        ptype: 'cellediting',//cellediting rowediting
+                        clicksToEdit: 2
+                    }],
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
                     },
@@ -47,12 +54,50 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
                         flex: 3,
                         xtype: 'treecolumn',
                         dataIndex: 'text'
+                    },{
+                    	text: loginUserLanguageResource.language_zh_CN,
+                    	flex: 3,
+                    	align: 'left',
+                    	dataIndex: 'orgName_zh_CN',
+                    	hidden:!showChineseName,
+                    	editor: loginUserOrgAndUserModuleRight.editFlag==1?{
+                            allowBlank: true,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1
+                        }:"",
+                    },{
+                    	text: loginUserLanguageResource.language_en,
+                    	flex: 3,
+                    	align: 'left',
+                    	dataIndex: 'orgName_en',
+                    	hidden:!showEnglishName,
+                    	editor: loginUserOrgAndUserModuleRight.editFlag==1?{
+                            allowBlank: true,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1
+                        }:"",
+                    },{
+                    	text: loginUserLanguageResource.language_ru,
+                    	flex: 3,
+                    	align: 'left',
+                    	dataIndex: 'orgName_ru',
+                    	hidden:!showRussianName,
+                    	editor: loginUserOrgAndUserModuleRight.editFlag==1?{
+                            allowBlank: true,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1
+                        }:"",
                     }, {
                         header: loginUserLanguageResource.sequenceNumber,
                         lockable: true,
-                        align: 'left',
+                        align: 'center',
+                        sortable: true,
                         flex: 1,
-                        dataIndex: 'orgSeq'
+                        dataIndex: 'orgSeq',
+                        editor: loginUserOrgAndUserModuleRight.editFlag==1?{
+                            allowBlank: true,
+                            xtype: 'numberfield',
+                            editable: false,
+                            disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                            minValue: 1
+                        }:""
                     }],
                     listeners: {
                         selectionchange: function (sm, selected) {
@@ -67,19 +112,27 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
                         	}
                         },
                         itemdblclick: function (grid, record, item, index, e, eOpts) {
-                        	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
-    	                    if(OrgAndUserModuleEditFlag==1){
-    	                    	if(!( (record.data.text==loginUserLanguageResource.orgRootNode&&parseInt(record.data.orgParent)==0) || parseInt(record.data.orgId)==parseInt(userOrg_Id)   )){
-                            		modifyOrgInfo();
-                        		}
-    	                    }
+//                        	var OrgAndUserModuleEditFlag=parseInt(Ext.getCmp("OrgAndUserModuleEditFlag").getValue());
+//    	                    if(OrgAndUserModuleEditFlag==1){
+//    	                    	if(!( (record.data.text==loginUserLanguageResource.orgRootNode&&parseInt(record.data.orgParent)==0) || parseInt(record.data.orgId)==parseInt(userOrg_Id)   )){
+//                            		modifyOrgInfo();
+//                        		}
+//    	                    }
                         },
                         itemclick: function (view,record,item,ndex,e,eOpts) {
+//                        	var gridPanel = Ext.getCmp("UserInfoGridPanel_Id");
+//                        	if (isNotVal(gridPanel)) {
+//                        		gridPanel.getStore().load();
+//                        	}
+                        },
+                        select( v, record, index, eOpts ){
                         	var gridPanel = Ext.getCmp("UserInfoGridPanel_Id");
                         	if (isNotVal(gridPanel)) {
                         		gridPanel.getStore().load();
-                        	}
-                        }
+                        	}else{
+                        		Ext.create("AP.store.orgAndUser.UserPanelInfoStore");
+                            }
+                    	}
                     }
 
                 });
@@ -89,13 +142,16 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
                 }
             }
 
-            //加载用户列表
-            var gridPanel = Ext.getCmp("UserInfoGridPanel_Id");
-        	if (isNotVal(gridPanel)) {
-        		gridPanel.getStore().load();
-        	}else{
-        		Ext.create("AP.store.orgAndUser.UserPanelInfoStore");
-        	}
+//            //加载用户列表
+//            var gridPanel = Ext.getCmp("UserInfoGridPanel_Id");
+//        	if (isNotVal(gridPanel)) {
+//        		gridPanel.getStore().load();
+//        	}else{
+//        		Ext.create("AP.store.orgAndUser.UserPanelInfoStore");
+//        	}
+            
+            treeGridPanel.getSelectionModel().deselectAll(true);
+            treeGridPanel.getSelectionModel().select(0, true);
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

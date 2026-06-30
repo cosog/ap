@@ -4811,7 +4811,7 @@ public class MemoryDataManagerTask {
 	
 	public static void loadUserInfoByRoleId(String roleId,String method){//condition 0 -用户id 1-用户账号
 		List<String> roleList=new ArrayList<String>();
-        String sql="select t.user_no from TBL_USER t where t.user_type="+roleId;
+        String sql="select t.user_no from TBL_USER t where t.user_type in ("+roleId+")";
         try {
         	List<Object[]> list=OracleJdbcUtis.query(sql);
 			for(Object[] obj:list){

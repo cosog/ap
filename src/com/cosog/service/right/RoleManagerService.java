@@ -306,8 +306,14 @@ public class RoleManagerService<T> extends BaseService<T> {
 		return getBaseDao().getObject(clazz, id);
 	}
 	
-	public int updateRoleInfo(Role role,boolean isLoginedUserRole) throws Exception {
+	public int updateRoleInfo(Role role,User prttentuser) throws Exception {
 		int r=0;
+		
+		boolean isLoginedUserRole=false;
+		if(prttentuser!=null && prttentuser.getUserType()==role.getRoleId()){
+			isLoginedUserRole=true;
+		}
+		
 		boolean flag = this.judgeRoleExistsOrNot(role);
 		if(flag){
 			r=2;

@@ -302,8 +302,12 @@
                     <div class="vertical-align-middle">
                         <div class="visible-xs text-center">
                         </div>
+                        <!--
                         <h3 class="hidden-xs" style="margin-bottom: 20px;"><span  id= "login_userlogin"></span> </h3>
                         <h4 class="hidden-xs" style="margin-bottom: 0px;"><span  id= "login_title"></span></h4>
+                        -->
+                        <h3 style="margin-bottom: 20px;"><span  id= "login_userlogin"></span> </h3>
+                        <h4 style="margin-bottom: 0px;"><span  id= "login_title"></span></h4>
                         <!-- <p class="hidden-xs"></p> -->
                         <form id="frmlogin" class="login-form fv-form fv-form-bootstrap" method="post">
 							<div class="form-group " >

@@ -585,6 +585,54 @@ function delRoleInfoByGridBtn(record) {
     }
 }
 
+function updateRoleInfo(modifiedRecords) {
+	if(modifiedRecords.length>0){
+		var modifiedRole=[];
+		
+		modifiedRecords.forEach(function(record) {
+			var role={};
+			role.roleId=record.get("roleId");
+		    role.roleName_zh_CN=record.get("roleName_zh_CN");
+		    role.roleName_en=record.get("roleName_en");
+		    role.roleName_ru=record.get("roleName_ru");
+		    role.remark_zh_CN=record.get("remark_zh_CN");
+		    role.remark_en=record.get("remark_en");
+		    role.remark_ru=record.get("remark_ru");
+		    
+		    role.roleLevel=record.get("roleLevel");
+		    role.roleVideoKeyEdit=record.get("roleVideoKeyEditName")?1:0;
+		    role.roleLanguageEdit=record.get("roleLanguageEditName")?1:0;
+		    role.showLevel=record.get("showLevel");
+			
+			modifiedRole.push(role);
+	    });
+		
+		Ext.Ajax.request({
+			method:'POST',
+			url:context + '/roleManagerController/batchUpdateRoleInfo',
+			success:function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true && result.flag == true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
+				}else if (result.success==true && result.flag == false) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}else {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}
+				Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
+			},
+			failure:function(){
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			},
+			params: {
+				data: JSON.stringify(modifiedRole)
+	        }
+		});
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
 function updateRoleInfoByGridBtn(record) {
 
     var roleId=record.get("roleId");
@@ -596,8 +644,6 @@ function updateRoleInfoByGridBtn(record) {
     var remark_ru=record.get("remark_ru");
     
     var roleLevel=record.get("roleLevel");
-//    var roleFlagName=record.get("roleFlagName");
-//    var roleReportEditName=record.get("roleReportEditName");
     var roleVideoKeyEditName=record.get("roleVideoKeyEditName");
     var roleLanguageEditName=record.get("roleLanguageEditName");
     var showLevel=record.get("showLevel");

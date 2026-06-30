@@ -14,9 +14,9 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 700,
-    minWidth: 600,
-    height: 400,
+    width: '50%',
+    minWidth: 300,
+    height: '60%',
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     padding:0,

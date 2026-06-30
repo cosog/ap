@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
@@ -34,6 +35,7 @@ import com.cosog.model.Module;
 import com.cosog.model.Org;
 import com.cosog.model.OrgParent;
 import com.cosog.model.OrgWellInfoBean;
+import com.cosog.model.Role;
 import com.cosog.model.User;
 import com.cosog.model.ExportOrganizationData;
 import com.cosog.service.base.CommonDataService;
@@ -234,8 +236,10 @@ public class OrgManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
+		List<Integer> languageList=null;
 		if(user!=null){
 			language=user.getLanguageName();
+			languageList=user.getLanguageList();
 		}
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
@@ -254,7 +258,16 @@ public class OrgManagerController extends BaseController {
 			}
 		}
 		json = r.modifyOrgStr(json);
-		json = this.getArrayTojsonPage(json, "",dictDeviceType,language);
+//		json = this.getArrayTojsonPage(json, "",dictDeviceType,language);
+		
+		
+		json="{\"success\": true,"
+				+ "\"showChineseName\":"+StringManagerUtils.existOrNot(languageList, 1)+","
+				+ "\"showEnglishName\":"+StringManagerUtils.existOrNot(languageList, 2)+","
+				+ "\"showRussianName\":"+StringManagerUtils.existOrNot(languageList, 3)+","
+				+ "\"children\":"+json
+				+"}";
+		
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -493,6 +506,48 @@ public class OrgManagerController extends BaseController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	@RequestMapping("/batchUpdateOrgInfo")
+	public String batchUpdateOrgInfo() throws IOException {
+		String result = "{success:true,flag:true}";
+		HttpSession session=request.getSession();
+		User userInfo = this.findCurrentUserInfo();
+		try {
+			String data = ParamUtils.getParameter(request, "data");
+			Gson gson=new Gson();
+			java.lang.reflect.Type type=null;
+			type = new TypeToken<List<Org>>() {}.getType();
+			List<Org> list=gson.fromJson(data, type);
+			
+			if(list!=null){
+				for(Org org:list){
+					this.orgService.modifyOrg(org);
+				}
+			}
+		} catch (Exception e) {
+			result = "{success:false,flag:false}";
+			e.printStackTrace();
+		}
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		Map<String, Object> map = DataModelMap.getMapObject();
+		
+		userInfo.setUserParentOrgids(orgService.findParentIds(userInfo.getUserOrgid()));
+		userInfo.setUserOrgIds(orgService.findChildIds(userInfo.getUserOrgid()));
+		userInfo.setUserOrgNames(orgService.findChildNames(userInfo.getUserOrgid(),userInfo.getLanguageName()));
+		userInfo.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
+		session.setAttribute("userLogin", userInfo);
+		list = orgService.findloadOrgTreeListById(Org.class, userInfo.getUserOrgIds());
+		map.put("oldUser", "");
+		map.put("oldUser", userInfo);
+		map.put("orgTree", list);
+		response.getWriter().print(result);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 

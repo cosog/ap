@@ -14,9 +14,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
     maximizable: true,
     minimizable: true,
     width: '65%',
-    minWidth: 800,
     height: '80%',
-    minHeight: 700,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     initComponent: function () {
@@ -30,6 +28,7 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
             	layout: 'fit',
             	split: true,
                 collapsible: true,
+                scrollable: true,
             	id:"DatabaseColumnMappingTableLeftTreePanel_Id"
             },{
             	region: 'center',

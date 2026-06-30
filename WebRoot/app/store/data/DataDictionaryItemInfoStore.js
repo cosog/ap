@@ -314,7 +314,7 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
                 		text: loginUserLanguageResource.config, 
                 		align:'center',
                 		itemId:'dataDictionaryItemGridConfigColumn_ItemId',
-                		width: (getLabelWidth(loginUserLanguageResource.config+"...",loginUserLanguage)),
+                		width: getLabelWidth(loginUserLanguageResource.config+"...",loginUserLanguage)+10,
                 		renderer :function(value,e,o){
                 			return iconDictItemConfig(value,e,o)
                 		} 

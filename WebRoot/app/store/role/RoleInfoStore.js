@@ -61,7 +61,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     forceFit: false,
                     selModel:{
                     	selType: (loginUserRoleManagerModuleRight.editFlag==1?'checkboxmodel':''),
-                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+                    	mode:'MULTI',//"SINGLE" / "SIMPLE" / "MULTI" 
                     	checkOnly:false,
                     	allowDeselect:false
                     },
@@ -281,6 +281,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     	xtype: 'actioncolumn',
                     	width: getLabelWidth(loginUserLanguageResource.save,loginUserLanguage)+'px',
                         align: 'center',
+                        hidden: true,
                         sortable: false,
                         menuDisabled: true,
                         items: [{
@@ -299,6 +300,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     	xtype: 'actioncolumn',
                     	width: getLabelWidth(loginUserLanguageResource.deleteData,loginUserLanguage)+'px',
                         align: 'center',
+                        hidden: true,
                         sortable: false,
                         menuDisabled: true,
                         items: [{
@@ -321,7 +323,14 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         	if(selected.length>0){
                         		roleId = selected[0].data.roleId;
                         		roleCode = selected[0].data.roleCode;
-                        		roleName = selected[0].data.roleName;
+                        		if(loginUserLanguage.toUpperCase()=='ZH_CN'){
+                        			roleName = selected[0].data.roleName_zh_CN;
+                        		}else if(loginUserLanguage.toUpperCase()=='EN'){
+                        			roleName = selected[0].data.roleName_en;
+                        		}else if(loginUserLanguage.toUpperCase()=='RU'){
+                        			roleName = selected[0].data.roleName_ru;
+                        		}
+                        		
                         		Ext.getCmp("RightBottomRoleCodes_Id").setValue(roleId);
                         		
                         		Ext.getCmp("RightModuleTreeInfoLabel_Id").setHtml(loginUserLanguageResource.role+"【<font color='red'>"+roleName+"</font>】 "+loginUserLanguageResourceFirstLower.moduleLicense);
@@ -414,10 +423,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
             		var selectedRoleId= Ext.getCmp("selectedRoleId_Id").getValue();
             		if(selectedRoleId>0){
             			for(var i=0;i<store.data.length;i++){
-                    		if( (loginUserLanguage.toUpperCase()=='ZH_CN' && store.getAt(i).data.roleName_zh_CN==addRoleFlag)
-                    				|| (loginUserLanguage.toUpperCase()=='EN' && store.getAt(i).data.roleName_en==addRoleFlag)
-                    				|| (loginUserLanguage.toUpperCase()=='RU' && store.getAt(i).data.roleName_ru==addRoleFlag)
-                    		){
+                    		if(selectedRoleId==store.getAt(i).data.roleId){
                     			selectedRow=i;
                     			break;
                     		}

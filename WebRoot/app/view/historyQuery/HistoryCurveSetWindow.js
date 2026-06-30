@@ -15,9 +15,9 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 1000,
-    minWidth: 1000,
-    height: 500,
+    width: '50%',
+    minWidth: 300,
+    height: '60%',
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     padding:0,

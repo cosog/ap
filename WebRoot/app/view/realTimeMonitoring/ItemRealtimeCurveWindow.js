@@ -13,9 +13,10 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 1200,
-    minWidth: 900,
-    height: 450,
+//    width: 1200,
+//    minWidth: 900,
+    width: '65%',
+    height: '50%',
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     initComponent: function () {

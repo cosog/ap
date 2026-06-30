@@ -223,6 +223,49 @@ function delOrgInfo() {
     }
 };
 
+function batchUpdateOrgInfo(modifiedRecords) {
+	if(modifiedRecords.length>0){
+		var modifiedOrg=[];
+		
+		modifiedRecords.forEach(function(record) {
+			var org={};
+			org.orgId=record.get("orgId");
+			org.orgParent=record.get("orgParent");
+			org.orgName_zh_CN=record.get("orgName_zh_CN");
+			org.orgName_en=record.get("orgName_en");
+			org.orgName_ru=record.get("orgName_ru");
+			org.orgMemo=record.get("orgMemo");
+			org.orgSeq=record.get("orgSeq");
+			
+			modifiedOrg.push(org);
+	    });
+		
+		Ext.Ajax.request({
+			method:'POST',
+			url: context + '/orgManagerController/batchUpdateOrgInfo',
+			success:function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true && result.flag == true) {
+					Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
+				}else if (result.success==true && result.flag == false) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}else {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}
+			},
+			failure:function(){
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			},
+			params: {
+				data: JSON.stringify(modifiedOrg)
+	        }
+		});
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
 function modifyOrgInfo() {
 	var org_panel = Ext.getCmp("OrgInfoTreeGridView_Id");
     var org_model = org_panel.getSelectionModel();

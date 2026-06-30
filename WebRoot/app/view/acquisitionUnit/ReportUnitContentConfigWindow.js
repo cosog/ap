@@ -15,9 +15,8 @@ Ext.define("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 1400,
-    minWidth: 1400,
-    height: 600,
+    width: '80%',
+    height: '90%',
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     initComponent: function () {

@@ -40,7 +40,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore', {
                     useArrows: false,
                     rootVisible: false,
                     autoScroll: true,
-                    forceFit: true,
+//                    forceFit: true,
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true

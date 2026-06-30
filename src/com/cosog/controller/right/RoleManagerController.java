@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
@@ -270,7 +271,6 @@ public class RoleManagerController extends BaseController {
 	public String updateRoleInfo() throws IOException {
 		String result = "{success:true,flag:true}";
 		try {
-			boolean isLoginedUserRole=false;
 			String roleId = ParamUtils.getParameter(request, "roleId");
 			String roleName_zh_CN = ParamUtils.getParameter(request, "roleName_zh_CN");
 			String roleName_en = ParamUtils.getParameter(request, "roleName_en");
@@ -299,14 +299,55 @@ public class RoleManagerController extends BaseController {
 			log.debug("edit role ==" + role.getRoleId());
 			HttpSession session=request.getSession();
 			User prttentuser = (User) session.getAttribute("userLogin");
-			//如果是当前登录用户角色
-			if(prttentuser!=null && prttentuser.getUserType()==role.getRoleId()){
-				isLoginedUserRole=true;
-			}
-			boolean userIdChange=false;
-			int r=this.roleService.updateRoleInfo(role,isLoginedUserRole);
+			int r=this.roleService.updateRoleInfo(role,prttentuser);
 			if(r==1){
 				MemoryDataManagerTask.loadUserInfoByRoleId(role.getRoleId()+"", "update");
+				result = "{success:true,flag:true}";
+			}else if(r==2){
+				result = "{success:true,flag:false}";
+			}else{
+				result = "{success:false,flag:false}";
+			}
+		} catch (Exception e) {
+			result = "{success:false,flag:false}";
+			e.printStackTrace();
+		}
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.getWriter().print(result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/batchUpdateRoleInfo")
+	public String batchUpdateRoleInfo() throws IOException {
+		String result = "{success:true,flag:true}";
+		try {
+			HttpSession session=request.getSession();
+			User prttentuser = (User) session.getAttribute("userLogin");
+			
+			String data = ParamUtils.getParameter(request, "data");
+			Gson gson=new Gson();
+			java.lang.reflect.Type type=null;
+			type = new TypeToken<List<Role>>() {}.getType();
+			List<Role> list=gson.fromJson(data, type);
+			
+			int r=0;
+			if(list!=null){
+				List<String> updateIds=new ArrayList<>();
+				for(Role role:list){
+					log.debug("edit role ==" + role.getRoleId());
+					r=this.roleService.updateRoleInfo(role,prttentuser);
+					updateIds.add(role.getRoleId()+"");
+				}
+				if(updateIds.size()>0){
+					MemoryDataManagerTask.loadUserInfoByRoleId(StringUtils.join(updateIds, ","), "update");
+				}
+			}
+			if(r==1){
 				result = "{success:true,flag:true}";
 			}else if(r==2){
 				result = "{success:true,flag:false}";

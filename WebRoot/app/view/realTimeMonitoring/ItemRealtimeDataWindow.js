@@ -16,7 +16,7 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
     minimizable: true,
     width: 500,
     minWidth: 500,
-    height: 600,
+    height: '80%',
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
     initComponent: function () {
@@ -71,10 +71,10 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
         		layout: 'fit',
             	html: '<div id="ItemRealtimeDataDiv_Id" style="width:100%;height:100%;"></div>',
                 listeners: {
-                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    resize: function (thisPanel, adjWidth, adjHeight, options) {
                     	if(itemRealtimeDataHandsontableHelper!=null && itemRealtimeDataHandsontableHelper.hot!=undefined){
-                    		var newWidth=width;
-                    		var newHeight=height;
+                    		var newWidth=adjWidth;
+                    		var newHeight=adjHeight;
                     		var header=thisPanel.getHeader();
                     		if(header){
                     			newHeight=newHeight-header.lastBox.height-2;

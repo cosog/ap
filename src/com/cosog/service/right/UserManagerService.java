@@ -174,7 +174,9 @@ public class UserManagerService<T> extends BaseService<T> {
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",");
 		for (Object o : roleList) {
 			Object[] obj = (Object[]) o;
-			role_json.append("['"+obj[1]+"','"+obj[1]+"'],");
+			if(StringManagerUtils.isNotNull(obj[1]+"")){
+				role_json.append("['"+obj[1]+"','"+obj[1]+"'],");
+			}
 		}
 		if (role_json.toString().endsWith(",")) {
 			role_json.deleteCharAt(role_json.length() - 1);
@@ -304,9 +306,11 @@ public class UserManagerService<T> extends BaseService<T> {
 				for (Object o : list) {
 					Object[] obj = (Object[]) o;
 					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
+					get_val = obj[1]==null?"":(obj[1]+"");
+					if(StringManagerUtils.isNotNull(get_val)){
+						result_json.append("{boxkey:\"" + get_key + "\",");
+						result_json.append("boxval:\"" + get_val + "\"},");
+					}
 				}
 				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);

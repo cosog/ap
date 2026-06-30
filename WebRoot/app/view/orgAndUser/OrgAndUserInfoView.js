@@ -56,17 +56,19 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     handler: function () {
                     	addOrgInfo();
                     }
-                }, "-", {
-                    xtype: 'button',
-                    itemId: 'editOrgLableClassBtnId',
-                    id: 'editOrgLableClassBtn_Id',
-                    text: loginUserLanguageResource.update,
-                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
-                    iconCls: 'edit',
-                    handler: function () {
-                    	modifyOrgInfo();
-                    }
-                }, "-", {
+                }
+//        		, "-", {
+//                    xtype: 'button',
+//                    itemId: 'editOrgLableClassBtnId',
+//                    id: 'editOrgLableClassBtn_Id',
+//                    text: loginUserLanguageResource.update,
+//                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+//                    iconCls: 'edit',
+//                    handler: function () {
+//                    	modifyOrgInfo();
+//                    }
+//                }
+        		, "-", {
                     xtype: 'button',
                     itemId: 'delOrgLableClassBtnId',
                     id: 'delOrgLableClassBtn_Id',
@@ -77,7 +79,18 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     handler: function () {
                     	delOrgInfo();
                     }
-                },"-", {
+                },"-",{
+                    xtype: 'button',
+                    text: loginUserLanguageResource.save,
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                    iconCls: 'save',
+                    handler: function () {
+                    	var OrgInfoTreeGridView = Ext.getCmp("OrgInfoTreeGridView_Id");
+                    	var store=OrgInfoTreeGridView.getStore();
+                    	var modifiedRecords = store.getModifiedRecords();
+                    	batchUpdateOrgInfo(modifiedRecords);
+                    }
+        		},"-", {
         			xtype: 'button',
         			text:loginUserLanguageResource.orgParentChange,
         			iconCls: 'move',

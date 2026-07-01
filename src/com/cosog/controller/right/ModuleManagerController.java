@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +31,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.cosog.controller.base.BaseController;
+import com.cosog.model.Code;
 import com.cosog.model.ExportModuleData;
 import com.cosog.model.Module;
+import com.cosog.model.Org;
 import com.cosog.model.User;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.right.ModuleManagerService;
@@ -87,8 +90,13 @@ public class ModuleManagerController extends BaseController {
 		String moduleName = ParamUtils.getParameter(request, "moduleName");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
+		List<Integer> languageList=null;
+		if(user!=null){
+			languageList=user.getLanguageList();
+		}
 		List<?>list = this.moduleService.queryModules(Module.class, moduleName,user);
 		String json = "";
+		
 		BackModuleTreePanelRecursion r = new BackModuleTreePanelRecursion();
 		if (list != null) {
 			for (Object org : list) {
@@ -99,7 +107,33 @@ public class ModuleManagerController extends BaseController {
 			}
 		}
 		json = r.modifyStr(json);
-		json=	this.getArrayTojsonPage(json,"","",user.getLanguageName());
+//		json=	this.getArrayTojsonPage(json,"","",user.getLanguageName());
+		
+		
+		
+		StringBuffer moduleTypeBuff = new StringBuffer();
+		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("MD_TYPE",user.getLanguageName());
+		moduleTypeBuff.append("[");
+		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<String, Code> entry = it.next();
+			Code c=entry.getValue();
+			String get_key = c.getItemvalue()+"";
+			String get_val = c.getItemname();
+			moduleTypeBuff.append("['"+get_val+"','"+get_val+"'],");
+		}
+		if (moduleTypeBuff.toString().endsWith(",")) {
+			moduleTypeBuff.deleteCharAt(moduleTypeBuff.length() - 1);
+		}
+		moduleTypeBuff.append("]");
+		
+		json="{\"success\": true,"
+				+ "\"showChineseName\":"+StringManagerUtils.existOrNot(languageList, 1)+","
+				+ "\"showEnglishName\":"+StringManagerUtils.existOrNot(languageList, 2)+","
+				+ "\"showRussianName\":"+StringManagerUtils.existOrNot(languageList, 3)+","
+				+ "\"moduleTypeList\":"+moduleTypeBuff+","
+				+ "\"children\":"+json
+				+"}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -278,6 +312,53 @@ public class ModuleManagerController extends BaseController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	@RequestMapping("/batchUpdateModuleInfo")
+	public String batchUpdateModuleInfo() throws IOException {
+		String result = "{success:true,flag:true}";
+		HttpSession session=request.getSession();
+		User userInfo = this.findCurrentUserInfo();
+		try {
+			try{
+				String data = ParamUtils.getParameter(request, "data");
+				Gson gson=new Gson();
+				java.lang.reflect.Type type=null;
+				type = new TypeToken<List<Module>>() {}.getType();
+				List<Module> list=gson.fromJson(data, type);
+				
+				if(list!=null){
+					for(Module module:list){
+						this.moduleService.modifyModuleBySql(module,userInfo);
+					}
+				}
+			} catch (Exception e) {
+				result = "{success:false,flag:false}";
+				e.printStackTrace();
+			}
+			
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			response.setHeader("Cache-Control", "no-cache");
+			PrintWriter pw = response.getWriter();
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			// 当前登录用户
+			Map<String, Object> map = DataModelMap.getMapObject();
+			list = this.moduleService.queryFunctionModuleList(Module.class, userInfo);
+			map.put("functionUser", "");
+			map.put("functionUser", userInfo);
+			map.put("functionModule", list);
+			list = this.moduleService.queryModuleList(Module.class, userInfo);
+			map.put("backModuleUser", "");
+			map.put("backModuleUser", userInfo);
+			map.put("backModule", list);
+			response.getWriter().print(result);
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 

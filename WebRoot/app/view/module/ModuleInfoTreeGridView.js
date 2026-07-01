@@ -68,10 +68,26 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
                 id: 'editmoduleLableClassBtn_Id',
                 text: loginUserLanguageResource.update,
                 action: 'editmoduleInfoAction',
+                hidden: true,
                 disabled: false,
                 disabled:loginUserModuleManagementModuleRight.editFlag!=1,
                 iconCls: 'edit'
             }, 
+            
+            {
+                xtype: 'button',
+                text: loginUserLanguageResource.save,
+                disabled:loginUserModuleManagementModuleRight.editFlag!=1,
+                iconCls: 'save',
+                handler: function () {
+                	var moduleInfoTreeGridView = Ext.getCmp("moduleInfoTreeGridView_Id");
+                	var store=moduleInfoTreeGridView.getStore();
+                	var modifiedRecords = store.getModifiedRecords();
+                	batchUpdateModuleInfo(modifiedRecords);
+                }
+    		},
+            
+            
 //            "-", 
             {
                 xtype: 'button',

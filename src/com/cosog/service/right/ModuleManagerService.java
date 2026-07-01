@@ -38,6 +38,19 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		getBaseDao().updateObject(Module);
 	}
 	
+	public int modifyModuleBySql(Module module,User user) throws Exception {
+		String mdType=MemoryDataManagerTask.getCodeValue("MD_TYPE", module.getMdTypeName(), user.getLanguageName());
+		String sql="update tbl_module t set "
+				+ " t.md_name_zh_cn='"+module.getMdName_zh_CN()+"',"
+				+ " t.md_name_en='"+module.getMdName_en()+"',"
+				+ " t.md_name_ru='"+module.getMdName_ru()+"',"
+				+ " t.md_icon='"+module.getMdIcon()+"',"
+				+ " t.md_type="+(StringManagerUtils.isNum(mdType)?mdType:null)+","
+				+ " t.md_seq="+module.getMdSeq()+" "
+				+ " where t.md_id="+module.getMdId();
+		return getBaseDao().updateOrDeleteBySql(sql);
+	}
+	
 	public void addImportedModule(Module m) throws Exception {
 		getBaseDao().addObjectFlush(m);
 	}

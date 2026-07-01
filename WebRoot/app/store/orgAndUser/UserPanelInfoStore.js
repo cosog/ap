@@ -41,8 +41,12 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     layout: "fit",
                     stripeRows: true,
                     forceFit: false,
-                    selType: 'checkboxmodel',
-                    multiSelect: true,
+                    selModel:{
+                    	selType: (loginUserOrgAndUserModuleRight.editFlag==1?'checkboxmodel':''),
+                    	mode:'MULTI',//"SINGLE" / "SIMPLE" / "MULTI" 
+                    	checkOnly:false,
+                    	allowDeselect:false
+                    },
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
                         forceFit: true
@@ -284,6 +288,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     	xtype: 'actioncolumn',
                     	width: getLabelWidth(loginUserLanguageResource.save,loginUserLanguage)+'px',
                         align: 'center',
+                        hidden:true,
                         sortable: false,
                         menuDisabled: true,
                         items: [{
@@ -296,15 +301,13 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
         	                    	updateUserInfoByGridBtn(record);
         	                    }
                             }
-//                        	,isDisabled : function (view, recIndex, cellIndex, item, record) {
-//                        		return true;
-//                            }
                         }]
                     },{
                     	header: loginUserLanguageResource.deleteData,
                     	xtype: 'actioncolumn',
                     	width: getLabelWidth(loginUserLanguageResource.deleteData,loginUserLanguage)+'px',
                         align: 'center',
+                        hidden:true,
                         sortable: false,
                         menuDisabled: true,
                         items: [{
@@ -342,15 +345,13 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
         },
         beforeload: function (store, options) {
         	var selectedOrgId="";
+        	var UserName_Id = Ext.getCmp('UserName_Id').getValue();
         	var orgTreeSelection = Ext.getCmp("OrgInfoTreeGridView_Id").getSelectionModel().getSelection();
         	if (orgTreeSelection.length > 0) {
         		selectedOrgId=foreachAndSearchOrgChildId(orgTreeSelection[0]);
+        	}else{
+        		selectedOrgId=Ext.getCmp('leftOrg_Id').getValue();
         	}
-        	var UserName_Id = Ext.getCmp('UserName_Id').getValue();
-            var orgId = Ext.getCmp('leftOrg_Id').getValue();
-            if(selectedOrgId==""){
-            	selectedOrgId=Ext.getCmp('leftOrg_Id').getValue();
-            }
             var new_params = {
             	orgId: selectedOrgId,
             	userName: UserName_Id

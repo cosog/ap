@@ -34,6 +34,10 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                 collapsible: true,
         		id:'OrgAndUserOrgInfoPanel_Id',
         		tbar: [{
+                    xtype: "hidden",
+                    id: 'selectedOrgId_Id',
+                    value: 0
+                },{
                     xtype: 'button',
                     text: loginUserLanguageResource.refresh,
                     iconCls: 'note-refresh',
@@ -57,17 +61,19 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     	addOrgInfo();
                     }
                 }
-//        		, "-", {
-//                    xtype: 'button',
-//                    itemId: 'editOrgLableClassBtnId',
-//                    id: 'editOrgLableClassBtn_Id',
-//                    text: loginUserLanguageResource.update,
-//                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
-//                    iconCls: 'edit',
-//                    handler: function () {
-//                    	modifyOrgInfo();
-//                    }
-//                }
+//        		, "-"
+        		, {
+                    xtype: 'button',
+                    itemId: 'editOrgLableClassBtnId',
+                    id: 'editOrgLableClassBtn_Id',
+                    text: loginUserLanguageResource.update,
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                    iconCls: 'edit',
+                    hidden: true,
+                    handler: function () {
+                    	modifyOrgInfo();
+                    }
+                }
         		, "-", {
                     xtype: 'button',
                     itemId: 'delOrgLableClassBtnId',
@@ -152,6 +158,22 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                     handler: function () {
                     	addUserInfo();
+                    }
+        		},'-',{
+                    xtype: 'button',
+                    text: loginUserLanguageResource.deleteData,
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                    iconCls: 'delete',
+                    handler: function () {
+                    	batchDeleteUser();
+                    }
+        		},'-',{
+                    xtype: 'button',
+                    text: loginUserLanguageResource.save,
+                    disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
+                    iconCls: 'save',
+                    handler: function () {
+                    	batchUpdateUserInfo();
                     }
         		}, "-", {
                     xtype: 'button',

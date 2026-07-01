@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
@@ -39,6 +40,7 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.ExportUserData;
 import com.cosog.model.Module;
 import com.cosog.model.Org;
+import com.cosog.model.Role;
 import com.cosog.model.User;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.service.base.CommonDataService;
@@ -360,6 +362,85 @@ public class UserManagerController extends BaseController {
 					receivingEMailAccount.add(email);
 					StringManagerUtils.sendEMail(emailTopic, emailContent, receivingEMailAccount);
 				}
+			}
+		} catch (Exception e) {
+			result = "{success:false,flag:false}";
+			e.printStackTrace();
+		}
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.getWriter().print(result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/batchUpdateUserInfo")
+	public String batchUpdateUserInfo() throws IOException {
+		String result = "{success:true,flag:true}";
+		try {
+			boolean isLoginedUser=false;
+			HttpSession session=request.getSession();
+			User loginUser = (User) session.getAttribute("userLogin");
+			
+			String data = ParamUtils.getParameter(request, "data");
+			Gson gson=new Gson();
+			java.lang.reflect.Type type=null;
+			type = new TypeToken<List<User>>() {}.getType();
+			List<User> list=gson.fromJson(data, type);
+			
+			int r=0;
+			List<String> userList=new ArrayList<String>();
+			if(list!=null){
+				for(User user:list){
+					log.debug("edit user ==" + user.getUserNo());
+					String emailContent="账号:"+user.getUserId()+"信息改变。<br/>";
+					String emailTopic="用户修改";
+					List<String> receivingEMailAccount=new ArrayList<String>();
+					
+					//如果是当前登录用户
+					if(user.getUserNo()==loginUser.getUserNo()){
+						isLoginedUser=true;
+						user.setUserType(loginUser.getUserType());
+						user.setUserEnable(loginUser.getUserEnable());
+					}
+					boolean userIdChange=false;
+					if(!isLoginedUser){
+						users=userService.queryUsersByNo(user.getUserNo(), User.class);
+						for(User u : users){
+							if(!u.getUserId().equalsIgnoreCase(user.getUserId())){
+								userIdChange=true;
+								break;
+							}
+						}
+					}
+					r=this.userService.updateUserInfo(user,isLoginedUser,loginUser);
+					
+					if(r==1){
+						userList.add(user.getUserNo()+"");
+						if(StringManagerUtils.isMailLegal(user.getUserInEmail())){
+							receivingEMailAccount.add(user.getUserInEmail());
+							StringManagerUtils.sendEMail(emailTopic, emailContent, receivingEMailAccount);
+						}
+						if(user.getUserEnable()==0||userIdChange){
+							SessionLockHelper.destroySessionByUserNo(user.getUserNo());
+						}
+					}
+				}
+			}
+			
+			if(userList.size()>0){
+				MemoryDataManagerTask.loadUserInfo(userList,0,"update");
+			}
+			
+			if(r==1){
+				result = "{success:true,flag:true}";
+			}else if(r==2){
+				result = "{success:true,flag:false}";
+			}else{
+				result = "{success:false,flag:false}";
 			}
 		} catch (Exception e) {
 			result = "{success:false,flag:false}";

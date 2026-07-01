@@ -78,10 +78,10 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         flex: 3,
                         align: 'center',
                         dataIndex: 'code',
-                        editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
-                            allowBlank: false,
-                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
-                        }:"",
+//                        editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
+//                            allowBlank: false,
+//                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
+//                        }:"",
                         renderer: function (value) {
                         	if(isNotVal(value)){
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";

@@ -126,6 +126,7 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
 //                        	}
                         },
                         select( v, record, index, eOpts ){
+                        	Ext.getCmp("selectedOrgId_Id").setValue(record.data.orgId);
                         	var gridPanel = Ext.getCmp("UserInfoGridPanel_Id");
                         	if (isNotVal(gridPanel)) {
                         		gridPanel.getStore().load();
@@ -150,8 +151,20 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
 //        		Ext.create("AP.store.orgAndUser.UserPanelInfoStore");
 //        	}
             
+            
+            var selectedRow=0;
+            var selectedOrgId= Ext.getCmp("selectedOrgId_Id").getValue();
+    		if(selectedOrgId>0){
+    			for(var i=0;i<store.data.length;i++){
+            		if(selectedOrgId==store.getAt(i).data.orgId){
+            			selectedRow=i;
+            			break;
+            		}
+            	}
+    		}
+            
             treeGridPanel.getSelectionModel().deselectAll(true);
-            treeGridPanel.getSelectionModel().select(0, true);
+            treeGridPanel.getSelectionModel().select(selectedRow, true);
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

@@ -392,7 +392,8 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             }else {
                                 return true;
                             }
-                        },select( v, record, index, eOpts ){
+                        },
+                        select( v, record, index, eOpts ){
                         	Ext.getCmp("selectedRoleId_Id").setValue(record.data.roleId);
                         }
                     }

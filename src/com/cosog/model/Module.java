@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 /**
  *  <p>描述：模块信息 实体类  tbl_module</p>
  *  
@@ -30,6 +31,7 @@ public  class Module implements java.io.Serializable {
 	private Integer mdFlag;
 	private String mdIcon;
 	private Integer mdType;
+	private String mdTypeName;
 	private String mdControl;
 
 	public Module() {
@@ -181,6 +183,15 @@ public  class Module implements java.io.Serializable {
 
 	public void setMdShowname_ru(String mdShowname_ru) {
 		this.mdShowname_ru = mdShowname_ru;
+	}
+
+	@Transient
+	public String getMdTypeName() {
+		return mdTypeName;
+	}
+
+	public void setMdTypeName(String mdTypeName) {
+		this.mdTypeName = mdTypeName;
 	}
 
 }

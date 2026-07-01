@@ -360,16 +360,16 @@ public class OrgManagerController extends BaseController {
 				}
 			}
 			
-			if(userInfo.getLanguage()==1){
-				org.setOrgName_en(org.getOrgName_zh_CN());
-				org.setOrgName_ru(org.getOrgName_zh_CN());
-			}else if(userInfo.getLanguage()==2){
-				org.setOrgName_zh_CN(org.getOrgName_en());
-				org.setOrgName_ru(org.getOrgName_en());
-			}else if(userInfo.getLanguage()==3){
-				org.setOrgName_zh_CN(org.getOrgName_ru());
-				org.setOrgName_en(org.getOrgName_ru());
-			}
+//			if(userInfo.getLanguage()==1){
+//				org.setOrgName_en(org.getOrgName_zh_CN());
+//				org.setOrgName_ru(org.getOrgName_zh_CN());
+//			}else if(userInfo.getLanguage()==2){
+//				org.setOrgName_zh_CN(org.getOrgName_en());
+//				org.setOrgName_ru(org.getOrgName_en());
+//			}else if(userInfo.getLanguage()==3){
+//				org.setOrgName_zh_CN(org.getOrgName_ru());
+//				org.setOrgName_en(org.getOrgName_ru());
+//			}
 			
 			this.orgService.addOrg(org);
 			result = "{success:true,msg:true}";

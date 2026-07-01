@@ -31,11 +31,11 @@ Ext.define("AP.view.orgAndUser.OrgParentChangeWindow", {
                 	var selectedCurrentOrg=Ext.getCmp("OrgParentChangeWinCurrentOrgListTreePanel_Id").getSelectionModel().getSelection();
                 	var selectedDestinationOrg=Ext.getCmp("OrgParentChangeWinDestinationOrgListTreePanel_Id").getSelectionModel().getSelection();
                 	if(selectedCurrentOrg.length==0){
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要迁移的组织！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
                 		return;
                 	}
                 	if(selectedDestinationOrg.length==0){
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择目的组织！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
                 		return;
                 	}
                 	var selectedCurrentOrgId="";
@@ -60,7 +60,7 @@ Ext.define("AP.view.orgAndUser.OrgParentChangeWindow", {
                 				Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
                 				Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.migrationSuccessful);
                 			}else if (result.success == true && result.resultStatus==-1) {
-                				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.orgChangeOwnerFai+"</font>");
+                				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.orgMigrationFailed+"</font>");
                 			}else if (result.success == false) {
                 				Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.migrationFailed+"</font>");
                 			}

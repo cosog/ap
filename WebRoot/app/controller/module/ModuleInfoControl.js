@@ -22,6 +22,57 @@ Ext.define('AP.controller.module.ModuleInfoControl', {
     }
 });
 
+function batchUpdateModuleInfo(modifiedRecords) {
+	if(modifiedRecords.length>0){
+		var modifiedModules=[];
+		
+		modifiedRecords.forEach(function(record) {
+			var modifiedModule={};
+			modifiedModule.mdId=record.get("mdId");
+			modifiedModule.mdParentid=record.get("mdParentid");
+			modifiedModule.mdName_zh_CN=record.get("mdName_zh_CN");
+			modifiedModule.mdName_en=record.get("mdName_en");
+			modifiedModule.mdName_ru=record.get("mdName_ru");
+			modifiedModule.mdShowname_zh_CN=record.get("mdShowname_zh_CN");
+			modifiedModule.mdShowname_en=record.get("mdShowname_en");
+			modifiedModule.mdShowname_ru=record.get("mdShowname_ru");
+			modifiedModule.mdUrl=record.get("mdUrl");
+			modifiedModule.mdControl=record.get("mdControl");
+			modifiedModule.mdCode=record.get("mdCode");
+			modifiedModule.mdSeq=record.get("mdSeq");
+			modifiedModule.mdIcon=record.get("mdIcon");
+			modifiedModule.mdTypeName=record.get("mdTypeName");
+			
+			modifiedModules.push(modifiedModule);
+	    });
+		
+		Ext.Ajax.request({
+			method:'POST',
+			url: context + '/moduleManagerController/batchUpdateModuleInfo',
+			success:function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true && result.flag == true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
+				}else if (result.success==true && result.flag == false) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}else {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}
+				Ext.getCmp("moduleInfoTreeGridView_Id").getStore().load();
+				Ext.getCmp("MainIframeView_Id").getStore().load();//右侧模块导航数刷新
+			},
+			failure:function(){
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			},
+			params: {
+				data: JSON.stringify(modifiedModules)
+	        }
+		});
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
 // 窗体创建按钮事件
 var SavemoduleDataInfoSubmitBtnForm = function () {
     var saveDataAttrInfoWinFormId = Ext.getCmp("module_addwin_Id").down('form');

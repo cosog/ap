@@ -474,6 +474,52 @@ function delUserInfo() {
     return false;
 };
 
+function batchDeleteUser() {
+	var selectUserNo=[];
+	var UserInfoGridPanel = Ext.getCmp("UserInfoGridPanel_Id");
+	var selectionModel = UserInfoGridPanel.getSelectionModel();
+    var selectionRecord = selectionModel.getSelection();
+	if(selectionRecord.length>0){
+		Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete, function (btn) {
+            if (btn == "yes") {
+            	if(selectionRecord.length==1 && parseInt(selectionRecord[0].data.userNo)==parseInt(user_)){
+            		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.cannotDeleteLoginUser+"</font>");
+            	}else{
+            		selectionRecord.forEach(function(record) {
+                		if (parseInt(record.data.userNo)!=parseInt(user_)){
+                			selectUserNo.push(record.data.userNo);
+                		}
+            	    });
+            		if(selectUserNo.length>0){
+            			Ext.Ajax.request({
+                			method:'POST',
+                			url : context + '/userManagerController/doUserBulkDelete',
+                			success:function(response) {
+                				var result = Ext.JSON.decode(response.responseText);
+                  				if (result.flag == true) {
+                  					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
+                  				}
+                  				if (result.flag == false) {
+                  					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
+                  				}
+                  				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
+                			},
+                			failure:function(){
+                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+                			},
+                			params: {
+                				paramsId: selectUserNo.join(",")
+                	        }
+                		});
+            		}
+            	}
+            }
+        });
+	} else {
+        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    }
+}
+
 function delUserInfoByGridBtn(record) {
 	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
 	Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
@@ -521,6 +567,57 @@ function delUserInfoByGridBtn(record) {
       	}
       }
   });
+}
+
+function batchUpdateUserInfo() {
+	var UserInfoGridPanel = Ext.getCmp("UserInfoGridPanel_Id");
+	var store=UserInfoGridPanel.getStore();
+	var modifiedRecords = store.getModifiedRecords();
+	
+	if(modifiedRecords.length>0){
+		var modifiedUsers=[];
+		modifiedRecords.forEach(function(record) {
+		    var modifiedUser={};
+		    modifiedUser.userNo=record.get("userNo");
+		    modifiedUser.userName=record.get("userName");
+		    modifiedUser.userId=record.get("userId");
+		    modifiedUser.userTypeName_zh_CN=record.get("userTypeName");
+		    modifiedUser.userTypeName_ru=record.get("userTypeName");
+		    modifiedUser.userTypeName_en=record.get("userTypeName");
+		    modifiedUser.userPhone=record.get("userPhone");
+		    modifiedUser.userInEmail=record.get("userInEmail");
+		    modifiedUser.userQuickLogin=record.get("userQuickLoginName")?1:0;
+		    modifiedUser.receiveSMS=record.get("receiveSMSName")?1:0;
+		    modifiedUser.receiveMail=record.get("receiveMailName")?1:0;
+		    modifiedUser.userEnable=record.get("userEnableName")?1:0;
+		    modifiedUser.userLanguageName=record.get("userLanguageName");
+			modifiedUsers.push(modifiedUser);
+	    });
+		
+		Ext.Ajax.request({
+			method:'POST',
+			url:context + '/userManagerController/batchUpdateUserInfo',
+			success:function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true && result.flag == true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
+				}else if (result.success==true && result.flag == false) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}else {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}
+				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
+			},
+			failure:function(){
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			},
+			params: {
+				data: JSON.stringify(modifiedUsers)
+	        }
+		});
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
 }
 
 function updateUserInfoByGridBtn(record) {

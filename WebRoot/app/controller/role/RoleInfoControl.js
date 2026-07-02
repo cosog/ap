@@ -586,6 +586,9 @@ function delRoleInfoByGridBtn(record) {
 }
 
 function updateRoleInfo(modifiedRecords) {
+	var RoleInfoGridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
+	var store=RoleInfoGridPanel.getStore();
+	var modifiedRecords = store.getModifiedRecords();
 	if(modifiedRecords.length>0){
 		var modifiedRole=[];
 		

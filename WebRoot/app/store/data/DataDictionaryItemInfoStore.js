@@ -376,14 +376,14 @@ Ext.define('AP.store.data.DataDictionaryItemInfoStore',{
             
         },
     	beforeload: function(store, options) {
-        	var dictionaryId='';
+        	var dictionaryId=Ext.getCmp("selectedDataDictionaryId").getValue();
         	var type=Ext.getCmp('dataDictionaryItemSearchTypeComb_Id').getValue();
         	var value=Ext.getCmp('dataDictionaryItemSearchValue_Id').getValue();
         	
-        	var dictionarySelection= Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
-        	if(dictionarySelection.length>0){
-        		dictionaryId = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection()[0].data.sysdataid;
-        	}
+//        	var dictionarySelection= Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection();
+//        	if(dictionarySelection.length>0){
+//        		dictionaryId = Ext.getCmp("SystemdataInfoGridPanelId").getSelectionModel().getSelection()[0].data.sysdataid;
+//        	}
         	var deviceType=getDeviceTypeFromTabId("DictItemRootTabPanel");
         	if(deviceType.includes(",")){
         		deviceType=getDeviceTypeFromTabId_first("DictItemRootTabPanel");

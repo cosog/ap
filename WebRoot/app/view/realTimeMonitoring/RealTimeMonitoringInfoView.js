@@ -782,6 +782,9 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     var data = get_rawData.totalRoot;
     tickInterval = Math.floor(data.length / 10) + 1;
     var title = itemName.split("(")[0];
+    
+    Ext.getCmp('ResourceProbeHistoryCurveWindow_Id').setTitle(title);
+    
     var subtitle="[" + get_rawData.startDate + "~" + get_rawData.endDate + "]";
     var legend=false;
     var legendName = [itemName];

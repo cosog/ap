@@ -85,6 +85,61 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 text: loginUserLanguageResource.add,
                 disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                 iconCls: 'add'
+    		},'-',{
+                xtype: 'button',
+                text: loginUserLanguageResource.deleteData,
+                disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+                iconCls: 'delete',
+                handler: function () {
+                	var selectDataDictionaryId=[];
+                	var SystemdataInfoGridPanel = Ext.getCmp("SystemdataInfoGridPanelId");
+                	var selectionModel = SystemdataInfoGridPanel.getSelectionModel();
+                    var selectionRecord = selectionModel.getSelection();
+                	if(selectionRecord.length>0){
+                		Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete, function (btn) {
+                            if (btn == "yes") {
+                        		selectionRecord.forEach(function(record) {
+                        			selectDataDictionaryId.push(record.data.sysdataid);
+    	                	    });
+                        		if(selectDataDictionaryId.length>0){
+                        			Ext.Ajax.request({
+        	                			method:'POST',
+        	                			url : context + '/systemdataInfoController/deleteSystemdataInfoById',
+        	                			success:function(response) {
+        	                				var result = Ext.JSON.decode(response.responseText);
+        	                  				if (result.flag == true) {
+        	                  					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
+        	                  				}
+        	                  				if (result.flag == false) {
+        	                  					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
+        	                  				}
+        	                  				Ext.getCmp("selectedDataDictionaryId").setValue('');
+        	                  				Ext.getCmp("SystemdataInfoGridPanelId").getStore().load();
+        	                			},
+        	                			failure:function(){
+        	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+        	                			},
+        	                			params: {
+        	                				paramsId: selectDataDictionaryId.join(",")
+        	                	        }
+        	                		});
+                        		}
+                        		
+                        	}
+                        });
+                	} else {
+                        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+                    }
+                	
+                }
+    		},'-',{
+                xtype: 'button',
+                text: loginUserLanguageResource.save,
+                disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+                iconCls: 'save',
+                handler: function () {
+                	batchUpdateDataDictionaryInfo();
+                }
     		},"-", {
                 xtype: 'button',
                 text: loginUserLanguageResource.exportData,

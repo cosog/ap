@@ -90,11 +90,6 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         }:"",
                         renderer: function (value, o, p, e) {
                             return adviceCurrentRoleName(value, o, p, e);
-                        },
-                        listeners: {
-                        	beforechange: function( cell, rowIndex, checked, record, e, eOpts){
-                        		alert(rowIndex);
-                        	}
                         }
                     }, {
                         header: loginUserLanguageResource.language_en,
@@ -110,11 +105,6 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         }:"",
                         renderer: function (value, o, p, e) {
                             return adviceCurrentRoleName(value, o, p, e);
-                        },
-                        listeners: {
-                        	beforechange: function( cell, rowIndex, checked, record, e, eOpts){
-                        		alert(rowIndex);
-                        	}
                         }
                     }, {
                         header: loginUserLanguageResource.language_ru,
@@ -130,11 +120,6 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         }:"",
                         renderer: function (value, o, p, e) {
                             return adviceCurrentRoleName(value, o, p, e);
-                        },
-                        listeners: {
-                        	beforechange: function( cell, rowIndex, checked, record, e, eOpts){
-                        		alert(rowIndex);
-                        	}
                         }
                     }, {
                         header: loginUserLanguageResource.roleLevel,

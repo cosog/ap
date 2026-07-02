@@ -1,5 +1,5 @@
 Ext.define('AP.store.data.SystemdataInfoStore', {
-    extend: 'Ext.data.BufferedStore',
+	extend: 'Ext.data.Store',
     id: "SystemdataInfoStoreId",
     alias: 'widget.systemdataInfoStore',
     model: 'AP.model.data.SystemdataInfoModel',
@@ -25,6 +25,9 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
         load: function (store, options, eOpts) {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
+            var showChineseName=get_rawData.showChineseName;
+            var showEnglishName=get_rawData.showEnglishName;
+            var showRussianName=get_rawData.showRussianName;
             var arrColumns = get_rawData.columns;
             var gridPanel = Ext.getCmp("SystemdataInfoGridPanelId");
             if (!isNotVal(gridPanel)) {
@@ -42,9 +45,8 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     stripeRows: true,
                     forceFit: false,
                     selModel:{
-//                    	selType: (loginUserDataDictionaryManagementModuleRight.editFlag==1?'checkboxmodel':''),
-                    	selType:'',
-                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+                    	selType: (loginUserDataDictionaryManagementModuleRight.editFlag==1?'checkboxmodel':''),
+                    	mode:'MULTI',//"SINGLE" / "SIMPLE" / "MULTI" 
                     	checkOnly:false,
                     	allowDeselect:false
                     },
@@ -60,33 +62,41 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         align: 'center',
                         locked: false
                     }, {
-                    	text: loginUserLanguageResource.dataModuleName,
+                        header: loginUserLanguageResource.language_zh_CN,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
                         flex: 2,
-                        align: 'center',
-                        dataIndex: 'name',
+                        dataIndex: 'name_zh_CN',
+                        hidden:!showChineseName,
                         editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
-                            allowBlank: false,
+                            allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
-                        }:"",
-                        renderer: function (value) {
-                        	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
-                        	}
-                        }
+                        }:""
                     }, {
-                    	text: loginUserLanguageResource.dataModuleCode,
-                        flex: 3,
+                        header: loginUserLanguageResource.language_en,
+                        lockable: true,
                         align: 'center',
-                        dataIndex: 'code',
-//                        editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
-//                            allowBlank: false,
-//                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
-//                        }:"",
-                        renderer: function (value) {
-                        	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
-                        	}
-                        }
+                        sortable: true,
+                        flex: 2,
+                        dataIndex: 'name_en',
+                        hidden:!showEnglishName,
+                        editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
+                        	allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
+                        }:""
+                    }, {
+                        header: loginUserLanguageResource.language_ru,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 2,
+                        dataIndex: 'name_ru',
+                        hidden:!showRussianName,
+                        editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
+                        	allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                            disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1
+                        }:""
                     }, {
                     	text: loginUserLanguageResource.displayOrder,
                         flex: 1,
@@ -95,11 +105,11 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         editor: loginUserDataDictionaryManagementModuleRight.editFlag==1?{
                             allowBlank: false,
                             xtype: 'numberfield',
-                            editable: false,
+                            editable: true,
                             disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                             minValue: 1
                         }:""
-                    }, {
+                    },{
                     	text: loginUserLanguageResource.dictionaryBelongTo,
                         flex: 2,
                         align: 'center',
@@ -109,32 +119,12 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         	}
                         }
-                    }, {
-                        text: 'Creator',
-                        flex: 1,
-                        align: 'center',
-                        dataIndex: 'creator',
-                        hidden: true,
-                        renderer: function (value) {
-                        	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
-                        	}
-                        }
-                    }, {
-                        text: 'Update Time',
-                        flex: 2,
-                        sortable: false,
-                        align: 'center',
-                        dataIndex: 'updatetime',
-                        hidden: true,
-                        renderer:function(value,o,p,e){
-                        	return adviceTimeFormat(value,o,p,e);
-                        }
                     },{
                     	header: loginUserLanguageResource.save,
                     	xtype: 'actioncolumn',
                     	width: getLabelWidth(loginUserLanguageResource.save,loginUserLanguage)+'px',
                         align: 'center',
+                        hidden: true,
                         sortable: false,
                         menuDisabled: true,
                         items: [{
@@ -153,6 +143,7 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
                     	xtype: 'actioncolumn',
                     	width: getLabelWidth(loginUserLanguageResource.deleteData,loginUserLanguage)+'px',
                         align: 'center',
+                        hidden: true,
                         sortable: false,
                         menuDisabled: true,
                         items: [{
@@ -204,8 +195,6 @@ Ext.define('AP.store.data.SystemdataInfoStore', {
         			}
         		}
 			}
-            
-            
 			gridPanel.getSelectionModel().deselectAll(true);
         	gridPanel.getSelectionModel().select(selectRow, true);
         },

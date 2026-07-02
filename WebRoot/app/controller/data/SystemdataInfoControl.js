@@ -141,7 +141,7 @@ function savesystemdataInfoSubmit() {
                     reFreshg("SystemdataInfoGridPanelId");
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.addedSuccessfully + "</font>");
                 } else {
-                    Ext.Msg.msg(loginUserLanguageResource.tip, "<font color=red>" + action.result.error + "。</font> ");
+                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + action.result.error + "</font> ");
                 }
 
             },
@@ -452,6 +452,49 @@ function editsystemdataInfoUpdata() {
     }
     return false;
 };
+
+function batchUpdateDataDictionaryInfo() {
+	var SystemdataInfoGridPanel = Ext.getCmp("SystemdataInfoGridPanelId");
+	var store=SystemdataInfoGridPanel.getStore();
+	var modifiedRecords = store.getModifiedRecords();
+	if(modifiedRecords.length>0){
+		var dataDictionarySaveData=[];
+		
+		modifiedRecords.forEach(function(record) {
+			var dataDictionary={};
+			dataDictionary.sysdataid=record.get("sysdataid");
+			dataDictionary.name_zh_CN=record.get("name_zh_CN");
+			dataDictionary.name_en=record.get("name_en");
+			dataDictionary.name_ru=record.get("name_ru");
+			dataDictionary.sorts=record.get("sorts");
+			dataDictionarySaveData.push(dataDictionary);
+	    });
+		
+		Ext.Ajax.request({
+			method:'POST',
+			url:context + '/systemdataInfoController/batchUpdateDataDictionaryInfo',
+			success:function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true && result.flag == true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
+				}else if (result.success==true && result.flag == false) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}else {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}
+				Ext.getCmp("SystemdataInfoGridPanelId").getStore().load();
+			},
+			failure:function(){
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			},
+			params: {
+				data: JSON.stringify(dataDictionarySaveData)
+	        }
+		});
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
 
 function updateDataDictionaryInfoByGridBtn(record) {
     var sysdataid=record.get("sysdataid");

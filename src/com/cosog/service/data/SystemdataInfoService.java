@@ -98,8 +98,11 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("{ \"success\":true,\"columns\":"+columns+","
+				+ "\"totalCount\":"+totals+","
+				+ "\"showChineseName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 1)+","
+				+ "\"showEnglishName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 2)+","
+				+ "\"showRussianName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 3)+",");
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
@@ -225,6 +228,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	 */
 	public String saveSystemdataInfo(SystemdataInfo systemdataInfo, User userInfo, String paramsdtblstringId) throws Exception {
 		String jsonaddstr = "";
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
 		boolean sysBooEname = this.findResetSysDataCodeListById(userInfo, "", systemdataInfo.getCode());
 		if (sysBooEname) {
 			String uuIDD = UUIDGenerator.randomUUID();
@@ -236,16 +240,16 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 			systemdataInfo.setUpdatetime(DateUtils.getTime());
 			systemdataInfo.setCreatedate(DateUtils.getTime());
 			
-			if(userInfo.getLanguage()==1){
-				systemdataInfo.setName_en(systemdataInfo.getName_zh_CN());
-				systemdataInfo.setName_ru(systemdataInfo.getName_zh_CN());
-			}else if(userInfo.getLanguage()==2){
-				systemdataInfo.setName_zh_CN(systemdataInfo.getName_en());
-				systemdataInfo.setName_ru(systemdataInfo.getName_en());
-			}else if(userInfo.getLanguage()==3){
-				systemdataInfo.setName_zh_CN(systemdataInfo.getName_ru());
-				systemdataInfo.setName_en(systemdataInfo.getName_ru());
-			}
+//			if(userInfo.getLanguage()==1){
+//				systemdataInfo.setName_en(systemdataInfo.getName_zh_CN());
+//				systemdataInfo.setName_ru(systemdataInfo.getName_zh_CN());
+//			}else if(userInfo.getLanguage()==2){
+//				systemdataInfo.setName_zh_CN(systemdataInfo.getName_en());
+//				systemdataInfo.setName_ru(systemdataInfo.getName_en());
+//			}else if(userInfo.getLanguage()==3){
+//				systemdataInfo.setName_zh_CN(systemdataInfo.getName_ru());
+//				systemdataInfo.setName_en(systemdataInfo.getName_ru());
+//			}
 //			addparamstr += "" + graw.name_zh_CN + "&" + graw.name_en+ "&" + graw.name_ru+ "&" + graw.code + "&" + graw.datavalue + "&" + graw.sorts + "&" + graw.status + "|";
 			this.save(systemdataInfo);
 			if (StringUtils.isNotBlank(paramsdtblstringId)) {
@@ -290,25 +294,28 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 						dinfo.setUpdateuser(userInfo.getUserId());
 						dinfo.setUpdatetime(DateUtils.getTime());
 						
-						if(userInfo.getLanguage()==1){
-							dinfo.setName_en(dinfo.getName_zh_CN());
-							dinfo.setName_ru(dinfo.getName_zh_CN());
-						}else if(userInfo.getLanguage()==2){
-							dinfo.setName_zh_CN(dinfo.getName_en());
-							dinfo.setName_ru(dinfo.getName_en());
-						}else if(userInfo.getLanguage()==3){
-							dinfo.setName_zh_CN(dinfo.getName_ru());
-							dinfo.setName_en(dinfo.getName_ru());
-						}
+//						if(userInfo.getLanguage()==1){
+//							dinfo.setName_en(dinfo.getName_zh_CN());
+//							dinfo.setName_ru(dinfo.getName_zh_CN());
+//						}else if(userInfo.getLanguage()==2){
+//							dinfo.setName_zh_CN(dinfo.getName_en());
+//							dinfo.setName_ru(dinfo.getName_en());
+//						}else if(userInfo.getLanguage()==3){
+//							dinfo.setName_zh_CN(dinfo.getName_ru());
+//							dinfo.setName_en(dinfo.getName_ru());
+//						}
 					}
 					dataitemsInfoService.saveDataitemsInfo(dinfo);
 				}
 			}
 			jsonaddstr = "{success:true,msg:true}";
 		} else {
-			jsonaddstr = "{success:true,msg:false,error:'此用户已创建了该英文名称！'}";
+			String errorInfo=languageResourceMap.get("dataModuleCode")+":"+systemdataInfo.getCode()+","+ languageResourceMap.get("alreadyExist")+"";
+			jsonaddstr = "{success:true,msg:false,error:'"+errorInfo+"'}";
 		}
 		return jsonaddstr;
+		
+		
 	}
 
 	/**
@@ -359,6 +366,22 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 					+ "t.code='"+code+"',"
 					+ "t.sorts= "+sorts
 					+ "where t.sysdataid='"+sysdataid+"' ";;
+			r=this.getBaseDao().updateOrDeleteBySql(sql);
+		} catch (Exception e) {
+			r=0;
+		}
+		return r;
+	}
+	
+	public int updateDataDictionaryInfo(SystemdataInfo systemdataInfo){
+		int r=0;
+		try {
+			String sql = "update TBL_DIST_NAME t set "
+					+ " t.name_zh_CN='"+systemdataInfo.getName_zh_CN()+"',"
+					+ " t.name_en='"+systemdataInfo.getName_en()+"',"
+					+ " t.name_ru='"+systemdataInfo.getName_ru()+"',"
+					+ " t.sorts= "+systemdataInfo.getSorts()
+					+ " where t.sysdataid='"+systemdataInfo.getSysdataid()+"' ";;
 			r=this.getBaseDao().updateOrDeleteBySql(sql);
 		} catch (Exception e) {
 			r=0;

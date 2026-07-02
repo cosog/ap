@@ -63,7 +63,7 @@ Ext.define('AP.view.data.DictItemGridPanel', {
                     }
                 },'-',{
                 	xtype: 'button',
-                    text: loginUserLanguageResource.bulkDelete,
+                    text: loginUserLanguageResource.deleteData,
                     iconCls: 'delete',
                     disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
                     handler: function () {

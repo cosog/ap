@@ -133,10 +133,7 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 disabled:loginUserRoleManagerModuleRight.editFlag!=1,
                 iconCls: 'save',
                 handler: function () {
-                	var RoleInfoGridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
-                	var store=RoleInfoGridPanel.getStore();
-                	var modifiedRecords = store.getModifiedRecords();
-                	updateRoleInfo(modifiedRecords);
+                	updateRoleInfo();
                 }
     		},"-", {
                 xtype: 'button',

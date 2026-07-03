@@ -1563,7 +1563,7 @@ color16ToRgba = function(sColor,Opacity){
  	 	o.style='background-color:'+rgba+';color:'+Colorr+';';
  	}
  	if(isNotVal(tipval)){
- 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+ 		return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(tipval),Ext.String.htmlEncode(val));
  	}
 }
  
@@ -1572,7 +1572,7 @@ color16ToRgba = function(sColor,Opacity){
 	 	val=val.split(".")[0];
 	 	var reslut=val;
 	 	if(isNotVal(reslut)){
-	 		return '<span data-qtip="'+reslut+'">'+reslut+'</span>';
+	 		return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(reslut),Ext.String.htmlEncode(reslut));
 	 	}
 	    
 	}
@@ -1607,7 +1607,7 @@ color16ToRgba = function(sColor,Opacity){
 	 	}
 	 	
 	 	if(isNotVal(tipval)){
-		 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+		 	return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(tipval),Ext.String.htmlEncode(val));
 	 	}
 	}
  
@@ -1637,7 +1637,7 @@ color16ToRgba = function(sColor,Opacity){
 		 	o.style='background-color:'+rgba+';color:'+color+';';
 	 	}
 	 	if(isNotVal(tipval)){
-	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 		return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(tipval),Ext.String.htmlEncode(val));
 	 	}
 	}
  
@@ -1663,7 +1663,7 @@ color16ToRgba = function(sColor,Opacity){
 		 	o.style='background-color:'+rgba+';color:'+color+';';
 	 	}
 	 	if(isNotVal(tipval)){
-	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 		return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(tipval),Ext.String.htmlEncode(val));
 	 	}
 	}
  
@@ -1689,7 +1689,7 @@ color16ToRgba = function(sColor,Opacity){
 		 	o.style='background-color:'+rgba+';color:'+color+';';
 	 	}
 	 	if(isNotVal(tipval)){
-	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 		return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(tipval),Ext.String.htmlEncode(val));
 	 	}
 	}
  
@@ -1728,7 +1728,7 @@ color16ToRgba = function(sColor,Opacity){
 			 	o.style='background-color:'+rgba+';color:'+color+';';
 		 	}
 		 	if(isNotVal(tipval)){
-			 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+			 	return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(tipval),Ext.String.htmlEncode(val));
 		 	}
 		}
 	}
@@ -1763,7 +1763,7 @@ color16ToRgba = function(sColor,Opacity){
 	 		}
 	 	}
 	 	if(isNotVal(tipval)){
-		 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+		 	return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(tipval),Ext.String.htmlEncode(val));
 	 	}
 	}
  
@@ -1819,7 +1819,7 @@ color16ToRgba = function(sColor,Opacity){
 	 	}
 	 	
 	 	if(isNotVal(tipval)){
-	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 		return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(tipval),Ext.String.htmlEncode(val));
 	 	}
 	}
  
@@ -1864,7 +1864,7 @@ color16ToRgba = function(sColor,Opacity){
 	var returnInfo='';
 	if(isNotVal(val)){
 		if (maxAlarmLevel == 0) {
-			returnInfo= '<span data-qtip="' + val + '" data-dismissDelay=10000>' + val + '</span>';
+			returnInfo= Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(val),Ext.String.htmlEncode(val));
         }else{
         	var color ='';
         	if (maxAlarmLevel == 100) {
@@ -2045,7 +2045,7 @@ color16ToRgba = function(sColor,Opacity){
 	    }
 	    var tipval = val;
 	    if(isNotVal(tipval)){
-		    return '<span data-qtip="' + tipval + '" data-dismissDelay=10000>' + val + '</span>';
+		    return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(tipval),Ext.String.htmlEncode(val));
 	    }
 	}
 	
@@ -3138,6 +3138,9 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
     if(isNaN(upperlimit)){
     	upperlimit=null;
     }
+    
+    var pointFormat=loginUserLanguageResource.displacement+': {point.x} m <br/> '+loginUserLanguageResource.load+': {point.y} kN'
+    
     if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
     	mychart = new Highcharts.Chart({
 			chart: {
@@ -3241,7 +3244,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	                },                                                                           
 	                tooltip: {                                                                   
 	                    headerFormat: '',                                
-	                    pointFormat: '{point.x},{point.y}'                                
+	                    pointFormat: pointFormat
 	                }                                                                            
 	            }                                                                                
 	        }, 
@@ -3740,7 +3743,7 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,yAx
 	                },                                                                           
 	                tooltip: {                                                                   
 	                    headerFormat: '',                                
-	                    pointFormat: '{point.x}, {point.y}'                                
+	                    pointFormat: loginUserLanguageResource.displacement+': {point.x} m <br/> '+loginUserLanguageResource.load+': {point.y} kN'
 	                }                                                                            
 	            }                                                                                
 	        }, 
@@ -4076,8 +4079,8 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			                    }                                                                        
 			                },                                                                           
 			                tooltip: {                                                                   
-			                    headerFormat: '',                                
-			                    pointFormat: '{point.x},{point.y}'                                
+			                    headerFormat: '',
+			                    pointFormat: loginUserLanguageResource.displacement+': {point.x} m <br/> '+loginUserLanguageResource.activePower+': {point.y} kW'
 			                }                                                                            
 			            }                                                                                
 			        },
@@ -4301,7 +4304,7 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			                },                                                                           
 			                tooltip: {                                                                   
 			                    headerFormat: '',                                
-			                    pointFormat: '{point.x},{point.y}'                                
+			                    pointFormat: loginUserLanguageResource.displacement+': {point.x} m <br/> '+loginUserLanguageResource.electricity+': {point.y} A'                      
 			                }                                                                            
 			            }                                                                                
 			        },
@@ -4460,11 +4463,7 @@ function initBalanceCurveChart(catagories,series,divId,title,deviceName,acqTime,
 					},
 					formatter : function() {
 						var seriesName=this.series.name;
-						if(seriesName.indexOf("扭矩")==-1){
-							seriesName=seriesName+"扭矩";
-						}
-						return '<b>' + seriesName + '</b><br/>' + this.x
-								+ ': ' + this.y;
+						return '<b>' + seriesName + '</b><br/>'+loginUserLanguageResource.torque+': ' + this.y+' kN*m';
 					},
 					valueSuffix : ''
 				},
@@ -4856,15 +4855,19 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 	var ytext='';
 	var color=new Array("#000000","#00ff00"); // 线条颜色
 	var subtitle=get_rawData.deviceName+"["+get_rawData.start_date+"~"+get_rawData.end_date+"]";
+	var pointFormat='{point.x}, {point.y}';
 	if(diagramType===0){//如果是功图
 		title=loginUserLanguageResource.FSDiagramOverlay;
 		ytext=loginUserLanguageResource.load+'(kN)';
+		pointFormat=loginUserLanguageResource.displacement+': {point.x} m <br/> '+loginUserLanguageResource.load+': {point.y} kN';
 	}else if(diagramType===1){//电功图
 		title= loginUserLanguageResource.WSDiagramOverlay;
-		ytext=loginUserLanguageResource.activePower+"(kW)"
+		ytext=loginUserLanguageResource.activePower+"(kW)";
+		pointFormat=loginUserLanguageResource.displacement+': {point.x} m <br/> '+loginUserLanguageResource.activePower+': {point.y} kW';
 	}else if(diagramType===2){//电流图
 		title= loginUserLanguageResource.ISDiagramOverlay;
-		ytext=loginUserLanguageResource.electricity+"(A)"
+		ytext=loginUserLanguageResource.electricity+"(A)";
+		pointFormat=loginUserLanguageResource.displacement+': {point.x} m <br/> '+loginUserLanguageResource.electricity+': {point.y} A';
 	}
 	
 	var minValue=null;
@@ -4977,15 +4980,15 @@ showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
 	}
     
     if(diagramType===0){//如果是功图
-    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,xAxisMin,yAxisMin);
+    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,xAxisMin,yAxisMin,pointFormat);
 	}else {
-		initPSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,xAxisMin,yAxisMin);
+		initPSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,xAxisMin,yAxisMin,pointFormat);
 	}
 	
 	return false;
 }
 
-function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,xAxisMin,yAxisMin) {
+function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,xAxisMin,yAxisMin,pointFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
 		mychart = new Highcharts.Chart({
 			chart: {                                                                             
@@ -5092,7 +5095,7 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	                },                                                                           
 	                tooltip: {                                                                   
 	                    headerFormat: '',                                
-	                    pointFormat: '{point.x}, {point.y}'                                
+	                    pointFormat: pointFormat
 	                }                                                                            
 	            }                                                                                
 	        }, 
@@ -5101,7 +5104,7 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	}
 }
 
-function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,xAxisMin,yAxisMin) {
+function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,xAxisMin,yAxisMin,pointFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
 		mychart = new Highcharts.Chart({
 			chart: {                                                                             
@@ -5197,7 +5200,7 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	                },                                                                           
 	                tooltip: {                                                                   
 	                    headerFormat: '',                                
-	                    pointFormat: '{point.x}, {point.y}'                                
+	                    pointFormat: pointFormat
 	                }                                                                            
 	            }                                                                                
 	        }, 

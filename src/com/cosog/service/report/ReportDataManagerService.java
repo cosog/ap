@@ -454,6 +454,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String startDate,String endDate,int userNo,String language)throws Exception {
 		try{
 			StringBuffer result_json = new StringBuffer();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			List<List<Object>> sheetDataList = new ArrayList<>();
 			Gson gson =new Gson();
 			java.lang.reflect.Type type=null;
@@ -464,11 +465,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			int headerRowCount=0;
-			String title=deviceName+"区间生产报表";
-			String fileName=deviceName+"区间生产报表";
+			String title=deviceName+"-"+languageResourceMap.get("areaReport");
+			String fileName=deviceName+"-"+languageResourceMap.get("areaReport");
 			ReportTemplate.Template template=null;
 			
-			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
 			String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
@@ -925,6 +926,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String deviceName,String startDate,String endDate,int userNo,String language)throws Exception {
 		try{
 			List<List<List<Object>>> sheetList =new ArrayList<>();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			List<String> sheetNameList =new ArrayList<>();
 			List<String> titleList =new ArrayList<>();
 			List<ReportTemplate.Template> sheetTemplateList=new ArrayList<>();
@@ -935,9 +937,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
 			String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
-			String fileName=deviceTypeName+"日报表-"+startDate+"~"+endDate;
+			String fileName=deviceTypeName+"-"+languageResourceMap.get("dailyReport")+"-"+startDate+"~"+endDate;
 			
-			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
 			String timeEfficiencyUnit=languageResourceMap.get("decimals");
@@ -1839,14 +1840,14 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int userNo,String language)throws Exception {
 		try{
 			List<List<Object>> sheetDataList = new ArrayList<>();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			int interval=Config.getInstance().configFile.getAp().getReport().getInterval();
 			String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 			int headerRowCount=0;
-			String title=deviceName+"单日生产报表";
-			String fileName=deviceName+"单日生产报表";
+			String title=deviceName+"-"+languageResourceMap.get("dailyReport");
+			String fileName=deviceName+"-"+languageResourceMap.get("dailyReport");
 			
-			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
 			String timeEfficiencyUnit=languageResourceMap.get("decimals");
@@ -2373,7 +2374,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			List<String> defaultTimeList= StringManagerUtils.getTimeRangeList(reportDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
-			String fileName=deviceTypeName+"班报表-"+reportDate;
+			String fileName=deviceTypeName+"-"+languageResourceMap.get("hourlyReport")+"-"+reportDate;
 			
 			String deviceTableName="viw_device";
 			String calTotalTableName="";
@@ -3286,10 +3287,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			List<List<Object>> sheetDataList = new ArrayList<>();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			Gson gson =new Gson();
 			java.lang.reflect.Type type=null;
-			String title=selectedOrgName+"日报表";
-			String fileName=selectedOrgName+"日报表";
+			String title=selectedOrgName+"-"+languageResourceMap.get("dailyReport");
+			String fileName=selectedOrgName+"-"+languageResourceMap.get("dailyReport");
 			int headerRowCount=0;
 			
 			String reportUnitId="";
@@ -3299,7 +3301,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			
-			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+			
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
 			String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
@@ -3776,10 +3778,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String reportDate,int userNo,String language)throws Exception {
 		try{
 			List<List<List<Object>>> sheetList =new ArrayList<>();
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			List<String> sheetNameList =new ArrayList<>();
 			List<String> titleList =new ArrayList<>();
 			List<ReportTemplate.Template> sheetTemplateList=new ArrayList<>();
-			String fileName=selectedOrgName+"日报表-"+reportDate;
+			String fileName=selectedOrgName+"-"+languageResourceMap.get("dailyReport")+"-"+reportDate;
 			
 			Gson gson =new Gson();
 			java.lang.reflect.Type type=null;
@@ -3788,7 +3791,6 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			String viewName="VIW_DAILYCALCULATIONDATA";
 			String calTotalTableName="";
 			
-			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			
 			int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
 			String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();

@@ -58,7 +58,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnProtocolTreeInfoStore', {
                         dataIndex: 'text',
                         renderer: function (value) {
                             if (isNotVal(value)) {
-                                return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(value),Ext.String.htmlEncode(value));
                             }
                         }
                     },{

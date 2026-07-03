@@ -51,7 +51,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
                         	}
                         },
                         viewConfig: {
-                        	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                        	emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>"
                         },
                         store: store,
                         columns: newColumns,

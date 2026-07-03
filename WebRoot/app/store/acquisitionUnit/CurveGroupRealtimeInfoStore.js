@@ -44,7 +44,7 @@ Ext.define('AP.store.acquisitionUnit.CurveGroupRealtimeInfoStore', {
 //                    	allowDeselect:false
 //                    },
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>",
                         forceFit: true
                     },
                     store: store,
@@ -69,7 +69,7 @@ Ext.define('AP.store.acquisitionUnit.CurveGroupRealtimeInfoStore', {
                         }:"",
                         renderer: function (value, o, p, e) {
                         	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        		return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(value),Ext.String.htmlEncode(value));
                         	}
                         }
                     },{

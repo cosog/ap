@@ -2,6 +2,7 @@ package com.cosog.controller.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,14 +23,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
+import com.cosog.model.Role;
 import com.cosog.model.User;
 import com.cosog.model.data.DataitemsInfo;
 import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.service.data.SystemdataInfoService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.StringManagerUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 系统数据字典数据项值表
@@ -153,6 +158,43 @@ public class DataitemsInfoController extends BaseController {
 			String status_ru = ParamUtils.getParameter(request, "status_ru");
 			User userInfo = this.findCurrentUserInfo();
 			int r=this.dataitemsInfoService.updateDataDictionaryItemInfo(dataitemid,name,code,sorts,datavalue,status,status_cn,status_en,status_ru,userInfo.getLanguageName());
+			if(r==1){
+				result = "{success:true,flag:true}";
+			}else if(r==2){
+				result = "{success:true,flag:false}";
+			}else{
+				result = "{success:false,flag:false}";
+			}
+		} catch (Exception e) {
+			result = "{success:false,flag:false}";
+			e.printStackTrace();
+		}
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.getWriter().print(result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/batchUpdateDictionaryItemInfo")
+	public String batchUpdateDictionaryItemInfo() throws IOException {
+		String result = "{success:true,flag:true}";
+		try {
+			String data = ParamUtils.getParameter(request, "data");
+			User userInfo = this.findCurrentUserInfo();
+			Gson gson=new Gson();
+			java.lang.reflect.Type type=null;
+			type = new TypeToken<List<DataitemsInfo>>() {}.getType();
+			List<DataitemsInfo> list=gson.fromJson(data, type);
+			int r=0;
+			if(list!=null){
+				for(DataitemsInfo dataitemsInfo:list){
+					r=this.dataitemsInfoService.updateDataDictionaryItemInfo(dataitemsInfo);
+				}
+			}
 			if(r==1){
 				result = "{success:true,flag:true}";
 			}else if(r==2){

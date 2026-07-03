@@ -40,7 +40,7 @@ Ext.define('AP.store.role.ImportRoleContentTreeInfoStore', {
                     stripeRows: true,
                     forceFit: false,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>",
                         forceFit: true
                     },
                     store: store,

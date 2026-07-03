@@ -152,7 +152,7 @@ adviceImportModuleCollisionInfoColor = function (val, o, p, e) {
     var rgba = color16ToRgba(backgroundColor, opacity);
     o.style = 'background-color:' + rgba + ';color:' + color + ';';
     if (isNotVal(tipval)) {
-        return '<span data-qtip="' + tipval + '" data-dismissDelay=10000>' + val + '</span>';
+    	return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(tipval),Ext.String.htmlEncode(val));
     }
 }
 

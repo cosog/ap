@@ -168,6 +168,8 @@
         var defaultGraghSize = configFile.ap.others.defaultGraghSize;
         
 		var moduleContentConfig=configFile.ap.moduleContent;
+		var videoConfigEnable=moduleContentConfig.primaryDevice.videoConfig;
+			
 		var emailConfig=configFile.ap.email;
         
         var defaultPageSize = configFile.ap.others.pageSize;

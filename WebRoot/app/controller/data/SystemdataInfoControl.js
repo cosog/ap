@@ -529,6 +529,54 @@ function updateDataDictionaryInfoByGridBtn(record) {
 	});
 }
 
+function batchUpdateDictionaryItemInfo() {
+	var dataDictionaryItemGridPanel = Ext.getCmp("dataDictionaryItemGridPanel_Id");
+	var store=dataDictionaryItemGridPanel.getStore();
+	var modifiedRecords = store.getModifiedRecords();
+	if(modifiedRecords.length>0){
+		var modifiedItemArr=[];
+		
+		modifiedRecords.forEach(function(record) {
+			var modifiedItem={};
+			modifiedItem.dataitemid=record.get("dataitemid");
+			modifiedItem.name_zh_CN=record.get("name_zh_CN");
+			modifiedItem.name_en=record.get("name_en");
+			modifiedItem.name_ru=record.get("name_ru");
+			modifiedItem.datavalue=record.get("datavalue");
+			modifiedItem.status_cn=record.get("status_cn")?1:0;
+			modifiedItem.status_en=record.get("status_en")?1:0;
+			modifiedItem.status_ru=record.get("status_ru")?1:0;
+			modifiedItem.sorts=record.get("sorts");
+			modifiedItem.status=record.get("status")?1:0;
+			modifiedItemArr.push(modifiedItem);
+	    });
+		
+		Ext.Ajax.request({
+			method:'POST',
+			url:context + '/dataitemsInfoController/batchUpdateDictionaryItemInfo',
+			success:function(response) {
+				var result = Ext.JSON.decode(response.responseText);
+				if (result.success==true && result.flag == true) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
+				}else if (result.success==true && result.flag == false) {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}else {
+					Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+				}
+				Ext.getCmp("SystemdataInfoGridPanelId").getStore().load();
+			},
+			failure:function(){
+				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			},
+			params: {
+				data: JSON.stringify(modifiedItemArr)
+	        }
+		});
+	}else{
+		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	}
+}
+
 function updateDataDictionaryItemInfoByGridBtn(record) {
 	var dataitemid=record.get("dataitemid");
     var name=record.get("name");

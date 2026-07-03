@@ -41,7 +41,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                             renderer: function (value, e, o) {
                                 e.tdStyle = "vertical-align:middle;";
                                 if (isNotVal(value)) {
-                                    return "<span data-qtip=\"" + (value == undefined ? "" : value) + "\">" + (value == undefined ? "" : value) + "</span>";
+                                    return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                                 }
                             }
                         }, {

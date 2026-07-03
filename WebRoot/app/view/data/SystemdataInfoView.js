@@ -209,6 +209,57 @@ function createDictItemSourceConfigGridPanelColumn(columnInfo) {
     return myColumns;
 };
 
+iconDictItemConfigureField = function(value, e, record) {
+	var resultstring="";
+	if(record.data.columnDataSource!=0){
+		var dataitemid=record.data.dataitemid;
+		var name_zh_CN=record.data.name_zh_CN;
+		var name_en=record.data.name_en;
+		var name_ru=record.data.name_ru;
+		var code=record.data.code;
+		var datavalue=record.data.datavalue;
+		var sorts=record.data.sorts;
+		var columnDataSource=record.data.columnDataSource;
+		var deviceType=record.data.deviceType;
+		var dataSource=record.data.dataSource;
+		var dataUnit=record.data.dataUnit;
+		var status=record.data.status;
+		var status_cn=record.data.status_cn;
+		var status_en=record.data.status_en;
+		var status_ru=record.data.status_ru;
+		var configItemName=record.data.configItemName;
+		var configItemBitIndex=record.data.configItemBitIndex;
+		
+		var color = record.data.status ? '' : 'color:gray;';
+		
+		dataitemid = encodeURIComponent(dataitemid || '');
+		name_zh_CN = encodeURIComponent(name_zh_CN || '');
+		name_en = encodeURIComponent(name_en || '');
+		name_ru = encodeURIComponent(name_ru || '');
+		code = encodeURIComponent(code || '');
+		datavalue = encodeURIComponent(datavalue || '');
+		sorts = encodeURIComponent(sorts || '');
+		columnDataSource = encodeURIComponent(columnDataSource || '');
+		deviceType = encodeURIComponent(deviceType || '');
+		dataSource = encodeURIComponent(dataSource || '');
+		dataUnit = encodeURIComponent(dataUnit || '');
+		status = encodeURIComponent(status || '');
+		status_cn = encodeURIComponent(status_cn || '');
+		status_en = encodeURIComponent(status_en || '');
+		status_ru = encodeURIComponent(status_ru || '');
+		configItemName = encodeURIComponent(configItemName || '');
+		configItemBitIndex = encodeURIComponent(configItemBitIndex || '');
+		
+		var resultstring="<a href='javascript:void(0)' style='text-decoration:none;" + color + "' " 
+			+"onclick=callBackDictItemConfig(" 
+			+"'"+dataitemid+"','"+name_zh_CN+"','"+name_en+"','"+name_ru+"','"+code+"','"+datavalue+"','"+sorts+"'," 
+			+"'"+columnDataSource+"','"+deviceType+"','"+dataSource+"','"+dataUnit+"'," 
+			+"'"+status+"','"+status_cn+"','"+status_en+"','"+status_ru+"','"+configItemName+"','"+configItemBitIndex+"')>"
+			+value+"...</a>";
+	}
+	return resultstring;
+}
+
 iconDictItemConfig = function(value, e, record) {
 	var resultstring="";
 	if(record.data.columnDataSource!=0){
@@ -255,9 +306,11 @@ iconDictItemConfig = function(value, e, record) {
 	return resultstring;
 }
 
-var callBackDictItemConfig = function(dataitemid,name,code,datavalue,sorts,columnDataSource,deviceType,dataSource,dataUnit,status,status_cn,status_en,status_ru,configItemName,configItemBitIndex) {
+var callBackDictItemConfig = function(dataitemid,name_zh_CN,name_en,name_ru,code,datavalue,sorts,columnDataSource,deviceType,dataSource,dataUnit,status,status_cn,status_en,status_ru,configItemName,configItemBitIndex) {
 	dataitemid = decodeURIComponent(dataitemid);
-	name = decodeURIComponent(name);
+	name_zh_CN = decodeURIComponent(name_zh_CN);
+	name_en = decodeURIComponent(name_en);
+	name_ru = decodeURIComponent(name_ru);
 	code = decodeURIComponent(code);
 	datavalue = decodeURIComponent(datavalue);
 	sorts = decodeURIComponent(sorts);
@@ -285,13 +338,9 @@ var callBackDictItemConfig = function(dataitemid,name,code,datavalue,sorts,colum
     Ext.getCmp("dictItemAddOrUpdate_Id").setValue(1);
     
     Ext.getCmp("dictItemDataItemId_Id").setValue(dataitemid);
-    Ext.getCmp("sysDataName_zh_CN_Ids").setValue(name);
-    Ext.getCmp("sysDataName_en_Ids").setValue(name);
-    Ext.getCmp("sysDataName_ru_Ids").setValue(name);
-    
-    
-    
-    
+    Ext.getCmp("sysDataName_zh_CN_Ids").setValue(name_zh_CN);
+    Ext.getCmp("sysDataName_en_Ids").setValue(name_en);
+    Ext.getCmp("sysDataName_ru_Ids").setValue(name_ru);
     
     Ext.getCmp("sysDataCode_Ids").setValue(code);
     Ext.getCmp("dictItemConfigItemName_Id").setValue(configItemName);

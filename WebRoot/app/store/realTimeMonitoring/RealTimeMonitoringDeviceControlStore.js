@@ -163,7 +163,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringDeviceControlStore', {
                         width: '69%',
                         renderer: function (value, meta, record) {
                             meta.tdStyle = "vertical-align:middle;";
-                            return value ? "<span data-qtip=\"" + Ext.util.Format.htmlEncode(value) + "\">" + Ext.util.Format.htmlEncode(value) + "</span>" : "";
+                            return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                         }
                     }, {
                         text: loginUserLanguageResource.action,

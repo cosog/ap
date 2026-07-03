@@ -903,7 +903,7 @@ function readWaterCutRawData(){
                         columnLines: true,
                         forceFit: false,
                         viewConfig: {
-                        	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                        	emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>"
                         },
                         store: store,
                         columns: [{
@@ -923,7 +923,7 @@ function readWaterCutRawData(){
                             dataIndex: 'pointAcqTime',
                             renderer: function (value) {
                                 if (isNotVal(value)) {
-                                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                    return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                                 }
                             }
                         }, {
@@ -935,7 +935,7 @@ function readWaterCutRawData(){
                             dataIndex: 'interval',
                             renderer: function (value) {
                                 if (isNotVal(value)) {
-                                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                    return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                                 }
                             }
                         }, {
@@ -947,7 +947,7 @@ function readWaterCutRawData(){
                             dataIndex: 'waterCut',
                             renderer: function (value) {
                                 if (isNotVal(value)) {
-                                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                    return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                                 }
                             }
                         }, {
@@ -959,7 +959,7 @@ function readWaterCutRawData(){
                             dataIndex: 'tubingPressure',
                             renderer: function (value) {
                                 if (isNotVal(value)) {
-                                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                    return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                                 }
                             }
                         }, {
@@ -971,7 +971,7 @@ function readWaterCutRawData(){
                             dataIndex: 'position',
                             renderer: function (value) {
                                 if (isNotVal(value)) {
-                                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                    return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                                 }
                             }
                         }],

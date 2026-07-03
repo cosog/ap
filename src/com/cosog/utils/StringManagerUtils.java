@@ -4414,6 +4414,14 @@ public class StringManagerUtils {
         InetAddress ia = InetAddress.getLocalHost();
         return ia.getHostAddress();
     }
+    
+    public static final String getIpAddr(final HttpServletRequest request) throws Exception {
+        if (request == null) {
+            throw (new Exception("getIpAddr method HttpServletRequest Object is null"));
+        }
+        String ipString = request.getRemoteAddr();
+        return ipString;
+    }
 
     /** 
      * 获取访问用户的客户端IP（适用于公网与局域网）. 
@@ -4451,87 +4459,87 @@ public class StringManagerUtils {
      * 才从 X-Forwarded-For 等Header中提取公网IP。
      * 保留原始 split 循环逻辑，并增加对内网IP的过滤。
      */
-    public static final String getIpAddr(final HttpServletRequest request) throws Exception {
-        if (request == null) {
-            throw new Exception("getIpAddr method HttpServletRequest Object is null");
-        }
-
-        // ========== 1. 获取所有候选值（用于日志） ==========
-        String xff = request.getHeader("x-forwarded-for");
-        String proxy = request.getHeader("Proxy-Client-IP");
-        String wlProxy = request.getHeader("WL-Proxy-Client-IP");
-        String remoteAddr = request.getRemoteAddr();
-
-        StringManagerUtils.printLog("【IP解析】X-Forwarded-For: " + xff + ", Proxy-Client-IP: " + proxy 
-                + ", WL-Proxy-Client-IP: " + wlProxy + ", RemoteAddr: " + remoteAddr, 0);
-
-        // ========== 2. 优先使用 RemoteAddr ==========
-        String ipString = remoteAddr;
-
-        // 仅当 RemoteAddr 是内网IP时，才从 Header 提取公网IP
-        if (isInternalIp(remoteAddr)) {
-            StringManagerUtils.printLog("【IP解析】RemoteAddr 为内网IP: " + remoteAddr + "，尝试从 Header 提取公网IP", 0);
-
-            // 尝试从 X-Forwarded-For 获取
-            if (isNotNull(xff) && !"unknown".equalsIgnoreCase(xff)) {
-                ipString = xff;
-                StringManagerUtils.printLog("【IP解析】X-Forwarded-For 原始值: " + ipString, 0);
-            }
-
-            // 如果 X-Forwarded-For 无效，尝试 Proxy-Client-IP
-            if (isInternalIp(ipString) || "unknown".equalsIgnoreCase(ipString)) {
-                if (isNotNull(proxy) && !"unknown".equalsIgnoreCase(proxy)) {
-                    ipString = proxy;
-                    StringManagerUtils.printLog("【IP解析】使用 Proxy-Client-IP: " + ipString, 0);
-                }
-            }
-
-            // 如果 Proxy-Client-IP 无效，尝试 WL-Proxy-Client-IP
-            if (isInternalIp(ipString) || "unknown".equalsIgnoreCase(ipString)) {
-                if (isNotNull(wlProxy) && !"unknown".equalsIgnoreCase(wlProxy)) {
-                    ipString = wlProxy;
-                    StringManagerUtils.printLog("【IP解析】使用 WL-Proxy-Client-IP: " + ipString, 0);
-                }
-            }
-
-            // 如果所有 Header 都无效，保留 RemoteAddr
-            if (isInternalIp(ipString) || "unknown".equalsIgnoreCase(ipString)) {
-                ipString = remoteAddr;
-                StringManagerUtils.printLog("【IP解析】所有Header无效，回退到 RemoteAddr: " + ipString, 0);
-            }
-        } else {
-            StringManagerUtils.printLog("【IP解析】RemoteAddr 已是公网IP，直接使用: " + ipString, 0);
-        }
-
-        // ========== 3. ★★★ 最后统一处理：split 循环（放在最后！）★★★ ==========
-        // 无论 ipString 来自 RemoteAddr 还是哪个 Header，都执行分割取第一个有效IP
-        StringManagerUtils.printLog("【IP解析】分割前的 ipString: " + ipString, 0);
-
-        if (isNotNull(ipString)) {
-            final String[] arr = ipString.split(",");
-            StringManagerUtils.printLog("【IP解析】分割后的IP列表: " + java.util.Arrays.toString(arr), 0);
-
-            for (final String str : arr) {
-                String trimmed = str.trim();
-                // 原条件：过滤 "unknown"
-                // 增强：同时过滤内网IP（127.0.0.1 等）
-                if (!"unknown".equalsIgnoreCase(trimmed) && !isInternalIp(trimmed)) {
-                    ipString = trimmed;
-                    StringManagerUtils.printLog("【IP解析】选中有效公网IP: " + ipString, 0);
-                    break;
-                }
-            }
-
-            // ★ 兜底：如果循环后 ipString 仍然是内网IP（比如只有 127.0.0.1），回退到 RemoteAddr
-            if (isInternalIp(ipString)) {
-                StringManagerUtils.printLog("【IP解析】分割后仍为内网IP: " + ipString + "，回退到 RemoteAddr: " + remoteAddr, 0);
-                ipString = remoteAddr;
-            }
-        }
-
-        StringManagerUtils.printLog("【IP解析】最终返回IP: " + ipString, 0);
-        return ipString;
-    }
+//    public static final String getIpAddr(final HttpServletRequest request) throws Exception {
+//        if (request == null) {
+//            throw new Exception("getIpAddr method HttpServletRequest Object is null");
+//        }
+//
+//        // ========== 1. 获取所有候选值（用于日志） ==========
+//        String xff = request.getHeader("x-forwarded-for");
+//        String proxy = request.getHeader("Proxy-Client-IP");
+//        String wlProxy = request.getHeader("WL-Proxy-Client-IP");
+//        String remoteAddr = request.getRemoteAddr();
+//
+//        StringManagerUtils.printLog("【IP解析】X-Forwarded-For: " + xff + ", Proxy-Client-IP: " + proxy 
+//                + ", WL-Proxy-Client-IP: " + wlProxy + ", RemoteAddr: " + remoteAddr, 0);
+//
+//        // ========== 2. 优先使用 RemoteAddr ==========
+//        String ipString = remoteAddr;
+//
+//        // 仅当 RemoteAddr 是内网IP时，才从 Header 提取公网IP
+//        if (isInternalIp(remoteAddr)) {
+//            StringManagerUtils.printLog("【IP解析】RemoteAddr 为内网IP: " + remoteAddr + "，尝试从 Header 提取公网IP", 0);
+//
+//            // 尝试从 X-Forwarded-For 获取
+//            if (isNotNull(xff) && !"unknown".equalsIgnoreCase(xff)) {
+//                ipString = xff;
+//                StringManagerUtils.printLog("【IP解析】X-Forwarded-For 原始值: " + ipString, 0);
+//            }
+//
+//            // 如果 X-Forwarded-For 无效，尝试 Proxy-Client-IP
+//            if (isInternalIp(ipString) || "unknown".equalsIgnoreCase(ipString)) {
+//                if (isNotNull(proxy) && !"unknown".equalsIgnoreCase(proxy)) {
+//                    ipString = proxy;
+//                    StringManagerUtils.printLog("【IP解析】使用 Proxy-Client-IP: " + ipString, 0);
+//                }
+//            }
+//
+//            // 如果 Proxy-Client-IP 无效，尝试 WL-Proxy-Client-IP
+//            if (isInternalIp(ipString) || "unknown".equalsIgnoreCase(ipString)) {
+//                if (isNotNull(wlProxy) && !"unknown".equalsIgnoreCase(wlProxy)) {
+//                    ipString = wlProxy;
+//                    StringManagerUtils.printLog("【IP解析】使用 WL-Proxy-Client-IP: " + ipString, 0);
+//                }
+//            }
+//
+//            // 如果所有 Header 都无效，保留 RemoteAddr
+//            if (isInternalIp(ipString) || "unknown".equalsIgnoreCase(ipString)) {
+//                ipString = remoteAddr;
+//                StringManagerUtils.printLog("【IP解析】所有Header无效，回退到 RemoteAddr: " + ipString, 0);
+//            }
+//        } else {
+//            StringManagerUtils.printLog("【IP解析】RemoteAddr 已是公网IP，直接使用: " + ipString, 0);
+//        }
+//
+//        // ========== 3. ★★★ 最后统一处理：split 循环（放在最后！）★★★ ==========
+//        // 无论 ipString 来自 RemoteAddr 还是哪个 Header，都执行分割取第一个有效IP
+//        StringManagerUtils.printLog("【IP解析】分割前的 ipString: " + ipString, 0);
+//
+//        if (isNotNull(ipString)) {
+//            final String[] arr = ipString.split(",");
+//            StringManagerUtils.printLog("【IP解析】分割后的IP列表: " + java.util.Arrays.toString(arr), 0);
+//
+//            for (final String str : arr) {
+//                String trimmed = str.trim();
+//                // 原条件：过滤 "unknown"
+//                // 增强：同时过滤内网IP（127.0.0.1 等）
+//                if (!"unknown".equalsIgnoreCase(trimmed) && !isInternalIp(trimmed)) {
+//                    ipString = trimmed;
+//                    StringManagerUtils.printLog("【IP解析】选中有效公网IP: " + ipString, 0);
+//                    break;
+//                }
+//            }
+//
+//            // ★ 兜底：如果循环后 ipString 仍然是内网IP（比如只有 127.0.0.1），回退到 RemoteAddr
+//            if (isInternalIp(ipString)) {
+//                StringManagerUtils.printLog("【IP解析】分割后仍为内网IP: " + ipString + "，回退到 RemoteAddr: " + remoteAddr, 0);
+//                ipString = remoteAddr;
+//            }
+//        }
+//
+//        StringManagerUtils.printLog("【IP解析】最终返回IP: " + ipString, 0);
+//        return ipString;
+//    }
 
     /**
      * 判断是否为内网/回环IP（支持 IPv4 和 IPv6）
@@ -4844,7 +4852,7 @@ public class StringManagerUtils {
     	return timeList;
     }
     
-    public static List<String> getDaliyTimeList(String dateStr,int offsetHour,int interval) {
+    public static List<String> getDailyTimeList(String dateStr,int offsetHour,int interval) {
     	CommResponseData.Range range= getTimeRange(dateStr,offsetHour);
     	List<String> timeList=new ArrayList<>();
     	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

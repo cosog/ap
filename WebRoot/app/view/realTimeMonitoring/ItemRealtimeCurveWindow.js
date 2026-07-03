@@ -3,7 +3,7 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
     alias: 'widget.itemRealtimeCurveWindow',
     layout: 'fit',
     id:'ItemRealtimeCurveWindow_Id',
-    title: ' ',
+    title: loginUserLanguageResource.trendCurve,
     border: false,
     hidden: false,
     constrainHeader:true,//True表示为将window header约束在视图中显示， false表示为允许header在视图之外的地方显示（默认为false）

@@ -43,7 +43,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
         		    dataIndex: 'condition',
         		    renderer: function (value) {
         		        if (isNotVal(value)) {
-        		            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+        		            return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(value),Ext.String.htmlEncode(value));
         		        }
         		    }
         		}, {
@@ -58,7 +58,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
                     },
         		    renderer: function (value) {
         		        if (isNotVal(value)) {
-        		            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+        		            return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(value),Ext.String.htmlEncode(value));
         		        }
         		    }
         		}];
@@ -88,7 +88,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
                 	    dataIndex: 'value',
                 	    renderer: function (value) {
                 	        if (isNotVal(value)) {
-                	            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                	            return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(value),Ext.String.htmlEncode(value));
                 	        }
                 	    }
                 	}, {
@@ -100,7 +100,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
                 	    dataIndex: 'meaning',
                 	    renderer: function (value) {
                 	        if (isNotVal(value)) {
-                	            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                	            return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(value),Ext.String.htmlEncode(value));
                 	        }
                 	    }
                 	}];
@@ -123,7 +123,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingTableStopItemsStore', 
                     },
                     plugins: plugins,
                     viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                    	emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>"
                     },
                     store: store,
                     columns: newColumns,

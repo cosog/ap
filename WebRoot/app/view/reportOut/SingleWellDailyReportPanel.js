@@ -1405,7 +1405,7 @@ function CreateSingleWellRangeReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.deviceName+ '-' + loginUserLanguageResource.daliyReportCurve;
+		    var title = result.deviceName+ '-' + loginUserLanguageResource.dailyReportCurve;
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;
 		    var color=[];

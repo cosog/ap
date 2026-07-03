@@ -510,7 +510,7 @@ adviceRealtimeDeviceOverviewDeviceNameColor = function (val, o, p, e) {
     var returnInfo = '';
     if (isNotVal(val)) {
         if (maxAlarmLevel == 0) {
-            returnInfo = '<span data-qtip="' + val + '" data-dismissDelay=10000>' + val + '</span>';
+            returnInfo= Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(val),Ext.String.htmlEncode(val));
         } else {
             var color = '';
             if (maxAlarmLevel == 100) {
@@ -604,35 +604,38 @@ adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
     if (val == undefined) val = '';
     if (!isNotVal(val)) return '';
 
-    // 无报警时：直接返回设备名称（可加 tooltip）
+    // 对名称进行 HTML 编码（防 XSS）
+    var encodedVal = Ext.util.Format.htmlEncode(val);
+
+    // 构建内部内容（可能是纯名称，或徽章+名称）
+    var innerHtml = '';
     if (maxAlarmLevel == 0) {
-        return '<span data-qtip="' + val + '" data-dismissDelay=10000>' + Ext.util.Format.htmlEncode(val) + '</span>';
+        innerHtml = encodedVal;
+    } else {
+        // 拼接报警徽章（原有逻辑）
+        if (alarmCount_Level1 > 0) {
+            var bg1 = alarmShowStyle.Data.FirstLevel.Color || 'dc2828';
+            var text1 = alarmShowStyle.Data.FirstLevel.ColorText || 'ffffff';
+            innerHtml += createAlarmBadge(alarmCount_Level1, bg1, text1);
+        }
+        if (alarmCount_Level2 > 0) {
+            var bg2 = alarmShowStyle.Data.SecondLevel.Color || 'f09614';
+            var text2 = alarmShowStyle.Data.SecondLevel.ColorText || 'ffffff';
+            innerHtml += createAlarmBadge(alarmCount_Level2, bg2, text2);
+        }
+        if (alarmCount_Level3 > 0) {
+            var bg3 = alarmShowStyle.Data.ThirdLevel.Color || 'fae600';
+            var text3 = alarmShowStyle.Data.ThirdLevel.ColorText || '333333';
+            innerHtml += createAlarmBadge(alarmCount_Level3, bg3, text3);
+        }
+        innerHtml += encodedVal;  // 追加设备名称
     }
 
-    // 有报警时：拼接徽章 + 设备名称
-    var rtn = '';
+    // 统一包裹一个外层容器，并设置 data-qtip 提示设备名称（始终提示）
+    // 同时保持 data-dismissDelay 控制延迟（10秒）
+//    return '<span data-qtip="' + encodedVal + '" data-dismissDelay="10000">' + innerHtml + '</span>';
     
-    // 一级报警（Level 100）
-    if (alarmCount_Level1 > 0) {
-        var bg1 = alarmShowStyle.Data.FirstLevel.Color || 'dc2828';
-        var text1 = alarmShowStyle.Data.FirstLevel.ColorText || 'ffffff';
-        rtn += createAlarmBadge(alarmCount_Level1, bg1, text1);
-    }
-    // 二级报警（Level 200）
-    if (alarmCount_Level2 > 0) {
-        var bg2 = alarmShowStyle.Data.SecondLevel.Color || 'f09614';
-        var text2 = alarmShowStyle.Data.SecondLevel.ColorText || 'ffffff';
-        rtn += createAlarmBadge(alarmCount_Level2, bg2, text2);
-    }
-    // 三级报警（Level 300）
-    if (alarmCount_Level3 > 0) {
-        var bg3 = alarmShowStyle.Data.ThirdLevel.Color || 'fae600';
-        var text3 = alarmShowStyle.Data.ThirdLevel.ColorText || '333333'; // 黄底建议深色字
-        rtn += createAlarmBadge(alarmCount_Level3, bg3, text3);
-    }
-    
-    var content = rtn + Ext.util.Format.htmlEncode(val);
-    return content;
+    return Ext.String.format('<span data-qtip="{0}">{1}</span>',encodedVal,innerHtml);
 };
 
 function createRealTimeMonitoringColumnObject(columnInfo) {
@@ -2647,27 +2650,28 @@ function initVideo(panelId,divId,videoUrl,videoKeyId,deviceType,videoNo,isNew){
 }
 
 function createVideo(deviceType,data,videoNo,isNew){
-	
-	var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
-	if(rightTabPanel!=undefined){
-		var RealTimeMonitoringRightControlAndVideoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightControlAndVideoPanel");
-		if(RealTimeMonitoringRightControlAndVideoPanel!=undefined){
-			var panelId1='RealTimeMonitoringRightVideoPanel1';
-			var divId1='RealTimeMonitoringRightVideoDiv1_Id';
-			
-			var panelId2='RealTimeMonitoringRightVideoPanel2';
-			var divId2='RealTimeMonitoringRightVideoDiv2_Id';
-			
-			var videoUrl1=data.videoUrl1,videoUrl2=data.videoUrl2;
-			var videoKeyId1=data.videoKeyId1,videoKeyId2=data.videoKeyId2;
-			
-			if(videoNo==1){
-				initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
-			}else if(videoNo==2){
-				initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
-			}else{
-				initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
-				initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
+	if(videoConfigEnable){
+		var rightTabPanel = Ext.getCmp("RealTimeMonitoringRightTabPanel");
+		if(rightTabPanel!=undefined){
+			var RealTimeMonitoringRightControlAndVideoPanel = rightTabPanel.getComponent("RealTimeMonitoringRightControlAndVideoPanel");
+			if(RealTimeMonitoringRightControlAndVideoPanel!=undefined){
+				var panelId1='RealTimeMonitoringRightVideoPanel1';
+				var divId1='RealTimeMonitoringRightVideoDiv1_Id';
+				
+				var panelId2='RealTimeMonitoringRightVideoPanel2';
+				var divId2='RealTimeMonitoringRightVideoDiv2_Id';
+				
+				var videoUrl1=data.videoUrl1,videoUrl2=data.videoUrl2;
+				var videoKeyId1=data.videoKeyId1,videoKeyId2=data.videoKeyId2;
+				
+				if(videoNo==1){
+					initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
+				}else if(videoNo==2){
+					initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
+				}else{
+					initVideo(panelId1,divId1,videoUrl1,videoKeyId1,deviceType,1,isNew);
+					initVideo(panelId2,divId2,videoUrl2,videoKeyId2,deviceType,2,isNew);
+				}
 			}
 		}
 	}

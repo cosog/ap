@@ -45,7 +45,7 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
                         clicksToEdit: 2
                     }],
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>",
                         forceFit: true
                     },
                     store: store,

@@ -35,7 +35,7 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeOrgListStore', {
                     onlyLeafCheckable: false, // 所有结点可选，如果不需要checkbox,该属性去掉
                     singleExpand: false,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>",
                         forceFit: true
                     },
                     store: store,

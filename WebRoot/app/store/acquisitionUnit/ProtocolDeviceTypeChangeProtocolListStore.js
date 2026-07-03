@@ -31,7 +31,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeProtocolListStore',
                     forceFit: false,
                     selType: 'checkboxmodel',
                     viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                    	emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>"
                     },
                     store: store,
                     columns: [{
@@ -53,7 +53,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeProtocolListStore',
                         renderer: function (value,o,p,e) {
                         	var showVal=value;
                          	if(isNotVal(showVal)){
-                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (showVal == undefined ? "" : showVal) + "</span>";
+                         		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(showVal));
                          	}
                         }
                     }, {
@@ -67,7 +67,7 @@ Ext.define('AP.store.acquisitionUnit.ProtocolDeviceTypeChangeProtocolListStore',
                         renderer: function (value,o,p,e) {
                         	var showVal=value;
                          	if(isNotVal(showVal)){
-                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (showVal == undefined ? "" : showVal) + "</span>";
+                         		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(showVal));
                          	}
                         }
                     }]

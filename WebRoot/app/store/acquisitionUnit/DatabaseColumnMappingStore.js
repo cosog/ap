@@ -30,7 +30,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
                     columnLines: true,
                     forceFit: false,
                     viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                    	emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>"
                     },
                     store: store,
                     columns: [{
@@ -51,7 +51,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
                         dataIndex: 'itemName',
                         renderer: function (value,o,p,e) {
                         	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        		return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(value),Ext.String.htmlEncode(value));
                         	}
                         }
                     }, {
@@ -64,7 +64,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
                         dataIndex: 'itemColumn',
                         renderer: function (value) {
                         	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        		return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(value),Ext.String.htmlEncode(value));
                         	}
                         }
                     }]

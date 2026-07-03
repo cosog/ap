@@ -265,7 +265,7 @@ public class ReportDataMamagerController extends BaseController {
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
-			List<String> defaultTimeList= StringManagerUtils.getDaliyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
+			List<String> defaultTimeList= StringManagerUtils.getDailyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
 			String sql = "select * from ("
 					+ " select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') "
@@ -358,7 +358,7 @@ public class ReportDataMamagerController extends BaseController {
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
-			List<String> defaultTimeList= StringManagerUtils.getDaliyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
+			List<String> defaultTimeList= StringManagerUtils.getDailyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
 			String sql = "select * from ("
 					+ " select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') "
@@ -441,7 +441,7 @@ public class ReportDataMamagerController extends BaseController {
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
-			List<String> defaultTimeList= StringManagerUtils.getDaliyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
+			List<String> defaultTimeList= StringManagerUtils.getDailyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
 			String sql = "select * from ("
 					+ " select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') "
@@ -776,7 +776,7 @@ public class ReportDataMamagerController extends BaseController {
 			int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
 			CommResponseData.Range startRange= StringManagerUtils.getTimeRange(startDate,offsetHour);
 			CommResponseData.Range endRange= StringManagerUtils.getTimeRange(endDate,offsetHour);
-			List<String> defaultTimeList= StringManagerUtils.getDaliyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
+			List<String> defaultTimeList= StringManagerUtils.getDailyTimeList(endDate,offsetHour,StringManagerUtils.stringToInteger(reportInterval));
 			
 			String sql = "select * from ("
 					+ " select  to_char(t.calTime-"+offsetHour+"/24,'yyyy-mm-dd hh24:mi:ss') "

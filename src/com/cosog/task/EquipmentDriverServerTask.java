@@ -69,7 +69,7 @@ public class EquipmentDriverServerTask {
 		if(Config.getInstance().configFile.getAp().getOthers().getIot()){
 			initWellCommStatusByOnlineProbe();//检测当前已在线的设备,并更新状态
 		}
-		initWellDaliyData();
+		initWellDailyData();
 		MemoryDataManagerTask.loadMemoryData();
 		
 		ThreadPool executor=null;
@@ -1586,7 +1586,7 @@ public class EquipmentDriverServerTask {
 		return result;
 	}
 	
-	public static int initWellDaliyData(){
+	public static int initWellDailyData(){
 		
 		int result=0;
 		try {

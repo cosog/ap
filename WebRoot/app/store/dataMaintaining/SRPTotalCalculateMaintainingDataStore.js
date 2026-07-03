@@ -49,7 +49,7 @@ Ext.define('AP.store.dataMaintaining.SRPTotalCalculateMaintainingDataStore', {
                     	mode:'MULTI'//"SINGLE" / "SIMPLE" / "MULTI" 
                     },
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>",
                         forceFit: false
                     },
                     bbar: bbar,

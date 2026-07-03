@@ -84,7 +84,9 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		String ddicCode="dictionary_DataDictionaryManage";
 		DataDictionary ddic= findTableSqlWhereByListFaceId(ddicCode,deviceType,user.getLanguageName());
 		String columns = ddic.getTableHeader();
-		String sql="select t.dataitemid,t.name_"+user.getLanguageName()+",t.code,t.datavalue,t.sorts,"
+		String sql="select t.dataitemid,t.name_zh_CN,t.name_en,t.name_ru,"
+				
+				+ "t.code,t.datavalue,t.sorts,"
 				+ "t.columnDataSource,t.devicetype,"
 				+ "t.dataSource,t.dataUnit,"
 				+ "t.status,"
@@ -107,49 +109,56 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 		List<?> list = this.findCallSql(sql);
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalCount\":"+totals+","
+				+ "\"showChineseName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 1)+","
+				+ "\"showEnglishName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 2)+","
+				+ "\"showRussianName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 3)+",");
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			
-			String columnDataSourceName=MemoryDataManagerTask.getCodeName("DICTDATASOURCE", obj[5]+"", user.getLanguageName());
-			String dataSourceName=MemoryDataManagerTask.getCodeName("DATASOURCE", obj[7]+"", user.getLanguageName());
+			String columnDataSourceName=MemoryDataManagerTask.getCodeName("DICTDATASOURCE", obj[7]+"", user.getLanguageName());
+			String dataSourceName=MemoryDataManagerTask.getCodeName("DATASOURCE", obj[9]+"", user.getLanguageName());
 			if(StringManagerUtils.isNotNull(dataSourceName)){
 				columnDataSourceName+="/"+dataSourceName;
 			}
 			
-			String configItemName=obj[13]+"";
-			if(StringManagerUtils.stringToInteger(obj[5]+"")==1 && StringManagerUtils.stringToInteger(obj[7]+"")==1){
-				CalItem calItem=MemoryDataManagerTask.getCalItemByCode(obj[2]+"", user.getLanguageName());
+			String configItemName=obj[15]+"";
+			if(StringManagerUtils.stringToInteger(obj[7]+"")==1 && StringManagerUtils.stringToInteger(obj[9]+"")==1){
+				CalItem calItem=MemoryDataManagerTask.getCalItemByCode(obj[4]+"", user.getLanguageName());
 				if(calItem!=null){
 					configItemName=calItem.getName();
 				}
-			}else if(StringManagerUtils.stringToInteger(obj[5]+"")==1 && StringManagerUtils.stringToInteger(obj[7]+"")==2){
-				CalItem calItem=MemoryDataManagerTask.getInputItemByCode(obj[2]+"", user.getLanguageName());
+			}else if(StringManagerUtils.stringToInteger(obj[7]+"")==1 && StringManagerUtils.stringToInteger(obj[9]+"")==2){
+				CalItem calItem=MemoryDataManagerTask.getInputItemByCode(obj[4]+"", user.getLanguageName());
 				if(calItem!=null){
 					configItemName=calItem.getName();
 				}
 			}
 			
 			result_json.append("{\"dataitemid\":\""+obj[0]+"\",");
-			result_json.append("\"name\":\""+obj[1]+"\",");
-			result_json.append("\"code\":\""+obj[2]+"\",");
-			result_json.append("\"datavalue\":\""+obj[3]+"\",");
-			result_json.append("\"sorts\":"+obj[4]+",");
-			result_json.append("\"columnDataSource\":\""+obj[5]+"\",");
+			result_json.append("\"name_zh_CN\":\""+obj[1]+"\",");
+			result_json.append("\"name_en\":\""+obj[2]+"\",");
+			result_json.append("\"name_ru\":\""+obj[3]+"\",");
+			
+			
+			result_json.append("\"code\":\""+obj[4]+"\",");
+			result_json.append("\"datavalue\":\""+obj[5]+"\",");
+			result_json.append("\"sorts\":"+obj[6]+",");
+			result_json.append("\"columnDataSource\":\""+obj[7]+"\",");
 			result_json.append("\"columnDataSourceName\":\""+columnDataSourceName+"\",");
-			result_json.append("\"deviceType\":\""+obj[6]+"\",");
+			result_json.append("\"deviceType\":\""+obj[8]+"\",");
 			
-			result_json.append("\"dataSource\":\""+obj[7]+"\",");
+			result_json.append("\"dataSource\":\""+obj[9]+"\",");
 			result_json.append("\"dataSourceName\":\""+dataSourceName+"\",");
-			result_json.append("\"dataUnit\":\""+obj[8]+"\",");
+			result_json.append("\"dataUnit\":\""+obj[10]+"\",");
 			
-			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[9]+"")==1)+",");
-			result_json.append("\"status_cn\":"+(StringManagerUtils.stringToInteger(obj[10]+"")==1)+",");
-			result_json.append("\"status_en\":"+(StringManagerUtils.stringToInteger(obj[11]+"")==1)+",");
-			result_json.append("\"status_ru\":"+(StringManagerUtils.stringToInteger(obj[12]+"")==1)+",");
+			result_json.append("\"status\":"+(StringManagerUtils.stringToInteger(obj[11]+"")==1)+",");
+			result_json.append("\"status_cn\":"+(StringManagerUtils.stringToInteger(obj[12]+"")==1)+",");
+			result_json.append("\"status_en\":"+(StringManagerUtils.stringToInteger(obj[13]+"")==1)+",");
+			result_json.append("\"status_ru\":"+(StringManagerUtils.stringToInteger(obj[14]+"")==1)+",");
 			result_json.append("\"configItemName\":\""+configItemName+"\",");
-			result_json.append("\"configItemBitIndex\":\""+obj[14]+"\"");
+			result_json.append("\"configItemBitIndex\":\""+obj[16]+"\"");
 			result_json.append("},");
 		}
 		if(result_json.toString().endsWith(",")){
@@ -174,6 +183,28 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 					+ " t.status_en="+("true".equalsIgnoreCase(status_en)?1:0)+","
 					+ " t.status_ru="+("true".equalsIgnoreCase(status_ru)?1:0)
 					+ " where t.dataitemid='"+dataitemid+"' ";;
+			r=this.getBaseDao().updateOrDeleteBySql(sql);
+		} catch (Exception e) {
+			r=0;
+		}
+		return r;
+	}
+	
+	public int updateDataDictionaryItemInfo(DataitemsInfo dataitemsInfo){
+		int r=0;
+		try {
+			String sql = "update tbl_dist_item t "
+					+ " set "
+					+ " t.name_zh_CN='"+dataitemsInfo.getName_zh_CN()+"',"
+					+ " t.name_en='"+dataitemsInfo.getName_en()+"',"
+					+ " t.name_ru='"+dataitemsInfo.getName_ru()+"',"
+					+ " t.sorts= "+dataitemsInfo.getSorts()+","
+					+ " t.datavalue ='"+dataitemsInfo.getDatavalue()+"',"
+					+ " t.status="+dataitemsInfo.getStatus()+","
+					+ " t.status_cn="+dataitemsInfo.getStatus_cn()+","
+					+ " t.status_en="+dataitemsInfo.getStatus_en()+","
+					+ " t.status_ru="+dataitemsInfo.getStatus_ru()
+					+ " where t.dataitemid='"+dataitemsInfo.getDataitemid()+"' ";;
 			r=this.getBaseDao().updateOrDeleteBySql(sql);
 		} catch (Exception e) {
 			r=0;

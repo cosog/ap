@@ -142,7 +142,7 @@
                     "backgroundColor": ""
                 },
                 "title_zh_CN": ["deviceNameLabel井排采班报表", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-                "title_en": ["deviceNameLabel hourly report", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+                "title_en": ["deviceNameLabel shift report", "", "", "", "", "", "", "", "", "", "", "", "", ""],
                 "title_ru": ["deviceNameLabel Отчеты экипажа", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
                 "tdStyle": {

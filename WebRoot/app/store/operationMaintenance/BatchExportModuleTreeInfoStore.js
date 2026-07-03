@@ -73,7 +73,7 @@ Ext.define('AP.store.operationMaintenance.BatchExportModuleTreeInfoStore', {
                         width: 50,
                         xtype: 'rownumberer'
                     },{
-                    	text: '数据',
+                    	text: loginUserLanguageResource.data,
                         flex: 8,
                         align: 'center',
                         dataIndex: 'text',
@@ -82,7 +82,7 @@ Ext.define('AP.store.operationMaintenance.BatchExportModuleTreeInfoStore', {
                         		o.style='color:gray;';
                         	}
                         	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                         	}
                         }
                     }],

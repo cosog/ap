@@ -40,7 +40,7 @@ Ext.define('AP.store.operationMaintenance.ImportBackupDataDictionaryContentTreeI
                     stripeRows: true,
                     forceFit: false,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>",
                         forceFit: true
                     },
                     store: store,
@@ -58,7 +58,7 @@ Ext.define('AP.store.operationMaintenance.ImportBackupDataDictionaryContentTreeI
                         dataIndex: 'name',
                         renderer: function (value) {
                         	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                         	}
                         }
                     }, {
@@ -68,7 +68,7 @@ Ext.define('AP.store.operationMaintenance.ImportBackupDataDictionaryContentTreeI
                         dataIndex: 'code',
                         renderer: function (value) {
                         	if(isNotVal(value)){
-                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                         	}
                         }
                     },{

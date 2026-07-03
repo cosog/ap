@@ -66,7 +66,7 @@ Ext.define('AP.store.alarmSet.AlarmSetGridInfoStore', {
                     selType: 'checkboxmodel',
                     multiSelect: true,
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>",
                         forceFit: true
                     },
                     bbar: bbar,

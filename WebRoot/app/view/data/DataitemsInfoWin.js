@@ -314,7 +314,7 @@ Ext.define('AP.view.data.DataitemsInfoWin', {
                     disabled: true
                 },{
                 	id: "dictItemConfigItemBitIndex_Id",
-                    fieldLabel: loginUserLanguageResource.configureField,
+                    fieldLabel: loginUserLanguageResource.bit,
                     labelWidth: labelWidth,
                     anchor: '95%',
                     msgTarget: 'side',

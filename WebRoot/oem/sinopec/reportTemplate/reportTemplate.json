@@ -389,7 +389,7 @@
         "singleWellDailyReportTemplate": [{
             "calculateType": 1,
             "templateCode": "oilWell_PumpingDailyReport",
-            "templateName": "SRP Hourly Report",
+            "templateName": "SRP shift report",
             "header": [{
                 "tdStyle": {
                     "fontWeight": "bold",
@@ -400,7 +400,7 @@
                     "backgroundColor": ""
                 },
                 "title_zh_CN": ["deviceNameLabel班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-                "title_en": ["deviceNameLabel hourly report", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+                "title_en": ["deviceNameLabel shift report", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
                 "title_ru": ["deviceNameLabel Отчеты экипажа", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
                 "tdStyle": {
@@ -528,7 +528,7 @@
     }, {
             "calculateType": 0,
             "templateCode": "CBMWell_heichaoDailyReport",
-            "templateName": "CBM Hourly Report",
+            "templateName": "CBM shift report",
             "header": [{
                 "tdStyle": {
                     "fontWeight": "bold",
@@ -539,7 +539,7 @@
                     "backgroundColor": ""
                 },
                 "title_zh_CN": ["deviceNameLabel井排采班报表", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-                "title_en": ["deviceNameLabel hourly report", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+                "title_en": ["deviceNameLabel shift report", "", "", "", "", "", "", "", "", "", "", "", "", ""],
                 "title_ru": ["deviceNameLabel Отчеты экипажа", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
                 "tdStyle": {
@@ -675,7 +675,7 @@
     }, {
             "calculateType": 2,
             "templateCode": "oilWell_ScrewPumpDailyReport",
-            "templateName": "PCP Hourly Report",
+            "templateName": "PCP shift report",
             "header": [{
                 "tdStyle": {
                     "fontWeight": "bold",
@@ -686,7 +686,7 @@
                     "backgroundColor": ""
                 },
                 "title_zh_CN": ["deviceNameLabel井班报表", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-                "title_en": ["deviceNameLabel hourly report", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+                "title_en": ["deviceNameLabel shift report", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
                 "title_ru": ["deviceNameLabel Отчеты экипажа", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
         }, {
                 "tdStyle": {

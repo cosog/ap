@@ -231,7 +231,7 @@ adviceCurrentRoleName = function(val,o,p,e) {
  		showVal="*"+val;
  	}
  	if(isNotVal(showVal)){
- 	 	return '<span data-qtip="'+val+'" data-dismissDelay=10000>'+showVal+'</span>';
+ 	 	return Ext.String.format('<span data-qtip="{0}">{1}</span>',Ext.String.htmlEncode(val),Ext.String.htmlEncode(showVal));
  	}
 };
 

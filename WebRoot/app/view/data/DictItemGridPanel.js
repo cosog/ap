@@ -69,7 +69,15 @@ Ext.define('AP.view.data.DictItemGridPanel', {
                     handler: function () {
                     	delfindtattxtInfo();
                     }
-                }]
+                },'-',{
+                    xtype: 'button',
+                    text: loginUserLanguageResource.save,
+                    disabled:loginUserDataDictionaryManagementModuleRight.editFlag!=1,
+                    iconCls: 'save',
+                    handler: function () {
+                    	batchUpdateDictionaryItemInfo();
+                    }
+        		}]
             }]
         });
         this.callParent(arguments);

@@ -985,7 +985,7 @@ function CreateProductionDailyReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.selectedOrgName+ '-' + loginUserLanguageResource.daliyReportCurve;
+		    var title = result.selectedOrgName+ '-' + loginUserLanguageResource.dailyReportCurve;
 		    var xTitle=loginUserLanguageResource.date;
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;

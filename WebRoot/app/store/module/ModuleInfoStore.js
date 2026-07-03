@@ -43,7 +43,7 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                         clicksToEdit: 2
                     }],
                     viewConfig: {
-                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>",
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>",
                         forceFit: true
                     },
                     store: store,
@@ -109,7 +109,7 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                             disabled:loginUserModuleManagementModuleRight.editFlag!=1
                         }:"",
                         renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                            return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
                         }
                     }, {
                         header: loginUserLanguageResource.moduleSort,

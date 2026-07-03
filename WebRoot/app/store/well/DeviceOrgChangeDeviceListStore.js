@@ -31,7 +31,7 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
                     forceFit: false,
                     selType: 'checkboxmodel',
                     viewConfig: {
-                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + loginUserLanguageResource.emptyMsg + "></div>"
+                    	emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>"
                     },
                     store: store,
                     columns: [{
@@ -52,7 +52,7 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
                         dataIndex: 'deviceName',
                         renderer: function (value) {
                         	if(isNotVal(value)){
-    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
 			        		}
                         }
                     }, {
@@ -65,7 +65,7 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
                         dataIndex: 'orgName',
                         renderer: function (value) {
                         	if(isNotVal(value)){
-    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
 			        		}
                         }
                     }, {
@@ -78,7 +78,7 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
                         dataIndex: 'deviceTypeName',
                         renderer: function (value) {
                         	if(isNotVal(value)){
-    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
 			        		}
                         }
                     }]

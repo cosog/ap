@@ -4131,12 +4131,20 @@ public class AcquisitionUnitManagerController extends BaseController {
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
 			String language="";
+			String name="";
 			if(user!=null){
 				language=user.getLanguageName();
+				if("zh_CN".equalsIgnoreCase(language)){
+					name=protocolReportInstance.getName_zh_CN();
+				}else if("en".equalsIgnoreCase(language)){
+					name=protocolReportInstance.getName_en();
+				}else if("ru".equalsIgnoreCase(language)){
+					name=protocolReportInstance.getName_ru();
+				}
 			}
 			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 			if(user!=null){
-				this.service.saveSystemLog(user,2,languageResourceMap.get("addReportInstance")+":"+protocolReportInstance.getName());
+				this.service.saveSystemLog(user,2,languageResourceMap.get("addReportInstance")+":"+name);
 			}
 			result = "{\"success\":true,\"msg\":true}";
 		} catch (Exception e) {
@@ -4332,6 +4340,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String language="";
+		String savedInstanceName="";
 		if(user!=null){
 			language=user.getLanguageName();
 		}
@@ -4343,6 +4352,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusProtocolReportInstanceSaveData modbusProtocolReportInstanceSaveData=gson.fromJson(data, type);
 		
 		if(modbusProtocolReportInstanceSaveData!=null){
+			if("zh_CN".equalsIgnoreCase(language)){
+				savedInstanceName=modbusProtocolReportInstanceSaveData.getName_zh_CN();
+			}else if("en".equalsIgnoreCase(language)){
+				savedInstanceName=modbusProtocolReportInstanceSaveData.getName_en();
+			}else if("ru".equalsIgnoreCase(language)){
+				savedInstanceName=modbusProtocolReportInstanceSaveData.getName_ru();
+			}
+			
 			if(modbusProtocolReportInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolReportInstanceSaveData.getDelidslist().size();i++){
 					this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceBulkDelete(modbusProtocolReportInstanceSaveData.getDelidslist().get(i));
@@ -4353,7 +4370,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 			}
 			
-			if(StringManagerUtils.isNotNull(modbusProtocolReportInstanceSaveData.getName())){
+			if(StringManagerUtils.isNotNull(savedInstanceName)){
 				String sql="select t.id from tbl_report_unit_conf t where t.unit_name='"+modbusProtocolReportInstanceSaveData.getUnitName()+"' "
 						+ " and rownum=1";
 				String unitId="";
@@ -4364,7 +4381,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 				ProtocolReportInstance protocolReportInstance=new ProtocolReportInstance();
 				protocolReportInstance.setId(modbusProtocolReportInstanceSaveData.getId());
 				protocolReportInstance.setCode(modbusProtocolReportInstanceSaveData.getCode());
-				protocolReportInstance.setName(modbusProtocolReportInstanceSaveData.getName());
+				protocolReportInstance.setName_zh_CN(modbusProtocolReportInstanceSaveData.getName_zh_CN());
+				protocolReportInstance.setName_en(modbusProtocolReportInstanceSaveData.getName_en());
+				protocolReportInstance.setName_ru(modbusProtocolReportInstanceSaveData.getName_ru());
 				protocolReportInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
 				
 				
@@ -4376,7 +4395,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				try {
 					this.protocolReportInstanceManagerService.doModbusProtocolReportInstanceEdit(protocolReportInstance);
 					if(user!=null){
-						this.service.saveSystemLog(user,2,languageResourceMap.get("editReportInstance")+":"+protocolReportInstance.getName());
+						this.service.saveSystemLog(user,2,languageResourceMap.get("editReportInstance")+":"+savedInstanceName);
 					}
 					json = "{\"success\":true,\"msg\":true}";
 				} catch (Exception e) {
@@ -4967,8 +4986,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/judgeReportInstanceExistOrNot")
 	public String judgeReportInstanceExistOrNot() throws IOException {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
 		String instanceName = ParamUtils.getParameter(request, "instanceName");
-		boolean flag = this.acquisitionUnitManagerService.judgeReportInstanceExistOrNot(instanceName);
+		boolean flag = this.acquisitionUnitManagerService.judgeReportInstanceExistOrNot(instanceName,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
@@ -8303,8 +8328,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 					while(it.hasNext()){
 						boolean isDel=true;
 						ExportReportInstanceData instanceData=(ExportReportInstanceData)it.next();
+						
+						String savedInstanceName="";
+						if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+							savedInstanceName=instanceData.getName_zh_CN();
+						}else if("en".equalsIgnoreCase(user.getLanguageName())){
+							savedInstanceName=instanceData.getName_en();
+						}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+							savedInstanceName=instanceData.getName_ru();
+						}
+						
 						if(unitName.equalsIgnoreCase(instanceData.getUnitName())
-								&& instanceName.equalsIgnoreCase(instanceData.getName())
+								&& instanceName.equalsIgnoreCase(savedInstanceName)
 								){
 							acquisitionUnitItemManagerService.importReportInstance(instanceData,user);
 							it.remove();

@@ -576,66 +576,315 @@ function createAlarmBadge(number, bgColor, textColor) {
     return '<span style="' + style + '">' + number + '</span>';
 }
 
+//adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
+//    var alarmInfo = p.data.alarmInfo;
+//    var maxAlarmLevel = 0;
+//    var alarmCount_Level1 = 0;
+//    var alarmCount_Level2 = 0;
+//    var alarmCount_Level3 = 0;
+//    var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+//    
+//    if (isNotVal(alarmShowStyle) && alarmShowStyle != {}) {
+//        if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
+//            for (var i = 0; i < alarmInfo.length; i++) {
+//                if (alarmInfo[i].alarmLevel == 100) {
+//                    alarmCount_Level1++;
+//                } else if (alarmInfo[i].alarmLevel == 200) {
+//                    alarmCount_Level2++;
+//                } else if (alarmInfo[i].alarmLevel == 300) {
+//                    alarmCount_Level3++;
+//                }
+//                if (alarmInfo[i].alarmLevel > 0 && (maxAlarmLevel == 0 || alarmInfo[i].alarmLevel < maxAlarmLevel)) {
+//                    maxAlarmLevel = alarmInfo[i].alarmLevel;
+//                }
+//            }
+//        }
+//    }
+//
+//    if (val == undefined) val = '';
+//    if (!isNotVal(val)) return '';
+//
+//    // 对名称进行 HTML 编码（防 XSS）
+//    var encodedVal = Ext.util.Format.htmlEncode(val);
+//
+//    // 构建内部内容（可能是纯名称，或徽章+名称）
+//    var innerHtml = '';
+//    if (maxAlarmLevel == 0) {
+//        innerHtml = encodedVal;
+//    } else {
+//        // 拼接报警徽章（原有逻辑）
+//        if (alarmCount_Level1 > 0) {
+//            var bg1 = alarmShowStyle.Data.FirstLevel.Color || 'dc2828';
+//            var text1 = alarmShowStyle.Data.FirstLevel.ColorText || 'ffffff';
+//            innerHtml += createAlarmBadge(alarmCount_Level1, bg1, text1);
+//        }
+//        if (alarmCount_Level2 > 0) {
+//            var bg2 = alarmShowStyle.Data.SecondLevel.Color || 'f09614';
+//            var text2 = alarmShowStyle.Data.SecondLevel.ColorText || 'ffffff';
+//            innerHtml += createAlarmBadge(alarmCount_Level2, bg2, text2);
+//        }
+//        if (alarmCount_Level3 > 0) {
+//            var bg3 = alarmShowStyle.Data.ThirdLevel.Color || 'fae600';
+//            var text3 = alarmShowStyle.Data.ThirdLevel.ColorText || '333333';
+//            innerHtml += createAlarmBadge(alarmCount_Level3, bg3, text3);
+//        }
+//        innerHtml += encodedVal;  // 追加设备名称
+//    }
+//
+//    // 统一包裹一个外层容器，并设置 data-qtip 提示设备名称（始终提示）
+//    // 同时保持 data-dismissDelay 控制延迟（10秒）
+////    return '<span data-qtip="' + encodedVal + '" data-dismissDelay="10000">' + innerHtml + '</span>';
+//    
+//    return Ext.String.format('<span data-qtip="{0}">{1}</span>',encodedVal,innerHtml);
+//};
+
+//adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
+//    // 1. 获取报警信息和样式配置
+//    var alarmInfo = p.data.alarmInfo;
+//    var maxAlarmLevel = 0;
+//    var alarmCount_Level1 = 0;
+//    var alarmCount_Level2 = 0;
+//    var alarmCount_Level3 = 0;
+//    var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+//
+//    // 2. 统计报警数量
+//    if (isNotVal(alarmShowStyle) && alarmShowStyle != {}) {
+//        if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
+//            for (var i = 0; i < alarmInfo.length; i++) {
+//                var level = alarmInfo[i].alarmLevel;
+//                if (level == 100) alarmCount_Level1++;
+//                else if (level == 200) alarmCount_Level2++;
+//                else if (level == 300) alarmCount_Level3++;
+//                if (level > 0 && (maxAlarmLevel == 0 || level < maxAlarmLevel)) {
+//                    maxAlarmLevel = level;
+//                }
+//            }
+//        }
+//    }
+//
+//    // 3. 处理空值
+//    if (val == undefined) val = '';
+//    if (!isNotVal(val)) return '';
+//
+//    var encodedVal = Ext.String.htmlEncode(val);
+//    var displayHtml = encodedVal;          // 单元格显示内容
+//    var tipText = encodedVal;              // 悬停提示纯文本（默认）
+//
+//    // 4. 有报警时构建徽章和提示文本
+//    if (maxAlarmLevel != 0) {
+//        // 4a. 拼接报警徽章（保留颜色）
+//        var innerHtml = '';
+//        if (alarmCount_Level1 > 0) {
+//            var bg1 = alarmShowStyle.Data.FirstLevel.Color || 'dc2828';
+//            var text1 = alarmShowStyle.Data.FirstLevel.ColorText || 'ffffff';
+//            innerHtml += createAlarmBadge(alarmCount_Level1, bg1, text1);
+//        }
+//        if (alarmCount_Level2 > 0) {
+//            var bg2 = alarmShowStyle.Data.SecondLevel.Color || 'f09614';
+//            var text2 = alarmShowStyle.Data.SecondLevel.ColorText || 'ffffff';
+//            innerHtml += createAlarmBadge(alarmCount_Level2, bg2, text2);
+//        }
+//        if (alarmCount_Level3 > 0) {
+//            var bg3 = alarmShowStyle.Data.ThirdLevel.Color || 'fae600';
+//            var text3 = alarmShowStyle.Data.ThirdLevel.ColorText || '333333';
+//            innerHtml += createAlarmBadge(alarmCount_Level3, bg3, text3);
+//        }
+//        displayHtml = innerHtml + encodedVal;
+//
+//        // 4b. 构建纯文本提示（不含 HTML 标签）
+//        var plainParts = [];
+//        if (alarmCount_Level1 > 0) plainParts.push(loginUserLanguageResource.alarmLevel1+':' + alarmCount_Level1);
+//        if (alarmCount_Level2 > 0) plainParts.push(loginUserLanguageResource.alarmLevel2+':' + alarmCount_Level2);
+//        if (alarmCount_Level3 > 0) plainParts.push(loginUserLanguageResource.alarmLevel3+':' + alarmCount_Level3);
+//        if (plainParts.length > 0) {
+//            tipText = encodedVal + ' ' + plainParts.join(';');
+//        }
+//    }
+//
+//    // 5. 使用 data-qtip 返回（纯文本，兼容所有 Ext JS 版本）
+//    return Ext.String.format(
+//        '<span data-qtip="{0}" data-dismissDelay="10000" style="display:inline-block;white-space:nowrap;">{1}</span>',
+//        Ext.String.htmlEncode(tipText),   // 转义纯文本内容
+//        displayHtml
+//    );
+//};
+
+//adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
+//    // 1. 获取报警信息和样式配置
+//    var alarmInfo = p.data.alarmInfo;
+//    var maxAlarmLevel = 0;
+//    var alarmCount_Level1 = 0;
+//    var alarmCount_Level2 = 0;
+//    var alarmCount_Level3 = 0;
+//    var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+//
+//    // 2. 统计报警数量
+//    if (isNotVal(alarmShowStyle) && alarmShowStyle != {}) {
+//        if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
+//            for (var i = 0; i < alarmInfo.length; i++) {
+//                var level = alarmInfo[i].alarmLevel;
+//                if (level == 100) alarmCount_Level1++;
+//                else if (level == 200) alarmCount_Level2++;
+//                else if (level == 300) alarmCount_Level3++;
+//                if (level > 0 && (maxAlarmLevel == 0 || level < maxAlarmLevel)) {
+//                    maxAlarmLevel = level;
+//                }
+//            }
+//        }
+//    }
+//
+//    // 3. 处理空值
+//    if (val == undefined) val = '';
+//    if (!isNotVal(val)) return '';
+//
+//    // 4. 设备名称 HTML 编码（防 XSS）
+//    var encodedVal = Ext.String.htmlEncode(val);
+//
+//    // 5. 构建显示内容（单元格）和悬停提示内容
+//    var displayHtml = encodedVal;          // 默认仅设备名称
+//    var tipHtml = encodedVal;              // 默认提示仅设备名称（纯文本）
+//
+//    if (maxAlarmLevel != 0) {
+//        // ---- 有报警时 ----
+//        // 5a. 拼接报警徽章（显示用）
+//        var innerHtml = '';
+//        if (alarmCount_Level1 > 0) {
+//            var bg1 = alarmShowStyle.Data.FirstLevel.Color || 'dc2828';
+//            var text1 = alarmShowStyle.Data.FirstLevel.ColorText || 'ffffff';
+//            innerHtml += createAlarmBadge(alarmCount_Level1, bg1, text1);
+//        }
+//        if (alarmCount_Level2 > 0) {
+//            var bg2 = alarmShowStyle.Data.SecondLevel.Color || 'f09614';
+//            var text2 = alarmShowStyle.Data.SecondLevel.ColorText || 'ffffff';
+//            innerHtml += createAlarmBadge(alarmCount_Level2, bg2, text2);
+//        }
+//        if (alarmCount_Level3 > 0) {
+//            var bg3 = alarmShowStyle.Data.ThirdLevel.Color || 'fae600';
+//            var text3 = alarmShowStyle.Data.ThirdLevel.ColorText || '333333';
+//            innerHtml += createAlarmBadge(alarmCount_Level3, bg3, text3);
+//        }
+//        displayHtml = innerHtml + encodedVal;   // 徽章 + 设备名称（名称无额外颜色）
+//
+//        // 5b. 构建带颜色的 HTML 提示（使用变量，无硬编码文字）
+//        var tipParts = [];
+//        if (alarmCount_Level1 > 0) {
+//            var color1 = '#' + (alarmShowStyle.Data.FirstLevel.Color || 'dc2828');
+//            // 使用单引号包裹 style 值，避免与外层 data-qtip 的双引号冲突
+//            tipParts.push('<span style=\'color:' + color1 + ';\'>' + loginUserLanguageResource.alarmLevel1 + ': ' + alarmCount_Level1 + '</span>');
+//        }
+//        if (alarmCount_Level2 > 0) {
+//            var color2 = '#' + (alarmShowStyle.Data.SecondLevel.Color || 'f09614');
+//            tipParts.push('<span style=\'color:' + color2 + ';\'>' + loginUserLanguageResource.alarmLevel2 + ': ' + alarmCount_Level2 + '</span>');
+//        }
+//        if (alarmCount_Level3 > 0) {
+//            var color3 = '#' + (alarmShowStyle.Data.ThirdLevel.Color || 'fae600');
+//            tipParts.push('<span style=\'color:' + color3 + ';\'>' + loginUserLanguageResource.alarmLevel3 + ': ' + alarmCount_Level3 + '</span>');
+//        }
+//        if (tipParts.length > 0) {
+//            // 设备名称 + 换行 + 各报警信息（空格分隔）
+//            tipHtml = encodedVal + '<br/>' + tipParts.join(' ');
+//        }
+//    }
+//
+//    // 6. 返回最终 HTML
+//    // 使用 data-qtip + data-html="true" 确保 HTML 内容被解析
+//    // data-dismissDelay 保留 10 秒延迟关闭
+//    return Ext.String.format(
+//        '<span data-qtip="{0}" data-html="true" data-dismissDelay="10000" style="display:inline-block;white-space:nowrap;">{1}</span>',
+//        tipHtml,        // 直接传入 HTML（已包含转义过的设备名称）
+//        displayHtml
+//    );
+//};
+
 adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
-    var alarmInfo = p.data.alarmInfo;
-    var maxAlarmLevel = 0;
-    var alarmCount_Level1 = 0;
-    var alarmCount_Level2 = 0;
-    var alarmCount_Level3 = 0;
-    var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
-    
-    if (isNotVal(alarmShowStyle) && alarmShowStyle != {}) {
-        if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
-            for (var i = 0; i < alarmInfo.length; i++) {
-                if (alarmInfo[i].alarmLevel == 100) {
-                    alarmCount_Level1++;
-                } else if (alarmInfo[i].alarmLevel == 200) {
-                    alarmCount_Level2++;
-                } else if (alarmInfo[i].alarmLevel == 300) {
-                    alarmCount_Level3++;
-                }
-                if (alarmInfo[i].alarmLevel > 0 && (maxAlarmLevel == 0 || alarmInfo[i].alarmLevel < maxAlarmLevel)) {
-                    maxAlarmLevel = alarmInfo[i].alarmLevel;
-                }
-            }
-        }
+    // 1. 读取报警配置
+    var alarmShowStyle = null;
+    try {
+        alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+    } catch (ex) {}
+
+    // 2. 统计报警数量
+    var alarmInfo = p.data.alarmInfo || [];
+    var c1 = 0, c2 = 0, c3 = 0, hasAlarm = false;
+    for (var i = 0; i < alarmInfo.length; i++) {
+        var lv = alarmInfo[i].alarmLevel;
+        if (lv == 100) { c1++; hasAlarm = true; }
+        else if (lv == 200) { c2++; hasAlarm = true; }
+        else if (lv == 300) { c3++; hasAlarm = true; }
     }
 
+    // 3. 设备名空值处理
     if (val == undefined) val = '';
     if (!isNotVal(val)) return '';
+    var encodedName = Ext.String.htmlEncode(val);
 
-    // 对名称进行 HTML 编码（防 XSS）
-    var encodedVal = Ext.util.Format.htmlEncode(val);
-
-    // 构建内部内容（可能是纯名称，或徽章+名称）
-    var innerHtml = '';
-    if (maxAlarmLevel == 0) {
-        innerHtml = encodedVal;
-    } else {
-        // 拼接报警徽章（原有逻辑）
-        if (alarmCount_Level1 > 0) {
+    // 4. 单元格显示（保留 createAlarmBadge）
+    var displayHtml = encodedName;
+    if (hasAlarm && alarmShowStyle) {
+        var badgeHtml = '';
+        if (c1 > 0) {
             var bg1 = alarmShowStyle.Data.FirstLevel.Color || 'dc2828';
-            var text1 = alarmShowStyle.Data.FirstLevel.ColorText || 'ffffff';
-            innerHtml += createAlarmBadge(alarmCount_Level1, bg1, text1);
+            var tx1 = alarmShowStyle.Data.FirstLevel.ColorText || 'ffffff';
+            badgeHtml += createAlarmBadge(c1, bg1, tx1);
         }
-        if (alarmCount_Level2 > 0) {
+        if (c2 > 0) {
             var bg2 = alarmShowStyle.Data.SecondLevel.Color || 'f09614';
-            var text2 = alarmShowStyle.Data.SecondLevel.ColorText || 'ffffff';
-            innerHtml += createAlarmBadge(alarmCount_Level2, bg2, text2);
+            var tx2 = alarmShowStyle.Data.SecondLevel.ColorText || 'ffffff';
+            badgeHtml += createAlarmBadge(c2, bg2, tx2);
         }
-        if (alarmCount_Level3 > 0) {
+        if (c3 > 0) {
             var bg3 = alarmShowStyle.Data.ThirdLevel.Color || 'fae600';
-            var text3 = alarmShowStyle.Data.ThirdLevel.ColorText || '333333';
-            innerHtml += createAlarmBadge(alarmCount_Level3, bg3, text3);
+            var tx3 = alarmShowStyle.Data.ThirdLevel.ColorText || '333333';
+            badgeHtml += createAlarmBadge(c3, bg3, tx3);
         }
-        innerHtml += encodedVal;  // 追加设备名称
+        displayHtml = badgeHtml + encodedName;
     }
 
-    // 统一包裹一个外层容器，并设置 data-qtip 提示设备名称（始终提示）
-    // 同时保持 data-dismissDelay 控制延迟（10秒）
-//    return '<span data-qtip="' + encodedVal + '" data-dismissDelay="10000">' + innerHtml + '</span>';
-    
-    return Ext.String.format('<span data-qtip="{0}">{1}</span>',encodedVal,innerHtml);
+    // 5. 悬停提示（带美观样式，全部使用单引号）
+    var tipHtml = encodedName;
+    if (hasAlarm && alarmShowStyle) {
+        var parts = [];
+        // 一级
+        if (c1 > 0) {
+            var bg1 = '#' + (alarmShowStyle.Data.FirstLevel.Color || 'dc2828');
+            var tx1 = '#' + (alarmShowStyle.Data.FirstLevel.ColorText || 'ffffff');
+            parts.push(
+                '<span style=\'display:inline-block;background:' + bg1 + ';color:' + tx1 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;\'>' +
+                (loginUserLanguageResource.alarmLevel1) + ':' + c1 +
+                '</span>'
+            );
+        }
+        // 二级
+        if (c2 > 0) {
+            var bg2 = '#' + (alarmShowStyle.Data.SecondLevel.Color || 'f09614');
+            var tx2 = '#' + (alarmShowStyle.Data.SecondLevel.ColorText || 'ffffff');
+            parts.push(
+                '<span style=\'display:inline-block;background:' + bg2 + ';color:' + tx2 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;\'>' +
+                (loginUserLanguageResource.alarmLevel2) + ':' + c2 +
+                '</span>'
+            );
+        }
+        // 三级
+        if (c3 > 0) {
+            var bg3 = '#' + (alarmShowStyle.Data.ThirdLevel.Color || 'fae600');
+            var tx3 = '#' + (alarmShowStyle.Data.ThirdLevel.ColorText || '333333');
+            parts.push(
+                '<span style=\'display:inline-block;background:' + bg3 + ';color:' + tx3 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;\'>' +
+                (loginUserLanguageResource.alarmLevel3) + ':' + c3 +
+                '</span>'
+            );
+        }
+        if (parts.length > 0) {
+            tipHtml = encodedName + ' ' + parts.join(' ');
+        }
+    }
+
+    // 6. 返回（data-html="true" 确保 HTML 渲染）
+    return Ext.String.format(
+        '<span data-qtip="{0}" data-html="true" data-dismissDelay="10000" style="display:inline-block;white-space:nowrap;">{1}</span>',
+        tipHtml,
+        displayHtml
+    );
 };
 
 function createRealTimeMonitoringColumnObject(columnInfo) {
@@ -2147,7 +2396,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
             	for(var i=0;i<totals;i++){
             		divId = divPrefix + i+"_Id";
                     htmlResult += '<div id=\"' + divId + '\"';
-                    htmlResult += ' style="height:'+ chartHeight2 +';width:'+ chartWidth2 +';"';
+                    htmlResult += ' style="height:'+ chartHeight2 +';width:'+ chartWidth2 +';min-height:' + graghMinHeight + 'px;"';
                     htmlResult += '></div>';
             	}
                 $('#'+containerId).append(htmlResult);
@@ -2169,16 +2418,6 @@ function deviceRealtimeMonitoringCurve(deviceType){
     		        var allNegative=true;//全部是负值
     		        
     		        var yAxisOpposite=curveConf[i].yAxisOpposite;
-        		    
-//        		    var series = "[";
-//    		        series += "{\"name\":\"" + legendName[i] + "\"," 
-//    		        +"\"lineWidth\":"+curveConf[i].lineWidth+"," 
-//    		        +"\"dashStyle\":\""+curveConf[i].dashStyle+"\"," 
-//    		        +"\"marker\":{\"enabled\": true}," 
-//    		        +"\"dataGrouping\":{\"enabled\": false},";
-//    		        series += "\"data\":[";
-    		        
-    		        
     		        var series = [];  // 直接定义为数组
     		        var seriesItem = {
     		            name: legendName[i],
@@ -2191,11 +2430,6 @@ function deviceRealtimeMonitoringCurve(deviceType){
     		        
     		        
     		        for (var j = 0; j < data.length; j++) {
-//    		        	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].data[i] + "]";
-//    		            if (j != data.length - 1) {
-//    		                series += ",";
-//    		            }
-    		            
     		            var timestamp = Date.parse(data[j].acqTime.replace(/-/g, '/'));
     		            var value = parseFloat(data[j].data[i]);
     		            seriesItem.data.push([timestamp, value]);
@@ -2206,16 +2440,12 @@ function deviceRealtimeMonitoringCurve(deviceType){
     		            	allNegative=false;
     		            }
     		        }
-//    		        series += "]}";
-//        		    series += "]";
     		        series.push(seriesItem);
         		    if(allNegative){
     		        	maxValue=0;
     		        }else if(allPositive){
     		        	minValue=0;
     		        }
-        		    
-//        		    var ser = Ext.JSON.decode(series);
         		    
         		    var timeFormat='%H:%M';
         		    initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, title, subtitle, xTitle, yTitle,color,false,true,false,timeFormat,maxValue,minValue,yAxisOpposite);

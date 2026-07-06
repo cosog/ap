@@ -360,21 +360,20 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     }
 
                     // ---- 创建各按钮 ----
-                    var minBtn = createButton('─', '最小化', function () {
+                    var minBtn = createButton('─', '', function () {
                         win._savedHeight = win.getHeight();
                         var headerH = win.getHeader() ? win.getHeader().getHeight() : 30;
                         if (win._panel) win._panel.hide();
                         if (win._toolbar) win._toolbar.hide();
                         win.setHeight(headerH);
                         win._minimized = true;
-                        win.setTitle(win.originalTitle + ' (已最小化)');
                         minBtn.style.display = 'none';
                         expandBtn.style.display = 'inline-block';
                     });
                     btnContainer.appendChild(minBtn);
                     win._minimizeBtn = minBtn;
 
-                    var expandBtn = createButton('⤢', '展开', function () {
+                    var expandBtn = createButton('⤢', '', function () {
                         if (win._savedHeight) {
                             win.setHeight(win._savedHeight);
                             win._savedHeight = null;
@@ -397,7 +396,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     btnContainer.appendChild(expandBtn);
                     win._expandBtn = expandBtn;
 
-                    var maxBtn = createButton('☐', '最大化', function () {
+                    var maxBtn = createButton('☐', '', function () {
                         if (!win.maximized) {
                             win.maximize();
                         }
@@ -405,7 +404,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     btnContainer.appendChild(maxBtn);
                     win._maximizeBtn = maxBtn;
 
-                    var restoreBtn = createButton('⧉', '还原', function () {
+                    var restoreBtn = createButton('⧉', '', function () {
                         if (win.maximized) {
                             win.restore();
                         }
@@ -414,7 +413,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     btnContainer.appendChild(restoreBtn);
                     win._restoreBtn = restoreBtn;
 
-                    var closeBtn = createButton('✕', '关闭', function () {
+                    var closeBtn = createButton('✕', '', function () {
                         win.close();
                     }, true);
                     btnContainer.appendChild(closeBtn);

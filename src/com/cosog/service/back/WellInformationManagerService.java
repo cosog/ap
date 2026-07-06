@@ -625,7 +625,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getReportInstanceCombList(String deviceTypeStr){
+	public String getReportInstanceCombList(String deviceTypeStr,String language){
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
 		StringBuffer result_json = new StringBuffer();
 		int protocolType=0;
@@ -633,7 +633,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			protocolType=1;
 		}
 		
-		String sql="select t.code,t.name from tbl_protocolreportinstance t order by t.sort";
+		String sql="select t.code,t.name_"+language+" from tbl_protocolreportinstance t order by t.sort";
 		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"totals\":"+(list.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\"\"},");
@@ -855,7 +855,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 				+ " and t4.language= "+(user!=null?user.getLanguage():0)
 				+ " order by t.sort";
-		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
+		String reportInstanceSql="select t.name_"+user.getLanguage()+" from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
@@ -1451,7 +1451,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String columns=service.showTableHeadersColumns(ddicCode,dictDeviceType,language);
 		String sql = "select id,orgName_"+language+",deviceName,deviceTypeName_"+language+","
 				+ " applicationScenarios,"
-				+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
+				+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName_"+language+","
 				+ " tcptype,signInId,ipport,slave,t.peakdelay,"
 				+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,"
 				+ " allpath_"+language+","
@@ -1486,7 +1486,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " and t4.language= "+(user!=null?user.getLanguage():0)
 				+ " and ( t4.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id ="+dictDeviceType+" CONNECT BY PRIOR parentid = id)  or  t4.devicetype in (SELECT id FROM tbl_devicetypeinfo START WITH id = "+dictDeviceType+" CONNECT BY PRIOR id = parentid)  )"
 				+ " order by t.sort";
-		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
+		String reportInstanceSql="select t.name_"+language+" from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
@@ -1663,7 +1663,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		    
 		    String sql = "select id,orgName_"+language+",deviceName,deviceTypeName_"+language+","
 					+ " applicationScenarios,"
-					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName,"
+					+ " instanceName,displayInstanceName,alarmInstanceName,reportInstanceName_"+language+","
 					+ " tcptype,signInId,ipport,slave,t.peakdelay,"
 					+ " status,decode(t.status,1,'"+languageResourceMap.get("enable")+"','"+languageResourceMap.get("disable")+"') as statusName,"
 					+ " allpath_"+language+","
@@ -1759,7 +1759,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " t.instancecode,t2.name as instanceName,"
 				+ " t.displayinstancecode,t3.name as displayinstanceName,"
 				+ " t.alarminstancecode,t4.name as alarminstanceName,"
-				+ " t.reportinstancecode,t5.name as reportinstanceName," //12~19
+				+ " t.reportinstancecode,t5.name_"+language+" as reportinstanceName," //12~19
 				+ " t.videokeyid1,t.videourl1,t.videokeyid2,t.videourl2," //20~23
 				+ " t.status,"
 				+ " decode(t6.calculatetype,null,0,t6.calculatetype) as calculatetype,"
@@ -3490,7 +3490,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
 				+ " and t4.language= "+(user!=null?user.getLanguage():0)
 				+ " order by t.sort";
-		String reportInstanceSql="select t.name from tbl_protocolreportinstance t  order by t.sort";
+		String reportInstanceSql="select t.name_"+language+" from tbl_protocolreportinstance t  order by t.sort";
 		String alarmInstanceSql="select t.name "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2, tbl_protocol t3 "
 				+ " where t.alarmunitid=t2.id and t2.protocol=t3.code "
@@ -4015,12 +4015,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return acqInstanceCode+";"+displayInstanceCode+";"+alarmInstanceCode+";"+reportInstanceCode;
 	}
 	
-	public String getDefaultInstanceName(String deviceType){
+	public String getDefaultInstanceName(String deviceType,String language){
 		String acqInstanceName=" ",displayInstanceName=" ",alarmInstanceName=" ",reportInstanceName=" ";
 		String acqInstanceSql="select v.name from(select t.name from TBL_PROTOCOLINSTANCE t where t.devicetype in ("+deviceType+") order by t.id) v where rownum=1";
 		String displayInstanceSql="select v.name from(select t.name from tbl_protocoldisplayinstance t where t.devicetype in ("+deviceType+") order by t.id) v where rownum=1";
 		String alarmInstanceSql="select v.name from(select t.name from tbl_protocolalarminstance t where t.devicetype in ("+deviceType+") order by t.id) v where rownum=1";
-		String reportInstanceSql="select v.name from(select t.name from tbl_protocolreportinstance t where t.devicetype in ("+deviceType+") order by t.id) v where rownum=1";
+		String reportInstanceSql="select v.name_"+language+" from(select t.name_"+language+" from tbl_protocolreportinstance t where t.devicetype in ("+deviceType+") order by t.id) v where rownum=1";
 		
 		List<?> acqInstanceList = this.findCallSql(acqInstanceSql);
 		List<?> displayInstanceList = this.findCallSql(displayInstanceSql);

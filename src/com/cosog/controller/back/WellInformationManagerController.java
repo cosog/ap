@@ -515,7 +515,7 @@ public class WellInformationManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
-		String json=wellInformationManagerService.getReportInstanceCombList(deviceType);
+		String json=wellInformationManagerService.getReportInstanceCombList(deviceType,user.getLanguageName());
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1823,7 +1823,7 @@ public class WellInformationManagerController extends BaseController {
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		
 		if((!Config.getInstance().configFile.getAp().getOthers().getIot()) && StringManagerUtils.stringToInteger(deviceType)<300 ){
-			String instanceNames=this.wellInformationManagerService.getDefaultInstanceName(deviceType);
+			String instanceNames=this.wellInformationManagerService.getDefaultInstanceName(deviceType,user.getLanguageName());
 			String[] instanceNameArr=instanceNames.split(";");
 			if(instanceNameArr.length==4){
 				if(wellHandsontableChangedData.getUpdatelist()!=null){
@@ -2019,7 +2019,7 @@ public class WellInformationManagerController extends BaseController {
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		
 		if((!Config.getInstance().configFile.getAp().getOthers().getIot()) && StringManagerUtils.stringToInteger(deviceType)<300 ){
-			String[] instanceNameArr=this.wellInformationManagerService.getDefaultInstanceName(deviceType).split(";");
+			String[] instanceNameArr=this.wellInformationManagerService.getDefaultInstanceName(deviceType,user.getLanguageName()).split(";");
 			if(instanceNameArr.length==4){
 				if(wellHandsontableChangedData.getUpdatelist()!=null){
 					for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){

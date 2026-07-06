@@ -56,7 +56,9 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
 						Ext.getCmp("addReportInstanceTip_Id").show();
 						
 						Ext.getCmp("modbusProtocolReportInstanceTemplateComb_Id").disable();
-						Ext.getCmp("formModbusProtocolReportInstanceName_Id").disable();
+						Ext.getCmp("formModbusProtocolReportInstanceName_zh_CN_Id").disable();
+						Ext.getCmp("formModbusProtocolReportInstanceName_en_Id").disable();
+						Ext.getCmp("formModbusProtocolReportInstanceName_ru_Id").disable();
 						Ext.getCmp("modbusProtocolReportInstanceSort_Id").disable();
 						
 						Ext.getCmp("addFormModbusProtocolReportInstance_Id").disable();
@@ -109,11 +111,86 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportInstanceInfoWindow", {
                 anchor: '100%',
                 name: "protocolReportInstance.id"
             },{
-                id: 'formModbusProtocolReportInstanceName_Id',
-                name: "protocolReportInstance.name",
+                id: 'formModbusProtocolReportInstanceName_zh_CN_Id',
+                name: "protocolReportInstance.name_zh_CN",
                 fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
+                allowBlank:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                 labelWidth: labelWidth,
-                allowBlank: false,
+                anchor: '100%',
+                value: '',
+                listeners: {
+                    blur: function (t, e) {
+                        var value_ = t.getValue();
+                        if(value_!=''){
+                        	Ext.Ajax.request({
+                                method: 'POST',
+                                params: {
+                                	instanceName: t.value
+                                },
+                                url: context + '/acquisitionUnitManagerController/judgeReportInstanceExistOrNot',
+                                success: function (response, opts) {
+                                    var obj = Ext.decode(response.responseText);
+                                    var msg_ = obj.msg;
+                                    if (msg_ == "1") {
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.reportInstanceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	    if (btn == 'ok'){
+                                    	    	t.focus(true, 100);
+                                    	    }
+                                    	});
+                                    }
+                                },
+                                failure: function (response, opts) {
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+                                }
+                            });
+                        }
+                    }
+                }
+            },{
+                id: 'formModbusProtocolReportInstanceName_en_Id',
+                name: "protocolReportInstance.name_en",
+                fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
+                allowBlank:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                labelWidth: labelWidth,
+                anchor: '100%',
+                value: '',
+                listeners: {
+                    blur: function (t, e) {
+                        var value_ = t.getValue();
+                        if(value_!=''){
+                        	Ext.Ajax.request({
+                                method: 'POST',
+                                params: {
+                                	instanceName: t.value
+                                },
+                                url: context + '/acquisitionUnitManagerController/judgeReportInstanceExistOrNot',
+                                success: function (response, opts) {
+                                    var obj = Ext.decode(response.responseText);
+                                    var msg_ = obj.msg;
+                                    if (msg_ == "1") {
+                                    	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color='red'>"+loginUserLanguageResource.reportInstanceExist+"</font>,"+loginUserLanguageResource.pleaseConfirm, function(btn, text){
+                                    	    if (btn == 'ok'){
+                                    	    	t.focus(true, 100);
+                                    	    }
+                                    	});
+                                    }
+                                },
+                                failure: function (response, opts) {
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+                                }
+                            });
+                        }
+                    }
+                }
+            },{
+                id: 'formModbusProtocolReportInstanceName_ru_Id',
+                name: "protocolReportInstance.name_ru",
+                fieldLabel: loginUserLanguageResource.instanceName+'<font color=red>*</font>',
+                allowBlank:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                labelWidth: labelWidth,
                 anchor: '100%',
                 value: '',
                 listeners: {

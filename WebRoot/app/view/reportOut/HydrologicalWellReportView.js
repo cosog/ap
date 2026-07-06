@@ -1260,12 +1260,12 @@ function CreateHydrologicalWellReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.deviceName+ "-" + loginUserLanguageResource.hourlyReportCurve+ "-"+result.reportDate;
+		    var title = result.deviceName+ (loginUserLanguage.toUpperCase()=='ZH_CN'?"":" ") + loginUserLanguageResourceFirstLower.hourlyReportCurve+ "-"+result.reportDate;
 		    
 		    if(timeType==1 || timeType==2){
-		    	title = result.deviceName+ "-" + loginUserLanguageResource.hydrologicalWellReportCurveTitle+ "-"+result.reportDate;
+		    	title = result.deviceName+ (loginUserLanguage.toUpperCase()=='ZH_CN'?"":" ") + loginUserLanguageResourceFirstLower.hydrologicalWellReportCurveTitle+ "-"+result.reportDate;
 		    }else{
-		    	title = result.deviceName+ "-" + loginUserLanguageResource.hydrologicalWellReportCurveTitle+ "-"+result.startDate+"~"+result.endDate;
+		    	title = result.deviceName+ (loginUserLanguage.toUpperCase()=='ZH_CN'?"":" ") + loginUserLanguageResourceFirstLower.hydrologicalWellReportCurveTitle+ "-"+result.startDate+"~"+result.endDate;
 		    }
 		    
 		    

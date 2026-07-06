@@ -129,14 +129,12 @@ var realtimeStatTabItems=[{
 ];
 
 var realtimeCurveAndTableTabPanelItems=[{
-	title: loginUserLanguageResource.wellboreAnalysis,
-	margin: '0 0 0 0',
+    title: loginUserLanguageResource.wellboreAnalysis,
+    margin: '0 0 0 0',
     padding: 0,
-    autoScroll:false,
+    autoScroll: false,
     scrollable: false,
     id: 'RealTimeMonitoringFSDiagramAnalysisTabPanel_Id',
-//    hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
-//    iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?null:'check3',
     iconCls: 'check3',
     layout: {
         type: 'vbox',
@@ -144,178 +142,205 @@ var realtimeCurveAndTableTabPanelItems=[{
         align: 'stretch'
     },
     items: [{
-    		border: false,
-    		margin: '0 0 0 0',
-    		flex: 1,
-    		layout: {
-    	        type: 'hbox',
-    	        pack: 'start',
-    	        align: 'stretch'
-    	    },
-    	    items:[{
-    	    	border: true,
-    	    	layout: 'fit',
-    	    	margin: '0 0 0 0',
+        border: false,
+        margin: '0 0 0 0',
+        flex: 1,
+        // ★★★ 关键修改1：启用滚动 ★★★
+        autoScroll: true,
+        layout: {
+            type: 'vbox',
+            pack: 'start',
+            align: 'stretch'
+        },
+        items: [{
+            // —— 第一个 hbox ——
+            border: false,
+            flex: 1,
+            // ★★★ 关键修改2：设置最小高度 ★★★
+            minHeight: graghMinHeight,
+            layout: {
+                type: 'hbox',
+                pack: 'start',
+                align: 'stretch'
+            },
+            items: [{
+                border: true,
+                layout: 'fit',
+                margin: '0 0 0 0',
                 flex: 1,
-                align:'stretch',
-                html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
+                align: 'stretch',
+                html: '<div id="FSDiagramAnalysisSingleWellboreDetailsDiv1_id" style="width:100%;height:100%;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts()!=undefined){
-                    		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv1_id");
-                    	}
+                        if ($("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts() != undefined) {
+                            highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv1_id");
+                        }
                     }
                 }
-    	    },{
-    	    	border: true,
-    	    	layout: 'fit',
-    	    	margin: '0 0 0 1',
+            }, {
+                border: true,
+                layout: 'fit',
+                margin: '0 0 0 1',
                 flex: 1,
-                align:'stretch',
-                html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
+                align: 'stretch',
+                html: '<div id="FSDiagramAnalysisSingleWellboreDetailsDiv2_id" style="width:100%;height:100%;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").highcharts()!=undefined){
-                    		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv2_id");
-                    	}
+                        if ($("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").highcharts() != undefined) {
+                            highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv2_id");
+                        }
                     }
                 }
-    	    }]
-    	},{
-    		border: false,
-    		flex: 1,
-    		margin: '1 0 0 0',
-    		layout: {
-    	        type: 'hbox',
-    	        pack: 'start',
-    	        align: 'stretch'
-    	    },
-    	    items:[{
-    	    	border: true,
-    	    	layout: 'fit',
-    	    	margin: '0 0 0 0',
+            }]
+        }, {
+            // —— 第二个 hbox ——
+            border: false,
+            flex: 1,
+            // ★★★ 关键修改2：设置最小高度（可与上面不同） ★★★
+            minHeight: graghMinHeight,
+            margin: '1 0 0 0',
+            layout: {
+                type: 'hbox',
+                pack: 'start',
+                align: 'stretch'
+            },
+            items: [{
+                border: true,
+                layout: 'fit',
+                margin: '0 0 0 0',
                 flex: 1,
-                align:'stretch',
-                html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
+                align: 'stretch',
+                html: '<div id="FSDiagramAnalysisSingleWellboreDetailsDiv3_id" style="width:100%;height:100%;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").highcharts()!=undefined){
-                    		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv3_id");
-                    	}
+                        if ($("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").highcharts() != undefined) {
+                            highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv3_id");
+                        }
                     }
                 }
-    	    },{
-    	    	border: true,
-    	    	layout: 'fit',
-    	    	margin: '0 0 0 1',
+            }, {
+                border: true,
+                layout: 'fit',
+                margin: '0 0 0 1',
                 flex: 1,
-                align:'stretch',
-                html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
+                align: 'stretch',
+                html: '<div id="FSDiagramAnalysisSingleWellboreDetailsDiv4_id" style="width:100%;height:100%;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").highcharts()!=undefined){
-                    		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv4_id");
-                    	}
+                        if ($("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").highcharts() != undefined) {
+                            highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv4_id");
+                        }
                     }
                 }
-    	    }]
-    	}]
+            }]
+        }]
+    }]
 },{
-	title: loginUserLanguageResource.surfaceAnalysis,
-	margin: '0 0 0 0',
+    title: loginUserLanguageResource.surfaceAnalysis,
+    margin: '0 0 0 0',
     padding: 0,
-    autoScroll:false,
+    autoScroll: false,
     scrollable: false,
     id: 'RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id',
-//    hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
+    // hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,  // 保留原注释
     layout: {
         type: 'vbox',
         pack: 'start',
         align: 'stretch'
     },
-    items: [
-    	{
-    		border: false,
-    		margin: '0 0 0 0',
-    		flex: 1,
-    		layout: {
-    	        type: 'hbox',
-    	        pack: 'start',
-    	        align: 'stretch'
-    	    },
-    	    items:[{
-    	    	border: true,
-    	    	layout: 'fit',
-    	    	margin: '0 0 0 0',
+    items: [{
+        // ★ 新增包裹层：启用滚动，承载最小高度逻辑
+        border: false,
+        margin: '0 0 0 0',
+        flex: 1,
+        autoScroll: true,
+        layout: {
+            type: 'vbox',
+            pack: 'start',
+            align: 'stretch'
+        },
+        items: [{
+            // —— 第一行 hbox ——
+            border: false,
+            flex: 1,
+            minHeight: graghMinHeight,      // 最小高度
+            margin: '0 0 0 0',              // 无上边距
+            layout: {
+                type: 'hbox',
+                pack: 'start',
+                align: 'stretch'
+            },
+            items: [{
+                border: true,
+                layout: 'fit',
+                margin: '0 0 0 0',          // 左边距0
                 flex: 1,
-//                height:300,
-                align:'stretch',
-                html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
+                align: 'stretch',
+                html: '<div id="FSDiagramAnalysisSingleSurfaceDetailsDiv1_id" style="width:100%;height:100%;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").highcharts()!=undefined){
-                    		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
-                    	}
+                        if ($("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").highcharts() != undefined) {
+                            highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
+                        }
                     }
                 }
-    	    },{
-    	    	border: true,
-    	    	layout: 'fit',
-    	    	margin: '0 0 0 1',
+            }, {
+                border: true,
+                layout: 'fit',
+                margin: '0 0 0 1',          // 左边距1px（分隔线）
                 flex: 1,
-//                height:300,
-                align:'stretch',
-                html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
+                align: 'stretch',
+                html: '<div id="FSDiagramAnalysisSingleSurfaceDetailsDiv2_id" style="width:100%;height:100%;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").highcharts()!=undefined){
-                    		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
-                    	}
+                        if ($("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").highcharts() != undefined) {
+                            highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
+                        }
                     }
                 }
-    	    }]
-    	},{
-    		border: false,
-    		flex: 1,
-    		margin: '0 0 0 0',
-    		layout: {
-    	        type: 'hbox',
-    	        pack: 'start',
-    	        align: 'stretch'
-    	    },
-    	    items:[{
-    	    	border: true,
-    	    	layout: 'fit',
-    	    	margin: '1 0 0 0',
+            }]
+        }, {
+            // —— 第二行 hbox ——
+            border: false,
+            flex: 1,
+            minHeight: graghMinHeight,      // 最小高度
+            margin: '1 0 0 0',              // 上边距1px，与第一行分隔
+            layout: {
+                type: 'hbox',
+                pack: 'start',
+                align: 'stretch'
+            },
+            items: [{
+                border: true,
+                layout: 'fit',
+                margin: '0 0 0 0',          // 左边距0（去掉了原 margin-top）
                 flex: 1,
-//                height:300,
-                align:'stretch',
-                html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
+                align: 'stretch',
+                html: '<div id="FSDiagramAnalysisSingleSurfaceDetailsDiv3_id" style="width:100%;height:100%;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").highcharts()!=undefined){
-                    		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
-                    	}
+                        if ($("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").highcharts() != undefined) {
+                            highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
+                        }
                     }
                 }
-    	    },{
-    	    	border: true,
-    	    	layout: 'fit',
-    	    	margin: '1 0 0 1',
+            }, {
+                border: true,
+                layout: 'fit',
+                margin: '0 0 0 1',          // 左边距1px
                 flex: 1,
-//                height:300,
-                align:'stretch',
-                html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
+                align: 'stretch',
+                html: '<div id="FSDiagramAnalysisSingleSurfaceDetailsDiv4_id" style="width:100%;height:100%;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").highcharts()!=undefined){
-                    		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
-                    	}
+                        if ($("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").highcharts() != undefined) {
+                            highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
+                        }
                     }
                 }
-    	    }]
-    	}
-    ]
+            }]
+        }]
+    }]
 },{
 	title:loginUserLanguageResource.trendCurve,
 	id:"RealTimeMonitoringCurveTabPanel_Id",

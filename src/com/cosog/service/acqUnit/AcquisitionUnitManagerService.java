@@ -6220,7 +6220,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
-		String sql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort,"
+		String sql="select t.id,"
+				+ " t.name_zh_CN,t.name_en,t.name_ru,"
+				+ " t.code,t.unitid,t2.unit_name,t.sort,"
 				+ " t2.singleWellRangeReportTemplate,t2.singleWellDailyReportTemplate,t2.productionreporttemplate,"
 				+ " t2.calculateType "
 				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
@@ -6241,19 +6243,33 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String code=obj[2]+"";
+			String code=obj[4]+"";
 			int deviceCount=deviceCountMap.containsKey(code)?deviceCountMap.get(code):0;
+			String text="";
+			if("zh_CN".equalsIgnoreCase(language)){
+				text=obj[1]+"";
+			}else if("en".equalsIgnoreCase(language)){
+				text=obj[2]+"";
+			}else if("ru".equalsIgnoreCase(language)){
+				text=obj[3]+"";
+			}
+			
 			tree_json.append("{\"classes\":1,");
 			tree_json.append("\"id\":"+obj[0]+",");
-			tree_json.append("\"text\":\""+obj[1]+"\",");
+			tree_json.append("\"text\":\""+text+"\",");
+			
+			tree_json.append("\"name_zh_CN\":\""+obj[1]+"\",");
+			tree_json.append("\"name_en\":\""+obj[2]+"\",");
+			tree_json.append("\"name_ru\":\""+obj[3]+"\",");
+			
 			tree_json.append("\"code\":\""+code+"\",");
-			tree_json.append("\"unitId\":"+obj[3]+",");
-			tree_json.append("\"unitName\":\""+obj[4]+"\",");
-			tree_json.append("\"sort\":\""+obj[5]+"\",");
-			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[6]+"\",");
-			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[7]+"\",");
-			tree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
-			tree_json.append("\"calculateType\":\""+obj[9]+"\",");
+			tree_json.append("\"unitId\":"+obj[5]+",");
+			tree_json.append("\"unitName\":\""+obj[6]+"\",");
+			tree_json.append("\"sort\":\""+obj[7]+"\",");
+			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[8]+"\",");
+			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[9]+"\",");
+			tree_json.append("\"productionReportTemplate\":\""+obj[10]+"\",");
+			tree_json.append("\"calculateType\":\""+obj[11]+"\",");
 			tree_json.append("\"deviceCount\":\""+deviceCount+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"leaf\": true},");
@@ -6277,7 +6293,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		tree_json.append("[");
-		String sql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort,"
+		String sql="select t.id,"
+				+ " t.name_zh_CN,t.name_en,t.name_ru,"
+				+ " t.code,t.unitid,t2.unit_name,t.sort,"
 				+ " t2.singleWellRangeReportTemplate,t2.singleWellDailyReportTemplate,t2.productionreporttemplate,"
 				+ " t2.calculateType "
 				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
@@ -6286,17 +6304,30 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<?> list=this.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
+			
+			String text="";
+			if("zh_CN".equalsIgnoreCase(language)){
+				text=obj[1]+"";
+			}else if("en".equalsIgnoreCase(language)){
+				text=obj[2]+"";
+			}else if("ru".equalsIgnoreCase(language)){
+				text=obj[3]+"";
+			}
+			
 			tree_json.append("{\"classes\":1,");
 			tree_json.append("\"id\":"+obj[0]+",");
-			tree_json.append("\"text\":\""+obj[1]+"\",");
-			tree_json.append("\"code\":\""+obj[2]+"\",");
-			tree_json.append("\"unitId\":"+obj[3]+",");
-			tree_json.append("\"unitName\":\""+obj[4]+"\",");
-			tree_json.append("\"sort\":\""+obj[5]+"\",");
-			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[6]+"\",");
-			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[7]+"\",");
-			tree_json.append("\"productionReportTemplate\":\""+obj[8]+"\",");
-			tree_json.append("\"calculateType\":\""+obj[9]+"\",");
+			tree_json.append("\"text\":\""+text+"\",");
+			tree_json.append("\"name_zh_CN\":\""+obj[1]+"\",");
+			tree_json.append("\"name_en\":\""+obj[2]+"\",");
+			tree_json.append("\"name_ru\":\""+obj[3]+"\",");
+			tree_json.append("\"code\":\""+obj[4]+"\",");
+			tree_json.append("\"unitId\":"+obj[5]+",");
+			tree_json.append("\"unitName\":\""+obj[6]+"\",");
+			tree_json.append("\"sort\":\""+obj[7]+"\",");
+			tree_json.append("\"singleWellRangeReportTemplate\":\""+obj[8]+"\",");
+			tree_json.append("\"singleWellDailyReportTemplate\":\""+obj[9]+"\",");
+			tree_json.append("\"productionReportTemplate\":\""+obj[10]+"\",");
+			tree_json.append("\"calculateType\":\""+obj[11]+"\",");
 			tree_json.append("\"iconCls\": \"protocol\",");
 			tree_json.append("\"expanded\": true,");
 			tree_json.append("\"checked\": false,");
@@ -7375,10 +7406,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return flag;
 	}
 	
-	public boolean judgeReportInstanceExistOrNot(String instanceName) {
+	public boolean judgeReportInstanceExistOrNot(String instanceName,String language) {
 		boolean flag = false;
 		if (StringManagerUtils.isNotNull(instanceName)) {
-			String sql = "select t.id from TBL_PROTOCOLREPORTINSTANCE t where t.name='"+instanceName+"'";
+			String sql = "select t.id from TBL_PROTOCOLREPORTINSTANCE t where t.name_"+language+"='"+instanceName+"'";
 			List<?> list = this.findCallSql(sql);
 			if (list.size() > 0) {
 				flag = true;
@@ -11571,7 +11602,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"Code\":\"ReportInstance\",");
 		result_json.append("\"List\":[");
-		String displayInstanceSql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort "
+		String displayInstanceSql="select t.id,"
+				+ " t.name_zh_CN,t.name_en,t.name_ru,"
+				+ " t.code,t.unitid,t2.unit_name,t.sort "
 				+ " from TBL_PROTOCOLREPORTINSTANCE t,tbl_report_unit_conf t2 "
 				+ " where t.unitid=t2.id and t.id in("+instanceList+")"
 				+ " order by t.unitid,t.id";
@@ -11580,11 +11613,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Object[] displayInstanceObj=(Object[])displayInstanceQueryList.get(i);
 			result_json.append("{");
 			result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(displayInstanceObj[0]+"")+",");
-			result_json.append("\"Name\":\""+displayInstanceObj[1]+"\",");
-			result_json.append("\"Code\":\""+displayInstanceObj[2]+"\",");
-			result_json.append("\"UnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[3]+"")+",");
-			result_json.append("\"UnitName\":\""+displayInstanceObj[4]+"\",");
-			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+"");
+			result_json.append("\"Name_zh_CN\":\""+displayInstanceObj[1]+"\",");
+			result_json.append("\"Name_en\":\""+displayInstanceObj[2]+"\",");
+			result_json.append("\"Name_ru\":\""+displayInstanceObj[3]+"\",");
+			result_json.append("\"Code\":\""+displayInstanceObj[4]+"\",");
+			result_json.append("\"UnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+",");
+			result_json.append("\"UnitName\":\""+displayInstanceObj[6]+"\",");
+			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[7]+"")+"");
 			result_json.append("},");
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -11599,7 +11634,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("{\"Code\":\"ReportInstance\",");
 		result_json.append("\"List\":[");
-		String displayInstanceSql="select t.id,t.name,t.code,t.unitid,t2.unit_name,t.sort "
+		String displayInstanceSql="select t.id,"
+				+ " t.name_zh_CN,t.name_en,t.name_ru,"
+				+ " t.code,t.unitid,t2.unit_name,t.sort "
 				+ " from TBL_PROTOCOLREPORTINSTANCE t,tbl_report_unit_conf t2 "
 				+ " where t.unitid=t2.id "
 				+ " order by t.unitid,t.id";
@@ -11608,11 +11645,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Object[] displayInstanceObj=(Object[])displayInstanceQueryList.get(i);
 			result_json.append("{");
 			result_json.append("\"Id\":"+StringManagerUtils.stringToInteger(displayInstanceObj[0]+"")+",");
-			result_json.append("\"Name\":\""+displayInstanceObj[1]+"\",");
-			result_json.append("\"Code\":\""+displayInstanceObj[2]+"\",");
-			result_json.append("\"UnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[3]+"")+",");
-			result_json.append("\"UnitName\":\""+displayInstanceObj[4]+"\",");
-			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+"");
+			result_json.append("\"Name_zh_CN\":\""+displayInstanceObj[1]+"\",");
+			result_json.append("\"Name_en\":\""+displayInstanceObj[2]+"\",");
+			result_json.append("\"Name_ru\":\""+displayInstanceObj[3]+"\",");
+			result_json.append("\"Code\":\""+displayInstanceObj[4]+"\",");
+			result_json.append("\"UnitId\":"+StringManagerUtils.stringToInteger(displayInstanceObj[5]+"")+",");
+			result_json.append("\"UnitName\":\""+displayInstanceObj[6]+"\",");
+			result_json.append("\"Sort\":"+StringManagerUtils.stringToInteger(displayInstanceObj[7]+"")+"");
 			result_json.append("},");
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -14021,7 +14060,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-		String instanceSql="select t.id,t.name,t2.unit_name "
+		String instanceSql="select t.id,t.name_"+user.getLanguageName()+",t2.unit_name "
 				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
 				+ " where t.unitid=t2.id ";
 		List<?> instanceQueryList = this.findCallSql(instanceSql);
@@ -14031,6 +14070,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			for(int i=0;i<uploadInstanceList.size();i++){
 				String msg="";
 				int saveSign=0;//无冲突覆盖
+				String savedInstanceName="";
+				if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+					savedInstanceName=uploadInstanceList.get(i).getName_zh_CN();
+				}else if("en".equalsIgnoreCase(user.getLanguageName())){
+					savedInstanceName=uploadInstanceList.get(i).getName_en();
+				}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+					savedInstanceName=uploadInstanceList.get(i).getName_ru();
+				}
 
 				String unitSql="select t.unit_name from tbl_report_unit_conf t where  t.id ="+uploadInstanceList.get(i).getUnitId();
 				List<?> unitQueryList = this.findCallSql(unitSql);
@@ -14040,7 +14087,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							Object[] obj=(Object[])instanceQueryList.get(j);
 							if((obj[0]+"").equalsIgnoreCase(uploadInstanceList.get(i).getId()+"") ){
 								saveSign=1;//覆盖
-								msg=uploadInstanceList.get(i).getName()+languageResourceMap.get("uploadCollisionInfo1");
+								msg=savedInstanceName+languageResourceMap.get("uploadCollisionInfo1");
 								break;
 							}
 						}
@@ -14050,7 +14097,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					msg=languageResourceMap.get("reportUnitDoesNotExist");
 				}
 				tree_json.append("{\"classes\":1,");
-				tree_json.append("\"text\":\""+uploadInstanceList.get(i).getName()+"\",");
+				tree_json.append("\"text\":\""+savedInstanceName+"\",");
 				tree_json.append("\"code\":\""+uploadInstanceList.get(i).getCode()+"\",");
 				tree_json.append("\"unitName\":\""+uploadInstanceList.get(i).getUnitName()+"\",");
 				tree_json.append("\"msg\":\""+msg+"\",");
@@ -14088,7 +14135,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			ProtocolReportInstance protocolReportInstance=new ProtocolReportInstance();
 			protocolReportInstance.setId(instanceData.getId());
 			protocolReportInstance.setCode(instanceData.getCode());
-			protocolReportInstance.setName(instanceData.getName());
+			protocolReportInstance.setName_zh_CN(instanceData.getName_zh_CN());
+			protocolReportInstance.setName_en(instanceData.getName_en());
+			protocolReportInstance.setName_ru(instanceData.getName_ru());
 			protocolReportInstance.setUnitId(instanceData.getUnitId());
 			protocolReportInstance.setSort(instanceData.getSort());
 			try {
@@ -14102,7 +14151,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				ProtocolReportInstance protocolReportInstance=new ProtocolReportInstance();
 				protocolReportInstance.setId(instanceData.getId());
 				protocolReportInstance.setCode(instanceData.getCode());
-				protocolReportInstance.setName(instanceData.getName());
+				protocolReportInstance.setName_zh_CN(instanceData.getName_zh_CN());
+				protocolReportInstance.setName_en(instanceData.getName_en());
+				protocolReportInstance.setName_ru(instanceData.getName_ru());
 				protocolReportInstance.setUnitId(instanceData.getUnitId());
 				protocolReportInstance.setSort(instanceData.getSort());
 				this.doModbusProtocolReportInstanceAdd(protocolReportInstance);
@@ -14116,7 +14167,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			if(user!=null){
 				try {
 					Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-					this.service.saveSystemLog(user,2,languageResourceMap.get("importReportInstance")+":"+instanceData.getName());
+					String savedInstanceName="";
+					if("zh_CN".equalsIgnoreCase(user.getLanguageName())){
+						savedInstanceName=instanceData.getName_zh_CN();
+					}else if("en".equalsIgnoreCase(user.getLanguageName())){
+						savedInstanceName=instanceData.getName_en();
+					}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+						savedInstanceName=instanceData.getName_ru();
+					}
+					this.service.saveSystemLog(user,2,languageResourceMap.get("importReportInstance")+":"+savedInstanceName);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -14126,11 +14185,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public void saveReportInstanceBackupData(List<ExportReportInstanceData> uploadInstanceList,User user){
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-		String instanceSql="select t.id,t.name,t2.unit_name "
-				+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
-				+ " where t.unitid=t2.id ";
-		List<?> instanceQueryList = this.findCallSql(instanceSql);
-		
 		if(uploadInstanceList!=null && uploadInstanceList.size()>0){
 			this.getBaseDao().triggerDisabledOrEnabled("TBL_PROTOCOLREPORTINSTANCE", false);
 			for(int i=0;i<uploadInstanceList.size();i++){

@@ -1,4 +1,9 @@
-Ext.QuickTips.init();
+Ext.onReady(function() {
+    Ext.tip.QuickTipManager.init({
+        interceptTitles: true,   // 必须为 true，以解析 data-qhtml / data-qtip 中的 HTML
+        html: true               // 允许提示内容包含 HTML 标签
+    });
+});
 
 Ext.Loader.setConfig({
 	enabled : true

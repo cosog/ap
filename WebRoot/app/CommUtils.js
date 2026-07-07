@@ -2,6 +2,7 @@
 var sfycjhh=true;
 copyright=cosog.string.copy+"&nbsp;<a href='"+cosog.string.linkaddress+"' target='_blank'>"+cosog.string.linkshow+"</a> ";
 graghMinWidth = 300;
+graghMinHeight= 350;
 defaultWellComboxSize=10000;
 comboxPagingStatus=0;//0-不分页  大于0分页
 isShowMap=true;//是否显示地图 true-显示   false-不显示
@@ -3142,7 +3143,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
     var pointFormat=loginUserLanguageResource.displacement+': {point.x} m <br/> '+loginUserLanguageResource.load+': {point.y} kN'
     
     if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
-    	mychart = new Highcharts.Chart({
+    	var chart = new Highcharts.Chart({
 			chart: {
 	            renderTo : divId,
 	            zoomType: 'xy',
@@ -3282,14 +3283,33 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	    		enableMouseTracking: true
 	    	},{                                                                           
 	            name: loginUserLanguageResource.load+'(kN)',   
-	            type: 'scatter',     // 散点图   
+	            type: 'scatter',     // 散点图   scatter
 	            color: '#00ff00',   
 	            lineWidth:3,
 	            data:  pointdata                                                                                  
 	        }]
     	});
+    	
+    	var isMobile = isMobileOS();
+    	if (isMobile) {
+    	    chart.redraw();
+    	    requestAnimationFrame(function() {
+    	    	chart.reflow();
+    	    });
+    	}
     }
 	
+}
+
+function isMobileOS(){
+	// 强制开启（调试）
+    if (window.location.search.indexOf('forceMobile=true') !== -1) return true;
+    
+    // 检测触摸支持（平板/手机的核心特征）
+    var hasTouch = 'ontouchstart' in window || 
+                   navigator.maxTouchPoints > 0 || 
+                   window.matchMedia("(pointer: coarse)").matches;
+    return hasTouch;
 }
 
 showRodPress = function(result, divId) {
@@ -4079,7 +4099,7 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			                    }                                                                        
 			                },                                                                           
 			                tooltip: {                                                                   
-			                    headerFormat: '',
+			                	headerFormat: '<b>{series.name}</b><br/>',
 			                    pointFormat: loginUserLanguageResource.displacement+': {point.x} m <br/> '+loginUserLanguageResource.activePower+': {point.y} kW'
 			                }                                                                            
 			            }                                                                                
@@ -4303,7 +4323,7 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			                    }                                                                        
 			                },                                                                           
 			                tooltip: {                                                                   
-			                    headerFormat: '',                                
+			                	headerFormat: '<b>{series.name}</b><br/>',                       
 			                    pointFormat: loginUserLanguageResource.displacement+': {point.x} m <br/> '+loginUserLanguageResource.electricity+': {point.y} A'                      
 			                }                                                                            
 			            }                                                                                
@@ -4463,7 +4483,8 @@ function initBalanceCurveChart(catagories,series,divId,title,deviceName,acqTime,
 					},
 					formatter : function() {
 						var seriesName=this.series.name;
-						return '<b>' + seriesName + '</b><br/>'+loginUserLanguageResource.torque+': ' + this.y+' kN*m';
+//						return '<b>' + seriesName + '</b><br/>'+loginUserLanguageResource.torque+': ' + this.y+' kN*m';
+						return '<b>' + seriesName + '</b><br/>'+loginUserLanguageResource.crankAngle+': ' + this.point.category+' ° <br/>'+loginUserLanguageResource.torque+': ' + this.y+' kN*m';
 					},
 					valueSuffix : ''
 				},

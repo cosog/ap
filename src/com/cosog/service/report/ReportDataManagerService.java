@@ -3801,7 +3801,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				timeEfficiencyZoom=100;
 			}
 			
-			String reportTemplateCodeSql="select t2.id,t2.productionreporttemplate,t.name,t.code,t2.calculateType "
+			String reportTemplateCodeSql="select t2.id,t2.productionreporttemplate,t.name_"+language+",t.code,t2.calculateType "
 					+ " from tbl_protocolreportinstance t,tbl_report_unit_conf t2 "
 					+ " where t.unitid=t2.id "
 					+ " and t.code in ( select t3.reportinstancecode from tbl_device t3 where t3.deviceType in("+deviceType+") )"
@@ -5901,7 +5901,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String tableName="tbl_device";
-		String sql="select  t2.id,t2.name,t2.code,t2.unitid,t2.sort "
+		String sql="select  t2.id,t2.name_"+language+",t2.code,t2.unitid,t2.sort "
 				+ " from "+tableName+" t,tbl_protocolreportinstance t2 "
 				+ " where t.reportinstancecode=t2.code "
 				+ " and t.orgid in("+orgId+")";
@@ -5913,7 +5913,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.deviceName='"+deviceName+"'";
 		}
-		sql+=" group by t2.id,t2.name,t2.code,t2.unitid,t2.sort order by t2.sort";
+		sql+=" group by t2.id,t2.name_"+language+",t2.code,t2.unitid,t2.sort order by t2.sort";
 		List<?> list = this.findCallSql(sql);
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"

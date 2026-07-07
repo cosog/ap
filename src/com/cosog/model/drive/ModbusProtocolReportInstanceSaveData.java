@@ -7,7 +7,9 @@ public class ModbusProtocolReportInstanceSaveData {
 	int id;
 	String code;
 	String oldName;
-	String name;
+	private String name_zh_CN;
+	private String name_en;
+	private String name_ru;
 	String unitName;
 	String sort;
 	
@@ -27,14 +29,6 @@ public class ModbusProtocolReportInstanceSaveData {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getSort() {
@@ -67,5 +61,29 @@ public class ModbusProtocolReportInstanceSaveData {
 
 	public void setUnitName(String unitName) {
 		this.unitName = unitName;
+	}
+
+	public String getName_zh_CN() {
+		return name_zh_CN;
+	}
+
+	public void setName_zh_CN(String name_zh_CN) {
+		this.name_zh_CN = name_zh_CN;
+	}
+
+	public String getName_en() {
+		return name_en;
+	}
+
+	public void setName_en(String name_en) {
+		this.name_en = name_en;
+	}
+
+	public String getName_ru() {
+		return name_ru;
+	}
+
+	public void setName_ru(String name_ru) {
+		this.name_ru = name_ru;
 	}
 }

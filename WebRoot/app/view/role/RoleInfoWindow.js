@@ -49,7 +49,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             autoSelect:true,
             editable:false,
             anchor: '100%',
-            emptyText: '--请选择--',
+            emptyText: '--',
             triggerAction: 'all',
             store: new Ext.data.SimpleStore({
             	autoLoad : false,
@@ -77,7 +77,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             autoSelect:true,
             editable:false,
             anchor: '100%',
-            emptyText: '--请选择--',
+            emptyText: '--',
             triggerAction: 'all',
             store: new Ext.data.SimpleStore({
             	autoLoad : false,

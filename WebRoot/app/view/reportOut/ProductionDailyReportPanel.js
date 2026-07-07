@@ -985,7 +985,7 @@ function CreateProductionDailyReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.selectedOrgName+ '-' + loginUserLanguageResource.dailyReportCurve;
+		    var title = result.selectedOrgName+ (loginUserLanguage.toUpperCase()=='ZH_CN'?"":" ") + loginUserLanguageResourceFirstLower.dailyReportCurve;
 		    var xTitle=loginUserLanguageResource.date;
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;

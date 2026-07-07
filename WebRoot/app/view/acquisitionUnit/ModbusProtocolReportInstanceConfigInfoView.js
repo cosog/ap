@@ -143,9 +143,11 @@ function SaveReportInstanceData(){
 			saveData.id=selectedItem.data.id;
 			saveData.code=selectedItem.data.code;
 			saveData.oldName=selectedItem.data.text;
-			saveData.name=propertiesData[0][2];
-			saveData.unitName=propertiesData[1][2];
-			saveData.sort=propertiesData[2][2];
+			saveData.name_zh_CN=propertiesData[0][2];
+			saveData.name_en=propertiesData[1][2];
+			saveData.name_ru=propertiesData[2][2];
+			saveData.unitName=propertiesData[3][2];
+			saveData.sort=propertiesData[4][2];
 			SaveModbusProtocolReportInstanceData(saveData);
 		}
 	}
@@ -191,7 +193,7 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
 			unitList=result.unitList;
-			
+			var hiddenRows=[];
 			if(data.classes==0){
 				var item1={};
 				item1.id=1;
@@ -199,23 +201,56 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 				item1.value=loginUserLanguageResource.instanceList;
 				root.push(item1);
 			}else if(data.classes==1){
+				var rowIndex=0;
+				if(isExist(loginUserLanguageList,1)>0){
+					rowIndex++;
+				}else{
+					hiddenRows.push(0);
+				}
 				var item1={};
-				item1.id=1;
-				item1.title=loginUserLanguageResource.instanceName;
-				item1.value=data.text;
+				item1.id=rowIndex;
+				item1.title=loginUserLanguageResource.language_zh_CN;
+				item1.value=data.name_zh_CN;
 				root.push(item1);
 				
+				
+				if(isExist(loginUserLanguageList,2)>0){
+					rowIndex++;
+				}else{
+					hiddenRows.push(1);
+				}
 				var item2={};
-				item2.id=2;
-				item2.title=loginUserLanguageResource.reportUnit;
-				item2.value=data.unitName;
+				item2.id=rowIndex;
+				item2.title=loginUserLanguageResource.language_en;
+				item2.value=data.name_en;
 				root.push(item2);
 				
+				if(isExist(loginUserLanguageList,3)>0){
+					rowIndex++;
+				}else{
+					hiddenRows.push(2);
+				}
 				var item3={};
-				item3.id=3;
-				item3.title=loginUserLanguageResource.sequenceNumber;
-				item3.value=data.sort;
+				item3.id=rowIndex;
+				item3.title=loginUserLanguageResource.language_ru;
+				item3.value=data.name_ru;
 				root.push(item3);
+				
+				
+				
+				rowIndex++;
+				var item4={};
+				item4.id=rowIndex;
+				item4.title=loginUserLanguageResource.reportUnit;
+				item4.value=data.unitName;
+				root.push(item4);
+				
+				rowIndex++;
+				var item5={};
+				item5.id=rowIndex;
+				item5.title=loginUserLanguageResource.sequenceNumber;
+				item5.value=data.sort;
+				root.push(item5);
 			}else if(data.classes==2){
 				var item1={};
 				item1.id=1;
@@ -238,6 +273,14 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 				protocolReportInstancePropertiesHandsontableHelper.unitList=unitList;
 				protocolReportInstancePropertiesHandsontableHelper.hot.loadData(root);
 			}
+			
+			const plugin = protocolReportInstancePropertiesHandsontableHelper.hot.getPlugin('hiddenRows');
+			if(hiddenRows.length>0){
+				plugin.hideRows(hiddenRows);
+			}else{
+				plugin.showRows(hiddenRows);
+			}
+			protocolReportInstancePropertiesHandsontableHelper.hot.render();
 		},
 		failure:function(){
 //			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
@@ -282,6 +325,11 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		theme: 'ht-theme-classic',
 	        		data: data,
+	        		hiddenRows: {
+	                    rows: [],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
 	        		colWidths: [1,4,7],
 	                columns:protocolReportInstancePropertiesHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -315,15 +363,25 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 		                    	cellProperties.editor = false;
 								cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
 		                    }else if(protocolReportInstancePropertiesHandsontableHelper.classes===1){
-		                    	if(visualColIndex === 2 && visualRowIndex===0){
-			                    	this.validator=function (val, callback) {
-			                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
+		                    	if(visualColIndex === 2 && visualRowIndex<=2){
+			                    	if(loginUserLanguage.toUpperCase()=='ZH_CN' && visualRowIndex==0){
+			                    		this.validator=function (val, callback) {
+				                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
+				                    	}
+			                    	}else if(loginUserLanguage.toUpperCase()=='EN' && visualRowIndex==1){
+			                    		this.validator=function (val, callback) {
+				                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
+				                    	}
+			                    	}else if(loginUserLanguage.toUpperCase()=='RU' && visualRowIndex==2){
+			                    		this.validator=function (val, callback) {
+				                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
+				                    	}
 			                    	}
-			                    }else if(visualColIndex === 2 && visualRowIndex===2){
+			                    }else if(visualColIndex === 2 && visualRowIndex===4){
 			                    	this.validator=function (val, callback) {
 			                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolReportInstancePropertiesHandsontableHelper);
 			                    	}
-			                    }else if (visualColIndex === 2 && visualRowIndex===1) {
+			                    }else if (visualColIndex === 2 && visualRowIndex===3) {
 		                    		this.type = 'dropdown';
 		                    		this.source = protocolReportInstancePropertiesHandsontableHelper.unitList;
 			                    	
@@ -334,7 +392,7 @@ var ProtocolReportInstancePropertiesHandsontableHelper = {
 		                    	if (visualColIndex ==0 || visualColIndex ==1) {
 									cellProperties.editor = false;
 									cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addBoldBg;
-				                }else if(visualColIndex === 2 && visualRowIndex!=1){
+				                }else if(visualColIndex === 2 && visualRowIndex!=3){
 				                	cellProperties.renderer = protocolReportInstancePropertiesHandsontableHelper.addCellStyle;
 				                }
 		                    }

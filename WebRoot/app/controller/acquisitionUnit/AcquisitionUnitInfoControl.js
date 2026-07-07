@@ -908,9 +908,16 @@ var saveModbusProtocolReportInstanceSubmitBtnForm = function () {
             waitMsg: loginUserLanguageResource.submittingData,
             waitTitle: loginUserLanguageResource.wait,
             success: function (response, action) {
-            	var addInstanceName = Ext.getCmp('formModbusProtocolReportInstanceName_Id').getValue();
-            	Ext.getCmp('AddNewReportInstanceName_Id').setValue(addInstanceName);
+            	var addInstanceName='';
+            	if(loginUserLanguage.toUpperCase()=='ZH_CN'){
+            		addInstanceName= Ext.getCmp('formModbusProtocolReportInstanceName_zh_CN_Id').getValue();
+            	}else if(loginUserLanguage.toUpperCase()=='EN'){
+            		addInstanceName= Ext.getCmp('formModbusProtocolReportInstanceName_en_Id').getValue();
+            	}else if(loginUserLanguage.toUpperCase()=='RU'){
+            		addInstanceName= Ext.getCmp('formModbusProtocolReportInstanceName_ru_Id').getValue();
+            	}
             	
+            	Ext.getCmp('AddNewReportInstanceName_Id').setValue(addInstanceName);
                 Ext.getCmp('modbusProtocolReportInstanceInfoWindow_Id').close();
                 Ext.getCmp("ModbusProtocolReportInstanceConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {

@@ -188,9 +188,11 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 	iconCls: 'check3',
                 	layout:'border',
                 	border: false,
+//                	autoScroll: true,
                 	items:[{
                 		region:'north',
                 		height:'50%',
+//                		minHeight: 300,
                 		layout:'fit',
                 		title:loginUserLanguageResource.reportCurve,
                 		collapsible: true, // 是否可折叠
@@ -209,6 +211,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 		region: 'center',
                 		title:loginUserLanguageResource.reportData,
                         layout: "fit",
+//                        minHeight: 300,
                     	id:'SingleWellDailyReportPanel_id',
                     	tbar:[{
                             xtype: 'button',
@@ -1405,7 +1408,7 @@ function CreateSingleWellRangeReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.deviceName+ '-' + loginUserLanguageResource.dailyReportCurve;
+		    var title = result.deviceName+ (loginUserLanguage.toUpperCase()=='ZH_CN'?"":" ") + loginUserLanguageResourceFirstLower.dailyReportCurve;
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;
 		    var color=[];
@@ -1608,7 +1611,8 @@ function CreateSingleWellDailyReportCurve(){
 		    if(tickInterval<100){
 		    	tickInterval=100;
 		    }
-		    var title = result.deviceName+ "-" + loginUserLanguageResource.hourlyReportCurve+ "-"+result.reportDate;
+		    var title = result.deviceName+ (loginUserLanguage.toUpperCase()=='ZH_CN'?"":" ") + loginUserLanguageResourceFirstLower.hourlyReportCurve+ "-"+result.reportDate;
+		    
 		    var legendName =result.curveItems;
 		    var curveConf=result.curveConf;
 		    var color=[];

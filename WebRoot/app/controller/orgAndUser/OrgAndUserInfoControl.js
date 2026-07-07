@@ -235,7 +235,9 @@ function batchUpdateOrgInfo(modifiedRecords) {
 			org.orgName_en=record.get("orgName_en");
 			org.orgName_ru=record.get("orgName_ru");
 			org.orgMemo=record.get("orgMemo");
-			org.orgSeq=record.get("orgSeq");
+			if(isNotVal(record.get("orgSeq")) && isNumber(record.get("orgSeq"))){
+				org.orgSeq=record.get("orgSeq");
+			}
 			
 			modifiedOrg.push(org);
 	    });

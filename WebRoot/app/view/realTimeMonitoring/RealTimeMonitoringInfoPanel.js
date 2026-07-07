@@ -8,12 +8,23 @@ var realtimeStatTabItems=[{
 //	hidden: !moduleContentConfig.realTimeMonitoring.FESDiagramResultData,
 //	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?null:'check3',
 	iconCls: 'check3',
-	html: '<div id="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	autoScroll: true,
+	html: '<div id="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
         	if(isNotVal($("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id"))){
         		if ($("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-        			highchartsResize("RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id");
+//        			highchartsResize("RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id");
+        			var chart = $("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts();
+        			var series = chart.series[0];
+                    var data = series.data.map(function(point) {
+                    	return point.options;
+                    });
+                    var title = chart.title.textStr;
+                    var name = series.name;
+                    var colors = [];
+                    chart.destroy();
+                    ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title, "RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id", name, data, colors);
                 }else{
                 	var toolTip=Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id");
                 	if(!isNotVal(toolTip)){
@@ -33,12 +44,25 @@ var realtimeStatTabItems=[{
 	closable:false,
 //	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?'check3':null,
 	id:'RealTimeMonitoringStatGraphPanel_Id',
-	html: '<div id="RealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	autoScroll: true,
+	html: '<div id="RealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
         	if(isNotVal($("#RealTimeMonitoringStatGraphPanelPieDiv_Id"))){
         		if ($("#RealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-        			highchartsResize("RealTimeMonitoringStatGraphPanelPieDiv_Id");
+//        			highchartsResize("RealTimeMonitoringStatGraphPanelPieDiv_Id");
+        			
+        			
+        			var chart = $("#RealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts();
+        			var series = chart.series[0];
+                    var data = series.data.map(function(point) {
+                    	return point.options;
+                    });
+                    var title = chart.title.textStr;
+                    var name = series.name;
+                    var colors = [];
+                    chart.destroy();
+                    ShowRealTimeMonitoringStatPieOrColChat(title, "RealTimeMonitoringStatGraphPanelPieDiv_Id", name, data, colors);
         		}else{
                 	var toolTip=Ext.getCmp("RealTimeMonitoringStatGraphPanelPieToolTip_Id");
                 	if(!isNotVal(toolTip)){
@@ -57,12 +81,24 @@ var realtimeStatTabItems=[{
 	layout: 'fit',
 	closable:false,
 	id:'RealTimeMonitoringRunStatusStatGraphPanel_Id',
-	html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	autoScroll: true,
+	html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
         	if(isNotVal($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id"))){
         		if ($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-        			highchartsResize("RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id");
+//        			highchartsResize("RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id");
+        			
+        			var chart = $("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts();
+        			var series = chart.series[0];
+                    var data = series.data.map(function(point) {
+                    	return point.options;
+                    });
+                    var title = chart.title.textStr;
+                    var name = series.name;
+                    var colors = [];
+                    chart.destroy();
+                    ShowRealTimeMonitoringRunStatusStatPieOrColChat(title, "RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id", name, data, colors);
         		}else{
                 	var toolTip=Ext.getCmp("RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id");
                 	if(!isNotVal(toolTip)){
@@ -81,12 +117,24 @@ var realtimeStatTabItems=[{
 	layout: 'fit',
 	closable:false,
 	id:'RealTimeMonitoringNumStatusStatGraphPanel_Id',
-	html: '<div id="RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	autoScroll: true,
+	html: '<div id="RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
         	if(isNotVal($("#RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id"))){
         		if ($("#RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-        			highchartsResize("RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id");
+//        			highchartsResize("RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id");
+        			
+        			var chart = $("#RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id").highcharts();
+        			var series = chart.series[0];
+                    var data = series.data.map(function(point) {
+                    	return point.options;
+                    });
+                    var title = chart.title.textStr;
+                    var name = series.name;
+                    var colors = [];
+                    chart.destroy();
+                    ShowRealTimeMonitoringNumStatusStatPieOrColChat(title, "RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id", name, data, colors);
         		}else{
                 	var toolTip=Ext.getCmp("RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id");
                 	if(!isNotVal(toolTip)){
@@ -157,7 +205,7 @@ var realtimeCurveAndTableTabPanelItems=[{
             border: false,
             flex: 1,
             // ★★★ 关键修改2：设置最小高度 ★★★
-            minHeight: graghMinHeight,
+            minHeight: dynamometerCardMinHeight,
             layout: {
                 type: 'hbox',
                 pack: 'start',
@@ -197,7 +245,7 @@ var realtimeCurveAndTableTabPanelItems=[{
             border: false,
             flex: 1,
             // ★★★ 关键修改2：设置最小高度（可与上面不同） ★★★
-            minHeight: graghMinHeight,
+            minHeight: dynamometerCardMinHeight,
             margin: '1 0 0 0',
             layout: {
                 type: 'hbox',
@@ -263,7 +311,7 @@ var realtimeCurveAndTableTabPanelItems=[{
             // —— 第一行 hbox ——
             border: false,
             flex: 1,
-            minHeight: graghMinHeight,      // 最小高度
+            minHeight: dynamometerCardMinHeight,      // 最小高度
             margin: '0 0 0 0',              // 无上边距
             layout: {
                 type: 'hbox',
@@ -303,7 +351,7 @@ var realtimeCurveAndTableTabPanelItems=[{
             // —— 第二行 hbox ——
             border: false,
             flex: 1,
-            minHeight: graghMinHeight,      // 最小高度
+            minHeight: dynamometerCardMinHeight,      // 最小高度
             margin: '1 0 0 0',              // 上边距1px，与第一行分隔
             layout: {
                 type: 'hbox',

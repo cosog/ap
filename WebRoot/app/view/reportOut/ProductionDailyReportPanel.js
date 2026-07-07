@@ -96,6 +96,7 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                 labelWidth: getLabelWidth(loginUserLanguageResource.date,loginUserLanguage),
                 width: (getLabelWidth(loginUserLanguageResource.date,loginUserLanguage)+100),
                 format: 'Y-m-d',
+                editable:false,
                 id: 'ProductionDailyReportStartDate_Id',
 //                value: new Date(),
                 listeners: {
@@ -117,7 +118,8 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                 fieldLabel: loginUserLanguageResource.timeTo,
                 labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                 width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                format: 'Y-m-d ',
+                format: 'Y-m-d',
+                editable:false,
                 id: 'ProductionDailyReportEndDate_Id',
                 value: new Date(),
                 listeners: {
@@ -183,7 +185,8 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                         split: true, // 竖折叠条
                         border: false,
                         id:'ProductionDailyReportCurvePanel_id',
-                        html: '<div id="ProductionDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                        autoScroll: true,
+                        html: '<div id="ProductionDailyReportCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 if ($("#ProductionDailyReportCurveDiv_Id").highcharts() != undefined) {
@@ -219,7 +222,8 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                             editable:false,
                             readOnly:true,
                             width: 90,
-                            format: 'Y-m-d ',
+                            format: 'Y-m-d',
+                            editable:false,
                             id: 'ProductionDailyReportDate_Id',
                             listeners: {
                             	change ( thisField, newValue, oldValue, eOpts )  {
@@ -1150,7 +1154,12 @@ function initProductionDailyReportCurveChartFn(series, tickInterval, divId, titl
 	            type: 'spline',
 	            shadow: false,
 	            borderWidth: 0,
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },
 	        time: {
 	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区

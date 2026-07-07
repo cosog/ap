@@ -30,7 +30,7 @@ Ext.define("AP.view.historyQuery.ItemHistoryCurveWindow", {
         		region: 'center',
             	id:'ItemHistoryCurvePanel_Id',
         		layout: 'fit',
-        		autoScroll: false,
+        		autoScroll: true,
         		tbar:[{
                     id: 'HistoryCurveItemName_Id',
                     xtype: 'textfield',
@@ -57,8 +57,9 @@ Ext.define("AP.view.historyQuery.ItemHistoryCurveWindow", {
                     fieldLabel: loginUserLanguageResource.range,
                     labelWidth: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage),
                     width: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage)+100,
-                    format: 'Y-m-d ',
+                    format: 'Y-m-d',
                     value: '',
+                    editable:false,
                     id: 'ItemHistoryCurveStartDate_Id',
                     listeners: {
                     	select: function (combo, record, index) {
@@ -113,8 +114,9 @@ Ext.define("AP.view.historyQuery.ItemHistoryCurveWindow", {
                     fieldLabel: loginUserLanguageResource.timeTo,
                     labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                     width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                    format: 'Y-m-d ',
+                    format: 'Y-m-d',
                     value: '',
+                    editable:false,
                     id: 'ItemHistoryCurveEndDate_Id',
                     listeners: {
                     	select: function (combo, record, index) {
@@ -205,7 +207,7 @@ Ext.define("AP.view.historyQuery.ItemHistoryCurveWindow", {
                     hidden: false,
                     style: 'margin-right:15px'
                 }],
-            	html: '<div id="ItemHistoryCurveDiv_Id" style="width:100%;height:100%;"></div>',
+            	html: '<div id="ItemHistoryCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                     	if ($("#ItemHistoryCurveDiv_Id").highcharts() != undefined) {
@@ -649,7 +651,12 @@ function initItemHistoryCurveChartFn(series, tickInterval, divId, title, subtitl
 	            type: 'spline',
 	            shadow: false,
 	            borderWidth: 0,
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },
 	        time: {
 	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区

@@ -51,14 +51,14 @@ public class OrgRecursion {
 	public String recursionOrgFn(List list, Object[] node) {
 		String data = "";
 		if (hasChild(list, node)) {
-			returnStr.append("{\"text\":\"" + node[2] + "\",");
-			returnStr.append("\"orgId\":\"" +  node[0]+ "\",");
-			returnStr.append("\"orgParent\":\"" +  node[1]+ "\",");
-			returnStr.append("\"orgMemo\":\"" +  node[3]+ "\",");
-			returnStr.append("\"orgSeq\":" +  (StringManagerUtils.isNotNull(node[4]+"")?node[4]:"\"\"")+ ",");
-			returnStr.append("\"orgName_zh_CN\":\"" +  node[5]+ "\",");
-			returnStr.append("\"orgName_en\":\"" +  node[6]+ "\",");
-			returnStr.append("\"orgName_ru\":\"" +  node[7]+ "\",");
+			returnStr.append("{\"text\":\"" + (node[2]==null?"":node[2]) + "\",");
+			returnStr.append("\"orgId\":" +  node[0]+ ",");
+			returnStr.append("\"orgParent\":" +  node[1]+ ",");
+			returnStr.append("\"orgMemo\":\"" +  (node[3]==null?"":node[3])+ "\",");
+			returnStr.append("\"orgSeq\":" +  (StringManagerUtils.isNotNull(node[4]+"")?node[4]:"null")+ ",");
+			returnStr.append("\"orgName_zh_CN\":\"" +  (node[5]==null?"":node[5])+ "\",");
+			returnStr.append("\"orgName_en\":\"" +  (node[6]==null?"":node[6])+ "\",");
+			returnStr.append("\"orgName_ru\":\"" +  (node[7]==null?"":node[7])+ "\",");
 			returnStr.append("\"expanded\" : true,");
 			returnStr.append("\"children\":[");
 			List childList = getChildList(list, node);
@@ -69,17 +69,17 @@ public class OrgRecursion {
 			}
 			returnStr.append("]},");
 		} else {
-			returnStr.append("{\"text\":\"" + node[2] + "\",");
-			returnStr.append("\"orgId\":\"" +  node[0]+ "\",");
-			returnStr.append("\"orgParent\":\"" +  node[1]+ "\",");
-			returnStr.append("\"orgMemo\":\"" +  node[3]+ "\",");
-			returnStr.append("\"orgSeq\":" +  (StringManagerUtils.isNotNull(node[4]+"")?node[4]:"\"\"")+ ",");
-			returnStr.append("\"orgName_zh_CN\":\"" +  node[5]+ "\",");
-			returnStr.append("\"orgName_en\":\"" +  node[6]+ "\",");
-			returnStr.append("\"orgName_ru\":\"" +  node[7]+ "\",");
+			returnStr.append("{\"text\":\"" + (node[2]==null?"":node[2]) + "\",");
+			returnStr.append("\"orgId\":" +  node[0]+ ",");
+			returnStr.append("\"orgParent\":" +  node[1]+ ",");
+			returnStr.append("\"orgMemo\":\"" +  (node[3]==null?"":node[3])+ "\",");
+			returnStr.append("\"orgSeq\":" +  (StringManagerUtils.isNotNull(node[4]+"")?node[4]:"null")+ ",");
+			returnStr.append("\"orgName_zh_CN\":\"" +  (node[5]==null?"":node[5])+ "\",");
+			returnStr.append("\"orgName_en\":\"" +  (node[6]==null?"":node[6])+ "\",");
+			returnStr.append("\"orgName_ru\":\"" +  (node[7]==null?"":node[7])+ "\",");
 			returnStr.append("\"leaf\":true },");
 		}
-		data = returnStr.toString().replaceAll("null", "");
+		data = returnStr.toString();
 		return data;
 	}
 	

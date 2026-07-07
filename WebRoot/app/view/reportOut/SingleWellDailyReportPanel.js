@@ -98,6 +98,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 labelWidth: getLabelWidth(loginUserLanguageResource.date,loginUserLanguage),
                 width: (getLabelWidth(loginUserLanguageResource.date,loginUserLanguage)+100),
                 format: 'Y-m-d',
+                editable:false,
                 id: 'SingleWellDailyReportStartDate_Id',
                 listeners: {
                 	select: function (combo, record, index) {
@@ -121,7 +122,8 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                 fieldLabel: loginUserLanguageResource.timeTo,
                 labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                 width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                format: 'Y-m-d ',
+                format: 'Y-m-d',
+                editable:false,
                 id: 'SingleWellDailyReportEndDate_Id',
                 value: new Date(),
                 listeners: {
@@ -199,7 +201,8 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         collapsed:false,//是否折叠
                         split: true, // 竖折叠条
                         id:'SingleWellDailyReportCurvePanel_id',
-                        html: '<div id="SingleWellDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                        autoScroll: true,
+                        html: '<div id="SingleWellDailyReportCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 if ($("#SingleWellDailyReportCurveDiv_Id").highcharts() != undefined) {
@@ -236,7 +239,7 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                             editable:false,
                             readOnly:true,
                             width: 90,
-                            format: 'Y-m-d ',
+                            format: 'Y-m-d',
                             id: 'SingleWellDailyReportDate_Id',
                             listeners: {
                             	change ( thisField, newValue, oldValue, eOpts )  {
@@ -358,7 +361,8 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         collapsed:false,//是否折叠
                         split: true, // 竖折叠条
                         id:'SingleWellRangeReportCurvePanel_id',
-                        html: '<div id="SingleWellRangeReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                        autoScroll: true,
+                        html: '<div id="SingleWellRangeReportCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 if ($("#SingleWellRangeReportCurveDiv_Id").highcharts() != undefined) {
@@ -1776,7 +1780,12 @@ function initSingleWellDailyReportCurveChartFn(series, tickInterval, divId, titl
 	            type: 'spline',
 	            shadow: false,
 	            borderWidth: 0,
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },
 	        time: {
 	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区

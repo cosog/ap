@@ -34,9 +34,10 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                          fieldLabel: '',
                          labelWidth: 0,
                          width: 90,
-                         format: 'Y-m-d ',
+                         format: 'Y-m-d',
                          id: 'AcquisitionDataMaintainingStartDate_Id',
                          value: '',
+                         editable:false,
                          readOnly:true,
                          disabled:true,
                          listeners: {
@@ -139,9 +140,10 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                          fieldLabel: loginUserLanguageResource.timeTo,
                          labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                          width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                         format: 'Y-m-d ',
+                         format: 'Y-m-d',
                          id: 'AcquisitionDataMaintainingEndDate_Id',
                          value: '',
+                         editable:false,
                          readOnly:true,
                          disabled:true,
                          listeners: {

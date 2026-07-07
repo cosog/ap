@@ -1503,7 +1503,12 @@ function ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divId, nam
 			chart : {
 				plotBackgroundColor : null,
 				plotBorderWidth : null,
-				plotShadow : false
+				plotShadow : false,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -1668,7 +1673,12 @@ function ShowRealTimeMonitoringStatPieOrColChat(title,divId, name, data,colors) 
 			chart : {
 				plotBackgroundColor : null,
 				plotBorderWidth : null,
-				plotShadow : false
+				plotShadow : false,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -1853,7 +1863,12 @@ function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divId, name, data
 			chart : {
 				plotBackgroundColor : null,
 				plotBorderWidth : null,
-				plotShadow : false
+				plotShadow : false,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -2029,7 +2044,12 @@ function ShowRealTimeMonitoringNumStatusStatPieOrColChat(title,divId, name, data
 			chart : {
 				plotBackgroundColor : null,
 				plotBorderWidth : null,
-				plotShadow : false
+				plotShadow : false,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -2192,7 +2212,12 @@ function ShowRealTimeMonitoringDeviceTypeStatPieChat(title,divId, name, data,col
 			chart : {
 				plotBackgroundColor : null,
 				plotBorderWidth : null,
-				plotShadow : false
+				plotShadow : false,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -2396,7 +2421,7 @@ function deviceRealtimeMonitoringCurve(deviceType){
             	for(var i=0;i<totals;i++){
             		divId = divPrefix + i+"_Id";
                     htmlResult += '<div id=\"' + divId + '\"';
-                    htmlResult += ' style="height:'+ chartHeight2 +';width:'+ chartWidth2 +';min-height:' + graghMinHeight + 'px;"';
+                    htmlResult += ' style="height:'+ chartHeight2 +';width:'+ chartWidth2 +';min-height:' + dynamometerCardMinHeight + 'px;"';
                     htmlResult += '></div>';
             	}
                 $('#'+containerId).append(htmlResult);
@@ -2493,11 +2518,11 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	            type: 'spline',
 	            shadow: false,
 	            borderWidth: 0,
-//	            zooming: {
-//	                mouseWheel: {
-//	                    enabled: false // 禁用鼠标滚轮缩放
-//	                }
-//	            },
+	            zooming: {
+	                mouseWheel: {
+	                    enabled: false // 禁用鼠标滚轮缩放
+	                }
+	            },
 	            zoomType: 'xy'
 	        },
 	        time: {

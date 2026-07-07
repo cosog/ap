@@ -175,8 +175,9 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 fieldLabel: loginUserLanguageResource.range,
                 labelWidth: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage),
                 width: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage)+100,
-                format: 'Y-m-d ',
+                format: 'Y-m-d',
                 value: '',
+                editable:false,
                 id: 'SystemLogQueryStartDate_Id',
                 listeners: {
                 	select: function (combo, record, index) {
@@ -252,8 +253,9 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 fieldLabel: loginUserLanguageResource.timeTo,
                 labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                 width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                format: 'Y-m-d ',
+                format: 'Y-m-d',
                 value: '',
+                editable:false,
                 id: 'SystemLogQueryEndDate_Id',
                 listeners: {
                 	select: function (combo, record, index) {

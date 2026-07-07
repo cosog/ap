@@ -1,13 +1,6 @@
 // ////// 操作公用方法//////////////
 var sfycjhh=true;
 copyright=cosog.string.copy+"&nbsp;<a href='"+cosog.string.linkaddress+"' target='_blank'>"+cosog.string.linkshow+"</a> ";
-graghMinWidth = 300;
-graghMinHeight= 350;
-defaultWellComboxSize=10000;
-comboxPagingStatus=0;//0-不分页  大于0分页
-isShowMap=true;//是否显示地图 true-显示   false-不显示
-recordCount=1000;//后台电子表格总行数
-var chartTitleFontSize='14px';
 
 //普通样式（灰色，正常粗细）
 var normalStyle = {
@@ -689,7 +682,12 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 				renderTo : divId,
 				shadow : false,
 				borderWidth : 0,
-				zoomType : 'xy'
+				zoomType : 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -839,7 +837,12 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 				renderTo : divId,
 				shadow : false,
 				borderWidth : 0,
-				zoomType : 'xy'
+				zoomType : 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -992,7 +995,12 @@ function initCurveChart(years, values, tickInterval, divId) {
 				shadow : false,
 				//alignTicks: false,
 				borderWidth : 0,
-				zoomType : 'xy'
+				zoomType : 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -2252,7 +2260,12 @@ function initContinuousDiagramChart(pointdata, divId,title,subtitle,xtext,ytext,
 	            renderTo : divId,
 	            borderWidth : 0,
 	            zoomType: 'xy',
-	            reflow: true
+	            reflow: true,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },                                                                                   
 	        title: {
 	        	text: title,
@@ -2702,7 +2715,12 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
 	            type: 'spline',
 	            shadow: false,
 	            borderWidth: 0,
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },
 	        credits: {
 	            enabled: false
@@ -3148,7 +3166,12 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	            renderTo : divId,
 	            zoomType: 'xy',
 	            borderWidth : 0,
-	            reflow: true
+	            reflow: true,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },                                                                                   
 	        title: {
 	        	text: loginUserLanguageResource.FSDiagram,  // 光杆功图       
@@ -3404,6 +3427,11 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 			            renderTo : divId,                    // 图形放置的位置
 			            zoomType: 'xy',                    // 沿xy轴放大
 			            borderWidth : 0,
+			            zooming: {
+		                    mouseWheel: {
+		                        enabled: false
+		                    }
+		                },
 			            options3d: {                         // 3D效果
 			                enabled: false,                   // 是否显示3D效果
 			                alpha: 0,                        // 内旋角度
@@ -3642,7 +3670,12 @@ function initMultiSurfaceCardChart(series, title, deviceName, acqTime, divId,yAx
 	            type: 'scatter',
 	            renderTo : divId,
 	            borderWidth : 0,
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },                                                                                   
 	        title: {  
 	        	text: title,
@@ -3807,7 +3840,12 @@ function initPumpEfficiencyChart(ydata, deviceName, acqTime, divId, title, yname
 				chart: {                                                                             
 		            type: 'column',      
 		            borderWidth : 0,
-		            zoomType: 'xy'                   
+		            zoomType: 'xy',
+		            zooming: {
+		                mouseWheel: {
+		                    enabled: false // 禁用鼠标滚轮缩放
+		                }
+		            }                   
 		        },                                                                                   
 		        title: {                                                                                      
 		            text: loginUserLanguageResource.pumpEfficiencyComposition,
@@ -4001,6 +4039,11 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			            renderTo : divId,
 			            borderWidth : 0,
 			            zoomType: 'xy',
+			            zooming: {
+		                    mouseWheel: {
+		                        enabled: false
+		                    }
+		                },
 			            reflow: true
 			        },                                                                                   
 			        title: {
@@ -4225,6 +4268,11 @@ function initASDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divId
 			            renderTo : divId,
 			            borderWidth : 0,
 			            zoomType: 'xy',
+			            zooming: {
+		                    mouseWheel: {
+		                        enabled: false
+		                    }
+		                },
 			            reflow: true
 			        },                                                                                   
 			        title: {
@@ -4395,7 +4443,12 @@ function initBalanceCurveChart(catagories,series,divId,title,deviceName,acqTime,
 					type : 'spline',
 					shadow : false,
 					borderWidth : 0,
-					zoomType : 'xy'
+					zoomType : 'xy',
+		            zooming: {
+		                mouseWheel: {
+		                    enabled: false // 禁用鼠标滚轮缩放
+		                }
+		            }
 				},
 				exporting:{ 
 		            enabled:true, 
@@ -4571,7 +4624,12 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,subtitle,
 					type : 'spline',
 					shadow : false,
 					borderWidth : 0,
-					zoomType : 'xy'
+					zoomType : 'xy',
+		            zooming: {
+		                mouseWheel: {
+		                    enabled: false // 禁用鼠标滚轮缩放
+		                }
+		            }
 				},
 				credits : {
 					enabled : false
@@ -4724,7 +4782,12 @@ function initBalanceCurveChartTowY(catagories,series,divId,titletext,subtitle,yt
 					type : 'spline',
 					shadow : false,
 					borderWidth : 0,
-					zoomType : 'xy'
+					zoomType : 'xy',
+		            zooming: {
+		                mouseWheel: {
+		                    enabled: false // 禁用鼠标滚轮缩放
+		                }
+		            }
 				},
 				credits : {
 					enabled : false
@@ -5016,7 +5079,12 @@ function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	            type: 'scatter',      // 散点图   
 	            renderTo : divId,
 	            borderWidth : 0,
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },                                                                                   
 	        title: {  
 	        	text: title,
@@ -5132,7 +5200,12 @@ function initPSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acq
 	            type: 'scatter',      // 散点图   
 	            renderTo : divId,
 	            borderWidth : 0,
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },                                                                                   
 	        title: {  
 	        	text: title,
@@ -5386,8 +5459,9 @@ function highchartsResize(divId){
 			var isFullScreen = isBrowserFullScreen();
 			var browserType=getBrowserType();
 			if(browserType==5||(!isFullScreen)){
-//				charts.setSize($("#"+divId).offsetWidth, $("#"+divId).offsetHeight,true);
-				charts.reflow();
+				charts.setSize($("#"+divId).offsetWidth, $("#"+divId).offsetHeight,true);
+//				charts.reflow();
+//				charts.redraw();
 			}
 		}
 	}

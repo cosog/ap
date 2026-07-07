@@ -23,7 +23,7 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
         	items: [{
         		region: 'center',
         		layout: 'fit',
-        		autoScroll: false,
+        		autoScroll: true,
         		border: false,
         		tbar:[{
                     id: 'RealtimeCurveItemName_Id',
@@ -47,7 +47,7 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
                     hidden: true
                 }],
                 id: 'ItemRealtimeCurvePanel_Id',
-            	html: '<div id="ItemRealtimeCurveContainer" class="hbox" style="width:100%;height:100%;display:flex;flex-wrap:wrap;align-content:flex-start;"></div>',
+            	html: '<div id="ItemRealtimeCurveContainer" class="hbox" style="width:100%;height:100%;min-height:' + otherCardMinHeight + 'px;display:flex;flex-wrap:wrap;align-content:flex-start;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                     	var chartCreated=false;

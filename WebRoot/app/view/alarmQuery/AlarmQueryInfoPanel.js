@@ -247,7 +247,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     		id:'AlarmLevelStatGraphPanel_Id',
                     		iconCls:'check3',
                     		layout: 'fit',
-                        	html: '<div id="AlarmLevelStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+                    		autoScroll: true,
+                        	html: '<div id="AlarmLevelStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if(isNotVal($("#AlarmLevelStatGraphPanelPieDiv_Id"))){
@@ -271,7 +272,8 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     		title:loginUserLanguageResource.alarmType,
                     		id:'AlarmTypeStatGraphPanel_Id',
                     		layout: 'fit',
-                        	html: '<div id="AlarmTypeStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+                    		autoScroll: true,
+                        	html: '<div id="AlarmTypeStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if(isNotVal($("#AlarmTypeStatGraphPanelPieDiv_Id"))){
@@ -382,8 +384,9 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                         fieldLabel: loginUserLanguageResource.range,
                         labelWidth: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage),
                         width: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage)+100,
-                        format: 'Y-m-d ',
+                        format: 'Y-m-d',
                         value: '',
+                        editable:false,
                         id: 'AlarmQueryStartDate_Id',
                         listeners: {
                         	select: function (combo, record, index) {
@@ -459,8 +462,9 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                         fieldLabel: loginUserLanguageResource.timeTo,
                         labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                         width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                        format: 'Y-m-d ',
+                        format: 'Y-m-d',
                         value: '',
+                        editable:false,
                         id: 'AlarmQueryEndDate_Id',
                         listeners: {
                         	select: function (combo, record, index) {

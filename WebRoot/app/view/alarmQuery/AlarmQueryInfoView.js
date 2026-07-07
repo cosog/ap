@@ -730,6 +730,11 @@ function showAlarmStatDrillDownChart(title,divId, subtitle,yAxisTitle,rawSeriesD
 	$('#'+divId).highcharts({
 		chart: {
             type: 'column',
+            zooming: {
+                mouseWheel: {
+                    enabled: false // 禁用鼠标滚轮缩放
+                }
+            },
             events: {
                 drilldown: function(e) {
                     var point = e.point;
@@ -1275,7 +1280,12 @@ function showAlarmQueryStatDataColChat(title,divId,name,categories,seriesData){
 		chart: {                                                                             
             type: 'column',      
             borderWidth : 0,
-            zoomType: 'xy'                   
+            zoomType: 'xy',
+            zooming: {
+                mouseWheel: {
+                    enabled: false // 禁用鼠标滚轮缩放
+                }
+            }                   
         }, 
         credits : {
 			enabled : false

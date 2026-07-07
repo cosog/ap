@@ -976,7 +976,12 @@ function initDeviceHistoryCurveChartFn(series, tickInterval, divId, title, subti
 	            type: 'spline',
 	            shadow: false,
 	            borderWidth: 0,
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },
 	        time: {
 	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区
@@ -1158,7 +1163,7 @@ function initHistoryQueryStatPieOrColChat(get_rawData) {
 			}
 		}
 	}
-	ShowHistoryQueryStatPieOrColChat(title,divId, "设备数占", pieData,colors);
+	ShowHistoryQueryStatPieOrColChat(title,divId, loginUserLanguageResource.deviceCount, pieData,colors);
 };
 
 function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
@@ -1167,7 +1172,12 @@ function ShowHistoryQueryStatPieOrColChat(title,divId, name, data,colors) {
 			chart : {
 				plotBackgroundColor : null,
 				plotBorderWidth : null,
-				plotShadow : false
+				plotShadow : false,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -1328,7 +1338,7 @@ function initHistoryQueryRunStatusStatPieOrColChat(get_rawData) {
 			}
 		}
 	}
-	ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, "设备数占", pieData,colors);
+	ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, loginUserLanguageResource.deviceCount, pieData,colors);
 };
 
 function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,colors) {
@@ -1337,7 +1347,12 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divId, name, data,color
 			chart : {
 				plotBackgroundColor : null,
 				plotBorderWidth : null,
-				plotShadow : false
+				plotShadow : false,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -1495,7 +1510,7 @@ function initHistoryQueryNumStatusStatPieOrColChat(get_rawData) {
 			}
 		}
 	}
-	ShowHistoryQueryNumStatusStatPieOrColChat(title,divId, "设备数占", pieData,colors);
+	ShowHistoryQueryNumStatusStatPieOrColChat(title,divId, loginUserLanguageResource.data, pieData,colors);
 };
 
 function ShowHistoryQueryNumStatusStatPieOrColChat(title,divId, name, data,colors) {
@@ -1504,7 +1519,12 @@ function ShowHistoryQueryNumStatusStatPieOrColChat(title,divId, name, data,color
 			chart : {
 				plotBackgroundColor : null,
 				plotBorderWidth : null,
-				plotShadow : false
+				plotShadow : false,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -1662,7 +1682,7 @@ function initHistoryQueryFESDiagramResultStatPieOrColChat(get_rawData) {
 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
 	var colors=[];
 	
-	ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, "设备数占", pieData,colors);
+	ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, loginUserLanguageResource.deviceCount, pieData,colors);
 };
 
 function ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, name, data,colors) {
@@ -1671,7 +1691,12 @@ function ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divId, name, dat
 			chart : {
 				plotBackgroundColor : null,
 				plotBorderWidth : null,
-				plotShadow : false
+				plotShadow : false,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -1828,7 +1853,12 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divId, name, data,colors) {
 			chart : {
 				plotBackgroundColor : null,
 				plotBorderWidth : null,
-				plotShadow : false
+				plotShadow : false,
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 			},
 			credits : {
 				enabled : false
@@ -2101,10 +2131,6 @@ loadSurfaceCardList = function (page) {
             var gtWidth = effectivePanelWidth/columnCount-1; // 有滚动条时图形宽度
             var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
             
-            if(gtHeight<graghMinHeight){
-            	gtHeight=graghMinHeight;
-            }
-            
             var gtWidth2 = gtWidth + 'px';
             var gtHeight2 = gtHeight + 'px';
 //            gtWidth2 = (100/columnCount) + '%';
@@ -2117,8 +2143,8 @@ loadSurfaceCardList = function (page) {
                 var diagramId = diagramList[index].id;
                 divId = 'DiagramTiled_FSDiagram_Id_' + diagramId;
                 htmlResult += '<div id=\"' + divId + '\"';
-//                htmlResult += ' style="height:'+ gtHeight2 +';min-height:'+ graghMinHeight +'px;width:'+ gtWidth2 +';float:left;"';
-                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';float:left;"';
+//                htmlResult += ' style="height:'+ gtHeight2 +';min-height:'+ dynamometerCardMinHeight +'px;width:'+ gtWidth2 +';float:left;"';
+                htmlResult += ' style="height:'+ gtHeight2 +';min-height:' + dynamometerCardMinHeight + 'px;width:'+ gtWidth2 +';float:left;"';
                 htmlResult += '></div>';
             });
             $("#surfaceCardContainer").append(htmlResult);
@@ -2217,8 +2243,8 @@ loadPSDiagramTiledList = function (page) {
             var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
             var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
             
-            if(gtHeight<graghMinHeight){
-            	gtHeight=graghMinHeight;
+            if(gtHeight<dynamometerCardMinHeight){
+            	gtHeight=dynamometerCardMinHeight;
             }
             
             var gtWidth2 = gtWidth + 'px';
@@ -2330,8 +2356,8 @@ loadISDiagramTiledList = function (page) {
             var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
             var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
             
-            if(gtHeight<graghMinHeight){
-            	gtHeight=graghMinHeight;
+            if(gtHeight<dynamometerCardMinHeight){
+            	gtHeight=dynamometerCardMinHeight;
             }
             
             var gtWidth2 = gtWidth + 'px';

@@ -23,11 +23,11 @@ public class Recursion {
 		String data = "";
 		String text="";
 		if("zh_CN".equalsIgnoreCase(language)){
-			text=node.getOrgName_zh_CN();
+			text=node.getOrgName_zh_CN()==null?"":node.getOrgName_zh_CN();
 		}else if("en".equalsIgnoreCase(language)){
-			text=node.getOrgName_en();
+			text=node.getOrgName_en()==null?"":node.getOrgName_en();
 		}else if("ru".equalsIgnoreCase(language)){
-			text=node.getOrgName_ru();
+			text=node.getOrgName_ru()==null?"":node.getOrgName_en();
 		}
 		text=StringManagerUtils.stringFormat(text);
 		if (hasChild(list, node)) {

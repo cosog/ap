@@ -116,9 +116,10 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          fieldLabel: '',
                          labelWidth: 0,
                          width: 90,
-                         format: 'Y-m-d ',
+                         format: 'Y-m-d',
                          id: 'PCPCalculateMaintainingStartDate_Id',
                          value: '',
+                         editable:false,
                          listeners: {
                          	select: function (combo, record, index) {
                          		calculateSignComb.clearValue();
@@ -215,9 +216,10 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          fieldLabel: loginUserLanguageResource.timeTo,
                          labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                          width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                         format: 'Y-m-d ',
+                         format: 'Y-m-d',
                          id: 'PCPCalculateMaintainingEndDate_Id',
                          value: '',
+                         editable:false,
                          listeners: {
                          	select: function (combo, record, index) {
                          		calculateSignComb.clearValue();

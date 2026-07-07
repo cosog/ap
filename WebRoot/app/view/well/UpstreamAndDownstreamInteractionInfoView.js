@@ -692,7 +692,12 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
             type: 'spline',
             shadow: true,
             borderWidth: 0,
-            zoomType: 'xy'
+            zoomType: 'xy',
+            zooming: {
+                mouseWheel: {
+                    enabled: false
+                }
+            }
         },
         time: {
             timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区

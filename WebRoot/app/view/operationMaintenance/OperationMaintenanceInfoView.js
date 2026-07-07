@@ -1764,8 +1764,9 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                         fieldLabel: loginUserLanguageResource.range,
                         labelWidth: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage),
                         width: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage)+100,
-                        format: 'Y-m-d ',
+                        format: 'Y-m-d',
                         value: '',
+                        editable:false,
                         id: 'OperationMaintenanceMonitorCurveStartDate_Id',
                         listeners: {
                         	select: function (combo, record, index) {
@@ -1820,8 +1821,9 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                         fieldLabel: loginUserLanguageResource.timeTo,
                         labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                         width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                        format: 'Y-m-d ',
+                        format: 'Y-m-d',
                         value: '',
+                        editable:false,
                         id: 'OperationMaintenanceMonitorCurveEndDate_Id',
                         listeners: {
                         	select: function (combo, record, index) {
@@ -3944,6 +3946,11 @@ function initOperationMaintenanceMonitorCurveChartFn(series, tickInterval, divId
 	            shadow: false,
 	            borderWidth: 0,
 	            zoomType: 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                },
 	            events: {
                     // 监听缩放完成事件
                     redraw: function() {

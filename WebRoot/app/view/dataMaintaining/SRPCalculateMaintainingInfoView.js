@@ -235,9 +235,10 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          fieldLabel: '',
                          labelWidth: 0,
                          width: 90,
-                         format: 'Y-m-d ',
+                         format: 'Y-m-d',
                          id: 'SRPCalculateMaintainingStartDate_Id',
                          value: '',
+                         editable:false,
                          listeners: {
                          	select: function (combo, record, index) {
                          		calculateSignComb.clearValue();
@@ -335,9 +336,10 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          fieldLabel: loginUserLanguageResource.timeTo,
                          labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                          width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                         format: 'Y-m-d ',
+                         format: 'Y-m-d',
                          id: 'SRPCalculateMaintainingEndDate_Id',
                          value: '',
+                         editable:false,
                          listeners: {
                          	select: function (combo, record, index) {
                          		calculateSignComb.clearValue();

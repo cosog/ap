@@ -94,6 +94,7 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                 labelWidth: getLabelWidth(loginUserLanguageResource.date,loginUserLanguage),
                 width: (getLabelWidth(loginUserLanguageResource.date,loginUserLanguage)+100),
                 format: 'Y-m-d',
+                editable:false,
                 id: 'HydrologicalWellReportStartDate_Id',
                 listeners: {
                 	select: function (combo, record, index) {
@@ -107,7 +108,8 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                 fieldLabel: loginUserLanguageResource.timeTo,
                 labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                 width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                format: 'Y-m-d ',
+                format: 'Y-m-d',
+                editable:false,
                 id: 'HydrologicalWellReportEndDate_Id',
                 value: new Date(),
                 listeners: {
@@ -190,7 +192,8 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                             editable:false,
                             readOnly:true,
                             width: 90,
-                            format: 'Y-m-d ',
+                            format: 'Y-m-d',
+                            editable:false,
                             id: 'HydrologicalWellReport1Date_Id',
                             listeners: {
                             	change ( thisField, newValue, oldValue, eOpts )  {
@@ -276,7 +279,8 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                     	layout: "fit",
                     	title:loginUserLanguageResource.reportCurve,
                     	id:'HydrologicalWellReport1CurvePanel_id',
-                        html: '<div id="HydrologicalWellReport1CurveDiv_Id" style="width:100%;height:100%;"></div>',
+                    	autoScroll: true,
+                        html: '<div id="HydrologicalWellReport1CurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 if ($("#HydrologicalWellReport1CurveDiv_Id").highcharts() != undefined) {
@@ -321,7 +325,8 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                             editable:false,
                             readOnly:true,
                             width: 90,
-                            format: 'Y-m-d ',
+                            format: 'Y-m-d',
+                            editable:false,
                             id: 'HydrologicalWellReport2Date_Id',
                             listeners: {
                             	change ( thisField, newValue, oldValue, eOpts )  {
@@ -1429,7 +1434,12 @@ function initHydrologicalWellReportCurveChartFn(series, tickInterval, divId, tit
 	            type: 'spline',
 	            shadow: false,
 	            borderWidth: 0,
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+	            zooming: {
+                    mouseWheel: {
+                        enabled: false
+                    }
+                }
 	        },
 	        time: {
 	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区

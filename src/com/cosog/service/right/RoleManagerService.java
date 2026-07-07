@@ -128,26 +128,26 @@ public class RoleManagerService<T> extends BaseService<T> {
 		for (Object o : list) {
 			Object[] obj = (Object[]) o;
 			result_json.append("{\"roleId\":"+obj[0]+",");
-			result_json.append("\"roleName_zh_CN\":\""+obj[1]+"\",");
-			result_json.append("\"remark_zh_CN\":\""+obj[2]+"\",");
-			result_json.append("\"roleName_en\":\""+obj[3]+"\",");
-			result_json.append("\"remark_en\":\""+obj[4]+"\",");
-			result_json.append("\"roleName_ru\":\""+obj[5]+"\",");
-			result_json.append("\"remark_ru\":\""+obj[6]+"\",");
+			result_json.append("\"roleName_zh_CN\":\""+(obj[1]==null?"":obj[1])+"\",");
+			result_json.append("\"remark_zh_CN\":\""+(obj[2]==null?"":obj[2])+"\",");
+			result_json.append("\"roleName_en\":\""+(obj[3]==null?"":obj[3])+"\",");
+			result_json.append("\"remark_en\":\""+(obj[4]==null?"":obj[4])+"\",");
+			result_json.append("\"roleName_ru\":\""+(obj[5]==null?"":obj[5])+"\",");
+			result_json.append("\"remark_ru\":\""+(obj[6]==null?"":obj[6])+"\",");
 			
-			result_json.append("\"roleLevel\":\""+obj[7]+"\",");
-			result_json.append("\"roleVideoKeyEdit\":\""+obj[8]+"\",");
+			result_json.append("\"roleLevel\":"+(obj[7]==null?null:obj[7])+",");
+			result_json.append("\"roleVideoKeyEdit\":"+(obj[8]==null?null:obj[8])+",");
 			result_json.append("\"roleVideoKeyEditName\":"+(StringManagerUtils.stringToInteger(obj[8]+"")==1)+",");
-			result_json.append("\"roleLanguageEdit\":\""+obj[10]+"\",");
+			result_json.append("\"roleLanguageEdit\":"+(obj[10]==null?null:obj[10])+",");
 			result_json.append("\"roleLanguageEditName\":"+(StringManagerUtils.stringToInteger(obj[10]+"")==1)+",");
-			result_json.append("\"showLevel\":\""+obj[12]+"\"},");
+			result_json.append("\"showLevel\":"+(obj[12]==null?null:obj[12])+"},");
 			
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
-		return result_json.toString().replaceAll("null", "");
+		return result_json.toString();
 	}
 	
 	

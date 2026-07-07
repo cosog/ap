@@ -23,7 +23,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
         	items: [{
         		region: 'center',
         		layout: 'fit',
-        		autoScroll: false,
+        		autoScroll: true,
         		border: false,
         		id:'ResourceProbeHistoryCurvePanel_Id',
         		tbar:[
@@ -33,9 +33,10 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                         fieldLabel: loginUserLanguageResource.range,
                         labelWidth: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage),
                         width: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage)+100,
-                        format: 'Y-m-d ',
+                        format: 'Y-m-d',
                         id: 'ResourceProbeHistoryCurve_from_date_Id',
                         value: 'new',
+                        editable:false,
                         listeners: {
                         	select: function (combo, record, index) {
 //                        		Ext.create("AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore");
@@ -113,6 +114,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                         format: 'Y-m-d',
                         id: 'ResourceProbeHistoryCurve_end_date_Id',
                         value: '',
+                        editable:false,
                         listeners: {
                         	select: function (combo, record, index) {
 //                        		Ext.create("AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore");
@@ -234,7 +236,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     	html: loginUserLanguageResource.resourcesMonitoringHistoryCountTip+':<font color=red>'+resourceMonitoringSaveData+'</font>'
                     }
             	],
-            	html: '<div id="ResourceProbeHistoryCurveDiv_Id" style="width:100%;height:100%;"></div>',
+            	html: '<div id="ResourceProbeHistoryCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                         if ($("#ResourceProbeHistoryCurveDiv_Id").highcharts() != undefined) {

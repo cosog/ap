@@ -5,11 +5,22 @@ var historyStatTabItems=[{
 //	hidden: !moduleContentConfig.historyQuery.FESDiagramResultData,
 //	iconCls: (!moduleContentConfig.historyQuery.FESDiagramResultData)?null:'check3',
 	iconCls:'check3',
-	html: '<div id="HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	autoScroll: true,
+	html: '<div id="HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
         	if ($("#HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-        		highchartsResize("HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id");
+//        		highchartsResize("HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id");
+        		var chart = $("#HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").highcharts();
+    			var series = chart.series[0];
+                var data = series.data.map(function(point) {
+                	return point.options;
+                });
+                var title = chart.title.textStr;
+                var name = series.name;
+                var colors = [];
+                chart.destroy();
+                ShowHistoryQueryFESDiagramResultStatPieOrColChat(title, "HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id", name, data, colors);
         	}else{
             	var toolTip=Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id");
             	if(!isNotVal(toolTip)){
@@ -27,11 +38,22 @@ var historyStatTabItems=[{
 	layout: 'fit',
 	id:'HistoryQueryStatGraphPanel_Id',
 //	iconCls: (!moduleContentConfig.historyQuery.FESDiagramResultData)?'check3':null,
-	html: '<div id="HistoryQueryStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	autoScroll: true,
+	html: '<div id="HistoryQueryStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
         	if ($("#HistoryQueryStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-        		highchartsResize("HistoryQueryStatGraphPanelPieDiv_Id");
+//        		highchartsResize("HistoryQueryStatGraphPanelPieDiv_Id");
+        		var chart = $("#HistoryQueryStatGraphPanelPieDiv_Id").highcharts();
+    			var series = chart.series[0];
+                var data = series.data.map(function(point) {
+                	return point.options;
+                });
+                var title = chart.title.textStr;
+                var name = series.name;
+                var colors = [];
+                chart.destroy();
+                ShowHistoryQueryStatPieOrColChat(title, "HistoryQueryStatGraphPanelPieDiv_Id", name, data, colors);
         	}else{
             	var toolTip=Ext.getCmp("HistoryQueryStatGraphPanelPieToolTip_Id");
             	if(!isNotVal(toolTip)){
@@ -48,11 +70,22 @@ var historyStatTabItems=[{
 	title:loginUserLanguageResource.runStatus,
 	layout: 'fit',
 	id:'HistoryQueryRunStatusStatGraphPanel_Id',
-	html: '<div id="HistoryQueryRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	autoScroll: true,
+	html: '<div id="HistoryQueryRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
         	if ($("#HistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-        		highchartsResize("HistoryQueryRunStatusStatGraphPanelPieDiv_Id");
+//        		highchartsResize("HistoryQueryRunStatusStatGraphPanelPieDiv_Id");
+        		var chart = $("#HistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts();
+    			var series = chart.series[0];
+                var data = series.data.map(function(point) {
+                	return point.options;
+                });
+                var title = chart.title.textStr;
+                var name = series.name;
+                var colors = [];
+                chart.destroy();
+                ShowHistoryQueryRunStatusStatPieOrColChat(title, "HistoryQueryRunStatusStatGraphPanelPieDiv_Id", name, data, colors);
         	}else{
             	var toolTip=Ext.getCmp("HistoryQueryRunStatusStatGraphPanelPieToolTip_Id");
             	if(!isNotVal(toolTip)){
@@ -69,11 +102,22 @@ var historyStatTabItems=[{
 	title:loginUserLanguageResource.numStatus,
 	layout: 'fit',
 	id:'HistoryQueryNumStatusStatGraphPanel_Id',
-	html: '<div id="HistoryQueryNumStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+	autoScroll: true,
+	html: '<div id="HistoryQueryNumStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
 	listeners: {
         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
         	if ($("#HistoryQueryNumStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-        		highchartsResize("HistoryQueryNumStatusStatGraphPanelPieDiv_Id");
+//        		highchartsResize("HistoryQueryNumStatusStatGraphPanelPieDiv_Id");
+        		var chart = $("#HistoryQueryNumStatusStatGraphPanelPieDiv_Id").highcharts();
+    			var series = chart.series[0];
+                var data = series.data.map(function(point) {
+                	return point.options;
+                });
+                var title = chart.title.textStr;
+                var name = series.name;
+                var colors = [];
+                chart.destroy();
+                ShowHistoryQueryNumStatusStatPieOrColChat(title, "HistoryQueryNumStatusStatGraphPanelPieDiv_Id", name, data, colors);
         	}else{
             	var toolTip=Ext.getCmp("HistoryQueryNumStatusStatGraphPanelPieToolTip_Id");
             	if(!isNotVal(toolTip)){
@@ -129,7 +173,8 @@ var historyQueryCenterTabPanelItems=[{
     	split: true,
         collapsible: true,
         id:'historyQueryCurvePanel_Id',
-        html: '<div id="historyQueryCurveDiv_Id" style="width:100%;height:100%;"></div>',
+        autoScroll: true,
+    	html: '<div id="historyQueryCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
         listeners: {
             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                 if ($("#historyQueryCurveDiv_Id").highcharts() != undefined) {
@@ -793,8 +838,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 fieldLabel: loginUserLanguageResource.range,
                                 labelWidth: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage),
                                 width: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage)+100,
-                                format: 'Y-m-d ',
+                                format: 'Y-m-d',
                                 value: '',
+                                editable:false,
                                 id: 'HistoryQueryStartDate_Id',
                                 listeners: {
                                 	select: function (combo, record, index) {
@@ -849,8 +895,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 fieldLabel: loginUserLanguageResource.timeTo,
                                 labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                                 width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                                format: 'Y-m-d ',
+                                format: 'Y-m-d',
                                 value: '',
+                                editable:false,
                                 id: 'HistoryQueryEndDate_Id',
                                 listeners: {
                                 	select: function (combo, record, index) {
@@ -1010,8 +1057,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 fieldLabel: loginUserLanguageResource.range,
                                 labelWidth: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage),
                                 width: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage)+100,
-                                format: 'Y-m-d ',
+                                format: 'Y-m-d',
                                 value: '',
+                                editable:false,
                                 id: 'HistoryFSDiagramQueryStartDate_Id',
                                 listeners: {
                                 	select: function (combo, record, index) {
@@ -1066,8 +1114,9 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 fieldLabel: loginUserLanguageResource.timeTo,
                                 labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                                 width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
-                                format: 'Y-m-d ',
+                                format: 'Y-m-d',
                                 value: '',
+                                editable:false,
                                 id: 'HistoryFSDiagramQueryEndDate_Id',
                                 listeners: {
                                 	select: function (combo, record, index) {

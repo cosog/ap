@@ -597,8 +597,9 @@ Ext.define("AP.view.well.DeviceInfoWindow", {
                 }
             },{
                 xtype: 'datefield',
-                format: 'Y-m-d ',
+                format: 'Y-m-d',
                 value: '',
+                editable:false,
                 fieldLabel: loginUserLanguageResource.commissioningDate,
                 labelWidth: labelWidth,
                 anchor: '95%',

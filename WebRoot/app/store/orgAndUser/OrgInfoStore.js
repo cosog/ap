@@ -21,6 +21,8 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
     listeners: {
         load: function (store, options, eOpts) {
             //获得列表数
+        	store.commitChanges();
+        	
             var get_rawData = store.proxy.reader.rawData;
             var showChineseName=get_rawData.showChineseName;
             var showEnglishName=get_rawData.showEnglishName;
@@ -94,7 +96,7 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
                         editor: loginUserOrgAndUserModuleRight.editFlag==1?{
                             allowBlank: true,
                             xtype: 'numberfield',
-                            editable: false,
+                            editable: true,
                             disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                             minValue: 1
                         }:""

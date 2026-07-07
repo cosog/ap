@@ -24,6 +24,9 @@ Ext.define('AP.model.org.OrgInfoModel', {
      }, {
         name: 'orgParent',
         type: 'string'
+     },{ 
+    	 name: 'orgSeq', 
+    	 type: 'auto' 
      }, {
          name: 'orgCoordX',
          type: 'float'

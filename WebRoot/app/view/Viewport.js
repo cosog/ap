@@ -1,4 +1,13 @@
 var websocketClient = null;
+graghMinWidth = 300;
+dynamometerCardMinHeight= 350;
+otherCardMinHeight= 280;
+defaultWellComboxSize=10000;
+comboxPagingStatus=0;//0-不分页  大于0分页
+isShowMap=true;//是否显示地图 true-显示   false-不显示
+recordCount=1000;//后台电子表格总行数
+var chartTitleFontSize='14px';
+
 Ext.define('AP.view.Viewport', {
     extend: 'Ext.container.Viewport',
     id: 'frame_imivport_ids',

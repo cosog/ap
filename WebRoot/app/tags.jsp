@@ -75,9 +75,7 @@ request.setAttribute("showVideo", showVideo);
 <script type="text/javascript" src="<%=path%>/app/ajaxfilter.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <!-- highcharts -->
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/highstock.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
-<!--<script type="text/javascript" src="<%=path%>/scripts/highcharts/grid.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>-->
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-more.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
-<!--<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-3d.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>-->
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/exporting.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/export-data.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/offline-exporting.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>

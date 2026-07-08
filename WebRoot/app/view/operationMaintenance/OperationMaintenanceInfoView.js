@@ -1187,7 +1187,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     	                				name_en: record.data.text_en,
     	                				name_ru: record.data.text_ru,
     	                				parentId: record.data.parentNodeId,
-    	                				sortNum: record.data.sortNum,
+    	                				sortNum: isNotVal(record.data.sortNum) && isNumber(record.data.sortNum)?record.data.sortNum:null,
     	                				status: record.data.deviceTypeEnable?1:0
     	                	        });
     	                	    });
@@ -1411,7 +1411,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                			tabDisplayInstance.name_zh_CN=record.data.name_zh_CN;
 		                			tabDisplayInstance.name_en=record.data.name_en;
 		                			tabDisplayInstance.name_ru=record.data.name_ru;
-		                			if(isNumber(record.data.sort)){
+		                			if(isNotVal(record.data.sort) && isNumber(record.data.sort)){
 		                				tabDisplayInstance.sort=record.data.sort;
 		                			}
 		                			tabDisplayInstance.calculateType=0;

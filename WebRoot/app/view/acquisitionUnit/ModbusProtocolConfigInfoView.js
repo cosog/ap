@@ -2093,7 +2093,8 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 				var columns=[{
 				    data: 'id'
 				}, {
-				    data: 'title'
+				    data: 'title',
+				    renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle
 				}, {
 				    data: 'title1',
 				    renderer: protocolExtendedFieldConfigHandsontableHelper.placeholderRenderer
@@ -2102,7 +2103,8 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 				    type: 'dropdown',
 				    strict: true,
 				    allowInvalid: false,
-				    source: operationList
+				    source: operationList,
+				    renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle
 				}, {
 				    data: 'title2',
 				    renderer: protocolExtendedFieldConfigHandsontableHelper.placeholderRenderer
@@ -2110,6 +2112,7 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 				    data: 'prec',
 				    type: 'text',
 				    allowInvalid: true,
+				    renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle,
 				    validator: function (val, callback) {
 				        return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, protocolExtendedFieldConfigHandsontableHelper);
 				    }
@@ -2117,16 +2120,19 @@ function CreateProtocolExtendedFieldConfigInfoTable(protocolName,classes,code){
 					data: 'ratio',
 				    type: 'text',
 				    allowInvalid: true,
+				    renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle,
 				    validator: function (val, callback) {
 				        return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, protocolExtendedFieldConfigHandsontableHelper);
 				    }
 				}, {
-				    data: 'unit'
+				    data: 'unit',
+				    renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle
 				}, {
 				    data: 'additionalConditions',
 				    type: 'dropdown',
 				    strict: true,
 				    allowInvalid: false,
+				    renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle,
 				    source: additionalConditionsList
 				}];
 				
@@ -2168,18 +2174,54 @@ var ProtocolExtendedFieldConfigHandsontableHelper = {
 	        protocolExtendedFieldConfigHandsontableHelper.AllData=[];
 	        
 	        protocolExtendedFieldConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+            	if(cellProperties.type=='checkbox'){
+	            	Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+	        	}else if(cellProperties.type=='dropdown'){
+	        		Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	        	}else{
+	        		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	}
+	            
+	            if(cellProperties.type!='checkbox'){
+	            	td.style.whiteSpace='nowrap'; //文本不换行
+	            	td.style.overflow='hidden';//超出部分隐藏
+	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        	}
 	        }
 	        
 	        protocolExtendedFieldConfigHandsontableHelper.placeholderRenderer = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	         // 1. 首先对 td 本身设置省略样式（无论值是什么）
+	            td.style.whiteSpace = 'nowrap';
+	            td.style.overflow = 'hidden';
+	            td.style.textOverflow = 'ellipsis';
+
+	            // 2. 如果 td 内部有子元素（比如 TextRenderer 可能生成 span），也要强制它们继承相同行为
+//	                但 text-overflow 不继承，所以需要直接设置到子元素上
+	            var children = td.children;
+	            if (children.length > 0) {
+	                for (var i = 0; i < children.length; i++) {
+	                    var child = children[i];
+	                    child.style.whiteSpace = 'nowrap';
+	                    child.style.overflow = 'hidden';
+	                    child.style.textOverflow = 'ellipsis';
+	                    // 如果子元素是块级或行内块，还需确保它不超出 td 宽度
+	                    child.style.display = 'block';  // 或 'inline-block'，视情况
+	                    child.style.maxWidth = '100%';
+	                }
+	            } else {
+	                // 如果直接是文本节点，没有子元素，可以直接操作 td，但 td 本身是 table-cell，
+	                // 需要确保 table-layout: fixed，并且 td 有宽度限制，否则溢出不会发生。
+	                // 所以我们必须在 Handsontable 配置中设置 tableLayout 和列宽（见下文）。
+	            }
+
+	            // 3. 处理空值占位符逻辑（保持原有）
 	            if (value === null || value === '') {
-	                td.style.color = 'gray'; // 设置灰色文本作为占位符样式
-	                td.style.fontStyle = 'italic'; // 可以添加其他样式如斜体
-	                td.innerHTML = loginUserLanguageResource.doubleClickCellTip+'...'; // 显示占位符文本
+	                td.style.color = 'gray';
+	                td.style.fontStyle = 'italic';
+	                td.innerHTML = loginUserLanguageResource.doubleClickCellTip + '...';
+	                // 注意：innerHTML 会清空子元素，所以之前设置的子元素样式会丢失，
+	                // 但此时内容很短，不会溢出，所以没关系。
 	            }
 	        }
 	        
@@ -2543,7 +2585,8 @@ function CreateProtocolExtendedFieldHighLowByteConfigInfoTable(protocolName,clas
 				var columns=[{
 				    data: 'id'
 				}, {
-				    data: 'title'
+				    data: 'title',
+				    renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle
 				}, {
 				    data: 'title1',
 				    renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.placeholderRenderer
@@ -2552,17 +2595,20 @@ function CreateProtocolExtendedFieldHighLowByteConfigInfoTable(protocolName,clas
 				    type: 'dropdown',
 				    strict: true,
 				    allowInvalid: false,
+				    renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle,
 				    source: [loginUserLanguageResource.highByte, loginUserLanguageResource.lowByte]
 				}, {
 				    data: 'resolutionMode',
 				    type: 'dropdown',
 				    strict: true,
 				    allowInvalid: false,
+				    renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle,
 				    source: [loginUserLanguageResource.switchingValue, loginUserLanguageResource.enumValue, loginUserLanguageResource.numericValue]
 				}, {
 				    data: 'prec',
 				    type: 'text',
 				    allowInvalid: true,
+				    renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle,
 				    validator: function (val, callback) {
 				        return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, protocolExtendedFieldConfigHandsontableHelper);
 				    }
@@ -2570,11 +2616,13 @@ function CreateProtocolExtendedFieldHighLowByteConfigInfoTable(protocolName,clas
 					data: 'ratio',
 				    type: 'text',
 				    allowInvalid: true,
+				    renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle,
 				    validator: function (val, callback) {
 				        return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, protocolExtendedFieldConfigHandsontableHelper);
 				    }
 				}, {
-				    data: 'unit'
+				    data: 'unit',
+				    renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle
 				}];
 				protocolExtendedFieldHighLowByteConfigHandsontableHelper.colHeaders=colHeaders;
 				protocolExtendedFieldHighLowByteConfigHandsontableHelper.columns=columns;
@@ -2636,18 +2684,55 @@ var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
 	        protocolExtendedFieldHighLowByteConfigHandsontableHelper.AllData=[];
 	        
 	        protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.whiteSpace='nowrap'; //文本不换行
-            	td.style.overflow='hidden';//超出部分隐藏
-            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	            if(cellProperties.type=='checkbox'){
+	            	Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+	        	}else if(cellProperties.type=='dropdown'){
+	        		Handsontable.renderers.DropdownRenderer.apply(this, arguments);//CheckboxRenderer TextRenderer NumericRenderer
+	        	}else{
+	        		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	}
+	            
+	            if(cellProperties.type!='checkbox'){
+	            	td.style.whiteSpace='nowrap'; //文本不换行
+	            	td.style.overflow='hidden';//超出部分隐藏
+	            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        	}
 	        }
 	        
 	        protocolExtendedFieldHighLowByteConfigHandsontableHelper.placeholderRenderer = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            
+	         // 1. 首先对 td 本身设置省略样式（无论值是什么）
+	            td.style.whiteSpace = 'nowrap';
+	            td.style.overflow = 'hidden';
+	            td.style.textOverflow = 'ellipsis';
+
+	            // 2. 如果 td 内部有子元素（比如 TextRenderer 可能生成 span），也要强制它们继承相同行为
+//	                但 text-overflow 不继承，所以需要直接设置到子元素上
+	            var children = td.children;
+	            if (children.length > 0) {
+	                for (var i = 0; i < children.length; i++) {
+	                    var child = children[i];
+	                    child.style.whiteSpace = 'nowrap';
+	                    child.style.overflow = 'hidden';
+	                    child.style.textOverflow = 'ellipsis';
+	                    // 如果子元素是块级或行内块，还需确保它不超出 td 宽度
+	                    child.style.display = 'block';  // 或 'inline-block'，视情况
+	                    child.style.maxWidth = '100%';
+	                }
+	            } else {
+	                // 如果直接是文本节点，没有子元素，可以直接操作 td，但 td 本身是 table-cell，
+	                // 需要确保 table-layout: fixed，并且 td 有宽度限制，否则溢出不会发生。
+	                // 所以我们必须在 Handsontable 配置中设置 tableLayout 和列宽（见下文）。
+	            }
+
+	            // 3. 处理空值占位符逻辑（保持原有）
 	            if (value === null || value === '') {
-	                td.style.color = 'gray'; // 设置灰色文本作为占位符样式
-	                td.style.fontStyle = 'italic'; // 可以添加其他样式如斜体
-	                td.innerHTML = loginUserLanguageResource.doubleClickCellTip+'...'; // 显示占位符文本
+	                td.style.color = 'gray';
+	                td.style.fontStyle = 'italic';
+	                td.innerHTML = loginUserLanguageResource.doubleClickCellTip + '...';
+	                // 注意：innerHTML 会清空子元素，所以之前设置的子元素样式会丢失，
+	                // 但此时内容很短，不会溢出，所以没关系。
 	            }
 	        }
 	        
@@ -2715,9 +2800,10 @@ var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
 	                    if(protocolConfigModuleEditFlag!=1){
 	                    	cellProperties.editor = false;
 	                    }
-	                    if(prop.toUpperCase()!='highLowByte'.toUpperCase() && prop.toUpperCase()!='resolutionMode'.toUpperCase()){
-	                    	cellProperties.renderer = protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle;
-	                    }
+//	                    if(prop.toUpperCase()!='highLowByte'.toUpperCase() && prop.toUpperCase()!='resolutionMode'.toUpperCase()){
+//	                    	cellProperties.renderer = protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle;
+//	                    }
+//	                    cellProperties.renderer = protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle;
 	                    return cellProperties;
 	                },
 	                afterBeginEditing: function (row, column) {

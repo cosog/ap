@@ -2143,16 +2143,30 @@ loadSurfaceCardList = function (page) {
                 var diagramId = diagramList[index].id;
                 divId = 'DiagramTiled_FSDiagram_Id_' + diagramId;
                 htmlResult += '<div id=\"' + divId + '\"';
-//                htmlResult += ' style="height:'+ gtHeight2 +';min-height:'+ dynamometerCardMinHeight +'px;width:'+ gtWidth2 +';float:left;"';
                 htmlResult += ' style="height:'+ gtHeight2 +';min-height:' + dynamometerCardMinHeight + 'px;width:'+ gtWidth2 +';float:left;"';
                 htmlResult += '></div>';
             });
             $("#surfaceCardContainer").append(htmlResult);
+            
+            var chartInstances = []; // 在函数外部定义
             Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
                 var diagramId = diagramList[index].id;
                 divId = 'DiagramTiled_FSDiagram_Id_' + diagramId;
                 showSurfaceCard(diagramList[index], divId); // 调用画功图的函数，功图列表
+                
+                var chart = $("#" + divId).highcharts();
+                if (chart) chartInstances.push(chart);
             });
+            
+         // 仅在移动设备或者mac上执行延迟重绘
+            if (isMobileOS() || isMacOS()) {
+                setTimeout(function() {
+                    for (var i = 0; i < chartInstances.length; i++) {
+                        chartInstances[i].redraw();
+                    }
+                    chartInstances = [];
+                }, 150);
+            }
         },
         failure: function () {
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
@@ -2243,10 +2257,6 @@ loadPSDiagramTiledList = function (page) {
             var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
             var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
             
-            if(gtHeight<dynamometerCardMinHeight){
-            	gtHeight=dynamometerCardMinHeight;
-            }
-            
             var gtWidth2 = gtWidth + 'px';
             var gtHeight2 = gtHeight + 'px';
 //            gtWidth2 = (100/columnCount) + '%';
@@ -2259,15 +2269,27 @@ loadPSDiagramTiledList = function (page) {
                 var diagramId = diagramList[index].id;
                 divId = 'DiagramTiled_PSDiagram_Id_' + diagramId;
                 htmlResult += '<div id=\"' + divId + '\"';
-                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';float:left;"';
+                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';min-height:' + dynamometerCardMinHeight + 'px;float:left;"';
                 htmlResult += '></div>';
             });
             $("#PSDiagramTiledContainer").append(htmlResult);
+            var chartInstances = [];
             Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
                 var diagramId = diagramList[index].id;
                 divId = 'DiagramTiled_PSDiagram_Id_' + diagramId;
                 showPSDiagram(diagramList[index], divId); // 调用画功图的函数，功图列表
+                var chart = $("#" + divId).highcharts();
+                if (chart) chartInstances.push(chart);
             });
+            
+            if (isMobileOS() || isMacOS()) {
+                setTimeout(function() {
+                    for (var i = 0; i < chartInstances.length; i++) {
+                        chartInstances[i].redraw();
+                    }
+                    chartInstances = [];
+                }, 150);
+            }
         },
         failure: function () {
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
@@ -2356,10 +2378,6 @@ loadISDiagramTiledList = function (page) {
             var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
             var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
             
-            if(gtHeight<dynamometerCardMinHeight){
-            	gtHeight=dynamometerCardMinHeight;
-            }
-            
             var gtWidth2 = gtWidth + 'px';
             var gtHeight2 = gtHeight + 'px';
 //            gtWidth2 = (100/columnCount) + '%';
@@ -2372,15 +2390,26 @@ loadISDiagramTiledList = function (page) {
                 var diagramId = diagramList[index].id;
                 divId = 'DiagramTiled_ISDiagram_Id_' + diagramId;
                 htmlResult += '<div id=\"' + divId + '\"';
-                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';float:left"';
+                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';min-height:' + dynamometerCardMinHeight + 'px;float:left"';
                 htmlResult += '></div>';
             });
             $("#ISDiagramTiledContainer").append(htmlResult);
+            var chartInstances = [];
             Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
                 var diagramId = diagramList[index].id;
                 divId = 'DiagramTiled_ISDiagram_Id_' + diagramId;
                 showASDiagram(diagramList[index], divId); // 调用画功图的函数，功图列表
+                var chart = $("#" + divId).highcharts();
+                if (chart) chartInstances.push(chart);
             });
+            if (isMobileOS() || isMacOS()) {
+                setTimeout(function() {
+                    for (var i = 0; i < chartInstances.length; i++) {
+                        chartInstances[i].redraw();
+                    }
+                    chartInstances = [];
+                }, 150);
+            }
         },
         failure: function () {
             Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);

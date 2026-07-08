@@ -3313,15 +3313,20 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	        }]
     	});
     	
-    	var isMobile = isMobileOS();
-    	if (isMobile) {
-    	    chart.redraw();
-    	    requestAnimationFrame(function() {
-    	    	chart.reflow();
-    	    });
-    	}
+//    	var isMobile = isMobileOS();
+//    	if (isMobile) {
+//    	    chart.redraw();
+//    	    requestAnimationFrame(function() {
+//    	    	chart.reflow();
+//    	    });
+//    	}
     }
 	
+}
+
+//判断是否为 macOS 系统
+function isMacOS() {
+    return /Macintosh/i.test(navigator.userAgent);
 }
 
 function isMobileOS(){

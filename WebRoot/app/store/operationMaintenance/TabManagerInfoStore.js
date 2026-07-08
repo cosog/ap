@@ -62,7 +62,7 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
                     	dataIndex: 'text_zh_CN',
                     	hidden:!showChineseName,
                     	editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
-                            allowBlank: false,
+                            allowBlank: (loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                             disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
                         }:"",
                     },{
@@ -72,7 +72,7 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
                     	dataIndex: 'text_en',
                     	hidden:!showEnglishName,
                     	editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
-                            allowBlank: false,
+                            allowBlank: (loginUserLanguage.toUpperCase()=='EN'?false:true),
                             disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
                         }:"",
                     },{
@@ -82,7 +82,7 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
                     	dataIndex: 'text_ru',
                     	hidden:!showRussianName,
                     	editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
-                            allowBlank: false,
+                            allowBlank: (loginUserLanguage.toUpperCase()=='RU'?false:true),
                             disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1
                         }:"",
                     }, {
@@ -94,9 +94,9 @@ Ext.define('AP.store.operationMaintenance.TabManagerInfoStore', {
 //                        width: getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)+'px',
                         dataIndex: 'sortNum',
                         editor: loginUserOperationMaintenanceModuleRight.editFlag==1?{
-                            allowBlank: false,
+                            allowBlank: true,
                             xtype: 'numberfield',
-                            editable: false,
+                            editable: true,
                             disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                             minValue: 1
                         }:""

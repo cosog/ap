@@ -438,17 +438,17 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		for (Object o : list) {
 			Object[] obj = (Object[]) o;
 			result_json.append("{\"instanceId\":"+obj[0]+",");
-			result_json.append("\"name_zh_CN\":\""+obj[1]+"\",");
-			result_json.append("\"name_en\":\""+obj[2]+"\",");
-			result_json.append("\"name_ru\":\""+obj[3]+"\",");
+			result_json.append("\"name_zh_CN\":\""+(obj[1]==null?"":obj[1])+"\",");
+			result_json.append("\"name_en\":\""+(obj[2]==null?"":obj[2])+"\",");
+			result_json.append("\"name_ru\":\""+(obj[3]==null?"":obj[3])+"\",");
 			result_json.append("\"calculateType\":\""+obj[4]+"\",");
-			result_json.append("\"sort\":\""+obj[5]+"\"},");
+			result_json.append("\"sort\":"+(obj[5]==null?null:obj[5])+"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
-		return result_json.toString().replaceAll("null", "");
+		return result_json.toString();
 	}
 	
 	public void addDeviceTabManagerInstance(T deviceTabManager) throws Exception {

@@ -2034,21 +2034,169 @@ function resizeTiledGraphs(panel,containerId) {
     }
 }
 
-/**
- * ========================================
- * 公共方法 - 图表渲染核心
- * ========================================
- */
+
+
+//loadSurfaceCardList = function (page) {
+//	diagramTiledPage=page;
+//    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loadingData); // 数据加载中，请稍后
+//    var start = (page - 1) * defaultGraghSize;
+//    if(page==1){
+//    	$("#surfaceCardContainer").html(''); // 将html内容清空
+//    }
+//    var orgId = Ext.getCmp('leftOrg_Id').getValue();
+//	var deviceName='';
+//	var deviceId=0;
+//	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+//		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+//		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+//	}
+//	var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id').rawValue;
+//	var startTime_Hour=Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').getValue();
+//	var startTime_Minute=Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').getValue();
+//	var startTime_Second=0;
+//
+//    var endDate=Ext.getCmp('HistoryFSDiagramQueryEndDate_Id').rawValue;
+//    var endTime_Hour=Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').getValue();
+//	var endTime_Minute=Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').getValue();
+//	var endTime_Second=0;
+//	var selectedResult=[];
+//	var statSelection = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id").getSelectionModel().getSelection();
+//	Ext.Array.each(statSelection, function (name, index, countriesItSelf) {
+//		selectedResult.push(statSelection[index].data.resultCode);
+//	});
+//    var resultCode=selectedResult.join(",");
+//	
+//	var hours=getHistoryQueryHours();
+//    Ext.Ajax.request({
+//        url: context + '/historyQueryController/querySurfaceCard',
+//        method: "POST",
+//        params: {
+//        	orgId: orgId,
+//    		deviceType:getDeviceTypeFromTabId("HistoryQueryRootTabPanel"),
+//    		deviceId:deviceId,
+//            deviceName:deviceName,
+//            resultCode:resultCode,
+//            startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
+//            endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+//            hours:hours,
+//            limit: defaultGraghSize,
+//            start: start,
+//            page: page
+//        },
+//        success: function (response) {
+//        	console.log("加载图形平铺第"+page+"页数据");
+//        	if(page==1){
+//        		$("#surfaceCardContainer").html(''); // 将html内容清空
+//        	}
+//            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loadingData); // 取消遮罩
+//            var get_rawData = Ext.decode(response.responseText); // 获取返回数据
+//            var diagramList = get_rawData.list; // 获取功图数据
+//            
+//            var totals = get_rawData.totals; // 总记录数
+//            var totalShow=get_rawData.totalShow;
+//            var totalPages = get_rawData.totalPages; // 总页数
+//            Ext.getCmp("SurfaceCardTotalPages_Id").setValue(totalPages);
+//            updateTotalRecords(totalShow,"HistoryFESDiagramTotalCount_Id");
+//            
+//            var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id');
+//            if(startDate.rawValue==''||null==startDate.rawValue){
+//            	startDate.setValue(get_rawData.start_date.split(' ')[0]);
+//            	Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
+//            	Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
+//            }
+//            var endDate=Ext.getCmp('HistoryFSDiagramQueryEndDate_Id');
+//            if(endDate.rawValue==''||null==endDate.rawValue){
+//            	endDate.setValue(get_rawData.end_date.split(' ')[0]);
+//            	Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
+//            	Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
+//            }
+//            
+//            
+//            var HistoryDiagramTabPanel = Ext.getCmp("FSDiagramTiledTabPanel_Id"); // 获取功图列表panel信息
+//            var panelHeight = HistoryDiagramTabPanel.getHeight(); // panel的高度
+//            var panelWidth = HistoryDiagramTabPanel.getWidth(); // panel的宽度
+//            var scrollWidth = getScrollWidth(); // 滚动条的宽度
+//            
+//            var scroller = HistoryDiagramTabPanel.getScrollable();
+//            var scrollSize = scroller.getSize().y;      // 内容高度
+//            var clientSize = scroller.getClientSize().y; // 可视高度
+//            var hasVerticalScroll = scrollSize > clientSize;
+//            
+////            var panelEl = HistoryDiagramTabPanel.getEl().dom;  // panel 是 Ext.getCmp("FSDiagramTiledTabPanel_Id")
+////            var hasVerticalScroll = panelEl.scrollHeight > panelEl.clientHeight;
+//            
+////            console.log("scrollSize:"+panelEl.scrollHeight+",clientSize:"+panelEl.clientHeight+",hasVerticalScroll:"+hasVerticalScroll);
+//            
+////            var effectivePanelWidth = panelWidth - (hasVerticalScroll ? scrollWidth : 0);
+//            var effectivePanelWidth = panelWidth - scrollWidth;
+//            var columnCount = parseInt( effectivePanelWidth/graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
+//            var gtWidth = effectivePanelWidth/columnCount-1; // 有滚动条时图形宽度
+//            var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
+//            
+//            var gtWidth2 = gtWidth + 'px';
+//            var gtHeight2 = gtHeight + 'px';
+////            gtWidth2 = (100/columnCount) + '%';
+////            gtHeight2 = 50 + '%';
+//            var htmlResult = '';
+//            var divId = '';
+//            
+//         // 功图列表，创建div
+//            Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
+//                var diagramId = diagramList[index].id;
+//                divId = 'DiagramTiled_FSDiagram_Id_' + diagramId;
+//                htmlResult = '';
+//                htmlResult += '<div id=\"' + divId + '\"';
+//                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';min-height:' + dynamometerCardMinHeight + 'px;float:left"';
+//                htmlResult += '></div>';
+//                
+//                $("#surfaceCardContainer").append(htmlResult);
+//                showSurfaceCard(diagramList[index], divId); // 调用画功图的函数，功图列表
+//            });
+//
+////            // 功图列表，创建div
+////            Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
+////                var diagramId = diagramList[index].id;
+////                divId = 'DiagramTiled_FSDiagram_Id_' + diagramId;
+////                htmlResult += '<div id=\"' + divId + '\"';
+////                htmlResult += ' style="height:'+ gtHeight2 +';min-height:' + dynamometerCardMinHeight + 'px;width:'+ gtWidth2 +';float:left;"';
+////                htmlResult += '></div>';
+////            });
+////            $("#surfaceCardContainer").append(htmlResult);
+////            
+////            var chartInstances = []; // 在函数外部定义
+////            Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
+////                var diagramId = diagramList[index].id;
+////                divId = 'DiagramTiled_FSDiagram_Id_' + diagramId;
+////                showSurfaceCard(diagramList[index], divId); // 调用画功图的函数，功图列表
+////                
+////                var chart = $("#" + divId).highcharts();
+////                if (chart) chartInstances.push(chart);
+////            });
+//            
+//         // 仅在移动设备或者mac上执行延迟重绘
+////            if (isMobileOS() || isMacOS()) {
+////                setTimeout(function() {
+////                    for (var i = 0; i < chartInstances.length; i++) {
+////                        chartInstances[i].redraw();
+////                    }
+////                    chartInstances = [];
+////                }, 150);
+////            }
+//        },
+//        failure: function () {
+//            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
+//        }
+//    });
+//}
 
 /**
  * 带回调的图表渲染函数
  * @param {Object} diagram - 功图数据
  * @param {String} divId - 容器ID
- * @param {Function} renderFunc - 渲染函数 (diagram, divId) => void
  * @param {Function} callback - 渲染完成回调
  */
-function renderChartWithCallback(diagram, divId, renderFunc, callback) {
-    renderFunc(diagram, divId);
+function renderChartWithCallback(diagram, divId, callback) {
+    showSurfaceCard(diagram, divId);
     
     // 等待图表渲染完成
     var checkChart = function(attempts) {
@@ -2063,7 +2211,7 @@ function renderChartWithCallback(diagram, divId, renderFunc, callback) {
         } else {
             // 超时后重试一次
             setTimeout(function() {
-                renderFunc(diagram, divId);
+                showSurfaceCard(diagram, divId);
                 var chart = $("#" + divId).highcharts();
                 if (callback) callback(chart);
             }, 500);
@@ -2075,7 +2223,7 @@ function renderChartWithCallback(diagram, divId, renderFunc, callback) {
 
 /**
  * 逐个渲染图表
- * @param {Array} renderQueue - 渲染队列 [{diagram: ..., divId: ..., renderFunc: ...}]
+ * @param {Array} renderQueue - 渲染队列 [{diagram: ..., divId: ...}]
  * @param {Function} onComplete - 全部完成回调
  */
 function renderChartsSequentially(renderQueue, onComplete) {
@@ -2096,7 +2244,9 @@ function renderChartsSequentially(renderQueue, onComplete) {
         if (isRendering) return;
         if (completedCount >= totalCount) {
             // 所有图表渲染完成
-//            console.log("所有图表渲染完成！成功: " + (totalCount - failedCount) + "，失败: " + failedCount + "，总计: " + totalCount);
+            console.log("所有图表渲染完成！成功: " + (totalCount - failedCount) + 
+                       "，失败: " + failedCount + "，总计: " + totalCount);
+            
             if (onComplete) onComplete();
             return;
         }
@@ -2105,12 +2255,12 @@ function renderChartsSequentially(renderQueue, onComplete) {
         var index = completedCount;
         var item = renderQueue[index];
         
-        renderChartWithCallback(item.diagram, item.divId, item.renderFunc, function(chart) {
+        renderChartWithCallback(item.diagram, item.divId, function(chart) {
             if (chart) {
-//                console.log("图表 " + (index + 1) + "/" + totalCount + " 渲染成功: " + item.divId);
+                console.log("图表 " + (index + 1) + "/" + totalCount + " 渲染成功: " + item.divId);
             } else {
                 failedCount++;
-//                console.warn("图表 " + (index + 1) + "/" + totalCount + " 渲染失败: " + item.divId);
+                console.warn("图表 " + (index + 1) + "/" + totalCount + " 渲染失败: " + item.divId);
             }
             
             completedCount++;
@@ -2128,34 +2278,14 @@ function renderChartsSequentially(renderQueue, onComplete) {
 }
 
 /**
- * ========================================
- * 公共方法 - 通用加载图表平铺列表
- * ========================================
+ * 加载表面功图列表
  */
-
-/**
- * 通用加载图表平铺列表方法
- * @param {Object} params - 参数对象
- * @param {String} params.containerId - 容器ID
- * @param {String} params.tabPanelId - TabPanel ID
- * @param {String} params.url - 请求URL
- * @param {Function} params.renderFunc - 渲染函数 (diagram, divId) => void
- * @param {Number} params.page - 页码
- * @param {String} params.divIdPrefix - div ID前缀
- */
-function loadDiagramTiledList(params) {
-    var page = params.page;
-    var containerId = params.containerId;
-    var tabPanelId = params.tabPanelId;
-    var url = params.url;
-    var renderFunc = params.renderFunc;
-    var divIdPrefix = params.divIdPrefix;
-    
+loadSurfaceCardList = function (page) {
     diagramTiledPage = page;
     Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loadingData);
     var start = (page - 1) * defaultGraghSize;
     if (page == 1) {
-        $("#" + containerId).html('');
+        $("#surfaceCardContainer").html('');
     }
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
     var deviceName = '';
@@ -2173,16 +2303,16 @@ function loadDiagramTiledList(params) {
     var endTime_Hour = Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').getValue();
     var endTime_Minute = Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').getValue();
     var endTime_Second = 0;
-    var hours = getHistoryQueryHours();
     var selectedResult = [];
     var statSelection = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id").getSelectionModel().getSelection();
     Ext.Array.each(statSelection, function (name, index, countriesItSelf) {
         selectedResult.push(statSelection[index].data.resultCode);
     });
     var resultCode = selectedResult.join(",");
-    
+
+    var hours = getHistoryQueryHours();
     Ext.Ajax.request({
-        url: url,
+        url: context + '/historyQueryController/querySurfaceCard',
         method: "POST",
         params: {
             orgId: orgId,
@@ -2198,8 +2328,9 @@ function loadDiagramTiledList(params) {
             page: page
         },
         success: function (response) {
+            console.log("加载图形平铺第" + page + "页数据");
             if (page == 1) {
-                $("#" + containerId).html('');
+                $("#surfaceCardContainer").html('');
             }
             Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loadingData);
             var get_rawData = Ext.decode(response.responseText);
@@ -2225,7 +2356,7 @@ function loadDiagramTiledList(params) {
             }
 
             // 计算图表尺寸
-            var HistoryDiagramTabPanel = Ext.getCmp(tabPanelId);
+            var HistoryDiagramTabPanel = Ext.getCmp("FSDiagramTiledTabPanel_Id");
             var panelHeight = HistoryDiagramTabPanel.getHeight();
             var panelWidth = HistoryDiagramTabPanel.getWidth();
             var scrollWidth = getScrollWidth();
@@ -2251,21 +2382,20 @@ function loadDiagramTiledList(params) {
                 // 创建所有div容器
                 Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
                     var diagramId = diagramList[index].id;
-                    var divId = divIdPrefix + diagramId;
+                    var divId = 'DiagramTiled_FSDiagram_Id_' + diagramId;
                     var htmlResult = '<div id=\"' + divId + '\"';
                     htmlResult += ' style="height:' + gtHeight2 + ';width:' + gtWidth2 + ';min-height:' + dynamometerCardMinHeight + 'px;float:left"';
                     htmlResult += '></div>';
                     
-                    $("#" + containerId).append(htmlResult);
+                    $("#surfaceCardContainer").append(htmlResult);
                     
                     renderQueue.push({
                         diagram: diagramList[index],
-                        divId: divId,
-                        renderFunc: renderFunc
+                        divId: divId
                     });
                 });
                 
-//                console.log("创建 " + renderQueue.length + " 个图表容器完成，开始逐个渲染（间隔10ms）");
+                console.log("创建 " + renderQueue.length + " 个图表容器完成，开始逐个渲染（间隔10ms）");
                 
                 // 逐个渲染图表
                 renderChartsSequentially(renderQueue, function() {
@@ -2284,51 +2414,264 @@ function loadDiagramTiledList(params) {
     });
 }
 
-/**
- * ========================================
- * 业务方法 - 加载各类功图列表
- * ========================================
- */
-
-/**
- * 加载地面功图列表
- */
-loadSurfaceCardList = function (page) {
-    loadDiagramTiledList({
-        page: page,
-        containerId: 'surfaceCardContainer',
-        tabPanelId: 'FSDiagramTiledTabPanel_Id',
-        url: context + '/historyQueryController/querySurfaceCard',
-        renderFunc: showSurfaceCard,
-        divIdPrefix: 'DiagramTiled_FSDiagram_Id_'
-    });
-}
-
-/**
- * 加载电功图列表
- */
 loadPSDiagramTiledList = function (page) {
-    loadDiagramTiledList({
-        page: page,
-        containerId: 'PSDiagramTiledContainer',
-        tabPanelId: 'PSDiagramTiledTabPanel_Id',
+	diagramTiledPage=page;
+    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loadingData); // 数据加载中，请稍后
+    var start = (page - 1) * defaultGraghSize;
+    if(page==1){
+    	$("#PSDiagramTiledContainer").html(''); // 将html内容清空
+    }
+    var orgId = Ext.getCmp('leftOrg_Id').getValue();
+	var deviceName='';
+	var deviceId=0;
+	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+	}
+	var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id').rawValue;
+	var startTime_Hour=Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').getValue();
+	var startTime_Minute=Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').getValue();
+	var startTime_Second=0;
+
+    var endDate=Ext.getCmp('HistoryFSDiagramQueryEndDate_Id').rawValue;
+    var endTime_Hour=Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').getValue();
+	var endTime_Minute=Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').getValue();
+	var endTime_Second=0;
+	var hours=getHistoryQueryHours();
+	var selectedResult=[];
+	var statSelection = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id").getSelectionModel().getSelection();
+	Ext.Array.each(statSelection, function (name, index, countriesItSelf) {
+		selectedResult.push(statSelection[index].data.resultCode);
+	});
+    var resultCode=selectedResult.join(",");
+    Ext.Ajax.request({
         url: context + '/historyQueryController/getPSDiagramTiledData',
-        renderFunc: showPSDiagram,
-        divIdPrefix: 'DiagramTiled_PSDiagram_Id_'
+        method: "POST",
+        params: {
+        	orgId: orgId,
+    		deviceType:getDeviceTypeFromTabId("HistoryQueryRootTabPanel"),
+    		deviceId:deviceId,
+            deviceName:deviceName,
+            resultCode:resultCode,
+            startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
+            endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+            hours:hours,
+            limit: defaultGraghSize,
+            start: start,
+            page: page
+        },
+        success: function (response) {
+        	if(page==1){
+        		$("#PSDiagramTiledContainer").html(''); // 将html内容清空
+        	}
+            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loadingData); // 取消遮罩
+            var get_rawData = Ext.decode(response.responseText); // 获取返回数据
+            var diagramList = get_rawData.list; // 获取功图数据
+            
+            var totals = get_rawData.totals; // 总记录数
+            var totalShow=get_rawData.totalShow;
+            var totalPages = get_rawData.totalPages; // 总页数
+            Ext.getCmp("SurfaceCardTotalPages_Id").setValue(totalPages);
+            updateTotalRecords(totalShow,"HistoryFESDiagramTotalCount_Id");
+            
+            var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id');
+            if(startDate.rawValue==''||null==startDate.rawValue){
+            	startDate.setValue(get_rawData.start_date.split(' ')[0]);
+            	Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
+            	Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
+            }
+            var endDate=Ext.getCmp('HistoryFSDiagramQueryEndDate_Id');
+            if(endDate.rawValue==''||null==endDate.rawValue){
+            	endDate.setValue(get_rawData.end_date.split(' ')[0]);
+            	Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
+            	Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
+            }
+            
+            
+            var HistoryDiagramTabPanel = Ext.getCmp("PSDiagramTiledTabPanel_Id"); // 获取功图列表panel信息
+            var panelHeight = HistoryDiagramTabPanel.getHeight(); // panel的高度
+            var panelWidth = HistoryDiagramTabPanel.getWidth(); // panel的宽度
+            var scrollWidth = getScrollWidth(); // 滚动条的宽度
+            var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
+            var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
+            var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
+            
+            var gtWidth2 = gtWidth + 'px';
+            var gtHeight2 = gtHeight + 'px';
+//            gtWidth2 = (100/columnCount) + '%';
+//            gtHeight2 = 50 + '%';
+            var htmlResult = '';
+            var divId = '';
+
+            // 功图列表，创建div
+            Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
+                var diagramId = diagramList[index].id;
+                divId = 'DiagramTiled_PSDiagram_Id_' + diagramId;
+                htmlResult += '<div id=\"' + divId + '\"';
+                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';min-height:' + dynamometerCardMinHeight + 'px;float:left;"';
+                htmlResult += '></div>';
+            });
+            $("#PSDiagramTiledContainer").append(htmlResult);
+            var chartInstances = [];
+            Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
+                var diagramId = diagramList[index].id;
+                divId = 'DiagramTiled_PSDiagram_Id_' + diagramId;
+                showPSDiagram(diagramList[index], divId); // 调用画功图的函数，功图列表
+                var chart = $("#" + divId).highcharts();
+                if (chart) chartInstances.push(chart);
+            });
+            
+            if (isMobileOS() || isMacOS()) {
+                setTimeout(function() {
+                    for (var i = 0; i < chartInstances.length; i++) {
+                        chartInstances[i].redraw();
+                    }
+                    chartInstances = [];
+                }, 150);
+            }
+        },
+        failure: function () {
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
+        }
     });
 }
 
-/**
- * 加载电流图列表
- */
 loadISDiagramTiledList = function (page) {
-    loadDiagramTiledList({
-        page: page,
-        containerId: 'ISDiagramTiledContainer',
-        tabPanelId: 'ISDiagramTiledTabPanel_Id',
+	diagramTiledPage=page;
+    Ext.getCmp("HistoryDiagramTabPanel").mask(loginUserLanguageResource.loadingData); // 数据加载中，请稍后
+    var start = (page - 1) * defaultGraghSize;
+    if(page==1){
+    	$("#ISDiagramTiledContainer").html(''); // 将html内容清空
+    }
+    var orgId = Ext.getCmp('leftOrg_Id').getValue();
+	var deviceName='';
+	var deviceId=0;
+	if(Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
+		deviceName = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+		deviceId = Ext.getCmp("HistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+	}
+	var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id').rawValue;
+	var startTime_Hour=Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').getValue();
+	var startTime_Minute=Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').getValue();
+	var startTime_Second=0;
+
+    var endDate=Ext.getCmp('HistoryFSDiagramQueryEndDate_Id').rawValue;
+    var endTime_Hour=Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').getValue();
+	var endTime_Minute=Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').getValue();
+	var endTime_Second=0;
+	var hours=getHistoryQueryHours();
+	var selectedResult=[];
+	var statSelection = Ext.getCmp("HistoryQueryFSdiagramTiledStatGrid_Id").getSelectionModel().getSelection();
+	Ext.Array.each(statSelection, function (name, index, countriesItSelf) {
+		selectedResult.push(statSelection[index].data.resultCode);
+	});
+    var resultCode=selectedResult.join(",");
+    Ext.Ajax.request({
         url: context + '/historyQueryController/getISDiagramTiledData',
-        renderFunc: showASDiagram,
-        divIdPrefix: 'DiagramTiled_ISDiagram_Id_'
+        method: "POST",
+        params: {
+        	orgId: orgId,
+    		deviceType:getDeviceTypeFromTabId("HistoryQueryRootTabPanel"),
+    		deviceId:deviceId,
+            deviceName:deviceName,
+            resultCode:resultCode,
+            startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
+            endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
+            hours:hours,
+            limit: defaultGraghSize,
+            start: start,
+            page: page
+        },
+        success: function (response) {
+        	if(page==1){
+        		$("#ISDiagramTiledContainer").html(''); // 将html内容清空
+        	}
+            Ext.getCmp("HistoryDiagramTabPanel").unmask(loginUserLanguageResource.loadingData); // 取消遮罩
+            var get_rawData = Ext.decode(response.responseText); // 获取返回数据
+            var diagramList = get_rawData.list; // 获取功图数据
+            
+            var totals = get_rawData.totals; // 总记录数
+            var totalShow=get_rawData.totalShow;
+            var totalPages = get_rawData.totalPages; // 总页数
+            Ext.getCmp("SurfaceCardTotalPages_Id").setValue(totalPages);
+            updateTotalRecords(totalShow,"HistoryFESDiagramTotalCount_Id");
+            
+            var startDate=Ext.getCmp('HistoryFSDiagramQueryStartDate_Id');
+            if(startDate.rawValue==''||null==startDate.rawValue){
+            	startDate.setValue(get_rawData.start_date.split(' ')[0]);
+            	Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[0]);
+            	Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').setValue(get_rawData.start_date.split(' ')[1].split(':')[1]);
+            }
+            var endDate=Ext.getCmp('HistoryFSDiagramQueryEndDate_Id');
+            if(endDate.rawValue==''||null==endDate.rawValue){
+            	endDate.setValue(get_rawData.end_date.split(' ')[0]);
+            	Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[0]);
+            	Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
+            }
+            
+            var HistoryDiagramTabPanel = Ext.getCmp("ISDiagramTiledTabPanel_Id"); // 获取功图列表panel信息
+            var panelHeight = HistoryDiagramTabPanel.getHeight(); // panel的高度
+            var panelWidth = HistoryDiagramTabPanel.getWidth(); // panel的宽度
+            var scrollWidth = getScrollWidth(); // 滚动条的宽度
+            var columnCount = parseInt( (panelWidth - scrollWidth) / graghMinWidth); // 有滚动条时一行显示的图形个数，graghMinWidth定义在CommUtils.js
+            var gtWidth = (panelWidth - scrollWidth) / columnCount-1; // 有滚动条时图形宽度
+            var gtHeight = gtWidth * diagramAspectRatio; // 有滚动条时图形高度
+            
+            var gtWidth2 = gtWidth + 'px';
+            var gtHeight2 = gtHeight + 'px';
+//            gtWidth2 = (100/columnCount) + '%';
+//            gtHeight2 = 50 + '%';
+            var htmlResult = '';
+            var divId = '';
+
+            // 功图列表，创建div
+            var chartInstances = [];
+            Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
+                var diagramId = diagramList[index].id;
+                divId = 'DiagramTiled_ISDiagram_Id_' + diagramId;
+                htmlResult = '';
+                htmlResult += '<div id=\"' + divId + '\"';
+                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';min-height:' + dynamometerCardMinHeight + 'px;float:left"';
+                htmlResult += '></div>';
+                
+                $("#ISDiagramTiledContainer").append(htmlResult);
+                showASDiagram(diagramList[index], divId); // 调用画功图的函数，功图列表
+                var chart = $("#" + divId).highcharts();
+                if (chart) chartInstances.push(chart);
+            });
+            
+            
+            
+//         // 功图列表，创建div
+//            Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
+//                var diagramId = diagramList[index].id;
+//                divId = 'DiagramTiled_ISDiagram_Id_' + diagramId;
+//                htmlResult += '<div id=\"' + divId + '\"';
+//                htmlResult += ' style="height:'+ gtHeight2 +';width:'+ gtWidth2 +';min-height:' + dynamometerCardMinHeight + 'px;float:left"';
+//                htmlResult += '></div>';
+//            });
+//            $("#ISDiagramTiledContainer").append(htmlResult);
+//            var chartInstances = [];
+//            Ext.Array.each(diagramList, function (name, index, countriesItSelf) {
+//                var diagramId = diagramList[index].id;
+//                divId = 'DiagramTiled_ISDiagram_Id_' + diagramId;
+//                showASDiagram(diagramList[index], divId); // 调用画功图的函数，功图列表
+//                var chart = $("#" + divId).highcharts();
+//                if (chart) chartInstances.push(chart);
+//            });
+            
+            if (isMobileOS() || isMacOS()) {
+                setTimeout(function() {
+                    for (var i = 0; i < chartInstances.length; i++) {
+                        chartInstances[i].redraw();
+                    }
+                    chartInstances = [];
+                }, 150);
+            }
+        },
+        failure: function () {
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + " </font>】:" + loginUserLanguageResource.contactAdmin);
+        }
     });
 }
 

@@ -583,7 +583,7 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}},"
 					 	+"{data:'highLowByte',type:'dropdown',strict:true,allowInvalid:false,source:['', '"+loginUserLanguageResource.highByte+"', '"+loginUserLanguageResource.lowByte+"']}," 
-					 	+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','bcd']}," 
+					 	+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','float64','bcd']}," 
 					 	+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolItemsConfigHandsontableHelper);}}," 
 					 	+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.readOnly+"', '"+loginUserLanguageResource.writeOnly+"', '"+loginUserLanguageResource.readWrite+"']}," 
 					 	+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['"+loginUserLanguageResource.activeAcqModel+"', '"+loginUserLanguageResource.passiveAcqModel+"']}," 
@@ -910,7 +910,7 @@ var ProtocolItemsConfigHandsontableHelper = {
                             if(isNotVal(highLowByte)){
                             	this.source = ['bit','byte'];
                             }else{
-                            	this.source = ['bit','byte','int16','uint16','float32','bcd'];
+                            	this.source = ['bit','byte','int16','uint16','float32','float64','bcd'];
                             }
 	                    }
 	                    

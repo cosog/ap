@@ -816,7 +816,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							displayUnitItem.setHistoryCurveConf(historyCurveConf);
 							
 							
-							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[21])?StringManagerUtils.stringToInteger(module_[22]):0);
+							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[22])?StringManagerUtils.stringToInteger(module_[22]):0);
 							displayUnitItem.setMatrix(module_[23]);
 							displayUnitItem.setItemEnable(StringManagerUtils.stringToInteger(module_[24]));
 							if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){
@@ -868,7 +868,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							displayUnitItem.setHistoryCurveConf(historyCurveConf);
 							
 							
-							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[21])?StringManagerUtils.stringToInteger(module_[22]):0);
+							displayUnitItem.setSwitchingValueShowType(StringManagerUtils.isNumber(module_[22])?StringManagerUtils.stringToInteger(module_[22]):0);
 							displayUnitItem.setMatrix(module_[23]);
 							displayUnitItem.setItemEnable(StringManagerUtils.stringToInteger(module_[24]));
 							if(StringManagerUtils.isNotNull(displayUnitItem.getItemCode())){

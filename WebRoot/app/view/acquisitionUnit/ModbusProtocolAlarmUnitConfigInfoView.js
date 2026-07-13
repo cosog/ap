@@ -2523,7 +2523,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 							item.itemName=selectedItem.data.title;
 							item.itemAddr=selectedItem.data.addr;
 							item.itemCode=selectedItem.data.itemCode;
-							if(alarmItemsData[index][4]==alarmItemsData[index][12]){
+							if(alarmItemsData[index][4]==alarmItemsData[index][11]){
 								item.value=1;
 							}else{
 								item.value=0;
@@ -2542,8 +2542,8 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
 									|| isNotVal(item.delay)
 									|| isNotVal(item.retriggerTime)
 									|| isNotVal(item.alarmLevel)
-									|| isNotVal(item.isSendMessage)
-									|| isNotVal(item.isSendMail)
+									|| item.isSendMessage==loginUserLanguageResource.yes
+									|| item.isSendMail==loginUserLanguageResource.yes
 									){
 								saveData.alarmItems.push(item);
 							}

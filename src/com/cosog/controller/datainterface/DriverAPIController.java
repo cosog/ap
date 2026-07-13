@@ -51,6 +51,7 @@ import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.model.calculate.DeviceInfo.DailyTotalItem;
 import com.cosog.model.drive.AcqGroup;
+import com.cosog.model.drive.AcqGroupDeserializer;
 import com.cosog.model.drive.AcqOnline;
 import com.cosog.model.drive.AcquisitionItemInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
@@ -78,6 +79,7 @@ import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.DeviceAlarmInfo.AlarmInfo;
 import com.cosog.websocket.config.WebSocketByJavax;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import net.sf.json.JSONObject;
@@ -1213,11 +1215,20 @@ public class DriverAPIController extends BaseController{
 		try {
 			if(EquipmentDriverServerTask.initFinished){
 				ss = request.getInputStream();
-				Gson gson=new Gson();
 				String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 				StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据："+data,0);
-				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
-				AcqGroup acqGroup=gson.fromJson(data, type);
+
+//				Gson gson=new Gson();
+//				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
+//				AcqGroup acqGroup=gson.fromJson(data, type);
+				
+				Gson gson = new GsonBuilder()
+					    .registerTypeAdapter(AcqGroup.class, new AcqGroupDeserializer())
+					    .create();
+
+					AcqGroup acqGroup = gson.fromJson(data, AcqGroup.class);
+				
+				
 				if(acqGroup!=null){
 					if(acqGroup.getHighLowByte()==null){
 						acqGroup.setHighLowByte(new ArrayList<>());

@@ -2786,6 +2786,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		Gson gson = new Gson();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String data = ParamUtils.getParameter(request, "data");
+		data = data.replaceAll("\\r?\\n|\\r", "");
+		data = data.replaceAll("\\\\n|\\\\r", "");
 		int saveType =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "saveType"));
 		data = StringManagerUtils.superscriptToNormal(data);
 		try{

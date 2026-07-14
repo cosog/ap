@@ -6891,7 +6891,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String tableName="tbl_resourcemonitoring";
 		String code=itemCode;
 		if("jedisStatus".equalsIgnoreCase(itemCode)){
-			code="round(t.cachemaxmemory/(1024*1024),2)||';'|| round(t.cacheusedmemory/(1024*1024),2) as jedisStatus";
+			code="TO_CHAR(ROUND(t.cachemaxmemory/(1024*1024), 2), 'FM999999990.00')||';'|| TO_CHAR(ROUND(t.cacheusedmemory/(1024*1024), 2), 'FM999999990.00') as jedisStatus";
 		}else if("tableSpaceSize".equalsIgnoreCase(itemCode)){
 			code="to_char(t.tablespaceusedpercent, 'FM999999990.99')||';'||to_char(t.undotablespaceusedpercent, 'FM999999990.99') as usedpercent";
 			tableName="tbl_dbmonitoring";

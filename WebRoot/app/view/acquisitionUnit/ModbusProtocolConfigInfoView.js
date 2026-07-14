@@ -2761,6 +2761,7 @@ var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                outsideClickDeselects:false,
 	                contextMenu: {
 	                    items: {
 	                        "row_above": {

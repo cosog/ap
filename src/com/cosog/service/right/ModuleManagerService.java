@@ -278,9 +278,10 @@ public class ModuleManagerService<T> extends BaseService<T> {
 				+ "md_name_zh_CN,md_name_en,md_name_ru,"
 				+ "md_showname_zh_CN,md_showname_en,md_showname_ru   ");
 		sqlBuffer.append("from  tbl_module t where 1=1 ");
-		if (!"1".equals(roleLevel)){
-			sqlBuffer.append("and  t.md_id in ( select distinct rm.rm_moduleid from tbl_user u ,tbl_role role,tbl_module2role rm where  role.role_Id =rm.rm_RoleId and role.role_Id = u.user_Type   and u.user_No="+user.getUserNo() + ")");
-		}
+//		if (!"1".equals(roleLevel)){
+//			sqlBuffer.append("and  t.md_id in ( select distinct rm.rm_moduleid from tbl_user u ,tbl_role role,tbl_module2role rm where  role.role_Id =rm.rm_RoleId and role.role_Id = u.user_Type   and u.user_No="+user.getUserNo() + ")");
+//		}
+		sqlBuffer.append("and  t.md_id in ( select distinct rm.rm_moduleid from tbl_user u ,tbl_role role,tbl_module2role rm where  role.role_Id =rm.rm_RoleId and role.role_Id = u.user_Type   and u.user_No="+user.getUserNo() + ")");
 		if(!moduleName.isEmpty()&&moduleName!=null&&!"".equals(moduleName)){
 			sqlBuffer.append("and t.md_name_"+user.getLanguageName()+" like '%"+moduleName+"%' ");
 		}
@@ -345,8 +346,8 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 			roleLevel = list.get(0).toString();
 		}
-		if ("1".equals(roleLevel))
-			return loadRightModules(clazz);
+//		if ("1".equals(roleLevel))
+//			return loadRightModules(clazz);
 		String queryString = "SELECT  m FROM Module m where 1=1 and m.mdType in(0,1)  and m.mdId in " 
 				+ "( select distinct rm.rmModuleid from User u ,Role role,RoleModule rm "
 				+ "where  role.roleId =rm.rmRoleId   " 

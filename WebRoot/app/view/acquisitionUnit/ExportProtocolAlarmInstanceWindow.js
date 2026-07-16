@@ -55,7 +55,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAlarmInstanceWindow", {
             items: [{
             	region: 'center',
 //            	width:'25%',
-            	title:loginUserLanguageResource.unitList,
+            	title:loginUserLanguageResource.instanceList,
             	layout: 'fit',
             	split: true,
                 collapsible: false,

@@ -2348,162 +2348,334 @@ function calculateTickInterval(data) {
     return tickInterval;
 }
 
-function deviceRealtimeMonitoringCurve(deviceType){
-	var selectRowId="RealTimeMonitoringInfoDeviceListSelectRow_Id";
-	var gridPanelId="RealTimeMonitoringListGridPanel_Id";
-	var contentId="realTimeMonitoringCurveContent";
-	var containerId="realTimeMonitoringCurveContainer";
-	var divPrefix="realTimeMonitoringCurveDiv";
-	var eastPanelId="RealTimeMonitoringCurveAndTableTabPanel";
-	var panelId="RealTimeMonitoringCurveTabPanel_Id";
-	
-	if(Ext.getCmp(panelId)!=undefined){
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
-	}
-	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-	var deviceName='';
-	var deviceId=0;
-	var calculateType=0;
-	var selectRow= Ext.getCmp(selectRowId).getValue();
-	if(Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
-		calculateType=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
-		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
-		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
-	}
-	Ext.Ajax.request({
-		method:'POST',
-		url:context + '/realTimeMonitoringController/getRealTimeMonitoringCurveData',
-		success:function(response) {
-			if(isNotVal(Ext.getCmp(panelId))){
-				Ext.getCmp(panelId).getEl().unmask();
+/**
+ * ========================================
+ * 公共方法 - 实时曲线渲染核心
+ * ========================================
+ */
+
+/**
+ * 带回调的实时曲线图表渲染函数
+ * @param {Object} chartConfig - 图表配置对象
+ * @param {String} divId - 容器ID
+ * @param {Function} callback - 渲染完成回调
+ */
+function renderRealTimeChartWithCallback(chartConfig, divId, callback) {
+    // 调用原始渲染函数
+    initDeviceRealtimeMonitoringStockChartFn(
+        chartConfig.series,
+        chartConfig.tickInterval,
+        divId,
+        chartConfig.title,
+        chartConfig.subtitle,
+        chartConfig.xtitle,
+        chartConfig.yTitle,
+        chartConfig.color,
+        chartConfig.legend,
+        chartConfig.navigator,
+        chartConfig.scrollbar,
+        chartConfig.timeFormat,
+        chartConfig.maxValue,
+        chartConfig.minValue,
+        chartConfig.yAxisOpposite
+    );
+    
+    // 等待图表渲染完成
+    var checkChart = function(attempts) {
+        attempts = attempts || 0;
+        var chart = $("#" + divId).highcharts();
+        if (chart && chart.series && chart.series.length > 0) {
+            if (callback) callback(chart);
+        } else if (attempts < 20) {
+            setTimeout(function() {
+                checkChart(attempts + 1);
+            }, 100);
+        } else {
+            // 超时后重试一次
+            setTimeout(function() {
+                initDeviceRealtimeMonitoringStockChartFn(
+                    chartConfig.series,
+                    chartConfig.tickInterval,
+                    divId,
+                    chartConfig.title,
+                    chartConfig.subtitle,
+                    chartConfig.xtitle,
+                    chartConfig.yTitle,
+                    chartConfig.color,
+                    chartConfig.legend,
+                    chartConfig.navigator,
+                    chartConfig.scrollbar,
+                    chartConfig.timeFormat,
+                    chartConfig.maxValue,
+                    chartConfig.minValue,
+                    chartConfig.yAxisOpposite
+                );
+                var chart = $("#" + divId).highcharts();
+                if (callback) callback(chart);
+            }, 500);
+        }
+    };
+    
+    checkChart();
+}
+
+/**
+ * 逐个渲染实时曲线图表
+ * @param {Array} renderQueue - 渲染队列 [{chartConfig: ..., divId: ...}]
+ * @param {Function} onComplete - 全部完成回调
+ */
+function renderRealTimeChartsSequentially(renderQueue, onComplete) {
+    if (!renderQueue || renderQueue.length === 0) {
+        if (onComplete) onComplete();
+        return;
+    }
+    
+    var totalCount = renderQueue.length;
+    var completedCount = 0;
+    var failedCount = 0;
+    var isRendering = false;
+    
+    function renderNext() {
+        if (isRendering) return;
+        if (completedCount >= totalCount) {
+//            console.log("所有实时曲线渲染完成！成功: " + (totalCount - failedCount) + 
+//                       "，失败: " + failedCount + "，总计: " + totalCount);
+            if (onComplete) onComplete();
+            return;
+        }
+        
+        isRendering = true;
+        var index = completedCount;
+        var item = renderQueue[index];
+        
+        renderRealTimeChartWithCallback(item.chartConfig, item.divId, function(chart) {
+            if (chart) {
+//                console.log("实时曲线 " + (index + 1) + "/" + totalCount + " 渲染成功: " + item.divId);
+            } else {
+                failedCount++;
+//                console.warn("实时曲线 " + (index + 1) + "/" + totalCount + " 渲染失败: " + item.divId);
             }
-			
-			var result =  Ext.JSON.decode(response.responseText);
-			var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
-		    var data = result.list;
-		    var totals=result.curveCount;
-		    var legendName =result.curveItems;
-		    var curveConf=result.curveConf;
-		    var colors=[];
-		    for(var i=0;i<curveConf.length;i++){
-		    	if(curveConf[i].color==''){
-		    		colors.push(defaultColors[i%10]);
-		    	}else{
-		    		colors.push('#'+curveConf[i].color);
-		    	}
-		    }
-		   
-		    var tickInterval = calculateTickInterval(data);
             
-		    var columnCount = 2;
-		    var rowCount = (totals%columnCount==0)?(totals/columnCount):(parseInt(totals/columnCount)+1);
-		    
-		    var chartWidth2 = 50 + '%';
-            var chartHeight2 = 50 + '%';
+            completedCount++;
+            isRendering = false;
             
-            if(totals==1){
-            	chartWidth2 = 100 + '%';
-                chartHeight2 = 100 + '%';
-            }else if(totals==2){
-            	chartWidth2 = 100 + '%';
-                chartHeight2 = 50 + '%';
-            }else{
-            	chartWidth2 = 50 + '%';
-                chartHeight2 = 50 + '%';
+            // 延迟10毫秒后开始渲染下一个
+            setTimeout(function() {
+                renderNext();
+            }, 10);
+        });
+    }
+    
+    renderNext();
+}
+
+/**
+ * ========================================
+ * 业务方法 - 设备实时监测曲线（改造后）
+ * ========================================
+ */
+
+function deviceRealtimeMonitoringCurve(deviceType) {
+    var selectRowId = "RealTimeMonitoringInfoDeviceListSelectRow_Id";
+    var gridPanelId = "RealTimeMonitoringListGridPanel_Id";
+    var containerId = "realTimeMonitoringCurveContainer";
+    var divPrefix = "realTimeMonitoringCurveDiv";
+    var eastPanelId = "RealTimeMonitoringCurveAndTableTabPanel";
+    var panelId = "RealTimeMonitoringCurveTabPanel_Id";
+    
+    if (Ext.getCmp(panelId) != undefined) {
+        Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
+    }
+    
+    var orgId = Ext.getCmp('leftOrg_Id').getValue();
+    var deviceName = '';
+    var deviceId = 0;
+    var calculateType = 0;
+    var selectRow = Ext.getCmp(selectRowId).getValue();
+    if (Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length > 0) {
+        calculateType = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
+        deviceId = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
+        deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
+    }
+    
+    Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/realTimeMonitoringController/getRealTimeMonitoringCurveData',
+        success: function(response) {
+            if (isNotVal(Ext.getCmp(panelId))) {
+                Ext.getCmp(panelId).getEl().unmask();
             }
             
-            $('#'+containerId).html(''); // 将html内容清空
-            var htmlResult = '';
-            var divId = '';
-		    
-            if (totals > 0) {
-            	//添加div
-            	for(var i=0;i<totals;i++){
-            		divId = divPrefix + i+"_Id";
-                    htmlResult += '<div id=\"' + divId + '\"';
-                    htmlResult += ' style="height:'+ chartHeight2 +';width:'+ chartWidth2 +';min-height:' + dynamometerCardMinHeight + 'px;"';
-                    htmlResult += '></div>';
-            	}
-                $('#'+containerId).append(htmlResult);
-                //数据处理
-                for(var i=0;i<totals;i++){
-                	divId = divPrefix + i+"_Id";
-                	var xTitle='';
-                	var yTitle=legendName[i];
-                	var title = result.deviceName+":"+legendName[i].split("(")[0] + loginUserLanguageResource.trendCurve;
-                	var subtitle='';
-        		    var color=[];
-        		    color.push(colors[i]);
-        		    if(color[0]==''){
-        		    	color[0]=defaultColors[i%10];
-        		    }
-        		    var maxValue=null;
-    		        var minValue=null;
-    		        var allPositive=true;//全部是非负数
-    		        var allNegative=true;//全部是负值
-    		        
-    		        var yAxisOpposite=curveConf[i].yAxisOpposite;
-    		        var series = [];  // 直接定义为数组
-    		        var seriesItem = {
-    		            name: legendName[i],
-    		            lineWidth: curveConf[i].lineWidth,
-    		            dashStyle: curveConf[i].dashStyle,
-    		            marker: { enabled: true },
-    		            dataGrouping: { enabled: false },
-    		            data: []  // 空数组，下面填充
-    		        };
-    		        
-    		        
-    		        for (var j = 0; j < data.length; j++) {
-    		            var timestamp = Date.parse(data[j].acqTime.replace(/-/g, '/'));
-    		            var value = parseFloat(data[j].data[i]);
-    		            seriesItem.data.push([timestamp, value]);
-    		            
-    		            if(parseFloat(data[j].data[i])<0){
-    		            	allPositive=false;
-    		            }else if(parseFloat(data[j].data[i])>=0){
-    		            	allNegative=false;
-    		            }
-    		        }
-    		        series.push(seriesItem);
-        		    if(allNegative){
-    		        	maxValue=0;
-    		        }else if(allPositive){
-    		        	minValue=0;
-    		        }
-        		    
-        		    var timeFormat='%H:%M';
-        		    initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, title, subtitle, xTitle, yTitle,color,false,true,false,timeFormat,maxValue,minValue,yAxisOpposite);
+            var result = Ext.JSON.decode(response.responseText);
+            var defaultColors = ["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
+            var data = result.list;
+            var totals = result.curveCount;
+            var legendName = result.curveItems;
+            var curveConf = result.curveConf;
+            var colors = [];
+            for (var i = 0; i < curveConf.length; i++) {
+                if (curveConf[i].color == '') {
+                    colors.push(defaultColors[i % 10]);
+                } else {
+                    colors.push('#' + curveConf[i].color);
                 }
             }
             
-            var eastPanel=Ext.getCmp(eastPanelId);
-			if(eastPanel.collapsed){
-            	var container=$('#'+containerId);
-    			if(container!=undefined && container.length>0){
-    				var containerChildren=container[0].children;
-    				if(containerChildren!=undefined && containerChildren.length>0){
-    					for(var i=0;i<containerChildren.length;i++){
-    						$("#"+containerChildren[i].id).hide(); 
-    					}
-    				}
-    			}
+            var tickInterval = calculateTickInterval(data);
+            
+            // 计算布局
+            var chartWidth2, chartHeight2;
+            if (totals == 1) {
+                chartWidth2 = '100%';
+                chartHeight2 = '100%';
+            } else if (totals == 2) {
+                chartWidth2 = '100%';
+                chartHeight2 = '50%';
+            } else {
+                chartWidth2 = '50%';
+                chartHeight2 = '50%';
             }
-		},
-		failure:function(){
-			if(Ext.getCmp(panelId)!=undefined){
-				Ext.getCmp(panelId).getEl().unmask();
-			}
-			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
-		},
-		params: {
-			deviceName:deviceName,
-			deviceId:deviceId,
-			deviceType:deviceType,
-			calculateType:calculateType
+            
+            // 清空容器
+            $('#' + containerId).html('');
+            
+            // ========== 创建所有div并构建渲染队列 ==========
+            var renderQueue = [];
+            
+            if (totals > 0) {
+                // 1. 先创建所有div
+                for (var i = 0; i < totals; i++) {
+                    var divId = divPrefix + i + "_Id";
+                    var htmlResult = '<div id=\"' + divId + '\"';
+                    htmlResult += ' style="height:' + chartHeight2 + ';width:' + chartWidth2 + ';min-height:' + dynamometerCardMinHeight + 'px;"';
+                    htmlResult += '></div>';
+                    $('#' + containerId).append(htmlResult);
+                }
+                
+                // 2. 准备每个图表的配置
+                for (var i = 0; i < totals; i++) {
+                    var divId = divPrefix + i + "_Id";
+                    var xTitle = '';
+                    var yTitle = legendName[i];
+                    var title = result.deviceName + ":" + legendName[i].split("(")[0] + loginUserLanguageResource.trendCurve;
+                    var subtitle = '';
+                    var color = [];
+                    color.push(colors[i]);
+                    if (color[0] == '') {
+                        color[0] = defaultColors[i % 10];
+                    }
+                    var maxValue = null;
+                    var minValue = null;
+                    var allPositive = true;
+                    var allNegative = true;
+                    var yAxisOpposite = curveConf[i].yAxisOpposite;
+                    
+                    // 构建series数据
+                    var seriesItem = {
+                        name: legendName[i],
+                        lineWidth: curveConf[i].lineWidth,
+                        dashStyle: curveConf[i].dashStyle,
+                        marker: { enabled: true },
+                        dataGrouping: { enabled: false },
+                        data: []
+                    };
+                    
+                    for (var j = 0; j < data.length; j++) {
+                        var timestamp = Date.parse(data[j].acqTime.replace(/-/g, '/'));
+                        var value = parseFloat(data[j].data[i]);
+                        seriesItem.data.push([timestamp, value]);
+                        
+                        if (value < 0) {
+                            allPositive = false;
+                        } else if (value >= 0) {
+                            allNegative = false;
+                        }
+                    }
+                    
+                    var series = [seriesItem];
+                    
+                    if (allNegative) {
+                        maxValue = 0;
+                    } else if (allPositive) {
+                        minValue = 0;
+                    }
+                    
+                    var timeFormat = '%H:%M';
+                    
+                    // 构建配置对象
+                    var chartConfig = {
+                        series: series,
+                        tickInterval: tickInterval,
+                        title: title,
+                        subtitle: subtitle,
+                        xtitle: xTitle,
+                        yTitle: yTitle,
+                        color: color,
+                        legend: false,
+                        navigator: true,
+                        scrollbar: false,
+                        timeFormat: timeFormat,
+                        maxValue: maxValue,
+                        minValue: minValue,
+                        yAxisOpposite: yAxisOpposite
+                    };
+                    
+                    renderQueue.push({
+                        divId: divId,
+                        chartConfig: chartConfig
+                    });
+                }
+                
+                // 3. 逐个渲染图表
+//                console.log("创建 " + renderQueue.length + " 个实时曲线容器完成，开始逐个渲染（间隔10ms）");
+                renderRealTimeChartsSequentially(renderQueue, function() {
+//                    console.log("所有实时曲线渲染完成");
+                    
+                    // 处理折叠面板隐藏逻辑（原有逻辑）
+                    var eastPanel = Ext.getCmp(eastPanelId);
+                    if (eastPanel.collapsed) {
+                        var container = $('#' + containerId);
+                        if (container != undefined && container.length > 0) {
+                            var containerChildren = container[0].children;
+                            if (containerChildren != undefined && containerChildren.length > 0) {
+                                for (var i = 0; i < containerChildren.length; i++) {
+                                    $("#" + containerChildren[i].id).hide();
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+//                console.log("没有实时曲线数据需要渲染");
+                // 如果无数据，也执行隐藏逻辑
+                var eastPanel = Ext.getCmp(eastPanelId);
+                if (eastPanel.collapsed) {
+                    var container = $('#' + containerId);
+                    if (container != undefined && container.length > 0) {
+                        var containerChildren = container[0].children;
+                        if (containerChildren != undefined && containerChildren.length > 0) {
+                            for (var i = 0; i < containerChildren.length; i++) {
+                                $("#" + containerChildren[i].id).hide();
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        failure: function() {
+            if (Ext.getCmp(panelId) != undefined) {
+                Ext.getCmp(panelId).getEl().unmask();
+            }
+            Ext.MessageBox.alert(loginUserLanguageResource.error, loginUserLanguageResource.ajaxError);
+        },
+        params: {
+            deviceName: deviceName,
+            deviceId: deviceId,
+            deviceType: deviceType,
+            calculateType: calculateType
         }
-	});
-};
+    });
+}
 
 function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, title, subtitle, xtitle,yTitle, color,legend,navigator,scrollbar,timeFormat,maxValue,minValue,yAxisOpposite) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
@@ -3279,7 +3451,7 @@ function updateDeviceMonitoringData(record) {
             continueUpdateDeviceMonitoringData(deviceInfo, deviceId, deviceName, deviceType, record);
         })
         .catch(function(error) {
-            console.error("获取设备附加信息失败", error);
+//            console.error("获取设备附加信息失败", error);
          // 忽略过期响应
             if (currentRequestId !== _updateDeviceMonitoringData_requestId) {
                 return;

@@ -27,6 +27,7 @@ public class WebSocketByJavax {
 	public Logger logger = LoggerFactory.getLogger(WebSocketByJavax.class);
 	public static int onlineCount = 0; 
 	public String userId;
+	public String loginUserLanguage;
 	public Session session; 
 	private static final int MAX_CONNECTIONS = 10000;
     public static final ConcurrentHashMap<String, WebSocketByJavax> clients;
@@ -50,6 +51,9 @@ public class WebSocketByJavax {
     
     @OnOpen
     public void onOpen(@PathParam("userId") String userId, Session session) throws IOException {
+    	Map<String, List<String>> paramMap = session.getRequestParameterMap();
+        String loginUserLanguage = paramMap.containsKey("loginUserLanguage")?paramMap.get("loginUserLanguage").get(0):null;
+    	
         synchronized(clients) {
             if (clients.size() >= MAX_CONNECTIONS) {
                 session.close(new CloseReason(CloseReason.CloseCodes.TRY_AGAIN_LATER, "服务器连接数已达上限"));
@@ -57,12 +61,13 @@ public class WebSocketByJavax {
             }
             synchronized(clients){
             	this.userId = userId+"_"+new Date().getTime();
+            	this.loginUserLanguage = loginUserLanguage;
                 this.session=session;
             	clients.put(this.userId,this);
-                addOnlineCount();
+//                addOnlineCount();
                 logger.debug("新连接：{}",this.userId);
                 StringManagerUtils.printLog("接收到客户端连接:"+this.userId,0);
-                StringManagerUtils.printLog("当前线上用户数量:"+clients.size()+","+this.getOnlineCount(),0);
+                StringManagerUtils.printLog("当前线上用户数量:"+clients.size(),0);
             }
         }
     }
@@ -97,9 +102,9 @@ public class WebSocketByJavax {
                         logger.error("关闭 session 失败: {}", userId, e);
                     }
                 }
-                subOnlineCount();
+//                subOnlineCount();
                 StringManagerUtils.printLog("用户"+userId+"已退出！",0);
-                StringManagerUtils.printLog("剩余在线用户"+clients.size()+","+this.getOnlineCount(),0);
+                StringManagerUtils.printLog("剩余在线用户"+clients.size(),0);
             }
         }
     }
@@ -158,24 +163,6 @@ public class WebSocketByJavax {
         }
     }
     
-//    public void sendMessageToUser(String userAccount,String message){
-//		for (WebSocketByJavax item : clients.values()) { 
-//            String[] clientInfo=item.userId.split("_");
-//        	if(clientInfo!=null && clientInfo.length==3 && userAccount.equals(clientInfo[1])){
-//        		synchronized(item.session){
-//        			try{
-//            			if(item.session!=null && item.session.isOpen()){
-//            				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
-//            			}
-//            		}catch(Exception e){
-//            			e.printStackTrace();
-//            			StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" +"webSocket信息推送失败:"+message.length());
-//            		}
-//        		}
-//            }
-//        }
-//    }
-    
     public void sendMessageToUser(String userAccount, String message) {
         List<WebSocketByJavax> targets = new ArrayList<>();
         
@@ -186,6 +173,32 @@ public class WebSocketByJavax {
                 if(clientInfo != null && clientInfo.length == 3 && 
                    userAccount.equals(clientInfo[1]) && 
                    item.session != null && item.session.isOpen()) {
+                    targets.add(item);
+                }
+            }
+        }
+        
+        // 然后发送消息
+        for (WebSocketByJavax target : targets) {
+            synchronized(target.session) {
+                try {
+                    target.session.getBasicRemote().sendText(message);
+                } catch (Exception e) {
+                    logger.error("发送消息失败，用户: {}", target.userId, e);
+                    StringManagerUtils.printLog("webSocket信息推送失败:"+message.length(),2);
+                    // 可以考虑移除无效连接
+                }
+            }
+        }
+    }
+    
+    public void sendMessageToUserId(String userId, String message) {
+        List<WebSocketByJavax> targets = new ArrayList<>();
+        
+        // 先收集目标客户端，减少同步块范围
+        synchronized(clients) {
+            for (WebSocketByJavax item : clients.values()) {
+                if(userId.equals(item.userId) && item.session != null && item.session.isOpen()) {
                     targets.add(item);
                 }
             }
@@ -227,7 +240,7 @@ public class WebSocketByJavax {
             clients.entrySet().removeIf(entry -> {
                 WebSocketByJavax client = entry.getValue();
                 if (client.session == null || !client.session.isOpen()) {
-                    subOnlineCount();
+//                    subOnlineCount();
                     return true;
                 }
                 return false;
@@ -235,17 +248,17 @@ public class WebSocketByJavax {
         }
     }
     
-    public static synchronized int getOnlineCount() { 
-        return onlineCount; 
-    } 
-
-    public static synchronized void addOnlineCount() {
-    	WebSocketByJavax.onlineCount++;
-    }
-
-    public static synchronized void subOnlineCount() {
-    	WebSocketByJavax.onlineCount--; 
-    }
+//    public static synchronized int getOnlineCount() { 
+//        return onlineCount; 
+//    } 
+//
+//    public static synchronized void addOnlineCount() {
+//    	WebSocketByJavax.onlineCount++;
+//    }
+//
+//    public static synchronized void subOnlineCount() {
+//    	WebSocketByJavax.onlineCount--; 
+//    }
 
     public static synchronized Map<String, WebSocketByJavax> getClients() {
         return clients;

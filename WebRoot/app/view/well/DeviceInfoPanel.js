@@ -4674,70 +4674,77 @@ function deviceProductionDataDownlink(){
         	}
 		}
 		
-		if(deviceCalculateDataType==1 || deviceCalculateDataType==2){
-			if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
-				Ext.getCmp("DeviceCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
-			}
-			Ext.Ajax.request({
-	            url: context + '/wellInformationManagerController/deviceProductionDataDownlink',
-	            method: "POST",
-	            params: {
-	            	deviceId: deviceId,
-	            	deviceName: deviceName,
-	            	deviceCalculateDataType: deviceCalculateDataType,
-	            	productionData:JSON.stringify(deviceProductionData),
-	            	pumpingUnitInfo:JSON.stringify(pumpingUnitInfo),
-	            	manualInterventionResultName:manualInterventionResultName,
-	            	FESDiagramSrcName:FESDiagramSrcName,
-	            	applicationScenarios:applicationScenarios
-	            },
-	            success: function (response, action) {
-	            	if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
-		            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+		var confirmInfo = loginUserLanguageResource.wellboreData+'</br>'
+			+loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font></br>"
+			+loginUserLanguageResource.confirmDownlink;
+		Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
+	        if (btn == "yes") {
+	        	if(deviceCalculateDataType==1 || deviceCalculateDataType==2){
+	    			if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
+	    				Ext.getCmp("DeviceCalculateDataInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
 	    			}
-	            	var result =  Ext.JSON.decode(response.responseText);
-	            	
-	            	if (result.flag == false) {
-	                    Ext.MessageBox.show({
-	                        title: loginUserLanguageResource.tip,
-	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
-	                        icon: Ext.MessageBox.INFO,
-	                        buttons: Ext.Msg.OK,
-	                        fn: function () {
-	                            window.location.href = context + "/login";
-	                        }
-	                    });
-	                } else if (result.flag == true && result.error == false) {
-	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-	                }  else if (result.flag == true && result.error == true) {
-	                    
-	                	const plugin = productionHandsontableHelper.hot.getPlugin('hiddenColumns');
-                    	plugin.showColumns([4]);
-                    	plugin.hideColumns([5]);
-                    	productionHandsontableHelper.hot.render();
-                    	
-                    	var codeColumnValue=productionHandsontableHelper.hot.getDataAtProp('itemCode');
-                    	for(var i=0;i<codeColumnValue.length;i++){
-                    		for(var j=0;j<result.downStatusList.length;j++){
-                    			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
-                    				productionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
-                    				break;
-                    			}
-                    		}
-                    	}
-//	                	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-	                } 
-	            },
-	            failure: function () {
-	            	if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
-		            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
-	    			}
-	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-	            }
-	        });
-		}else{
-			
-		}
+	    			Ext.Ajax.request({
+	    	            url: context + '/wellInformationManagerController/deviceProductionDataDownlink',
+	    	            method: "POST",
+	    	            params: {
+	    	            	deviceId: deviceId,
+	    	            	deviceName: deviceName,
+	    	            	deviceCalculateDataType: deviceCalculateDataType,
+	    	            	productionData:JSON.stringify(deviceProductionData),
+	    	            	pumpingUnitInfo:JSON.stringify(pumpingUnitInfo),
+	    	            	manualInterventionResultName:manualInterventionResultName,
+	    	            	FESDiagramSrcName:FESDiagramSrcName,
+	    	            	applicationScenarios:applicationScenarios
+	    	            },
+	    	            success: function (response, action) {
+	    	            	if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
+	    		            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+	    	    			}
+	    	            	var result =  Ext.JSON.decode(response.responseText);
+	    	            	
+	    	            	if (result.flag == false) {
+	    	                    Ext.MessageBox.show({
+	    	                        title: loginUserLanguageResource.tip,
+	    	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
+	    	                        icon: Ext.MessageBox.INFO,
+	    	                        buttons: Ext.Msg.OK,
+	    	                        fn: function () {
+	    	                            window.location.href = context + "/login";
+	    	                        }
+	    	                    });
+	    	                } else if (result.flag == true && result.error == false) {
+	    	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+	    	                }  else if (result.flag == true && result.error == true) {
+	    	                    
+	    	                	const plugin = productionHandsontableHelper.hot.getPlugin('hiddenColumns');
+	                        	plugin.showColumns([4]);
+	                        	plugin.hideColumns([5]);
+	                        	productionHandsontableHelper.hot.render();
+	                        	
+	                        	var codeColumnValue=productionHandsontableHelper.hot.getDataAtProp('itemCode');
+	                        	for(var i=0;i<codeColumnValue.length;i++){
+	                        		for(var j=0;j<result.downStatusList.length;j++){
+	                        			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+	                        				productionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+	                        				break;
+	                        			}
+	                        		}
+	                        	}
+//	    	                	Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+	    	                } 
+	    	            },
+	    	            failure: function () {
+	    	            	if(Ext.getCmp("DeviceCalculateDataInfoPanel_Id")!=undefined){
+	    		            	Ext.getCmp("DeviceCalculateDataInfoPanel_Id").getEl().unmask();
+	    	    			}
+	    	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+	    	            }
+	    	        });
+	    		}else{
+	    			
+	    		}
+	        }
+	    });
 	}else{
 		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
 	}
@@ -4769,109 +4776,116 @@ function devicePumpingUnitDataDownlink(){
             	}
         	}
         }
-
-        if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
-            Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
-		}
-		Ext.Ajax.request({
-            url: context + '/wellInformationManagerController/devicePumpingUnitDataDownlink',
-            method: "POST",
-            params: {
-            	deviceId: deviceId,
-            	deviceName: deviceName,
-            	manufacturer:manufacturer,
-            	model:model,
-            	stroke:stroke,
-            	balanceInfo:JSON.stringify(balanceInfo)
-            },
-            success: function (response, action) {
-            	if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
-                	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
+        
+        var confirmInfo = loginUserLanguageResource.pumpingUnitData+'</br>'
+			+loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font></br>"
+			+loginUserLanguageResource.confirmDownlink;
+        Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
+        	if (btn == "yes") {
+        		if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+                    Ext.getCmp("PumpingInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
         		}
-            	var result =  Ext.JSON.decode(response.responseText);
-            	
-            	if (result.flag == false) {
-                    Ext.MessageBox.show({
-                        title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
-                        icon: Ext.MessageBox.INFO,
-                        buttons: Ext.Msg.OK,
-                        fn: function () {
-                            window.location.href = context + "/login";
-                        }
-                    });
-                } else if (result.flag == true && result.error == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-                }  else if (result.flag == true && result.error == true) {
-                    
-                	var plugin = pumpingInfoHandsontableHelper.hot.getPlugin('hiddenColumns');
-                	plugin.showColumns([4]);
-                	plugin.hideColumns([5]);
-                	pumpingInfoHandsontableHelper.hot.render();
-                	
-                	var codeColumnValue=pumpingInfoHandsontableHelper.hot.getDataAtProp('itemCode');
-                	for(var i=0;i<codeColumnValue.length;i++){
-                		for(var j=0;j<result.downStatusList.length;j++){
-                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
-                				pumpingInfoHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
-                				break;
-                			}
+        		Ext.Ajax.request({
+                    url: context + '/wellInformationManagerController/devicePumpingUnitDataDownlink',
+                    method: "POST",
+                    params: {
+                    	deviceId: deviceId,
+                    	deviceName: deviceName,
+                    	manufacturer:manufacturer,
+                    	model:model,
+                    	stroke:stroke,
+                    	balanceInfo:JSON.stringify(balanceInfo)
+                    },
+                    success: function (response, action) {
+                    	if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+                        	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
                 		}
-                	}
-                	
-                	plugin = devicePumpingUnitDetailedInformationHandsontableHelper.hot.getPlugin('hiddenColumns');
-                	plugin.showColumns([4]);
-                	plugin.hideColumns([5]);
-                	devicePumpingUnitDetailedInformationHandsontableHelper.hot.render();
-                	
-                	var codeColumnValue=devicePumpingUnitDetailedInformationHandsontableHelper.hot.getDataAtProp('itemCode');
-                	for(var i=0;i<codeColumnValue.length;i++){
-                		for(var j=0;j<result.downStatusList.length;j++){
-                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
-                				devicePumpingUnitDetailedInformationHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
-                				break;
-                			}
+                    	var result =  Ext.JSON.decode(response.responseText);
+                    	
+                    	if (result.flag == false) {
+                            Ext.MessageBox.show({
+                                title: loginUserLanguageResource.tip,
+                                msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
+                                icon: Ext.MessageBox.INFO,
+                                buttons: Ext.Msg.OK,
+                                fn: function () {
+                                    window.location.href = context + "/login";
+                                }
+                            });
+                        } else if (result.flag == true && result.error == false) {
+                            Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+                        }  else if (result.flag == true && result.error == true) {
+                            
+                        	var plugin = pumpingInfoHandsontableHelper.hot.getPlugin('hiddenColumns');
+                        	plugin.showColumns([4]);
+                        	plugin.hideColumns([5]);
+                        	pumpingInfoHandsontableHelper.hot.render();
+                        	
+                        	var codeColumnValue=pumpingInfoHandsontableHelper.hot.getDataAtProp('itemCode');
+                        	for(var i=0;i<codeColumnValue.length;i++){
+                        		for(var j=0;j<result.downStatusList.length;j++){
+                        			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                        				pumpingInfoHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+                        				break;
+                        			}
+                        		}
+                        	}
+                        	
+                        	plugin = devicePumpingUnitDetailedInformationHandsontableHelper.hot.getPlugin('hiddenColumns');
+                        	plugin.showColumns([4]);
+                        	plugin.hideColumns([5]);
+                        	devicePumpingUnitDetailedInformationHandsontableHelper.hot.render();
+                        	
+                        	var codeColumnValue=devicePumpingUnitDetailedInformationHandsontableHelper.hot.getDataAtProp('itemCode');
+                        	for(var i=0;i<codeColumnValue.length;i++){
+                        		for(var j=0;j<result.downStatusList.length;j++){
+                        			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                        				devicePumpingUnitDetailedInformationHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+                        				break;
+                        			}
+                        		}
+                        	}
+                        	plugin = devicePumpingUnitPRTFHandsontableHelper.hot.getPlugin('hiddenColumns');
+                        	plugin.showColumns([1,4,7]);
+                        	plugin.hideColumns([2,5,8]);
+                        	devicePumpingUnitPRTFHandsontableHelper.hot.render();
+                        	
+                        	
+                        	var rowCount = devicePumpingUnitPRTFHandsontableHelper.hot.countRows();
+                        	for(var j=0;j<result.downStatusList.length;j++){
+                    			if(result.downStatusList[j].key.toUpperCase()=='CrankAngle'.toUpperCase()){
+                    				var updateData=[];
+                                    for(var i=0;i<rowCount;i++){
+                                    	var data=[i,'CrankAngleDownlinkStatus',result.downStatusList[j].status];
+                                    	updateData.push(data);
+                                    }
+                                    devicePumpingUnitPRTFHandsontableHelper.hot.setDataAtRowProp(updateData);
+                    			}else if(result.downStatusList[j].key.toUpperCase()=='PR'.toUpperCase()){
+                    				var updateData=[];
+                                    for(var i=0;i<rowCount;i++){
+                                    	var data=[i,'PRDownlinkStatus',result.downStatusList[j].status];
+                                    	updateData.push(data);
+                                    }
+                                    devicePumpingUnitPRTFHandsontableHelper.hot.setDataAtRowProp(updateData);
+                    			}else if(result.downStatusList[j].key.toUpperCase()=='TF'.toUpperCase()){
+                    				var updateData=[];
+                                    for(var i=0;i<rowCount;i++){
+                                    	var data=[i,'TFDownlinkStatus',result.downStatusList[j].status];
+                                    	updateData.push(data);
+                                    }
+                                    devicePumpingUnitPRTFHandsontableHelper.hot.setDataAtRowProp(updateData);
+                    			}
+                    		}
+                        } 
+                    },
+                    failure: function () {
+                    	if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
+                        	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
                 		}
-                	}
-                	plugin = devicePumpingUnitPRTFHandsontableHelper.hot.getPlugin('hiddenColumns');
-                	plugin.showColumns([1,4,7]);
-                	plugin.hideColumns([2,5,8]);
-                	devicePumpingUnitPRTFHandsontableHelper.hot.render();
-                	
-                	
-                	var rowCount = devicePumpingUnitPRTFHandsontableHelper.hot.countRows();
-                	for(var j=0;j<result.downStatusList.length;j++){
-            			if(result.downStatusList[j].key.toUpperCase()=='CrankAngle'.toUpperCase()){
-            				var updateData=[];
-                            for(var i=0;i<rowCount;i++){
-                            	var data=[i,'CrankAngleDownlinkStatus',result.downStatusList[j].status];
-                            	updateData.push(data);
-                            }
-                            devicePumpingUnitPRTFHandsontableHelper.hot.setDataAtRowProp(updateData);
-            			}else if(result.downStatusList[j].key.toUpperCase()=='PR'.toUpperCase()){
-            				var updateData=[];
-                            for(var i=0;i<rowCount;i++){
-                            	var data=[i,'PRDownlinkStatus',result.downStatusList[j].status];
-                            	updateData.push(data);
-                            }
-                            devicePumpingUnitPRTFHandsontableHelper.hot.setDataAtRowProp(updateData);
-            			}else if(result.downStatusList[j].key.toUpperCase()=='TF'.toUpperCase()){
-            				var updateData=[];
-                            for(var i=0;i<rowCount;i++){
-                            	var data=[i,'TFDownlinkStatus',result.downStatusList[j].status];
-                            	updateData.push(data);
-                            }
-                            devicePumpingUnitPRTFHandsontableHelper.hot.setDataAtRowProp(updateData);
-            			}
-            		}
-                } 
-            },
-            failure: function () {
-            	if(Ext.getCmp("PumpingInfoPanel_Id")!=undefined){
-                	Ext.getCmp("PumpingInfoPanel_Id").getEl().unmask();
-        		}
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-            }
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+                    }
+                });
+        	}
         });
 	}else{
 		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
@@ -4964,61 +4978,68 @@ function deviceFSDiagramConstructionDataDownlink(){
 				}
 			}
 		}
-
-		if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
-			Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
-		}
-		Ext.Ajax.request({
-            url: context + '/wellInformationManagerController/deviceFSDiagramConstructionDataDownlink',
-            method: "POST",
-            params: {
-            	deviceId: deviceId,
-            	deviceName: deviceName,
-            	data: JSON.stringify(FSDiagramConstructionData)
-            },
-            success: function (response, action) {
-            	if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
-                	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
-        		}
-            	var result =  Ext.JSON.decode(response.responseText);
-            	
-            	if (result.flag == false) {
-                    Ext.MessageBox.show({
-                        title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
-                        icon: Ext.MessageBox.INFO,
-                        buttons: Ext.Msg.OK,
-                        fn: function () {
-                            window.location.href = context + "/login";
-                        }
-                    });
-                } else if (result.flag == true && result.error == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-                }  else if (result.flag == true && result.error == true) {
-                    
-                	const plugin = fsDiagramConstructionHandsontableHelper.hot.getPlugin('hiddenColumns');
-                	plugin.showColumns([4]);
-                	plugin.hideColumns([5]);
-                	fsDiagramConstructionHandsontableHelper.hot.render();
-                	
-                	var codeColumnValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtProp('itemCode');
-                	for(var i=0;i<codeColumnValue.length;i++){
-                		for(var j=0;j<result.downStatusList.length;j++){
-                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
-                				fsDiagramConstructionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
-                				break;
-                			}
-                		}
-                	}
-                } 
-            },
-            failure: function () {
-            	if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
-                	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
-        		}
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-            }
-        });
+		
+		var confirmInfo = loginUserLanguageResource.fsDiagramConstruction+'</br>'
+			+loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font></br>"
+			+loginUserLanguageResource.confirmDownlink;
+		Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
+			if (btn == "yes") {
+				if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+					Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+				}
+				Ext.Ajax.request({
+		            url: context + '/wellInformationManagerController/deviceFSDiagramConstructionDataDownlink',
+		            method: "POST",
+		            params: {
+		            	deviceId: deviceId,
+		            	deviceName: deviceName,
+		            	data: JSON.stringify(FSDiagramConstructionData)
+		            },
+		            success: function (response, action) {
+		            	if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+		                	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+		        		}
+		            	var result =  Ext.JSON.decode(response.responseText);
+		            	
+		            	if (result.flag == false) {
+		                    Ext.MessageBox.show({
+		                        title: loginUserLanguageResource.tip,
+		                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
+		                        icon: Ext.MessageBox.INFO,
+		                        buttons: Ext.Msg.OK,
+		                        fn: function () {
+		                            window.location.href = context + "/login";
+		                        }
+		                    });
+		                } else if (result.flag == true && result.error == false) {
+		                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+		                }  else if (result.flag == true && result.error == true) {
+		                    
+		                	const plugin = fsDiagramConstructionHandsontableHelper.hot.getPlugin('hiddenColumns');
+		                	plugin.showColumns([4]);
+		                	plugin.hideColumns([5]);
+		                	fsDiagramConstructionHandsontableHelper.hot.render();
+		                	
+		                	var codeColumnValue=fsDiagramConstructionHandsontableHelper.hot.getDataAtProp('itemCode');
+		                	for(var i=0;i<codeColumnValue.length;i++){
+		                		for(var j=0;j<result.downStatusList.length;j++){
+		                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+		                				fsDiagramConstructionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+		                				break;
+		                			}
+		                		}
+		                	}
+		                } 
+		            },
+		            failure: function () {
+		            	if(Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id")!=undefined){
+		                	Ext.getCmp("DeviceFSDiagramConstructionInfoPanel_Id").getEl().unmask();
+		        		}
+		                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+		            }
+		        });
+			}
+		});
 	}else{
 		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
 	}
@@ -5038,59 +5059,66 @@ function deviceSystemParameterDataDownlink(){
 		}else if(applicationScenariosName==loginUserLanguageResource.applicationScenarios2){
 			applicationScenarios=2;
 		}
-
-		if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
-			Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
-		}
-		Ext.Ajax.request({
-            url: context + '/wellInformationManagerController/deviceSystemParameterDataDownlink',
-            method: "POST",
-            params: {
-            	deviceId: deviceId,
-            	deviceName: deviceName
-            },
-            success: function (response, action) {
-            	if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
-                	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
-        		}
-            	var result =  Ext.JSON.decode(response.responseText);
-            	
-            	if (result.flag == false) {
-                    Ext.MessageBox.show({
-                        title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
-                        icon: Ext.MessageBox.INFO,
-                        buttons: Ext.Msg.OK,
-                        fn: function () {
-                            window.location.href = context + "/login";
-                        }
-                    });
-                } else if (result.flag == true && result.error == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-                }  else if (result.flag == true && result.error == true) {
-                	const plugin = deviceSystemParameterHandsontableHelper.hot.getPlugin('hiddenColumns');
-                	plugin.showColumns([4]);
-                	plugin.hideColumns([5]);
-                	deviceSystemParameterHandsontableHelper.hot.render();
-                	
-                	var codeColumnValue=deviceSystemParameterHandsontableHelper.hot.getDataAtProp('itemCode');
-                	for(var i=0;i<codeColumnValue.length;i++){
-                		for(var j=0;j<result.downStatusList.length;j++){
-                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
-                				deviceSystemParameterHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
-                				break;
-                			}
-                		}
-                	}
-                } 
-            },
-            failure: function () {
-            	if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
-                	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
-        		}
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-            }
-        });
+		
+		var confirmInfo = loginUserLanguageResource.systemParameterConfiguration+'</br>'
+			+loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font></br>"
+			+loginUserLanguageResource.confirmDownlink;
+		Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
+			if (btn == "yes") {
+				if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+					Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+				}
+				Ext.Ajax.request({
+		            url: context + '/wellInformationManagerController/deviceSystemParameterDataDownlink',
+		            method: "POST",
+		            params: {
+		            	deviceId: deviceId,
+		            	deviceName: deviceName
+		            },
+		            success: function (response, action) {
+		            	if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+		                	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+		        		}
+		            	var result =  Ext.JSON.decode(response.responseText);
+		            	
+		            	if (result.flag == false) {
+		                    Ext.MessageBox.show({
+		                        title: loginUserLanguageResource.tip,
+		                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
+		                        icon: Ext.MessageBox.INFO,
+		                        buttons: Ext.Msg.OK,
+		                        fn: function () {
+		                            window.location.href = context + "/login";
+		                        }
+		                    });
+		                } else if (result.flag == true && result.error == false) {
+		                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+		                }  else if (result.flag == true && result.error == true) {
+		                	const plugin = deviceSystemParameterHandsontableHelper.hot.getPlugin('hiddenColumns');
+		                	plugin.showColumns([4]);
+		                	plugin.hideColumns([5]);
+		                	deviceSystemParameterHandsontableHelper.hot.render();
+		                	
+		                	var codeColumnValue=deviceSystemParameterHandsontableHelper.hot.getDataAtProp('itemCode');
+		                	for(var i=0;i<codeColumnValue.length;i++){
+		                		for(var j=0;j<result.downStatusList.length;j++){
+		                			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+		                				deviceSystemParameterHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+		                				break;
+		                			}
+		                		}
+		                	}
+		                } 
+		            },
+		            failure: function () {
+		            	if(Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id")!=undefined){
+		                	Ext.getCmp("DeviceSystemParameterConfigurationInfoPanel_Id").getEl().unmask();
+		        		}
+		                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+		            }
+		        });
+			}
+		});
 	}else{
 		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
 	}
@@ -7272,61 +7300,67 @@ function deviceIntelligentFrequencyConversionDataDownlink(){
         	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=frequencyConversionHandsontableData[40][4]?1:0;
         	frequencyConversionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=frequencyConversionHandsontableData[41][4]?1:0;
         	
-			if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
-				Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
-			}
-			Ext.Ajax.request({
-	            url: context + '/wellInformationManagerController/deviceIntelligentFrequencyConversionDataDownlink',
-	            method: "POST",
-	            params: {
-	            	deviceId: deviceId,
-	            	deviceName: deviceName,
-	            	data:JSON.stringify(frequencyConversionData)
-	            },
-	            success: function (response, action) {
-	            	if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
-		            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
-	    			}
-	            	var result =  Ext.JSON.decode(response.responseText);
-	            	
-	            	if (result.flag == false) {
-	                    Ext.MessageBox.show({
-	                        title: loginUserLanguageResource.tip,
-	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
-	                        icon: Ext.MessageBox.INFO,
-	                        buttons: Ext.Msg.OK,
-	                        fn: function () {
-	                            window.location.href = context + "/login";
-	                        }
-	                    });
-	                } else if (result.flag == true && result.error == false) {
-	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-	                }  else if (result.flag == true && result.error == true) {
-	                    
-	                	const plugin = deviceIntelligentFrequencyConversionHandsontableHelper.hot.getPlugin('hiddenColumns');
-                    	plugin.showColumns([6]);
-                    	plugin.hideColumns([7]);
-                    	deviceIntelligentFrequencyConversionHandsontableHelper.hot.render();
-                    	
-                    	var codeColumnValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtProp('itemCode');
-                    	for(var i=0;i<codeColumnValue.length;i++){
-                    		for(var j=0;j<result.downStatusList.length;j++){
-                    			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
-                    				deviceIntelligentFrequencyConversionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
-                    				break;
-                    			}
-                    		}
-                    	}
-	                } 
-	            },
-	            failure: function () {
-	            	if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
-		            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
-	    			}
-	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-	            }
-	        });
-		
+        	var confirmInfo = loginUserLanguageResource.intelligentFrequencyConversion+'</br>'
+				+loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font></br>"
+				+loginUserLanguageResource.confirmDownlink;
+        	Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
+        		if (btn == "yes") {
+        			if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+        				Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+        			}
+        			Ext.Ajax.request({
+        	            url: context + '/wellInformationManagerController/deviceIntelligentFrequencyConversionDataDownlink',
+        	            method: "POST",
+        	            params: {
+        	            	deviceId: deviceId,
+        	            	deviceName: deviceName,
+        	            	data:JSON.stringify(frequencyConversionData)
+        	            },
+        	            success: function (response, action) {
+        	            	if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+        		            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+        	    			}
+        	            	var result =  Ext.JSON.decode(response.responseText);
+        	            	
+        	            	if (result.flag == false) {
+        	                    Ext.MessageBox.show({
+        	                        title: loginUserLanguageResource.tip,
+        	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
+        	                        icon: Ext.MessageBox.INFO,
+        	                        buttons: Ext.Msg.OK,
+        	                        fn: function () {
+        	                            window.location.href = context + "/login";
+        	                        }
+        	                    });
+        	                } else if (result.flag == true && result.error == false) {
+        	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+        	                }  else if (result.flag == true && result.error == true) {
+        	                    
+        	                	const plugin = deviceIntelligentFrequencyConversionHandsontableHelper.hot.getPlugin('hiddenColumns');
+                            	plugin.showColumns([6]);
+                            	plugin.hideColumns([7]);
+                            	deviceIntelligentFrequencyConversionHandsontableHelper.hot.render();
+                            	
+                            	var codeColumnValue=deviceIntelligentFrequencyConversionHandsontableHelper.hot.getDataAtProp('itemCode');
+                            	for(var i=0;i<codeColumnValue.length;i++){
+                            		for(var j=0;j<result.downStatusList.length;j++){
+                            			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                            				deviceIntelligentFrequencyConversionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+                            				break;
+                            			}
+                            		}
+                            	}
+        	                } 
+        	            },
+        	            failure: function () {
+        	            	if(Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id")!=undefined){
+        		            	Ext.getCmp("DeviceIntelligentFrequencyConversionInfoPanel_Id").getEl().unmask();
+        	    			}
+        	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+        	            }
+        	        });
+        		}
+        	});
         }
 	}else{
 		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
@@ -7383,61 +7417,66 @@ function deviceInterlockProtectionDataDownlink(){
         	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1230=interlockProtectionHandsontableData[27][3]?1:0;
         	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=interlockProtectionHandsontableData[28][3]?1:0;
         	
-        	
-			if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
-				Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
-			}
-			Ext.Ajax.request({
-	            url: context + '/wellInformationManagerController/deviceInterlockProtectionDataDownlink',
-	            method: "POST",
-	            params: {
-	            	deviceId: deviceId,
-	            	deviceName: deviceName,
-	            	data:JSON.stringify(interlockProtectionData)
-	            },
-	            success: function (response, action) {
-	            	if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
-		            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
-	    			}
-	            	var result =  Ext.JSON.decode(response.responseText);
-	            	
-	            	if (result.flag == false) {
-	                    Ext.MessageBox.show({
-	                        title: loginUserLanguageResource.tip,
-	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
-	                        icon: Ext.MessageBox.INFO,
-	                        buttons: Ext.Msg.OK,
-	                        fn: function () {
-	                            window.location.href = context + "/login";
-	                        }
-	                    });
-	                } else if (result.flag == true && result.error == false) {
-	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-	                }  else if (result.flag == true && result.error == true) {
-	                	const plugin = deviceInterlockProtectionHandsontableHelper.hot.getPlugin('hiddenColumns');
-                    	plugin.showColumns([5]);
-                    	plugin.hideColumns([6]);
-                    	deviceInterlockProtectionHandsontableHelper.hot.render();
-                    	
-                    	var codeColumnValue=deviceInterlockProtectionHandsontableHelper.hot.getDataAtProp('itemCode');
-                    	for(var i=0;i<codeColumnValue.length;i++){
-                    		for(var j=0;j<result.downStatusList.length;j++){
-                    			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
-                    				deviceInterlockProtectionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
-                    				break;
-                    			}
-                    		}
-                    	}
-	                } 
-	            },
-	            failure: function () {
-	            	if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
-		            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
-	    			}
-	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-	            }
-	        });
-		
+        	var confirmInfo = loginUserLanguageResource.interlockProtection+'</br>'
+				+loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font></br>"
+				+loginUserLanguageResource.confirmDownlink;
+        	Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
+        		if (btn == "yes") {
+        			if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+        				Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").el.mask(loginUserLanguageResource.commandSending+'...').show();
+        			}
+        			Ext.Ajax.request({
+        	            url: context + '/wellInformationManagerController/deviceInterlockProtectionDataDownlink',
+        	            method: "POST",
+        	            params: {
+        	            	deviceId: deviceId,
+        	            	deviceName: deviceName,
+        	            	data:JSON.stringify(interlockProtectionData)
+        	            },
+        	            success: function (response, action) {
+        	            	if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+        		            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+        	    			}
+        	            	var result =  Ext.JSON.decode(response.responseText);
+        	            	
+        	            	if (result.flag == false) {
+        	                    Ext.MessageBox.show({
+        	                        title: loginUserLanguageResource.tip,
+        	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
+        	                        icon: Ext.MessageBox.INFO,
+        	                        buttons: Ext.Msg.OK,
+        	                        fn: function () {
+        	                            window.location.href = context + "/login";
+        	                        }
+        	                    });
+        	                } else if (result.flag == true && result.error == false) {
+        	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+        	                }  else if (result.flag == true && result.error == true) {
+        	                	const plugin = deviceInterlockProtectionHandsontableHelper.hot.getPlugin('hiddenColumns');
+                            	plugin.showColumns([5]);
+                            	plugin.hideColumns([6]);
+                            	deviceInterlockProtectionHandsontableHelper.hot.render();
+                            	
+                            	var codeColumnValue=deviceInterlockProtectionHandsontableHelper.hot.getDataAtProp('itemCode');
+                            	for(var i=0;i<codeColumnValue.length;i++){
+                            		for(var j=0;j<result.downStatusList.length;j++){
+                            			if(result.downStatusList[j].key.toUpperCase()==codeColumnValue[i].toUpperCase()){
+                            				deviceInterlockProtectionHandsontableHelper.hot.setDataAtRowProp(i,'downlinkStatus',result.downStatusList[j].status);
+                            				break;
+                            			}
+                            		}
+                            	}
+        	                } 
+        	            },
+        	            failure: function () {
+        	            	if(Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id")!=undefined){
+        		            	Ext.getCmp("DeviceInterlockProtectionInfoPanel_Id").getEl().unmask();
+        	    			}
+        	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+        	            }
+        	        });
+        		}
+        	});
         }
 	}else{
 		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);

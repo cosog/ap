@@ -3,6 +3,6 @@
     "Slave": 1,
     "GroupSN": 0,
     "Addr": [40018,40031,40032],
-    "Value": [[4328522796.512134],[32768],[32768]],
+    "Value": [[4328522796.512134],[32768],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true]],
     "RawData": ""
 }

@@ -128,7 +128,7 @@ Ext.define('AP.view.Viewport', {
             var baseUrl = getBaseUrl().replace("https", "ws").replace("http", "ws");
             var moduleCode = "ApWebSocketClient_" + user_;
             if ('WebSocket' in window) {
-                websocketClient = new ReconnectingWebSocket(baseUrl + "/websocketServer/" + moduleCode);
+                websocketClient = new ReconnectingWebSocket(baseUrl + "/websocketServer/" + moduleCode+"?loginUserLanguage="+loginUserLanguage);
                 websocketClient.debug = false;  // 关闭调试日志
                 websocketClient.reconnectInterval = 1000;
                 websocketClient.timeoutInterval = 2000;

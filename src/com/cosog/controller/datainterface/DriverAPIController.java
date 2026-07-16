@@ -2479,7 +2479,8 @@ public class DriverAPIController extends BaseController{
 		return energyCalculateResponseData;
 	}
 	
-	public String getWebSocketSendData(DeviceInfo deviceInfo,String acqTime,UserInfo userInfo,List<AcquisitionItemInfo> acquisitionItemInfoList,
+	public String getWebSocketSendData(DeviceInfo deviceInfo,String acqTime,UserInfo userInfo,String loginUserLanguage,
+			List<AcquisitionItemInfo> acquisitionItemInfoList,
 			DisplayInstanceOwnItem displayInstanceOwnItem,int items,
 			String functionCode,int commAlarmLevel,int runAlarmLevel,
 			SRPCalculateResponseData srpCalculateResponseData,SRPCalculateRequestData srpCalculateRequestData,int resultAlarmLevel,
@@ -2493,11 +2494,11 @@ public class DriverAPIController extends BaseController{
 		StringBuffer wellBoreChartsData = new StringBuffer();
 		StringBuffer surfaceChartsData = new StringBuffer();
 		
-		Map<String,String>  LanguageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+		Map<String,String>  LanguageResourceMap=MemoryDataManagerTask.getLanguageResource(loginUserLanguage);
 		
 		WorkType workType=null;
 		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",userInfo.getLanguageName());
+			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",loginUserLanguage);
 		}
 		
 		String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
@@ -2878,7 +2879,7 @@ public class DriverAPIController extends BaseController{
 					
 					
 					if(finalAcquisitionItemInfoList.get(index).getType()==1){
-						CalItem calItem=MemoryDataManagerTask.getCalItemByCode(column, userInfo.getLanguageName());
+						CalItem calItem=MemoryDataManagerTask.getCalItemByCode(column, loginUserLanguage);
 						if(calItem!=null){
 							columnName=calItem.getName();
 							unit=calItem.getUnit();
@@ -2892,13 +2893,13 @@ public class DriverAPIController extends BaseController{
 								value=LanguageResourceMap.get("emptyMsg");
 							}
 						}else if(column.equalsIgnoreCase("ResultName") || column.equalsIgnoreCase("ResultCode")){
-							workType=MemoryDataManagerTask.getWorkTypeByCode(rawValue,userInfo.getLanguageName());
+							workType=MemoryDataManagerTask.getWorkTypeByCode(rawValue,loginUserLanguage);
 							if(workType!=null){
 								value=workType.getResultName();
 							}
 						}
 					}else if(finalAcquisitionItemInfoList.get(index).getType()==3){
-						CalItem calItem=MemoryDataManagerTask.getInputItemByCode(column, userInfo.getLanguageName());
+						CalItem calItem=MemoryDataManagerTask.getInputItemByCode(column, loginUserLanguage);
 						if(calItem!=null){
 							columnName=calItem.getName();
 							unit=calItem.getUnit();
@@ -2918,9 +2919,7 @@ public class DriverAPIController extends BaseController{
 								columnName=rawColumnName+"/"+columnName;
 							}
 							break;
-						}else if( ("1".equalsIgnoreCase(resolutionMode) || "2".equalsIgnoreCase(resolutionMode) )
-								&& displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())  
-								){
+						}else if(displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())){
 							realtimeColor=displayItem.getRealtimeColor();
 							realtimeBgColor=displayItem.getRealtimeBgColor();
 							historyColor=displayItem.getHistoryColor();
@@ -3008,12 +3007,9 @@ public class DriverAPIController extends BaseController{
 		
 		String language=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-		List<String> websocketClientUserList=new ArrayList<>();
+		Map<String,String> websocketClientUserLanguageMap=new HashMap<>();
 		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
-            String[] clientInfo=item.userId.split("_");
-            if(clientInfo!=null && clientInfo.length==3 && !StringManagerUtils.existOrNot(websocketClientUserList, clientInfo[1], true)){
-            	websocketClientUserList.add(clientInfo[1]);
-            }
+			websocketClientUserLanguageMap.put(item.userId, item.loginUserLanguage);
         }
 		String deviceTypeName="";
 		if("zh_CN".equalsIgnoreCase(language)){
@@ -3672,18 +3668,27 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					//处理websocket推送
-					if(displayInstanceOwnItem!=null && websocketClientUserList.size()>0){
-						for (String websocketClientUser : websocketClientUserList) {
+					if(displayInstanceOwnItem!=null && websocketClientUserLanguageMap.size()>0){
+						for (String websocketClientUserId:websocketClientUserLanguageMap.keySet()) {
+							String loginUserLanguage=websocketClientUserLanguageMap.get(websocketClientUserId);
+							String websocketClientUser="";
+							String[] clientInfo=websocketClientUserId.split("_");
+							if(clientInfo!=null && clientInfo.length==3){
+								websocketClientUser=clientInfo[1];
+				            }
 							UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
 							if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
 								int items=3;
-								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
+								if(!StringManagerUtils.isNotNull(loginUserLanguage)){
+									loginUserLanguage=userInfo.getLanguageName();
+								}
+								String webSocketSendDataStr=getWebSocketSendData(deviceInfo,acqTime,userInfo,loginUserLanguage,acquisitionItemInfoList,displayInstanceOwnItem,items,functionCode,commAlarmLevel,runAlarmLevel,
 										srpCalculateReturnData.getSrpCalculateResponseData(),srpCalculateReturnData.getSrpCalculateRequestData(),resultAlarmLevel,
 										alarmShowStyle,
 										protocol,
 										checkSign);
 //								StringManagerUtils.printLog(webSocketSendDataStr,0);
-								infoHandler().sendMessageToUser(websocketClientUser, webSocketSendDataStr);
+								infoHandler().sendMessageToUserId(websocketClientUserId, webSocketSendDataStr);
 							}
 						}
 					}

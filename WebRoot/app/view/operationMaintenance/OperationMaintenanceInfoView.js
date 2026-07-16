@@ -1940,18 +1940,38 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                     			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     			handler: function (v, o) {
                     				selectList=[];
+                    				selectDeviceNameList=[];
                                 	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
                                 		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
                                     	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
                                             if (checkedArr[index]) {
                                             	selectList.push(index);
-                                            	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(index,'boxDownlinkStatus',loginUserLanguageResource.waitingForDownlink);
+                                            	selectDeviceNameList.push(lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(index,'deviceName'));
                                             }
                                         });
                                 	}
                                 	
                                 	if(selectList.length>0){
-                                		lowerComputerProgramBatchUpgrade(selectList,'box');
+                                		var programType=programType=loginUserLanguageResource.boxProgram;
+                                		var deviceName='';
+                                		for(var i=0;i<selectDeviceNameList.length;i++){
+                                			deviceName+=selectDeviceNameList[i];
+                                			if(i!=selectDeviceNameList.length-1){
+                                				deviceName+=',';
+                                			}
+                                		}
+                                		
+                                		var confirmInfo = programType+'</br>'
+                                			+loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font></br>"
+                                			+loginUserLanguageResource.confirmDownlink;
+                                		Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
+                                			if (btn == "yes") {
+                                				for(var i=0;i<selectList.length;i++){
+                                					lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(selectList[i],'boxDownlinkStatus',loginUserLanguageResource.waitingForDownlink);
+                                				}
+                                				lowerComputerProgramBatchUpgrade(selectList,'box');
+                                		    }
+                                		});
                                 	}else{
                                 		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
                                 	}
@@ -1963,18 +1983,38 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                     			disabled:loginUserOperationMaintenanceModuleRight.editFlag!=1,
                     			handler: function (v, o) {
                     				selectList=[];
+                    				selectDeviceNameList=[];
                                 	if(lowerComputerProgramUpgradeHandsontableHelper!=null && lowerComputerProgramUpgradeHandsontableHelper.hot!=undefined){
                                 		var checkedArr=lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtProp('checked');
                                     	Ext.Array.each(checkedArr, function (name, index, countriesItSelf) {
                                             if (checkedArr[index]) {
                                             	selectList.push(index);
-                                            	lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(index,'acDownlinkStatus',loginUserLanguageResource.waitingForDownlink);
+                                            	selectDeviceNameList.push(lowerComputerProgramUpgradeHandsontableHelper.hot.getDataAtRowProp(index,'deviceName'));
                                             }
                                         });
                                 	}
                                 	
                                 	if(selectList.length>0){
-                                		lowerComputerProgramBatchUpgrade(selectList,'ac');
+                                		var programType=programType=loginUserLanguageResource.acProgram;
+                                		var deviceName='';
+                                		for(var i=0;i<selectDeviceNameList.length;i++){
+                                			deviceName+=selectDeviceNameList[i];
+                                			if(i!=selectDeviceNameList.length-1){
+                                				deviceName+=',';
+                                			}
+                                		}
+                                		
+                                		var confirmInfo = programType+'</br>'
+                                			+loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font></br>"
+                                			+loginUserLanguageResource.confirmDownlink;
+                                		Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
+                                			if (btn == "yes") {
+                                				for(var i=0;i<selectList.length;i++){
+                                					lowerComputerProgramUpgradeHandsontableHelper.hot.setDataAtRowProp(selectList[i],'acDownlinkStatus',loginUserLanguageResource.waitingForDownlink);
+                                				}
+                                				lowerComputerProgramBatchUpgrade(selectList,'ac');
+                                		    }
+                                		});
                                 	}else{
                                 		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
                                 	}
@@ -4509,7 +4549,7 @@ function lowerComputerProgramUpgrade(row, name) {
 }
 
 //通用按钮渲染器工厂
-function createLowerComputerProgramUpgradeButtonRenderer(buttonText, clickHandler, bgColor, hoverColor = null) {
+function createLowerComputerProgramUpgradeButtonRenderer(buttonText, clickHandler, bgColor,type, hoverColor = null) {
     if (!hoverColor) {
         // 简单提亮颜色（或者手动传参）
         hoverColor = bgColor === '#409eff' ? '#66b1ff' :
@@ -4549,8 +4589,28 @@ function createLowerComputerProgramUpgradeButtonRenderer(buttonText, clickHandle
         });
         
         btn.onclick = (e) => {
-            e.stopPropagation();
-            clickHandler(instance, td, row, col, prop, value, cellProperties);
+        	if(type==1 || type==2){
+        		var deviceName=instance.getDataAtRowProp(row,'deviceName');
+        		var programType='';
+        		if(type==1){
+        			programType=loginUserLanguageResource.boxProgram;
+        		}else if(type==2){
+        			programType=loginUserLanguageResource.acProgram;
+        		}
+        		
+        		var confirmInfo = programType+'</br>'
+        			+loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font></br>"
+        			+loginUserLanguageResource.confirmDownlink;
+        		Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
+        			if (btn == "yes") {
+        				e.stopPropagation();
+        	            clickHandler(instance, td, row, col, prop, value, cellProperties);
+        		    }
+        		});
+        	}else{
+        		e.stopPropagation();
+                clickHandler(instance, td, row, col, prop, value, cellProperties);
+        	}
         };
         
         container.appendChild(btn);
@@ -4605,7 +4665,8 @@ function loadLowerComputerProgramUpgradeDeviceList(){
                         		loginUserLanguageResource.statusDetection,
                                 (instance, td, row, col, prop, value, cellProperties) => 
                                     lowerComputerProgramVersionDataUplink(row, ''),
-                                '#409eff'  // 蓝色
+                                '#409eff',  // 蓝色
+                                0
                             ),
                         readOnly: true
                     },
@@ -4626,7 +4687,8 @@ function loadLowerComputerProgramUpgradeDeviceList(){
                                     .catch(function(error) {
                                         console.error("升级失败：", error);
                                     }),
-                                '#67c23a'  // 绿色
+                                '#67c23a',  // 绿色
+                                1
                             ),
                         readOnly: true
                     },
@@ -4647,7 +4709,8 @@ function loadLowerComputerProgramUpgradeDeviceList(){
                                     .catch(function(error) {
                                         console.error("升级失败：", error);
                                     }),
-                                '#e6a23c'  // 橙色
+                                '#e6a23c',  // 橙色
+                                2
                             ),
                         readOnly: true
                     },

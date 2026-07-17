@@ -1342,17 +1342,17 @@ function saveDisplayUnitConfigData(displayUnitSaveData,protocol,deviceType){
             	if(displayUnitSaveData.delidslist!=undefined && displayUnitSaveData.delidslist.length>0){
             		Ext.getCmp("ModbusProtocolDisplayUnitConfigSelectRow_Id").setValue(0);
             		Ext.getCmp("DisplayUnitTreeSelectUnitId_Id").setValue(0);
-            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
+            		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.deleteSuccessfully);
             	}else{
-            		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
+            		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.savedSuccessfully);
             	}
             	Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id").getStore().load();
             } else {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+            	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
             displayUnitConfigHandsontableHelper.clearContainer();
 		},
 		params: {

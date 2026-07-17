@@ -336,7 +336,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
         		    			p.body.update(response.responseText);
         		    		},
         		    		failure:function(){
-        		    			Ext.MessageBox.alert(loginUserLanguageResource.message,"帮助文档加载失败");
+        		    			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
         		    		},
         		    		params: {
         		            }
@@ -418,7 +418,7 @@ function syncModelData(){
     			Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue(response.responseText);
     		},
     		failure:function(){
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+    			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
     		},
     		params: {
     			wellId:wellId,
@@ -453,7 +453,7 @@ function producerMsg(){
 		var slave = _record[0].data.slave;
 		var data=Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').getValue();
 		var operaName="是否对设备<font color=red>"+wellName+"</font>执行<font color=red>"+operationName+"</font>操作！";
-		Ext.Msg.confirm("操作确认", operaName, function (btn) {
+		Ext.Msg.confirm(loginUserLanguageResource.tip, operaName, function (btn) {
             if (btn == "yes") {
             	Ext.Ajax.request({
             		method:'POST',
@@ -461,15 +461,15 @@ function producerMsg(){
             		success:function(response) {
             			rdata=Ext.JSON.decode(response.responseText);
             			if (rdata.success && rdata.msg==1 ) {
-                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"下行成功。");
+                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.downlinkSuccessfully);
                         } else if (rdata.success && rdata.msg==0 ) {
-                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>下行失败<font color=red>!");
+                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.downlinkFailed+"<font color=red>!");
                         }else if (!rdata.success){
-                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>发送失败<font color=red>!");
+                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.requestFailed+"<font color=red>!");
                         }
             		},
             		failure:function(){
-            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+            			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
             		},
             		params: {
             			type: type,
@@ -505,7 +505,7 @@ function requestConfigData(){
     			}
     		},
     		failure:function(){
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+    			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
     		},
     		params: {
     			type: type,
@@ -890,7 +890,7 @@ function readWaterCutRawData(){
     						data.push(waterCutData);
     					}
     				}else if(result.OutOfMemory){
-    					Ext.MessageBox.alert(loginUserLanguageResource.message, "数据过大，加载失败，请将配置下行中StoreAcqWaterCut的值修改位更小值！");
+    					Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
     				}
     			}
     			
@@ -998,7 +998,7 @@ function readWaterCutRawData(){
     			if(Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id")!=undefined){
         			Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").getEl().unmask();
     	    	}
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+    			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
     		},
     		params: {
     			wellId:wellId,

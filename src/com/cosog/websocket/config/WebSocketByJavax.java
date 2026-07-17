@@ -147,20 +147,30 @@ public class WebSocketByJavax {
     }
     
     public void sendMessageToBy(String To,String message){
-		for (WebSocketByJavax item : clients.values()) {
-        	if (item.userId.contains(To) ) {
-        		synchronized(item.session){
-        			try{
-            			if(item.session!=null && item.session.isOpen()){
-            				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
-            			}
-            		}catch(Exception e){
-            			e.printStackTrace();
-            			StringManagerUtils.printLog("webSocket信息推送失败:"+message.length(),2);
-            		}
-        		}
-        	}
+		List<WebSocketByJavax> targets = new ArrayList<>();
+        
+        // 先收集目标客户端，减少同步块范围
+        synchronized(clients) {
+            for (WebSocketByJavax item : clients.values()) { 
+                if(item.session != null && item.session.isOpen()) {
+                    targets.add(item);
+                }
+            }
         }
+        
+        // 然后发送消息
+        for (WebSocketByJavax target : targets) {
+            synchronized(target.session) {
+                try {
+                    target.session.getBasicRemote().sendText(message);
+                } catch (Exception e) {
+                    logger.error("发送消息失败，用户: {}", target.userId, e);
+                    StringManagerUtils.printLog("webSocket信息推送失败:"+message.length(),2);
+                    // 可以考虑移除无效连接
+                }
+            }
+        }
+		
     }
     
     public void sendMessageToUser(String userAccount, String message) {

@@ -31,15 +31,15 @@ Ext.define("AP.view.acquisitionUnit.ProtocoDeviceTypeChangeWindow", {
                 	var selectedProtocol=Ext.getCmp("ProtocolDeviceTypeChangeProtocolListGridPanel_Id").getSelectionModel().getSelection();
                 	var selectedDeviceType=Ext.getCmp("ProtocolDeviceTypeChangeDeviceTypeTreeGridView_Id").getSelectionModel().getSelection();
                 	if(selectedProtocol.length==0){
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要迁移的协议！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                 		return;
                 	}
                 	if(selectedDeviceType.length==0){
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.selectDeviceType);
+                		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.selectDeviceType);
                 		return;
                 	}else{
                 		if(!selectedDeviceType[0].isLeaf()){
-//                			Ext.MessageBox.alert(loginUserLanguageResource.message,"选择的设备类型不是叶子节点！");
+//                			Ext.MessageBox.alert(loginUserLanguageResource.tip,"选择的设备类型不是叶子节点！");
 //                			return;
                 		}
                 	}

@@ -131,8 +131,8 @@ public class Config {
 				configFile.getAp().setDatabaseMaintenance(oemConfigFile.getDatabaseMaintenance());
 			}
 			
-			if(configFile.getAp()!=null && configFile.getAp().getOthers()!=null && configFile.getAp().getOthers().getExportLimit()>65534){
-				configFile.getAp().getOthers().setExportLimit(65534);
+			if(configFile.getAp()!=null && configFile.getAp().getOthers()!=null && configFile.getAp().getOthers().getExportLimit()>1000000){
+				configFile.getAp().getOthers().setExportLimit(1000000);
 			}
 			if(configFile.getAp().getDataVacuate().getVacuateRecord()<=0){
 				configFile.getAp().getDataVacuate().setVacuateRecord(500);

@@ -96,7 +96,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 	var selectionModel = SystemdataInfoGridPanel.getSelectionModel();
                     var selectionRecord = selectionModel.getSelection();
                 	if(selectionRecord.length>0){
-                		Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete, function (btn) {
+                		Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDelete, function (btn) {
                             if (btn == "yes") {
                         		selectionRecord.forEach(function(record) {
                         			selectDataDictionaryId.push(record.data.sysdataid);
@@ -117,7 +117,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
         	                  				Ext.getCmp("SystemdataInfoGridPanelId").getStore().load();
         	                			},
         	                			failure:function(){
-        	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+        	                				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
         	                			},
         	                			params: {
         	                				paramsId: selectDataDictionaryId.join(",")
@@ -128,7 +128,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                         	}
                         });
                 	} else {
-                        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
                     }
                 	
                 }

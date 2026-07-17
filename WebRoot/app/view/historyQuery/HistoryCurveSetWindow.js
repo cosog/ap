@@ -110,7 +110,7 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
                 			var result =  Ext.JSON.decode(response.responseText);
                 			if (result.success) {
                 				Ext.getCmp("HistoryCurveSetWindow_Id").close();
-                				Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
+                				Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
                 			}
                 		},
                 		failure:function(){

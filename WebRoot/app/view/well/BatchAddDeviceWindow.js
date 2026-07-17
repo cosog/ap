@@ -484,15 +484,15 @@ var BatchAddDeviceHandsontableHelper = {
                 	rdata = Ext.JSON.decode(response.responseText);
                 	if (rdata.success&&rdata.collisionCount==0&&rdata.overlayCount==0) {
                     	if(rdata.overCount>0){
-                    		Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+rdata.overCount+"</font>设备超限，保存失败");
+                    		Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+rdata.overCount+"</font>"+loginUserLanguageResource.saveFailed+"");
                     	}else{
-                    		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
+                    		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
                     	}
                         //保存以后重置全局容器
                         batchAddDeviceHandsontableHelper.clearContainer();
                     }else if(rdata.success&&(rdata.collisionCount>0 || rdata.overlayCount>0)){
                     	var window = Ext.create("AP.view.well.BatchAddDeviceCollisionDataWindow", {
-                            title: '异常数据处理'
+                            title: loginUserLanguageResource.exceptionData
                         });
                         Ext.getCmp("batchAddCollisionDeviceType_Id").setValue(deviceType);
                         Ext.getCmp("batchAddCollisionDeviceOrg_Id").setValue(orgId);
@@ -526,13 +526,13 @@ var BatchAddDeviceHandsontableHelper = {
                         if(rdata.overCount>0){
                         	info+=overInfo;
                         }
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, info);
+                        Ext.MessageBox.alert(loginUserLanguageResource.tip, info);
                     } else {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+                        Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                     }
                 },
                 failure: function () {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+                    Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
                     batchAddDeviceHandsontableHelper.clearContainer();
                 },
                 params: {

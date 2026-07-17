@@ -406,6 +406,9 @@
             
             _clientWidth = document.body.clientWidth;
             
+            Ext.MessageBox.buttonText.yes = loginUserLanguageResource.confirm;
+            Ext.MessageBox.buttonText.no = loginUserLanguageResource.cancel;
+            
             
          // 1. 从 URL 中获取 token（假设 URL 参数为 ?token=xxx）
             var token = getParameterByName('token');

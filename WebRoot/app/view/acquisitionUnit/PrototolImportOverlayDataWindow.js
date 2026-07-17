@@ -80,14 +80,14 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
                             success: function (response) {
                             	rdata = Ext.JSON.decode(response.responseText);
                             	if (rdata.success) {
-                            		Ext.MessageBox.alert(loginUserLanguageResource.message, "协议及关联内容导入成功！");
+                            		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.updateSuccessfully);
                             		Ext.getCmp("PrototolImportOverlayDataWindow_Id").close();
                             	}else{
-                            		Ext.MessageBox.alert(loginUserLanguageResource.message, "协议及关联内容导入失败！");
+                            		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.updateFailed);
                             	}
                             },
                             failure: function () {
-                                Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+                                Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
                             },
                             params: {
                             	data: JSON.stringify(addContent),

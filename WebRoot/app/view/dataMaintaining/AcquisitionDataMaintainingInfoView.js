@@ -86,7 +86,7 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                          		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -107,7 +107,7 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -129,7 +129,7 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -192,7 +192,7 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                          		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -213,7 +213,7 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -235,7 +235,7 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -251,13 +251,13 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                           	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                           	var startTime_Hour=Ext.getCmp('AcquisitionDataMaintainingStartTime_Hour_Id').getValue();
                           	if(!r.test(startTime_Hour)){
-                          		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                          		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                           		Ext.getCmp('AcquisitionDataMaintainingStartTime_Hour_Id').focus(true, 100);
                           		return;
                           	}
                           	var startTime_Minute=Ext.getCmp('AcquisitionDataMaintainingStartTime_Minute_Id').getValue();
                           	if(!r2.test(startTime_Minute)){
-                          		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                          		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                           		Ext.getCmp('AcquisitionDataMaintainingStartTime_Minute_Id').focus(true, 100);
                           		return;
                           	}
@@ -265,13 +265,13 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
                           	
                           	var endTime_Hour=Ext.getCmp('AcquisitionDataMaintainingEndTime_Hour_Id').getValue();
                           	if(!r.test(endTime_Hour)){
-                          		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                          		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                           		Ext.getCmp('AcquisitionDataMaintainingEndTime_Hour_Id').focus(true, 100);
                           		return;
                           	}
                           	var endTime_Minute=Ext.getCmp('AcquisitionDataMaintainingEndTime_Minute_Id').getValue();
                           	if(!r2.test(endTime_Minute)){
-                          		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                          		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                           		Ext.getCmp('AcquisitionDataMaintainingEndTime_Minute_Id').focus(true, 100);
                           		return;
                           	}
@@ -1011,7 +1011,7 @@ function deleteRealtimeAcquisitionData() {
         }
     }
     if (deleteAcqTimeList.length > 0) {
-    	Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
     		if (btn == "yes") {
     			Ext.Ajax.request({
     	    		method:'POST',
@@ -1019,7 +1019,7 @@ function deleteRealtimeAcquisitionData() {
     	    		success:function(response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.deleteSuccessfully);
+                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
                         	var bbar=Ext.getCmp("RealtimeAcquisitionDataMaintainingBbar");
 	        				if (isNotVal(bbar)) {
 	        					if(bbar.getStore().isEmptyStore){
@@ -1032,11 +1032,11 @@ function deleteRealtimeAcquisitionData() {
 	        					Ext.create('AP.store.dataMaintaining.RealtimeAcquisitionDataMaintainingDataStore');
 	        				}
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
     	    		failure:function(){
-    	    			Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+    	    			Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
     	    		},
     	    		params: {
     	    			deviceId: deviceId,
@@ -1047,7 +1047,7 @@ function deleteRealtimeAcquisitionData() {
     		}
     	});
     } else {
-        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noSelectionRecord);
+        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noSelectionRecord);
     }
 }
 
@@ -1070,7 +1070,7 @@ function deleteHistoryAcquisitionData() {
         }
     }
     if (deleteRecordList.length > 0) {
-    	Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
     		if (btn == "yes") {
     			Ext.Ajax.request({
     	    		method:'POST',
@@ -1078,7 +1078,7 @@ function deleteHistoryAcquisitionData() {
     	    		success:function(response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.deleteSuccessfully);
+                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
                         	var bbar=Ext.getCmp("HistoryAcquisitionDataMaintainingBbar");
 	        				if (isNotVal(bbar)) {
 	        					if(bbar.getStore().isEmptyStore){
@@ -1091,11 +1091,11 @@ function deleteHistoryAcquisitionData() {
 	        					Ext.create('AP.store.dataMaintaining.HistoryAcquisitionDataMaintainingDataStore');
 	        				}
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
     	    		failure:function(){
-    	    			Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+    	    			Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
     	    		},
     	    		params: {
     	    			deviceId: deviceId,
@@ -1106,6 +1106,6 @@ function deleteHistoryAcquisitionData() {
     		}
     	});
     } else {
-        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noSelectionRecord);
+        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noSelectionRecord);
     }
 }

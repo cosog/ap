@@ -140,7 +140,7 @@ function modifywellInfo() {
 	        SelectwellInfoPanel();
 	        //setTimeout('SelectwellInfoPanel()',1000);
 		}else{
-	        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+	        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
 	    }
         
     }
@@ -163,7 +163,7 @@ function saveWellEditerGridDataInfo() {
     		method:'POST',
     		url:context + '/wellInformationManagerController/saveWellEditerGridData',
     		success:function(response) {
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,"更新成功",function(){
+    			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.updateSuccessfully,function(){
     				well_panel.getStore().load();
     				well_panel.getStore().modified = []; 
     				if(mapHelperWell!=null){
@@ -182,7 +182,7 @@ function saveWellEditerGridDataInfo() {
             }
     	});   
     }else {
-        //Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+        //Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
     }
     
     return false;

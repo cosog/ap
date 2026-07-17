@@ -46,7 +46,7 @@ function addModbusProtocolAddrMappingConfigData() {
 	    
 	    Ext.getCmp("protocolLanguage_Id1").setValue(loginUserLanguageValue);
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.selectDeviceType);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.selectDeviceType);
 	}
 	
 	
@@ -214,7 +214,7 @@ function modifyAcquisitionGroupInfo() {
         Ext.getCmp("updateFormaAquisitionGroup_Id").show();
         SelectAcquisitionGroupDataAttrInfoGridPanel();
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     return false;
 }
@@ -244,14 +244,14 @@ function delAcquisitionGroupInfo() {
     if (_record.length > 0) {
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("AcquisitionGroupInfoGridPanel_Id", _record, "id", delUrl);
             }
         });
 
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
 }
 
@@ -336,7 +336,7 @@ function modifyAcquisitionUnitInfo() {
         Ext.getCmp("updateFormaAquisitionUnit_Id").show();
         SelectAcquisitionUnitDataAttrInfoGridPanel();
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     return false;
 }
@@ -362,14 +362,14 @@ function delAcquisitionUnitInfo() {
     if (_record.length > 0) {
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("AcquisitionUnitInfoGridPanel_Id", _record, "id", delUrl);
             }
         });
 
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
 }
 
@@ -1009,7 +1009,7 @@ function modifyModbusProtocolSMSInstanceConfigData() {
         Ext.getCmp("updateFormaModbusprotocolSMSInstance_Id").show();
         SelectModbusProtocolSMSInstanceGridPanel();
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     return false;
 }
@@ -1103,13 +1103,13 @@ function delModbusProtocolSMSInstanceInfo() {
         // 提示是否删除数据
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
                 ExtDel_ObjectInfo("ModbusProtocolSMSInstanceGridPanel_Id", _record,"id", delUrl);
             }
         });
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     return false;
 }

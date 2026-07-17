@@ -68,7 +68,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolAcqInstanceWindow", {
     	        		exportDataMask(key,maskPanelId,loginUserLanguageResource.loadingData);
     	        	    openExcelWindow(url);
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+    					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
     				}
     			}
             }],

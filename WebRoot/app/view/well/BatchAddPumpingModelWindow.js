@@ -255,7 +255,7 @@ var BatchAddPumpingModelHandsontableHelper = {
                     CreateAndLoadPumpingModelInfoTable();
                 	rdata = Ext.JSON.decode(response.responseText);
                 	if (rdata.success&&rdata.overlayCount==0) {
-                    	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
+                    	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
                         batchAddPumpingModelHandsontableHelper.clearContainer();
                     }else if(rdata.success&&rdata.overlayCount>0){
                     	var window = Ext.create("AP.view.well.BatchAddPumpingModelCollisionDataWindow", {
@@ -264,11 +264,11 @@ var BatchAddPumpingModelHandsontableHelper = {
                         window.show();
                         CreateAndLoadBatchAddPumpingModelOverlayDataTable(rdata);
                     } else {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+                        Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                     }
                 },
                 failure: function () {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+                    Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
                     batchAddPumpingModelHandsontableHelper.clearContainer();
                 },
                 params: {

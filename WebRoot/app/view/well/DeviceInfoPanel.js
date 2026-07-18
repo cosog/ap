@@ -711,7 +711,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     						deleteInfo=loginUserLanguageResource.confirmDelete;
     					}
     					
-    					Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, deleteInfo, function (btn) {
+    					Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
     			            if (btn == "yes") {
     			            	for(var i=startRow;i<=endRow;i++){
     	    						var deviceId= deviceInfoHandsontableHelper.hot.getDataAtRowProp(i,'id');
@@ -729,18 +729,18 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     	    	                    success: function (response) {
     	    	                        rdata = Ext.JSON.decode(response.responseText);
     	    	                        if (rdata.success) {
-    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.deleteSuccessfully);
+    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
     	    	                            //保存以后重置全局容器
     	    	                            deviceInfoHandsontableHelper.clearContainer();
     	    	                            Ext.getCmp("DeviceSelectRow_Id").setValue(0);
     	    	                        	Ext.getCmp("DeviceSelectEndRow_Id").setValue(0);
     	    	                            CreateAndLoadDeviceInfoTable();
     	    	                        } else {
-    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
     	    	                        }
     	    	                    },
     	    	                    failure: function () {
-    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
     	    	                        deviceInfoHandsontableHelper.clearContainer();
     	    	                    },
     	    	                    params: {
@@ -752,7 +752,7 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     			            }
     			        });
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+    					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
     				}
     			}
     		},"-", {
@@ -2685,17 +2685,17 @@ var DeviceInfoHandsontableHelper = {
                         			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
                         		}
                         	}
-                        	Ext.MessageBox.alert(loginUserLanguageResource.message, saveInfo);
+                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, saveInfo);
                             if(rdata.successCount>0){
                             	deviceInfoHandsontableHelper.clearContainer();
                             	CreateAndLoadDeviceInfoTable();
                             }
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+                        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
                         deviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -2707,7 +2707,7 @@ var DeviceInfoHandsontableHelper = {
                     }
                 });
         	}else{
-        		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+        		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
         	}
         }
 
@@ -2721,15 +2721,15 @@ var DeviceInfoHandsontableHelper = {
                     success: function (response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
+                            Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
                             deviceInfoHandsontableHelper.clearContainer();
                             CreateAndLoadDeviceInfoTable();
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
                     failure: function () {
-                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+                        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
                         deviceInfoHandsontableHelper.clearContainer();
                     },
                     params: {
@@ -2739,9 +2739,9 @@ var DeviceInfoHandsontableHelper = {
                 });
             } else {
                 if (!deviceInfoHandsontableHelper.validresult) {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.invalidDataType);
+                    Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.invalidDataType);
                 } else {
-                    Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+                    Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
                 }
             }
         }
@@ -4746,7 +4746,7 @@ function deviceProductionDataDownlink(){
 	        }
 	    });
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -4888,7 +4888,7 @@ function devicePumpingUnitDataDownlink(){
         	}
         });
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -5041,7 +5041,7 @@ function deviceFSDiagramConstructionDataDownlink(){
 			}
 		});
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -5120,7 +5120,7 @@ function deviceSystemParameterDataDownlink(){
 			}
 		});
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -5198,7 +5198,7 @@ function deviceProductionDataUplink(){
 			
 		}
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -5349,7 +5349,7 @@ function devicePumpingUnitDataUplink(){
             }
         });
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -5421,7 +5421,7 @@ function deviceFSDiagramConstructionDataUplink(){
             }
         });
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -5491,7 +5491,7 @@ function deviceSystemParameterDataUplink(){
             }
         });
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -5592,7 +5592,7 @@ function deviceIntelligentFrequencyConversionDataUplink(){
             }
         });
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -5692,7 +5692,7 @@ function deviceInterlockProtectionDataUplink(){
             }
         });
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -7363,7 +7363,7 @@ function deviceIntelligentFrequencyConversionDataDownlink(){
         	});
         }
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -7479,7 +7479,7 @@ function deviceInterlockProtectionDataDownlink(){
         	});
         }
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 

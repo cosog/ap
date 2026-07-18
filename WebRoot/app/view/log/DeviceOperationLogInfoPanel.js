@@ -199,7 +199,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                 		var flag=r.test(field.value);
                 		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                 			field.focus(true, 100);
                 		}
                     }
@@ -220,7 +220,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                 		var flag=r.test(field.value);
                 		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                 			field.focus(true, 100);
                 		}
                     }
@@ -242,7 +242,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                 		var flag=r.test(field.value);
                 		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                 			field.focus(true, 100);
                 		}
                     }
@@ -277,7 +277,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                 		var flag=r.test(field.value);
                 		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                 			field.focus(true, 100);
                 		}
                     }
@@ -298,7 +298,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                 		var flag=r.test(field.value);
                 		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                 			field.focus(true, 100);
                 		}
                     }
@@ -320,7 +320,7 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                 		var flag=r.test(field.value);
                 		if(!flag){
-                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                 			field.focus(true, 100);
                 		}
                     }
@@ -334,13 +334,13 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                 	var startTime_Hour=Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').getValue();
                 	if(!r.test(startTime_Hour)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                 		Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
                 	var startTime_Minute=Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').getValue();
                 	if(!r2.test(startTime_Minute)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                 		Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
@@ -348,13 +348,13 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 	
                 	var endTime_Hour=Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').getValue();
                 	if(!r.test(endTime_Hour)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                 		Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
                 	var endTime_Minute=Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').getValue();
                 	if(!r2.test(endTime_Minute)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                 		Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
@@ -375,13 +375,13 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                 	var startTime_Hour=Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').getValue();
                 	if(!r.test(startTime_Hour)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                 		Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
                 	var startTime_Minute=Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').getValue();
                 	if(!r2.test(startTime_Minute)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                 		Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').focus(true, 100);
                 		return;
                 	}
@@ -389,13 +389,13 @@ Ext.define('AP.view.log.DeviceOperationLogInfoPanel', {
                 	
                 	var endTime_Hour=Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').getValue();
                 	if(!r.test(endTime_Hour)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                 		Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').focus(true, 100);
                 		return;
                 	}
                 	var endTime_Minute=Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').getValue();
                 	if(!r2.test(endTime_Minute)){
-                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                 		Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').focus(true, 100);
                 		return;
                 	}

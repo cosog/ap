@@ -123,11 +123,11 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
                         	var selectedOrg=Ext.getCmp("DeviceOrgChangeOrgListTreePanel_Id").getSelectionModel().getSelection();
                         	var deviceType=Ext.getCmp("DeviceOrgChangeWinDeviceType_Id").getValue();
                         	if(selectedDevice.length==0){
-                        		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要迁移的设备！");
+                        		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                         		return;
                         	}
                         	if(selectedOrg.length==0){
-                        		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择目的组织！");
+                        		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                         		return;
                         	}
                         	var selectedDeviceId="";
@@ -178,15 +178,15 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
                         	var selectedDeviceType=Ext.getCmp("DeviceTypeChangeDeviceTypeTreeGridView_Id").getSelectionModel().getSelection();
                         	var deviceType=Ext.getCmp("DeviceOrgChangeWinDeviceType_Id").getValue();
                         	if(selectedDevice.length==0){
-                        		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要迁移的设备！");
+                        		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                         		return;
                         	}
                         	if(selectedDeviceType.length==0){
-                        		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择目的设备类型！");
+                        		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                         		return;
                         	}else{
                         		if(!selectedDeviceType[0].isLeaf()){
-                        			Ext.MessageBox.alert(loginUserLanguageResource.message,"目的设备类型不是叶子节点！");
+                        			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.selectLeafNode);
                         			return;
                         		}
                         	}

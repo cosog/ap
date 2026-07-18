@@ -81,7 +81,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     						deleteInfo=loginUserLanguageResource.confirmDelete;
     					}
     					
-    					Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, deleteInfo, function (btn) {
+    					Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
     			            if (btn == "yes") {
     			            	for(var i=startRow;i<=endRow;i++){
     	    						var rowdata = videoKeyDataHandsontableHelper.hot.getDataAtRow(i);
@@ -99,18 +99,18 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     	    	                    success: function (response) {
     	    	                        rdata = Ext.JSON.decode(response.responseText);
     	    	                        if (rdata.success) {
-    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.deleteSuccessfully);
+    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
     	    	                            //保存以后重置全局容器
     	    	                            videoKeyDataHandsontableHelper.clearContainer();
     	    	                            Ext.getCmp("VideoKeySelectRow_Id").setValue(0);
     	    	                        	Ext.getCmp("VideoKeySelectEndRow_Id").setValue(0);
     	    	                            CreateDeviceKeyDataTable();
     	    	                        } else {
-    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
     	    	                        }
     	    	                    },
     	    	                    failure: function () {
-    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
     	    	                        videoKeyDataHandsontableHelper.clearContainer();
     	    	                    },
     	    	                    params: {
@@ -120,7 +120,7 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
     			            }
     			        });
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+    					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
     				}
     			}
     		},"-", {
@@ -414,15 +414,15 @@ var VideoKeyDataHandsontableHelper = {
 	                        rdata = Ext.JSON.decode(response.responseText);
 	                        if (rdata.success) {
 	                        	var saveInfo=loginUserLanguageResource.savedSuccessfully;
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message, saveInfo);
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, saveInfo);
 	                        	videoKeyDataHandsontableHelper.clearContainer();
 	                        	CreateDeviceKeyDataTable();
 	                        } else {
-	                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+	                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 	                        }
 	                    },
 	                    failure: function () {
-	                        Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+	                        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
 	                        videoKeyDataHandsontableHelper.clearContainer();
 	                    },
 	                    params: {
@@ -431,7 +431,7 @@ var VideoKeyDataHandsontableHelper = {
 	                    }
 	                });
 	        	}else{
-	        		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+	        		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	        	}
 	        }
 

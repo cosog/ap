@@ -73,7 +73,7 @@ Ext.define("AP.view.acquisitionUnit.ExportProtocolWindow", {
     	        	    openExcelWindow(url);
 //                    	document.location.href = url;
     				}else{
-    					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+    					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
     				}
     			}
             }],

@@ -1032,7 +1032,7 @@ function invalidateSession() {
 
         },
         failure: function () {
-            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+            Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
         },
         params: {}
     });

@@ -652,7 +652,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 		            		success:function(response) {
 		            			rdata=Ext.JSON.decode(response.responseText);
 		            			if (rdata.success) {
-		                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
+		                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.savedSuccessfully);
 		                            databaseColumnMappingHandsontableHelper.clearContainer();
 		                            CreateDatabaseColumnMappingTable(classes,protocolType,protocolCode);
 		                            
@@ -662,11 +662,11 @@ var DatabaseColumnMappingHandsontableHelper = {
 		                            	gridPanel.getStore().load();
 		                            }
 		                        } else {
-		                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.saveFailed);
+		                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.saveFailed);
 		                        }
 		            		},
 		            		failure:function(){
-		            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+		            			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 		                        databaseColumnMappingHandsontableHelper.clearContainer();
 		            		},
 		            		params: {
@@ -677,9 +677,9 @@ var DatabaseColumnMappingHandsontableHelper = {
 		            	}); 
 		            } else {
 		                if (!databaseColumnMappingHandsontableHelper.validresult) {
-		                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.invalidDataType);
+		                	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.invalidDataType);
 		                } else {
-		                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noDataChange);
+		                	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noDataChange);
 		                }
 		            }
 	        	}
@@ -872,7 +872,7 @@ function saveProtocolRunStatusConfig(){
 			method:'POST',
 			url:context + '/acquisitionUnitManagerController/saveProtocolRunStatusConfig',
 			success:function(response) {
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.savedSuccessfully);
 				var gridPanel = Ext.getCmp("DatabaseColumnMappingTableRunStatusMeaningGridPanel1_Id");
                 if (isNotVal(gridPanel)) {
                 	gridPanel.getSelectionModel().deselectAll(true);

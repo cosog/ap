@@ -30,11 +30,11 @@ Ext.define("AP.view.orgAndUser.UserOrgChangeWindow", {
                 	var selectedUser=Ext.getCmp("UserOrgChangeUserListGridPanel_Id").getSelectionModel().getSelection();
                 	var selectedOrg=Ext.getCmp("UserOrgChangeOrgListTreePanel_Id").getSelectionModel().getSelection();
                 	if(selectedUser.length==0){
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择要迁移的用户！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                 		return;
                 	}
                 	if(selectedOrg.length==0){
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,"请选择目的组织！");
+                		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                 		return;
                 	}
                 	var selectedUserId="";

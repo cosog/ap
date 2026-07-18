@@ -220,7 +220,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
                 			var result =  Ext.JSON.decode(response.responseText);
                 			if (result.success) {
                 				Ext.getCmp("ReportCurveSetWindow_Id").close();
-                				Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
+                				Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
                 			}
                 		},
                 		failure:function(){

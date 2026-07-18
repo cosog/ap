@@ -1719,9 +1719,9 @@ function saveModbusProtocolAddrMappingConfigData(configInfo,saveType){
 			protocolItemsConfigHandsontableHelper.clearContainer();
 			if (data.success) {
 				if(configInfo.delidslist!=undefined && configInfo.delidslist.length>0){
-					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
+					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.deleteSuccessfully);
 				}else{
-					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
+					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.savedSuccessfully);
 				}
 				
 				if(configInfo.delidslist!=undefined && configInfo.delidslist.length>0){//如果删除
@@ -1735,14 +1735,14 @@ function saveModbusProtocolAddrMappingConfigData(configInfo,saveType){
 					}
 				}
             } else {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+            	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
             }
 		},
 		failure:function(){
 			if(Ext.getCmp("modbusProtocolConfigInfoViewId")!=undefined){
 				Ext.getCmp("modbusProtocolConfigInfoViewId").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			data:JSON.stringify(configInfo),

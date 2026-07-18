@@ -81,7 +81,7 @@ Ext.define('AP.view.data.SystemdataInfoWin', {
 		                    bodyStyle: "padding:10px;",
 		                    items: [{
 		                            xtype: 'fieldset',
-		                            title: loginUserLanguageResource.message,
+		                            title: loginUserLanguageResource.tip,
 		                            style: "padding:10px;",
 		                            collapsed: false,
 		                            items: [{

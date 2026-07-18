@@ -640,18 +640,18 @@ function SaveModbusProtocolAcqInstanceData(saveData){
 				if(saveData.delidslist!=undefined && saveData.delidslist.length>0){
 					Ext.getCmp("ScadaProtocolModbusInstanceConfigSelectRow_Id").setValue(0);
 					Ext.getCmp("ScadaProtocolModbusAddNewInstanceId_Id").setValue(0);
-					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
+					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.deleteSuccessfully);
 				}else{
-					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
+					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.savedSuccessfully);
 				}
 				Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id").getStore().load();
             	
             } else {
-            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+            	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
             }
 		},
 		failure:function(){
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			data: JSON.stringify(saveData),

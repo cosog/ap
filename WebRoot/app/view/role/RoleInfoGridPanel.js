@@ -83,12 +83,12 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 	var selectionModel = RoleInfoGridPanel.getSelectionModel();
                     var selectionRecord = selectionModel.getSelection();
                 	if(selectionRecord.length>0){
-                		Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete, function (btn) {
+                		Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDelete, function (btn) {
                             if (btn == "yes") {
                             	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
                             	
                             	if(selectionRecord.length==1 && parseInt(selectionRecord[0].data.roleId)==parseInt(currentId)){
-                            		Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.cannotDeleteLoginUserRole);
+                            		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.cannotDeleteLoginUserRole);
                             	}else{
                             		selectionRecord.forEach(function(record) {
                                 		if (parseInt(record.data.roleId)!=parseInt(currentId)){
@@ -111,7 +111,7 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
             	                  				Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
             	                			},
             	                			failure:function(){
-            	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+            	                				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
             	                			},
             	                			params: {
             	                				paramsId: selectRoleId.join(",")
@@ -123,7 +123,7 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                             }
                         });
                 	} else {
-                        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
                     }
                 	
                 }

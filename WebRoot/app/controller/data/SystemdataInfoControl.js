@@ -168,7 +168,7 @@ function delSystemdataInfo() {
                         }
                     });
         } else {
-        	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
         }
     }
 };
@@ -237,7 +237,7 @@ function editSystemdataInfo() {
         Ext.getCmp('sysmodule_Id').setValue(moduleId);
         
     } else {
-    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
 
     return false;
@@ -293,7 +293,7 @@ function editfindtattxtInfo() {
 	        Ext.getCmp("sysdatasorts_Ids").setValue(sorts);
 	        Ext.getCmp("sysdatadatavalue_Ids").setValue(datavalue);
 	    }else {
-	    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+	    	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
 	    }
 	    return false;
 	}
@@ -305,7 +305,7 @@ function savetoSysDataItems() {
     if (sysdataForm.getForm().isValid()) {
     	var dictItemSourceSelection = Ext.getCmp("DictItemSourceGridPanel_Id").getSelectionModel().getSelection();
     	if(dictItemSourceSelection.length==0){
-    		Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     	}else{
     		var getSysId = Ext.getCmp("selectedDataDictionaryId").getValue();
     		
@@ -351,7 +351,7 @@ function updateSysDataItems() {
     if (sysdataForm.getForm().isValid()) {
     	var dictItemSourceSelection = Ext.getCmp("DictItemSourceGridPanel_Id").getSelectionModel().getSelection();
     	if(dictItemSourceSelection.length==0){
-    		Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     	}else{
     		var getSysId = Ext.getCmp("selectedDataDictionaryId").getValue();
     		
@@ -485,14 +485,14 @@ function batchUpdateDataDictionaryInfo() {
 				Ext.getCmp("SystemdataInfoGridPanelId").getStore().load();
 			},
 			failure:function(){
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 			},
 			params: {
 				data: JSON.stringify(dataDictionarySaveData)
 	        }
 		});
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -566,14 +566,14 @@ function batchUpdateDictionaryItemInfo() {
 				Ext.getCmp("SystemdataInfoGridPanelId").getStore().load();
 			},
 			failure:function(){
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 			},
 			params: {
 				data: JSON.stringify(modifiedItemArr)
 	        }
 		});
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -631,7 +631,7 @@ function deleteDataDictionaryItemInfoByGridBtn(record) {
                     }
                 });
     } else {
-    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     return false;
 };
@@ -649,7 +649,7 @@ function delfindtattxtInfo() {
                     }
                 });
     } else {
-    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     return false;
 };

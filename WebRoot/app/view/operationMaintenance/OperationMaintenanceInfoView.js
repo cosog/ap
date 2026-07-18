@@ -304,7 +304,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     				                        	name:'operationMaintenance.exportLimit',
     				                        	id:'operationMaintenance_exportLimit_Id',
     				                        	minValue: 1,
-    				                        	maxValue: 65534
+    				                        	maxValue: 1000000
     				                        }
     				                    ]
     				                }, {
@@ -1276,14 +1276,14 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
     	                				var data=Ext.JSON.decode(response.responseText);
     	                				
     	                				if (data.success) {
-    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
+    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.savedSuccessfully);
     	                	            	store.commitChanges();
     	                	            } else {
-    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
     	                	            }
     	                			},
     	                			failure:function(){
-    	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+    	                				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
     	                			},
     	                			params: {
     	                				data:JSON.stringify(modifiedDeviceTypes),
@@ -1353,7 +1353,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	    	                	var selectionModel = operationMaintenanceDeviceTabManagerGridView.getSelectionModel();
 	    	                    var selectionRecord = selectionModel.getSelection();
 	    	                	if(selectionRecord.length>0){
-	    	                		Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete, function (btn) {
+	    	                		Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDelete, function (btn) {
 	    	                            if (btn == "yes") {
 	    	                            	selectionRecord.forEach(function(record) {
 	    	    	                			selectInstanceId.push(record.data.instanceId);
@@ -1365,14 +1365,14 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	    	    	                			success:function(response) {
 	    	    	                				var data=Ext.JSON.decode(response.responseText);
 	    	    	                				if (data.success) {
-	    	    	                					Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.deleteSuccessfully);
+	    	    	                					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.deleteSuccessfully);
 	    	    	                	            	Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id").getStore().load();
 	    	    	                	            } else {
-	    	    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
+	    	    	                	            	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
 	    	    	                	            }
 	    	    	                			},
 	    	    	                			failure:function(){
-	    	    	                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+	    	    	                				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 	    	    	                			},
 	    	    	                			params: {
 	    	    	                				instanceIds: selectInstanceId.join(",")
@@ -1381,7 +1381,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	    	                            }
 	    	                        });
 	    	                	} else {
-	    	                        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+	    	                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
 	    	                    }
 	                        	
 	                        }
@@ -1462,16 +1462,16 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                				var data=Ext.JSON.decode(response.responseText);
 		                				
 		                				if (data.success) {
-		                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.savedSuccessfully);
+		                	            	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.savedSuccessfully);
 		                	            	store.commitChanges();
 		                	            	
 		                	            	Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id").getStore().load();
 		                	            } else {
-		                	            	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+		                	            	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 		                	            }
 		                			},
 		                			failure:function(){
-		                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+		                				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 		                			},
 		                			params: {
 		                				data: JSON.stringify(modifiedTabDisplayInstance),
@@ -1789,7 +1789,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                         		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                         		var flag=r.test(field.value);
                         		if(!flag){
-                        			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                        			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         			field.focus(true, 100);
                         		}
                             }
@@ -1810,7 +1810,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                         		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         		var flag=r.test(field.value);
                         		if(!flag){
-                        			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                        			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         			field.focus(true, 100);
                         		}
                             }
@@ -1846,7 +1846,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                         		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                         		var flag=r.test(field.value);
                         		if(!flag){
-                        			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                        			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         			field.focus(true, 100);
                         		}
                             }
@@ -1867,7 +1867,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                         		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         		var flag=r.test(field.value);
                         		if(!flag){
-                        			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                        			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         			field.focus(true, 100);
                         		}
                             }
@@ -1881,26 +1881,26 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                         	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                         	var startTime_Hour=Ext.getCmp('OperationMaintenanceMonitorCurveStartTime_Hour_Id').getValue();
                         	if(!r.test(startTime_Hour)){
-                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         		Ext.getCmp('OperationMaintenanceMonitorCurveStartTime_Hour_Id').focus(true, 100);
                         		return;
                         	}
                         	var startTime_Minute=Ext.getCmp('OperationMaintenanceMonitorCurveStartTime_Minute_Id').getValue();
                         	if(!r2.test(startTime_Minute)){
-                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         		Ext.getCmp('OperationMaintenanceMonitorCurveStartTime_Minute_Id').focus(true, 100);
                         		return;
                         	}
                         	
                         	var endTime_Hour=Ext.getCmp('OperationMaintenanceMonitorCurveEndTime_Hour_Id').getValue();
                         	if(!r.test(endTime_Hour)){
-                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                         		Ext.getCmp('OperationMaintenanceMonitorCurveEndTime_Hour_Id').focus(true, 100);
                         		return;
                         	}
                         	var endTime_Minute=Ext.getCmp('OperationMaintenanceMonitorCurveEndTime_Minute_Id').getValue();
                         	if(!r2.test(endTime_Minute)){
-                        		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                         		Ext.getCmp('OperationMaintenanceMonitorCurveEndTime_Minute_Id').focus(true, 100);
                         		return;
                         	}
@@ -1973,7 +1973,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                 		    }
                                 		});
                                 	}else{
-                                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+                                		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                                 	}
                     			}
                     		},'-',{
@@ -2016,7 +2016,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
                                 		    }
                                 		});
                                 	}else{
-                                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+                                		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                                 	}
                     			}
                     		},'-',{
@@ -2163,14 +2163,14 @@ function loadOemOperationConfigInfo(){
 				initOemOperationConfigInfo(configFile);
 //				alert(configFile.others.printLog);
 			} else {
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 			}
 		},
 		failure:function(){
 			if(Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id")!=undefined){
 				Ext.getCmp("OperationMaintenanceBasicInfoPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			
@@ -2194,14 +2194,14 @@ function loadOemConfigInfo(){
 				var configFile=data.configFile;
 				initOemConfigInfo(configFile);
 			} else {
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 			}
 		},
 		failure:function(){
 			if(Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id")!=undefined){
 				Ext.getCmp("OperationMaintenanceOEMInfoTabPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			
@@ -2415,7 +2415,7 @@ function oneKeyBackupData(){
 	    });
 		Ext.getCmp("BatchExportModuleTreeGridPanel_Id").getStore().commitChanges();
 	} else {
-    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+    	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
 }
 function exportModuleBackupData(){
@@ -4154,14 +4154,14 @@ function initDeviceTabManagerInstance(instanceId){
 				var instanceConfig=data.config;
 				initDeviceTabManagerInstanceConfig(instanceConfig);
 			} else {
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 			}
 		},
 		failure:function(){
 			if(Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id")!=undefined){
 				Ext.getCmp("OperationMaintenanceDeviceTabManangerPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			instanceId:instanceId
@@ -4242,14 +4242,14 @@ function initDeviceTypeContentConfig(deviceTypeId,deviceTypeName){
 				var deviceTypeContentConfig=data.config;
 				updateDeviceTypeContentConfig(deviceTypeContentConfig);
 			} else {
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 			}
 		},
 		failure:function(){
 			if(Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id")!=undefined){
 				Ext.getCmp("OperationMaintenanceDeviceTypeMaintenanceListPanel_Id").getEl().unmask();
 			}
-			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 		},
 		params: {
 			deviceTypeId:deviceTypeId
@@ -4371,7 +4371,7 @@ function lowerComputerProgramVersionDataBatchUplink(deviceIdList,name){
 	        }
 	    });
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
 	}
 	
 }

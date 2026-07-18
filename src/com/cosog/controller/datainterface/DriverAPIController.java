@@ -271,12 +271,9 @@ public class DriverAPIController extends BaseController{
 		try {
 			if(EquipmentDriverServerTask.initFinished){
 				String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
-				List<String> websocketClientUserList=new ArrayList<>();
+				Map<String,String> websocketClientUserLanguageMap=new HashMap<>();
 				for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
-		            String[] clientInfo=item.userId.split("_");
-		            if(clientInfo!=null && clientInfo.length==3 && !StringManagerUtils.existOrNot(websocketClientUserList, clientInfo[1], true)){
-		            	websocketClientUserList.add(clientInfo[1]);
-		            }
+					websocketClientUserLanguageMap.put(item.userId, item.loginUserLanguage);
 		        }
 				
 				int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
@@ -558,10 +555,6 @@ public class DriverAPIController extends BaseController{
 									thirdLevel++;
 								}
 							}
-
-
-							
-							
 							
 							String commTime="",commTimeEfficiency="",commRange="";
 							
@@ -685,10 +678,19 @@ public class DriverAPIController extends BaseController{
 							
 							
 							
-							for (String websocketClientUser : websocketClientUserList) {
+							for (String websocketClientUserId:websocketClientUserLanguageMap.keySet()) {
+								String loginUserLanguage=websocketClientUserLanguageMap.get(websocketClientUserId);
+								String websocketClientUser="";
+								String[] clientInfo=websocketClientUserId.split("_");
+								if(clientInfo!=null && clientInfo.length==3){
+									websocketClientUser=clientInfo[1];
+					            }
 								UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
 								if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
-									Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+									if(!StringManagerUtils.isNotNull(loginUserLanguage)){
+										loginUserLanguage=userInfo.getLanguageName();
+									}
+									Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginUserLanguage);
 									
 									webSocketSendData = new StringBuffer();
 									webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
@@ -705,7 +707,7 @@ public class DriverAPIController extends BaseController{
 									webSocketSendData.append("\"commAlarmLevel\":"+(commAlarmLevel));
 									webSocketSendData.append("}");
 									
-									infoHandler().sendMessageToUser(websocketClientUser, webSocketSendData.toString());
+									infoHandler().sendMessageToUserId(websocketClientUserId, webSocketSendData.toString());
 								}
 							}
 						}
@@ -746,12 +748,9 @@ public class DriverAPIController extends BaseController{
 		try {
 			if(EquipmentDriverServerTask.initFinished){
 				String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
-				List<String> websocketClientUserList=new ArrayList<>();
+				Map<String,String> websocketClientUserLanguageMap=new HashMap<>();
 				for (WebSocketByJavax item : WebSocketByJavax.clients.values()) {
-		            String[] clientInfo=item.userId.split("_");
-		            if(clientInfo!=null && clientInfo.length==3 && !StringManagerUtils.existOrNot(websocketClientUserList, clientInfo[1], true)){
-		            	websocketClientUserList.add(clientInfo[1]);
-		            }
+					websocketClientUserLanguageMap.put(item.userId, item.loginUserLanguage);
 		        }
 				int timeEfficiencyUnitType=Config.getInstance().configFile.getAp().getOthers().getTimeEfficiencyUnit();
 				int timeEfficiencyZoom=1;
@@ -1154,10 +1153,19 @@ public class DriverAPIController extends BaseController{
 							
 							
 							
-							for (String websocketClientUser : websocketClientUserList) {
+							for (String websocketClientUserId:websocketClientUserLanguageMap.keySet()) {
+								String loginUserLanguage=websocketClientUserLanguageMap.get(websocketClientUserId);
+								String websocketClientUser="";
+								String[] clientInfo=websocketClientUserId.split("_");
+								if(clientInfo!=null && clientInfo.length==3){
+									websocketClientUser=clientInfo[1];
+					            }
 								UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
 								if(userInfo!=null && StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId()) && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())){
-									Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+									if(!StringManagerUtils.isNotNull(loginUserLanguage)){
+										loginUserLanguage=userInfo.getLanguageName();
+									}
+									Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginUserLanguage);
 									
 									webSocketSendData = new StringBuffer();
 									webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
@@ -1174,7 +1182,7 @@ public class DriverAPIController extends BaseController{
 									webSocketSendData.append("\"commAlarmLevel\":"+(commAlarmLevel));
 									webSocketSendData.append("}");
 									
-									infoHandler().sendMessageToUser(websocketClientUser, webSocketSendData.toString());
+									infoHandler().sendMessageToUserId(websocketClientUserId, webSocketSendData.toString());
 								}
 							}
 						}

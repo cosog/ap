@@ -26,7 +26,7 @@ Ext.define('AP.store.historyQuery.HistoryQueryDiagramOverlayStore', {
             	allNotCheck=false;
                 var get_rawData = store.proxy.reader.rawData;
                 if(get_rawData.outOfMemory){
-                	Ext.MessageBox.alert(loginUserLanguageResource.message, "数据过大，加载失败，请缩小区间重新查询！");
+                	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.operationFailed);
                 }
                 Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(get_rawData.AlarmShowStyle));
                 var HistoryQueryFSdiagramOverlayGrid = Ext.getCmp("HistoryQueryFSdiagramOverlayGrid_Id");

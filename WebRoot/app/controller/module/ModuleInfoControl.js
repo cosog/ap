@@ -62,14 +62,14 @@ function batchUpdateModuleInfo(modifiedRecords) {
 				Ext.getCmp("MainIframeView_Id").getStore().load();//右侧模块导航数刷新
 			},
 			failure:function(){
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 			},
 			params: {
 				data: JSON.stringify(modifiedModules)
 	        }
 		});
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -219,13 +219,13 @@ function delmoduleInfo() {
             // 提示是否删除数据
             Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
             Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-            Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
+            Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
                 if (btn == "yes") {
                     ExtDel_ObjectInfo("moduleInfoTreeGridView_Id", _record,"mdId", delUrl);
                 }
             });
         } else {
-            Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
         }
     }
 }
@@ -250,7 +250,7 @@ function modifymoduleInfo() {
             Ext.getCmp("updateFormmodule_Id").show();
             SelectmoduleDataAttrInfoGridPanel();
         }else {
-            Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
         }
     }
 }

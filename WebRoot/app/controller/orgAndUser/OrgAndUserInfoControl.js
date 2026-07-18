@@ -194,7 +194,7 @@ function delOrgInfo() {
         }
         
         
-        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, confirmInfo, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
             if (btn == "yes") {
         		Ext.Ajax.request({
         			url : context + '/orgManagerController/doOrgBulkDelete',
@@ -219,7 +219,7 @@ function delOrgInfo() {
             }
         });
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
 };
 
@@ -257,14 +257,14 @@ function batchUpdateOrgInfo(modifiedRecords) {
 				}
 			},
 			failure:function(){
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 			},
 			params: {
 				data: JSON.stringify(modifiedOrg)
 	        }
 		});
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 
@@ -285,7 +285,7 @@ function modifyOrgInfo() {
         Ext.getCmp("updateFormOrg_Id").show();
         SelectOrgDataAttrInfoGridPanel();
     }else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     
     return false;
@@ -319,7 +319,7 @@ function addUserInfo() {
 	    Ext.getCmp("userPwd_Id").setValue("123456");
 	    Ext.getCmp("userPwdAgain_Id").setValue("123456");
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.addOrgFirst);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.addOrgFirst);
 	}
 	
     return false;
@@ -334,7 +334,7 @@ function modifyUserInfo() {
     	UserEditPasswordWindow.show();
     	SelectedUserDataAttrInfoGridPanel();
     }else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     return false;
 };
@@ -421,7 +421,7 @@ function delUserInfo() {
         // 提示是否删除数据
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
             if (btn == "yes") {
 //                ExtDel_ObjectInfo("UserInfoGridPanel_Id", _record,"userNo", delUrl);
                 
@@ -471,7 +471,7 @@ function delUserInfo() {
             }
         });
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     return false;
 };
@@ -482,7 +482,7 @@ function batchDeleteUser() {
 	var selectionModel = UserInfoGridPanel.getSelectionModel();
     var selectionRecord = selectionModel.getSelection();
 	if(selectionRecord.length>0){
-		Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete, function (btn) {
+		Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDelete, function (btn) {
             if (btn == "yes") {
             	if(selectionRecord.length==1 && parseInt(selectionRecord[0].data.userNo)==parseInt(user_)){
             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.cannotDeleteLoginUser+"</font>");
@@ -507,7 +507,7 @@ function batchDeleteUser() {
                   				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
                 			},
                 			failure:function(){
-                				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+                				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
                 			},
                 			params: {
                 				paramsId: selectUserNo.join(",")
@@ -518,14 +518,14 @@ function batchDeleteUser() {
             }
         });
 	} else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
 }
 
 function delUserInfoByGridBtn(record) {
 	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
 	Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-	Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDelete+",userId:"+record.get("userId"), function (btn) {
+	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDelete+",userId:"+record.get("userId"), function (btn) {
       if (btn == "yes") {
           var deletejson = [];
           var noDelete=[];
@@ -611,14 +611,14 @@ function batchUpdateUserInfo() {
 				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
 			},
 			failure:function(){
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 			},
 			params: {
 				data: JSON.stringify(modifiedUsers)
 	        }
 		});
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 

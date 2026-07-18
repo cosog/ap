@@ -282,7 +282,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -303,7 +303,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -325,7 +325,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -383,7 +383,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -404,7 +404,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -426,7 +426,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -444,19 +444,19 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                              	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                              	var startTime_Hour=Ext.getCmp('SRPCalculateMaintainingStartTime_Hour_Id').getValue();
                              	if(!r.test(startTime_Hour)){
-                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                              		Ext.getCmp('SRPCalculateMaintainingStartTime_Hour_Id').focus(true, 100);
                              		return;
                              	}
                              	var startTime_Minute=Ext.getCmp('SRPCalculateMaintainingStartTime_Minute_Id').getValue();
                              	if(!r2.test(startTime_Minute)){
-                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                              		Ext.getCmp('SRPCalculateMaintainingStartTime_Minute_Id').focus(true, 100);
                              		return;
                              	}
 //                             	var startTime_Second=Ext.getCmp('SRPCalculateMaintainingStartTime_Second_Id').getValue();
 //                             	if(!r2.test(startTime_Second)){
-//                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
 //                             		Ext.getCmp('SRPCalculateMaintainingStartTime_Second_Id').focus(true, 100);
 //                             		return;
 //                             	}
@@ -464,19 +464,19 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                              	
                              	var endTime_Hour=Ext.getCmp('SRPCalculateMaintainingEndTime_Hour_Id').getValue();
                              	if(!r.test(endTime_Hour)){
-                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                              		Ext.getCmp('SRPCalculateMaintainingEndTime_Hour_Id').focus(true, 100);
                              		return;
                              	}
                              	var endTime_Minute=Ext.getCmp('SRPCalculateMaintainingEndTime_Minute_Id').getValue();
                              	if(!r2.test(endTime_Minute)){
-                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                              		Ext.getCmp('SRPCalculateMaintainingEndTime_Minute_Id').focus(true, 100);
                              		return;
                              	}
 //                             	var endTime_Second=Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').getValue();
 //                             	if(!r2.test(endTime_Second)){
-//                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
 //                             		Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').focus(true, 100);
 //                             		return;
 //                             	}
@@ -530,19 +530,19 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          	var startTime_Hour=Ext.getCmp('SRPCalculateMaintainingStartTime_Hour_Id').getValue();
                          	if(!r.test(startTime_Hour)){
-                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                          		Ext.getCmp('SRPCalculateMaintainingStartTime_Hour_Id').focus(true, 100);
                          		return;
                          	}
                          	var startTime_Minute=Ext.getCmp('SRPCalculateMaintainingStartTime_Minute_Id').getValue();
                          	if(!r2.test(startTime_Minute)){
-                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                          		Ext.getCmp('SRPCalculateMaintainingStartTime_Minute_Id').focus(true, 100);
                          		return;
                          	}
 //                         	var startTime_Second=Ext.getCmp('SRPCalculateMaintainingStartTime_Second_Id').getValue();
 //                         	if(!r2.test(startTime_Second)){
-//                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
 //                         		Ext.getCmp('SRPCalculateMaintainingStartTime_Second_Id').focus(true, 100);
 //                         		return;
 //                         	}
@@ -550,19 +550,19 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          	
                          	var endTime_Hour=Ext.getCmp('SRPCalculateMaintainingEndTime_Hour_Id').getValue();
                          	if(!r.test(endTime_Hour)){
-                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                          		Ext.getCmp('SRPCalculateMaintainingEndTime_Hour_Id').focus(true, 100);
                          		return;
                          	}
                          	var endTime_Minute=Ext.getCmp('SRPCalculateMaintainingEndTime_Minute_Id').getValue();
                          	if(!r2.test(endTime_Minute)){
-                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                          		Ext.getCmp('SRPCalculateMaintainingEndTime_Minute_Id').focus(true, 100);
                          		return;
                          	}
 //                         	var endTime_Second=Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').getValue();
 //                         	if(!r2.test(endTime_Second)){
-//                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
 //                         		Ext.getCmp('SRPCalculateMaintainingEndTime_Second_Id').focus(true, 100);
 //                         		return;
 //                         	}
@@ -594,7 +594,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
 //                         		showDeviceName+='井';
                          	}
                          	var operaName=loginUserLanguageResource.takeEffectScope+":"+showDeviceName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>,"+loginUserLanguageResourceFirstLower.calculateMaintainingConfirm+"</font>"
-                         	Ext.Msg.confirm(loginUserLanguageResource.confirm, operaName, function (btn) {
+                         	Ext.Msg.confirm(loginUserLanguageResource.tip, operaName, function (btn) {
                                  if (btn == "yes") {
                                  	Ext.Ajax.request({
                  	            		method:'POST',
@@ -602,17 +602,17 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                  	            		success:function(response) {
                  	            			var rdata=Ext.JSON.decode(response.responseText);
                  	            			if (rdata.success) {
-                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.calculateMaintainingEditSuccessInfo);
+                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.calculateMaintainingEditSuccessInfo);
                  	                            //保存以后重置全局容器
                  	                            srpFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
                  	                            Ext.getCmp("SRPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
                  	                        } else {
-                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.operationFailed);
+                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.operationFailed);
 
                  	                        }
                  	            		},
                  	            		failure:function(){
-                 	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+                 	            			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
                  	                        srpFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
                  	            		},
                  	            		params: {
@@ -663,7 +663,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                                  	downloadFile(url);
                          		}
                          	}else{
-                         		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
+                         		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noSelectionRecord);
                          	}
                          }
                      },"-",{
@@ -695,7 +695,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                         	 if(deleteRecordList.length>0){
                         		 deleteCalculateData(deviceId,deleteRecordList,1);
                         	 }else{
-                        		 Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
+                        		 Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noSelectionRecord);
                         	 }
                          }
                      },{
@@ -736,7 +736,7 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                              		 downloadFile(url);
                             	 }
                              }else{
-                             	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
+                             	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noSelectionRecord);
                              }
                          }
                      }]
@@ -1283,14 +1283,14 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	                        	var successInfo=loginUserLanguageResource.calculateMaintainingEditSuccessInfo;
 	                            //保存以后重置全局容器
 	                            srpFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
-	                            Ext.MessageBox.alert(loginUserLanguageResource.message,successInfo);
+	                            Ext.MessageBox.alert(loginUserLanguageResource.tip,successInfo);
 	                            Ext.getCmp("SRPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
 	                        } else {
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 	                        }
 	            		},
 	            		failure:function(){
-	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+	            			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 	                        srpFESDiagramCalculateMaintainingHandsontableHelper.clearContainer();
 	            		},
 	            		params: {
@@ -1302,9 +1302,9 @@ var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	            	}); 
 	            } else {
 	                if (!srpFESDiagramCalculateMaintainingHandsontableHelper.validresult) {
-	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.invalidDataType);
+	                	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.invalidDataType);
 	                } else {
-	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noDataChange);
+	                	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noDataChange);
 	                }
 	            }
 	        }
@@ -1387,14 +1387,14 @@ function ReTotalFESDiagramData(){
     			if(Ext.getCmp("SRPTotalCalculateMaintainingPanel")!=undefined){
         			Ext.getCmp("SRPTotalCalculateMaintainingPanel").getEl().unmask();
     			}
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.recalculationComplete);
+    			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.recalculationComplete);
                 Ext.getCmp("SRPTotalCalculateMaintainingDataGridPanel_Id").getStore().loadPage(1);
     		},
     		failure:function(){
     			if(Ext.getCmp("SRPTotalCalculateMaintainingPanel")!=undefined){
         			Ext.getCmp("SRPTotalCalculateMaintainingPanel").getEl().unmask();
     			}
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+    			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
     		},
     		params: {
     			deviceType: 0,
@@ -1402,13 +1402,13 @@ function ReTotalFESDiagramData(){
             }
     	}); 
     }else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
 }
 
 function deleteCalculateData(deviceId,recordIdList,calculateType){
     if (recordIdList.length>0) {
-    	Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
     		if (btn == "yes") {
     			Ext.Ajax.request({
     	    		method:'POST',
@@ -1416,7 +1416,7 @@ function deleteCalculateData(deviceId,recordIdList,calculateType){
     	    		success:function(response) {
                         rdata = Ext.JSON.decode(response.responseText);
                         if (rdata.success) {
-                        	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.deleteSuccessfully);
+                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
                             //保存以后重置全局容器
                         	
                         	if(calculateType==1){
@@ -1445,11 +1445,11 @@ function deleteCalculateData(deviceId,recordIdList,calculateType){
                  				}
                         	}
                         } else {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                         }
                     },
     	    		failure:function(){
-    	    			Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+    	    			Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
     	    		},
     	    		params: {
     	    			deviceId: deviceId,
@@ -1460,7 +1460,7 @@ function deleteCalculateData(deviceId,recordIdList,calculateType){
     		}
     	});
     }else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
 }
 

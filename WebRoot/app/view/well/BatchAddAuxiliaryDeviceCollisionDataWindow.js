@@ -62,15 +62,15 @@ Ext.define("AP.view.well.BatchAddAuxiliaryDeviceCollisionDataWindow", {
                         	rdata = Ext.JSON.decode(response.responseText);
                             if (rdata.success&&rdata.overlayCount==0) {
                             	Ext.getCmp("BatchAddAuxiliaryDeviceCollisionDataWindow_Id").close();
-                            	Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.savedSuccessfully);
+                            	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
                             }else if(rdata.success&&rdata.overlayCount>0){
                             	CreateAndLoadBatchAddAuxiliaryDeviceOverlayDataTable(rdata);
                             } else {
-                                Ext.MessageBox.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+                                Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
                             }
                         },
                         failure: function () {
-                            Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.requestFailed);
+                            Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
                         },
                         params: {
                             data: JSON.stringify(saveDate),

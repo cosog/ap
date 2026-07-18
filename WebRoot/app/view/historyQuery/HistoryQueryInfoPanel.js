@@ -863,7 +863,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                                 		var flag=r.test(field.value);
                                 		if(!flag){
-                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 			field.focus(true, 100);
                                 		}
                                     }
@@ -884,7 +884,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                                 		var flag=r.test(field.value);
                                 		if(!flag){
-                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 			field.focus(true, 100);
                                 		}
                                     }
@@ -920,7 +920,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                                 		var flag=r.test(field.value);
                                 		if(!flag){
-                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 			field.focus(true, 100);
                                 		}
                                     }
@@ -941,7 +941,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                                 		var flag=r.test(field.value);
                                 		if(!flag){
-                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 			field.focus(true, 100);
                                 		}
                                     }
@@ -955,26 +955,26 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                                 	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
                                 	if(!r.test(startTime_Hour)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
                                 	if(!r2.test(startTime_Minute)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	
                                 	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
                                 	if(!r.test(endTime_Hour)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
                                 	if(!r2.test(endTime_Minute)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
                                 		return;
                                 	}
@@ -992,13 +992,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                                 	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
                                 	if(!r.test(startTime_Hour)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
                                 	if(!r2.test(startTime_Minute)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
                                 		return;
                                 	}
@@ -1006,13 +1006,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 	
                                 	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
                                 	if(!r.test(endTime_Hour)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
                                 	if(!r2.test(endTime_Minute)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
                                 		return;
                                 	}
@@ -1082,7 +1082,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                                 		var flag=r.test(field.value);
                                 		if(!flag){
-                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 			field.focus(true, 100);
                                 		}
                                     }
@@ -1103,7 +1103,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                                 		var flag=r.test(field.value);
                                 		if(!flag){
-                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 			field.focus(true, 100);
                                 		}
                                     }
@@ -1139,7 +1139,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                                 		var flag=r.test(field.value);
                                 		if(!flag){
-                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 			field.focus(true, 100);
                                 		}
                                     }
@@ -1160,7 +1160,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                                 		var flag=r.test(field.value);
                                 		if(!flag){
-                                			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 			field.focus(true, 100);
                                 		}
                                     }
@@ -1174,26 +1174,26 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                                 	var startTime_Hour=Ext.getCmp('HistoryQueryStartTime_Hour_Id').getValue();
                                 	if(!r.test(startTime_Hour)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 		Ext.getCmp('HistoryQueryStartTime_Hour_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	var startTime_Minute=Ext.getCmp('HistoryQueryStartTime_Minute_Id').getValue();
                                 	if(!r2.test(startTime_Minute)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 		Ext.getCmp('HistoryQueryStartTime_Minute_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	
                                 	var endTime_Hour=Ext.getCmp('HistoryQueryEndTime_Hour_Id').getValue();
                                 	if(!r.test(endTime_Hour)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 		Ext.getCmp('HistoryQueryEndTime_Hour_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	var endTime_Minute=Ext.getCmp('HistoryQueryEndTime_Minute_Id').getValue();
                                 	if(!r2.test(endTime_Minute)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 		Ext.getCmp('HistoryQueryEndTime_Minute_Id').focus(true, 100);
                                 		return;
                                 	}
@@ -1211,13 +1211,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                                 	var startTime_Hour=Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').getValue();
                                 	if(!r.test(startTime_Hour)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 		Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	var startTime_Minute=Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').getValue();
                                 	if(!r2.test(startTime_Minute)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 		Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').focus(true, 100);
                                 		return;
                                 	}
@@ -1225,13 +1225,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 	
                                 	var endTime_Hour=Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').getValue();
                                 	if(!r.test(endTime_Hour)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 		Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	var endTime_Minute=Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').getValue();
                                 	if(!r2.test(endTime_Minute)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 		Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').focus(true, 100);
                                 		return;
                                 	}
@@ -1283,13 +1283,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                                 	var startTime_Hour=Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').getValue();
                                 	if(!r.test(startTime_Hour)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 		Ext.getCmp('HistoryFSDiagramQueryStartTime_Hour_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	var startTime_Minute=Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').getValue();
                                 	if(!r2.test(startTime_Minute)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 		Ext.getCmp('HistoryFSDiagramQueryStartTime_Minute_Id').focus(true, 100);
                                 		return;
                                 	}
@@ -1297,13 +1297,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                                 	
                                 	var endTime_Hour=Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').getValue();
                                 	if(!r.test(endTime_Hour)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                                 		Ext.getCmp('HistoryFSDiagramQueryEndTime_Hour_Id').focus(true, 100);
                                 		return;
                                 	}
                                 	var endTime_Minute=Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').getValue();
                                 	if(!r2.test(endTime_Minute)){
-                                		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                                		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                                 		Ext.getCmp('HistoryFSDiagramQueryEndTime_Minute_Id').focus(true, 100);
                                 		return;
                                 	}

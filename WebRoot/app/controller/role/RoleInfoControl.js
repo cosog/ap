@@ -245,17 +245,17 @@ function delroleInfo() {
     	if(parseInt(roleId)>1){
     		Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
             Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
-            Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, loginUserLanguageResource.confirmDeleteData, function (btn) {
+            Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
                 if (btn == "yes") {
                     ExtDel_ObjectInfo("RoleInfoGridPanel_Id", _record,"roleId", delUrl);
                 }
             });
     	}else{
-    		Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.cannotDeleteLoginUserRole);
+    		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.cannotDeleteLoginUserRole);
     	}
         
     } else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
 }
 
@@ -272,7 +272,7 @@ function modifyroleInfo() {
         Ext.getCmp("updateFormrole_Id").show();
         SelectRoleDataAttrInfoGridPanel();
     }else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
     return false;
 }
@@ -554,7 +554,7 @@ function delRoleInfoByGridBtn(record) {
         	confirmInfo+=loginUserLanguageResource.confirmDelete;
         }
         
-        Ext.Msg.confirm(loginUserLanguageResource.confirmDelete, confirmInfo, function (btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
             if (btn == "yes") {
             	Ext.Ajax.request({
           			url : context + '/roleManagerController/doRoleBulkDelete',
@@ -581,7 +581,7 @@ function delRoleInfoByGridBtn(record) {
         });
 
     } else {
-    	Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.cannotDeleteLoginUserRole);
+    	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.cannotDeleteLoginUserRole);
     }
 }
 
@@ -625,14 +625,14 @@ function updateRoleInfo() {
 				Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
 			},
 			failure:function(){
-				Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 			},
 			params: {
 				data: JSON.stringify(modifiedRole)
 	        }
 		});
 	}else{
-		Ext.MessageBox.alert(loginUserLanguageResource.message, loginUserLanguageResource.noDataChange);
+		Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
 	}
 }
 

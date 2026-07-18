@@ -162,7 +162,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -183,7 +183,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -205,7 +205,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -262,7 +262,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -283,7 +283,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -305,7 +305,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          		var flag=r.test(field.value);
                          		if(!flag){
-                         			Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+                         			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
                          			field.focus(true, 100);
                          		}
                              }
@@ -323,19 +323,19 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                              	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                              	var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
                              	if(!r.test(startTime_Hour)){
-                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                              		Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').focus(true, 100);
                              		return;
                              	}
                              	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
                              	if(!r2.test(startTime_Minute)){
-                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                              		Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').focus(true, 100);
                              		return;
                              	}
 //                             	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
 //                             	if(!r2.test(startTime_Second)){
-//                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
 //                             		Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').focus(true, 100);
 //                             		return;
 //                             	}
@@ -343,19 +343,19 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                              	
                              	var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
                              	if(!r.test(endTime_Hour)){
-                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                              		Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').focus(true, 100);
                              		return;
                              	}
                              	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
                              	if(!r2.test(endTime_Minute)){
-                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                              		Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').focus(true, 100);
                              		return;
                              	}
 //                             	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
 //                             	if(!r2.test(endTime_Second)){
-//                             		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                             		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
 //                             		Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').focus(true, 100);
 //                             		return;
 //                             	}
@@ -408,19 +408,19 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
                          	var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
                          	if(!r.test(startTime_Hour)){
-                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                          		Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').focus(true, 100);
                          		return;
                          	}
                          	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
                          	if(!r2.test(startTime_Minute)){
-                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                          		Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').focus(true, 100);
                          		return;
                          	}
 //                         	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
 //                         	if(!r2.test(startTime_Second)){
-//                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
 //                         		Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').focus(true, 100);
 //                         		return;
 //                         	}
@@ -428,19 +428,19 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          	
                          	var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
                          	if(!r.test(endTime_Hour)){
-                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
+                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
                          		Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').focus(true, 100);
                          		return;
                          	}
                          	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
                          	if(!r2.test(endTime_Minute)){
-                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
+                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
                          		Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').focus(true, 100);
                          		return;
                          	}
 //                         	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
 //                         	if(!r2.test(endTime_Second)){
-//                         		Ext.Msg.alert(loginUserLanguageResource.message, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
+//                         		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
 //                         		Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').focus(true, 100);
 //                         		return;
 //                         	}
@@ -472,7 +472,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
 //                         		showDeviceName+='井';
                          	}
                          	var operaName=loginUserLanguageResource.takeEffectScope+":"+showDeviceName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>"+loginUserLanguageResourceFirstLower.calculateMaintainingConfirm+"</font>"
-                         	Ext.Msg.confirm(loginUserLanguageResource.confirm, operaName, function (btn) {
+                         	Ext.Msg.confirm(loginUserLanguageResource.tip, operaName, function (btn) {
                                  if (btn == "yes") {
                                  	Ext.Ajax.request({
                  	            		method:'POST',
@@ -480,17 +480,17 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                  	            		success:function(response) {
                  	            			var rdata=Ext.JSON.decode(response.responseText);
                  	            			if (rdata.success) {
-                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.calculateMaintainingEditSuccessInfo);
+                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.calculateMaintainingEditSuccessInfo);
                  	                            //保存以后重置全局容器
                  	                            pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
                  	                            Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
                  	                        } else {
-                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.operationFailed);
+                 	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.operationFailed);
 
                  	                        }
                  	            		},
                  	            		failure:function(){
-                 	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+                 	            			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
                  	                        pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
                  	            		},
                  	            		params: {
@@ -538,7 +538,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                                  	downloadFile(url);
                          		}
                          	}else{
-                         		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
+                         		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noSelectionRecord);
                          	}
                          }
                      },"-",{
@@ -570,7 +570,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                         	 if(deleteRecordList.length>0){
                         		 deleteCalculateData(deviceId,deleteRecordList,2);
                         	 }else{
-                        		 Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
+                        		 Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noSelectionRecord);
                         	 }
                          }
                      },{
@@ -611,7 +611,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                               		 downloadFile(url);
                             	 }
                              }else{
-                             	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noSelectionRecord);
+                             	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noSelectionRecord);
                              }
                          }
                      }]
@@ -1075,14 +1075,14 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                        	var successInfo=loginUserLanguageResource.calculateMaintainingEditSuccessInfo;
 	                            //保存以后重置全局容器
 	                            pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
-	                            Ext.MessageBox.alert(loginUserLanguageResource.message,successInfo);
+	                            Ext.MessageBox.alert(loginUserLanguageResource.tip,successInfo);
 	                            Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar").getStore().loadPage(1);
 	                        } else {
-	                        	Ext.MessageBox.alert(loginUserLanguageResource.message,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
 	                        }
 	            		},
 	            		failure:function(){
-	            			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+	            			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
 	                        pcpRPMCalculateMaintainingHandsontableHelper.clearContainer();
 	            		},
 	            		params: {
@@ -1094,9 +1094,9 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	            	}); 
 	            } else {
 	                if (!pcpRPMCalculateMaintainingHandsontableHelper.validresult) {
-	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.invalidDataType);
+	                	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.invalidDataType);
 	                } else {
-	                	Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.noDataChange);
+	                	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noDataChange);
 	                }
 	            }
 	        }
@@ -1179,14 +1179,14 @@ function ReTotalRPMData(){
     			if(Ext.getCmp("PCPTotalCalculateMaintainingPanel")!=undefined){
         			Ext.getCmp("PCPTotalCalculateMaintainingPanel").getEl().unmask();
     			}
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.recalculationComplete);
+    			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.recalculationComplete);
                 Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id").getStore().loadPage(1);
     		},
     		failure:function(){
     			if(Ext.getCmp("PCPTotalCalculateMaintainingPanel")!=undefined){
         			Ext.getCmp("PCPTotalCalculateMaintainingPanel").getEl().unmask();
     			}
-    			Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.requestFailed);
+    			Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
     		},
     		params: {
     			deviceType: 1,
@@ -1194,7 +1194,7 @@ function ReTotalRPMData(){
             }
     	}); 
     }else {
-        Ext.Msg.alert(loginUserLanguageResource.message, loginUserLanguageResource.checkOne);
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }
 }
 

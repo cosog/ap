@@ -31,11 +31,11 @@ Ext.define("AP.view.orgAndUser.OrgParentChangeWindow", {
                 	var selectedCurrentOrg=Ext.getCmp("OrgParentChangeWinCurrentOrgListTreePanel_Id").getSelectionModel().getSelection();
                 	var selectedDestinationOrg=Ext.getCmp("OrgParentChangeWinDestinationOrgListTreePanel_Id").getSelectionModel().getSelection();
                 	if(selectedCurrentOrg.length==0){
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+                		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                 		return;
                 	}
                 	if(selectedDestinationOrg.length==0){
-                		Ext.MessageBox.alert(loginUserLanguageResource.message,loginUserLanguageResource.checkOne);
+                		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
                 		return;
                 	}
                 	var selectedCurrentOrgId="";

@@ -3140,7 +3140,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
     if(productionUnit.toUpperCase()=='stere'.toUpperCase()){
     	productionUnitStr='m^3/d';
     }
-    xtext+=loginUserLanguageResource.pointCount+':'+pointCount+" ";
+//    xtext+=loginUserLanguageResource.pointCount+':'+pointCount+" ";
     xtext+=loginUserLanguageResource.fMax+':'+fmax+'kN ';
     xtext+=loginUserLanguageResource.fMin+':'+fmin+'kN ';
     xtext+=loginUserLanguageResource.deltaF+':'+deltaF+'kN ';

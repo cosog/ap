@@ -92,15 +92,33 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 iconCls: 'delete',
                 handler: function () {
                 	var selectDataDictionaryId=[];
+                	var selectDataDictionaryNameList=[];
                 	var SystemdataInfoGridPanel = Ext.getCmp("SystemdataInfoGridPanelId");
                 	var selectionModel = SystemdataInfoGridPanel.getSelectionModel();
                     var selectionRecord = selectionModel.getSelection();
                 	if(selectionRecord.length>0){
-                		Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDelete, function (btn) {
+                		selectionRecord.forEach(function(record) {
+                			selectDataDictionaryId.push(record.data.sysdataid);
+                			var selectDataDictionaryName='';
+                			if(loginUserLanguage.toUpperCase()=='ZH_CN'){
+                				selectDataDictionaryName=record.data.name_zh_CN;
+                			}else if(loginUserLanguage.toUpperCase()=='EN'){
+                				selectDataDictionaryName=record.data.name_en;
+                			}else if(loginUserLanguage.toUpperCase()=='RU'){
+                				selectDataDictionaryName=record.data.name_ru;
+                			}
+                			selectDataDictionaryNameList.push(selectDataDictionaryName);
+                	    });
+                		var deleteInfo=loginUserLanguageResource.confirmDelete;
+                		if(selectDataDictionaryId.length==1){
+                			deleteInfo=loginUserLanguageResource.dataModuleName+":<font color=red>"+selectDataDictionaryNameList[0]+"</font>" 
+							+"</br>"+loginUserLanguageResource.confirmDelete;
+                		}else{
+                			deleteInfo=loginUserLanguageResource.sparseRecordCount+":<font color=red>"+selectDataDictionaryId.length+"</font>" 
+							+"</br>"+loginUserLanguageResource.confirmDelete;
+                		}
+                		Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
                             if (btn == "yes") {
-                        		selectionRecord.forEach(function(record) {
-                        			selectDataDictionaryId.push(record.data.sysdataid);
-    	                	    });
                         		if(selectDataDictionaryId.length>0){
                         			Ext.Ajax.request({
         	                			method:'POST',
@@ -124,7 +142,6 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
         	                	        }
         	                		});
                         		}
-                        		
                         	}
                         });
                 	} else {

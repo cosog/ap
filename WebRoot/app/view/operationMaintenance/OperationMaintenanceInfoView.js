@@ -1349,15 +1349,36 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                        iconCls: 'delete',
 	                        handler: function () {
 	                        	var selectInstanceId=[];
+	                        	var selectInstanceNameList=[];
 	                        	var operationMaintenanceDeviceTabManagerGridView = Ext.getCmp("operationMaintenanceDeviceTabManagerGridView_Id");
 	    	                	var selectionModel = operationMaintenanceDeviceTabManagerGridView.getSelectionModel();
 	    	                    var selectionRecord = selectionModel.getSelection();
 	    	                	if(selectionRecord.length>0){
-	    	                		Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDelete, function (btn) {
+	    	                		selectionRecord.forEach(function(record) {
+	    	                			selectInstanceId.push(record.data.instanceId);
+	    	                			var selectInstanceName='';
+	    	                			if(loginUserLanguage.toUpperCase()=='ZH_CN'){
+	    	                				selectInstanceName=record.data.name_zh_CN;
+	    	                			}else if(loginUserLanguage.toUpperCase()=='EN'){
+	    	                				selectInstanceName=record.data.name_en;
+	    	                			}else if(loginUserLanguage.toUpperCase()=='RU'){
+	    	                				selectInstanceName=record.data.name_ru;
+	    	                			}
+	    	                			selectInstanceNameList.push(selectInstanceName);
+	    	                	    });
+	    	                		
+	    	                		var deleteInfo=loginUserLanguageResource.confirmDelete;
+	    	                		if(selectInstanceId.length==1){
+	    	                			deleteInfo=loginUserLanguageResource.deviceTagInstance+":<font color=red>"+selectInstanceNameList[0]+"</font>" 
+	    								+"</br>"+loginUserLanguageResource.confirmDelete;
+	    	                		}else{
+	    	                			deleteInfo=loginUserLanguageResource.sparseRecordCount+":<font color=red>"+selectInstanceId.length+"</font>" 
+	    								+"</br>"+loginUserLanguageResource.confirmDelete;
+	    	                		}
+
+	    	                		Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
 	    	                            if (btn == "yes") {
-	    	                            	selectionRecord.forEach(function(record) {
-	    	    	                			selectInstanceId.push(record.data.instanceId);
-	    	    	                	    });
+	    	                            	
 	    	    	                		
 	    	    	                		Ext.Ajax.request({
 	    	    	                			method:'POST',

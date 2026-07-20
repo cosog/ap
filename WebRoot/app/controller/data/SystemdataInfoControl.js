@@ -641,7 +641,32 @@ function deleteDataDictionaryItemInfoByGridBtn(record) {
 function delfindtattxtInfo() {
     var obj_row = Ext.getCmp("dataDictionaryItemGridPanel_Id").getSelectionModel().getSelection();
     if (obj_row.length > 0) {
-    	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData,
+    	var selectItemIdList=[];
+     	var selectItemNameList=[];
+     	obj_row.forEach(function(record) {
+     		selectItemIdList.push(record.data.dataitemid);
+			var selectItemName='';
+			if(loginUserLanguage.toUpperCase()=='ZH_CN'){
+				selectItemName=record.data.name_zh_CN;
+			}else if(loginUserLanguage.toUpperCase()=='EN'){
+				selectItemName=record.data.name_en;
+			}else if(loginUserLanguage.toUpperCase()=='RU'){
+				selectItemName=record.data.name_ru;
+			}
+			selectItemNameList.push(selectItemName);
+	    });
+
+     	var deleteInfo=loginUserLanguageResource.confirmDelete;
+		if(selectItemIdList.length==1){
+			deleteInfo=loginUserLanguageResource.fiedName+":<font color=red>"+selectItemNameList[0]+"</font>" 
+			+"</br>"+loginUserLanguageResource.confirmDelete;
+		}else{
+			deleteInfo=loginUserLanguageResource.sparseRecordCount+":<font color=red>"+selectItemIdList.length+"</font>" 
+			+"</br>"+loginUserLanguageResource.confirmDelete;
+		}
+    	
+    	
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo,
                 function (btn) {
                     if (btn == "yes") {
                         //调用Grid公共方法 

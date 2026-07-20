@@ -1496,9 +1496,8 @@ function controlBtnHandler(btn,btnIndex,showButtonCount){
 	    var all_loading = new Ext.LoadMask({msg: loginUserLanguageResource.commandSending+'...',target: Ext.getBody().component});
 	    
 	    if(resolutionMode == 1 && itemMeaning.length <= showButtonCount) {
-	    	var tipInfo=loginUserLanguageResource.deviceName+':'+deviceName;
-	    	tipInfo+="</br>"+item
-	    	tipInfo+="</br>"+text
+	    	var tipInfo=loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font>";
+	    	tipInfo+="</br>"+item+":<font color=red>"+text+"</font>";
 	    	tipInfo+="</br>"+loginUserLanguageResource.confirmOperation;
 	    	
 	    	Ext.Msg.confirm(loginUserLanguageResource.tip, tipInfo, function (btn) {

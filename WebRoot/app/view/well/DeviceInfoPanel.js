@@ -706,51 +706,64 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
     				if(startRow!='' && endRow!=''){
     					startRow=parseInt(startRow);
     					endRow=parseInt(endRow);
-    					var deleteInfo=loginUserLanguageResource.confirmDelete;
-    					if(startRow==endRow){
-    						deleteInfo=loginUserLanguageResource.confirmDelete;
-    					}
     					
-    					Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
-    			            if (btn == "yes") {
-    			            	for(var i=startRow;i<=endRow;i++){
-    	    						var deviceId= deviceInfoHandsontableHelper.hot.getDataAtRowProp(i,'id');
-    	    						if (deviceId != null && parseInt(deviceId)>0) {
-    	    		                    deviceInfoHandsontableHelper.delidslist.push(deviceId);
-    	    		                }
-    	    					}
-    	    					var saveData={};
-    	    	            	saveData.updatelist=[];
-    	    	            	saveData.insertlist=[];
-    	    	            	saveData.delidslist=deviceInfoHandsontableHelper.delidslist;
-    	    	            	Ext.Ajax.request({
-    	    	                    method: 'POST',
-    	    	                    url: context + '/wellInformationManagerController/saveWellHandsontableData',
-    	    	                    success: function (response) {
-    	    	                        rdata = Ext.JSON.decode(response.responseText);
-    	    	                        if (rdata.success) {
-    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
-    	    	                            //保存以后重置全局容器
-    	    	                            deviceInfoHandsontableHelper.clearContainer();
-    	    	                            Ext.getCmp("DeviceSelectRow_Id").setValue(0);
-    	    	                        	Ext.getCmp("DeviceSelectEndRow_Id").setValue(0);
-    	    	                            CreateAndLoadDeviceInfoTable();
-    	    	                        } else {
-    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
-    	    	                        }
-    	    	                    },
-    	    	                    failure: function () {
-    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
-    	    	                        deviceInfoHandsontableHelper.clearContainer();
-    	    	                    },
-    	    	                    params: {
-    	    	                        data: JSON.stringify(saveData),
-    	    	                        orgId: leftOrg_Id,
-    	    	                        deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel")
-    	    	                    }
-    	    	                });
-    			            }
-    			        });
+    					var delidslist=[];
+    					var delDeviceNameList=[];
+		            	for(var i=startRow;i<=endRow;i++){
+    						var deviceId= deviceInfoHandsontableHelper.hot.getDataAtRowProp(i,'id');
+    						var deviceName= deviceInfoHandsontableHelper.hot.getDataAtRowProp(i,'deviceName');
+    						if (deviceId != null && parseInt(deviceId)>0) {
+    		                    delidslist.push(deviceId);
+    		                    delDeviceNameList.push(deviceName);
+    		                }
+    					}
+    					var saveData={};
+    	            	saveData.updatelist=[];
+    	            	saveData.insertlist=[];
+    	            	saveData.delidslist=delidslist;
+    	            	if(saveData.delidslist.length>0){
+    	            		var deleteInfo=loginUserLanguageResource.confirmDelete;
+        					if(saveData.delidslist.length==1){
+        						deleteInfo=loginUserLanguageResource.deviceName+":<font color=red>"+delDeviceNameList[0]+"</font>" 
+        							+"</br>"+loginUserLanguageResource.confirmDelete;
+        					}else{
+        						deleteInfo=loginUserLanguageResource.sparseRecordCount+":<font color=red>"+saveData.delidslist.length+"</font>" 
+    							+"</br>"+loginUserLanguageResource.confirmDelete;
+        					}
+        					
+        					Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
+        			            if (btn == "yes") {
+        			            	Ext.Ajax.request({
+        	    	                    method: 'POST',
+        	    	                    url: context + '/wellInformationManagerController/saveWellHandsontableData',
+        	    	                    success: function (response) {
+        	    	                        rdata = Ext.JSON.decode(response.responseText);
+        	    	                        if (rdata.success) {
+        	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
+        	    	                            //保存以后重置全局容器
+        	    	                            deviceInfoHandsontableHelper.clearContainer();
+        	    	                            Ext.getCmp("DeviceSelectRow_Id").setValue(0);
+        	    	                        	Ext.getCmp("DeviceSelectEndRow_Id").setValue(0);
+        	    	                            CreateAndLoadDeviceInfoTable();
+        	    	                        } else {
+        	    	                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+        	    	                        }
+        	    	                    },
+        	    	                    failure: function () {
+        	    	                        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
+        	    	                        deviceInfoHandsontableHelper.clearContainer();
+        	    	                    },
+        	    	                    params: {
+        	    	                        data: JSON.stringify(saveData),
+        	    	                        orgId: leftOrg_Id,
+        	    	                        deviceType: getDeviceTypeFromTabId("DeviceManagerTabPanel")
+        	    	                    }
+        	    	                });
+        			            }
+        			        });
+    	            	}else{
+    	            		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
+    	            	}
     				}else{
     					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
     				}

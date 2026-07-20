@@ -552,23 +552,39 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                          handler: function (v, o) {
                         	 var checkedStatus=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtProp('checked');
                         	 var deleteRecordList=[];
+                        	 var deleteRecordAcqTimeList = [];
                         	 
                         	 var deviceId=0;
+                        	 var deviceName = '';
                         	 var selectRow= Ext.getCmp("DataMaintainingDeviceListSelectRow_Id").getValue();
                         	 if(Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
                          		deviceId=Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                         		deviceName = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
                          	 }
                         	 
                         	 if(checkedStatus.length>0){
                         		 for(var i=0;i<checkedStatus.length;i++){
                         			 if(checkedStatus[i]){
                         				 var recordId=pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(i,'recordId'); 
+                        				 var acqTime = pcpRPMCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(i, 'acqTime');
                         				 deleteRecordList.push(recordId);
+                        				 deleteRecordAcqTimeList.push(acqTime);
                         			 }
                         		 }
                         	 }
                         	 if(deleteRecordList.length>0){
-                        		 deleteCalculateData(deviceId,deleteRecordList,2);
+                        		 var deleteInfo = loginUserLanguageResource.confirmDelete;
+                        		 if (deleteRecordList.length == 1) {
+                        		     deleteInfo = loginUserLanguageResource.deviceName + ":<font color=red>" + deviceName + "</font>" +
+                        		         "</br>" + loginUserLanguageResource.cloudAcqtime + ":<font color=red>" + deleteRecordAcqTimeList[0] + "</font>" +
+                        		         "</br>" + loginUserLanguageResource.confirmDelete;
+                        		 } else {
+                        		     deleteInfo = loginUserLanguageResource.deviceName + ":<font color=red>" + deviceName + "</font>" +
+                        		         "</br>" + loginUserLanguageResource.sparseRecordCount + ":<font color=red>" + deleteRecordList.length + "</font>" +
+                        		         "</br>" + loginUserLanguageResource.confirmDelete;
+                        		 }
+                        		 
+                        		 deleteCalculateData(deviceId,deleteRecordList,2,deleteInfo);
                         	 }else{
                         		 Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noSelectionRecord);
                         	 }

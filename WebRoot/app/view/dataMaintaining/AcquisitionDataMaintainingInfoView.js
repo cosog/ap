@@ -998,8 +998,10 @@ function deleteRealtimeAcquisitionData() {
     var checkedStatus = realtimeAcquisitionDataMaintainingHandsontableHelper.hot.getDataAtProp('checked');
     var deleteAcqTimeList = [];
     var deviceId = 0;
+    var deviceName='';
     if (Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length > 0) {
         deviceId = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        deviceName=Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
     }
 
     if (checkedStatus.length > 0) {
@@ -1011,7 +1013,19 @@ function deleteRealtimeAcquisitionData() {
         }
     }
     if (deleteAcqTimeList.length > 0) {
-    	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
+    	var deleteInfo=loginUserLanguageResource.confirmDelete;
+		if(deleteAcqTimeList.length==1){
+			deleteInfo=loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font>" 
+				+"</br>"+loginUserLanguageResource.cloudAcqtime+":<font color=red>"+deleteAcqTimeList[0]+"</font>" 
+				+"</br>"+loginUserLanguageResource.confirmDelete;
+		}else{
+			deleteInfo=loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font>" 
+			+"</br>"+loginUserLanguageResource.sparseRecordCount+":<font color=red>"+deleteAcqTimeList.length+"</font>" 
+			+"</br>"+loginUserLanguageResource.confirmDelete;
+		}
+		
+		
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
     		if (btn == "yes") {
     			Ext.Ajax.request({
     	    		method:'POST',
@@ -1054,23 +1068,40 @@ function deleteRealtimeAcquisitionData() {
 function deleteHistoryAcquisitionData() {
     var checkedStatus = historyAcquisitionDataMaintainingHandsontableHelper.hot.getDataAtProp('checked');
     var deleteRecordList = [];
+    var deleteRecordAcqTImeList = [];
     var deviceId = 0;
     var calculateType = 0;
+    var deviceName='';
     if (Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length > 0) {
         deviceId = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         calculateType = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.calculateType;
+        deviceName = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
     }
 
     if (checkedStatus.length > 0) {
         for (var i = 0; i < checkedStatus.length; i++) {
             if (checkedStatus[i]) {
                 var recordId = historyAcquisitionDataMaintainingHandsontableHelper.hot.getDataAtRowProp(i, 'recordId');
+                var acqTime = historyAcquisitionDataMaintainingHandsontableHelper.hot.getDataAtRowProp(i, 'acqTime');
                 deleteRecordList.push(recordId);
+                deleteRecordAcqTImeList.push(acqTime);
             }
         }
     }
     if (deleteRecordList.length > 0) {
-    	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
+    	var deleteInfo=loginUserLanguageResource.confirmDelete;
+		if(deleteRecordList.length==1){
+			deleteInfo=loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font>" 
+				+"</br>"+loginUserLanguageResource.cloudAcqtime+":<font color=red>"+deleteRecordAcqTImeList[0]+"</font>" 
+				+"</br>"+loginUserLanguageResource.confirmDelete;
+		}else{
+			deleteInfo=loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font>" 
+			+"</br>"+loginUserLanguageResource.sparseRecordCount+":<font color=red>"+deleteRecordList.length+"</font>" 
+			+"</br>"+loginUserLanguageResource.confirmDelete;
+		}
+    	
+    	
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
     		if (btn == "yes") {
     			Ext.Ajax.request({
     	    		method:'POST',

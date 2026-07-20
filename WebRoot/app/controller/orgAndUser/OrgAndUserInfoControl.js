@@ -179,19 +179,31 @@ function delOrgInfo() {
         Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.confirm;
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;"+loginUserLanguageResource.cancel;
         
-        var confirmInfo=loginUserLanguageResource.confirmDelete;
+        
+        
+        var confirmInfo='';
+        var delOrgName='';
+        if(loginUserLanguage.toUpperCase()=='ZH_CN'){
+        	delOrgName=_record[0].data.orgName_zh_CN;
+		}else if(loginUserLanguage.toUpperCase()=='EN'){
+			delOrgName=_record[0].data.orgName_en;
+		}else if(loginUserLanguage.toUpperCase()=='RU'){
+			delOrgName=_record[0].data.orgName_ru;
+		}
+        confirmInfo=loginUserLanguageResource.orgName+":<font color=red>"+delOrgName+"</font>" 
         
         var orgAssociatedInformation=getOrgAssociatedInformation(_record[0].get("orgId"));
         if(orgAssociatedInformation.deviceCount>0 || orgAssociatedInformation.userCount>0){
-        	confirmInfo=loginUserLanguageResource.orgAssociatedInformation+"<br/>" ;
+        	confirmInfo+="<br/>"+loginUserLanguageResource.orgAssociatedInformation;
         	if(orgAssociatedInformation.userCount>0){
-        		confirmInfo+=loginUserLanguageResource.userCount+":"+orgAssociatedInformation.userCount+"<br/>"
+        		confirmInfo+="<br/>"+loginUserLanguageResource.userCount+":"+orgAssociatedInformation.userCount;
         	}
         	if(orgAssociatedInformation.deviceCount>0){
-        		confirmInfo+=loginUserLanguageResource.deviceCount+":"+orgAssociatedInformation.deviceCount+"<br/>"
+        		confirmInfo+="<br/>"+loginUserLanguageResource.deviceCount+":"+orgAssociatedInformation.deviceCount;
         	}
-        	confirmInfo+=loginUserLanguageResource.confirmDelete;
         }
+        
+        confirmInfo+='<br/>'+loginUserLanguageResource.confirmDelete;
         
         
         Ext.Msg.confirm(loginUserLanguageResource.tip, confirmInfo, function (btn) {
@@ -478,22 +490,34 @@ function delUserInfo() {
 
 function batchDeleteUser() {
 	var selectUserNo=[];
+	var selectUserNameList=[];
 	var UserInfoGridPanel = Ext.getCmp("UserInfoGridPanel_Id");
 	var selectionModel = UserInfoGridPanel.getSelectionModel();
     var selectionRecord = selectionModel.getSelection();
 	if(selectionRecord.length>0){
-		Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDelete, function (btn) {
-            if (btn == "yes") {
-            	if(selectionRecord.length==1 && parseInt(selectionRecord[0].data.userNo)==parseInt(user_)){
-            		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.cannotDeleteLoginUser+"</font>");
-            	}else{
-            		selectionRecord.forEach(function(record) {
-                		if (parseInt(record.data.userNo)!=parseInt(user_)){
-                			selectUserNo.push(record.data.userNo);
-                		}
-            	    });
-            		if(selectUserNo.length>0){
-            			Ext.Ajax.request({
+    	if(selectionRecord.length==1 && parseInt(selectionRecord[0].data.userNo)==parseInt(user_)){
+    		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.cannotDeleteLoginUser+"</font>");
+    	}else{
+    		selectionRecord.forEach(function(record) {
+        		if (parseInt(record.data.userNo)!=parseInt(user_)){
+        			selectUserNo.push(record.data.userNo);
+        			selectUserNameList.push(record.data.userName);
+        		}
+    	    });
+    		
+    		var deleteInfo=loginUserLanguageResource.confirmDelete;
+    		if(selectUserNo.length==1){
+    			deleteInfo=loginUserLanguageResource.userName+":<font color=red>"+selectUserNameList[0]+"</font>" 
+				+"</br>"+loginUserLanguageResource.confirmDelete;
+    		}else{
+    			deleteInfo=loginUserLanguageResource.sparseRecordCount+":<font color=red>"+selectUserNo.length+"</font>" 
+				+"</br>"+loginUserLanguageResource.confirmDelete;
+    		}
+    		
+    		if(selectUserNo.length>0){
+    			Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
+                    if (btn == "yes") {
+                    	Ext.Ajax.request({
                 			method:'POST',
                 			url : context + '/userManagerController/doUserBulkDelete',
                 			success:function(response) {
@@ -513,10 +537,12 @@ function batchDeleteUser() {
                 				paramsId: selectUserNo.join(",")
                 	        }
                 		});
-            		}
-            	}
-            }
-        });
+                    }
+                });
+    		}else{
+    			Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+    		}
+    	}
 	} else {
         Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
     }

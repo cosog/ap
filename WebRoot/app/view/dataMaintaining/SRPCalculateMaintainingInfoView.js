@@ -675,29 +675,47 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
                          iconCls: 'delete',
                          id:'SRPCalculateMaintainingDeleteDataBtn',
                          handler: function (v, o) {
-                        	 var checkedStatus=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtProp('checked');
-                        	 var deleteRecordList=[];
-                        	 var deviceId=0;
-                        	 var selectRow= Ext.getCmp("DataMaintainingDeviceListSelectRow_Id").getValue();
-                        	 if(Ext.getCmp("DataMaintainingDeviceListGridPanel_Id")!=undefined && Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                         		deviceId=Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-                         	}
-                        	 
-                        	 
-                        	 if(checkedStatus.length>0){
-                        		 for(var i=0;i<checkedStatus.length;i++){
-                        			 if(checkedStatus[i]){
-                        				 var recordId=srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(i,'recordId'); 
-                        				 deleteRecordList.push(recordId);
-                        			 }
-                        		 }
-                        	 }
-                        	 if(deleteRecordList.length>0){
-                        		 deleteCalculateData(deviceId,deleteRecordList,1);
-                        	 }else{
-                        		 Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.noSelectionRecord);
-                        	 }
-                         }
+                        	    var checkedStatus = srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtProp('checked');
+                        	    var deleteRecordList = [];
+                        	    var deleteRecordAcqTimeList = [];
+                        	    var deleteRecordFESDiagramAcqtimeList = [];
+                        	    var deviceId = 0;
+                        	    var deviceName = '';
+                        	    var selectRow = Ext.getCmp("DataMaintainingDeviceListSelectRow_Id").getValue();
+                        	    if (Ext.getCmp("DataMaintainingDeviceListGridPanel_Id") != undefined && Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection().length > 0) {
+                        	        deviceId = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                        	        deviceName = Ext.getCmp("DataMaintainingDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.deviceName;
+                        	    }
+                        	    if (checkedStatus.length > 0) {
+                        	        for (var i = 0; i < checkedStatus.length; i++) {
+                        	            if (checkedStatus[i]) {
+                        	                var recordId = srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(i, 'recordId');
+                        	                var acqTime = srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(i, 'acqTime');
+                        	                var FESDiagramAcqtime = srpFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRowProp(i, 'FESDiagramAcqtime');
+                        	                deleteRecordList.push(recordId);
+                        	                deleteRecordAcqTimeList.push(acqTime);
+                        	                deleteRecordFESDiagramAcqtimeList.push(FESDiagramAcqtime);
+                        	            }
+                        	        }
+                        	    }
+                        	    if (deleteRecordList.length > 0) {
+                        	        var deleteInfo = loginUserLanguageResource.confirmDelete;
+                        	        if (deleteRecordList.length == 1) {
+                        	            deleteInfo = loginUserLanguageResource.deviceName + ":<font color=red>" + deviceName + "</font>" +
+                        	                "</br>" + loginUserLanguageResource.cloudAcqtime + ":<font color=red>" + deleteRecordAcqTimeList[0] + "</font>" +
+                        	                "</br>" + loginUserLanguageResource.FESDiagramAcqtime + ":<font color=red>" + deleteRecordFESDiagramAcqtimeList[0] + "</font>" +
+                        	                "</br>" + loginUserLanguageResource.confirmDelete;
+                        	        } else {
+                        	            deleteInfo = loginUserLanguageResource.deviceName + ":<font color=red>" + deviceName + "</font>" +
+                        	                "</br>" + loginUserLanguageResource.sparseRecordCount + ":<font color=red>" + deleteRecordList.length + "</font>" +
+                        	                "</br>" + loginUserLanguageResource.confirmDelete;
+                        	        }
+
+                        	        deleteCalculateData(deviceId, deleteRecordList, 1,deleteInfo);
+                        	    } else {
+                        	        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noSelectionRecord);
+                        	    }
+                        	}
                      },{
                          xtype: 'button',
                          text: loginUserLanguageResource.reTotalCalculate,
@@ -1406,9 +1424,9 @@ function ReTotalFESDiagramData(){
     }
 }
 
-function deleteCalculateData(deviceId,recordIdList,calculateType){
+function deleteCalculateData(deviceId,recordIdList,calculateType,deleteInfo){
     if (recordIdList.length>0) {
-    	Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteData, function (btn) {
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
     		if (btn == "yes") {
     			Ext.Ajax.request({
     	    		method:'POST',

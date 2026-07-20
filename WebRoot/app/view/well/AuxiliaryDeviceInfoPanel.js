@@ -59,47 +59,68 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
     				var endRow= Ext.getCmp("AuxiliaryDeviceSelectEndRow_Id").getValue();
     				if(startRow!=''&&endRow!=''){
     					startRow=parseInt(startRow);
-    					endRow=parseInt(endRow);
-    					var deleteInfo=loginUserLanguageResource.confirmDelete;
-    					if(startRow==endRow){
-    						deleteInfo=loginUserLanguageResource.confirmDelete;
-    					}
+    					endRow=parseInt(endRow)
     					
-    					Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
-    			            if (btn == "yes") {
-    			            	for(var i=startRow;i<=endRow;i++){
-    	    						var rowdata = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRow(i);
-    	    						if (rowdata[0] != null && parseInt(rowdata[0])>0) {
-    	    		                    auxiliaryDeviceInfoHandsontableHelper.delidslist.push(rowdata[0]);
-    	    		                }
-    	    					}
-    	    					var saveData={};
-    	    	            	saveData.updatelist=[];
-    	    	            	saveData.insertlist=[];
-    	    	            	saveData.delidslist=auxiliaryDeviceInfoHandsontableHelper.delidslist;
-    	    	            	Ext.Ajax.request({
-    	    	                    method: 'POST',
-    	    	                    url: context + '/wellInformationManagerController/saveAuxiliaryDeviceHandsontableData',
-    	    	                    success: function (response) {
-    	    	                        rdata = Ext.JSON.decode(response.responseText);
-    	    	                        if (rdata.success) {
-    	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
-    	    	                        	auxiliaryDeviceInfoHandsontableHelper.clearContainer();
-    	    	                            CreateAndLoadAuxiliaryDeviceInfoTable();
-    	    	                        } else {
-    	    	                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
-    	    	                        }
-    	    	                    },
-    	    	                    failure: function () {
-    	    	                        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
-    	    	                        auxiliaryDeviceInfoHandsontableHelper.clearContainer();
-    	    	                    },
-    	    	                    params: {
-    	    	                        data: JSON.stringify(saveData)
-    	    	                    }
-    	    	                });
-    			            }
-    			        });
+    					var delidslist=[];
+    					var delDeviceNameList=[];
+    					var delManufacturerList=[];
+    					var delModelList=[];
+		            	for(var i=startRow;i<=endRow;i++){
+    						var deviceId= auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(i,'id');
+		            		var name= auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(i,'name');
+		            		var manufacturer= auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(i,'manufacturer');
+		            		var model= auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(i,'model');
+    						if (deviceId!= null && parseInt(deviceId)>0) {
+    		                    delidslist.push(deviceId);
+    		                    delDeviceNameList.push(name);
+    		                    delManufacturerList.push(manufacturer);
+    		                    delModelList.push(model);
+    		                }
+    					}
+    					var saveData={};
+    	            	saveData.updatelist=[];
+    	            	saveData.insertlist=[];
+    	            	saveData.delidslist=delidslist;
+    	            	if(saveData.delidslist.length>0){
+        					var deleteInfo=loginUserLanguageResource.confirmDelete;
+        					if(saveData.delidslist.length==1){
+        						deleteInfo=loginUserLanguageResource.deviceName+":<font color=red>"+delDeviceNameList[0]+"</font>" 
+        							+"</br>"+loginUserLanguageResource.manufacturer+":<font color=red>"+delManufacturerList[0]+"</font>" 
+        							+"</br>"+loginUserLanguageResource.model+":<font color=red>"+delModelList[0]+"</font>" 
+        							+"</br>"+loginUserLanguageResource.confirmDelete;
+        					}else{
+        						deleteInfo=loginUserLanguageResource.sparseRecordCount+":<font color=red>"+saveData.delidslist.length+"</font>" 
+    							+"</br>"+loginUserLanguageResource.confirmDelete;
+        					}
+        					
+        					Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
+        			            if (btn == "yes") {
+        			            	Ext.Ajax.request({
+        	    	                    method: 'POST',
+        	    	                    url: context + '/wellInformationManagerController/saveAuxiliaryDeviceHandsontableData',
+        	    	                    success: function (response) {
+        	    	                        rdata = Ext.JSON.decode(response.responseText);
+        	    	                        if (rdata.success) {
+        	    	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
+        	    	                        	auxiliaryDeviceInfoHandsontableHelper.clearContainer();
+        	    	                            CreateAndLoadAuxiliaryDeviceInfoTable();
+        	    	                        } else {
+        	    	                            Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+        	    	                        }
+        	    	                    },
+        	    	                    failure: function () {
+        	    	                        Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.requestFailed);
+        	    	                        auxiliaryDeviceInfoHandsontableHelper.clearContainer();
+        	    	                    },
+        	    	                    params: {
+        	    	                        data: JSON.stringify(saveData)
+        	    	                    }
+        	    	                });
+        			            }
+        			        });
+    	            	}else{
+    	            		Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
+    	            	}
     				}else{
     					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.checkOne);
     				}

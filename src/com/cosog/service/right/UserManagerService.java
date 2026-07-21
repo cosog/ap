@@ -141,7 +141,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		String userName = (String) map.get("userName");
 		String roleSql = " select t.role_id,t.role_name_"+user.getLanguageName()+" from tbl_role t"
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
-				+ " order by t.role_id";
+				+ " order by t.role_level,t.role_id";
 		
 		String sql="select u.user_no as  userNo,u.user_name as userName,u.user_orgid as userOrgid,o.org_name_"+user.getLanguageName()+" as orgName,u.user_id as userId,"
 				+ " u.user_pwd as userPwd,"
@@ -296,7 +296,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		String sql = "";
 		sql = " select t.role_id,t.role_name_"+user.getLanguageName()+" from tbl_role t"
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
-				+ " order by t.role_id";
+				+ " order by t.role_level,t.role_id";
 		try {
 			List<?> list = this.getSQLObjects(sql);
 			result_json.append("[");

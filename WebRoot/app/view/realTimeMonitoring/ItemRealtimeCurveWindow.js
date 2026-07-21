@@ -46,32 +46,36 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
                     value: '',
                     hidden: true
                 }],
-                id: 'ItemRealtimeCurvePanel_Id',
-            	html: '<div id="ItemRealtimeCurveContainer" class="hbox" style="width:100%;height:100%;min-height:' + otherCardMinHeight + 'px;display:flex;flex-wrap:wrap;align-content:flex-start;"></div>',
-                listeners: {
-                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    	var chartCreated=false;
-                    	var container=$('#ItemRealtimeCurveContainer');
-            			if(container!=undefined && container.length>0){
-            				var containerChildren=container[0].children;
-            				if(containerChildren!=undefined && containerChildren.length>0){
-            					for(var i=0;i<containerChildren.length;i++){
-            						var chart = $("#"+containerChildren[i].id).highcharts(); 
-            						if(isNotVal(chart)){
-            							chartCreated=true;
-            							highchartsResize(containerChildren[i].id);
-            						}
-            					}
-            				}
-            			}
-            			if(!chartCreated){
-            				getItemRealTimeCurveData();
-            			}
-                    },
-                    minimize: function (win, opts) {
-                        win.collapse();
+                items:[{
+                	xtype: 'panel',
+                    layout: 'fit',
+                    minHeight: otherCardMinHeight,   // 图表最小可视高度
+                    autoScroll: false,                // 禁止内部滚动
+                    border: false,
+                    id: 'ItemRealtimeCurvePanel_Id',
+                	html: '<div id="ItemRealtimeCurveContainer" class="hbox" style="width:100%;height:100%;display:flex;flex-wrap:wrap;align-content:flex-start;"></div>',
+                    listeners: {
+                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                        	var chartCreated=false;
+                        	var container=$('#ItemRealtimeCurveContainer');
+                			if(container!=undefined && container.length>0){
+                				var containerChildren=container[0].children;
+                				if(containerChildren!=undefined && containerChildren.length>0){
+                					for(var i=0;i<containerChildren.length;i++){
+                						var chart = $("#"+containerChildren[i].id).highcharts(); 
+                						if(isNotVal(chart)){
+                							chartCreated=true;
+                							highchartsResize(containerChildren[i].id);
+                						}
+                					}
+                				}
+                			}
+                			if(!chartCreated){
+                				getItemRealTimeCurveData();
+                			}
+                        }
                     }
-                }
+                }]
         	}],
             listeners: {
                 beforeclose: function (panel) {

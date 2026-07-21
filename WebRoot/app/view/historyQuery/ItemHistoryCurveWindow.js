@@ -207,19 +207,25 @@ Ext.define("AP.view.historyQuery.ItemHistoryCurveWindow", {
                     hidden: false,
                     style: 'margin-right:15px'
                 }],
-            	html: '<div id="ItemHistoryCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-                listeners: {
-                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    	if ($("#ItemHistoryCurveDiv_Id").highcharts() != undefined) {
-                    		highchartsResize("ItemHistoryCurveDiv_Id");
-                    	}else{
-            				getItemHistoryCurveData();
-            			}
-                    },
-                    minimize: function (win, opts) {
-                        win.collapse();
+                items:[{
+                	layout: 'fit',
+                    minHeight: otherCardMinHeight,   // 图表最小可视高度
+                    autoScroll: false,                // 禁止内部滚动
+                    border: false,
+                	html: '<div id="ItemHistoryCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                    listeners: {
+                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                        	if ($("#ItemHistoryCurveDiv_Id").highcharts() != undefined) {
+                        		highchartsResize("ItemHistoryCurveDiv_Id");
+                        	}else{
+                				getItemHistoryCurveData();
+                			}
+                        },
+                        minimize: function (win, opts) {
+                            win.collapse();
+                        }
                     }
-                }
+                }]
         	}],
             listeners: {
                 // 最大化时，确保窗口处于展开状态，并刷新表格

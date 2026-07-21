@@ -324,8 +324,8 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     }],
                     listeners: {
                     	celldblclick : function( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
-                    		var record = grid.getStore().getAt(rowIndex);
-                            var dataIndex=grid.getHeaderAtIndex(cellIndex).dataIndex;
+                            var header = grid.getHeaderByCell(td);
+                            var dataIndex = header.dataIndex;
                             if (record.data.userNo==user_ 
                             		&& ( dataIndex.toUpperCase()=='userId'.toUpperCase() 
                             				|| dataIndex.toUpperCase()=='userTypeName'.toUpperCase() 

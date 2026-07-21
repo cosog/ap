@@ -193,7 +193,7 @@ SelectRoleDataAttrInfoGridPanel = function () {
     if(currentUserRoleShowLevel>=showLevel){
     	Ext.getCmp('roleShowLevel_Id').disable();
     }else{
-    	Ext.getCmp("roleShowLevel_Id").setMinValue(currentUserRoleShowLevel+1);
+    	Ext.getCmp("roleShowLevel_Id").setMinValue(currentUserRoleShowLevel);
     }
     
     if(currentUserRoleLevel>=roleLevel){
@@ -216,8 +216,8 @@ function addroleInfo() {
     Ext.getCmp("roleLevel_Id").setMinValue(currentUserRoleLevel+1);
     Ext.getCmp("roleLevel_Id").setValue(currentUserRoleLevel+1);
     
-    Ext.getCmp("roleShowLevel_Id").setMinValue(currentUserRoleShowLevel+1);
-    Ext.getCmp("roleShowLevel_Id").setValue(currentUserRoleShowLevel+1);
+    Ext.getCmp("roleShowLevel_Id").setMinValue(currentUserRoleShowLevel);
+    Ext.getCmp("roleShowLevel_Id").setValue(currentUserRoleShowLevel);
     
     
     if(currentUserRoleVideoKeyEdit==0){

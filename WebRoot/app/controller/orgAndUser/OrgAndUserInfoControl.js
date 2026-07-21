@@ -190,16 +190,16 @@ function delOrgInfo() {
 		}else if(loginUserLanguage.toUpperCase()=='RU'){
 			delOrgName=_record[0].data.orgName_ru;
 		}
-        confirmInfo=loginUserLanguageResource.orgName+":<font color=red>"+delOrgName+"</font>" 
+        confirmInfo=loginUserLanguageResource.orgName+":<font color=red>"+delOrgName+"</font>";
         
         var orgAssociatedInformation=getOrgAssociatedInformation(_record[0].get("orgId"));
         if(orgAssociatedInformation.deviceCount>0 || orgAssociatedInformation.userCount>0){
         	confirmInfo+="<br/>"+loginUserLanguageResource.orgAssociatedInformation;
         	if(orgAssociatedInformation.userCount>0){
-        		confirmInfo+="<br/>"+loginUserLanguageResource.userCount+":"+orgAssociatedInformation.userCount;
+        		confirmInfo+="<br/>"+loginUserLanguageResource.userCount+":<font color=red>"+orgAssociatedInformation.userCount+"</font>";;
         	}
         	if(orgAssociatedInformation.deviceCount>0){
-        		confirmInfo+="<br/>"+loginUserLanguageResource.deviceCount+":"+orgAssociatedInformation.deviceCount;
+        		confirmInfo+="<br/>"+loginUserLanguageResource.deviceCount+":<font color=red>"+orgAssociatedInformation.deviceCount+"</font>";;
         	}
         }
         

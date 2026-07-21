@@ -147,7 +147,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             xtype: 'numberfield',
                             editable: false,
                             disabled:loginUserRoleManagerModuleRight.editFlag!=1,
-                            minValue: currentShowLevel+1
+                            minValue: currentShowLevel
                         }:""
                     }, {
                         header: loginUserLanguageResource.roleVideoKeyEdit,
@@ -364,9 +364,8 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         },
                         celldblclick: function ( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
-                        	
-                        	var record = grid.getStore().getAt(rowIndex);
-                            var dataIndex=grid.getHeaderAtIndex(cellIndex).dataIndex;
+                        	var header = grid.getHeaderByCell(td);
+                            var dataIndex = header.dataIndex;
                             if (parseInt(record.data.roleId)==parseInt(currentId) 
                             		&& ( dataIndex.toUpperCase()=='roleLevel'.toUpperCase() 
                             				|| dataIndex.toUpperCase()=='showLevel'.toUpperCase() 

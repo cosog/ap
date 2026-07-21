@@ -6,249 +6,249 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
     title: loginUserLanguageResource.trendCurve,
     border: false,
     hidden: false,
-    constrainHeader:true,//True表示为将window header约束在视图中显示， false表示为允许header在视图之外的地方显示（默认为false）
-    closable: false,          // 禁用内置按钮，完全自定义
+    constrainHeader: true,
+    closable: false,
     maximizable: false,
     minimizable: false,
     collapsible: false,
     width: '65%',
     height: '50%',
-    draggable: true, // 是否可拖曳
-    modal: true, // 是否为模态窗口
+    draggable: true,
+    modal: true,
+
     initComponent: function () {
         var me = this;
         Ext.apply(me, {
-        	layout: 'border',
-        	border: false,
-        	items: [{
-        		region: 'center',
-        		layout: 'fit',
-        		autoScroll: true,
-        		border: false,
-        		id:'ResourceProbeHistoryCurvePanel_Id',
-        		tbar:[
-            		{
+            layout: 'border',
+            border: false,
+            items: [{
+                region: 'center',
+                layout: 'fit',
+                autoScroll: true,          // 外层滚动，用于窗口缩小时查看完整内容
+                border: false,
+                id: 'ResourceProbeHistoryCurvePanel_Id',
+                tbar: [
+                    // ===== 起始日期 =====
+                    {
                         xtype: 'datefield',
                         anchor: '100%',
                         fieldLabel: loginUserLanguageResource.range,
-                        labelWidth: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage),
-                        width: getLabelWidth(loginUserLanguageResource.range,loginUserLanguage)+100,
+                        labelWidth: getLabelWidth(loginUserLanguageResource.range, loginUserLanguage),
+                        width: getLabelWidth(loginUserLanguageResource.range, loginUserLanguage) + 100,
                         format: 'Y-m-d',
                         id: 'ResourceProbeHistoryCurve_from_date_Id',
                         value: 'new',
-                        editable:false,
+                        editable: false,
                         listeners: {
-                        	select: function (combo, record, index) {
-//                        		Ext.create("AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore");
-                            }
+                            select: function () {}
                         }
-                    },{
-                    	xtype: 'numberfield',
-                    	id: 'ResourceProbeHistoryCurveStartTime_Hour_Id',
-                    	fieldLabel: loginUserLanguageResource.hour,
-                        labelWidth: getLabelWidth(loginUserLanguageResource.hour,loginUserLanguage),
-                        width: getLabelWidth(loginUserLanguageResource.hour,loginUserLanguage)+45,
+                    }, {
+                        xtype: 'numberfield',
+                        id: 'ResourceProbeHistoryCurveStartTime_Hour_Id',
+                        fieldLabel: loginUserLanguageResource.hour,
+                        labelWidth: getLabelWidth(loginUserLanguageResource.hour, loginUserLanguage),
+                        width: getLabelWidth(loginUserLanguageResource.hour, loginUserLanguage) + 45,
                         minValue: 0,
                         maxValue: 23,
-                        value:'',
+                        value: '',
                         msgTarget: 'none',
-                        regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
+                        regex: /^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
                         listeners: {
-                        	blur: function (field, event, eOpts) {
-                        		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                        		var flag=r.test(field.value);
-                        		if(!flag){
-                        			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
-                        			field.focus(true, 100);
-                        		}
-                            }
-                        }
-                    },{
-                    	xtype: 'numberfield',
-                    	id: 'ResourceProbeHistoryCurveStartTime_Minute_Id',
-                    	fieldLabel: loginUserLanguageResource.minute,
-                        labelWidth: getLabelWidth(loginUserLanguageResource.minute,loginUserLanguage),
-                        width: getLabelWidth(loginUserLanguageResource.minute,loginUserLanguage)+45,
-                        minValue: 0,
-                        maxValue: 59,
-                        value:'',
-                        msgTarget: 'none',
-                        regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
-                        listeners: {
-                        	blur: function (field, event, eOpts) {
-                        		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                        		var flag=r.test(field.value);
-                        		if(!flag){
-                        			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
-                        			field.focus(true, 100);
-                        		}
-                            }
-                        }
-                    },{
-                    	xtype: 'numberfield',
-                    	id: 'ResourceProbeHistoryCurveStartTime_Second_Id',
-                    	fieldLabel: loginUserLanguageResource.second,
-                        labelWidth: getLabelWidth(loginUserLanguageResource.second,loginUserLanguage),
-                        width: getLabelWidth(loginUserLanguageResource.second,loginUserLanguage)+45,
-                        minValue: 0,
-                        maxValue: 59,
-                        value:'',
-                        msgTarget: 'none',
-                        regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
-                        listeners: {
-                        	blur: function (field, event, eOpts) {
-                        		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                        		var flag=r.test(field.value);
-                        		if(!flag){
-                        			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                        			field.focus(true, 100);
-                        		}
+                            blur: function (field) {
+                                var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                                if (!r.test(field.value)) {
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.hourlyValidData);
+                                    field.focus(true, 100);
+                                }
                             }
                         }
                     }, {
+                        xtype: 'numberfield',
+                        id: 'ResourceProbeHistoryCurveStartTime_Minute_Id',
+                        fieldLabel: loginUserLanguageResource.minute,
+                        labelWidth: getLabelWidth(loginUserLanguageResource.minute, loginUserLanguage),
+                        width: getLabelWidth(loginUserLanguageResource.minute, loginUserLanguage) + 45,
+                        minValue: 0,
+                        maxValue: 59,
+                        value: '',
+                        msgTarget: 'none',
+                        regex: /^[1-5]?\d([\/-][1-5]?\d)?$/,
+                        listeners: {
+                            blur: function (field) {
+                                var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                                if (!r.test(field.value)) {
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.minuteValidData);
+                                    field.focus(true, 100);
+                                }
+                            }
+                        }
+                    }, {
+                        xtype: 'numberfield',
+                        id: 'ResourceProbeHistoryCurveStartTime_Second_Id',
+                        fieldLabel: loginUserLanguageResource.second,
+                        labelWidth: getLabelWidth(loginUserLanguageResource.second, loginUserLanguage),
+                        width: getLabelWidth(loginUserLanguageResource.second, loginUserLanguage) + 45,
+                        minValue: 0,
+                        maxValue: 59,
+                        value: '',
+                        msgTarget: 'none',
+                        regex: /^[1-5]?\d([\/-][1-5]?\d)?$/,
+                        listeners: {
+                            blur: function (field) {
+                                var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                                if (!r.test(field.value)) {
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.secondValidData);
+                                    field.focus(true, 100);
+                                }
+                            }
+                        }
+                    },
+                    // ===== 结束日期 =====
+                    {
                         xtype: 'datefield',
                         anchor: '100%',
                         fieldLabel: loginUserLanguageResource.timeTo,
-                        labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
-                        width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
+                        labelWidth: getLabelWidth(loginUserLanguageResource.timeTo, loginUserLanguage),
+                        width: getLabelWidth(loginUserLanguageResource.timeTo, loginUserLanguage) + 95,
                         format: 'Y-m-d',
                         id: 'ResourceProbeHistoryCurve_end_date_Id',
                         value: '',
-                        editable:false,
+                        editable: false,
                         listeners: {
-                        	select: function (combo, record, index) {
-//                        		Ext.create("AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore");
-                            }
+                            select: function () {}
                         }
-                    },{
-                    	xtype: 'numberfield',
-                    	id: 'ResourceProbeHistoryCurveEndTime_Hour_Id',
-                    	fieldLabel: loginUserLanguageResource.hour,
-                        labelWidth: getLabelWidth(loginUserLanguageResource.hour,loginUserLanguage),
-                        width: getLabelWidth(loginUserLanguageResource.hour,loginUserLanguage)+45,
+                    }, {
+                        xtype: 'numberfield',
+                        id: 'ResourceProbeHistoryCurveEndTime_Hour_Id',
+                        fieldLabel: loginUserLanguageResource.hour,
+                        labelWidth: getLabelWidth(loginUserLanguageResource.hour, loginUserLanguage),
+                        width: getLabelWidth(loginUserLanguageResource.hour, loginUserLanguage) + 45,
                         minValue: 0,
                         maxValue: 23,
-                        value:'',
+                        value: '',
                         msgTarget: 'none',
-                        regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
+                        regex: /^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
                         listeners: {
-                        	blur: function (field, event, eOpts) {
-                        		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                        		var flag=r.test(field.value);
-                        		if(!flag){
-                        			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
-                        			field.focus(true, 100);
-                        		}
+                            blur: function (field) {
+                                var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                                if (!r.test(field.value)) {
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.hourlyValidData);
+                                    field.focus(true, 100);
+                                }
                             }
                         }
-                    },{
-                    	xtype: 'numberfield',
-                    	id: 'ResourceProbeHistoryCurveEndTime_Minute_Id',
-                    	fieldLabel: loginUserLanguageResource.minute,
-                        labelWidth: getLabelWidth(loginUserLanguageResource.minute,loginUserLanguage),
-                        width: getLabelWidth(loginUserLanguageResource.minute,loginUserLanguage)+45,
+                    }, {
+                        xtype: 'numberfield',
+                        id: 'ResourceProbeHistoryCurveEndTime_Minute_Id',
+                        fieldLabel: loginUserLanguageResource.minute,
+                        labelWidth: getLabelWidth(loginUserLanguageResource.minute, loginUserLanguage),
+                        width: getLabelWidth(loginUserLanguageResource.minute, loginUserLanguage) + 45,
                         minValue: 0,
                         maxValue: 59,
-                        value:'',
+                        value: '',
                         msgTarget: 'none',
-                        regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+                        regex: /^[1-5]?\d([\/-][1-5]?\d)?$/,
                         listeners: {
-                        	blur: function (field, event, eOpts) {
-                        		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                        		var flag=r.test(field.value);
-                        		if(!flag){
-                        			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
-                        			field.focus(true, 100);
-                        		}
+                            blur: function (field) {
+                                var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                                if (!r.test(field.value)) {
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.minuteValidData);
+                                    field.focus(true, 100);
+                                }
                             }
                         }
-                    },{
-                    	xtype: 'numberfield',
-                    	id: 'ResourceProbeHistoryCurveEndTime_Second_Id',
-                    	fieldLabel: loginUserLanguageResource.second,
-                        labelWidth: getLabelWidth(loginUserLanguageResource.second,loginUserLanguage),
-                        width: getLabelWidth(loginUserLanguageResource.second,loginUserLanguage)+45,
+                    }, {
+                        xtype: 'numberfield',
+                        id: 'ResourceProbeHistoryCurveEndTime_Second_Id',
+                        fieldLabel: loginUserLanguageResource.second,
+                        labelWidth: getLabelWidth(loginUserLanguageResource.second, loginUserLanguage),
+                        width: getLabelWidth(loginUserLanguageResource.second, loginUserLanguage) + 45,
                         minValue: 0,
                         maxValue: 59,
-                        value:'',
+                        value: '',
                         msgTarget: 'none',
-                        regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+                        regex: /^[1-5]?\d([\/-][1-5]?\d)?$/,
                         listeners: {
-                        	blur: function (field, event, eOpts) {
-                        		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                        		var flag=r.test(field.value);
-                        		if(!flag){
-                        			Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                        			field.focus(true, 100);
-                        		}
+                            blur: function (field) {
+                                var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                                if (!r.test(field.value)) {
+                                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.secondValidData);
+                                    field.focus(true, 100);
+                                }
                             }
                         }
-                    },'-',{
+                    }, '-', {
                         xtype: 'button',
                         text: loginUserLanguageResource.search,
                         iconCls: 'search',
                         handler: function () {
-                        	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
-                        	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
-                        	var startTime_Hour=Ext.getCmp('ResourceProbeHistoryCurveStartTime_Hour_Id').getValue();
-                        	if(!r.test(startTime_Hour)){
-                        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
-                        		Ext.getCmp('ResourceProbeHistoryCurveStartTime_Hour_Id').focus(true, 100);
-                        		return;
-                        	}
-                        	var startTime_Minute=Ext.getCmp('ResourceProbeHistoryCurveStartTime_Minute_Id').getValue();
-                        	if(!r2.test(startTime_Minute)){
-                        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
-                        		Ext.getCmp('ResourceProbeHistoryCurveStartTime_Minute_Id').focus(true, 100);
-                        		return;
-                        	}
-                        	var startTime_Second=Ext.getCmp('ResourceProbeHistoryCurveStartTime_Second_Id').getValue();
-                        	if(!r2.test(startTime_Second)){
-                        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                        		Ext.getCmp('ResourceProbeHistoryCurveStartTime_Second_Id').focus(true, 100);
-                        		return;
-                        	}
-                        	
-                        	var endTime_Hour=Ext.getCmp('ResourceProbeHistoryCurveEndTime_Hour_Id').getValue();
-                        	if(!r.test(endTime_Hour)){
-                        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.hourlyValidData);
-                        		Ext.getCmp('ResourceProbeHistoryCurveEndTime_Hour_Id').focus(true, 100);
-                        		return;
-                        	}
-                        	var endTime_Minute=Ext.getCmp('ResourceProbeHistoryCurveEndTime_Minute_Id').getValue();
-                        	if(!r2.test(endTime_Minute)){
-                        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.minuteValidData);
-                        		Ext.getCmp('ResourceProbeHistoryCurveEndTime_Minute_Id').focus(true, 100);
-                        		return;
-                        	}
-                        	var endTime_Second=Ext.getCmp('ResourceProbeHistoryCurveEndTime_Second_Id').getValue();
-                        	if(!r2.test(endTime_Second)){
-                        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.invalidData+"</font>"+loginUserLanguageResource.secondValidData);
-                        		Ext.getCmp('ResourceProbeHistoryCurveEndTime_Second_Id').focus(true, 100);
-                        		return;
-                        	}
-                        	
-                        	Ext.create("AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore");
+                            var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                            var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                            var startTime_Hour = Ext.getCmp('ResourceProbeHistoryCurveStartTime_Hour_Id').getValue();
+                            if (!r.test(startTime_Hour)) {
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.hourlyValidData);
+                                Ext.getCmp('ResourceProbeHistoryCurveStartTime_Hour_Id').focus(true, 100);
+                                return;
+                            }
+                            var startTime_Minute = Ext.getCmp('ResourceProbeHistoryCurveStartTime_Minute_Id').getValue();
+                            if (!r2.test(startTime_Minute)) {
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.minuteValidData);
+                                Ext.getCmp('ResourceProbeHistoryCurveStartTime_Minute_Id').focus(true, 100);
+                                return;
+                            }
+                            var startTime_Second = Ext.getCmp('ResourceProbeHistoryCurveStartTime_Second_Id').getValue();
+                            if (!r2.test(startTime_Second)) {
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.secondValidData);
+                                Ext.getCmp('ResourceProbeHistoryCurveStartTime_Second_Id').focus(true, 100);
+                                return;
+                            }
+                            var endTime_Hour = Ext.getCmp('ResourceProbeHistoryCurveEndTime_Hour_Id').getValue();
+                            if (!r.test(endTime_Hour)) {
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.hourlyValidData);
+                                Ext.getCmp('ResourceProbeHistoryCurveEndTime_Hour_Id').focus(true, 100);
+                                return;
+                            }
+                            var endTime_Minute = Ext.getCmp('ResourceProbeHistoryCurveEndTime_Minute_Id').getValue();
+                            if (!r2.test(endTime_Minute)) {
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.minuteValidData);
+                                Ext.getCmp('ResourceProbeHistoryCurveEndTime_Minute_Id').focus(true, 100);
+                                return;
+                            }
+                            var endTime_Second = Ext.getCmp('ResourceProbeHistoryCurveEndTime_Second_Id').getValue();
+                            if (!r2.test(endTime_Second)) {
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + loginUserLanguageResource.invalidData + "</font>" + loginUserLanguageResource.secondValidData);
+                                Ext.getCmp('ResourceProbeHistoryCurveEndTime_Second_Id').focus(true, 100);
+                                return;
+                            }
+                            Ext.create("AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore");
                         }
-                    },'->',{
-                    	xtype: 'label',
-                    	hidden: Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue()=="tableSpaceSize",
-                    	html: loginUserLanguageResource.resourcesMonitoringHistoryCountTip+':<font color=red>'+resourceMonitoringSaveData+'</font>'
+                    }, '->', {
+                        xtype: 'label',
+                        hidden: Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue() == "tableSpaceSize",
+                        html: loginUserLanguageResource.resourcesMonitoringHistoryCountTip + ':<font color=red>' + resourceMonitoringSaveData + '</font>'
                     }
-            	],
-            	html: '<div id="ResourceProbeHistoryCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-                listeners: {
-                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                        if ($("#ResourceProbeHistoryCurveDiv_Id").highcharts() != undefined) {
+                ],
+                // ★ 核心改动：内嵌子容器，分离滚动与图表容器 ★
+                items: [{
+                    xtype: 'panel',
+                    layout: 'fit',
+                    minHeight: otherCardMinHeight,   // 图表最小可视高度
+                    autoScroll: false,                // 禁止内部滚动
+                    border: false,
+                    html: '<div id="ResourceProbeHistoryCurveDiv_Id" style="width:100%;height:100%;overflow:hidden;"></div>',
+                    listeners: {
+                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            if ($("#ResourceProbeHistoryCurveDiv_Id").highcharts() != undefined) {
                         	highchartsResize("ResourceProbeHistoryCurveDiv_Id");
-                        }else{
-                        	Ext.create("AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore");
+                            }else{
+                        	   Ext.create("AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore");
+                            }
                         }
                     }
-                }
-        	}],
+                }]
+            }],
+            // ===== 窗口级别监听（自定义按钮，保持不变） =====
             listeners: {
-                // 最大化时，确保窗口处于展开状态，并刷新表格
                 maximize: function (win) {
                     win._minimized = false;
                     win.setTitle(win.originalTitle);
@@ -264,7 +264,12 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     if (restoreBtn) restoreBtn.style.display = 'inline-block';
                     var panel = Ext.getCmp('ResourceProbeHistoryCurvePanel_Id');
                     if (panel) {
-                        Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 50);
+                        Ext.defer(function () {
+                            var inner = panel.down('panel');
+                            if (inner) {
+                                inner.fireEvent('resize', inner, inner.getWidth(), inner.getHeight());
+                            }
+                        }, 50);
                     }
                 },
                 restore: function (win) {
@@ -290,7 +295,12 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     win.setTitle(win.originalTitle);
                     var panel = Ext.getCmp('ResourceProbeHistoryCurvePanel_Id');
                     if (panel) {
-                        Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 50);
+                        Ext.defer(function () {
+                            var inner = panel.down('panel');
+                            if (inner) {
+                                inner.fireEvent('resize', inner, inner.getWidth(), inner.getHeight());
+                            }
+                        }, 50);
                     }
                 },
                 afterrender: function (panel) {
@@ -330,24 +340,19 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                             'font-family:sans-serif; line-height:1;' +
                             'min-width:30px; min-height:30px;';
 
-                        // 使用 pointerdown 事件（统一鼠标和触摸）
                         btn.addEventListener('pointerdown', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            // 视觉反馈
                             if (isClose) {
                                 this.style.background = '#e81123';
                                 this.style.color = '#ffffff';
                             } else {
                                 this.style.background = 'rgba(0,0,0,0.15)';
                             }
-                            // 执行业务逻辑
                             clickHandler(e);
-                            // 释放指针捕获（如果有）
                             this.releasePointerCapture(e.pointerId);
                         }, { passive: false });
 
-                        // 指针释放时恢复样式
                         btn.addEventListener('pointerup', function(e) {
                             this.style.background = 'transparent';
                             this.style.color = isClose ? defaultColor : defaultColor;
@@ -389,9 +394,11 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                         win.updateLayout();
                         expandBtn.style.display = 'none';
                         minBtn.style.display = 'inline-block';
-                        var panel = Ext.getCmp('ResourceProbeHistoryCurvePanel_Id');
-                        if (panel) {
-                            Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 100);
+                        var inner = win._panel ? win._panel.down('panel') : null;
+                        if (inner) {
+                            Ext.defer(function () {
+                                inner.fireEvent('resize', inner, inner.getWidth(), inner.getHeight());
+                            }, 100);
                         }
                     });
                     expandBtn.style.display = 'none';
@@ -420,7 +427,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                     }, true);
                     btnContainer.appendChild(closeBtn);
 
-                    // 标题栏点击展开（忽略按钮区域）
+                    // 标题栏点击展开
                     header.el.on('click', function (e) {
                         if (btnContainer.contains(e.target)) {
                             return;
@@ -440,9 +447,11 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
                             if (win._toolbar) win._toolbar.show();
                             expandBtn.style.display = 'none';
                             minBtn.style.display = 'inline-block';
-                            var panel = Ext.getCmp('ResourceProbeHistoryCurvePanel_Id');
-                            if (panel) {
-                                Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 100);
+                            var inner = win._panel ? win._panel.down('panel') : null;
+                            if (inner) {
+                                Ext.defer(function () {
+                                    inner.fireEvent('resize', inner, inner.getWidth(), inner.getHeight());
+                                }, 100);
                             }
                         }
                     });

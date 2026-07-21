@@ -457,6 +457,7 @@ public class CalculateDataController extends BaseController{
 		String deviceId=ParamUtils.getParameter(request, "deviceId");
 		String timeStr=StringManagerUtils.timeStampToString(StringManagerUtils.stringToLong(time),"yyyy-MM-dd HH:mm:ss");
 		
+		deviceId="1";
 		long t1 = System.nanoTime();
 		calculateDataService.AcquisitionDataTimingRecord(timeStr,deviceId);
 		long t2 = System.nanoTime();

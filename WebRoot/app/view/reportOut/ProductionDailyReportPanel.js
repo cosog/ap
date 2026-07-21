@@ -186,14 +186,20 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                         border: false,
                         id:'ProductionDailyReportCurvePanel_id',
                         autoScroll: true,
-                        html: '<div id="ProductionDailyReportCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-                        listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                if ($("#ProductionDailyReportCurveDiv_Id").highcharts() != undefined) {
-                                	highchartsResize("ProductionDailyReportCurveDiv_Id");
+                        items:[{
+                        	layout: 'fit',
+                            minHeight: otherCardMinHeight,   // 图表最小可视高度
+                            autoScroll: false,                // 禁止内部滚动
+                            border: false,
+                            html: '<div id="ProductionDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                            listeners: {
+                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    if ($("#ProductionDailyReportCurveDiv_Id").highcharts() != undefined) {
+                                    	highchartsResize("ProductionDailyReportCurveDiv_Id");
+                                    }
                                 }
                             }
-                        }
+                        }]
                 	},{
                 		region: 'center',
                 		title:loginUserLanguageResource.reportData,

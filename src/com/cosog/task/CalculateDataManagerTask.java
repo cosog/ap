@@ -44,7 +44,7 @@ public class CalculateDataManagerTask {
 	
 	public static ScheduledExecutorService AcquisitionTimingRecordExecutor=null;
 	
-	private static boolean acquisitionTimingRecordEnable=false;
+//	private static boolean acquisitionTimingRecordEnable=false;
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void timer(){
@@ -663,32 +663,33 @@ public class CalculateDataManagerTask {
 	}
 	
 	public static void AcquisitionTimingRecord() {
-		if(acquisitionTimingRecordEnable){
-			AcquisitionTimingRecordExecutor = Executors.newScheduledThreadPool(1);
-	        long interval = 5 * 60 * 1000;
-	        long initDelay = StringManagerUtils.getTimeMillis("00:00:00") - System.currentTimeMillis();
-	        while(initDelay<0){
-	        	initDelay=interval + initDelay;
-	        }
-	        AcquisitionTimingRecordExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
-	            @Override
-	            public void run() {
-	                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:00");
-	            	try {
-	            		AcquisitionDataTimingRecord(timeStr);
-					}catch (Exception e) {
-						e.printStackTrace();
-					}
-	            }
-	        }), initDelay, interval, TimeUnit.MILLISECONDS);
-		}
-    }
+		AcquisitionTimingRecordExecutor = Executors.newScheduledThreadPool(1);
+        long interval = 5 * 60 * 1000;
+        long initDelay = StringManagerUtils.getTimeMillis("00:00:00") - System.currentTimeMillis();
+        while(initDelay<0){
+        	initDelay=interval + initDelay;
+        }
+        AcquisitionTimingRecordExecutor.scheduleAtFixedRate(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String timeStr=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:00");
+            	try {
+            		AcquisitionDataTimingRecord(timeStr);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+            }
+        }), initDelay, interval, TimeUnit.MILLISECONDS);
+	}
 	
+	@SuppressWarnings("static-access")
 	public static void AcquisitionDataTimingRecord(String timeStr){
-		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:00");
-		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/AcquisitionDataTimingRecord?time="+time;
-		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
+		if(Config.getInstance().configFile.getAp().getOthers().getAcquisitionTimingRecordEnable()){
+			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+			long time=StringManagerUtils.stringToTimeStamp(timeStr, "yyyy-MM-dd HH:mm:00");
+			String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/AcquisitionDataTimingRecord?time="+time;
+			String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
+		}
 	}
 	
 	

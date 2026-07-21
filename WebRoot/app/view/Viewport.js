@@ -1,7 +1,7 @@
 var websocketClient = null;
 graghMinWidth = 300;
 dynamometerCardMinHeight= 350;
-otherCardMinHeight= 280;
+otherCardMinHeight= 300;
 defaultWellComboxSize=10000;
 comboxPagingStatus=0;//0-不分页  大于0分页
 isShowMap=true;//是否显示地图 true-显示   false-不显示

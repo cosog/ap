@@ -202,14 +202,20 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         split: true, // 竖折叠条
                         id:'SingleWellDailyReportCurvePanel_id',
                         autoScroll: true,
-                        html: '<div id="SingleWellDailyReportCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-                        listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                if ($("#SingleWellDailyReportCurveDiv_Id").highcharts() != undefined) {
-                                	highchartsResize("SingleWellDailyReportCurveDiv_Id");
+                        items:[{
+                        	layout: 'fit',
+                            minHeight: otherCardMinHeight,   // 图表最小可视高度
+                            autoScroll: false,                // 禁止内部滚动
+                            border: false,
+                            html: '<div id="SingleWellDailyReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                            listeners: {
+                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    if ($("#SingleWellDailyReportCurveDiv_Id").highcharts() != undefined) {
+                                    	highchartsResize("SingleWellDailyReportCurveDiv_Id");
+                                    }
                                 }
                             }
-                        }
+                        }]
                 	},{
                 		region: 'center',
                 		title:loginUserLanguageResource.reportData,
@@ -362,14 +368,19 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         split: true, // 竖折叠条
                         id:'SingleWellRangeReportCurvePanel_id',
                         autoScroll: true,
-                        html: '<div id="SingleWellRangeReportCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-                        listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                if ($("#SingleWellRangeReportCurveDiv_Id").highcharts() != undefined) {
-                                	highchartsResize("SingleWellRangeReportCurveDiv_Id");
+                        items:[{
+                        	layout: 'fit',
+                            minHeight: otherCardMinHeight,   // 图表最小可视高度
+                            autoScroll: false,                // 禁止内部滚动
+                            border: false,html: '<div id="SingleWellRangeReportCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                            listeners: {
+                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    if ($("#SingleWellRangeReportCurveDiv_Id").highcharts() != undefined) {
+                                    	highchartsResize("SingleWellRangeReportCurveDiv_Id");
+                                    }
                                 }
                             }
-                        }
+                        }]
                 	},{
                 		region: 'center',
                 		title:loginUserLanguageResource.reportData,

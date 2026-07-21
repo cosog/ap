@@ -300,6 +300,8 @@ public class OEMConfigFile {
 	    
 	    private int realtimeDataRetentionTime;
 	    
+	    private boolean acquisitionTimingRecordEnable;
+	    
 	    private String otherStaticResourceTimestamp;
 
 	    public void setCache(boolean cache){
@@ -488,6 +490,12 @@ public class OEMConfigFile {
 		}
 		public void setShowHelp(boolean showHelp) {
 			this.showHelp = showHelp;
+		}
+		public boolean getAcquisitionTimingRecordEnable() {
+			return acquisitionTimingRecordEnable;
+		}
+		public void setAcquisitionTimingRecordEnable(boolean acquisitionTimingRecordEnable) {
+			this.acquisitionTimingRecordEnable = acquisitionTimingRecordEnable;
 		}
 	}
 	

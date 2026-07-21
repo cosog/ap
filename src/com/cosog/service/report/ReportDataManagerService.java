@@ -5059,7 +5059,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 		}
 		
-		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype,t.curvestattype,t.totalType,t.dataSource "
+		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype,t.curvestattype,t.totalType,t.dataSource,t.prec "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t "
 				+ " where t.unitid= "+unitId
 				+ " and t.sort>=0"
@@ -5098,7 +5098,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int curveStatType=StringManagerUtils.stringToInteger(reportCurveItemObj[4]+"");
 			int totalType=StringManagerUtils.stringToInteger(reportCurveItemObj[5]+"");
 			int dataSource=StringManagerUtils.stringToInteger(reportCurveItemObj[6]+"");
-			int prec=StringManagerUtils.isNumber(reportCurveItemObj[4]+"")?StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""):-1; 
+			int prec=StringManagerUtils.isNumber(reportCurveItemObj[7]+"")?StringManagerUtils.stringToInteger(reportCurveItemObj[7]+""):-1; 
 			reflectType=new TypeToken<CurveConf>() {}.getType();
 			CurveConf curveConfObj=gson.fromJson(reportCurveConfStr,reflectType);
 			
@@ -5115,6 +5115,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					statTypeName=languageResourceMap.get("curveStatType_min");
 				}else{
 					statTypeName=languageResourceMap.get("curveStatType_sum");
+				}
+				if(!"zh_CN".equalsIgnoreCase(language)){
+					statTypeName=" "+statTypeName;
 				}
 				itemName+=statTypeName;
 				

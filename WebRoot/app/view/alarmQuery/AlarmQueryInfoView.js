@@ -883,6 +883,28 @@ function showAlarmStatDrillDownChart(title,divId, subtitle,yAxisTitle,rawSeriesD
                 }
             }
         },
+        exporting:{ 
+            enabled:true,    
+            filename:title,
+            fallbackToExportServer: false,
+            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
+    	    sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
+    	    		buttons: {
+    	    	    	contextButton: {
+    	    	    		menuItems: [
+    	    	    			'viewFullscreen',
+    	    	    			'printChart',
+    	    	    			'separator',
+    	    	    			'downloadPNG',
+    	    	    			'downloadJPEG',
+    	    	    			'downloadSVG',
+    	    	    			'separator',
+    	    	    			'downloadCSV',
+    	    	    			'downloadXLS'
+    	    	    			]
+    	    	    		}
+    	    	    }
+		},
         series: [{
             name: title,
             colorByPoint: true,

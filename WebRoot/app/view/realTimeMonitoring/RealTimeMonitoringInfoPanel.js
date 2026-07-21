@@ -9,35 +9,42 @@ var realtimeStatTabItems=[{
 //	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?null:'check3',
 	iconCls: 'check3',
 	autoScroll: true,
-	html: '<div id="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if(isNotVal($("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id"))){
-        		if ($("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-//        			highchartsResize("RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id");
-        			var chart = $("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts();
-        			var series = chart.series[0];
-                    var data = series.data.map(function(point) {
-                    	return point.options;
-                    });
-                    var title = chart.title.textStr;
-                    var name = series.name;
-                    var colors = [];
-                    chart.destroy();
-                    ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title, "RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id", name, data, colors);
-                }else{
-                	var toolTip=Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id");
-                	if(!isNotVal(toolTip)){
-                		Ext.create('Ext.tip.ToolTip', {
-                            id:'RealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id',
-                    		target: 'RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id',
-                            html: loginUserLanguageResource.statPieChartToolTip
+	items:[{
+		xtype: 'panel',
+        layout: 'fit',
+        minHeight: otherCardMinHeight,   // 图表最小可视高度
+        autoScroll: false,                // 禁止内部滚动
+        border: false,
+        html: '<div id="RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+    	listeners: {
+            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            	if(isNotVal($("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id"))){
+            		if ($("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+//            			highchartsResize("RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id");
+            			var chart = $("#RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts();
+            			var series = chart.series[0];
+                        var data = series.data.map(function(point) {
+                        	return point.options;
                         });
-                	}
-                }
-        	}
+                        var title = chart.title.textStr;
+                        var name = series.name;
+                        var colors = [];
+                        chart.destroy();
+                        ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title, "RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id", name, data, colors);
+                    }else{
+                    	var toolTip=Ext.getCmp("RealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id");
+                    	if(!isNotVal(toolTip)){
+                    		Ext.create('Ext.tip.ToolTip', {
+                                id:'RealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id',
+                        		target: 'RealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id',
+                                html: loginUserLanguageResource.statPieChartToolTip
+                            });
+                    	}
+                    }
+            	}
+            }
         }
-    }
+	}]
 },{
 	title:loginUserLanguageResource.commStatus,
 	layout: 'fit',
@@ -45,109 +52,130 @@ var realtimeStatTabItems=[{
 //	iconCls: (!moduleContentConfig.realTimeMonitoring.FESDiagramResultData)?'check3':null,
 	id:'RealTimeMonitoringStatGraphPanel_Id',
 	autoScroll: true,
-	html: '<div id="RealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if(isNotVal($("#RealTimeMonitoringStatGraphPanelPieDiv_Id"))){
-        		if ($("#RealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-//        			highchartsResize("RealTimeMonitoringStatGraphPanelPieDiv_Id");
-        			
-        			
-        			var chart = $("#RealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts();
-        			var series = chart.series[0];
-                    var data = series.data.map(function(point) {
-                    	return point.options;
-                    });
-                    var title = chart.title.textStr;
-                    var name = series.name;
-                    var colors = [];
-                    chart.destroy();
-                    ShowRealTimeMonitoringStatPieOrColChat(title, "RealTimeMonitoringStatGraphPanelPieDiv_Id", name, data, colors);
-        		}else{
-                	var toolTip=Ext.getCmp("RealTimeMonitoringStatGraphPanelPieToolTip_Id");
-                	if(!isNotVal(toolTip)){
-                		Ext.create('Ext.tip.ToolTip', {
-                            id:'RealTimeMonitoringStatGraphPanelPieToolTip_Id',
-                    		target: 'RealTimeMonitoringStatGraphPanelPieDiv_Id',
-                            html: loginUserLanguageResource.statPieChartToolTip
+	items:[{
+		xtype: 'panel',
+        layout: 'fit',
+        minHeight: otherCardMinHeight,   // 图表最小可视高度
+        autoScroll: false,                // 禁止内部滚动
+        border: false,
+        html: '<div id="RealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+    	listeners: {
+            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            	if(isNotVal($("#RealTimeMonitoringStatGraphPanelPieDiv_Id"))){
+            		if ($("#RealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+//            			highchartsResize("RealTimeMonitoringStatGraphPanelPieDiv_Id");
+            			
+            			
+            			var chart = $("#RealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts();
+            			var series = chart.series[0];
+                        var data = series.data.map(function(point) {
+                        	return point.options;
                         });
-                	}
-                }
-        	}
+                        var title = chart.title.textStr;
+                        var name = series.name;
+                        var colors = [];
+                        chart.destroy();
+                        ShowRealTimeMonitoringStatPieOrColChat(title, "RealTimeMonitoringStatGraphPanelPieDiv_Id", name, data, colors);
+            		}else{
+                    	var toolTip=Ext.getCmp("RealTimeMonitoringStatGraphPanelPieToolTip_Id");
+                    	if(!isNotVal(toolTip)){
+                    		Ext.create('Ext.tip.ToolTip', {
+                                id:'RealTimeMonitoringStatGraphPanelPieToolTip_Id',
+                        		target: 'RealTimeMonitoringStatGraphPanelPieDiv_Id',
+                                html: loginUserLanguageResource.statPieChartToolTip
+                            });
+                    	}
+                    }
+            	}
+            }
         }
-    }
+	}]
 },{
 	title:loginUserLanguageResource.runStatus,
 	layout: 'fit',
 	closable:false,
 	id:'RealTimeMonitoringRunStatusStatGraphPanel_Id',
 	autoScroll: true,
-	html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if(isNotVal($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id"))){
-        		if ($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-//        			highchartsResize("RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id");
-        			
-        			var chart = $("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts();
-        			var series = chart.series[0];
-                    var data = series.data.map(function(point) {
-                    	return point.options;
-                    });
-                    var title = chart.title.textStr;
-                    var name = series.name;
-                    var colors = [];
-                    chart.destroy();
-                    ShowRealTimeMonitoringRunStatusStatPieOrColChat(title, "RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id", name, data, colors);
-        		}else{
-                	var toolTip=Ext.getCmp("RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id");
-                	if(!isNotVal(toolTip)){
-                		Ext.create('Ext.tip.ToolTip', {
-                            id:'RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id',
-                    		target: 'RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id',
-                            html: loginUserLanguageResource.statPieChartToolTip
+	items:[{
+		xtype: 'panel',
+        layout: 'fit',
+        minHeight: otherCardMinHeight,   // 图表最小可视高度
+        autoScroll: false,                // 禁止内部滚动
+        border: false,
+        html: '<div id="RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+    	listeners: {
+            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            	if(isNotVal($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id"))){
+            		if ($("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+//            			highchartsResize("RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id");
+            			
+            			var chart = $("#RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts();
+            			var series = chart.series[0];
+                        var data = series.data.map(function(point) {
+                        	return point.options;
                         });
-                	}
-                }
-        	}
+                        var title = chart.title.textStr;
+                        var name = series.name;
+                        var colors = [];
+                        chart.destroy();
+                        ShowRealTimeMonitoringRunStatusStatPieOrColChat(title, "RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id", name, data, colors);
+            		}else{
+                    	var toolTip=Ext.getCmp("RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id");
+                    	if(!isNotVal(toolTip)){
+                    		Ext.create('Ext.tip.ToolTip', {
+                                id:'RealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id',
+                        		target: 'RealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id',
+                                html: loginUserLanguageResource.statPieChartToolTip
+                            });
+                    	}
+                    }
+            	}
+            }
         }
-    }
+	}]
 },{
 	title:loginUserLanguageResource.numStatus,
 	layout: 'fit',
 	closable:false,
 	id:'RealTimeMonitoringNumStatusStatGraphPanel_Id',
 	autoScroll: true,
-	html: '<div id="RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if(isNotVal($("#RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id"))){
-        		if ($("#RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-//        			highchartsResize("RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id");
-        			
-        			var chart = $("#RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id").highcharts();
-        			var series = chart.series[0];
-                    var data = series.data.map(function(point) {
-                    	return point.options;
-                    });
-                    var title = chart.title.textStr;
-                    var name = series.name;
-                    var colors = [];
-                    chart.destroy();
-                    ShowRealTimeMonitoringNumStatusStatPieOrColChat(title, "RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id", name, data, colors);
-        		}else{
-                	var toolTip=Ext.getCmp("RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id");
-                	if(!isNotVal(toolTip)){
-                		Ext.create('Ext.tip.ToolTip', {
-                            id:'RealTimeMonitoringNumStatusStatGraphPanelPieToolTip_Id',
-                    		target: 'RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id',
-                            html: loginUserLanguageResource.statPieChartToolTip
+	items:[{
+		xtype: 'panel',
+        layout: 'fit',
+        minHeight: otherCardMinHeight,   // 图表最小可视高度
+        autoScroll: false,                // 禁止内部滚动
+        border: false,
+    	html: '<div id="RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+    	listeners: {
+            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            	if(isNotVal($("#RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id"))){
+            		if ($("#RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+//            			highchartsResize("RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id");
+            			
+            			var chart = $("#RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id").highcharts();
+            			var series = chart.series[0];
+                        var data = series.data.map(function(point) {
+                        	return point.options;
                         });
-                	}
-                }
-        	}
+                        var title = chart.title.textStr;
+                        var name = series.name;
+                        var colors = [];
+                        chart.destroy();
+                        ShowRealTimeMonitoringNumStatusStatPieOrColChat(title, "RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id", name, data, colors);
+            		}else{
+                    	var toolTip=Ext.getCmp("RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id");
+                    	if(!isNotVal(toolTip)){
+                    		Ext.create('Ext.tip.ToolTip', {
+                                id:'RealTimeMonitoringNumStatusStatGraphPanelPieToolTip_Id',
+                        		target: 'RealTimeMonitoringNumStatusStatGraphPanelPieDiv_Id',
+                                html: loginUserLanguageResource.statPieChartToolTip
+                            });
+                    	}
+                    }
+            	}
+            }
         }
-    }
+	}]
 }
 //,{
 //	title:loginUserLanguageResource.deviceType,

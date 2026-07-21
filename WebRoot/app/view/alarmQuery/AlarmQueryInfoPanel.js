@@ -236,6 +236,7 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     },{
                     	region: 'south',
                     	title:loginUserLanguageResource.alarmSstatistics,
+                    	header:false,
                     	split: true,
                         collapsible: true,
                     	height: '50%',
@@ -248,51 +249,43 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoPanel", {
                     		iconCls:'check3',
                     		layout: 'fit',
                     		autoScroll: true,
-                        	html: '<div id="AlarmLevelStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if(isNotVal($("#AlarmLevelStatGraphPanelPieDiv_Id"))){
-                                		if ($("#AlarmLevelStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                			highchartsResize("AlarmLevelStatGraphPanelPieDiv_Id");
-                                        }else{
-//                                        	var toolTip=Ext.getCmp("AlarmLevelStatGraphGraphPanelPieToolTip_Id");
-//                                        	if(!isNotVal(toolTip)){
-//                                        		Ext.create('Ext.tip.ToolTip', {
-//                                                    id:'AlarmLevelStatGraphGraphPanelPieToolTip_Id',
-//                                            		target: 'AlarmLevelStatGraphPanelPieDiv_Id',
-////                                                    html: loginUserLanguageResource.statPieChartToolTip
-//                                            		html:'点击图形查看相应统计数据'
-//                                                });
-//                                        	}
-                                        }
-                                	}
+                    		items:[{
+                            	layout: 'fit',
+                                minHeight: otherCardMinHeight,   // 图表最小可视高度
+                                autoScroll: false,                // 禁止内部滚动
+                                border: false,
+                            	html: '<div id="AlarmLevelStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+                            	listeners: {
+                                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    	if(isNotVal($("#AlarmLevelStatGraphPanelPieDiv_Id"))){
+                                    		if ($("#AlarmLevelStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+                                    			highchartsResize("AlarmLevelStatGraphPanelPieDiv_Id");
+                                            }
+                                    	}
+                                    }
                                 }
-                            }
+                            }]
                     	},{
                     		title:loginUserLanguageResource.alarmType,
                     		id:'AlarmTypeStatGraphPanel_Id',
                     		layout: 'fit',
                     		autoScroll: true,
-                        	html: '<div id="AlarmTypeStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-                        	listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if(isNotVal($("#AlarmTypeStatGraphPanelPieDiv_Id"))){
-                                		if ($("#AlarmTypeStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                			highchartsResize("AlarmTypeStatGraphPanelPieDiv_Id");
-                                        }else{
-//                                        	var toolTip=Ext.getCmp("AlarmTypeStatGraphGraphPanelPieToolTip_Id");
-//                                        	if(!isNotVal(toolTip)){
-//                                        		Ext.create('Ext.tip.ToolTip', {
-//                                                    id:'AlarmTypeStatGraphGraphPanelPieToolTip_Id',
-//                                            		target: 'AlarmTypeStatGraphPanelPieDiv_Id',
-////                                                    html: loginUserLanguageResource.statPieChartToolTip
-//                                            		html:'点击图形查看相应统计数据'
-//                                                });
-//                                        	}
-                                        }
-                                	}
+                    		items:[{
+                            	layout: 'fit',
+                                minHeight: otherCardMinHeight,   // 图表最小可视高度
+                                autoScroll: false,                // 禁止内部滚动
+                                border: false,
+                            	html: '<div id="AlarmTypeStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+                            	listeners: {
+                                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    	if(isNotVal($("#AlarmTypeStatGraphPanelPieDiv_Id"))){
+                                    		if ($("#AlarmTypeStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+                                    			highchartsResize("AlarmTypeStatGraphPanelPieDiv_Id");
+                                            }
+                                    	}
+                                    }
                                 }
-                            }
+                            }]
                     	}],
                     	listeners: {
                     		beforetabchange:function ( tabPanel, newCard, oldCard, eOpts ) {

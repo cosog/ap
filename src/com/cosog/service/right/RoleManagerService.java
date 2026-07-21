@@ -101,7 +101,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 		if (StringManagerUtils.isNotNull(roleName)) {
 			sql+=" and t.role_Name_"+user.getLanguageName()+" like '%" + roleName + "%' ";
 		}
-		sql+=" order by t.role_id ";
+		sql+=" order by t.role_level,t.role_id ";
 		String columns="[]";
 		List<?> list = this.findCallSql(sql);
 		List<?> currentUserLevelList = this.findCallSql(currentRoleLevel);

@@ -2,134 +2,151 @@ var historyStatTabItems=[{
 	title:loginUserLanguageResource.workType,
 	layout: 'fit',
 	id:'HistoryQueryFESdiagramResultStatGraphPanel_Id',
-//	hidden: !moduleContentConfig.historyQuery.FESDiagramResultData,
-//	iconCls: (!moduleContentConfig.historyQuery.FESDiagramResultData)?null:'check3',
 	iconCls:'check3',
 	autoScroll: true,
-	html: '<div id="HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if ($("#HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-//        		highchartsResize("HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id");
-        		var chart = $("#HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").highcharts();
-    			var series = chart.series[0];
-                var data = series.data.map(function(point) {
-                	return point.options;
-                });
-                var title = chart.title.textStr;
-                var name = series.name;
-                var colors = [];
-                chart.destroy();
-                ShowHistoryQueryFESDiagramResultStatPieOrColChat(title, "HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id", name, data, colors);
-        	}else{
-            	var toolTip=Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id");
-            	if(!isNotVal(toolTip)){
-            		Ext.create('Ext.tip.ToolTip', {
-                        id:'HistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id',
-                		target: 'HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id',
-                        html: loginUserLanguageResource.statPieChartToolTip
+	items:[{
+		layout: 'fit',
+        minHeight: otherCardMinHeight,   // 图表最小可视高度
+        autoScroll: false,                // 禁止内部滚动
+        border: false,
+        html: '<div id="HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+    	listeners: {
+            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            	if ($("#HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+            		var chart = $("#HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").highcharts();
+        			var series = chart.series[0];
+                    var data = series.data.map(function(point) {
+                    	return point.options;
                     });
-            	}
+                    var title = chart.title.textStr;
+                    var name = series.name;
+                    var colors = [];
+                    chart.destroy();
+                    ShowHistoryQueryFESDiagramResultStatPieOrColChat(title, "HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id", name, data, colors);
+            	}else{
+                	var toolTip=Ext.getCmp("HistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id");
+                	if(!isNotVal(toolTip)){
+                		Ext.create('Ext.tip.ToolTip', {
+                            id:'HistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id',
+                    		target: 'HistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id',
+                            html: loginUserLanguageResource.statPieChartToolTip
+                        });
+                	}
+                }
             }
         }
-    }
+	}]
 },{
 	title:loginUserLanguageResource.commStatus,
 	layout: 'fit',
 	id:'HistoryQueryStatGraphPanel_Id',
-//	iconCls: (!moduleContentConfig.historyQuery.FESDiagramResultData)?'check3':null,
 	autoScroll: true,
-	html: '<div id="HistoryQueryStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if ($("#HistoryQueryStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-//        		highchartsResize("HistoryQueryStatGraphPanelPieDiv_Id");
-        		var chart = $("#HistoryQueryStatGraphPanelPieDiv_Id").highcharts();
-    			var series = chart.series[0];
-                var data = series.data.map(function(point) {
-                	return point.options;
-                });
-                var title = chart.title.textStr;
-                var name = series.name;
-                var colors = [];
-                chart.destroy();
-                ShowHistoryQueryStatPieOrColChat(title, "HistoryQueryStatGraphPanelPieDiv_Id", name, data, colors);
-        	}else{
-            	var toolTip=Ext.getCmp("HistoryQueryStatGraphPanelPieToolTip_Id");
-            	if(!isNotVal(toolTip)){
-            		Ext.create('Ext.tip.ToolTip', {
-                        id:'HistoryQueryStatGraphPanelPieToolTip_Id',
-                		target: 'HistoryQueryStatGraphPanelPieDiv_Id',
-                        html: loginUserLanguageResource.statPieChartToolTip
+	items:[{
+		layout: 'fit',
+        minHeight: otherCardMinHeight,   // 图表最小可视高度
+        autoScroll: false,                // 禁止内部滚动
+        border: false,
+    	html: '<div id="HistoryQueryStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+    	listeners: {
+            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            	if ($("#HistoryQueryStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+            		var chart = $("#HistoryQueryStatGraphPanelPieDiv_Id").highcharts();
+        			var series = chart.series[0];
+                    var data = series.data.map(function(point) {
+                    	return point.options;
                     });
-            	}
+                    var title = chart.title.textStr;
+                    var name = series.name;
+                    var colors = [];
+                    chart.destroy();
+                    ShowHistoryQueryStatPieOrColChat(title, "HistoryQueryStatGraphPanelPieDiv_Id", name, data, colors);
+            	}else{
+                	var toolTip=Ext.getCmp("HistoryQueryStatGraphPanelPieToolTip_Id");
+                	if(!isNotVal(toolTip)){
+                		Ext.create('Ext.tip.ToolTip', {
+                            id:'HistoryQueryStatGraphPanelPieToolTip_Id',
+                    		target: 'HistoryQueryStatGraphPanelPieDiv_Id',
+                            html: loginUserLanguageResource.statPieChartToolTip
+                        });
+                	}
+                }
             }
         }
-    }
+	}]
 },{
 	title:loginUserLanguageResource.runStatus,
 	layout: 'fit',
 	id:'HistoryQueryRunStatusStatGraphPanel_Id',
 	autoScroll: true,
-	html: '<div id="HistoryQueryRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if ($("#HistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-//        		highchartsResize("HistoryQueryRunStatusStatGraphPanelPieDiv_Id");
-        		var chart = $("#HistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts();
-    			var series = chart.series[0];
-                var data = series.data.map(function(point) {
-                	return point.options;
-                });
-                var title = chart.title.textStr;
-                var name = series.name;
-                var colors = [];
-                chart.destroy();
-                ShowHistoryQueryRunStatusStatPieOrColChat(title, "HistoryQueryRunStatusStatGraphPanelPieDiv_Id", name, data, colors);
-        	}else{
-            	var toolTip=Ext.getCmp("HistoryQueryRunStatusStatGraphPanelPieToolTip_Id");
-            	if(!isNotVal(toolTip)){
-            		Ext.create('Ext.tip.ToolTip', {
-                        id:'HistoryQueryRunStatusStatGraphPanelPieToolTip_Id',
-                		target: 'HistoryQueryRunStatusStatGraphPanelPieDiv_Id',
-                        html: loginUserLanguageResource.statPieChartToolTip
+	items:[{
+		layout: 'fit',
+        minHeight: otherCardMinHeight,   // 图表最小可视高度
+        autoScroll: false,                // 禁止内部滚动
+        border: false,
+    	html: '<div id="HistoryQueryRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+    	listeners: {
+            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            	if ($("#HistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+            		var chart = $("#HistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts();
+        			var series = chart.series[0];
+                    var data = series.data.map(function(point) {
+                    	return point.options;
                     });
-            	}
+                    var title = chart.title.textStr;
+                    var name = series.name;
+                    var colors = [];
+                    chart.destroy();
+                    ShowHistoryQueryRunStatusStatPieOrColChat(title, "HistoryQueryRunStatusStatGraphPanelPieDiv_Id", name, data, colors);
+            	}else{
+                	var toolTip=Ext.getCmp("HistoryQueryRunStatusStatGraphPanelPieToolTip_Id");
+                	if(!isNotVal(toolTip)){
+                		Ext.create('Ext.tip.ToolTip', {
+                            id:'HistoryQueryRunStatusStatGraphPanelPieToolTip_Id',
+                    		target: 'HistoryQueryRunStatusStatGraphPanelPieDiv_Id',
+                            html: loginUserLanguageResource.statPieChartToolTip
+                        });
+                	}
+                }
             }
         }
-    }
+	}]
 },{
 	title:loginUserLanguageResource.numStatus,
 	layout: 'fit',
 	id:'HistoryQueryNumStatusStatGraphPanel_Id',
 	autoScroll: true,
-	html: '<div id="HistoryQueryNumStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-	listeners: {
-        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-        	if ($("#HistoryQueryNumStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-//        		highchartsResize("HistoryQueryNumStatusStatGraphPanelPieDiv_Id");
-        		var chart = $("#HistoryQueryNumStatusStatGraphPanelPieDiv_Id").highcharts();
-    			var series = chart.series[0];
-                var data = series.data.map(function(point) {
-                	return point.options;
-                });
-                var title = chart.title.textStr;
-                var name = series.name;
-                var colors = [];
-                chart.destroy();
-                ShowHistoryQueryNumStatusStatPieOrColChat(title, "HistoryQueryNumStatusStatGraphPanelPieDiv_Id", name, data, colors);
-        	}else{
-            	var toolTip=Ext.getCmp("HistoryQueryNumStatusStatGraphPanelPieToolTip_Id");
-            	if(!isNotVal(toolTip)){
-            		Ext.create('Ext.tip.ToolTip', {
-                        id:'HistoryQueryNumStatusStatGraphPanelPieToolTip_Id',
-                		target: 'HistoryQueryNumStatusStatGraphPanelPieDiv_Id',
-                        html: loginUserLanguageResource.statPieChartToolTip
+	items:[{
+		layout: 'fit',
+        minHeight: otherCardMinHeight,   // 图表最小可视高度
+        autoScroll: false,                // 禁止内部滚动
+        border: false,
+    	html: '<div id="HistoryQueryNumStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
+    	listeners: {
+            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+            	if ($("#HistoryQueryNumStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+            		var chart = $("#HistoryQueryNumStatusStatGraphPanelPieDiv_Id").highcharts();
+        			var series = chart.series[0];
+                    var data = series.data.map(function(point) {
+                    	return point.options;
                     });
-            	}
+                    var title = chart.title.textStr;
+                    var name = series.name;
+                    var colors = [];
+                    chart.destroy();
+                    ShowHistoryQueryNumStatusStatPieOrColChat(title, "HistoryQueryNumStatusStatGraphPanelPieDiv_Id", name, data, colors);
+            	}else{
+                	var toolTip=Ext.getCmp("HistoryQueryNumStatusStatGraphPanelPieToolTip_Id");
+                	if(!isNotVal(toolTip)){
+                		Ext.create('Ext.tip.ToolTip', {
+                            id:'HistoryQueryNumStatusStatGraphPanelPieToolTip_Id',
+                    		target: 'HistoryQueryNumStatusStatGraphPanelPieDiv_Id',
+                            html: loginUserLanguageResource.statPieChartToolTip
+                        });
+                	}
+                }
             }
         }
-    }
+	}]
 }
 
 //,{
@@ -174,14 +191,20 @@ var historyQueryCenterTabPanelItems=[{
         collapsible: true,
         id:'historyQueryCurvePanel_Id',
         autoScroll: true,
-    	html: '<div id="historyQueryCurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-        listeners: {
-            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                if ($("#historyQueryCurveDiv_Id").highcharts() != undefined) {
-                	highchartsResize("historyQueryCurveDiv_Id");
+        items:[{
+        	layout: 'fit',
+            minHeight: otherCardMinHeight,   // 图表最小可视高度
+            autoScroll: false,                // 禁止内部滚动
+            border: false,
+        	html: '<div id="historyQueryCurveDiv_Id" style="width:100%;height:100%;"></div>',
+            listeners: {
+                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    if ($("#historyQueryCurveDiv_Id").highcharts() != undefined) {
+                    	highchartsResize("historyQueryCurveDiv_Id");
+                    }
                 }
             }
-        }
+        }]
     },{
     	region: 'center',
     	title: loginUserLanguageResource.historyData,

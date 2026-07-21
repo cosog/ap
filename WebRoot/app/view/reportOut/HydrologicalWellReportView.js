@@ -280,14 +280,20 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                     	title:loginUserLanguageResource.reportCurve,
                     	id:'HydrologicalWellReport1CurvePanel_id',
                     	autoScroll: true,
-                        html: '<div id="HydrologicalWellReport1CurveDiv_Id" style="width:100%;height:100%;min-height:'+otherCardMinHeight+'px;"></div>',
-                        listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                if ($("#HydrologicalWellReport1CurveDiv_Id").highcharts() != undefined) {
-                                	highchartsResize("HydrologicalWellReport1CurveDiv_Id");
+                    	items:[{
+                        	layout: 'fit',
+                            minHeight: otherCardMinHeight,   // 图表最小可视高度
+                            autoScroll: false,                // 禁止内部滚动
+                            border: false,
+                            html: '<div id="HydrologicalWellReport1CurveDiv_Id" style="width:100%;height:100%;"></div>',
+                            listeners: {
+                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    if ($("#HydrologicalWellReport1CurveDiv_Id").highcharts() != undefined) {
+                                    	highchartsResize("HydrologicalWellReport1CurveDiv_Id");
+                                    }
                                 }
                             }
-                        }
+                        }]
                     }]
                 },{
                 	id:'HydrologicalWellReportTabPanel2_id',

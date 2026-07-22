@@ -33,7 +33,7 @@ Ext.define("AP.view.well.ExcelImportDeviceWindow", {
                 	id:'DeviceInfoImportFilefield_Id',
                     name: 'file',
                     fieldLabel: loginUserLanguageResource.uploadFile,
-                    labelWidth: 60,
+                    labelWidth: getLabelWidth(loginUserLanguageResource.uploadFile,loginUserLanguage),
                     width:'100%',
                     msgTarget: 'side',
                     allowBlank: false,

@@ -32,7 +32,11 @@ public class ExportUserData {
 	
 	private int RoleLevel;
 	
-	private String RoleName;
+	private String RoleName_zh_CN;
+	
+	private String RoleName_en;
+	
+	private String RoleName_ru;
 	
 	private int saveSign=0;
 	
@@ -184,11 +188,27 @@ public class ExportUserData {
 		RoleLevel = roleLevel;
 	}
 
-	public String getRoleName() {
-		return RoleName;
+	public String getRoleName_zh_CN() {
+		return RoleName_zh_CN;
 	}
 
-	public void setRoleName(String roleName) {
-		RoleName = roleName;
+	public void setRoleName_zh_CN(String roleName_zh_CN) {
+		RoleName_zh_CN = roleName_zh_CN;
+	}
+
+	public String getRoleName_en() {
+		return RoleName_en;
+	}
+
+	public void setRoleName_en(String roleName_en) {
+		RoleName_en = roleName_en;
+	}
+
+	public String getRoleName_ru() {
+		return RoleName_ru;
+	}
+
+	public void setRoleName_ru(String roleName_ru) {
+		RoleName_ru = roleName_ru;
 	}
 }

@@ -110,6 +110,7 @@ Ext.define('AP.store.orgAndUser.ImportUserContentTreeInfoStore', {
                         sortable: true,
                         width: getLabelWidth(loginUserLanguageResource.receiveSMS,loginUserLanguage)+'px',
                         dataIndex: 'receiveSMSName',
+                        hidden: !emailConfig.enable,
                         listeners: {
                     	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
                     	    	return false;
@@ -120,6 +121,7 @@ Ext.define('AP.store.orgAndUser.ImportUserContentTreeInfoStore', {
                         xtype: 'checkcolumn',
                         disabled:loginUserOrgAndUserModuleRight.editFlag!=1,
                         lockable: true,
+                        hidden: !emailConfig.enable,
                         align: 'center',
                         sortable: true,
                         width: getLabelWidth(loginUserLanguageResource.receiveMail,loginUserLanguage)+'px',

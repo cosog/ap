@@ -448,6 +448,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 		String language=user!=null?user.getLanguageName():"zh_CN";
 		int orgId=user!=null?user.getUserOrgid():0;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		List<ExportOrganizationData> list=getUploadedOrganizationList(uploadOrganizationList,user);
 		String sql="select t.org_id,t.org_code,"
 				+ " t.org_name_"+language+",substr(sys_connect_by_path(t.org_name_"+language+",'/'),2) as allpath,"
@@ -462,7 +463,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 					Object[] obj = (Object[]) currentOrgList.get(i);
 					if(e.getOrgId()==StringManagerUtils.stringToInteger(obj[0]+"")){
 						e.setSaveSign(1);
-						e.setMsg(obj[3]+","+languageResourceMap.get("uploadCollisionInfo1"));
+						e.setMsg(obj[3]+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1"));
 						break;
 					}
 				}

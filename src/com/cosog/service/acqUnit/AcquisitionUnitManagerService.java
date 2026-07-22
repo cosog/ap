@@ -11666,6 +11666,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		String allDeviceIds=user.getDeviceTypeIds();
 		
 		
@@ -11702,7 +11703,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						if((obj[0]+"").equalsIgnoreCase(protocolList.get(i).getId()+"")){
 							saveSign=1;//覆盖
 							overlayCount++;
-							msg=protocolList.get(i).getName()+languageResourceMap.get("uploadCollisionInfo1");
+							msg=protocolList.get(i).getName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1");
 							break;
 						}
 					}
@@ -11714,7 +11715,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						if((obj[0]+"").equalsIgnoreCase(protocolList.get(i).getId()+"")){
 							saveSign=2;//冲突
 							collisionCount++;
-							msg=obj[1]+languageResourceMap.get("uploadCollisionInfo2");
+							msg=obj[1]+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo2");
 							break;
 						}
 					}
@@ -12089,6 +12090,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=user.getDeviceTypeIds();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		
 		List<String> protoolList=new ArrayList<>();
 		String protocolSql="select t.code "
@@ -12120,7 +12122,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							Object[] obj=(Object[])unitQueryList.get(j);
 							if((obj[0]+"").equalsIgnoreCase(uploadAcqUnitList.get(i).getId()+"") && (obj[1]+"").equalsIgnoreCase(uploadAcqUnitList.get(i).getProtocolCode())){
 								saveSign=1;//覆盖
-								msg=uploadAcqUnitList.get(i).getUnitName()+languageResourceMap.get("uploadCollisionInfo1");
+								msg=uploadAcqUnitList.get(i).getUnitName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1");
 								break;
 							}
 						}
@@ -12456,7 +12458,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=user.getDeviceTypeIds();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-		
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		List<String> protoolList=new ArrayList<>();
 		List<String> protoolDeviceTypeList=new ArrayList<>();
 		String protocolSql="select t.name,t.deviceType "
@@ -12492,7 +12494,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							Object[] obj=(Object[])unitQueryList.get(j);
 							if((obj[0]+"").equalsIgnoreCase(uploadUnitList.get(i).getId()+"") ){
 								saveSign=1;//覆盖
-								msg=uploadUnitList.get(i).getUnitName()+languageResourceMap.get("uploadCollisionInfo1");
+								msg=uploadUnitList.get(i).getUnitName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1");
 								break;
 							}
 						}
@@ -12777,7 +12779,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=user.getDeviceTypeIds();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-		
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		List<String> protoolList=new ArrayList<>();
 		List<String> protoolDeviceTypeList=new ArrayList<>();
 		String protocolSql="select t.name,t.devicetype from tbl_protocol t "
@@ -12815,7 +12817,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								Object[] obj=(Object[])displayUnitQueryList.get(j);
 								if((obj[0]+"").equalsIgnoreCase(uploadUnitList.get(i).getId()+"") ){
 									saveSign=1;//覆盖
-									msg=uploadUnitList.get(i).getUnitName()+languageResourceMap.get("uploadCollisionInfo1");
+									msg=uploadUnitList.get(i).getUnitName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1");
 									break;
 								}
 							}
@@ -13122,7 +13124,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer tree_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-		
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		String unitSql="select t.id,t.unit_code from TBL_REPORT_UNIT_CONF t";
 		List<?> unitQueryList = this.findCallSql(unitSql);
 		
@@ -13138,7 +13140,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						Object[] obj=(Object[])unitQueryList.get(j);
 						if((obj[0]+"").equalsIgnoreCase(uploadUnitList.get(i).getId()+"")){
 							saveSign=1;//覆盖
-							msg=uploadUnitList.get(i).getUnitName()+languageResourceMap.get("uploadCollisionInfo1");
+							msg=uploadUnitList.get(i).getUnitName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1");
 							break;
 						}
 					}
@@ -13454,16 +13456,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=user.getDeviceTypeIds();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-		
-//		List<String> protoolList=new ArrayList<>();
-//		String protocolSql="select t.name from tbl_protocol t "
-//				+ " where t.deviceType in("+allDeviceIds+")"
-//				+ " and t.language in ("+StringUtils.join(user.getLanguageList(), ",")+")";
-//		List<?> protoolQueryList = this.findCallSql(protocolSql);
-//		for(int i=0;i<protoolQueryList.size();i++){
-//			protoolList.add(protoolQueryList.get(i)+"");
-//		}
-		
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		String instanceSql="select t.id,t.name,t2.unit_name,t2.protocol "
 				+ " from tbl_protocolinstance t,tbl_acq_unit_conf t2,tbl_protocol t3 "
 				+ " where t.unitid=t2.id and t2.protocol=t3.code "
@@ -13498,7 +13491,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								Object[] obj=(Object[])instanceQueryList.get(j);
 								if((obj[0]+"").equalsIgnoreCase(uploadInstanceList.get(i).getId()+"") ){
 									saveSign=1;//覆盖
-									msg=uploadInstanceList.get(i).getName()+languageResourceMap.get("uploadCollisionInfo1");
+									msg=uploadInstanceList.get(i).getName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1");
 									break;
 								}
 							}
@@ -13672,7 +13665,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=user.getDeviceTypeIds();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-		
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		String instanceSql="select t.id,t.name,t2.unit_name as displayUnitName,t3.unit_name as acqUnitName,t4.name as protocol "
 				+ " from TBL_PROTOCOLDISPLAYINSTANCE t ,tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_protocol t4 "
 				+ " where t.displayunitid=t2.id and t2.acqunitid=t3.id and t3.protocol=t4.code "
@@ -13708,7 +13701,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								Object[] obj=(Object[])instanceQueryList.get(j);
 								if((obj[0]+"").equalsIgnoreCase(uploadInstanceList.get(i).getId()+"") ){
 									saveSign=1;//覆盖
-									msg=uploadInstanceList.get(i).getName()+languageResourceMap.get("uploadCollisionInfo1");
+									msg=uploadInstanceList.get(i).getName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1");
 									break;
 								}
 							}
@@ -13869,7 +13862,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer tree_json = new StringBuffer();
 		String allDeviceIds=user.getDeviceTypeIds();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
-		
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		
 		String instanceSql="select t.id,t.name,t2.unit_name,t2.protocol "
 				+ " from tbl_protocolalarminstance t,tbl_alarm_unit_conf t2,tbl_protocol t3 "
@@ -13904,7 +13897,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 								Object[] obj=(Object[])instanceQueryList.get(j);
 								if((obj[0]+"").equalsIgnoreCase(uploadInstanceList.get(i).getId()+"") ){
 									saveSign=1;//覆盖
-									msg=uploadInstanceList.get(i).getName()+languageResourceMap.get("uploadCollisionInfo1");
+									msg=uploadInstanceList.get(i).getName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1");
 									break;
 								}
 							}

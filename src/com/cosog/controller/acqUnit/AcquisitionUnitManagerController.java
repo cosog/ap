@@ -5051,7 +5051,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("exportProtocol"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5108,7 +5109,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5164,7 +5166,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("exportProtocolInitData"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5562,7 +5565,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAcqUnit"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5617,7 +5621,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5671,7 +5676,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAlarmUnit"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5725,7 +5731,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5778,7 +5785,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("exportReportUnit"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5832,7 +5840,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5886,7 +5895,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("exportDisplayUnit"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5940,7 +5950,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -5994,7 +6005,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("exportAcqInstance"));
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -6049,7 +6061,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -6103,7 +6116,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -6157,7 +6171,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -6212,7 +6227,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -6266,7 +6282,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -6320,7 +6337,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -6374,7 +6392,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -6428,7 +6447,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,4,languageResourceMap.get("exportFile")+":"+fileName);
 			}
 			response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];

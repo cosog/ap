@@ -166,7 +166,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 				+ " and t.role_id not in( select distinct(t5.rd_roleid) from TBL_DEVICETYPE2ROLE t5 where t5.rd_devicetypeid not in("+user.getDeviceTypeIds()+") )"
 				+ " and ( t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
 						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+") )"
-				+ " order by t.role_id ";
+				+ " order by t.role_level,t.role_id ";
 		
 		String moduleSql="select t.rm_roleid,t.rm_moduleid,t.rm_matrix "
 				+ " from tbl_module2role t "
@@ -498,6 +498,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 	public String getUploadedRoleTreeData(List<ExportRoleData> uploadRoleList,User user) {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(user.getLanguageName());
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		String currentTabs=user.getDeviceTypeIds();
 		String[] currentTabArr=currentTabs.split(",");
 		String currentId="";
@@ -584,10 +585,10 @@ public class RoleManagerService<T> extends BaseService<T> {
 				
 				if(StringManagerUtils.existOrNot(overlayRoleList, exportRoleData.getRoleId()+"", true)){
 					exportRoleData.setSaveSign(1);
-					exportRoleData.setMsg(addRoleName+languageResourceMap.get("uploadCollisionInfo1"));
+					exportRoleData.setMsg(addRoleName+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1"));
 				}else if(StringManagerUtils.existOrNot(collisionRoleList, exportRoleData.getRoleId()+"", true)){
 					exportRoleData.setSaveSign(2);
-					exportRoleData.setMsg(addRoleName+languageResourceMap.get("uploadCollisionInfo2"));
+					exportRoleData.setMsg(addRoleName+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo2"));
 				}
 				
 				

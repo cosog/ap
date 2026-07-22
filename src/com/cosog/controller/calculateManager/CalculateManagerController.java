@@ -601,7 +601,8 @@ public class CalculateManagerController extends BaseController {
 		File file=StringManagerUtils.createJsonFile(json, path);
 		try {
         	response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+        	String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             InputStream in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];
@@ -791,7 +792,8 @@ public class CalculateManagerController extends BaseController {
 		File file=StringManagerUtils.createJsonFile(json, path);
 		try {
         	response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+        	String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName);
             InputStream in = new FileInputStream(file);
             int len = 0;
             byte[] buffer = new byte[1024];

@@ -52,12 +52,29 @@ Ext.define('AP.store.role.ImportRoleContentTreeInfoStore', {
                         width: getLabelWidth(loginUserLanguageResource.idx,loginUserLanguage)+'px',
                         xtype: 'rownumberer'
                     }, {
-                        header: loginUserLanguageResource.roleName,
+                        header: loginUserLanguageResource.language_zh_CN,
+                        hidden:isExist(loginUserLanguageList,1)==0,
                         lockable: true,
                         align: 'center',
                         sortable: true,
                         flex: 1,
-                        dataIndex: 'roleName'
+                        dataIndex: 'roleName_zh_CN'
+                    }, {
+                        header: loginUserLanguageResource.language_en,
+                        hidden:isExist(loginUserLanguageList,2)==0,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 1,
+                        dataIndex: 'roleName_en'
+                    }, {
+                        header: loginUserLanguageResource.language_ru,
+                        hidden:isExist(loginUserLanguageList,3)==0,
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 1,
+                        dataIndex: 'roleName_ru'
                     }, {
                         header: loginUserLanguageResource.roleLevel,
                         lockable: true,
@@ -103,11 +120,28 @@ Ext.define('AP.store.role.ImportRoleContentTreeInfoStore', {
                     	}
                     },{
                         header: loginUserLanguageResource.roleRemark,
+                        hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),
                         lockable: true,
                         align: 'center',
                         sortable: true,
                         flex: 3,
-                        dataIndex: 'remark'
+                        dataIndex: 'remark_zh_CN'
+                    },{
+                        header: loginUserLanguageResource.roleRemark,
+                        hidden:(loginUserLanguage.toUpperCase()=='EN'?false:true),
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 3,
+                        dataIndex: 'remark_en'
+                    },{
+                        header: loginUserLanguageResource.roleRemark,
+                        hidden:(loginUserLanguage.toUpperCase()=='RU'?false:true),
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        flex: 3,
+                        dataIndex: 'remark_ru'
                     },{
                     	header: loginUserLanguageResource.collisionInfo,
                     	flex: 5,

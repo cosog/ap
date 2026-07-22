@@ -810,6 +810,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		int userNo=user!=null?user.getUserNo():0;
 		int userRoleLevel=user!=null?user.getRoleLevel():0;
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
 		String[] orgIdArr=orgIds.split(",");
 		
@@ -851,7 +852,7 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ ")";
 		
 		Map<String,Integer> roleMap=new HashMap<>();
-		String roleSql="select t.role_name_zh_CN,t.role_id from TBL_ROLE t where t.role_level>"+userRoleLevel+" or t.role_id="+user.getUserType();
+		String roleSql="select t.role_name_"+language+",t.role_id from TBL_ROLE t where t.role_level>"+userRoleLevel+" or t.role_id="+user.getUserType();
 		List<?> roleList = this.findCallSql(roleSql);
 		for(int i=0;i<roleList.size();i++){
 			Object[] obj = (Object[]) roleList.get(i);
@@ -873,10 +874,10 @@ public class UserManagerService<T> extends BaseService<T> {
 			
 			if(StringManagerUtils.existOrNot(overlayUserList, exportUserData.getUserId(), true)){
 				exportUserData.setSaveSign(1);
-				exportUserData.setMsg(exportUserData.getUserId()+languageResourceMap.get("uploadCollisionInfo1"));
+				exportUserData.setMsg(exportUserData.getUserId()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1"));
 			}else if(StringManagerUtils.existOrNot(collisionUserList, exportUserData.getUserId(), true)){
 				exportUserData.setSaveSign(2);
-				exportUserData.setMsg(exportUserData.getUserId()+languageResourceMap.get("uploadCollisionInfo2"));
+				exportUserData.setMsg(exportUserData.getUserId()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo2"));
 			}
 			
 			result_json.append("{\"userNo\":"+exportUserData.getUserNo()+",");
@@ -885,9 +886,16 @@ public class UserManagerService<T> extends BaseService<T> {
 			result_json.append("\"userId\":\""+exportUserData.getUserId()+"\",");
 			result_json.append("\"userPwd\":\""+exportUserData.getUserPwd()+"\",");
 			result_json.append("\"userType\":\""+exportUserData.getUserType()+"\",");
-			
-			if(roleMap.containsKey(exportUserData.getRoleName())){
-				result_json.append("\"userTypeName\":\""+exportUserData.getRoleName()+"\",");
+			String roleName="";
+			if("zh_CN".equalsIgnoreCase(language)){
+				roleName=exportUserData.getRoleName_zh_CN();
+			}else if("en".equalsIgnoreCase(language)){
+				roleName=exportUserData.getRoleName_en();
+			}else if("ru".equalsIgnoreCase(language)){
+				roleName=exportUserData.getRoleName_ru();
+			}
+			if(roleMap.containsKey(roleName)){
+				result_json.append("\"userTypeName\":\""+roleName+"\",");
 			}else{
 				result_json.append("\"userTypeName\":\"\",");
 			}

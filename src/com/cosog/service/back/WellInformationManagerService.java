@@ -4615,6 +4615,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String deviceTypes=user!=null?user.getDeviceTypeIds():"0";
 		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
 		
 		String columns=	"[]";
@@ -4641,10 +4642,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			
 			if(StringManagerUtils.existOrNot(overlayList, exportData.getId()+"", true)){
 				exportData.setSaveSign(1);
-				exportData.setMsg(exportData.getDeviceName()+languageResourceMap.get("uploadCollisionInfo1"));
+				exportData.setMsg(exportData.getDeviceName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1"));
 			}else if(StringManagerUtils.existOrNot(collisionList, exportData.getId()+"", true)){
 				exportData.setSaveSign(2);
-				exportData.setMsg(exportData.getDeviceName()+languageResourceMap.get("uploadCollisionInfo2"));
+				exportData.setMsg(exportData.getDeviceName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo2"));
 			}
 			
 			result_json.append("{\"id\":\""+exportData.getId()+"\",");
@@ -4741,6 +4742,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String deviceTypes=user!=null?user.getDeviceTypeIds():"0";
 		String language=user!=null?user.getLanguageName():"";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Map<String,String> languageResourceMap_FirstLetterLowercase=MemoryDataManagerTask.getLanguageResource_FirstLetterLowercase(user.getLanguageName());
 		Map<String,Code> languageCodeMap=MemoryDataManagerTask.getCodeMap("LANGUAGE",language);
 		
 		String columns=	"[]";
@@ -4767,10 +4769,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			
 			if(StringManagerUtils.existOrNot(overlayList, exportData.getId()+"", true)){
 				exportData.setSaveSign(1);
-				exportData.setMsg(exportData.getDeviceName()+languageResourceMap.get("uploadCollisionInfo1"));
+				exportData.setMsg(exportData.getDeviceName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo1"));
 			}else if(StringManagerUtils.existOrNot(collisionList, exportData.getId()+"", true)){
 				exportData.setSaveSign(2);
-				exportData.setMsg(exportData.getDeviceName()+languageResourceMap.get("uploadCollisionInfo2"));
+				exportData.setMsg(exportData.getDeviceName()+("zh_CN".equalsIgnoreCase(user.getLanguageName())?"":" ")+languageResourceMap_FirstLetterLowercase.get("uploadCollisionInfo2"));
 			}
 			
 			result_json.append("{\"id\":\""+exportData.getId()+"\",");

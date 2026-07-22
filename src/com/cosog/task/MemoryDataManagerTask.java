@@ -6172,6 +6172,19 @@ public class MemoryDataManagerTask {
 		return languageMap;
 	}
 	
+	public static Map<String,String> getLanguageResource_FirstLetterLowercase(String language){
+		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
+		Map<String,String> languageMap=new LinkedHashMap<>();
+		String key="languageResource_FirstLetterLowercase-"+language;
+		if(!dataModelMap.containsKey(key)){
+			loadLanguageResource(language);
+		}
+		if(dataModelMap.containsKey(key)){
+			languageMap=(Map<String, String>) dataModelMap.get(key);
+		}
+		return languageMap;
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public static Map<String,Map<String,Code>> getCode(String language){
@@ -6296,6 +6309,7 @@ public class MemoryDataManagerTask {
 		language=language.toLowerCase().replace("zh_cn", "zh_CN");
 		Map<String, Object> dataModelMap=DataModelMap.getMapObject();
 		Map<String,String> languageMap=new LinkedHashMap<>();
+		Map<String,String> languageMap_FirstLetterLowercase=new LinkedHashMap<>();
 		Map<String,Map<String,Code>> codeMap=new LinkedHashMap<>();
 		
 		Map<String,WorkType> workTypeMap=new LinkedHashMap<>();
@@ -6322,6 +6336,7 @@ public class MemoryDataManagerTask {
 								value=StringManagerUtils.stringFormat(value);
 							}
 							languageMap.put(item, value);
+							languageMap_FirstLetterLowercase.put(item, StringManagerUtils.stringFormat2(value));
 						}
 					}
 			    }else if(key.equalsIgnoreCase("tbl_code")){
@@ -6378,6 +6393,10 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		}
 		dataModelMap.put("languageResource-"+language, languageMap);
+		dataModelMap.put("languageResource_FirstLetterLowercase-"+language, languageMap_FirstLetterLowercase);
+		
+		
+		
 		dataModelMap.put("codeLanguageResource-"+language, codeMap);
 		dataModelMap.put("workTypeLanguageResource-"+language, workTypeMap);
 		

@@ -35,7 +35,6 @@ import com.cosog.utils.AdInitMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.CounterUtils;
 import com.cosog.utils.DataModelMap;
-import com.cosog.utils.JDBCUtil;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -1523,8 +1522,8 @@ public class EquipmentDriverServerTask {
 						+ " where t.commstatus<>1 "
 						+ " and t.deviceid in ( select t2.id from tbl_device t2 where t2.tcptype='TCP Client' and t2.signinid in("+StringManagerUtils.joinStringArr2(adOnlineProbeResponseData.getOnlineID(), ",")+") )";
 				try {
-					JDBCUtil.updateRecord(initSRPCommSql, null);
-				} catch (SQLException e) {
+					OracleJdbcUtis.executeSqlUpdate(initSRPCommSql);
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -1534,9 +1533,8 @@ public class EquipmentDriverServerTask {
 						+ " where t.commstatus<>1 "
 						+ " and t.deviceid in ( select t2.id from tbl_device t2 where t2.tcptype='TCP Server' and t2.ipport in("+StringManagerUtils.joinStringArr2(adOnlineProbeResponseData.getOnlineIPPort(), ",")+") )";
 				try {
-//					OracleJdbcUtis.executeSqlUpdate(initSRPCommSql);         
-					JDBCUtil.updateRecord(initSRPCommSql, null);
-				} catch (SQLException e) {
+					OracleJdbcUtis.executeSqlUpdate(initSRPCommSql);
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -1549,8 +1547,8 @@ public class EquipmentDriverServerTask {
 		String initSRPCommSql="update tbl_acqdata_latest t set t.commstatus=0 ";
 		int result=0;
 		try {
-			result = JDBCUtil.updateRecord(initSRPCommSql, null);
-		} catch (SQLException e) {
+			result=OracleJdbcUtis.executeSqlUpdate(initSRPCommSql);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -1560,7 +1558,7 @@ public class EquipmentDriverServerTask {
 		
 		int result=0;
 		try {
-			result = JDBCUtil.callProcedure("prd_init_device_daily", null);
+			result = OracleJdbcUtis.callProcedure("prd_init_device_daily", null);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1571,8 +1569,8 @@ public class EquipmentDriverServerTask {
 		String initCommSql="update tbl_srpacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0";
 		int result=0;
 		try {
-			result = JDBCUtil.updateRecord(initCommSql, null);
-		} catch (SQLException e) {
+			result = OracleJdbcUtis.executeSqlUpdate(initCommSql);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;

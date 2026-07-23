@@ -60,6 +60,14 @@ public class OracleJdbcUtis {
     private static volatile ScheduledExecutorService healthCheckScheduler = null;
     private static final AtomicBoolean resetting = new AtomicBoolean(false);
 
+    static {
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+        } catch (ClassNotFoundException e) {
+            logger.error("Oracle JDBC Driver not found", e);
+        }
+    }
+    
     // ---------- 初始化内部数据源（HikariCP 3.4.5）----------
     private static void initDataSource() {
         try {

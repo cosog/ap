@@ -7036,7 +7036,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			wellBoreChartsData.append("\"resultStatus\":"+resultStatus+",");
 			wellBoreChartsData.append("\"deviceId\":"+id+",");
 			wellBoreChartsData.append("\"deviceName\":\""+deviceName+"\",");
-			wellBoreChartsData.append("\"acqTime\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
+			wellBoreChartsData.append("\"acqTime\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null&&srpCalculateRequestData.getFESDiagram().getAcqTime()!=null?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			
 			wellBoreChartsData.append("\"pointCount\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getS().size():"")+"\",");
 			wellBoreChartsData.append("\"upperLoadLine\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
@@ -7312,7 +7312,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			surfaceChartsData.append("\"success\":true,");
 			surfaceChartsData.append("\"resultStatus\":"+resultStatus+",");
 			surfaceChartsData.append("\"deviceName\":\""+deviceName+"\",");
-			surfaceChartsData.append("\"acqTime\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null)?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
+			surfaceChartsData.append("\"acqTime\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null&&srpCalculateRequestData.getFESDiagram().getAcqTime()!=null)?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			
 			surfaceChartsData.append("\"upStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getUpStrokeWattMax():"")+"\",");
 			surfaceChartsData.append("\"downStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getDownStrokeWattMax():"")+"\",");

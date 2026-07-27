@@ -2578,7 +2578,7 @@ public class DriverAPIController extends BaseController{
 			wellBoreChartsData.append("\"resultStatus\":"+resultStatus+",");
 			wellBoreChartsData.append("\"deviceId\":"+deviceInfo.getId()+",");
 			wellBoreChartsData.append("\"deviceName\":\""+deviceInfo.getDeviceName()+"\",");
-			wellBoreChartsData.append("\"acqTime\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
+			wellBoreChartsData.append("\"acqTime\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null&&srpCalculateRequestData.getFESDiagram().getAcqTime()!=null?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			
 			wellBoreChartsData.append("\"pointCount\":\""+(srpCalculateRequestData!=null&&srpCalculateRequestData.getFESDiagram()!=null?srpCalculateRequestData.getFESDiagram().getS().size():"")+"\",");
 			wellBoreChartsData.append("\"upperLoadLine\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1?srpCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
@@ -2635,7 +2635,7 @@ public class DriverAPIController extends BaseController{
 			surfaceChartsData.append("\"success\":true,");
 			surfaceChartsData.append("\"resultStatus\":"+resultStatus+",");
 			surfaceChartsData.append("\"deviceName\":\""+deviceInfo.getDeviceName()+"\",");
-			surfaceChartsData.append("\"acqTime\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null)?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
+			surfaceChartsData.append("\"acqTime\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null&&srpCalculateRequestData.getFESDiagram().getAcqTime()!=null)?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			
 			surfaceChartsData.append("\"upStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getUpStrokeWattMax():"")+"\",");
 			surfaceChartsData.append("\"downStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getDownStrokeWattMax():"")+"\",");

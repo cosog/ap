@@ -3147,8 +3147,10 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
     xtext+=loginUserLanguageResource.stroke+':'+stroke+'m ';
     xtext+=loginUserLanguageResource.SPM+':'+spm+'/min ';
     xtext+=loginUserLanguageResource.liquidProduction+':'+liquidProduction+productionUnitStr+' ';
-    xtext+=loginUserLanguageResource.FSDiagramWorkType+':'+resultName+' ';
-    xtext+=loginUserLanguageResource.optimizationSuggestion+':'+optimizationSuggestion;
+    xtext+=loginUserLanguageResource.FSDiagramWorkType+':'+resultName;
+    if(isNotVal(optimizationSuggestion)){
+    	xtext+=' '+loginUserLanguageResource.optimizationSuggestion+':'+optimizationSuggestion;
+    }
     
     var upperlimit=parseFloat(fmax)+10;
     if(parseFloat(upperLoadLine)>=parseFloat(fmax)){

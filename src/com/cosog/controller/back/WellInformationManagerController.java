@@ -4724,6 +4724,55 @@ public class WellInformationManagerController extends BaseController {
 		return result;
 	}
 	
+	@RequestMapping("/deviceDataUplink")
+	public String deviceDataUplink() throws Exception {
+		String deviceId = request.getParameter("deviceId");
+		String deviceName = request.getParameter("deviceName");
+		String controlType = request.getParameter("controlType");
+		
+		String jsonLogin = "";
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		
+		String deviceTableName="tbl_device";
+		// 用户不存在
+		if (null != userInfo) {
+			Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(userInfo.getLanguageName());
+
+			String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+					+ " where t.instancecode=t2.code and t2.unitid=t3.id"
+					+ " and t.id="+deviceId;
+			List<?> list = this.service.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				String protocol=obj[0]+"";
+				String tcpType=obj[1]+"";
+				String signinid=obj[2]+"";
+				String ipPort=obj[3]+"";
+				String slave=obj[4]+"";
+				String realDeviceType=obj[5]+"";
+				if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
+					if(StringManagerUtils.isNotNull(slave)){
+						String result=readAddr(protocol,tcpType,signinid,ipPort,slave,controlType,userInfo.getLanguageName());
+						jsonLogin = "{success:true,flag:true,error:true,data:\""+result+"\"}";
+					}
+				}else{
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+				}
+			}else{
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+			}
+		} else {
+			jsonLogin = "{success:true,flag:false}";
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(jsonLogin);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	
 	@RequestMapping("/deviceProductionDataUplink")
 	public String deviceProductionDataUplink() throws Exception {
@@ -5420,6 +5469,7 @@ public class WellInformationManagerController extends BaseController {
 				
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(readUrl, readJson,"utf-8",0,0);
+//				responseStr="{\"ResultStatus\":1,\"Value\":[60.5]}";
 				StringManagerUtils.printLog("读地址数据:"+item.getTitle()+",request:"+readJson+",response:"+responseStr,1);
 				if(StringManagerUtils.isNotNull(responseStr)){
 					type = new TypeToken<AcqAddrData>() {}.getType();

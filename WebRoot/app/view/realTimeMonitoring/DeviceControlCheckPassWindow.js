@@ -10,12 +10,12 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
     collapsible: true,
     constrainHeader:true,//True表示为将window header约束在视图中显示， false表示为允许header在视图之外的地方显示（默认为false）
 //    constrain: true,
-    closable: 'sides',
-    closeAction: 'destroy',
-    maximizable: true,
-    minimizable: true,
-    width: 700,
-    minWidth: 700,
+    closable: false,          // 禁用内置按钮，完全自定义
+    maximizable: false,
+    minimizable: false,
+    collapsible: false,
+    width: 800,
+    minWidth: 800,
     height: 410,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
@@ -27,7 +27,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
             tbar:[{
                 xtype: 'label',
                 margin: '0 0 0 5',
-                id:'DeviceControlItemName_Id',
+                id:'DeviceControlShowInfo_Id',
                 html: ''
             },{
                 id: 'DeviceControlDeviceId_Id',//选择的设备Id
@@ -36,6 +36,16 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                 hidden: true
             },{
                 id: 'DeviceControlDeviceName_Id',//选择的设备
+                xtype: 'textfield',
+                value: '',
+                hidden: true
+            },{
+                id: 'DeviceControlItemName_Id',//选择的项名称
+                xtype: 'textfield',
+                value: '',
+                hidden: true
+            },{
+                id: 'DeviceControlItemUnit_Id',//选择的项单位
                 xtype: 'textfield',
                 value: '',
                 hidden: true
@@ -71,7 +81,18 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
                 hidden: true
             },'->',{
                 xtype: 'button',
-                text: loginUserLanguageResource.batchDownwardCommand,
+                text: loginUserLanguageResource.uplink,
+                iconCls: 'uplink',
+                id:'DeviceControlDataUplinkBtn_Id',
+                handler: function (v, o) {
+                	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
+            		if(resolutionMode!=1){
+            			deviceDataUplinkFun();
+            		}
+                }
+            },'-',{
+                xtype: 'button',
+                text: loginUserLanguageResource.downlink,
                 iconCls: 'downlink',
                 id:'DeviceControlConfirmBtn_Id',
                 handler: function (v, o) {
@@ -127,8 +148,211 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
     					deviceControlValueHandsontableHelper=null;
     				}
                 },
-                minimize: function (win, opts) {
-                    win.collapse();
+                // 最大化时，确保窗口处于展开状态，并刷新表格
+                maximize: function (win) {
+                    win._minimized = false;
+                    win.setTitle(win.originalTitle);
+                    if (win._panel) win._panel.show();
+                    if (win._toolbar) win._toolbar.show();
+                    var minBtn = win._minimizeBtn;
+                    var expandBtn = win._expandBtn;
+                    if (minBtn) minBtn.style.display = 'inline-block';
+                    if (expandBtn) expandBtn.style.display = 'none';
+                    var maxBtn = win._maximizeBtn;
+                    var restoreBtn = win._restoreBtn;
+                    if (maxBtn) maxBtn.style.display = 'none';
+                    if (restoreBtn) restoreBtn.style.display = 'inline-block';
+                    var panel = Ext.getCmp('DeviceControlValueTablePanel_Id');
+                    if (panel) {
+                        Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 50);
+                    }
+                },
+                restore: function (win) {
+                    if (win._minimized) {
+                        win._minimized = false;
+                        win.setTitle(win.originalTitle);
+                        if (win._panel) win._panel.show();
+                        if (win._toolbar) win._toolbar.show();
+                        var minBtn = win._minimizeBtn;
+                        var expandBtn = win._expandBtn;
+                        if (minBtn) minBtn.style.display = 'inline-block';
+                        if (expandBtn) expandBtn.style.display = 'none';
+                    }
+                    var maxBtn = win._maximizeBtn;
+                    var restoreBtn = win._restoreBtn;
+                    if (maxBtn) maxBtn.style.display = 'inline-block';
+                    if (restoreBtn) restoreBtn.style.display = 'none';
+                    if (win._savedHeight && !win.maximized) {
+                        win.setHeight(win._savedHeight);
+                        win._savedHeight = null;
+                    }
+                    win._minimized = false;
+                    win.setTitle(win.originalTitle);
+                    var panel = Ext.getCmp('DeviceControlValueTablePanel_Id');
+                    if (panel) {
+                        Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 50);
+                    }
+                },
+                afterrender: function (panel) {
+                    var win = panel;
+                    win.originalTitle = win.title;
+                    win._savedHeight = null;
+                    win._minimized = false;
+                    win._defaultHeight = win.getHeight();
+
+                    win._panel = win.down('#DeviceControlValueTablePanel_Id');
+                    win._toolbar = win.down('toolbar');
+                    if (win._toolbar) win._toolbar.show();
+
+                    var header = win.getHeader();
+                    if (!header) return;
+
+                    var headerEl = header.el.dom;
+                    var btnContainer = document.createElement('div');
+                    btnContainer.style.cssText = 
+                        'position:absolute; right:2px; top:0; height:100%;' +
+                        'display:flex; align-items:center; gap:2px; z-index:10;' +
+                        'padding:0 4px;';
+                    headerEl.style.position = 'relative';
+                    headerEl.appendChild(btnContainer);
+
+                    function createButton(text, title, clickHandler, isClose) {
+                        var btn = document.createElement('button');
+                        btn.textContent = text;
+                        btn.title = title;
+                        var defaultColor = '#404040';
+                        btn.style.cssText = 
+                            'background:transparent; border:none; font-size:16px; font-weight:300;' +
+                            'cursor:pointer; padding:0 8px;' +
+                            'display:flex; align-items:center; justify-content:center; border-radius:2px;' +
+                            'transition:background 0.15s, color 0.15s;' +
+                            'color:' + defaultColor + '; touch-action:manipulation;' +
+                            'font-family:sans-serif; line-height:1;' +
+                            'min-width:30px; min-height:30px;';
+
+                        // 使用 pointerdown 事件（统一鼠标和触摸）
+                        btn.addEventListener('pointerdown', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            // 视觉反馈
+                            if (isClose) {
+                                this.style.background = '#e81123';
+                                this.style.color = '#ffffff';
+                            } else {
+                                this.style.background = 'rgba(0,0,0,0.15)';
+                            }
+                            // 执行业务逻辑
+                            clickHandler(e);
+                            // 释放指针捕获（如果有）
+                            this.releasePointerCapture(e.pointerId);
+                        }, { passive: false });
+
+                        // 指针释放时恢复样式
+                        btn.addEventListener('pointerup', function(e) {
+                            this.style.background = 'transparent';
+                            this.style.color = isClose ? defaultColor : defaultColor;
+                        }, { passive: false });
+
+                        btn.addEventListener('pointerleave', function(e) {
+                            this.style.background = 'transparent';
+                            this.style.color = isClose ? defaultColor : defaultColor;
+                        }, { passive: false });
+
+                        return btn;
+                    }
+
+                    // ---- 创建各按钮 ----
+                    var minBtn = createButton('─', '', function () {
+                        win._savedHeight = win.getHeight();
+                        var headerH = win.getHeader() ? win.getHeader().getHeight() : 30;
+                        if (win._panel) win._panel.hide();
+                        if (win._toolbar) win._toolbar.hide();
+                        win.setHeight(headerH);
+                        win._minimized = true;
+//                        win.setTitle(win.originalTitle + ' (已最小化)');
+                        minBtn.style.display = 'none';
+                        expandBtn.style.display = 'inline-block';
+                    });
+                    btnContainer.appendChild(minBtn);
+                    win._minimizeBtn = minBtn;
+
+                    var expandBtn = createButton('⤢', '', function () {
+                        if (win._savedHeight) {
+                            win.setHeight(win._savedHeight);
+                            win._savedHeight = null;
+                        } else {
+                            win.setHeight(win._defaultHeight || '80%');
+                        }
+                        win._minimized = false;
+                        win.setTitle(win.originalTitle);
+                        if (win._panel) win._panel.show();
+                        if (win._toolbar) win._toolbar.show();
+                        win.updateLayout();
+                        expandBtn.style.display = 'none';
+                        minBtn.style.display = 'inline-block';
+                        var panel = Ext.getCmp('DeviceControlValueTablePanel_Id');
+                        if (panel) {
+                            Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 100);
+                        }
+                    });
+                    expandBtn.style.display = 'none';
+                    btnContainer.appendChild(expandBtn);
+                    win._expandBtn = expandBtn;
+
+                    var maxBtn = createButton('☐', '', function () {
+                        if (!win.maximized) {
+                            win.maximize();
+                        }
+                    });
+                    btnContainer.appendChild(maxBtn);
+                    win._maximizeBtn = maxBtn;
+
+                    var restoreBtn = createButton('⧉', '', function () {
+                        if (win.maximized) {
+                            win.restore();
+                        }
+                    });
+                    restoreBtn.style.display = 'none';
+                    btnContainer.appendChild(restoreBtn);
+                    win._restoreBtn = restoreBtn;
+
+                    var closeBtn = createButton('✕', '', function () {
+                        win.close();
+                    }, true);
+                    btnContainer.appendChild(closeBtn);
+
+                    // 标题栏点击展开（忽略按钮区域）
+                    header.el.on('click', function (e) {
+                        if (btnContainer.contains(e.target)) {
+                            return;
+                        }
+                        if (win._minimized && !win.maximized) {
+                            e.stopEvent();
+                            if (win._savedHeight) {
+                                win.setHeight(win._savedHeight);
+                                win._savedHeight = null;
+                            } else {
+                                win.setHeight(win._defaultHeight || '80%');
+                            }
+                            win._minimized = false;
+                            win.setTitle(win.originalTitle);
+                            win.updateLayout();
+                            if (win._panel) win._panel.show();
+                            if (win._toolbar) win._toolbar.show();
+                            expandBtn.style.display = 'none';
+                            minBtn.style.display = 'inline-block';
+                            var panel = Ext.getCmp('DeviceControlValueTablePanel_Id');
+                            if (panel) {
+                                Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 100);
+                            }
+                        }
+                    });
+
+                    win.on('destroy', function () {
+                        if (btnContainer.parentNode) {
+                            btnContainer.parentNode.removeChild(btnContainer);
+                        }
+                    });
                 }
             }
         });
@@ -193,6 +417,13 @@ function deviceControlFunRenderer(){
 	}
 }
 
+function deviceDataUplinkFunRenderer(){
+	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
+	if(resolutionMode!=1){
+		deviceDataUplinkFun();
+	}
+}
+
 function CreateDeviceControlValueTable(){
 	var deviceId= Ext.getCmp('DeviceControlDeviceId_Id').getValue();
 	var deviceName= Ext.getCmp('DeviceControlDeviceName_Id').getValue();
@@ -208,7 +439,7 @@ function CreateDeviceControlValueTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceControlValueHandsontableHelper==null || deviceControlValueHandsontableHelper.hot==undefined){
 				deviceControlValueHandsontableHelper = DeviceControlValueHandsontableHelper.createNew("DeviceControlValueTableDiv_Id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.value+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.uplinkStatus+"']";
 				var columns="[" 
 						+"{data:'index'}," ;
 				
@@ -240,7 +471,7 @@ function CreateDeviceControlValueTable(){
 					}
 				}
 				
-				
+				columns+=",{data:'uplinkStatus'}";
 				columns+="]";
 				
 				var colHeaderList=Ext.JSON.decode(colHeaders);
@@ -248,48 +479,38 @@ function CreateDeviceControlValueTable(){
 				
 				if(result.totalRoot.length==1){//当只有一行时
 					Ext.getCmp("DeviceControlConfirmBtn_Id").hide();
-					colHeaderList.push(loginUserLanguageResource.action);
+					Ext.getCmp("DeviceControlDataUplinkBtn_Id").hide();
 					
-					var actionColumn={
-	                        data: 'id',
+					colHeaderList.push(loginUserLanguageResource.uplink);
+					colHeaderList.push(loginUserLanguageResource.downlink);
+					
+					
+					var uplinkColumn={
+	                        data: 'uplink',
 	                        renderer: createDeviceControlButtonRenderer(
-	                        		loginUserLanguageResource.downwardCommand,
+	                        		loginUserLanguageResource.uplink,
 	                                (instance, td, row, col, prop, value, cellProperties) => 
-	                                deviceControlFunRenderer(),
+	                                deviceDataUplinkFunRenderer(),
 	                                '#409eff'  // 蓝色
 	                            ),
-//	                        renderer: function(instance, td, row, col, prop, value, cellProperties) {
-//	                            // 清空单元格
-//	                            td.innerHTML = '';
-//	                            
-//	                            // 创建按钮容器
-//	                            const buttonContainer = document.createElement('div');
-//	                            buttonContainer.style.display = 'flex';
-//	                            buttonContainer.style.justifyContent = 'center';
-//	                            buttonContainer.style.gap = '5px';
-//	                            
-//	                            //按钮
-//	                            const controlButton = document.createElement('button');
-//	                            controlButton.className = 'action-btn view';
-//	                            controlButton.textContent = loginUserLanguageResource.downwardCommand;
-//	                            controlButton.onclick = function() {
-//	                            	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
-//	                        		if(resolutionMode!=1){
-//	                        			deviceControlFun();
-//	                        		}
-//	                            };
-//	                            
-//	                            // 添加按钮到容器
-//	                            buttonContainer.appendChild(controlButton);
-//	                            
-//	                            // 添加容器到单元格
-//	                            td.appendChild(buttonContainer);
-//	                            
-//	                            return td;
-//	                        },
 	                        readOnly: true
 	                    };
-					columnList.push(actionColumn);
+					var downlinkColumn={
+	                        data: 'downlink',
+	                        renderer: createDeviceControlButtonRenderer(
+	                        		loginUserLanguageResource.downlink,
+	                                (instance, td, row, col, prop, value, cellProperties) => 
+	                                deviceControlFunRenderer(),
+	                                '#67c23a'  // 绿色
+	                            ),
+	                        readOnly: true
+	                    };
+					
+					columnList.push(uplinkColumn);
+					columnList.push(downlinkColumn);
+					deviceControlValueHandsontableHelper.colWidths=[15,60,60,40,40]
+				}else{
+					deviceControlValueHandsontableHelper.colWidths=[15,80,80]
 				}
 				
 				deviceControlValueHandsontableHelper.colHeaders=colHeaderList;
@@ -318,6 +539,7 @@ var DeviceControlValueHandsontableHelper = {
 	        deviceControlValueHandsontableHelper.validresult=true;//数据校验
 	        deviceControlValueHandsontableHelper.colHeaders=[];
 	        deviceControlValueHandsontableHelper.columns=[];
+	        deviceControlValueHandsontableHelper.colWidths=[];
 	        
 	        deviceControlValueHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -346,7 +568,7 @@ var DeviceControlValueHandsontableHelper = {
 	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [],
+	                    columns: [2],
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -354,7 +576,7 @@ var DeviceControlValueHandsontableHelper = {
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                rowHeaders: false,//显示行头
 	                colHeaders: deviceControlValueHandsontableHelper.colHeaders,
-	                colWidths: [1,8,4],
+	                colWidths: deviceControlValueHandsontableHelper.colWidths,
 	                columnSorting: true, //允许排序
 	                allowInsertRow:false,
 	                sortIndicator: true,
@@ -367,7 +589,7 @@ var DeviceControlValueHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if(visualColIndex==0){
+	                    if(prop.toUpperCase()=='index'.toUpperCase() || prop.toUpperCase()=='uplinkStatus'.toUpperCase()){
 	                    	cellProperties.renderer = deviceControlValueHandsontableHelper.addBoldBg;
 	                    	cellProperties.editor = false;
 	                    }
@@ -534,7 +756,7 @@ function deviceControlFun(){
         msg: loginUserLanguageResource.commandSending+'...',
         target: Ext.getCmp('DeviceControlCheckPassWindow_Id')
     });
-	all_loading.show();
+	
 	
 	var isValid=true;
 	var controlValue='';
@@ -582,48 +804,120 @@ function deviceControlFun(){
 		isValid=false;
 	}
 	if(isValid){
-		Ext.Ajax.request({
-            url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
-            method: "POST",
-            params: {
-            	deviceId: Ext.getCmp('DeviceControlDeviceId_Id').getValue(),
-            	deviceName: Ext.getCmp('DeviceControlDeviceName_Id').getValue(),
-            	deviceType: Ext.getCmp('DeviceControlDeviceType_Id').getValue(),
-                controlType: Ext.getCmp('DeviceControlType_Id').getValue(),
-                controlValue: controlValue,
-                storeDataType: storeDataType,
-                quantity: quantity
-            },
-            success: function (response, action) {
-            	all_loading.hide();
-            	var result =  Ext.JSON.decode(response.responseText);
-            	
-            	if (result.flag == false) {
-//            		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                    Ext.MessageBox.show({
-                        title: loginUserLanguageResource.tip,
-                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
-                        icon: Ext.MessageBox.INFO,
-                        buttons: Ext.Msg.OK,
-                        fn: function () {
-                            window.location.href = context + "/login";
-                        }
-                    });
-                } else if (result.flag == true && result.error == false) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-                }  else if (result.flag == true && result.error == true) {
-//                	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
-                } 
-            },
-            failure: function () {
-            	all_loading.hide();
-//            	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
-                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
-            }
-        });
+		var deviceName=Ext.getCmp("DeviceControlDeviceName_Id").getValue();
+		var itemName=Ext.getCmp("DeviceControlItemName_Id").getValue();
+		var itemUnit=Ext.getCmp("DeviceControlItemUnit_Id").getValue();
+		
+		var tipInfo=loginUserLanguageResource.deviceName+":<font color=red>"+deviceName+"</font>";
+    	tipInfo+="</br>"+(itemName+(isNotVal(itemUnit)?"("+itemUnit+")":""))+":<font color=red>"+controlValue+"</font>";
+    	tipInfo+="</br>"+loginUserLanguageResource.confirmOperation;
+    	
+    	Ext.Msg.confirm(loginUserLanguageResource.tip, tipInfo, function (btn) {
+    	    if (btn == "yes") {
+    	    	all_loading.show();
+    	    	Ext.Ajax.request({
+    	            url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+    	            method: "POST",
+    	            params: {
+    	            	deviceId: Ext.getCmp('DeviceControlDeviceId_Id').getValue(),
+    	            	deviceName: Ext.getCmp('DeviceControlDeviceName_Id').getValue(),
+    	            	deviceType: Ext.getCmp('DeviceControlDeviceType_Id').getValue(),
+    	                controlType: Ext.getCmp('DeviceControlType_Id').getValue(),
+    	                controlValue: controlValue,
+    	                storeDataType: storeDataType,
+    	                quantity: quantity
+    	            },
+    	            success: function (response, action) {
+    	            	all_loading.hide();
+    	            	var result =  Ext.JSON.decode(response.responseText);
+    	            	
+    	            	if (result.flag == false) {
+//    	            		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+    	                    Ext.MessageBox.show({
+    	                        title: loginUserLanguageResource.tip,
+    	                        msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
+    	                        icon: Ext.MessageBox.INFO,
+    	                        buttons: Ext.Msg.OK,
+    	                        fn: function () {
+    	                            window.location.href = context + "/login";
+    	                        }
+    	                    });
+    	                } else if (result.flag == true && result.error == false) {
+    	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+    	                }  else if (result.flag == true && result.error == true) {
+//    	                	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+    	                    Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+    	                } 
+    	            },
+    	            failure: function () {
+    	            	all_loading.hide();
+//    	            	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+    	                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+    	            }
+    	        });
+    	    }
+    	});
 	}else{
 		all_loading.hide();
 		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.dataFormattingError+"</font>");
 	}
+}
+
+function deviceDataUplinkFun(){
+	var all_loading = new Ext.LoadMask({
+        msg: loginUserLanguageResource.commandSending+'...',
+        target: Ext.getCmp('DeviceControlCheckPassWindow_Id')
+    });
+	
+
+	all_loading.show();
+	Ext.Ajax.request({
+        url: context + '/wellInformationManagerController/deviceDataUplink',
+        method: "POST",
+        params: {
+        	deviceId: Ext.getCmp('DeviceControlDeviceId_Id').getValue(),
+        	deviceName: Ext.getCmp('DeviceControlDeviceName_Id').getValue(),
+            controlType: Ext.getCmp('DeviceControlType_Id').getValue()
+        },
+        success: function (response, action) {
+        	all_loading.hide();
+        	var result =  Ext.JSON.decode(response.responseText);
+        	
+        	if (result.flag == false) {
+//        		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+                Ext.MessageBox.show({
+                    title: loginUserLanguageResource.tip,
+                    msg: "<font color=red>" + loginUserLanguageResource.sessionExpired + "。</font>",
+                    icon: Ext.MessageBox.INFO,
+                    buttons: Ext.Msg.OK,
+                    fn: function () {
+                        window.location.href = context + "/login";
+                    }
+                });
+            } else if (result.flag == true && result.error == false) {
+                Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
+            }  else if (result.flag == true && result.error == true) {
+            	const plugin = deviceControlValueHandsontableHelper.hot.getPlugin('hiddenColumns');
+            	plugin.showColumns([2]);
+            	deviceControlValueHandsontableHelper.hot.render();
+            	
+            	var uplinkStatusData=deviceControlValueHandsontableHelper.hot.getDataAtProp('uplinkStatus');
+            	
+            	var uplinkData=result.data.split(",");;
+            	
+            	for(var i=0;i<uplinkData.length;i++){
+            		if(uplinkStatusData.length>i){
+            			deviceControlValueHandsontableHelper.hot.setDataAtRowProp(i,'uplinkStatus',uplinkData[i]);
+            		}
+            	}
+            } 
+        },
+        failure: function () {
+        	all_loading.hide();
+//        	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
+            Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>】:" + loginUserLanguageResource.contactAdmin)
+        }
+    });
+
+
 }

@@ -1574,8 +1574,8 @@ function controlBtnHandler(btn,btnIndex,showButtonCount){
 	    	});
         }else if(resolutionMode == 0 && itemMeaning.length > 0 && itemMeaning.length <= showButtonCount){
         	var tipInfo=loginUserLanguageResource.deviceName+':'+deviceName;
-	    	tipInfo+="</br>"+item
-	    	tipInfo+="</br>"+text
+	    	tipInfo+="</br>"+item;
+	    	tipInfo+="</br>"+text;
 	    	tipInfo+="</br>"+loginUserLanguageResource.confirmOperation;
         	
 	    	Ext.Msg.confirm(loginUserLanguageResource.tip, tipInfo, function (btn) {
@@ -1648,18 +1648,10 @@ function controlBtnHandler(btn,btnIndex,showButtonCount){
                 }
                 if(resolutionMode==1 || resolutionMode==0){
                 	Ext.getCmp("DeviceControlConfirmBtn_Id").hide();
+                	Ext.getCmp("DeviceControlDataUplinkBtn_Id").hide();
                 }
                 
-                
-//                var showInfo=loginUserLanguageResource.controlItem+':<font color=red>'+record.data.itemName+'</font>'
-//                	+','+loginUserLanguageResource.storeDataType+':<font color=red>'+record.data.storeDataType+'</font>'
-//                	+','+loginUserLanguageResource.quantity+':<font color=red>'+record.data.quantity+'</font>';
-//                if(isNotVal(resolutionModeName)){
-//                	showInfo+=','+loginUserLanguageResource.resolutionMode+':<font color=red>'+resolutionModeName+'</font>'
-//                }
-//                showInfo+=","+loginUserLanguageResource.unit+":<font color=red>"+(isNotVal(record.data.unit)?record.data.unit:"无")+'</font>'
-                
-                Ext.getCmp("DeviceControlItemName_Id").setHtml(showInfo);
+                Ext.getCmp("DeviceControlShowInfo_Id").setHtml(showInfo);
                 
                 
                 Ext.getCmp("DeviceControlDeviceName_Id").setValue(deviceName);
@@ -1670,6 +1662,9 @@ function controlBtnHandler(btn,btnIndex,showButtonCount){
                 Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
                 Ext.getCmp("DeviceControlStoreDataType_Id").setValue(record.data.storeDataType);
                 Ext.getCmp("DeviceControlQuantity_Id").setValue(record.data.quantity);
+                
+                Ext.getCmp("DeviceControlItemName_Id").setValue(record.data.itemName);
+                Ext.getCmp("DeviceControlItemUnit_Id").setValue(isNotVal(record.data.unit)?record.data.unit:"");
 
                 Ext.getCmp("DeviceControlShowType_Id").setValue(2);
                 if (resolutionMode == 1 && itemMeaning.length > 0) {

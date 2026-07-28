@@ -90,7 +90,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
             			deviceDataUplinkFun();
             		}
                 }
-            },'-',{
+            },{
                 xtype: 'button',
                 text: loginUserLanguageResource.downlink,
                 iconCls: 'downlink',
@@ -100,12 +100,6 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
             		if(resolutionMode!=1){
             			deviceControlFun();
             		}
-                }
-            }, {
-                text: loginUserLanguageResource.close,
-                iconCls: 'cancel',
-                handler: function () {
-                    Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
                 }
             }],
         	items:[{
@@ -508,9 +502,9 @@ function CreateDeviceControlValueTable(){
 					
 					columnList.push(uplinkColumn);
 					columnList.push(downlinkColumn);
-					deviceControlValueHandsontableHelper.colWidths=[15,60,60,40,40]
+					deviceControlValueHandsontableHelper.colWidths=[20,50,50,50,50]
 				}else{
-					deviceControlValueHandsontableHelper.colWidths=[15,80,80]
+					deviceControlValueHandsontableHelper.colWidths=[20,100,100]
 				}
 				
 				deviceControlValueHandsontableHelper.colHeaders=colHeaderList;

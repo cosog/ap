@@ -1100,7 +1100,7 @@ function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceRealTimeMonitoringDataHandsontableHelper==null || deviceRealTimeMonitoringDataHandsontableHelper.hot==undefined){
 				deviceRealTimeMonitoringDataHandsontableHelper = DeviceRealTimeMonitoringDataHandsontableHelper.createNew("RealTimeMonitoringInfoDataTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
+				var colHeaders="['"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"']";
 				var columns="[" 
 						+"{data:'name1'}," 
 						+"{data:'value1'}," 

@@ -92,8 +92,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			String columns = "["
 					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"item\",children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"count\",children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"item\",children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"count\",children:[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalCount\":3,");
@@ -208,8 +208,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		List<?> list = this.findCallSql(sql);
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"item\",children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"count\",children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"item\",children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"count\",children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+list.size()+",");
@@ -8196,7 +8196,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			String head="",field="";
 			
 			for(int i=1;i<=items;i++){
-				head+=languageResourceMap.get("name")+","+languageResourceMap.get("variable");
+				head+=languageResourceMap.get("variable")+","+languageResourceMap.get("value");
 				field+="name"+i+","+"value"+i;
 				if(i<items){
 					head+=",";

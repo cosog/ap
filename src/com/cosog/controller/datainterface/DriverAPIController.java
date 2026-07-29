@@ -2665,8 +2665,8 @@ public class DriverAPIController extends BaseController{
 		
 		String columns = "[";
 		for(int i=1;i<=items;i++){
-			columns+= "{ \"header\":\""+LanguageResourceMap.get("name")+"\",\"dataIndex\":\"name"+i+"\",children:[] },"
-					+ "{ \"header\":\""+LanguageResourceMap.get("variable")+"\",\"dataIndex\":\"value"+i+"\",children:[] }";
+			columns+= "{ \"header\":\""+LanguageResourceMap.get("variable")+"\",\"dataIndex\":\"name"+i+"\",children:[] },"
+					+ "{ \"header\":\""+LanguageResourceMap.get("value")+"\",\"dataIndex\":\"value"+i+"\",children:[] }";
 			if(i<items){
 				columns+=",";
 			}

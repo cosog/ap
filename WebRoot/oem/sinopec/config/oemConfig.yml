@@ -110,6 +110,7 @@ others:
    timeEfficiencyUnit: 1               #时率单位 1-小数 2-百分数
    cache: false
    loginLanguage: zh_CN                   #登录界面语言，目前支持中、英、俄文  zh_CN en ru
+   uiType: "extjs"                    # 可选值: "extjs" | "miniui"
    pageSize: 100
    syncOrAsync: false
    expandedAll: true
@@ -122,7 +123,7 @@ others:
    iot: true                      #是否为物联网模式
    scene: all                      #应用场景 all-全部 oil-油井 cbm-煤层气井
    module: all                     #模块 ""-仅监测 srp-仅抽油机井功图计算 pcp-仅螺杆泵井转速计算 all-全部 
-   showLogo: true                  #是否显示图标
+   showLogo: false                  #是否显示图标
    showHelp: true                  #是否显示帮助文档
    printLog: true                  #是否打印调试日志
    printAdLog: true                #是否打印交互日志

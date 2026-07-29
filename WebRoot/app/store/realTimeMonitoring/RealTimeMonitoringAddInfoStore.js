@@ -58,7 +58,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
         				store: deviceInfoStore,
         			    columns: [
         			    	{ 
-        			        	header: loginUserLanguageResource.name,  
+        			        	header: loginUserLanguageResource.variable,  
         			        	dataIndex: 'item',
         			        	align:'left',
         			        	flex:9,
@@ -67,7 +67,7 @@ Ext.define('AP.store.realTimeMonitoring.RealTimeMonitoringAddInfoStore', {
         			        	}
         			        },
         			        { 
-        			        	header: loginUserLanguageResource.variable, 
+        			        	header: loginUserLanguageResource.value, 
         			        	dataIndex: 'value',
         			        	align:'center',
         			        	flex:10,

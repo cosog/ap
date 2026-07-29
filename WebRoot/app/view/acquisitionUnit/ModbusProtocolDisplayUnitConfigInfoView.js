@@ -1099,7 +1099,7 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 	
 	if(protocolDisplayUnitPropertiesHandsontableHelper==null || protocolDisplayUnitPropertiesHandsontableHelper.hot==undefined){
 		protocolDisplayUnitPropertiesHandsontableHelper = ProtocolDisplayUnitPropertiesHandsontableHelper.createNew("ModbusProtocolDisplayUnitPropertiesTableInfoDiv_id");
-		var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
+		var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"']";
 		var columns="[{data:'id'},{data:'title'},{data:'value'}]";
 		protocolDisplayUnitPropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 		protocolDisplayUnitPropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);

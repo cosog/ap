@@ -90,7 +90,7 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
             			deviceDataUplinkFun();
             		}
                 }
-            },'-',{
+            },{
                 xtype: 'button',
                 text: loginUserLanguageResource.downlink,
                 iconCls: 'downlink',
@@ -100,12 +100,6 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
             		if(resolutionMode!=1){
             			deviceControlFun();
             		}
-                }
-            }, {
-                text: loginUserLanguageResource.close,
-                iconCls: 'cancel',
-                handler: function () {
-                    Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
                 }
             }],
         	items:[{
@@ -439,82 +433,88 @@ function CreateDeviceControlValueTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceControlValueHandsontableHelper==null || deviceControlValueHandsontableHelper.hot==undefined){
 				deviceControlValueHandsontableHelper = DeviceControlValueHandsontableHelper.createNew("DeviceControlValueTableDiv_Id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.uplinkStatus+"']";
-				var columns="[" 
-						+"{data:'index'}," ;
+				
+				var uplinkColumn={
+                        data: 'uplink',
+                        renderer: createDeviceControlButtonRenderer(
+                        		loginUserLanguageResource.uplink,
+                                (instance, td, row, col, prop, value, cellProperties) => 
+                                deviceDataUplinkFunRenderer(),
+                                '#409eff'  // 蓝色
+                            ),
+                        readOnly: true
+                    };
+				var downlinkColumn={
+                        data: 'downlink',
+                        renderer: createDeviceControlButtonRenderer(
+                        		loginUserLanguageResource.downlink,
+                                (instance, td, row, col, prop, value, cellProperties) => 
+                                deviceControlFunRenderer(),
+                                '#67c23a'  // 绿色
+                            ),
+                        readOnly: true
+                    };
+				
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.uplinkValue+"','"+loginUserLanguageResource.uplink+"','"+loginUserLanguageResource.downlinkValue+"','"+loginUserLanguageResource.downlink+"']";
+				
+				var columns=[];
+				columns.push({data:'index'});
+				columns.push({data:'uplinkStatus'});
+				columns.push(uplinkColumn);
+				
 				
 				if(resolutionMode==1 && quantity==1){
 					var itemMeaning=Ext.getCmp('DeviceControlItemMeaning_Id').getValue();
 					itemMeaning=Ext.JSON.decode(itemMeaning);
 					if(isNotVal(itemMeaning) && itemMeaning.length>0){
-						var itemMeaningStr="";
+						var itemMeaningArr=[];
 						for(var i=0;i<itemMeaning.length;i++){
-							itemMeaningStr+="'"+itemMeaning[i][1]+"'";
-							if(i<itemMeaning.length-1){
-								itemMeaningStr+=',';
-							}
+							itemMeaningArr.push(itemMeaning[i][1]);
 						}
-						
-						columns+="{data:'value',type:'dropdown',strict:true,allowInvalid:false,source:["+itemMeaningStr+"]}," 
+						columns.push({data:'value',type:'dropdown',strict:true,allowInvalid:false,source:itemMeaningArr});
 					}else{
 						if(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING'){
-							columns+="{data:'value'}";
+							columns.push({data:'value'});
 						}else{
-							columns+="{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceControlValueHandsontableHelper);}}" 
+							columns.push({
+							    data: 'value',
+							    type: 'text',
+							    allowInvalid: true,
+							    validator: function (val, callback) {
+							        return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, deviceControlValueHandsontableHelper);
+							    }
+							});
 						}
 					}
 				}else{
 					if(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING'){
-						columns+="{data:'value'}";
+						columns.push({data:'value'});
 					}else{
-						columns+="{data:'value',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceControlValueHandsontableHelper);}}" 
+						columns.push({
+						    data: 'value',
+						    type: 'text',
+						    allowInvalid: true,
+						    validator: function (val, callback) {
+						        return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, deviceControlValueHandsontableHelper);
+						    }
+						});
 					}
 				}
 				
-				columns+=",{data:'uplinkStatus'}";
-				columns+="]";
+				columns.push(downlinkColumn);	
 				
 				var colHeaderList=Ext.JSON.decode(colHeaders);
-				var columnList= Ext.JSON.decode(columns);
 				
 				if(result.totalRoot.length==1){//当只有一行时
 					Ext.getCmp("DeviceControlConfirmBtn_Id").hide();
 					Ext.getCmp("DeviceControlDataUplinkBtn_Id").hide();
-					
-					colHeaderList.push(loginUserLanguageResource.uplink);
-					colHeaderList.push(loginUserLanguageResource.downlink);
-					
-					
-					var uplinkColumn={
-	                        data: 'uplink',
-	                        renderer: createDeviceControlButtonRenderer(
-	                        		loginUserLanguageResource.uplink,
-	                                (instance, td, row, col, prop, value, cellProperties) => 
-	                                deviceDataUplinkFunRenderer(),
-	                                '#409eff'  // 蓝色
-	                            ),
-	                        readOnly: true
-	                    };
-					var downlinkColumn={
-	                        data: 'downlink',
-	                        renderer: createDeviceControlButtonRenderer(
-	                        		loginUserLanguageResource.downlink,
-	                                (instance, td, row, col, prop, value, cellProperties) => 
-	                                deviceControlFunRenderer(),
-	                                '#67c23a'  // 绿色
-	                            ),
-	                        readOnly: true
-	                    };
-					
-					columnList.push(uplinkColumn);
-					columnList.push(downlinkColumn);
-					deviceControlValueHandsontableHelper.colWidths=[15,60,60,40,40]
+					deviceControlValueHandsontableHelper.hiddenColumns=[]
 				}else{
-					deviceControlValueHandsontableHelper.colWidths=[15,80,80]
+					deviceControlValueHandsontableHelper.hiddenColumns=[2,4]
 				}
-				
+				deviceControlValueHandsontableHelper.colWidths=[20,50,50,50,50]
 				deviceControlValueHandsontableHelper.colHeaders=colHeaderList;
-				deviceControlValueHandsontableHelper.columns=columnList;
+				deviceControlValueHandsontableHelper.columns=columns;
 				deviceControlValueHandsontableHelper.createTable(result.totalRoot);
 			}else{
 				deviceControlValueHandsontableHelper.hot.loadData(result.totalRoot);
@@ -540,6 +540,7 @@ var DeviceControlValueHandsontableHelper = {
 	        deviceControlValueHandsontableHelper.colHeaders=[];
 	        deviceControlValueHandsontableHelper.columns=[];
 	        deviceControlValueHandsontableHelper.colWidths=[];
+	        deviceControlValueHandsontableHelper.hiddenColumns=[];
 	        
 	        deviceControlValueHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -568,7 +569,7 @@ var DeviceControlValueHandsontableHelper = {
 	        		theme: 'ht-theme-classic',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [2],
+	                    columns: deviceControlValueHandsontableHelper.hiddenColumns,
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -764,15 +765,14 @@ function deviceControlFun(){
 	var quantity= Ext.getCmp('DeviceControlQuantity_Id').getValue();
 	var resolutionMode= Ext.getCmp('DeviceControlShowType_Id').getValue();
 	if(deviceControlValueHandsontableHelper!=null && deviceControlValueHandsontableHelper.hot!=null){
-		var controlValueData=deviceControlValueHandsontableHelper.hot.getData();
+		var controlValueData=deviceControlValueHandsontableHelper.hot.getDataAtProp('value');
 		if(resolutionMode==1 && quantity==1){
 			var itemMeaning=Ext.getCmp('DeviceControlItemMeaning_Id').getValue();
 			itemMeaning=Ext.JSON.decode(itemMeaning);
-			var controlValue="";
-			
+			var controlValue='';
 			if(isNotVal(itemMeaning) && itemMeaning.length>0){
 				for(var i=0;i<itemMeaning.length;i++){
-					if(controlValueData[0][1]==itemMeaning[i][1]){
+					if(controlValueData[0]==itemMeaning[i][1]){
 						controlValue=itemMeaning[i][0];
 						break;
 					}
@@ -784,8 +784,8 @@ function deviceControlFun(){
 		}else{
 			for(var i=0;i<controlValueData.length;i++){
     			
-    			if(isNotVal(controlValueData[i][1])){
-    				controlValue+=controlValueData[i][1];
+    			if(isNotVal(controlValueData[i])){
+    				controlValue+=controlValueData[i];
     			}else{
     				controlValue+=" ";
     			}
@@ -794,7 +794,7 @@ function deviceControlFun(){
     				controlValue+=',';
     			}
     			if( !(storeDataType.toUpperCase()=='BCD' || storeDataType.toUpperCase()=='STRING') ){
-    				if( isNotVal(controlValueData[i][1]) && (!isNumber(controlValueData[i][1])) ){
+    				if( isNotVal(controlValueData[i]) && (!isNumber(controlValueData[i])) ){
     					isValid=false;
     				}
     			}
@@ -897,9 +897,9 @@ function deviceDataUplinkFun(){
             } else if (result.flag == true && result.error == false) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
             }  else if (result.flag == true && result.error == true) {
-            	const plugin = deviceControlValueHandsontableHelper.hot.getPlugin('hiddenColumns');
-            	plugin.showColumns([2]);
-            	deviceControlValueHandsontableHelper.hot.render();
+//            	const plugin = deviceControlValueHandsontableHelper.hot.getPlugin('hiddenColumns');
+//            	plugin.showColumns([2]);
+//            	deviceControlValueHandsontableHelper.hot.render();
             	
             	var uplinkStatusData=deviceControlValueHandsontableHelper.hot.getDataAtProp('uplinkStatus');
             	

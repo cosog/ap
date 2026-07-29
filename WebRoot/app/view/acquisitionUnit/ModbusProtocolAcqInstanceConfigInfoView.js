@@ -292,7 +292,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 			
 			if(protocolConfigInstancePropertiesHandsontableHelper==null || protocolConfigInstancePropertiesHandsontableHelper.hot==undefined){
 				protocolConfigInstancePropertiesHandsontableHelper = ProtocolConfigInstancePropertiesHandsontableHelper.createNew("ProtocolConfigInstancePropertiesTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"']";
 				var columns="[{data:'id'},{data:'title'},{data:'value'}]";
 				protocolConfigInstancePropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolConfigInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);

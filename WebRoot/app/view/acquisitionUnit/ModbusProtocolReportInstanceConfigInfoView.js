@@ -261,7 +261,7 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 			
 			if(protocolReportInstancePropertiesHandsontableHelper==null || protocolReportInstancePropertiesHandsontableHelper.hot==undefined){
 				protocolReportInstancePropertiesHandsontableHelper = ProtocolReportInstancePropertiesHandsontableHelper.createNew("ModbusProtocolReportInstancePropertiesTableInfoDiv_id");
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"']";
 				var columns="[{data:'id'},{data:'title'},{data:'value'}]";
 				protocolReportInstancePropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolReportInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);

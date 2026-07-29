@@ -1228,7 +1228,7 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 	
 	if(protocolPropertiesHandsontableHelper==null || protocolPropertiesHandsontableHelper.hot==undefined){
 		protocolPropertiesHandsontableHelper = ProtocolPropertiesHandsontableHelper.createNew("ModbusProtocolAddrMappingPropertiesTableInfoDiv_id");
-		var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
+		var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"']";
 		var columns="[{data:'id'}," 
 			+"{data:'title'}," 
 			+"{data:'value'}]";

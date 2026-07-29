@@ -159,7 +159,15 @@ public class PageTurnController extends BaseController {
 		session.setAttribute("loadingUI", loadingUI);
 		session.setAttribute("helpDocumentUrl", helpDocumentUrl);
 		session.setAttribute("showVideo", configFile.getAp().getModuleContent().getPrimaryDevice().getVideoConfig());
-		return "app/main";
+		
+		String returnPage="app/main";
+		if("miniui".equalsIgnoreCase(configFile.getAp().getOthers().getUiType())){
+			returnPage="miniui-app/layout/main-miniui";
+		}else if("extjs".equalsIgnoreCase(configFile.getAp().getOthers().getUiType())){
+			returnPage="app/main";
+		}
+		
+		return returnPage;
 //		return "forward:/app/main.jsp";
 //		return "redirect:/app/main.jsp";
 	}
@@ -296,7 +304,14 @@ public class PageTurnController extends BaseController {
 				
 				SessionLockHelper.putSession(session);
 				this.service.saveSystemLog(user,0,"外部系统登录");
-				result="app/main";
+				
+				String returnPage="app/main";
+				if("miniui".equalsIgnoreCase(configFile.getAp().getOthers().getUiType())){
+					returnPage="miniui-app/layout/main-miniui";
+				}else if("extjs".equalsIgnoreCase(configFile.getAp().getOthers().getUiType())){
+					returnPage="app/main";
+				}
+				result=returnPage;
 			}else if(user != null && user.getUserEnable()!=1){
 //				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">"+languageResourceMap.get("disabledUser")+"</font>' }");
 			} else {

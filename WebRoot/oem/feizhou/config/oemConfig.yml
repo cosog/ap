@@ -110,6 +110,7 @@ others:
    timeEfficiencyUnit: 2               #时率单位 1-小数 2-百分数
    cache: false
    loginLanguage: zh_CN                   #zh_CN en ru
+   uiType: "extjs"                    # 可选值: "extjs" | "miniui"
    pageSize: 100
    syncOrAsync: false
    expandedAll: true

@@ -247,6 +247,8 @@ public class OEMConfigFile {
 		private boolean cache;
 
 	    private String loginLanguage;
+	    
+	    private String uiType;
 
 	    private int pageSize;
 
@@ -496,6 +498,12 @@ public class OEMConfigFile {
 		}
 		public void setAcquisitionTimingRecordEnable(boolean acquisitionTimingRecordEnable) {
 			this.acquisitionTimingRecordEnable = acquisitionTimingRecordEnable;
+		}
+		public String getUiType() {
+			return uiType;
+		}
+		public void setUiType(String uiType) {
+			this.uiType = uiType;
 		}
 	}
 	

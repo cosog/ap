@@ -1389,7 +1389,7 @@ function CreateProtocolReportUnitPropertiesInfoTable(data) {
 
     if (reportUnitPropertiesHandsontableHelper == null || reportUnitPropertiesHandsontableHelper.hot == undefined) {
         reportUnitPropertiesHandsontableHelper = ReportUnitPropertiesHandsontableHelper.createNew("ModbusProtocolReportUnitPropertiesTableInfoDiv_id");
-        var colHeaders = "['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
+        var colHeaders = "['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"']";
         var columns = "[{data:'id'},{data:'title'},{data:'value'}]";
         reportUnitPropertiesHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
         reportUnitPropertiesHandsontableHelper.columns = Ext.JSON.decode(columns);

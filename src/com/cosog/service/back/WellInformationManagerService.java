@@ -2486,8 +2486,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		String columns = "["
 				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemValue1\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue2\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue1\",width:120 ,children:[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue2\",width:80 ,children:[] }"
 				+ "]";
 		String sql = "select t.stroke,t.balanceinfo from tbl_device t where t.id="+deviceId;
 		String auxiliaryDeviceSql="select t3.name,t3.manufacturer,t3.model "
@@ -2663,8 +2663,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try{
 			String columns = "["
 					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
 					+ "]";
 			String deviceTableName="tbl_device";
 			String sql = "select t.productiondata,to_char(t.productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss'),t.applicationscenarios "
@@ -3110,8 +3110,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try{
 			String columns = "["
 					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
 					+ "]";
 			String deviceTableName="tbl_device";
 			String sql = "select t.constructiondata "
@@ -3194,8 +3194,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try{
 			String columns = "["
 					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
 					+ "]";
 			
 			result_json.append("{\"success\":true,\"totalCount\":2,\"columns\":"+columns+",\"totalRoot\":[");
@@ -3219,8 +3219,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try{
 			String columns = "["
 					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
 					+ "]";
 			
 			String deviceTableName="tbl_device";
@@ -3307,8 +3307,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try{
 			String columns = "["
 					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
 					+ "]";
 			
 			String deviceTableName="tbl_device";

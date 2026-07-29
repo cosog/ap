@@ -504,7 +504,7 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceHistoryQueryDataHandsontableHelper==null || deviceHistoryQueryDataHandsontableHelper.hot==undefined){
 				deviceHistoryQueryDataHandsontableHelper = DeviceHistoryQueryDataHandsontableHelper.createNew("HistoryQueryDataDetailsDiv_Id");
-				var colHeaders="['"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"']";
+				var colHeaders="['"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"']";
 				var columns="[" 
 						+"{data:'name1'}," 
 						+"{data:'value1'}," 

@@ -2844,7 +2844,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 					productionHandsontableHelper = ProductionHandsontableHelper.createNew("AdditionalInfoTableDiv_id");
 					productionHandsontableHelper.resultList = result.resultNameList;
 					productionHandsontableHelper.FESdiagramSrcList=result.FESdiagramSrcList;
-					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 					var columns="[{data:'id'}," 
 						+"{data:'itemName'}," 
 						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionHandsontableHelper);}}," 
@@ -3171,7 +3171,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
     	        pumpingInfoHandsontableHelper.balanceWeightList = result.balanceInfoArrStr;
     	        pumpingInfoHandsontableHelper.pumpingUnitList=result.pumpingUnitList;
 				
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 				var columns="[{data:'id'}," 
 					+"{data:'itemValue1',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingInfoHandsontableHelper);}}," 
 					+"{data:'itemValue2',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingInfoHandsontableHelper);}}," 
@@ -3333,9 +3333,9 @@ var PumpingInfoHandsontableHelper = {
 	                nestedHeaders:[[{
 	                	label:loginUserLanguageResource.idx
 	                },{
-	                	label:loginUserLanguageResource.name
-	                },{
 	                	label:loginUserLanguageResource.variable
+	                },{
+	                	label:loginUserLanguageResource.value
 //	                	colspan:2
 	                },{
 	                	label:''
@@ -3815,8 +3815,8 @@ function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
 			if(deviceAdditionalInfoHandsontableHelper==null || deviceAdditionalInfoHandsontableHelper.hot==undefined){
 				deviceAdditionalInfoHandsontableHelper = DeviceAdditionalInfoHandsontableHelper.createNew("DeviceAdditionalInfoTableDiv_id");
 				var colHeaders="['"+loginUserLanguageResource.idx+"'," 
-				+"'"+loginUserLanguageResource.name+"'," 
 				+"'"+loginUserLanguageResource.variable+"'," 
+				+"'"+loginUserLanguageResource.value+"'," 
 				+"'"+loginUserLanguageResource.unit+"'," 
 				+"'"+loginUserLanguageResource.deviceOverview+"'," 
 				+"'"+loginUserLanguageResource.columnSort+"'"
@@ -5729,7 +5729,7 @@ function CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applica
 				var result =  Ext.JSON.decode(response.responseText);
 				if(fsDiagramConstructionHandsontableHelper==null || fsDiagramConstructionHandsontableHelper.hot==undefined){
 					fsDiagramConstructionHandsontableHelper = FSDiagramConstructionHandsontableHelper.createNew("DeviceFSDiagramConstructionInfoTableDiv_id");;
-					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 					var columns="[{data:'id'}," 
 						+"{data:'itemName'}," 
 						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,fsDiagramConstructionHandsontableHelper);}}," 
@@ -5962,7 +5962,7 @@ function CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,application
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceSystemParameterHandsontableHelper==null || deviceSystemParameterHandsontableHelper.hot==undefined){
 				deviceSystemParameterHandsontableHelper = DeviceSystemParameterHandsontableHelper.createNew("DeviceSystemParameterConfigurationInfoTableDiv_id");;
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 				var columns="[{data:'id'}," 
 					+"{data:'itemName'}," 
 					+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceSystemParameterHandsontableHelper);}}," 
@@ -6378,7 +6378,7 @@ function CreatePumpingUnitDetailedInformationTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(devicePumpingUnitDetailedInformationHandsontableHelper==null || devicePumpingUnitDetailedInformationHandsontableHelper.hot==undefined){
 				devicePumpingUnitDetailedInformationHandsontableHelper = DevicePumpingUnitDetailedInformationHandsontableHelper.createNew("DevicePumpingUnitDetailedInformationTableDiv_id");			
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 				var columns="[{data:'id'}," 
 					+"{data:'itemName'}," 
 					+"{data:'itemValue'}," 
@@ -6535,7 +6535,7 @@ function CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId,deviceN
 			if(deviceIntelligentFrequencyConversionHandsontableHelper==null || deviceIntelligentFrequencyConversionHandsontableHelper.hot==undefined){
 				deviceIntelligentFrequencyConversionHandsontableHelper = DeviceIntelligentFrequencyConversionHandsontableHelper.createNew("DeviceIntelligentFrequencyConversionInfoTableDiv_id");;
 				var colHeaders="[" 
-					+"['"+loginUserLanguageResource.idx+"',{label: '"+loginUserLanguageResource.name+"', colspan: 3},'"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']" 
+					+"['"+loginUserLanguageResource.idx+"',{label: '"+loginUserLanguageResource.variable+"', colspan: 3},'"+loginUserLanguageResource.value+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']" 
 					+"]";
 				var columns="[{data:'id'}," 
 					+"{data:'itemClasses'}," 
@@ -6983,7 +6983,7 @@ function CreateAndLoadDeviceInterlockProtectionTable(deviceId,deviceName,applica
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceInterlockProtectionHandsontableHelper==null || deviceInterlockProtectionHandsontableHelper.hot==undefined){
 				deviceInterlockProtectionHandsontableHelper = DeviceInterlockProtectionHandsontableHelper.createNew("DeviceInterlockProtectionInfoTableDiv_id");;
-				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.name+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
 				var columns="[{data:'id'}," 
 					+"{data:'itemClasses'}," 
 					+"{data:'itemName'}," 

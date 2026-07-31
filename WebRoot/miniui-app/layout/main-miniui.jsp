@@ -125,11 +125,9 @@ request.setAttribute("browserLang", browserLang);
             font-weight: bold;
         }
 
-        /* 树样式 - 移除多余边距 */
+        /* 树样式 */
         .mini-tree {
             background: transparent;
-            padding: 0 !important;
-            margin: 0 !important;
         }
         .mini-tree .mini-tree-node-hover {
             background: #e6f7ff;
@@ -139,13 +137,6 @@ request.setAttribute("browserLang", browserLang);
         }
         .mini-tree .mini-tree-node {
             padding: 2px 0;
-        }
-        /* 确保树容器没有额外边距 */
-        .tree-container {
-            flex: 1;
-            overflow: auto;
-            padding: 0 !important;
-            margin: 0 !important;
         }
 
         /* 加载提示 */
@@ -191,6 +182,34 @@ request.setAttribute("browserLang", browserLang);
             font-size: 12px;
             color: #999;
         }
+
+        /* 树容器 - 无多余边距 */
+        .tree-wrap {
+            flex: 1;
+            overflow: auto;
+            padding: 0;
+            margin: 0;
+        }
+        .tree-wrap .mini-tree {
+            padding: 0;
+            margin: 0;
+        }
+        /* 左侧区域 flex 布局 */
+        .west-panel {
+            padding: 0;
+            background: #f5f7fa;
+            border-right: 1px solid #e8e8e8;
+            display: flex;
+            flex-direction: column;
+        }
+        .west-section {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .west-section:first-child {
+            border-bottom: 1px solid #e8e8e8;
+        }
     </style>
 </head>
 <body>
@@ -229,43 +248,45 @@ request.setAttribute("browserLang", browserLang);
             </div>
         </div>
 
-        <!-- ===== 左侧区域：组织树 (40%) + 功能菜单树 (60%) ===== -->
+        <!-- ===== 左侧区域：功能菜单树 (50%) + 组织树 (50%) ===== -->
         <div region="west" width="250" minWidth="180" maxWidth="400"
              showSplitIcon="true" title="导航"
              bodyStyle="padding:0;background:#f5f7fa;border-right:1px solid #e8e8e8;display:flex;flex-direction:column;">
 
-            <!-- 组织树区域（占 40% 高度） -->
-            <div style="flex:4;display:flex;flex-direction:column;overflow:hidden;border-bottom:1px solid #e8e8e8;">
+            <!-- 功能菜单树区域（50% 高度） -->
+            <div class="west-section" style="flex:1;">
+                <div class="panel-title panel-title-top">
+                    <span>📋 功能菜单</span>
+                </div>
+                <div class="tree-wrap">
+                    <ul id="menuTree" class="mini-tree" style="width:100%;height:100%;padding:0;margin:0;"
+                        showTreeIcon="true" 
+                        showRootNode="true"
+                        resultAsTree="true"
+                        expandOnLoad="true"
+                        url="<%=path%>/moduleMenuController/obtainFunctionModuleList"
+                        onnodeselect="onMenuTreeSelect"
+                        onload="onMenuTreeLoad">
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 组织树区域（50% 高度） -->
+            <div class="west-section" style="flex:1;">
                 <div class="panel-title panel-title-border">
                     <span>📁 组织机构</span>
                     <span class="count" id="orgTreeCount"></span>
                 </div>
-                <div class="tree-container" style="flex:1;overflow:auto;padding:0;margin:0;">
+                <div class="tree-wrap">
                     <ul id="orgTree" class="mini-tree" style="width:100%;height:100%;padding:0;margin:0;"
                         showTreeIcon="true" 
-                        showRootNode="false"
+                        showRootNode="true"
+                        resultAsTree="true"
                         idField="orgId"
                         expandOnLoad="true"
                         url="<%=path%>/orgManagerController/constructOrgTree"
                         onnodeselect="onOrgTreeSelect"
                         onload="onOrgTreeLoad">
-                    </ul>
-                </div>
-            </div>
-
-            <!-- 功能菜单树区域（占 60% 高度） -->
-            <div style="flex:6;display:flex;flex-direction:column;overflow:hidden;">
-                <div class="panel-title panel-title-top">
-                    <span>📋 功能菜单</span>
-                </div>
-                <div class="tree-container" style="flex:1;overflow:auto;padding:0;margin:0;">
-                    <ul id="menuTree" class="mini-tree" style="width:100%;height:100%;padding:0;margin:0;"
-                        showTreeIcon="true" 
-                        showRootNode="false"
-                        expandOnLoad="true"
-                        url="<%=path%>/moduleMenuController/obtainFunctionModuleList"
-                        onnodeselect="onMenuTreeSelect"
-                        onload="onMenuTreeLoad">
                     </ul>
                 </div>
             </div>
@@ -279,10 +300,11 @@ request.setAttribute("browserLang", browserLang);
         </div>
 
         <!-- ===== 底部区域 ===== -->
+        <!--
         <div region="south" height="25" showHeader="false" showSplit="false"
              bodyStyle="text-align:center;padding:4px 0;background:#f0f2f5;color:#999;font-size:12px;border-top:1px solid #e8e8e8;">
-            Copyright © 上海普加软件有限公司版权所有
         </div>
+        -->
     </div>
 
     <!-- ===== 隐藏域 ===== -->
@@ -318,6 +340,11 @@ request.setAttribute("browserLang", browserLang);
     var defaultPageSize = configFile.ap.others.pageSize || 25;
     var productionUnit = configFile.ap.others.productionUnit || 't/d';
     var showHelp = configFile.ap.others.showHelp !== false;
+
+    // ================================================================
+    // 新增：第一个叶子节点的ID（在 onMenuTreeLoad 中动态获取）
+    // ================================================================
+    var FIRST_LEAF_MODULE_ID = null;
 
     // ================================================================
     // 2. 顶部栏初始化
@@ -388,25 +415,40 @@ request.setAttribute("browserLang", browserLang);
 
     function onOrgTreeLoad(e) {
         var tree = e.sender;
-        // 如果数据包含"组织根节点"，跳过它直接显示子节点
+        // 跳过"组织根节点"
         var data = tree.getData();
-        if (data && data.length > 0 && data[0].text && data[0].text.indexOf('根') !== -1) {
-            tree.setData(data[0].children || []);
-        }
-        var root = tree.getRootNode();
-        if (root) {
-            tree.expandNode(root);
-            var count = tree.getNodes(root);
-            $('#orgTreeCount').text('共 ' + count.length + ' 个');
-        }
+        //if (data && data.length > 0 && data[0].text && data[0].text.indexOf('根') !== -1) {
+        //    tree.setData(data[0].children || []);
+        //}
+        //var root = tree.getRootNode();
+        //if (root) {
+        //    tree.expandNode(root);
+        //    // 使用 getList() 获取所有节点
+        //    var allNodes = tree.getList();
+        //   $('#orgTreeCount').text('共 ' + (allNodes ? allNodes.length : 0) + ' 个');
+        //}
     }
 
     // ================================================================
-    // 6. 功能菜单树选择
+    // 6. 功能菜单树选择（带防御性检查）
     // ================================================================
     function onMenuTreeSelect(e) {
+        var tree = e.sender;
         var node = e.node;
-        if (!node || !node.isLeaf) return;
+        
+        if (!node || !tree.isLeaf(node)) return;
+        
+        // ===== 检查 mainTabs 是否已初始化 =====
+        var tabs = mini.get('mainTabs');
+        if (!tabs) {
+            console.warn('mainTabs 尚未初始化，延迟重试...');
+            // 延迟重试
+            setTimeout(function() {
+                onMenuTreeSelect(e);
+            }, 500);
+            return;
+        }
+        
         var moduleId = node.id;
         var moduleCode = node.mdCode;
         var viewSrc = node.viewsrc;
@@ -418,17 +460,25 @@ request.setAttribute("browserLang", browserLang);
             return;
         }
 
-        var tabs = mini.get('mainTabs');
+        // ===== 将 ExtJS 视图类名映射为 MiniUI 模块路径 =====
+        var miniuiPath = convertExtToMiniuiPath(viewSrc);
+        if (!miniuiPath) {
+            // 如果还没有迁移，使用占位页面
+            miniuiPath = context + '/miniui-app/modules/under-construction.jsp';
+        }
+
         var existingTab = tabs.getTab(moduleId);
         if (existingTab) {
             tabs.activeTab(existingTab);
         } else {
+            // ===== 判断是否为第一个叶子节点（默认模块，不可关闭） =====
+            var isDefault = (FIRST_LEAF_MODULE_ID !== null && moduleId === FIRST_LEAF_MODULE_ID);
             var tab = {
                 name: moduleId,
                 title: title,
                 iconCls: iconCls,
-                closable: true,
-                body: '<iframe src="' + context + '/' + viewSrc + '" style="width:100%;height:100%;border:0;"></iframe>'
+                showCloseButton: !isDefault,
+                body: '<iframe src="' + miniuiPath + '?moduleId=' + moduleId + '" style="width:100%;height:100%;border:0;"></iframe>'
             };
             tabs.addTab(tab);
             tabs.activeTab(tab);
@@ -438,28 +488,40 @@ request.setAttribute("browserLang", browserLang);
         saveAccessModuleLog(moduleCode);
     }
 
+    // ================================================================
+    // 功能菜单树加载完成（延迟选中第一个叶子节点）
+    // ================================================================
     function onMenuTreeLoad(e) {
         var tree = e.sender;
-        // 如果数据包含虚拟根节点，跳过它
-        var data = tree.getData();
-        if (data && data.length > 0 && data[0].text && data[0].text.indexOf('功能导航') !== -1) {
-            tree.setData(data[0].children || []);
-        }
         var root = tree.getRootNode();
         if (root) {
             tree.expandNode(root);
-            var firstLeaf = findFirstLeaf(root);
+            
+            // 查找第一个叶子节点
+            var firstLeaf = findFirstLeaf(root, tree);
             if (firstLeaf) {
-                tree.selectNode(firstLeaf);
+                // 保存第一个叶子节点的 ID
+                FIRST_LEAF_MODULE_ID = firstLeaf.id;
+                console.log('第一个叶子节点 ID:', FIRST_LEAF_MODULE_ID, '名称:', firstLeaf.text);
+                
+                // 延迟选中，确保 mainTabs 已初始化
+                setTimeout(function() {
+                    tree.selectNode(firstLeaf);
+                    console.log('选中第一个叶子节点:', firstLeaf.text);
+                }, 300);
             }
         }
     }
 
-    function findFirstLeaf(node) {
-        if (node.isLeaf) return node;
-        if (node.children) {
+    // ================================================================
+    // 查找第一个叶子节点
+    // ================================================================
+    function findFirstLeaf(node, tree) {
+        if (!node) return null;
+        if (tree.isLeaf(node)) return node;
+        if (node.children && node.children.length > 0) {
             for (var i = 0; i < node.children.length; i++) {
-                var result = findFirstLeaf(node.children[i]);
+                var result = findFirstLeaf(node.children[i], tree);
                 if (result) return result;
             }
         }
@@ -632,6 +694,24 @@ request.setAttribute("browserLang", browserLang);
         else if (elem.mozCancelFullScreen) elem.mozCancelFullScreen();
         else if (elem.cancelFullScreen) elem.cancelFullScreen();
         else if (elem.exitFullscreen) elem.exitFullscreen();
+    }
+    
+    // ================================================================
+    // 16. 将 ExtJS 视图类名映射为 MiniUI 模块页面路径
+    // ================================================================
+    function convertExtToMiniuiPath(viewSrc) {
+        var mapping = {
+            // 实时监控模块
+            'AP.view.realTimeMonitoring.RealTimeMonitoringInfoView': 
+                context + '/miniui-app/modules/realTimeMonitoring/RealTimeMonitoringInfo.jsp',
+            // 后续添加其他模块
+            // 'AP.view.historyQuery.HistoryQueryInfoView': 
+            //     context + '/miniui-app/modules/historyQuery/HistoryQueryInfo.jsp',
+            // 'AP.view.alarmQuery.AlarmQueryInfoView': 
+            //     context + '/miniui-app/modules/alarmQuery/AlarmQueryInfo.jsp',
+            // ...
+        };
+        return mapping[viewSrc] || null;
     }
 
     console.log('MiniUI 主页面加载完成');

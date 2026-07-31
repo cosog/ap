@@ -45,9 +45,9 @@
                     var msg = (loginUserLanguageResource && loginUserLanguageResource.ajaxError) 
                         || '请求失败，请稍后重试';
                     if (typeof mini !== 'undefined' && mini.alert) {
-                        mini.alert(msg);
+//                        mini.alert(msg);
                     } else {
-                        alert(msg);
+//                        alert(msg);
                     }
                 }
             };
@@ -59,9 +59,9 @@
     // 4. 兼容 ExtJS 的 Message 风格（过渡用）
     window.miniAlert = function(msg, title) {
         if (typeof mini !== 'undefined' && mini.alert) {
-            mini.alert(msg, title || '提示');
+//            mini.alert(msg, title || '提示');
         } else {
-            alert(msg);
+//            alert(msg);
         }
     };
 

@@ -308,8 +308,8 @@ public class UserManagerService<T> extends BaseService<T> {
 					get_key = obj[0] + "";
 					get_val = obj[1]==null?"":(obj[1]+"");
 					if(StringManagerUtils.isNotNull(get_val)){
-						result_json.append("{boxkey:\"" + get_key + "\",");
-						result_json.append("boxval:\"" + get_val + "\"},");
+						result_json.append("{\"boxkey\":\"" + get_key + "\",");
+						result_json.append("\"boxval\":\"" + get_val + "\"},");
 					}
 				}
 				if (result_json.toString().endsWith(",")) {
@@ -332,8 +332,8 @@ public class UserManagerService<T> extends BaseService<T> {
 			Map.Entry<String, Code> entry = it.next();
 			Code c=entry.getValue();
 			if(StringManagerUtils.existOrNot(user.getLanguageList(), c.getItemvalue())){
-				result_json.append("{boxkey:\"" + c.getItemvalue() + "\",");
-				result_json.append("boxval:\"" + c.getItemname() + "\"},");
+				result_json.append("{\"boxkey\":\"" + c.getItemvalue() + "\",");
+				result_json.append("\"boxval\":\"" + c.getItemname() + "\"},");
 			}
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -352,8 +352,8 @@ public class UserManagerService<T> extends BaseService<T> {
 			Map.Entry<String, Code> entry = it.next();
 			Code c=entry.getValue();
 			if(StringManagerUtils.existOrNot(user.getLanguageList(), c.getItemvalue())){
-				result_json.append("{boxkey:\"" + c.getItemname() + "\",");
-				result_json.append("boxval:\"" + c.getItemname() + "\"},");
+				result_json.append("{\"boxkey\":\"" + c.getItemname() + "\",");
+				result_json.append("\"boxval\":\"" + c.getItemname() + "\"},");
 			}
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -749,7 +749,7 @@ public class UserManagerService<T> extends BaseService<T> {
 			try {
 				int totals=this.getTotalCountRows(sql);
 				List<?> list = this.findCallSql(finalsql);
-				result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+selectAll+"\"},");
+				result_json.append("{\"totals\":"+totals+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+selectAll+"\"},");
 				String get_key = "";
 				String get_val = "";
 				if (null != list && list.size() > 0) {
@@ -757,8 +757,8 @@ public class UserManagerService<T> extends BaseService<T> {
 						Object[] obj = (Object[]) o;
 						get_key = obj[0] + "";
 						get_val = (String) obj[1];
-						result_json.append("{boxkey:\"" + get_key + "\",");
-						result_json.append("boxval:\"" + get_val + "\"},");
+						result_json.append("{\"boxkey\":\"" + get_key + "\",");
+						result_json.append("\"boxval\":\"" + get_val + "\"},");
 					}
 					if (result_json.toString().endsWith(",")) {
 						result_json.deleteCharAt(result_json.length() - 1);
@@ -769,11 +769,11 @@ public class UserManagerService<T> extends BaseService<T> {
 			} catch (Exception e) {
 				e.printStackTrace();
 				result_json = new StringBuffer();
-				result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\""+selectAll+"\"}]}");
+				result_json.append("{\"totals\":"+0+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+selectAll+"\"}]}");
 			}
 		}else{
 			result_json = new StringBuffer();
-			result_json.append("{\"totals\":"+0+",\"list\":[{boxkey:\"\",boxval:\""+selectAll+"\"}]}");
+			result_json.append("{\"totals\":"+0+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+selectAll+"\"}]}");
 		}
 		
 		

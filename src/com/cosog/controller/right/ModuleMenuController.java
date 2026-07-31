@@ -188,6 +188,36 @@ public class ModuleMenuController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/treeListTest")
+	public String treeListTest() throws Exception {
+		// TODO Auto-generated method stub
+		Integer userNo = 1;
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		String json = "["
+				+ "{\"name\":\"行政部\", \"id\":\"xz\", expanded: true},"
+				+ "{\"name\":\"人事部\", \"id\":\"rs\", \"pid\": \"xz\"},"
+				+ "{\"name\":\"财务部\",\"id\":\"cw\", \"pid\": \"xz\"},"
+				+ "{\"name\":\"业务部\", \"id\":\"yw\", expanded: true},"
+				+ "{\"name\":\"市场销售部\", \"id\":\"sc\", \"pid\": \"yw\"},"
+				+ "{\"name\":\"技术部\", \"id\":\"js\", \"pid\": \"yw\"}"
+				+ "]";
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.debug("obtainFunctionModuleList json==" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/obtainFunctionModuleList2")
 	public String obtainFunctionModuleList2() throws Exception {
 		// TODO Auto-generated method stub

@@ -164,9 +164,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		AlarmShowStyle alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"item\",children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"count\",children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"item\",\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"count\",\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":4,");
@@ -259,22 +259,22 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		result_json.append("\"totalRoot\":[");
 		result_json.append("{\"id\":1,");
-		result_json.append("\"item\":'"+languageResourceMap.get("normal")+"',");
+		result_json.append("\"item\":\""+languageResourceMap.get("normal")+"\",");
 		result_json.append("\"level\":0,");
 		result_json.append("\"count\":"+normalDeviceCount+"},");
 		
 		result_json.append("{\"id\":2,");
-		result_json.append("\"item\":'"+languageResourceMap.get("alarmLevel1")+"',");
+		result_json.append("\"item\":\""+languageResourceMap.get("alarmLevel1")+"\",");
 		result_json.append("\"level\":100,");
 		result_json.append("\"count\":"+firstLevelCount+"},");
 		
 		result_json.append("{\"id\":3,");
-		result_json.append("\"item\":'"+languageResourceMap.get("alarmLevel2")+"',");
+		result_json.append("\"item\":\""+languageResourceMap.get("alarmLevel2")+"\",");
 		result_json.append("\"level\":200,");
 		result_json.append("\"count\":"+secondLevelCount+"},");
 		
 		result_json.append("{\"id\":4,");
-		result_json.append("\"item\":'"+languageResourceMap.get("alarmLevel3")+"',");
+		result_json.append("\"item\":\""+languageResourceMap.get("alarmLevel3")+"\",");
 		result_json.append("\"level\":300,");
 		result_json.append("\"count\":"+thirdLevelCount+"}");
 		result_json.append("]");
@@ -295,9 +295,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			
 			String columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"item\",children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"count\",children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"item\",\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"count\",\"children\":[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalCount\":3,");
@@ -352,22 +352,22 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			total=online+goOnline+offline;
 			result_json.append("\"totalRoot\":[");
 			result_json.append("{\"id\":1,");
-			result_json.append("\"item\":'"+languageResourceMap.get("all")+"',");
+			result_json.append("\"item\":\""+languageResourceMap.get("all")+"\",");
 			result_json.append("\"itemCode\":\"all\",");
 			result_json.append("\"count\":"+total+"},");
 			
 			result_json.append("{\"id\":2,");
-			result_json.append("\"item\":'"+languageResourceMap.get("online")+"',");
+			result_json.append("\"item\":\""+languageResourceMap.get("online")+"\",");
 			result_json.append("\"itemCode\":\"online\",");
 			result_json.append("\"count\":"+online+"},");
 			
 			result_json.append("{\"id\":3,");
-			result_json.append("\"item\":'"+languageResourceMap.get("goOnline")+"',");
+			result_json.append("\"item\":\""+languageResourceMap.get("goOnline")+"\",");
 			result_json.append("\"itemCode\":\"goOnline\",");
 			result_json.append("\"count\":"+goOnline+"},");
 			
 			result_json.append("{\"id\":4,");
-			result_json.append("\"item\":'"+languageResourceMap.get("offline")+"',");
+			result_json.append("\"item\":\""+languageResourceMap.get("offline")+"\",");
 			result_json.append("\"itemCode\":\"offline\",");
 			result_json.append("\"count\":"+offline+"}");
 			result_json.append("]");
@@ -392,9 +392,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			alarmShowStyle=MemoryDataManagerTask.getAlarmShowStyle();
 			deviceList =MemoryDataManagerTask.getDeviceInfoByOrgIdArr(orgId.split(","));
 			String columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"item\",children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"count\",children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"item\",\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"count\",\"children\":[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalCount\":4,");
@@ -461,32 +461,32 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			total=run+stop+noData+offline;
 			result_json.append("\"totalRoot\":[");
 			result_json.append("{\"id\":1,");
-			result_json.append("\"item\":'"+languageResourceMap.get("all")+"',");
+			result_json.append("\"item\":\""+languageResourceMap.get("all")+"\",");
 			result_json.append("\"itemCode\":\"all\",");
 			result_json.append("\"count\":"+total+"},");
 			
 			result_json.append("{\"id\":2,");
-			result_json.append("\"item\":'"+languageResourceMap.get("run")+"',");
+			result_json.append("\"item\":\""+languageResourceMap.get("run")+"\",");
 			result_json.append("\"itemCode\":\"run\",");
 			result_json.append("\"count\":"+run+"},");
 			
 			result_json.append("{\"id\":3,");
-			result_json.append("\"item\":'"+languageResourceMap.get("stop")+"',");
+			result_json.append("\"item\":\""+languageResourceMap.get("stop")+"\",");
 			result_json.append("\"itemCode\":\"stop\",");
 			result_json.append("\"count\":"+stop+"},");
 			
 			result_json.append("{\"id\":4,");
-			result_json.append("\"item\":'"+languageResourceMap.get("emptyMsg")+"',");
+			result_json.append("\"item\":\""+languageResourceMap.get("emptyMsg")+"\",");
 			result_json.append("\"itemCode\":\"noData\",");
 			result_json.append("\"count\":"+noData+"},");
 			
 			result_json.append("{\"id\":5,");
-			result_json.append("\"item\":'"+languageResourceMap.get("goOnline")+"',");
+			result_json.append("\"item\":\""+languageResourceMap.get("goOnline")+"\",");
 			result_json.append("\"itemCode\":\"goOnline\",");
 			result_json.append("\"count\":"+goOnline+"},");
 			
 			result_json.append("{\"id\":6,");
-			result_json.append("\"item\":'"+languageResourceMap.get("offline")+"',");
+			result_json.append("\"item\":\""+languageResourceMap.get("offline")+"\",");
 			result_json.append("\"itemCode\":\"offline\",");
 			result_json.append("\"count\":"+offline+"}");
 			result_json.append("]");
@@ -522,9 +522,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			List<?> list = this.findCallSql(sql);
 			String columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"item\",children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"count\",children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"item\",\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"count\",\"children\":[] }"
 					+ "]";
 			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 			result_json.append("\"totalCount\":"+list.size()+",");
@@ -3471,8 +3471,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			String columns = "[";
 			for(int i=1;i<=items;i++){
-				columns+= "{ \"header\":\"名称\",\"dataIndex\":\"name"+i+"\",children:[] },"
-						+ "{ \"header\":\"变量\",\"dataIndex\":\"value"+i+"\",children:[] }";
+				columns+= "{ \"header\":\"名称\",\"dataIndex\":\"name"+i+"\",\"children\":[] },"
+						+ "{ \"header\":\"变量\",\"dataIndex\":\"value"+i+"\",\"children\":[] }";
 				if(i<items){
 					columns+=",";
 				}

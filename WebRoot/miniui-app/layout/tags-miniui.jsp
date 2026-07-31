@@ -12,7 +12,12 @@ if(browserLang == null) browserLang = "zh_CN";
 <!-- ============================================================== -->
 
 <!-- metro-blue 主题 -->
+<link rel="stylesheet" href="<%=path%>/scripts/miniui/themes/default/miniui.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/miniui/font-awesome/css/font-awesome.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/miniui/themes/default/flatstyle.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/miniui/themes/icons.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/scripts/miniui/themes/metro-blue/skin.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/styles/icon.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 
 <!-- ============================================================== -->
 <!--  JavaScript 库                                                  -->

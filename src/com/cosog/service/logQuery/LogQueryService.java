@@ -336,13 +336,13 @@ public class LogQueryService<T> extends BaseService<T>  {
 	public String loadSystemLogActionComboxList(String language) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("SYSTEMACTION",language);
-		result_json.append("{\"totals\":"+(codeMap.size()+1)+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+		result_json.append("{\"totals\":"+(codeMap.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
 		while(it.hasNext()){
 			Map.Entry<String, Code> entry = it.next();
 			Code c=entry.getValue();
-			result_json.append("{boxkey:\"" + c.getItemvalue() + "\",");
-			result_json.append("boxval:\"" + c.getItemname() + "\"},");
+			result_json.append("{\"boxkey\":\"" + c.getItemvalue() + "\",");
+			result_json.append("\"boxval\":\"" + c.getItemname() + "\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);

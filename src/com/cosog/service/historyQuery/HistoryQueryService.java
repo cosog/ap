@@ -12293,8 +12293,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		result_json.append("{\"totals\":"+(workTypeList.size()+1)+",\"list\":[");		
 		for(int i=0;i<workTypeList.size();i++){
-			result_json.append("{boxkey:\"" + workTypeList.get(i).getResultCode() + "\",");
-			result_json.append("boxval:\"" + workTypeList.get(i).getResultName()+"("+workTypeCount.get(i)+")" + "\"},");
+			result_json.append("{\"boxkey\":\"" + workTypeList.get(i).getResultCode() + "\",");
+			result_json.append("\"boxval\":\"" + workTypeList.get(i).getResultName()+"("+workTypeCount.get(i)+")" + "\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

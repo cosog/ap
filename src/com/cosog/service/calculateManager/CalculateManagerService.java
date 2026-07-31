@@ -1029,13 +1029,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	public String getCalculateStatusList(String orgId, String deviceName, String calculateType,String startDate,String endDate,int timeType,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("RESULTSTATUS",language);
-		result_json.append("{\"totals\":"+(codeMap.size()+1)+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");
+		result_json.append("{\"totals\":"+(codeMap.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");
 		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
 		while(it.hasNext()){
 			Map.Entry<String, Code> entry = it.next();
 			Code c=entry.getValue();
-			result_json.append(",{boxkey:\"" + c.getItemvalue() + "\",");
-			result_json.append("boxval:\"" + c.getItemname() + "\"}");
+			result_json.append(",{\"boxkey\":\"" + c.getItemvalue() + "\",");
+			result_json.append("\"boxval\":\"" + c.getItemname() + "\"}");
 		}
 		result_json.append("]}");
 		
@@ -1070,10 +1070,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				workTypeCount.add(StringManagerUtils.stringToInteger(obj[2]+""));
 			}
 		}
-		result_json.append("{\"totals\":"+(workTypeList.size()+1)+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");		
+		result_json.append("{\"totals\":"+(workTypeList.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");		
 		for(int i=0;i<workTypeList.size();i++){
-			result_json.append(",{boxkey:\"" + workTypeList.get(i).getResultCode() + "\",");
-			result_json.append("boxval:\"" + workTypeList.get(i).getResultName()+"("+workTypeCount.get(i)+")" + "\"}");
+			result_json.append(",{\"boxkey\":\"" + workTypeList.get(i).getResultCode() + "\",");
+			result_json.append("\"boxval\":\"" + workTypeList.get(i).getResultName()+"("+workTypeCount.get(i)+")" + "\"}");
 		}
 		result_json.append("]}");
 		return result_json.toString();

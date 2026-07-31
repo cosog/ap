@@ -6467,8 +6467,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						&&StringManagerUtils.existOrNot(protocolArr, modbusProtocolConfig.getProtocol().get(i).getCode())
 						&&modbusProtocolConfig.getProtocol().get(i).getLanguage()==user.getLanguage()
 						){
-					result_json.append("{boxkey:\"" + modbusProtocolConfig.getProtocol().get(i).getCode() + "\",");
-					result_json.append("boxval:\"" + modbusProtocolConfig.getProtocol().get(i).getName() + "\"},");
+					result_json.append("{\"boxkey\":\"" + modbusProtocolConfig.getProtocol().get(i).getCode() + "\",");
+					result_json.append("\"boxval\":\"" + modbusProtocolConfig.getProtocol().get(i).getName() + "\"},");
 				}
 			}
 		}
@@ -6488,8 +6488,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			//排序
 			Collections.sort(reportTemplate.getClasses0().getSingleWellRangeReportTemplate());
 			for(int i=0;i<reportTemplate.getClasses0().getSingleWellRangeReportTemplate().size();i++){
-				result_json.append("{boxkey:\"" + reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateCode() + "\",");
-				result_json.append("boxval:\"" + reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateName() + "\"},");
+				result_json.append("{\"boxkey\":\"" + reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateCode() + "\",");
+				result_json.append("\"boxval\":\"" + reportTemplate.getClasses0().getSingleWellRangeReportTemplate().get(i).getTemplateName() + "\"},");
 			}
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -6506,8 +6506,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{\"totals\":"+list.size()+",\"list\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
-			result_json.append("{boxkey:\"" + obj[0] + "\",");
-			result_json.append("boxval:\"" + obj[1] + "\"},");
+			result_json.append("{\"boxkey\":\"" + obj[0] + "\",");
+			result_json.append("\"boxval\":\"" + obj[1] + "\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -6588,8 +6588,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{\"totals\":"+list.size()+",\"list\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			result_json.append("{boxkey:\"" + obj[0] + "\",");
-			result_json.append("boxval:\"" + obj[1] + "\"},");
+			result_json.append("{\"boxkey\":\"" + obj[0] + "\",");
+			result_json.append("\"boxval\":\"" + obj[1] + "\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -14304,8 +14304,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		result_json.append("{\"totals\":"+list.size()+",\"list\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
-			result_json.append("{boxkey:\"" + obj[0] + "\",");
-			result_json.append("boxval:\"" + obj[1] + "\"},");
+			result_json.append("{\"boxkey\":\"" + obj[0] + "\",");
+			result_json.append("\"boxval\":\"" + obj[1] + "\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);

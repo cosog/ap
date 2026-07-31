@@ -143,7 +143,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(finalsql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+			result_json.append("{\"totals\":"+totals+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 			String get_key = "";
 			String get_val = "";
 			if (null != list && list.size() > 0) {
@@ -151,8 +151,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					Object[] obj = (Object[]) o;
 					get_key = obj[0] + "";
 					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
+					result_json.append("{\"boxkey\":\"" + get_key + "\",");
+					result_json.append("\"boxval\":\"" + get_val + "\"},");
 				}
 				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);
@@ -208,7 +208,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(finalsql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+			result_json.append("{\"totals\":"+totals+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 			String get_key = "";
 			String get_val = "";
 			if (null != list && list.size() > 0) {
@@ -216,8 +216,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					Object[] obj = (Object[]) o;
 					get_key = obj[0] + "";
 					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
+					result_json.append("{\"boxkey\":\"" + get_key + "\",");
+					result_json.append("\"boxval\":\"" + get_val + "\"},");
 				}
 				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);
@@ -240,15 +240,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		sql += " order by t.manufacturer";
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"totals\":"+list.size()+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+		result_json.append("{\"totals\":"+list.size()+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 		String get_key = "";
 		String get_val = "";
 		if (null != list && list.size() > 0) {
 			for (Object o : list) {
 				get_key = o.toString();
 				get_val = get_key;
-				result_json.append("{boxkey:\"" + get_key + "\",");
-				result_json.append("boxval:\"" + get_val + "\"},");
+				result_json.append("{\"boxkey\":\"" + get_key + "\",");
+				result_json.append("\"boxval\":\"" + get_val + "\"},");
 			}
 			if (result_json.toString().endsWith(",")) {
 				result_json.deleteCharAt(result_json.length() - 1);
@@ -352,15 +352,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		sql += " order by t.manufacturer,t.model";
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{\"totals\":"+list.size()+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+		result_json.append("{\"totals\":"+list.size()+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 		String get_key = "";
 		String get_val = "";
 		if (null != list && list.size() > 0) {
 			for (Object o : list) {
 				get_key = o.toString();
 				get_val = get_key;
-				result_json.append("{boxkey:\"" + get_key + "\",");
-				result_json.append("boxval:\"" + get_val + "\"},");
+				result_json.append("{\"boxkey\":\"" + get_key + "\",");
+				result_json.append("\"boxval\":\"" + get_val + "\"},");
 			}
 			if (result_json.toString().endsWith(",")) {
 				result_json.deleteCharAt(result_json.length() - 1);
@@ -703,7 +703,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+			result_json.append("{\"totals\":"+totals+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 			String get_key = "";
 			String get_val = "";
 			if (null != list && list.size() > 0) {
@@ -711,8 +711,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					Object[] obj = (Object[]) o;
 					get_key = obj[0] + "";
 					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
+					result_json.append("{\"boxkey\":\"" + get_key + "\",");
+					result_json.append("\"boxval\":\"" + get_val + "\"},");
 				}
 				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);
@@ -735,7 +735,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+			result_json.append("{\"totals\":"+totals+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 			String get_key = "";
 			String get_val = "";
 			if (null != list && list.size() > 0) {
@@ -743,8 +743,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					Object[] obj = (Object[]) o;
 					get_key = obj[0] + "";
 					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
+					result_json.append("{\"boxkey\":\"" + get_key + "\",");
+					result_json.append("\"boxval\":\"" + get_val + "\"},");
 				}
 				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);
@@ -761,13 +761,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String loadCodeComboxList(String itemCode,String language) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap(itemCode.toUpperCase(),language);
-		result_json.append("{\"totals\":"+(codeMap.size()+1)+",\"list\":[{boxkey:\"\",boxval:\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+		result_json.append("{\"totals\":"+(codeMap.size()+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
 		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
 		while(it.hasNext()){
 			Map.Entry<String, Code> entry = it.next();
 			Code c=entry.getValue();
-			result_json.append("{boxkey:\"" + c.getItemvalue() + "\",");
-			result_json.append("boxval:\"" + c.getItemname() + "\"},");
+			result_json.append("{\"boxkey\":\"" + c.getItemvalue() + "\",");
+			result_json.append("\"boxval\":\"" + c.getItemname() + "\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -785,8 +785,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		while(it.hasNext()){
 			Map.Entry<String, Code> entry = it.next();
 			Code c=entry.getValue();
-			result_json.append("{boxkey:\"" + c.getItemvalue() + "\",");
-			result_json.append("boxval:\"" + c.getItemname() + "\"},");
+			result_json.append("{\"boxkey\":\"" + c.getItemvalue() + "\",");
+			result_json.append("\"boxval\":\"" + c.getItemname() + "\"},");
 			
 		}
 		if (result_json.toString().endsWith(",")) {

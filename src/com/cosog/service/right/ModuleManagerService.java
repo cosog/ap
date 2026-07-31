@@ -392,8 +392,8 @@ public class ModuleManagerService<T> extends BaseService<T> {
 			Code c=entry.getValue();
 			String get_key = c.getItemvalue()+"";
 			String get_val = c.getItemname();
-			result_json.append("{boxkey:\"" + get_key + "\",");
-			result_json.append("boxval:\"" + get_val + "\"},");
+			result_json.append("{\"boxkey\":\"" + get_key + "\",");
+			result_json.append("\"boxval\":\"" + get_val + "\"},");
 		}
 		if (result_json.toString().endsWith(",")) {
 			result_json.deleteCharAt(result_json.length() - 1);

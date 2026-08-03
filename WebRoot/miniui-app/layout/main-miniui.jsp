@@ -66,10 +66,36 @@ request.setAttribute("browserLang", browserLang);
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="renderer" content="webkit">
 
-    <!-- ===== 动态引入 MiniUI 资源 ===== -->
+    <!-- ★★★ 第一步：提前定义所有全局变量（供 miniui-commutils.js 等使用） ★★★ -->
+    <script>
+        // ================================================================
+        // 全局变量（必须在使用它们之前定义）
+        // ================================================================
+        var context = '<%=path%>';
+        var user_ = '<%=userLoginNo%>';
+        var user_Type = '<%=userLoginType%>';
+        var userOrg_Ids = '<%=userLoginOrgIds%>';
+        var userOrg_Names = "<%=userLoginOrgNames%>";
+        var loginUserRoleLevel = <%=loginUserRoleLevel%>;
+        var loginUserLanguage = '<%=loginUserLanguage%>';
+        var loginUserLanguageValue = <%=loginUserLanguageValue%>;
+        var loginUserLanguageList = JSON.parse('<%=loginUserLanguageListJson%>');
+        var loginUserLanguageResource = JSON.parse('<%= loginUserLanguageResource.replace("'", "\\'") %>');
+        var loginUserLanguageResourceFirstLower = JSON.parse('<%= loginUserLanguageResourceFirstLower.replace("'", "\\'") %>');
+        var configFile = JSON.parse('<%= configFileJson.replace("'", "\\'") %>');
+        var tabInfo = JSON.parse('<%= tabInfoJson.replace("'", "\\'") %>');
+        var defaultPageSize = configFile.ap.others.pageSize || 25;
+        var productionUnit = configFile.ap.others.productionUnit;
+        var showHelp = configFile.ap.others.showHelp !== false;
+        // 新增：第一个叶子节点的ID（在 onMenuTreeLoad 中动态获取）
+        var FIRST_LEAF_MODULE_ID = null;
+    </script>
+
+    <!-- ===== 第二步：动态引入 MiniUI 资源（包含 miniui-commutils.js） ===== -->
     <jsp:include page="./tags-miniui.jsp" flush="true" />
 
     <style>
+        /* ... 样式保持不变 ... */
         html, body {
             margin: 0;
             padding: 0;
@@ -78,8 +104,6 @@ request.setAttribute("browserLang", browserLang);
             overflow: hidden;
             font-family: "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
         }
-
-        /* 顶部栏 */
         .app-header {
             background: linear-gradient(135deg, #1a3a5c 0%, #2d6a9f 100%);
             height: 60px;
@@ -124,8 +148,6 @@ request.setAttribute("browserLang", browserLang);
             color: #ffd700;
             font-weight: bold;
         }
-
-        /* 树样式 */
         .mini-tree {
             background: transparent;
         }
@@ -138,8 +160,6 @@ request.setAttribute("browserLang", browserLang);
         .mini-tree .mini-tree-node {
             padding: 2px 0;
         }
-
-        /* 加载提示 */
         #loading_div_id {
             position: absolute;
             left: 40%;
@@ -159,8 +179,6 @@ request.setAttribute("browserLang", browserLang);
         #loading_div_id .loading-indicator img {
             margin-right: 12px;
         }
-
-        /* 左侧面板标题 */
         .panel-title {
             padding: 6px 12px 4px 12px;
             font-weight: bold;
@@ -182,8 +200,6 @@ request.setAttribute("browserLang", browserLang);
             font-size: 12px;
             color: #999;
         }
-
-        /* 树容器 - 无多余边距 */
         .tree-wrap {
             flex: 1;
             overflow: auto;
@@ -194,7 +210,6 @@ request.setAttribute("browserLang", browserLang);
             padding: 0;
             margin: 0;
         }
-        /* 左侧区域 flex 布局 */
         .west-panel {
             padding: 0;
             background: #f5f7fa;
@@ -248,12 +263,11 @@ request.setAttribute("browserLang", browserLang);
             </div>
         </div>
 
-        <!-- ===== 左侧区域：功能菜单树 (50%) + 组织树 (50%) ===== -->
+        <!-- ===== 左侧区域 ===== -->
         <div region="west" width="250" minWidth="180" maxWidth="400"
              showSplitIcon="true" title="导航"
              bodyStyle="padding:0;background:#f5f7fa;border-right:1px solid #e8e8e8;display:flex;flex-direction:column;">
 
-            <!-- 功能菜单树区域（50% 高度） -->
             <div class="west-section" style="flex:1;">
                 <div class="panel-title panel-title-top">
                     <span>📋 功能菜单</span>
@@ -271,7 +285,6 @@ request.setAttribute("browserLang", browserLang);
                 </div>
             </div>
 
-            <!-- 组织树区域（50% 高度） -->
             <div class="west-section" style="flex:1;">
                 <div class="panel-title panel-title-border">
                     <span>📁 组织机构</span>
@@ -298,13 +311,6 @@ request.setAttribute("browserLang", browserLang);
                  activeIndex="0" onactivechanged="onTabActiveChanged">
             </div>
         </div>
-
-        <!-- ===== 底部区域 ===== -->
-        <!--
-        <div region="south" height="25" showHeader="false" showSplit="false"
-             bodyStyle="text-align:center;padding:4px 0;background:#f0f2f5;color:#999;font-size:12px;border-top:1px solid #e8e8e8;">
-        </div>
-        -->
     </div>
 
     <!-- ===== 隐藏域 ===== -->
@@ -318,36 +324,12 @@ request.setAttribute("browserLang", browserLang);
     <input id="tabNums_Id" class="mini-hidden" />
 
     <!-- ================================================================ -->
-    <!-- 主 JavaScript                                                   -->
+    <!-- 主 JavaScript（与 DOM 相关的初始化，保留在底部）               -->
     <!-- ================================================================ -->
     <script>
     // ================================================================
-    // 1. 全局变量
-    // ================================================================
-    var context = '<%=path%>';
-    var user_ = '<%=userLoginNo%>';
-    var user_Type = '<%=userLoginType%>';
-    var userOrg_Ids = '<%=userLoginOrgIds%>';
-    var userOrg_Names = "<%=userLoginOrgNames%>";
-    var loginUserRoleLevel = <%=loginUserRoleLevel%>;
-    var loginUserLanguage = '<%=loginUserLanguage%>';
-    var loginUserLanguageValue = <%=loginUserLanguageValue%>;
-    var loginUserLanguageList = JSON.parse('<%=loginUserLanguageListJson%>');
-    var loginUserLanguageResource = JSON.parse('<%= loginUserLanguageResource.replace("'", "\\'") %>');
-    var loginUserLanguageResourceFirstLower = JSON.parse('<%= loginUserLanguageResourceFirstLower.replace("'", "\\'") %>');
-    var configFile = JSON.parse('<%= configFileJson.replace("'", "\\'") %>');
-    var tabInfo = JSON.parse('<%= tabInfoJson.replace("'", "\\'") %>');
-    var defaultPageSize = configFile.ap.others.pageSize || 25;
-    var productionUnit = configFile.ap.others.productionUnit || 't/d';
-    var showHelp = configFile.ap.others.showHelp !== false;
-
-    // ================================================================
-    // 新增：第一个叶子节点的ID（在 onMenuTreeLoad 中动态获取）
-    // ================================================================
-    var FIRST_LEAF_MODULE_ID = null;
-
-    // ================================================================
-    // 2. 顶部栏初始化
+    // 顶部栏初始化、事件绑定、WebSocket 等（依赖 DOM 元素）
+    // 这些函数现在可以使用上面定义的全局变量（如 loginUserLanguageResource）
     // ================================================================
     function initBannerDisplayInformation() {
         var oem = configFile.ap.oem || {};
@@ -375,9 +357,6 @@ request.setAttribute("browserLang", browserLang);
         initResourceMonitor();
     }
 
-    // ================================================================
-    // 3. 语言切换
-    // ================================================================
     function switchLanguage(languageValue) {
         if (parseInt(languageValue) !== parseInt(loginUserLanguageValue)) {
             $.ajax({
@@ -390,9 +369,6 @@ request.setAttribute("browserLang", browserLang);
         }
     }
 
-    // ================================================================
-    // 4. 资源监测
-    // ================================================================
     function initResourceMonitor() {
         var container = $('#resourceMonitorContainer');
         if (container.length) {
@@ -400,9 +376,6 @@ request.setAttribute("browserLang", browserLang);
         }
     }
 
-    // ================================================================
-    // 5. 组织树选择
-    // ================================================================
     function onOrgTreeSelect(e) {
         var node = e.node;
         if (!node) return;
@@ -415,40 +388,19 @@ request.setAttribute("browserLang", browserLang);
 
     function onOrgTreeLoad(e) {
         var tree = e.sender;
-        // 跳过"组织根节点"
         var data = tree.getData();
-        //if (data && data.length > 0 && data[0].text && data[0].text.indexOf('根') !== -1) {
-        //    tree.setData(data[0].children || []);
-        //}
-        //var root = tree.getRootNode();
-        //if (root) {
-        //    tree.expandNode(root);
-        //    // 使用 getList() 获取所有节点
-        //    var allNodes = tree.getList();
-        //   $('#orgTreeCount').text('共 ' + (allNodes ? allNodes.length : 0) + ' 个');
-        //}
+        // 可选择性操作
     }
 
-    // ================================================================
-    // 6. 功能菜单树选择（带防御性检查）
-    // ================================================================
     function onMenuTreeSelect(e) {
         var tree = e.sender;
         var node = e.node;
-        
         if (!node || !tree.isLeaf(node)) return;
-        
-        // ===== 检查 mainTabs 是否已初始化 =====
         var tabs = mini.get('mainTabs');
         if (!tabs) {
-            console.warn('mainTabs 尚未初始化，延迟重试...');
-            // 延迟重试
-            setTimeout(function() {
-                onMenuTreeSelect(e);
-            }, 500);
+            setTimeout(function() { onMenuTreeSelect(e); }, 500);
             return;
         }
-        
         var moduleId = node.id;
         var moduleCode = node.mdCode;
         var viewSrc = node.viewsrc;
@@ -460,10 +412,8 @@ request.setAttribute("browserLang", browserLang);
             return;
         }
 
-        // ===== 将 ExtJS 视图类名映射为 MiniUI 模块路径 =====
         var miniuiPath = convertExtToMiniuiPath(viewSrc);
         if (!miniuiPath) {
-            // 如果还没有迁移，使用占位页面
             miniuiPath = context + '/miniui-app/modules/under-construction.jsp';
         }
 
@@ -471,7 +421,6 @@ request.setAttribute("browserLang", browserLang);
         if (existingTab) {
             tabs.activeTab(existingTab);
         } else {
-            // ===== 判断是否为第一个叶子节点（默认模块，不可关闭） =====
             var isDefault = (FIRST_LEAF_MODULE_ID !== null && moduleId === FIRST_LEAF_MODULE_ID);
             var tab = {
                 name: moduleId,
@@ -483,39 +432,25 @@ request.setAttribute("browserLang", browserLang);
             tabs.addTab(tab);
             tabs.activeTab(tab);
         }
-
         mini.get('topModule_Id').setValue(moduleCode);
         saveAccessModuleLog(moduleCode);
     }
 
-    // ================================================================
-    // 功能菜单树加载完成（延迟选中第一个叶子节点）
-    // ================================================================
     function onMenuTreeLoad(e) {
         var tree = e.sender;
         var root = tree.getRootNode();
         if (root) {
             tree.expandNode(root);
-            
-            // 查找第一个叶子节点
             var firstLeaf = findFirstLeaf(root, tree);
             if (firstLeaf) {
-                // 保存第一个叶子节点的 ID
                 FIRST_LEAF_MODULE_ID = firstLeaf.id;
-                console.log('第一个叶子节点 ID:', FIRST_LEAF_MODULE_ID, '名称:', firstLeaf.text);
-                
-                // 延迟选中，确保 mainTabs 已初始化
                 setTimeout(function() {
                     tree.selectNode(firstLeaf);
-                    console.log('选中第一个叶子节点:', firstLeaf.text);
                 }, 300);
             }
         }
     }
 
-    // ================================================================
-    // 查找第一个叶子节点
-    // ================================================================
     function findFirstLeaf(node, tree) {
         if (!node) return null;
         if (tree.isLeaf(node)) return node;
@@ -528,18 +463,12 @@ request.setAttribute("browserLang", browserLang);
         return null;
     }
 
-    // ================================================================
-    // 7. Tab 切换事件
-    // ================================================================
     function onTabActiveChanged(e) {
         var tab = e.tab;
         if (!tab) return;
         refreshCurrentModule();
     }
 
-    // ================================================================
-    // 8. 刷新当前模块
-    // ================================================================
     function refreshCurrentModule() {
         var moduleCode = mini.get('topModule_Id').getValue();
         if (!moduleCode) return;
@@ -555,9 +484,6 @@ request.setAttribute("browserLang", browserLang);
         }
     }
 
-    // ================================================================
-    // 9. 保存模块访问日志
-    // ================================================================
     function saveAccessModuleLog(moduleCode) {
         var tabs = mini.get('mainTabs');
         var activeTab = tabs.getActiveTab();
@@ -571,9 +497,6 @@ request.setAttribute("browserLang", browserLang);
         });
     }
 
-    // ================================================================
-    // 10. 退出登录
-    // ================================================================
     function userLoginOut() {
         miniConfirm(loginUserLanguageResource.exitConfirm || '确定要退出吗？', function(ok) {
             if (ok) {
@@ -587,9 +510,6 @@ request.setAttribute("browserLang", browserLang);
         }, loginUserLanguageResource.tip || '提示');
     }
 
-    // ================================================================
-    // 11. 帮助文档窗口
-    // ================================================================
     function showHelpDocumentWinFn() {
         if (!showHelp) return;
         var tabs = mini.get('mainTabs');
@@ -608,11 +528,7 @@ request.setAttribute("browserLang", browserLang);
         }
     }
 
-    // ================================================================
-    // 12. WebSocket
-    // ================================================================
     var websocketClient = null;
-
     function initWebSocket() {
         var baseUrl = getBaseUrl().replace('https', 'ws').replace('http', 'ws');
         var moduleCode = 'ApWebSocketClient_' + user_;
@@ -639,9 +555,6 @@ request.setAttribute("browserLang", browserLang);
         }
     }
 
-    // ================================================================
-    // 13. websocketOnMessage
-    // ================================================================
     function websocketOnMessage(evt) {
         try {
             var data = JSON.parse(evt.data);
@@ -649,7 +562,6 @@ request.setAttribute("browserLang", browserLang);
             var activeTab = tabs.getActiveTab();
             if (!activeTab) return;
             var activeId = activeTab.name;
-
             if (data.functionCode && data.functionCode.toUpperCase() === 'deviceRealTimeMonitoringData'.toUpperCase()) {
                 if (activeId === 'DeviceRealTimeMonitoring') {
                     console.log('实时数据推送:', data);
@@ -660,28 +572,6 @@ request.setAttribute("browserLang", browserLang);
         }
     }
 
-    // ================================================================
-    // 14. 页面初始化
-    // ================================================================
-    $(document).ready(function() {
-        mini.parse();
-        initBannerDisplayInformation();
-        $('#loading_div_id').hide();
-        initWebSocket();
-
-        $(window).resize(function() {
-            $('.highcharts-container').each(function() {
-                try {
-                    var chart = $(this).highcharts();
-                    if (chart) chart.reflow();
-                } catch(e) {}
-            });
-        });
-    });
-
-    // ================================================================
-    // 15. 全屏相关
-    // ================================================================
     function fullscreen() {
         var el = document.documentElement;
         var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
@@ -695,24 +585,30 @@ request.setAttribute("browserLang", browserLang);
         else if (elem.cancelFullScreen) elem.cancelFullScreen();
         else if (elem.exitFullscreen) elem.exitFullscreen();
     }
-    
-    // ================================================================
-    // 16. 将 ExtJS 视图类名映射为 MiniUI 模块页面路径
-    // ================================================================
+
     function convertExtToMiniuiPath(viewSrc) {
         var mapping = {
-            // 实时监控模块
             'AP.view.realTimeMonitoring.RealTimeMonitoringInfoView': 
                 context + '/miniui-app/modules/realTimeMonitoring/RealTimeMonitoringInfo.jsp',
-            // 后续添加其他模块
-            // 'AP.view.historyQuery.HistoryQueryInfoView': 
-            //     context + '/miniui-app/modules/historyQuery/HistoryQueryInfo.jsp',
-            // 'AP.view.alarmQuery.AlarmQueryInfoView': 
-            //     context + '/miniui-app/modules/alarmQuery/AlarmQueryInfo.jsp',
-            // ...
         };
         return mapping[viewSrc] || null;
     }
+
+    // 页面初始化
+    $(document).ready(function() {
+        mini.parse();
+        initBannerDisplayInformation();
+        $('#loading_div_id').hide();
+        initWebSocket();
+        $(window).resize(function() {
+            $('.highcharts-container').each(function() {
+                try {
+                    var chart = $(this).highcharts();
+                    if (chart) chart.reflow();
+                } catch(e) {}
+            });
+        });
+    });
 
     console.log('MiniUI 主页面加载完成');
     </script>

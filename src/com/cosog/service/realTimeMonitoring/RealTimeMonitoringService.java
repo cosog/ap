@@ -7205,75 +7205,75 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        }
 	        String pumpFSDiagramData = pumpFSDiagramStrBuff.toString();
 	        
-	        dataSbf.append("{success:true,");
-	        dataSbf.append("deviceId:\""+id+"\",");
-	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 设备名称
-	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
-	        dataSbf.append("pointCount:\""+pointCount+"\","); 
-	        dataSbf.append("upperLoadLine:\""+obj[3]+"\",");         // 理论上载荷
-	        dataSbf.append("lowerLoadLine:\""+obj[4]+"\",");         // 理论下载荷
-	        dataSbf.append("fmax:\""+obj[5]+"\",");         // 最大载荷
-	        dataSbf.append("fmin:\""+obj[6]+"\",");         // 最小载荷
-	        dataSbf.append("deltaF:\""+obj[7]+"\",");
-	        dataSbf.append("stroke:\""+obj[8]+"\",");         // 冲程
-	        dataSbf.append("spm:\""+obj[9]+"\",");         // 冲次
-	        dataSbf.append("liquidProduction:\""+obj[10]+"\",");         // 日累计产液量
+	        dataSbf.append("{\"success\":true,");
+	        dataSbf.append("\"deviceId\":\""+id+"\",");
+	        dataSbf.append("\"deviceName\":\""+deviceName+"\",");           // 设备名称
+	        dataSbf.append("\"acqTime\":\""+obj[1]+"\",");         // 时间
+	        dataSbf.append("\"pointCount\":\""+pointCount+"\","); 
+	        dataSbf.append("\"upperLoadLine\":\""+obj[3]+"\",");         // 理论上载荷
+	        dataSbf.append("\"lowerLoadLine\":\""+obj[4]+"\",");         // 理论下载荷
+	        dataSbf.append("\"fmax\":\""+obj[5]+"\",");         // 最大载荷
+	        dataSbf.append("\"fmin\":\""+obj[6]+"\",");         // 最小载荷
+	        dataSbf.append("\"deltaF\":\""+obj[7]+"\",");
+	        dataSbf.append("\"stroke\":\""+obj[8]+"\",");         // 冲程
+	        dataSbf.append("\"spm\":\""+obj[9]+"\",");         // 冲次
+	        dataSbf.append("\"liquidProduction\":\""+obj[10]+"\",");         // 日累计产液量
 	        
-	        dataSbf.append("resultCode:\""+resultCode+"\",");         // 工况代码
-	        dataSbf.append("resultName:\""+(workType!=null?workType.getResultName():"")+"\",");         // 工况类型
-	        dataSbf.append("optimizationSuggestion:\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");         // 优化建议 rodCNT
+	        dataSbf.append("\"resultCode\":\""+resultCode+"\",");         // 工况代码
+	        dataSbf.append("\"resultName\":\""+(workType!=null?workType.getResultName():"")+"\",");         // 工况类型
+	        dataSbf.append("\"optimizationSuggestion\":\""+(workType!=null?workType.getOptimizationSuggestion():"")+"\",");         // 优化建议 rodCNT
 	        
-	        dataSbf.append("rodCNT:"+rodCNT+",");
-	        dataSbf.append("rodStressRatio1:"+rodStressRatio1+",");       	// 一级应力百分比
-	        dataSbf.append("rodStressRatio2:"+rodStressRatio2+",");       	// 二级应力百分比 
-	        dataSbf.append("rodStressRatio3:"+rodStressRatio3+",");           // 三级应力百分比
-	        dataSbf.append("rodStressRatio4:"+rodStressRatio4+",");           // 四级应力百分比
+	        dataSbf.append("\"rodCNT\":"+rodCNT+",");
+	        dataSbf.append("\"rodStressRatio1\":"+rodStressRatio1+",");       	// 一级应力百分比
+	        dataSbf.append("\"rodStressRatio2\":"+rodStressRatio2+",");       	// 二级应力百分比 
+	        dataSbf.append("\"rodStressRatio3\":"+rodStressRatio3+",");           // 三级应力百分比
+	        dataSbf.append("\"rodStressRatio4\":"+rodStressRatio4+",");           // 四级应力百分比
 	        
-	        dataSbf.append("rodStressRangeRatio1:"+rodStressRangeRatio1+",");       	// 一级应力范围百分比
-	        dataSbf.append("rodStressRangeRatio2:"+rodStressRangeRatio2+",");      	 	// 二级应力范围百分比 
-	        dataSbf.append("rodStressRangeRatio3:"+rodStressRangeRatio3+",");           // 三级范围应力百分比
-	        dataSbf.append("rodStressRangeRatio4:"+rodStressRangeRatio4+",");           // 四级范围应力百分比
+	        dataSbf.append("\"rodStressRangeRatio1\":"+rodStressRangeRatio1+",");       	// 一级应力范围百分比
+	        dataSbf.append("\"rodStressRangeRatio2\":"+rodStressRangeRatio2+",");      	 	// 二级应力范围百分比 
+	        dataSbf.append("\"rodStressRangeRatio3\":"+rodStressRangeRatio3+",");           // 三级范围应力百分比
+	        dataSbf.append("\"rodStressRangeRatio4\":"+rodStressRangeRatio4+",");           // 四级范围应力百分比
 	        
-	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[13]==null?"":obj[13].toString(),1)+",");       // 冲程损失系数
-	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[14]==null?"":obj[14].toString().toString(),1)+",");       // 充满系数
-	        dataSbf.append("pumpEff3:"+StringManagerUtils.stringToFloat(obj[15]==null?"":obj[15].toString().toString(),1)+",");           // 漏失系数
-	        dataSbf.append("pumpEff4:"+StringManagerUtils.stringToFloat(obj[16]==null?"":obj[16].toString().toString(),1)+",");           // 液体收缩系数
-	        dataSbf.append("pumpFSDiagramData:\""+pumpFSDiagramData+"\",");         // 泵功图数据
-	        dataSbf.append("positionCurveData:\""+positionCurveData+"\",");         
-	        dataSbf.append("loadCurveData:\""+loadCurveData+"\""); 
+	        dataSbf.append("\"pumpEff1\":"+StringManagerUtils.stringToFloat(obj[13]==null?"":obj[13].toString(),1)+",");       // 冲程损失系数
+	        dataSbf.append("\"pumpEff2\":"+StringManagerUtils.stringToFloat(obj[14]==null?"":obj[14].toString().toString(),1)+",");       // 充满系数
+	        dataSbf.append("\"pumpEff3\":"+StringManagerUtils.stringToFloat(obj[15]==null?"":obj[15].toString().toString(),1)+",");           // 漏失系数
+	        dataSbf.append("\"pumpEff4\":"+StringManagerUtils.stringToFloat(obj[16]==null?"":obj[16].toString().toString(),1)+",");           // 液体收缩系数
+	        dataSbf.append("\"pumpFSDiagramData\":\""+pumpFSDiagramData+"\",");         // 泵功图数据
+	        dataSbf.append("\"positionCurveData\":\""+positionCurveData+"\",");         
+	        dataSbf.append("\"loadCurveData\":\""+loadCurveData+"\""); 
 	        dataSbf.append("}");
 		}else{
-			dataSbf.append("{success:true,");
-			dataSbf.append("deviceName:\""+deviceName+"\",");
-	        dataSbf.append("acqTime:\"\",");
-	        dataSbf.append("pointCount:\""+pointCount+"\","); 
-	        dataSbf.append("upperLoadLine:\"\",");  
-	        dataSbf.append("lowerLoadLine:\"\","); 
-	        dataSbf.append("fmax:\"\",");  
-	        dataSbf.append("fmin:\"\",");
-	        dataSbf.append("deltaF:\"\",");
-	        dataSbf.append("stroke:\"\",");  
-	        dataSbf.append("spm:\"\","); 
-	        dataSbf.append("liquidProduction:\"\",");  
-	        dataSbf.append("resultName:\"\",");
-	        dataSbf.append("resultCode:\"\",");  
-	        dataSbf.append("optimizationSuggestion:\"\",");
-	        dataSbf.append("rodCNT:0,");
-	        dataSbf.append("rodStressRatio1:\"\","); 
-	        dataSbf.append("rodStressRatio2:\"\",");  
-	        dataSbf.append("rodStressRatio3:\"\",");
-	        dataSbf.append("rodStressRatio4:\"\",");  
-	        dataSbf.append("rodStressRangeRatio1:\"\",");
-	        dataSbf.append("rodStressRangeRatio2:\"\",");
-	        dataSbf.append("rodStressRangeRatio3:\"\",");
-	        dataSbf.append("rodStressRangeRatio4:\"\",");
-	        dataSbf.append("pumpEff1:\"\","); 
-	        dataSbf.append("pumpEff2:\"\",");  
-	        dataSbf.append("pumpEff3:\"\",");
-	        dataSbf.append("pumpEff4:\"\",");  
-	        dataSbf.append("pumpFSDiagramData:\"\",");
-	        dataSbf.append("positionCurveData:\"\",");
-	        dataSbf.append("loadCurveData:\"\"");
+			dataSbf.append("{\"success\":true,");
+			dataSbf.append("\"deviceName\":\""+deviceName+"\",");
+	        dataSbf.append("\"acqTime\":\"\",");
+	        dataSbf.append("\"pointCount\":\""+pointCount+"\","); 
+	        dataSbf.append("\"upperLoadLine\":\"\",");  
+	        dataSbf.append("\"lowerLoadLine\":\"\","); 
+	        dataSbf.append("\"fmax\":\"\",");  
+	        dataSbf.append("\"fmin\":\"\",");
+	        dataSbf.append("\"deltaF\":\"\",");
+	        dataSbf.append("\"stroke\":\"\",");  
+	        dataSbf.append("\"spm\":\"\","); 
+	        dataSbf.append("\"liquidProduction\":\"\",");  
+	        dataSbf.append("\"resultName\":\"\",");
+	        dataSbf.append("\"resultCode\":\"\",");  
+	        dataSbf.append("\"optimizationSuggestion\":\"\",");
+	        dataSbf.append("\"rodCNT\":0,");
+	        dataSbf.append("\"rodStressRatio1\":\"\","); 
+	        dataSbf.append("\"rodStressRatio2\":\"\",");  
+	        dataSbf.append("\"rodStressRatio3\":\"\",");
+	        dataSbf.append("\"rodStressRatio4\":\"\",");  
+	        dataSbf.append("\"rodStressRangeRatio1\":\"\",");
+	        dataSbf.append("\"rodStressRangeRatio2\":\"\",");
+	        dataSbf.append("\"rodStressRangeRatio3\":\"\",");
+	        dataSbf.append("\"rodStressRangeRatio4\":\"\",");
+	        dataSbf.append("\"pumpEff1\":\"\","); 
+	        dataSbf.append("\"pumpEff2\":\"\",");  
+	        dataSbf.append("\"pumpEff3\":\"\",");
+	        dataSbf.append("\"pumpEff4\":\"\",");  
+	        dataSbf.append("\"pumpFSDiagramData\":\"\",");
+	        dataSbf.append("\"positionCurveData\":\"\",");
+	        dataSbf.append("\"loadCurveData\":\"\"");
 	        dataSbf.append("}");
 		}
 		return dataSbf.toString().replaceAll("null", "");
@@ -7407,55 +7407,55 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				polishrodA=StringManagerUtils.CLOBObjectToString(obj[21]);
 			}
 			
-	        dataSbf.append("{success:true,");
-	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 设备名称
-	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
-	        dataSbf.append("upStrokeWattMax:\""+obj[2]+"\",");         
-	        dataSbf.append("downStrokeWattMax:\""+obj[3]+"\",");
-	        dataSbf.append("wattDegreeBalance:\""+obj[4]+"\",");
-	        dataSbf.append("upStrokeIMax:\""+obj[5]+"\",");
-	        dataSbf.append("downStrokeIMax:\""+obj[6]+"\",");
-	        dataSbf.append("iDegreeBalance:\""+obj[7]+"\",");
-	        dataSbf.append("deltaRadius:\""+obj[8]+"\",");
-	        dataSbf.append("positionCurveData:\""+positionCurveData+"\",");
-	        dataSbf.append("loadCurveData:\""+loadCurveData+"\",");
-	        dataSbf.append("powerCurveData:\""+wattCurveData+"\",");
-	        dataSbf.append("currentCurveData:\""+iCurveData+"\",");
-	        dataSbf.append("crankAngle:\""+crankAngle+"\","); 
-	        dataSbf.append("loadRorque:\""+loadRorque+"\","); 
-	        dataSbf.append("crankTorque:\""+crankTorque+"\","); 
-	        dataSbf.append("currentBalanceTorque:\""+currentBalanceTorque+"\","); 
-	        dataSbf.append("currentNetTorque:\""+currentNetTorque+"\","); 
-	        dataSbf.append("expectedBalanceTorque:\""+expectedBalanceTorque+"\","); 
-	        dataSbf.append("expectedNetTorque:\""+expectedNetTorque+"\","); 
-	        dataSbf.append("polishrodV:\""+polishrodV+"\","); 
-	        dataSbf.append("polishrodA:\""+polishrodA+"\""); 
+	        dataSbf.append("{\"success\":true,");
+	        dataSbf.append("\"deviceName\":\""+deviceName+"\",");           // 设备名称
+	        dataSbf.append("\"acqTime\":\""+obj[1]+"\",");         // 时间
+	        dataSbf.append("\"upStrokeWattMax\":\""+obj[2]+"\",");         
+	        dataSbf.append("\"downStrokeWattMax\":\""+obj[3]+"\",");
+	        dataSbf.append("\"wattDegreeBalance\":\""+obj[4]+"\",");
+	        dataSbf.append("\"upStrokeIMax\":\""+obj[5]+"\",");
+	        dataSbf.append("\"downStrokeIMax\":\""+obj[6]+"\",");
+	        dataSbf.append("\"iDegreeBalance\":\""+obj[7]+"\",");
+	        dataSbf.append("\"deltaRadius\":\""+obj[8]+"\",");
+	        dataSbf.append("\"positionCurveData\":\""+positionCurveData+"\",");
+	        dataSbf.append("\"loadCurveData\":\""+loadCurveData+"\",");
+	        dataSbf.append("\"powerCurveData\":\""+wattCurveData+"\",");
+	        dataSbf.append("\"currentCurveData\":\""+iCurveData+"\",");
+	        dataSbf.append("\"crankAngle\":\""+crankAngle+"\","); 
+	        dataSbf.append("\"loadRorque\":\""+loadRorque+"\","); 
+	        dataSbf.append("\"crankTorque\":\""+crankTorque+"\","); 
+	        dataSbf.append("\"currentBalanceTorque\":\""+currentBalanceTorque+"\","); 
+	        dataSbf.append("\"currentNetTorque\":\""+currentNetTorque+"\","); 
+	        dataSbf.append("\"expectedBalanceTorque\":\""+expectedBalanceTorque+"\","); 
+	        dataSbf.append("\"expectedNetTorque\":\""+expectedNetTorque+"\","); 
+	        dataSbf.append("\"polishrodV\":\""+polishrodV+"\","); 
+	        dataSbf.append("\"polishrodA\":\""+polishrodA+"\""); 
 	        dataSbf.append("}");
 	        
 		}else{
-			dataSbf.append("{success:true,");
-	        dataSbf.append("deviceName:\""+deviceName+"\",");           // 设备名称
-	        dataSbf.append("acqTime:\"\",");         // 时间
-	        dataSbf.append("upStrokeWattMax:\"\",");         
-	        dataSbf.append("downStrokeWattMax:\"\",");
-	        dataSbf.append("wattDegreeBalance:\"\",");
-	        dataSbf.append("upStrokeIMax:\"\",");
-	        dataSbf.append("downStrokeIMax:\"\",");
-	        dataSbf.append("iDegreeBalance:\"\",");
-	        dataSbf.append("deltaRadius:\"\",");
-	        dataSbf.append("positionCurveData:\"\",");
-	        dataSbf.append("loadCurveData:\"\",");
-	        dataSbf.append("powerCurveData:\"\",");
-	        dataSbf.append("currentCurveData:\"\",");
-	        dataSbf.append("crankAngle:\"\","); 
-	        dataSbf.append("loadRorque:\"\","); 
-	        dataSbf.append("crankTorque:\"\","); 
-	        dataSbf.append("currentBalanceTorque:\"\","); 
-	        dataSbf.append("currentNetTorque:\"\","); 
-	        dataSbf.append("expectedBalanceTorque:\"\","); 
-	        dataSbf.append("expectedNetTorque:\"\","); 
-	        dataSbf.append("polishrodV:\"\","); 
-	        dataSbf.append("polishrodA:\"\""); 
+			dataSbf.append("{\"success\":true,");
+	        dataSbf.append("\"deviceName\":\""+deviceName+"\",");           // 设备名称
+	        dataSbf.append("\"acqTime\":\"\",");         // 时间
+	        dataSbf.append("\"upStrokeWattMax\":\"\",");         
+	        dataSbf.append("\"downStrokeWattMax\":\"\",");
+	        dataSbf.append("\"wattDegreeBalance\":\"\",");
+	        dataSbf.append("\"upStrokeIMax\":\"\",");
+	        dataSbf.append("\"downStrokeIMax\":\"\",");
+	        dataSbf.append("\"iDegreeBalance\":\"\",");
+	        dataSbf.append("\"deltaRadius\":\"\",");
+	        dataSbf.append("\"positionCurveData\":\"\",");
+	        dataSbf.append("\"loadCurveData\":\"\",");
+	        dataSbf.append("\"powerCurveData\":\"\",");
+	        dataSbf.append("\"currentCurveData\":\"\",");
+	        dataSbf.append("\"crankAngle\":\"\","); 
+	        dataSbf.append("\"loadRorque\":\"\","); 
+	        dataSbf.append("\"crankTorque\":\"\","); 
+	        dataSbf.append("\"currentBalanceTorque\":\"\","); 
+	        dataSbf.append("\"currentNetTorque\":\"\","); 
+	        dataSbf.append("\"expectedBalanceTorque\":\"\","); 
+	        dataSbf.append("\"expectedNetTorque\":\"\","); 
+	        dataSbf.append("\"polishrodV\":\"\","); 
+	        dataSbf.append("\"polishrodA\":\"\""); 
 	        dataSbf.append("}");
 		}
 		return dataSbf.toString().replaceAll("null", "");

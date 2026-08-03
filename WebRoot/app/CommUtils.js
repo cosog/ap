@@ -711,11 +711,6 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 						min:0,
 						title : {
 							text : ytitle
-//							,
-//							style : {
-//								color : '#000000',
-//								fontWeight : 'bold'
-//							}
 						},
 						labels : {
 							formatter : function() {
@@ -742,11 +737,6 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 						},
 						title : {
 							text : ytitle1
-//							,
-//							style : {
-//								color : '#000000',
-//								fontWeight : 'bold'
-//							}
 						}
 					}],
 			tooltip : {
@@ -763,20 +753,6 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 				},
 				valueSuffix : ''
 			},
-//			  exporting: {
-//		            buttons: {
-//		                contextButton: {
-//		                    menuItems: [{
-//		                        separator: true
-//		                    }]
-//		                    .concat(Highcharts.getOptions().exporting.buttons.contextButton.menuItems)
-//		                    .concat([{
-//		                        separator: true
-//		                    }
-//		                    ])
-//		                }
-//		            }
-//		        },
 			exporting:{    
                 enabled:true,    
                 filename:title,  
@@ -827,7 +803,7 @@ function initCurveChartFn(catagories, series, tickInterval, divId, title, ytitle
 			},
 			series : series
 		});
-}
+	}
 }
 function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitle, ytitle1) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
@@ -866,11 +842,6 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 						min:0,
 						title : {
 							text : ytitle
-//							,
-//							style : {
-//								color : '#000000',
-//								fontWeight : 'bold'
-//							}
 						},
 						labels : {
 							formatter : function() {
@@ -897,11 +868,6 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 						},
 						title : {
 							text : ytitle1
-//							,
-//							style : {
-//								color : '#000000',
-//								fontWeight : 'bold'
-//							}
 						}
 					}],
 			tooltip : {
@@ -918,20 +884,6 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 				},
 				valueSuffix : ''
 			},
-//			  exporting: {
-//		            buttons: {
-//		                contextButton: {
-//		                    menuItems: [{
-//		                        separator: true
-//		                    }]
-//		                    .concat(Highcharts.getOptions().exporting.buttons.contextButton.menuItems)
-//		                    .concat([{
-//		                        separator: true
-//		                    }
-//		                    ])
-//		                }
-//		            }
-//		        },
 			exporting:{    
                 enabled:true,    
                 filename:title,  
@@ -982,7 +934,7 @@ function initCurveChartFn1(catagories, series, tickInterval, divId, title, ytitl
 			},
 			series : series
 		});
-}
+	}
 }
 
 // 生产曲线初始化函数
@@ -993,7 +945,6 @@ function initCurveChart(years, values, tickInterval, divId) {
 				renderTo : divId,
 				type : 'spline',
 				shadow : false,
-				//alignTicks: false,
 				borderWidth : 0,
 				zoomType : 'xy',
 	            zooming: {
@@ -1030,14 +981,8 @@ function initCurveChart(years, values, tickInterval, divId) {
 			yAxis : [{
 						lineWidth : 1,
 						min:0,
-						//max:200,
 						title : {
 							text : cosog.string.cl
-//							,
-//							style : {
-//								color : '#000000',
-//								fontWeight : 'bold'
-//							}
 						},
 						labels : {
 							formatter : function() {
@@ -1064,11 +1009,6 @@ function initCurveChart(years, values, tickInterval, divId) {
 						},
 						title : {
 							text : cosog.string.hsl
-//							,
-//							style : {
-//								color : '#000000',
-//								fontWeight : 'bold'
-//							}
 						}
 					}],
 			tooltip : {
@@ -1085,20 +1025,6 @@ function initCurveChart(years, values, tickInterval, divId) {
 				},
 				valueSuffix : ''
 			},
-//			  exporting: {
-//		            buttons: {
-//		                contextButton: {
-//		                    menuItems: [{
-//		                        separator: true
-//		                    }]
-//		                    .concat(Highcharts.getOptions().exporting.buttons.contextButton.menuItems)
-//		                    .concat([{
-//		                        separator: true
-//		                    }
-//		                    ])
-//		                }
-//		            }
-//		        },
 			exporting:{    
                 enabled:true,   
                 fallbackToExportServer: false,
@@ -1150,7 +1076,7 @@ function initCurveChart(years, values, tickInterval, divId) {
 			},
 			series : values
 		});
-}
+	}
 }
 /**
  * Curve chart
@@ -2374,8 +2300,8 @@ function initContinuousDiagramChart(pointdata, divId,title,subtitle,xtext,ytext,
 	            lineWidth:3,
 	            data:  pointdata                                                                                  
 	        }]
-});
-}
+		});
+	}
 }
 
 function SetEveryOnePointColor(chart) {      // 设置每一个数据点的颜色横向渐变
@@ -3003,8 +2929,6 @@ showSurfaceCard = function(result, divId) {
 	}
 	
 	if(result.positionCurveData!="" && positionCurveData.length>0 && result.loadCurveData!="" && loadCurveData.length>0){
-//		var firstXData=positionCurveData[0];
-//		var lastXData=positionCurveData[positionCurveData.length-1];
 		for (var i=0; i <= gtcount; i++) {
 			if(i<gtcount){
 				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"],";
@@ -3013,9 +2937,6 @@ showSurfaceCard = function(result, divId) {
 					minLoadValue=changeTwoDecimal(loadCurveData[i]);
 				}
 			}else{
-//				if(Math.abs(lastXData-firstXData)<0.5){
-//					
-//				}
 				data += "[" + changeTwoDecimal(positionCurveData[0]) + ","+changeTwoDecimal(loadCurveData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
@@ -3314,16 +3235,7 @@ function initSurfaceCardChart(pointdata, gtdata, divId, yAxisMin) {
 	            data:  pointdata                                                                                  
 	        }]
     	});
-    	
-//    	var isMobile = isMobileOS();
-//    	if (isMobile) {
-//    	    chart.redraw();
-//    	    requestAnimationFrame(function() {
-//    	    	chart.reflow();
-//    	    });
-//    	}
     }
-	
 }
 
 //判断是否为 macOS 系统
@@ -3410,10 +3322,6 @@ showRodPress = function(result, divId) {
 	var categories_X = Ext.JSON.decode(xdata);
 	var seriesData1 = Ext.JSON.decode(ydata);
 	var seriesData2 = Ext.JSON.decode(ydata2);
-	
-//	categories_X=['一级杆','二级杆','三级杆','四极杆'];
-//	seriesData1=[70,60,80,90];
-//	seriesData2=[60,50,70,80];
 	
 	initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, acqTime, divId,showMaxRodStress,showRodStressRange);
 	return false;
@@ -3573,7 +3481,7 @@ function initRodPressChart(categories_X, seriesData1,seriesData2, deviceName, ac
 			        }] 
 		});
 		SetRodStressEveryOnePointColor(rodStressChart);           //设置每一个数据点的颜色值
-}
+	}
 }
 
 function SetRodStressEveryOnePointColor(chart) {      // 设置每一个数据点的颜色横向渐变

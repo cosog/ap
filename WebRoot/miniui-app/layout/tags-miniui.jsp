@@ -18,6 +18,10 @@ if(browserLang == null) browserLang = "zh_CN";
 <link rel="stylesheet" href="<%=path%>/scripts/miniui/themes/icons.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/scripts/miniui/themes/metro-blue/skin.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/styles/icon.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<!-- handsontable 主题 -->
+<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/handsontable.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/ht-theme-classic.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/table.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 
 <!-- ============================================================== -->
 <!--  JavaScript 库                                                  -->
@@ -43,6 +47,11 @@ if(browserLang == null) browserLang = "zh_CN";
 <% if(!"en".equalsIgnoreCase(browserLang)) { %>
 <script src="<%=path%>/scripts/highcharts/highcharts-<%=browserLang%>.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <% } %>
+
+<!-- handsontable -->
+<script type="text/javascript" src="<%=path%>/scripts/handsontable/js/handsontable.full.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<script type="text/javascript" src="<%=path%>/scripts/handsontable/js/zh-CN.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<script type="text/javascript" src="<%=path%>/scripts/handsontable/js/accessibility.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 
 <!-- WebSocket -->
 <script src="<%=path%>/scripts/reconnecting-websocket/reconnecting-websocket.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>

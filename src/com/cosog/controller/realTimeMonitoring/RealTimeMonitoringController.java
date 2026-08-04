@@ -792,27 +792,27 @@ public class RealTimeMonitoringController extends BaseController {
 						if(StringManagerUtils.isNotNull(slave)){
 							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,deviceName,realDeviceType,tcpType,signinid,ipPort,slave,controlType,controlValue,bitIndex);
 							if(reslut==1){
-								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>'}";
+								jsonLogin = "{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>"+languageResourceMap.get("commandExecutedSuccessfully")+"</font>\"}";
 							}else if(reslut==0){
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandExecutedFailed")+"</font>'}";
+								jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("commandExecutedFailed")+"</font>\"}";
 							}else if(reslut==-1){
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandSendFailure")+"</font>'}";
+								jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("commandSendFailure")+"</font>\"}";
 							}else{
-								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("commandSendException")+"</font>'}";
+								jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("commandSendException")+"</font>\"}";
 							}
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag:\"false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

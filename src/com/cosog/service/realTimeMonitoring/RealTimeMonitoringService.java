@@ -5400,7 +5400,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											col=loadProtocolMappingColumnByTitleMap.get(title).getMappingColumn();
 										}
 										
-										String switchingValueMeaning="[['1','"+languageResourceMap.get("switchingOpenValue")+"'],['0','"+languageResourceMap.get("switchingCloseValue")+"']]";
+										String switchingValueMeaning="[[\"1\",\""+languageResourceMap.get("switchingOpenValue")+"\"],[\"0\",\""+languageResourceMap.get("switchingCloseValue")+"\"]]";
 										String itemMeaning="";
 										if(controlItemMeaningMap.containsKey(col)){
 											itemMeaning=controlItemMeaningMap.get(col);
@@ -5451,7 +5451,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 												StringBuffer itemMeaning_buff = new StringBuffer();
 												itemMeaning_buff.append("[");
 												for(int n=0;n<protocol.getItems().get(k).getMeaning().size();n++){
-													itemMeaning_buff.append("["+protocol.getItems().get(k).getMeaning().get(n).getValue()+",'"+protocol.getItems().get(k).getMeaning().get(n).getMeaning()+"'],");
+													itemMeaning_buff.append("[\""+protocol.getItems().get(k).getMeaning().get(n).getValue()+"\",\""+protocol.getItems().get(k).getMeaning().get(n).getMeaning()+"\"],");
 												}
 												if(itemMeaning_buff.toString().endsWith(",")){
 													itemMeaning_buff.deleteCharAt(itemMeaning_buff.length() - 1);

@@ -424,6 +424,7 @@ request.setAttribute("browserLang", browserLang);
             var isDefault = (FIRST_LEAF_MODULE_ID !== null && moduleId === FIRST_LEAF_MODULE_ID);
             var tab = {
                 name: moduleId,
+                id:moduleId,
                 title: title,
                 iconCls: iconCls,
                 showCloseButton: !isDefault,
@@ -554,19 +555,96 @@ request.setAttribute("browserLang", browserLang);
             };
         }
     }
+    
+ // ===== 将信息推送给指定模块 =====
+    function forwardToIframe(moduleId, message) {
+        var tabs = mini.get('mainTabs');
+        var tab = tabs.getTab(moduleId);
+        if (!tab) return;
+        // 获取 Tab 内容区域的 DOM 元素
+        var bodyEl = tabs.getTabBodyEl(tab);
+        if (!bodyEl) return;
+        // 在内容区域内查找 iframe
+        var iframe = $(bodyEl).find('iframe')[0];
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage(message, '*');
+        } else {
+            console.warn('未找到模块 ' + moduleId + ' 的 iframe');
+        }
+    }
+
+    // ===== 将信息转发给所有模块 =====
+    function broadcastToAllIframes(message) {
+        var tabs = mini.get('mainTabs');
+        var allTabs = tabs.getTabs();
+        for (var i = 0; i < allTabs.length; i++) {
+            var tab = allTabs[i];
+            var bodyEl = tabs.getTabBodyEl(tab);
+            if (!bodyEl) continue;
+            var iframe = $(bodyEl).find('iframe')[0];
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage(message, '*');
+            }
+        }
+    }
 
     function websocketOnMessage(evt) {
         try {
-            var data = JSON.parse(evt.data);
+            var receiveData = evt.data;
+            if (evt.data.indexOf("}{") >= 0) {
+                var dataStr = evt.data.replace("}{", "}@@@@{");
+                receiveData = dataStr.split("@@@@")[0];
+            }
+            var data = JSON.parse(receiveData);
+
             var tabs = mini.get('mainTabs');
             var activeTab = tabs.getActiveTab();
             if (!activeTab) return;
             var activeId = activeTab.name;
-            if (data.functionCode && data.functionCode.toUpperCase() === 'deviceRealTimeMonitoringData'.toUpperCase()) {
-                if (activeId === 'DeviceRealTimeMonitoring') {
-                    console.log('实时数据推送:', data);
+
+            var funcCode = data.functionCode ? data.functionCode.toUpperCase() : '';
+            
+            // 实时监控
+            if (activeId === 'DeviceRealTimeMonitoring') {
+                if (funcCode === "DEVICEREALTIMEMONITORINGDATA" ||
+                    funcCode === "DEVICEREALTIMEMONITORINGSTATUSDATA") {
+                    forwardToIframe(activeId, {
+                        action: 'updateDeviceData',
+                        data: data
+                    });
+                } else if (funcCode === "RESOURCEMONITORINGDATA") {
+                    forwardToIframe(activeId, {
+                        action: 'updateResourceData',
+                        data: data
+                    });
+                } else if (funcCode === "DBMONITORINGDATA") {
+                    forwardToIframe(activeId, {
+                        action: 'updateDBData',
+                        data: data
+                    });
+                } else if (funcCode === "ADEXITANDDEVICEOFFLINE") {
+                    forwardToIframe(activeId, {
+                        action: 'adExitAndDeviceOffline',
+                        data: data
+                    });
                 }
             }
+            // 上下游交互
+            else if (activeId === 'UpstreamAndDownstreamInteraction') {
+                if (funcCode === "SRPUPONLINEDATA" || funcCode === "SRPDOWNONLINEDATA") {
+                    forwardToIframe(activeId, {
+                        action: 'updateUpDownData',
+                        data: data
+                    });
+                } else if (funcCode === "ADEXITANDDEVICEOFFLINE_SRP") {
+                    forwardToIframe(activeId, {
+                        action: 'adExitAndDeviceOffline',
+                        data: data
+                    });
+                }
+            }
+
+            //console.log('WebSocket 消息已转发到模块:', activeId, 'functionCode:', funcCode);
         } catch (e) {
             console.error('WebSocket message error:', e);
         }

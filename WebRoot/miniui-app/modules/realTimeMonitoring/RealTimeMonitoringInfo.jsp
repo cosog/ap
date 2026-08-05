@@ -230,19 +230,6 @@ try {
     }
 } catch(e) { console.warn('无法从父页面获取 tabInfo:', e); }
 
-if (!tabInfo || !tabInfo.children) {
-    tabInfo = {
-        children: [{
-            text: "举升类型", expanded: true, deviceTypeId: "2", parentId: "1",
-            children: [
-                { text: "抽油机", deviceTypeId: "3", parentId: "2", leaf: true },
-                { text: "螺杆泵", deviceTypeId: "4", parentId: "2", leaf: true },
-                { text: "电潜泵", deviceTypeId: "5", parentId: "2", leaf: true }
-            ]
-        }]
-    };
-}
-
 // ================================================================
 // 2. 状态变量
 // ================================================================
@@ -334,19 +321,40 @@ function buildLevel1Tabs() {
         container.appendChild(span);
     }
 
-    // ★ 资源监测区域（右侧），与 ExtJS 设计完全一致
+    // 资源监测区域（右侧）
     var rightArea = document.createElement('div');
     rightArea.id = 'resourceMonitorArea';
-    // 按钮 ID 与 ExtJS 一致，便于后续通过 ID 更新文本
-    rightArea.innerHTML =
-        '<button class="res-btn" onclick="openResourceChart(\'cpuUsedPercent\',\'CPU使用率(%)\')" id="CPUUsedPercentLabel_id">CPU</button>' +
-        '<button class="res-btn" onclick="openResourceChart(\'memUsedPercent\',\'内存使用率(%)\')" id="memUsedPercentLabel_id">内存</button>' +
-        '<button class="res-btn" onclick="openResourceChart(\'jedisStatus\',\'缓存数据库内存(m)\')" id="redisRunStatusProbeLabel_id">缓存</button>' +
-        '<button class="res-btn" onclick="openResourceChart(\'tableSpaceSize\',\'表空间使用率(%)\')" id="tableSpaceSizeProbeLabel_id">表空间</button>' +
-        '<button class="res-btn" onclick="openResourceChart(\'adRunStatus\',\'AD状态\')" id="adRunStatusProbeLabel_id">通信服务</button>' +
-        '<button class="res-btn" onclick="openResourceChart(\'acRunStatus\',\'AC状态\')" id="acRunStatusProbeLabel_id">计算服务</button>' +
-        '<span id="adLicenseStatusProbeLabel_id" style="color:#dc2828;font-size:12px;display:none;"></span>';
+    rightArea.style.cssText = 'display:flex; align-items:center; gap:6px; margin-left:auto;';
     container.appendChild(rightArea);
+
+    var resourceButtons = [
+        { id: 'CPUUsedPercentLabel_id', text: 'CPU', onclick: "openResourceChart('cpuUsedPercent','CPU使用率(%)')" },
+        { id: 'memUsedPercentLabel_id', text: '内存', onclick: "openResourceChart('memUsedPercent','内存使用率(%)')" },
+        { id: 'redisRunStatusProbeLabel_id', text: '缓存', onclick: "openResourceChart('jedisStatus','缓存数据库内存(m)')" },
+        { id: 'tableSpaceSizeProbeLabel_id', text: '表空间', onclick: "openResourceChart('tableSpaceSize','表空间使用率(%)')" },
+        { id: 'adRunStatusProbeLabel_id', text: '通信服务', onclick: "openResourceChart('adRunStatus','AD状态')" },
+        { id: 'acRunStatusProbeLabel_id', text: '计算服务', onclick: "openResourceChart('acRunStatus','AC状态')" },
+        { id: 'adLicenseStatusProbeLabel_id', text: 'License', onclick: '' }
+    ];
+
+    for (var i = 0; i < resourceButtons.length; i++) {
+        var cfg = resourceButtons[i];
+        var btn = new mini.Button();
+        btn.setId(cfg.id);
+        btn.setText(cfg.text);
+        btn.setIconCls(''); // 初始无图标
+        btn.setPlain(true); // ★ 关键：使按钮透明、无边框，且高度保持默认紧凑
+        // 如果高度仍偏高，可取消注释下面一行强制还原
+        // btn.setStyle('padding: 0 8px; height: 22px;');
+        if (cfg.onclick) {
+            btn.on('click', new Function(cfg.onclick));
+        }
+        btn.render(rightArea);
+    }
+
+    // License 默认隐藏
+    var licenseBtn = mini.get('adLicenseStatusProbeLabel_id');
+    if (licenseBtn) licenseBtn.hide();
 
     if (level1Data.length > 0) selectLevel1(0);
 }
@@ -2230,6 +2238,627 @@ $(document).ready(function() {
 
     console.log('实时监控模块加载完成');
 });
+
+//监听父页面消息
+window.addEventListener('message', function(event) {
+    var message = event.data;
+    if (!message || !message.action) return;
+    switch (message.action) {
+        case 'updateDeviceData':
+            // 调用已有函数处理实时数据
+            handleRealTimeData(message.data);
+            break;
+        case 'updateResourceData':
+            updateResourceMonitorUI(message.data);
+            break;
+        case 'updateDBData':
+        	updateDBMonitorUI(message.data);
+            break;
+        case 'adExitAndDeviceOffline':
+            // AD退出处理
+            handleAdExit(message.data);
+            break;
+        default:
+            break;
+    }
+});
+
+// 示例：处理实时数据（需根据原 ExtJS 逻辑实现）
+function handleRealTimeData(data) {
+    var funcCode = data.functionCode ? data.functionCode.toUpperCase() : '';
+    var isFullData = (funcCode === 'DEVICEREALTIMEMONITORINGDATA');
+    var isStatusData = (funcCode === 'DEVICEREALTIMEMONITORINGSTATUSDATA');
+
+    if (!isFullData && !isStatusData) {
+        console.warn('未知数据类型:', funcCode);
+        return;
+    }
+
+    var grid = mini.get('deviceGrid');
+    var selected = grid ? grid.getSelected() : null;
+    var selectedId = selected ? selected.id : null;
+    var isSelectWell = (selectedId === data.deviceId);
+    var commStatusChange = false;
+
+    // ===== 更新设备概览表格 =====
+    if (grid) {
+        var rows = grid.getData();
+        var foundRow = null;
+        for (var i = 0; i < rows.length; i++) {
+            if (rows[i].id === data.deviceId) {
+                foundRow = rows[i];
+                break;
+            }
+        }
+
+        if (foundRow) {
+            var updateObj = {};
+
+            if (isFullData) {
+                // ===== 全量数据逻辑 =====
+                // ★ 通信状态处理：固定设为在线 (1)，但需映射键名
+                var commStatusKey = null;
+                var commStatusNameKey = null;
+                for (var key in foundRow) {
+                    if (key.toUpperCase() === 'COMMSTATUS') {
+                        commStatusKey = key;
+                    } else if (key.toUpperCase() === 'COMMSTATUSNAME') {
+                        commStatusNameKey = key;
+                    }
+                }
+                if (commStatusKey !== null) {
+                    if (foundRow[commStatusKey] == 0) {
+                        commStatusChange = true;
+                    }
+                    updateObj[commStatusKey] = 1;
+                }
+                if (commStatusNameKey !== null) {
+                    updateObj[commStatusNameKey] = _loginUserLanguageResource.online || '在线';
+                }
+
+                // ★ 采集时间
+                var acqTimeKey = null;
+                for (var key in foundRow) {
+                    if (key.toUpperCase() === 'ACQTIME') {
+                        acqTimeKey = key;
+                        break;
+                    }
+                }
+                if (acqTimeKey !== null && data.acqTime) {
+                    updateObj[acqTimeKey] = data.acqTime;
+                }
+
+                // ★ 报警信息：完全重建
+                var alarmInfoKey = null;
+                for (var key in foundRow) {
+                    if (key.toUpperCase() === 'ALARMINFO') {
+                        alarmInfoKey = key;
+                        break;
+                    }
+                }
+                var alarmInfo = [];
+                if (data.allItemInfo) {
+                    for (var j = 0; j < data.allItemInfo.length; j++) {
+                        var item = data.allItemInfo[j];
+                        if (item.alarmLevel > 0) {
+                            // ★ 将 column 映射为 foundRow 中实际的键名（忽略大小写匹配）
+                            var actualColumnKey = null;
+                            for (var key in foundRow) {
+                                if (key.toUpperCase() === item.column.toUpperCase()) {
+                                    actualColumnKey = key;
+                                    break;
+                                }
+                            }
+                            if (actualColumnKey === null) {
+                                actualColumnKey = item.column; // 若找不到，用原值
+                            }
+                            alarmInfo.push({
+                                item: actualColumnKey,
+                                alarmLevel: item.alarmLevel
+                            });
+                        }
+                    }
+                }
+                if (alarmInfoKey !== null) {
+                    updateObj[alarmInfoKey] = alarmInfo;
+                }
+
+                // ★ 遍历 allItemInfo 更新所有采集项
+                if (data.allItemInfo) {
+                    for (var m = 0; m < data.allItemInfo.length; m++) {
+                        var item = data.allItemInfo[m];
+                        var fieldName = item.column;
+                        // 跳过通信状态和报警信息（已单独处理）
+                        if (fieldName.toUpperCase() === 'COMMSTATUS' || fieldName.toUpperCase() === 'COMMSTATUSNAME' || fieldName.toUpperCase() === 'ALARMINFO') {
+                            continue;
+                        }
+                        // 在 foundRow 中查找匹配的键（忽略大小写）
+                        var matchedKey = null;
+                        for (var key in foundRow) {
+                            if (key.toUpperCase() === fieldName.toUpperCase()) {
+                                matchedKey = key;
+                                break;
+                            }
+                        }
+                        if (matchedKey !== null) {
+                            // 特殊处理运行状态
+                            if (fieldName.toUpperCase() === 'RUNSTATUSNAME') {
+                                // 同时更新 runStatus（如果有）
+                                var runStatusKey = null;
+                                for (var key in foundRow) {
+                                    if (key.toUpperCase() === 'RUNSTATUS') {
+                                        runStatusKey = key;
+                                        break;
+                                    }
+                                }
+                                if (runStatusKey !== null) {
+                                    updateObj[runStatusKey] = parseInt(item.rawValue) || 0;
+                                }
+                                updateObj[matchedKey] = item.value;
+                            } else {
+                                updateObj[matchedKey] = item.value;
+                            }
+                        }
+                    }
+                }
+
+                // ★ 报警级别（顶层字段）
+                var commAlarmKey = null;
+                var runAlarmKey = null;
+                var resultAlarmKey = null;
+                for (var key in foundRow) {
+                    if (key.toUpperCase() === 'COMMALARMLEVEL') commAlarmKey = key;
+                    else if (key.toUpperCase() === 'RUNALARMLEVEL') runAlarmKey = key;
+                    else if (key.toUpperCase() === 'RESULTALARMLEVEL') resultAlarmKey = key;
+                }
+                if (commAlarmKey !== null && data.commAlarmLevel !== undefined) updateObj[commAlarmKey] = data.commAlarmLevel;
+                if (runAlarmKey !== null && data.runAlarmLevel !== undefined) updateObj[runAlarmKey] = data.runAlarmLevel;
+                if (resultAlarmKey !== null && data.resultAlarmLevel !== undefined) updateObj[resultAlarmKey] = data.resultAlarmLevel;
+
+            } else if (isStatusData) {
+                // ===== 状态数据逻辑 =====
+                // ★ 通信状态
+                var commStatusKey = null;
+                var commStatusNameKey = null;
+                for (var key in foundRow) {
+                    if (key.toUpperCase() === 'COMMSTATUS') {
+                        commStatusKey = key;
+                    } else if (key.toUpperCase() === 'COMMSTATUSNAME') {
+                        commStatusNameKey = key;
+                    }
+                }
+                if (commStatusKey !== null && data.commStatus !== undefined) {
+                    if (foundRow[commStatusKey] !== data.commStatus) {
+                        commStatusChange = true;
+                    }
+                    updateObj[commStatusKey] = data.commStatus;
+                }
+                if (commStatusNameKey !== null && data.commStatusName !== undefined) {
+                    updateObj[commStatusNameKey] = data.commStatusName;
+                }
+
+                // ★ 采集时间
+                var acqTimeKey = null;
+                for (var key in foundRow) {
+                    if (key.toUpperCase() === 'ACQTIME') {
+                        acqTimeKey = key;
+                        break;
+                    }
+                }
+                if (acqTimeKey !== null && data.acqTime) {
+                    updateObj[acqTimeKey] = data.acqTime;
+                }
+
+                // ★ 通信相关字段
+                var fieldMap = {
+                    'commTime': null,
+                    'commTimeEfficiency': null,
+                    'commRange': null
+                };
+                for (var key in foundRow) {
+                    var upperKey = key.toUpperCase();
+                    if (upperKey === 'COMMTIME') fieldMap.commTime = key;
+                    else if (upperKey === 'COMMTIMEEFFICIENCY') fieldMap.commTimeEfficiency = key;
+                    else if (upperKey === 'COMMRANGE') fieldMap.commRange = key;
+                }
+                if (fieldMap.commTime !== null && data.commTime !== undefined) updateObj[fieldMap.commTime] = data.commTime;
+                if (fieldMap.commTimeEfficiency !== null && data.commTimeEfficiency !== undefined) updateObj[fieldMap.commTimeEfficiency] = data.commTimeEfficiency;
+                if (fieldMap.commRange !== null && data.commRange !== undefined) updateObj[fieldMap.commRange] = data.commRange;
+
+                // ★ 报警信息：仅更新通信报警（保留其他）
+                var alarmInfoKey = null;
+                for (var key in foundRow) {
+                    if (key.toUpperCase() === 'ALARMINFO') {
+                        alarmInfoKey = key;
+                        break;
+                    }
+                }
+                if (alarmInfoKey !== null) {
+                    var alarmInfo = foundRow[alarmInfoKey] || [];
+                    var commStatusNameKeyActual = null;
+                    for (var key in foundRow) {
+                        if (key.toUpperCase() === 'COMMSTATUSNAME') {
+                            commStatusNameKeyActual = key;
+                            break;
+                        }
+                    }
+                    if (commStatusNameKeyActual !== null) {
+                        var existCommAlarm = false;
+                        for (var k = 0; k < alarmInfo.length; k++) {
+                            if (alarmInfo[k].item && alarmInfo[k].item.toUpperCase() === commStatusNameKeyActual.toUpperCase()) {
+                                existCommAlarm = true;
+                                if (data.commAlarmLevel > 0) {
+                                    alarmInfo[k].alarmLevel = data.commAlarmLevel;
+                                } else {
+                                    alarmInfo.splice(k, 1);
+                                }
+                                break;
+                            }
+                        }
+                        if (!existCommAlarm && data.commAlarmLevel > 0) {
+                            alarmInfo.push({
+                                item: commStatusNameKeyActual,
+                                alarmLevel: data.commAlarmLevel
+                            });
+                        }
+                        updateObj[alarmInfoKey] = alarmInfo;
+                    }
+                }
+
+                // ★ 通信报警级别
+                var commAlarmKey = null;
+                for (var key in foundRow) {
+                    if (key.toUpperCase() === 'COMMALARMLEVEL') {
+                        commAlarmKey = key;
+                        break;
+                    }
+                }
+                if (commAlarmKey !== null && data.commAlarmLevel !== undefined) {
+                    updateObj[commAlarmKey] = data.commAlarmLevel;
+                }
+            }
+
+            // ★ 执行更新（updateObj 中的键已经是 foundRow 中的实际键名）
+            grid.updateRow(foundRow, updateObj);
+            grid.acceptRecord(foundRow);
+            // 强制刷新整个表格（确保视图更新）
+            //grid.setData(grid.getData());
+
+        } else {
+            console.log('设备不在当前页');
+        }
+    }
+
+    // ===== 统计饼图刷新（只刷新当前激活的统计标签页） =====
+    var deviceTypeId = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+    var orgId = window.parent && window.parent.mini ? 
+                 window.parent.mini.get('leftOrg_Id').getValue() : '';
+
+    var statTabs = mini.get('statTabs');
+    if (statTabs) {
+        var activeStatTab = statTabs.getActiveTab();
+        if (activeStatTab) {
+            var key = activeStatTab._key;
+            if (isFullData) {
+                loadStatData(activeStatTab, deviceTypeId, orgId);
+            } else if (isStatusData) {
+                if (key !== 'FESdiagramResult') {
+                    loadStatData(activeStatTab, deviceTypeId, orgId);
+                }
+            }
+        }
+    }
+
+    // ===== 中间区域更新 =====
+    if (isFullData && isSelectWell) {
+        var middleTabs = mini.get('middleTabs');
+        if (middleTabs) {
+            var activeMiddleTab = middleTabs.getActiveTab();
+            if (activeMiddleTab) {
+                var tabName = activeMiddleTab.name;
+                switch (tabName) {
+                    case 'middle_WellboreAnalysis':
+                        if (data.wellBoreChartsData) {
+                            if (isNotVal(data.wellBoreChartsData.pumpFSDiagramData)) {
+                                showFSDiagramFromPumpcard(data.wellBoreChartsData, 'wellboreChart1');
+                            } else {
+                                showSurfaceCard(data.wellBoreChartsData, 'wellboreChart1');
+                            }
+                            showRodPress(data.wellBoreChartsData, 'wellboreChart2');
+                            showPumpCard(data.wellBoreChartsData, 'wellboreChart3');
+                            showPumpEfficiency(data.wellBoreChartsData, 'wellboreChart4');
+                        }
+                        break;
+                    case 'middle_SurfaceAnalysis':
+                        if (data.surfaceChartsData) {
+                            showPSDiagram(data.surfaceChartsData, 'surfaceChart1');
+                            showASDiagram(data.surfaceChartsData, 'surfaceChart3');
+                            showBalanceAnalysisCurveChart(
+                                data.surfaceChartsData.crankAngle,
+                                data.surfaceChartsData.loadRorque,
+                                data.surfaceChartsData.crankTorque,
+                                data.surfaceChartsData.currentBalanceTorque,
+                                data.surfaceChartsData.currentNetTorque,
+                                '目前扭矩曲线',
+                                data.surfaceChartsData.deviceName || '',
+                                data.surfaceChartsData.acqTime || '',
+                                'surfaceChart2'
+                            );
+                            var deltaRadius = parseFloat(data.surfaceChartsData.deltaRadius) || 0;
+                            var expectedTitle = '扭矩曲线';
+                            if (Math.abs(deltaRadius) > 0) {
+                                expectedTitle = (deltaRadius > 0 ? '外移' : '內移') + Math.abs(deltaRadius) + 'cm' + expectedTitle;
+                            } else {
+                                expectedTitle = '预期扭矩曲线';
+                            }
+                            showBalanceAnalysisCurveChart(
+                                data.surfaceChartsData.crankAngle,
+                                data.surfaceChartsData.loadRorque,
+                                data.surfaceChartsData.crankTorque,
+                                data.surfaceChartsData.expectedBalanceTorque,
+                                data.surfaceChartsData.expectedNetTorque,
+                                expectedTitle,
+                                data.surfaceChartsData.deviceName || '',
+                                data.surfaceChartsData.acqTime || '',
+                                'surfaceChart4'
+                            );
+                        }
+                        break;
+                    case 'middle_TrendCurve':
+                        var container = document.getElementById('trendContainer');
+                        if (container && data.CellInfo) {
+                            var chartItems = container.querySelectorAll('.trend-chart-container');
+                            var timestamp = Date.parse(data.acqTime.replace(/-/g, '/'));
+                            for (var ci = 0; ci < chartItems.length; ci++) {
+                                var chartEl = chartItems[ci];
+                                var chart = $(chartEl).highcharts();
+                                if (chart && chart.series && chart.series.length > 0) {
+                                    var series = chart.series[0];
+                                    var seriesName = series.name.split("(")[0].trim();
+                                    for (var cellIdx = 0; cellIdx < data.CellInfo.length; cellIdx++) {
+                                        var cell = data.CellInfo[cellIdx];
+                                        if (cell.columnName === seriesName) {
+                                            var value = parseFloat(cell.rawValue);
+                                            if (!isNaN(value)) {
+                                                var translation = false;
+                                                if (series.data.length > 100) {
+                                                    translation = true;
+                                                }
+                                                series.addPoint([timestamp, value], true, translation);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case 'middle_DynamicData':
+                        if (deviceRealTimeMonitoringDataHandsontableHelper && 
+                            deviceRealTimeMonitoringDataHandsontableHelper.hot) {
+                            deviceRealTimeMonitoringDataHandsontableHelper.CellInfo = data.CellInfo;
+                            deviceRealTimeMonitoringDataHandsontableHelper.sourceData = data.totalRoot;
+                            deviceRealTimeMonitoringDataHandsontableHelper.hot.loadData(data.totalRoot);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    // ===== 动态数据表更新（状态数据且设备被选中且当前标签为动态数据） =====
+    if (isStatusData && isSelectWell) {
+        var middleTabs = mini.get('middleTabs');
+        if (middleTabs) {
+            var activeMiddleTab = middleTabs.getActiveTab();
+            if (activeMiddleTab && activeMiddleTab.name === 'middle_DynamicData') {
+                if (deviceRealTimeMonitoringDataHandsontableHelper && 
+                    deviceRealTimeMonitoringDataHandsontableHelper.hot) {
+                    var statusText = data.commStatus > 0 ? 
+                        (_loginUserLanguageResource.goOnline || '上线') : 
+                        (_loginUserLanguageResource.offline || '离线');
+                    var value = data.deviceName + ':' + data.acqTime + ' ' + statusText;
+                    deviceRealTimeMonitoringDataHandsontableHelper.hot.setDataAtCell(0, 0, value);
+                }
+            }
+        }
+    }
+
+    // ===== 右侧控制面板刷新（通信状态变化时） =====
+    if (commStatusChange && isSelectWell) {
+        var rightTabs = mini.get('rightTabs');
+        if (rightTabs) {
+            var activeRightTab = rightTabs.getActiveTab();
+            if (activeRightTab && activeRightTab.name === 'right_DeviceControl') {
+                loadDeviceControl();
+            }
+        }
+    }
+
+    console.log('实时数据处理完成，设备ID:', data.deviceId, '类型:', funcCode, '通信变化:', commStatusChange);
+}
+
+function updateResourceMonitorUI(data) {
+    var cpuBtn = mini.get('CPUUsedPercentLabel_id');
+    var memBtn = mini.get('memUsedPercentLabel_id');
+    var tableBtn = mini.get('tableSpaceSizeProbeLabel_id');
+    var redisBtn = mini.get('redisRunStatusProbeLabel_id');
+    var adBtn = mini.get('adRunStatusProbeLabel_id');
+    var acBtn = mini.get('acRunStatusProbeLabel_id');
+    var licenseBtn = mini.get('adLicenseStatusProbeLabel_id');
+
+    // ===== CPU：仅文字颜色 =====
+    if (cpuBtn) {
+        var cpuText = (_loginUserLanguageResource.resourcesMonitoring_cpu || 'CPU') + ':' + (data.cpuUsedPercent || '0') + '%';
+        cpuBtn.setText(cpuText);
+        cpuBtn.setIconCls('');
+        var textEl = cpuBtn.getEl() ? cpuBtn.getEl().querySelector('.mini-button-text') : null;
+        if (textEl) {
+            if (data.cpuUsedPercentAlarmLevel == 1) {
+                textEl.style.color = '#F09614';
+            } else if (data.cpuUsedPercentAlarmLevel == 2) {
+                textEl.style.color = '#DC2828';
+            } else {
+                textEl.style.color = '';
+            }
+        }
+    }
+
+    // ===== 内存：仅文字颜色 =====
+    if (memBtn) {
+        var memText = (_loginUserLanguageResource.resourcesMonitoring_mem || '内存') + ':' + (data.memUsedPercent || '0') + '%';
+        memBtn.setText(memText);
+        memBtn.setIconCls('');
+        var textEl = memBtn.getEl() ? memBtn.getEl().querySelector('.mini-button-text') : null;
+        if (textEl) {
+            if (data.memUsedPercentAlarmLevel == 1) {
+                textEl.style.color = '#F09614';
+            } else if (data.memUsedPercentAlarmLevel == 2) {
+                textEl.style.color = '#DC2828';
+            } else {
+                textEl.style.color = '';
+            }
+        }
+    }
+
+    // ===== 表空间：图标 + 文字颜色 =====
+    if (tableBtn) {
+        if (data.dbConnStatus == 1) {
+            var showInfo = (_loginUserLanguageResource.resourcesMonitoring_tablespaces || '表空间') + ':' + 
+                           (data.tableSpaceUsedPercent || '0') + '%;' + 
+                           (data.undoTableSpaceUsedPercent || '0') + '%';
+            tableBtn.setText(showInfo);
+            tableBtn.setIconCls('dtgreen');
+            var textEl = tableBtn.getEl() ? tableBtn.getEl().querySelector('.mini-button-text') : null;
+            if (textEl) {
+                if (data.tableSpaceUsedPercentAlarmLevel == 1) {
+                    textEl.style.color = '#F09614';
+                } else if (data.tableSpaceUsedPercentAlarmLevel == 2) {
+                    textEl.style.color = '#DC2828';
+                } else {
+                    textEl.style.color = '';
+                }
+            }
+        } else {
+            tableBtn.setText(_loginUserLanguageResource.resourcesMonitoring_tablespaces || '表空间');
+            tableBtn.setIconCls('dtyellow');
+            var textEl = tableBtn.getEl() ? tableBtn.getEl().querySelector('.mini-button-text') : null;
+            if (textEl) textEl.style.color = '';
+        }
+    }
+
+    // ===== 缓存（Redis）：图标 + 文字 =====
+    if (redisBtn) {
+        if (data.redisStatus == 1) {
+            var redisText = (_loginUserLanguageResource.resourcesMonitoring_cache || '缓存') + ':' + 
+                            (data.cacheUsedMemory || '0') + 'm/' + (data.cacheMaxMemory || '0') + 'm';
+            redisBtn.setText(redisText);
+            redisBtn.setIconCls('dtgreen');
+        } else {
+            redisBtn.setText(_loginUserLanguageResource.resourcesMonitoring_cache || '缓存');
+            redisBtn.setIconCls('dtyellow');
+        }
+        // 确保文字颜色正常（默认）
+        var textEl = redisBtn.getEl() ? redisBtn.getEl().querySelector('.mini-button-text') : null;
+        if (textEl) textEl.style.color = '';
+    }
+
+    // ===== AD（通信服务）：图标 + 文字 =====
+    if (adBtn) {
+        adBtn.setText(_loginUserLanguageResource.resourcesMonitoring_ad || '通信服务');
+        adBtn.setIconCls(data.adRunStatus == 1 ? 'dtgreen' : 'dtyellow');
+        var textEl = adBtn.getEl() ? adBtn.getEl().querySelector('.mini-button-text') : null;
+        if (textEl) textEl.style.color = '';
+    }
+
+    // ===== AC（计算服务）：图标 + 文字 =====
+    if (acBtn) {
+        acBtn.setText(_loginUserLanguageResource.resourcesMonitoring_ac || '计算服务');
+        acBtn.setIconCls(data.acRunStatus == 1 ? 'dtgreen' : 'dtyellow');
+        var textEl = acBtn.getEl() ? acBtn.getEl().querySelector('.mini-button-text') : null;
+        if (textEl) textEl.style.color = '';
+    }
+
+    // ===== License：仅红色文字，无图标 =====
+    if (licenseBtn) {
+        if (data.licenseSign) {
+            licenseBtn.setText('License:' + (data.deviceAmount || 0) + '/' + (data.license || 0));
+            licenseBtn.setIconCls('');
+            var textEl = licenseBtn.getEl() ? licenseBtn.getEl().querySelector('.mini-button-text') : null;
+            if (textEl) {
+                textEl.style.color = '#DC2828';
+            }
+            licenseBtn.show();
+        } else {
+            licenseBtn.hide();
+        }
+    }
+}
+
+function updateDBMonitorUI(data) {
+    var tableBtn = mini.get('tableSpaceSizeProbeLabel_id');
+    if (!tableBtn) return;
+
+    // 数据库连接正常
+    if (data.dbConnStatus == 1) {
+        var showInfo = (_loginUserLanguageResource.resourcesMonitoring_tablespaces || '表空间') + ':' + 
+                       (data.tableSpaceUsedPercent || '0') + '%;' + 
+                       (data.undoTableSpaceUsedPercent || '0') + '%';
+        tableBtn.setText(showInfo);
+        tableBtn.setIconCls('dtgreen'); // 连接正常默认绿色图标
+        var tableEl = tableBtn.getEl().dom;
+        if (data.tableSpaceUsedPercentAlarmLevel == 1) {
+            tableEl.style.color = '#F09614';
+        } else if (data.tableSpaceUsedPercentAlarmLevel == 2) {
+            tableEl.style.color = '#DC2828';
+        } else {
+            tableEl.style.color = '';
+        }
+    } else {
+        // 数据库断开
+        tableBtn.setText(_loginUserLanguageResource.resourcesMonitoring_tablespaces || '表空间');
+        tableBtn.setIconCls('dtyellow');
+        tableBtn.getEl().dom.style.color = '';
+    }
+}
+
+function handleAdExit(data) {
+    // 1. 重新加载当前激活的统计图表
+    var statTabsObj = mini.get('statTabs');
+    if (statTabsObj) {
+        var activeTab = statTabsObj.getActiveTab();
+        if (activeTab) {
+            var deviceTypeId = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+            var orgId = window.parent && window.parent.mini ? 
+                         window.parent.mini.get('leftOrg_Id').getValue() : '';
+            // 优先使用 loadStatData 刷新当前标签页
+            if (typeof loadStatData === 'function') {
+                loadStatData(activeTab, deviceTypeId, orgId);
+            } else {
+                // 降级方案：重新加载所有统计标签页
+                loadStatCharts(deviceTypeId, orgId);
+            }
+        }
+    }
+
+    // 2. 清空设备下拉框的值和显示文本
+    var deviceCombo = mini.get('deviceCombo');
+    if (deviceCombo) {
+        deviceCombo.setValue('');
+        deviceCombo.setText('');
+    }
+
+    // 3. 刷新设备网格：取消选中并重新加载
+    var grid = mini.get('deviceGrid');
+    if (grid) {
+        grid.deselectAll();
+        grid.load();
+    }
+
+    console.log('AD 退出处理完成，所有设备离线');
+}
 
 // ================================================================
 // 12. 暴露给外部

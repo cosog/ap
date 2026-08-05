@@ -4118,6 +4118,6 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
 	        },
 	        series: series
 	    });
-}
+	}
 };
 // ================================================================

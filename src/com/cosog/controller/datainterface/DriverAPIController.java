@@ -2665,8 +2665,8 @@ public class DriverAPIController extends BaseController{
 		
 		String columns = "[";
 		for(int i=1;i<=items;i++){
-			columns+= "{ \"header\":\""+LanguageResourceMap.get("variable")+"\",\"dataIndex\":\"name"+i+"\",children:[] },"
-					+ "{ \"header\":\""+LanguageResourceMap.get("value")+"\",\"dataIndex\":\"value"+i+"\",children:[] }";
+			columns+= "{ \"header\":\""+LanguageResourceMap.get("variable")+"\",\"dataIndex\":\"name"+i+"\",\"children\":[] },"
+					+ "{ \"header\":\""+LanguageResourceMap.get("value")+"\",\"dataIndex\":\"value"+i+"\",\"children\":[] }";
 			if(i<items){
 				columns+=",";
 			}
@@ -2699,9 +2699,25 @@ public class DriverAPIController extends BaseController{
 					){
 				column+="_"+acquisitionItemInfoList.get(j).getBitIndex();
 			}
+			String value=acquisitionItemInfoList.get(j).getValue();
+			if(column.equalsIgnoreCase("RunStatusName") || column.equalsIgnoreCase("RunStatus")){
+				if(StringManagerUtils.stringToInteger(acquisitionItemInfoList.get(j).getRawValue())==1){
+					value=LanguageResourceMap.get("run");
+				}else if(StringManagerUtils.isNotNull(acquisitionItemInfoList.get(j).getRawValue()) && StringManagerUtils.stringToInteger(acquisitionItemInfoList.get(j).getRawValue())==0){
+					value=LanguageResourceMap.get("stop");
+				}else{
+					value=LanguageResourceMap.get("emptyMsg");
+				}
+			}else if(column.equalsIgnoreCase("ResultName") || column.equalsIgnoreCase("ResultCode")){
+				workType=MemoryDataManagerTask.getWorkTypeByCode(acquisitionItemInfoList.get(j).getRawValue(),loginUserLanguage);
+				if(workType!=null){
+					value=workType.getResultName();
+				}
+			}
+			
 			allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\","
 					+ "\"column\":\""+column+"\","
-					+ "\"value\":\""+acquisitionItemInfoList.get(j).getValue()+"\","
+					+ "\"value\":\""+value+"\","
 					+ "\"rawValue\":\""+acquisitionItemInfoList.get(j).getRawValue()+"\","
 					+ "\"columnDataType\":\""+acquisitionItemInfoList.get(j).getDataType()+"\","
 					+ "\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\","
@@ -2918,20 +2934,20 @@ public class DriverAPIController extends BaseController{
 								&& displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())  
 								&& displayItem.getBitIndex()==StringManagerUtils.stringToInteger(finalAcquisitionItemInfoList.get(index).getBitIndex())
 								){//开关量
-							realtimeColor=displayItem.getRealtimeColor();
-							realtimeBgColor=displayItem.getRealtimeBgColor();
-							historyColor=displayItem.getHistoryColor();
-							historyBgColor=displayItem.getHistoryBgColor();
+							realtimeColor=displayItem.getRealtimeColor()!=null?displayItem.getRealtimeColor():"";
+							realtimeBgColor=displayItem.getRealtimeBgColor()!=null?displayItem.getRealtimeBgColor():"";
+							historyColor=displayItem.getHistoryColor()!=null?displayItem.getHistoryColor():"";
+							historyBgColor=displayItem.getHistoryBgColor()!=null?displayItem.getHistoryBgColor():"";
 							
 							if(displayItem.getSwitchingValueShowType()==1){
 								columnName=rawColumnName+"/"+columnName;
 							}
 							break;
 						}else if(displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())){
-							realtimeColor=displayItem.getRealtimeColor();
-							realtimeBgColor=displayItem.getRealtimeBgColor();
-							historyColor=displayItem.getHistoryColor();
-							historyBgColor=displayItem.getHistoryBgColor();
+							realtimeColor=displayItem.getRealtimeColor()!=null?displayItem.getRealtimeColor():"";
+							realtimeBgColor=displayItem.getRealtimeBgColor()!=null?displayItem.getRealtimeBgColor():"";
+							historyColor=displayItem.getHistoryColor()!=null?displayItem.getHistoryColor():"";
+							historyBgColor=displayItem.getHistoryBgColor()!=null?displayItem.getHistoryBgColor():"";
 							break;
 						}
 					}

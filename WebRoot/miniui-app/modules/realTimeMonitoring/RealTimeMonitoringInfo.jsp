@@ -165,8 +165,18 @@ String moduleId = request.getParameter("moduleId");
                            valueField="boxkey" textField="boxval"
                            onvaluechanged="onDeviceComboChange" />
                     <span class="spacer"></span>
-                    <button class="mini-button" iconCls="export" onclick="exportData()">导出</button>
+                    <button class="mini-button" iconCls="export" onclick="exportRealTimeMonitoringData()">导出</button>
                     <button class="mini-button" onclick="gotoHistory()">查看历史</button>
+                    <!-- 隐藏控件（放在这里，不会影响布局） -->
+    				<input id="RealTimeMonitoringInfoDeviceListSelectRow_Id" type="hidden" value="-1" />
+    				<input id="RealTimeMonitoringStatSelectFESdiagramResult_Id" type="hidden" value="" />
+    				<input id="RealTimeMonitoringStatSelectCommStatus_Id" type="hidden" value="" />
+    				<input id="RealTimeMonitoringStatSelectRunStatus_Id" type="hidden" value="" />
+    				<input id="RealTimeMonitoringStatSelectNumStatus_Id" type="hidden" value="" />
+    				<input id="RealTimeMonitoringStatSelectDeviceType_Id" type="hidden" value="" />
+    				<input id="RealTimeMonitoringColumnStr_Id" type="hidden" value="" />
+    				<input id="rodStressChart_ShowMaxRodStress_Id" type="hidden" value="0" />
+    				<input id="rodStressChart_ShowRodStressRange_Id" type="hidden" value="0" />
                 </div>
                 <div class="grid-wrapper">
                     <div id="deviceGrid" class="mini-datagrid" style="width:100%;height:100%;"
@@ -271,10 +281,10 @@ var STAT_TAB_CONFIG = {
 
 // 中间 Tab 配置
 var MIDDLE_TAB_CONFIG = [
-    { id: 'middle_WellboreAnalysis', title: function() { return _loginUserLanguageResource.wellboreAnalysis || '井筒分析'; } },
-    { id: 'middle_SurfaceAnalysis', title: function() { return _loginUserLanguageResource.surfaceAnalysis || '地面分析'; } },
-    { id: 'middle_TrendCurve', title: function() { return _loginUserLanguageResource.trendCurve || '趋势曲线'; } },
-    { id: 'middle_DynamicData', title: function() { return _loginUserLanguageResource.dynamicData || '动态数据'; } }
+    { id: 'middle_WellboreAnalysis', title: _loginUserLanguageResource.wellboreAnalysis },
+    { id: 'middle_SurfaceAnalysis', title: _loginUserLanguageResource.surfaceAnalysis },
+    { id: 'middle_TrendCurve', title: _loginUserLanguageResource.trendCurve },
+    { id: 'middle_DynamicData', title: _loginUserLanguageResource.dynamicData }
 ];
 
 // 右侧 Tab 配置
@@ -457,8 +467,7 @@ function loadAllData(level2Item) {
                  window.parent.mini.get('leftOrg_Id').getValue() : '';
     refreshDeviceList();
     loadStatCharts(deviceTypeId, orgId);
-    initMiddleTabs();
-    initRightTabs();
+    // 中间和右侧标签不再在此初始化，由设备选中事件触发
 }
 
 // ================================================================
@@ -604,6 +613,11 @@ function onDeviceGridLoad(e) {
         }
         if (result.columns && result.columns.length > 0) {
             var columns = buildGridColumns(result.columns);
+            var columnStrInput = document.getElementById('RealTimeMonitoringColumnStr_Id');
+            if (columnStrInput) {
+                columnStrInput.value = JSON.stringify(result.columns);
+            }
+            
             console.log('生成的列数量:', columns.length);
             grid.setColumns([]);
             setTimeout(function() {
@@ -627,6 +641,11 @@ function onDeviceGridSelectChanged(e) {
     if (selected) {
         currentDeviceId = selected.id;
         console.log('选中设备:', selected.deviceName, 'ID:', selected.id);
+        
+        // ★ 动态刷新标签（中间和右侧）
+        refreshDeviceTabs(selected);
+        
+        // 加载数据（当前激活的标签数据）
         refreshMiddleTabs();
         refreshRightTabs();
     }
@@ -722,8 +741,96 @@ function onDeviceComboChange() {
     refreshDeviceList();
 }
 
-function exportData() {
-    mini.alert('导出功能开发中...');
+function exportRealTimeMonitoringData() {
+    // 1. 组织ID
+    var orgId = '';
+    try {
+        var leftOrg = window.parent.mini.get('leftOrg_Id');
+        if (leftOrg) orgId = leftOrg.getValue();
+    } catch(e) {}
+
+    // 2. 设备名称
+    var deviceCombo = mini.get('deviceCombo');
+    var deviceName = deviceCombo ? deviceCombo.getValue() : '';
+
+    // 3. 设备类型
+    var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+    var dictDeviceType = deviceType;
+    if (deviceType && deviceType.indexOf(',') > -1) {
+        dictDeviceType = currentLevel1 ? currentLevel1.deviceTypeId : deviceType;
+    }
+
+    // 4. 列配置（从隐藏字段读取）
+    var columnStrInput = document.getElementById('RealTimeMonitoringColumnStr_Id');
+    if (!columnStrInput || !columnStrInput.value) {
+        mini.alert('表格列配置未加载，请刷新页面重试');
+        return;
+    }
+    var columnStr = columnStrInput.value;
+
+    // 5. 统计筛选条件（从隐藏字段读取）
+    var FESdiagramResultStatValue = document.getElementById('RealTimeMonitoringStatSelectFESdiagramResult_Id')?.value || '';
+    var commStatusStatValue = document.getElementById('RealTimeMonitoringStatSelectCommStatus_Id')?.value || '';
+    var runStatusStatValue = document.getElementById('RealTimeMonitoringStatSelectRunStatus_Id')?.value || '';
+    var numStatusStatValue = document.getElementById('RealTimeMonitoringStatSelectNumStatus_Id')?.value || '';
+    var deviceTypeStatValue = document.getElementById('RealTimeMonitoringStatSelectDeviceType_Id')?.value || '';
+
+    // 6. 文件名
+    var fileName = _loginUserLanguageResource.realtimeMonitoringExpFileName || '设备实时监测数据';
+    var title = fileName;
+
+    // 7. 构建 fields / heads
+    var fields = '', heads = '';
+    try {
+        var columns = JSON.parse(columnStr);
+        var lockedfields = '', lockedheads = '', unlockedfields = '', unlockedheads = '';
+        columns.forEach(function(col) {
+            if (col.hidden || col.dataIndex === 'id') return;
+            var dataIndex = col.dataIndex || col.field;
+            var header = col.header || col.text || col.title || dataIndex;
+            if (col.locked) {
+                lockedfields += dataIndex + ',';
+                lockedheads += header + ',';
+            } else {
+                unlockedfields += dataIndex + ',';
+                unlockedheads += header + ',';
+            }
+        });
+        if (lockedfields) { lockedfields = lockedfields.slice(0,-1); lockedheads = lockedheads.slice(0,-1); }
+        if (unlockedfields) { unlockedfields = unlockedfields.slice(0,-1); unlockedheads = unlockedheads.slice(0,-1); }
+        fields = 'id' + (lockedfields ? ','+lockedfields : '') + (unlockedfields ? ','+unlockedfields : '');
+        heads = (_loginUserLanguageResource.idx || '序号') + (lockedheads ? ','+lockedheads : '') + (unlockedheads ? ','+unlockedheads : '');
+    } catch(e) {
+        mini.alert('列配置解析失败');
+        return;
+    }
+
+    // 8. 生成key
+    var key = 'exportDeviceRealTimeOverviewData_' + deviceType + '_' + new Date().getTime();
+
+    // 9. 构建URL
+    var url = context + '/realTimeMonitoringController/exportDeviceRealTimeOverviewDataExcel';
+    var param = '&fields=' + encodeURIComponent(fields)
+        + '&heads=' + encodeURIComponent(encodeURIComponent(heads))
+        + '&orgId=' + encodeURIComponent(orgId)
+        + '&deviceType=' + encodeURIComponent(deviceType)
+        + '&dictDeviceType=' + encodeURIComponent(dictDeviceType)
+        + '&deviceName=' + encodeURIComponent(encodeURIComponent(deviceName))
+        + '&FESdiagramResultStatValue=' + encodeURIComponent(encodeURIComponent(FESdiagramResultStatValue))
+        + '&commStatusStatValue=' + encodeURIComponent(encodeURIComponent(commStatusStatValue))
+        + '&runStatusStatValue=' + encodeURIComponent(encodeURIComponent(runStatusStatValue))
+        + '&numStatusStatValue=' + encodeURIComponent(encodeURIComponent(numStatusStatValue))
+        + '&deviceTypeStatValue=' + encodeURIComponent(encodeURIComponent(deviceTypeStatValue))
+        + '&fileName=' + encodeURIComponent(encodeURIComponent(fileName))
+        + '&title=' + encodeURIComponent(encodeURIComponent(title))
+        + '&key=' + key;
+
+    var fullUrl = url + '?flag=true' + param;
+
+    // 10. 遮罩 + 下载
+    var maskContainer = document.querySelector('.device-overview-area') || document.body;
+    exportDataMask(key, maskContainer, _loginUserLanguageResource.loadingData || '数据导出中...');
+    openExcelWindow(fullUrl);
 }
 
 function gotoHistory() {
@@ -736,12 +843,15 @@ function gotoHistory() {
 // 7. 统计饼图
 // ================================================================
 function loadStatCharts(deviceTypeId, orgId) {
-    var defaultConfig = {
-        FESdiagramResult: true,
-        CommStatus: true,
-        RunStatus: true,
-        NumStatus: true
+	var projectTabConfig=getProjectTabInstanceInfoByDeviceType(deviceTypeId);
+	
+	var defaultConfig = {
+        FESdiagramResult: projectTabConfig.DeviceRealTimeMonitoring.FESDiagramStatPie,
+        CommStatus: projectTabConfig.DeviceRealTimeMonitoring.CommStatusStatPie,
+        RunStatus: projectTabConfig.DeviceRealTimeMonitoring.RunStatusStatPie,
+        NumStatus: projectTabConfig.DeviceRealTimeMonitoring.NumStatusStatPie
     };
+    
     buildStatTabs(defaultConfig, deviceTypeId, orgId);
 }
 
@@ -891,19 +1001,13 @@ function renderPieChart(divId, data, title) {
 function initMiddleTabs() {
     middleTabs = mini.get('middleTabs');
     if (!middleTabs) return;
-    var tabs = [];
-    for (var i = 0; i < MIDDLE_TAB_CONFIG.length; i++) {
-        var cfg = MIDDLE_TAB_CONFIG[i];
-        tabs.push({
-            name: cfg.id,
-            title: typeof cfg.title === 'function' ? cfg.title() : cfg.title,
-            body: '<div class="loading-placeholder">请选择设备</div>'
-        });
-    }
-    middleTabs.setTabs(tabs);
-    if (tabs.length > 0) {
-        currentMiddleTab = tabs[0].name;
-    }
+    // 不再设置固定标签，等设备选中后由 refreshDeviceTabs 填充
+    // 但为了首次加载显示占位，可先放一个临时标签
+    middleTabs.setTabs([{
+        name: 'middle_placeholder',
+        title: '请选择设备',
+        body: '<div class="loading-placeholder">请从列表中选择设备</div>'
+    }]);
 }
 
 function onMiddleTabChanged(e) {
@@ -919,6 +1023,111 @@ function onMiddleTabChanged(e) {
             body.innerHTML = '<div class="loading-placeholder">请选择设备</div>';
         }
     }
+}
+
+/**
+ * 根据选中的设备动态刷新中间和右侧标签
+ * @param {Object} selected 选中的设备记录（包含 id, deviceName, calculateType, videoNum, controlItemNum, addInfoNum, auxiliaryDeviceNum 等）
+ */
+function refreshDeviceTabs(selected) {
+    if (!selected) return;
+
+    // 获取设备级别的标签配置
+    var deviceInfo = getDeviceTabInstanceInfoByDeviceId(selected.id);
+    var config = deviceInfo.config || {};
+    var deviceRealTimeMonitoring = config.DeviceRealTimeMonitoring || {};
+    var calculateType = selected.calculateType || 0;
+
+    // ---- 中间区域标签 ----
+    var showWellbore = deviceRealTimeMonitoring.WellboreAnalysis === true && calculateType == 1;
+    var showSurface = deviceRealTimeMonitoring.SurfaceAnalysis === true && calculateType == 1;
+    var showTrend = deviceRealTimeMonitoring.TrendCurve === true;
+    var showDynamic = deviceRealTimeMonitoring.DynamicData === true;
+
+    var middleTabsConfig = [];
+    if (showWellbore) {
+        middleTabsConfig.push({
+            name: 'middle_WellboreAnalysis',
+            title: _loginUserLanguageResource.wellboreAnalysis || '井筒分析',
+            body: '<div class="loading-placeholder">加载中...</div>'
+        });
+    }
+    if (showSurface) {
+        middleTabsConfig.push({
+            name: 'middle_SurfaceAnalysis',
+            title: _loginUserLanguageResource.surfaceAnalysis || '地面分析',
+            body: '<div class="loading-placeholder">加载中...</div>'
+        });
+    }
+    if (showTrend) {
+        middleTabsConfig.push({
+            name: 'middle_TrendCurve',
+            title: _loginUserLanguageResource.trendCurve || '趋势曲线',
+            body: '<div class="loading-placeholder">加载中...</div>'
+        });
+    }
+    if (showDynamic) {
+        middleTabsConfig.push({
+            name: 'middle_DynamicData',
+            title: _loginUserLanguageResource.dynamicData || '动态数据',
+            body: '<div id="RealTimeMonitoringInfoDataTableInfoDiv_id" style="flex:1; overflow:hidden; background:#fff; min-height:0;"></div>'
+        });
+    }
+
+    if (middleTabsConfig.length === 0) {
+        middleTabsConfig.push({
+            name: 'middle_placeholder',
+            title: '无可用标签',
+            body: '<div class="loading-placeholder">该设备暂无数据分析标签</div>'
+        });
+    }
+
+    // 更新中间标签
+    if (middleTabs) {
+        middleTabs.setTabs(middleTabsConfig);
+        middleTabs.activeTab(middleTabsConfig[0]);
+        // currentMiddleTab 会在 onactivechanged 事件中更新
+    }
+
+    // ---- 右侧区域标签 ----
+    var showControl = deviceRealTimeMonitoring.DeviceControl === true 
+                      && (selected.videoNum > 0 || selected.controlItemNum > 0);
+    var showInfo = deviceRealTimeMonitoring.DeviceInformation === true 
+                   && (selected.addInfoNum > 0 || selected.auxiliaryDeviceNum > 0);
+
+    var showControl = deviceRealTimeMonitoring.DeviceControl;
+    var showInfo = deviceRealTimeMonitoring.DeviceInformation;
+    
+    var rightTabsConfig = [];
+    if (showControl) {
+        rightTabsConfig.push({
+            name: 'right_DeviceControl',
+            title: _loginUserLanguageResource.deviceControl || '设备控制',
+            body: '<div id="right_DeviceControl_container" style="width:100%;height:100%;"></div>'
+        });
+    }
+    if (showInfo) {
+        rightTabsConfig.push({
+            name: 'right_DeviceInfo',
+            title: _loginUserLanguageResource.deviceInformation || '设备信息',
+            body: '<div id="right_DeviceInfo_container" style="width:100%;height:100%;"></div>'
+        });
+    }
+    if (rightTabsConfig.length === 0) {
+        rightTabsConfig.push({
+            name: 'right_placeholder',
+            title: '无信息',
+            body: '<div class="loading-placeholder">该设备暂无附加信息或控制项</div>'
+        });
+    }
+
+    if (rightTabs) {
+        rightTabs.setTabs(rightTabsConfig);
+        rightTabs.activeTab(rightTabsConfig[0]);
+    }
+
+    // 保存当前设备的 calculateType 到全局（供后续加载使用）
+    window._currentCalculateType = calculateType;
 }
 
 function refreshMiddleTabs() {
@@ -1380,190 +1589,769 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
     }
 }
 
-// ---------- 动态数据 ----------
+
+var deviceRealTimeMonitoringDataHandsontableHelper = null;
+//---------- 动态数据 ----------
 function loadDynamicData(deviceId) {
-    var tabBody = middleTabs.getTabBodyEl('middle_DynamicData');
-    if (!tabBody) return;
+	if (deviceRealTimeMonitoringDataHandsontableHelper) {
+     if (deviceRealTimeMonitoringDataHandsontableHelper.hot) {
+         deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
+     }
+     deviceRealTimeMonitoringDataHandsontableHelper = null;
+ }
+	
+ var container = document.getElementById('RealTimeMonitoringInfoDataTableInfoDiv_id');
+ if (!container) return;
 
-    // 清空并创建容器
-    tabBody.innerHTML = '<div id="dynamicDataContainer" style="width:100%;height:100%;padding:5px;box-sizing:border-box;"></div>';
+ var grid = mini.get('deviceGrid');
+ var deviceName = '';
+ var calculateType = 0;
+ if (grid) {
+     var selected = grid.getSelected();
+     if (selected) {
+         deviceName = selected.deviceName || '';
+         calculateType = selected.calculateType || 0;
+         if (!deviceId || deviceId === 0) {
+             deviceId = selected.id || 0;
+         }
+     }
+ }
+ var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
 
-    // 获取设备信息
+ container.innerHTML = '<div class="loading-placeholder">加载数据...</div>';
+
+ $.ajax({
+     url: context + '/realTimeMonitoringController/getDeviceRealTimeMonitoringData',
+     type: 'POST',
+     data: {
+         deviceId: deviceId,
+         deviceName: deviceName,
+         deviceType: deviceType,
+         calculateType: calculateType
+     },
+     dataType: 'json',
+     timeout: 15000,
+     success: function (result) {
+     	if(deviceRealTimeMonitoringDataHandsontableHelper==null || deviceRealTimeMonitoringDataHandsontableHelper.hot==undefined){
+				var colHeaders = [
+	                _loginUserLanguageResource.variable,
+	                _loginUserLanguageResource.value,
+	                _loginUserLanguageResource.variable,
+	                _loginUserLanguageResource.value,
+	                _loginUserLanguageResource.variable,
+	                _loginUserLanguageResource.value
+	            ];
+	            var columns = [
+	                { data: 'name1' },
+	                { data: 'value1' },
+	                { data: 'name2' },
+	                { data: 'value2' },
+	                { data: 'name3' },
+	                { data: 'value3' }
+	            ];
+	            deviceRealTimeMonitoringDataHandsontableHelper = DeviceRealTimeMonitoringDataHandsontableHelper.createNew("RealTimeMonitoringInfoDataTableInfoDiv_id");
+	            deviceRealTimeMonitoringDataHandsontableHelper.colHeaders = colHeaders;
+	            deviceRealTimeMonitoringDataHandsontableHelper.columns = columns;
+				deviceRealTimeMonitoringDataHandsontableHelper.CellInfo=result.CellInfo;
+				
+				if(result.totalRoot.length==0){
+					deviceRealTimeMonitoringDataHandsontableHelper.sourceData=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+					deviceRealTimeMonitoringDataHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					deviceRealTimeMonitoringDataHandsontableHelper.sourceData=result.totalRoot;
+					deviceRealTimeMonitoringDataHandsontableHelper.createTable(result.totalRoot);
+				}
+				
+				deviceRealTimeMonitoringDataHandsontableHelper.hot.addHook('afterOnCellMouseDown', function(event, coords, td) {
+				    // 检查是否为双击
+				    if (deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer != null 
+				    		&& deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow === coords.row 
+				    		&& deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol === coords.col) {
+				        clearTimeout(deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer);
+				        deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
+				        viewDeviceRealTimeMonitoringData(coords.row,coords.col);
+				        // TODO: 在这里调用打开弹窗的函数
+				        deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = -1;
+				        deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = -1;
+				    } else {
+				        // 如果是第一次点击，设置定时器
+				        deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = coords.row;
+				        deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = coords.col;
+				        if (deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer) {
+				            clearTimeout(deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer);
+				        }
+				        deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = setTimeout(() => {
+				            deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
+				        }, 250);
+				    }
+				});
+			}else{
+				deviceRealTimeMonitoringDataHandsontableHelper.CellInfo=result.CellInfo;
+				deviceRealTimeMonitoringDataHandsontableHelper.sourceData=result.totalRoot;
+				deviceRealTimeMonitoringDataHandsontableHelper.hot.loadData(result.totalRoot);
+			}
+			//添加单元格属性
+			for(var i=0;i<deviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length;i++){
+				var row=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
+				var col=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col;
+				var column=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].column;
+				var columnDataType=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].columnDataType;
+				if(deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
+					deviceRealTimeMonitoringDataHandsontableHelper.hot.setCellMeta(row,col,'columnDataType',columnDataType);
+				}
+			}
+			deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
+	        deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = -1;
+	        deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = -1;
+     },
+     error: function (xhr, status, errorThrown) {
+         console.error('动态数据加载失败:', status, errorThrown);
+         container.innerHTML = '<div class="loading-placeholder error"><span class="icon">❌</span>数据加载失败</div>';
+     }
+ });
+}
+
+//Handsontable 相关（动态数据）
+var DeviceRealTimeMonitoringDataHandsontableHelper = {
+		createNew: function (divid) {
+	        var deviceRealTimeMonitoringDataHandsontableHelper = {};
+	        deviceRealTimeMonitoringDataHandsontableHelper.divid = divid;
+	        deviceRealTimeMonitoringDataHandsontableHelper.validresult=true;//数据校验
+	        deviceRealTimeMonitoringDataHandsontableHelper.colHeaders=[];
+	        deviceRealTimeMonitoringDataHandsontableHelper.columns=[];
+	        deviceRealTimeMonitoringDataHandsontableHelper.CellInfo=[];
+	        deviceRealTimeMonitoringDataHandsontableHelper.sourceData=[];
+	        
+	        deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
+	        deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = -1;
+	        deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = -1;
+	        
+	        deviceRealTimeMonitoringDataHandsontableHelper.addItenmNameColStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.fontWeight = 'bold';
+	        }
+	        
+	        deviceRealTimeMonitoringDataHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	td.style.fontWeight = 'bold';
+		        td.style.fontSize = '20px';
+		        td.style.height = '40px';
+	        }
+	        
+	        function getAlarmShowStyle() {
+	            var val = null;
+	            try {
+	                var input = mini.get('AlarmShowStyle_Id');
+	                if (input) val = input.getValue();
+	            } catch (e) {}
+	            if (!val && window.parent && window.parent.mini) {
+	                try {
+	                    var parentInput = window.parent.mini.get('AlarmShowStyle_Id');
+	                    if (parentInput) val = parentInput.getValue();
+	                } catch (e) {}
+	            }
+	            if (val && typeof val === 'string') {
+	                try { return JSON.parse(val); } catch(e) { return {}; }
+	            }
+	            return {};
+	        }
+	        
+	        deviceRealTimeMonitoringDataHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	        	Handsontable.renderers.TextRenderer.apply(this, arguments);
+	        	var AlarmShowStyle = getAlarmShowStyle();
+	            if (row ==0) {
+	            	Handsontable.renderers.TextRenderer.apply(this, arguments);
+			        td.style.fontSize = '20px';
+			        td.style.height = '40px';
+	            }
+	            if (row%2==1&&row>0) {
+	            	td.style.backgroundColor = '#f5f5f5';
+             }
+	            
+	            td.style.whiteSpace='nowrap'; //文本不换行
+         	td.style.overflow='hidden';//超出部分隐藏
+         	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+         	
+	            for(var i=0;i<deviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length;i++){
+             	if( isNotVal(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeColor) ){
+             		var row2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
+     				var col2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col*2;
+     				if(row==row2 && col==col2 ){
+     					td.style.color='#'+deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeColor;
+     				}
+             	}
+             	
+             	if( isNotVal(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeBgColor) ){
+             		var row2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
+     				var col2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col*2;
+     				if(row==row2 && col==col2 ){
+     					td.style.backgroundColor = '#' + deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeBgColor;
+     				}
+             	}
+	            	
+	            	if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel>=0){
+             		var row2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
+     				var col2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col*2+1;
+     				if(row==row2 && col==col2 ){
+     					if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel>0){
+     						td.style.fontWeight = 'bold';
+     					}
+			             	if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel==0){
+			             		if(AlarmShowStyle.Data.Normal.Opacity!=0){
+			             			td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.Normal.BackgroundColor,AlarmShowStyle.Data.Normal.Opacity);
+			             		}
+			             		td.style.color='#'+AlarmShowStyle.Data.Normal.Color;
+			             	}else if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel==100){
+     						if(AlarmShowStyle.Data.FirstLevel.Opacity!=0){
+     							td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.FirstLevel.BackgroundColor,AlarmShowStyle.Data.FirstLevel.Opacity);
+     						}
+     						td.style.color='#'+AlarmShowStyle.Data.FirstLevel.Color;
+     					}else if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel==200){
+     						if(AlarmShowStyle.Data.SecondLevel.Opacity!=0){
+     							td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.SecondLevel.BackgroundColor,AlarmShowStyle.Data.SecondLevel.Opacity);
+     						}
+     						td.style.color='#'+AlarmShowStyle.Data.SecondLevel.Color;
+     					}else if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel==300){
+     						if(AlarmShowStyle.Data.ThirdLevel.Opacity!=0){
+     							td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.ThirdLevel.BackgroundColor,AlarmShowStyle.Data.ThirdLevel.Opacity);
+     						}
+     						td.style.color='#'+AlarmShowStyle.Data.ThirdLevel.Color;
+     					}
+     				}
+             	}
+ 			}
+	        }
+	        
+	        deviceRealTimeMonitoringDataHandsontableHelper.createTable = function (data) {
+	        	var container = document.getElementById(deviceRealTimeMonitoringDataHandsontableHelper.divid);
+	            if (!container) return;
+	            container.innerHTML = '';
+
+	            var parent = container.parentNode;
+	            var height = 300;
+	            if (parent) {
+	                var rect = parent.getBoundingClientRect();
+	                if (rect.height > 0) {
+	                    height = rect.height;
+	                } else {
+	                    var el = parent;
+	                    while (el && el !== document.body) {
+	                        var h = el.clientHeight || el.offsetHeight;
+	                        if (h > 0) { height = h; break; }
+	                        el = el.parentNode;
+	                    }
+	                }
+	            }
+	            container.style.height = height + 'px';
+	            container.style.width = '100%';
+
+	            if (deviceRealTimeMonitoringDataHandsontableHelper.hot) {
+	                deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
+	                deviceRealTimeMonitoringDataHandsontableHelper.hot = null;
+	            }
+	        	
+	            deviceRealTimeMonitoringDataHandsontableHelper.hot = new Handsontable(container, {
+	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
+	        		data: data,
+	        		colWidths: [30,20,30,20,30,20],
+	                columns:deviceRealTimeMonitoringDataHandsontableHelper.columns,
+	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                rowHeaders: false,//显示行头
+	                colHeaders: false,
+	                autoWrapRow: false, //自动换行
+	                rowHeights: [40],
+	                columnSorting: true, //允许排序
+	                allowInsertRow:false,
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                mergeCells: [{
+                        "row": 0,
+                        "col": 0,
+                        "rowspan": 1,
+                        "colspan": 6
+                    }],
+	                cells: function (row, col, prop) {
+	                	var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    cellProperties.editor = false;
+	                    cellProperties.renderer = deviceRealTimeMonitoringDataHandsontableHelper.addCellStyle;
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                    if(coords.col>=0 && coords.row>=0 && deviceRealTimeMonitoringDataHandsontableHelper!=null && deviceRealTimeMonitoringDataHandsontableHelper.hot!='' && deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined && deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell!=undefined){
+	                        var rawValue = deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(coords.row, coords.col);
+	                        if(isNotVal(rawValue)){
+	                            var showValue = rawValue;
+	                            var rowChar = 90;
+	                            var maxWidth = rowChar * 10;
+	                            if(rawValue.length > rowChar){
+	                                showValue = '';
+	                                let arr = [];
+	                                let index = 0;
+	                                while(index < rawValue.length){
+	                                    arr.push(rawValue.slice(index, index += rowChar));
+	                                }
+	                                for(var i=0; i<arr.length; i++){
+	                                    showValue += arr[i];
+	                                    if(i < arr.length - 1){
+	                                        showValue += '<br>';
+	                                    }
+	                                }
+	                            }
+
+	                            // ★ 清除定时器
+	                            if(window._hoverTimer){
+	                                clearTimeout(window._hoverTimer);
+	                                window._hoverTimer = null;
+	                            }
+
+	                            // ★ 强制关闭所有已存在的提示框（使用 DOM 方式）
+	                            if(typeof window.closeAllTips === 'function'){
+	                                window.closeAllTips();
+	                            }
+
+	                            // ★ 延迟创建新提示
+	                            window._hoverTimer = setTimeout(function(){
+	                                if(typeof mini !== 'undefined' && mini.showTips){
+	                                    mini.showTips({
+	                                        x: event.clientX + 10,
+	                                        y: event.clientY + 10,
+	                                        content: showValue,
+	                                        state: 'default',
+	                                        timeout: 3000
+	                                    });
+	                                } else {
+	                                    TD.title = rawValue;
+	                                }
+	                                window._hoverTimer = null;
+	                            }, 300);
+	                        }
+	                    }
+	                },
+	                afterOnCellMouseOut: function(event, coords, TD){
+	                    if(window._hoverTimer){
+	                        clearTimeout(window._hoverTimer);
+	                        window._hoverTimer = null;
+	                    }
+	                    if(typeof window.closeAllTips === 'function'){
+	                        window.closeAllTips();
+	                    }
+	                }
+	        	});
+	        }
+	        return deviceRealTimeMonitoringDataHandsontableHelper;
+	    }
+};
+
+function viewDeviceRealTimeMonitoringData(row, col) {
+	if(deviceRealTimeMonitoringDataHandsontableHelper!=null && deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined && row>0){
+		if(col%2==1){
+			col=(col-1)/2;
+		}else{
+			col=col/2;
+		}
+		
+		var cellInfo=null;
+		for(var i=0;i<deviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length;i++){
+			if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row==row && deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col==col){
+				cellInfo=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i];
+			}
+		}
+		if(cellInfo!=null){
+			var itemName=deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(row,col*2);
+			var itemValue=deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(row,col*2+1);
+			var info=itemName+':'+itemValue;
+			if(cellInfo.type==0){
+				if(cellInfo.resolutionMode==2){
+					info+=',采集数据量';
+					if(cellInfo.columnDataType.toUpperCase()!='string'.toUpperCase() && isNumber(itemValue)){
+						viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+					}else{
+						viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+					}
+				}else if(cellInfo.resolutionMode==0){
+					info+=',采集开关量';
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}else if(cellInfo.resolutionMode==1){
+					info+=',采集枚举量';
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}
+			}else if(cellInfo.type==1){
+				info+=',计算项';
+				if(isNumByCalculateItemCode(cellInfo.column)){
+					viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+				}else{
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}
+			}else if(cellInfo.type==3){
+				info+=',录入项';
+				if(isNumber(itemValue)){
+					viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+				}else{
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}
+			}else if(cellInfo.type==5){
+				if(cellInfo.resolutionMode==2){
+					info+=',协议拓展项数据量';
+					if(isNumber(itemValue)){
+						viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+					}else{
+						viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+					}
+				}else if(cellInfo.resolutionMode==0){
+					info+=',协议拓展项开关量';
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}else if(cellInfo.resolutionMode==1){
+					info+=',协议拓展项枚举量';
+					viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+				}else if(cellInfo.resolutionMode==7){
+					info+=',协议拓展项数值运算项';
+					if(isNumber(itemValue)){
+						viewItemRealTimeCurve(itemName,itemValue,cellInfo);
+					}else{
+						viewItemRealTimeDataTable(itemName,itemValue,cellInfo);
+					}
+				}	
+			}
+			console.log(info);
+		}
+	}
+}
+
+//存储当前曲线窗口上下文
+var _curveWindowContext = null;
+
+function viewItemRealTimeCurve(itemName, itemValue, cellInfo) {
+    // 获取当前选中的设备信息
     var grid = mini.get('deviceGrid');
-    var deviceName = '';
-    var calculateType = 0;
-    if (grid) {
-        var selected = grid.getSelected();
-        if (selected) {
-            deviceName = selected.deviceName || '';
-            calculateType = selected.calculateType || 0;
-            if (!deviceId || deviceId === 0) {
-                deviceId = selected.id || 0;
+    var selected = grid ? grid.getSelected() : null;
+    if (!selected) {
+        mini.alert('请先选择设备');
+        return;
+    }
+
+    var deviceId = selected.id;
+    var deviceName = selected.deviceName;
+    var calculateType = selected.calculateType || 0;
+
+    // 创建 MiniUI 窗口
+    var win = new mini.Window();
+    win.set({
+        title: _loginUserLanguageResource.trendCurve || '趋势曲线',
+        width: '65%',
+        height: '50%',
+        minWidth: 500,
+        minHeight: 300,
+        modal: true,
+        showHeader: true,
+        allowResize: true,
+        maxable: true,
+        minable: true,
+        showCloseButton: true
+    });
+    win.show();
+
+    // 图表容器
+    var containerId = 'ItemRealtimeCurveContainer_' + Date.now();
+    win.setBody('<div id="' + containerId + '" style="width:100%;height:100%;"></div>');
+
+    // 保存上下文
+    _curveWindowContext = {
+        win: win,
+        containerId: containerId,
+        deviceId: deviceId,
+        deviceName: deviceName,
+        calculateType: calculateType,
+        itemName: itemName,
+        itemCode: cellInfo.column,
+        itemType: cellInfo.type,
+        itemResolutionMode: cellInfo.resolutionMode
+    };
+
+    // 加载数据
+    getItemRealTimeCurveData();
+
+    // 窗口关闭时清理
+    win.on('beforedestroy', function() {
+        // 销毁 Highcharts 实例
+        var container = document.getElementById(containerId);
+        if (container) {
+            var charts = Highcharts.charts || [];
+            for (var i = 0; i < charts.length; i++) {
+                if (charts[i] && charts[i].renderTo === container) {
+                    charts[i].destroy();
+                    break;
+                }
             }
         }
-    }
-    var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+        _curveWindowContext = null;
+    });
+}
 
-    // 显示加载遮罩（简单文字）
-    var container = document.getElementById('dynamicDataContainer');
-    container.innerHTML = '<div class="loading-placeholder">加载数据...</div>';
+// 获取曲线数据（完全复用原有逻辑，仅修改 UI 交互）
+function getItemRealTimeCurveData() {
+    var ctx = _curveWindowContext;
+    if (!ctx) return;
 
-    // 发起请求
+    // 显示遮罩
+    var mask = mini.mask({
+        el: ctx.win.getBodyEl(),
+        cls: 'mini-mask-loading',
+        html: _loginUserLanguageResource.loadingData
+    });
+
     $.ajax({
-        url: context + '/realTimeMonitoringController/getDeviceRealTimeMonitoringData',
+        url: context + '/realTimeMonitoringController/getItemRealTimeCurveData',
         type: 'POST',
         data: {
-            deviceId: deviceId,
-            deviceName: deviceName,
-            deviceType: deviceType,
-            calculateType: calculateType
+            deviceName: ctx.deviceName,
+            deviceId: ctx.deviceId,
+            calculateType: ctx.calculateType,
+            itemName: ctx.itemName,
+            itemCode: ctx.itemCode,
+            itemType: ctx.itemType,
+            itemResolutionMode: ctx.itemResolutionMode
         },
         dataType: 'json',
         timeout: 15000,
         success: function(result) {
-            // 清空容器
-            container.innerHTML = '';
-
-            if (!result || !result.totalRoot || result.totalRoot.length === 0) {
-                container.innerHTML = '<div class="loading-placeholder">无数据</div>';
+            mini.unmask(ctx.win.getBodyEl());
+            if (!result || !result.list || result.list.length === 0) {
+                document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;">无数据</div>';
                 return;
             }
 
-            // 创建 Handsontable
-            createDynamicDataTable(result, container);
+            // ---------- 以下完全复用原有绘图逻辑 ----------
+            var data = result.list;
+            var legendName = result.curveItems || ['曲线'];
+            var title = result.deviceName + ':' + legendName[0].split('(')[0] + (_loginUserLanguageResource.trendCurve || '趋势曲线');
+            var subtitle = '';
+
+            // 构建 series
+            var seriesData = [];
+            for (var j = 0; j < data.length; j++) {
+                var timestamp = Date.parse(data[j].acqTime.replace(/-/g, '/'));
+                var value = parseFloat(data[j].data);
+                if (!isNaN(value)) {
+                    seriesData.push([timestamp, value]);
+                }
+            }
+            var series = [{
+                name: legendName[0],
+                data: seriesData,
+                lineWidth: 2,
+                marker: { enabled: true }
+            }];
+
+            // 计算 yAxis 范围
+            var allPositive = true, allNegative = true;
+            for (var k = 0; k < seriesData.length; k++) {
+                var v = seriesData[k][1];
+                if (v < 0) allPositive = false;
+                if (v >= 0) allNegative = false;
+            }
+            var maxValue = allNegative ? 0 : null;
+            var minValue = allPositive ? 0 : null;
+
+            // 使用 Highcharts 渲染（复用现有绘图函数）
+            if (typeof initDeviceRealtimeMonitoringStockChartFn === 'function') {
+                initDeviceRealtimeMonitoringStockChartFn(
+                    series,
+                    undefined,
+                    ctx.containerId,
+                    title,
+                    subtitle,
+                    _loginUserLanguageResource.time || '时间',
+                    legendName[0],
+                    ['#7cb5ec'],
+                    false,
+                    true,
+                    false,
+                    '%H:%M',
+                    maxValue,
+                    minValue,
+                    false
+                );
+            } else {
+                // 降级方案
+                Highcharts.chart(ctx.containerId, {
+                    chart: { type: 'spline' },
+                    title: { text: title },
+                    xAxis: { type: 'datetime', title: { text: '时间' } },
+                    yAxis: { title: { text: legendName[0] }, max: maxValue, min: minValue },
+                    series: series,
+                    credits: { enabled: false },
+                    exporting: { enabled: true, fallbackToExportServer: false }
+                });
+            }
         },
         error: function(xhr, status, errorThrown) {
-            console.error('动态数据加载失败:', status, errorThrown);
-            container.innerHTML = '<div class="loading-placeholder error"><span class="icon">❌</span>数据加载失败</div>';
+            mini.unmask(mask);
+            document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;color:red;">加载失败</div>';
+            console.error('加载曲线数据失败:', status, errorThrown);
         }
     });
 }
 
-// Handsontable 相关（动态数据）
-var deviceRealTimeMonitoringDataHandsontableHelper = null;
+//存储当前数据表窗口上下文
+var _dataWindowContext = null;
 
-function createDynamicDataTable(result, container) {
-    if (deviceRealTimeMonitoringDataHandsontableHelper) {
-        if (deviceRealTimeMonitoringDataHandsontableHelper.hot) {
-            deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
-        }
-        deviceRealTimeMonitoringDataHandsontableHelper = null;
+function viewItemRealTimeDataTable(itemName, itemValue, cellInfo) {
+    var grid = mini.get('deviceGrid');
+    var selected = grid ? grid.getSelected() : null;
+    if (!selected) {
+        mini.alert('请先选择设备');
+        return;
     }
 
-    deviceRealTimeMonitoringDataHandsontableHelper = DeviceRealTimeMonitoringDataHandsontableHelper.createNew(
-        'dynamicDataContainer',  // 容器 ID
-        result
-    );
+    var deviceId = selected.id;
+    var deviceName = selected.deviceName;
+    var calculateType = selected.calculateType || 0;
+
+    // 创建 MiniUI 窗口
+    var win = new mini.Window();
+    win.set({
+        title: _loginUserLanguageResource.dynamicData || '动态数据',
+        width: 500,
+        height: '80%',
+        minWidth: 400,
+        minHeight: 300,
+        modal: true,
+        showHeader: true,
+        allowResize: true,
+        maxable: true,
+        minable: true,
+        showCloseButton: true
+    });
+    win.show();
+
+    // 构造 HTML：工具栏 + 表格容器
+    var containerId = 'ItemRealtimeDataDiv_' + Date.now();
+    var html = '<div style="display:flex; flex-direction:column; height:100%;">';
+    // 工具栏
+    html += '<div style="flex-shrink:0; padding:4px 8px; background:#f5f5f5; border-bottom:1px solid #ddd; display:flex; align-items:center; gap:6px;">';
+    html += '<span style="font-size:12px; color:#333;">' + (_loginUserLanguageResource.totalCount || '总条数') + ': <span id="itemRealtimeDataCount_' + containerId + '">0</span></span>';
+    html += '<span style="flex:1;"></span>';
+    html += '<button id="exportItemRealtimeDataBtn_' + containerId + '" class="mini-button" iconCls="export" style="padding:2px 12px;">' + (_loginUserLanguageResource.exportData || '导出') + '</button>';
+    html += '</div>';
+    // Handsontable 容器
+    html += '<div id="' + containerId + '" style="flex:1; overflow:hidden; min-height:0;"></div>';
+    html += '</div>';
+    win.setBody(html);
+
+    mini.parse();
+
+    // 绑定导出按钮
+    var exportBtn = mini.get('exportItemRealtimeDataBtn_' + containerId);
+    if (exportBtn) {
+        exportBtn.on('click', function() {
+            exportItemRealtimeDataTable(deviceId, deviceName, calculateType, itemName, cellInfo.column, cellInfo.type, cellInfo.resolutionMode, cellInfo.bitIndex);
+        });
+    }
+
+    // 保存上下文
+    _dataWindowContext = {
+        win: win,
+        containerId: containerId,
+        countId: 'itemRealtimeDataCount_' + containerId,
+        deviceId: deviceId,
+        deviceName: deviceName,
+        calculateType: calculateType,
+        itemName: itemName,
+        itemCode: cellInfo.column,
+        itemType: cellInfo.type,
+        itemResolutionMode: cellInfo.resolutionMode,
+        itemBitIndex: cellInfo.bitIndex || ''
+    };
+
+    // 加载数据表
+    CreateItemRealtimeDataTable();
+
+    // 窗口关闭时清理
+    win.on('beforedestroy', function() {
+        if (window._itemRealtimeDataHot) {
+            window._itemRealtimeDataHot.destroy();
+            window._itemRealtimeDataHot = null;
+        }
+        _dataWindowContext = null;
+    });
 }
 
-var DeviceRealTimeMonitoringDataHandsontableHelper = {
-    createNew: function (divid, result) {
-        var helper = {};
-        helper.divid = divid;
-        helper.validresult = true;
-        helper.colHeaders = [];
-        helper.columns = [];
-        helper.CellInfo = result.CellInfo || [];
-        helper.sourceData = result.totalRoot || [];
+// 创建数据表（完全复用原有逻辑，修改 UI 交互）
+function CreateItemRealtimeDataTable() {
+    var ctx = _dataWindowContext;
+    if (!ctx) return;
 
-        var colHeaders = ['变量', '值', '变量', '值', '变量', '值'];
-        var columns = [
-            { data: 'name1' },
-            { data: 'value1' },
-            { data: 'name2' },
-            { data: 'value2' },
-            { data: 'name3' },
-            { data: 'value3' }
-        ];
-        helper.colHeaders = colHeaders;
-        helper.columns = columns;
+    var mask = mini.mask({
+        el: ctx.win.getBodyEl(),
+        cls: 'mini-mask-loading',
+        html: _loginUserLanguageResource.loadingData
+    });
 
-        function getAlarmShowStyle() {
-            var val = null;
-            try {
-                var input = mini.get('AlarmShowStyle_Id');
-                if (input) val = input.getValue();
-            } catch (e) {}
-            if (!val && window.parent && window.parent.mini) {
-                try {
-                    var parentInput = window.parent.mini.get('AlarmShowStyle_Id');
-                    if (parentInput) val = parentInput.getValue();
-                } catch (e) {}
+    $.ajax({
+        url: context + '/realTimeMonitoringController/getItemRealTimeData',
+        type: 'POST',
+        data: {
+            deviceName: ctx.deviceName,
+            deviceId: ctx.deviceId,
+            calculateType: ctx.calculateType,
+            itemName: ctx.itemName,
+            itemCode: ctx.itemCode,
+            itemType: ctx.itemType,
+            itemResolutionMode: ctx.itemResolutionMode,
+            itemBitIndex: ctx.itemBitIndex
+        },
+        dataType: 'json',
+        timeout: 15000,
+        success: function(result) {
+            mini.unmask(ctx.win.getBodyEl());
+            if (!result || !result.totalRoot || result.totalRoot.length === 0) {
+                document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;">无数据</div>';
+                return;
             }
-            if (val && typeof val === 'string') {
-                try { return JSON.parse(val); } catch(e) { return {}; }
+
+            // 更新总条数
+            var countEl = document.getElementById(ctx.countId);
+            if (countEl) countEl.innerText = result.totalCount || result.totalRoot.length;
+
+            var data = result.totalRoot;
+
+            // ---------- 以下 Handsontable 创建逻辑（复用原有） ----------
+            var container = document.getElementById(ctx.containerId);
+            var parent = container.parentNode;
+            var height = 300;
+            if (parent) {
+                var rect = parent.getBoundingClientRect();
+                if (rect.height > 0) height = rect.height;
             }
-            return {};
-        }
+            container.style.height = height + 'px';
+            container.style.width = '100%';
 
-        helper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-            Handsontable.renderers.TextRenderer.apply(this, arguments);
-            var AlarmShowStyle = getAlarmShowStyle();
-            var Data = AlarmShowStyle.Data || {};
-
-            if (row === 0) {
-                td.style.fontSize = '20px';
-                td.style.height = '40px';
-                td.style.fontWeight = 'bold';
+            // 销毁旧实例
+            if (window._itemRealtimeDataHot) {
+                window._itemRealtimeDataHot.destroy();
+                window._itemRealtimeDataHot = null;
             }
-            if (row % 2 === 1 && row > 0) {
-                td.style.backgroundColor = '#f5f5f5';
-            }
-            td.style.whiteSpace = 'nowrap';
-            td.style.overflow = 'hidden';
-            td.style.textOverflow = 'ellipsis';
 
-            var cellInfo = helper.CellInfo || [];
-            for (var i = 0; i < cellInfo.length; i++) {
-                var info = cellInfo[i];
-                var row2 = info.row;
-                var col2 = info.col * 2;
-                if (row === row2 && col === col2) {
-                    if (info.realtimeColor) {
-                        td.style.color = '#' + info.realtimeColor;
-                    }
-                    if (info.realtimeBgColor) {
-                        td.style.backgroundColor = '#' + info.realtimeBgColor;
-                    }
-                }
-                if (row === row2 && col === col2 + 1) {
-                    if (info.alarmLevel !== undefined && info.alarmLevel >= 0) {
-                        if (info.alarmLevel > 0) td.style.fontWeight = 'bold';
-                        var level = info.alarmLevel;
-                        var levelCfg = Data.Normal || {};
-                        if (level === 100) levelCfg = Data.FirstLevel || {};
-                        else if (level === 200) levelCfg = Data.SecondLevel || {};
-                        else if (level === 300) levelCfg = Data.ThirdLevel || {};
-                        if (levelCfg.Opacity && levelCfg.Opacity !== 0) {
-                            td.style.backgroundColor = color16ToRgba('#' + (levelCfg.BackgroundColor || 'FFFFFF'), levelCfg.Opacity);
-                        }
-                        td.style.color = '#' + (levelCfg.Color || '000000');
-                    }
-                }
-            }
-        };
-
-        helper.createTable = function (data) {
-            var container = document.getElementById(helper.divid);
-            if (!container) return;
-            container.innerHTML = '';
-
-            var hotElement = document.createElement('div');
-            hotElement.style.width = '100%';
-            hotElement.style.height = '100%';
-            container.appendChild(hotElement);
-
-            var hot = new Handsontable(hotElement, {
+            var hot = new Handsontable(container, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
                 theme: 'ht-theme-classic',
                 data: data,
-                colWidths: [30, 20, 30, 20, 30, 20],
-                columns: helper.columns,
+                columns: [
+                    { data: 'acqTime', title: _loginUserLanguageResource.acqTime || '采集时间' },
+                    { data: 'data', title: ctx.itemName }
+                ],
                 stretchH: 'all',
-                rowHeaders: false,
-                colHeaders: false,
+                rowHeaders: true,
+                colHeaders: true,
+                fixedColumnsStart: 1,
                 autoWrapRow: false,
-                rowHeights: [40],
                 columnSorting: true,
                 allowInsertRow: false,
                 sortIndicator: true,
@@ -1572,94 +2360,75 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
                 filters: true,
                 renderAllRows: true,
                 search: true,
-                mergeCells: [{ row: 0, col: 0, rowspan: 1, colspan: 6 }],
-                cells: function (row, col, prop) {
+                cells: function(row, col, prop) {
                     var cellProperties = {};
                     cellProperties.editor = false;
-                    cellProperties.renderer = helper.addCellStyle;
+                    cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
+                        Handsontable.renderers.TextRenderer.apply(this, arguments);
+                        td.style.whiteSpace = 'nowrap';
+                        td.style.overflow = 'hidden';
+                        td.style.textOverflow = 'ellipsis';
+                    };
                     return cellProperties;
                 },
-                afterOnCellMouseOver: function (event, coords, TD) {
-                    if (coords.col >= 0 && coords.row >= 0 && helper.hot) {
-                        var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
-                        if (isNotVal(rawValue)) {
+                afterOnCellMouseOver: function(event, coords, TD) {
+                    if (coords.col >= 0 && coords.row >= 0 && hot) {
+                        var rawValue = hot.getDataAtCell(coords.row, coords.col);
+                        if (rawValue && rawValue !== '') {
                             TD.title = rawValue;
                         }
-                    }
-                },
-                afterOnCellMouseDown: function (event, coords, TD) {
-                    if (helper.doubleClickTimer != null &&
-                        helper.lastClickRow === coords.row &&
-                        helper.lastClickCol === coords.col) {
-                        clearTimeout(helper.doubleClickTimer);
-                        helper.doubleClickTimer = null;
-                        viewDeviceRealTimeMonitoringData(coords.row, coords.col);
-                        helper.lastClickRow = -1;
-                        helper.lastClickCol = -1;
-                    } else {
-                        helper.lastClickRow = coords.row;
-                        helper.lastClickCol = coords.col;
-                        if (helper.doubleClickTimer) {
-                            clearTimeout(helper.doubleClickTimer);
-                        }
-                        helper.doubleClickTimer = setTimeout(function () {
-                            helper.doubleClickTimer = null;
-                        }, 250);
                     }
                 }
             });
 
-            helper.hot = hot;
-            helper.doubleClickTimer = null;
-            helper.lastClickRow = -1;
-            helper.lastClickCol = -1;
+            window._itemRealtimeDataHot = hot;
+            hot.render();
 
-            for (var i = 0; i < helper.CellInfo.length; i++) {
-                var info = helper.CellInfo[i];
-                if (helper.hot) {
-                    helper.hot.setCellMeta(info.row, info.col, 'columnDataType', info.columnDataType);
+            // 窗口 resize 时调整高度
+            ctx.win.on('resize', function() {
+                if (window._itemRealtimeDataHot) {
+                    var container = document.getElementById(ctx.containerId);
+                    if (container) {
+                        var parent = container.parentNode;
+                        var h = parent ? parent.clientHeight || 300 : 300;
+                        container.style.height = h + 'px';
+                        window._itemRealtimeDataHot.updateSettings({ height: h });
+                    }
                 }
-            }
-        };
-
-        helper.createTable(helper.sourceData);
-        return helper;
-    }
-};
-
-function viewDeviceRealTimeMonitoringData(row, col) {
-    if (!deviceRealTimeMonitoringDataHandsontableHelper || !deviceRealTimeMonitoringDataHandsontableHelper.hot) return;
-    if (row > 0 && col % 2 === 1) {
-        var colIndex = (col - 1) / 2;
-        var cellInfo = null;
-        var CellInfo = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo || [];
-        for (var i = 0; i < CellInfo.length; i++) {
-            if (CellInfo[i].row === row && CellInfo[i].col === colIndex) {
-                cellInfo = CellInfo[i];
-                break;
-            }
+            });
+        },
+        error: function(xhr, status, errorThrown) {
+            mini.unmask(mask);
+            document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;color:red;">加载失败</div>';
+            console.error('加载数据表失败:', status, errorThrown);
         }
-        if (cellInfo) {
-            var itemName = deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(row, col - 1);
-            var itemValue = deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(row, col);
-            var info = itemName + ':' + itemValue;
-            if (cellInfo.type === 0 || cellInfo.type === 5) {
-                if (cellInfo.resolutionMode === 2 || cellInfo.resolutionMode === 7) {
-                    mini.alert('查看趋势曲线: ' + info);
-                } else {
-                    mini.alert('查看数据表: ' + info);
-                }
-            } else if (cellInfo.type === 1 || cellInfo.type === 3) {
-                if (isNumByCalculateItemCode(cellInfo.column)) {
-                    mini.alert('查看趋势曲线: ' + info);
-                } else {
-                    mini.alert('查看数据表: ' + info);
-                }
-            } else {
-                mini.alert('查看详情: ' + info);
-            }
-        }
+    });
+}
+
+// 导出数据表（适配 MiniUI）
+function exportItemRealtimeDataTable(deviceId, deviceName, calculateType, itemName, itemCode, itemType, itemResolutionMode, itemBitIndex) {
+    if (!deviceId) {
+        mini.alert('请先选择设备');
+        return;
     }
+
+    var timestamp = new Date().getTime();
+    var key = 'exportItemRealTimeData_' + deviceId + '_' + itemCode + '_' + timestamp;
+    var url = context + '/realTimeMonitoringController/exportItemRealTimeData';
+    var param = '&deviceId=' + deviceId +
+        '&deviceName=' + encodeURIComponent(encodeURIComponent(deviceName)) +
+        '&calculateType=' + calculateType +
+        '&itemName=' + encodeURIComponent(encodeURIComponent(itemName)) +
+        '&itemCode=' + itemCode +
+        '&itemType=' + itemType +
+        '&itemResolutionMode=' + itemResolutionMode +
+        '&itemBitIndex=' + (itemBitIndex || '') +
+        '&key=' + key;
+
+    // 遮罩容器为当前窗口或 body
+    var container = _dataWindowContext ? _dataWindowContext.win.getBodyEl() : document.body;
+    exportDataMask(key, container, _loginUserLanguageResource.loadingData || '数据导出中...');
+    openExcelWindow(url + '?flag=true' + param);
 }
 
 // ================================================================
@@ -1668,19 +2437,11 @@ function viewDeviceRealTimeMonitoringData(row, col) {
 function initRightTabs() {
     rightTabs = mini.get('rightTabs');
     if (!rightTabs) return;
-    var tabs = [];
-    for (var i = 0; i < RIGHT_TAB_CONFIG.length; i++) {
-        var cfg = RIGHT_TAB_CONFIG[i];
-        tabs.push({
-            name: cfg.id,
-            title: cfg.title,
-            body: '<div id="' + cfg.id + '_container" style="width:100%;height:100%;"></div>'
-        });
-    }
-    rightTabs.setTabs(tabs);
-    if (tabs.length > 0) {
-        rightTabs.activeTab(tabs[0]);
-    }
+    rightTabs.setTabs([{
+        name: 'right_placeholder',
+        title: '请选择设备',
+        body: '<div class="loading-placeholder">请从列表中选择设备</div>'
+    }]);
 }
 
 function onRightTabChanged(e) {
@@ -1852,62 +2613,6 @@ function onSwitchControlClick(recordId, item, controlType, quantity, value, bitI
     });
 }
 
-function onNumericControlClick(recordId, controlType, itemName, unit, quantity, storeDataType, disabled) {
-    if (disabled) return;
-    var grid = mini.get('deviceGrid');
-    var selected = grid.getSelected();
-    if (!selected) return;
-    var deviceId = selected.id;
-    var deviceName = selected.deviceName;
-
-    var win = new mini.Window();
-    win.set({
-        title: '设置 ' + itemName,
-        width: 400,
-        height: 200,
-        modal: true,
-        showHeader: true,
-        allowResize: false
-    });
-
-    var html = '<div style="padding:20px;">';
-    html += '<table>';
-    html += '<tr><td>设备：</td><td>' + deviceName + '</td></tr>';
-    html += '<tr><td>参数：</td><td>' + itemName + (unit ? ' (' + unit + ')' : '') + '</td></tr>';
-    html += '<tr><td>数值：</td><td><input id="numericInput" class="mini-textbox" style="width:200px;" /></td></tr>';
-    html += '</table>';
-    html += '<div style="text-align:center;margin-top:20px;">';
-    html += '<button class="mini-button" onclick="submitNumericControl()">确定</button>';
-    html += '<button class="mini-button" style="margin-left:10px;" onclick="closeNumericWin()">取消</button>';
-    html += '</div>';
-    html += '</div>';
-
-    win.setBody(html);
-    win.show();
-
-    win._context = {
-        deviceId: deviceId,
-        deviceName: deviceName,
-        controlType: controlType,
-        quantity: quantity,
-        storeDataType: storeDataType
-    };
-
-    window.submitNumericControl = function() {
-        var input = mini.get('numericInput');
-        var value = input.getValue();
-        if (value === '' || isNaN(value)) {
-            mini.alert('请输入有效的数值');
-            return;
-        }
-        var ctx = win._context;
-        sendDeviceControl(ctx.deviceId, ctx.deviceName, ctx.controlType, ctx.quantity, value, null);
-        win.close();
-    };
-    window.closeNumericWin = function() {
-        win.close();
-    };
-}
 
 function showMoreEnum(recordId) {
     mini.alert('更多枚举功能开发中...');
@@ -2860,6 +3565,519 @@ function handleAdExit(data) {
     console.log('AD 退出处理完成，所有设备离线');
 }
 
+var DeviceControlValueHandsontableHelper = {
+	    createNew: function (divid) {
+	        var helper = {};
+	        helper.divid = divid;
+	        helper.validresult = true;
+	        helper.colHeaders = [];
+	        helper.columns = [];
+	        helper.colWidths = [];
+	        helper.hiddenColumns = [];
+
+	        helper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = '#DC2828';
+	            td.style.color = '#FFFFFF';
+	        };
+
+	        helper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        };
+
+	        helper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.fontWeight = 'bold';
+	            td.style.fontSize = '20px';
+	            td.style.height = '40px';
+	        };
+
+	        helper.createTable = function (data) {
+	            var container = document.getElementById(helper.divid);
+	            if (!container) return;
+	            // 清空
+	            container.innerHTML = '';
+	            // ★★★ 关键：设置容器高度为父容器高度（窗口内容区域） ★★★
+	            var parent = container.parentNode;
+	            var height = 300; // 默认
+	            if (parent) {
+	                // 获取父容器可见高度
+	                var rect = parent.getBoundingClientRect();
+	                if (rect.height > 0) {
+	                    height = rect.height;
+	                } else {
+	                    // 尝试递归查找
+	                    var el = parent;
+	                    while (el && el !== document.body) {
+	                        var h = el.clientHeight || el.offsetHeight;
+	                        if (h > 0) { height = h; break; }
+	                        el = el.parentNode;
+	                    }
+	                }
+	            }
+	            container.style.height = height + 'px';
+	            container.style.width = '100%';
+
+	            // 销毁旧实例
+	            if (helper.hot) {
+	                helper.hot.destroy();
+	                helper.hot = null;
+	            }
+
+	            // 创建 Handsontable
+	            helper.hot = new Handsontable(container, {
+	                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	                theme: 'ht-theme-classic',
+	                data: data,
+	                hiddenColumns: {
+	                    columns: helper.hiddenColumns,
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                columns: helper.columns,
+	                stretchH: 'all',
+	                rowHeaders: false,
+	                colHeaders: helper.colHeaders,
+	                colWidths: helper.colWidths,
+	                columnSorting: true,
+	                allowInsertRow: false,
+	                sortIndicator: true,
+	                manualColumnResize: true,
+	                manualRowResize: true,
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    if (prop.toUpperCase() == 'index'.toUpperCase() || prop.toUpperCase() == 'uplinkStatus'.toUpperCase()) {
+	                        cellProperties.editor = false;
+	                    }
+	                    return cellProperties;
+	                }
+	            });
+
+	            // 强制渲染
+	            helper.hot.render();
+	            // 延迟刷新
+	            setTimeout(function() {
+	                if (helper.hot) {
+	                    helper.hot.render();
+	                    helper.hot.updateSettings({ width: '100%', height: height });
+	                }
+	            }, 50);
+	        };
+	        return helper;
+	    }
+	};
+
+function onNumericControlClick(recordId, controlType, itemName, unit, quantity, storeDataType, disabled) {
+    if (disabled) return;
+
+    var grid = mini.get('deviceGrid');
+    var selected = grid.getSelected();
+    if (!selected) return;
+    var deviceId = selected.id;
+    var deviceName = selected.deviceName;
+    var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+
+    var win = new mini.Window();
+    win.set({
+        title: _loginUserLanguageResource.deviceControl,
+        width: 800,
+        height: 410,
+        minWidth: 600,
+        minHeight: 300,
+        modal: true,
+        showHeader: true,
+        allowResize: true,
+        maxable: true,
+        minable: true,
+        showCloseButton: true
+    });
+    win.show();
+
+    var containerId = 'DeviceControlValueTableDiv_' + Date.now();
+    var html = '<div style="display:flex; flex-direction:column; height:100%;">';
+    html += '<div id="toolbar_' + containerId + '" style="flex-shrink:0; padding:4px 8px; background:#f5f5f5; border-bottom:1px solid #ddd; display:flex; align-items:center; gap:6px;">';
+    html += '<span style="font-size:12px; color:#333;">' + (itemName || '') + (unit ? ' (' + unit + ')' : '') + '</span>';
+    html += '<span style="flex:1;"></span>';
+    html += '<button id="uplinkBtn_' + containerId + '" class="mini-button" style="padding:2px 12px;">' + (_loginUserLanguageResource.uplink) + '</button>';
+    html += '<button id="downlinkBtn_' + containerId + '" class="mini-button" style="padding:2px 12px;">' + (_loginUserLanguageResource.downlink) + '</button>';
+    html += '</div>';
+    html += '<div id="' + containerId + '" style="flex:1; overflow:hidden; margin:0; min-height:0; background:#fff;"></div>';
+    html += '</div>';
+    win.setBody(html);
+
+    mini.parse();
+
+    var uplinkBtn = mini.get('uplinkBtn_' + containerId);
+    var downlinkBtn = mini.get('downlinkBtn_' + containerId);
+    var helper = null;
+
+    function loadData() {
+        mini.mask({
+            el: win.getBodyEl(),
+            cls: 'mini-mask-loading',
+            html: '加载中...'
+        });
+
+        $.ajax({
+            url: context + '/realTimeMonitoringController/getDeviceControlValueList',
+            type: 'POST',
+            data: {
+                deviceId: deviceId,
+                deviceName: deviceName,
+                deviceType: deviceType,
+                controlType: controlType
+            },
+            dataType: 'json',
+            timeout: 10000,
+            success: function(result) {
+                mini.unmask(win.getBodyEl()); // 直接移除遮罩
+                console.log('数据加载成功', result);
+
+                if (!result || !result.totalRoot || result.totalRoot.length === 0) {
+                    document.getElementById(containerId).innerHTML = '<div style="text-align:center;padding:20px;">无数据</div>';
+                    return;
+                }
+
+                var data = result.totalRoot;
+                var isSingleRow = (data.length === 1);
+
+                var colHeaders = [
+                    _loginUserLanguageResource.idx,
+                    _loginUserLanguageResource.uplinkValue,
+                    _loginUserLanguageResource.uplink,
+                    _loginUserLanguageResource.downlinkValue,
+                    _loginUserLanguageResource.downlink
+                ];
+                var columns = [];
+
+             // ★★★ 1. 序号列（只读 + 灰色背景） ★★★
+                columns.push({
+                    data: 'index',
+                    readOnly: true,
+                    renderer: function(instance, td, row, col, prop, value, cellProperties) {
+                        Handsontable.renderers.TextRenderer.apply(this, arguments);
+                        td.style.backgroundColor = '#f5f5f5';
+                        td.style.fontWeight = 'bold';
+                        td.style.textAlign = 'center';
+                    },
+                    editor: false
+                });
+
+                // ★★★ 2. 上行值列（只读 + 灰色背景） ★★★
+                columns.push({
+                    data: 'uplinkStatus',
+                    readOnly: true,
+                    renderer: function(instance, td, row, col, prop, value, cellProperties) {
+                        Handsontable.renderers.TextRenderer.apply(this, arguments);
+                        td.style.backgroundColor = '#f5f5f5';
+                        td.style.fontWeight = 'bold';
+                        td.style.textAlign = 'left';
+                    },
+                    editor: false
+                });
+
+                columns.push({
+                    data: 'uplink',
+                    renderer: function(instance, td, row, col, prop, value, cellProperties) {
+                        td.innerHTML = '';
+                        var btn = document.createElement('button');
+                        btn.textContent = _loginUserLanguageResource.uplink;
+                        btn.className = 'mini-button';
+                        btn.style.padding = '2px 8px';
+                        btn.style.fontSize = '11px';
+                        btn.style.cursor = 'pointer';
+                        btn.style.border = '1px solid #ccc';
+                        btn.style.borderRadius = '3px';
+                        btn.style.background = '#f5f5f5';
+                        btn.onclick = function(e) {
+                            e.stopPropagation();
+                            performRowUplink(row);
+                        };
+                        td.appendChild(btn);
+                        return td;
+                    },
+                    readOnly: true
+                });
+
+                var valueColumn = { data: 'value', type: 'text' };
+                if (storeDataType.toUpperCase() !== 'BCD' && storeDataType.toUpperCase() !== 'STRING') {
+                    valueColumn.validator = function(val, callback) {
+                        if (val !== null && val !== undefined && val !== '' && isNaN(val)) {
+                            callback(false);
+                            return false;
+                        }
+                        callback(true);
+                        return true;
+                    };
+                }
+                columns.push(valueColumn);
+
+                columns.push({
+                    data: 'downlink',
+                    renderer: function(instance, td, row, col, prop, value, cellProperties) {
+                        td.innerHTML = '';
+                        var btn = document.createElement('button');
+                        btn.textContent = _loginUserLanguageResource.downlink;
+                        btn.className = 'mini-button';
+                        btn.style.padding = '2px 8px';
+                        btn.style.fontSize = '11px';
+                        btn.style.cursor = 'pointer';
+                        btn.style.border = '1px solid #ccc';
+                        btn.style.borderRadius = '3px';
+                        btn.style.background = '#f5f5f5';
+                        btn.onclick = function(e) {
+                            e.stopPropagation();
+                            performRowDownlink(row);
+                        };
+                        td.appendChild(btn);
+                        return td;
+                    },
+                    readOnly: true
+                });
+
+                // 单行时显示按钮列，多行时隐藏按钮列
+                var hiddenColumns = isSingleRow ? [] : [2, 4];
+
+                helper = DeviceControlValueHandsontableHelper.createNew(containerId);
+                helper.colHeaders = colHeaders;
+                helper.columns = columns;
+                helper.hiddenColumns = hiddenColumns;
+                helper.colWidths = isSingleRow ? [50, 100, 60, 100, 60] : [50, 80, 60, 80, 60];
+                helper.createTable(data);
+
+                // 工具栏按钮显隐：单行隐藏，多行显示
+                if (isSingleRow) {
+                    if (uplinkBtn) uplinkBtn.hide();
+                    if (downlinkBtn) downlinkBtn.hide();
+                } else {
+                    if (uplinkBtn) uplinkBtn.show();
+                    if (downlinkBtn) downlinkBtn.show();
+                }
+
+                if (uplinkBtn) {
+                    uplinkBtn.on('click', function() { performGlobalUplink(); });
+                }
+                if (downlinkBtn) {
+                    downlinkBtn.on('click', function() { performGlobalDownlink(); });
+                }
+
+                win.on('resize', function() {
+                    if (helper && helper.hot) {
+                        var container = document.getElementById(containerId);
+                        if (container) {
+                            var parent = container.parentNode;
+                            var h = parent ? parent.clientHeight || 300 : 300;
+                            container.style.height = h + 'px';
+                            helper.hot.updateSettings({ height: h });
+                        }
+                    }
+                });
+
+            },
+            error: function(xhr, status, errorThrown) {
+                mini.unmask(win.getBodyEl());
+                document.getElementById(containerId).innerHTML = '<div style="text-align:center;padding:20px;color:red;">加载失败</div>';
+                console.error('加载控制值列表失败:', status, errorThrown);
+            }
+        });
+    }
+
+    // ---- 操作函数（略，与之前相同） ----
+    function performRowUplink(rowIndex) {
+        if (!helper || !helper.hot) return;
+        var m = mini.mask({ el: win.getBodyEl(), cls: 'mini-mask-loading', html: '上行中...' });
+        $.ajax({
+            url: context + '/wellInformationManagerController/deviceDataUplink',
+            type: 'POST',
+            data: { deviceId: deviceId, deviceName: deviceName, controlType: controlType },
+            dataType: 'json',
+            timeout: 10000,
+            success: function(result) {
+                mini.unmask(win.getBodyEl());
+                if (result.flag && result.flag == true && result.error == false && result.data) {
+                    var uplinkValues = result.data.split(',');
+                    if (uplinkValues.length > rowIndex) {
+                        helper.hot.setDataAtCell(rowIndex, 1, uplinkValues[rowIndex]);
+                    }
+                } else {
+                    mini.alert(result.msg || '上行失败');
+                }
+            },
+            error: function() {
+                mini.unmask(win.getBodyEl());
+                mini.alert('上行请求失败');
+            }
+        });
+    }
+
+    function performRowDownlink(rowIndex) {
+        if (!helper || !helper.hot) return;
+        var value = helper.hot.getDataAtCell(rowIndex, 3);
+        if (storeDataType.toUpperCase() !== 'BCD' && storeDataType.toUpperCase() !== 'STRING') {
+            if (value !== null && value !== undefined && value !== '' && isNaN(value)) {
+                mini.alert(_loginUserLanguageResource.dataFormattingError);
+                return;
+            }
+        }
+        var deviceNameShow = selected.deviceName;
+        var tipInfo = _loginUserLanguageResource.deviceName + ":<font color=red>" + deviceNameShow + "</font>";
+        tipInfo += "</br>" + (itemName || '') + (unit ? " (" + unit + ")" : "") + ":<font color=red>" + value + "</font>";
+        tipInfo += "</br>" + (_loginUserLanguageResource.confirmOperation);
+        mini.confirm(tipInfo, _loginUserLanguageResource.tip, function(action) {
+            if (action == 'ok') {
+                sendBatchControl([value]);
+            }
+        });
+    }
+
+    function performGlobalUplink() {
+        if (!helper || !helper.hot) return;
+        var rowCount = helper.hot.countRows();
+        mini.mask({ el: win.getBodyEl(), cls: 'mini-mask-loading', html: '上行中...' });
+        $.ajax({
+            url: context + '/wellInformationManagerController/deviceDataUplink',
+            type: 'POST',
+            data: { deviceId: deviceId, deviceName: deviceName, controlType: controlType },
+            dataType: 'json',
+            timeout: 10000,
+            success: function(result) {
+                mini.unmask(win.getBodyEl());
+                if (result.flag && result.flag == true && result.error == false && result.data) {
+                    var uplinkValues = result.data.split(',');
+                    for (var i = 0; i < Math.min(rowCount, uplinkValues.length); i++) {
+                        helper.hot.setDataAtCell(i, 1, uplinkValues[i]);
+                    }
+                } else {
+                    mini.alert(result.msg || '上行失败');
+                }
+            },
+            error: function() {
+                mini.unmask(win.getBodyEl());
+                mini.alert('上行请求失败');
+            }
+        });
+    }
+
+    function performGlobalDownlink() {
+        if (!helper || !helper.hot) return;
+        var rowCount = helper.hot.countRows();
+        var values = [];
+        var isValid = true;
+        for (var i = 0; i < rowCount; i++) {
+            var v = helper.hot.getDataAtCell(i, 3);
+            if (storeDataType.toUpperCase() !== 'BCD' && storeDataType.toUpperCase() !== 'STRING') {
+                if (v !== null && v !== undefined && v !== '' && isNaN(v)) {
+                    isValid = false;
+                    break;
+                }
+            }
+            values.push(v !== undefined && v !== null ? v : '');
+        }
+        if (!isValid) {
+            mini.alert(_loginUserLanguageResource.dataFormattingError);
+            return;
+        }
+        var deviceNameShow = selected.deviceName;
+        var valueStr = values.join(',');
+        var tipInfo = _loginUserLanguageResource.deviceName + ":<font color=red>" + deviceNameShow + "</font>";
+        tipInfo += "</br>" + (itemName || '') + (unit ? " (" + unit + ")" : "") + ":<font color=red>" + valueStr + "</font>";
+        tipInfo += "</br>" + (_loginUserLanguageResource.confirmOperation);
+        mini.confirm(tipInfo, _loginUserLanguageResource.tip, function(action) {
+            if (action == 'ok') {
+                sendBatchControl(values);
+            }
+        });
+    }
+
+    function sendBatchControl(values) {
+        var controlValue = values.join(',');
+        mini.mask({ el: win.getBodyEl(), cls: 'mini-mask-loading', html: '指令发送中...' });
+        $.ajax({
+            url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
+            type: 'POST',
+            data: {
+                deviceId: deviceId,
+                deviceName: deviceName,
+                deviceType: deviceType,
+                controlType: controlType,
+                controlValue: controlValue,
+                storeDataType: storeDataType,
+                quantity: quantity
+            },
+            dataType: 'json',
+            timeout: 10000,
+            success: function(result) {
+                mini.unmask(win.getBodyEl());
+                if (result.flag == false) {
+                    mini.alert(result.msg || '会话过期，请重新登录');
+                } else if (result.flag == true && result.error == false) {
+                    mini.alert(result.msg || '操作成功');
+                } else if (result.flag == true && result.error == true) {
+                    mini.alert(result.msg || '操作失败');
+                }
+            },
+            error: function() {
+                mini.unmask(win.getBodyEl());
+                mini.alert('请求失败');
+            }
+        });
+    }
+
+    win.on('beforedestroy', function() {
+        if (helper && helper.hot) {
+            helper.hot.destroy();
+            helper = null;
+        }
+        mini.unmask(win.getBodyEl());
+    });
+
+    loadData();
+}
+
+/**
+ * 导出设备实时监测数据（调用公共函数）
+ * @param {number} deviceId 设备ID
+ * @param {string} deviceName 设备名称
+ * @param {number} calculateType 计算类型
+ */
+function exportDeviceRealTimeMonitoringData(deviceId, deviceName, calculateType) {
+    if (!deviceId) {
+        mini.alert('请先选择设备');
+        return;
+    }
+
+    // 生成导出任务唯一标识
+    var timestamp = new Date().getTime();
+    var key = 'exportDeviceRealTimeMonitoringData_' + deviceId + '_' + timestamp;
+
+    // 构建下载 URL
+    var url = context + '/realTimeMonitoringController/exportDeviceRealTimeMonitoringData';
+    var param = '&deviceId=' + deviceId
+        + '&deviceName=' + encodeURIComponent(encodeURIComponent(deviceName))
+        + '&calculateType=' + calculateType
+        + '&key=' + key;
+
+    // ---- 调用公共函数：显示遮罩并轮询 ----
+    var maskCtrl = exportDataMask(
+        key,
+        'RealTimeMonitoringInfoDataTableInfoDiv_id',  // 遮罩容器 ID
+        _loginUserLanguageResource.loadingData
+    );
+
+    // ---- 打开下载链接 ----
+    var fullUrl = url + '?flag=true' + param;
+    openExcelWindow(fullUrl);
+
+    // 注意：如果 window.open 被拦截，用户需允许弹窗
+    // 如果导出窗口关闭但后台尚未完成，遮罩仍会轮询直至完成或超时
+}
+
 // ================================================================
 // 12. 暴露给外部
 // ================================================================
@@ -2875,7 +4093,7 @@ window.onDeviceGridSelectChanged = onDeviceGridSelectChanged;
 window.onDeviceGridDrawCell = onDeviceGridDrawCell;
 window.onDeviceComboChange = onDeviceComboChange;
 window.refreshDeviceList = refreshDeviceList;
-window.exportData = exportData;
+window.exportRealTimeMonitoringData = exportRealTimeMonitoringData;
 window.gotoHistory = gotoHistory;
 </script>
 </body>

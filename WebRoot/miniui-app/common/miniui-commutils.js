@@ -620,10 +620,91 @@ function ExtDel_ObjectInfo(grid_id, row, data_id, action_name) {
 }
 
 // ================================================================
-// 12. Excel 导出
+// 导出
 // ================================================================
+/**
+ * 导出数据时显示遮罩，并轮询检查导出完成状态
+ * @param {string} key 导出任务唯一标识（由调用方生成）
+ * @param {string|HTMLElement} container 遮罩容器（DOM元素 或 元素ID，默认 document.body）
+ * @param {string} msg 遮罩提示文字
+ * @param {number} interval 轮询间隔（毫秒，默认 1000）
+ * @param {number} timeout 超时时间（毫秒，默认 60000），超时后自动取消遮罩并停止轮询
+ * @returns {object} 返回 { mask, checkInterval, stop } 便于外部控制
+ */
+function exportDataMask(key, container, msg, interval, timeout) {
+    msg = msg || (_loginUserLanguageResource.loadingData || '数据导出中，请稍候...');
+    interval = interval || 1000;
+    timeout = timeout || 60000;
+
+    // 容器处理
+    var containerEl = container;
+    if (typeof container === 'string') {
+        containerEl = document.getElementById(container);
+        if (!containerEl) {
+            console.warn('容器 "' + container + '" 未找到，使用 document.body');
+            containerEl = document.body;
+        }
+    }
+    if (!containerEl) {
+        containerEl = document.body;
+    }
+
+    // 显示遮罩
+    var mask = mini.mask({
+        el: containerEl,
+        cls: 'mini-mask-loading',
+        html: msg
+    });
+
+    // 轮询检查导出状态
+    var flagUrl = context + '/reportDataMamagerController/getSessionFlag?key=' + key;
+    var checkInterval = setInterval(function () {
+        $.ajax({
+            url: flagUrl,
+            type: 'POST',
+            dataType: 'json',
+            timeout: 5000,
+            success: function (result) {
+                if (result && result.flag == '1') {
+                    clearInterval(checkInterval);
+                    clearTimeout(timeoutId);
+                    mini.unmask(containerEl);
+                    console.log('导出完成，遮罩已移除, key:', key);
+                }
+            },
+            error: function (xhr, status) {
+                console.warn('导出状态检查请求失败:', status, 'key:', key);
+                // 不停止轮询，继续尝试
+            }
+        });
+    }, interval);
+
+    // 超时自动取消遮罩（防止永久卡住）
+    var timeoutId = setTimeout(function () {
+        clearInterval(checkInterval);
+        mini.unmask(mask);
+        console.warn('导出超时，遮罩已强制移除, key:', key);
+    }, timeout);
+
+    // 返回控制对象，方便外部手动停止
+    return {
+        mask: mask,
+        checkInterval: checkInterval,
+        timeoutId: timeoutId,
+        stop: function () {
+            clearInterval(checkInterval);
+            clearTimeout(timeoutId);
+            mini.unmask(mask);
+        }
+    };
+}
+
+/**
+ * 打开导出文件下载链接（不刷新当前页面）
+ * @param {string} url 完整下载链接
+ */
 function openExcelWindow(url) {
-    document.location.href = url;
+	document.location.href = url;
 }
 
 function exportExcelWindow(url) {
@@ -4120,4 +4201,143 @@ function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitl
 	    });
 	}
 };
-// ================================================================
+
+window.closeAllTips = function() {
+    var tips = document.querySelectorAll('.mini-tips');
+    for (var i = tips.length - 1; i >= 0; i--) {
+        var tip = tips[i];
+        if (tip.parentNode) {
+            tip.parentNode.removeChild(tip);
+        }
+    }
+};
+
+/**
+ * 根据设备类型获取项目配置（统计标签显示/隐藏）
+ * @param {string} deviceType 设备类型ID（可能为逗号分隔）
+ * @returns {object} 配置对象，结构同原 ExtJS 版本
+ */
+function getProjectTabInstanceInfoByDeviceType(deviceType) {
+    var r = {
+        DeviceRealTimeMonitoring: {
+            FESDiagramStatPie: false,
+            CommStatusStatPie: false,
+            RunStatusStatPie: false,
+            NumStatusStatPie: false
+        },
+        DeviceHistoryQuery: {
+            FESDiagramStatPie: false,
+            CommStatusStatPie: false,
+            RunStatusStatPie: false,
+            NumStatusStatPie: false
+        },
+        AlarmQuery: {
+            FESDiagramResultAlarm: false,
+            RunStatusAlarm: false,
+            CommStatusAlarm: false,
+            NumericValueAlarm: false,
+            EnumValueAlarm: false,
+            SwitchingValueAlarm: false
+        }
+    };
+
+    // 使用同步 Ajax 请求（保持与原有行为一致）
+    $.ajax({
+        url: context + '/operationMaintenanceController/getProjectTabInstanceInfoByDeviceType',
+        type: 'POST',
+        data: { deviceType: deviceType },
+        dataType: 'json',
+        async: false,          // 关键：同步请求
+        timeout: 10000,
+        success: function(result) {
+            if (result && result.config && result.config.length > 0) {
+                for (var i = 0; i < result.config.length; i++) {
+                    var item = result.config[i];
+
+                    // ---- DeviceRealTimeMonitoring ----
+                    if (item.DeviceRealTimeMonitoring) {
+                        var d = item.DeviceRealTimeMonitoring;
+                        if (d.FESDiagramStatPie !== undefined && r.DeviceRealTimeMonitoring.FESDiagramStatPie === false) {
+                            r.DeviceRealTimeMonitoring.FESDiagramStatPie = d.FESDiagramStatPie;
+                        }
+                        if (d.CommStatusStatPie !== undefined && r.DeviceRealTimeMonitoring.CommStatusStatPie === false) {
+                            r.DeviceRealTimeMonitoring.CommStatusStatPie = d.CommStatusStatPie;
+                        }
+                        if (d.RunStatusStatPie !== undefined && r.DeviceRealTimeMonitoring.RunStatusStatPie === false) {
+                            r.DeviceRealTimeMonitoring.RunStatusStatPie = d.RunStatusStatPie;
+                        }
+                        if (d.NumStatusStatPie !== undefined && r.DeviceRealTimeMonitoring.NumStatusStatPie === false) {
+                            r.DeviceRealTimeMonitoring.NumStatusStatPie = d.NumStatusStatPie;
+                        }
+                    }
+
+                    // ---- DeviceHistoryQuery ----
+                    if (item.DeviceHistoryQuery) {
+                        var h = item.DeviceHistoryQuery;
+                        if (h.FESDiagramStatPie !== undefined && r.DeviceHistoryQuery.FESDiagramStatPie === false) {
+                            r.DeviceHistoryQuery.FESDiagramStatPie = h.FESDiagramStatPie;
+                        }
+                        if (h.CommStatusStatPie !== undefined && r.DeviceHistoryQuery.CommStatusStatPie === false) {
+                            r.DeviceHistoryQuery.CommStatusStatPie = h.CommStatusStatPie;
+                        }
+                        if (h.RunStatusStatPie !== undefined && r.DeviceHistoryQuery.RunStatusStatPie === false) {
+                            r.DeviceHistoryQuery.RunStatusStatPie = h.RunStatusStatPie;
+                        }
+                        if (h.NumStatusStatPie !== undefined && r.DeviceHistoryQuery.NumStatusStatPie === false) {
+                            r.DeviceHistoryQuery.NumStatusStatPie = h.NumStatusStatPie;
+                        }
+                    }
+
+                    // ---- AlarmQuery ----
+                    if (item.AlarmQuery) {
+                        var a = item.AlarmQuery;
+                        if (a.FESDiagramResultAlarm !== undefined && r.AlarmQuery.FESDiagramResultAlarm === false) {
+                            r.AlarmQuery.FESDiagramResultAlarm = a.FESDiagramResultAlarm;
+                        }
+                        if (a.RunStatusAlarm !== undefined && r.AlarmQuery.RunStatusAlarm === false) {
+                            r.AlarmQuery.RunStatusAlarm = a.RunStatusAlarm;
+                        }
+                        if (a.CommStatusAlarm !== undefined && r.AlarmQuery.CommStatusAlarm === false) {
+                            r.AlarmQuery.CommStatusAlarm = a.CommStatusAlarm;
+                        }
+                        if (a.NumericValueAlarm !== undefined && r.AlarmQuery.NumericValueAlarm === false) {
+                            r.AlarmQuery.NumericValueAlarm = a.NumericValueAlarm;
+                        }
+                        if (a.EnumValueAlarm !== undefined && r.AlarmQuery.EnumValueAlarm === false) {
+                            r.AlarmQuery.EnumValueAlarm = a.EnumValueAlarm;
+                        }
+                        if (a.SwitchingValueAlarm !== undefined && r.AlarmQuery.SwitchingValueAlarm === false) {
+                            r.AlarmQuery.SwitchingValueAlarm = a.SwitchingValueAlarm;
+                        }
+                    }
+                }
+            }
+        },
+        error: function(xhr, status, errorThrown) {
+            console.warn('获取项目配置失败，将使用默认全禁用配置:', status, errorThrown);
+            // 保持 r 中所有值为 false（已初始化）
+        }
+    });
+
+    return r;
+}
+
+function getDeviceTabInstanceInfoByDeviceId(deviceId) {
+    var result = {};
+    $.ajax({
+        url: context + '/operationMaintenanceController/getDeviceTabInstanceInfoByDeviceId',
+        type: 'POST',
+        data: { deviceId: deviceId },
+        dataType: 'json',
+        async: false,
+        timeout: 10000,
+        success: function(data) {
+            result = data;
+        },
+        error: function() {
+            console.warn('获取设备标签配置失败，使用默认配置');
+            result = { config: { DeviceRealTimeMonitoring: {} }, calculateType: 0 };
+        }
+    });
+    return result;
+}

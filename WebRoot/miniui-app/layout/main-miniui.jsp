@@ -84,7 +84,7 @@ request.setAttribute("browserLang", browserLang);
         var loginUserLanguageResourceFirstLower = JSON.parse('<%= loginUserLanguageResourceFirstLower.replace("'", "\\'") %>');
         var configFile = JSON.parse('<%= configFileJson.replace("'", "\\'") %>');
         var tabInfo = JSON.parse('<%= tabInfoJson.replace("'", "\\'") %>');
-        var defaultPageSize = configFile.ap.others.pageSize || 25;
+        var defaultPageSize = configFile.ap.others.pageSize || 50;
         var productionUnit = configFile.ap.others.productionUnit;
         var showHelp = configFile.ap.others.showHelp !== false;
         // 新增：第一个叶子节点的ID（在 onMenuTreeLoad 中动态获取）
@@ -258,14 +258,13 @@ request.setAttribute("browserLang", browserLang);
                     <a href="#" id="banner_exit" onclick="userLoginOut()">
                         <span id="banner_exit_text">退出</span>
                     </a>
-                    <span id="resourceMonitorContainer" style="margin-left:20px;font-size:12px;"></span>
                 </div>
             </div>
         </div>
 
         <!-- ===== 左侧区域 ===== -->
         <div region="west" width="250" minWidth="180" maxWidth="400"
-             showSplitIcon="true" title="导航"
+             showSplitIcon="true" showHeader="false"
              bodyStyle="padding:0;background:#f5f7fa;border-right:1px solid #e8e8e8;display:flex;flex-direction:column;">
 
             <div class="west-section" style="flex:1;">
@@ -354,7 +353,6 @@ request.setAttribute("browserLang", browserLang);
             }
         }
         $('#languageContainer').html(langHtml);
-        initResourceMonitor();
     }
 
     function switchLanguage(languageValue) {
@@ -366,13 +364,6 @@ request.setAttribute("browserLang", browserLang);
                     window.location.href = context + '/miniui-app/layout/main-miniui.jsp';
                 }
             });
-        }
-    }
-
-    function initResourceMonitor() {
-        var container = $('#resourceMonitorContainer');
-        if (container.length) {
-            container.html('<span style="color:#8f8;">●</span> <span style="color:#aaa;">系统运行中</span>');
         }
     }
 
@@ -465,23 +456,40 @@ request.setAttribute("browserLang", browserLang);
     }
 
     function onTabActiveChanged(e) {
-        var tab = e.tab;
+    	var tab = e.tab;
         if (!tab) return;
         refreshCurrentModule();
     }
 
     function refreshCurrentModule() {
         var moduleCode = mini.get('topModule_Id').getValue();
-        if (!moduleCode) return;
+        if (!moduleCode) {
+            console.warn('refreshCurrentModule: moduleCode 为空');
+            return;
+        }
         var tabs = mini.get('mainTabs');
         var activeTab = tabs.getActiveTab();
-        if (!activeTab) return;
-        var iframe = $(activeTab.tabEl).find('iframe')[0];
+        if (!activeTab) {
+            console.warn('refreshCurrentModule: 没有激活的 Tab');
+            return;
+        }
+        // ★ 使用 MiniUI 官方 API 获取 Tab Body 容器
+        var bodyEl = tabs.getTabBodyEl(activeTab);
+        if (!bodyEl) {
+            console.warn('refreshCurrentModule: 无法获取 Tab Body 元素');
+            return;
+        }
+        // 在 body 容器中查找 iframe
+        var iframe = $(bodyEl).find('iframe')[0];
         if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage({
+            var msg = {
                 action: 'refresh',
                 orgId: mini.get('leftOrg_Id').getValue()
-            }, '*');
+            };
+            console.log('向子模块发送刷新消息:', msg, 'iframe.src:', iframe.src);
+            iframe.contentWindow.postMessage(msg, '*');
+        } else {
+            console.warn('refreshCurrentModule: 未找到 iframe 或 contentWindow 不可用');
         }
     }
 

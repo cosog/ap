@@ -72,6 +72,9 @@ var _loginUserLanguageResource = (function() {
 var _configFile = getGlobalVar('configFile', { ap: { others: {} } });
 var _productionUnit = _configFile.ap.others.productionUnit || getGlobalVar('productionUnit', '');
 var _loginUserLanguage = getGlobalVar('loginUserLanguage', '');
+var _defaultPageSize = getGlobalVar('defaultPageSize', '');
+
+
 
 
 // ================================================================
@@ -1039,6 +1042,62 @@ function foreachAndSearchOrgChildId(rec) {
     }
     recursionOrgChildId(rec);
     return rtnArr.join(",");
+}
+
+/**
+ * 递归获取组织机构节点下所有子节点的 ID（包括自身），以逗号分隔
+ * 对应原有 ExtJS 函数：foreachAndSearchOrgChildId
+ */
+function getOrgNodeIds(node) {
+    if (!node) return '';
+    var ids = [];
+
+    // 递归遍历函数
+    function traverse(currentNode) {
+        if (!currentNode) return;
+        // 收集当前节点的 ID（MiniUI 树节点使用 id 字段，对应 orgId）
+        var id = currentNode.id || currentNode.orgId;
+        if (id !== undefined && id !== null && id !== '') {
+            ids.push(id);
+        }
+        // 如果有子节点，递归遍历
+        if (currentNode.children && currentNode.children.length > 0) {
+            for (var i = 0; i < currentNode.children.length; i++) {
+                traverse(currentNode.children[i]);
+            }
+        }
+    }
+
+    traverse(node);
+    return ids.join(',');
+}
+
+/**
+ * 递归获取组织机构节点下所有子节点的名称（包括自身），以逗号分隔
+ * 对应原有 ExtJS 函数：selectEachTreeText
+ */
+function getOrgNodeNames(node) {
+    if (!node) return '';
+    var names = [];
+
+    // 递归遍历函数
+    function traverse(currentNode) {
+        if (!currentNode) return;
+        // 收集当前节点的名称（MiniUI 树节点使用 text 字段）
+        var name = currentNode.text || currentNode.name || '';
+        if (name !== '') {
+            names.push(name);
+        }
+        // 如果有子节点，递归遍历
+        if (currentNode.children && currentNode.children.length > 0) {
+            for (var i = 0; i < currentNode.children.length; i++) {
+                traverse(currentNode.children[i]);
+            }
+        }
+    }
+
+    traverse(node);
+    return names.join(',');
 }
 
 // ================================================================
@@ -4340,4 +4399,38 @@ function getDeviceTabInstanceInfoByDeviceId(deviceId) {
         }
     });
     return result;
+}
+
+/**
+ * 创建报警数量徽章（CSS 实现，高度固定，避免锁定列行高问题）
+ * @param {number} number 报警数量（如 3, 12, 105）
+ * @param {string} bgColor 背景色（支持 "dc2828" 或 "#dc2828" 格式）
+ * @param {string} textColor 文本颜色（可选，默认白色）
+ * @returns {string} HTML 字符串
+ */
+function createAlarmBadge(number, bgColor, textColor) {
+    if (!number || number <= 0) return '';
+    
+    // 统一格式：确保 # 前缀
+    bgColor = (bgColor && bgColor.charAt(0) === '#') ? bgColor : '#' + bgColor;
+    textColor = (textColor && textColor.charAt(0) === '#') ? textColor : (textColor ? '#' + textColor : '#ffffff');
+    
+    // 固定高度 10px，line-height 相等，边框半径设为 10px 可保证圆形/胶囊自适应
+    // 内边距左右各 3px，最小宽度 10px，数字字体 7px（可读性）
+    var style = 'display: inline-block;' +
+                'background-color: ' + bgColor + ';' +
+                'color: ' + textColor + ';' +
+                'border-radius: 10px;' +           // 高度一半，单数圆形多数胶囊
+                'padding: 0 3px;' +
+                'min-width: 10px;' +               // 最小宽度等于高度
+                'height: 10px;' +
+                'line-height: 10px;' +
+                'text-align: center;' +
+                'font-size: 7px;' +                // 字体缩小适应 10px 高度
+                'font-weight: normal;' +
+                'margin-right: 3px;' +
+                'vertical-align: middle;' +
+                'box-sizing: border-box;';
+    
+    return '<span style="' + style + '">' + number + '</span>';
 }

@@ -882,15 +882,22 @@ function checkedNode(node, checked) {
 // 16. 告警颜色渲染（适配 Ext.getCmp/Ext.JSON.decode）
 // ================================================================
 function getAlarmShowStyle() {
-    var alarmStyleInput = mini.get('AlarmShowStyle_Id');
-    if (alarmStyleInput) {
-        var val = alarmStyleInput.getValue();
-        if (isNotVal(val)) {
-            try {
-                return JSON.parse(val);
-            } catch(e) {
-                return {};
-            }
+    var val = null;
+    try {
+        var input = mini.get('AlarmShowStyle_Id');
+        if (input) val = input.getValue();
+    } catch (e) {}
+    if (!isNotVal(val) && window.parent && window.parent.mini) {
+        try {
+            var parentInput = window.parent.mini.get('AlarmShowStyle_Id');
+            if (parentInput) val = parentInput.getValue();
+        } catch (e) {}
+    }
+    if (isNotVal(val) && typeof val === 'string') {
+        try {
+            return JSON.parse(val);
+        } catch (e) {
+            return {};
         }
     }
     return {};
@@ -4433,4 +4440,60 @@ function createAlarmBadge(number, bgColor, textColor) {
                 'box-sizing: border-box;';
     
     return '<span style="' + style + '">' + number + '</span>';
+}
+
+function extractPieData(result, tabKey, alarmShowStyle) {
+    if (!result) return [{ name: _loginUserLanguageResource.emptyMsg, y: 1 }];
+    var list = result.totalRoot || [];
+    var data = [];
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+        if (item.itemCode !== 'all' && item.count > 0) {
+            var point = {
+                name: item.item || item.text || '未知',
+                y: item.count || 0
+            };
+
+            // ★★★ 根据统计类型和 AlarmShowStyle 设置颜色 ★★★
+            if (tabKey === 'CommStatus' && alarmShowStyle && alarmShowStyle.Comm) {
+                var comm = alarmShowStyle.Comm;
+                if (item.itemCode === 'online') {
+                    point.color = '#' + (comm.online ? comm.online.Color : '52c41a');
+                } else if (item.itemCode === 'goOnline') {
+                    point.color = '#' + (comm.goOnline ? comm.goOnline.Color : 'faad14');
+                } else if (item.itemCode === 'offline') {
+                    point.color = '#' + (comm.offline ? comm.offline.Color : 'ff4d4f');
+                }
+            } else if (tabKey === 'RunStatus' && alarmShowStyle && alarmShowStyle.Run) {
+                var run = alarmShowStyle.Run;
+                var comm = alarmShowStyle.Comm;
+                if (item.itemCode === 'run') {
+                    point.color = '#' + (run.run ? run.run.Color : '52c41a');
+                } else if (item.itemCode === 'stop') {
+                    point.color = '#' + (run.stop ? run.stop.Color : 'ff4d4f');
+                } else if (item.itemCode === 'noData') {
+                    point.color = '#' + (run.noData ? run.noData.Color : '999999');
+                } else if (item.itemCode === 'goOnline') {
+                    point.color = '#' + (comm.goOnline ? comm.goOnline.Color : 'faad14');
+                } else if (item.itemCode === 'offline') {
+                    point.color = '#' + (comm.offline ? comm.offline.Color : 'ff4d4f');
+                }
+            } else if (tabKey === 'NumStatus' && alarmShowStyle && alarmShowStyle.Data) {
+                var dataStyle = alarmShowStyle.Data;
+                var level = item.level;
+                if (level === 0) {
+                    point.color = '#' + (dataStyle.Normal ? dataStyle.Normal.BackgroundColor : 'FFFFFF');
+                } else if (level === 100) {
+                    point.color = '#' + (dataStyle.FirstLevel ? dataStyle.FirstLevel.BackgroundColor : 'DC2828');
+                } else if (level === 200) {
+                    point.color = '#' + (dataStyle.SecondLevel ? dataStyle.SecondLevel.BackgroundColor : 'F09614');
+                } else if (level === 300) {
+                    point.color = '#' + (dataStyle.ThirdLevel ? dataStyle.ThirdLevel.BackgroundColor : 'FAE600');
+                }
+            }
+            // FESdiagramResult 不设置颜色，使用 Highcharts 默认
+            data.push(point);
+        }
+    }
+    return data.length > 0 ? data : [{ name: _loginUserLanguageResource.emptyMsg, y: 1 }];
 }

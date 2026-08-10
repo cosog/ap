@@ -445,8 +445,8 @@ String moduleId = request.getParameter("moduleId");
                                                 <span class="separator"></span>
                                                 <input id="deviceCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --" url="<%=path%>/wellInformationManagerController/loadWellComboxList" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onDeviceComboChange" />
                                                 <span style="flex:1;"></span>
-                                                <button class="mini-button" iconCls="export" onclick="exportRealTimeMonitoringData()">导出</button>
-                                                <button class="mini-button" onclick="gotoHistory()">查看历史</button>
+                                                <button id="exportRealTimeMonitoringDeviceListBtn" class="mini-button" iconCls="export" onclick="exportRealTimeMonitoringData()">导出</button>
+                                                <button id="queryDeviceHistoryDataBtn" class="mini-button" onclick="gotoHistory()">查看历史</button>
                                                 <!-- 隐藏控件 -->
                                                 <input id="RealTimeMonitoringInfoDeviceListSelectRow_Id" type="hidden" value="-1" />
                                                 <input id="RealTimeMonitoringStatSelectFESdiagramResult_Id" type="hidden" value="" />
@@ -536,28 +536,28 @@ String moduleId = request.getParameter("moduleId");
             'FESdiagramResult': {
                 id: 'stat_FESdiagramResult',
                 title: function() {
-                    return _loginUserLanguageResource.workType || '工况类型';
+                    return _loginUserLanguageResource.workType;
                 },
                 api: '/realTimeMonitoringController/getRealTimeMonitoringFESDiagramResultStatData'
             },
             'CommStatus': {
                 id: 'stat_CommStatus',
                 title: function() {
-                    return _loginUserLanguageResource.commStatus || '通信状态';
+                    return _loginUserLanguageResource.commStatus;
                 },
                 api: '/realTimeMonitoringController/getRealTimeMonitoringCommStatusStatData'
             },
             'RunStatus': {
                 id: 'stat_RunStatus',
                 title: function() {
-                    return _loginUserLanguageResource.runStatus || '运行状态';
+                    return _loginUserLanguageResource.runStatus;
                 },
                 api: '/realTimeMonitoringController/getRealTimeMonitoringRunStatusStatData'
             },
             'NumStatus': {
                 id: 'stat_NumStatus',
                 title: function() {
-                    return _loginUserLanguageResource.numStatus || '数值状态';
+                    return _loginUserLanguageResource.numStatus;
                 },
                 api: '/realTimeMonitoringController/getRealTimeMonitoringNumStatusStatData'
             }
@@ -593,10 +593,39 @@ String moduleId = request.getParameter("moduleId");
                 field: 'acqTime',
                 width: 150,
                 headerAlign: 'center',
-                header: '采集时间',
+                header: _loginUserLanguageResource.avqTime,
                 dateFormat: 'yyyy-MM-dd HH:mm:ss'
             }
         ];
+        
+        function initI18n() {
+            // 1. 工具栏按钮
+            var btnRefresh = mini.get('btnRefresh');
+            if (btnRefresh) btnRefresh.setText(_loginUserLanguageResource.refresh);
+            
+            // 导出按钮（需添加 id="exportBtn" 或通过 class 选择）
+            var exportBtn = mini.get('exportRealTimeMonitoringDeviceListBtn');
+            if (exportBtn) exportBtn.setText(_loginUserLanguageResource.exportData);
+            
+            var historyBtn = mini.get('queryDeviceHistoryDataBtn');
+            if (historyBtn) historyBtn.setText(_loginUserLanguageResource.showHistory);
+
+            // 2. 设备下拉框（emptyText）
+            var deviceCombo = mini.get('deviceCombo');
+            if (deviceCombo) {
+                deviceCombo.setEmptyText('--' + (_loginUserLanguageResource.all) + '--');
+            }
+
+            // 3. 动态数据导出按钮（在 refreshDeviceTabs 中已创建，需在创建后设置）
+            // 可通过监听 middleTabs 的 activechanged 事件，在动态数据标签激活时设置
+            // 或者在 refreshDeviceTabs 中直接使用国际化文本
+
+            // 4. 右侧面板的表格列标题（在 loadDeviceControl 中设置）
+            // 可修改 renderer 中的列标题为国际化
+
+            // 5. 所有 mini.alert 和 mini.confirm 中的文本
+            // 已在函数中使用 _loginUserLanguageResource，无需额外修改
+        }
 
         // ================================================================
         // 3. 构建一级标签（底部）+ 资源监测（右侧）
@@ -636,32 +665,32 @@ String moduleId = request.getParameter("moduleId");
             var resourceButtons = [{
                     id: 'CPUUsedPercentLabel_id',
                     text: 'CPU',
-                    onclick: "openResourceChart('cpuUsedPercent','CPU使用率(%)')"
+                    onclick: "openResourceChart('cpuUsedPercent','"+_loginUserLanguageResource.cpuUsage+"(%)')"
                 },
                 {
                     id: 'memUsedPercentLabel_id',
                     text: '内存',
-                    onclick: "openResourceChart('memUsedPercent','内存使用率(%)')"
+                    onclick: "openResourceChart('memUsedPercent','"+_loginUserLanguageResource.memUsage+"(%)')"
                 },
                 {
                     id: 'redisRunStatusProbeLabel_id',
                     text: '缓存',
-                    onclick: "openResourceChart('jedisStatus','缓存数据库内存(m)')"
+                    onclick: "openResourceChart('jedisStatus','"+_loginUserLanguageResource.cacheDbMemory+"(m)')"
                 },
                 {
                     id: 'tableSpaceSizeProbeLabel_id',
                     text: '表空间',
-                    onclick: "openResourceChart('tableSpaceSize','表空间使用率(%)')"
+                    onclick: "openResourceChart('tableSpaceSize','"+_loginUserLanguageResource.tablespacesUsage+"(%)')"
                 },
                 {
                     id: 'adRunStatusProbeLabel_id',
                     text: '通信服务',
-                    onclick: "openResourceChart('adRunStatus','AD状态')"
+                    onclick: "openResourceChart('adRunStatus','"+_loginUserLanguageResource.adStatus+"')"
                 },
                 {
                     id: 'acRunStatusProbeLabel_id',
                     text: '计算服务',
-                    onclick: "openResourceChart('acRunStatus','AC状态')"
+                    onclick: "openResourceChart('acRunStatus','"+_loginUserLanguageResource.acStatus+"')"
                 },
                 {
                     id: 'adLicenseStatusProbeLabel_id',
@@ -730,7 +759,7 @@ String moduleId = request.getParameter("moduleId");
                 allIds.push(children[i].deviceTypeId);
             }
             var allTabs = [{
-                text: '全部',
+                text: _loginUserLanguageResource.all,
                 deviceTypeId: allIds.join(','),
                 isAll: true
             }];
@@ -796,6 +825,7 @@ String moduleId = request.getParameter("moduleId");
             var deviceTypeId = level2Item.deviceTypeId || '0';
             var orgId = window.parent && window.parent.mini ?
                 window.parent.mini.get('leftOrg_Id').getValue() : '';
+            clearStatFilters();    
             refreshDeviceList();
             loadStatCharts(deviceTypeId, orgId);
             // 中间和右侧标签不再在此初始化，由设备选中事件触发
@@ -823,7 +853,7 @@ String moduleId = request.getParameter("moduleId");
                 if (col.dataIndex === 'id') {
                     column.type = 'indexcolumn';
                     column.width = col.width || 40;
-                    column.header = '序号';
+                    column.header = _loginUserLanguageResource.idx;
                     delete column.field;
                 } else if (col.dataIndex === 'deviceName') {
                     column.width = col.width || 140;
@@ -840,31 +870,6 @@ String moduleId = request.getParameter("moduleId");
                 columns.push(column);
             }
             return columns;
-        }
-
-        // ================================================================
-        // 报警样式与徽章工具函数
-        // ================================================================
-        function getAlarmShowStyle() {
-            var val = null;
-            try {
-                var input = mini.get('AlarmShowStyle_Id');
-                if (input) val = input.getValue();
-            } catch (e) {}
-            if (!isNotVal(val) && window.parent && window.parent.mini) {
-                try {
-                    var parentInput = window.parent.mini.get('AlarmShowStyle_Id');
-                    if (parentInput) val = parentInput.getValue();
-                } catch (e) {}
-            }
-            if (isNotVal(val) && typeof val === 'string') {
-                try {
-                    return JSON.parse(val);
-                } catch (e) {
-                    return {};
-                }
-            }
-            return {};
         }
 
         function getAlarmStyleByLevel(level, styleConfig) {
@@ -901,6 +906,18 @@ String moduleId = request.getParameter("moduleId");
             params.deviceType = deviceType;
             var deviceCombo = mini.get('deviceCombo');
             params.deviceName = deviceCombo ? deviceCombo.getValue() : '';
+            
+         	// ★★★ 新增：从隐藏字段读取统计筛选条件 ★★★
+            var getFieldValue = function(id) {
+                var el = document.getElementById(id);
+                return el ? el.value : '';
+            };
+            params.FESdiagramResultStatValue = getFieldValue('RealTimeMonitoringStatSelectFESdiagramResult_Id');
+            params.commStatusStatValue = getFieldValue('RealTimeMonitoringStatSelectCommStatus_Id');
+            params.runStatusStatValue = getFieldValue('RealTimeMonitoringStatSelectRunStatus_Id');
+            params.numStatusStatValue = getFieldValue('RealTimeMonitoringStatSelectNumStatus_Id');
+            params.deviceTypeStatValue = getFieldValue('RealTimeMonitoringStatSelectDeviceType_Id');
+            
             console.log('加载设备列表参数:', params);
         }
 
@@ -956,6 +973,93 @@ String moduleId = request.getParameter("moduleId");
                 refreshRightTabs();
             }
         }
+        
+
+        // 处理鼠标进入
+           function handleDeviceNameCellMouseEnter(cellElement, event) {
+        	   var alarmData = cellElement.getAttribute('data-alarm');
+        	    if (!alarmData) return;
+        	    var counts;
+        	    try {
+        	        counts = JSON.parse(alarmData);
+        	    } catch(e) {
+        	        return;
+        	    }
+        	    var deviceName = cellElement.getAttribute('data-name') || '';
+        	    var hasAlarm = (counts[100] + counts[200] + counts[300]) > 0;
+        	    if (!hasAlarm) return;
+
+        	    var alarmShowStyle = getAlarmShowStyle() || {};
+        	    var Data = alarmShowStyle.Data || {};
+
+        	    // 构建提示 HTML（带背景色的彩色标签）
+        	    var parts = [];
+        	    if (counts[100] > 0) {
+        	        var bg1 = '#' + (Data.FirstLevel && Data.FirstLevel.Color || 'dc2828');
+        	        var tx1 = '#' + (Data.FirstLevel && Data.FirstLevel.ColorText || 'ffffff');
+        	        parts.push('<span style="display:inline-block;background:' + bg1 + ';color:' + tx1 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;">' + (_loginUserLanguageResource.alarmLevel1 || '一级') + ':' + counts[100] + '</span>');
+        	    }
+        	    if (counts[200] > 0) {
+        	        var bg2 = '#' + (Data.SecondLevel && Data.SecondLevel.Color || 'f09614');
+        	        var tx2 = '#' + (Data.SecondLevel && Data.SecondLevel.ColorText || 'ffffff');
+        	        parts.push('<span style="display:inline-block;background:' + bg2 + ';color:' + tx2 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;">' + (_loginUserLanguageResource.alarmLevel2 || '二级') + ':' + counts[200] + '</span>');
+        	    }
+        	    if (counts[300] > 0) {
+        	        var bg3 = '#' + (Data.ThirdLevel && Data.ThirdLevel.Color || 'fae600');
+        	        var tx3 = '#' + (Data.ThirdLevel && Data.ThirdLevel.ColorText || '333333');
+        	        parts.push('<span style="display:inline-block;background:' + bg3 + ';color:' + tx3 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;">' + (_loginUserLanguageResource.alarmLevel3 || '三级') + ':' + counts[300] + '</span>');
+        	    }
+
+        	    var tipHtml = deviceName;
+        	    if (parts.length > 0) {
+        	        tipHtml = deviceName + ' ' + parts.join(' ');
+        	    }
+
+        	    // ★★★ 使用鼠标坐标定位 ★★★
+        	    var x = event.clientX + 12;
+        	    var y = event.clientY + 12;
+
+        	    // 防止超出屏幕右边界
+        	    var tipWidth = 300; // 预估最大宽度
+        	    if (x + tipWidth > window.innerWidth) {
+        	        x = event.clientX - tipWidth - 12;
+        	    }
+        	    // 防止超出屏幕底部
+        	    var tipHeight = 80; // 预估最小高度
+        	    if (y + tipHeight > window.innerHeight) {
+        	        y = event.clientY - tipHeight - 12;
+        	    }
+
+        	    // 关闭之前的提示
+        	    hideDeviceNameTip();
+
+        	    var tipDiv = document.createElement('div');
+        	    tipDiv.id = 'deviceNameTip';
+        	    tipDiv.style.cssText = 
+        	        'position:fixed;' +
+        	        'background:#fff;' +
+        	        'border:1px solid #ccc;' +
+        	        'padding:6px 10px;' +
+        	        'border-radius:4px;' +
+        	        'box-shadow:0 2px 8px rgba(0,0,0,0.15);' +
+        	        'z-index:99999;' +
+        	        'max-width:400px;' +
+        	        'font-size:12px;' +
+        	        'font-family:"Microsoft YaHei",Arial,sans-serif;' +
+        	        'pointer-events:none;';
+        	    tipDiv.innerHTML = tipHtml;
+        	    tipDiv.style.left = x + 'px';
+        	    tipDiv.style.top = y + 'px';
+        	    document.body.appendChild(tipDiv);
+           }
+
+           // 隐藏提示
+           function hideDeviceNameTip() {
+               var tip = document.getElementById('deviceNameTip');
+               if (tip && tip.parentNode) {
+                   tip.parentNode.removeChild(tip);
+               }
+           }
 
         //===== 设备表格绘制单元格 =====
         function onDeviceGridDrawCell(e) {
@@ -973,12 +1077,8 @@ String moduleId = request.getParameter("moduleId");
 
             // ---- 设备名称列（徽章 + 悬停提示） ----
             if (fieldUpper === 'DEVICENAME') {
-                var badges = '';
-                var counts = {
-                    100: 0,
-                    200: 0,
-                    300: 0
-                };
+            	var badges = '';
+                var counts = { 100: 0, 200: 0, 300: 0 };
                 for (var i = 0; i < alarmInfo.length; i++) {
                     var level = alarmInfo[i].alarmLevel;
                     if (level === 100 || level === 200 || level === 300) {
@@ -993,16 +1093,10 @@ String moduleId = request.getParameter("moduleId");
                 if (counts[300] > 0) badges += createAlarmBadge(counts[300], thirdColor);
 
                 var deviceName = value || '';
-                // 构建悬停提示文本（纯文本，不包含样式）
-                var tipParts = [];
-                if (counts[100] > 0) tipParts.push((_loginUserLanguageResource.alarmLevel1 || '一级') + ':' + counts[100]);
-                if (counts[200] > 0) tipParts.push((_loginUserLanguageResource.alarmLevel2 || '二级') + ':' + counts[200]);
-                if (counts[300] > 0) tipParts.push((_loginUserLanguageResource.alarmLevel3 || '三级') + ':' + counts[300]);
-                var tipText = deviceName;
-                if (tipParts.length > 0) tipText += ' ' + tipParts.join(' ');
-
-                // 渲染单元格（徽章 + 设备名 + 原生 title 提示）
-                e.cellHtml = '<span title="' + tipText + '" style="white-space:nowrap;">' + badges + deviceName + '</span>';
+                // 将 counts 转为 JSON 字符串存入 data-* 属性
+                var alarmData = JSON.stringify(counts);
+                // 使用 data-* 属性存储报警信息
+                e.cellHtml = '<span class="device-name-cell" data-alarm=\'' + alarmData + '\' data-name="' + deviceName + '" style="white-space:nowrap;">' + badges + deviceName + '</span>';
                 return;
             }
 
@@ -1134,7 +1228,7 @@ String moduleId = request.getParameter("moduleId");
                     unlockedheads = unlockedheads.slice(0, -1);
                 }
                 fields = 'id' + (lockedfields ? ',' + lockedfields : '') + (unlockedfields ? ',' + unlockedfields : '');
-                heads = (_loginUserLanguageResource.idx || '序号') + (lockedheads ? ',' + lockedheads : '') + (unlockedheads ? ',' + unlockedheads : '');
+                heads = (_loginUserLanguageResource.idx) + (lockedheads ? ',' + lockedheads : '') + (unlockedheads ? ',' + unlockedheads : '');
             } catch (e) {
                 mini.alert('列配置解析失败');
                 return;
@@ -1324,8 +1418,8 @@ String moduleId = request.getParameter("moduleId");
         // 7. 统计饼图
         // ================================================================
         function loadStatCharts(deviceTypeId, orgId) {
-            var projectTabConfig = getProjectTabInstanceInfoByDeviceType(deviceTypeId);
-
+        	clearStatFilters();
+        	var projectTabConfig = getProjectTabInstanceInfoByDeviceType(deviceTypeId);
             var config = {
                 FESdiagramResult: projectTabConfig.DeviceRealTimeMonitoring.FESDiagramStatPie,
                 CommStatus: projectTabConfig.DeviceRealTimeMonitoring.CommStatusStatPie,
@@ -1339,10 +1433,27 @@ String moduleId = request.getParameter("moduleId");
         function onStatTabChanged(e) {
             var tab = e.tab;
             if (!tab) return;
+
+            // 1. 清空所有统计筛选条件
+            clearStatFilters();
+
+            // 2. 清空设备下拉框
+            var deviceCombo = mini.get('deviceCombo');
+            if (deviceCombo) {
+                deviceCombo.setValue('');
+                deviceCombo.setText('');
+            }
+
+            // 3. 加载当前统计标签的数据
             var deviceTypeId = currentLevel2 ? currentLevel2.deviceTypeId : '0';
             var orgId = window.parent && window.parent.mini ?
-                window.parent.mini.get('leftOrg_Id').getValue() : '';
+                         window.parent.mini.get('leftOrg_Id').getValue() : '';
             loadStatData(tab, deviceTypeId, orgId);
+
+            // 4. ★★★ 刷新设备列表（应用清空后的筛选条件，即显示全部设备） ★★★
+            refreshDeviceList();
+
+            console.log('统计标签切换完成，已清空筛选并刷新设备列表');
         }
 
         function loadStatData(tab, deviceTypeId, orgId) {
@@ -1368,8 +1479,15 @@ String moduleId = request.getParameter("moduleId");
                             .replace(/(\{|\,)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*(\:)/g, '$1"$2"$3')
                             .replace(/'([^']*)'/g, '"$1"');
                         var result = JSON.parse(fixedJson);
-                        var data = extractPieData(result);
-                        renderPieChart(divId, data, tab.title);
+                        
+                        if (result.AlarmShowStyle && window.parent && window.parent.mini) {
+                            var alarmInput = window.parent.mini.get('AlarmShowStyle_Id');
+                            if (alarmInput) {
+                                alarmInput.setValue(JSON.stringify(result.AlarmShowStyle));
+                            }
+                        }
+                        var data = extractPieData(result,tab._key,result.AlarmShowStyle);
+                        renderPieChart(divId, data, tab.title, tab._key);
                     } catch (e) {
                         console.error('JSON解析失败:', e);
                         if (container) {
@@ -1385,36 +1503,67 @@ String moduleId = request.getParameter("moduleId");
             });
         }
 
-        function extractPieData(result) {
-            if (!result) return [{
-                name: '暂无数据',
-                y: 1
-            }];
-            var list = result.totalRoot || [];
-            var data = [];
-            for (var i = 0; i < list.length; i++) {
-                if (list[i].itemCode !== 'all' && list[i].count > 0) {
-                    data.push({
-                        name: list[i].item || list[i].text || '未知',
-                        y: list[i].count || 0
-                    });
+        
+        
+        function handlePieClick(e, tabKey) {
+            // 重置行选中
+            var selectRowInput = document.getElementById('RealTimeMonitoringInfoDeviceListSelectRow_Id');
+            if (selectRowInput) selectRowInput.value = -1;
+
+            // 确定要更新的隐藏字段 ID
+            var fieldId = '';
+            switch (tabKey) {
+                case 'FESdiagramResult':
+                    fieldId = 'RealTimeMonitoringStatSelectFESdiagramResult_Id';
+                    break;
+                case 'CommStatus':
+                    fieldId = 'RealTimeMonitoringStatSelectCommStatus_Id';
+                    break;
+                case 'RunStatus':
+                    fieldId = 'RealTimeMonitoringStatSelectRunStatus_Id';
+                    break;
+                case 'NumStatus':
+                    fieldId = 'RealTimeMonitoringStatSelectNumStatus_Id';
+                    break;
+                default:
+                    return;
+            }
+            var fieldInput = document.getElementById(fieldId);
+            if (!fieldInput) return;
+
+            // 切换选中状态
+            if (e.point.selected) {
+                // 如果已选中，则取消选中
+                fieldInput.value = '';
+            } else {
+                // 选中：数值状态使用 level 值，其他使用名称
+                if (tabKey === 'NumStatus') {
+                    fieldInput.value = e.point.level !== undefined ? e.point.level : '';
+                } else {
+                    fieldInput.value = e.point.name;
                 }
             }
-            return data.length > 0 ? data : [{
-                name: '暂无数据',
-                y: 1
-            }];
+
+            // 清空设备下拉框
+            var deviceCombo = mini.get('deviceCombo');
+            if (deviceCombo) {
+                deviceCombo.setValue('');
+                deviceCombo.setText('');
+            }
+
+            // 刷新设备列表
+            refreshDeviceList();
         }
 
-        function renderPieChart(divId, data, title) {
+        function renderPieChart(divId, data, title,tabKey) {
             var container = document.getElementById(divId);
             if (!container) return;
             if (container._chart) {
                 container._chart.destroy();
                 container._chart = null;
             }
-            if (data.length === 1 && data[0].name === '暂无数据') {
-                container.innerHTML = '<div class="loading-placeholder">暂无数据</div>';
+            if (data.length === 1 && data[0].name === _loginUserLanguageResource.emptyMsg) {
+                container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
                 return;
             }
 
@@ -1439,9 +1588,9 @@ String moduleId = request.getParameter("moduleId");
                         fontSize: '13px'
                     }
                 },
-                tooltip: {
-                    pointFormat: '数量: <b>{point.y}</b><br/>占比: <b>{point.percentage:.1f}%</b>'
-                },
+                tooltip : {
+    				pointFormat : _loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+_loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+    			},
                 legend: {
                     align: 'center',
                     verticalAlign: 'bottom',
@@ -1460,12 +1609,18 @@ String moduleId = request.getParameter("moduleId");
                             connectorColor: '#000000',
                             format: '<b>{point.name}</b>: {point.y}'
                         },
-                        showInLegend: true
+                        showInLegend: true,
+                     	// ★★★ 点击事件 ★★★
+                        events: {
+                            click: function(e) {
+                                handlePieClick(e, tabKey);
+                            }
+                        }
                     }
                 },
                 exporting: {
                     enabled: true,
-                    filename: title || '统计图',
+                    filename: title,
                     fallbackToExportServer: false
                 },
                 series: [{
@@ -1475,6 +1630,23 @@ String moduleId = request.getParameter("moduleId");
                 }]
             });
             container._chart = chart;
+        }
+        
+        /**
+         * 清空所有统计饼图筛选条件
+         */
+        function clearStatFilters() {
+            var ids = [
+                'RealTimeMonitoringStatSelectFESdiagramResult_Id',
+                'RealTimeMonitoringStatSelectCommStatus_Id',
+                'RealTimeMonitoringStatSelectRunStatus_Id',
+                'RealTimeMonitoringStatSelectNumStatus_Id',
+                'RealTimeMonitoringStatSelectDeviceType_Id'
+            ];
+            for (var i = 0; i < ids.length; i++) {
+                var el = document.getElementById(ids[i]);
+                if (el) el.value = '';
+            }
         }
 
         // ================================================================
@@ -1527,7 +1699,7 @@ String moduleId = request.getParameter("moduleId");
                     '</div>' +
                     '<div id="RealTimeMonitoringInfoDataTableInfoDiv_id" style="flex:1; overflow:hidden; background:#fff; min-height:0;"></div>' +
                     '</div>',
-                'middle_placeholder': '<div class="loading-placeholder">该设备暂无数据分析标签</div>'
+                'middle_placeholder': '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>'
             };
             var titleMap = {
                 'middle_WellboreAnalysis': _loginUserLanguageResource.wellboreAnalysis,
@@ -1547,11 +1719,11 @@ String moduleId = request.getParameter("moduleId");
             var bodyMap = {
                 'right_DeviceControl': '<div id="right_DeviceControl_container" style="width:100%;height:100%;"></div>',
                 'right_DeviceInfo': '<div id="right_DeviceInfo_container" style="width:100%;height:100%;"></div>',
-                'right_placeholder': '<div class="loading-placeholder">该设备暂无附加信息或控制项</div>'
+                'right_placeholder': '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>'
             };
             var titleMap = {
-                'right_DeviceControl': _loginUserLanguageResource.deviceControl || '设备控制',
-                'right_DeviceInfo': _loginUserLanguageResource.deviceInformation || '设备信息',
+                'right_DeviceControl': _loginUserLanguageResource.deviceControl,
+                'right_DeviceInfo': _loginUserLanguageResource.deviceInformation,
                 'right_placeholder': '无信息'
             };
             return {
@@ -1748,7 +1920,7 @@ String moduleId = request.getParameter("moduleId");
                         var charts = ['wellboreChart1', 'wellboreChart2', 'wellboreChart3', 'wellboreChart4'];
                         charts.forEach(function(id) {
                             var el = document.getElementById(id);
-                            if (el) el.innerHTML = '<div class="loading-placeholder">无数据</div>';
+                            if (el) el.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
                         });
                     }
                 },
@@ -1820,12 +1992,12 @@ String moduleId = request.getParameter("moduleId");
                                 'surfaceChart4'
                             );
                         } else {
-                            document.getElementById('surfaceChart4').innerHTML = '<div class="loading-placeholder">无预期扭矩数据</div>';
+                            document.getElementById('surfaceChart4').innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
                         }
                     } else {
                         ['surfaceChart1', 'surfaceChart2', 'surfaceChart3', 'surfaceChart4'].forEach(function(id) {
                             var el = document.getElementById(id);
-                            if (el) el.innerHTML = '<div class="loading-placeholder">无数据</div>';
+                            if (el) el.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
                         });
                     }
                 },
@@ -1846,7 +2018,7 @@ String moduleId = request.getParameter("moduleId");
             if (!tabBody) return;
 
             // 显示加载占位
-            tabBody.innerHTML = '<div class="loading-placeholder"><span class="icon">⏳</span>加载趋势数据...</div>';
+            tabBody.innerHTML = '<div class="loading-placeholder"><span class="icon">⏳</span>'+_loginUserLanguageResource.loadingData+'</div>';
 
             // 获取选中的设备信息
             var grid = mini.get('deviceGrid');
@@ -1879,17 +2051,17 @@ String moduleId = request.getParameter("moduleId");
                     tabBody.innerHTML = '';
 
                     if (!result || !result.list || result.list.length === 0) {
-                        tabBody.innerHTML = '<div class="loading-placeholder">暂无趋势数据</div>';
+                        tabBody.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
                         return;
                     }
 
                     var data = result.list;
                     var curveNames = result.curveItems || [];
-                    var deviceNameResult = result.deviceName || deviceName || '设备';
+                    var deviceNameResult = result.deviceName || deviceName || '';
                     var curveCount = data.length > 0 ? data[0].data.length : 0;
 
                     if (curveCount === 0) {
-                        tabBody.innerHTML = '<div class="loading-placeholder">无曲线数据</div>';
+                        tabBody.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
                         return;
                     }
 
@@ -1963,8 +2135,8 @@ String moduleId = request.getParameter("moduleId");
                             continue;
                         }
 
-                        var yTitle = curveNames[i] || ('曲线' + (i + 1));
-                        var titleText = deviceNameResult + ':' + yTitle + ' 趋势';
+                        var yTitle = curveNames[i];
+                        var titleText = deviceNameResult + ':' + yTitle +   (_loginUserLanguage!='zh_CN'?' ':'') + _loginUserLanguageResource.trendCurve;
                         var conf = (curveConf && curveConf.length > i) ? curveConf[i] : {};
                         var color = (colors && colors.length > i) ? colors[i] : defaultColors[i % 10];
                         var lineWidth = conf.lineWidth || 2;
@@ -2373,28 +2545,6 @@ String moduleId = request.getParameter("moduleId");
                     td.style.height = '40px';
                 }
 
-                function getAlarmShowStyle() {
-                    var val = null;
-                    try {
-                        var input = mini.get('AlarmShowStyle_Id');
-                        if (input) val = input.getValue();
-                    } catch (e) {}
-                    if (!val && window.parent && window.parent.mini) {
-                        try {
-                            var parentInput = window.parent.mini.get('AlarmShowStyle_Id');
-                            if (parentInput) val = parentInput.getValue();
-                        } catch (e) {}
-                    }
-                    if (val && typeof val === 'string') {
-                        try {
-                            return JSON.parse(val);
-                        } catch (e) {
-                            return {};
-                        }
-                    }
-                    return {};
-                }
-
                 deviceRealTimeMonitoringDataHandsontableHelper.addCellStyle = function(instance, td, row, col, prop, value, cellProperties) {
                     Handsontable.renderers.TextRenderer.apply(this, arguments);
                     var AlarmShowStyle = getAlarmShowStyle();
@@ -2680,7 +2830,7 @@ String moduleId = request.getParameter("moduleId");
             // 创建 MiniUI 窗口
             var win = new mini.Window();
             win.set({
-                title: _loginUserLanguageResource.trendCurve || '趋势曲线',
+                title: _loginUserLanguageResource.trendCurve,
                 width: '65%',
                 height: '50%',
                 minWidth: 500,
@@ -2760,14 +2910,14 @@ String moduleId = request.getParameter("moduleId");
                 success: function(result) {
                     mini.unmask(ctx.win.getBodyEl());
                     if (!result || !result.list || result.list.length === 0) {
-                        document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;">无数据</div>';
+                        document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;">'+_loginUserLanguageResource.emptyMsg+'</div>';
                         return;
                     }
 
                     // ---------- 以下完全复用原有绘图逻辑 ----------
                     var data = result.list;
-                    var legendName = result.curveItems || ['曲线'];
-                    var title = result.deviceName + ':' + legendName[0].split('(')[0] + (_loginUserLanguageResource.trendCurve || '趋势曲线');
+                    var legendName = result.curveItems;
+                    var title = result.deviceName + ':' + legendName[0].split('(')[0] + (_loginUserLanguageResource.trendCurve);
                     var subtitle = '';
 
                     // 构建 series
@@ -2800,14 +2950,13 @@ String moduleId = request.getParameter("moduleId");
                     var minValue = allPositive ? 0 : null;
 
                     // 使用 Highcharts 渲染（复用现有绘图函数）
-                    if (typeof initDeviceRealtimeMonitoringStockChartFn === 'function') {
-                        initDeviceRealtimeMonitoringStockChartFn(
+                    initDeviceRealtimeMonitoringStockChartFn(
                             series,
                             undefined,
                             ctx.containerId,
                             title,
                             subtitle,
-                            _loginUserLanguageResource.time || '时间',
+                            _loginUserLanguageResource.time,
                             legendName[0],
                             ['#7cb5ec'],
                             false,
@@ -2818,38 +2967,6 @@ String moduleId = request.getParameter("moduleId");
                             minValue,
                             false
                         );
-                    } else {
-                        // 降级方案
-                        Highcharts.chart(ctx.containerId, {
-                            chart: {
-                                type: 'spline'
-                            },
-                            title: {
-                                text: title
-                            },
-                            xAxis: {
-                                type: 'datetime',
-                                title: {
-                                    text: '时间'
-                                }
-                            },
-                            yAxis: {
-                                title: {
-                                    text: legendName[0]
-                                },
-                                max: maxValue,
-                                min: minValue
-                            },
-                            series: series,
-                            credits: {
-                                enabled: false
-                            },
-                            exporting: {
-                                enabled: true,
-                                fallbackToExportServer: false
-                            }
-                        });
-                    }
                 },
                 error: function(xhr, status, errorThrown) {
                     mini.unmask(mask);
@@ -2972,7 +3089,7 @@ String moduleId = request.getParameter("moduleId");
                 success: function(result) {
                     mini.unmask(ctx.win.getBodyEl());
                     if (!result || !result.totalRoot || result.totalRoot.length === 0) {
-                        document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;">无数据</div>';
+                        document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;">'+_loginUserLanguageResource.emptyMsg+'</div>';
                         return;
                     }
 
@@ -3005,7 +3122,7 @@ String moduleId = request.getParameter("moduleId");
                         data: data,
                         columns: [{
                                 data: 'acqTime',
-                                title: _loginUserLanguageResource.acqTime || '采集时间'
+                                title: _loginUserLanguageResource.acqTime
                             },
                             {
                                 data: 'data',
@@ -3149,7 +3266,7 @@ String moduleId = request.getParameter("moduleId");
 
             var grid = mini.get('deviceGrid');
             if (!grid || !grid.getSelected()) {
-                container.innerHTML = '<div class="loading-placeholder">请选择设备</div>';
+                container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.noSelectionRecord+'</div>';
                 return;
             }
             var selected = grid.getSelected();
@@ -3157,7 +3274,7 @@ String moduleId = request.getParameter("moduleId");
             var deviceName = selected.deviceName;
             var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
 
-            container.innerHTML = '<div class="loading-placeholder">加载控制项...</div>';
+            container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.loadingData+'</div>';
 
             $.ajax({
                 url: context + '/realTimeMonitoringController/getDeviceControlData',
@@ -3172,7 +3289,7 @@ String moduleId = request.getParameter("moduleId");
                 success: function(result) {
                     container.innerHTML = '';
                     if (!result || !result.totalRoot || result.totalRoot.length === 0) {
-                        container.innerHTML = '<div class="loading-placeholder">无控制项</div>';
+                        container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
                         return;
                     }
 
@@ -3185,13 +3302,13 @@ String moduleId = request.getParameter("moduleId");
                         allowResize: true,
                         columns: [{
                                 field: 'item',
-                                header: '控制项',
+                                header: _loginUserLanguageResource.controlItem,
                                 width: '40%',
                                 align: 'left'
                             },
                             {
                                 field: 'action',
-                                header: '操作',
+                                header:  _loginUserLanguageResource.operation,
                                 width: '60%',
                                 align: 'center',
                                 renderer: function(e) {
@@ -3210,17 +3327,13 @@ String moduleId = request.getParameter("moduleId");
                                     var html = '<div style="display:flex; flex-direction:column; align-items:center; gap:4px;">';
 
                                     if (resolutionMode == 1) {
-                                        var btnCount = Math.min(itemMeaning.length, 3);
+                                        var btnCount = itemMeaning.length;
                                         for (var i = 0; i < btnCount; i++) {
                                             var text = itemMeaning[i][1];
                                             var value = itemMeaning[i][0];
                                             html += '<button class="mini-button" style="' + btnStyle + '" ' +
                                                 (disabled ? 'disabled' : '') +
                                                 ' onclick="onEnumControlClick(' + record.id + ', \'' + record.item + '\', \'' + record.itemcode + '\', \'' + record.quantity + '\', \'' + value + '\', \'' + text + '\', ' + disabled + ')">' + text + '</button>';
-                                        }
-                                        if (itemMeaning.length > 3) {
-                                            html += '<button class="mini-button" style="' + btnStyle + '" ' + (disabled ? 'disabled' : '') +
-                                                ' onclick="showMoreEnum(' + record.id + ')">更多</button>';
                                         }
                                     } else if (resolutionMode == 0) {
                                         for (var i = 0; i < itemMeaning.length; i++) {
@@ -3234,7 +3347,7 @@ String moduleId = request.getParameter("moduleId");
                                     } else {
                                         html += '<button class="mini-button" style="' + btnStyle + '" ' +
                                             (disabled ? 'disabled' : '') +
-                                            ' onclick="onNumericControlClick(' + record.id + ', \'' + record.itemcode + '\', \'' + record.itemName + '\', \'' + (record.unit || '') + '\', ' + record.quantity + ', \'' + record.storeDataType + '\', ' + disabled + ')">设置</button>';
+                                            ' onclick="onNumericControlClick(' + record.id + ', \'' + record.itemcode + '\', \'' + record.itemName + '\', \'' + (record.unit || '') + '\', ' + record.quantity + ', \'' + record.storeDataType + '\', ' + disabled + ')">'+_loginUserLanguageResource.set+'</button>';
                                     }
 
                                     html += '</div>';
@@ -3368,7 +3481,7 @@ String moduleId = request.getParameter("moduleId");
                 success: function(result) {
                     container.innerHTML = '';
                     if (!result) {
-                        container.innerHTML = '<div class="loading-placeholder">无数据</div>';
+                        container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
                         return;
                     }
 
@@ -3382,8 +3495,8 @@ String moduleId = request.getParameter("moduleId");
                     if (infoList.length > 0) {
                         html += '<table style="width:100%; border-collapse:collapse; font-size:12px;">';
                         html += '<thead><tr style="background:#f5f7fa;">';
-                        html += '<th style="padding:6px 10px; text-align:left; border:1px solid #ddd;">变量</th>';
-                        html += '<th style="padding:6px 10px; text-align:center; border:1px solid #ddd;">值</th>';
+                        html += '<th style="padding:6px 10px; text-align:left; border:1px solid #ddd;">'+_loginUserLanguageResource.variable+'</th>';
+                        html += '<th style="padding:6px 10px; text-align:center; border:1px solid #ddd;">'+_loginUserLanguageResource.value+'</th>';
                         html += '</tr></thead><tbody>';
                         for (var i = 0; i < infoList.length; i++) {
                             var item = infoList[i];
@@ -3395,7 +3508,7 @@ String moduleId = request.getParameter("moduleId");
                         }
                         html += '</tbody></table>';
                     } else {
-                        html += '<div class="loading-placeholder" style="height:100%;">无附加信息</div>';
+                        html += '<div class="loading-placeholder" style="height:100%;">'+_loginUserLanguageResource.emptyMsg+'</div>';
                     }
                     html += '</div>';
 
@@ -3404,8 +3517,8 @@ String moduleId = request.getParameter("moduleId");
                     if (auxList.length > 0) {
                         html += '<table style="width:100%; border-collapse:collapse; font-size:12px;">';
                         html += '<thead><tr style="background:#f5f7fa;">';
-                        html += '<th style="padding:4px 8px; border:1px solid #ddd; text-align:center; width:50px;">序号</th>';
-                        html += '<th style="padding:4px 8px; border:1px solid #ddd; text-align:left;">设备名称</th>';
+                        html += '<th style="padding:4px 8px; border:1px solid #ddd; text-align:center; width:50px;">'+_loginUserLanguageResource.idx+'</th>';
+                        html += '<th style="padding:4px 8px; border:1px solid #ddd; text-align:left;">'+_loginUserLanguageResource.deviceName+'</th>';
                         html += '</tr></thead>';
                         html += '<tbody>';
                         for (var i = 0; i < auxList.length; i++) {
@@ -3419,13 +3532,13 @@ String moduleId = request.getParameter("moduleId");
                             // 详情行（紧跟在主行下方，默认显示，跨两列）
                             html += '<tr style="background:#fafafa;">';
                             html += '<td colspan="2" style="padding:8px 12px; border:1px solid #ddd;">';
-                            html += '<div style="word-break:break-all; line-height:1.6;">' + (item.detailsInfo || '无详情') + '</div>';
+                            html += '<div style="word-break:break-all; line-height:1.6;">' + (item.detailsInfo) + '</div>';
                             html += '</td>';
                             html += '</tr>';
                         }
                         html += '</tbody></table>';
                     } else {
-                        html += '<div class="loading-placeholder" style="height:100%;">无辅件设备</div>';
+                        html += '<div class="loading-placeholder" style="height:100%;">'+_loginUserLanguageResource.emptyMsg+'</div>';
                     }
                     html += '</div>';
                     html += '</div>';
@@ -3445,7 +3558,7 @@ String moduleId = request.getParameter("moduleId");
         function openResourceChart(itemCode, itemName) {
             var win = new mini.Window();
             win.set({
-                title: itemName + ' - 趋势曲线',
+                title: itemName +(_loginUserLanguage!='zh_CN'?' ':'')+_loginUserLanguageResource.trendCurve,
                 width: '70%',
                 height: '60%',
                 modal: true,
@@ -3462,6 +3575,180 @@ String moduleId = request.getParameter("moduleId");
 
             loadResourceChartData(itemCode, itemName, divId, win);
         }
+        
+        function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, ytitle, color, legend, timeFormat) {
+            if ($("#" + divId) != undefined && $("#" + divId)[0] != undefined) {
+            	var isZooming = false;
+                var zoomTimer = null;
+                var $container = $("#" + divId);
+                var panelId = "ResourceProbeHistoryCurvePanel_Id";
+                
+            	var mychart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: divId,
+                        type: 'spline',
+                        shadow: false,
+                        borderWidth: 0,
+                        zoomType: 'xy',
+                     // 禁用鼠标滚轮缩放
+                        zooming: {
+                            mouseWheel: {
+                                enabled: false
+                            }
+                        },
+                        events: {
+                            // 监听缩放完成事件
+                            redraw: function() {
+                                // 缩放完成后隐藏遮罩
+                                if (isZooming) {
+                                    setTimeout(function() {
+                                        Ext.getCmp(panelId).getEl().unmask();
+                                        isZooming = false;
+                                        if (zoomTimer) clearTimeout(zoomTimer);
+                                    }, 300);
+                                }
+                            }
+                        }
+                    },
+                    time: {
+                        timezoneOffset: new Date().getTimezoneOffset() // 用户本地时区
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: title,
+                        style: {
+                            fontSize: chartTitleFontSize
+                        }
+                    },
+                    subtitle: {
+                        text: subtitle
+                    },
+                    colors: color,
+                    xAxis: {
+                        type: 'datetime',
+                        title: {
+                            text: xtitle
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.axis.chart.time.dateFormat(timeFormat, this.value);
+                            },
+                            autoRotation: true, //自动旋转
+                            rotation: -45 //倾斜度，防止数量过多显示不全  
+                        },
+                        events: {
+                            // 当范围即将改变时触发（缩放前）
+                            setExtremes: function(e) {
+                                // 检查范围是否真的会改变
+                                var currentMin = this.min;
+                                var currentMax = this.max;
+                                var newMin = e.min;
+                                var newMax = e.max;
+                                
+                                // 如果范围没有实际变化，不显示遮罩
+                                if (currentMin === newMin && currentMax === newMax) {
+                                    return;
+                                }
+                                
+                                // 实际发生了缩放，显示遮罩
+                                if (!isZooming) {
+                                    isZooming = true;
+                                    Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
+                                }
+                                
+                                // 设置超时保护
+                                if (zoomTimer) clearTimeout(zoomTimer);
+                                zoomTimer = setTimeout(function() {
+                                    if (isZooming) {
+                                        Ext.getCmp(panelId).getEl().unmask();
+                                        isZooming = false;
+                                    }
+                                }, 5000);
+                            }
+                        }
+                    },
+                    yAxis: [{
+                        lineWidth: 1,
+                        tickWidth: 1, // 刻度线宽度
+                        tickLength: 5, // 刻度线长度（可选）
+                        title: {
+                            text: ytitle
+                        }
+        		      }],
+                    tooltip: {
+                        crosshairs: true, //十字准线
+                        shared: true,
+                        style: {
+                            color: '#333333',
+                            fontSize: '12px',
+                            padding: '8px'
+                        },
+                        dateTimeLabelFormats: {
+                            millisecond: '%Y-%m-%d %H:%M:%S.%L',
+                            second: '%Y-%m-%d %H:%M:%S',
+                            minute: '%Y-%m-%d %H:%M',
+                            hour: '%Y-%m-%d %H',
+                            day: '%Y-%m-%d',
+                            week: '%m-%d',
+                            month: '%Y-%m',
+                            year: '%Y'
+                        }
+                    },
+                    exporting: {
+                        enabled: true,
+                        filename: title,
+                        fallbackToExportServer: false,
+                        sourceWidth: $("#" + divId)[0] != undefined ? $("#" + divId)[0].offsetWidth : null,
+                        sourceHeight: $("#" + divId)[0] != undefined ? $("#" + divId)[0].offsetHeight : null,
+                        buttons: {
+                            contextButton: {
+                                menuItems: [
+                                	'viewFullscreen',
+                                	'printChart',
+                                	'separator',
+                                	'downloadPNG',
+                                	'downloadJPEG',
+                                	'downloadSVG',
+                                	'separator',
+                                	'downloadCSV',
+                                	'downloadXLS'
+                                ]
+                            }
+                        }
+                    },
+                    plotOptions: {
+                        spline: {
+                            lineWidth: 1,
+                            fillOpacity: 0.3,
+                            marker: {
+                                enabled: true,
+                                radius: 3, //曲线点半径，默认是4
+                                states: {
+                                    hover: {
+                                        enabled: true,
+                                        radius: 6
+                                    }
+                                }
+                            },
+                            shadow: true
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        enabled: legend,
+                        borderWidth: 0,
+        	            itemHiddenStyle: {
+        	                textDecoration: 'none'
+        	            }
+                    },
+                    series: series
+                });
+            }
+        };
 
         function loadResourceChartData(itemCode, itemName, divId, win) {
             var endDate = new Date();
@@ -3481,54 +3768,34 @@ String moduleId = request.getParameter("moduleId");
                 timeout: 10000,
                 success: function(result) {
                     if (!result || !result.totalRoot || result.totalRoot.length === 0) {
-                        document.getElementById(divId).innerHTML = '<div style="text-align:center;padding:20px;">无数据</div>';
+                        document.getElementById(divId).innerHTML = '<div style="text-align:center;padding:20px;">'+_loginUserLanguageResource.emptyMsg+'</div>';
                         return;
                     }
                     var chartData = result.totalRoot;
+                    var legend=false;
                     var series = buildResourceSeries(chartData, itemCode, itemName);
-                    var title = itemName;
-                    var subtitle = result.startDate + ' ~ ' + result.endDate;
+                    if(series.length>0){
+                    	legend=true;
+                    }
+                    var title = itemName.split("(")[0];
+                    var subtitle="[" + result.startDate + "~" + result.endDate + "]";
                     var yTitle = itemName;
+                    var tickInterval = Math.floor(chartData.length / 10) + 1;
+                    var color = ['#800000', // 红
+                        '#008C00', // 绿
+                        '#000000', // 黑
+                        '#0000FF', // 蓝
+                        '#F4BD82', // 黄
+                        '#FF00FF' // 紫
+                      ];
+                    
+                    var timeFormat='%m-%d';
+                    if(chartData.length>0 && result.minAcqTime.split(' ')[0]==result.maxAcqTime.split(' ')[0]){
+                	    timeFormat='%H:%M';
+                    }
 
                     if (typeof initResourceProbeHistoryCurveChartFn === 'function') {
-                        initResourceProbeHistoryCurveChartFn(series, 3600 * 1000, divId, title, subtitle, '时间', yTitle, ['#2caffe'], true, '%m-%d %H:%M');
-                    } else {
-                        // 降级方案
-                        Highcharts.chart(divId, {
-                            chart: {
-                                type: 'spline',
-                                zooming: {
-                                    mouseWheel: {
-                                        enabled: false
-                                    }
-                                }
-                            },
-                            title: {
-                                text: title
-                            },
-                            subtitle: {
-                                text: subtitle
-                            },
-                            xAxis: {
-                                type: 'datetime',
-                                title: {
-                                    text: '时间'
-                                }
-                            },
-                            yAxis: {
-                                title: {
-                                    text: yTitle
-                                }
-                            },
-                            series: series,
-                            credits: {
-                                enabled: false
-                            },
-                            exporting: {
-                                enabled: true,
-                                fallbackToExportServer: false
-                            }
-                        });
+                        initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, _loginUserLanguageResource.time, yTitle, color, legend, timeFormat);
                     }
                 },
                 error: function() {
@@ -3568,11 +3835,11 @@ String moduleId = request.getParameter("moduleId");
                     }
                 });
                 series.push({
-                    name: '最大内存(m)',
+                    name: 'maxmemory(m)',
                     data: maxData
                 });
                 series.push({
-                    name: '已用内存(m)',
+                    name: 'usedmemory(m)',
                     data: usedData
                 });
             } else if (itemCode === 'tableSpaceSize') {
@@ -3587,11 +3854,11 @@ String moduleId = request.getParameter("moduleId");
                     }
                 });
                 series.push({
-                    name: '数据表空间(%)',
+                    name: _loginUserLanguageResource.dataTablespace+"(%)",
                     data: dataSpace
                 });
                 series.push({
-                    name: 'UNDO表空间(%)',
+                    name: _loginUserLanguageResource.undoTablespace+"(%)",
                     data: undoSpace
                 });
             } else {
@@ -3641,6 +3908,7 @@ String moduleId = request.getParameter("moduleId");
             }
 
             buildLevel1Tabs();
+            initI18n();
 
             $(window).resize(function() {
                 if (window.resizeTimer) clearTimeout(window.resizeTimer);
@@ -3657,6 +3925,24 @@ String moduleId = request.getParameter("moduleId");
                         if (chart) chart.reflow();
                     });
                 }, 500);
+            });
+            
+         // 使用事件代理监听 .device-name-cell 的 mouseenter/mouseleave（兼容性更好）
+            document.addEventListener('mouseover', function(e) {
+                var target = e.target.closest('.device-name-cell');
+                if (target && !target._tipShown) {
+                    // 标记防止重复触发
+                    target._tipShown = true;
+                    handleDeviceNameCellMouseEnter(target, e);
+                }
+            });
+
+            document.addEventListener('mouseout', function(e) {
+                var target = e.target.closest('.device-name-cell');
+                if (target) {
+                    target._tipShown = false;
+                    hideDeviceNameTip();
+                }
             });
 
             console.log('实时监控模块加载完成');
@@ -3684,6 +3970,7 @@ String moduleId = request.getParameter("moduleId");
                     // ---- 父页面刷新指令（切换组织/功能标签） ----
                 case 'refresh':
                     console.log('收到父页面刷新指令, orgId:', message.orgId);
+                    clearStatFilters();
                     // 如果传递了组织ID，可在此处理（如重新加载设备列表）
                     if (message.orgId) {
                         // 可选的：处理组织切换逻辑
@@ -3750,7 +4037,7 @@ String moduleId = request.getParameter("moduleId");
                             updateObj[commStatusKey] = 1;
                         }
                         if (commStatusNameKey !== null) {
-                            updateObj[commStatusNameKey] = _loginUserLanguageResource.online || '在线';
+                            updateObj[commStatusNameKey] = _loginUserLanguageResource.online;
                         }
 
                         // ★ 采集时间
@@ -4263,6 +4550,7 @@ String moduleId = request.getParameter("moduleId");
 
         function handleAdExit(data) {
             // 1. 重新加载当前激活的统计图表
+            clearStatFilters();
             var statTabsObj = mini.get('statTabs');
             if (statTabsObj) {
                 var activeTab = statTabsObj.getActiveTab();
@@ -4478,7 +4766,7 @@ String moduleId = request.getParameter("moduleId");
                         console.log('数据加载成功', result);
 
                         if (!result || !result.totalRoot || result.totalRoot.length === 0) {
-                            document.getElementById(containerId).innerHTML = '<div style="text-align:center;padding:20px;">无数据</div>';
+                            document.getElementById(containerId).innerHTML = '<div style="text-align:center;padding:20px;">'+_loginUserLanguageResource.emptyMsg+'</div>';
                             return;
                         }
 

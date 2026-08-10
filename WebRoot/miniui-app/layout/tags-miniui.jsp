@@ -32,7 +32,15 @@ if(browserLang == null) browserLang = "zh_CN";
 
 <!-- MiniUI 核心 -->
 <script src="<%=path%>/scripts/miniui/miniui.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
-<script src="<%=path%>/scripts/miniui/locale/zh_CN.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<% if("en".equalsIgnoreCase(browserLang)) { %>
+	<script src="<%=path%>/scripts/miniui/locale/en_US.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<% }else{%>
+	<script src="<%=path%>/scripts/miniui/locale/zh_CN.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<% } %>
+
+
+
+
 
 <!-- MiniUI 公共配置 -->
 <script src="<%=path%>/miniui-app/common/miniui-common.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>

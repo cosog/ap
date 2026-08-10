@@ -83,10 +83,19 @@ request.setAttribute("browserLang", browserLang);
         var loginUserLanguageResource = JSON.parse('<%= loginUserLanguageResource.replace("'", "\\'") %>');
         var loginUserLanguageResourceFirstLower = JSON.parse('<%= loginUserLanguageResourceFirstLower.replace("'", "\\'") %>');
         var configFile = JSON.parse('<%= configFileJson.replace("'", "\\'") %>');
+        var oem = configFile.ap.oem;
+        
+        
         var tabInfo = JSON.parse('<%= tabInfoJson.replace("'", "\\'") %>');
         var defaultPageSize = configFile.ap.others.pageSize || 50;
         var productionUnit = configFile.ap.others.productionUnit;
         var showHelp = configFile.ap.others.showHelp !== false;
+        
+        
+        var helpDocumentUrl='<%=helpDocumentUrl%>';
+        var helpDocumentTimestamp=oem.helpDocumentTimestamp;
+        helpDocumentUrl = context + helpDocumentUrl.substring(helpDocumentUrl.indexOf("/"), helpDocumentUrl.length);
+        
         // 新增：第一个叶子节点的ID（在 onMenuTreeLoad 中动态获取）
         var FIRST_LEAF_MODULE_ID = null;
     </script>
@@ -269,7 +278,7 @@ request.setAttribute("browserLang", browserLang);
 
             <div class="west-section" style="flex:1;">
                 <div class="panel-title panel-title-top">
-                    <span>📋 功能菜单</span>
+                    <span id="functionNavigation_text">功能菜单</span>
                 </div>
                 <div class="tree-wrap">
                     <ul id="menuTree" class="mini-tree" style="width:100%;height:100%;padding:0;margin:0;"
@@ -286,8 +295,7 @@ request.setAttribute("browserLang", browserLang);
 
             <div class="west-section" style="flex:1;">
                 <div class="panel-title panel-title-border">
-                    <span>📁 组织机构</span>
-                    <span class="count" id="orgTreeCount"></span>
+                    <span id="organizationNavigation_text">组织机构</span>
                 </div>
                 <div class="tree-wrap">
                     <ul id="orgTree" class="mini-tree" style="width:100%;height:100%;padding:0;margin:0;"
@@ -338,14 +346,14 @@ request.setAttribute("browserLang", browserLang);
             $('#bannerLogoImg').attr('src', logoUrl + '?timestamp=' + (oem.staticResourceTimestamp || '')).show();
         }
         $('#bannerTitle').html(loginUserLanguageResource.projectName || '<%=viewProjectName%>');
-        $('#banner_exit_text').html(loginUserLanguageResource.exit || '退出');
-        $('#banner_help_text').html(loginUserLanguageResource.help || '帮助');
+        $('#banner_exit_text').html(loginUserLanguageResource.exit);
+        $('#banner_help_text').html(loginUserLanguageResource.help);
 
         var langHtml = '';
         if (loginUserLanguageList && loginUserLanguageList.length > 1) {
             for (var i = 0; i < loginUserLanguageList.length; i++) {
                 var val = loginUserLanguageList[i];
-                var label = (val == 1) ? '中文' : (val == 2) ? 'English' : 'Русский';
+                var label = (val == 1) ? loginUserLanguageResource.language_zh_CN : (val == 2) ? loginUserLanguageResource.language_en : loginUserLanguageResource.language_ru;
                 var isActive = (val == loginUserLanguageValue);
                 var cls = isActive ? 'active-lang' : '';
                 langHtml += '<a href="#" class="' + cls + '" onclick="switchLanguage(' + val + ')">' + label + '</a>';
@@ -353,6 +361,9 @@ request.setAttribute("browserLang", browserLang);
             }
         }
         $('#languageContainer').html(langHtml);
+        
+        $('#functionNavigation_text').html(loginUserLanguageResource.functionNavigation);
+        $('#organizationNavigation_text').html(loginUserLanguageResource.organizationNavigation);
     }
 
     function switchLanguage(languageValue) {
@@ -361,7 +372,7 @@ request.setAttribute("browserLang", browserLang);
                 url: context + '/userManagerController/switchUserLanguage',
                 data: { languageValue: languageValue },
                 success: function() {
-                    window.location.href = context + '/miniui-app/layout/main-miniui.jsp';
+                	window.location.href = context+"/home";
                 }
             });
         }
@@ -507,7 +518,7 @@ request.setAttribute("browserLang", browserLang);
     }
 
     function userLoginOut() {
-        miniConfirm(loginUserLanguageResource.exitConfirm || '确定要退出吗？', function(ok) {
+        miniConfirm(loginUserLanguageResource.exitConfirm, function(ok) {
             if (ok) {
                 $.ajax({
                     url: context + '/userLoginManagerController/userExit',
@@ -516,25 +527,37 @@ request.setAttribute("browserLang", browserLang);
                     }
                 });
             }
-        }, loginUserLanguageResource.tip || '提示');
+        }, loginUserLanguageResource.tip);
     }
 
     function showHelpDocumentWinFn() {
-        if (!showHelp) return;
+        if (!showHelp) return;  // 全局配置是否显示帮助按钮
         var tabs = mini.get('mainTabs');
+        if (!tabs) return;
+
+        // 查找已存在的帮助标签
         var helpTab = tabs.getTab('HelpDocPanel');
         if (helpTab) {
             tabs.activeTab(helpTab);
-        } else {
-            var url = context + '/readme/ap/ap.html';
-            tabs.addTab({
-                name: 'HelpDocPanel',
-                title: loginUserLanguageResource.help || '帮助',
-                iconCls: 'help',
-                closable: true,
-                body: '<iframe src="' + url + '" style="width:100%;height:100%;border:0;"></iframe>'
-            });
+            return;
         }
+
+        // 构造帮助文档 URL（带时间戳防止缓存）
+        var url = helpDocumentUrl;  // 已包含 context，如 /ap/readme/ap/ap.html
+        if (helpDocumentTimestamp) {
+            url += (url.indexOf('?') > -1 ? '&' : '?') + 'timestamp=' + helpDocumentTimestamp;
+        }
+
+        // 添加新标签
+        tabs.addTab({
+            name: 'HelpDocPanel',
+            title: _loginUserLanguageResource.help,
+            iconCls: 'help',
+            showCloseButton: true,
+            body: '<iframe src="' + url + '" style="width:100%;height:100%;border:0;"></iframe>'
+        });
+        // 激活新标签
+        tabs.activeTab('HelpDocPanel');
     }
 
     var websocketClient = null;

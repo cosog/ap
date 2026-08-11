@@ -536,28 +536,28 @@ String moduleId = request.getParameter("moduleId");
             'FESdiagramResult': {
                 id: 'stat_FESdiagramResult',
                 title: function() {
-                    return _loginUserLanguageResource.workType || '工况类型';
+                    return _loginUserLanguageResource.workType;
                 },
                 api: '/realTimeMonitoringController/getRealTimeMonitoringFESDiagramResultStatData'
             },
             'CommStatus': {
                 id: 'stat_CommStatus',
                 title: function() {
-                    return _loginUserLanguageResource.commStatus || '通信状态';
+                    return _loginUserLanguageResource.commStatus;
                 },
                 api: '/realTimeMonitoringController/getRealTimeMonitoringCommStatusStatData'
             },
             'RunStatus': {
                 id: 'stat_RunStatus',
                 title: function() {
-                    return _loginUserLanguageResource.runStatus || '运行状态';
+                    return _loginUserLanguageResource.runStatus;
                 },
                 api: '/realTimeMonitoringController/getRealTimeMonitoringRunStatusStatData'
             },
             'NumStatus': {
                 id: 'stat_NumStatus',
                 title: function() {
-                    return _loginUserLanguageResource.numStatus || '数值状态';
+                    return _loginUserLanguageResource.numStatus;
                 },
                 api: '/realTimeMonitoringController/getRealTimeMonitoringNumStatusStatData'
             }
@@ -664,32 +664,32 @@ String moduleId = request.getParameter("moduleId");
 
             var resourceButtons = [{
                     id: 'CPUUsedPercentLabel_id',
-                    text: 'CPU',
+                    text: _loginUserLanguageResource.resourcesMonitoring_cpu,
                     onclick: "openResourceChart('cpuUsedPercent','"+_loginUserLanguageResource.cpuUsage+"(%)')"
                 },
                 {
                     id: 'memUsedPercentLabel_id',
-                    text: '内存',
+                    text: _loginUserLanguageResource.resourcesMonitoring_mem,
                     onclick: "openResourceChart('memUsedPercent','"+_loginUserLanguageResource.memUsage+"(%)')"
                 },
                 {
                     id: 'redisRunStatusProbeLabel_id',
-                    text: '缓存',
+                    text: _loginUserLanguageResource.resourcesMonitoring_cache,
                     onclick: "openResourceChart('jedisStatus','"+_loginUserLanguageResource.cacheDbMemory+"(m)')"
                 },
                 {
                     id: 'tableSpaceSizeProbeLabel_id',
-                    text: '表空间',
+                    text: _loginUserLanguageResource.resourcesMonitoring_tablespaces,
                     onclick: "openResourceChart('tableSpaceSize','"+_loginUserLanguageResource.tablespacesUsage+"(%)')"
                 },
                 {
                     id: 'adRunStatusProbeLabel_id',
-                    text: '通信服务',
+                    text: _loginUserLanguageResource.resourcesMonitoring_ad,
                     onclick: "openResourceChart('adRunStatus','"+_loginUserLanguageResource.adStatus+"')"
                 },
                 {
                     id: 'acRunStatusProbeLabel_id',
-                    text: '计算服务',
+                    text: _loginUserLanguageResource.resourcesMonitoring_ac,
                     onclick: "openResourceChart('acRunStatus','"+_loginUserLanguageResource.acStatus+"')"
                 },
                 {
@@ -825,6 +825,7 @@ String moduleId = request.getParameter("moduleId");
             var deviceTypeId = level2Item.deviceTypeId || '0';
             var orgId = window.parent && window.parent.mini ?
                 window.parent.mini.get('leftOrg_Id').getValue() : '';
+            clearStatFilters();    
             refreshDeviceList();
             loadStatCharts(deviceTypeId, orgId);
             // 中间和右侧标签不再在此初始化，由设备选中事件触发
@@ -905,6 +906,18 @@ String moduleId = request.getParameter("moduleId");
             params.deviceType = deviceType;
             var deviceCombo = mini.get('deviceCombo');
             params.deviceName = deviceCombo ? deviceCombo.getValue() : '';
+            
+         	// ★★★ 新增：从隐藏字段读取统计筛选条件 ★★★
+            var getFieldValue = function(id) {
+                var el = document.getElementById(id);
+                return el ? el.value : '';
+            };
+            params.FESdiagramResultStatValue = getFieldValue('RealTimeMonitoringStatSelectFESdiagramResult_Id');
+            params.commStatusStatValue = getFieldValue('RealTimeMonitoringStatSelectCommStatus_Id');
+            params.runStatusStatValue = getFieldValue('RealTimeMonitoringStatSelectRunStatus_Id');
+            params.numStatusStatValue = getFieldValue('RealTimeMonitoringStatSelectNumStatus_Id');
+            params.deviceTypeStatValue = getFieldValue('RealTimeMonitoringStatSelectDeviceType_Id');
+            
             console.log('加载设备列表参数:', params);
         }
 
@@ -1405,8 +1418,8 @@ String moduleId = request.getParameter("moduleId");
         // 7. 统计饼图
         // ================================================================
         function loadStatCharts(deviceTypeId, orgId) {
-            var projectTabConfig = getProjectTabInstanceInfoByDeviceType(deviceTypeId);
-
+        	clearStatFilters();
+        	var projectTabConfig = getProjectTabInstanceInfoByDeviceType(deviceTypeId);
             var config = {
                 FESdiagramResult: projectTabConfig.DeviceRealTimeMonitoring.FESDiagramStatPie,
                 CommStatus: projectTabConfig.DeviceRealTimeMonitoring.CommStatusStatPie,
@@ -1420,10 +1433,27 @@ String moduleId = request.getParameter("moduleId");
         function onStatTabChanged(e) {
             var tab = e.tab;
             if (!tab) return;
+
+            // 1. 清空所有统计筛选条件
+            clearStatFilters();
+
+            // 2. 清空设备下拉框
+            var deviceCombo = mini.get('deviceCombo');
+            if (deviceCombo) {
+                deviceCombo.setValue('');
+                deviceCombo.setText('');
+            }
+
+            // 3. 加载当前统计标签的数据
             var deviceTypeId = currentLevel2 ? currentLevel2.deviceTypeId : '0';
             var orgId = window.parent && window.parent.mini ?
-                window.parent.mini.get('leftOrg_Id').getValue() : '';
+                         window.parent.mini.get('leftOrg_Id').getValue() : '';
             loadStatData(tab, deviceTypeId, orgId);
+
+            // 4. ★★★ 刷新设备列表（应用清空后的筛选条件，即显示全部设备） ★★★
+            refreshDeviceList();
+
+            console.log('统计标签切换完成，已清空筛选并刷新设备列表');
         }
 
         function loadStatData(tab, deviceTypeId, orgId) {
@@ -1449,8 +1479,15 @@ String moduleId = request.getParameter("moduleId");
                             .replace(/(\{|\,)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*(\:)/g, '$1"$2"$3')
                             .replace(/'([^']*)'/g, '"$1"');
                         var result = JSON.parse(fixedJson);
-                        var data = extractPieData(result);
-                        renderPieChart(divId, data, tab.title);
+                        
+                        if (result.AlarmShowStyle && window.parent && window.parent.mini) {
+                            var alarmInput = window.parent.mini.get('AlarmShowStyle_Id');
+                            if (alarmInput) {
+                                alarmInput.setValue(JSON.stringify(result.AlarmShowStyle));
+                            }
+                        }
+                        var data = extractPieData(result,tab._key,result.AlarmShowStyle);
+                        renderPieChart(divId, data, tab.title, tab._key);
                     } catch (e) {
                         console.error('JSON解析失败:', e);
                         if (container) {
@@ -1466,28 +1503,59 @@ String moduleId = request.getParameter("moduleId");
             });
         }
 
-        function extractPieData(result) {
-            if (!result) return [{
-                name: _loginUserLanguageResource.emptyMsg,
-                y: 1
-            }];
-            var list = result.totalRoot || [];
-            var data = [];
-            for (var i = 0; i < list.length; i++) {
-                if (list[i].itemCode !== 'all' && list[i].count > 0) {
-                    data.push({
-                        name: list[i].item || list[i].text || '未知',
-                        y: list[i].count || 0
-                    });
+        
+        
+        function handlePieClick(e, tabKey) {
+            // 重置行选中
+            var selectRowInput = document.getElementById('RealTimeMonitoringInfoDeviceListSelectRow_Id');
+            if (selectRowInput) selectRowInput.value = -1;
+
+            // 确定要更新的隐藏字段 ID
+            var fieldId = '';
+            switch (tabKey) {
+                case 'FESdiagramResult':
+                    fieldId = 'RealTimeMonitoringStatSelectFESdiagramResult_Id';
+                    break;
+                case 'CommStatus':
+                    fieldId = 'RealTimeMonitoringStatSelectCommStatus_Id';
+                    break;
+                case 'RunStatus':
+                    fieldId = 'RealTimeMonitoringStatSelectRunStatus_Id';
+                    break;
+                case 'NumStatus':
+                    fieldId = 'RealTimeMonitoringStatSelectNumStatus_Id';
+                    break;
+                default:
+                    return;
+            }
+            var fieldInput = document.getElementById(fieldId);
+            if (!fieldInput) return;
+
+            // 切换选中状态
+            if (e.point.selected) {
+                // 如果已选中，则取消选中
+                fieldInput.value = '';
+            } else {
+                // 选中：数值状态使用 level 值，其他使用名称
+                if (tabKey === 'NumStatus') {
+                    fieldInput.value = e.point.level !== undefined ? e.point.level : '';
+                } else {
+                    fieldInput.value = e.point.name;
                 }
             }
-            return data.length > 0 ? data : [{
-                name: _loginUserLanguageResource.emptyMsg,
-                y: 1
-            }];
+
+            // 清空设备下拉框
+            var deviceCombo = mini.get('deviceCombo');
+            if (deviceCombo) {
+                deviceCombo.setValue('');
+                deviceCombo.setText('');
+            }
+
+            // 刷新设备列表
+            refreshDeviceList();
         }
 
-        function renderPieChart(divId, data, title) {
+        function renderPieChart(divId, data, title,tabKey) {
             var container = document.getElementById(divId);
             if (!container) return;
             if (container._chart) {
@@ -1520,9 +1588,9 @@ String moduleId = request.getParameter("moduleId");
                         fontSize: '13px'
                     }
                 },
-                tooltip: {
-                    pointFormat: '数量: <b>{point.y}</b><br/>占比: <b>{point.percentage:.1f}%</b>'
-                },
+                tooltip : {
+    				pointFormat : _loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+_loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
+    			},
                 legend: {
                     align: 'center',
                     verticalAlign: 'bottom',
@@ -1541,12 +1609,18 @@ String moduleId = request.getParameter("moduleId");
                             connectorColor: '#000000',
                             format: '<b>{point.name}</b>: {point.y}'
                         },
-                        showInLegend: true
+                        showInLegend: true,
+                     	// ★★★ 点击事件 ★★★
+                        events: {
+                            click: function(e) {
+                                handlePieClick(e, tabKey);
+                            }
+                        }
                     }
                 },
                 exporting: {
                     enabled: true,
-                    filename: title || '统计图',
+                    filename: title,
                     fallbackToExportServer: false
                 },
                 series: [{
@@ -1556,6 +1630,23 @@ String moduleId = request.getParameter("moduleId");
                 }]
             });
             container._chart = chart;
+        }
+        
+        /**
+         * 清空所有统计饼图筛选条件
+         */
+        function clearStatFilters() {
+            var ids = [
+                'RealTimeMonitoringStatSelectFESdiagramResult_Id',
+                'RealTimeMonitoringStatSelectCommStatus_Id',
+                'RealTimeMonitoringStatSelectRunStatus_Id',
+                'RealTimeMonitoringStatSelectNumStatus_Id',
+                'RealTimeMonitoringStatSelectDeviceType_Id'
+            ];
+            for (var i = 0; i < ids.length; i++) {
+                var el = document.getElementById(ids[i]);
+                if (el) el.value = '';
+            }
         }
 
         // ================================================================
@@ -2859,8 +2950,7 @@ String moduleId = request.getParameter("moduleId");
                     var minValue = allPositive ? 0 : null;
 
                     // 使用 Highcharts 渲染（复用现有绘图函数）
-                    if (typeof initDeviceRealtimeMonitoringStockChartFn === 'function') {
-                        initDeviceRealtimeMonitoringStockChartFn(
+                    initDeviceRealtimeMonitoringStockChartFn(
                             series,
                             undefined,
                             ctx.containerId,
@@ -2877,38 +2967,6 @@ String moduleId = request.getParameter("moduleId");
                             minValue,
                             false
                         );
-                    } else {
-                        // 降级方案
-                        Highcharts.chart(ctx.containerId, {
-                            chart: {
-                                type: 'spline'
-                            },
-                            title: {
-                                text: title
-                            },
-                            xAxis: {
-                                type: 'datetime',
-                                title: {
-                                    text: _loginUserLanguageResource.time
-                                }
-                            },
-                            yAxis: {
-                                title: {
-                                    text: legendName[0]
-                                },
-                                max: maxValue,
-                                min: minValue
-                            },
-                            series: series,
-                            credits: {
-                                enabled: false
-                            },
-                            exporting: {
-                                enabled: true,
-                                fallbackToExportServer: false
-                            }
-                        });
-                    }
                 },
                 error: function(xhr, status, errorThrown) {
                     mini.unmask(mask);
@@ -3912,6 +3970,7 @@ String moduleId = request.getParameter("moduleId");
                     // ---- 父页面刷新指令（切换组织/功能标签） ----
                 case 'refresh':
                     console.log('收到父页面刷新指令, orgId:', message.orgId);
+                    clearStatFilters();
                     // 如果传递了组织ID，可在此处理（如重新加载设备列表）
                     if (message.orgId) {
                         // 可选的：处理组织切换逻辑
@@ -4491,6 +4550,7 @@ String moduleId = request.getParameter("moduleId");
 
         function handleAdExit(data) {
             // 1. 重新加载当前激活的统计图表
+            clearStatFilters();
             var statTabsObj = mini.get('statTabs');
             if (statTabsObj) {
                 var activeTab = statTabsObj.getActiveTab();

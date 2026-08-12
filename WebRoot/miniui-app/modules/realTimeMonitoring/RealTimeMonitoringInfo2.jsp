@@ -459,7 +459,7 @@ String moduleId = request.getParameter("moduleId");
                                                 <input id="rodStressChart_ShowRodStressRange_Id" type="hidden" value="0" />
                                             </div>
                                             <div class="grid-wrapper" style="flex:1;overflow:hidden;">
-                                                <div id="deviceGrid" class="mini-datagrid" style="width:100%;height:100%;" idField="id" pageSize="25" allowResize="true" url="<%=path%>/realTimeMonitoringController/getDeviceRealTimeOverview" dataField="totalRoot" totalField="totalCount" ondrawcell="onDeviceGridDrawCell" onselectionchanged="onDeviceGridSelectChanged" onload="onDeviceGridLoad" onbeforeload="onDeviceGridBeforeLoad">
+                                                <div id="deviceGrid" class="mini-datagrid" style="width:100%;height:100%;" idField="id" pageSize="25" allowResize="true" allowAlternating="true" frozenStartColumn="0" frozenEndColumn="1" url="<%=path%>/realTimeMonitoringController/getDeviceRealTimeOverview" dataField="totalRoot" totalField="totalCount" ondrawcell="onDeviceGridDrawCell" onselectionchanged="onDeviceGridSelectChanged" onload="onDeviceGridLoad" onbeforeload="onDeviceGridBeforeLoad">
                                                     <div property="columns">
                                                         <!-- 动态生成 -->
                                                     </div>
@@ -564,49 +564,17 @@ String moduleId = request.getParameter("moduleId");
         };
 
         // 默认列配置
-        var DEFAULT_COLUMNS = [{
-                type: 'indexcolumn',
-                width: 40,
-                headerAlign: 'center',
-                header: '序号'
-            },
-            {
-                field: 'deviceName',
-                width: 140,
-                headerAlign: 'center',
-                header: '设备名称',
-                locked: true
-            },
-            {
-                field: 'commStatusName',
-                width: 80,
-                headerAlign: 'center',
-                header: '通信状态'
-            },
-            {
-                field: 'runStatusName',
-                width: 80,
-                headerAlign: 'center',
-                header: '运行状态'
-            },
-            {
-                field: 'acqTime',
-                width: 150,
-                headerAlign: 'center',
-                header: _loginUserLanguageResource.avqTime,
-                dateFormat: 'yyyy-MM-dd HH:mm:ss'
-            }
-        ];
-        
+        var DEFAULT_COLUMNS = [];
+
         function initI18n() {
             // 1. 工具栏按钮
             var btnRefresh = mini.get('btnRefresh');
             if (btnRefresh) btnRefresh.setText(_loginUserLanguageResource.refresh);
-            
+
             // 导出按钮（需添加 id="exportBtn" 或通过 class 选择）
             var exportBtn = mini.get('exportRealTimeMonitoringDeviceListBtn');
             if (exportBtn) exportBtn.setText(_loginUserLanguageResource.exportData);
-            
+
             var historyBtn = mini.get('queryDeviceHistoryDataBtn');
             if (historyBtn) historyBtn.setText(_loginUserLanguageResource.showHistory);
 
@@ -665,32 +633,32 @@ String moduleId = request.getParameter("moduleId");
             var resourceButtons = [{
                     id: 'CPUUsedPercentLabel_id',
                     text: _loginUserLanguageResource.resourcesMonitoring_cpu,
-                    onclick: "openResourceChart('cpuUsedPercent','"+_loginUserLanguageResource.cpuUsage+"(%)')"
+                    onclick: "openResourceChart('cpuUsedPercent','" + _loginUserLanguageResource.cpuUsage + "(%)')"
                 },
                 {
                     id: 'memUsedPercentLabel_id',
                     text: _loginUserLanguageResource.resourcesMonitoring_mem,
-                    onclick: "openResourceChart('memUsedPercent','"+_loginUserLanguageResource.memUsage+"(%)')"
+                    onclick: "openResourceChart('memUsedPercent','" + _loginUserLanguageResource.memUsage + "(%)')"
                 },
                 {
                     id: 'redisRunStatusProbeLabel_id',
                     text: _loginUserLanguageResource.resourcesMonitoring_cache,
-                    onclick: "openResourceChart('jedisStatus','"+_loginUserLanguageResource.cacheDbMemory+"(m)')"
+                    onclick: "openResourceChart('jedisStatus','" + _loginUserLanguageResource.cacheDbMemory + "(m)')"
                 },
                 {
                     id: 'tableSpaceSizeProbeLabel_id',
                     text: _loginUserLanguageResource.resourcesMonitoring_tablespaces,
-                    onclick: "openResourceChart('tableSpaceSize','"+_loginUserLanguageResource.tablespacesUsage+"(%)')"
+                    onclick: "openResourceChart('tableSpaceSize','" + _loginUserLanguageResource.tablespacesUsage + "(%)')"
                 },
                 {
                     id: 'adRunStatusProbeLabel_id',
                     text: _loginUserLanguageResource.resourcesMonitoring_ad,
-                    onclick: "openResourceChart('adRunStatus','"+_loginUserLanguageResource.adStatus+"')"
+                    onclick: "openResourceChart('adRunStatus','" + _loginUserLanguageResource.adStatus + "')"
                 },
                 {
                     id: 'acRunStatusProbeLabel_id',
                     text: _loginUserLanguageResource.resourcesMonitoring_ac,
-                    onclick: "openResourceChart('acRunStatus','"+_loginUserLanguageResource.acStatus+"')"
+                    onclick: "openResourceChart('acRunStatus','" + _loginUserLanguageResource.acStatus + "')"
                 },
                 {
                     id: 'adLicenseStatusProbeLabel_id',
@@ -825,7 +793,7 @@ String moduleId = request.getParameter("moduleId");
             var deviceTypeId = level2Item.deviceTypeId || '0';
             var orgId = window.parent && window.parent.mini ?
                 window.parent.mini.get('leftOrg_Id').getValue() : '';
-            clearStatFilters();    
+            clearStatFilters();
             refreshDeviceList();
             loadStatCharts(deviceTypeId, orgId);
             // 中间和右侧标签不再在此初始化，由设备选中事件触发
@@ -906,8 +874,8 @@ String moduleId = request.getParameter("moduleId");
             params.deviceType = deviceType;
             var deviceCombo = mini.get('deviceCombo');
             params.deviceName = deviceCombo ? deviceCombo.getValue() : '';
-            
-         	// ★★★ 新增：从隐藏字段读取统计筛选条件 ★★★
+
+            // ★★★ 新增：从隐藏字段读取统计筛选条件 ★★★
             var getFieldValue = function(id) {
                 var el = document.getElementById(id);
                 return el ? el.value : '';
@@ -917,7 +885,7 @@ String moduleId = request.getParameter("moduleId");
             params.runStatusStatValue = getFieldValue('RealTimeMonitoringStatSelectRunStatus_Id');
             params.numStatusStatValue = getFieldValue('RealTimeMonitoringStatSelectNumStatus_Id');
             params.deviceTypeStatValue = getFieldValue('RealTimeMonitoringStatSelectDeviceType_Id');
-            
+
             console.log('加载设备列表参数:', params);
         }
 
@@ -940,11 +908,25 @@ String moduleId = request.getParameter("moduleId");
                     if (columnStrInput) {
                         columnStrInput.value = JSON.stringify(result.columns);
                     }
+                    var showIndex = false;
+                    var showDeviceName = false;
+                    for (var i = 0; i < columns.length; i++) {
+                        var col = columns[i];
+                        if (col.type == 'indexcolumn' || col.field.toUpperCase() === 'id'.toUpperCase()) {
+                            showIndex = true;
+                        } else if (col.field.toUpperCase() === 'deviceName'.toUpperCase()) {
+                            showDeviceName = true;
+                        }
+                    }
 
-                    console.log('生成的列数量:', columns.length);
-                    grid.setColumns([]);
+
                     setTimeout(function() {
                         grid.setColumns(columns);
+                        if (showIndex && showDeviceName) {
+                            grid.frozenColumns(0, 1);
+                        } else if (showIndex || showDeviceName) {
+                            grid.frozenColumns(0, 0);
+                        }
                         grid.doLayout();
                         grid.refresh();
                     }, 50);
@@ -973,93 +955,93 @@ String moduleId = request.getParameter("moduleId");
                 refreshRightTabs();
             }
         }
-        
+
 
         // 处理鼠标进入
-           function handleDeviceNameCellMouseEnter(cellElement, event) {
-        	   var alarmData = cellElement.getAttribute('data-alarm');
-        	    if (!alarmData) return;
-        	    var counts;
-        	    try {
-        	        counts = JSON.parse(alarmData);
-        	    } catch(e) {
-        	        return;
-        	    }
-        	    var deviceName = cellElement.getAttribute('data-name') || '';
-        	    var hasAlarm = (counts[100] + counts[200] + counts[300]) > 0;
-        	    if (!hasAlarm) return;
+        function handleDeviceNameCellMouseEnter(cellElement, event) {
+            var alarmData = cellElement.getAttribute('data-alarm');
+            if (!alarmData) return;
+            var counts;
+            try {
+                counts = JSON.parse(alarmData);
+            } catch (e) {
+                return;
+            }
+            var deviceName = cellElement.getAttribute('data-name') || '';
+            var hasAlarm = (counts[100] + counts[200] + counts[300]) > 0;
+            if (!hasAlarm) return;
 
-        	    var alarmShowStyle = getAlarmShowStyle() || {};
-        	    var Data = alarmShowStyle.Data || {};
+            var alarmShowStyle = getAlarmShowStyle() || {};
+            var Data = alarmShowStyle.Data || {};
 
-        	    // 构建提示 HTML（带背景色的彩色标签）
-        	    var parts = [];
-        	    if (counts[100] > 0) {
-        	        var bg1 = '#' + (Data.FirstLevel && Data.FirstLevel.Color || 'dc2828');
-        	        var tx1 = '#' + (Data.FirstLevel && Data.FirstLevel.ColorText || 'ffffff');
-        	        parts.push('<span style="display:inline-block;background:' + bg1 + ';color:' + tx1 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;">' + (_loginUserLanguageResource.alarmLevel1 || '一级') + ':' + counts[100] + '</span>');
-        	    }
-        	    if (counts[200] > 0) {
-        	        var bg2 = '#' + (Data.SecondLevel && Data.SecondLevel.Color || 'f09614');
-        	        var tx2 = '#' + (Data.SecondLevel && Data.SecondLevel.ColorText || 'ffffff');
-        	        parts.push('<span style="display:inline-block;background:' + bg2 + ';color:' + tx2 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;">' + (_loginUserLanguageResource.alarmLevel2 || '二级') + ':' + counts[200] + '</span>');
-        	    }
-        	    if (counts[300] > 0) {
-        	        var bg3 = '#' + (Data.ThirdLevel && Data.ThirdLevel.Color || 'fae600');
-        	        var tx3 = '#' + (Data.ThirdLevel && Data.ThirdLevel.ColorText || '333333');
-        	        parts.push('<span style="display:inline-block;background:' + bg3 + ';color:' + tx3 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;">' + (_loginUserLanguageResource.alarmLevel3 || '三级') + ':' + counts[300] + '</span>');
-        	    }
+            // 构建提示 HTML（带背景色的彩色标签）
+            var parts = [];
+            if (counts[100] > 0) {
+                var bg1 = '#' + (Data.FirstLevel && Data.FirstLevel.Color || 'dc2828');
+                var tx1 = '#' + (Data.FirstLevel && Data.FirstLevel.ColorText || 'ffffff');
+                parts.push('<span style="display:inline-block;background:' + bg1 + ';color:' + tx1 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;">' + (_loginUserLanguageResource.alarmLevel1 || '一级') + ':' + counts[100] + '</span>');
+            }
+            if (counts[200] > 0) {
+                var bg2 = '#' + (Data.SecondLevel && Data.SecondLevel.Color || 'f09614');
+                var tx2 = '#' + (Data.SecondLevel && Data.SecondLevel.ColorText || 'ffffff');
+                parts.push('<span style="display:inline-block;background:' + bg2 + ';color:' + tx2 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;">' + (_loginUserLanguageResource.alarmLevel2 || '二级') + ':' + counts[200] + '</span>');
+            }
+            if (counts[300] > 0) {
+                var bg3 = '#' + (Data.ThirdLevel && Data.ThirdLevel.Color || 'fae600');
+                var tx3 = '#' + (Data.ThirdLevel && Data.ThirdLevel.ColorText || '333333');
+                parts.push('<span style="display:inline-block;background:' + bg3 + ';color:' + tx3 + ';padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;">' + (_loginUserLanguageResource.alarmLevel3 || '三级') + ':' + counts[300] + '</span>');
+            }
 
-        	    var tipHtml = deviceName;
-        	    if (parts.length > 0) {
-        	        tipHtml = deviceName + ' ' + parts.join(' ');
-        	    }
+            var tipHtml = deviceName;
+            if (parts.length > 0) {
+                tipHtml = deviceName + ' ' + parts.join(' ');
+            }
 
-        	    // ★★★ 使用鼠标坐标定位 ★★★
-        	    var x = event.clientX + 12;
-        	    var y = event.clientY + 12;
+            // ★★★ 使用鼠标坐标定位 ★★★
+            var x = event.clientX + 12;
+            var y = event.clientY + 12;
 
-        	    // 防止超出屏幕右边界
-        	    var tipWidth = 300; // 预估最大宽度
-        	    if (x + tipWidth > window.innerWidth) {
-        	        x = event.clientX - tipWidth - 12;
-        	    }
-        	    // 防止超出屏幕底部
-        	    var tipHeight = 80; // 预估最小高度
-        	    if (y + tipHeight > window.innerHeight) {
-        	        y = event.clientY - tipHeight - 12;
-        	    }
+            // 防止超出屏幕右边界
+            var tipWidth = 300; // 预估最大宽度
+            if (x + tipWidth > window.innerWidth) {
+                x = event.clientX - tipWidth - 12;
+            }
+            // 防止超出屏幕底部
+            var tipHeight = 80; // 预估最小高度
+            if (y + tipHeight > window.innerHeight) {
+                y = event.clientY - tipHeight - 12;
+            }
 
-        	    // 关闭之前的提示
-        	    hideDeviceNameTip();
+            // 关闭之前的提示
+            hideDeviceNameTip();
 
-        	    var tipDiv = document.createElement('div');
-        	    tipDiv.id = 'deviceNameTip';
-        	    tipDiv.style.cssText = 
-        	        'position:fixed;' +
-        	        'background:#fff;' +
-        	        'border:1px solid #ccc;' +
-        	        'padding:6px 10px;' +
-        	        'border-radius:4px;' +
-        	        'box-shadow:0 2px 8px rgba(0,0,0,0.15);' +
-        	        'z-index:99999;' +
-        	        'max-width:400px;' +
-        	        'font-size:12px;' +
-        	        'font-family:"Microsoft YaHei",Arial,sans-serif;' +
-        	        'pointer-events:none;';
-        	    tipDiv.innerHTML = tipHtml;
-        	    tipDiv.style.left = x + 'px';
-        	    tipDiv.style.top = y + 'px';
-        	    document.body.appendChild(tipDiv);
-           }
+            var tipDiv = document.createElement('div');
+            tipDiv.id = 'deviceNameTip';
+            tipDiv.style.cssText =
+                'position:fixed;' +
+                'background:#fff;' +
+                'border:1px solid #ccc;' +
+                'padding:6px 10px;' +
+                'border-radius:4px;' +
+                'box-shadow:0 2px 8px rgba(0,0,0,0.15);' +
+                'z-index:99999;' +
+                'max-width:400px;' +
+                'font-size:12px;' +
+                'font-family:"Microsoft YaHei",Arial,sans-serif;' +
+                'pointer-events:none;';
+            tipDiv.innerHTML = tipHtml;
+            tipDiv.style.left = x + 'px';
+            tipDiv.style.top = y + 'px';
+            document.body.appendChild(tipDiv);
+        }
 
-           // 隐藏提示
-           function hideDeviceNameTip() {
-               var tip = document.getElementById('deviceNameTip');
-               if (tip && tip.parentNode) {
-                   tip.parentNode.removeChild(tip);
-               }
-           }
+        // 隐藏提示
+        function hideDeviceNameTip() {
+            var tip = document.getElementById('deviceNameTip');
+            if (tip && tip.parentNode) {
+                tip.parentNode.removeChild(tip);
+            }
+        }
 
         //===== 设备表格绘制单元格 =====
         function onDeviceGridDrawCell(e) {
@@ -1077,8 +1059,12 @@ String moduleId = request.getParameter("moduleId");
 
             // ---- 设备名称列（徽章 + 悬停提示） ----
             if (fieldUpper === 'DEVICENAME') {
-            	var badges = '';
-                var counts = { 100: 0, 200: 0, 300: 0 };
+                var badges = '';
+                var counts = {
+                    100: 0,
+                    200: 0,
+                    300: 0
+                };
                 for (var i = 0; i < alarmInfo.length; i++) {
                     var level = alarmInfo[i].alarmLevel;
                     if (level === 100 || level === 200 || level === 300) {
@@ -1418,8 +1404,8 @@ String moduleId = request.getParameter("moduleId");
         // 7. 统计饼图
         // ================================================================
         function loadStatCharts(deviceTypeId, orgId) {
-        	clearStatFilters();
-        	var projectTabConfig = getProjectTabInstanceInfoByDeviceType(deviceTypeId);
+            clearStatFilters();
+            var projectTabConfig = getProjectTabInstanceInfoByDeviceType(deviceTypeId);
             var config = {
                 FESdiagramResult: projectTabConfig.DeviceRealTimeMonitoring.FESDiagramStatPie,
                 CommStatus: projectTabConfig.DeviceRealTimeMonitoring.CommStatusStatPie,
@@ -1447,7 +1433,7 @@ String moduleId = request.getParameter("moduleId");
             // 3. 加载当前统计标签的数据
             var deviceTypeId = currentLevel2 ? currentLevel2.deviceTypeId : '0';
             var orgId = window.parent && window.parent.mini ?
-                         window.parent.mini.get('leftOrg_Id').getValue() : '';
+                window.parent.mini.get('leftOrg_Id').getValue() : '';
             loadStatData(tab, deviceTypeId, orgId);
 
             // 4. ★★★ 刷新设备列表（应用清空后的筛选条件，即显示全部设备） ★★★
@@ -1479,14 +1465,14 @@ String moduleId = request.getParameter("moduleId");
                             .replace(/(\{|\,)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*(\:)/g, '$1"$2"$3')
                             .replace(/'([^']*)'/g, '"$1"');
                         var result = JSON.parse(fixedJson);
-                        
+
                         if (result.AlarmShowStyle && window.parent && window.parent.mini) {
                             var alarmInput = window.parent.mini.get('AlarmShowStyle_Id');
                             if (alarmInput) {
                                 alarmInput.setValue(JSON.stringify(result.AlarmShowStyle));
                             }
                         }
-                        var data = extractPieData(result,tab._key,result.AlarmShowStyle);
+                        var data = extractPieData(result, tab._key, result.AlarmShowStyle);
                         renderPieChart(divId, data, tab.title, tab._key);
                     } catch (e) {
                         console.error('JSON解析失败:', e);
@@ -1503,8 +1489,8 @@ String moduleId = request.getParameter("moduleId");
             });
         }
 
-        
-        
+
+
         function handlePieClick(e, tabKey) {
             // 重置行选中
             var selectRowInput = document.getElementById('RealTimeMonitoringInfoDeviceListSelectRow_Id');
@@ -1555,7 +1541,7 @@ String moduleId = request.getParameter("moduleId");
             refreshDeviceList();
         }
 
-        function renderPieChart(divId, data, title,tabKey) {
+        function renderPieChart(divId, data, title, tabKey) {
             var container = document.getElementById(divId);
             if (!container) return;
             if (container._chart) {
@@ -1563,7 +1549,7 @@ String moduleId = request.getParameter("moduleId");
                 container._chart = null;
             }
             if (data.length === 1 && data[0].name === _loginUserLanguageResource.emptyMsg) {
-                container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                container.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
                 return;
             }
 
@@ -1588,9 +1574,9 @@ String moduleId = request.getParameter("moduleId");
                         fontSize: '13px'
                     }
                 },
-                tooltip : {
-    				pointFormat : _loginUserLanguageResource.deviceCount+': <b>{point.y}</b> '+_loginUserLanguageResource.proportion+': <b>{point.percentage:.1f}%</b>'
-    			},
+                tooltip: {
+                    pointFormat: _loginUserLanguageResource.deviceCount + ': <b>{point.y}</b> ' + _loginUserLanguageResource.proportion + ': <b>{point.percentage:.1f}%</b>'
+                },
                 legend: {
                     align: 'center',
                     verticalAlign: 'bottom',
@@ -1610,7 +1596,7 @@ String moduleId = request.getParameter("moduleId");
                             format: '<b>{point.name}</b>: {point.y}'
                         },
                         showInLegend: true,
-                     	// ★★★ 点击事件 ★★★
+                        // ★★★ 点击事件 ★★★
                         events: {
                             click: function(e) {
                                 handlePieClick(e, tabKey);
@@ -1631,7 +1617,7 @@ String moduleId = request.getParameter("moduleId");
             });
             container._chart = chart;
         }
-        
+
         /**
          * 清空所有统计饼图筛选条件
          */
@@ -1699,7 +1685,7 @@ String moduleId = request.getParameter("moduleId");
                     '</div>' +
                     '<div id="RealTimeMonitoringInfoDataTableInfoDiv_id" style="flex:1; overflow:hidden; background:#fff; min-height:0;"></div>' +
                     '</div>',
-                'middle_placeholder': '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>'
+                'middle_placeholder': '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>'
             };
             var titleMap = {
                 'middle_WellboreAnalysis': _loginUserLanguageResource.wellboreAnalysis,
@@ -1719,7 +1705,7 @@ String moduleId = request.getParameter("moduleId");
             var bodyMap = {
                 'right_DeviceControl': '<div id="right_DeviceControl_container" style="width:100%;height:100%;"></div>',
                 'right_DeviceInfo': '<div id="right_DeviceInfo_container" style="width:100%;height:100%;"></div>',
-                'right_placeholder': '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>'
+                'right_placeholder': '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>'
             };
             var titleMap = {
                 'right_DeviceControl': _loginUserLanguageResource.deviceControl,
@@ -1920,7 +1906,7 @@ String moduleId = request.getParameter("moduleId");
                         var charts = ['wellboreChart1', 'wellboreChart2', 'wellboreChart3', 'wellboreChart4'];
                         charts.forEach(function(id) {
                             var el = document.getElementById(id);
-                            if (el) el.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                            if (el) el.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
                         });
                     }
                 },
@@ -1992,12 +1978,12 @@ String moduleId = request.getParameter("moduleId");
                                 'surfaceChart4'
                             );
                         } else {
-                            document.getElementById('surfaceChart4').innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                            document.getElementById('surfaceChart4').innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
                         }
                     } else {
                         ['surfaceChart1', 'surfaceChart2', 'surfaceChart3', 'surfaceChart4'].forEach(function(id) {
                             var el = document.getElementById(id);
-                            if (el) el.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                            if (el) el.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
                         });
                     }
                 },
@@ -2018,7 +2004,7 @@ String moduleId = request.getParameter("moduleId");
             if (!tabBody) return;
 
             // 显示加载占位
-            tabBody.innerHTML = '<div class="loading-placeholder"><span class="icon">⏳</span>'+_loginUserLanguageResource.loadingData+'</div>';
+            tabBody.innerHTML = '<div class="loading-placeholder"><span class="icon">⏳</span>' + _loginUserLanguageResource.loadingData + '</div>';
 
             // 获取选中的设备信息
             var grid = mini.get('deviceGrid');
@@ -2051,7 +2037,7 @@ String moduleId = request.getParameter("moduleId");
                     tabBody.innerHTML = '';
 
                     if (!result || !result.list || result.list.length === 0) {
-                        tabBody.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                        tabBody.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
                         return;
                     }
 
@@ -2061,7 +2047,7 @@ String moduleId = request.getParameter("moduleId");
                     var curveCount = data.length > 0 ? data[0].data.length : 0;
 
                     if (curveCount === 0) {
-                        tabBody.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                        tabBody.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
                         return;
                     }
 
@@ -2136,7 +2122,7 @@ String moduleId = request.getParameter("moduleId");
                         }
 
                         var yTitle = curveNames[i];
-                        var titleText = deviceNameResult + ':' + yTitle +   (_loginUserLanguage!='zh_CN'?' ':'') + _loginUserLanguageResource.trendCurve;
+                        var titleText = deviceNameResult + ':' + yTitle + (_loginUserLanguage != 'zh_CN' ? ' ' : '') + _loginUserLanguageResource.trendCurve;
                         var conf = (curveConf && curveConf.length > i) ? curveConf[i] : {};
                         var color = (colors && colors.length > i) ? colors[i] : defaultColors[i % 10];
                         var lineWidth = conf.lineWidth || 2;
@@ -2385,17 +2371,8 @@ String moduleId = request.getParameter("moduleId");
             }
         }
 
-
-        var deviceRealTimeMonitoringDataHandsontableHelper = null;
         //---------- 动态数据 ----------
         function loadDynamicData(deviceId) {
-            if (deviceRealTimeMonitoringDataHandsontableHelper) {
-                if (deviceRealTimeMonitoringDataHandsontableHelper.hot) {
-                    deviceRealTimeMonitoringDataHandsontableHelper.hot.destroy();
-                }
-                deviceRealTimeMonitoringDataHandsontableHelper = null;
-            }
-
             var container = document.getElementById('RealTimeMonitoringInfoDataTableInfoDiv_id');
             if (!container) return;
 
@@ -2428,88 +2405,12 @@ String moduleId = request.getParameter("moduleId");
                 dataType: 'json',
                 timeout: 15000,
                 success: function(result) {
-                    if (deviceRealTimeMonitoringDataHandsontableHelper == null || deviceRealTimeMonitoringDataHandsontableHelper.hot == undefined) {
-                        var colHeaders = [
-                            _loginUserLanguageResource.variable,
-                            _loginUserLanguageResource.value,
-                            _loginUserLanguageResource.variable,
-                            _loginUserLanguageResource.value,
-                            _loginUserLanguageResource.variable,
-                            _loginUserLanguageResource.value
-                        ];
-                        var columns = [{
-                                data: 'name1'
-                            },
-                            {
-                                data: 'value1'
-                            },
-                            {
-                                data: 'name2'
-                            },
-                            {
-                                data: 'value2'
-                            },
-                            {
-                                data: 'name3'
-                            },
-                            {
-                                data: 'value3'
-                            }
-                        ];
-                        deviceRealTimeMonitoringDataHandsontableHelper = DeviceRealTimeMonitoringDataHandsontableHelper.createNew("RealTimeMonitoringInfoDataTableInfoDiv_id");
-                        deviceRealTimeMonitoringDataHandsontableHelper.colHeaders = colHeaders;
-                        deviceRealTimeMonitoringDataHandsontableHelper.columns = columns;
-                        deviceRealTimeMonitoringDataHandsontableHelper.CellInfo = result.CellInfo;
-
-                        if (result.totalRoot.length == 0) {
-                            deviceRealTimeMonitoringDataHandsontableHelper.sourceData = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-                            deviceRealTimeMonitoringDataHandsontableHelper.createTable([{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]);
-                        } else {
-                            deviceRealTimeMonitoringDataHandsontableHelper.sourceData = result.totalRoot;
-                            deviceRealTimeMonitoringDataHandsontableHelper.createTable(result.totalRoot);
-                        }
-
-                        deviceRealTimeMonitoringDataHandsontableHelper.hot.addHook('afterOnCellMouseDown', function(event, coords, td) {
-                            // 检查是否为双击
-                            if (deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer != null &&
-                                deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow === coords.row &&
-                                deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol === coords.col) {
-                                clearTimeout(deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer);
-                                deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
-                                viewDeviceRealTimeMonitoringData(coords.row, coords.col);
-                                // TODO: 在这里调用打开弹窗的函数
-                                deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = -1;
-                                deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = -1;
-                            } else {
-                                // 如果是第一次点击，设置定时器
-                                deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = coords.row;
-                                deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = coords.col;
-                                if (deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer) {
-                                    clearTimeout(deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer);
-                                }
-                                deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = setTimeout(() => {
-                                    deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
-                                }, 250);
-                            }
-                        });
+                    if (result.totalRoot && result.totalRoot.length > 0) {
+                        // 创建或更新 MiniUI Grid
+                        createDeviceRealTimeMonitoringGrid('RealTimeMonitoringInfoDataTableInfoDiv_id', result.totalRoot, result.CellInfo);
                     } else {
-                        deviceRealTimeMonitoringDataHandsontableHelper.CellInfo = result.CellInfo;
-                        deviceRealTimeMonitoringDataHandsontableHelper.sourceData = result.totalRoot;
-                        deviceRealTimeMonitoringDataHandsontableHelper.hot.loadData(result.totalRoot);
+                        container.innerHTML = '<div class="loading-placeholder">无数据</div>';
                     }
-                    //添加单元格属性
-                    for (var i = 0; i < deviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length; i++) {
-                        var row = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
-                        var col = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col;
-                        var column = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].column;
-                        var columnDataType = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].columnDataType;
-                        if (deviceRealTimeMonitoringDataHandsontableHelper.hot != undefined) {
-                            deviceRealTimeMonitoringDataHandsontableHelper.hot.setCellMeta(row, col, 'columnDataType', columnDataType);
-                        }
-                    }
-                    deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
-                    deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = -1;
-                    deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = -1;
                 },
                 error: function(xhr, status, errorThrown) {
                     console.error('动态数据加载失败:', status, errorThrown);
@@ -2518,296 +2419,93 @@ String moduleId = request.getParameter("moduleId");
             });
         }
 
-        //Handsontable 相关（动态数据）
-        var DeviceRealTimeMonitoringDataHandsontableHelper = {
-            createNew: function(divid) {
-                var deviceRealTimeMonitoringDataHandsontableHelper = {};
-                deviceRealTimeMonitoringDataHandsontableHelper.divid = divid;
-                deviceRealTimeMonitoringDataHandsontableHelper.validresult = true; //数据校验
-                deviceRealTimeMonitoringDataHandsontableHelper.colHeaders = [];
-                deviceRealTimeMonitoringDataHandsontableHelper.columns = [];
-                deviceRealTimeMonitoringDataHandsontableHelper.CellInfo = [];
-                deviceRealTimeMonitoringDataHandsontableHelper.sourceData = [];
-
-                deviceRealTimeMonitoringDataHandsontableHelper.doubleClickTimer = null;
-                deviceRealTimeMonitoringDataHandsontableHelper.lastClickRow = -1;
-                deviceRealTimeMonitoringDataHandsontableHelper.lastClickCol = -1;
-
-                deviceRealTimeMonitoringDataHandsontableHelper.addItenmNameColStyle = function(instance, td, row, col, prop, value, cellProperties) {
-                    Handsontable.renderers.TextRenderer.apply(this, arguments);
-                    td.style.fontWeight = 'bold';
-                }
-
-                deviceRealTimeMonitoringDataHandsontableHelper.addSizeBg = function(instance, td, row, col, prop, value, cellProperties) {
-                    Handsontable.renderers.TextRenderer.apply(this, arguments);
-                    td.style.fontWeight = 'bold';
-                    td.style.fontSize = '20px';
-                    td.style.height = '40px';
-                }
-
-                deviceRealTimeMonitoringDataHandsontableHelper.addCellStyle = function(instance, td, row, col, prop, value, cellProperties) {
-                    Handsontable.renderers.TextRenderer.apply(this, arguments);
-                    var AlarmShowStyle = getAlarmShowStyle();
-                    if (row == 0) {
-                        Handsontable.renderers.TextRenderer.apply(this, arguments);
-                        td.style.fontSize = '20px';
-                        td.style.height = '40px';
-                    }
-                    if (row % 2 == 1 && row > 0) {
-                        td.style.backgroundColor = '#f5f5f5';
-                    }
-
-                    td.style.whiteSpace = 'nowrap'; //文本不换行
-                    td.style.overflow = 'hidden'; //超出部分隐藏
-                    td.style.textOverflow = 'ellipsis'; //使用省略号表示溢出的文本
-
-                    for (var i = 0; i < deviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length; i++) {
-                        if (isNotVal(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeColor)) {
-                            var row2 = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
-                            var col2 = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col * 2;
-                            if (row == row2 && col == col2) {
-                                td.style.color = '#' + deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeColor;
-                            }
-                        }
-
-                        if (isNotVal(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeBgColor)) {
-                            var row2 = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
-                            var col2 = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col * 2;
-                            if (row == row2 && col == col2) {
-                                td.style.backgroundColor = '#' + deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].realtimeBgColor;
-                            }
-                        }
-
-                        if (deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel >= 0) {
-                            var row2 = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
-                            var col2 = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col * 2 + 1;
-                            if (row == row2 && col == col2) {
-                                if (deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel > 0) {
-                                    td.style.fontWeight = 'bold';
-                                }
-                                if (deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel == 0) {
-                                    if (AlarmShowStyle.Data.Normal.Opacity != 0) {
-                                        td.style.backgroundColor = color16ToRgba('#' + AlarmShowStyle.Data.Normal.BackgroundColor, AlarmShowStyle.Data.Normal.Opacity);
-                                    }
-                                    td.style.color = '#' + AlarmShowStyle.Data.Normal.Color;
-                                } else if (deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel == 100) {
-                                    if (AlarmShowStyle.Data.FirstLevel.Opacity != 0) {
-                                        td.style.backgroundColor = color16ToRgba('#' + AlarmShowStyle.Data.FirstLevel.BackgroundColor, AlarmShowStyle.Data.FirstLevel.Opacity);
-                                    }
-                                    td.style.color = '#' + AlarmShowStyle.Data.FirstLevel.Color;
-                                } else if (deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel == 200) {
-                                    if (AlarmShowStyle.Data.SecondLevel.Opacity != 0) {
-                                        td.style.backgroundColor = color16ToRgba('#' + AlarmShowStyle.Data.SecondLevel.BackgroundColor, AlarmShowStyle.Data.SecondLevel.Opacity);
-                                    }
-                                    td.style.color = '#' + AlarmShowStyle.Data.SecondLevel.Color;
-                                } else if (deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel == 300) {
-                                    if (AlarmShowStyle.Data.ThirdLevel.Opacity != 0) {
-                                        td.style.backgroundColor = color16ToRgba('#' + AlarmShowStyle.Data.ThirdLevel.BackgroundColor, AlarmShowStyle.Data.ThirdLevel.Opacity);
-                                    }
-                                    td.style.color = '#' + AlarmShowStyle.Data.ThirdLevel.Color;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                deviceRealTimeMonitoringDataHandsontableHelper.createTable = function(data) {
-                    var container = document.getElementById(deviceRealTimeMonitoringDataHandsontableHelper.divid);
-                    if (!container) return;
-                    container.innerHTML = '';
-
-                    var parent = container.parentNode;
-                    var height = 300;
-                    if (parent) {
-                        var rect = parent.getBoundingClientRect();
-                        if (rect.height > 0) {
-                            height = rect.height;
-                        } else {
-                            var el = parent;
-                            while (el && el !== document.body) {
-                                var h = el.clientHeight || el.offsetHeight;
-                                if (h > 0) {
-                                    height = h;
-                                    break;
-                                }
-                                el = el.parentNode;
-                            }
-                        }
-                    }
-                    container.style.height = height + 'px';
-                    container.style.width = '100%';
-
-                    deviceRealTimeMonitoringDataHandsontableHelper.hot = new Handsontable(container, {
-                        licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-                        theme: 'ht-theme-classic',
-                        data: data,
-                        colWidths: [30, 20, 30, 20, 30, 20],
-                        columns: deviceRealTimeMonitoringDataHandsontableHelper.columns,
-                        stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-                        rowHeaders: false, //显示行头
-                        colHeaders: false,
-                        autoWrapRow: false, //自动换行
-                        rowHeights: [40],
-                        columnSorting: true, //允许排序
-                        allowInsertRow: false,
-                        sortIndicator: true,
-                        manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
-                        manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
-                        filters: true,
-                        renderAllRows: true,
-                        search: true,
-                        mergeCells: [{
-                            "row": 0,
-                            "col": 0,
-                            "rowspan": 1,
-                            "colspan": 6
-                        }],
-                        cells: function(row, col, prop) {
-                            var cellProperties = {};
-                            var visualRowIndex = this.instance.toVisualRow(row);
-                            var visualColIndex = this.instance.toVisualColumn(col);
-                            cellProperties.editor = false;
-                            cellProperties.renderer = deviceRealTimeMonitoringDataHandsontableHelper.addCellStyle;
-                            return cellProperties;
-                        },
-                        afterOnCellMouseOver: function(event, coords, TD) {
-                            if (coords.col >= 0 && coords.row >= 0 && deviceRealTimeMonitoringDataHandsontableHelper != null && deviceRealTimeMonitoringDataHandsontableHelper.hot != '' && deviceRealTimeMonitoringDataHandsontableHelper.hot != undefined && deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell != undefined) {
-                                var rawValue = deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(coords.row, coords.col);
-                                if (isNotVal(rawValue)) {
-                                    var showValue = rawValue;
-                                    var rowChar = 90;
-                                    var maxWidth = rowChar * 10;
-                                    if (rawValue.length > rowChar) {
-                                        showValue = '';
-                                        let arr = [];
-                                        let index = 0;
-                                        while (index < rawValue.length) {
-                                            arr.push(rawValue.slice(index, index += rowChar));
-                                        }
-                                        for (var i = 0; i < arr.length; i++) {
-                                            showValue += arr[i];
-                                            if (i < arr.length - 1) {
-                                                showValue += '<br>';
-                                            }
-                                        }
-                                    }
-
-                                    // ★ 清除定时器
-                                    if (window._hoverTimer) {
-                                        clearTimeout(window._hoverTimer);
-                                        window._hoverTimer = null;
-                                    }
-
-                                    // ★ 强制关闭所有已存在的提示框（使用 DOM 方式）
-                                    if (typeof window.closeAllTips === 'function') {
-                                        window.closeAllTips();
-                                    }
-
-                                    // ★ 延迟创建新提示
-                                    window._hoverTimer = setTimeout(function() {
-                                        if (typeof mini !== 'undefined' && mini.showTips) {
-                                            mini.showTips({
-                                                x: event.clientX + 10,
-                                                y: event.clientY + 10,
-                                                content: showValue,
-                                                state: 'default',
-                                                timeout: 3000
-                                            });
-                                        } else {
-                                            TD.title = rawValue;
-                                        }
-                                        window._hoverTimer = null;
-                                    }, 300);
-                                }
-                            }
-                        },
-                        afterOnCellMouseOut: function(event, coords, TD) {
-                            if (window._hoverTimer) {
-                                clearTimeout(window._hoverTimer);
-                                window._hoverTimer = null;
-                            }
-                            if (typeof window.closeAllTips === 'function') {
-                                window.closeAllTips();
-                            }
-                        }
-                    });
-                }
-                return deviceRealTimeMonitoringDataHandsontableHelper;
-            }
-        };
-
         function viewDeviceRealTimeMonitoringData(row, col) {
-            if (deviceRealTimeMonitoringDataHandsontableHelper != null && deviceRealTimeMonitoringDataHandsontableHelper.hot != undefined && row > 0) {
-                if (col % 2 == 1) {
-                    col = (col - 1) / 2;
-                } else {
-                    col = col / 2;
-                }
+            if (!deviceRealTimeMonitoringGrid || row < 1) return;
+            var grid = deviceRealTimeMonitoringGrid;
+            var record = grid.getAt(row);
+            if (!record) return;
 
-                var cellInfo = null;
-                for (var i = 0; i < deviceRealTimeMonitoringDataHandsontableHelper.CellInfo.length; i++) {
-                    if (deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row == row && deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col == col) {
-                        cellInfo = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i];
-                    }
+            var itemName = record['name' + (col + 1)];
+            var itemValue = record['value' + (col + 1)];
+
+            var cellInfo = grid._cellInfo || [];
+            var info = null;
+            for (var i = 0; i < cellInfo.length; i++) {
+                if (cellInfo[i].row === row && cellInfo[i].col === col) {
+                    info = cellInfo[i];
+                    break;
                 }
-                if (cellInfo != null) {
-                    var itemName = deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(row, col * 2);
-                    var itemValue = deviceRealTimeMonitoringDataHandsontableHelper.hot.getDataAtCell(row, col * 2 + 1);
-                    var info = itemName + ':' + itemValue;
-                    if (cellInfo.type == 0) {
-                        if (cellInfo.resolutionMode == 2) {
-                            info += ',采集数据量';
-                            if (cellInfo.columnDataType.toUpperCase() != 'string'.toUpperCase() && isNumber(itemValue)) {
-                                viewItemRealTimeCurve(itemName, itemValue, cellInfo);
-                            } else {
-                                viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
-                            }
-                        } else if (cellInfo.resolutionMode == 0) {
-                            info += ',采集开关量';
-                            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
-                        } else if (cellInfo.resolutionMode == 1) {
-                            info += ',采集枚举量';
-                            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
-                        }
-                    } else if (cellInfo.type == 1) {
-                        info += ',计算项';
-                        if (isNumByCalculateItemCode(cellInfo.column)) {
-                            viewItemRealTimeCurve(itemName, itemValue, cellInfo);
-                        } else {
-                            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
-                        }
-                    } else if (cellInfo.type == 3) {
-                        info += ',录入项';
-                        if (isNumber(itemValue)) {
-                            viewItemRealTimeCurve(itemName, itemValue, cellInfo);
-                        } else {
-                            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
-                        }
-                    } else if (cellInfo.type == 5) {
-                        if (cellInfo.resolutionMode == 2) {
-                            info += ',协议拓展项数据量';
-                            if (isNumber(itemValue)) {
-                                viewItemRealTimeCurve(itemName, itemValue, cellInfo);
-                            } else {
-                                viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
-                            }
-                        } else if (cellInfo.resolutionMode == 0) {
-                            info += ',协议拓展项开关量';
-                            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
-                        } else if (cellInfo.resolutionMode == 1) {
-                            info += ',协议拓展项枚举量';
-                            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
-                        } else if (cellInfo.resolutionMode == 7) {
-                            info += ',协议拓展项数值运算项';
-                            if (isNumber(itemValue)) {
-                                viewItemRealTimeCurve(itemName, itemValue, cellInfo);
-                            } else {
-                                viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
-                            }
-                        }
+            }
+            if (!info) {
+                console.warn('未找到 CellInfo:', row, col);
+                return;
+            }
+
+            // 判断是否为有效数值（用于曲线显示）
+            var isNumeric = function(val) {
+                return val !== undefined && val !== null && val !== '' && !isNaN(parseFloat(val));
+            };
+
+            var type = info.type;
+            var resolutionMode = info.resolutionMode;
+            var columnDataType = info.columnDataType || '';
+            var column = info.column;
+
+            // 根据类型和分辨率决定打开曲线还是数据表
+            if (type == 0) {
+                // 采集项
+                if (resolutionMode == 2) {
+                    // 数值量
+                    if (columnDataType.toUpperCase() !== 'STRING' && isNumeric(itemValue)) {
+                        viewItemRealTimeCurve(itemName, itemValue, info);
+                    } else {
+                        viewItemRealTimeDataTable(itemName, itemValue, info);
                     }
-                    console.log(info);
+                } else if (resolutionMode == 0 || resolutionMode == 1) {
+                    // 开关量或枚举量 → 数据表
+                    viewItemRealTimeDataTable(itemName, itemValue, info);
+                } else {
+                    viewItemRealTimeDataTable(itemName, itemValue, info);
                 }
+            } else if (type == 1) {
+                // 计算项
+                if (isNumByCalculateItemCode(column)) {
+                    viewItemRealTimeCurve(itemName, itemValue, info);
+                } else {
+                    viewItemRealTimeDataTable(itemName, itemValue, info);
+                }
+            } else if (type == 3) {
+                // 录入项
+                if (isNumeric(itemValue)) {
+                    viewItemRealTimeCurve(itemName, itemValue, info);
+                } else {
+                    viewItemRealTimeDataTable(itemName, itemValue, info);
+                }
+            } else if (type == 5) {
+                // 协议拓展项
+                if (resolutionMode == 2) {
+                    // 数据量
+                    if (isNumeric(itemValue)) {
+                        viewItemRealTimeCurve(itemName, itemValue, info);
+                    } else {
+                        viewItemRealTimeDataTable(itemName, itemValue, info);
+                    }
+                } else if (resolutionMode == 0 || resolutionMode == 1) {
+                    // 开关量或枚举量
+                    viewItemRealTimeDataTable(itemName, itemValue, info);
+                } else if (resolutionMode == 7) {
+                    // 数值运算项
+                    if (isNumeric(itemValue)) {
+                        viewItemRealTimeCurve(itemName, itemValue, info);
+                    } else {
+                        viewItemRealTimeDataTable(itemName, itemValue, info);
+                    }
+                } else {
+                    viewItemRealTimeDataTable(itemName, itemValue, info);
+                }
+            } else {
+                // 默认打开数据表
+                viewItemRealTimeDataTable(itemName, itemValue, info);
             }
         }
 
@@ -2910,7 +2608,7 @@ String moduleId = request.getParameter("moduleId");
                 success: function(result) {
                     mini.unmask(ctx.win.getBodyEl());
                     if (!result || !result.list || result.list.length === 0) {
-                        document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                        document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;">' + _loginUserLanguageResource.emptyMsg + '</div>';
                         return;
                     }
 
@@ -2951,22 +2649,22 @@ String moduleId = request.getParameter("moduleId");
 
                     // 使用 Highcharts 渲染（复用现有绘图函数）
                     initDeviceRealtimeMonitoringStockChartFn(
-                            series,
-                            undefined,
-                            ctx.containerId,
-                            title,
-                            subtitle,
-                            _loginUserLanguageResource.time,
-                            legendName[0],
-                            ['#7cb5ec'],
-                            false,
-                            true,
-                            false,
-                            '%H:%M',
-                            maxValue,
-                            minValue,
-                            false
-                        );
+                        series,
+                        undefined,
+                        ctx.containerId,
+                        title,
+                        subtitle,
+                        _loginUserLanguageResource.time,
+                        legendName[0],
+                        ['#7cb5ec'],
+                        false,
+                        true,
+                        false,
+                        '%H:%M',
+                        maxValue,
+                        minValue,
+                        false
+                    );
                 },
                 error: function(xhr, status, errorThrown) {
                     mini.unmask(mask);
@@ -2994,7 +2692,7 @@ String moduleId = request.getParameter("moduleId");
             // 创建 MiniUI 窗口
             var win = new mini.Window();
             win.set({
-                title: _loginUserLanguageResource.dynamicData || '动态数据',
+                title: _loginUserLanguageResource.dynamicData,
                 width: 500,
                 height: '80%',
                 minWidth: 400,
@@ -3013,11 +2711,10 @@ String moduleId = request.getParameter("moduleId");
             var html = '<div style="display:flex; flex-direction:column; height:100%;">';
             // 工具栏
             html += '<div style="flex-shrink:0; padding:4px 8px; background:#f5f5f5; border-bottom:1px solid #ddd; display:flex; align-items:center; gap:6px;">';
-            html += '<span style="font-size:12px; color:#333;">' + (_loginUserLanguageResource.totalCount || '总条数') + ': <span id="itemRealtimeDataCount_' + containerId + '">0</span></span>';
+            html += '<span style="font-size:12px; color:#333;">' + (_loginUserLanguageResource.totalCount) + ': <span id="itemRealtimeDataCount_' + containerId + '">0</span></span>';
             html += '<span style="flex:1;"></span>';
-            html += '<button id="exportItemRealtimeDataBtn_' + containerId + '" class="mini-button" iconCls="export" style="padding:2px 12px;">' + (_loginUserLanguageResource.exportData || '导出') + '</button>';
+            html += '<button id="exportItemRealtimeDataBtn_' + containerId + '" class="mini-button" iconCls="export" style="padding:2px 12px;">' + (_loginUserLanguageResource.exportData) + '</button>';
             html += '</div>';
-            // Handsontable 容器
             html += '<div id="' + containerId + '" style="flex:1; overflow:hidden; min-height:0;"></div>';
             html += '</div>';
             win.setBody(html);
@@ -3049,15 +2746,6 @@ String moduleId = request.getParameter("moduleId");
 
             // 加载数据表
             CreateItemRealtimeDataTable();
-
-            // 窗口关闭时清理
-            win.on('beforedestroy', function() {
-                if (window._itemRealtimeDataHot) {
-                    window._itemRealtimeDataHot.destroy();
-                    window._itemRealtimeDataHot = null;
-                }
-                _dataWindowContext = null;
-            });
         }
 
         // 创建数据表（完全复用原有逻辑，修改 UI 交互）
@@ -3088,8 +2776,9 @@ String moduleId = request.getParameter("moduleId");
                 timeout: 15000,
                 success: function(result) {
                     mini.unmask(ctx.win.getBodyEl());
-                    if (!result || !result.totalRoot || result.totalRoot.length === 0) {
-                        document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                    var container = document.getElementById(ctx.containerId);
+                    if (!container) {
+                        console.warn('容器不存在:', ctx.containerId);
                         return;
                     }
 
@@ -3097,93 +2786,79 @@ String moduleId = request.getParameter("moduleId");
                     var countEl = document.getElementById(ctx.countId);
                     if (countEl) countEl.innerText = result.totalCount || result.totalRoot.length;
 
+                    // 清空容器
+                    container.innerHTML = '';
+
+                    if (!result || !result.totalRoot || result.totalRoot.length === 0) {
+                        container.innerHTML = '<div style="text-align:center;padding:20px;color:#999;">' + _loginUserLanguageResource.emptyMsg + '</div>';
+                        return;
+                    }
+
                     var data = result.totalRoot;
 
-                    // ---------- 以下 Handsontable 创建逻辑（复用原有） ----------
-                    var container = document.getElementById(ctx.containerId);
-                    var parent = container.parentNode;
-                    var height = 300;
-                    if (parent) {
-                        var rect = parent.getBoundingClientRect();
-                        if (rect.height > 0) height = rect.height;
-                    }
-                    container.style.height = height + 'px';
-                    container.style.width = '100%';
-
-                    // 销毁旧实例
-                    if (window._itemRealtimeDataHot) {
-                        window._itemRealtimeDataHot.destroy();
-                        window._itemRealtimeDataHot = null;
-                    }
-
-                    var hot = new Handsontable(container, {
-                        licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-                        theme: 'ht-theme-classic',
+                    // 创建 MiniUI DataGrid
+                    var grid = new mini.DataGrid();
+                    grid.set({
+                        id: 'itemRealtimeDataGrid_' + Date.now(),
+                        style: 'width:100%; height:100%;',
+                        showPager: false,
+                        allowCellSelect: true,
+                        allowCellWrap: false,
+                        allowResize: true,
+                        virtualScroll: false,
+                        allowAlternating: true,
                         data: data,
                         columns: [{
-                                data: 'acqTime',
-                                title: _loginUserLanguageResource.acqTime
+                                type: 'indexcolumn',
+                                align: 'center',
+                                headerAlign: 'center',
+                                width: 70,
+                                header: _loginUserLanguageResource.idx
                             },
                             {
-                                data: 'data',
-                                title: ctx.itemName
+                                field: 'acqTime',
+                                width: '50%',
+                                align: 'center',
+                                headerAlign: 'center',
+                                header: _loginUserLanguageResource.acqTime,
+                                dateFormat: 'yyyy-MM-dd HH:mm:ss'
+                            },
+                            {
+                                field: 'data',
+                                width: '50%',
+                                align: 'center',
+                                headerAlign: 'center',
+                                header: ctx.itemName
                             }
-                        ],
-                        stretchH: 'all',
-                        rowHeaders: true,
-                        colHeaders: true,
-                        fixedColumnsStart: 1,
-                        autoWrapRow: false,
-                        columnSorting: true,
-                        allowInsertRow: false,
-                        sortIndicator: true,
-                        manualColumnResize: true,
-                        manualRowResize: true,
-                        filters: true,
-                        renderAllRows: true,
-                        search: true,
-                        cells: function(row, col, prop) {
-                            var cellProperties = {};
-                            cellProperties.editor = false;
-                            cellProperties.renderer = function(instance, td, row, col, prop, value, cellProperties) {
-                                Handsontable.renderers.TextRenderer.apply(this, arguments);
-                                td.style.whiteSpace = 'nowrap';
-                                td.style.overflow = 'hidden';
-                                td.style.textOverflow = 'ellipsis';
-                            };
-                            return cellProperties;
-                        },
-                        afterOnCellMouseOver: function(event, coords, TD) {
-                            if (coords.col >= 0 && coords.row >= 0 && hot) {
-                                var rawValue = hot.getDataAtCell(coords.row, coords.col);
-                                if (rawValue && rawValue !== '') {
-                                    TD.title = rawValue;
-                                }
-                            }
+                        ]
+                    });
+
+                    grid.render(container);
+
+                    // 保存 grid 实例到 window，便于窗口关闭时销毁
+                    window._itemRealtimeDataGrid = grid;
+
+                    // 窗口 resize 时调整 grid 大小
+                    ctx.win.on('resize', function() {
+                        if (window._itemRealtimeDataGrid) {
+                            window._itemRealtimeDataGrid.doLayout();
                         }
                     });
 
-                    window._itemRealtimeDataHot = hot;
-                    hot.render();
-
-                    // 窗口 resize 时调整高度
-                    ctx.win.on('resize', function() {
-                        if (window._itemRealtimeDataHot) {
-                            var container = document.getElementById(ctx.containerId);
-                            if (container) {
-                                var parent = container.parentNode;
-                                var h = parent ? parent.clientHeight || 300 : 300;
-                                container.style.height = h + 'px';
-                                window._itemRealtimeDataHot.updateSettings({
-                                    height: h
-                                });
-                            }
+                    // 窗口关闭时销毁 grid
+                    ctx.win.on('beforedestroy', function() {
+                        if (window._itemRealtimeDataGrid) {
+                            window._itemRealtimeDataGrid.destroy();
+                            window._itemRealtimeDataGrid = null;
                         }
                     });
                 },
                 error: function(xhr, status, errorThrown) {
                     mini.unmask(mask);
-                    document.getElementById(ctx.containerId).innerHTML = '<div style="text-align:center;padding:20px;color:red;">加载失败</div>';
+                    var container = document.getElementById(ctx.containerId);
+                    if (container) {
+                        container.innerHTML = '<div style="text-align:center;padding:20px;color:red;">加载失败</div>';
+                    }
                     console.error('加载数据表失败:', status, errorThrown);
                 }
             });
@@ -3266,7 +2941,7 @@ String moduleId = request.getParameter("moduleId");
 
             var grid = mini.get('deviceGrid');
             if (!grid || !grid.getSelected()) {
-                container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.noSelectionRecord+'</div>';
+                container.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.noSelectionRecord + '</div>';
                 return;
             }
             var selected = grid.getSelected();
@@ -3274,7 +2949,7 @@ String moduleId = request.getParameter("moduleId");
             var deviceName = selected.deviceName;
             var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
 
-            container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.loadingData+'</div>';
+            container.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.loadingData + '</div>';
 
             $.ajax({
                 url: context + '/realTimeMonitoringController/getDeviceControlData',
@@ -3289,7 +2964,7 @@ String moduleId = request.getParameter("moduleId");
                 success: function(result) {
                     container.innerHTML = '';
                     if (!result || !result.totalRoot || result.totalRoot.length === 0) {
-                        container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                        container.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
                         return;
                     }
 
@@ -3308,7 +2983,7 @@ String moduleId = request.getParameter("moduleId");
                             },
                             {
                                 field: 'action',
-                                header:  _loginUserLanguageResource.operation,
+                                header: _loginUserLanguageResource.operation,
                                 width: '60%',
                                 align: 'center',
                                 renderer: function(e) {
@@ -3347,7 +3022,7 @@ String moduleId = request.getParameter("moduleId");
                                     } else {
                                         html += '<button class="mini-button" style="' + btnStyle + '" ' +
                                             (disabled ? 'disabled' : '') +
-                                            ' onclick="onNumericControlClick(' + record.id + ', \'' + record.itemcode + '\', \'' + record.itemName + '\', \'' + (record.unit || '') + '\', ' + record.quantity + ', \'' + record.storeDataType + '\', ' + disabled + ')">'+_loginUserLanguageResource.set+'</button>';
+                                            ' onclick="onNumericControlClick(' + record.id + ', \'' + record.itemcode + '\', \'' + record.itemName + '\', \'' + (record.unit || '') + '\', ' + record.quantity + ', \'' + record.storeDataType + '\', ' + disabled + ')">' + _loginUserLanguageResource.set + '</button>';
                                     }
 
                                     html += '</div>';
@@ -3481,7 +3156,7 @@ String moduleId = request.getParameter("moduleId");
                 success: function(result) {
                     container.innerHTML = '';
                     if (!result) {
-                        container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                        container.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
                         return;
                     }
 
@@ -3495,8 +3170,8 @@ String moduleId = request.getParameter("moduleId");
                     if (infoList.length > 0) {
                         html += '<table style="width:100%; border-collapse:collapse; font-size:12px;">';
                         html += '<thead><tr style="background:#f5f7fa;">';
-                        html += '<th style="padding:6px 10px; text-align:left; border:1px solid #ddd;">'+_loginUserLanguageResource.variable+'</th>';
-                        html += '<th style="padding:6px 10px; text-align:center; border:1px solid #ddd;">'+_loginUserLanguageResource.value+'</th>';
+                        html += '<th style="padding:6px 10px; text-align:left; border:1px solid #ddd;">' + _loginUserLanguageResource.variable + '</th>';
+                        html += '<th style="padding:6px 10px; text-align:center; border:1px solid #ddd;">' + _loginUserLanguageResource.value + '</th>';
                         html += '</tr></thead><tbody>';
                         for (var i = 0; i < infoList.length; i++) {
                             var item = infoList[i];
@@ -3508,7 +3183,7 @@ String moduleId = request.getParameter("moduleId");
                         }
                         html += '</tbody></table>';
                     } else {
-                        html += '<div class="loading-placeholder" style="height:100%;">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                        html += '<div class="loading-placeholder" style="height:100%;">' + _loginUserLanguageResource.emptyMsg + '</div>';
                     }
                     html += '</div>';
 
@@ -3517,8 +3192,8 @@ String moduleId = request.getParameter("moduleId");
                     if (auxList.length > 0) {
                         html += '<table style="width:100%; border-collapse:collapse; font-size:12px;">';
                         html += '<thead><tr style="background:#f5f7fa;">';
-                        html += '<th style="padding:4px 8px; border:1px solid #ddd; text-align:center; width:50px;">'+_loginUserLanguageResource.idx+'</th>';
-                        html += '<th style="padding:4px 8px; border:1px solid #ddd; text-align:left;">'+_loginUserLanguageResource.deviceName+'</th>';
+                        html += '<th style="padding:4px 8px; border:1px solid #ddd; text-align:center; width:50px;">' + _loginUserLanguageResource.idx + '</th>';
+                        html += '<th style="padding:4px 8px; border:1px solid #ddd; text-align:left;">' + _loginUserLanguageResource.deviceName + '</th>';
                         html += '</tr></thead>';
                         html += '<tbody>';
                         for (var i = 0; i < auxList.length; i++) {
@@ -3538,7 +3213,7 @@ String moduleId = request.getParameter("moduleId");
                         }
                         html += '</tbody></table>';
                     } else {
-                        html += '<div class="loading-placeholder" style="height:100%;">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                        html += '<div class="loading-placeholder" style="height:100%;">' + _loginUserLanguageResource.emptyMsg + '</div>';
                     }
                     html += '</div>';
                     html += '</div>';
@@ -3558,7 +3233,7 @@ String moduleId = request.getParameter("moduleId");
         function openResourceChart(itemCode, itemName) {
             var win = new mini.Window();
             win.set({
-                title: itemName +(_loginUserLanguage!='zh_CN'?' ':'')+_loginUserLanguageResource.trendCurve,
+                title: itemName + (_loginUserLanguage != 'zh_CN' ? ' ' : '') + _loginUserLanguageResource.trendCurve,
                 width: '70%',
                 height: '60%',
                 modal: true,
@@ -3575,22 +3250,22 @@ String moduleId = request.getParameter("moduleId");
 
             loadResourceChartData(itemCode, itemName, divId, win);
         }
-        
+
         function initResourceProbeHistoryCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, ytitle, color, legend, timeFormat) {
             if ($("#" + divId) != undefined && $("#" + divId)[0] != undefined) {
-            	var isZooming = false;
+                var isZooming = false;
                 var zoomTimer = null;
                 var $container = $("#" + divId);
                 var panelId = "ResourceProbeHistoryCurvePanel_Id";
-                
-            	var mychart = new Highcharts.Chart({
+
+                var mychart = new Highcharts.Chart({
                     chart: {
                         renderTo: divId,
                         type: 'spline',
                         shadow: false,
                         borderWidth: 0,
                         zoomType: 'xy',
-                     // 禁用鼠标滚轮缩放
+                        // 禁用鼠标滚轮缩放
                         zooming: {
                             mouseWheel: {
                                 enabled: false
@@ -3632,7 +3307,7 @@ String moduleId = request.getParameter("moduleId");
                             text: xtitle
                         },
                         labels: {
-                            formatter: function () {
+                            formatter: function() {
                                 return this.axis.chart.time.dateFormat(timeFormat, this.value);
                             },
                             autoRotation: true, //自动旋转
@@ -3646,18 +3321,18 @@ String moduleId = request.getParameter("moduleId");
                                 var currentMax = this.max;
                                 var newMin = e.min;
                                 var newMax = e.max;
-                                
+
                                 // 如果范围没有实际变化，不显示遮罩
                                 if (currentMin === newMin && currentMax === newMax) {
                                     return;
                                 }
-                                
+
                                 // 实际发生了缩放，显示遮罩
                                 if (!isZooming) {
                                     isZooming = true;
                                     Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
                                 }
-                                
+
                                 // 设置超时保护
                                 if (zoomTimer) clearTimeout(zoomTimer);
                                 zoomTimer = setTimeout(function() {
@@ -3676,7 +3351,7 @@ String moduleId = request.getParameter("moduleId");
                         title: {
                             text: ytitle
                         }
-        		      }],
+                    }],
                     tooltip: {
                         crosshairs: true, //十字准线
                         shared: true,
@@ -3705,15 +3380,15 @@ String moduleId = request.getParameter("moduleId");
                         buttons: {
                             contextButton: {
                                 menuItems: [
-                                	'viewFullscreen',
-                                	'printChart',
-                                	'separator',
-                                	'downloadPNG',
-                                	'downloadJPEG',
-                                	'downloadSVG',
-                                	'separator',
-                                	'downloadCSV',
-                                	'downloadXLS'
+                                    'viewFullscreen',
+                                    'printChart',
+                                    'separator',
+                                    'downloadPNG',
+                                    'downloadJPEG',
+                                    'downloadSVG',
+                                    'separator',
+                                    'downloadCSV',
+                                    'downloadXLS'
                                 ]
                             }
                         }
@@ -3741,9 +3416,9 @@ String moduleId = request.getParameter("moduleId");
                         verticalAlign: 'middle',
                         enabled: legend,
                         borderWidth: 0,
-        	            itemHiddenStyle: {
-        	                textDecoration: 'none'
-        	            }
+                        itemHiddenStyle: {
+                            textDecoration: 'none'
+                        }
                     },
                     series: series
                 });
@@ -3768,17 +3443,17 @@ String moduleId = request.getParameter("moduleId");
                 timeout: 10000,
                 success: function(result) {
                     if (!result || !result.totalRoot || result.totalRoot.length === 0) {
-                        document.getElementById(divId).innerHTML = '<div style="text-align:center;padding:20px;">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                        document.getElementById(divId).innerHTML = '<div style="text-align:center;padding:20px;">' + _loginUserLanguageResource.emptyMsg + '</div>';
                         return;
                     }
                     var chartData = result.totalRoot;
-                    var legend=false;
+                    var legend = false;
                     var series = buildResourceSeries(chartData, itemCode, itemName);
-                    if(series.length>0){
-                    	legend=true;
+                    if (series.length > 0) {
+                        legend = true;
                     }
                     var title = itemName.split("(")[0];
-                    var subtitle="[" + result.startDate + "~" + result.endDate + "]";
+                    var subtitle = "[" + result.startDate + "~" + result.endDate + "]";
                     var yTitle = itemName;
                     var tickInterval = Math.floor(chartData.length / 10) + 1;
                     var color = ['#800000', // 红
@@ -3787,11 +3462,11 @@ String moduleId = request.getParameter("moduleId");
                         '#0000FF', // 蓝
                         '#F4BD82', // 黄
                         '#FF00FF' // 紫
-                      ];
-                    
-                    var timeFormat='%m-%d';
-                    if(chartData.length>0 && result.minAcqTime.split(' ')[0]==result.maxAcqTime.split(' ')[0]){
-                	    timeFormat='%H:%M';
+                    ];
+
+                    var timeFormat = '%m-%d';
+                    if (chartData.length > 0 && result.minAcqTime.split(' ')[0] == result.maxAcqTime.split(' ')[0]) {
+                        timeFormat = '%H:%M';
                     }
 
                     if (typeof initResourceProbeHistoryCurveChartFn === 'function') {
@@ -3854,11 +3529,11 @@ String moduleId = request.getParameter("moduleId");
                     }
                 });
                 series.push({
-                    name: _loginUserLanguageResource.dataTablespace+"(%)",
+                    name: _loginUserLanguageResource.dataTablespace + "(%)",
                     data: dataSpace
                 });
                 series.push({
-                    name: _loginUserLanguageResource.undoTablespace+"(%)",
+                    name: _loginUserLanguageResource.undoTablespace + "(%)",
                     data: undoSpace
                 });
             } else {
@@ -3902,11 +3577,6 @@ String moduleId = request.getParameter("moduleId");
             middleTabs = mini.get('middleTabs');
             rightTabs = mini.get('rightTabs');
 
-            var grid = mini.get('deviceGrid');
-            if (grid) {
-                grid.setColumns(DEFAULT_COLUMNS);
-            }
-
             buildLevel1Tabs();
             initI18n();
 
@@ -3926,8 +3596,8 @@ String moduleId = request.getParameter("moduleId");
                     });
                 }, 500);
             });
-            
-         // 使用事件代理监听 .device-name-cell 的 mouseenter/mouseleave（兼容性更好）
+
+            // 使用事件代理监听 .device-name-cell 的 mouseenter/mouseleave（兼容性更好）
             document.addEventListener('mouseover', function(e) {
                 var target = e.target.closest('.device-name-cell');
                 if (target && !target._tipShown) {
@@ -4358,11 +4028,22 @@ String moduleId = request.getParameter("moduleId");
                                 }
                                 break;
                             case 'middle_DynamicData':
-                                if (deviceRealTimeMonitoringDataHandsontableHelper &&
-                                    deviceRealTimeMonitoringDataHandsontableHelper.hot) {
-                                    deviceRealTimeMonitoringDataHandsontableHelper.CellInfo = data.CellInfo;
-                                    deviceRealTimeMonitoringDataHandsontableHelper.sourceData = data.totalRoot;
-                                    deviceRealTimeMonitoringDataHandsontableHelper.hot.loadData(data.totalRoot);
+                                if (deviceRealTimeMonitoringGrid) {
+                                    var newData = data.totalRoot;
+                                    if (newData && newData.length > 0) {
+                                        deviceRealTimeMonitoringGrid.setData(newData);
+                                        deviceRealTimeMonitoringGrid._cellInfo = data.CellInfo;
+                                        // 重新合并第一行
+                                        setTimeout(function() {
+                                            mergeDataGridCell(deviceRealTimeMonitoringGrid, [{
+                                                rowIndex: 0,
+                                                columnIndex: 0,
+                                                rowSpan: 1,
+                                                colSpan: 6
+                                            }]);
+                                            deviceRealTimeMonitoringGrid.setStyle('visibility:visible;');
+                                        }, 50);
+                                    }
                                 }
                                 break;
                             default:
@@ -4378,13 +4059,20 @@ String moduleId = request.getParameter("moduleId");
                 if (middleTabs) {
                     var activeMiddleTab = middleTabs.getActiveTab();
                     if (activeMiddleTab && activeMiddleTab.name === 'middle_DynamicData') {
-                        if (deviceRealTimeMonitoringDataHandsontableHelper &&
-                            deviceRealTimeMonitoringDataHandsontableHelper.hot) {
+                        // ★ 替换为 MiniUI Grid 操作
+                        if (deviceRealTimeMonitoringGrid) {
                             var statusText = data.commStatus > 0 ?
                                 (_loginUserLanguageResource.goOnline || '上线') :
                                 (_loginUserLanguageResource.offline || '离线');
-                            var value = data.deviceName + ':' + data.acqTime + ' ' + statusText;
-                            deviceRealTimeMonitoringDataHandsontableHelper.hot.setDataAtCell(0, 0, value);
+                            var newTitle = data.deviceName + ':' + data.acqTime + ' ' + statusText;
+
+                            // 更新第一行的 name1 字段
+                            var firstRow = deviceRealTimeMonitoringGrid.getAt(0);
+                            if (firstRow) {
+                                deviceRealTimeMonitoringGrid.updateRow(firstRow, {
+                                    name1: newTitle
+                                });
+                            }
                         }
                     }
                 }
@@ -4402,6 +4090,242 @@ String moduleId = request.getParameter("moduleId");
             }
 
             console.log('实时数据处理完成，设备ID:', data.deviceId, '类型:', funcCode, '通信变化:', commStatusChange);
+        }
+
+
+        var deviceRealTimeMonitoringGrid = null; // 存放 MiniUI grid 实例
+        function createDeviceRealTimeMonitoringGrid(containerId, data, cellInfo) {
+            if (deviceRealTimeMonitoringGrid) {
+                deviceRealTimeMonitoringGrid.destroy();
+                deviceRealTimeMonitoringGrid = null;
+            }
+
+            var container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+
+            deviceRealTimeMonitoringGrid = new mini.DataGrid();
+            deviceRealTimeMonitoringGrid._cellInfo = cellInfo || [];
+            deviceRealTimeMonitoringGrid.set({
+                id: 'deviceRealtimeDataGrid',
+                style: 'width:100%; height:100%; visibility:hidden;', // ★ 初始隐藏
+                showPager: false,
+                showColumns: false,
+                allowCellSelect: true,
+                allowCellWrap: false,
+                allowResize: true,
+                allowCellMerge: true,
+                virtualScroll: false,
+                allowAlternating: true,
+                data: data || [],
+                columns: [{
+                        field: 'name1',
+                        width: '16%',
+                        align: 'center',
+                        headerAlign: 'center'
+                    },
+                    {
+                        field: 'value1',
+                        width: '16%',
+                        align: 'center',
+                        headerAlign: 'center'
+                    },
+                    {
+                        field: 'name2',
+                        width: '16%',
+                        align: 'center',
+                        headerAlign: 'center'
+                    },
+                    {
+                        field: 'value2',
+                        width: '16%',
+                        align: 'center',
+                        headerAlign: 'center'
+                    },
+                    {
+                        field: 'name3',
+                        width: '16%',
+                        align: 'center',
+                        headerAlign: 'center'
+                    },
+                    {
+                        field: 'value3',
+                        width: '16%',
+                        align: 'center',
+                        headerAlign: 'center'
+                    }
+                ],
+                ondrawcell: function(e) {
+                    applyCellStyle(e);
+                },
+                oncellmouseenter: function(e) {},
+                oncelldblclick: function(e) {
+                    handleCellDblClick(e);
+                },
+                onrender: function() {
+                    var merges = [{
+                        rowIndex: 0,
+                        columnIndex: 0,
+                        rowSpan: 1,
+                        colSpan: 6
+                    }];
+                    mergeDataGridCell(this, merges);
+                    // ★ 合并完成后显示
+                    this.setStyle('visibility:visible;');
+                }
+            });
+
+            deviceRealTimeMonitoringGrid.render(container);
+
+            // 兜底：如果数据存在且 onrender 未触发（极少情况），延迟合并并显示
+            if (data && data.length > 0) {
+                setTimeout(function() {
+                    var merges = [{
+                        rowIndex: 0,
+                        columnIndex: 0,
+                        rowSpan: 1,
+                        colSpan: 6
+                    }];
+                    mergeDataGridCell(deviceRealTimeMonitoringGrid, merges);
+                    deviceRealTimeMonitoringGrid.setStyle('visibility:visible;');
+                }, 100);
+            }
+        }
+
+        function mergeDataGridCell(grid, marges) {
+            if (!grid) return;
+            try {
+                grid.mergeCells(marges);
+            } catch (e) {
+                // 若失败，延迟重试
+                setTimeout(function() {
+                    try {
+                        grid.mergeCells(marges);
+                    } catch (e2) {}
+                }, 200);
+            }
+        }
+
+        function applyCellStyle(e) {
+            // ★ 从 grid 实例获取最新的 cellInfo
+            var grid = e.sender;
+            var cellInfo = grid._cellInfo || [];
+
+            e.cellStyle = '';
+
+            var record = e.record;
+            var field = e.field;
+            var rowIndex = e.rowIndex;
+            var colIndex = e.columnIndex;
+            var value = e.value;
+
+            // 第一行特殊样式：字体大、高度高
+            if (rowIndex === 0) {
+                e.cellStyle = 'font-size:20px; height:40px; font-weight:bold;';
+                return;
+            }
+
+            if (!cellInfo) return;
+
+            var alarmShowStyle = getAlarmShowStyle();
+            // 遍历 cellInfo 找到匹配当前行和组的项
+            // 先确定组索引：field 是 name1/value1 对应组0，name2/value2 对应组1，name3/value3 对应组2
+            var groupMap = {
+                name1: 0,
+                value1: 0,
+                name2: 1,
+                value2: 1,
+                name3: 2,
+                value3: 2
+            };
+            var groupIndex = groupMap[field];
+            if (groupIndex === undefined) return;
+
+            for (var i = 0; i < cellInfo.length; i++) {
+                var info = cellInfo[i];
+                if (info.row === rowIndex && info.col === groupIndex) {
+                    // 判断是名称列还是值列：字段名以 'name' 开头为名称列，'value' 开头为值列
+                    var isNameColumn = field.indexOf('name') === 0;
+                    var isValueColumn = field.indexOf('value') === 0;
+
+                    if (isNameColumn) {
+                        // 名称列应用 realtimeColor 和 realtimeBgColor
+                        if (isNotVal(info.realtimeColor)) {
+                            e.cellStyle = (e.cellStyle || '') + 'color:#' + info.realtimeColor + ';';
+                        }
+                        if (isNotVal(info.realtimeBgColor)) {
+                            e.cellStyle = (e.cellStyle || '') + 'background-color:#' + info.realtimeBgColor + ';';
+                        }
+                    } else if (isValueColumn) {
+                        // 值列应用报警样式
+                        var alarmLevel = info.alarmLevel;
+                        if (alarmLevel > 0) {
+                            e.cellStyle = (e.cellStyle || '') + 'font-weight:bold;';
+                        }
+                        // 根据 alarmLevel 获取颜色配置
+                        var styleCfg = getAlarmStyleByLevel(alarmLevel, alarmShowStyle);
+                        if (styleCfg) {
+                            if (styleCfg.bg) {
+                                e.cellStyle += 'background-color:' + styleCfg.bg + ';';
+                            }
+                            if (styleCfg.color) {
+                                e.cellStyle += 'color:' + styleCfg.color + ';';
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        function handleCellDblClick(e) {
+            var grid = e.sender;
+            var record = e.record;
+            if (!record) return;
+
+            // 获取行索引
+            var rowIndex = grid.indexOf(record);
+
+            // 获取字段名（可能来自 e.field 或 e.column.field）
+            var field = e.field || (e.column ? e.column.field : null);
+            if (!field) return;
+
+            console.log('双击事件触发：', rowIndex, field);
+
+            // 标题行不处理
+            if (rowIndex === 0) return;
+
+            // 只处理 name1/value1, name2/value2, name3/value3
+            var groupMap = {
+                name1: 0,
+                value1: 0,
+                name2: 1,
+                value2: 1,
+                name3: 2,
+                value3: 2
+            };
+            var groupIndex = groupMap[field];
+            if (groupIndex === undefined) return;
+
+            var itemName = record['name' + (groupIndex + 1)];
+            var itemValue = record['value' + (groupIndex + 1)];
+
+            // 查找对应的 CellInfo
+            var cellInfo = grid._cellInfo || [];
+            var info = null;
+            for (var i = 0; i < cellInfo.length; i++) {
+                if (cellInfo[i].row === rowIndex && cellInfo[i].col === groupIndex) {
+                    info = cellInfo[i];
+                    break;
+                }
+            }
+            if (!info) {
+                console.warn('未找到对应的 CellInfo，row=' + rowIndex + ', col=' + groupIndex);
+                return;
+            }
+
+            // 调用原有的 viewDeviceRealTimeMonitoringData
+            viewDeviceRealTimeMonitoringData(rowIndex, groupIndex);
         }
 
         function updateResourceMonitorUI(data) {
@@ -4766,7 +4690,7 @@ String moduleId = request.getParameter("moduleId");
                         console.log('数据加载成功', result);
 
                         if (!result || !result.totalRoot || result.totalRoot.length === 0) {
-                            document.getElementById(containerId).innerHTML = '<div style="text-align:center;padding:20px;">'+_loginUserLanguageResource.emptyMsg+'</div>';
+                            document.getElementById(containerId).innerHTML = '<div style="text-align:center;padding:20px;">' + _loginUserLanguageResource.emptyMsg + '</div>';
                             return;
                         }
 
@@ -5152,5 +5076,4 @@ String moduleId = request.getParameter("moduleId");
 
     </script>
 </body>
-
 </html>

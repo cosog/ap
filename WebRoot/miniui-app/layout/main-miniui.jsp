@@ -73,6 +73,12 @@ request.setAttribute("browserLang", browserLang);
         // ================================================================
         var context = '<%=path%>';
         var user_ = '<%=userLoginNo%>';
+        
+        if (user_ == null || user_ == "") {
+            window.location.href = context + "/login";
+        }
+        
+        
         var user_Type = '<%=userLoginType%>';
         var userOrg_Ids = '<%=userLoginOrgIds%>';
         var userOrg_Names = "<%=userLoginOrgNames%>";

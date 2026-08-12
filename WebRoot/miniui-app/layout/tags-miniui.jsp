@@ -66,3 +66,4 @@ if(browserLang == null) browserLang = "zh_CN";
 
 <!-- MiniUI 版通用工具 -->
 <script src="<%=path%>/miniui-app/common/miniui-commutils.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<script src="<%=path%>/miniui-app/common/miniui-ajaxfilter.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>

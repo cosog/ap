@@ -25,6 +25,13 @@ var activeStyle = {
 };
 
 var realtimeInterval, realtimeGraphicalInterval;
+var graghMinWidth = 300;
+var dynamometerCardMinHeight= 330;
+var otherCardMinHeight= 280;
+var defaultWellComboxSize=10000;
+var comboxPagingStatus=0;//0-不分页  大于0分页
+var isShowMap=true;//是否显示地图 true-显示   false-不显示
+var recordCount=1000;//后台电子表格总行数
 var chartTitleFontSize = '14px';
 
 

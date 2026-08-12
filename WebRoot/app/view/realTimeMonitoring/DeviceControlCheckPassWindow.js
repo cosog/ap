@@ -897,10 +897,6 @@ function deviceDataUplinkFun(){
             } else if (result.flag == true && result.error == false) {
                 Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>" + result.msg + "</font>");
             }  else if (result.flag == true && result.error == true) {
-//            	const plugin = deviceControlValueHandsontableHelper.hot.getPlugin('hiddenColumns');
-//            	plugin.showColumns([2]);
-//            	deviceControlValueHandsontableHelper.hot.render();
-            	
             	var uplinkStatusData=deviceControlValueHandsontableHelper.hot.getDataAtProp('uplinkStatus');
             	
             	var uplinkData=result.data.split(",");;

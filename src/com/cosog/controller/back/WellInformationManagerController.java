@@ -1024,7 +1024,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1069,9 +1069,9 @@ public class WellInformationManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":'1'}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":'0'}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -1086,13 +1086,13 @@ public class WellInformationManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.auxiliaryDeviceManagerService.doAuxiliaryDeviceAdd(auxiliaryDeviceInformation);
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -1496,7 +1496,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/saveVideoKeyHandsontableData")
 	public String saveVideoKeyHandsontableData() throws Exception {
 		HttpSession session=request.getSession();
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		String data = ParamUtils.getParameter(request, "data");
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		Gson gson = new Gson();
@@ -1781,7 +1781,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 		
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1802,7 +1802,7 @@ public class WellInformationManagerController extends BaseController {
 	@SuppressWarnings("static-access")
 	@RequestMapping("/saveWellHandsontableData")
 	public String saveWellHandsontableData() throws Exception {
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		int deviceId = StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "deviceId"));
 		String data = ParamUtils.getParameter(request, "data");
 		String deviceAdditionalInformationData = ParamUtils.getParameter(request, "deviceAdditionalInformationData");
@@ -2433,13 +2433,13 @@ public class WellInformationManagerController extends BaseController {
 						TimeUnit.SECONDS, 
 						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 				executor.execute(dataSynchronizationThread);
-				result = "{success:true,msg:true,resultCode:1}";
+				result = "{\"success\":true,\"msg\":true,resultCode:1}";
 			}else{
-				result = "{success:true,msg:true,resultCode:-66}";
+				result = "{\"success\":true,\"msg\":true,resultCode:-66}";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -2462,13 +2462,13 @@ public class WellInformationManagerController extends BaseController {
 			addWellList.add(smsDeviceInformation.getDeviceName());
 			EquipmentDriverServerTask.initSMSDevice(addWellList,"update");
 			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, user,300+"");
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -2480,13 +2480,13 @@ public class WellInformationManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.pumpingModelManagerService.doPumpingModelAdd(pumpingModelInformation);
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -2501,13 +2501,13 @@ public class WellInformationManagerController extends BaseController {
 			List<String> nameList=new ArrayList<>();
 			nameList.add(videoKey.getAccount());
 			MemoryDataManagerTask.loadUIKitAccessTokenByName(nameList,"update");
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -2523,9 +2523,9 @@ public class WellInformationManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":'1'}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":'0'}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -2576,9 +2576,9 @@ public class WellInformationManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":'1'}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":'0'}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -2595,9 +2595,9 @@ public class WellInformationManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":'1'}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":'0'}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -2709,7 +2709,7 @@ public class WellInformationManagerController extends BaseController {
 		}
 		
 		String result="";
-		String json="{success:false,msg:0}";
+		String json="{\"success\":false,\"msg\":0}";
 		if(StringManagerUtils.isNotNull(url)){
 			if((StringManagerUtils.stringToInteger(type)<=2&&StringManagerUtils.isNotNull(data)) || StringManagerUtils.stringToInteger(type)>=3){
 				result=StringManagerUtils.sendPostMethod(url, downstreamBuff.toString(),"utf-8",0,0);
@@ -2721,13 +2721,13 @@ public class WellInformationManagerController extends BaseController {
 			SRPInteractionResponseData srpInteractionResponseData=gson.fromJson(result, reflectType);
 			if(srpInteractionResponseData!=null){
 				if(srpInteractionResponseData.getResultStatus()==1){
-					json = "{success:true,msg:1}";
+					json = "{\"success\":true,\"msg\":1}";
 				}else if(srpInteractionResponseData.getResultStatus()==0){
-					json = "{success:true,msg:0}";
+					json = "{\"success\":true,\"msg\":0}";
 				}
 			}
 		}else{
-			json = "{success:false,msg:0}";
+			json = "{\"success\":false,\"msg\":0}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -3429,20 +3429,20 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						}else{
-							jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceOffline")+"</font>'}";
+							jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceOffline")+"</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -3681,23 +3681,23 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 				List<String> initWellList=new ArrayList<String>();
 				initWellList.add(deviceId);
 				MemoryDataManagerTask.loadDeviceInfo(initWellList,0,"update");
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4004,20 +4004,20 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4281,20 +4281,20 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4490,20 +4490,20 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4582,20 +4582,20 @@ public class WellInformationManagerController extends BaseController {
 							    this.wellInformationManagerService.getBaseDao().saveDeviceControlLog(deviceId, deviceName, deviceType, remark.toString(), userInfo);
 							}
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4753,16 +4753,16 @@ public class WellInformationManagerController extends BaseController {
 				if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 					if(StringManagerUtils.isNotNull(slave)){
 						String result=readAddr(protocol,tcpType,signinid,ipPort,slave,controlType,userInfo.getLanguageName());
-						jsonLogin = "{success:true,flag:true,error:true,data:\""+result+"\"}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":true,\"data\":\""+result+"\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 				}
 			}else{
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 			}
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -4908,20 +4908,20 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -5000,20 +5000,20 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -5087,20 +5087,20 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -5159,20 +5159,20 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -5286,20 +5286,20 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -5404,20 +5404,20 @@ public class WellInformationManagerController extends BaseController {
 							result_json.append("]}");
 							jsonLogin=result_json.toString();
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>'}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>" + languageResourceMap.get("deviceOffline") + "</font>\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>'}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("invalidProtocolConfiguration")+"</font>\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>'}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("deviceNotFound")+"</font>\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>"+languageResourceMap.get("inputDataError")+"</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>"+languageResourceMap.get("inputDataError")+"</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -5568,20 +5568,20 @@ public class WellInformationManagerController extends BaseController {
 									+ "\"lowerComputerDeviceId\":\""+statusMap.get("LowerComputerDeviceId")+"\","
 									+ "\"RPCStatus\":\""+RPCStatus+"\"}";
 						} else {
-						    jsonLogin = "{success:true,flag:true,error:false,msg:\"" + languageResourceMap.get("deviceOffline") + "\"}";
+						    jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"" + languageResourceMap.get("deviceOffline") + "\"}";
 						}
 					}else{
-						jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("invalidProtocolConfiguration")+"\"}";
+						jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("invalidProtocolConfiguration")+"\"}";
 					}
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("deviceNotFound")+"\"}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("deviceNotFound")+"\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("inputDataError")+"\"}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("inputDataError")+"\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -5676,14 +5676,14 @@ public class WellInformationManagerController extends BaseController {
 					result_json.append("]}");
 					jsonLogin=result_json.toString();
 				}else{
-					jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("deviceNotFound")+"\"}";
+					jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("deviceNotFound")+"\"}";
 				}
 			}else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:\""+languageResourceMap.get("inputDataError")+"\"}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\""+languageResourceMap.get("inputDataError")+"\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

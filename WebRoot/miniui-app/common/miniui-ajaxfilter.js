@@ -113,13 +113,6 @@
         var responseText = jqXHR.responseText || '';
         var lang = getLoginUserLanguageResource(); // 动态获取
 
-        console.warn('Ajax错误：', {
-            url: ajaxSettings.url,
-            status: httpStatus,
-            statusText: jqXHR.statusText,
-            responseText: responseText
-        });
-
         switch (httpStatus) {
             case 400:
                 showErrorMsg(lang.tip, lang.ajaxError400);

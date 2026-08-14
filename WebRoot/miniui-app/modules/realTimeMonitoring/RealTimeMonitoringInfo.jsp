@@ -447,7 +447,7 @@ String moduleId = request.getParameter("moduleId");
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="statPanel" size="45%" showCollapseButton="true" minSize="100">
+                                    <div id="statPanel" size="50%" showCollapseButton="true" minSize="100">
                                         <div class="stat-charts-area" style="height:100%;">
                                             <div id="statTabs" class="mini-tabs" style="width:100%;height:100%;" activeIndex="0" onactivechanged="onStatTabChanged"></div>
                                         </div>
@@ -2299,7 +2299,7 @@ String moduleId = request.getParameter("moduleId");
                     series: {
                         data: series[0].data,
                         dataGrouping: {
-                            enabled: true,
+                            enabled: false,
                             groupPixelWidth: 8,
                             approximation: 'average'
                         },
@@ -2434,7 +2434,7 @@ String moduleId = request.getParameter("moduleId");
                         },
                         shadow: true,
                         dataGrouping: {
-                            enabled: true,
+                            enabled: false,
                             groupPixelWidth: 20,
                             approximation: 'average'
                         },
@@ -4378,19 +4378,19 @@ String moduleId = request.getParameter("moduleId");
                 var el = document.getElementById(id);
                 if (!el) return;
                 el.style.display = '';
+                var dotHtml = '<span style="color:' + dotColor + '; font-size: 18px; line-height: 1;">●</span>';
                 if (textColor) {
-                    el.innerHTML = '<span style="color:' + dotColor + ';">●</span> <span style="color:' + textColor + ';">' + text + '</span>';
+                    el.innerHTML = dotHtml + ' <span style="color:' + textColor + ';">' + text + '</span>';
                 } else {
-                    el.innerHTML = '<span style="color:' + dotColor + ';">●</span> ' + text;
+                    el.innerHTML = dotHtml + ' ' + text;
                 }
-                // ★ 根据 blink 参数添加或移除闪烁类
                 if (blink) {
                     el.classList.add('resource-blink');
                 } else {
                     el.classList.remove('resource-blink');
                 }
             }
-
+            
             function hideResourceItem(id) {
                 var el = document.getElementById(id);
                 if (el) el.style.display = 'none';

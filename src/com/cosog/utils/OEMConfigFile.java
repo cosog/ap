@@ -278,6 +278,8 @@ public class OEMConfigFile {
 
 	    private boolean showLogo;
 	    
+	    private boolean showProjectProfile;
+	    
 	    private boolean showHelp;
 
 	    private boolean printLog;
@@ -504,6 +506,12 @@ public class OEMConfigFile {
 		}
 		public void setUiType(String uiType) {
 			this.uiType = uiType;
+		}
+		public boolean getShowProjectProfile() {
+			return showProjectProfile;
+		}
+		public void setShowProjectProfile(boolean showProjectProfile) {
+			this.showProjectProfile = showProjectProfile;
 		}
 	}
 	

@@ -98,10 +98,34 @@
     <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap-select.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+    
+    <style>
+    	/* 固定样式，无需 JS 重复注入 */
+.page-content { padding: 0 !important; padding-right: 470px !important; }
+.page-brand-info {
+    background-size: cover !important;
+    background-position: left center !important;
+    background-repeat: no-repeat !important;
+    position: relative;
+    height: 100% !important;
+}
+.page-brand-info::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(38, 50, 56, 0.6);
+    z-index: 1;
+}
+.page-brand-info .page-brand { position: relative; z-index: 2; }
+.page-login.page-dark.layout-full:after { background-color: transparent !important; }
+    </style>
+    
+    
 	<script>
 	var context='<%=path%>'; 
 	
-	var oem = ${configFile}.ap.oem;
+	var configFile= ${configFile};
+	var oem = configFile.ap.oem;
 	var loginBackgroundImage=oem.loginBackgroundImage;
 	loginBackgroundImage=context+loginBackgroundImage.substring(loginBackgroundImage.indexOf("/"),loginBackgroundImage.length);
 	var loginLanguageResource=${loginLanguageResource};
@@ -129,7 +153,11 @@
 	function initDisplayInformation(){
 		
 		$("#login_userlogin").html(loginLanguageResource.userLogin);
-		$("#login_loginInfo").html(loginLanguageResource.projectProfile);
+		if(configFile && configFile.ap && configFile.ap.others && configFile.ap.others.showProjectProfile){
+			$("#login_loginInfo").html(loginLanguageResource.projectProfile);
+		}else{
+			$("#login_loginInfo").html('');
+		}
 		$("#login_title").html(loginLanguageResource.loginInterfaceProjectName);
 		$("#userSelectpicker").html(loginLanguageResource.myself);
 		$("#userId").attr("placeholder", loginLanguageResource.enterUserName);
@@ -142,10 +170,8 @@
 		$("#login_link").text(loginLanguageResource.linkshow);
 		$('#login_link').attr('href',loginLanguageResource.linkaddress);
 		
-		//$(".page-login:before").css("background-image", "url("+loginBackgroundImage+")");
-		
-		$('<style>.page-login:before{background-image:url('+loginBackgroundImage+');}</style>').appendTo('head');
-		
+		//$('<style>.page-login:before{background-image:url('+loginBackgroundImage+');}</style>').appendTo('head');
+		$('.page-brand-info').css('background-image', 'url(' + loginBackgroundImage + ')');
 		
 		var userLoginName=localStorage.getItem("userLoginName");
 	    var userLoginPassword=localStorage.getItem("userLoginPassword");

@@ -279,14 +279,19 @@ request.setAttribute("browserLang", browserLang);
 
         <!-- ===== 左侧区域 ===== -->
         <div region="west" width="250" minWidth="180" maxWidth="400"
-             showSplitIcon="true" showHeader="false"
-             bodyStyle="padding:0;background:#f5f7fa;border-right:1px solid #e8e8e8;display:flex;flex-direction:column;">
-
-            <div class="west-section" style="flex:1;">
+     showSplitIcon="true" showHeader="false"
+     bodyStyle="padding:0;background:#f5f7fa;border-right:1px solid #e8e8e8;">
+    
+    <!-- ★ 使用 mini-splitter 垂直分割 ★ -->
+    <div class="mini-splitter" style="width:100%;height:100%;" vertical="true">
+        
+        <!-- 上方：功能菜单（不可折叠） -->
+        <div id="menuPanel" size="50%" showCollapseButton="false" minSize="80">
+            <div style="height:100%;display:flex;flex-direction:column;">
                 <div class="panel-title panel-title-top">
                     <span id="functionNavigation_text">功能菜单</span>
                 </div>
-                <div class="tree-wrap">
+                <div class="tree-wrap" style="flex:1;overflow:auto;">
                     <ul id="menuTree" class="mini-tree" style="width:100%;height:100%;padding:0;margin:0;"
                         showTreeIcon="true" 
                         showRootNode="true"
@@ -298,12 +303,15 @@ request.setAttribute("browserLang", browserLang);
                     </ul>
                 </div>
             </div>
-
-            <div class="west-section" style="flex:1;">
+        </div>
+        
+        <!-- 下方：组织机构（可向下收缩） -->
+        <div id="orgPanel" size="50%" showCollapseButton="true" minSize="60" collapseDirection="bottom">
+            <div style="height:100%;display:flex;flex-direction:column;">
                 <div class="panel-title panel-title-border">
                     <span id="organizationNavigation_text">组织机构</span>
                 </div>
-                <div class="tree-wrap">
+                <div class="tree-wrap" style="flex:1;overflow:auto;">
                     <ul id="orgTree" class="mini-tree" style="width:100%;height:100%;padding:0;margin:0;"
                         showTreeIcon="true" 
                         showRootNode="true"
@@ -317,7 +325,8 @@ request.setAttribute("browserLang", browserLang);
                 </div>
             </div>
         </div>
-
+    </div>
+</div>
         <!-- ===== 中间区域：Tabs ===== -->
         <div region="center" bodyStyle="padding:0;">
             <div id="mainTabs" class="mini-tabs" style="width:100%;height:100%;"

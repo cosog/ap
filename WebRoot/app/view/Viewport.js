@@ -580,88 +580,108 @@ function websocketOnMessage(evt) {
             }
         }
     } else if (data.functionCode.toUpperCase() == "DBMonitoringData".toUpperCase()) {
-    	if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
-    		if (data.dbConnStatus == 1) {
-                Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtgreen");
-                var showInfo=loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent+";"+data.undoTableSpaceUsedPercent;
-                if (data.tableSpaceUsedPercentAlarmLevel == 1) {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >"+showInfo + "</font>");
-                } else if (data.tableSpaceUsedPercentAlarmLevel == 2) {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >"+showInfo + "</font>");
-                } else {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText(showInfo);
-                }
-            } else {
-                Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtyellow");
-                Ext.getCmp("tableSpaceSizeProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_tablespaces);
-            }
-    	}
-    } else if (data.functionCode.toUpperCase() == "ResourceMonitoringData".toUpperCase()) { //接收到资源监测数据
         if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
-            if (data.cpuUsedPercentAlarmLevel == 1) {
-                Ext.getCmp("CPUUsedPercentLabel_id").setText("<font color=#F09614 >"+loginUserLanguageResource.resourcesMonitoring_cpu+":" + data.cpuUsedPercent + "</font>");
-            } else if (data.cpuUsedPercentAlarmLevel == 2) {
-                Ext.getCmp("CPUUsedPercentLabel_id").setText("<font color=#DC2828 >"+loginUserLanguageResource.resourcesMonitoring_cpu+":" + data.cpuUsedPercent + "</font>");
-            } else {
-                Ext.getCmp("CPUUsedPercentLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_cpu+":" + data.cpuUsedPercent);
-            }
-
-            if (data.memUsedPercentAlarmLevel == 1) {
-                Ext.getCmp("memUsedPercentLabel_id").setText("<font color=#F09614 >"+loginUserLanguageResource.resourcesMonitoring_mem+":" + data.memUsedPercent + "</font>");
-            } else if (data.memUsedPercentAlarmLevel == 2) {
-                Ext.getCmp("memUsedPercentLabel_id").setText("<font color=#DC2828 >"+loginUserLanguageResource.resourcesMonitoring_mem+":" + data.memUsedPercent + "</font>");
-            } else {
-                Ext.getCmp("memUsedPercentLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_mem+":" + data.memUsedPercent);
-            }
-
+            // 表空间更新（与 ResourceMonitoringData 逻辑一致）
+            var tableDot = (data.dbConnStatus == 1) ? '#52c41a' : '#ccc';
+            var tableText = loginUserLanguageResource.resourcesMonitoring_tablespaces;
+            var tableTextColor = '';
+            var tableBlink = (data.dbConnStatus != 1);
             if (data.dbConnStatus == 1) {
-                Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtgreen");
-                var showInfo=loginUserLanguageResource.resourcesMonitoring_tablespaces+":" + data.tableSpaceUsedPercent+";"+data.undoTableSpaceUsedPercent;
-                if (data.tableSpaceUsedPercentAlarmLevel == 1) {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >"+showInfo + "</font>");
-                } else if (data.tableSpaceUsedPercentAlarmLevel == 2) {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >"+showInfo + "</font>");
-                } else {
-                    Ext.getCmp("tableSpaceSizeProbeLabel_id").setText(showInfo);
+                tableText = loginUserLanguageResource.resourcesMonitoring_tablespaces + ':' + data.tableSpaceUsedPercent + ';' + data.undoTableSpaceUsedPercent;
+                if (data.tableSpaceUsedPercentAlarmLevel == 1) tableTextColor = '#F09614';
+                else if (data.tableSpaceUsedPercentAlarmLevel == 2) tableTextColor = '#DC2828';
+            }
+            // 直接调用 updateWithDot（已在 ResourceMonitoringData 中定义）
+            updateWithDot('tableSpaceSizeProbeLabel_id', tableDot, tableText, tableTextColor, tableBlink);
+        }
+    } else if (data.functionCode.toUpperCase() == "ResourceMonitoringData".toUpperCase()) {
+        if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {
+            // 辅助函数：更新纯文本（CPU、内存）
+            function updatePlain(id, text, color) {
+                var cmp = Ext.getCmp(id);
+                if (cmp) {
+                    var html = text;
+                    if (color) html = '<span style="color:' + color + ';">' + text + '</span>';
+                    cmp.setHtml(html);
                 }
-            } else {
-                Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtyellow");
-                Ext.getCmp("tableSpaceSizeProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_tablespaces);
+            }
+            // 辅助函数：更新带圆点的项（表空间、缓存、AD、AC），并控制闪烁
+            function updateWithDot(id, dotColor, text, textColor, blink) {
+                var cmp = Ext.getCmp(id);
+                if (cmp) {
+                    // 圆点：inline-block，line-height 与文本一致，vertical-align:middle
+                    var dotHtml = '<span style="display:inline-block; line-height:1.4; vertical-align:middle; font-size:18px; color:' + dotColor + ';">●</span>';
+                    // 文本：同样 inline-block，line-height:1.4，vertical-align:middle
+                    var textHtml = textColor 
+                        ? '<span style="display:inline-block; line-height:1.4; vertical-align:middle; color:' + textColor + ';">' + text + '</span>' 
+                        : '<span style="display:inline-block; line-height:1.4; vertical-align:middle;">' + text + '</span>';
+                    var html = dotHtml + ' ' + textHtml;
+                    cmp.setHtml(html);
+                    // 闪烁控制
+                    if (blink) {
+                        cmp.getEl().addCls('resource-blink');
+                    } else {
+                        cmp.getEl().removeCls('resource-blink');
+                    }
+                }
             }
 
-            if (data.redisStatus == 1) {
-                Ext.getCmp("redisRunStatusProbeLabel_id").setIconCls("dtgreen");
-                Ext.getCmp("redisRunStatusProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_cache+":" + data.cacheUsedMemory+"m/"+data.cacheMaxMemory+"m");
-            } else {
-                Ext.getCmp("redisRunStatusProbeLabel_id").setIconCls("dtyellow");
-                Ext.getCmp("redisRunStatusProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_cache);
+            // CPU
+            var cpuColor = '';
+            if (data.cpuUsedPercentAlarmLevel == 1) cpuColor = '#F09614';
+            else if (data.cpuUsedPercentAlarmLevel == 2) cpuColor = '#DC2828';
+            updatePlain('CPUUsedPercentLabel_id', 
+                        loginUserLanguageResource.resourcesMonitoring_cpu + ':' + data.cpuUsedPercent, 
+                        cpuColor);
+
+            // 内存
+            var memColor = '';
+            if (data.memUsedPercentAlarmLevel == 1) memColor = '#F09614';
+            else if (data.memUsedPercentAlarmLevel == 2) memColor = '#DC2828';
+            updatePlain('memUsedPercentLabel_id', 
+                        loginUserLanguageResource.resourcesMonitoring_mem + ':' + data.memUsedPercent, 
+                        memColor);
+
+            // 表空间
+            var tableDot = (data.dbConnStatus == 1) ? '#52c41a' : '#ccc';
+            var tableText = loginUserLanguageResource.resourcesMonitoring_tablespaces;
+            var tableTextColor = '';
+            var tableBlink = (data.dbConnStatus != 1);
+            if (data.dbConnStatus == 1) {
+                tableText = loginUserLanguageResource.resourcesMonitoring_tablespaces + ':' + data.tableSpaceUsedPercent + ';' + data.undoTableSpaceUsedPercent + '';
+                if (data.tableSpaceUsedPercentAlarmLevel == 1) tableTextColor = '#F09614';
+                else if (data.tableSpaceUsedPercentAlarmLevel == 2) tableTextColor = '#DC2828';
             }
+            updateWithDot('tableSpaceSizeProbeLabel_id', tableDot, tableText, tableTextColor, tableBlink);
 
-            if (data.adRunStatus == 1) {
-                Ext.getCmp("adRunStatusProbeLabel_id").setIconCls("dtgreen");
-//                Ext.getCmp("adRunStatusProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_ad+" v" + data.adVersion);
-                Ext.getCmp("adRunStatusProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_ad);
-            } else {
-                Ext.getCmp("adRunStatusProbeLabel_id").setIconCls("dtyellow");
-                Ext.getCmp("adRunStatusProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_ad);
-            }
+            // 缓存
+            var redisDot = (data.redisStatus == 1) ? '#52c41a' : '#ccc';
+            var redisBlink = (data.redisStatus != 1);
+            var redisText = (data.redisStatus == 1) ? 
+                            loginUserLanguageResource.resourcesMonitoring_cache + ':' + data.cacheUsedMemory + 'm/' + data.cacheMaxMemory + 'm' :
+                            loginUserLanguageResource.resourcesMonitoring_cache;
+            updateWithDot('redisRunStatusProbeLabel_id', redisDot, redisText, null, redisBlink);
 
+            // AD
+            var adDot = (data.adRunStatus == 1) ? '#52c41a' : '#ccc';
+            var adBlink = (data.adRunStatus != 1);
+            updateWithDot('adRunStatusProbeLabel_id', adDot, loginUserLanguageResource.resourcesMonitoring_ad, null, adBlink);
 
-            if (data.licenseSign) {
-                Ext.getCmp("adLicenseStatusProbeLabel_id").setText("<font color=#DC2828 >License:" + data.deviceAmount + "/" + data.license + "</font>");
-                Ext.getCmp("adLicenseStatusProbeLabel_id").show();
-            } else {
-                Ext.getCmp("adLicenseStatusProbeLabel_id").setText("");
-                Ext.getCmp("adLicenseStatusProbeLabel_id").hide();
-            }
+            // AC
+            var acDot = (data.acRunStatus == 1) ? '#52c41a' : '#ccc';
+            var acBlink = (data.acRunStatus != 1);
+            updateWithDot('acRunStatusProbeLabel_id', acDot, loginUserLanguageResource.resourcesMonitoring_ac, null, acBlink);
 
-            if (data.acRunStatus == 1) {
-                Ext.getCmp("acRunStatusProbeLabel_id").setIconCls("dtgreen");
-//                Ext.getCmp("acRunStatusProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_ac+" v" + data.acVersion);
-                Ext.getCmp("acRunStatusProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_ac);
-            } else {
-                Ext.getCmp("acRunStatusProbeLabel_id").setIconCls("dtyellow");
-                Ext.getCmp("acRunStatusProbeLabel_id").setText(loginUserLanguageResource.resourcesMonitoring_ac);
+            // License
+            var licenseCmp = Ext.getCmp('adLicenseStatusProbeLabel_id');
+            if (licenseCmp) {
+                if (data.licenseSign) {
+                    var licenseHtml = '<span style="color:#DC2828;">License:' + data.deviceAmount + '/' + data.license + '</span>';
+                    licenseCmp.setHtml(licenseHtml);
+                    licenseCmp.show();
+                } else {
+                    licenseCmp.hide();
+                }
             }
         }
     } else if (data.functionCode.toUpperCase() == "srpUpOnlineData".toUpperCase()) { //接收到推送 uponline 数据

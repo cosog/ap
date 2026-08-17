@@ -23,25 +23,38 @@ Ext.define('AP.view.frame.IframeView', {
             store: iframe_store,
             tbar: {
                 hidden: false,
-                items: [{
-                    iconCls: 'icon-collapse-all', // 收缩按钮
-                    text: loginUserLanguageResource.collapse,
-                    tooltip: {
-                        text: loginUserLanguageResource.collapseAll
-                    },
-                    handler: function () {
-                        orgTree.collapseAll();
-                    }
-                }, '-', {
-                    iconCls: 'icon-expand-all', // 展开按钮
-                    tooltip: {
-                        text: loginUserLanguageResource.expandAll
-                    },
-                    text: loginUserLanguageResource.expand,
-                    handler: function () {
-                        orgTree.expandAll();
-                    }
-                }, '-', {
+                items: [
+//                	{
+//                    iconCls: 'icon-collapse-all', // 收缩按钮
+//                    text: loginUserLanguageResource.collapse,
+//                    tooltip: {
+//                        text: loginUserLanguageResource.collapseAll
+//                    },
+//                    handler: function () {
+//                        orgTree.collapseAll();
+//                    }
+//                }, '-', {
+//                    iconCls: 'icon-expand-all', // 展开按钮
+//                    tooltip: {
+//                        text: loginUserLanguageResource.expandAll
+//                    },
+//                    text: loginUserLanguageResource.expand,
+//                    handler: function () {
+//                        orgTree.expandAll();
+//                    }
+//                }, 
+                	{
+                    	xtype: 'label',
+                    	html: loginUserLanguageResource.organizationNavigation,
+                    	style: {
+                            marginLeft: '10px',
+                            fontSize: '11px',
+                            fontFamily: 'tahoma,arial,verdana,sans-serif',
+                            color: '#333333'
+                        }
+                },
+                '->', 
+                {
 	                iconCls: 'note-refresh',
 //	                text: loginUserLanguageResource.refresh,
 	                tooltip: {

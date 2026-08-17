@@ -359,6 +359,29 @@
             }
         }
 
+		/* 资源监测圆点闪烁动画 */
+		@keyframes resourceBlink {
+    		0% { color: #ccc; }
+    		50% { color: #f0ad4e; }
+    		100% { color: #ccc; }
+		}
+		.resource-blink > span:first-child {
+    		animation: resourceBlink 1s ease-in-out infinite;
+		}
+		
+		.res-monitor-item {
+    		display: inline-block;
+    		vertical-align: middle;
+    		line-height: 1.4;
+    		font-size: 12px;
+    		margin-right: 8px;
+    		padding: 0 2px;
+    		cursor: pointer;
+		}
+		.res-monitor-item span {
+    		vertical-align: middle;
+    		line-height: 1.4;
+		}
     </style>
 </head>
 

@@ -288,9 +288,10 @@ request.setAttribute("browserLang", browserLang);
         <!-- 上方：功能菜单（不可折叠） -->
         <div id="menuPanel" size="50%" showCollapseButton="false" minSize="80">
             <div style="height:100%;display:flex;flex-direction:column;">
-                <div class="panel-title panel-title-top">
-                    <span id="functionNavigation_text">功能菜单</span>
-                </div>
+                <div class="panel-title panel-title-top" style="display:flex; justify-content:space-between; align-items:center;">
+    				<span id="functionNavigation_text">功能菜单</span>
+    				<button class="mini-button" iconCls="note-refresh" plain="true" onclick="refreshMenuTree()" style="margin-right:0px;"></button>
+				</div>
                 <div class="tree-wrap" style="flex:1;overflow:auto;">
                     <ul id="menuTree" class="mini-tree" style="width:100%;height:100%;padding:0;margin:0;"
                         showTreeIcon="true" 
@@ -308,16 +309,17 @@ request.setAttribute("browserLang", browserLang);
         <!-- 下方：组织机构（可向下收缩） -->
         <div id="orgPanel" size="50%" showCollapseButton="true" minSize="60" collapseDirection="bottom">
             <div style="height:100%;display:flex;flex-direction:column;">
-                <div class="panel-title panel-title-border">
-                    <span id="organizationNavigation_text">组织机构</span>
-                </div>
+                <div class="panel-title panel-title-border" style="display:flex; justify-content:space-between; align-items:center;">
+    				<span id="organizationNavigation_text">组织机构</span>
+    				<button class="mini-button" iconCls="note-refresh" plain="true" onclick="refreshOrgTree()" style="margin-right:0px;"></button>
+				</div>
                 <div class="tree-wrap" style="flex:1;overflow:auto;">
                     <ul id="orgTree" class="mini-tree" style="width:100%;height:100%;padding:0;margin:0;"
                         showTreeIcon="true" 
                         showRootNode="true"
                         resultAsTree="true"
-                        idField="orgId"
                         expandOnLoad="true"
+                        idField="orgId"
                         url="<%=path%>/orgManagerController/constructOrgTree"
                         onnodeselect="onOrgTreeSelect"
                         onload="onOrgTreeLoad">
@@ -390,6 +392,22 @@ request.setAttribute("browserLang", browserLang);
                 	window.location.href = context+"/home";
                 }
             });
+        }
+    }
+    
+ // 刷新功能菜单树
+    function refreshMenuTree() {
+        var tree = mini.get('menuTree');
+        if (tree) {
+            tree.load(); // 重新从服务器加载数据
+        }
+    }
+
+ // 刷新组织机构树
+    function refreshOrgTree() {
+        var tree = mini.get('orgTree');
+        if (tree) {
+            tree.load();
         }
     }
 
@@ -712,8 +730,8 @@ request.setAttribute("browserLang", browserLang);
 
     function convertExtToMiniuiPath(viewSrc) {
         var mapping = {
-            'AP.view.realTimeMonitoring.RealTimeMonitoringInfoView': 
-                context + '/miniui-app/modules/realTimeMonitoring/RealTimeMonitoringInfo.jsp',
+            'AP.view.realTimeMonitoring.RealTimeMonitoringInfoView':  context + '/miniui-app/modules/realTimeMonitoring/RealTimeMonitoringInfo.jsp',
+            'AP.view.historyQuery.HistoryQueryInfoView':  context + '/miniui-app/modules/historyQuery/HistoryQuery.jsp'
         };
         return mapping[viewSrc] || null;
     }

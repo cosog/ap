@@ -2299,7 +2299,7 @@ String moduleId = request.getParameter("moduleId");
                     series: {
                         data: series[0].data,
                         dataGrouping: {
-                            enabled: false,
+                            enabled: true,
                             groupPixelWidth: 8,
                             approximation: 'average'
                         },
@@ -2390,6 +2390,7 @@ String moduleId = request.getParameter("moduleId");
                 tooltip: {
                     crosshairs: true,
                     shared: true,
+                    valueDecimals: 2,
                     style: {
                         color: '#333333',
                         fontSize: '12px',

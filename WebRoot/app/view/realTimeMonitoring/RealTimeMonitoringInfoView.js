@@ -130,103 +130,143 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         				border: false,
         				id:'ResourceMonitoringToolbar_Id',
         				style: 'background-color: transparent; background-image: none;',
-        				items:['->',
-        	                {
-    	            		xtype: 'button',
-    	                    id:"CPUUsedPercentLabel_id",
-    	                    text: loginUserLanguageResource.resourcesMonitoring_cpu+':',
-    	                    handler: function (v, o) {
-    	                    	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.cpuUsage+"(%)");
-    	                        Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("cpuUsedPercent");
-    	                        var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
-    	                    	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
-    	        				    html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
-    	                    	});
-    	                    	ResourceProbeHistoryCurveWindow.show();
-    	                    }
-    	            	},{
-    	            		xtype: 'button',
-    	                    id:"memUsedPercentLabel_id",
-    	                    text: loginUserLanguageResource.resourcesMonitoring_mem+':',
-    	                    handler: function (v, o) {
-    	                    	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.memUsage+"(%)");
-    	                        Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("memUsedPercent");
-    	                        var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
-    	                    	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
-    	        				    html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
-    	                    	});
-    	                    	ResourceProbeHistoryCurveWindow.show();
-    	                    }
-    	            	},{
-    	            		xtype: 'button',
-    	                    id:"redisRunStatusProbeLabel_id",
-    	                    text: loginUserLanguageResource.resourcesMonitoring_cache+'',
-    	                    handler: function (v, o) {
-    	                    	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.cacheDbMemory+"(m)");
-    	                        Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("jedisStatus");
-    	                        var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
-    	                    	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
-    	        				    html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
-    	                    	});
-    	                    	ResourceProbeHistoryCurveWindow.show();
-    	                    }
-    	            	},{
-    	            		xtype: 'button',
-    	                    id:"tableSpaceSizeProbeLabel_id",
-    	                    text: loginUserLanguageResource.resourcesMonitoring_tablespaces+':',
-    	                    handler: function (v, o) {
-    	                    	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.tablespacesUsage+"(%)");
-    	                        Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("tableSpaceSize");
-    	                        var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
-    	                    	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
-    	        				    html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
-    	                    	});
-    	                    	ResourceProbeHistoryCurveWindow.show();
-    	                    }
-    	            	},{
-    	            		xtype: 'button',
-    	                    id:"adRunStatusProbeLabel_id",
-    	                    text: loginUserLanguageResource.resourcesMonitoring_ad,
-    	                    hidden: !IoTConfig,
-    	                    handler: function (v, o) {
-    	                    	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.adStatus);
-    	                        Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("adRunStatus");
-    	                        var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
-    	                    	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
-    	        				    html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
-    	                    	});
-    	                    	ResourceProbeHistoryCurveWindow.show();
-    	                    }
-    	            	},{
-    	            		xtype: 'button',
-    	                    id:"acRunStatusProbeLabel_id",
-    	                    text: loginUserLanguageResource.resourcesMonitoring_ac,
-    	                    handler: function (v, o) {
-    	                    	Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.acStatus);
-    	                        Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("acRunStatus");
-    	                        var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
-    	                    	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
-    	        				    html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
-    	                    	});
-    	                    	ResourceProbeHistoryCurveWindow.show();
-    	                    }
-    	            	},{
-    	            		xtype: 'button',
-    	                    id:"adLicenseStatusProbeLabel_id",
-    	                    text: 'License:',
-    	                    hidden: true,
-    	                    handler: function (v, o) {}
-    	            	},{
-    	                    id: 'ResourceMonitoringCurveItem_Id',
-    	                    xtype: 'textfield',
-    	                    value: '',
-    	                    hidden: true
-    	                },{
-    	                    id: 'ResourceMonitoringCurveItemCode_Id',
-    	                    xtype: 'textfield',
-    	                    value: '',
-    	                    hidden: true
-    	                }]
+        				items: [
+        				    '->',
+        				    {
+        				        xtype: 'label',
+        				        id: 'CPUUsedPercentLabel_id',
+        				        html: loginUserLanguageResource.resourcesMonitoring_cpu,
+        				        cls: 'res-monitor-item',
+        				        listeners: {
+        				            render: function(lbl) {
+        				                lbl.getEl().on('click', function() {
+        				                    Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.cpuUsage+"(%)");
+        				                    Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("cpuUsedPercent");
+        				                    var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
+        				                    var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
+        				                        html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
+        				                    });
+        				                    ResourceProbeHistoryCurveWindow.show();
+        				                });
+        				            }
+        				        }
+        				    },
+        				    {
+        				        xtype: 'label',
+        				        id: 'memUsedPercentLabel_id',
+        				        html: loginUserLanguageResource.resourcesMonitoring_mem,
+        				        cls: 'res-monitor-item',
+        				        listeners: {
+        				            render: function(lbl) {
+        				                lbl.getEl().on('click', function() {
+        				                    Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.memUsage+"(%)");
+        				                    Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("memUsedPercent");
+        				                    var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
+        				                    var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
+        				                        html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
+        				                    });
+        				                    ResourceProbeHistoryCurveWindow.show();
+        				                });
+        				            }
+        				        }
+        				    },
+        				    {
+        				        xtype: 'label',
+        				        id: 'tableSpaceSizeProbeLabel_id',
+        				        html: loginUserLanguageResource.resourcesMonitoring_tablespaces,
+        				        cls: 'res-monitor-item',
+        				        listeners: {
+        				            render: function(lbl) {
+        				                lbl.getEl().on('click', function() {
+        				                    Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.tablespacesUsage+"(%)");
+        				                    Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("tableSpaceSize");
+        				                    var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
+        				                    var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
+        				                        html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
+        				                    });
+        				                    ResourceProbeHistoryCurveWindow.show();
+        				                });
+        				            }
+        				        }
+        				    },
+        				    {
+        				        xtype: 'label',
+        				        id: 'redisRunStatusProbeLabel_id',
+        				        html: loginUserLanguageResource.resourcesMonitoring_cache,
+        				        cls: 'res-monitor-item',
+        				        listeners: {
+        				            render: function(lbl) {
+        				                lbl.getEl().on('click', function() {
+        				                    Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.cacheDbMemory+"(m)");
+        				                    Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("jedisStatus");
+        				                    var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
+        				                    var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
+        				                        html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
+        				                    });
+        				                    ResourceProbeHistoryCurveWindow.show();
+        				                });
+        				            }
+        				        }
+        				    },
+        				    {
+        				        xtype: 'label',
+        				        id: 'adRunStatusProbeLabel_id',
+        				        html: loginUserLanguageResource.resourcesMonitoring_ad,
+        				        cls: 'res-monitor-item',
+        				        hidden: !IoTConfig,
+        				        listeners: {
+        				            render: function(lbl) {
+        				                lbl.getEl().on('click', function() {
+        				                    Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.adStatus);
+        				                    Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("adRunStatus");
+        				                    var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
+        				                    var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
+        				                        html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
+        				                    });
+        				                    ResourceProbeHistoryCurveWindow.show();
+        				                });
+        				            }
+        				        }
+        				    },
+        				    {
+        				        xtype: 'label',
+        				        id: 'acRunStatusProbeLabel_id',
+        				        html: loginUserLanguageResource.resourcesMonitoring_ac,
+        				        cls: 'res-monitor-item',
+        				        listeners: {
+        				            render: function(lbl) {
+        				                lbl.getEl().on('click', function() {
+        				                    Ext.getCmp('ResourceMonitoringCurveItem_Id').setValue(loginUserLanguageResource.acStatus);
+        				                    Ext.getCmp('ResourceMonitoringCurveItemCode_Id').setValue("acRunStatus");
+        				                    var itemCode= Ext.getCmp('ResourceMonitoringCurveItemCode_Id').getValue();
+        				                    var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
+        				                        html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
+        				                    });
+        				                    ResourceProbeHistoryCurveWindow.show();
+        				                });
+        				            }
+        				        }
+        				    },
+        				    {
+        				        xtype: 'label',
+        				        id: 'adLicenseStatusProbeLabel_id',
+        				        html: '',
+        				        cls: 'res-monitor-item',
+        				        hidden: true
+        				    },
+        				    {
+        				        id: 'ResourceMonitoringCurveItem_Id',
+        				        xtype: 'textfield',
+        				        value: '',
+        				        hidden: true
+        				    },
+        				    {
+        				        id: 'ResourceMonitoringCurveItemCode_Id',
+        				        xtype: 'textfield',
+        				        value: '',
+        				        hidden: true
+        				    }
+        				]
         			}
 //        			,{
 //        				header:false,
@@ -2475,7 +2515,8 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	                    enabled: false // 禁用鼠标滚轮缩放
 	                }
 	            },
-	            zoomType: 'xy'
+	            zoomType: 'xy',
+                animation: false
 	        },
 	        time: {
 	            timezoneOffset: new Date().getTimezoneOffset()   // 用户本地时区
@@ -2484,7 +2525,18 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	            enabled: false
 	        },
 	        navigator: {
-	    		enabled: navigator
+	    		enabled: navigator,
+                maskInside: true,
+                series: {
+                    data: series[0].data,
+                    dataGrouping: {
+                        enabled: true,
+                        groupPixelWidth: 8,
+                        approximation: 'average'
+                    },
+                    turboThreshold: 5000,
+                    animation: false
+                }
 	    	},
 	    	scrollbar: {
 	    		enabled: scrollbar
@@ -2588,6 +2640,7 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 	        tooltip: {
 	            crosshairs: true, //十字准线
 	            shared: true,
+                valueDecimals: 2,
 	            style: {
 	                color: '#333333',
 	                fontSize: '12px',

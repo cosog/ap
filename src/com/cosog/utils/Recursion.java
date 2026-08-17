@@ -27,7 +27,7 @@ public class Recursion {
 		}else if("en".equalsIgnoreCase(language)){
 			text=node.getOrgName_en()==null?"":node.getOrgName_en();
 		}else if("ru".equalsIgnoreCase(language)){
-			text=node.getOrgName_ru()==null?"":node.getOrgName_en();
+			text=node.getOrgName_ru()==null?"":node.getOrgName_ru();
 		}
 		text=StringManagerUtils.stringFormat(text);
 		if (hasChild(list, node)) {

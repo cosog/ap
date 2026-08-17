@@ -20,25 +20,36 @@ Ext.define('AP.view.frame.MainIframeView', {
 							store : mainIframe_store,
 							tbar : {
 								hidden: false,
-								items : [{
-											iconCls : 'icon-collapse-all', // 收缩按钮
-											text : loginUserLanguageResource.collapse,
-											tooltip : {
-												text : loginUserLanguageResource.collapseAll
-											},
-											handler : function() {
-												moduleTree.collapseAll();
-											}
-										}, '-', {
-											iconCls : 'icon-expand-all',// 展开按钮
-											tooltip : {
-												text : loginUserLanguageResource.expandAll
-											},
-											text : loginUserLanguageResource.expand,
-											handler : function() {
-												moduleTree.expandAll();
-											}
-										}, '-', {
+								items : [
+//									{
+//											iconCls : 'icon-collapse-all', // 收缩按钮
+//											text : loginUserLanguageResource.collapse,
+//											tooltip : {
+//												text : loginUserLanguageResource.collapseAll
+//											},
+//											handler : function() {
+//												moduleTree.collapseAll();
+//											}
+//										}, '-', {
+//											iconCls : 'icon-expand-all',// 展开按钮
+//											tooltip : {
+//												text : loginUserLanguageResource.expandAll
+//											},
+//											text : loginUserLanguageResource.expand,
+//											handler : function() {
+//												moduleTree.expandAll();
+//											}
+//										}, 
+									{
+				                    	xtype: 'label',
+				                    	html: loginUserLanguageResource.functionNavigation,
+				                    	style: {
+				                            marginLeft: '10px',
+				                            fontSize: '11px',
+				                            fontFamily: 'tahoma,arial,verdana,sans-serif',
+				                            color: '#333333'
+				                        }
+				                },'->', {
 							                iconCls: 'note-refresh',
 							                tooltip: {
 							                    text: loginUserLanguageResource.refresh

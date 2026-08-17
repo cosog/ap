@@ -108,6 +108,7 @@
     background-repeat: no-repeat !important;
     position: relative;
     height: 100% !important;
+    animation: none !important;   /* ← 添加这行，取消 slide-left 动画 */
 }
 .page-brand-info::after {
     content: "";

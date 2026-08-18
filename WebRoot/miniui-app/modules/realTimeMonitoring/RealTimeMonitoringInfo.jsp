@@ -555,16 +555,6 @@ String moduleId = request.getParameter("moduleId");
             if (deviceCombo) {
                 deviceCombo.setEmptyText('--' + (_loginUserLanguageResource.all) + '--');
             }
-
-            // 3. 动态数据导出按钮（在 refreshDeviceTabs 中已创建，需在创建后设置）
-            // 可通过监听 middleTabs 的 activechanged 事件，在动态数据标签激活时设置
-            // 或者在 refreshDeviceTabs 中直接使用国际化文本
-
-            // 4. 右侧面板的表格列标题（在 loadDeviceControl 中设置）
-            // 可修改 renderer 中的列标题为国际化
-
-            // 5. 所有 mini.alert 和 mini.confirm 中的文本
-            // 已在函数中使用 _loginUserLanguageResource，无需额外修改
         }
 
         // ================================================================
@@ -1269,106 +1259,51 @@ String moduleId = request.getParameter("moduleId");
                 }
             }
 
-            // 无可用标签 → 显示占位
-            if (newTabKeys.length === 0) {
-                var currentTabs = statTabs.getTabs();
-                if (currentTabs.length !== 1 || currentTabs[0].name !== 'stat_placeholder') {
-                    statTabs.setTabs([{
-                        name: 'stat_placeholder',
-                        title: _loginUserLanguageResource.emptyMsg,
-                        body: '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>'
-                    }]);
-                }
-                return;
-            }
-
-            // 2. 记录当前激活的标签 key
+            // 记录当前激活的标签 key（在移除前保存）
             var activeTab = statTabs.getActiveTab();
             var activeKey = activeTab ? activeTab._key : null;
 
-            // 3. 移除不在新列表中的标签
+            // 2. 移除所有现有标签（包括占位标签）
             var currentTabs = statTabs.getTabs();
             for (var i = currentTabs.length - 1; i >= 0; i--) {
                 var tab = currentTabs[i];
-                if (tab._key && newTabKeys.indexOf(tab._key) === -1) {
-                    // ★ 移除前清理饼图资源
-                    if (tab._divId) {
-                        var container = document.getElementById(tab._divId);
-                        if (container) destroyPieChart(container);
-                    }
-                    statTabs.removeTab(tab);
+                // 清理饼图资源（如果有）
+                if (tab._divId) {
+                    var container = document.getElementById(tab._divId);
+                    if (container) destroyPieChart(container);
                 }
+                statTabs.removeTab(tab);
             }
 
-            // 4. 获取当前剩余标签（移除后）
-            var remainingTabs = statTabs.getTabs();
-            var remainingKeys = remainingTabs.map(function(t) {
-                return t._key;
-            });
+            // 无可用标签 → 显示占位
+            if (newTabKeys.length === 0) {
+                statTabs.setTabs([{
+                    name: 'stat_placeholder',
+                    title: _loginUserLanguageResource.emptyMsg,
+                    body: '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>'
+                }]);
+                return;
+            }
 
-            // 5. 按顺序添加新标签（如果不存在），并插入到正确位置
+            // 3. 按顺序添加新标签
             for (var i = 0; i < newTabKeys.length; i++) {
                 var key = newTabKeys[i];
                 var cfg = STAT_TAB_CONFIG[key];
                 if (!cfg) continue;
 
-                // 检查是否已存在
-                var existing = null;
-                for (var j = 0; j < remainingTabs.length; j++) {
-                    if (remainingTabs[j]._key === key) {
-                        existing = remainingTabs[j];
-                        break;
-                    }
-                }
-
-                if (!existing) {
-                    // 计算插入位置
-                    var insertIndex = 0;
-                    // 获取当前实际存在的标签列表
-                    var existingTabs = statTabs.getTabs();
-                    // 找到已存在的标签中，在 newTabKeys 中位于当前 key 之前的最后一个标签的位置
-                    var lastIndex = -1;
-                    for (var k = 0; k < existingTabs.length; k++) {
-                        var existingKey = existingTabs[k]._key;
-                        var pos = newTabKeys.indexOf(existingKey);
-                        if (pos !== -1 && pos < i) {
-                            if (pos > lastIndex) {
-                                lastIndex = pos;
-                            }
-                        }
-                    }
-                    // 如果找到了前驱标签，插入到它后面
-                    if (lastIndex !== -1) {
-                        var targetKey = newTabKeys[lastIndex];
-                        var currentAfterRemoval = statTabs.getTabs();
-                        for (var m = 0; m < currentAfterRemoval.length; m++) {
-                            if (currentAfterRemoval[m]._key === targetKey) {
-                                insertIndex = m + 1;
-                                break;
-                            }
-                        }
-                    }
-                    // 如果 insertIndex 超出范围，追加到末尾
-                    if (insertIndex > statTabs.getTabs().length) {
-                        insertIndex = statTabs.getTabs().length;
-                    }
-
-                    // 创建新标签
-                    var divId = 'pieChart_' + key + '_' + Date.now() + '_' + i;
-                    var newTab = {
-                        name: cfg.id,
-                        title: cfg.title,
-                        _key: key,
-                        _api: cfg.api,
-                        _divId: divId,
-                        body: '<div style="width:100%;height:100%;min-height:' + otherCardMinHeight + 'px;overflow:hidden;position:relative;"><div id="' + divId + '" style="width:100%;height:100%;"></div></div>'
-                    };
-                    // 插入到指定位置（MiniUI 的 addTab 支持第二个参数为索引）
-                    statTabs.addTab(newTab, insertIndex);
-                }
+                var divId = 'pieChart_' + key + '_' + Date.now() + '_' + i;
+                var newTab = {
+                    name: cfg.id,
+                    title: cfg.title,
+                    _key: key,
+                    _api: cfg.api,
+                    _divId: divId,
+                    body: '<div style="width:100%;height:100%;min-height:' + (otherCardMinHeight || 100) + 'px;overflow:hidden;position:relative;"><div id="' + divId + '" style="width:100%;height:100%;"></div></div>'
+                };
+                statTabs.addTab(newTab);
             }
 
-            // 6. 决定激活哪个标签
+            // 4. 决定激活哪个标签
             var targetTab = null;
             // 优先恢复之前的激活标签
             if (activeKey && newTabKeys.indexOf(activeKey) !== -1) {
@@ -1389,7 +1324,7 @@ String moduleId = request.getParameter("moduleId");
             }
             if (targetTab) {
                 statTabs.activeTab(targetTab);
-                // 加载数据
+                // 加载数据（传递 orgId）
                 loadStatData(targetTab, paramDeviceType, orgId);
             }
         }
@@ -4498,9 +4433,6 @@ String moduleId = request.getParameter("moduleId");
                     // 优先使用 loadStatData 刷新当前标签页
                     if (typeof loadStatData === 'function') {
                         loadStatData(activeTab, deviceTypeId, orgId);
-                    } else {
-                        // 降级方案：重新加载所有统计标签页
-                        loadStatCharts(deviceTypeId, orgId);
                     }
                 }
             }

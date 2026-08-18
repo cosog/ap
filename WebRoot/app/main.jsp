@@ -370,18 +370,18 @@
 		}
 		
 		.res-monitor-item {
-    		display: inline-block;
-    		vertical-align: middle;
-    		line-height: 1.4;
-    		font-size: 12px;
-    		margin-right: 8px;
-    		padding: 0 2px;
-    		cursor: pointer;
-		}
-		.res-monitor-item span {
-    		vertical-align: middle;
-    		line-height: 1.4;
-		}
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1.4;
+    font-size: 12px;
+    margin-right: 8px;
+    padding: 0 2px;
+    cursor: pointer;
+}
+.res-monitor-item span {
+    vertical-align: middle;
+    line-height: 1.4;
+}
     </style>
 </head>
 

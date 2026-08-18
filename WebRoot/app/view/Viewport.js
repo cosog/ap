@@ -609,14 +609,13 @@ function websocketOnMessage(evt) {
             function updateWithDot(id, dotColor, text, textColor, blink) {
                 var cmp = Ext.getCmp(id);
                 if (cmp) {
-                    // 圆点：inline-block，line-height 与文本一致，vertical-align:middle
-                    var dotHtml = '<span style="display:inline-block; line-height:1.4; vertical-align:middle; font-size:18px; color:' + dotColor + ';">●</span>';
-                    // 文本：同样 inline-block，line-height:1.4，vertical-align:middle
+                    // 圆点：inline-block，与文本统一 line-height 和 vertical-align
+                	var dotHtml = '<span style="display:inline-block; vertical-align:middle; line-height:1.4; font-size:18px; color:' + dotColor + '; margin-bottom:3px;">●</span>';
+                    // 文本：同样 inline-block，统一 vertical-align 和 line-height
                     var textHtml = textColor 
-                        ? '<span style="display:inline-block; line-height:1.4; vertical-align:middle; color:' + textColor + ';">' + text + '</span>' 
-                        : '<span style="display:inline-block; line-height:1.4; vertical-align:middle;">' + text + '</span>';
-                    var html = dotHtml + ' ' + textHtml;
-                    cmp.setHtml(html);
+                        ? '<span style="display:inline-block; vertical-align:middle; line-height:1.4; color:' + textColor + ';">' + text + '</span>' 
+                        : '<span style="display:inline-block; vertical-align:middle; line-height:1.4;">' + text + '</span>';
+                    cmp.setHtml(dotHtml + ' ' + textHtml);
                     // 闪烁控制
                     if (blink) {
                         cmp.getEl().addCls('resource-blink');

@@ -7192,8 +7192,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			String columns = "[";
 			for(int i=1;i<=items;i++){
-				columns+= "{ \"header\":\"名称\",\"dataIndex\":\"name"+i+"\",children:[] },"
-						+ "{ \"header\":\"变量\",\"dataIndex\":\"value"+i+"\",children:[] }";
+				columns+= "{ \"header\":\"名称\",\"dataIndex\":\"name"+i+"\",\"children\":[] },"
+						+ "{ \"header\":\"变量\",\"dataIndex\":\"value"+i+"\",\"children\":[] }";
 				if(i<items){
 					columns+=",";
 				}
@@ -10860,7 +10860,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		result_json.append("\"dataFilterTotalRoot\":[");
 		boolean commData=graphicSetData!=null&&graphicSetData.getHistoryDataFilter()!=null?graphicSetData.getHistoryDataFilter().getCommData():false;
 		boolean exceptionData= !(graphicSetData!=null && graphicSetData.getHistoryDataFilter()!=null && !graphicSetData.getHistoryDataFilter().getExceptionData());
-		result_json.append("{\"title\":\""+languageResourceMap.get("onlineAndOffline")+"\",\"value\":"+commData+"},{\"title\":\""+languageResourceMap.get("exceptionData")+"\",\"value\":"+exceptionData+"}");
+		result_json.append("{\"title\":\""+languageResourceMap.get("onlineAndOffline")+"\",\"code\":\"commData\",\"value\":"+commData+"},{\"title\":\""+languageResourceMap.get("exceptionData")+"\",\"code\":\"exceptionData\",\"value\":"+exceptionData+"}");
 		
 		
 		result_json.append("]}");

@@ -466,6 +466,7 @@ public class HistoryQueryController extends BaseController  {
 		User user = (User) session.getAttribute("userLogin");
 		if(user!=null){
 			json = historyQueryService.getDeviceHistoryDetailsData(deviceId,deviceName,deviceType,recordId,calculateType,user.getUserNo(),user.getLanguageName(),startDate,endDate);
+			System.out.println(json);
 		}
 		
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -623,15 +624,16 @@ public class HistoryQueryController extends BaseController  {
 	
 	@RequestMapping("/setHistoryDataGraphicInfo")
 	public String setHistoryDataGraphicInfo() throws Exception {
-		String json = "{success:false}";
+		String json = "{\"success\":false}";
 		HttpSession session=request.getSession();
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		String graphicSetData = ParamUtils.getParameter(request, "graphicSetData");
 		this.pager = new Page("pagerForm", request);
-		int result = historyQueryService.setHistoryDataGraphicInfo(deviceId,deviceType,graphicSetData);
-		json = "{success:true}";
+		if(historyQueryService.setHistoryDataGraphicInfo(deviceId,deviceType,graphicSetData)>0){
+			json = "{\"success\":true}";
+		}
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

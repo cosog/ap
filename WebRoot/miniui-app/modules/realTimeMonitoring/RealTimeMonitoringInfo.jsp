@@ -819,24 +819,7 @@ String moduleId = request.getParameter("moduleId");
             return columns;
         }
 
-        function getAlarmStyleByLevel(level, styleConfig) {
-            var config = styleConfig || getAlarmShowStyle();
-            var cfg = (config && config.Data) || {};
-            var levelMap = {
-                100: cfg.FirstLevel || {},
-                200: cfg.SecondLevel || {},
-                300: cfg.ThirdLevel || {}
-            };
-            var lvl = levelMap[level] || {};
-            var bg = lvl.BackgroundColor ? '#' + lvl.BackgroundColor : 'transparent';
-            var color = lvl.Color ? '#' + lvl.Color : '#000';
-            var opacity = (lvl.Opacity !== undefined) ? lvl.Opacity : 1;
-            var bgRgba = (opacity === 0) ? 'transparent' : color16ToRgba(bg, opacity);
-            return {
-                bg: bgRgba,
-                color: color
-            };
-        }
+        
 
         // ===== 设备表格加载前 =====
         function onDeviceGridBeforeLoad(e) {

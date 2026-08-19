@@ -38,13 +38,6 @@ String moduleId = request.getParameter("moduleId");
         .loading-placeholder { display:flex; align-items:center; justify-content:center; height:100%; color:#999; font-size:13px; flex-direction:column; }
         .pie-chart-container { width:100%; height:100%; min-height:100px; }
         .hidden { display:none; }
-        @media (max-width:768px) {
-            .level2-sidebar { width:100%; height:32px; flex-direction:row; padding:0 8px; border-right:none; border-bottom:1px solid #e8e8e8; overflow-x:auto; overflow-y:hidden; }
-            .level2-sidebar .tab-item { writing-mode:horizontal-tb; transform:none; min-height:auto; padding:4px 12px; border-left:none; border-bottom:2px solid transparent; }
-            .level2-sidebar .tab-item.active { border-left:none; border-bottom-color:#1890ff; }
-            .level2-sidebar .no-child-tip { writing-mode:horizontal-tb; padding:4px 8px; }
-            .mini-splitter { flex-direction:column !important; }
-        }
         /* 报警徽章 */
         .alarm-badge { display:inline-block; border-radius:10px; padding:0 4px; min-width:14px; height:14px; line-height:14px; text-align:center; font-size:9px; font-weight:bold; margin-right:2px; vertical-align:middle; box-sizing:border-box; }
         .device-name-cell { white-space:nowrap; }
@@ -85,7 +78,6 @@ String moduleId = request.getParameter("moduleId");
                                         <input id="HistoryQueryDataColumnStr_Id" type="hidden" value="" />
                                         <input id="HistoryQueryDiagramOverlayColumnStr_Id" type="hidden" value="" />
                                         <input id="selectedDeviceId_global" type="hidden" value="0" />
-                                        <input id="AlarmShowStyle_Id" type="hidden" value="" />
                                     </div>
                                     <div style="flex:1;overflow:hidden;">
                                         <div id="deviceGrid" class="mini-datagrid" style="width:100%; height:100%;"
@@ -323,8 +315,10 @@ String moduleId = request.getParameter("moduleId");
         var grid = e.sender, result = e.result;
         if (result) {
             if (result.AlarmShowStyle) {
-                var alarmInput = document.getElementById('AlarmShowStyle_Id');
-                if (alarmInput) alarmInput.value = JSON.stringify(result.AlarmShowStyle);
+            	var alarmInput = window.parent.mini.get('AlarmShowStyle_Id');
+                if (alarmInput) {
+                    alarmInput.setValue(JSON.stringify(result.AlarmShowStyle));
+                }
             }
             if (result.columns) {
                 var columns = buildGridColumns(result.columns);
@@ -591,8 +585,10 @@ String moduleId = request.getParameter("moduleId");
             timeout: 10000,
             success: function(result) {
                 if (result.AlarmShowStyle) {
-                    var alarmInput = document.getElementById('AlarmShowStyle_Id');
-                    if (alarmInput) alarmInput.value = JSON.stringify(result.AlarmShowStyle);
+                	var alarmInput = window.parent.mini.get('AlarmShowStyle_Id');
+                    if (alarmInput) {
+                        alarmInput.setValue(JSON.stringify(result.AlarmShowStyle));
+                    }
                 }
                 var data = extractPieData(result, tab._key, result.AlarmShowStyle);
                 renderPieChart(divId, data, tab.title, tab._key);
@@ -774,7 +770,7 @@ String moduleId = request.getParameter("moduleId");
         if (!active) return;
         var name = active._name;
         if (name === 'trendCurve') {
-            loadHistoryCurve(start, end);
+            loadHistoryCurve();
             loadHistoryDataGrid(start, end);
         } else if (name === 'tiledDiagram') {
             tiledPage = 1;
@@ -838,7 +834,7 @@ String moduleId = request.getParameter("moduleId");
              'idField="id" pageSize="'+parseInt(_defaultPageSize, 10)+'" allowResize="true" showPager="true" ' +
              'url="' + context + '/historyQueryController/getDeviceHistoryData" ' +
              'dataField="totalRoot" totalField="totalCount" ' +
-             'onload="onHistoryDataLoad" onbeforeload="onHistoryDataBeforeLoad" onrowdblclick="onHistoryDataDblClick">' +
+             'onload="onHistoryDataLoad" onbeforeload="onHistoryDataBeforeLoad" ondrawcell="onHistoryDataDrawCell" onrowdblclick="onHistoryDataDblClick">' +
              '<div property="columns"></div>' +
              '</div>' +
              '</div>' +
@@ -991,7 +987,12 @@ String moduleId = request.getParameter("moduleId");
     // ================================================================
     // 7. 趋势曲线
     // ================================================================
-    function loadHistoryCurve(start, end) {
+    function loadHistoryCurve() {
+    	if (!currentDeviceId) { mini.alert('请选择设备'); return; }
+        var start = mini.get('startDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+        var end = mini.get('endDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+        
+    	
     var container = document.getElementById('historyCurveContainer');
     container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.loadingData+'</div>';
     var hours = getHistoryQueryHours();
@@ -1246,114 +1247,37 @@ String moduleId = request.getParameter("moduleId");
 
     // 打开曲线设置窗口
     function openCurveSetWindow() {
-        var win = new mini.Window();
-        win.set({
+        if (!currentDeviceId) {
+            mini.alert(_loginUserLanguageResource.checkOne);
+            return;
+        }
+        var params = {
+            deviceId: currentDeviceId,
+            deviceName: currentDeviceName,
+            deviceType: currentLevel2 ? currentLevel2.deviceTypeId : '0'
+        };
+        mini.open({
             title: _loginUserLanguageResource.historyDiagramSet,
-            width: '60%', height: '60%',
-            modal: true, showHeader: true, allowResize: true
-        });
-        win.show();
-        var containerId = 'curveSetContainer_'+Date.now();
-        win.setBody('<div id="'+containerId+'" style="width:100%;height:100%;"></div>');
-        // 加载曲线设置数据
-        loadCurveSetData(containerId, win);
-    }
-
-    function loadCurveSetData(containerId, win) {
-        var mask = mini.mask({ el: win.getBodyEl(), cls:'mini-mask-loading', html:_loginUserLanguageResource.loadingData });
-        var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
-        $.ajax({
-            url: context + '/historyQueryController/getHistoryQueryCurveSetData',
-            type: 'POST',
-            data: { deviceId: currentDeviceId, deviceName: currentDeviceName, deviceType: deviceType },
-            dataType: 'json',
-            success: function(result) {
-                mini.unmask(win.getBodyEl());
-                var container = document.getElementById(containerId);
-                if (!container) return;
-                // 构建表格
-                var data = result.totalRoot || [];
-                var filterData = result.dataFilterTotalRoot || [];
-                var html = '<div style="display:flex; flex-direction:column; height:100%;">';
-                html += '<div style="flex:1; overflow:auto; padding:4px;">';
-                html += '<table class="mini-datagrid" style="width:100%; border-collapse:collapse;">';
-                html += '<tr><th style="text-align:left;">'+_loginUserLanguageResource.curve+'</th><th>'+_loginUserLanguageResource.yAxisMaxSetValue+'</th><th>'+_loginUserLanguageResource.yAxisMinSetValue+'</th></tr>';
-                for (var i=0; i<data.length; i++) {
-                    var row = data[i];
-                    html += '<tr><td>'+row.curveName+'</td><td><input type="text" class="mini-textbox" value="'+ (row.yAxisMaxValue||'') +'" data-itemcode="'+row.itemCode+'" data-field="max" /></td><td><input type="text" class="mini-textbox" value="'+ (row.yAxisMinValue||'') +'" data-itemcode="'+row.itemCode+'" data-field="min" /></td></tr>';
-                }
-                html += '</table>';
-                html += '</div>';
-                html += '<div style="flex-shrink:0; padding:8px; border-top:1px solid #ddd; background:#f5f7fa; display:flex; align-items:center; gap:10px;">';
-                html += '<span>'+_loginUserLanguageResource.dataFilter+'：</span>';
-                for (var i=0; i<filterData.length; i++) {
-                    var f = filterData[i];
-                    html += '<label><input type="checkbox" class="filter-checkbox" data-key="'+f.title+'" '+(f.value?'checked':'')+' /> '+f.title+'</label>';
-                }
-                html += '<span style="flex:1;"></span>';
-                html += '<button class="mini-button" onclick="saveCurveSet(\''+containerId+'\')">'+_loginUserLanguageResource.save+'</button>';
-                html += '</div>';
-                html += '</div>';
-                container.innerHTML = html;
-                mini.parse();
+            url: context + '/miniui-app/modules/historyQuery/historyCurveSet.jsp',
+            width: '50%',
+            height: '60%',
+            modal: true,
+            allowResize: true,
+            onload: function() {
+                var iframe = this.getIFrameEl();
+                iframe.contentWindow.setData(params);
+             // ★★★ 将 doQuery 函数挂载到子窗口，方便调用 ★★★
+                iframe.contentWindow._parentLoadHistoryCurve = loadHistoryCurve;
+                iframe.contentWindow._parentShowAlert = window.showAlert;
             },
-            error: function() { mini.unmask(win.getBodyEl()); mini.alert(_loginUserLanguageResource.requestFailed); }
-        });
-    }
-
-    window.saveCurveSet = function(containerId) {
-        var container = document.getElementById(containerId);
-        if (!container) return;
-        // 收集 Y 轴设置
-        var inputs = container.querySelectorAll('input[data-itemcode]');
-        var graphicSet = { History: [], HistoryDataFilter: {} };
-        var filterChecks = container.querySelectorAll('.filter-checkbox');
-        var commData = false, exceptionData = false;
-        filterChecks.forEach(function(chk) {
-            if (chk.dataset.key === 'commData') commData = chk.checked;
-            else if (chk.dataset.key === 'exceptionData') exceptionData = chk.checked;
-        });
-        graphicSet.HistoryDataFilter.commData = commData;
-        graphicSet.HistoryDataFilter.exceptionData = exceptionData;
-        inputs.forEach(function(inp) {
-            var itemCode = inp.dataset.itemcode;
-            var field = inp.dataset.field;
-            var val = inp.value;
-            var existing = graphicSet.History.find(function(item) { return item.itemCode === itemCode; });
-            if (!existing) {
-                existing = { itemCode: itemCode, yAxisMaxValue: '', yAxisMinValue: '' };
-                graphicSet.History.push(existing);
+            ondestroy: function() {
+                // 关闭后可选额外操作
             }
-            if (field === 'max') existing.yAxisMaxValue = val;
-            else if (field === 'min') existing.yAxisMinValue = val;
         });
-        // 发送保存请求
-        var mask = mini.mask({ el: document.body, cls:'mini-mask-loading', html:_loginUserLanguageResource.saving });
-        $.ajax({
-            url: context + '/historyQueryController/setHistoryDataGraphicInfo',
-            type: 'POST',
-            data: {
-                deviceId: currentDeviceId,
-                deviceName: currentDeviceName,
-                deviceType: currentLevel2 ? currentLevel2.deviceTypeId : '0',
-                graphicSetData: JSON.stringify(graphicSet)
-            },
-            dataType: 'json',
-            success: function(result) {
-                mini.unmask(document.body);
-                if (result.success) {
-                    mini.alert(_loginUserLanguageResource.savedSuccessfully);
-                    // 关闭窗口
-                    var win = mini.get(container.closest('.mini-window'));
-                    if (win) win.destroy();
-                    // 刷新曲线
-                    doQuery();
-                } else {
-                    mini.alert(_loginUserLanguageResource.operationFailed);
-                }
-            },
-            error: function() { mini.unmask(document.body); mini.alert(_loginUserLanguageResource.requestFailed); }
-        });
+    }
+    
+    showAlert = function(message, title) {
+        mini.alert(message, title);
     };
 
     // ================================================================
@@ -1378,6 +1302,18 @@ String moduleId = request.getParameter("moduleId");
                 else if (col.dataIndex==='acqTime') { column.dateFormat='yyyy-MM-dd HH:mm:ss'; column.width=150; }
                 cols.push(column);
             }
+            
+         	// ★ 只定义列的基本结构，不设置 renderer
+            var detailColumn = {
+                field: 'details',
+                header: _loginUserLanguageResource.details,
+                width: 60,
+                headerAlign:'center',
+                align: 'center'
+            };
+            // 插入到索引 1
+            cols.splice(1, 0, detailColumn);
+            
             grid.setColumns(cols);
             document.getElementById('HistoryQueryDataColumnStr_Id').value = JSON.stringify(result.columns);
             
@@ -1390,6 +1326,134 @@ String moduleId = request.getParameter("moduleId");
             	mini.get('endDate').setValue(result.end_date);
             }
         }
+    }
+    
+    /**
+     * 显示历史数据详情（目前为占位实现）
+     * @param {string} params - 经过 URL 编码的 JSON 参数对象
+     */
+     function showHistoryDetail(params) {
+    	    var obj = JSON.parse(decodeURIComponent(params));
+    	    // 补充 deviceType（从当前上下文中获取）
+    	    obj.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+
+    	    mini.open({
+    	        title: _loginUserLanguageResource.detailsData,
+    	        url: context + '/miniui-app/modules/historyQuery/historyDetail.jsp',
+    	        width: '80%',
+    	        height: '80%',
+    	        modal: true,
+    	        allowResize: true,
+    	        onload: function() {
+    	            var iframe = this.getIFrameEl();
+    	            iframe.contentWindow.setData(obj);
+    	        }
+    	    });
+    	}
+    
+    /**
+     * 历史数据表格绘制单元格
+     * 参照实时监控的 onDeviceGridDrawCell 逻辑
+     */
+    function onHistoryDataDrawCell(e) {
+        var record = e.record;
+        var field = e.field;
+        var value = e.value;
+        if (!record || !field) return;
+
+        // 获取报警样式配置（从隐藏域读取）
+        var alarmShowStyle = getAlarmShowStyle() || {};
+        var Data = alarmShowStyle.Data || {};
+        var Comm = alarmShowStyle.Comm || {};
+        var Run = alarmShowStyle.Run || {};
+        var alarmInfo = record.alarmInfo || [];
+        var fieldUpper = field.toUpperCase();
+
+        if (field === 'details') {
+            if (!record) {
+                e.cellHtml = '';
+                return;
+            }
+            var recordId = record.id || '';
+            var deviceId = record.deviceId || '';
+            var deviceName = record.deviceName || record.wellName || '';
+            var calculateType = record.calculateType !== undefined ? record.calculateType : 0;
+            if (!recordId && !deviceId) {
+                e.cellHtml = '';
+                return;
+            }
+         	// ★ 获取当前查询的时间范围
+            var startDate = mini.get('startDate') ? mini.get('startDate').getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+            var endDate = mini.get('endDate') ? mini.get('endDate').getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+            var params = encodeURIComponent(JSON.stringify({
+                recordId: recordId,
+                deviceId: deviceId,
+                deviceName: deviceName,
+                calculateType: calculateType,
+                startDate: startDate,
+                endDate: endDate
+            }));
+            e.cellHtml = '<a href="javascript:void(0)" onclick="showHistoryDetail(\'' + params + '\')" style="text-decoration:none;">' + (_loginUserLanguageResource.details) + '...</a>';
+            return;
+        }
+        
+        // ---- 通信状态列 ----
+        if (fieldUpper === 'COMMSTATUSNAME') {
+            var status = record.commStatus;
+            var offlineColor = (Comm.offline && Comm.offline.Color) ? '#' + Comm.offline.Color : '#ff4d4f';
+            var onlineColor = (Comm.online && Comm.online.Color) ? '#' + Comm.online.Color : '#52c41a';
+            var goOnlineColor = (Comm.goOnline && Comm.goOnline.Color) ? '#' + Comm.goOnline.Color : '#faad14';
+            var color = '#999';
+            if (status === 0) color = offlineColor;
+            else if (status === 1) color = onlineColor;
+            else if (status === 2) color = goOnlineColor;
+            e.cellHtml = '<span style="color:' + color + ';font-weight:bold;">' + (value || '') + '</span>';
+            return;
+        }
+
+        // ---- 运行状态列 ----
+        if (fieldUpper === 'RUNSTATUSNAME') {
+            var commStatus = record.commStatus;
+            var runStatus = record.runStatus;
+            if (commStatus == 0 || commStatus == 2 || !value) {
+                e.cellHtml = ''; // 离线或无数据时不显示
+                return;
+            } else {
+                var stopColor = (Run.stop && Run.stop.Color) ? '#' + Run.stop.Color : '#ff4d4f';
+                var runColor = (Run.run && Run.run.Color) ? '#' + Run.run.Color : '#52c41a';
+                var noDataColor = (Run.noData && Run.noData.Color) ? '#' + Run.noData.Color : '#999';
+                var runColorSelected = (runStatus === 0) ? stopColor : (runStatus === 1 ? runColor : noDataColor);
+                e.cellHtml = '<span style="color:' + runColorSelected + ';font-weight:bold;">' + (value || '') + '</span>';
+                return;
+            }
+        }
+
+        // ---- 其他数据列（报警高亮） ----
+        // 排除 id、设备名、状态、时间等已处理的列
+        if (fieldUpper !== 'ID' && fieldUpper !== 'DEVICENAME' && fieldUpper !== 'WELLNAME' &&
+            fieldUpper !== 'COMMSTATUSNAME' && fieldUpper !== 'RUNSTATUSNAME' && fieldUpper !== 'ACQTIME') {
+            var alarmLevel = 0;
+            // 在 alarmInfo 中查找匹配的字段（忽略大小写）
+            for (var j = 0; j < alarmInfo.length; j++) {
+                var item = alarmInfo[j].item;
+                if (item && item.toUpperCase() === fieldUpper) {
+                    alarmLevel = alarmInfo[j].alarmLevel || 0;
+                    break;
+                }
+            }
+            if (alarmLevel > 0) {
+                var style = getAlarmStyleByLevel(alarmLevel, alarmShowStyle);
+                if (style && style.bg) {
+                    e.cellStyle = 'background-color:' + style.bg + ';color:' + style.color + ';';
+                }
+            }
+            // 如果 value 为空，显示占位符
+            e.cellHtml = value !== undefined && value !== null ? value : '';
+            return;
+        }
+
+        // 默认：直接显示值
+        e.cellHtml = (value !== undefined && value !== null) ? value : '';
     }
 
     function onHistoryDataDblClick(e) {
@@ -1886,6 +1950,14 @@ String moduleId = request.getParameter("moduleId");
             refreshDeviceList();
         }
     }
+    
+    window.refreshHistoryCurve = function() {
+        if (typeof doQuery === 'function') {
+            doQuery();
+        } else {
+            console.warn('doQuery 未定义，无法刷新曲线');
+        }
+    };
 
     // ================================================================
     // 13. 初始化
@@ -1939,6 +2011,10 @@ String moduleId = request.getParameter("moduleId");
                     if (typeof refreshData === 'function') {
                         refreshData();
                     }
+                    break;
+                case 'refreshCurve':
+                	alert('refreshCurve');
+                	doQuery();
                     break;
             }
         });

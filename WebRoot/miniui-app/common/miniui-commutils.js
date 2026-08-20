@@ -26,7 +26,7 @@ var activeStyle = {
 
 var realtimeInterval, realtimeGraphicalInterval;
 var graghMinWidth = 300;
-var dynamometerCardMinHeight= 330;
+var dynamometerCardMinHeight= 350;
 var otherCardMinHeight= 280;
 var defaultWellComboxSize=10000;
 var comboxPagingStatus=0;//0-不分页  大于0分页
@@ -98,7 +98,8 @@ var _configFile = getGlobalVar('configFile', { ap: { others: {} } });
 var _productionUnit = _configFile.ap.others.productionUnit || getGlobalVar('productionUnit', '');
 var _loginUserLanguage = getGlobalVar('loginUserLanguage', '');
 var _defaultPageSize = getGlobalVar('defaultPageSize', '');
-
+var _defaultComboxSize = getGlobalVar('defaultComboxSize', '');
+var _defaultGraghSize = getGlobalVar('defaultGraghSize', '');
 
 
 

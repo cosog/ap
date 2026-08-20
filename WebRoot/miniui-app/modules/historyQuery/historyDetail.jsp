@@ -641,6 +641,9 @@ function viewItemHistoryDataTable(itemName, itemValue, cellInfo) {
             params.itemType = itemType;
             params.itemResolutionMode = itemResolutionMode;
             params.itemBitIndex = bitIndex || '';
+            
+            params.totalCount = grid.getTotalCount() || 0;
+            
             e.params = params;
         },
         // ★ 加载完成后更新总记录数

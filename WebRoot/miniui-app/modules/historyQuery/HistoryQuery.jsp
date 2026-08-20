@@ -41,6 +41,24 @@ String moduleId = request.getParameter("moduleId");
         /* 报警徽章 */
         .alarm-badge { display:inline-block; border-radius:10px; padding:0 4px; min-width:14px; height:14px; line-height:14px; text-align:center; font-size:9px; font-weight:bold; margin-right:2px; vertical-align:middle; box-sizing:border-box; }
         .device-name-cell { white-space:nowrap; }
+        
+        .tiled-chart-container {
+    		width: 100%;
+    		height: 100%;
+    		overflow: auto;
+    		padding: 2px;
+    		box-sizing: border-box;
+		}
+		.tiled-chart-container .chart-item {
+    		float: left;
+    		box-sizing: border-box;
+    		padding: 2px;
+		}
+		/* 让 mini-tabs 的左侧标签宽度固定，显得整齐 */
+		.mini-tabs-tab-left {
+    		width: 60px !important;
+    		text-align: center;
+		}
     </style>
 </head>
 <body>
@@ -150,6 +168,35 @@ String moduleId = request.getParameter("moduleId");
             api: '/realTimeMonitoringController/getRealTimeMonitoringNumStatusStatData'
         }
     };
+    
+    var TILED_CONFIG = {
+    	    'FSDiagram': {
+    	    	containerId: 'fsTiledContainer',
+    	        url: context + '/historyQueryController/querySurfaceCard',
+    	        renderFunc: showSurfaceCard,
+    	        divIdPrefix: 'DiagramTiled_FSDiagram_Id_',
+    	        title: _loginUserLanguageResource.FSDiagram
+    	    },
+    	    'PSDiagram': {
+    	        containerId: 'psTiledContainer',
+    	        url: context + '/historyQueryController/getPSDiagramTiledData',
+    	        renderFunc: showPSDiagram,
+    	        divIdPrefix: 'DiagramTiled_PSDiagram_Id_',
+    	        title: _loginUserLanguageResource.PSDiagram
+    	    },
+    	    'ISDiagram': {
+    	        containerId: 'isTiledContainer',
+    	        url: context + '/historyQueryController/getISDiagramTiledData',
+    	        renderFunc: showASDiagram,
+    	        divIdPrefix: 'DiagramTiled_ISDiagram_Id_',
+    	        title: _loginUserLanguageResource.ISDiagram
+    	    }
+    	};
+    	var tiledPage = 1;
+    	var diagramAspectRatio = 0.75;
+    	var defaultGraghSize = _defaultGraghSize;
+    	var _tiledTotalPages = {};
+    	var _tiledScrollHandlers = {};
     
     function initI18n() {
         // 1. 工具栏按钮
@@ -294,7 +341,7 @@ String moduleId = request.getParameter("moduleId");
     function onDeviceGridBeforeLoad(e) {
         var params = e.params || {};
         var pageIndex = params.pageIndex || 0;
-        var pageSize = params.pageSize || 50;
+        var pageSize = params.pageSize || _defaultPageSize;
         params.start = pageIndex * pageSize;
         params.limit = pageSize;
         var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
@@ -429,6 +476,14 @@ String moduleId = request.getParameter("moduleId");
         params.orgId = leftOrgId ? leftOrgId.getValue() : '';
         // 可选 totalCount（后端可能用于优化）
         params.totalCount = params.totalCount || 0;
+        
+     // ★★★ 关键修复：从 grid 自身获取 totalCount，而不是从 params 中取 ★★★
+        var grid = mini.get('historyDataGrid');
+        if (grid) {
+            params.totalCount = grid.getTotalCount() || 0;
+        } else {
+            params.totalCount = 0;
+        }
     }
 
     function getAlarmStyleByLevel(level, styleConfig) {
@@ -761,36 +816,39 @@ String moduleId = request.getParameter("moduleId");
     // ================================================================
     function doQuery() {
         if (!currentDeviceId) { mini.alert('请选择设备'); return; }
-        var start = mini.get('startDate').getFormValue('yyyy-MM-dd HH:mm:ss');
-        var end = mini.get('endDate').getFormValue('yyyy-MM-dd HH:mm:ss');
         
-        //if (!start || !end) { mini.alert('请选择时间范围'); return; }
         var resultTabs = mini.get('resultTabs');
         var active = resultTabs.getActiveTab();
         if (!active) return;
         var name = active._name;
         if (name === 'trendCurve') {
             loadHistoryCurve();
-            loadHistoryDataGrid(start, end);
+            loadHistoryDataGrid();
         } else if (name === 'tiledDiagram') {
             tiledPage = 1;
-            loadTiledDiagram(start, end);
+            var statGrid = mini.get('tiledStatGrid');
+            if (statGrid) {
+                statGrid.load();
+            }
         } else if (name === 'diagramOverlay') {
-            loadOverlayDiagram(start, end);
+            //loadOverlayDiagram();
         }
     }
 
     function onResultTabChanged(e) {
         var tab = e.tab;
-        if (tab && currentDeviceId) doQuery();
-        var vacLabel = document.getElementById('vacuateCountLabel');
-        var totalLabel = document.getElementById('totalCountLabel');
-        if (tab && tab.name === 'trendCurve') {
-            if (vacLabel) vacLabel.style.display = 'inline';
-            if (totalLabel) totalLabel.style.display = 'inline';
-        } else {
-            if (vacLabel) vacLabel.style.display = 'none';
-            if (totalLabel) totalLabel.style.display = 'none';
+        var resultTabs = mini.get('resultTabs');
+        if (tab && currentDeviceId) {
+            var name = tab._name;
+            if (name != 'trendCurve') {
+            	// ★ 仅当第一次激活时，强制刷新布局
+                if (!tab._initialized) {
+                    tab._initialized = true;
+                    var bodyEl = resultTabs.getTabBodyEl(tab);
+                    mini.parse(bodyEl);
+                }
+            }
+            doQuery();
         }
     }
     
@@ -846,20 +904,69 @@ String moduleId = request.getParameter("moduleId");
     /**
      * 创建图形平铺标签的 body HTML
      */
-    function createTiledDiagramBody() {
-        return '<div class="mini-splitter" style="width:100%; height:100%;" vertical="false">' +
-            '<div size="25%" showCollapseButton="true" minSize="100" collapseDirection="left" collapsed="true">' +
-            '<div style="height:100%; padding:4px; overflow:auto;"><div id="tiledStatGrid" class="mini-datagrid" style="width:100%; height:100%;" idField="resultCode" showPager="false" allowResize="true" url="' + context + '/historyQueryController/getDiagramTiledStat" onselectionchanged="onTiledStatSelect"><div property="columns"><div field="resultName" width="100%" headerAlign="center">工况类型</div></div></div></div>' +
-            '</div>' +
-            '<div size="75%">' +
-            '<div style="height:100%;"><div id="tiledDiagramTabs" class="mini-tabs" style="width:100%; height:100%;" tabPosition="left" activeIndex="0" onactivechanged="onTiledTabChanged">' +
-            '<div title="光杆功图" iconCls="chart" name="FSDiagram"><div id="fsTiledContainer" class="chart-container"><div class="loading-placeholder">请选择设备并查询</div></div></div>' +
-            '<div title="电功图" iconCls="chart" name="PSDiagram"><div id="psTiledContainer" class="chart-container"><div class="loading-placeholder">请选择设备并查询</div></div></div>' +
-            '<div title="电流图" iconCls="chart" name="ISDiagram"><div id="isTiledContainer" class="chart-container"><div class="loading-placeholder">请选择设备并查询</div></div></div>' +
-            '</div></div>' +
-            '</div>' +
-            '</div>';
-    }
+     function createTiledDiagramBody() {
+    	    // 第一行：时间选择工具栏
+    	    var toolbarRow1 = '<div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px; padding:4px 10px; background:#fff; border-bottom:1px solid #e8e8e8;">' +
+    	        '<span style="font-size:12px; color:#333;">' + _loginUserLanguageResource.range + '：</span>' +
+    	        '<input id="tiledStartDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
+    	        '<span style="margin-left:8px; font-size:12px; color:#333;">' + _loginUserLanguageResource.timeTo + '：</span>' +
+    	        '<input id="tiledEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd HH:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
+    	        '<button class="mini-button" iconCls="search" onclick="doTiledQuery()">' + (_loginUserLanguageResource.search) + '</button>' +
+    	        '<button class="mini-button" iconCls="export" onclick="exportTiledData()">' + (_loginUserLanguageResource.exportData) + '</button>' +
+    	        '<span style="flex:1;"></span>' +
+    	        '<span id="tiledTotalCountLabel" style="font-size:12px; color:#999; display:none;">' + _loginUserLanguageResource.totalCount + '：<span id="tiledTotalCountSpan">0</span></span>' +
+    	        '</div>';
+
+    	    // 第二行：时段复选框
+    	    var toolbarRow2 = '<div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px; padding:4px 10px; background:#fafafa; border-bottom:1px solid #e8e8e8;">' +
+    	        '<span style="font-size:12px; color:#666;">' + _loginUserLanguageResource.timeRange + '：</span>' +
+    	        '<input type="checkbox" id="tiledChkAll" checked onchange="updateTiledTimeRange(event)" /><label for="tiledChkAll">' + _loginUserLanguageResource.all + '</label>' +
+    	        '<input type="checkbox" id="tiledChk1" checked name="00:00:00~06:00:00" onchange="updateTiledTimeRange(event)" /><label for="tiledChk1">0~6h</label>' +
+    	        '<input type="checkbox" id="tiledChk2" checked name="06:00:00~12:00:00" onchange="updateTiledTimeRange(event)" /><label for="tiledChk2">6~12h</label>' +
+    	        '<input type="checkbox" id="tiledChk3" checked name="12:00:00~18:00:00" onchange="updateTiledTimeRange(event)" /><label for="tiledChk3">12~18h</label>' +
+    	        '<input type="checkbox" id="tiledChk4" checked name="18:00:00~23:59:59" onchange="updateTiledTimeRange(event)" /><label for="tiledChk4">18~24h</label>' +
+    	        '</div>';
+
+    	    // 主体：左侧统计表格 + 右侧 mini-tabs（左侧竖向标签）
+    	    var body = '<div class="mini-splitter" style="width:100%; flex:1;" vertical="false" >' +
+        '<div size="25%" showCollapseButton="true" minSize="100" collapseDirection="left" expanded="false">' +
+        '<div style="height:100%; padding:4px; overflow:hidden;">' +
+        '<div id="tiledStatGrid" class="mini-datagrid" style="width:100%; height:100%;" ' +
+        'idField="id" dataField="totalRoot" totalField="totalCount" showPager="false" ' +
+        'allowResize="true" multiSelect="true" showCheckColumn="true" ' +
+        'url="' + context + '/historyQueryController/getDeviceResultStatusStatData" ' +
+        'onselectionchanged="onTiledStatSelect" onload="onTiledStatGridLoad" ' +
+        'onbeforeload="onTiledStatGridBeforeLoad" >' +
+        '<div property="columns">' +
+        '<div type="checkcolumn" width="30"></div>'+
+        '<div type="indexcolumn" width="50" headerAlign="center" align="center" header="' + _loginUserLanguageResource.idx + '"></div>' +
+        '<div field="resultName" width="50%" headerAlign="center" align="center" header="' + _loginUserLanguageResource.WellFSDiagramWorkType + '"></div>' +
+        '<div field="count" width="50%" headerAlign="center" align="center" header="' + _loginUserLanguageResource.totalCount + '"></div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+    	        // 右侧：mini-tabs 实现图形类型切换（左侧竖向排列）
+    	        '<div size="75%" >' +
+    	        '<div id="tiledTabs" class="mini-tabs" style="width:100%; height:100%;" tabPosition="left" activeIndex="0" onactivechanged="onTiledTabActiveChanged" >' +
+    	        // 标签1：地面功图
+    	        '<div title="' + _loginUserLanguageResource.FSDiagram + '" _type="FSDiagram">' +
+    	        '<div id="fsTiledContainer" class="tiled-chart-container" style="width:100%; height:100%; overflow:auto; box-sizing:border-box;"></div>' +
+    	        '</div>' +
+    	        // 标签2：电功图
+    	        '<div title="' + _loginUserLanguageResource.PSDiagram + '" _type="PSDiagram">' +
+    	        '<div id="psTiledContainer" class="tiled-chart-container" style="width:100%; height:100%; overflow:auto; box-sizing:border-box;"></div>' +
+    	        '</div>' +
+    	        // 标签3：电流图
+    	        '<div title="' + _loginUserLanguageResource.ISDiagram + '" _type="ISDiagram">' +
+    	        '<div id="isTiledContainer" class="tiled-chart-container" style="width:100%; height:100%; overflow:auto; box-sizing:border-box;"></div>' +
+    	        '</div>' +
+    	        '</div>' +
+    	        '</div>' +
+    	        '</div>';
+
+    	    return '<div style="display:flex; flex-direction:column; height:100%;">' + toolbarRow1 + toolbarRow2 + body + '</div>';
+    	}
 
     /**
      * 创建图形叠加标签的 body HTML
@@ -953,7 +1060,8 @@ String moduleId = request.getParameter("moduleId");
     	        var tab = {
     	            title: title,
     	            _name: name,
-    	            body: body
+    	            body: body,
+    	            _initialized: false
     	        };
     	        tabs.addTab(tab);
     	    }
@@ -975,11 +1083,21 @@ String moduleId = request.getParameter("moduleId");
     	    }
     	    if (targetTab) {
     	        tabs.activeTab(targetTab);
+    	        var bodyEl = tabs.getTabBodyEl(targetTab);
     	        // 重新解析动态添加的 MiniUI 组件
-    	        mini.parse(tabs.getTabBodyEl(targetTab));
-    	        // 若当前已有设备且切换到趋势曲线标签，自动执行查询
+    	        mini.parse(bodyEl);
+    	     	
+    	        
+    	        // 自动查询（仅趋势曲线）
     	        if (currentDeviceId && targetTab._name === 'trendCurve') {
     	            doQuery();
+    	        }else if (currentDeviceId && targetTab._name === 'tiledDiagram') {
+    	            setTimeout(function() {
+    	                var statGrid = mini.get('tiledStatGrid');
+    	                if (statGrid) {
+    	                    statGrid.load();
+    	                }
+    	            }, 100);
     	        }
     	    }
     	}
@@ -1283,25 +1401,22 @@ String moduleId = request.getParameter("moduleId");
     // ================================================================
     // 8. 历史数据表格
     // ================================================================
-    function loadHistoryDataGrid(start, end) {
+    function loadHistoryDataGrid() {
         var grid = mini.get('historyDataGrid');
         if (!grid) return;
+        if (!currentDeviceId) { mini.alert('请选择设备'); return; }
         var hours = getHistoryQueryHours();
         var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+        
+        var start = mini.get('startDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+        var end = mini.get('endDate').getFormValue('yyyy-MM-dd HH:mm:ss');
         grid.load({ deviceId: currentDeviceId, startDate: start, endDate: end, hours: hours, deviceType: deviceType, calculateType: currentCalculateType });
     }
 
     function onHistoryDataLoad(e) {
         var grid = e.sender, result = e.result;
         if (result && result.columns) {
-            var cols = [];
-            for (var i=0; i<result.columns.length; i++) {
-                var col = result.columns[i];
-                var column = { field: col.dataIndex, header: col.header, headerAlign:'center', align:'center', width: col.width||100 };
-                if (col.dataIndex==='id') { column.type='indexcolumn'; column.width=40; column.header=_loginUserLanguageResource.idx; delete column.field; }
-                else if (col.dataIndex==='acqTime') { column.dateFormat='yyyy-MM-dd HH:mm:ss'; column.width=150; }
-                cols.push(column);
-            }
+        	var cols = buildGridColumns(result.columns);
             
          	// ★ 只定义列的基本结构，不设置 renderer
             var detailColumn = {
@@ -1397,6 +1512,10 @@ String moduleId = request.getParameter("moduleId");
             return;
         }
         
+        if (fieldUpper === 'ACQTIME') {
+            return;
+        }
+        
         // ---- 通信状态列 ----
         if (fieldUpper === 'COMMSTATUSNAME') {
             var status = record.commStatus;
@@ -1458,198 +1577,30 @@ String moduleId = request.getParameter("moduleId");
 
     function onHistoryDataDblClick(e) {
         var record = e.record;
-        if (!record) return;
-        // 弹出数据详情窗口
-        openHistoryDataDetails(record.id, record.deviceId, record.wellName, record.calculateType);
-    }
-
-    function openHistoryDataDetails(recordId, deviceId, deviceName, calculateType) {
-        var win = new mini.Window();
-        win.set({
-            title: _loginUserLanguageResource.detailsData,
-            width: '80%', height: '80%',
-            modal: true, showHeader: true, allowResize: true
-        });
-        win.show();
-        var containerId = 'detailsContainer_'+Date.now();
-        win.setBody('<div id="'+containerId+'" style="width:100%;height:100%;"></div>');
-        // 加载详情数据
-        loadHistoryDetailsData(containerId, recordId, deviceId, deviceName, calculateType, win);
-    }
-
-    function loadHistoryDetailsData(containerId, recordId, deviceId, deviceName, calculateType, win) {
-        var mask = mini.mask({ el: win.getBodyEl(), cls:'mini-mask-loading', html:_loginUserLanguageResource.loadingData });
-        var start = mini.get('startDate').getFormValue('yyyy-MM-dd HH:mm:ss');
-        var end = mini.get('endDate').getFormValue('yyyy-MM-dd HH:mm:ss');
-        var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
-        $.ajax({
-            url: context + '/historyQueryController/getDeviceHistoryDetailsData',
-            type: 'POST',
-            data: {
-                recordId: recordId,
-                deviceId: deviceId,
-                deviceName: deviceName,
-                calculateType: calculateType,
-                deviceType: deviceType,
-                startDate: start,
-                endDate: end
-            },
-            dataType: 'json',
-            timeout: 15000,
-            success: function(result) {
-                mini.unmask(win.getBodyEl());
-                var container = document.getElementById(containerId);
-                if (!container) return;
-                // 使用 Handsontable 或 MiniUI Grid，这里用 MiniUI Grid 简化
-                var data = result.totalRoot || [];
-                var cellInfo = result.CellInfo || [];
-                if (data.length===0) {
-                    container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
-                    return;
-                }
-                // 构建列
-                var cols = [];
-                for (var i=0; i<3; i++) {
-                    cols.push({ field: 'name'+(i+1), width: '16%', align:'center' });
-                    cols.push({ field: 'value'+(i+1), width: '16%', align:'center' });
-                }
-                var grid = new mini.DataGrid();
-                grid.set({
-                    style: 'width:100%; height:100%;',
-                    showPager: false,
-                    allowAlternating: true,
-                    data: data,
-                    columns: cols,
-                    ondrawcell: function(e) {
-                        // 可添加报警颜色
-                    }
-                });
-                grid.render(container);
-                // 合并第一行
-                setTimeout(function() {
-                    try { grid.mergeCells([{ rowIndex:0, columnIndex:0, rowSpan:1, colSpan:6 }]); } catch(e) {}
-                }, 100);
-                // 添加导出按钮
-                var toolbar = document.createElement('div');
-                toolbar.style.cssText = 'padding:4px 8px; background:#f5f5f5; border-bottom:1px solid #ddd; display:flex; align-items:center;';
-                toolbar.innerHTML = '<span style="flex:1;"></span><button class="mini-button" onclick="exportDetailsData(\''+recordId+'\',\''+deviceId+'\',\''+deviceName+'\','+calculateType+')">'+_loginUserLanguageResource.exportData+'</button>';
-                container.parentNode.insertBefore(toolbar, container);
-                mini.parse();
-            },
-            error: function() { mini.unmask(win.getBodyEl()); mini.alert(_loginUserLanguageResource.requestFailed); }
-        });
-    }
-
-    window.exportDetailsData = function(recordId, deviceId, deviceName, calculateType) {
-    	var start = mini.get('startDate').getFormValue('yyyy-MM-dd HH:mm:ss');
-        var end = mini.get('endDate').getFormValue('yyyy-MM-dd HH:mm:ss');
-        var key = 'exportDetails_'+recordId+'_'+Date.now();
-        var url = context + '/historyQueryController/exportDeviceHistoryQueryDetailsData';
-        var param = '&recordId='+recordId+'&deviceId='+deviceId+'&deviceName='+encodeURIComponent(encodeURIComponent(deviceName))+
-                    '&calculateType='+calculateType+'&deviceType='+(currentLevel2?currentLevel2.deviceTypeId:'0')+
-                    '&startDate='+encodeURIComponent(start)+'&endDate='+encodeURIComponent(end)+'&key='+key;
-        exportDataMask(key, document.body, _loginUserLanguageResource.loadingData);
-        openExcelWindow(url+'?flag=true'+param);
-    };
-
-    // ================================================================
-    // 9. 图形平铺
-    // ================================================================
-    function loadTiledDiagram(start, end) {
-        var tabs = mini.get('tiledDiagramTabs');
-        var active = tabs.getActiveTab();
-        var type = active ? active.name : 'FSDiagram';
-        var containerId = '';
-        if (type === 'FSDiagram') containerId = 'fsTiledContainer';
-        else if (type === 'PSDiagram') containerId = 'psTiledContainer';
-        else if (type === 'ISDiagram') containerId = 'isTiledContainer';
-        if (!containerId) return;
-        var container = document.getElementById(containerId);
-        container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.loadingData+'</div>';
-        var hours = getHistoryQueryHours();
-        var statGrid = mini.get('tiledStatGrid');
-        var selected = statGrid.getSelected();
-        var resultCode = selected ? selected.resultCode : '';
-        var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
-        var limit = defaultGraghSize || 20;
-        var startIdx = (tiledPage-1)*limit;
-        $.ajax({
-            url: context + '/historyQueryController/getDiagramTiledData',
-            type: 'POST',
-            data: {
-                deviceId: currentDeviceId,
-                deviceName: currentDeviceName,
-                startDate: start,
-                endDate: end,
-                hours: hours,
-                diagramType: type,
-                resultCode: resultCode,
-                deviceType: deviceType,
-                calculateType: currentCalculateType,
-                start: startIdx,
-                limit: limit
-            },
-            dataType: 'json',
-            success: function(result) {
-                container.innerHTML = '';
-                var list = result.list || [];
-                if (list.length===0) {
-                    container.innerHTML = '<div class="loading-placeholder">'+_loginUserLanguageResource.emptyMsg+'</div>';
-                    return;
-                }
-                // 计算布局
-                var panelWidth = container.clientWidth;
-                var scrollWidth = getScrollWidth();
-                var columnCount = Math.max(1, Math.floor((panelWidth - scrollWidth) / graghMinWidth));
-                var itemWidth = (panelWidth - scrollWidth) / columnCount - 1;
-                var itemHeight = itemWidth * diagramAspectRatio;
-                var gridDiv = document.createElement('div');
-                gridDiv.style.cssText = 'display:flex; flex-wrap:wrap; width:100%; align-content:flex-start;';
-                container.appendChild(gridDiv);
-                for (var i=0; i<list.length; i++) {
-                    var item = list[i];
-                    var divId = 'tiled_'+type+'_'+item.id+'_'+i;
-                    var itemDiv = document.createElement('div');
-                    itemDiv.style.cssText = 'flex:0 0 '+itemWidth+'px; height:'+itemHeight+'px; padding:2px; box-sizing:border-box; min-height:150px;';
-                    var chartDiv = document.createElement('div');
-                    chartDiv.id = divId;
-                    chartDiv.style.cssText = 'width:100%; height:100%;';
-                    itemDiv.appendChild(chartDiv);
-                    gridDiv.appendChild(itemDiv);
-                    // 根据类型绘制
-                    if (type === 'FSDiagram') showSurfaceCard(item, divId);
-                    else if (type === 'PSDiagram') showPSDiagram(item, divId);
-                    else if (type === 'ISDiagram') showASDiagram(item, divId);
-                }
-                // 更新分页信息
-                totalTiledPages = result.totalPages || 1;
-                if (tiledPage < totalTiledPages) {
-                    // 监听滚动加载更多
-                    var scrollable = mini.get(containerId).getScrollable();
-                    if (scrollable) {
-                        scrollable.on('scroll', function() {
-                            var pos = this.getPosition();
-                            var maxScroll = this.getSize().y - this.getClientSize().y;
-                            if (maxScroll>0 && pos.y/maxScroll > 0.8 && tiledPage < totalTiledPages) {
-                                tiledPage++;
-                                loadTiledDiagram(start, end);
-                            }
-                        });
-                    }
-                }
-            },
-            error: function() {
-                container.innerHTML = '<div class="loading-placeholder error">'+_loginUserLanguageResource.requestFailed+'</div>';
-            }
-        });
-    }
-
-    function onTiledStatSelect(e) {
-        if (currentDeviceId) doQuery();
-    }
-
-    function onTiledTabChanged(e) {
-        if (currentDeviceId) doQuery();
+        if (!record) {
+            e.cellHtml = '';
+            return;
+        }
+        var recordId = record.id || '';
+        var deviceId = record.deviceId || '';
+        var deviceName = record.deviceName || record.wellName || '';
+        var calculateType = record.calculateType !== undefined ? record.calculateType : 0;
+        if (!recordId && !deviceId) {
+            e.cellHtml = '';
+            return;
+        }
+     	// ★ 获取当前查询的时间范围
+        var startDate = mini.get('startDate') ? mini.get('startDate').getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+        var endDate = mini.get('endDate') ? mini.get('endDate').getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+        var params = encodeURIComponent(JSON.stringify({
+            recordId: recordId,
+            deviceId: deviceId,
+            deviceName: deviceName,
+            calculateType: calculateType,
+            startDate: startDate,
+            endDate: endDate
+        }));
+        showHistoryDetail(params);
     }
 
     // ================================================================
@@ -1836,7 +1787,6 @@ String moduleId = request.getParameter("moduleId");
         if (!currentDeviceId) { mini.alert('请选择设备'); return; }
         var start = mini.get('startDate').getFormValue('yyyy-MM-dd HH:mm:ss');
         var end = mini.get('endDate').getFormValue('yyyy-MM-dd HH:mm:ss');
-        if (!start || !end) { mini.alert('请选择时间范围'); return; }
         var resultTabs = mini.get('resultTabs');
         var active = resultTabs.getActiveTab();
         var name = active ? active._name : '';
@@ -1951,14 +1901,392 @@ String moduleId = request.getParameter("moduleId");
         }
     }
     
-    window.refreshHistoryCurve = function() {
-        if (typeof doQuery === 'function') {
-            doQuery();
-        } else {
-            console.warn('doQuery 未定义，无法刷新曲线');
-        }
-    };
+    function onTiledStatGridBeforeLoad(e) {
+        var params = e.params || {};
+        
+        // 获取组织ID
+        var orgId = '';
+        try {
+            orgId = window.parent.mini.get('leftOrg_Id').getValue() || '';
+        } catch (ex) {}
+        params.orgId = orgId;
 
+        // 获取设备类型
+        params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+
+        // 获取当前选中的设备
+        var grid = mini.get('deviceGrid');
+        var selected = grid ? grid.getSelected() : null;
+        if (selected) {
+            params.deviceId = selected.id || '';
+            params.deviceName = selected.deviceName || selected.wellName || '';
+        } else {
+            params.deviceId = '';
+            params.deviceName = '';
+        }
+
+        // 获取时间范围（使用图形平铺的日期控件）
+        var startDate = mini.get('tiledStartDate');
+        var endDate = mini.get('tiledEndDate');
+        if (startDate && endDate) {
+            var start = startDate.getFormValue('yyyy-MM-dd HH:mm:ss');
+            var end = endDate.getFormValue('yyyy-MM-dd HH:mm:ss');
+            params.startDate = start || '';
+            params.endDate = end || '';
+        } else {
+            params.startDate = '';
+            params.endDate = '';
+        }
+
+        params.hours = getTiledHistoryQueryHours();
+
+    }
+    
+    function onTiledStatGridLoad(e) {
+        var grid = e.sender;
+        var result = e.result;
+        
+        var startDate=mini.get('tiledStartDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+        if(startDate==''||null==startDate){
+        	mini.get('tiledStartDate').setValue(result.start_date);
+        }
+        var endDate=mini.get('tiledEndDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+        if(endDate==''||null==endDate){
+        	mini.get('tiledEndDate').setValue(result.end_date);
+        }
+        
+        
+        var data = grid.getData();
+        if (!data || data.length === 0) return;
+        var selectedRows = [];
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].resultCode != 1232) {
+                selectedRows.push(data[i]);
+            }
+        }
+        if (selectedRows.length > 0) {
+            grid.selects(selectedRows);
+        } else if (data.length > 0) {
+            grid.select(0);
+        }
+    }
+
+    function onTiledStatSelect(e) {
+        if (currentDeviceId) {
+            var activeType = getCurrentTiledType();
+            tiledPage = 1;
+            loadTiledDiagram(activeType, 1);
+        }
+    }
+    
+    function getCurrentTiledType() {
+        var tabs = mini.get('tiledTabs');
+        if (!tabs) return 'FSDiagram';
+        var activeTab = tabs.getActiveTab();
+        if (activeTab) {
+            for (var key in TILED_CONFIG) {
+                if (TILED_CONFIG[key].title === activeTab.title) {
+                    return key;
+                }
+            }
+        }
+        return 'FSDiagram';
+    }
+    
+    function onTiledTabActiveChanged(e) {
+        var tab = e.tab;
+        if (!tab) return;
+        var type = getCurrentTiledType();
+        if (currentDeviceId) {
+            tiledPage = 1;
+            loadTiledDiagram(type, 1);
+        }
+    }
+    
+    function loadTiledDiagram(type, page) {
+        if (!currentDeviceId) {
+            mini.alert('请选择设备');
+            return;
+        }
+        page = page || 1;
+        tiledPage = page;
+        var config = TILED_CONFIG[type];
+        if (!config) return;
+
+        var containerId = config.containerId;
+        var container = document.getElementById(containerId);
+        if (!container) return;
+
+        var statGrid = mini.get('tiledStatGrid');
+        if (!statGrid) return;
+        var selected = statGrid.getSelecteds();
+        if (!selected || selected.length === 0) {
+            container.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
+            return;
+        }
+        var resultCodes = [];
+        for (var i = 0; i < selected.length; i++) {
+            resultCodes.push(selected[i].resultCode);
+        }
+        var resultCode = resultCodes.join(',');
+
+        var start = mini.get('tiledStartDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+        var end = mini.get('tiledEndDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+        
+        var hours = getTiledHistoryQueryHours();
+        var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+        var limit = defaultGraghSize || 20;
+        var startIdx = (page - 1) * limit;
+
+        var mask = mini.mask({
+            el: container,
+            cls: 'mini-mask-loading',
+            html: _loginUserLanguageResource.loadingData
+        });
+
+        $.ajax({
+            url: config.url,
+            type: 'POST',
+            data: {
+                deviceId: currentDeviceId,
+                deviceName: currentDeviceName,
+                startDate: start,
+                endDate: end,
+                hours: hours,
+                resultCode: resultCode,
+                deviceType: deviceType,
+                calculateType: currentCalculateType,
+                start: startIdx,
+                limit: limit,
+                page: page
+            },
+            dataType: 'json',
+            timeout: 30000,
+            success: function(result) {
+                mini.unmask(container);
+                if (page === 1) {
+                    container.innerHTML = '';
+                }
+                var list = result.list || [];
+                var totalPages = result.totalPages || 0;
+                var totalShow = result.totalShow || 0;
+                _tiledTotalPages[type] = totalPages;
+
+                // 更新总记录数
+                var totalLabel = document.getElementById('tiledTotalCountLabel');
+                var totalSpan = document.getElementById('tiledTotalCountSpan');
+                if (totalLabel && totalSpan) {
+                    totalLabel.style.display = 'inline';
+                    totalSpan.textContent = totalShow;
+                }
+
+                if (list.length === 0 && page === 1) {
+                    container.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
+                    return;
+                }
+
+             // 计算图表尺寸
+                var containerRect = container.getBoundingClientRect();
+                var containerWidth = containerRect.width;
+                var paddingTotal = 4; // 左右各2px padding
+
+                
+                var scrollWidth = getScrollWidth();
+
+                // ★ 可用宽度 = 容器宽度 - padding - 滚动条宽度
+                var availableWidth = containerWidth - scrollWidth;
+
+                if (availableWidth <= 0) {
+                    // 如果可用宽度太小，使用最小宽度
+                    availableWidth = 200;
+                }
+
+                var columnCount = Math.max(1, Math.floor(availableWidth / graghMinWidth));
+                var chartWidth = Math.floor((availableWidth - (columnCount - 1) * 4) / columnCount);
+                var chartHeight = Math.floor(chartWidth * diagramAspectRatio);
+                chartHeight = Math.max(chartHeight, dynamometerCardMinHeight);
+                chartWidth = Math.max(chartWidth, 200);
+
+                var fragment = document.createDocumentFragment();
+                var renderQueue = [];
+                for (var i = 0; i < list.length; i++) {
+                    var diagram = list[i];
+                    var divId = config.divIdPrefix + diagram.id;
+                    var div = document.createElement('div');
+                    div.className = 'chart-item';
+                    div.id = divId;
+                    div.style.cssText = 'width:' + chartWidth + 'px;height:' + chartHeight + 'px;min-height:' + dynamometerCardMinHeight + 'px;float:left;box-sizing:border-box;';
+                    fragment.appendChild(div);
+                    renderQueue.push({
+                        diagram: diagram,
+                        divId: divId,
+                        renderFunc: config.renderFunc
+                    });
+                }
+                container.appendChild(fragment);
+
+                renderChartsSequentially(renderQueue, function() {
+                    if (page === 1 && totalPages > 1) {
+                        initTiledDiagramScroll(containerId, type);
+                    }
+                });
+            },
+            error: function(xhr, status, errorThrown) {
+                mini.unmask(container);
+                container.innerHTML = '<div class="loading-placeholder error">' + _loginUserLanguageResource.requestFailed + '</div>';
+                console.error('加载图形数据失败:', status, errorThrown);
+            }
+        });
+    }
+    
+    function renderChartsSequentially(queue, callback) {
+        if (queue.length === 0) {
+            if (callback) callback();
+            return;
+        }
+        var item = queue.shift();
+        try {
+            item.renderFunc(item.diagram, item.divId);
+        } catch (e) {
+            console.warn('渲染图表失败:', e, item.diagram);
+        }
+        setTimeout(function() {
+            renderChartsSequentially(queue, callback);
+        }, 10);
+    }
+
+    function initTiledDiagramScroll(containerId, type) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        if (_tiledScrollHandlers[type]) {
+            container.removeEventListener('scroll', _tiledScrollHandlers[type]);
+        }
+        var handler = function() {
+            var totalPages = _tiledTotalPages[type] || 0;
+            if (tiledPage >= totalPages) return;
+            var scrollTop = container.scrollTop;
+            var scrollHeight = container.scrollHeight;
+            var clientHeight = container.clientHeight;
+            if (scrollTop + clientHeight >= scrollHeight - 50) {
+                tiledPage++;
+                loadTiledDiagram(type, tiledPage);
+            }
+        };
+        container.addEventListener('scroll', handler);
+        _tiledScrollHandlers[type] = handler;
+    }
+    
+    function onTiledTabsResize(e) {
+    	alert('onTiledTabsResize');
+        // ★ 获取当前激活的图形类型
+        var type = getCurrentTiledType();
+        var config = TILED_CONFIG[type];
+        if (config) {
+            // 延迟执行，确保布局已稳定
+            setTimeout(function() {
+                resizeTiledCharts(config.containerId);
+            }, 50);
+        }
+    }
+
+    function resizeTiledCharts(containerId) {
+    	alert(containerId);
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        var children = container.querySelectorAll('.chart-item');
+        alert(children.length);
+        if (children.length === 0) return;
+        
+        var containerRect = container.getBoundingClientRect();
+        var containerWidth = containerRect.width;
+        var paddingTotal = 4;
+        
+        // ★ 直接减去滚动条宽度
+        var scrollWidth = getScrollWidth();
+        var availableWidth = containerWidth - scrollWidth;
+        if (availableWidth <= 0) {
+            availableWidth = 200;
+        }
+        
+        var columnCount = Math.max(1, Math.floor(availableWidth / graghMinWidth));
+        var chartWidth = Math.floor((availableWidth - (columnCount - 1) * 4) / columnCount);
+        var chartHeight = Math.floor(chartWidth * diagramAspectRatio);
+        chartHeight = Math.max(chartHeight, dynamometerCardMinHeight);
+        chartWidth = Math.max(chartWidth, 200);
+        
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            child.style.width = chartWidth + 'px';
+            child.style.height = chartHeight + 'px';
+            highchartsResize(child.id);
+        }
+    }
+
+    function doTiledQuery() {
+        var activeType = getCurrentTiledType();
+        tiledPage = 1;
+        loadTiledDiagram(activeType, 1);
+    }
+
+    function updateTiledTimeRange(e) {
+        var target = e ? e.target : null;
+        var all = document.getElementById('tiledChkAll');
+        if (!all) return;
+        if (target && target.id === 'tiledChkAll') {
+            var checkboxes = document.querySelectorAll('[id^="tiledChk"]');
+            checkboxes.forEach(function(chk) {
+                if (chk.id !== 'tiledChkAll') {
+                    chk.checked = all.checked;
+                }
+            });
+        } else {
+            var allChecked = true;
+            var subs = document.querySelectorAll('[id^="tiledChk"]:not(#tiledChkAll)');
+            subs.forEach(function(chk) {
+                if (!chk.checked) allChecked = false;
+            });
+            all.checked = allChecked;
+        }
+        if (currentDeviceId) {
+            doTiledQuery();
+        }
+    }
+
+    function getTiledHistoryQueryHours() {
+        var all = document.getElementById('tiledChkAll');
+        if (all && all.checked) return 'all';
+        var hours = [];
+        ['tiledChk1','tiledChk2','tiledChk3','tiledChk4'].forEach(function(id) {
+            var chk = document.getElementById(id);
+            if (chk && chk.checked) hours.push(chk.name);
+        });
+        return hours.length > 0 ? hours.join(',') : 'all';
+    }
+
+    function exportTiledData() {
+        var activeType = getCurrentTiledType();
+        var statGrid = mini.get('tiledStatGrid');
+        var selected = statGrid ? statGrid.getSelecteds() : [];
+        var resultCodes = [];
+        for (var i = 0; i < selected.length; i++) {
+            resultCodes.push(selected[i].resultCode);
+        }
+        var resultCode = resultCodes.join(',');
+        var start = mini.get('tiledStartDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+        var end = mini.get('tiledEndDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+        var hours = getTiledHistoryQueryHours();
+        var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+        var key = 'exportTiled_' + currentDeviceId + '_' + Date.now();
+        var url = context + '/historyQueryController/exportHistoryQueryFESDiagramDataExcel';
+        var param = '&orgId=' + (window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id').getValue() : '') +
+                    '&deviceType=' + deviceType + '&deviceId=' + currentDeviceId + '&deviceName=' + encodeURIComponent(encodeURIComponent(currentDeviceName)) +
+                    '&resultCode=' + resultCode + '&startDate=' + encodeURIComponent(start) + '&endDate=' + encodeURIComponent(end) +
+                    '&hours=' + hours + '&diagramType=' + activeType + '&fileName=' + encodeURIComponent(encodeURIComponent(currentDeviceName + '-' + _loginUserLanguageResource.FSDiagramData)) +
+                    '&title=' + encodeURIComponent(encodeURIComponent(currentDeviceName + '-' + _loginUserLanguageResource.FSDiagramData)) +
+                    '&key=' + key;
+        exportDataMask(key, document.querySelector('.right-panel'), _loginUserLanguageResource.loadingData);
+        openExcelWindow(url + '?flag=true' + param);
+    }
     // ================================================================
     // 13. 初始化
     // ================================================================
@@ -2033,7 +2361,6 @@ String moduleId = request.getParameter("moduleId");
     window.onStatTabChanged = onStatTabChanged;
     window.onResultTabChanged = onResultTabChanged;
     window.onTiledStatSelect = onTiledStatSelect;
-    window.onTiledTabChanged = onTiledTabChanged;
     window.onOverlayStatSelect = onOverlayStatSelect;
     window.onDeviceGridBeforeLoad = onDeviceGridBeforeLoad;
     window.onDeviceGridLoad = onDeviceGridLoad;

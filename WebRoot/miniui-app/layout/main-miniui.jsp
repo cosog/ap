@@ -102,6 +102,9 @@ request.setAttribute("browserLang", browserLang);
         var helpDocumentTimestamp=oem.helpDocumentTimestamp;
         helpDocumentUrl = context + helpDocumentUrl.substring(helpDocumentUrl.indexOf("/"), helpDocumentUrl.length);
         
+        var defaultComboxSize = configFile.ap.others.defaultComboxSize;
+        var defaultGraghSize = configFile.ap.others.defaultGraghSize;
+        
         // 新增：第一个叶子节点的ID（在 onMenuTreeLoad 中动态获取）
         var FIRST_LEAF_MODULE_ID = null;
     </script>

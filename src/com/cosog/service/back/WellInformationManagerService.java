@@ -143,7 +143,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(finalsql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"},");
+			result_json.append("{\"totals\":"+(totals+1)+",\"list\":[{\"boxkey\":\"\",\"boxval\":\""+MemoryDataManagerTask.getLanguageResourceItem(language,"selectAll")+"\"}");
 			String get_key = "";
 			String get_val = "";
 			if (null != list && list.size() > 0) {
@@ -151,8 +151,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					Object[] obj = (Object[]) o;
 					get_key = obj[0] + "";
 					get_val = (String) obj[1];
-					result_json.append("{\"boxkey\":\"" + get_key + "\",");
-					result_json.append("\"boxval\":\"" + get_val + "\"},");
+					result_json.append(",{\"boxkey\":\"" + get_key + "\",");
+					result_json.append("\"boxval\":\"" + get_val + "\"}");
 				}
 				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);

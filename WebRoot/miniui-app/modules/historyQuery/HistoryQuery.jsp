@@ -69,7 +69,7 @@ String moduleId = request.getParameter("moduleId");
         <div class="level2-sidebar" id="level2Sidebar"><div class="no-child-tip">选择一级</div></div>
         <!-- 内容区域 -->
         <div style="flex:1; overflow:hidden;">
-            <div class="mini-splitter" style="width:100%; height:100%;" vertical="false">
+            <div class="mini-splitter" style="width:100%; height:100%;" vertical="false" onresize="onSplitterResize">
                 <!-- 左侧：设备列表 + 饼图（垂直分割，饼图可折叠） -->
                 <div size="35%" showCollapseButton="false" minSize="200">
                     <div class="left-panel">
@@ -79,8 +79,8 @@ String moduleId = request.getParameter("moduleId");
                                 <div class="device-grid-wrapper" style="height:100%; display:flex; flex-direction:column;">
                                     <div class="mini-toolbar" style="border:0;border-bottom:1px solid #e8e8e8;padding:4px 8px;display:flex;align-items:center;gap:6px;flex-shrink:0;">
                                         <button id="btnRefresh" class="mini-button" iconCls="note-refresh" onclick="refreshDeviceList()">刷新</button>
-                                        <input id="deviceCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --"
-                                               url="<%=path%>/wellInformationManagerController/loadWellComboxList"
+                                        <input id="deviceCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --" allowInput="true"
+                                               url="<%=path%>/wellInformationManagerController/loadWellComboxList" onbeforeload="onDeviceComboBeforeLoad" onshowpopup="onDeviceComboShowPopup" onload="onDeviceComboLoad"
                                                dataField="list" totalField="totals" valueField="boxkey" textField="boxval"
                                                onvaluechanged="onDeviceComboChange" />
                                         <span style="flex:1;"></span>
@@ -193,7 +193,7 @@ String moduleId = request.getParameter("moduleId");
     	    }
     	};
     	var tiledPage = 1;
-    	var diagramAspectRatio = 0.75;
+    	var diagramAspectRatio = 1;
     	var defaultGraghSize = _defaultGraghSize;
     	var _tiledTotalPages = {};
     	var _tiledScrollHandlers = {};
@@ -224,6 +224,50 @@ String moduleId = request.getParameter("moduleId");
         // 5. 所有 mini.alert 和 mini.confirm 中的文本
         // 已在函数中使用 _loginUserLanguageResource，无需额外修改
     }
+    
+    function onSplitterResize(){
+    	//alert('');
+    }
+    
+    var _tiledTabsResizeObserver = null;
+
+    function panelResizeObserver(divId, callback) {
+        var container = document.getElementById(divId);
+        if (!container) return;
+        
+        // 如果已有 Observer，先断开
+        if (_tiledTabsResizeObserver) {
+            _tiledTabsResizeObserver.disconnect();
+            _tiledTabsResizeObserver = null;
+        }
+        
+        if (window.ResizeObserver) {
+            var observer = new ResizeObserver(function(entries) {
+                for (var entry of entries) {
+                    if (entry.target === container) {
+                        // 防抖：延迟执行，避免频繁触发
+                        clearTimeout(container._resizeTimer);
+                        container._resizeTimer = setTimeout(function() {
+                            callback(divId);
+                        }, 150);
+                        break;
+                    }
+                }
+            });
+            observer.observe(container);
+            _tiledTabsResizeObserver = observer;
+        }
+    }
+
+    function destroyTiledTabsResizeObserver() {
+        if (_tiledTabsResizeObserver) {
+            _tiledTabsResizeObserver.disconnect();
+            _tiledTabsResizeObserver = null;
+        }
+    }
+    $(window).on('beforeunload', function() {
+        destroyTiledTabsResizeObserver();
+    });
 
     // ================================================================
     // 1. 构建一级标签（底部）
@@ -825,11 +869,9 @@ String moduleId = request.getParameter("moduleId");
             loadHistoryCurve();
             loadHistoryDataGrid();
         } else if (name === 'tiledDiagram') {
-            tiledPage = 1;
-            var statGrid = mini.get('tiledStatGrid');
-            if (statGrid) {
-                statGrid.load();
-            }
+        	tiledPage = 1;
+            var activeType = getCurrentTiledType();
+            loadTiledDiagram(activeType, 1);
         } else if (name === 'diagramOverlay') {
             //loadOverlayDiagram();
         }
@@ -840,15 +882,22 @@ String moduleId = request.getParameter("moduleId");
         var resultTabs = mini.get('resultTabs');
         if (tab && currentDeviceId) {
             var name = tab._name;
-            if (name != 'trendCurve') {
-            	// ★ 仅当第一次激活时，强制刷新布局
-                if (!tab._initialized) {
-                    tab._initialized = true;
-                    var bodyEl = resultTabs.getTabBodyEl(tab);
-                    mini.parse(bodyEl);
-                }
+         // ★ 仅当第一次激活时，强制刷新布局
+            if (!tab._initialized) {
+                tab._initialized = true;
+                var bodyEl = resultTabs.getTabBodyEl(tab);
+                mini.parse(bodyEl);
             }
             doQuery();
+            
+         // ★ 如果是图形平铺标签，建立监听（单例，不会重复）
+            if (name === 'tiledDiagram') {
+                setTimeout(function() {
+                    panelResizeObserver("tiledTabs", function() {
+                        resizeTiledCharts();
+                    });
+                }, 100);
+            }
         }
     }
     
@@ -919,6 +968,19 @@ String moduleId = request.getParameter("moduleId");
 
     	    // 第二行：时段复选框
     	    var toolbarRow2 = '<div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px; padding:4px 10px; background:#fafafa; border-bottom:1px solid #e8e8e8;">' +
+    '<span style="font-size:12px; color:#666;">' + _loginUserLanguageResource.WellFSDiagramWorkType + '：</span>' +
+    '<mini-combobox id="tiledWorkTypeCombo" style="width:180px;" popupWidth="280" '+
+    ' textField="resultName" valueField="resultCode" multiSelect="true" showClose="true" oncloseclick="onTiledWorkTypeComboCloseClick" ' +
+        'url="' + context + '/historyQueryController/getDeviceResultStatusStatData" ' +
+        'dataField="totalRoot" totalField="totalCount" ' +
+        'onbeforeload="onTiledWorkTypeComboBeforeLoad" ' +
+        'onload="onTiledWorkTypeComboLoad" ' +
+        'onvaluechanged="onTiledWorkTypeComboChange">' +
+        '<columns>' +
+            '<column header="' + _loginUserLanguageResource.WellFSDiagramWorkType + '" field="resultName" headerAlign="left" align="left" width="60%"></column>' +
+            '<column header="' + _loginUserLanguageResource.totalCount + '" field="count" headerAlign="left" align="left" width="40%"></column>' +
+        '</columns>' +
+    '</mini-combobox>' +
     	        '<span style="font-size:12px; color:#666;">' + _loginUserLanguageResource.timeRange + '：</span>' +
     	        '<input type="checkbox" id="tiledChkAll" checked onchange="updateTiledTimeRange(event)" /><label for="tiledChkAll">' + _loginUserLanguageResource.all + '</label>' +
     	        '<input type="checkbox" id="tiledChk1" checked name="00:00:00~06:00:00" onchange="updateTiledTimeRange(event)" /><label for="tiledChk1">0~6h</label>' +
@@ -927,43 +989,21 @@ String moduleId = request.getParameter("moduleId");
     	        '<input type="checkbox" id="tiledChk4" checked name="18:00:00~23:59:59" onchange="updateTiledTimeRange(event)" /><label for="tiledChk4">18~24h</label>' +
     	        '</div>';
 
-    	    // 主体：左侧统计表格 + 右侧 mini-tabs（左侧竖向标签）
-    	    var body = '<div class="mini-splitter" style="width:100%; flex:1;" vertical="false" >' +
-        '<div size="25%" showCollapseButton="true" minSize="100" collapseDirection="left" expanded="false">' +
-        '<div style="height:100%; padding:4px; overflow:hidden;">' +
-        '<div id="tiledStatGrid" class="mini-datagrid" style="width:100%; height:100%;" ' +
-        'idField="id" dataField="totalRoot" totalField="totalCount" showPager="false" ' +
-        'allowResize="true" multiSelect="true" showCheckColumn="true" ' +
-        'url="' + context + '/historyQueryController/getDeviceResultStatusStatData" ' +
-        'onselectionchanged="onTiledStatSelect" onload="onTiledStatGridLoad" ' +
-        'onbeforeload="onTiledStatGridBeforeLoad" >' +
-        '<div property="columns">' +
-        '<div type="checkcolumn" width="30"></div>'+
-        '<div type="indexcolumn" width="50" headerAlign="center" align="center" header="' + _loginUserLanguageResource.idx + '"></div>' +
-        '<div field="resultName" width="50%" headerAlign="center" align="center" header="' + _loginUserLanguageResource.WellFSDiagramWorkType + '"></div>' +
-        '<div field="count" width="50%" headerAlign="center" align="center" header="' + _loginUserLanguageResource.totalCount + '"></div>' +
-        '</div>' +
-        '</div>' +
-        '</div>' +
-        '</div>' +
-    	        // 右侧：mini-tabs 实现图形类型切换（左侧竖向排列）
-    	        '<div size="75%" >' +
-    	        '<div id="tiledTabs" class="mini-tabs" style="width:100%; height:100%;" tabPosition="left" activeIndex="0" onactivechanged="onTiledTabActiveChanged" >' +
-    	        // 标签1：地面功图
-    	        '<div title="' + _loginUserLanguageResource.FSDiagram + '" _type="FSDiagram">' +
-    	        '<div id="fsTiledContainer" class="tiled-chart-container" style="width:100%; height:100%; overflow:auto; box-sizing:border-box;"></div>' +
-    	        '</div>' +
-    	        // 标签2：电功图
-    	        '<div title="' + _loginUserLanguageResource.PSDiagram + '" _type="PSDiagram">' +
-    	        '<div id="psTiledContainer" class="tiled-chart-container" style="width:100%; height:100%; overflow:auto; box-sizing:border-box;"></div>' +
-    	        '</div>' +
-    	        // 标签3：电流图
-    	        '<div title="' + _loginUserLanguageResource.ISDiagram + '" _type="ISDiagram">' +
-    	        '<div id="isTiledContainer" class="tiled-chart-container" style="width:100%; height:100%; overflow:auto; box-sizing:border-box;"></div>' +
-    	        '</div>' +
-    	        '</div>' +
-    	        '</div>' +
-    	        '</div>';
+    	     // 主体：仅保留右侧图形区域，占满100%（移除 mini-splitter 及其左侧面板）
+    	        var body = '<div id="tiledTabs" class="mini-tabs" style="width:100%; height:100%;" tabPosition="left" activeIndex="0" onactivechanged="onTiledTabActiveChanged">' +
+    	            // 标签1：地面功图
+    	            '<div title="' + _loginUserLanguageResource.FSDiagram + '" _type="FSDiagram">' +
+    	            '<div id="fsTiledContainer" class="tiled-chart-container" style="width:100%; height:100%; overflow:auto; padding:2px; box-sizing:border-box;"></div>' +
+    	            '</div>' +
+    	            // 标签2：电功图
+    	            '<div title="' + _loginUserLanguageResource.PSDiagram + '" _type="PSDiagram">' +
+    	            '<div id="psTiledContainer" class="tiled-chart-container" style="width:100%; height:100%; overflow:auto; padding:2px; box-sizing:border-box;"></div>' +
+    	            '</div>' +
+    	            // 标签3：电流图
+    	            '<div title="' + _loginUserLanguageResource.ISDiagram + '" _type="ISDiagram">' +
+    	            '<div id="isTiledContainer" class="tiled-chart-container" style="width:100%; height:100%; overflow:auto; padding:2px; box-sizing:border-box;"></div>' +
+    	            '</div>' +
+    	            '</div>';
 
     	    return '<div style="display:flex; flex-direction:column; height:100%;">' + toolbarRow1 + toolbarRow2 + body + '</div>';
     	}
@@ -1087,16 +1127,13 @@ String moduleId = request.getParameter("moduleId");
     	        // 重新解析动态添加的 MiniUI 组件
     	        mini.parse(bodyEl);
     	     	
+    	        doQuery();
     	        
-    	        // 自动查询（仅趋势曲线）
-    	        if (currentDeviceId && targetTab._name === 'trendCurve') {
-    	            doQuery();
-    	        }else if (currentDeviceId && targetTab._name === 'tiledDiagram') {
+    	        if (targetTab._name === 'tiledDiagram') {
     	            setTimeout(function() {
-    	                var statGrid = mini.get('tiledStatGrid');
-    	                if (statGrid) {
-    	                    statGrid.load();
-    	                }
+    	                panelResizeObserver("tiledTabs", function() {
+    	                    resizeTiledCharts();
+    	                });
     	            }, 100);
     	        }
     	    }
@@ -1901,82 +1938,55 @@ String moduleId = request.getParameter("moduleId");
         }
     }
     
-    function onTiledStatGridBeforeLoad(e) {
+    window.onTiledWorkTypeComboBeforeLoad = function(e) {
         var params = e.params || {};
-        
-        // 获取组织ID
-        var orgId = '';
-        try {
-            orgId = window.parent.mini.get('leftOrg_Id').getValue() || '';
-        } catch (ex) {}
-        params.orgId = orgId;
-
-        // 获取设备类型
+        var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+        params.orgId = leftOrgId ? leftOrgId.getValue() : '';
         params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
 
-        // 获取当前选中的设备
         var grid = mini.get('deviceGrid');
         var selected = grid ? grid.getSelected() : null;
-        if (selected) {
-            params.deviceId = selected.id || '';
-            params.deviceName = selected.deviceName || selected.wellName || '';
-        } else {
-            params.deviceId = '';
-            params.deviceName = '';
-        }
+        params.deviceId = selected ? selected.id : '';
+        params.deviceName = selected ? (selected.deviceName || selected.wellName || '') : '';
 
-        // 获取时间范围（使用图形平铺的日期控件）
         var startDate = mini.get('tiledStartDate');
         var endDate = mini.get('tiledEndDate');
         if (startDate && endDate) {
-            var start = startDate.getFormValue('yyyy-MM-dd HH:mm:ss');
-            var end = endDate.getFormValue('yyyy-MM-dd HH:mm:ss');
-            params.startDate = start || '';
-            params.endDate = end || '';
+            params.startDate = startDate.getFormValue('yyyy-MM-dd HH:mm:ss') || '';
+            params.endDate = endDate.getFormValue('yyyy-MM-dd HH:mm:ss') || '';
         } else {
             params.startDate = '';
             params.endDate = '';
         }
-
         params.hours = getTiledHistoryQueryHours();
-
-    }
+    };
     
-    function onTiledStatGridLoad(e) {
-        var grid = e.sender;
-        var result = e.result;
-        
-        var startDate=mini.get('tiledStartDate').getFormValue('yyyy-MM-dd HH:mm:ss');
-        if(startDate==''||null==startDate){
-        	mini.get('tiledStartDate').setValue(result.start_date);
-        }
-        var endDate=mini.get('tiledEndDate').getFormValue('yyyy-MM-dd HH:mm:ss');
-        if(endDate==''||null==endDate){
-        	mini.get('tiledEndDate').setValue(result.end_date);
-        }
-        
-        
-        var data = grid.getData();
+    window.onTiledWorkTypeComboLoad = function(e) {
+        var combo = e.sender;
+        var data = combo.getData();
         if (!data || data.length === 0) return;
-        var selectedRows = [];
+        var selectedCodes = [];
         for (var i = 0; i < data.length; i++) {
-            if (data[i].resultCode != 1232) {
-                selectedRows.push(data[i]);
+            var item = data[i];
+            if (item.resultCode != 1232) {
+                selectedCodes.push(item.resultCode);
             }
         }
-        if (selectedRows.length > 0) {
-            grid.selects(selectedRows);
+        if (selectedCodes.length > 0) {
+            combo.setValue(selectedCodes.join(','));
         } else if (data.length > 0) {
-            grid.select(0);
+            combo.setValue('');
         }
-    }
-
-    function onTiledStatSelect(e) {
-        if (currentDeviceId) {
-            var activeType = getCurrentTiledType();
-            tiledPage = 1;
-            loadTiledDiagram(activeType, 1);
-        }
+    };
+    
+    window.onTiledWorkTypeComboChange = function(e) {
+    	
+    };
+    
+    function onTiledWorkTypeComboCloseClick(e) {
+        var obj = e.sender;
+        obj.setText("");
+        obj.setValue("");
     }
     
     function getCurrentTiledType() {
@@ -2017,18 +2027,14 @@ String moduleId = request.getParameter("moduleId");
         var container = document.getElementById(containerId);
         if (!container) return;
 
-        var statGrid = mini.get('tiledStatGrid');
-        if (!statGrid) return;
-        var selected = statGrid.getSelecteds();
-        if (!selected || selected.length === 0) {
-            container.innerHTML = '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>';
-            return;
+        var combo = mini.get('tiledWorkTypeCombo');
+        var resultCode = '';
+        if (combo) {
+            var values = combo.getValue();
+            if (values) {
+                resultCode = values; // 已经是逗号分隔的字符串
+            }
         }
-        var resultCodes = [];
-        for (var i = 0; i < selected.length; i++) {
-            resultCodes.push(selected[i].resultCode);
-        }
-        var resultCode = resultCodes.join(',');
 
         var start = mini.get('tiledStartDate').getFormValue('yyyy-MM-dd HH:mm:ss');
         var end = mini.get('tiledEndDate').getFormValue('yyyy-MM-dd HH:mm:ss');
@@ -2064,6 +2070,16 @@ String moduleId = request.getParameter("moduleId");
             timeout: 30000,
             success: function(result) {
                 mini.unmask(container);
+                
+                var startDate=mini.get('tiledStartDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+                if(startDate==''||null==startDate){
+                	mini.get('tiledStartDate').setValue(result.start_date);
+                }
+                var endDate=mini.get('tiledEndDate').getFormValue('yyyy-MM-dd HH:mm:ss');
+                if(endDate==''||null==endDate){
+                	mini.get('tiledEndDate').setValue(result.end_date);
+                }
+                
                 if (page === 1) {
                     container.innerHTML = '';
                 }
@@ -2106,6 +2122,9 @@ String moduleId = request.getParameter("moduleId");
                 var chartHeight = Math.floor(chartWidth * diagramAspectRatio);
                 chartHeight = Math.max(chartHeight, dynamometerCardMinHeight);
                 chartWidth = Math.max(chartWidth, 200);
+                
+                chartWidth=chartWidth+'px';
+                chartHeight=chartHeight+'px';
 
                 var fragment = document.createDocumentFragment();
                 var renderQueue = [];
@@ -2115,7 +2134,7 @@ String moduleId = request.getParameter("moduleId");
                     var div = document.createElement('div');
                     div.className = 'chart-item';
                     div.id = divId;
-                    div.style.cssText = 'width:' + chartWidth + 'px;height:' + chartHeight + 'px;min-height:' + dynamometerCardMinHeight + 'px;float:left;box-sizing:border-box;';
+                    div.style.cssText = 'width:' + chartWidth + ';height:' + chartHeight + ';min-height:' + dynamometerCardMinHeight + 'px;float:left;box-sizing:border-box;';
                     fragment.appendChild(div);
                     renderQueue.push({
                         diagram: diagram,
@@ -2175,33 +2194,28 @@ String moduleId = request.getParameter("moduleId");
         container.addEventListener('scroll', handler);
         _tiledScrollHandlers[type] = handler;
     }
-    
-    function onTiledTabsResize(e) {
-    	alert('onTiledTabsResize');
-        // ★ 获取当前激活的图形类型
-        var type = getCurrentTiledType();
-        var config = TILED_CONFIG[type];
-        if (config) {
-            // 延迟执行，确保布局已稳定
-            setTimeout(function() {
-                resizeTiledCharts(config.containerId);
-            }, 50);
-        }
-    }
 
-    function resizeTiledCharts(containerId) {
-    	alert(containerId);
-        var container = document.getElementById(containerId);
+    function resizeTiledCharts() {
+    	// ★ 先判断当前激活的 resultTabs 标签是否为 tiledDiagram
+        var resultTabs = mini.get('resultTabs');
+        if (!resultTabs) return;
+        var activeTab = resultTabs.getActiveTab();
+        if (!activeTab || activeTab._name !== 'tiledDiagram') {
+            // 当前激活的不是图形平铺标签，不处理
+            return;
+        }
+        // 只刷新当前激活的图形类型
+        var activeType = getCurrentTiledType();
+        var config = TILED_CONFIG[activeType];
+        if (!config) return;
+        
+        var container = document.getElementById(config.containerId);
         if (!container) return;
         var children = container.querySelectorAll('.chart-item');
-        alert(children.length);
         if (children.length === 0) return;
         
         var containerRect = container.getBoundingClientRect();
         var containerWidth = containerRect.width;
-        var paddingTotal = 4;
-        
-        // ★ 直接减去滚动条宽度
         var scrollWidth = getScrollWidth();
         var availableWidth = containerWidth - scrollWidth;
         if (availableWidth <= 0) {
@@ -2265,28 +2279,70 @@ String moduleId = request.getParameter("moduleId");
 
     function exportTiledData() {
         var activeType = getCurrentTiledType();
-        var statGrid = mini.get('tiledStatGrid');
-        var selected = statGrid ? statGrid.getSelecteds() : [];
-        var resultCodes = [];
-        for (var i = 0; i < selected.length; i++) {
-            resultCodes.push(selected[i].resultCode);
+        
+        var config = TILED_CONFIG[activeType];
+        if (!config) return;
+        
+        var combo = mini.get('tiledWorkTypeCombo');
+        var resultCode = '';
+        if (combo) {
+            var values = combo.getValue();
+            if (values) {
+                resultCode = values; // 已经是逗号分隔的字符串
+            }
         }
-        var resultCode = resultCodes.join(',');
         var start = mini.get('tiledStartDate').getFormValue('yyyy-MM-dd HH:mm:ss');
         var end = mini.get('tiledEndDate').getFormValue('yyyy-MM-dd HH:mm:ss');
         var hours = getTiledHistoryQueryHours();
         var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
         var key = 'exportTiled_' + currentDeviceId + '_' + Date.now();
-        var url = context + '/historyQueryController/exportHistoryQueryFESDiagramDataExcel';
+        var url = context + '/historyQueryController/exportHistoryQueryDiagramTiledDataExcel';
         var param = '&orgId=' + (window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id').getValue() : '') +
                     '&deviceType=' + deviceType + '&deviceId=' + currentDeviceId + '&deviceName=' + encodeURIComponent(encodeURIComponent(currentDeviceName)) +
                     '&resultCode=' + resultCode + '&startDate=' + encodeURIComponent(start) + '&endDate=' + encodeURIComponent(end) +
                     '&hours=' + hours + '&diagramType=' + activeType + '&fileName=' + encodeURIComponent(encodeURIComponent(currentDeviceName + '-' + _loginUserLanguageResource.FSDiagramData)) +
                     '&title=' + encodeURIComponent(encodeURIComponent(currentDeviceName + '-' + _loginUserLanguageResource.FSDiagramData)) +
                     '&key=' + key;
-        exportDataMask(key, document.querySelector('.right-panel'), _loginUserLanguageResource.loadingData);
+        exportDataMask(key, config.containerId, _loginUserLanguageResource.loadingData);
         openExcelWindow(url + '?flag=true' + param);
     }
+    
+    window.onDeviceComboBeforeLoad = function(e) {
+    	var params = e.params || {};
+    	
+    	var pageIndex = params.pageIndex || 0;
+        var pageSize = params.pageSize || defaultWellComboxSize;
+        params.start = pageIndex * pageSize;
+        params.limit = pageSize;
+    	
+        var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+        params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+        params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+        var combo = mini.get('deviceCombo');
+        params.deviceName = combo ? combo.getValue() : '';
+    }
+    
+
+    window.onDeviceComboShowPopup = function(e) {
+        var combo = e.sender;
+        // 如果当前没有数据或数据为空，加载
+        var data = combo.getData();
+        if (!data || data.length <= 1) {
+            // 先隐藏下拉，防止显示空
+            combo.hidePopup();
+        }
+        combo.load(combo.url);
+    };
+
+    window.onDeviceComboLoad = function(e) {
+        var combo = e.sender;
+        
+    };
+    
+    function alertInfo(container){
+    	alert(container);
+    }
+    
     // ================================================================
     // 13. 初始化
     // ================================================================
@@ -2360,7 +2416,6 @@ String moduleId = request.getParameter("moduleId");
     window.updateTimeRange = updateTimeRange;
     window.onStatTabChanged = onStatTabChanged;
     window.onResultTabChanged = onResultTabChanged;
-    window.onTiledStatSelect = onTiledStatSelect;
     window.onOverlayStatSelect = onOverlayStatSelect;
     window.onDeviceGridBeforeLoad = onDeviceGridBeforeLoad;
     window.onDeviceGridLoad = onDeviceGridLoad;

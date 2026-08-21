@@ -2167,11 +2167,6 @@ String moduleId = request.getParameter("moduleId");
                             yAxisOpposite
                         );
                     }
-
-                    // 延迟触发重绘
-                    setTimeout(function() {
-                        $(window).resize();
-                    }, 100);
                 },
                 error: function(xhr, status, errorThrown) {
                     console.error(_loginUserLanguageResource.requestFailed + ':', status, errorThrown);
@@ -2841,24 +2836,6 @@ String moduleId = request.getParameter("moduleId");
                     });
 
                     grid.render(container);
-
-                    // 保存 grid 实例到 window，便于窗口关闭时销毁
-                    window._itemRealtimeDataGrid = grid;
-
-                    // 窗口 resize 时调整 grid 大小
-                    ctx.win.on('resize', function() {
-                        if (window._itemRealtimeDataGrid) {
-                            window._itemRealtimeDataGrid.doLayout();
-                        }
-                    });
-
-                    // 窗口关闭时销毁 grid
-                    ctx.win.on('beforedestroy', function() {
-                        if (window._itemRealtimeDataGrid) {
-                            window._itemRealtimeDataGrid.destroy();
-                            window._itemRealtimeDataGrid = null;
-                        }
-                    });
                 },
                 error: function(xhr, status, errorThrown) {
                     mini.unmask(mask);
@@ -4708,10 +4685,6 @@ String moduleId = request.getParameter("moduleId");
                         performGlobalDownlink();
                     });
                 }
-
-                win.on('resize', function() {
-                    if (window._deviceControlGrid) window._deviceControlGrid.doLayout();
-                });
             }
 
             window.performUplink = function() {

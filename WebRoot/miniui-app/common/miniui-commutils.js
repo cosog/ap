@@ -3723,164 +3723,219 @@ function initBalanceCurveChartTowY(catagories,series,divId,titletext,subtitle,yt
 				series : series
 			});
 }
-showFSDiagramOverlayChart = function(get_rawData,divId,visible,diagramType) {
-	var color=new Array("#000000","#00ff00"); // 线条颜色
-	var list=get_rawData.totalRoot;
-	var upperLoadLine=null;
-	var lowerLoadLine=null;
-	var fmax=null;
-	var fmin=null;
-	var yAxisMin=0;
-	var minYValue=0;
-    var xAxisMin=0;
-    var minXValue=0;
-    
-    
-	var strokeMax=0;
-	var visiblestr='';
-	if(!visible){
-		visiblestr='visible:false,';
-	};
-	if(list.length>0){
-		fmax=list[0].fmax;
-		fmin=list[0].fmin;
-	}
-	var title='';
-	var ytext='';
-	var color=new Array("#000000","#00ff00"); // 线条颜色
-	var subtitle=get_rawData.deviceName+"["+get_rawData.start_date+"~"+get_rawData.end_date+"]";
-	var pointFormat='{point.x}, {point.y}';
-	if(diagramType===0){//如果是功图
-		title=_loginUserLanguageResource.FSDiagramOverlay;
-		ytext=_loginUserLanguageResource.load+'(kN)';
-		pointFormat=_loginUserLanguageResource.displacement+': {point.x} m <br/> '+_loginUserLanguageResource.load+': {point.y} kN';
-	}else if(diagramType===1){//电功图
-		title= _loginUserLanguageResource.WSDiagramOverlay;
-		ytext=_loginUserLanguageResource.activePower+"(kW)";
-		pointFormat=_loginUserLanguageResource.displacement+': {point.x} m <br/> '+_loginUserLanguageResource.activePower+': {point.y} kW';
-	}else if(diagramType===2){//电流图
-		title= _loginUserLanguageResource.ISDiagramOverlay;
-		ytext=_loginUserLanguageResource.electricity+"(A)";
-		pointFormat=_loginUserLanguageResource.displacement+': {point.x} m <br/> '+_loginUserLanguageResource.electricity+': {point.y} A';
-	}
-	
-	var minValue=null;
-	var series = "[";
-	for (var i =0; i < list.length; i++){
-		if(i==0){
-			if(list[i].upperLoadLine!="" && parseFloat(list[i].upperLoadLine)>0){
-				upperLoadLine=list[i].upperLoadLine;
-			}
-			if(list[i].lowerLoadLine!="" && parseFloat(list[i].lowerLoadLine)>0){
-				lowerLoadLine=list[i].lowerLoadLine;
-			}
-		}
-		
-		if(parseFloat(list[i].fmax)>fmax){
-			fmax=parseFloat(list[i].fmax);
-		}
-		if(parseFloat(list[i].fmin)<fmin){
-			fmin=parseFloat(list[i].fmin);
-		}
-		if(parseFloat(list[i].stroke)>strokeMax){
-			strokeMax=parseFloat(list[i].stroke);
-		}
-		var xData = list[i].positionCurveData;
-		var xDataArr=xData.split(",");
-		var yData;
-		var yDataArr=[];
-		var diagramPoint=xDataArr.length;
-		if(diagramType===0){//如果是功图
-			yData = list[i].loadCurveData;
-			color=new Array("#000000","#00ff00");
-			minValue=0;
-		}else if(diagramType===1){//电功图
-			yData = list[i].powerCurveData;
-			color=new Array("#000000","#CC0000");
-		}else if(diagramType===2){//电流图
-			yData = list[i].currentCurveData;
-			color=new Array("#000000","#0033FF");
-		}
-		yDataArr=yData.split(",");
-		if(diagramPoint>yDataArr.length){
-			diagramPoint=yDataArr.length;
-		}
-		var data = "[";
-		
-		if(xData!="" && yData!="" && diagramPoint>0){
-			for (var j=0; j <= diagramPoint; j++) {
-				if(j<diagramPoint){
-					data += "[" + changeTwoDecimal(xDataArr[j]) + ","+changeTwoDecimal(yDataArr[j])+"],";
-					if(changeTwoDecimal(yDataArr[j])<minYValue){
-						minYValue=changeTwoDecimal(yDataArr[j]);
-					}
-                    if(changeTwoDecimal(xDataArr[j])<minXValue){
-						minXValue=changeTwoDecimal(xDataArr[j]);
-					}
-				}else{
-					data += "[" + changeTwoDecimal(xDataArr[0]) + ","+changeTwoDecimal(yDataArr[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
-				}
-			}
-		}
-		
-		data+="]";
-		if(list.length==1){
-			    series+="{name: '"+list[i].id+"',visible:"+visible + ",color: '" + color[1] + " ' , " + "lineWidth:2," + "data:" + data + "}";
-		}else{
-			if(i==0){
-				series+="{name: '"+list[i].id+"',visible:"+visible + ",color: '" + color[1] + " ' , " + "lineWidth:2," + "data:" + data + "},";
-			}else if((i>0)&&(i<(list.length-1))){
-	            series+="{name: '"+list[i].id+"',visible:"+visible + ",color: '" + color[1] + " ' , " + "lineWidth:2," + "data:" + data + "},";
-	        }else{
-				series+="{name: '"+list[i].id+"',visible:"+visible + ",color: '" + color[1] + " ' , " + "lineWidth:2," + "data:" + data + "}";
-			}
-		}
-	}
-	
-	if(strokeMax>0 && diagramType===0){//如果是功图
-		series+=",{type: 'line',color: '#d12',dashStyle: 'Dash',lineWidth:2,name: '"+_loginUserLanguageResource.upperLoadLine+"',data: [[0," +parseFloat(upperLoadLine)+"], ["+parseFloat(strokeMax)+", "+parseFloat(upperLoadLine)+"]],marker: {enabled: false},states: {hover: {lineWidth: 0}},enableMouseTracking: true}";
-		series+=",{type: 'line',color: '#d12',dashStyle: 'Dash',lineWidth:2,name: '"+_loginUserLanguageResource.lowerLoadLine+"',data: [[0," +parseFloat(lowerLoadLine)+"], ["+parseFloat(strokeMax)+", "+parseFloat(lowerLoadLine)+"]],marker: {enabled: false},states: {hover: {lineWidth: 0}},enableMouseTracking: true}";
-	}
-	
-	series+="]";
-	
-	var pointdata = JSON.parse(series);
-	
-	var upperlimit=parseFloat(fmax)+5;
-    if(parseFloat(upperLoadLine)==0||parseFloat(fmax)==0){
-    	upperlimit=null;
-    }else if(parseFloat(upperLoadLine)>=parseFloat(fmax)){
-    	upperlimit=parseFloat(upperLoadLine)+5;
+showFSDiagramOverlayChart = function(get_rawData, divId, visible, diagramType) {
+    var list = get_rawData.totalRoot;
+    if (!list || list.length === 0) {
+        $('#' + divId).html('<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>');
+        return false;
     }
-    var underlimit=parseFloat(fmin)-5;
-    if(parseFloat(lowerLoadLine)==0||parseFloat(fmin)==0){
-    	underlimit=null;
-    }else if(parseFloat(lowerLoadLine)<=parseFloat(fmin)){
-    	underlimit=parseFloat(lowerLoadLine)-5;
+
+    var upperLoadLine = null;
+    var lowerLoadLine = null;
+    var fmax = null;
+    var fmin = null;
+    var yAxisMin = 0;
+    var minYValue = 0;
+    var xAxisMin = 0;
+    var minXValue = 0;
+    var strokeMax = 0;
+
+    // 颜色配置
+    var color = ["#000000", "#00ff00"]; // 默认
+
+    // 获取标题、y轴标签等
+    var title = '';
+    var ytext = '';
+    var pointFormat = '{point.x}, {point.y}';
+    var subtitle = get_rawData.deviceName + "[" + get_rawData.start_date + "~" + get_rawData.end_date + "]";
+
+    if (diagramType === 0) { // 功图
+        title = _loginUserLanguageResource.FSDiagramOverlay;
+        ytext = _loginUserLanguageResource.load + '(kN)';
+        pointFormat = _loginUserLanguageResource.displacement + ': {point.x} m <br/> ' + _loginUserLanguageResource.load + ': {point.y} kN';
+    } else if (diagramType === 1) { // 电功图
+        title = _loginUserLanguageResource.WSDiagramOverlay;
+        ytext = _loginUserLanguageResource.activePower + "(kW)";
+        pointFormat = _loginUserLanguageResource.displacement + ': {point.x} m <br/> ' + _loginUserLanguageResource.activePower + ': {point.y} kW';
+    } else if (diagramType === 2) { // 电流图
+        title = _loginUserLanguageResource.ISDiagramOverlay;
+        ytext = _loginUserLanguageResource.electricity + "(A)";
+        pointFormat = _loginUserLanguageResource.displacement + ': {point.x} m <br/> ' + _loginUserLanguageResource.electricity + ': {point.y} A';
     }
-    if(underlimit<0){
-    	underlimit=0;
+
+    // 初始化极值（用于后续计算上下限）
+    if (list.length > 0) {
+        fmax = parseFloat(list[0].fmax);
+        fmin = parseFloat(list[0].fmin);
     }
-    underlimit=0;
-    if(isNaN(upperlimit)){
-    	upperlimit=null;
+
+    // ========== 构建 series 数组 ==========
+    var seriesArray = [];
+
+    for (var i = 0; i < list.length; i++) {
+        var item = list[i];
+
+        // 更新上下载荷线（取第一个有效值）
+        if (i === 0) {
+            if (item.upperLoadLine && parseFloat(item.upperLoadLine) > 0) {
+                upperLoadLine = parseFloat(item.upperLoadLine);
+            }
+            if (item.lowerLoadLine && parseFloat(item.lowerLoadLine) > 0) {
+                lowerLoadLine = parseFloat(item.lowerLoadLine);
+            }
+        }
+
+        // 更新全局最大/最小载荷及冲程
+        if (parseFloat(item.fmax) > fmax) fmax = parseFloat(item.fmax);
+        if (parseFloat(item.fmin) < fmin) fmin = parseFloat(item.fmin);
+        if (parseFloat(item.stroke) > strokeMax) strokeMax = parseFloat(item.stroke);
+
+        // 获取位置数据
+        var xData = item.positionCurveData || "";
+        var xDataArr = xData.split(",");
+
+        // 根据类型获取对应的 Y 数据
+        var yData = "";
+        var lineColor = "#00ff00"; // 默认
+        if (diagramType === 0) {
+            yData = item.loadCurveData || "";
+            lineColor = "#00ff00";
+        } else if (diagramType === 1) {
+            yData = item.powerCurveData || "";
+            lineColor = "#CC0000";
+        } else if (diagramType === 2) {
+            yData = item.currentCurveData || "";
+            lineColor = "#0033FF";
+        }
+        var yDataArr = yData.split(",");
+
+        // 确定点数（取最小长度）
+        var diagramPoint = Math.min(xDataArr.length, yDataArr.length);
+
+        // 构建数据点数组
+        var data = [];
+        if (xData !== "" && yData !== "" && diagramPoint > 0) {
+            for (var j = 0; j < diagramPoint; j++) {
+                var xVal = parseFloat(xDataArr[j]);
+                var yVal = parseFloat(yDataArr[j]);
+                if (!isNaN(xVal) && !isNaN(yVal)) {
+                    data.push([xVal, yVal]);
+                    // 更新全局极值（用于坐标轴自动范围）
+                    if (yVal < minYValue) minYValue = yVal;
+                    if (xVal < minXValue) minXValue = xVal;
+                }
+            }
+            // 闭合：将第一个点添加到末尾（若存在）
+            if (data.length > 0) {
+                data.push(data[0]);
+            }
+        }
+
+        // 创建 series 对象
+        var seriesObj = {
+            name: item.id || '',
+            visible: visible,
+            color: lineColor,
+            lineWidth: 2,
+            data: data
+        };
+        seriesArray.push(seriesObj);
     }
-	if(minYValue<0){
-		yAxisMin=null;
-	}
-    
-    if(minXValue<0){
-		xAxisMin=null;
-	}
-    
-    if(diagramType===0){//如果是功图
-    	initFSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,xAxisMin,yAxisMin,pointFormat);
-	}else {
-		initPSDiagramOverlayChart(pointdata, title,subtitle,ytext,get_rawData.deviceName, get_rawData.calculateDate, divId,xAxisMin,yAxisMin,pointFormat);
-	}
-	
-	return false;
-}
+
+    // 如果是功图，添加上下载荷线
+    if (strokeMax > 0 && diagramType === 0 && upperLoadLine !== null && lowerLoadLine !== null) {
+        // 上载荷线
+        seriesArray.push({
+            type: 'line',
+            color: '#d12',
+            dashStyle: 'Dash',
+            lineWidth: 2,
+            name: _loginUserLanguageResource.upperLoadLine,
+            data: [
+                [0, upperLoadLine],
+                [strokeMax, upperLoadLine]
+            ],
+            marker: { enabled: false },
+            states: { hover: { lineWidth: 0 } },
+            enableMouseTracking: true
+        });
+        // 下载荷线
+        seriesArray.push({
+            type: 'line',
+            color: '#d12',
+            dashStyle: 'Dash',
+            lineWidth: 2,
+            name: _loginUserLanguageResource.lowerLoadLine,
+            data: [
+                [0, lowerLoadLine],
+                [strokeMax, lowerLoadLine]
+            ],
+            marker: { enabled: false },
+            states: { hover: { lineWidth: 0 } },
+            enableMouseTracking: true
+        });
+    }
+
+    // ========== 计算坐标轴范围 ==========
+    var upperlimit = parseFloat(fmax) + 5;
+    if (parseFloat(upperLoadLine) === 0 || parseFloat(fmax) === 0) {
+        upperlimit = null;
+    } else if (parseFloat(upperLoadLine) >= parseFloat(fmax)) {
+        upperlimit = parseFloat(upperLoadLine) + 5;
+    }
+
+    var underlimit = parseFloat(fmin) - 5;
+    if (parseFloat(lowerLoadLine) === 0 || parseFloat(fmin) === 0) {
+        underlimit = null;
+    } else if (parseFloat(lowerLoadLine) <= parseFloat(fmin)) {
+        underlimit = parseFloat(lowerLoadLine) - 5;
+    }
+    if (underlimit < 0) underlimit = 0;
+    underlimit = 0; // 原逻辑强制为0，保留
+    if (isNaN(upperlimit)) upperlimit = null;
+
+    if (minYValue < 0) yAxisMin = null;
+    if (minXValue < 0) xAxisMin = null;
+
+    // ========== 调用绘图函数 ==========
+    var deviceName = get_rawData.deviceName || '';
+    var acqTime = get_rawData.calculateDate || '';
+
+    if (diagramType === 0) {
+        initFSDiagramOverlayChart(
+            seriesArray, // 直接传入数组对象
+            title,
+            subtitle,
+            ytext,
+            deviceName,
+            acqTime,
+            divId,
+            upperLoadLine,
+            lowerLoadLine,
+            upperlimit,
+            underlimit,
+            strokeMax,
+            xAxisMin,
+            yAxisMin,
+            pointFormat
+        );
+    } else {
+        initPSDiagramOverlayChart(
+            seriesArray,
+            title,
+            subtitle,
+            ytext,
+            deviceName,
+            acqTime,
+            divId,
+            xAxisMin,
+            yAxisMin,
+            pointFormat
+        );
+    }
+
+    return false;
+};
 function initFSDiagramOverlayChart(series, title,subtitle,ytext, deviceName, acqTime, divId,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax,xAxisMin,yAxisMin,pointFormat) {
 	if($("#"+divId)!=undefined && $("#"+divId)[0]!=undefined){
 		mychart = new Highcharts.Chart({

@@ -734,7 +734,8 @@ request.setAttribute("browserLang", browserLang);
     function convertExtToMiniuiPath(viewSrc) {
         var mapping = {
             'AP.view.realTimeMonitoring.RealTimeMonitoringInfoView':  context + '/miniui-app/modules/realTimeMonitoring/RealTimeMonitoringInfo.jsp',
-            'AP.view.historyQuery.HistoryQueryInfoView':  context + '/miniui-app/modules/historyQuery/HistoryQuery.jsp'
+            'AP.view.historyQuery.HistoryQueryInfoView':  context + '/miniui-app/modules/historyQuery/HistoryQuery.jsp',
+            'AP.view.alarmQuery.AlarmQueryInfoView': context + '/miniui-app/modules/alarmQuery/AlarmQuery.jsp'
         };
         return mapping[viewSrc] || null;
     }

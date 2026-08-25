@@ -420,10 +420,8 @@ function loadAlarmQueryStatData(){
 			
 			var statTabPanel=Ext.getCmp('AlarmQueryStatGraphPanel_Id');
 			if(statTabPanel.getActiveTab().id=='AlarmTypeStatGraphPanel_Id'){
-//				initAlarmTypeStatData(result,projectTabConfig);
 				initAlarmTypeStatDrillDownChartData(result,projectTabConfig);
 			}else if(statTabPanel.getActiveTab().id=='AlarmLevelStatGraphPanel_Id'){
-//				initAlarmLevelStatData(result,projectTabConfig);
 				initAlarmLeveStatDrillDownChartData(result,projectTabConfig);
 			}
 		},

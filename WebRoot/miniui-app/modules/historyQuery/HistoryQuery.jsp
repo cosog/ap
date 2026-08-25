@@ -1072,7 +1072,7 @@ String moduleId = request.getParameter("moduleId");
                 var item = list[i];
                 if (item.itemCode === 'all' || item.count <= 0) continue;
                 var point = {
-                    name: item.item || item.text || '未知',
+                    name: item.item || item.text,
                     y: item.count
                 };
                 if (tabKey === 'CommStatus') {
@@ -1320,7 +1320,7 @@ String moduleId = request.getParameter("moduleId");
         // ================================================================
         function doQuery() {
             if (!currentDeviceId) {
-                mini.alert('请选择设备');
+                mini.alert(_loginUserLanguageResource.checkOne);
                 return;
             }
 
@@ -1401,7 +1401,7 @@ String moduleId = request.getParameter("moduleId");
             // 主体：垂直分割器（曲线 + 表格）
             var splitterHtml = '<div id="historyTrendCurvePanel" class="mini-splitter" style="width:100%; height:100%;" vertical="true">' +
                 '<div size="50%" showCollapseButton="true" minSize="80" collapseDirection="top">' +
-                '<div style="height:100%; display:flex; flex-direction:column;"><div id="historyCurveContainer" class="chart-container"><div class="loading-placeholder">请选择设备并查询</div></div></div>' +
+                '<div style="height:100%; display:flex; flex-direction:column;"><div id="historyCurveContainer" class="chart-container"><div class="loading-placeholder"></div></div></div>' +
                 '</div>' +
                 '<div size="50%" showCollapseButton="false" style="display:flex; flex-direction:column;">' +
                 '<div style="flex:1; min-height:0; height:100%;">' + // 新增包裹层
@@ -1743,7 +1743,7 @@ String moduleId = request.getParameter("moduleId");
         // ================================================================
         function loadHistoryCurve() {
             if (!currentDeviceId) {
-                mini.alert('请选择设备');
+                mini.alert(_loginUserLanguageResource.checkOne);
                 return;
             }
             var start = mini.get('startDate').getFormValue('yyyy-MM-dd HH:mm:ss');
@@ -2097,7 +2097,7 @@ String moduleId = request.getParameter("moduleId");
             var grid = mini.get('historyDataGrid');
             if (!grid) return;
             if (!currentDeviceId) {
-                mini.alert('请选择设备');
+                mini.alert(_loginUserLanguageResource.checkOne);
                 return;
             }
             var hours = getHistoryQueryHours();
@@ -2426,7 +2426,7 @@ String moduleId = request.getParameter("moduleId");
 
         function exportData() {
             if (!currentDeviceId) {
-                mini.alert('请选择设备');
+                mini.alert(_loginUserLanguageResource.checkOne);
                 return;
             }
             var resultTabs = mini.get('resultTabs');
@@ -2755,7 +2755,7 @@ String moduleId = request.getParameter("moduleId");
 
         function loadTiledDiagram(type, page) {
             if (!currentDeviceId) {
-                mini.alert('请选择设备');
+                mini.alert(_loginUserLanguageResource.checkOne);
                 return;
             }
             page = page || 1;
@@ -3000,7 +3000,7 @@ String moduleId = request.getParameter("moduleId");
 
         function doOverlayQuery() {
             if (!currentDeviceId) {
-                mini.alert('请选择设备');
+                mini.alert(_loginUserLanguageResource.checkOne);
                 return;
             }
             var grid = mini.get('overlayDataGrid');
@@ -3010,6 +3010,7 @@ String moduleId = request.getParameter("moduleId");
         }
 
         function onOverlayGridBeforeLoad(e) {
+        	_overlayGridReault={};
             var params = e.params || {};
             var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
             params.orgId = leftOrgId ? leftOrgId.getValue() : '';
@@ -3041,10 +3042,20 @@ String moduleId = request.getParameter("moduleId");
             params.calculateType = currentCalculateType || 0;
             e.params = params;
         }
-
+        
+		var _overlayGridReault={};
         function onOverlayGridLoad(e) {
             var grid = e.sender;
             var result = e.result;
+            if (result.start_date) {
+                result.start_date = formatDate(result.start_date, 'yyyy-MM-dd HH:mm:ss');
+            }
+            if (result.end_date) {
+                result.end_date = formatDate(result.end_date, 'yyyy-MM-dd HH:mm:ss');
+            }
+            _overlayGridReault=result;
+            
+            
             if (!result) return;
             // 更新记录数标签
             if (result.totalCount !== undefined) {
@@ -3093,11 +3104,9 @@ String moduleId = request.getParameter("moduleId");
             // 全选所有行（默认显示所有图形）
            	grid.selectAll();
 
-            showFSDiagramOverlayChart(result, 'overlayFsChart', true, 0);
-            showFSDiagramOverlayChart(result, 'overlayPowerChart', true, 1);
-            showFSDiagramOverlayChart(result, 'overlayCurrentChart', true, 2);
-
-
+            showFSDiagramOverlayChart(_overlayGridReault, 'overlayFsChart', true, 0);
+            showFSDiagramOverlayChart(_overlayGridReault, 'overlayPowerChart', true, 1);
+            showFSDiagramOverlayChart(_overlayGridReault, 'overlayCurrentChart', true, 2);
         }
 
         // 标志位，防止循环触发
@@ -3148,9 +3157,9 @@ String moduleId = request.getParameter("moduleId");
                     end_date: totalData.length > 0 ? totalData[0].acqTime : ''
                 };
 
-                showFSDiagramOverlayChart(result, "overlayFsChart", isChecked, 0);
-                showFSDiagramOverlayChart(result, "overlayPowerChart", isChecked, 1);
-                showFSDiagramOverlayChart(result, "overlayCurrentChart", isChecked, 2);
+                showFSDiagramOverlayChart(_overlayGridReault, "overlayFsChart", isChecked, 0);
+                showFSDiagramOverlayChart(_overlayGridReault, "overlayPowerChart", isChecked, 1);
+                showFSDiagramOverlayChart(_overlayGridReault, "overlayCurrentChart", isChecked, 2);
             } finally {
                 // 重置标志（延迟一点，确保后续的 select 事件也被忽略）
                 setTimeout(function() {

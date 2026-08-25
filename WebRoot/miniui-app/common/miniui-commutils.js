@@ -213,6 +213,36 @@ function miniEncode(obj) {
 // ================================================================
 // 5. 日期格式化
 // ================================================================
+/**
+ * 将日期值按指定格式输出
+ * @param {Date|string|number} dateVal - 日期对象、日期字符串或时间戳
+ * @param {string} outputFormat - 输出格式，默认 "yyyy-MM-dd HH:mm:ss"
+ * @returns {string} 格式化后的日期字符串
+ */
+function formatDate(dateVal, outputFormat) {
+    if (!dateVal) return '';
+    if (!outputFormat) outputFormat = 'yyyy-MM-dd HH:mm:ss';
+
+    // 统一转为 Date 对象
+    var d = new Date(dateVal);
+    // 如果解析失败，原样返回（不做额外判断，避免格式硬编码）
+    if (isNaN(d.getTime())) return String(dateVal);
+
+    // 根据 outputFormat 替换对应占位符
+    var map = {
+        'yyyy': d.getFullYear(),
+        'MM': String(d.getMonth() + 1).padStart(2, '0'),
+        'dd': String(d.getDate()).padStart(2, '0'),
+        'HH': String(d.getHours()).padStart(2, '0'),
+        'mm': String(d.getMinutes()).padStart(2, '0'),
+        'ss': String(d.getSeconds()).padStart(2, '0')
+    };
+
+    return outputFormat.replace(/yyyy|MM|dd|HH|mm|ss/g, function(match) {
+        return map[match];
+    });
+}
+
 function dateFormat(value) {
     if (!value) return '';
     try {

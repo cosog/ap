@@ -505,12 +505,12 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		}
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns="["
-				+ "{\"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[]},"
-				+ "{\"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\",flex:8,children:[]},"
-				+ "{\"header\":\""+languageResourceMap.get("alarmTime")+"\",\"dataIndex\":\"alarmTime\",flex:12,children:[]},"
-				+ "{\"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevelAgg\",flex:20,children:[]},"
-				+ "{\"header\":\""+languageResourceMap.get("alarmType")+"\",\"dataIndex\":\"alarmTypeAgg\",flex:20,children:[]}"
-//				+ "{ \"header\":\""+languageResourceMap.get("deviceType")+"\",\"dataIndex\":\"deviceTypeName\",flex:6,children:[] }"
+				+ "{\"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50,\"children\":[]},"
+				+ "{\"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\",\"flex\":8,\"children\":[]},"
+				+ "{\"header\":\""+languageResourceMap.get("alarmTime")+"\",\"dataIndex\":\"alarmTime\",\"flex\":12,\"children\":[]},"
+				+ "{\"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevelAgg\",\"flex\":20,\"children\":[]},"
+				+ "{\"header\":\""+languageResourceMap.get("alarmType")+"\",\"dataIndex\":\"alarmTypeAgg\",\"flex\":20,\"children\":[]}"
+//				+ "{ \"header\":\""+languageResourceMap.get("deviceType")+"\",\"dataIndex\":\"deviceTypeName\",flex:6,\"children\":[] }"
 				+ "]";
 		
 

@@ -302,7 +302,7 @@ request.setAttribute("browserLang", browserLang);
                         resultAsTree="true"
                         expandOnLoad="true"
                         url="<%=path%>/moduleMenuController/obtainFunctionModuleList"
-                        onnodeselect="onMenuTreeSelect"
+                        onnodeclick="onMenuTreeClick"
                         onload="onMenuTreeLoad">
                     </ul>
                 </div>
@@ -430,13 +430,13 @@ request.setAttribute("browserLang", browserLang);
         // 可选择性操作
     }
 
-    function onMenuTreeSelect(e) {
+    function onMenuTreeClick(e) {
         var tree = e.sender;
         var node = e.node;
         if (!node || !tree.isLeaf(node)) return;
         var tabs = mini.get('mainTabs');
         if (!tabs) {
-            setTimeout(function() { onMenuTreeSelect(e); }, 500);
+            setTimeout(function() { onMenuTreeClick(e); }, 500);
             return;
         }
         var moduleId = node.id;
@@ -457,7 +457,10 @@ request.setAttribute("browserLang", browserLang);
 
         var existingTab = tabs.getTab(moduleId);
         if (existingTab) {
-            tabs.activeTab(existingTab);
+        	var currentActive=tabs.getActiveTab();
+        	if(!currentActive || currentActive.id!=existingTab.id){
+        		tabs.activeTab(existingTab);
+        	}
         } else {
             var isDefault = (FIRST_LEAF_MODULE_ID !== null && moduleId === FIRST_LEAF_MODULE_ID);
             var tab = {
@@ -482,9 +485,50 @@ request.setAttribute("browserLang", browserLang);
             tree.expandNode(root);
             var firstLeaf = findFirstLeaf(root, tree);
             if (firstLeaf) {
+            	tree.select(firstLeaf);
                 FIRST_LEAF_MODULE_ID = firstLeaf.id;
                 setTimeout(function() {
-                    tree.selectNode(firstLeaf);
+                	var tabs = mini.get('mainTabs');
+                    if (!tabs) {
+                        return;
+                    }
+                	
+                    var moduleId = firstLeaf.id;
+                    var moduleCode = firstLeaf.mdCode;
+                    var viewSrc = firstLeaf.viewsrc;
+                    var title = firstLeaf.text;
+                    var iconCls = firstLeaf.md_icon || '';
+
+                    if (moduleId === 'backAdmin') {
+                        window.location.href = context + '/login';
+                        return;
+                    }
+
+                    var miniuiPath = convertExtToMiniuiPath(viewSrc);
+                    if (!miniuiPath) {
+                        miniuiPath = context + '/miniui-app/modules/under-construction.jsp';
+                    }
+
+                    var existingTab = tabs.getTab(moduleId);
+                    if (existingTab) {
+                        tabs.activeTab(existingTab);
+                    } else {
+                        var isDefault = (FIRST_LEAF_MODULE_ID !== null && moduleId === FIRST_LEAF_MODULE_ID);
+                        var tab = {
+                            name: moduleId,
+                            id:moduleId,
+                            title: title,
+                            iconCls: iconCls,
+                            showCloseButton: !isDefault,
+                            body: '<iframe src="' + miniuiPath + '?moduleId=' + moduleId + '" style="width:100%;height:100%;border:0;"></iframe>'
+                        };
+                        tabs.addTab(tab);
+                        tabs.activeTab(tab);
+                    }
+                    mini.get('topModule_Id').setValue(moduleCode);
+                    saveAccessModuleLog(moduleCode);
+                    
+                    
                 }, 300);
             }
         }

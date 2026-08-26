@@ -181,6 +181,7 @@ public class AlarmQueryController extends BaseController{
 		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
 		
 		this.pager = new Page("pagerForm", request);
 		String tableName="viw_alarminfo_hist";
@@ -190,6 +191,9 @@ public class AlarmQueryController extends BaseController{
 		if(user!=null){
 			language=user.getLanguageName();
 		}
+		
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
 		
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
@@ -220,6 +224,7 @@ public class AlarmQueryController extends BaseController{
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		boolean bool = alarmQueryService.exportAlarmData(user,response,fileName,title, heads, fields,orgId,deviceType,dictDeviceType,deviceId,deviceName,alarmType,alarmLevel,isSendMessage,pager,language);
+		session.setAttribute(key, 1);
 		return null;
 	}
 	
@@ -277,6 +282,7 @@ public class AlarmQueryController extends BaseController{
 		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
 		
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -284,7 +290,8 @@ public class AlarmQueryController extends BaseController{
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(orgId)){
 			if (user != null) {
@@ -292,6 +299,7 @@ public class AlarmQueryController extends BaseController{
 			}
 		}
 		boolean bool = alarmQueryService.exportAlarmOverviewData(user,response,fileName,title, heads, fields,orgId,deviceType,statType,deviceName,alarmType,alarmLevel,alarmQueryStatRangeType,isSendMessage,pager,language);
+		session.setAttribute(key, 1);
 		return null;
 	}
 	

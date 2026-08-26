@@ -803,17 +803,23 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				result_json.append("\"deviceTypeName\":\""+obj[2]+"\",");
 				result_json.append("\"alarmTypeAgg\":\""+alarmTypeAgg+"\",");
 				result_json.append("\"alarmLevelAgg\":\""+alarmLevelAgg+"\",");
-				result_json.append("\"alarmTime\":\""+obj[3]+"\"},");
+				result_json.append("\"alarmTime\":\""+obj[3]+"\"}");
 				
-				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
-				for (int j = 0; j < columns.length; j++) {
-					if(jsonObject.has(columns[j])){
-						record.add(jsonObject.getString(columns[j]));
-					}else{
-						record.add("");
+				try{
+					jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+					for (int j = 0; j < columns.length; j++) {
+						if(jsonObject.has(columns[j])){
+							record.add(jsonObject.getString(columns[j]));
+						}else{
+							record.add("");
+						}
 					}
+					sheetDataList.add(record);
+				}catch(Exception e){
+					e.printStackTrace();
+					System.out.println(result_json.toString().replaceAll("null", ""));
 				}
-				sheetDataList.add(record);
+				
 			}
 			ExcelUtils.export(response,fileName,title, sheetDataList,1);
 			if(user!=null){

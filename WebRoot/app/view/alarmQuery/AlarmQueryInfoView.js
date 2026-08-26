@@ -241,6 +241,9 @@ function createAlarmQueryColumn(columnInfo) {
 };
 
 function exportAlarmOverviewDataExcel() {
+	var timestamp=new Date().getTime();
+	var key='exportAlarmOverviewData'+deviceType+'_'+timestamp;
+	
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
 	var deviceType=getDeviceTypeFromTabId("AlarmQueryRootTabPanel");
 	var deviceName=Ext.getCmp('AlarmDeviceListComb_Id').getValue();
@@ -313,12 +316,18 @@ function exportAlarmOverviewDataExcel() {
     + "&alarmQueryStatRangeType=" + alarmQueryStatRangeType
     + "&isSendMessage=" + isSendMessage
     + "&fileName=" + URLencode(URLencode(fileName)) 
-    + "&title=" + URLencode(URLencode(title));
+    + "&title=" + URLencode(URLencode(title))
+    + '&key='+key;;
+    
+    exportDataMask(key,'AlarmQueryDeviceOverviewPanel_Id',loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };
 
 function exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceName,startDate,endDate,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr) {
-    var url = context + '/alarmQueryController/exportAlarmData';
+	var timestamp=new Date().getTime();
+	var key='exportAlarmData'+deviceType+'_'+timestamp;
+	
+	var url = context + '/alarmQueryController/exportAlarmData';
     var fields = "";
     var heads = "";
     var lockedheads = "";
@@ -367,6 +376,7 @@ function exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceNam
     + "&isSendMessage=" + isSendMessage
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title));
+    exportDataMask(key, 'AlarmQuerySecondTabPanel', _loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };
 

@@ -145,7 +145,7 @@ String moduleId = request.getParameter("moduleId");
             padding: 4px;
         }
         #alarmDetailTabs {
-            flex: 1;
+            height: 100%;
             width: 100%;
             overflow: hidden;
         }
@@ -163,7 +163,10 @@ String moduleId = request.getParameter("moduleId");
             height: 100%;
             overflow: hidden;
         }
-        /* 工具类 */
+        .detail-grid-container .mini-datagrid {
+            width: 100%;
+            height: 100%;
+        }
         .mini-toolbar .separator {
             width: 1px;
             height: 20px;
@@ -187,7 +190,6 @@ String moduleId = request.getParameter("moduleId");
         .alarm-level-100 { background-color: #dc2828; color: #fff; }
         .alarm-level-200 { background-color: #f09614; color: #fff; }
         .alarm-level-300 { background-color: #fae600; color: #333; }
-        /* 图表容器 */
         #alarmTypeChartContainer, #alarmLevelChartContainer {
             width: 100%;
             height: 100%;
@@ -213,8 +215,7 @@ String moduleId = request.getParameter("moduleId");
         <div class="level2-sidebar" id="level2Sidebar">
             <div class="no-child-tip">选择一级</div>
         </div>
-        <!-- 内容区域 -->
-        <div style="flex:1; overflow:hidden;">
+        <div id="alarmQueryPanel"  style="flex:1; overflow:hidden;">
             <div class="mini-splitter" style="width:100%; height:100%;" vertical="false">
                 <!-- 左侧：设备概览 + 统计图表（垂直分割） -->
                 <div size="45%" showCollapseButton="false" minSize="200">
@@ -269,25 +270,27 @@ String moduleId = request.getParameter("moduleId");
                         </div>
                     </div>
                 </div>
-                <!-- 右侧：报警详情 Tabs（使用 Flex 布局） -->
+                <!-- 右侧：报警详情 Tabs -->
                 <div size="55%" showCollapseButton="true" minSize="300" collapseDirection="right">
                     <div class="right-panel">
                         <!-- 工具栏（固定高度） -->
                         <div class="mini-toolbar" style="border:0;border-bottom:1px solid #e8e8e8;padding:4px 8px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;flex-shrink:0;background:#fff;">
-                            <span style="font-size:12px;color:#333;" id="detailRangeLabel"></span>
+                            <span style="font-size:12px;color:#333;" id="detailRangeLabel">区间：</span>
                             <input id="detailStartDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
-                            <span style="margin-left:8px;font-size:12px;color:#333;" id="detailTimeToLabel"></span>
+                            <span style="margin-left:8px;font-size:12px;color:#333;" id="detailTimeToLabel">至：</span>
                             <input id="detailEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
-                            <span style="font-size:12px;color:#333;margin-left:8px;" id="detailAlarmLevelLabel"></span>
+                            <span style="font-size:12px;color:#333;margin-left:8px;" id="detailAlarmLevelLabel">报警级别：</span>
                             <input id="detailAlarmLevel" class="mini-combobox" style="width:100px;" emptyText="-- 全部 --" valueField="id" textField="text" />
                             <button class="mini-button" iconCls="search" onclick="refreshDetailData()">查询</button>
                             <button class="mini-button" iconCls="export" onclick="exportAlarmDetail()">导出</button>
                             <span style="flex:1;"></span>
                             <span id="detailTotalCountLabel" style="font-size:12px;color:#999;display:none;">总记录数：<span id="detailTotalCountSpan">0</span></span>
                         </div>
-                        <!-- Tabs 填充剩余高度 -->
-                        <div id="alarmDetailTabs" class="mini-tabs" style="flex:1; width:100%; overflow:hidden;" activeIndex="0" onactivechanged="onDetailTabChanged">
-                            <!-- 由 JS 动态生成标签，每个标签 body 为 detail-grid-container -->
+                        <!-- ★★★ 使用 mini-fit 包裹 Tabs，确保高度自适应 ★★★ -->
+                        <div class="mini-fit">
+                            <div id="alarmDetailTabs" class="mini-tabs" style="height:100%; width:100%; overflow:hidden;" activeIndex="0" onactivechanged="onDetailTabChanged">
+                                <!-- 标签由 JS 动态添加 -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -322,7 +325,7 @@ String moduleId = request.getParameter("moduleId");
     ];
 
     // ================================================================
-    // 1. 构建一级标签
+    // 1. 构建一级标签a
     // ================================================================
     function buildLevel1Tabs() {
         var container = document.getElementById('level1Footer');
@@ -466,7 +469,24 @@ String moduleId = request.getParameter("moduleId");
             document.getElementById('overviewAlarmCount').textContent = result.alarmCount || 0;
         }
         var data = grid.getData();
-        if (data && data.length > 0) grid.select(0);
+        if (data && data.length > 0){
+        	grid.select(0);
+        }else{
+        	currentDeviceId=0;
+        	var startDate = mini.get('detailStartDate');
+        	if(startDate){
+        		startDate.setValue('');
+        	}
+            var endDate = mini.get('detailEndDate');
+            if(endDate){
+            	endDate.setValue('');
+        	}
+    		var alarmLevelCombo = mini.get('detailAlarmLevel');
+    		if(alarmLevelCombo){
+    			alarmLevelCombo.setValue('');
+    	    }
+        	refreshDetailData();
+        } 
     }
     function buildOverviewColumns(colsData) {
         var cols = [];
@@ -496,28 +516,24 @@ String moduleId = request.getParameter("moduleId");
         return cols;
     }
     function onOverviewRowSelect(e) {
+    	var startDate = mini.get('detailStartDate');
+    	if(startDate){
+    		startDate.setValue('');
+    	}
+        var endDate = mini.get('detailEndDate');
+        if(endDate){
+        	endDate.setValue('');
+    	}
+		var alarmLevelCombo = mini.get('detailAlarmLevel');
+		if(alarmLevelCombo){
+			alarmLevelCombo.setValue('');
+	    }
+    	
         var selected = e.selected;
         if (selected) {
             currentDeviceId = selected.id;
             currentDeviceName = selected.deviceName || '';
-            window._skipDetailDataLoad = false;
-            var detailTabs = mini.get('alarmDetailTabs');
-            if (detailTabs) {
-                var activeTab = detailTabs.getActiveTab();
-                if (!activeTab || activeTab.name === 'placeholder') {
-                    var tabs = detailTabs.getTabs();
-                    for (var i = 0; i < tabs.length; i++) {
-                        if (tabs[i].name !== 'placeholder') {
-                            detailTabs.activeTab(tabs[i]);
-                            break;
-                        }
-                    }
-                } else {
-                    refreshDetailData();
-                }
-            } else {
-                refreshDetailData();
-            }
+            refreshDetailData();
         }
     }
     function onStatRangeChanged() {
@@ -533,7 +549,7 @@ String moduleId = request.getParameter("moduleId");
     }
 
     // ================================================================
-    // 5. 统计图表（柱状图 + 钻取）【完整保留，未删减】
+    // 5. 统计图表（柱状图 + 钻取）【完整实现】
     // ================================================================
     function loadStatCharts(deviceTypeId, orgId, callback) {
         var statType = 0;
@@ -1119,10 +1135,10 @@ String moduleId = request.getParameter("moduleId");
                         alarmStatDrillDownChartResetAllPoints(this);
                     },
                     drillup: function() {
+                        alarmStatDrillDownChartResetAllPoints(this);
                         document.getElementById('selectedAlarmStatType_Id').value = '';
                         document.getElementById('selectedAlarmStatLevel_Id').value = '';
                         refreshOverview();
-                        alarmStatDrillDownChartResetAllPoints(this);
                     }
                 }
             },
@@ -1166,17 +1182,21 @@ String moduleId = request.getParameter("moduleId");
                                 var alarmLevel = opt.alarmLevel || point.alarmLevel;
                                 var isSelected = point.selected;
                                 if (isSelected) {
-                                    point.select(false);
-                                    alarmStatDrillDownChartResetPointStyle(point);
+                                	if(!point.destroyed){
+                                		point.select(false);
+                                        alarmStatDrillDownChartResetPointStyle(point);
+                                	}
                                     if (isTypeChart) {
                                         document.getElementById('selectedAlarmStatLevel_Id').value = '';
                                     } else {
                                         document.getElementById('selectedAlarmStatType_Id').value = '';
                                     }
                                 } else {
-                                    alarmStatDrillDownChartResetAllPoints(point.series.chart);
-                                    point.select(true);
-                                    alarmStatDrillDownChartApplyHighlightEffect(point);
+                                	if(!point.destroyed){
+                                		alarmStatDrillDownChartResetAllPoints(point.series.chart);
+                                        point.select(true);
+                                        alarmStatDrillDownChartApplyHighlightEffect(point);
+                                	}
                                     if (isTypeChart) {
                                         document.getElementById('selectedAlarmStatLevel_Id').value = alarmLevel;
                                     } else {
@@ -1286,169 +1306,284 @@ String moduleId = request.getParameter("moduleId");
     }
 
     // ================================================================
-    // 6. 右侧报警详情 Tabs（动态创建 + Grid 预先渲染）
+    // 6. 通用 Tabs 增量更新函数（从历史查询模块复制）
+    // ================================================================
+    function updateTabs(tabsControl, config, order, tabFactory, onRemoveTab, onAddTab) {
+        if (!tabsControl) return;
+
+        // 清除占位标签
+        var allTabs = tabsControl.getTabs();
+        for (var i = allTabs.length - 1; i >= 0; i--) {
+            if (allTabs[i]._key === 'placeholder' || allTabs[i]._name === 'placeholder') {
+                if (onRemoveTab) onRemoveTab(allTabs[i]);
+                tabsControl.removeTab(allTabs[i]);
+            }
+        }
+
+        var currentTabs = tabsControl.getTabs();
+        var currentKeys = {};
+        for (var i = 0; i < currentTabs.length; i++) {
+            var tab = currentTabs[i];
+            if (tab._key) currentKeys[tab._key] = tab;
+        }
+
+        var newKeys = [];
+        for (var i = 0; i < order.length; i++) {
+            var key = order[i];
+            if (config[key]) newKeys.push(key);
+        }
+
+        // 无有效标签 → 占位
+        if (newKeys.length === 0) {
+            var placeholderTab = tabFactory('placeholder');
+            if (!placeholderTab) placeholderTab = {
+                name: 'placeholder',
+                title: _loginUserLanguageResource.emptyMsg,
+                body: '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>',
+                _key: 'placeholder'
+            };
+            tabsControl.addTab(placeholderTab);
+            tabsControl.activeTab(placeholderTab);
+            return;
+        }
+
+        var activeTab = tabsControl.getActiveTab();
+        var activeKey = activeTab ? activeTab._key : null;
+
+        // 移除不在新列表中的标签
+        var toRemove = [];
+        for (var i = 0; i < currentTabs.length; i++) {
+            var tab = currentTabs[i];
+            if (tab._key && newKeys.indexOf(tab._key) === -1) {
+                toRemove.push(tab);
+            }
+        }
+        for (var i = 0; i < toRemove.length; i++) {
+            if (onRemoveTab) onRemoveTab(toRemove[i]);
+            tabsControl.removeTab(toRemove[i]);
+        }
+
+        // 重新获取剩余标签
+        var remainingTabs = tabsControl.getTabs();
+        var remainingMap = {};
+        for (var i = 0; i < remainingTabs.length; i++) {
+            var tab = remainingTabs[i];
+            if (tab._key) remainingMap[tab._key] = tab;
+        }
+
+        // 插入缺失的标签，保持顺序
+        for (var i = 0; i < newKeys.length; i++) {
+            var key = newKeys[i];
+            if (!remainingMap[key]) {
+                var newTab = tabFactory(key);
+                if (!newTab) continue;
+                var currentAll = tabsControl.getTabs();
+                var pos = currentAll.length;
+                for (var j = 0; j < currentAll.length; j++) {
+                    var t = currentAll[j];
+                    if (t._key) {
+                        var idx = newKeys.indexOf(t._key);
+                        if (idx !== -1 && idx >= i) {
+                            pos = j;
+                            break;
+                        }
+                    }
+                }
+                tabsControl.addTab(newTab, pos);
+                if (onAddTab) onAddTab(newTab);
+                remainingMap[key] = newTab;
+            }
+        }
+
+        // 激活目标标签
+        var finalTabs = tabsControl.getTabs();
+        var targetTab = null;
+        if (activeKey) {
+            for (var i = 0; i < finalTabs.length; i++) {
+                if (finalTabs[i]._key === activeKey) {
+                    targetTab = finalTabs[i];
+                    break;
+                }
+            }
+        }
+        if (!targetTab && finalTabs.length > 0) {
+            for (var i = 0; i < finalTabs.length; i++) {
+                if (finalTabs[i]._key && finalTabs[i]._key !== 'placeholder') {
+                    targetTab = finalTabs[i];
+                    break;
+                }
+            }
+            if (!targetTab) targetTab = finalTabs[0];
+        }
+        if (targetTab) {
+            tabsControl.activeTab(targetTab);
+        }
+    }
+
+    // ================================================================
+    // 7. 创建详情 Tab 的工厂函数
+    // ================================================================
+    function createDetailTab(key) {
+        if (key === 'placeholder') {
+            return {
+                name: 'placeholder',
+                title: _loginUserLanguageResource.emptyMsg,
+                body: '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>',
+                _key: 'placeholder',
+                _gridId: null,
+                _initialized: true
+            };
+        }
+        var cfg = null;
+        for (var i = 0; i < ALARM_TYPE_CONFIG.length; i++) {
+            if (ALARM_TYPE_CONFIG[i].id === key) {
+                cfg = ALARM_TYPE_CONFIG[i];
+                break;
+            }
+        }
+        if (!cfg) return null;
+        var gridId = 'alarmDetailGrid_' + cfg.id;
+        var gridHtml = '<div class="detail-grid-container">' +
+            '<div id="' + gridId + '" class="mini-datagrid" ' +
+            'style="width:100%;height:100%;" ' +
+            'showPager="true" pageSize="100" allowResize="true" allowAlternating="true" ' +
+            'url="' + context + '/alarmQueryController/getAlarmData" ' +
+            'dataField="totalRoot" totalField="totalCount" ' +
+            'onbeforeload="onDetailGridBeforeLoad" ' +
+            'onload="onDetailGridLoad">' +
+            '<div property="columns"></div>' +
+            '</div>' +
+            '</div>';
+        return {
+            name: cfg.id,
+            title: cfg.title,
+            body: gridHtml,
+            _key: cfg.id,
+            _gridId: gridId,
+            _initialized: false
+        };
+    }
+
+    // ================================================================
+    // 8. 更新报警详情 Tabs（增量更新）
     // ================================================================
     function updateDetailTabs(deviceTypeId) {
         alarmDetailTabs = mini.get('alarmDetailTabs');
         if (!alarmDetailTabs) return;
         var projectTabConfig = getProjectTabInstanceInfoByDeviceType(deviceTypeId);
         var alarmConfig = projectTabConfig.AlarmQuery || {};
-        var enabledTabs = [];
+
+        var config = {};
+        var order = [];
         for (var i = 0; i < ALARM_TYPE_CONFIG.length; i++) {
             var cfg = ALARM_TYPE_CONFIG[i];
-            if (alarmConfig[cfg.key] === true) enabledTabs.push(cfg);
+            var enabled = alarmConfig[cfg.key] === true;
+            config[cfg.id] = enabled;
+            if (enabled) order.push(cfg.id);
         }
-        var currentTabs = alarmDetailTabs.getTabs();
-        var activeTab = alarmDetailTabs.getActiveTab();
-        var activeName = activeTab ? activeTab.name : null;
-        // 移除不需要的标签
-        for (var i = currentTabs.length - 1; i >= 0; i--) {
-            var tab = currentTabs[i];
-            if (tab.name === 'placeholder') {
-                if (enabledTabs.length > 0) alarmDetailTabs.removeTab(tab);
-                continue;
-            }
-            var exists = enabledTabs.some(function(cfg) { return cfg.id === tab.name; });
-            if (!exists) alarmDetailTabs.removeTab(tab);
-        }
-        if (enabledTabs.length === 0) {
-            if (!alarmDetailTabs.getTab('placeholder')) {
-                alarmDetailTabs.addTab({
-                    name: 'placeholder',
-                    title: _loginUserLanguageResource.emptyMsg,
-                    body: '<div class="loading-placeholder">' + _loginUserLanguageResource.emptyMsg + '</div>'
-                });
-            }
-            alarmDetailTabs.activeTab('placeholder');
-            return;
-        }
-        var remainingTabs = alarmDetailTabs.getTabs();
-        var remainingMap = {};
-        for (var i = 0; i < remainingTabs.length; i++) {
-            remainingMap[remainingTabs[i].name] = remainingTabs[i];
-        }
-        for (var i = 0; i < enabledTabs.length; i++) {
-            var cfg = enabledTabs[i];
-            if (!remainingMap[cfg.id]) {
-                var tabObj = {
-                    name: cfg.id,
-                    title: cfg.title,
-                    body: '<div id="detailGridContainer_' + cfg.id + '" class="detail-grid-container"></div>'
-                };
-                var insertIndex = 0;
-                for (var j = 0; j < remainingTabs.length; j++) {
-                    var tab = remainingTabs[j];
-                    if (tab.name === 'placeholder') continue;
-                    var idx = enabledTabs.findIndex(function(c) { return c.id === tab.name; });
-                    if (idx !== -1 && idx < i) insertIndex = j + 1;
-                }
-                alarmDetailTabs.addTab(tabObj, insertIndex);
-                var newTab = alarmDetailTabs.getTab(cfg.id);
-                var bodyEl = alarmDetailTabs.getTabBodyEl(newTab);
-                if (bodyEl) {
-                    var container = document.getElementById('detailGridContainer_' + cfg.id);
-                    if (container) {
-                        var gridObj = new mini.DataGrid();
-                        gridObj.set({
-                            id: 'alarmDetailGrid_' + cfg.id,
-                            style: 'width:100%; height:100%;',
-                            showPager: true,
-                            pageSize: 100,
-                            allowResize: true,
-                            allowAlternating: true,
-                            url: context + '/alarmQueryController/getAlarmData',
-                            dataField: 'totalRoot',
-                            totalField: 'totalCount',
-                            onbeforeload: function(e) {
-                                var params = e.params || {};
-                                var pageIndex = params.pageIndex || 0;
-                                var pageSize = params.pageSize || 100;
-                                params.start = pageIndex * pageSize;
-                                params.limit = pageSize;
-                                var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
-                                params.orgId = leftOrgId ? leftOrgId.getValue() : '';
-                                params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
-                                params.deviceId = currentDeviceId;
-                                params.deviceName = currentDeviceName;
-                                var currentTab = mini.get('alarmDetailTabs').getActiveTab();
-                                if (currentTab) params.alarmType = getAlarmTypeFromTabName(currentTab.name);
-                                else params.alarmType = -1;
-                                var startDate = mini.get('detailStartDate');
-                                var endDate = mini.get('detailEndDate');
-                                var alarmLevelCombo = mini.get('detailAlarmLevel');
-                                params.startDate = startDate ? startDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
-                                params.endDate = endDate ? endDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
-                                params.alarmLevel = alarmLevelCombo ? alarmLevelCombo.getValue() : '';
-                                params.isSendMessage = '';
-                                e.params = params;
-                            },
-                            onload: function(e) {
-                                var result = e.result;
-                                if (result && result.columns) {
-                                    var cols = buildDetailColumns(result.columns);
-                                    document.getElementById('AlarmDetailsColumnStr_Id').value = JSON.stringify(result.columns);
-                                    this.setColumns(cols);
-                                }
-                                var totalSpan = document.getElementById('detailTotalCountSpan');
-                                if (totalSpan) totalSpan.textContent = result ? result.totalCount : 0;
-                                document.getElementById('detailTotalCountLabel').style.display = 'inline';
-                                if (result && result.start_date) {
-                                    var startDate = mini.get('detailStartDate');
-                                    var endDate = mini.get('detailEndDate');
-                                    if (startDate && !startDate.getValue()) startDate.setValue(result.start_date);
-                                    if (endDate && !endDate.getValue()) endDate.setValue(result.end_date);
-                                }
-                            }
-                        });
-                        gridObj.render(container);
-                        // 不调用 load()，等待设备选中后由 refreshDetailData 触发
-                        window['_detailGrid_' + cfg.id] = gridObj;
-                    }
-                }
-            }
-        }
-        var targetTab = null;
-        if (activeName && alarmDetailTabs.getTab(activeName)) targetTab = alarmDetailTabs.getTab(activeName);
-        if (!targetTab && enabledTabs.length > 0) targetTab = alarmDetailTabs.getTab(enabledTabs[0].id);
-        if (targetTab) {
-            alarmDetailTabs.activeTab(targetTab);
-            window._skipDetailDataLoad = true;
-        }
+
+        // 调用增量更新
+        updateTabs(alarmDetailTabs, config, order, createDetailTab, null, null);
     }
 
+    // ================================================================
+    // 9. 右侧 Tab 切换事件（解析 Grid）
+    // ================================================================
     function onDetailTabChanged(e) {
         var tab = e.tab;
         if (!tab) return;
-        if (window._skipDetailDataLoad) {
-            window._skipDetailDataLoad = false;
-            return;
-        }
-        if (currentDeviceId && currentDeviceId > 0) {
-            refreshDetailData();
+        if (tab._key === 'placeholder') return;
+
+        var bodyEl = alarmDetailTabs.getTabBodyEl(tab);
+        if (!bodyEl) return;
+
+        // 如果未初始化，解析 Grid
+        if (!tab._initialized) {
+            mini.parse(bodyEl);
+            tab._initialized = true;
+            var grid = mini.get(tab._gridId);
+            if (grid) {
+                grid.setUrl(context + '/alarmQueryController/getAlarmData');
+                grid.load();
+            }
+        } else {
+            // 已初始化，刷新数据
+        	var grid = mini.get(tab._gridId);
+            if (grid) grid.load();
         }
     }
 
+    // ================================================================
+    // 10. 刷新详情数据
+    // ================================================================
     function refreshDetailData() {
-        if (window._skipDetailDataLoad) {
-            window._skipDetailDataLoad = false;
-            return;
-        }
-        if (!currentDeviceId) return;
         var detailTabs = mini.get('alarmDetailTabs');
         if (!detailTabs) return;
         var activeTab = detailTabs.getActiveTab();
-        if (!activeTab || activeTab.name === 'placeholder') return;
-        var tabName = activeTab.name;
-        var grid = mini.get('alarmDetailGrid_' + tabName);
+        if (!activeTab || activeTab._key === 'placeholder') return;
+        var grid = mini.get(activeTab._gridId);
         if (grid) {
             grid.load();
-            // 延迟执行布局刷新，确保容器已稳定
-            setTimeout(function() {
-                grid.doLayout();
-            }, 50);
         }
     }
 
+    // ================================================================
+    // 11. Grid 事件处理（全局函数，供声明式绑定）
+    // ================================================================
+    function onDetailGridBeforeLoad(e) {
+        var params = e.params || {};
+        var pageIndex = params.pageIndex || 0;
+        var pageSize = params.pageSize || 100;
+        params.start = pageIndex * pageSize;
+        params.limit = pageSize;
+        var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+        params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+        params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+        params.deviceId = currentDeviceId;
+        params.deviceName = currentDeviceName;
+        var detailTabs = mini.get('alarmDetailTabs');
+        if (detailTabs) {
+            var activeTab = detailTabs.getActiveTab();
+            if (activeTab) {
+                params.alarmType = getAlarmTypeFromTabName(activeTab.name);
+            } else {
+                params.alarmType = -1;
+            }
+        } else {
+            params.alarmType = -1;
+        }
+        var startDate = mini.get('detailStartDate');
+        var endDate = mini.get('detailEndDate');
+        var alarmLevelCombo = mini.get('detailAlarmLevel');
+        params.startDate = startDate ? startDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+        params.endDate = endDate ? endDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+        params.alarmLevel = alarmLevelCombo ? alarmLevelCombo.getValue() : '';
+        params.isSendMessage = '';
+        e.params = params;
+    }
+
+    function onDetailGridLoad(e) {
+        var grid = e.sender;
+        var result = e.result;
+        if (result && result.columns) {
+            var cols = buildDetailColumns(result.columns);
+            document.getElementById('AlarmDetailsColumnStr_Id').value = JSON.stringify(result.columns);
+            grid.setColumns(cols);
+        }
+        var totalSpan = document.getElementById('detailTotalCountSpan');
+        if (totalSpan) totalSpan.textContent = result ? result.totalCount : 0;
+        document.getElementById('detailTotalCountLabel').style.display = 'inline';
+        if (result && result.start_date) {
+            var startDate = mini.get('detailStartDate');
+            var endDate = mini.get('detailEndDate');
+            if (startDate && !startDate.getValue()) startDate.setValue(result.start_date);
+            if (endDate && !endDate.getValue()) endDate.setValue(result.end_date);
+        }
+    }
+
+    // ================================================================
+    // 12. 辅助函数：构建表格列
+    // ================================================================
     function buildDetailColumns(colsData) {
         var cols = [];
         for (var i = 0; i < colsData.length; i++) {
@@ -1482,7 +1617,7 @@ String moduleId = request.getParameter("moduleId");
     }
 
     // ================================================================
-    // 7. 导出功能
+    // 13. 导出功能
     // ================================================================
     function exportAlarmOverview() {
         var orgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id').getValue() : '';
@@ -1493,6 +1628,8 @@ String moduleId = request.getParameter("moduleId");
         if (statTab && statTab.getActiveTab() && statTab.getActiveTab().name === 'stat_level') statType = 1;
         var alarmType = document.getElementById('selectedAlarmStatType_Id').value || '';
         var alarmLevel = document.getElementById('selectedAlarmStatLevel_Id').value || '';
+        var statRange = mini.get('alarmStatRangeType');
+        var alarmQueryStatRangeType = statRange ? parseInt(statRange.getValue(), 10) : 0;
         var fileName = _loginUserLanguageResource.alarmData + '-' + _loginUserLanguageResource.deviceList;
         var title = fileName;
         var columnStr = document.getElementById('AlarmOverviewColumnStr_Id').value;
@@ -1527,23 +1664,26 @@ String moduleId = request.getParameter("moduleId");
         var key = 'exportAlarmOverview_' + deviceType + '_' + Date.now();
         var url = context + '/alarmQueryController/exportAlarmOverviewData';
         var param = '&fields=' + fields + '&heads=' + URLencode(URLencode(heads)) +
-            '&orgId=' + orgId + '&deviceType=' + deviceType + '&deviceName=' + encodeURIComponent(encodeURIComponent(deviceName)) +
-            '&alarmType=' + alarmType + '&alarmLevel=' + alarmLevel + '&statType=' + statType +
-            '&alarmQueryStatRangeType=0&isSendMessage=' +
-            '&fileName=' + encodeURIComponent(encodeURIComponent(fileName)) +
-            '&title=' + encodeURIComponent(encodeURIComponent(title)) +
+            '&orgId=' + orgId + 
+            '&deviceType=' + deviceType + 
+            '&deviceName=' + URLencode(URLencode(deviceName)) +
+            '&alarmType=' + alarmType + 
+            '&alarmLevel=' + alarmLevel + 
+            '&statType=' + statType +
+            '&alarmQueryStatRangeType='+alarmQueryStatRangeType+
+            //'&isSendMessage=0' +
+            '&fileName=' + URLencode(URLencode(fileName)) +
+            '&title=' + URLencode(URLencode(title)) +
             '&key=' + key;
-        exportDataMask(key, document.querySelector('.device-overview-area'), _loginUserLanguageResource.loadingData);
+        exportDataMask(key, 'alarmQueryPanel', _loginUserLanguageResource.loadingData);
         openExcelWindow(url + '?flag=true' + param);
     }
 
     function exportAlarmDetail() {
-        if (!currentDeviceId) { mini.alert(_loginUserLanguageResource.checkOne); return; }
         var detailTabs = mini.get('alarmDetailTabs');
         var activeTab = detailTabs ? detailTabs.getActiveTab() : null;
-        if (!activeTab || activeTab.name === 'placeholder') { mini.alert('请选择报警类型'); return; }
-        var tabName = activeTab.name;
-        var grid = mini.get('alarmDetailGrid_' + tabName);
+        if (!activeTab || activeTab._key === 'placeholder') { mini.alert('请选择报警类型'); return; }
+        var grid = mini.get(activeTab._gridId);
         if (!grid) { mini.alert('表格未加载完成'); return; }
         var orgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id').getValue() : '';
         var deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
@@ -1554,7 +1694,7 @@ String moduleId = request.getParameter("moduleId");
         var startDate = mini.get('detailStartDate');
         var endDate = mini.get('detailEndDate');
         var alarmLevelCombo = mini.get('detailAlarmLevel');
-        var alarmType = getAlarmTypeFromTabName(tabName);
+        var alarmType = getAlarmTypeFromTabName(activeTab.name);
         var fileName = currentDeviceName + '-' + activeTab.title;
         var title = fileName;
         var columnStr = document.getElementById('AlarmDetailsColumnStr_Id').value;
@@ -1602,19 +1742,19 @@ String moduleId = request.getParameter("moduleId");
             '&fileName=' + encodeURIComponent(encodeURIComponent(fileName)) +
             '&title=' + encodeURIComponent(encodeURIComponent(title)) +
             '&key=' + key;
-        exportDataMask(key, document.querySelector('.right-panel'), _loginUserLanguageResource.loadingData);
+        exportDataMask(key, 'alarmQueryPanel', _loginUserLanguageResource.loadingData);
         openExcelWindow(url + '?flag=true' + param);
     }
 
     // ================================================================
-    // 8. 刷新与重置
+    // 14. 刷新与重置
     // ================================================================
     function refreshData() {
         if (currentLevel2) loadAllData(currentLevel2);
     }
 
     // ================================================================
-    // 10. 页面初始化
+    // 15. 页面初始化
     // ================================================================
     $(document).ready(function() {
         mini.parse();
@@ -1665,6 +1805,8 @@ String moduleId = request.getParameter("moduleId");
     window.onOverviewGridBeforeLoad = onOverviewGridBeforeLoad;
     window.onOverviewGridLoad = onOverviewGridLoad;
     window.onOverviewRowSelect = onOverviewRowSelect;
+    window.onDetailGridBeforeLoad = onDetailGridBeforeLoad;
+    window.onDetailGridLoad = onDetailGridLoad;
 </script>
 </body>
 </html>

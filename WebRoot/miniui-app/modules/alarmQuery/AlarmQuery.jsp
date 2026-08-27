@@ -227,10 +227,10 @@ String moduleId = request.getParameter("moduleId");
                                     <div class="mini-toolbar" style="border:0;border-bottom:1px solid #e8e8e8;padding:4px 8px;display:flex;align-items:center;gap:6px;flex-shrink:0;">
                                         <button id="btnRefreshOverview" class="mini-button" iconCls="note-refresh" onclick="refreshData()">刷新</button>
                                         <span class="separator"></span>
-                                        <span style="font-size:12px;color:#333;margin-right:4px;">统计类型：</span>
-                                        <input id="alarmStatRangeType" class="mini-radiobuttonlist" data="[{'id':0,'text':'实时'},{'id':1,'text':'历史'}]" valueField="id" textField="text" value="0" onvaluechanged="onStatRangeChanged" />
+                                        <span id="statRangeTypeLabel" style="font-size:12px;color:#333;margin-right:4px;">统计类型：</span>
+                                        <input id="alarmStatRangeType" class="mini-radiobuttonlist" valueField="id" textField="text" value="0" onvaluechanged="onStatRangeChanged" />
                                         <span class="separator"></span>
-                                        <input id="overviewDeviceCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --" url="<%=path%>/wellInformationManagerController/loadWellComboxList" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onOverviewDeviceChange" />
+                                        <input id="overviewDeviceCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --" url="<%=path%>/wellInformationManagerController/loadWellComboxList" onbeforeload="onDeviceComboBeforeLoad" onshowpopup="onDeviceComboShowPopup" onload="onDeviceComboLoad" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onOverviewDeviceChange" />
                                         <span style="flex:1;"></span>
                                         <button id="exportAlarmOverviewBtn" class="mini-button" iconCls="export" onclick="exportAlarmOverview()">导出</button>
                                         <input id="AlarmOverviewSelectRow_Id" type="hidden" value="-1" />
@@ -281,10 +281,10 @@ String moduleId = request.getParameter("moduleId");
                             <input id="detailEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                             <span style="font-size:12px;color:#333;margin-left:8px;" id="detailAlarmLevelLabel">报警级别：</span>
                             <input id="detailAlarmLevel" class="mini-combobox" style="width:100px;" emptyText="-- 全部 --" valueField="id" textField="text" />
-                            <button class="mini-button" iconCls="search" onclick="refreshDetailData()">查询</button>
-                            <button class="mini-button" iconCls="export" onclick="exportAlarmDetail()">导出</button>
+                            <button id="detailQueryBtn" class="mini-button" iconCls="search" onclick="refreshDetailData()">查询</button>
+                            <button id="detailExportBtn" class="mini-button" iconCls="export" onclick="exportAlarmDetail()">导出</button>
                             <span style="flex:1;"></span>
-                            <span id="detailTotalCountLabel" style="font-size:12px;color:#999;display:none;">总记录数：<span id="detailTotalCountSpan">0</span></span>
+                            <span id="detailTotalCountLabel">总记录数：</span><span id="detailTotalCountSpan">0</span>
                         </div>
                         <!-- ★★★ 使用 mini-fit 包裹 Tabs，确保高度自适应 ★★★ -->
                         <div class="mini-fit">
@@ -1526,6 +1526,38 @@ String moduleId = request.getParameter("moduleId");
             grid.load();
         }
     }
+    
+    window.onDeviceComboBeforeLoad = function(e) {
+        var params = e.params || {};
+
+        var pageIndex = params.pageIndex || 0;
+        var pageSize = params.pageSize || defaultWellComboxSize;
+        params.start = pageIndex * pageSize;
+        params.limit = pageSize;
+
+        var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+        params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+        params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+        var combo = mini.get('overviewDeviceCombo');
+        params.deviceName = combo ? combo.getValue() : '';
+    }
+
+
+    window.onDeviceComboShowPopup = function(e) {
+        var combo = e.sender;
+        // 如果当前没有数据或数据为空，加载
+        var data = combo.getData();
+        if (!data || data.length <= 1) {
+            // 先隐藏下拉，防止显示空
+            combo.hidePopup();
+        }
+        combo.load(combo.url);
+    };
+
+    window.onDeviceComboLoad = function(e) {
+        var combo = e.sender;
+
+    };
 
     // ================================================================
     // 11. Grid 事件处理（全局函数，供声明式绑定）
@@ -1752,22 +1784,52 @@ String moduleId = request.getParameter("moduleId");
     function refreshData() {
         if (currentLevel2) loadAllData(currentLevel2);
     }
-
-    // ================================================================
-    // 15. 页面初始化
-    // ================================================================
-    $(document).ready(function() {
-        mini.parse();
-        buildLevel1Tabs();
-        var btnRefresh = mini.get('btnRefreshOverview');
+    
+    function initI18n() {
+    	var btnRefresh = mini.get('btnRefreshOverview');
         if (btnRefresh) btnRefresh.setText(_loginUserLanguageResource.refresh);
         var exportBtn = mini.get('exportAlarmOverviewBtn');
         if (exportBtn) exportBtn.setText(_loginUserLanguageResource.exportData);
         var overviewCombo = mini.get('overviewDeviceCombo');
         if (overviewCombo) overviewCombo.setEmptyText('--' + _loginUserLanguageResource.all + '--');
+        
+        document.getElementById('statRangeTypeLabel').textContent = _loginUserLanguageResource.statisticsType + '：';
+        document.getElementById('overviewDeviceCountLabel').textContent = _loginUserLanguageResource.deviceCount + '：';
+        document.getElementById('overviewAlarmCountLabel').textContent = _loginUserLanguageResource.alarmCount + '：';
+        
+        var statTabs = mini.get('statTabs');
+        if (statTabs) {
+            var tabs = statTabs.getTabs();
+            if (tabs && tabs.length >= 2) {
+                // 假设第一个 tab 索引 0 是“报警类型”，索引 1 是“报警级别”
+                var tab0 = tabs[0];
+                var tab1 = tabs[1];
+                if (tab0) statTabs.updateTab(tab0, { title: _loginUserLanguageResource.alarmType });
+                if (tab1) statTabs.updateTab(tab1, { title: _loginUserLanguageResource.alarmLevel });
+            }
+        }
+        
+     // 设置统计类型单选按钮列表的选项（实时 / 历史）
+        var statRangeType = mini.get('alarmStatRangeType');
+        if (statRangeType) {
+            statRangeType.setData([
+                { id: "0", text: _loginUserLanguageResource.realtime },
+                { id: "1", text: _loginUserLanguageResource.history }    
+            ]);
+            statRangeType.setValue("0", false);//第二个参数 false 表示不触发 onvaluechanged 事件
+        }
+        
+        
         document.getElementById('detailRangeLabel').textContent = _loginUserLanguageResource.range + '：';
         document.getElementById('detailTimeToLabel').textContent = _loginUserLanguageResource.timeTo + '：';
         document.getElementById('detailAlarmLevelLabel').textContent = _loginUserLanguageResource.alarmLevel + '：';
+        
+        mini.get('detailQueryBtn').setText(_loginUserLanguageResource.search);
+        mini.get('detailExportBtn').setText(_loginUserLanguageResource.exportData);
+        mini.get('detailAlarmLevel').setEmptyText('--' + _loginUserLanguageResource.all + '--');
+        
+        document.getElementById('detailTotalCountLabel').textContent = _loginUserLanguageResource.totalCount + '：';
+        
         var alarmLevelCombo = mini.get('detailAlarmLevel');
         if (alarmLevelCombo) {
             alarmLevelCombo.setData([
@@ -1778,6 +1840,16 @@ String moduleId = request.getParameter("moduleId");
             ]);
             alarmLevelCombo.setValue('');
         }
+    }
+
+    // ================================================================
+    // 15. 页面初始化
+    // ================================================================
+    $(document).ready(function() {
+        mini.parse();
+        initI18n();
+        buildLevel1Tabs();
+        
         window.addEventListener('message', function(event) {
             var message = event.data;
             if (!message || !message.action) return;

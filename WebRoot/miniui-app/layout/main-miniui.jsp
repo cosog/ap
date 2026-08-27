@@ -779,7 +779,9 @@ request.setAttribute("browserLang", browserLang);
         var mapping = {
             'AP.view.realTimeMonitoring.RealTimeMonitoringInfoView':  context + '/miniui-app/modules/realTimeMonitoring/RealTimeMonitoringInfo.jsp',
             'AP.view.historyQuery.HistoryQueryInfoView':  context + '/miniui-app/modules/historyQuery/HistoryQuery.jsp',
-            'AP.view.alarmQuery.AlarmQueryInfoView': context + '/miniui-app/modules/alarmQuery/AlarmQuery.jsp'
+            'AP.view.alarmQuery.AlarmQueryInfoView': context + '/miniui-app/modules/alarmQuery/AlarmQuery.jsp',
+            'AP.view.log.DeviceOperationLogInfoView': context + '/miniui-app/modules/log/DeviceOperationLog.jsp',
+            'AP.view.log.SystemLogInfoView': context + '/miniui-app/modules/log/SystemLog.jsp'
         };
         return mapping[viewSrc] || null;
     }

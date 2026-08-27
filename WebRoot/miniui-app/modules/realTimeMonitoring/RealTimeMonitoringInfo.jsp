@@ -423,7 +423,7 @@ String moduleId = request.getParameter("moduleId");
                                             <div class="mini-toolbar" style="border:0;border-bottom:1px solid #e8e8e8;padding:4px 8px;display:flex;align-items:center;gap:6px;">
                                                 <button id="btnRefresh" class="mini-button" iconCls="note-refresh" onclick="refreshDeviceList()">刷新</button>
                                                 <span class="separator"></span>
-                                                <input id="deviceCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --" url="<%=path%>/wellInformationManagerController/loadWellComboxList" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onDeviceComboChange" />
+                                                <input id="deviceCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --" url="<%=path%>/wellInformationManagerController/loadWellComboxList" onbeforeload="onDeviceComboBeforeLoad" onshowpopup="onDeviceComboShowPopup" onload="onDeviceComboLoad" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onDeviceComboChange" />
                                                 <span style="flex:1;"></span>
                                                 <button id="exportRealTimeMonitoringDeviceListBtn" class="mini-button" iconCls="export" onclick="exportRealTimeMonitoringData()">导出</button>
                                                 <button id="queryDeviceHistoryDataBtn" class="mini-button" onclick="gotoHistory()">查看历史</button>
@@ -4888,6 +4888,38 @@ String moduleId = request.getParameter("moduleId");
 
             loadData();
         }
+        
+        window.onDeviceComboBeforeLoad = function(e) {
+            var params = e.params || {};
+
+            var pageIndex = params.pageIndex || 0;
+            var pageSize = params.pageSize || defaultWellComboxSize;
+            params.start = pageIndex * pageSize;
+            params.limit = pageSize;
+
+            var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+            params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+            params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+            var combo = mini.get('deviceCombo');
+            params.deviceName = combo ? combo.getValue() : '';
+        }
+
+
+        window.onDeviceComboShowPopup = function(e) {
+            var combo = e.sender;
+            // 如果当前没有数据或数据为空，加载
+            var data = combo.getData();
+            if (!data || data.length <= 1) {
+                // 先隐藏下拉，防止显示空
+                combo.hidePopup();
+            }
+            combo.load(combo.url);
+        };
+
+        window.onDeviceComboLoad = function(e) {
+            var combo = e.sender;
+
+        };
 
 
         function exportDeviceRealTimeMonitoringData() {

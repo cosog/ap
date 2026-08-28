@@ -174,15 +174,4 @@ function refreshCalculateMaintainingData(){
 	}else{
 		Ext.create('AP.store.dataMaintaining.DataMaintainingDevcieListStore');
 	}
-	
-
-//	var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
-//	var activeId = tabPanel.getActiveTab().id;
-//	if(activeId=="AcquisitionDataMaintainingInfoPanel_Id"){
-//		refreshAcquisitionDataMaintainingData();
-//	}else if(activeId=="SRPCalculateMaintainingInfoPanel_Id"){
-//		refreshSRPCalculateMaintainingData();
-//	}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
-//		refreshPCPCalculateMaintainingData();
-//	}
 }

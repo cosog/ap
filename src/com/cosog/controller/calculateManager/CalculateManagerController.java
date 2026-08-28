@@ -102,6 +102,11 @@ public class CalculateManagerController extends BaseController {
 		
 		if(!StringManagerUtils.isNotNull(startDate)){
 			startDate=endDate.split(" ")[0]+" 00:00:00";
+			int realtimeDataRetentionTime=Config.getInstance().configFile.getAp().getOthers().getRealtimeDataRetentionTime();
+			if(realtimeDataRetentionTime<=0){
+				realtimeDataRetentionTime=1;
+			}
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(startDate), 1-realtimeDataRetentionTime)+" 00:00:00";
 		}
 //		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-120);
 		pager.setStart_date(startDate);

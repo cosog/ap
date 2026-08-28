@@ -99,7 +99,20 @@
 
     // 跳转登录（使用顶层窗口，避免 iframe 内嵌）
     function redirectLogin() {
-        window.top.location.href = getContext() + '/login';
+        var ctx = getContext();
+        var loginUrl = ctx + '/login';
+        // 尝试跳出所有框架
+        try {
+            // 如果当前在 iframe 中，则跳出到顶层
+            if (window.top && window.top !== window) {
+                window.top.location.replace(loginUrl);
+            } else {
+                window.location.replace(loginUrl);
+            }
+        } catch (e) {
+            // 跨域限制时降级
+            window.location.replace(loginUrl);
+        }
     }
 
     // 跳转错误页（使用顶层窗口）

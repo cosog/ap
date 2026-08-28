@@ -464,7 +464,7 @@ request.setAttribute("browserLang", browserLang);
         } else {
             var isDefault = (FIRST_LEAF_MODULE_ID !== null && moduleId === FIRST_LEAF_MODULE_ID);
             var tab = {
-                name: moduleId,
+                name: moduleCode,
                 id:moduleId,
                 title: title,
                 iconCls: iconCls,
@@ -475,7 +475,7 @@ request.setAttribute("browserLang", browserLang);
             tabs.activeTab(tab);
         }
         mini.get('topModule_Id').setValue(moduleCode);
-        saveAccessModuleLog(moduleCode);
+        //saveAccessModuleLog(moduleCode);
     }
 
     function onMenuTreeLoad(e) {
@@ -515,7 +515,7 @@ request.setAttribute("browserLang", browserLang);
                     } else {
                         var isDefault = (FIRST_LEAF_MODULE_ID !== null && moduleId === FIRST_LEAF_MODULE_ID);
                         var tab = {
-                            name: moduleId,
+                            name: moduleCode,
                             id:moduleId,
                             title: title,
                             iconCls: iconCls,
@@ -526,7 +526,7 @@ request.setAttribute("browserLang", browserLang);
                         tabs.activeTab(tab);
                     }
                     mini.get('topModule_Id').setValue(moduleCode);
-                    saveAccessModuleLog(moduleCode);
+                    //saveAccessModuleLog(moduleCode);
                     
                     
                 }, 300);
@@ -549,6 +549,7 @@ request.setAttribute("browserLang", browserLang);
     function onTabActiveChanged(e) {
     	var tab = e.tab;
         if (!tab) return;
+        saveAccessModuleLog(tab.name);
         refreshCurrentModule();
     }
 
@@ -781,7 +782,8 @@ request.setAttribute("browserLang", browserLang);
             'AP.view.historyQuery.HistoryQueryInfoView':  context + '/miniui-app/modules/historyQuery/HistoryQuery.jsp',
             'AP.view.alarmQuery.AlarmQueryInfoView': context + '/miniui-app/modules/alarmQuery/AlarmQuery.jsp',
             'AP.view.log.DeviceOperationLogInfoView': context + '/miniui-app/modules/log/DeviceOperationLog.jsp',
-            'AP.view.log.SystemLogInfoView': context + '/miniui-app/modules/log/SystemLog.jsp'
+            'AP.view.log.SystemLogInfoView': context + '/miniui-app/modules/log/SystemLog.jsp',
+            'AP.view.dataMaintaining.CalculateMaintainingInfoView': context + '/miniui-app/modules/dataMaintaining/CalculateMaintaining.jsp'
         };
         return mapping[viewSrc] || null;
     }

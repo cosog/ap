@@ -359,7 +359,7 @@ public class CalculateManagerController extends BaseController {
 		String applicationScenarios = ParamUtils.getParameter(request, "applicationScenarios");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		Gson gson = new Gson();
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		if("1".equals(calculateType) || "2".equals(calculateType)){
 			java.lang.reflect.Type type = new TypeToken<CalculateManagerHandsontableChangedData>() {}.getType();
 			CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData=gson.fromJson(data, type);
@@ -368,7 +368,7 @@ public class CalculateManagerController extends BaseController {
 			}else if("2".equals(calculateType)){
 				this.calculateManagerService.saveRPMReCalculateData(calculateManagerHandsontableChangedData,StringManagerUtils.stringToInteger(applicationScenarios),language);
 			}
-			json ="{success:true}";
+			json ="{\"success\":true}";
 		}else if("5".equals(calculateType)){
 			
 		}
@@ -412,7 +412,7 @@ public class CalculateManagerController extends BaseController {
 		
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserOrgid();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String tableName="tbl_srpacqdata_hist";
@@ -483,7 +483,7 @@ public class CalculateManagerController extends BaseController {
 		
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			if (user != null) {
-				orgId = "" + user.getUserOrgid();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
 		String tableName="tbl_srpacqdata_hist";
@@ -548,11 +548,11 @@ public class CalculateManagerController extends BaseController {
 			HttpSession session=request.getSession();
 			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
-				orgId = "" + user.getUserOrgid();
+				orgId = "" + user.getUserOrgIds();
 			}
 		}
-		this.calculateManagerService.recalculateByProductionData(orgId,deviceName,deviceType,startDate,endDate,calculateSign,calculateType);
-		String json ="{success:true}";
+		int r=this.calculateManagerService.recalculateByProductionData(orgId,deviceName,deviceType,startDate,endDate,calculateSign,calculateType);
+		String json ="{\"success\":true}";
 //		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

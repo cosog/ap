@@ -49,7 +49,7 @@ public class TotalCalculateThread extends Thread{
 		if(deviceType==0){
 			String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
 					+ " from tbl_srpdailycalculationdata t,tbl_device t2 "
-					+ " where t.wellid=t2.id "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id="+recordId;
 			String fesDiagramSql="select to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 					+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
@@ -282,8 +282,8 @@ public class TotalCalculateThread extends Thread{
 			}
 		}else{
 			String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
-					+ " from tbl_pcpdailycalculationdata t,tbl_pcpdevice t2 "
-					+ " where t.wellid=t2.id "
+					+ " from tbl_pcpdailycalculationdata t,tbl_device t2 "
+					+ " where t.deviceId=t2.id "
 					+ " and t.id="+recordId;
 			String rpmSql="select "
 					+ "to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"

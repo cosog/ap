@@ -3308,11 +3308,16 @@ String moduleId = request.getParameter("moduleId");
             var combo = e.sender;
             // 如果当前没有数据或数据为空，加载
             var data = combo.getData();
+            var hidePopup=false;
             if (!data || data.length <= 1) {
                 // 先隐藏下拉，防止显示空
                 combo.hidePopup();
+                hidePopup=true;
             }
             combo.load(combo.url);
+            if(hidePopup){
+           	 combo.showPopup();
+            }
         };
 
         window.onDeviceComboLoad = function(e) {

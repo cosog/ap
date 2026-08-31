@@ -90,7 +90,8 @@ request.setAttribute("browserLang", browserLang);
         var loginUserLanguageResourceFirstLower = JSON.parse('<%= loginUserLanguageResourceFirstLower.replace("'", "\\'") %>');
         var configFile = JSON.parse('<%= configFileJson.replace("'", "\\'") %>');
         var oem = configFile.ap.oem;
-        
+        var emailConfig=configFile.ap.email;
+        var emailEnable=emailConfig.enable;
         
         var tabInfo = JSON.parse('<%= tabInfoJson.replace("'", "\\'") %>');
         var defaultPageSize = configFile.ap.others.pageSize || 50;
@@ -783,7 +784,8 @@ request.setAttribute("browserLang", browserLang);
             'AP.view.alarmQuery.AlarmQueryInfoView': context + '/miniui-app/modules/alarmQuery/AlarmQuery.jsp',
             'AP.view.log.DeviceOperationLogInfoView': context + '/miniui-app/modules/log/DeviceOperationLog.jsp',
             'AP.view.log.SystemLogInfoView': context + '/miniui-app/modules/log/SystemLog.jsp',
-            'AP.view.dataMaintaining.CalculateMaintainingInfoView': context + '/miniui-app/modules/dataMaintaining/CalculateMaintaining.jsp'
+            'AP.view.dataMaintaining.CalculateMaintainingInfoView': context + '/miniui-app/modules/dataMaintaining/CalculateMaintaining.jsp',
+            'AP.view.acquisitionUnit.ProtocolConfigInfoView': context + '/miniui-app/modules/driverConfig/DriverConfig.jsp'
         };
         return mapping[viewSrc] || null;
     }

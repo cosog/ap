@@ -101,7 +101,7 @@ var _defaultPageSize = getGlobalVar('defaultPageSize', '');
 var _defaultComboxSize = getGlobalVar('defaultComboxSize', '');
 var _defaultGraghSize = getGlobalVar('defaultGraghSize', '');
 
-
+var _emailEnable = getGlobalVar('emailEnable', '');
 
 // ================================================================
 // 2. String 扩展

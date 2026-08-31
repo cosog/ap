@@ -199,9 +199,9 @@ String moduleId = request.getParameter("moduleId");
                     <div class="left-panel" style="height:100%; background:#f0f2f5; padding:4px; display:flex; flex-direction:column; overflow:hidden;">
                         <div class="device-overview-area" style="height:100%;">
                             <div class="mini-toolbar" style="border:0;border-bottom:1px solid #e8e8e8;padding:4px 8px;display:flex;align-items:center;gap:6px;flex-shrink:0;">
-                                <button id="refreshDeviceBtn" class="mini-button" iconCls="note-refresh">刷新</button>
+                                <button id="refreshDeviceBtn" class="mini-button" iconCls="note-refresh" onclick="refreshDeviceBtnClick()">刷新</button>
                                 <span class="separator"></span>
-                                <input id="deviceListCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --"  url="<%=path%>/wellInformationManagerController/loadWellComboxList" onbeforeload="onDeviceComboBeforeLoad" onshowpopup="onDeviceComboShowPopup" onload="onDeviceComboLoad" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onDeviceChange" />
+                                <input id="deviceListCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --"  url="<%=path%>/wellInformationManagerController/loadWellComboxList" onbeforeload="onDeviceComboBeforeLoad" onshowpopup="onDeviceComboShowPopup" onload="onDeviceComboLoad" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onDeviceCombChange" />
                             </div>
                             <div style="flex:1;overflow:hidden;">
                                 <div id="deviceGrid" class="mini-datagrid" style="width:100%;height:100%;" idField="id" pageSize="100" allowResize="true" allowAlternating="true" 
@@ -229,9 +229,9 @@ String moduleId = request.getParameter("moduleId");
                                             <div title="实时数据" name="realtime" style="height:100%;">
                                                 <div class="sub-tab-container">
                                                     <div class="mini-toolbar">
-                                                        <input id="acqRealtimeStartDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
+                                                        <input id="acqRealtimeStartDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" enabled="false" />
                                                         <span style="margin-left:8px;font-size:12px;color:#333;" id="acqRealtimeToLabel">至：</span>
-                                                        <input id="acqRealtimeEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
+                                                        <input id="acqRealtimeEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" enabled="false" />
                                                         <span class="separator"></span>
                                                         <button id="acqRealtimeQueryBtn" class="mini-button" iconCls="search" onclick="onAcqRealtimeQuery()">查询</button>
                                                         <span style="flex:1;"></span>
@@ -293,57 +293,71 @@ String moduleId = request.getParameter("moduleId");
                                                         <input id="srpSingleEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                                                         <span class="separator"></span>
                                                         <span id="srpSingleStatusLabel">计算状态：</span>
-                                                        <input id="srpSingleStatusCombo" class="mini-combobox" style="width:100px;" emptyText="--全部--" />
+                                                        <input id="srpSingleStatusCombo" class="mini-combobox" style="width:100px;" emptyText="--全部--" 
+    														valueField="boxkey" textField="boxval" 
+    														dataField="list" 
+    														reloadOnOpen="true" 
+    														autoLoad="false" 
+    														onbeforeload="onSRPStatusComboBeforeLoad" 
+    														onshowpopup="onSRPStatusComboShowPopup" />
                                                         <span class="separator"></span>
                                                         <span id="srpSingleResultLabel">工况：</span>
-                                                        <input id="srpSingleResultCombo" class="mini-combobox" style="width:120px;" emptyText="--全部--" />
+                                                        <input id="srpSingleResultCombo" class="mini-combobox" style="width:120px;" emptyText="--全部--" 
+    														valueField="boxkey" textField="boxval" 
+    														dataField="list" 
+    														reloadOnOpen="true" 
+    														autoLoad="false" 
+   	 														onbeforeload="onSRPResultComboBeforeLoad"
+   	 														onload="onSRPResultComboLoad"
+   	 														onshowpopup="onSRPResultComboShowPopup" />
                                                         <span class="separator"></span>
-                                                        <button id="srpSingleQueryBtn" class="mini-button" iconCls="search">查询</button>
+                                                        <button id="srpSingleQueryBtn" class="mini-button" iconCls="search" onclick="loadSRPSingleData()">查询</button>
                                                     </div>
                                                     <div class="mini-toolbar">
                                                         <span style="flex:1;"></span>
-                                                        <button id="srpSingleEditBtn" class="mini-button" iconCls="save">修改历史数据计算</button>
-                                                        <button id="srpSingleLinkBtn" class="mini-button" iconCls="save">关联生产数据计算</button>
-                                                        <button id="srpSingleExportBtn" class="mini-button" iconCls="export">导出请求数据</button>
-                                                        <button id="srpSingleDeleteBtn" class="mini-button" iconCls="delete">删除</button>
+                                                        <button id="srpSingleEditBtn" class="mini-button" iconCls="save" onclick="saveSRPSingleData()">修改历史数据计算</button>
+                                                        <button id="srpSingleLinkBtn" class="mini-button" iconCls="save" onclick="linkSRPSingleData()">关联生产数据计算</button>
+                                                        <button id="srpSingleExportBtn" class="mini-button" iconCls="export" onclick="exportSRPSingleData()">导出请求数据</button>
+                                                        <button id="srpSingleDeleteBtn" class="mini-button" iconCls="delete" onclick="deleteSRPSingleData()">删除</button>
                                                     </div>
-                                                    <div id="srpSingleGrid" class="mini-datagrid"
-                                                         style="width:100%; height:100%;"
-                                                         idField="recordId" pageSize="100" allowResize="true" allowAlternating="true"
-                                                         showPager="true" showPageInfo="true"
-                                                         allowCellEdit="true" allowCellSelect="true">
-                                                        <div property="columns">
-                                                            <div type="checkcolumn" width="30"></div>
-                                                            <div field="deviceName" width="120" header="设备名称"></div>
-                                                            <div field="acqTime" width="150" dateFormat="yyyy-MM-dd HH:mm:ss" header="采集时间"></div>
-                                                        </div>
-                                                        <div property="emptyText" class="empty-msg">暂无单条记录</div>
-                                                    </div>
+                                                    <div id="srpSingleGrid" class="mini-datagrid" style="width:100%; height:100%;"
+     													idField="id" pageSize="100" allowResize="true" allowAlternating="true"
+     													showPager="true" showPageInfo="true"
+     													multiSelect="true"
+     													allowCellEdit="true" allowCellSelect="true" cellEditAction="celldblclick"
+     													dataField="totalRoot" totalField="totalCount"
+     													onbeforeload="onSrpSingleGridBeforeLoad"
+     													onload="onSrpSingleGridLoad"
+     													oncellvalidation="onSrpSingleCellValidation"
+     													oncellcommitedit="onSrpSingleCellCommitEdit"
+     													oncellbeginedit="onSrpSingleCellBeginEdit" >
+    													<div property="columns"></div>
+    													<div property="emptyText" class="empty-msg">暂无单条记录</div>
+													</div>
                                                 </div>
                                             </div>
                                             <!-- 汇总记录 -->
-                                            <div title="汇总记录" name="total" style="height:100%;">
+                                            <div id="srpTotalPanel" title="汇总记录" name="total" style="height:100%;">
                                                 <div class="sub-tab-container">
                                                     <div class="mini-toolbar">
                                                         <input id="srpTotalStartDate" class="mini-datepicker" style="width:100px;" format="yyyy-MM-dd" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                                                         <span style="margin-left:8px;font-size:12px;color:#333;" id="srpTotalToLabel">至：</span>
                                                         <input id="srpTotalEndDate" class="mini-datepicker" style="width:100px;" format="yyyy-MM-dd" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                                                         <span style="flex:1;"></span>
-                                                        <button id="srpTotalQueryBtn" class="mini-button" iconCls="search">查询</button>
-                                                        <button id="srpTotalReCalcBtn" class="mini-button" iconCls="edit" hidden>重新汇总</button>
-                                                        <button id="srpTotalExportBtn" class="mini-button" iconCls="export" hidden>导出请求数据</button>
+                                                        <button id="srpTotalQueryBtn" class="mini-button" iconCls="search" onclick="loadSRPTotalData()">查询</button>
+                                                        <button id="srpTotalReCalcBtn" class="mini-button" iconCls="edit" onclick="reTotalSRP()">重新汇总</button>
+                                                        <button id="srpTotalExportBtn" class="mini-button" iconCls="export" onclick="exportSRPTotalData()">导出请求数据</button>
                                                     </div>
-                                                    <div id="srpTotalGrid" class="mini-datagrid"
-                                                         style="width:100%; height:100%;"
-                                                         idField="id" pageSize="100" allowResize="true" allowAlternating="true"
-                                                         showPager="true" showPageInfo="true">
-                                                        <div property="columns">
-                                                            <div type="checkcolumn" width="30"></div>
-                                                            <div field="deviceName" width="120" header="设备名称"></div>
-                                                            <div field="calDate" width="150" dateFormat="yyyy-MM-dd" header="计算日期"></div>
-                                                        </div>
-                                                        <div property="emptyText" class="empty-msg">暂无汇总记录</div>
-                                                    </div>
+                                                    <div id="srpTotalGrid" class="mini-datagrid" style="width:100%; height:100%;"
+     													idField="id" pageSize="100" allowResize="true" allowAlternating="true"
+     													showPager="true" showPageInfo="true"
+     													multiSelect="true"
+     													dataField="totalRoot" totalField="totalCount"
+     													onbeforeload="onSrpTotalGridBeforeLoad"
+     													onload="onSrpTotalGridLoad">
+    													<div property="columns"></div>
+    													<div property="emptyText" class="empty-msg">暂无汇总记录</div>
+													</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -363,29 +377,37 @@ String moduleId = request.getParameter("moduleId");
                                                         <input id="pcpSingleEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                                                         <span class="separator"></span>
                                                         <span id="pcpSingleStatusLabel">计算状态：</span>
-                                                        <input id="pcpSingleStatusCombo" class="mini-combobox" style="width:100px;" emptyText="--全部--" />
+                                                        <input id="pcpSingleStatusCombo" class="mini-combobox" style="width:100px;" emptyText="--全部--" 
+    														valueField="boxkey" textField="boxval" 
+    														dataField="list" 
+    														reloadOnOpen="true" 
+    														autoLoad="false" 
+    														onbeforeload="onPCPStatusComboBeforeLoad" 
+    														onshowpopup="onPCPStatusComboShowPopup" />
                                                         <span class="separator"></span>
-                                                        <button id="pcpSingleQueryBtn" class="mini-button" iconCls="search">查询</button>
+                                                        <button id="pcpSingleQueryBtn" class="mini-button" iconCls="search" onclick="loadPCPSingleData()">查询</button>
                                                     </div>
                                                     <div class="mini-toolbar">
                                                         <span style="flex:1;"></span>
-                                                        <button id="pcpSingleEditBtn" class="mini-button" iconCls="save">修改历史数据计算</button>
-                                                        <button id="pcpSingleLinkBtn" class="mini-button" iconCls="save">关联生产数据计算</button>
-                                                        <button id="pcpSingleExportBtn" class="mini-button" iconCls="export">导出请求数据</button>
-                                                        <button id="pcpSingleDeleteBtn" class="mini-button" iconCls="delete">删除</button>
+                                                        <button id="pcpSingleEditBtn" class="mini-button" iconCls="save" onclick="savePCPSingleData()">修改历史数据计算</button>
+                                                        <button id="pcpSingleLinkBtn" class="mini-button" iconCls="save" onclick="linkPCPSingleData()">关联生产数据计算</button>
+                                                        <button id="pcpSingleExportBtn" class="mini-button" iconCls="export" onclick="exportPCPSingleData()">导出请求数据</button>
+                                                        <button id="pcpSingleDeleteBtn" class="mini-button" iconCls="delete" onclick="deletePCPSingleData()">删除</button>
                                                     </div>
-                                                    <div id="pcpSingleGrid" class="mini-datagrid"
-                                                         style="width:100%; height:100%;"
-                                                         idField="recordId" pageSize="100" allowResize="true" allowAlternating="true"
-                                                         showPager="true" showPageInfo="true"
-                                                         allowCellEdit="true" allowCellSelect="true">
-                                                        <div property="columns">
-                                                            <div type="checkcolumn" width="30"></div>
-                                                            <div field="deviceName" width="120" header="设备名称"></div>
-                                                            <div field="acqTime" width="150" dateFormat="yyyy-MM-dd HH:mm:ss" header="采集时间"></div>
-                                                        </div>
-                                                        <div property="emptyText" class="empty-msg">暂无单条记录</div>
-                                                    </div>
+                                                    <div id="pcpSingleGrid" class="mini-datagrid" 
+     													style="width:100%; height:100%;"
+     													idField="recordId" pageSize="100" allowResize="true" allowAlternating="true"
+     													showPager="true" showPageInfo="true"
+     													multiSelect="true"
+     													allowCellEdit="true" allowCellSelect="true" cellEditAction="celldblclick"
+     													dataField="totalRoot" totalField="totalCount"
+     													onbeforeload="onPcpSingleGridBeforeLoad"
+     													onload="onPcpSingleGridLoad"
+     													oncellcommitedit="onPcpSingleCellCommitEdit"
+     													oncellbeginedit="onPcpSingleCellBeginEdit">
+    													<div property="columns"><!-- 由 onload 动态生成 --></div>
+    													<div property="emptyText" class="empty-msg">暂无单条记录</div>
+													</div>
                                                 </div>
                                             </div>
                                             <!-- 汇总记录 -->
@@ -396,21 +418,21 @@ String moduleId = request.getParameter("moduleId");
                                                         <span style="margin-left:8px;font-size:12px;color:#333;" id="pcpTotalToLabel">至：</span>
                                                         <input id="pcpTotalEndDate" class="mini-datepicker" style="width:100px;" format="yyyy-MM-dd" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                                                         <span style="flex:1;"></span>
-                                                        <button id="pcpTotalQueryBtn" class="mini-button" iconCls="search">查询</button>
-                                                        <button id="pcpTotalReCalcBtn" class="mini-button" iconCls="edit" hidden>重新汇总</button>
-                                                        <button id="pcpTotalExportBtn" class="mini-button" iconCls="export" hidden>导出请求数据</button>
+                                                        <button id="pcpTotalQueryBtn" class="mini-button" iconCls="search" onclick="loadPCPTotalData()">查询</button>
+                                                        <button id="pcpTotalReCalcBtn" class="mini-button" iconCls="edit" onclick="reTotalPCP()">重新汇总</button>
+                                                        <button id="pcpTotalExportBtn" class="mini-button" iconCls="export" onclick="exportPCPTotalData()">导出请求数据</button>
                                                     </div>
-                                                    <div id="pcpTotalGrid" class="mini-datagrid"
-                                                         style="width:100%; height:100%;"
-                                                         idField="id" pageSize="100" allowResize="true" allowAlternating="true"
-                                                         showPager="true" showPageInfo="true">
-                                                        <div property="columns">
-                                                            <div type="checkcolumn" width="30"></div>
-                                                            <div field="deviceName" width="120" header="设备名称"></div>
-                                                            <div field="calDate" width="150" dateFormat="yyyy-MM-dd" header="计算日期"></div>
-                                                        </div>
-                                                        <div property="emptyText" class="empty-msg">暂无汇总记录</div>
-                                                    </div>
+                                                    <div id="pcpTotalGrid" class="mini-datagrid" 
+     													style="width:100%; height:100%;"
+     													idField="id" pageSize="100" allowResize="true" allowAlternating="true"
+     													showPager="true" showPageInfo="true"
+     													multiSelect="true"
+     													dataField="totalRoot" totalField="totalCount"
+     													onbeforeload="onPcpTotalGridBeforeLoad"
+     													onload="onPcpTotalGridLoad">
+    													<div property="columns"><!-- 由 onload 动态生成 --></div>
+    													<div property="emptyText" class="empty-msg">暂无汇总记录</div>
+													</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -551,11 +573,16 @@ String moduleId = request.getParameter("moduleId");
         var combo = e.sender;
         // 如果当前没有数据或数据为空，加载
         var data = combo.getData();
+        var hidePopup=false;
         if (!data || data.length <= 1) {
             // 先隐藏下拉，防止显示空
             combo.hidePopup();
+            hidePopup=true;
         }
         combo.load(combo.url);
+        if(hidePopup){
+       	 	combo.showPopup();
+        }
     };
 
     window.onDeviceComboLoad = function(e) {
@@ -563,7 +590,7 @@ String moduleId = request.getParameter("moduleId");
 
     };
     
-    function onDeviceChange() { 
+    function onDeviceCombChange() { 
     	refreshData(); 
     }
 
@@ -571,6 +598,11 @@ String moduleId = request.getParameter("moduleId");
     	var grid = mini.get('deviceGrid');
         if (grid) grid.load();
     }
+    
+    function refreshDeviceBtnClick(){
+    	mini.get('deviceListCombo').setValue('');
+        refreshData();
+    };
     
     function onDeviceGridBeforeLoad(e) {
         var params = e.params || {};
@@ -601,6 +633,7 @@ String moduleId = request.getParameter("moduleId");
         	currentDeviceId=0;
             currentDeviceName = '';
             currentDeviceCalculateType=0;
+            currentApplicationScenarios=0;
         	updateDataTypeTabs(0);
         	clearAllGrids();
         }
@@ -639,6 +672,7 @@ String moduleId = request.getParameter("moduleId");
             currentDeviceId = selected.id;
             currentDeviceName = selected.deviceName || '';
             currentDeviceCalculateType = selected.calculateType;
+            currentApplicationScenarios = selected.applicationScenarios;
             updateDataTypeTabs(selected.calculateType);
          	// 重置所有查询参数
             resetAllQueryParams();
@@ -648,6 +682,7 @@ String moduleId = request.getParameter("moduleId");
         	currentDeviceId = 0;
             currentDeviceName = '';
             currentDeviceCalculateType = 0;
+            currentApplicationScenarios = 0;
         	updateDataTypeTabs(0);
         	clearAllGrids();
         }
@@ -901,7 +936,10 @@ String moduleId = request.getParameter("moduleId");
      params.deviceId = currentDeviceId;
      params.deviceName = currentDeviceName;
      params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
-     params.dictDeviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0'; // 简化
+     params.dictDeviceType = params.deviceType;
+   	 if (params.dictDeviceType && params.dictDeviceType.indexOf(',') > -1) {
+    	params.dictDeviceType = currentLevel1 ? currentLevel1.deviceTypeId : deviceType;
+     }
      params.timeType = 1; // 固定为1（云端采集时间）
      params.calculateType = currentDeviceCalculateType;
      
@@ -995,7 +1033,10 @@ String moduleId = request.getParameter("moduleId");
      params.deviceId = currentDeviceId;
      params.deviceName = currentDeviceName;
      params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
-     params.dictDeviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+     params.dictDeviceType = params.deviceType;
+     if (params.dictDeviceType && params.dictDeviceType.indexOf(',') > -1) {
+    	 params.dictDeviceType = currentLevel1 ? currentLevel1.deviceTypeId : deviceType;
+     }
      params.timeType = 1;
      params.calculateType = currentDeviceCalculateType;
      
@@ -1073,22 +1114,1227 @@ String moduleId = request.getParameter("moduleId");
          }
      });
  }
+ 	
+//计算状态下拉加载前事件
+ function onSRPStatusComboBeforeLoad(e) {
+	// 如果没有选中设备，取消加载并清空数据
+	    if (!currentDeviceId || currentDeviceId === 0) {
+	        var combo = e.sender;
+	        combo.setData([]);  // 清空数据
+	        combo.setValue(''); // 清空选中值
+	        e.cancel = true;    // 阻止本次加载
+	        return;
+	    }
+	
+     var params = e.params || {};
+     
+     // 获取组织ID
+     var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+     params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+     
+     // 当前选中的设备
+     params.deviceId = currentDeviceId || 0;
+     params.deviceName = currentDeviceName || '';
+     
+     // 日期参数
+     var startDate = mini.get('srpSingleStartDate');
+     var endDate = mini.get('srpSingleEndDate');
+     params.startDate = startDate ? startDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+     params.endDate = endDate ? endDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+     
+     // 时间类型
+     var timeType = mini.get('srpSingleTimeType');
+     params.timeType = timeType ? timeType.getValue() : 0;
+     
+     // 计算类型固定为1（功图）
+     params.calculateType = 1;
+     
+     e.params = params;
+ }
  
+ onSRPStatusComboShowPopup = function(e) {
+     var combo = e.sender;
+     // 如果当前没有数据或数据为空，加载
+     var data = combo.getData();
+     var hidePopup=false;
+     if (!data || data.length <= 1) {
+         // 先隐藏下拉，防止显示空
+         combo.hidePopup();
+         hidePopup=true;
+     }
+     combo.load(context + '/calculateManagerController/getCalculateStatusList');
+     if(hidePopup){
+    	 combo.showPopup();
+     }
+ };
+
+ // 工况下拉加载前事件
+ function onSRPResultComboBeforeLoad(e) {
+	// 如果没有选中设备，取消加载并清空数据
+	    if (!currentDeviceId || currentDeviceId === 0) {
+	        var combo = e.sender;
+	        combo.setData([]);  // 清空数据
+	        combo.setValue(''); // 清空选中值
+	        e.cancel = true;    // 阻止本次加载
+	        return;
+	    }
+	 
+     var params = e.params || {};
+     
+     var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+     params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+     
+     params.deviceId = currentDeviceId || 0;
+     params.deviceName = currentDeviceName || '';
+     
+     var startDate = mini.get('srpSingleStartDate');
+     var endDate = mini.get('srpSingleEndDate');
+     params.startDate = startDate ? startDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+     params.endDate = endDate ? endDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+     
+     var timeType = mini.get('srpSingleTimeType');
+     params.timeType = timeType ? timeType.getValue() : 0;
+     params.calculateType = 1;
+     
+     e.params = params;
+ }
+ 
+ onSRPResultComboLoad = function(e) {
+     var combo = e.sender;
+ };
+ 
+ onSRPResultComboShowPopup = function(e) {
+     var combo = e.sender;
+     // 如果当前没有数据或数据为空，加载
+     var data = combo.getData();
+     var hidePopup=false;
+     if (!data || data.length <= 1) {
+         // 先隐藏下拉，防止显示空
+         combo.hidePopup();
+         hidePopup=true;
+     }
+     combo.load(context + '/calculateManagerController/getResultNameList');
+     if(hidePopup){
+    	 combo.showPopup();
+     }
+ };
+ 
+//PCP 计算状态下拉加载前事件
+ function onPCPStatusComboBeforeLoad(e) {
+     var params = e.params || {};
+     
+     // 获取组织ID
+     var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+     params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+     
+     // 当前选中的设备
+     params.deviceId = currentDeviceId || 0;
+     params.deviceName = currentDeviceName || '';
+     
+     // 日期参数（PCP 单条日期控件）
+     var startDate = mini.get('pcpSingleStartDate');
+     var endDate = mini.get('pcpSingleEndDate');
+     params.startDate = startDate ? startDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+     params.endDate = endDate ? endDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+     
+     // 注意：PCP 没有 timeType，可省略或传默认值
+     // params.timeType = 0;
+     
+     // 计算类型固定为 2（转速计产）
+     params.calculateType = 2;
+     
+     e.params = params;
+ }
+ 
+ onPCPStatusComboShowPopup = function(e) {
+     var combo = e.sender;
+     // 如果当前没有数据或数据为空，加载
+     var data = combo.getData();
+     var hidePopup=false;
+     if (!data || data.length <= 1) {
+         // 先隐藏下拉，防止显示空
+         combo.hidePopup();
+         hidePopup=true;
+     }
+     combo.load(context + '/calculateManagerController/getCalculateStatusList');
+     if(hidePopup){
+    	 combo.showPopup();
+     }
+ };
+ 	
+ 	var srpEditData = { updatelist: [], insertlist: [], delidslist: [] }; // 编辑缓存
  	function loadSRPSingleData() {
-	    // TODO
-	    console.log('loadSRPSingleData');
+ 		var grid = mini.get('srpSingleGrid');
+ 	    if (!grid) return;
+ 	    grid.setUrl(context + '/calculateManagerController/getCalculateResultData');
+ 	    grid.load();
 	}
+ 	function onSrpSingleGridBeforeLoad(e) {
+ 	    var params = e.params || {};
+ 	    var pageIndex = params.pageIndex || 0;
+ 	    var pageSize = params.pageSize || 100;
+ 	    params.start = pageIndex * pageSize;
+ 	    params.limit = pageSize;
+
+ 	    var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+ 	    params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+ 	    params.deviceId = currentDeviceId;
+ 	    params.deviceName = currentDeviceName;
+ 	    params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+ 	    params.dictDeviceType = params.deviceType;
+      	if (params.dictDeviceType && params.dictDeviceType.indexOf(',') > -1) {
+      		params.dictDeviceType = currentLevel1 ? currentLevel1.deviceTypeId : deviceType;
+      	}
+ 	    
+ 	    // 查询参数
+ 	    var timeType = mini.get('srpSingleTimeType') ? mini.get('srpSingleTimeType').getValue() : 0;
+ 	    params.timeType = timeType;
+ 	    
+ 	    var startDate = mini.get('srpSingleStartDate');
+ 	    var endDate = mini.get('srpSingleEndDate');
+ 	    params.startDate = startDate ? startDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+ 	    params.endDate = endDate ? endDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+ 	    
+ 	    var statusCombo = mini.get('srpSingleStatusCombo');
+ 	    params.calculateSign = statusCombo ? statusCombo.getValue() : '';
+ 	    
+ 	    var resultCombo = mini.get('srpSingleResultCombo');
+ 	    params.resultCode = resultCombo ? resultCombo.getValue() : '';
+ 	    
+ 	    params.calculateType = 1; // SRP
+ 	    params.applicationScenarios = currentApplicationScenarios || 0;
+ 	    
+ 	    e.params = params;
+ 	}
+ 	function onSrpSingleGridLoad(e) {
+ 	    var grid = e.sender;
+ 	    var result = e.result;
+ 	    if (result && result.columns) {
+ 	        // 自动填充时间
+ 	        if (result.start_date) {
+ 	            var startDate = mini.get('srpSingleStartDate');
+ 	            var endDate = mini.get('srpSingleEndDate');
+ 	            if (startDate && !startDate.getValue()) startDate.setValue(result.start_date);
+ 	            if (endDate && !endDate.getValue()) endDate.setValue(result.end_date);
+ 	        }
+ 	        
+ 	        // 构建动态列（可编辑）
+ 	        var columns = buildSrpSingleColumns(result.columns, result.applicationScenarios,result);
+ 	        grid.setColumns(columns);
+ 	        grid.doLayout();
+ 	        
+ 	        // 清除选中
+ 	        grid.deselectAll(false);
+ 	    }
+ 	    // 清空编辑缓存（重新加载后丢弃未保存的修改）
+ 	    srpEditData = { updatelist: [], insertlist: [], delidslist: [] };
+ 	}
+ 	function buildSrpSingleColumns(colsData, applicationScenarios,result) {
+ 	    var cols = [];
+ 	   	cols.push({
+ 	         type: "checkcolumn",
+ 	         width: 40,
+ 	         header: "",
+ 	         headerAlign: "center",
+ 	         align: "center"
+ 	     });
+ 	    // 不可可编辑字段列表
+ 	   var diseditableFields = [
+	        'id', 'deviceName', 'acqTime', 'FESDiagramAcqtime',
+	        'resultStatus', 'resultName', 
+	        'liquidWeightProduction', 'oilWeightProduction','waterWeightProduction', 
+	        'liquidVolumetricProduction', 'oilVolumetricProduction', 'waterVolumetricProduction'
+	    ];
+ 	    // 如果应用场景为0（煤层气），部分字段可能需要跳过（原有逻辑有过滤，但前端只负责显示，后端会处理）
+ 	    
+ 	    for (var i = 0; i < colsData.length; i++) {
+ 	        var col = colsData[i];
+ 	        
+ 	        var column = {
+ 	            field: col.dataIndex,
+ 	            header: col.header,
+ 	            headerAlign: 'center',
+ 	            align: 'center',
+ 	            width: col.width || 100,
+ 	            allowSort: false
+ 	        };
+ 	       if (col.dataIndex === 'acqTime' || col.dataIndex === 'FESDiagramAcqtime') {
+                column.dateFormat = 'yyyy-MM-dd HH:mm:ss';
+                column.width = 150;
+            }
+ 	        
+ 	       	if (col.dataIndex === 'id') {
+ 	             column.type = 'indexcolumn';
+ 	             column.width = 50;
+ 	             column.header = _loginUserLanguageResource.idx;
+ 	             delete column.field;
+ 	         }else if (diseditableFields.indexOf(col.dataIndex) !== -1) {
+ 	            // 只读
+ 	            column.editor = null;
+ 	        } else {
+ 	            // 可编辑
+ 	            column.allowCellEdit = true;
+ 	            // 根据字段类型设置编辑器
+ 	            var editor = null;
+ 	            var source = [];
+ 	            if (col.dataIndex === 'manualInterventionResult') {
+ 	            	for (var j = 0; j < result.resultNameList.length; j++) {
+ 	            		source.push({id: result.resultNameList[j],text: result.resultNameList[j]});
+ 	                }
+	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+	            }else if (col.dataIndex === 'anchoringStateName') {
+ 	               	source.push({id: '锚定',text: '锚定'});
+ 	               	source.push({id: '未锚定',text: '未锚定'});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else if (col.dataIndex === 'barrelTypeName') {
+ 	               	source.push({id: _loginUserLanguageResource.barrelType_H,text: _loginUserLanguageResource.barrelType_H});
+ 	               	source.push({id: _loginUserLanguageResource.barrelType_L,text: _loginUserLanguageResource.barrelType_L});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else if (col.dataIndex === 'pumpTypeName') {
+ 	               	source.push({id: '杆式泵',text: '杆式泵'});
+	               	source.push({id: '管式泵',text: '管式泵'});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else if (col.dataIndex === 'pumpGrade') {
+ 	                // 根据barrelTypeName动态变化（在cellbeginedit中处理）
+ 	                source.push({id: '1',text: '1'});
+ 	               	source.push({id: '2',text: '2'});
+ 	              	source.push({id: '3',text: '3'});
+ 	             	source.push({id: '4',text: '4'});
+ 	            	source.push({id: '5',text: '5'});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else if (col.dataIndex.indexOf('rodGrade') !== -1) {
+ 	               	source.push({id: '',text: ''});
+	               	source.push({id: 'A',text: 'A'});
+	              	source.push({id: 'B',text: 'B'});
+	             	source.push({id: 'C',text: 'C'});
+	            	source.push({id: 'D',text: 'D'});
+	            	source.push({id: 'K',text: 'K'});
+	            	source.push({id: 'KD',text: 'KD'});
+	            	source.push({id: 'HL',text: 'HL'});
+	            	source.push({id: 'HY',text: 'HY'});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else if (col.dataIndex.indexOf('rodTypeName') !== -1) {
+ 	               	source.push({id: '',text: ''});
+	               	source.push({id: _loginUserLanguageResource.rodStringTypeValue1,text: _loginUserLanguageResource.rodStringTypeValue1});
+	              	source.push({id: _loginUserLanguageResource.rodStringTypeValue2,text: _loginUserLanguageResource.rodStringTypeValue2});
+	             	source.push({id: _loginUserLanguageResource.rodStringTypeValue3,text: _loginUserLanguageResource.rodStringTypeValue3});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else {
+ 	                // 数值文本
+ 	                editor = { type: 'textbox' };
+ 	            }
+ 	            column.editor = editor;
+ 	        }
+ 	        
+ 	        // 特殊：如果应用场景为0（煤层气），可能替换列名（已在后端处理，前端无需重复）
+ 	        cols.push(column);
+ 	    }
+ 	    return cols;
+ 	}
+ 	// 单元格开始编辑事件 - 动态修改 pumpGrade 下拉选项
+ 	function onSrpSingleCellBeginEdit(e) {
+ 	    var field = e.field;
+ 	    if (field !== 'pumpGrade') return; // 仅处理泵级别列
+ 	    
+ 	    var grid = e.sender;
+ 	    var rowIndex = e.rowIndex;
+ 	    var record = grid.getRow(rowIndex);
+ 	    if (!record) return;
+ 	    
+ 	    // 获取 barrelTypeName 字段的值
+ 	    var barrelType = record.barrelTypeName || '';
+ 	    var editor = e.editor;
+ 	    if (!editor) return;
+ 	    
+ 	    // 根据 barrelType 决定可选项
+ 	    var options = [];
+ 	    // 获取国际化值
+ 	    var barrelTypeH = _loginUserLanguageResource.barrelType_H;
+ 	    var barrelTypeL = _loginUserLanguageResource.barrelType_L;
+ 	    
+ 	    if (barrelType === barrelTypeH) {
+ 	        options = ['1', '2', '3', '4', '5'];
+ 	    } else if (barrelType === barrelTypeL) {
+ 	        options = ['1', '2', '3'];
+ 	    } else {
+ 	        // 默认全部
+ 	        options = ['1', '2', '3', '4', '5'];
+ 	    }
+ 	    
+ 	    // 构建 source 数据（MiniUI combobox 的 data 格式为 [{id:..., text:...}]）
+ 	    var sourceData = [];
+ 	    for (var i = 0; i < options.length; i++) {
+ 	        sourceData.push({ id: options[i], text: options[i] });
+ 	    }
+ 	    editor.setData(sourceData);
+ 	    
+ 	    // 如果当前值不在新的选项列表中，清空
+ 	    var currentValue = record.pumpGrade;
+ 	    if (currentValue && options.indexOf(currentValue) === -1) {
+ 	        // 可以提示或清空，此处不清空，让用户手动选择
+ 	    }
+ 	}
+ 	// 单元格编辑校验（示例）
+ 	function onSrpSingleCellValidation(e) {
+ 	    var field = e.field;
+ 	    var value = e.value;
+ 	    if (field === 'pumpGrade') {
+ 	        if (value && !/^[1-5]$/.test(value)) {
+ 	            e.isValid = false;
+ 	            e.errorText = '请输入1-5的数字';
+ 	        }
+ 	    }
+ 	    // 可添加其他校验
+ 	}
+ 	// 单元格编辑提交（收集变更）
+ 	function onSrpSingleCellCommitEdit(e) {
+ 	    var record = e.record;
+ 	    var field = e.field;
+ 	    var value = e.value;
+ 	    var oldValue = e.oldValue;
+ 	    
+ 	    if (value !== oldValue) {
+ 	        var recordId = record.recordId;
+ 	        if (recordId && recordId > 0) {
+ 	            // 更新
+ 	            var found = false;
+ 	            for (var i = 0; i < srpEditData.updatelist.length; i++) {
+ 	                if (srpEditData.updatelist[i].recordId === recordId) {
+ 	                    srpEditData.updatelist[i][field] = value;
+ 	                    found = true;
+ 	                    break;
+ 	                }
+ 	            }
+ 	            if (!found) {
+ 	            	var updateRecord = mini.clone(record);   // 深拷贝当前记录
+ 	               	// 或者显式确保新值
+ 	               	updateRecord[field] = value;
+ 	               	srpEditData.updatelist.push(updateRecord);
+ 	            }
+ 	        }
+ 	        // 新增行暂不处理（insert）
+ 	    }
+ 	}
+ // 保存编辑数据（修改历史数据计算）
+ 	function saveSRPSingleData() {
+ 	    // 检查是否有修改
+ 	    var hasChange = (srpEditData.updatelist.length > 0 || srpEditData.insertlist.length > 0 || srpEditData.delidslist.length > 0);
+ 	    if (!hasChange) {
+ 	        mini.alert(_loginUserLanguageResource.noDataChange || '无数据变更');
+ 	        return;
+ 	    }
+ 	    
+ 	    var saveData = {
+ 	        updatelist: srpEditData.updatelist,
+ 	        insertlist: srpEditData.insertlist,
+ 	        delidslist: srpEditData.delidslist
+ 	    };
+ 	    
+ 	    mini.confirm(_loginUserLanguageResource.confirmSave || '确认保存？', _loginUserLanguageResource.tip, function(action) {
+ 	        if (action === 'ok') {
+ 	            $.ajax({
+ 	                url: context + '/calculateManagerController/saveRecalculateData',
+ 	                type: 'POST',
+ 	                data: {
+ 	                    data: JSON.stringify(saveData),
+ 	                    deviceType: 0, // SRP deviceType=0
+ 	                    applicationScenarios: currentApplicationScenarios || 0,
+ 	                    calculateType: 1 // SRP
+ 	                },
+ 	                dataType: 'json',
+ 	                success: function(result) {
+ 	                    if (result.success) {
+ 	                        mini.alert(_loginUserLanguageResource.calculateMaintainingEditSuccessInfo || '保存成功');
+ 	                        // 清空缓存并刷新
+ 	                        srpEditData = { updatelist: [], insertlist: [], delidslist: [] };
+ 	                        loadSRPSingleData();
+ 	                    } else {
+ 	                        mini.alert(result.msg || _loginUserLanguageResource.saveFailed);
+ 	                    }
+ 	                },
+ 	                error: function() {
+ 	                    mini.alert(_loginUserLanguageResource.requestFailed);
+ 	                }
+ 	            });
+ 	        }
+ 	    });
+ 	}
+ // 关联生产数据计算
+ 	function linkSRPSingleData() {
+ 	    // 收集当前查询条件
+ 	    var orgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id').getValue() : '';
+ 	    var deviceName = currentDeviceName;
+ 	    var startDate = mini.get('srpSingleStartDate') ? mini.get('srpSingleStartDate').getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+ 	    var endDate = mini.get('srpSingleEndDate') ? mini.get('srpSingleEndDate').getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+ 	    var calculateSign = mini.get('srpSingleStatusCombo') ? mini.get('srpSingleStatusCombo').getValue() : '';
+ 	    var calculateType = 1;
+ 	    var deviceType = 0;
+ 	    
+ 	    var confirmMsg = _loginUserLanguageResource.takeEffectScope + ':' + (deviceName || _loginUserLanguageResource.allSRPCalculateWell) + ' ' + 
+ 	                    (startDate ? startDate + '~' + endDate : '') + ' <br/><font color=red>' + 
+ 	                    (_loginUserLanguageResourceFirstLower ? _loginUserLanguageResourceFirstLower.calculateMaintainingConfirm : '确认执行？') + '</font>';
+ 	    
+ 	    mini.confirm(confirmMsg, _loginUserLanguageResource.tip, function(action) {
+ 	        if (action === 'ok') {
+ 	            $.ajax({
+ 	                url: context + '/calculateManagerController/recalculateByProductionData',
+ 	                type: 'POST',
+ 	                data: {
+ 	                    orgId: orgId,
+ 	                   	deviceId:currentDeviceId,
+ 	                    deviceName: deviceName,
+ 	                    startDate: startDate,
+ 	                    endDate: endDate,
+ 	                    calculateSign: calculateSign,
+ 	                    calculateType: calculateType,
+ 	                    deviceType: deviceType
+ 	                },
+ 	                dataType: 'json',
+ 	                success: function(result) {
+ 	                    if (result.success) {
+ 	                        mini.alert(_loginUserLanguageResource.calculateMaintainingEditSuccessInfo || '关联计算成功');
+ 	                        srpEditData = { updatelist: [], insertlist: [], delidslist: [] };
+ 	                        loadSRPSingleData();
+ 	                    } else {
+ 	                        mini.alert(result.msg || _loginUserLanguageResource.operationFailed);
+ 	                    }
+ 	                },
+ 	                error: function() {
+ 	                    mini.alert(_loginUserLanguageResource.requestFailed);
+ 	                }
+ 	            });
+ 	        }
+ 	    });
+ 	}
+ // 导出请求数据（单条）
+ 	function exportSRPSingleData() {
+ 	    var grid = mini.get('srpSingleGrid');
+ 	    if (!grid) return;
+ 	    var rows = grid.getSelecteds();
+ 	    if (rows.length === 0) {
+ 	        mini.alert(_loginUserLanguageResource.noSelectionRecord);
+ 	        return;
+ 	    }
+ 	    for (var i = 0; i < rows.length; i++) {
+ 	        var record = rows[i];
+ 	        var url = context + '/calculateManagerController/exportCalculateRequestData?recordId=' + record.recordId +
+ 	                  '&deviceName=' + encodeURIComponent(encodeURIComponent(record.deviceName)) +
+ 	                  '&acqTime=' + formatDate(record.acqTime, 'yyyy-MM-dd HH:mm:ss') +
+ 	                  '&calculateType=1';
+ 	        downloadFile(url);
+ 	    }
+ 	}
+ // 删除单条记录
+ 	function deleteSRPSingleData() {
+ 	    var grid = mini.get('srpSingleGrid');
+ 	    if (!grid) return;
+ 	    var rows = grid.getSelecteds();
+ 	    if (rows.length === 0) {
+ 	        mini.alert(_loginUserLanguageResource.noSelectionRecord);
+ 	        return;
+ 	    }
+ 	    var recordIds = [];
+ 	    var acqTimes = [];
+ 	    var fesAcqTimes = [];
+ 	    for (var i = 0; i < rows.length; i++) {
+ 	        recordIds.push(rows[i].recordId);
+ 	        acqTimes.push(formatDate(rows[i].acqTime, 'yyyy-MM-dd HH:mm:ss'));
+ 	        fesAcqTimes.push(formatDate(rows[i].FESDiagramAcqtime, 'yyyy-MM-dd HH:mm:ss'));
+ 	    }
+ 	    // 构建删除确认信息
+ 	    var deleteInfo = _loginUserLanguageResource.confirmDelete;
+ 	    if (recordIds.length === 1) {
+ 	        deleteInfo = _loginUserLanguageResource.deviceName + ':<font color=red>' + (rows[0].deviceName || '') + '</font>' +
+ 	                     '</br>' + _loginUserLanguageResource.cloudAcqtime + ':<font color=red>' + (acqTimes[0] || '') + '</font>' +
+ 	                     '</br>' + _loginUserLanguageResource.FESDiagramAcqtime + ':<font color=red>' + (fesAcqTimes[0] || '') + '</font>' +
+ 	                     '</br>' + _loginUserLanguageResource.confirmDelete;
+ 	    } else {
+ 	        deleteInfo = _loginUserLanguageResource.deviceName + ':<font color=red>' + (rows[0].deviceName || '') + '</font>' +
+ 	                     '</br>' + _loginUserLanguageResource.sparseRecordCount + ':<font color=red>' + recordIds.length + '</font>' +
+ 	                     '</br>' + _loginUserLanguageResource.confirmDelete;
+ 	    }
+ 	    
+ 	    mini.confirm(deleteInfo, _loginUserLanguageResource.tip, function(action) {
+ 	        if (action === 'ok') {
+ 	            $.ajax({
+ 	                url: context + '/calculateManagerController/deleteCalculateData',
+ 	                type: 'POST',
+ 	                data: {
+ 	                    deviceId: currentDeviceId,
+ 	                    calculateType: 1,
+ 	                    recordIds: recordIds.join(',')
+ 	                },
+ 	                dataType: 'json',
+ 	                success: function(result) {
+ 	                    if (result.success) {
+ 	                        mini.alert(_loginUserLanguageResource.deleteSuccessfully);
+ 	                        // 清除选中并刷新
+ 	                        srpEditData = { updatelist: [], insertlist: [], delidslist: [] };
+ 	                        loadSRPSingleData();
+ 	                    } else {
+ 	                        mini.alert(result.msg || _loginUserLanguageResource.saveFailed);
+ 	                    }
+ 	                },
+ 	                error: function() {
+ 	                    mini.alert(_loginUserLanguageResource.requestFailed);
+ 	                }
+ 	            });
+ 	        }
+ 	    });
+ 	}
+ 	
+ 	// ================================================================
+ 	// 功图计算（SRP）汇总记录
+ 	// ================================================================
 	function loadSRPTotalData() {
-	    // TODO
-	    console.log('loadSRPTotalData');
+		var grid = mini.get('srpTotalGrid');
+	    if (!grid) return;
+	    grid.setUrl(context + '/calculateManagerController/getTotalCalculateResultData');
+	    grid.load();
 	}
+	function onSrpTotalGridBeforeLoad(e) {
+	    var params = e.params || {};
+	    var pageIndex = params.pageIndex || 0;
+	    var pageSize = params.pageSize || 100;
+	    params.start = pageIndex * pageSize;
+	    params.limit = pageSize;
+
+	    var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+	    params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+	    params.deviceId = currentDeviceId;
+	    params.deviceName = currentDeviceName;
+	    params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+	    params.dictDeviceType = params.deviceType;
+	   	if (params.dictDeviceType && params.dictDeviceType.indexOf(',') > -1) {
+	    	params.dictDeviceType = currentLevel1 ? currentLevel1.deviceTypeId : deviceType;
+	    }
+	    
+	    var startDate = mini.get('srpTotalStartDate');
+	    var endDate = mini.get('srpTotalEndDate');
+	    params.startDate = startDate ? startDate.getFormValue('yyyy-MM-dd') : '';
+	    params.endDate = endDate ? endDate.getFormValue('yyyy-MM-dd') : '';
+	    params.calculateType = 3; // SRP汇总
+	    
+	    e.params = params;
+	}
+	function onSrpTotalGridLoad(e) {
+	    var grid = e.sender;
+	    var result = e.result;
+	    if (result && result.columns) {
+	        if (result.startDate) {
+	            var startDate = mini.get('srpTotalStartDate');
+	            var endDate = mini.get('srpTotalEndDate');
+	            if (startDate && !startDate.getValue()) startDate.setValue(result.startDate);
+	            if (endDate && !endDate.getValue()) endDate.setValue(result.endDate);
+	        }
+	        var columns = buildTotalColumns(result.columns);
+	        grid.setColumns(columns);
+	        grid.doLayout();
+	        grid.deselectAll(false);
+	    }
+	}
+	function buildTotalColumns(colsData) {
+	    var cols = [];
+	    cols.push({
+	         type: "checkcolumn",
+	         width: 40,
+	         header: "",
+	         headerAlign: "center",
+	         align: "center"
+	     });
+	    for (var i = 0; i < colsData.length; i++) {
+	        var col = colsData[i];
+	        var column = {
+	            field: col.dataIndex,
+	            header: col.header,
+	            headerAlign: 'center',
+	            align: 'center',
+	            width: col.width || 100
+	        };
+	        if (col.dataIndex === 'id') {
+	             column.type = 'indexcolumn';
+	             column.width = 50;
+	             column.header = _loginUserLanguageResource.idx;
+	             //delete column.field;
+	         }else if (col.dataIndex === 'calDate') {
+	            column.dateFormat = 'yyyy-MM-dd';
+	        }
+	        cols.push(column);
+	    }
+	    return cols;
+	}
+	// 重新汇总计算
+	function reTotalSRP() {
+	    var grid = mini.get('srpTotalGrid');
+	    if (!grid) return;
+	    var rows = grid.getSelecteds();
+	    if (rows.length === 0) {
+	        mini.alert(_loginUserLanguageResource.noSelectionRecord);
+	        return;
+	    }
+	    var reCalculateData = '';
+	    for (var i = 0; i < rows.length; i++) {
+	        var r = rows[i];
+	        reCalculateData += r.id + ',' + r.deviceId + ',' + r.deviceName + ',' + r.calDate + ';';
+	    }
+	    reCalculateData = reCalculateData.substring(0, reCalculateData.length - 1);
+	    
+	    mini.confirm(_loginUserLanguageResource.confirmOperation, _loginUserLanguageResource.tip, function(action) {
+	        if (action === 'ok') {
+	        	var mask = mini.mask({
+	                el: 'srpTotalPanel',
+	                cls: 'mini-mask-loading',
+	                html: _loginUserLanguageResource.recalculating+'...'
+	            });
+	            $.ajax({
+	                url: context + '/calculateManagerController/reTotalCalculate',
+	                type: 'POST',
+	                data: {
+	                    deviceType: 0,
+	                    reCalculateDate: reCalculateData
+	                },
+	                dataType: 'json',
+	                success: function(result) {
+	                	mini.unmask('srpTotalPanel');
+	                    if (result.success) {
+	                        mini.alert(_loginUserLanguageResource.recalculationComplete);
+	                        loadSRPTotalData();
+	                    } else {
+	                        mini.alert(result.msg || _loginUserLanguageResource.operationFailed);
+	                    }
+	                },
+	                error: function() {
+	                	mini.unmask('srpTotalPanel');
+	                    mini.alert(_loginUserLanguageResource.requestFailed);
+	                }
+	            });
+	        }
+	    });
+	}
+	// 导出汇总请求数据
+	function exportSRPTotalData() {
+	    var grid = mini.get('srpTotalGrid');
+	    if (!grid) return;
+	    var rows = grid.getSelecteds();
+	    if (rows.length === 0) {
+	        mini.alert(_loginUserLanguageResource.noSelectionRecord);
+	        return;
+	    }
+	    for (var i = 0; i < rows.length; i++) {
+	        var r = rows[i];
+	        alert(r.calDate);
+	        var url = context + '/calculateManagerController/exportTotalCalculateRequestData?recordId=' + r.id +
+	                  '&deviceId=' + r.deviceId +
+	                  '&deviceName=' + encodeURIComponent(encodeURIComponent(r.deviceName)) +
+	                  '&calDate=' + encodeURIComponent(r.calDate) +
+	                  '&calculeteType=0';
+	        downloadFile(url);
+	    }
+	}
+	
+	// ================================================================
+	// 转速计产（PCP）单条记录
+	// ================================================================
+	var pcpEditData = { updatelist: [], insertlist: [], delidslist: [] }; // 编辑缓存
 	function loadPCPSingleData() {
-	    // TODO
-	    console.log('loadPCPSingleData');
+		var grid = mini.get('pcpSingleGrid');
+	    if (!grid) return;
+	    grid.setUrl(context + '/calculateManagerController/getCalculateResultData');
+	    grid.load();
 	}
+	function onPcpSingleGridBeforeLoad(e) {
+		var params = e.params || {};
+	    var pageIndex = params.pageIndex || 0;
+	    var pageSize = params.pageSize || 100;
+	    params.start = pageIndex * pageSize;
+	    params.limit = pageSize;
+
+	    var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+	    params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+	    params.deviceId = currentDeviceId;
+	    params.deviceName = currentDeviceName;
+	    params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+	    params.dictDeviceType = params.deviceType;
+	    if (params.dictDeviceType && params.dictDeviceType.indexOf(',') > -1) {
+	        params.dictDeviceType = currentLevel1 ? currentLevel1.deviceTypeId : deviceType;
+	    }
+
+	    // 查询参数（PCP 可能没有 timeType，只有日期）
+	    var startDate = mini.get('pcpSingleStartDate');
+	    var endDate = mini.get('pcpSingleEndDate');
+	    params.startDate = startDate ? startDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+	    params.endDate = endDate ? endDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+
+	    var statusCombo = mini.get('pcpSingleStatusCombo');
+	    params.calculateSign = statusCombo ? statusCombo.getValue() : '';
+
+	    // 固定为 PCP
+	    params.calculateType = 2;          // 转速计产
+	    params.applicationScenarios = currentApplicationScenarios || 0;
+
+	    e.params = params;
+	}
+	function onPcpSingleGridLoad(e) {
+	    var grid = e.sender;
+	    var result = e.result;
+	    if (result && result.columns) {
+	        if (result.start_date) {
+	            var startDate = mini.get('pcpSingleStartDate');
+	            var endDate = mini.get('pcpSingleEndDate');
+	            if (startDate && !startDate.getValue()) startDate.setValue(result.start_date);
+	            if (endDate && !endDate.getValue()) endDate.setValue(result.end_date);
+	        }
+
+	        // 构建动态列（可编辑）
+	        var columns = buildPcpSingleColumns(result.columns);
+	        grid.setColumns(columns);
+	        grid.doLayout();
+
+	        grid.deselectAll(false);
+	    }
+	    // 清空编辑缓存
+	    pcpEditData = { updatelist: [], insertlist: [], delidslist: [] };
+	}
+	function buildPcpSingleColumns(colsData) {
+	    var cols = [];
+	    cols.push({
+	        type: "checkcolumn",
+	        width: 40,
+	        header: "",
+	        headerAlign: "center",
+	        align: "center"
+	    });
+
+	 	// 不可可编辑字段列表
+	    var diseditableFields = ['id', 'recordId', 
+	    	'deviceName', 'acqTime', 'resultStatus', 
+	    	'liquidWeightProduction', 'oilWeightProduction','waterWeightProduction', 
+	    	'liquidVolumetricProduction', 'oilVolumetricProduction', 'waterVolumetricProduction',
+	    	'rpm'];
+
+	    for (var i = 0; i < colsData.length; i++) {
+	        var col = colsData[i];
+	        var column = {
+	            field: col.dataIndex,
+	            header: col.header,
+	            headerAlign: 'center',
+	            align: 'center',
+	            width: col.width || 100,
+	            allowSort: false
+	        };
+
+	        if (col.dataIndex === 'acqTime') {
+	            column.dateFormat = 'yyyy-MM-dd HH:mm:ss';
+	            column.width = 150;
+	        }
+
+	        if (col.dataIndex === 'id' || col.dataIndex === 'recordId') {
+	            column.type = 'indexcolumn';
+	            column.width = 50;
+	            column.header = _loginUserLanguageResource.idx;
+	            delete column.field;
+	        } else if (diseditableFields.indexOf(col.dataIndex) !== -1) {
+	            // 只读
+	            column.editor = null;
+	        } else {
+	        	// 可编辑
+ 	            column.allowCellEdit = true;
+ 	            // 根据字段类型设置编辑器
+ 	            var editor = null;
+ 	            var source = [];
+ 	            if (col.dataIndex === 'anchoringStateName') {
+ 	               	source.push({id: '锚定',text: '锚定'});
+ 	               	source.push({id: '未锚定',text: '未锚定'});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else if (col.dataIndex === 'barrelTypeName') {
+ 	               	source.push({id: _loginUserLanguageResource.barrelType_H,text: _loginUserLanguageResource.barrelType_H});
+ 	               	source.push({id: _loginUserLanguageResource.barrelType_L,text: _loginUserLanguageResource.barrelType_L});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else if (col.dataIndex === 'pumpTypeName') {
+ 	               	source.push({id: '杆式泵',text: '杆式泵'});
+	               	source.push({id: '管式泵',text: '管式泵'});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else if (col.dataIndex === 'pumpGrade') {
+ 	                // 根据barrelTypeName动态变化（在cellbeginedit中处理）
+ 	                source.push({id: '1',text: '1'});
+ 	               	source.push({id: '2',text: '2'});
+ 	              	source.push({id: '3',text: '3'});
+ 	             	source.push({id: '4',text: '4'});
+ 	            	source.push({id: '5',text: '5'});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else if (col.dataIndex.indexOf('rodGrade') !== -1) {
+ 	               	source.push({id: '',text: ''});
+	               	source.push({id: 'A',text: 'A'});
+	              	source.push({id: 'B',text: 'B'});
+	             	source.push({id: 'C',text: 'C'});
+	            	source.push({id: 'D',text: 'D'});
+	            	source.push({id: 'K',text: 'K'});
+	            	source.push({id: 'KD',text: 'KD'});
+	            	source.push({id: 'HL',text: 'HL'});
+	            	source.push({id: 'HY',text: 'HY'});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else if (col.dataIndex.indexOf('rodTypeName') !== -1) {
+ 	               	source.push({id: '',text: ''});
+	               	source.push({id: _loginUserLanguageResource.rodStringTypeValue1,text: _loginUserLanguageResource.rodStringTypeValue1});
+	              	source.push({id: _loginUserLanguageResource.rodStringTypeValue2,text: _loginUserLanguageResource.rodStringTypeValue2});
+	             	source.push({id: _loginUserLanguageResource.rodStringTypeValue3,text: _loginUserLanguageResource.rodStringTypeValue3});
+ 	                editor = { type: 'combobox', data: source, valueField: 'id', textField: 'text', allowInput: false };
+ 	            } else {
+ 	                // 数值文本
+ 	                editor = { type: 'textbox' };
+ 	            }
+ 	           	column.editor = editor;
+	        }
+
+	        cols.push(column);
+	    }
+	    return cols;
+	}
+	// 单元格开始编辑事件 - 动态修改 pumpGrade 下拉选项
+ 	function onPcpSingleCellBeginEdit(e) {
+ 	    var field = e.field;
+ 	    if (field !== 'pumpGrade') return; // 仅处理泵级别列
+ 	    
+ 	    var grid = e.sender;
+ 	    var rowIndex = e.rowIndex;
+ 	    var record = grid.getRow(rowIndex);
+ 	    if (!record) return;
+ 	    
+ 	    // 获取 barrelTypeName 字段的值
+ 	    var barrelType = record.barrelTypeName || '';
+ 	    var editor = e.editor;
+ 	    if (!editor) return;
+ 	    
+ 	    // 根据 barrelType 决定可选项
+ 	    var options = [];
+ 	    // 获取国际化值
+ 	    var barrelTypeH = _loginUserLanguageResource.barrelType_H;
+ 	    var barrelTypeL = _loginUserLanguageResource.barrelType_L;
+ 	    
+ 	    if (barrelType === barrelTypeH) {
+ 	        options = ['1', '2', '3', '4', '5'];
+ 	    } else if (barrelType === barrelTypeL) {
+ 	        options = ['1', '2', '3'];
+ 	    } else {
+ 	        // 默认全部
+ 	        options = ['1', '2', '3', '4', '5'];
+ 	    }
+ 	    
+ 	    // 构建 source 数据（MiniUI combobox 的 data 格式为 [{id:..., text:...}]）
+ 	    var sourceData = [];
+ 	    for (var i = 0; i < options.length; i++) {
+ 	        sourceData.push({ id: options[i], text: options[i] });
+ 	    }
+ 	    editor.setData(sourceData);
+ 	    
+ 	    // 如果当前值不在新的选项列表中，清空
+ 	    var currentValue = record.pumpGrade;
+ 	    if (currentValue && options.indexOf(currentValue) === -1) {
+ 	        // 可以提示或清空，此处不清空，让用户手动选择
+ 	    }
+ 	}
+	// 单元格编辑提交（收集变更）
+	function onPcpSingleCellCommitEdit(e) {
+	    var record = e.record;
+	    var field = e.field;
+	    var value = e.value;
+	    var oldValue = e.oldValue;
+
+	    if (value !== oldValue) {
+	        var recordId = record.recordId || record.id;   // 注意主键字段名
+	        if (recordId && recordId > 0) {
+	            var found = false;
+	            for (var i = 0; i < pcpEditData.updatelist.length; i++) {
+	                if (pcpEditData.updatelist[i].recordId === recordId) {
+	                    pcpEditData.updatelist[i][field] = value;
+	                    found = true;
+	                    break;
+	                }
+	            }
+	            if (!found) {
+	                var updateRecord = mini.clone(record);
+	                updateRecord[field] = value;
+	                pcpEditData.updatelist.push(updateRecord);
+	            }
+	        }
+	    }
+	}
+	// 保存编辑（修改历史数据计算）
+	function savePCPSingleData() {
+	    var hasChange = (pcpEditData.updatelist.length > 0 || pcpEditData.insertlist.length > 0 || pcpEditData.delidslist.length > 0);
+	    if (!hasChange) {
+	        mini.alert(_loginUserLanguageResource.noDataChange || '无数据变更');
+	        return;
+	    }
+
+	    var saveData = {
+	        updatelist: pcpEditData.updatelist,
+	        insertlist: pcpEditData.insertlist,
+	        delidslist: pcpEditData.delidslist
+	    };
+
+	    mini.confirm(_loginUserLanguageResource.confirmSave || '确认保存？', _loginUserLanguageResource.tip, function(action) {
+	        if (action === 'ok') {
+	            $.ajax({
+	                url: context + '/calculateManagerController/saveRecalculateData',
+	                type: 'POST',
+	                data: {
+	                    data: JSON.stringify(saveData),
+	                    deviceType: 0,          // 设备类型，默认0
+	                    applicationScenarios: currentApplicationScenarios || 0,
+	                    calculateType: 2         // PCP
+	                },
+	                dataType: 'json',
+	                success: function(result) {
+	                    if (result.success) {
+	                        mini.alert(_loginUserLanguageResource.calculateMaintainingEditSuccessInfo || '保存成功');
+	                        pcpEditData = { updatelist: [], insertlist: [], delidslist: [] };
+	                        loadPCPSingleData();
+	                    } else {
+	                        mini.alert(result.msg || _loginUserLanguageResource.saveFailed);
+	                    }
+	                },
+	                error: function() {
+	                    mini.alert(_loginUserLanguageResource.requestFailed);
+	                }
+	            });
+	        }
+	    });
+	}
+	// 关联生产数据计算
+	function linkPCPSingleData() {
+	    var orgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id').getValue() : '';
+	    var deviceName = currentDeviceName;
+	    var startDate = mini.get('pcpSingleStartDate') ? mini.get('pcpSingleStartDate').getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+	    var endDate = mini.get('pcpSingleEndDate') ? mini.get('pcpSingleEndDate').getFormValue('yyyy-MM-dd HH:mm:ss') : '';
+	    var calculateSign = mini.get('pcpSingleStatusCombo') ? mini.get('pcpSingleStatusCombo').getValue() : '';
+
+	    var confirmMsg = _loginUserLanguageResource.takeEffectScope + ':' + (deviceName || _loginUserLanguageResource.allPCPCalculateWell) + ' ' + 
+	                    (startDate ? startDate + '~' + endDate : '') + ' <br/><font color=red>' + 
+	                    (_loginUserLanguageResourceFirstLower ? _loginUserLanguageResourceFirstLower.calculateMaintainingConfirm : '确认执行？') + '</font>';
+
+	    mini.confirm(confirmMsg, _loginUserLanguageResource.tip, function(action) {
+	        if (action === 'ok') {
+	            $.ajax({
+	                url: context + '/calculateManagerController/recalculateByProductionData',
+	                type: 'POST',
+	                data: {
+	                    orgId: orgId,
+	                    deviceId: currentDeviceId,
+	                    deviceName: deviceName,
+	                    startDate: startDate,
+	                    endDate: endDate,
+	                    calculateSign: calculateSign,
+	                    calculateType: 2,      // PCP
+	                    deviceType: 0
+	                },
+	                dataType: 'json',
+	                success: function(result) {
+	                    if (result.success) {
+	                        mini.alert(_loginUserLanguageResource.calculateMaintainingEditSuccessInfo || '关联计算成功');
+	                        pcpEditData = { updatelist: [], insertlist: [], delidslist: [] };
+	                        loadPCPSingleData();
+	                    } else {
+	                        mini.alert(result.msg || _loginUserLanguageResource.operationFailed);
+	                    }
+	                },
+	                error: function() {
+	                    mini.alert(_loginUserLanguageResource.requestFailed);
+	                }
+	            });
+	        }
+	    });
+	}
+	// 导出请求数据（单条）
+	function exportPCPSingleData() {
+	    var grid = mini.get('pcpSingleGrid');
+	    if (!grid) return;
+	    var rows = grid.getSelecteds();
+	    if (rows.length === 0) {
+	        mini.alert(_loginUserLanguageResource.noSelectionRecord);
+	        return;
+	    }
+	    for (var i = 0; i < rows.length; i++) {
+	        var record = rows[i];
+	        var url = context + '/calculateManagerController/exportCalculateRequestData?recordId=' + record.recordId +
+	                  '&deviceName=' + encodeURIComponent(encodeURIComponent(record.deviceName)) +
+	                  '&acqTime=' + formatDate(record.acqTime, 'yyyy-MM-dd HH:mm:ss') +
+	                  '&calculateType=2';
+	        downloadFile(url);
+	    }
+	}
+	// 删除单条记录
+	function deletePCPSingleData() {
+	    var grid = mini.get('pcpSingleGrid');
+	    if (!grid) return;
+	    var rows = grid.getSelecteds();
+	    if (rows.length === 0) {
+	        mini.alert(_loginUserLanguageResource.noSelectionRecord);
+	        return;
+	    }
+	    var recordIds = [];
+	    var acqTimes = [];
+	    for (var i = 0; i < rows.length; i++) {
+	        recordIds.push(rows[i].recordId);
+	        acqTimes.push(formatDate(rows[i].acqTime, 'yyyy-MM-dd HH:mm:ss'));
+	    }
+
+	    var deleteInfo = _loginUserLanguageResource.confirmDelete;
+	    if (recordIds.length === 1) {
+	        deleteInfo = _loginUserLanguageResource.deviceName + ':<font color=red>' + (rows[0].deviceName || '') + '</font>' +
+	                     '</br>' + _loginUserLanguageResource.cloudAcqtime + ':<font color=red>' + (acqTimes[0] || '') + '</font>' +
+	                     '</br>' + _loginUserLanguageResource.confirmDelete;
+	    } else {
+	        deleteInfo = _loginUserLanguageResource.deviceName + ':<font color=red>' + (rows[0].deviceName || '') + '</font>' +
+	                     '</br>' + _loginUserLanguageResource.sparseRecordCount + ':<font color=red>' + recordIds.length + '</font>' +
+	                     '</br>' + _loginUserLanguageResource.confirmDelete;
+	    }
+
+	    mini.confirm(deleteInfo, _loginUserLanguageResource.tip, function(action) {
+	        if (action === 'ok') {
+	            $.ajax({
+	                url: context + '/calculateManagerController/deleteCalculateData',
+	                type: 'POST',
+	                data: {
+	                    deviceId: currentDeviceId,
+	                    calculateType: 2,
+	                    recordIds: recordIds.join(',')
+	                },
+	                dataType: 'json',
+	                success: function(result) {
+	                    if (result.success) {
+	                        mini.alert(_loginUserLanguageResource.deleteSuccessfully);
+	                        pcpEditData = { updatelist: [], insertlist: [], delidslist: [] };
+	                        loadPCPSingleData();
+	                    } else {
+	                        mini.alert(result.msg || _loginUserLanguageResource.saveFailed);
+	                    }
+	                },
+	                error: function() {
+	                    mini.alert(_loginUserLanguageResource.requestFailed);
+	                }
+	            });
+	        }
+	    });
+	}
+	
+	// ================================================================
+	// 转速计产（PCP）汇总记录
+	// ================================================================
 	function loadPCPTotalData() {
-	    // TODO
-	    console.log('loadPCPTotalData');
+    	var grid = mini.get('pcpTotalGrid');
+    	if (!grid) return;
+    	grid.setUrl(context + '/calculateManagerController/getTotalCalculateResultData');
+    	grid.load();
+	}
+	function onPcpTotalGridBeforeLoad(e) {
+	    var params = e.params || {};
+	    var pageIndex = params.pageIndex || 0;
+	    var pageSize = params.pageSize || 100;
+	    params.start = pageIndex * pageSize;
+	    params.limit = pageSize;
+
+	    var leftOrgId = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Id') : null;
+	    params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+	    params.deviceId = currentDeviceId;
+	    params.deviceName = currentDeviceName;
+	    params.deviceType = currentLevel2 ? currentLevel2.deviceTypeId : '0';
+	    params.dictDeviceType = params.deviceType;
+	    if (params.dictDeviceType && params.dictDeviceType.indexOf(',') > -1) {
+	        params.dictDeviceType = currentLevel1 ? currentLevel1.deviceTypeId : deviceType;
+	    }
+
+	    var startDate = mini.get('pcpTotalStartDate');
+	    var endDate = mini.get('pcpTotalEndDate');
+	    params.startDate = startDate ? startDate.getFormValue('yyyy-MM-dd') : '';
+	    params.endDate = endDate ? endDate.getFormValue('yyyy-MM-dd') : '';
+	    params.calculateType = 4;   // PCP 汇总（假设是4，与SRP汇总的3区分）
+
+	    e.params = params;
+	}
+	function onPcpTotalGridLoad(e) {
+	    var grid = e.sender;
+	    var result = e.result;
+	    if (result && result.columns) {
+	        if (result.startDate) {
+	            var startDate = mini.get('pcpTotalStartDate');
+	            var endDate = mini.get('pcpTotalEndDate');
+	            if (startDate && !startDate.getValue()) startDate.setValue(result.startDate);
+	            if (endDate && !endDate.getValue()) endDate.setValue(result.endDate);
+	        }
+	        var columns = buildTotalColumns(result.columns); // 复用通用的汇总列构建
+	        grid.setColumns(columns);
+	        grid.doLayout();
+	        grid.deselectAll(false);
+	    }
+	}
+	// 重新汇总计算（PCP）
+	function reTotalPCP() {
+	    var grid = mini.get('pcpTotalGrid');
+	    if (!grid) return;
+	    var rows = grid.getSelecteds();
+	    if (rows.length === 0) {
+	        mini.alert(_loginUserLanguageResource.noSelectionRecord);
+	        return;
+	    }
+	    var reCalculateData = '';
+	    for (var i = 0; i < rows.length; i++) {
+	        var r = rows[i];
+	        reCalculateData += r.id + ',' + r.deviceId + ',' + r.deviceName + ',' + r.calDate + ';';
+	    }
+	    reCalculateData = reCalculateData.substring(0, reCalculateData.length - 1);
+
+	    mini.confirm(_loginUserLanguageResource.confirmOperation, _loginUserLanguageResource.tip, function(action) {
+	        if (action === 'ok') {
+	            var mask = mini.mask({
+	                el: 'pcpTotalPanel',
+	                cls: 'mini-mask-loading',
+	                html: _loginUserLanguageResource.recalculating + '...'
+	            });
+	            $.ajax({
+	                url: context + '/calculateManagerController/reTotalCalculate',
+	                type: 'POST',
+	                data: {
+	                    deviceType: 1,
+	                    reCalculateDate: reCalculateData,
+	                    calculateType: 2    // PCP
+	                },
+	                dataType: 'json',
+	                success: function(result) {
+	                    mini.unmask('pcpTotalPanel');
+	                    if (result.success) {
+	                        mini.alert(_loginUserLanguageResource.recalculationComplete);
+	                        loadPCPTotalData();
+	                    } else {
+	                        mini.alert(result.msg || _loginUserLanguageResource.operationFailed);
+	                    }
+	                },
+	                error: function() {
+	                    mini.unmask('pcpTotalPanel');
+	                    mini.alert(_loginUserLanguageResource.requestFailed);
+	                }
+	            });
+	        }
+	    });
+	}
+	// 导出汇总请求数据（PCP）
+	function exportPCPTotalData() {
+	    var grid = mini.get('pcpTotalGrid');
+	    if (!grid) return;
+	    var rows = grid.getSelecteds();
+	    if (rows.length === 0) {
+	        mini.alert(_loginUserLanguageResource.noSelectionRecord);
+	        return;
+	    }
+	    for (var i = 0; i < rows.length; i++) {
+	        var r = rows[i];
+	        var url = context + '/calculateManagerController/exportTotalCalculateRequestData?recordId=' + r.id +
+	                  '&deviceId=' + r.deviceId +
+	                  '&deviceName=' + encodeURIComponent(encodeURIComponent(r.deviceName)) +
+	                  '&calDate=' + encodeURIComponent(r.calDate) +
+	                  '&calculeteType=1';   // PCP
+	        downloadFile(url);
+	    }
 	}
     
     // ================================================================

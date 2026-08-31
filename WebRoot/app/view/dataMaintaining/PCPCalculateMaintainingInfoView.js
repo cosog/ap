@@ -947,7 +947,7 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var CalculateMaintainingModuleEditFlag=parseInt(Ext.getCmp("CalculateMaintainingModuleEditFlag").getValue());
 	                    if(CalculateMaintainingModuleEditFlag==1){
-	                    	if (visualColIndex >= 1 && visualColIndex <= 7) {
+	                    	if (visualColIndex >= 1 && visualColIndex <= 8) {
 								cellProperties.editor = false;
 			                }
 	                    	cellProperties.renderer = pcpRPMCalculateMaintainingHandsontableHelper.addCellStyle;

@@ -1518,7 +1518,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	}
 	
 	public String deleteCalculateData(String deviceId,String calculateType,String recordIds) {
-		String json="";
+		String json ="{\"success\":true}";
 		int result=0;
 		boolean success=true;
 		try {
@@ -1613,7 +1613,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	}
 	
 	public String reTotalCalculate(String deviceType,String reCalculateDate)throws Exception {
-		String json="";
+		String json ="{\"success\":true}";
 		if("0".equals(deviceType)){
 			json=this.reTotalCalculateFESDiagramData(reCalculateDate);
 		}else if("1".equals(deviceType)){
@@ -1624,7 +1624,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	}
 	
 	public String reTotalCalculateFESDiagramData(String reCalculateDate)throws Exception {
-		String json="";
+		String json ="{\"success\":true}";
 		int deviceType=0;
 		if(StringManagerUtils.isNotNull(reCalculateDate)){
 			ThreadPool executor = new ThreadPool("SRPReTotalCalculate",
@@ -1650,7 +1650,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	}
 	
 	public String reTotalCalculateRPMData(String reCalculateDate)throws Exception {
-		String json="";
+		String json ="{\"success\":true}";
 		int deviceType=1;
 		if(StringManagerUtils.isNotNull(reCalculateDate)){
 			ThreadPool executor = new ThreadPool("PCPReTotalCalculate",

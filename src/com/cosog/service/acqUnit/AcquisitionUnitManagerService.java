@@ -106,19 +106,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("resolutionMode")+"\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("resolutionMode")+"\",\"dataIndex\":\"resolutionMode\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -209,15 +209,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,Code> additionalConditionsCodeMap=MemoryDataManagerTask.getCodeMap("ADDITIONALCONDITIONS",language);
 		int type=StringManagerUtils.stringToInteger(typeStr);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"1"+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("fourOperation")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"2"+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("additionalConditions")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"1"+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("fourOperation")+"\",\"dataIndex\":\"quantity\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"2"+"\",\"dataIndex\":\"storeDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("additionalConditions")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		
 		
@@ -304,23 +304,23 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ModbusProtocolConfig.Protocol protocolConfig=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("resolutionMode")+"\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("curveSort")+"\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("curveColor")+"\",\"dataIndex\":\"realtimeCurveColor\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("curveSort")+"\",\"dataIndex\":\"historyCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("curveColor")+"\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("resolutionMode")+"\",\"dataIndex\":\"resolutionMode\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("curveSort")+"\",\"dataIndex\":\"realtimeCurve\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("curveColor")+"\",\"dataIndex\":\"realtimeCurveColor\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("curveSort")+"\",\"dataIndex\":\"historyCurve\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("curveColor")+"\",\"dataIndex\":\"historyCurveColor\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -468,9 +468,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,DataMapping> protocolColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
 		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"protocolCode\":\""+protocolCode+"\",\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -570,15 +570,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		totalRoot.append("]");
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		if(resolutionMode==0){
 			columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] }"
 					+ "]";
 		}
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"itemResolutionMode\":"+resolutionMode+",\"itemTitle\":\""+title+"\",\"totolCount\":\""+totolCount+"\",");
@@ -636,15 +636,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		totalRoot.append("]");
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		if(resolutionMode==0){
 			columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] }"
 					+ "]";
 		}
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"itemResolutionMode\":"+resolutionMode+",\"itemTitle\":\""+title+"\",\"totolCount\":\""+totolCount+"\",");
@@ -714,9 +714,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		totalRoot.append("]");
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"itemResolutionMode\":"+resolutionMode+",\"itemTitle\":\""+title+"\",");
 		result_json.append("\"totalRoot\":"+totalRoot+"");
@@ -785,9 +785,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		totalRoot.append("]");
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"itemResolutionMode\":"+resolutionMode+",\"itemTitle\":\""+title+"\",");
 		result_json.append("\"totalRoot\":"+totalRoot+"");
@@ -803,19 +803,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
 		
 		String columns = "["
-				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSource")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",\"width\":20 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSource")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		List<CalItem> calItemList=null;
 		if(StringManagerUtils.stringToInteger(calculateType)==1){
@@ -1007,15 +1007,15 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"value\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",\"width\":20 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"value\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -1135,16 +1135,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"bitIndex\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("switchItemAlarmValue")+"\",\"dataIndex\":\"value\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",\"width\":20 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"bitIndex\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("switchItemAlarmValue")+"\",\"dataIndex\":\"value\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -1279,14 +1279,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",\"width\":20 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -1367,14 +1367,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",\"width\":20 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -1457,14 +1457,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,WorkType> workTypeMap=MemoryDataManagerTask.getWorkTypeMap(language);
 		
 		String columns = "["
-				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:20 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",\"width\":20 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -1564,14 +1564,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			e.printStackTrace();
 		}
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurveConf\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurveConf\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveConf\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		
 		
@@ -2738,12 +2738,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -3806,16 +3806,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 		}
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("sumSign")+"\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("averageSign")+"\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("reportCurve")+"\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("curveStatType")+"\",\"dataIndex\":\"curveStatType\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("sumSign")+"\",\"dataIndex\":\"sumSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("averageSign")+"\",\"dataIndex\":\"averageSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("reportCurve")+"\",\"dataIndex\":\"realtimeCurve\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("curveStatType")+"\",\"dataIndex\":\"curveStatType\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		
 		
@@ -4296,16 +4296,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}finally{
 		}
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("sumSign")+"\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("averageSign")+"\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("curveStatType")+"\",\"dataIndex\":\"curveStatType\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("sumSign")+"\",\"dataIndex\":\"sumSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("averageSign")+"\",\"dataIndex\":\"averageSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("curveStatType")+"\",\"dataIndex\":\"curveStatType\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -4429,16 +4429,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 		}
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("sumSign")+"\",\"dataIndex\":\"sumSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("averageSign")+"\",\"dataIndex\":\"averageSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("curveStatType")+"\",\"dataIndex\":\"curveStatType\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("sumSign")+"\",\"dataIndex\":\"sumSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("averageSign")+"\",\"dataIndex\":\"averageSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\"报表曲线\",\"dataIndex\":\"realtimeCurve\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("curveStatType")+"\",\"dataIndex\":\"curveStatType\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -4547,17 +4547,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		Gson gson = new Gson();
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -4634,17 +4634,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			
 		}
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -4716,13 +4716,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -4780,13 +4780,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -4841,13 +4841,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -6520,11 +6520,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-		+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-		+ "{ \"header\":\""+languageResourceMap.get("instanceName")+"\",\"dataIndex\":\"name\" ,children:[] },"
-		+ "{ \"header\":\""+languageResourceMap.get("acqProtocolType")+"\",\"dataIndex\":\"acqProtocolType\" ,children:[] },"
-		+ "{ \"header\":\""+languageResourceMap.get("ctrlProtocolType")+"\",\"dataIndex\":\"ctrlProtocolType\" ,children:[] },"
-		+ "{ \"header\":\""+languageResourceMap.get("sequenceNumber")+"\",\"dataIndex\":\"sort\",children:[] }"
+		+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+		+ "{ \"header\":\""+languageResourceMap.get("instanceName")+"\",\"dataIndex\":\"name\" ,\"children\":[] },"
+		+ "{ \"header\":\""+languageResourceMap.get("acqProtocolType")+"\",\"dataIndex\":\"acqProtocolType\" ,\"children\":[] },"
+		+ "{ \"header\":\""+languageResourceMap.get("ctrlProtocolType")+"\",\"dataIndex\":\"ctrlProtocolType\" ,\"children\":[] },"
+		+ "{ \"header\":\""+languageResourceMap.get("sequenceNumber")+"\",\"dataIndex\":\"sort\",\"children\":[] }"
 		+ "]";
 		
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,t.sort from tbl_protocolsmsinstance t where 1=1";
@@ -6606,11 +6606,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		String calColumnSql="select t.itemname,t.itemmappingcolumn,t.calcolumn,t.calculateenable,t.protocol from tbl_calculatecolumnconfig t where t.protocol='"+protocolCode+"'";
 		ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 		String columns="["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\" ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"\",\"dataIndex\":\"itemColumn\",children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("calculatedFieldName")+"\",\"dataIndex\":\"calColumn\",children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("enable")+"\",\"dataIndex\":\"calculateEnable\",children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\" ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataColumn")+"\",\"dataIndex\":\"itemColumn\",\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("calculatedFieldName")+"\",\"dataIndex\":\"calColumn\",\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("enable")+"\",\"dataIndex\":\"calculateEnable\",\"children\":[] }"
 				+ "]";
 		
 		calColumnNameBuff.append("[''");
@@ -7569,17 +7569,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		int index=1;
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -7721,13 +7721,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -7884,13 +7884,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<CalItem> srpCalItemList=null;
 		
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] },"
-				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",width:80 ,children:[] },"
-				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\"实时曲线\",\"dataIndex\":\"realtimeCurve\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\"历史曲线\",\"dataIndex\":\"historyCurveColor\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -8012,11 +8012,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("showLevel")+"\",\"dataIndex\":\"showLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -8127,17 +8127,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -8200,17 +8200,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		List<CalItem> calItemList=null;
 		
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("upperLimit")+"\",\"dataIndex\":\"upperLimit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("lowerLimit")+"\",\"dataIndex\":\"lowerLimit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("hystersis")+"\",\"dataIndex\":\"hystersis\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -8285,17 +8285,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"bitIndex\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("switchItemAlarmValue")+"\",\"dataIndex\":\"value\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("bit")+"\",\"dataIndex\":\"bitIndex\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("switchItemAlarmValue")+"\",\"dataIndex\":\"value\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -8372,16 +8372,16 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"value\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"value\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("meaning")+"\",\"dataIndex\":\"meaning\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -8457,13 +8457,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -8521,13 +8521,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -8585,13 +8585,13 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		ExportProtocolConfig exportProtocolConfig=(ExportProtocolConfig) map.get("importedProtocolFileMap");
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("delay")+"(s)\",\"dataIndex\":\"delay\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevel\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("alarmSign")+"\",\"dataIndex\":\"alarmSign\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendMessage")+"\",\"dataIndex\":\"isSendMessage\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("isSendEmail")+"\",\"dataIndex\":\"isSendMail\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -10440,9 +10440,9 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String[] deviceTypeIdArr=deviceTypeIds.split(",");
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",width:120 ,children:[] },"
-				+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",width:120 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\"设备类型\",\"dataIndex\":\"deviceTypeName\",\"width\":120 ,\"children\":[] }"
 				+ "]";
 		
 		String sql="select t.id,t.name,t.devicetype,t2.allpath_"+language+" "
@@ -11823,19 +11823,19 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("resolutionMode")+"\",\"dataIndex\":\"resolutionMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("resolutionMode")+"\",\"dataIndex\":\"resolutionMode\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("dataSort")+"\",\"dataIndex\":\"sort\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -12192,17 +12192,17 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		int index=1;
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"title\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("address")+"\",\"dataIndex\":\"addr\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("quantity")+"\",\"dataIndex\":\"quantity\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("storeDataType")+"\",\"dataIndex\":\"storeDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("IFDataType")+"\",\"dataIndex\":\"IFDataType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("prec")+"\",\"dataIndex\":\"prec\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("ratio")+"\",\"dataIndex\":\"ratio\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("RWType")+"\",\"dataIndex\":\"RWType\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"unit\",\"width\":80 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("acqMode")+"\",\"dataIndex\":\"acqMode\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");

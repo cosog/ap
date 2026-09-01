@@ -341,6 +341,166 @@ function getStringLength(str) {
     return realLength;
 }
 
+function handsontableDataCheck_Org(val, callback, row, col, handsontableHelper) {
+    var leftOrgNameCmp = window.parent && window.parent.mini ? window.parent.mini.get('leftOrg_Name') : null;
+    var leftOrg_Name = leftOrgNameCmp ? leftOrgNameCmp.getValue() : '';
+    var orgArr = leftOrg_Name.split(',');
+    var orgCount = isExist(orgArr, val) ? 1 : 0;
+    if (orgCount !== 1) {
+        var cell = handsontableHelper.hot.getCell(row, col);
+        if (cell) cell.style.background = "#f09614";
+        return callback(false);
+    } else {
+        return callback(true);
+    }
+}
+
+function handsontableDataCheck_Num(val, callback, row, col, handsontableHelper) {
+    if (val !== undefined && val !== null && val !== '' && !isNaN(val)) {
+        return callback(true);
+    } else {
+        var cell = handsontableHelper.hot.getCell(row, col);
+        if (cell) cell.style.background = "#f09614";
+        return callback(false);
+    }
+}
+
+function handsontableDataCheck_Num_Nullable(val, callback, row, col, handsontableHelper) {
+    if (val === '' || val === null || !isNaN(val)) {
+        return callback(true);
+    } else {
+        var cell = handsontableHelper.hot.getCell(row, col);
+        if (cell) cell.style.background = "#f09614";
+        return callback(false);
+    }
+}
+
+function handsontableDataCheck_NotNull(val, callback, row, col, handsontableHelper) {
+    if (val !== undefined && val !== null && val !== '') {
+        return callback(true);
+    } else {
+        var cell = handsontableHelper.hot.getCell(row, col);
+        if (cell) cell.style.background = "#f09614";
+        return callback(false);
+    }
+}
+
+function handsontableDataCheck_PumpGrade(val, callback, row, col, handsontableHelper) {
+    var num = Number(val);
+    if (num >= 1 && num <= 5) {
+        return callback(true);
+    } else {
+        var cell = handsontableHelper.hot.getCell(row, col);
+        if (cell) cell.style.background = "#f09614";
+        return callback(false);
+    }
+}
+
+function handsontableDataCheck_RodType(val, callback, row, col, handsontableHelper) {
+    var upper = val ? val.toUpperCase() : '';
+    if (upper === '' || upper === '钢杆' || upper === '玻璃钢杆' || upper === '空心抽油杆') {
+        return callback(true);
+    } else {
+        var cell = handsontableHelper.hot.getCell(row, col);
+        if (cell) cell.style.background = "#f09614";
+        return callback(false);
+    }
+}
+
+function handsontableDataCheck_RodGrade(val, callback, row, col, handsontableHelper) {
+    var upper = val ? val.toUpperCase() : '';
+    var valid = ['', 'A', 'B', 'C', 'D', 'K', 'KD', 'HL', 'HY'];
+    if (valid.indexOf(upper) !== -1) {
+        return callback(true);
+    } else {
+        var cell = handsontableHelper.hot.getCell(row, col);
+        if (cell) cell.style.background = "#f09614";
+        return callback(false);
+    }
+}
+
+function handsontableDataCheck_IpPort_Nullable(val, callback, row, col, handsontableHelper) {
+    if (val === '' || val === null) {
+        return callback(true);
+    }
+    var ipPattern = /^(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\:([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+    var ipv6Pattern = /^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*\:([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+    if (ipPattern.test(val) || ipv6Pattern.test(val)) {
+        return callback(true);
+    } else {
+        var cell = handsontableHelper.hot.getCell(row, col);
+        if (cell) cell.style.background = "#f09614";
+        return callback(false);
+    }
+}
+
+function handsontableDataCheck_HexStr_Nullable(val, callback, row, col, handsontableHelper) {
+    if (val === '' || val === null) {
+        return callback(true);
+    }
+    var pattern = /^(0x|0X)?[a-fA-F0-9]+$/;
+    if (pattern.test(val)) {
+        return callback(true);
+    } else {
+        var cell = handsontableHelper.hot.getCell(row, col);
+        if (cell) cell.style.background = "#f09614";
+        return callback(false);
+    }
+}
+
+function handsontableDataCheck_Cancel(val, callback, row, col, handsontableHelper) {
+    return callback(true);
+}
+
+function handsontableDataCheck_IdAndIpPort(val, callback, row, col, handsontableHelper) {
+    if (val === '' || val === null) {
+        return callback(true);
+    }
+    var columns = handsontableHelper.columns;
+    var tcpTypeColIndex = -1;
+    for (var i = 0; i < columns.length; i++) {
+        if (columns[i].data && columns[i].data.toUpperCase() === "tcpType".toUpperCase()) {
+            tcpTypeColIndex = i;
+            break;
+        }
+    }
+    if (tcpTypeColIndex < 0) {
+        return callback(true);
+    }
+    var tcpType = handsontableHelper.hot.getDataAtCell(row, tcpTypeColIndex);
+    var cell = handsontableHelper.hot.getCell(row, col);
+    var prop = columns[col] ? columns[col].data : '';
+    if (tcpType === '' || tcpType === null) {
+        return callback(true);
+    } else {
+        if (prop.toUpperCase() === "signInId".toUpperCase()) {
+            if (tcpType.toUpperCase() === "TCP Client".toUpperCase() || tcpType.toUpperCase() === "TCPClient".toUpperCase()) {
+                return callback(true);
+            } else {
+                if (cell) cell.style.background = "#f5f5f5";
+                return callback(false);
+            }
+        } else if (prop.toUpperCase() === "ipPort".toUpperCase()) {
+            if (tcpType.toUpperCase() === "TCP Server".toUpperCase() || tcpType.toUpperCase() === "TCPServer".toUpperCase()) {
+                var ipPortPattern = /^(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\:([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+                var ipv6PortPattern = /^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*\:([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+                if (ipPortPattern.test(val) || ipv6PortPattern.test(val)) {
+                    return callback(true);
+                } else {
+                    if (cell) cell.style.background = "#f09614";
+                    return callback(false);
+                }
+            } else {
+                if (cell) cell.style.background = "#f5f5f5";
+                return callback(false);
+            }
+        } else if (prop.toUpperCase() === "tcpType".toUpperCase()) {
+            return callback(true);
+        }
+    }
+    return callback(true);
+}
+
 // ================================================================
 // 7. 浏览器/URL 工具
 // ================================================================
@@ -1304,10 +1464,10 @@ function getCalculateTypeDeviceCount(orgId, deviceType, calculateType) {
     return deviceCount;
 }
 
-function getRoleModuleRight(moduleCode) {
+function getRoleModuleRight(url,moduleCode) {
     var moduleRight = null;
     $.ajax({
-        url: _context + '/roleManagerController/getRoleModuleRight',
+        url: url,
         type: 'POST',
         async: false,
         data: { moduleCode: moduleCode },

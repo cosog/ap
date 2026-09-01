@@ -2561,8 +2561,6 @@ function handsontableDataCheck_Cancel(val, callback,row,col,handsontableHelper){
 	return callback(true);
 };
 
-/^(0x|0X)?[a-fA-F0-9]+$/
-
 function handsontableDataCheck_IdAndIpPort(val, callback,row,col,handsontableHelper){
 	if(val==''|| val==null){
 		return callback(true);

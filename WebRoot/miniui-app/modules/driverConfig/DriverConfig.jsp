@@ -280,26 +280,36 @@ String path = request.getContextPath();
                         <div title="Protocol" name="protocol" style="height:100%;">
                             <div class="tab-content-layout" style="height:100%;">
                                 <div class="mini-toolbar">
-                                    <button id="protocolRefreshBtn" class="mini-button" iconCls="note-refresh">Refresh</button>
+                                    <button id="protocolRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="loadProtocolTree()">Refresh</button>
                                     <span style="flex:1;"></span>
-                                    <button id="protocolAddBtn" class="mini-button" iconCls="add">Add</button>
-                                    <button id="protocolSaveBtn" class="mini-button" iconCls="save">Save</button>
+                                    <button id="protocolAddBtn" class="mini-button" iconCls="add" onclick="addProtocolData()">Add</button>
+                                    <button id="protocolSaveBtn" class="mini-button" iconCls="save" onclick="saveProtocolConfigData()">Save</button>
                                     <span class="separator"></span>
-                                    <button id="protocolMappingBtn" class="mini-button" iconCls="table">Mapping</button>
+                                    <button id="protocolMappingBtn" class="mini-button" >Mapping</button>
                                     <button id="protocolExportBtn" class="mini-button" iconCls="export">Export</button>
                                     <button id="protocolImportBtn" class="mini-button" iconCls="import">Import</button>
                                     <button id="protocolDeviceTypeChangeBtn" class="mini-button" iconCls="move">Move</button>
                                     <span id="protocolInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                     <input type="hidden" id="ModbusProtocolAddrMappingItemsSelectRow_Id" value="0" />
+                                    <input type="hidden" id="ProtocolExtendedFieldHighLowByteSelectRow_Id" value="0" />
                                 </div>
                                 <div style="flex:1;overflow:hidden;">
                                     <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
                                         <!-- 左侧协议树 17% -->
                                         <div size="17%" showCollapseButton="true" collapseDirection="left" minSize="150">
                                             <div style="padding:4px;height:100%;background:#fafafa;">
-                                                <div id="protocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onload="onProtocolTreeLoad" onbeforeload="onProtocolTreeBeforeLoad" onnodeselect="onProtocolNodeSelect">
+                                                <div id="protocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" 
+                                                	idField="id" textField="text" parentField="pid" resultAsTree="true" 
+                                                	onload="onProtocolTreeLoad" onbeforeload="onProtocolTreeBeforeLoad" onnodeselect="onProtocolNodeSelect"
+                                                	contextMenu="#protocolTreeMenu" >
                                                     <div property="emptyText" class="empty-msg">No Protocol</div>
                                                 </div>
+                                                <!-- 协议树右键菜单 -->
+												<ul id="protocolTreeMenu" class="mini-contextmenu" onbeforeopen="onProtocolTreeBeforeMenu">
+    												<li name="delete" iconCls="delete" onclick="deleteProtocolNode">
+        												<span id="protocolTreeMenuDeleteText">删除</span>
+    												</li>
+												</ul>
                                             </div>
                                         </div>
                                         <!-- 右侧详情 83% -->
@@ -360,7 +370,7 @@ String path = request.getContextPath();
                                                                         </div>
                                                                     </div>
                                                                     <div size="20%" showCollapseButton="true" collapseDirection="right" minSize="150">
-                                                                        <div class="mini-splitter" style="width:100%;height:100%;" vertical="true">
+                                                                        <div id="highLowBitStatusSplitter_Id" class="mini-splitter" style="width:100%;height:100%;" vertical="true">
                                                                             <div size="50%" showCollapseButton="false">
                                                                                 <div style="padding:4px;height:100%;background:#fff;">
                                                                                     <div id="extHighLowMeaningContainer" style="width:100%;height:100%;">
@@ -368,7 +378,7 @@ String path = request.getContextPath();
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div size="50%" showCollapseButton="true" collapseDirection="bottom" minSize="80">
+                                                                            <div size="50%" showCollapseButton="true" collapseDirection="bottom" minSize="80" visible="false">
                                                                                 <div style="padding:4px;height:100%;background:#fff;">
                                                                                     <div id="extHighLowBitStatusContainer" style="width:100%;height:100%;">
                                                                                         <div id="ProtocolExtendedFieldSwitchingValueBitStatusConfigTableInfoDiv_id" style="width:100%;height:100%;"></div>
@@ -994,7 +1004,25 @@ String path = request.getContextPath();
 
         function onExtendedSubTabChanged(e) {
             if (isInitializing) return;
-            if (selectedDeviceTypeId) loadDataForCurrentTab(selectedDeviceTypeId);
+            var protocolTree = mini.get('protocolTree');
+            if (!protocolTree) return;
+            var selectedNode = protocolTree.getSelectedNode();
+            if (selectedNode && selectedNode.classes === 1) {
+                // 根据当前协议和扩展子标签重新加载
+                var extSub = mini.get('extendedSubTabs');
+                if (!extSub) return;
+                var extActive = extSub.getActiveTab();
+                if (!extActive) return;
+
+                var protocolCode = selectedNode.code || '';
+                var protocolName = selectedNode.text || '';
+
+                if (extActive.name === 'numeric') {
+                    CreateProtocolExtendedFieldConfigInfoTable(protocolName, 1, protocolCode);
+                } else if (extActive.name === 'highlow') {
+                    CreateProtocolExtendedFieldHighLowByteConfigInfoTable(protocolName, 1, protocolCode);
+                }
+            }
         }
 
         function onUnitSubTabChanged(e) {
@@ -1120,6 +1148,13 @@ String path = request.getContextPath();
                 }
             }
         }
+        
+        function loadProtocolTree(){
+        	var protocolTree = mini.get('protocolTree');
+            if (protocolTree) {
+                protocolTree.load();
+            }
+        }
 
         function onProtocolTreeBeforeLoad(e) {
             var params = e.params || {};
@@ -1130,20 +1165,16 @@ String path = request.getContextPath();
 
         function onProtocolTreeLoad(e) {
             var tree = e.sender;
-            // 获取根节点
             var root = tree.getRootNode();
             if (!root) return;
 
-            // 递归收集所有叶子节点（协议节点）
             var protocolNodes = [];
-
             function collect(node) {
                 if (node.children && node.children.length > 0) {
                     for (var i = 0; i < node.children.length; i++) {
                         collect(node.children[i]);
                     }
                 } else {
-                    // 叶子节点即为协议（根据实际数据结构，可能 classes==1 表示协议）
                     if (node.classes == 1) {
                         protocolNodes.push(node);
                     }
@@ -1151,9 +1182,24 @@ String path = request.getContextPath();
             }
             collect(root);
 
-            // 如果有协议节点，选中第一个并展开根节点
             if (protocolNodes.length > 0) {
-                tree.selectNode(protocolNodes[0]);
+                var targetNode = null;
+                // 如果有新添加的协议名称，优先选中它
+                if (window._newProtocolName) {
+                    for (var i = 0; i < protocolNodes.length; i++) {
+                        if (protocolNodes[i].text === window._newProtocolName) {
+                            targetNode = protocolNodes[i];
+                            break;
+                        }
+                    }
+                    // 清除标记，避免重复选中
+                    window._newProtocolName = null;
+                }
+                // 如果没有找到或没有新协议，默认选中第一个
+                if (!targetNode) {
+                    targetNode = protocolNodes[0];
+                }
+                tree.selectNode(targetNode);
             }
         }
         function onProtocolNodeSelect(e) {
@@ -1168,6 +1214,57 @@ String path = request.getContextPath();
                 loadProtocolDetailData(node);
             }
         }
+        
+
+     // 右键菜单打开前事件（控制显示/隐藏）
+     function onProtocolTreeBeforeMenu(e) {
+         var tree = mini.get('protocolTree');
+         var menu = e.sender;
+         var node = tree.getSelectedNode(); // 注意：右键点击时，树会自动选中该节点
+
+         // 只对协议节点（classes===1）显示菜单，目录节点不显示
+         if (!node || node.classes !== 1) {
+             e.cancel = true; // 阻止菜单弹出
+             e.htmlEvent.preventDefault();
+             return;
+         }
+
+         // 更新菜单项文字（国际化）
+         var deleteText = _loginUserLanguageResource.deleteData;
+         document.getElementById('protocolTreeMenuDeleteText').textContent = deleteText;
+
+         // 根据权限禁用菜单项（如果需要）
+         var editFlag = (typeof loginUserProtocolConfigModuleRight !== 'undefined' && loginUserProtocolConfigModuleRight.editFlag == 1) ? 1 : 0;
+         var deleteItem = mini.getbyName('delete', menu);
+         if (editFlag !== 1) {
+              deleteItem.disable();
+         } else {
+              deleteItem.enable();
+         }
+     }
+
+     // 删除协议节点
+     function deleteProtocolNode(e) {
+    	 var tree = mini.get('protocolTree');
+         var menu = e.sender;
+         var node = tree.getSelectedNode();
+    	 if (!node) {
+             return;
+         }
+         var protocolCode = node.code;
+         var protocolName = node.text;
+
+         mini.confirm(_loginUserLanguageResource.confirmDelete, _loginUserLanguageResource.confirm, function(action) {
+             if (action == 'ok') {
+                 var configInfo = {
+                     delidslist: [protocolCode]
+                 };
+                 saveModbusProtocolAddrMappingConfigData(configInfo);
+             }
+         });
+     }
+        
+        
         function getCurrentProtocolCode() {
             var tree = mini.get('protocolTree');
             if (!tree) return '';
@@ -1275,19 +1372,19 @@ String path = request.getContextPath();
     	                var colHeaders = [
     	                    ['', '', { label: (_loginUserLanguageResource.lowerComputer || 'Lower Computer'), colspan: 6 }, { label: (_loginUserLanguageResource.upperComputer || 'Upper Computer'), colspan: 5 }],
     	                    [
-    	                        _loginUserLanguageResource.idx || 'Idx',
-    	                        _loginUserLanguageResource.name || 'Name',
-    	                        _loginUserLanguageResource.startAddress || 'Start Address',
-    	                        _loginUserLanguageResource.highLowByte || 'High/Low Byte',
-    	                        _loginUserLanguageResource.storeDataType || 'Store Data Type',
-    	                        _loginUserLanguageResource.quantity || 'Quantity',
-    	                        _loginUserLanguageResource.RWType || 'RW Type',
-    	                        _loginUserLanguageResource.acqMode || 'Acq Mode',
-    	                        _loginUserLanguageResource.IFDataType || 'IF Data Type',
-    	                        _loginUserLanguageResource.prec || 'Prec',
-    	                        _loginUserLanguageResource.ratio || 'Ratio',
-    	                        _loginUserLanguageResource.unit || 'Unit',
-    	                        _loginUserLanguageResource.resolutionMode || 'Resolution Mode'
+    	                        _loginUserLanguageResource.idx,
+    	                        _loginUserLanguageResource.name,
+    	                        _loginUserLanguageResource.startAddress,
+    	                        _loginUserLanguageResource.highLowByte,
+    	                        _loginUserLanguageResource.storeDataType,
+    	                        _loginUserLanguageResource.quantity,
+    	                        _loginUserLanguageResource.RWType,
+    	                        _loginUserLanguageResource.acqMode,
+    	                        _loginUserLanguageResource.IFDataType,
+    	                        _loginUserLanguageResource.prec,
+    	                        _loginUserLanguageResource.ratio,
+    	                        _loginUserLanguageResource.unit,
+    	                        _loginUserLanguageResource.resolutionMode
     	                    ]
     	                ];
     	                var columns = [
@@ -1389,14 +1486,12 @@ String path = request.getContextPath();
     	                var splitter = mini.get('meaningAndBitStatusSplitter_Id');
     	                if(splitter){
     	                	splitter.showPane(2);
-    	                	//splitter.updatePane(1,{visible:true});
     	                }
     	                CreateProtocolSwitchingValueBitStatusConfigInfoTable(protocolCode, itemTitle, itemAddr, highLowByte, resolutionMode, quantity, isNew);
     	            } else {
     	            	var splitter = mini.get('meaningAndBitStatusSplitter_Id');
     	                if(splitter){
     	                	splitter.hidePane(2);
-    	                	//splitter.updatePane(1,{visible:false});
     	                }
     	                if (protocolSwitchingValueBitStatusConfigHandsontableHelper && protocolSwitchingValueBitStatusConfigHandsontableHelper.hot) {
     	                    protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
@@ -1632,13 +1727,13 @@ String path = request.getContextPath();
     		        helper.initTitleDataMap = function (data) {
     		            helper.titleDataMap.clear();
     		            data.forEach((row, index) => {
-    		                var value = row.title;
-    		                if (!value) return;
-    		                if (!helper.titleDataMap.has(value)) {
-    		                    helper.titleDataMap.set(value, [index]);
-    		                } else {
-    		                    helper.titleDataMap.get(value).push(index);
-    		                }
+    		                const value = row.title;
+    	                    if (row.title==undefined || !value) return;
+    	                    if (!helper.titleDataMap.has(value)) {
+    	                    	helper.titleDataMap.set(value, [index]);
+    	                    } else {
+    	                    	helper.titleDataMap.get(value).push(index);
+    	                    }
     		            });
     		        };
 
@@ -1663,16 +1758,19 @@ String path = request.getContextPath();
     		        helper.initAddressDataMap = function (data) {
     		            helper.addressDataMap.clear();
     		            data.forEach((row, index) => {
-    		                var addr = row.addr + '';
-    		                var highLowByte = row.highLowByte + '';
-    		                if (addr !== '' || highLowByte !== '') {
-    		                    var key = addr + '_' + highLowByte;
-    		                    if (!helper.addressDataMap.has(key)) {
-    		                        helper.addressDataMap.set(key, [index]);
-    		                    } else {
-    		                        helper.addressDataMap.get(key).push(index);
-    		                    }
-    		                }
+    		                var value = "";
+    	                    var addr=row.addr+"";
+    	                    var highLowByte=row.highLowByte+"";
+    	                    if(addr!='' || highLowByte!=''){
+    	                    	value=addr+'_'+highLowByte;
+    	                	}
+    	                    if ( (row.addr==undefined && row.highLowByte==undefined) || !value) return;
+    	                    
+    	                    if (!helper.addressDataMap.has(value)) {
+    	                    	helper.addressDataMap.set(value, [index]);
+    	                    } else {
+    	                    	helper.addressDataMap.get(value).push(index);
+    	                    }
     		            });
     		        };
 
@@ -1799,11 +1897,15 @@ String path = request.getContextPath();
     		                        }
     		                    }
     		                    if (prop === 'storeDataType') {
-    		                        var highLowByte = this.instance.getDataAtRowProp(row, 'highLowByte');
-    		                        this.type = 'dropdown';
-    		                        this.strict = true;
-    		                        this.allowInvalid = false;
-    		                        this.source = (highLowByte) ? ['bit', 'byte', 'int16', 'uint16', 'float32', 'float64', 'bcd'] : ['bit', 'byte'];
+    		                        var highLowByte=this.instance.getDataAtRowProp(row,'highLowByte')
+    	            				this.type = 'dropdown';
+    	                            this.strict = true;
+    	                            this.allowInvalid = false;
+    	                            if(isNotVal(highLowByte)){
+    	                            	this.source = ['bit','byte'];
+    	                            }else{
+    	                            	this.source = ['bit','byte','int16','uint16','float32','float64','bcd'];
+    	                            }
     		                    }
     		                    if (visualColIndex === 0) {
     		                        cellProperties.renderer = helper.addBoldBg;
@@ -2073,6 +2175,1410 @@ String path = request.getContextPath();
     		        return helper;
     		    }
     		};
+     
+  // ================================================================
+  // 加载数值运算表格
+  // ================================================================
+  function CreateProtocolExtendedFieldConfigInfoTable(protocolName, classes, code) {
+      // 销毁旧的 helper
+      if (protocolExtendedFieldConfigHandsontableHelper && protocolExtendedFieldConfigHandsontableHelper.hot) {
+          protocolExtendedFieldConfigHandsontableHelper.hot.destroy();
+          protocolExtendedFieldConfigHandsontableHelper = null;
+      }
+
+      // 更新信息标签
+      var showInfo = (_loginUserLanguageResource.extendedField || 'Extended Field');
+      if (protocolName) {
+          showInfo = '【<font color="red">' + protocolName + '</font>】' + showInfo;
+      }
+      //$('#protocolInfoLabel').html(showInfo);
+
+      $.ajax({
+          type: 'POST',
+          url: context + '/acquisitionUnitManagerController/getProtocolExtendedFieldsConfigData',
+          data: {
+              protocolName: protocolName,
+              classes: classes,
+              code: code,
+              type: 0   // 数值运算
+          },
+          dataType: 'json',
+          success: function (result) {
+              var dataLength = result.totalRoot.length;
+              var defultDataLength = 100;
+              var tableData = result.totalRoot;
+              if (dataLength < defultDataLength) {
+                  for (var i = dataLength; i < defultDataLength; i++) {
+                      tableData.push({});
+                  }
+              }
+
+              if (!protocolExtendedFieldConfigHandsontableHelper) {
+                  protocolExtendedFieldConfigHandsontableHelper = ProtocolExtendedFieldConfigHandsontableHelper.createNew('ProtocolExtendedFieldTableInfoDiv_id');
+
+                  var operationList = result.operationList || [];
+                  var additionalConditionsList = result.additionalConditionsList || [];
+
+                  var colHeaders = [
+                      _loginUserLanguageResource.idx || 'Idx',
+                      _loginUserLanguageResource.name || 'Name',
+                      (_loginUserLanguageResource.dataColumn || 'Column') + '1',
+                      _loginUserLanguageResource.fourOperation || 'Operation',
+                      (_loginUserLanguageResource.dataColumn || 'Column') + '2',
+                      _loginUserLanguageResource.prec || 'Prec',
+                      _loginUserLanguageResource.ratio || 'Ratio',
+                      _loginUserLanguageResource.unit || 'Unit',
+                      _loginUserLanguageResource.additionalConditions || 'Additional Conditions'
+                  ];
+
+                  var columns = [
+                      { data: 'id' },
+                      { data: 'title', renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle },
+                      { data: 'title1', renderer: protocolExtendedFieldConfigHandsontableHelper.placeholderRenderer },
+                      {
+                          data: 'operation',
+                          type: 'dropdown',
+                          strict: true,
+                          allowInvalid: false,
+                          source: operationList,
+                          renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle
+                      },
+                      { data: 'title2', renderer: protocolExtendedFieldConfigHandsontableHelper.placeholderRenderer },
+                      {
+                          data: 'prec',
+                          type: 'text',
+                          allowInvalid: true,
+                          renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle,
+                          validator: function (val, callback) {
+                              return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, protocolExtendedFieldConfigHandsontableHelper);
+                          }
+                      },
+                      {
+                          data: 'ratio',
+                          type: 'text',
+                          allowInvalid: true,
+                          renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle,
+                          validator: function (val, callback) {
+                              return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, protocolExtendedFieldConfigHandsontableHelper);
+                          }
+                      },
+                      { data: 'unit', renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle },
+                      {
+                          data: 'additionalConditions',
+                          type: 'dropdown',
+                          strict: true,
+                          allowInvalid: false,
+                          source: additionalConditionsList,
+                          renderer: protocolExtendedFieldConfigHandsontableHelper.addCellStyle
+                      }
+                  ];
+
+                  protocolExtendedFieldConfigHandsontableHelper.colHeaders = colHeaders;
+                  protocolExtendedFieldConfigHandsontableHelper.columns = columns;
+                  protocolExtendedFieldConfigHandsontableHelper.createTable(tableData);
+              } else {
+                  protocolExtendedFieldConfigHandsontableHelper.hot.loadData(tableData);
+                  protocolExtendedFieldConfigHandsontableHelper.hot.render();
+              }
+          },
+          error: function () {
+              mini.alert((_loginUserLanguageResource.ajaxError || 'Ajax error'));
+          }
+      });
+  }
+
+     
+  // ================================================================
+  // 扩展字段 - 数值运算表格 Helper
+  // ================================================================
+  var ProtocolExtendedFieldConfigHandsontableHelper = {
+      createNew: function (divid) {
+          var helper = {};
+          helper.hot = null;
+          helper.divid = divid;
+          helper.validresult = true;
+          helper.colHeaders = [];
+          helper.columns = [];
+          helper.AllData = [];
+
+          helper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+              if (cellProperties.type === 'checkbox') {
+                  Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+              } else if (cellProperties.type === 'dropdown') {
+                  Handsontable.renderers.DropdownRenderer.apply(this, arguments);
+              } else {
+                  Handsontable.renderers.TextRenderer.apply(this, arguments);
+              }
+              if (cellProperties.type !== 'checkbox') {
+                  td.style.whiteSpace = 'nowrap';
+                  td.style.overflow = 'hidden';
+                  td.style.textOverflow = 'ellipsis';
+              }
+          };
+
+          helper.placeholderRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+              Handsontable.renderers.TextRenderer.apply(this, arguments);
+              td.style.whiteSpace = 'nowrap';
+              td.style.overflow = 'hidden';
+              td.style.textOverflow = 'ellipsis';
+
+              var children = td.children;
+              if (children.length > 0) {
+                  for (var i = 0; i < children.length; i++) {
+                      var child = children[i];
+                      child.style.whiteSpace = 'nowrap';
+                      child.style.overflow = 'hidden';
+                      child.style.textOverflow = 'ellipsis';
+                      child.style.display = 'block';
+                      child.style.maxWidth = '100%';
+                  }
+              }
+
+              if (value === null || value === '') {
+                  td.style.color = 'gray';
+                  td.style.fontStyle = 'italic';
+                  td.innerHTML = (_loginUserLanguageResource.doubleClickCellTip || 'Double click') + '...';
+              }
+          };
+
+          helper.createTable = function (data) {
+              $('#' + helper.divid).empty();
+              var hotElement = document.querySelector('#' + helper.divid);
+              helper.hot = new Handsontable(hotElement, {
+                  licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+                  theme: 'ht-theme-classic',
+                  data: data,
+                  hiddenColumns: {
+                      columns: [0],
+                      indicators: false,
+                      copyPasteEnabled: false
+                  },
+                  colWidths: [50, 200, 200, 80, 200, 80, 80, 80, 150],
+                  columns: helper.columns,
+                  stretchH: 'all',
+                  autoWrapRow: true,
+                  rowHeaders: true,
+                  colHeaders: helper.colHeaders,
+                  columnSorting: true,
+                  sortIndicator: true,
+                  manualColumnResize: true,
+                  manualRowResize: true,
+                  filters: true,
+                  renderAllRows: true,
+                  search: true,
+                  contextMenu: {
+                      items: {
+                          "row_above": { name: (_loginUserLanguageResource.contextMenu_insertRowAbove || 'Insert row above') },
+                          "row_below": { name: (_loginUserLanguageResource.contextMenu_insertRowBelow || 'Insert row below') },
+                          "col_left": { name: (_loginUserLanguageResource.contextMenu_insertColumnLeft || 'Insert column left') },
+                          "col_right": { name: (_loginUserLanguageResource.contextMenu_insertColumnRight || 'Insert column right') },
+                          "remove_row": { name: (_loginUserLanguageResource.contextMenu_removeRow || 'Remove row') },
+                          "remove_col": { name: (_loginUserLanguageResource.contextMenu_removeColumn || 'Remove column') },
+                          "merge_cell": { name: (_loginUserLanguageResource.contextMenu_mergeCell || 'Merge cells') },
+                          "copy": { name: (_loginUserLanguageResource.contextMenu_copy || 'Copy') },
+                          "cut": { name: (_loginUserLanguageResource.contextMenu_cut || 'Cut') }
+                      }
+                  },
+                  cells: function (row, col, prop) {
+                      var cellProperties = {};
+                      var editFlag = (typeof loginUserProtocolConfigModuleRight !== 'undefined' && loginUserProtocolConfigModuleRight.editFlag == 1) ? 1 : 0;
+                      if (editFlag !== 1) {
+                          cellProperties.editor = false;
+                      }
+                      return cellProperties;
+                  },
+                  afterBeginEditing: function (row, column) {
+                      // 占位：双击编辑 title1/title2 时原逻辑会弹出选择窗口，暂不实现，保留占位显示
+                  },
+                  afterOnCellMouseOver: function (event, coords, TD) {
+                      if (coords.col >= 0 && coords.row >= 0 && helper.hot && helper.hot.getDataAtCell) {
+                          var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
+                          if (rawValue && rawValue !== '') {
+                              var showValue = rawValue;
+                              var rowChar = 90;
+                              var maxWidth = rowChar * 10;
+                              if (rawValue.length > rowChar) {
+                                  showValue = '';
+                                  var arr = [];
+                                  var index = 0;
+                                  while (index < rawValue.length) {
+                                      arr.push(rawValue.slice(index, index += rowChar));
+                                  }
+                                  for (var i = 0; i < arr.length; i++) {
+                                      showValue += arr[i];
+                                      if (i < arr.length - 1) showValue += '<br>';
+                                  }
+                              }
+                              if (!TD.tip) {
+                                  TD.tip = new Ext.ToolTip({
+                                      target: event.target,
+                                      maxWidth: maxWidth,
+                                      html: showValue,
+                                      listeners: {
+                                          hide: function () { },
+                                          close: function () { }
+                                      }
+                                  });
+                              } else {
+                                  TD.tip.setHtml(showValue);
+                              }
+                          }
+                      }
+                  }
+              });
+          };
+          return helper;
+      }
+  };
+  
+//================================================================
+//加载高低字节主表
+//================================================================
+function CreateProtocolExtendedFieldHighLowByteConfigInfoTable(protocolName, classes, code) {
+   if (protocolExtendedFieldHighLowByteConfigHandsontableHelper && protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot) {
+       protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.destroy();
+       protocolExtendedFieldHighLowByteConfigHandsontableHelper = null;
+   }
+
+   var showInfo = (_loginUserLanguageResource.extendedField || 'Extended Field');
+   if (protocolName) {
+       showInfo = '【<font color="red">' + protocolName + '</font>】' + showInfo;
+   }
+   //$('#protocolInfoLabel').html(showInfo);
+
+   $.ajax({
+       type: 'POST',
+       url: context + '/acquisitionUnitManagerController/getProtocolExtendedFieldsConfigData',
+       data: {
+           protocolName: protocolName,
+           classes: classes,
+           code: code,
+           type: 1   // 高低字节
+       },
+       dataType: 'json',
+       success: function (result) {
+           var dataLength = result.totalRoot.length;
+           var defultDataLength = 100;
+           var tableData = result.totalRoot;
+           if (dataLength < defultDataLength) {
+               for (var i = dataLength; i < defultDataLength; i++) {
+                   tableData.push({});
+               }
+           }
+
+           if (!protocolExtendedFieldHighLowByteConfigHandsontableHelper) {
+               protocolExtendedFieldHighLowByteConfigHandsontableHelper = ProtocolExtendedFieldHighLowByteConfigHandsontableHelper.createNew('ProtocolExtendedFieldHighLowByteTableInfoDiv_id');
+
+               var colHeaders = [
+                   _loginUserLanguageResource.idx || 'Idx',
+                   _loginUserLanguageResource.name || 'Name',
+                   (_loginUserLanguageResource.dataColumn || 'Column'),
+                   _loginUserLanguageResource.highLowByte || 'High/Low Byte',
+                   _loginUserLanguageResource.resolutionMode || 'Resolution Mode',
+                   _loginUserLanguageResource.prec || 'Prec',
+                   _loginUserLanguageResource.ratio || 'Ratio',
+                   _loginUserLanguageResource.unit || 'Unit'
+               ];
+
+               var columns = [
+                   { data: 'id' },
+                   { data: 'title', renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle },
+                   { data: 'title1', renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.placeholderRenderer },
+                   {
+                       data: 'highLowByte',
+                       type: 'dropdown',
+                       strict: true,
+                       allowInvalid: false,
+                       source: [(_loginUserLanguageResource.highByte || 'High'), (_loginUserLanguageResource.lowByte || 'Low')],
+                       renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle
+                   },
+                   {
+                       data: 'resolutionMode',
+                       type: 'dropdown',
+                       strict: true,
+                       allowInvalid: false,
+                       source: [(_loginUserLanguageResource.switchingValue || 'Switching'), (_loginUserLanguageResource.enumValue || 'Enum'), (_loginUserLanguageResource.numericValue || 'Numeric')],
+                       renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle
+                   },
+                   {
+                       data: 'prec',
+                       type: 'text',
+                       allowInvalid: true,
+                       renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle,
+                       validator: function (val, callback) {
+                           return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, protocolExtendedFieldHighLowByteConfigHandsontableHelper);
+                       }
+                   },
+                   {
+                       data: 'ratio',
+                       type: 'text',
+                       allowInvalid: true,
+                       renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle,
+                       validator: function (val, callback) {
+                           return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, protocolExtendedFieldHighLowByteConfigHandsontableHelper);
+                       }
+                   },
+                   { data: 'unit', renderer: protocolExtendedFieldHighLowByteConfigHandsontableHelper.addCellStyle }
+               ];
+
+               protocolExtendedFieldHighLowByteConfigHandsontableHelper.colHeaders = colHeaders;
+               protocolExtendedFieldHighLowByteConfigHandsontableHelper.columns = columns;
+               protocolExtendedFieldHighLowByteConfigHandsontableHelper.createTable(tableData);
+           } else {
+               protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.loadData(tableData);
+               protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.render();
+           }
+
+           // 默认选中第一行并加载含义表
+           if (dataLength > 0) {
+               protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.selectCell(0, 'title');
+               $('#ProtocolExtendedFieldHighLowByteSelectRow_Id').val(0);
+               var protocolCode = getCurrentProtocolCode();
+               var itemTitle = protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(0, 'title');
+               var resolutionMode = protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(0, 'resolutionMode');
+               CreateProtocolExtendedFieldMeaningConfigInfoTable(protocolCode, itemTitle, resolutionMode, true);
+           } else {
+               // 无数据，清空含义和位状态
+               $('#ProtocolExtendedFieldHighLowByteSelectRow_Id').val('');
+               CreateProtocolExtendedFieldMeaningConfigInfoTable('', '', '', true);
+           }
+       },
+       error: function () {
+           mini.alert((_loginUserLanguageResource.ajaxError || 'Ajax error'));
+       }
+   });
+}
+  
+//================================================================
+//扩展字段 - 高低字节主表 Helper
+//================================================================
+var ProtocolExtendedFieldHighLowByteConfigHandsontableHelper = {
+   createNew: function (divid) {
+       var helper = {};
+       helper.hot = null;
+       helper.divid = divid;
+       helper.validresult = true;
+       helper.colHeaders = [];
+       helper.columns = [];
+       helper.AllData = [];
+
+       helper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+           if (cellProperties.type === 'checkbox') {
+               Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+           } else if (cellProperties.type === 'dropdown') {
+               Handsontable.renderers.DropdownRenderer.apply(this, arguments);
+           } else {
+               Handsontable.renderers.TextRenderer.apply(this, arguments);
+           }
+           if (cellProperties.type !== 'checkbox') {
+               td.style.whiteSpace = 'nowrap';
+               td.style.overflow = 'hidden';
+               td.style.textOverflow = 'ellipsis';
+           }
+       };
+
+       helper.placeholderRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+           Handsontable.renderers.TextRenderer.apply(this, arguments);
+           td.style.whiteSpace = 'nowrap';
+           td.style.overflow = 'hidden';
+           td.style.textOverflow = 'ellipsis';
+
+           var children = td.children;
+           if (children.length > 0) {
+               for (var i = 0; i < children.length; i++) {
+                   var child = children[i];
+                   child.style.whiteSpace = 'nowrap';
+                   child.style.overflow = 'hidden';
+                   child.style.textOverflow = 'ellipsis';
+                   child.style.display = 'block';
+                   child.style.maxWidth = '100%';
+               }
+           }
+
+           if (value === null || value === '') {
+               td.style.color = 'gray';
+               td.style.fontStyle = 'italic';
+               td.innerHTML = (_loginUserLanguageResource.doubleClickCellTip || 'Double click') + '...';
+           }
+       };
+
+       helper.createTable = function (data) {
+           $('#' + helper.divid).empty();
+           var hotElement = document.querySelector('#' + helper.divid);
+           helper.hot = new Handsontable(hotElement, {
+               licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+               theme: 'ht-theme-classic',
+               data: data,
+               hiddenColumns: {
+                   columns: [0],
+                   indicators: false,
+                   copyPasteEnabled: false
+               },
+               colWidths: [50, 200, 200, 80, 80, 80, 80, 80],
+               columns: helper.columns,
+               stretchH: 'all',
+               autoWrapRow: true,
+               rowHeaders: true,
+               colHeaders: helper.colHeaders,
+               columnSorting: true,
+               sortIndicator: true,
+               manualColumnResize: true,
+               manualRowResize: true,
+               filters: true,
+               renderAllRows: true,
+               search: true,
+               outsideClickDeselects: false,
+               contextMenu: {
+                   items: {
+                       "row_above": { name: (_loginUserLanguageResource.contextMenu_insertRowAbove || 'Insert row above') },
+                       "row_below": { name: (_loginUserLanguageResource.contextMenu_insertRowBelow || 'Insert row below') },
+                       "col_left": { name: (_loginUserLanguageResource.contextMenu_insertColumnLeft || 'Insert column left') },
+                       "col_right": { name: (_loginUserLanguageResource.contextMenu_insertColumnRight || 'Insert column right') },
+                       "remove_row": { name: (_loginUserLanguageResource.contextMenu_removeRow || 'Remove row') },
+                       "remove_col": { name: (_loginUserLanguageResource.contextMenu_removeColumn || 'Remove column') },
+                       "merge_cell": { name: (_loginUserLanguageResource.contextMenu_mergeCell || 'Merge cells') },
+                       "copy": { name: (_loginUserLanguageResource.contextMenu_copy || 'Copy') },
+                       "cut": { name: (_loginUserLanguageResource.contextMenu_cut || 'Cut') }
+                   }
+               },
+               cells: function (row, col, prop) {
+                   var cellProperties = {};
+                   var editFlag = (typeof loginUserProtocolConfigModuleRight !== 'undefined' && loginUserProtocolConfigModuleRight.editFlag == 1) ? 1 : 0;
+                   if (editFlag !== 1) {
+                       cellProperties.editor = false;
+                   }
+                   return cellProperties;
+               },
+               afterBeginEditing: function (row, column) {
+                   // 占位
+               },
+               afterChange: function (changes, source) {
+                   if (!changes) return;
+                   changes.forEach(function (change) {
+                       var row = change[0], prop = change[1], oldVal = change[2], newVal = change[3];
+                       if (prop === 'resolutionMode') {
+                           var selectedRow = parseInt($('#ProtocolExtendedFieldHighLowByteSelectRow_Id').val() || 0);
+                           if (selectedRow === row &&
+                               typeof protocolExtendedFieldMeaningConfigHandsontableHelper !== 'undefined' &&
+                               protocolExtendedFieldMeaningConfigHandsontableHelper &&
+                               protocolExtendedFieldMeaningConfigHandsontableHelper.hot) {
+                               var resolutionMode = newVal;
+                               var itemTitle = helper.hot.getDataAtRowProp(row, 'title');
+                               var protocolCode = getCurrentProtocolCode();
+                               CreateProtocolExtendedFieldMeaningConfigInfoTable(protocolCode, itemTitle, resolutionMode, true);
+                           }
+                       }
+                   });
+               },
+               afterSelectionEnd: function (row, column, row2, column2, selectionLayerLevel) {
+                   if (row < 0 && row2 < 0) {
+                       // 只选中表头
+                       $('#ProtocolExtendedFieldHighLowByteSelectRow_Id').val('');
+                       CreateProtocolExtendedFieldMeaningConfigInfoTable('', '', '', true);
+                       return;
+                   }
+                   var startRow = (row < 0) ? 0 : row;
+                   if (row2 < 0) row2 = 0;
+                   if (row > row2) { startRow = row2; row2 = row; }
+                   var selectedRow = parseInt($('#ProtocolExtendedFieldHighLowByteSelectRow_Id').val() || 0);
+                   if (selectedRow !== startRow) {
+                       $('#ProtocolExtendedFieldHighLowByteSelectRow_Id').val(startRow);
+                       var protocolCode = getCurrentProtocolCode();
+                       var itemTitle = helper.hot.getDataAtRowProp(startRow, 'title');
+                       var resolutionMode = helper.hot.getDataAtRowProp(startRow, 'resolutionMode');
+                       CreateProtocolExtendedFieldMeaningConfigInfoTable(protocolCode, itemTitle, resolutionMode, true);
+                   }
+               },
+               afterOnCellMouseOver: function (event, coords, TD) {
+                   if (coords.col >= 0 && coords.row >= 0 && helper.hot && helper.hot.getDataAtCell) {
+                       var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
+                       if (rawValue && rawValue !== '') {
+                           var showValue = rawValue;
+                           var rowChar = 90;
+                           var maxWidth = rowChar * 10;
+                           if (rawValue.length > rowChar) {
+                               showValue = '';
+                               var arr = [];
+                               var index = 0;
+                               while (index < rawValue.length) {
+                                   arr.push(rawValue.slice(index, index += rowChar));
+                               }
+                               for (var i = 0; i < arr.length; i++) {
+                                   showValue += arr[i];
+                                   if (i < arr.length - 1) showValue += '<br>';
+                               }
+                           }
+                           if (!TD.tip) {
+                               TD.tip = new Ext.ToolTip({
+                                   target: event.target,
+                                   maxWidth: maxWidth,
+                                   html: showValue,
+                                   listeners: {
+                                       hide: function () { },
+                                       close: function () { }
+                                   }
+                               });
+                           } else {
+                               TD.tip.setHtml(showValue);
+                           }
+                       }
+                   }
+               }
+           });
+       };
+       return helper;
+   }
+};
+
+//================================================================
+//加载高低字节含义表格
+//================================================================
+function CreateProtocolExtendedFieldMeaningConfigInfoTable(protocolCode, itemTitle, resolutionMode, isNew) {
+ if (protocolExtendedFieldMeaningConfigHandsontableHelper && protocolExtendedFieldMeaningConfigHandsontableHelper.hot) {
+     protocolExtendedFieldMeaningConfigHandsontableHelper.hot.destroy();
+     protocolExtendedFieldMeaningConfigHandsontableHelper = null;
+ }
+
+ var resolutionModeValue = 2;
+ if (resolutionMode === (_loginUserLanguageResource.switchingValue || 'Switching')) resolutionModeValue = 0;
+ else if (resolutionMode === (_loginUserLanguageResource.enumValue || 'Enum')) resolutionModeValue = 1;
+
+ var quantity = 8; // 默认8位
+
+ var showInfo = (_loginUserLanguageResource.meaning || 'Meaning');
+ if (itemTitle) {
+     showInfo = '【<font color="red">' + itemTitle + '</font>】' + showInfo;
+ }
+ // 更新含义面板标题（假设面板id是 ProtocolExtendedFieldConfigHighLowByteItemsMeaningConfigPanel_Id）
+ var meaningPanel = mini.get('ProtocolExtendedFieldConfigHighLowByteItemsMeaningConfigPanel_Id');
+ if (meaningPanel) {
+     meaningPanel.setTitle(showInfo);
+ } else {
+     $('#ProtocolExtendedFieldConfigHighLowByteItemsMeaningConfigPanel_Id .mini-panel-title').html(showInfo);
+ }
+
+ $.ajax({
+     type: 'POST',
+     url: context + '/acquisitionUnitManagerController/getProtocolExtendedFieldMeaningConfigData',
+     data: {
+         protocolCode: protocolCode,
+         itemTitle: itemTitle,
+         resolutionMode: resolutionModeValue,
+         quantity: quantity
+     },
+     dataType: 'json',
+     success: function (result) {
+         var data = result.totalRoot || [];
+
+         // 补充空行
+         if (resolutionModeValue !== 0) {
+             var dataLength = data.length;
+             var defultDataLength = 50;
+             if (dataLength < defultDataLength) {
+                 if (defultDataLength - dataLength < 10) {
+                     for (var i = 0; i < 10; i++) data.push({});
+                 } else {
+                     for (var i = dataLength; i < defultDataLength; i++) data.push({});
+                 }
+             } else {
+                 for (var i = 0; i < 10; i++) data.push({});
+             }
+         }
+
+         if (!protocolExtendedFieldMeaningConfigHandsontableHelper) {
+             protocolExtendedFieldMeaningConfigHandsontableHelper = ProtocolExtendedFieldMeaningConfigHandsontableHelper.createNew('ProtocolExtendedFieldConfigHighLowByteItemsMeaningTableInfoDiv_id');
+
+             var colHeaders, columns;
+             if (resolutionModeValue === 0) {
+                 colHeaders = [(_loginUserLanguageResource.bit || 'Bit'), (_loginUserLanguageResource.meaning || 'Meaning'), ''];
+                 columns = [
+                     { data: 'title' },
+                     { data: 'meaning' },
+                     { data: 'value' }
+                 ];
+                 protocolExtendedFieldMeaningConfigHandsontableHelper.hiddenColumns = [2];
+                 protocolExtendedFieldMeaningConfigHandsontableHelper.contextMenu = false;
+             } else {
+                 colHeaders = [(_loginUserLanguageResource.value || 'Value'), (_loginUserLanguageResource.meaning || 'Meaning')];
+                 columns = [
+                     {
+                         data: 'value',
+                         type: 'text',
+                         allowInvalid: true,
+                         validator: function (val, callback) {
+                             return handsontableDataCheck_Num(val, callback, this.row, this.col, protocolExtendedFieldMeaningConfigHandsontableHelper);
+                         }
+                     },
+                     { data: 'meaning' }
+                 ];
+                 protocolExtendedFieldMeaningConfigHandsontableHelper.hiddenColumns = [];
+                 protocolExtendedFieldMeaningConfigHandsontableHelper.contextMenu = {
+                     items: {
+                         "row_above": { name: (_loginUserLanguageResource.contextMenu_insertRowAbove || 'Insert row above') },
+                         "row_below": { name: (_loginUserLanguageResource.contextMenu_insertRowBelow || 'Insert row below') },
+                         "col_left": { name: (_loginUserLanguageResource.contextMenu_insertColumnLeft || 'Insert column left') },
+                         "col_right": { name: (_loginUserLanguageResource.contextMenu_insertColumnRight || 'Insert column right') },
+                         "remove_row": { name: (_loginUserLanguageResource.contextMenu_removeRow || 'Remove row') },
+                         "remove_col": { name: (_loginUserLanguageResource.contextMenu_removeColumn || 'Remove column') },
+                         "merge_cell": { name: (_loginUserLanguageResource.contextMenu_mergeCell || 'Merge cells') },
+                         "copy": { name: (_loginUserLanguageResource.contextMenu_copy || 'Copy') },
+                         "cut": { name: (_loginUserLanguageResource.contextMenu_cut || 'Cut') }
+                     }
+                 };
+             }
+             protocolExtendedFieldMeaningConfigHandsontableHelper.colHeaders = colHeaders;
+             protocolExtendedFieldMeaningConfigHandsontableHelper.columns = columns;
+             protocolExtendedFieldMeaningConfigHandsontableHelper.itemResolutionMode = resolutionModeValue;
+             protocolExtendedFieldMeaningConfigHandsontableHelper.createTable(data);
+         } else {
+             protocolExtendedFieldMeaningConfigHandsontableHelper.hot.loadData(data);
+             protocolExtendedFieldMeaningConfigHandsontableHelper.itemResolutionMode = resolutionModeValue;
+             protocolExtendedFieldMeaningConfigHandsontableHelper.hot.render();
+         }
+
+         // 控制位状态面板显示
+         if (resolutionModeValue === 0) {
+             // 显示位状态面板
+        	 var splitter = mini.get('highLowBitStatusSplitter_Id');
+             if(splitter){
+             	splitter.showPane(2);
+             }
+             CreateProtocolExtendedFieldSwitchingValueBitStatusConfigInfoTable(protocolCode, itemTitle, resolutionMode, isNew);
+         } else {
+        	 var splitter = mini.get('highLowBitStatusSplitter_Id');
+             if(splitter){
+             	splitter.hidePane(2);
+             }
+             if (protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper && protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot) {
+                 protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
+                 protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper = null;
+             }
+         }
+     },
+     error: function () {
+         mini.alert((_loginUserLanguageResource.ajaxError || 'Ajax error'));
+     }
+ });
+}
+
+//================================================================
+//扩展字段 - 高低字节含义表格 Helper
+//================================================================
+var ProtocolExtendedFieldMeaningConfigHandsontableHelper = {
+ createNew: function (divid) {
+     var helper = {};
+     helper.hot = null;
+     helper.divid = divid;
+     helper.validresult = true;
+     helper.colHeaders = [];
+     helper.columns = [];
+     helper.AllData = [];
+     helper.itemResolutionMode = 2;
+     helper.hiddenColumns = [];
+     helper.contextMenu = null;
+
+     helper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+         Handsontable.renderers.TextRenderer.apply(this, arguments);
+         td.style.whiteSpace = 'nowrap';
+         td.style.overflow = 'hidden';
+         td.style.textOverflow = 'ellipsis';
+     };
+
+     helper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+         Handsontable.renderers.TextRenderer.apply(this, arguments);
+         td.style.backgroundColor = 'rgb(245, 245, 245)';
+         td.style.whiteSpace = 'nowrap';
+         td.style.overflow = 'hidden';
+         td.style.textOverflow = 'ellipsis';
+     };
+
+     helper.createTable = function (data) {
+         $('#' + helper.divid).empty();
+         var hotElement = document.querySelector('#' + helper.divid);
+         helper.hot = new Handsontable(hotElement, {
+             licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+             theme: 'ht-theme-classic',
+             data: data,
+             hiddenColumns: {
+                 columns: helper.hiddenColumns,
+                 indicators: false,
+                 copyPasteEnabled: false
+             },
+             colWidths: [1, 3],
+             columns: helper.columns,
+             stretchH: 'all',
+             autoWrapRow: true,
+             rowHeaders: false,
+             colHeaders: helper.colHeaders,
+             columnSorting: true,
+             sortIndicator: true,
+             manualColumnResize: true,
+             manualRowResize: true,
+             filters: true,
+             renderAllRows: true,
+             search: true,
+             contextMenu: helper.contextMenu,
+             cells: function (row, col, prop) {
+                 var cellProperties = {};
+                 var editFlag = (typeof loginUserProtocolConfigModuleRight !== 'undefined' && loginUserProtocolConfigModuleRight.editFlag == 1) ? 1 : 0;
+                 if (editFlag !== 1) {
+                     cellProperties.editor = false;
+                     cellProperties.renderer = helper.addCellStyle;
+                 } else {
+                     if (helper.itemResolutionMode === 0 && prop === 'title') {
+                         cellProperties.editor = false;
+                         cellProperties.renderer = helper.addBoldBg;
+                     } else {
+                         cellProperties.renderer = helper.addCellStyle;
+                     }
+                 }
+                 return cellProperties;
+             },
+             afterOnCellMouseOver: function (event, coords, TD) {
+                 if (coords.col >= 0 && coords.row >= 0 && helper.hot && helper.hot.getDataAtCell) {
+                     var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
+                     if (rawValue && rawValue !== '') {
+                         var showValue = rawValue;
+                         var rowChar = 90;
+                         var maxWidth = rowChar * 10;
+                         if (rawValue.length > rowChar) {
+                             showValue = '';
+                             var arr = [];
+                             var index = 0;
+                             while (index < rawValue.length) {
+                                 arr.push(rawValue.slice(index, index += rowChar));
+                             }
+                             for (var i = 0; i < arr.length; i++) {
+                                 showValue += arr[i];
+                                 if (i < arr.length - 1) showValue += '<br>';
+                             }
+                         }
+                         if (!TD.tip) {
+                             TD.tip = new Ext.ToolTip({
+                                 target: event.target,
+                                 maxWidth: maxWidth,
+                                 html: showValue,
+                                 listeners: {
+                                     hide: function () { },
+                                     close: function () { }
+                                 }
+                             });
+                         } else {
+                             TD.tip.setHtml(showValue);
+                         }
+                     }
+                 }
+             }
+         });
+     };
+     return helper;
+ }
+};
+
+//================================================================
+//加载高低字节开关量位状态表格
+//================================================================
+function CreateProtocolExtendedFieldSwitchingValueBitStatusConfigInfoTable(protocolCode, itemTitle, resolutionMode, isNew) {
+ if (protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper && protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot) {
+     protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.destroy();
+     protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper = null;
+ }
+
+ var quantity = 8;
+ var showInfo = (_loginUserLanguageResource.switchingValueBitStatusConfig || 'Bit Status Config');
+ if (itemTitle) {
+     showInfo = '【<font color="red">' + itemTitle + '</font>】' + showInfo;
+ }
+ var bitPanel = mini.get('ProtocolExtendedFieldSwitchingValueBitStatusConfigPanel_Id');
+ if (bitPanel) {
+     bitPanel.setTitle(showInfo);
+ } else {
+     $('#ProtocolExtendedFieldSwitchingValueBitStatusConfigPanel_Id .mini-panel-title').html(showInfo);
+ }
+
+ $.ajax({
+     type: 'POST',
+     url: context + '/acquisitionUnitManagerController/getProtocolExtendedFieldSwitchingValueBitStatusConfigData',
+     data: {
+         protocolCode: protocolCode,
+         itemTitle: itemTitle,
+         quantity: quantity,
+         resolutionMode: resolutionMode
+     },
+     dataType: 'json',
+     success: function (result) {
+         var data = result.totalRoot || [];
+
+         if (!protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper) {
+             protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper = ProtocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.createNew('ProtocolExtendedFieldSwitchingValueBitStatusConfigTableInfoDiv_id');
+
+             var colHeaders = [(_loginUserLanguageResource.bit || 'Bit') + '/' + (_loginUserLanguageResource.value || 'Value'), (_loginUserLanguageResource.switchingValuStatus || 'Status'), '', ''];
+             var columns = [
+                 { data: 'title', type: 'text' },
+                 { data: 'status' },
+                 { data: 'bitIndex' },
+                 { data: 'value' }
+             ];
+
+             protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.colHeaders = colHeaders;
+             protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.columns = columns;
+             protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.createTable(data);
+         } else {
+             protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.loadData(data);
+             protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.render();
+         }
+     },
+     error: function () {
+         mini.alert((_loginUserLanguageResource.ajaxError || 'Ajax error'));
+     }
+ });
+}
+
+//================================================================
+//扩展字段 - 高低字节开关量位状态表格 Helper
+//================================================================
+var ProtocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper = {
+ createNew: function (divid) {
+     var helper = {};
+     helper.hot = null;
+     helper.divid = divid;
+     helper.validresult = true;
+     helper.colHeaders = [];
+     helper.columns = [];
+     helper.AllData = [];
+
+     helper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+         Handsontable.renderers.TextRenderer.apply(this, arguments);
+         td.style.whiteSpace = 'nowrap';
+         td.style.overflow = 'hidden';
+         td.style.textOverflow = 'ellipsis';
+     };
+
+     helper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+         Handsontable.renderers.TextRenderer.apply(this, arguments);
+         td.style.backgroundColor = 'rgb(245, 245, 245)';
+         td.style.whiteSpace = 'nowrap';
+         td.style.overflow = 'hidden';
+         td.style.textOverflow = 'ellipsis';
+     };
+
+     helper.createTable = function (data) {
+         $('#' + helper.divid).empty();
+         var hotElement = document.querySelector('#' + helper.divid);
+         helper.hot = new Handsontable(hotElement, {
+             licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+             theme: 'ht-theme-classic',
+             data: data,
+             hiddenColumns: {
+                 columns: [2, 3],
+                 indicators: false,
+                 copyPasteEnabled: false
+             },
+             colWidths: [2, 5],
+             columns: helper.columns,
+             stretchH: 'all',
+             autoWrapRow: true,
+             rowHeaders: false,
+             colHeaders: helper.colHeaders,
+             columnSorting: true,
+             sortIndicator: true,
+             manualColumnResize: true,
+             manualRowResize: true,
+             filters: true,
+             renderAllRows: true,
+             search: true,
+             cells: function (row, col, prop) {
+                 var cellProperties = {};
+                 var editFlag = (typeof loginUserProtocolConfigModuleRight !== 'undefined' && loginUserProtocolConfigModuleRight.editFlag == 1) ? 1 : 0;
+                 if (editFlag !== 1) {
+                     cellProperties.editor = false;
+                     cellProperties.renderer = helper.addCellStyle;
+                 } else {
+                     if (prop === 'title') {
+                         cellProperties.editor = false;
+                         cellProperties.renderer = helper.addBoldBg;
+                     } else {
+                         cellProperties.renderer = helper.addCellStyle;
+                     }
+                 }
+                 return cellProperties;
+             },
+             afterOnCellMouseOver: function (event, coords, TD) {
+                 if (coords.col >= 0 && coords.row >= 0 && helper.hot && helper.hot.getDataAtCell) {
+                     var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
+                     if (rawValue && rawValue !== '') {
+                         var showValue = rawValue;
+                         var rowChar = 90;
+                         var maxWidth = rowChar * 10;
+                         if (rawValue.length > rowChar) {
+                             showValue = '';
+                             var arr = [];
+                             var index = 0;
+                             while (index < rawValue.length) {
+                                 arr.push(rawValue.slice(index, index += rowChar));
+                             }
+                             for (var i = 0; i < arr.length; i++) {
+                                 showValue += arr[i];
+                                 if (i < arr.length - 1) showValue += '<br>';
+                             }
+                         }
+                         if (!TD.tip) {
+                             TD.tip = new Ext.ToolTip({
+                                 target: event.target,
+                                 maxWidth: maxWidth,
+                                 html: showValue,
+                                 listeners: {
+                                     hide: function () { },
+                                     close: function () { }
+                                 }
+                             });
+                         } else {
+                             TD.tip.setHtml(showValue);
+                         }
+                     }
+                 }
+             }
+         });
+     };
+     return helper;
+ }
+};
+
+function saveProtocolConfigData() {
+    // 1. 获取当前选中的协议节点
+    var protocolTree = mini.get('protocolTree');
+    if (!protocolTree) {
+        mini.alert(_loginUserLanguageResource.tip || '提示', '请先选择协议');
+        return;
+    }
+    var selectedNode = protocolTree.getSelectedNode();
+    if (!selectedNode || selectedNode.classes !== 1) {
+        mini.alert(_loginUserLanguageResource.tip || '提示', '请选择一个协议节点');
+        return;
+    }
+
+    // 2. 确定保存类型
+    var saveType = 0; // 默认属性
+    var protoSub = mini.get('protocolSubTabs');
+    if (protoSub) {
+        var activeTab = protoSub.getActiveTab();
+        if (activeTab) {
+            var tabName = activeTab.name; // props, config, extended
+            if (tabName === 'props') {
+                saveType = 0;
+            } else if (tabName === 'config') {
+                saveType = 1;
+            } else if (tabName === 'extended') {
+                var extSub = mini.get('extendedSubTabs');
+                if (extSub) {
+                    var extActive = extSub.getActiveTab();
+                    if (extActive) {
+                        if (extActive.name === 'numeric') {
+                            saveType = 2; // 数值运算
+                        } else if (extActive.name === 'highlow') {
+                            saveType = 3; // 高低字节
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 3. 准备协议基础数据
+    var protocolConfigData = {
+        text: selectedNode.text,
+        code: selectedNode.code,
+        deviceType: selectedNode.deviceType || '',
+        sort: selectedNode.sort || ''
+    };
+
+    // 4. 如果是属性标签，从属性表格获取最新名称和排序
+    if (saveType === 0 && protocolPropertiesHandsontableHelper && protocolPropertiesHandsontableHelper.hot) {
+        var propertiesData = protocolPropertiesHandsontableHelper.hot.getData();
+        if (propertiesData && propertiesData.length > 0) {
+            var nameVal = (propertiesData[0] && propertiesData[0][2] !== undefined) ? propertiesData[0][2] : '';
+            var sortVal = (propertiesData[1] && propertiesData[1][2] !== undefined) ? propertiesData[1][2] : '';
+            protocolConfigData.text = isNotVal(nameVal) ? nameVal : '';
+            protocolConfigData.sort = isNotVal(sortVal) ? sortVal : '';
+        }
+    }
+
+    // 5. 校验协议名称不能为空
+    if (!isNotVal(protocolConfigData.text)) {
+        mini.alert(_loginUserLanguageResource.tip || '提示',
+            (_loginUserLanguageResource.protocolName || '协议名称') + ',' +
+            (_loginUserLanguageResource.canNotBeEmpty || '不能为空') + '!');
+        return;
+    }
+
+    // 6. 构造 configInfo 对象
+    var configInfo = {
+        ProtocolName: protocolConfigData.text,
+        ProtocolCode: protocolConfigData.code,
+        DeviceType: protocolConfigData.deviceType,
+        Sort: protocolConfigData.sort,
+        DataConfig: [],
+        ExtendedFieldConfig: []
+    };
+
+    // 7. 根据 saveType 收集对应的表格数据
+    if (saveType === 1) {
+        // 配置项表格
+        if (protocolItemsConfigHandsontableHelper && protocolItemsConfigHandsontableHelper.hot) {
+            var itemsData = protocolItemsConfigHandsontableHelper.hot.getData();
+            var selectedRow = parseInt($('#ModbusProtocolAddrMappingItemsSelectRow_Id').val() || 0);
+
+            for (var i = 0; i < itemsData.length; i++) {
+                var itemTitle = protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'title');
+                if (!isNotVal(itemTitle)) continue;
+
+                var item = {};
+                item.Title = itemTitle;
+                item.Addr = parseInt(protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'addr')) || 0;
+
+                var highLow = protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'highLowByte');
+                item.HighLowByte = '';
+                if (highLow === (_loginUserLanguageResource.highByte || '高字节')) {
+                    item.HighLowByte = 'high';
+                } else if (highLow === (_loginUserLanguageResource.lowByte || '低字节')) {
+                    item.HighLowByte = 'low';
+                }
+
+                item.StoreDataType = protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'storeDataType') || '';
+                item.Quantity = parseInt(protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'quantity')) || 0;
+                item.RWType = protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'RWType') || '';
+                item.AcqMode = protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'acqMode') || '';
+                item.IFDataType = protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'IFDataType') || '';
+
+                var precStr = protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'prec') + '';
+                precStr = precStr.replace(/\s/g, '');
+                item.Prec = (item.IFDataType && item.IFDataType.toLowerCase().indexOf('float') >= 0) ?
+                    (isNumber(parseFloat(precStr)) ? parseFloat(precStr) : 0) : 0;
+
+                var ratioVal = protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'ratio');
+                item.Ratio = isNumber(parseFloat(ratioVal)) ? parseFloat(ratioVal) : 1;
+
+                var unitVal = protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'unit') + '';
+                item.Unit = unitVal.replace(/\s/g, '');
+
+                item.ResolutionMode = protocolItemsConfigHandsontableHelper.hot.getDataAtRowProp(i, 'resolutionMode') || '';
+
+                // 只有选中行才收集含义/位状态
+                if (i === selectedRow) {
+                    item.Meaning = [];
+                    if (item.ResolutionMode === (_loginUserLanguageResource.enumValue || '枚举量')) {
+                        // 枚举量：从含义表收集 value/meaning
+                        if (protocolItemsMeaningConfigHandsontableHelper && protocolItemsMeaningConfigHandsontableHelper.hot) {
+                            var meaningData = protocolItemsMeaningConfigHandsontableHelper.hot.getData();
+                            for (var j = 0; j < meaningData.length; j++) {
+                                var val = protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j, 'value');
+                                var meaning = protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j, 'meaning');
+                                if (isNotVal(val) && isNotVal(meaning)) {
+                                    item.Meaning.push({ Value: val, Meaning: meaning });
+                                }
+                            }
+                        }
+                    } else if (item.ResolutionMode === (_loginUserLanguageResource.switchingValue || '开关量')) {
+                        // 开关量：从位状态表收集，并结合含义表补充 Meaning
+                        if (protocolSwitchingValueBitStatusConfigHandsontableHelper && protocolSwitchingValueBitStatusConfigHandsontableHelper.hot) {
+                            var bitData = protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.getData();
+                            for (var k = 0; k < bitData.length; k++) {
+                                var status = protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtRowProp(k, 'status');
+                                var bitIndex = protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtRowProp(k, 'bitIndex');
+                                var bitValue = protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtRowProp(k, 'value');
+                                if (isNotVal(status)) {
+                                    var exist = false;
+                                    for (var m = 0; m < item.Meaning.length; m++) {
+                                        if (bitIndex == item.Meaning[m].Value) {
+                                            if (bitValue == 0) item.Meaning[m].Status0 = status;
+                                            else if (bitValue == 1) item.Meaning[m].Status1 = status;
+                                            exist = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!exist) {
+                                        var newMeaning = { Value: bitIndex };
+                                        if (bitValue == 0) newMeaning.Status0 = status;
+                                        else if (bitValue == 1) newMeaning.Status1 = status;
+                                        item.Meaning.push(newMeaning);
+                                    }
+                                }
+                            }
+                        }
+                        // 补充含义表的 Meaning 字段
+                        if (protocolItemsMeaningConfigHandsontableHelper && protocolItemsMeaningConfigHandsontableHelper.hot) {
+                            var meaningData = protocolItemsMeaningConfigHandsontableHelper.hot.getData();
+                            for (var j = 0; j < meaningData.length; j++) {
+                                var bitIdx = protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j, 'value');
+                                var meaningText = protocolItemsMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j, 'meaning');
+                                for (var k = 0; k < item.Meaning.length; k++) {
+                                    if (bitIdx == item.Meaning[k].Value) {
+                                        item.Meaning[k].Meaning = meaningText;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                configInfo.DataConfig.push(item);
+            }
+        }
+    } else if (saveType === 2) {
+        // 扩展字段 - 数值运算
+        if (protocolExtendedFieldConfigHandsontableHelper && protocolExtendedFieldConfigHandsontableHelper.hot) {
+            var extData = protocolExtendedFieldConfigHandsontableHelper.hot.getData();
+            for (var i = 0; i < extData.length; i++) {
+                var title = protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i, 'title');
+                if (!isNotVal(title)) continue;
+                var extItem = {};
+                extItem.Title = title;
+                var title1 = protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i, 'title1');
+                extItem.Title1 = (title1 === (_loginUserLanguageResource.doubleClickCellTip + '...')) ? '' : title1;
+                extItem.Operation = protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i, 'operation') || '';
+                var title2 = protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i, 'title2');
+                extItem.Title2 = (title2 === (_loginUserLanguageResource.doubleClickCellTip + '...')) ? '' : title2;
+
+                var precStr = protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i, 'prec') + '';
+                precStr = precStr.replace(/\s/g, '');
+                extItem.Prec = isNumber(parseFloat(precStr)) ? parseFloat(precStr) : 0;
+
+                var ratioVal = protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i, 'ratio');
+                extItem.Ratio = isNumber(parseFloat(ratioVal)) ? parseFloat(ratioVal) : 1;
+
+                var unitVal = protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i, 'unit') + '';
+                extItem.Unit = unitVal.replace(/\s/g, '');
+                extItem.AdditionalConditions = protocolExtendedFieldConfigHandsontableHelper.hot.getDataAtRowProp(i, 'additionalConditions') || '';
+
+                configInfo.ExtendedFieldConfig.push(extItem);
+            }
+        }
+    } else if (saveType === 3) {
+        // 扩展字段 - 高低字节
+        if (protocolExtendedFieldHighLowByteConfigHandsontableHelper && protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot) {
+            var extData = protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getData();
+            var selectedRow = parseInt($('#ProtocolExtendedFieldHighLowByteSelectRow_Id').val() || 0);
+            for (var i = 0; i < extData.length; i++) {
+                var title = protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i, 'title');
+                if (!isNotVal(title)) continue;
+                var extItem = {};
+                extItem.Title = title;
+                var title1 = protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i, 'title1');
+                extItem.Title1 = (title1 === (_loginUserLanguageResource.doubleClickCellTip + '...')) ? '' : title1;
+
+                var highLow = protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i, 'highLowByte');
+                extItem.HighLowByte = '';
+                if (highLow === (_loginUserLanguageResource.highByte || '高字节')) {
+                    extItem.HighLowByte = 'high';
+                } else if (highLow === (_loginUserLanguageResource.lowByte || '低字节')) {
+                    extItem.HighLowByte = 'low';
+                }
+
+                extItem.ResolutionMode = protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i, 'resolutionMode') || '';
+
+                var precStr = protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i, 'prec') + '';
+                precStr = precStr.replace(/\s/g, '');
+                extItem.Prec = isNumber(parseFloat(precStr)) ? parseFloat(precStr) : 0;
+
+                var ratioVal = protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i, 'ratio');
+                extItem.Ratio = isNumber(parseFloat(ratioVal)) ? parseFloat(ratioVal) : 1;
+
+                var unitVal = protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.getDataAtRowProp(i, 'unit') + '';
+                extItem.Unit = unitVal.replace(/\s/g, '');
+
+                // 只有选中行才收集含义/位状态
+                if (i === selectedRow) {
+                    extItem.Meaning = [];
+                    if (extItem.ResolutionMode === (_loginUserLanguageResource.enumValue || '枚举量')) {
+                        if (protocolExtendedFieldMeaningConfigHandsontableHelper && protocolExtendedFieldMeaningConfigHandsontableHelper.hot) {
+                            var meaningData = protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getData();
+                            for (var j = 0; j < meaningData.length; j++) {
+                                var val = protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j, 'value');
+                                var meaning = protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j, 'meaning');
+                                if (isNotVal(val) && isNotVal(meaning)) {
+                                    extItem.Meaning.push({ Value: val, Meaning: meaning });
+                                }
+                            }
+                        }
+                    } else if (extItem.ResolutionMode === (_loginUserLanguageResource.switchingValue || '开关量')) {
+                        if (protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper && protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot) {
+                            var bitData = protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.getData();
+                            for (var k = 0; k < bitData.length; k++) {
+                                var status = protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtRowProp(k, 'status');
+                                var bitIndex = protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtRowProp(k, 'bitIndex');
+                                var bitValue = protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.getDataAtRowProp(k, 'value');
+                                if (isNotVal(status)) {
+                                    var exist = false;
+                                    for (var m = 0; m < extItem.Meaning.length; m++) {
+                                        if (bitIndex == extItem.Meaning[m].Value) {
+                                            if (bitValue == 0) extItem.Meaning[m].Status0 = status;
+                                            else if (bitValue == 1) extItem.Meaning[m].Status1 = status;
+                                            exist = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!exist) {
+                                        var newMeaning = { Value: bitIndex };
+                                        if (bitValue == 0) newMeaning.Status0 = status;
+                                        else if (bitValue == 1) newMeaning.Status1 = status;
+                                        extItem.Meaning.push(newMeaning);
+                                    }
+                                }
+                            }
+                        }
+                        if (protocolExtendedFieldMeaningConfigHandsontableHelper && protocolExtendedFieldMeaningConfigHandsontableHelper.hot) {
+                            var meaningData = protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getData();
+                            for (var j = 0; j < meaningData.length; j++) {
+                                var bitIdx = protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j, 'value');
+                                var meaningText = protocolExtendedFieldMeaningConfigHandsontableHelper.hot.getDataAtRowProp(j, 'meaning');
+                                for (var k = 0; k < extItem.Meaning.length; k++) {
+                                    if (bitIdx == extItem.Meaning[k].Value) {
+                                        extItem.Meaning[k].Meaning = meaningText;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                configInfo.ExtendedFieldConfig.push(extItem);
+            }
+        }
+    }
+
+    // 8. 重复检查（仅配置项表格）
+    var hasDuplicate = false;
+    if (saveType === 1 && protocolItemsConfigHandsontableHelper) {
+        var dupList = protocolItemsConfigHandsontableHelper.getDuplicateRowList();
+        var addrDupList = protocolItemsConfigHandsontableHelper.getAddrDuplicateRowList();
+        if (dupList.length > 0 || addrDupList.length > 0) {
+            hasDuplicate = true;
+        }
+    }
+
+    // 9. 如果有重复，弹出确认对话框（用 mini.confirm）
+    if (hasDuplicate) {
+        mini.confirm(_loginUserLanguageResource.protocolSaveConfirm,
+            _loginUserLanguageResource.confirm,
+            function (action) {
+                if (action == 'ok') {
+                    saveModbusProtocolAddrMappingConfigData(configInfo, saveType);
+                }
+            }
+        );
+    } else {
+        saveModbusProtocolAddrMappingConfigData(configInfo, saveType);
+    }
+}
+
+function saveModbusProtocolAddrMappingConfigData(configInfo, saveType) {
+    // 可选：显示页面遮罩（这里用 mini.loading 或直接控制 DOM）
+    var loading = mini.loading(_loginUserLanguageResource.updateWait, _loginUserLanguageResource.tip);
+
+    $.ajax({
+        type: 'POST',
+        url: context + '/acquisitionUnitManagerController/saveModbusProtocolAddrMappingConfigData',
+        data: {
+            data: JSON.stringify(configInfo),
+            saveType: saveType
+        },
+        dataType: 'json',
+        success: function (response) {
+            mini.hideMessageBox(loading);
+            if (response.success) {
+                // 清空临时数据（原逻辑调用了 clearContainer，这里保留空实现）
+                if (protocolItemsConfigHandsontableHelper && typeof protocolItemsConfigHandsontableHelper.clearContainer === 'function') {
+                    protocolItemsConfigHandsontableHelper.clearContainer();
+                }
+
+                if (configInfo.delidslist && configInfo.delidslist.length > 0) {
+                    mini.alert(_loginUserLanguageResource.deleteSuccessfully || '删除成功');
+                } else {
+                    mini.alert(_loginUserLanguageResource.savedSuccessfully || '保存成功');
+                }
+
+                // 刷新协议树（根据原逻辑：删除时刷新，或 saveType==0 时刷新）
+                if (configInfo.delidslist && configInfo.delidslist.length > 0) {
+                    // 删除后刷新并重置选中状态
+                    var tree = mini.get('protocolTree');
+                    if (tree) {
+                        tree.load(context + '/acquisitionUnitManagerController/modbusProtocolAddrMappingTreeData');
+                    }
+                    // 清空隐藏域
+                    $('#ModbusProtocolAddrMappingItemsSelectRow_Id').val(0);
+                    $('#ProtocolExtendedFieldHighLowByteSelectRow_Id').val(0);
+                } else {
+                    if (saveType === 0) {
+                        // 仅属性保存时刷新树（协议名称可能变化）
+                        var tree = mini.get('protocolTree');
+                        if (tree) {
+                            tree.load(context + '/acquisitionUnitManagerController/modbusProtocolAddrMappingTreeData');
+                        }
+                    }
+                }
+            } else {
+                mini.alert('<font color="red">' + (_loginUserLanguageResource.saveFailed || '保存失败') + '</font>');
+            }
+        },
+        error: function () {
+        	mini.hideMessageBox(loading);
+            mini.alert(_loginUserLanguageResource.requestFailed || '请求失败');
+        }
+    });
+}
+
+function addProtocolData() {
+    // 获取当前选中的设备类型节点
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) {
+        mini.alert(_loginUserLanguageResource.selectDeviceType);
+        return;
+    }
+    var selectedNode = deviceTree.getSelectedNode();
+    if (!selectedNode) {
+        mini.alert(_loginUserLanguageResource.selectDeviceType);
+        return;
+    }
+
+    var deviceTypeId = selectedNode.deviceTypeId;
+    var deviceTypeName = selectedNode.text;
+
+    // 打开添加窗口
+    mini.open({
+        title: _loginUserLanguageResource.addProtoco,
+        url: context + '/miniui-app/modules/driverConfig/protocolAddWindow.jsp',
+        width: 330,
+        height: 280,
+        modal: true,
+        allowResize: true,
+        onload: function () {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            // 传递参数
+            contentWindow.setData({
+                deviceTypeId: deviceTypeId,
+                deviceTypeName: deviceTypeName,
+                languageValue: _loginUserLanguageValue,
+                language: _loginUserLanguage
+            });
+            // 暴露刷新树的函数给子窗口
+            contentWindow._parentRefreshProtocolTree = function () {
+                var tree = mini.get('protocolTree');
+                if (tree) {
+                    tree.load();
+                }
+            };
+            // 暴露设置新协议名称的函数，用于树加载后高亮
+            contentWindow._parentSetNewProtocolName = function (name) {
+                window._newProtocolName = name;
+                // 在树加载完成后会自动选中（见 onProtocolTreeLoad 中的处理）
+            };
+        },
+        ondestroy: function (action) {
+            // 如果子窗口成功添加，会刷新树，这里无需额外操作
+        }
+    });
+}
 
         // ================================================================
         // 国际化初始化
@@ -2450,18 +3956,6 @@ String path = request.getContextPath();
             setTimeout(function() {
                 isInitializing = false;
             }, 500);
-        });
-
-        // ================================================================
-        // 占位事件处理（所有按钮点击提示）
-        // ================================================================
-        $(document).on('click', '.mini-button', function(e) {
-            var btn = e.currentTarget;
-            var id = btn.id;
-            if (id) {
-                var key = _loginUserLanguageResource[id] || id;
-                mini.alert(key + ' (占位)');
-            }
         });
 
     </script>

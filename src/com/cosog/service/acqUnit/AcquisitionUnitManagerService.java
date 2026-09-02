@@ -283,7 +283,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
 							+ "\"resolutionMode\":\""+resolutionMode+"\","
 							+ "\"highLowByte\":\""+highLowByte+"\","
-							+ "\"additionalConditions\":\""+MemoryDataManagerTask.getCodeName("ADDITIONALCONDITIONS", protocolConfig.getExtendedFields().get(j).getAdditionalConditions()+"", language)+"\","
+							+ "\"additionalConditions\":\""+MemoryDataManagerTask.getCodeName("ADDITIONALCONDITIONS", protocolConfig.getExtendedFields().get(j).getAdditionalConditions()+"", language)+"\""
 							+ "},");
 					index++;
 				}
@@ -11917,7 +11917,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 						+ "\"prec\":\""+protocolConfig.getExtendedFields().get(j).getPrec()+"\","
 						+ "\"ratio\":"+protocolConfig.getExtendedFields().get(j).getRatio()+","
 						+ "\"unit\":\""+protocolConfig.getExtendedFields().get(j).getUnit()+"\","
-						+ "\"additionalConditions\":\""+MemoryDataManagerTask.getCodeName("ADDITIONALCONDITIONS", protocolConfig.getExtendedFields().get(j).getAdditionalConditions()+"", language)+"\","
+						+ "\"additionalConditions\":\""+MemoryDataManagerTask.getCodeName("ADDITIONALCONDITIONS", protocolConfig.getExtendedFields().get(j).getAdditionalConditions()+"", language)+"\""
 						+ "},");
 			}
 		}

@@ -97,6 +97,7 @@ var _loginUserLanguageResourceFirstLower = (function() {
 var _configFile = getGlobalVar('configFile', { ap: { others: {} } });
 var _productionUnit = _configFile.ap.others.productionUnit || getGlobalVar('productionUnit', '');
 var _loginUserLanguage = getGlobalVar('loginUserLanguage', '');
+var _loginUserLanguageValue = getGlobalVar('loginUserLanguageValue', '');
 var _defaultPageSize = getGlobalVar('defaultPageSize', '');
 var _defaultComboxSize = getGlobalVar('defaultComboxSize', '');
 var _defaultGraghSize = getGlobalVar('defaultGraghSize', '');

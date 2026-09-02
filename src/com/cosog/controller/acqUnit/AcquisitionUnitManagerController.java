@@ -368,7 +368,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		out.print(result);
 		out.flush();
@@ -422,7 +422,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("deleteAcqGroup"));
 			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			String result = "{success:true,flag:true}";
+			String result = "{\"success\":true,\"flag\":true}";
 			response.getWriter().print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -452,7 +452,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		out.print(result);
 		out.flush();
@@ -508,7 +508,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("deleteAcqUnit"));
 			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			String result = "{success:true,flag:true}";
+			String result = "{\"success\":true,\"flag\":true}";
 			response.getWriter().print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -653,7 +653,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -697,7 +697,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -933,7 +933,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -1028,7 +1028,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -1084,7 +1084,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -1139,7 +1139,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -1248,7 +1248,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -1359,7 +1359,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -3257,7 +3257,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			json ="{\"success\":true}";
 		}catch(Exception e){
 			e.printStackTrace();
-			json ="{success:false}";
+			json ="{\"success\":false}";
 		}
 		
 		response.setContentType("application/json;charset="+Constants.ENCODING_UTF8);
@@ -3625,7 +3625,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -3657,7 +3657,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		out.print(result);
 		out.flush();
@@ -3686,7 +3686,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		out.print(result);
 		out.flush();
@@ -3744,7 +3744,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					json = "{success:false,msg:false}";
+					json = "{\"success\":false,\"msg\":false}";
 				}
 			}
 		}
@@ -3865,7 +3865,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					json = "{success:false,msg:false}";
+					json = "{\"success\":false,\"msg\":false}";
 				}
 			}
 		}
@@ -4031,7 +4031,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					json = "{success:false,msg:false}";
+					json = "{\"success\":false,\"msg\":false}";
 				}
 			}
 		}
@@ -4081,7 +4081,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -4111,7 +4111,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -4152,7 +4152,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -4262,7 +4262,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					json = "{success:false,msg:false}";
+					json = "{\"success\":false,\"msg\":false}";
 				}
 			}
 		}
@@ -4324,7 +4324,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					json = "{\"success\":true,\"msg\":true}";
 				} catch (Exception e) {
 					e.printStackTrace();
-					json = "{success:false,msg:false}";
+					json = "{\"success\":false,\"msg\":false}";
 				}
 			}
 		}
@@ -4402,7 +4402,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					json = "{\"success\":true,\"msg\":true}";
 				} catch (Exception e) {
 					e.printStackTrace();
-					json = "{success:false,msg:false}";
+					json = "{\"success\":false,\"msg\":false}";
 				}
 			}
 		}
@@ -4449,7 +4449,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -4558,7 +4558,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					json = "{success:false,msg:false}";
+					json = "{\"success\":false,\"msg\":false}";
 				}
 			}
 		}
@@ -4594,7 +4594,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -4657,7 +4657,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				this.service.saveSystemLog(user,2,languageResourceMap.get("deleteSMSInstance"));
 			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			String result = "{success:true,flag:true}";
+			String result = "{\"success\":true,\"flag\":true}";
 			response.getWriter().print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -4816,9 +4816,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -4836,9 +4836,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -4856,9 +4856,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -4876,9 +4876,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -4896,9 +4896,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -4916,9 +4916,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -4936,9 +4936,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -4956,9 +4956,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -4975,9 +4975,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -5000,9 +5000,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -8488,7 +8488,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	
 	@RequestMapping("/saveCurveGroupData")
 	public String saveCurveGroupData() throws Exception {
-		String result ="{success:true,msg:false}";
+		String result ="{\"success\":true,\"msg\":false}";
 		HttpSession session=request.getSession();
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;

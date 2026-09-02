@@ -6172,6 +6172,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			
 			result_json.append("{\"deviceName\":\""+deviceName+"\","
 					+ "\"curveCount\":"+itemCodeSortMap.size()+","
+					+ "\"totalCount\":"+acqTimeList.size()+","
 					+ "\"curveItems\":"+itemsBuff+","
 					+ "\"curveConf\":"+curveConfBuff+","
 					+ "\"list\":[");

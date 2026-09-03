@@ -651,7 +651,7 @@ String moduleId = request.getParameter("moduleId");
             };
             if (col.dataIndex === 'id') {
                 column.type = 'indexcolumn';
-                column.width = 40;
+                column.width = 50;
                 column.header = _loginUserLanguageResource.idx;
                 delete column.field;
             } else if (col.dataIndex === 'deviceName') {

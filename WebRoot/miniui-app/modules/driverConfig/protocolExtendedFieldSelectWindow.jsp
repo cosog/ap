@@ -43,19 +43,11 @@ String context = path;
             left: 0;
             right: 0;
             bottom: 0;
-            overflow: auto;  /* 关键：由外层容器滚动 */
+            overflow: hidden;    /* 改为 hidden，禁止父级滚动 */
             padding: 4px;
             box-sizing: border-box;
         }
-        /* 表格自身高度由内容撑开，或设为 100% 让 MiniUI 自己管理 */
-        #fieldGrid {
-            width: 100%;
-            height: 100%;   /* 让表格填满外层，但内部滚动交给外层 */
-        }
-        /* 可选：禁用表格自身滚动，避免双重滚动 */
-        .mini-datagrid .mini-grid-body {
-            overflow: hidden !important;
-        }
+        
     </style>
 </head>
 <body>
@@ -67,7 +59,7 @@ String context = path;
     </div>
     <!-- 外层滚动容器 -->
     <div class="grid-wrapper">
-        <div id="fieldGrid" class="mini-datagrid" 
+        <div id="fieldGrid" class="mini-datagrid"  style="width:100%;height:100%;"
              allowResize="false"
              showPager="false" 
              multiSelect="false" 
@@ -154,20 +146,26 @@ String context = path;
             }
             grid.setColumns(miniColumns);
         }
-
-        var rows = grid.data;
         if (currentValue) {
+        	var rows = grid.data;
+            var selectRow=-1;
             for (var i = 0; i < rows.length; i++) {
                 if (rows[i].itemName === currentValue) {
-                    grid.select(i);
+                	selectRow=i;
                     break;
                 }
+            }
+            if(selectRow>=0){
+            	grid.select(selectRow);
+                setTimeout(function() {
+                	grid.scrollIntoView(selectRow);
+                }, 150);
             }
         }
     }
 
     function onRowClick(e) {}
-
+    
     function onSave() {
         var grid = mini.get('fieldGrid');
         var row = grid.getSelected();

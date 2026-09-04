@@ -49,7 +49,7 @@ Ext.define('AP.store.acquisitionUnit.ImportProtocolContentTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '预导入协议',
+                    	text: loginUserLanguageResource.importProtocol,
                         flex: 8,
                         align: 'left',
                         dataIndex: 'text',

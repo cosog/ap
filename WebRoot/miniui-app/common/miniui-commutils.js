@@ -103,6 +103,7 @@ var _defaultComboxSize = getGlobalVar('defaultComboxSize', '');
 var _defaultGraghSize = getGlobalVar('defaultGraghSize', '');
 
 var _emailEnable = getGlobalVar('emailEnable', '');
+var _exportAdInitData = getGlobalVar('exportAdInitData', '');
 
 // ================================================================
 // 2. String 扩展

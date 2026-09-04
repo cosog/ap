@@ -6613,12 +6613,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\""+languageResourceMap.get("enable")+"\",\"dataIndex\":\"calculateEnable\",\"children\":[] }"
 				+ "]";
 		
-		calColumnNameBuff.append("[''");
+		calColumnNameBuff.append("[\"\"");
 		CalculateColumnInfo calculateColumnInfo=MemoryDataManagerTask.getCalColumnsInfo(language);
 		List<CalculateColumn> calculateColumnList=calculateColumnInfo.getSRPCalculateColumnList();
 
 		for(int i = 0; i < calculateColumnList.size(); i++){
-			calColumnNameBuff.append(",'"+calculateColumnList.get(i).getName()+"'");
+			calColumnNameBuff.append(",\""+calculateColumnList.get(i).getName()+"\"");
 		}
 		if(calColumnNameBuff.toString().endsWith(",")){
 			calColumnNameBuff.deleteCharAt(calColumnNameBuff.length() - 1);
@@ -11724,6 +11724,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				protocolList.get(i).setSaveSign(saveSign);
 				protocolList.get(i).setMsg(msg);
 				tree_json.append("{\"classes\":1,");
+				tree_json.append("\"nodeId\": "+(i+1)+",");
+				tree_json.append("\"nodeParentId\":0,");
 				tree_json.append("\"text\":\""+protocolList.get(i).getName()+"\",");
 				tree_json.append("\"code\":\""+protocolList.get(i).getCode()+"\",");
 				tree_json.append("\"sort\":\""+protocolList.get(i).getSort()+"\",");
@@ -11741,7 +11743,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		tree_json.append("]");
 		
 		result_json.append("[");
-		result_json.append("{\"classes\":0,\"text\":\""+languageResourceMap.get("protocolList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
+		result_json.append("{\"classes\":0,\"nodeId\":0,\"text\":\""+languageResourceMap.get("protocolList")+"\",\"deviceType\":0,\"iconCls\": \"device\",\"expanded\": true,\"children\": "+tree_json+"}");
 		result_json.append("]");
 		
 		return result_json.toString();

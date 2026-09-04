@@ -97,7 +97,7 @@ request.setAttribute("browserLang", browserLang);
         var defaultPageSize = configFile.ap.others.pageSize || 50;
         var productionUnit = configFile.ap.others.productionUnit;
         var showHelp = configFile.ap.others.showHelp !== false;
-        
+        var exportAdInitData = configFile.ap.others.exportAdInitData;
         
         var helpDocumentUrl='<%=helpDocumentUrl%>';
         var helpDocumentTimestamp=oem.helpDocumentTimestamp;

@@ -285,9 +285,9 @@ String path = request.getContextPath();
                                     <button id="protocolAddBtn" class="mini-button" iconCls="add" onclick="addProtocolData()">Add</button>
                                     <button id="protocolSaveBtn" class="mini-button" iconCls="save" onclick="saveProtocolConfigData()">Save</button>
                                     <button id="protocolMappingBtn" class="mini-button" onclick="openFieldMappingWindow()" >Mapping</button>
-                                    <button id="protocolExportBtn" class="mini-button" iconCls="export">Export</button>
-                                    <button id="protocolImportBtn" class="mini-button" iconCls="import">Import</button>
-                                    <button id="protocolDeviceTypeChangeBtn" class="mini-button" iconCls="move">Move</button>
+                                    <button id="protocolExportBtn" class="mini-button" iconCls="export" onclick="openExportProtocolWindow()">Export</button>
+                                    <button id="protocolImportBtn" class="mini-button" iconCls="import" onclick="openImportProtocolWindow()">Import</button> 
+                                    <button id="protocolDeviceTypeChangeBtn" class="mini-button" iconCls="move" onclick="openProtocolDeviceTypeChangeWindow()">Move</button>
                                     <span id="protocolInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                     <input type="hidden" id="ModbusProtocolAddrMappingItemsSelectRow_Id" value="0" />
                                     <input type="hidden" id="ProtocolExtendedFieldHighLowByteSelectRow_Id" value="0" />
@@ -942,6 +942,7 @@ String path = request.getContextPath();
         // ================================================================
         // 递归获取当前节点及其所有子节点的 deviceTypeId，返回逗号分隔的字符串
         var selectedDeviceTypeId = null;
+        var allDeviceTypeIds = null;
 
         function foreachAndSearchTabChildId(node) {
             if (!node) return '';
@@ -972,6 +973,7 @@ String path = request.getContextPath();
         function onDeviceTypeTreeLoad(e) {
             var tree = e.sender;
             var root = tree.getRootNode();
+            allDeviceTypeIds = foreachAndSearchTabChildId(root);
             if (root && root.children && root.children.length > 0) {
                 var firstChild = root.children[0];
              // 延迟启用事件处理
@@ -1059,7 +1061,10 @@ String path = request.getContextPath();
             if (mainName === 'protocol') {
                 var protocolTree = mini.get('protocolTree');
                 if (protocolTree) {
-                    protocolTree.load(context + '/acquisitionUnitManagerController/modbusProtocolAddrMappingTreeData');
+                	if(!protocolTree.getUrl()){
+                		protocolTree.setUrl(context + '/acquisitionUnitManagerController/modbusProtocolAddrMappingTreeData');
+                	}
+                    protocolTree.load();
                 }
             } else if (mainName === 'unit') {
                 var unitSub = mini.get('unitSubTabs');
@@ -1381,7 +1386,7 @@ String path = request.getContextPath();
     	                        _loginUserLanguageResource.name,
     	                        _loginUserLanguageResource.startAddress,
     	                        _loginUserLanguageResource.highLowByte,
-    	                        _loginUserLanguageResource.storeDataType,
+    	                        _loginUserLanguageResource.treeDataType,
     	                        _loginUserLanguageResource.quantity,
     	                        _loginUserLanguageResource.RWType,
     	                        _loginUserLanguageResource.acqMode,
@@ -3446,7 +3451,7 @@ function saveModbusProtocolAddrMappingConfigData(configInfo, saveType) {
                     // 删除后刷新并重置选中状态
                     var tree = mini.get('protocolTree');
                     if (tree) {
-                        tree.load(context + '/acquisitionUnitManagerController/modbusProtocolAddrMappingTreeData');
+                        tree.load();
                     }
                     // 清空隐藏域
                     $('#ModbusProtocolAddrMappingItemsSelectRow_Id').val(0);
@@ -3456,7 +3461,7 @@ function saveModbusProtocolAddrMappingConfigData(configInfo, saveType) {
                         // 仅属性保存时刷新树（协议名称可能变化）
                         var tree = mini.get('protocolTree');
                         if (tree) {
-                            tree.load(context + '/acquisitionUnitManagerController/modbusProtocolAddrMappingTreeData');
+                            tree.load();
                         }
                     }
                 }
@@ -3548,7 +3553,8 @@ function openFieldMappingWindow() {
             var contentWindow = iframe.contentWindow;
             // 传递 deviceTypeIds
             contentWindow.setData({
-                deviceTypeIds: selectedDeviceTypeId
+                deviceTypeIds: selectedDeviceTypeId,
+                editFlag:editFlag
             });
         },
         ondestroy: function() {
@@ -3557,6 +3563,134 @@ function openFieldMappingWindow() {
     });
 }
 
+function openExportProtocolWindow() {
+    // 获取设备类型树选中的节点（与之前字段映射表类似）
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) {
+        return;
+    }
+    var selectedNode = deviceTree.getSelectedNode();
+    if (!selectedNode) {
+        return;
+    }
+
+    mini.open({
+        title: _loginUserLanguageResource.exportProtocol,
+        url: context + '/miniui-app/modules/driverConfig/exportProtocolWindow.jsp',
+        width: 450,
+        height: 600,
+        modal: true,
+        allowResize: true,
+        maxable: true,
+        onload: function() {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                deviceTypeIds: selectedDeviceTypeId
+            });
+        }
+    });
+}
+
+function openImportProtocolWindow() {
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) {
+        mini.alert(_loginUserLanguageResource.selectDeviceType);
+        return;
+    }
+    var selectedNode = deviceTree.getSelectedNode();
+    if (!selectedNode) {
+        mini.alert(_loginUserLanguageResource.selectDeviceType);
+        return;
+    }
+    var deviceTypeId = selectedNode.deviceTypeId;
+    var deviceTypeName = getNodePath(deviceTree,selectedNode);
+
+    mini.open({
+        title: _loginUserLanguageResource.importProtocol,
+        url: context + '/miniui-app/modules/driverConfig/importProtocolWindow.jsp',
+        width: '90%',
+        height: '80%',
+        modal: true,
+        allowResize: true,
+        maxable: true,
+        onload: function() {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                deviceTypeId: deviceTypeId,
+                deviceTypeName: deviceTypeName
+            });
+            contentWindow.parent.refreshProtocolTree = function (r, c, value) {
+            	var tree = mini.get('protocolTree');
+                if (tree) {
+                    tree.load();
+                }
+            };
+        },
+        ondestroy: function() {
+            // 关闭后
+        }
+    });
+}
+
+//获取树节点的绝对路径（从根到当前节点，用 "/" 拼接）
+function getNodePath(tree, node) {
+    if (!node) return '';
+    var path = [];
+    var current = node;
+    while (current) {
+        path.unshift(current.text);
+        // 获取当前节点的父ID
+        var parentId = current.parentId;
+        // 如果父ID为 null/undefined/'0'，说明到达根节点
+        if (!parentId || parentId === '0' || parentId === 0) {
+            break;
+        }
+        // 通过父ID查找父节点（idField 为 deviceTypeId）
+        current = tree.getNode(parentId);
+        if (!current) break; // 防止死循环
+    }
+    return path.join('/');
+}
+
+
+function openProtocolDeviceTypeChangeWindow() {
+    // 获取当前设备类型树选中的节点（用于过滤协议列表）
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) {
+        return;
+    }
+    var selectedNode = deviceTree.getSelectedNode();
+    if (!selectedNode) {
+        return;
+    }
+
+    mini.open({
+        title: _loginUserLanguageResource.protocoDeviceTypeChange,
+        url: context + '/miniui-app/modules/driverConfig/protocolDeviceTypeChangeWindow.jsp',
+        width: 600,
+        height: 600,
+        modal: true,
+        allowResize: true,
+        maxable: true,
+        onload: function() {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                deviceTypeIds: allDeviceTypeIds
+            });
+            contentWindow.parent.refreshProtocolTree = function (r, c, value) {
+            	var tree = mini.get('protocolTree');
+                if (tree) {
+                    tree.load();
+                }
+            };
+        }
+    });
+}
+		
+		
         // ================================================================
         // 国际化初始化
         // ================================================================

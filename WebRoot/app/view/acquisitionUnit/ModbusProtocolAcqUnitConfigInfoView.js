@@ -940,3 +940,89 @@ function saveAcquisitionGroupConfigData(acqGroupSaveData,protocol,unitId){
         }
 	});
 };
+
+function grantAcquisitionItemsPermission(node) {
+    if (!node || node.classes !== 3) {
+        mini.alert('请选择一个采集组');
+        return;
+    }
+
+    var helper = protocolAcqUnitConfigItemsHandsontableHelper;
+    if (!helper || !helper.hot) {
+        mini.alert('配置表格未初始化');
+        return;
+    }
+
+    var data = helper.hot.getData();
+    var addjson = [];
+    var matrixData = '';
+
+    for (var i = 0; i < data.length; i++) {
+        var row = data[i];
+        var checked = row[0] === true || row[0] === 'true';
+        var dailyTotalCalculate = row[8] === true || row[8] === 'true';
+        var dailyTotalCalculateName = row[9] || '';
+
+        if (checked || dailyTotalCalculate || dailyTotalCalculateName) {
+            var itemName = row[2] || '';
+            var itemAddr = row[3] || '';
+            var itemHighLowByte = row[11] || '';
+            var resolutionMode = row[6] || '';
+            var bitIndex = row[7] || '';
+
+            var itemEnable = checked ? 1 : 0;
+            var dailyTotalCalculateFlag = dailyTotalCalculate ? 1 : 0;
+            if (!dailyTotalCalculateName && dailyTotalCalculate) {
+                dailyTotalCalculateName = itemName.replace('累计', '').replace('累积', '') + '日累计';
+            }
+
+            addjson.push(itemName);
+            matrixData += itemName + ':' + itemAddr + ':' + itemHighLowByte + ':' + resolutionMode + ':' + bitIndex + '::' + dailyTotalCalculateName + ':' + dailyTotalCalculateFlag + ':' + itemEnable + '|';
+        }
+    }
+
+    if (matrixData.length > 0) {
+        matrixData = matrixData.substring(0, matrixData.length - 1);
+    } else {
+        mini.alert('请至少选择一项');
+        return;
+    }
+
+    var groupId = node.id;
+    var groupCode = node.code;
+    var protocol = node.protocol || '';
+
+    var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.savingData || '保存中...' });
+    $.ajax({
+        url: context + '/acquisitionUnitManagerController/grantAcquisitionItemsPermission',
+        type: 'POST',
+        data: {
+            params: addjson.join(','),
+            protocol: protocol,
+            groupId: groupId,
+            groupCode: groupCode,
+            matrixCodes: matrixData
+        },
+        dataType: 'json',
+        success: function(response) {
+            mini.unmask(document.body);
+            if (response.msg === true) {
+                mini.alert(_loginUserLanguageResource.savedSuccessfully || '保存成功');
+                refreshAcqUnitTree();
+            } else {
+                mini.alert('<font color="red">' + (_loginUserLanguageResource.saveFailed || '保存失败') + '</font>');
+            }
+        },
+        error: function() {
+            mini.unmask(document.body);
+            mini.alert(_loginUserLanguageResource.requestFailed || '请求失败');
+        }
+    });
+}
+
+function refreshAcqUnitTree() {
+    var tree = mini.get('acqUnitListTree');
+    if (tree) {
+        tree.load();
+    }
+}

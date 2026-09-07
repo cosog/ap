@@ -2637,28 +2637,28 @@ public class DriverAPIController extends BaseController{
 			surfaceChartsData.append("\"deviceName\":\""+deviceInfo.getDeviceName()+"\",");
 			surfaceChartsData.append("\"acqTime\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null&&srpCalculateRequestData.getFESDiagram().getAcqTime()!=null)?srpCalculateRequestData.getFESDiagram().getAcqTime():"")+"\",");
 			
-			surfaceChartsData.append("\"upStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getUpStrokeWattMax():"")+"\",");
-			surfaceChartsData.append("\"downStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getDownStrokeWattMax():"")+"\",");
-			surfaceChartsData.append("\"wattDegreeBalance\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getWattDegreeBalance():"")+"\",");
-			surfaceChartsData.append("\"upStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getUpStrokeIMax():"")+"\",");
-			surfaceChartsData.append("\"downStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getDownStrokeIMax():"")+"\",");
-			surfaceChartsData.append("\"iDegreeBalance\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
-			surfaceChartsData.append("\"deltaRadius\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
+			surfaceChartsData.append("\"upStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getUpStrokeWattMax():"")+"\",");
+			surfaceChartsData.append("\"downStrokeWattMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getDownStrokeWattMax():"")+"\",");
+			surfaceChartsData.append("\"wattDegreeBalance\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getWattDegreeBalance():"")+"\",");
+			surfaceChartsData.append("\"upStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getUpStrokeIMax():"")+"\",");
+			surfaceChartsData.append("\"downStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getDownStrokeIMax():"")+"\",");
+			surfaceChartsData.append("\"iDegreeBalance\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
+			surfaceChartsData.append("\"deltaRadius\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
 			
 			surfaceChartsData.append("\"positionCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getS()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getS(), ",")):"")+"\",");
 			surfaceChartsData.append("\"loadCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getF()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getF(), ",")):"")+"\",");
 			surfaceChartsData.append("\"powerCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getWatt()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getWatt(), ",")):"")+"\",");
 			surfaceChartsData.append("\"currentCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getI()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getI(), ",")):"")+"\",");
 			
-			surfaceChartsData.append("\"crankAngle\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCrankAngle(), ","):"")+"\",");
-			surfaceChartsData.append("\"loadRorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getLoadTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"crankTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCrankTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"currentBalanceTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"currentNetTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCurrentNetTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"expectedBalanceTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"expectedNetTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getExpectedNetTorque(), ","):"")+"\",");
-			surfaceChartsData.append("\"polishrodV\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getV(), ","):"")+"\",");
-			surfaceChartsData.append("\"polishrodA\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&srpCalculateResponseData.getCalculationStatus().getResultCode()!=1232?StringUtils.join(srpCalculateResponseData.getFESDiagram().getA(), ","):"")+"\"");
+			surfaceChartsData.append("\"crankAngle\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getCrankAngle()!=null?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCrankAngle(), ","):"")+"\",");
+			surfaceChartsData.append("\"loadRorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getLoadTorque()!=null?StringUtils.join(srpCalculateResponseData.getFESDiagram().getLoadTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"crankTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getCrankTorque()!=null?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCrankTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"currentBalanceTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getCurrentBalanceTorque()!=null?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"currentNetTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getCurrentNetTorque()!=null?StringUtils.join(srpCalculateResponseData.getFESDiagram().getCurrentNetTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"expectedBalanceTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getExpectedBalanceTorque()!=null?StringUtils.join(srpCalculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"expectedNetTorque\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getExpectedNetTorque()!=null?StringUtils.join(srpCalculateResponseData.getFESDiagram().getExpectedNetTorque(), ","):"")+"\",");
+			surfaceChartsData.append("\"polishrodV\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getV()!=null?StringUtils.join(srpCalculateResponseData.getFESDiagram().getV(), ","):"")+"\",");
+			surfaceChartsData.append("\"polishrodA\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null&&srpCalculateResponseData.getFESDiagram().getA()!=null?StringUtils.join(srpCalculateResponseData.getFESDiagram().getA(), ","):"")+"\"");
 		}
 		wellBoreChartsData.append("}");
 		surfaceChartsData.append("}");
@@ -5216,7 +5216,8 @@ public class DriverAPIController extends BaseController{
 		FESDiagramCalItemList.add(new ProtocolItemResolutionData("功图采集时间","功图采集时间",calculateRequestData.getFESDiagram().getAcqTime(),calculateRequestData.getFESDiagram().getAcqTime(),"","FESDiagramAcqtime","","","","",1,1,0));
 		//冲程、冲次
 		FESDiagramCalItemList.add(new ProtocolItemResolutionData("冲次","冲次",calculateRequestData.getFESDiagram().getSPM()+"",calculateRequestData.getFESDiagram().getSPM()+"","","SPM","","","","1/min",1,1,0));
-		if(calculateResponseData!=null&&calculateResponseData.getCalculationStatus().getResultStatus()==1){
+		if(calculateResponseData!=null 
+				&& (calculateResponseData.getCalculationStatus().getResultStatus()==1 || calculateResponseData.getCalculationStatus().getResultStatus()==-99) ){
 			if(calculateResponseData.getCalculationStatus().getResultCode()!=1232){
 				FESDiagramCalItemList.add(new ProtocolItemResolutionData("冲程","冲程",calculateResponseData.getFESDiagram().getStroke()+"",calculateResponseData.getFESDiagram().getStroke()+"","","Stroke","","","","m",1,1,0));
 				//工况
@@ -5329,33 +5330,34 @@ public class DriverAPIController extends BaseController{
 				//杆参数
 				FESDiagramCalItemList.add(new ProtocolItemResolutionData("杆参数","杆参数",calculateResponseData.getRodCalData()+"",calculateResponseData.getRodCalData()+"","","RODSTRING","","","","",1,1,0));
 				
-				for(int i=0;i<calculateResponseData.getRodString().getEveryRod().size();i++){
-					String rodGrade="";
-					if(i==0){
-						rodGrade="一级杆";
-					}else if(i==1){
-						rodGrade="二级杆";
-					}else if(i==2){
-						rodGrade="三级杆";
-					}else if(i==3){
-						rodGrade="四级杆";
+				if(calculateResponseData.getRodString()!=null && calculateResponseData.getRodString().getEveryRod()!=null){
+					for(int i=0;i<calculateResponseData.getRodString().getEveryRod().size();i++){
+						String rodGrade="";
+						if(i==0){
+							rodGrade="一级杆";
+						}else if(i==1){
+							rodGrade="二级杆";
+						}else if(i==2){
+							rodGrade="三级杆";
+						}else if(i==3){
+							rodGrade="四级杆";
+						}
+						FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最大应力百分比",rodGrade+"最大应力百分比",StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()*100+"",2),"",("MaxRodStressRatio"+(i+1)).toUpperCase(),"","","","%",1,1,0));
+						FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"应力范围百分比",rodGrade+"应力范围百分比",StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()*100+"",2),"",("RodStressRangeRatio"+(i+1)).toUpperCase(),"","","","%",1,1,0));
+						FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最大应力",rodGrade+"最大应力",calculateResponseData.getRodString().getEveryRod().get(i).getMaxStress()+"",calculateResponseData.getRodString().getEveryRod().get(i).getMaxStress()+"","",("RodMaxStress"+(i+1)).toUpperCase(),"","","","MPa",1,1,0));
+						FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最小应力",rodGrade+"最小应力",calculateResponseData.getRodString().getEveryRod().get(i).getMinStress()+"",calculateResponseData.getRodString().getEveryRod().get(i).getMinStress()+"","",("RodMinStress"+(i+1)).toUpperCase(),"","","","MPa",1,1,0));
+						FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"许用应力",rodGrade+"许用应力",calculateResponseData.getRodString().getEveryRod().get(i).getAllowableStress()+"",calculateResponseData.getRodString().getEveryRod().get(i).getAllowableStress()+"","",("RodAllowableStress"+(i+1)).toUpperCase(),"","","","MPa",1,1,0));
+						
+						float fMax=0,fMin=0;
+						if(calculateResponseData.getFESDiagram().getFMax()!=null && calculateResponseData.getFESDiagram().getFMax().size()>i && calculateResponseData.getFESDiagram().getFMin().size()>i){
+							fMax=calculateResponseData.getFESDiagram().getFMax().get(i);
+							fMin=calculateResponseData.getFESDiagram().getFMin().get(i);
+						}
+						
+						FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最大载荷",rodGrade+"最大载荷",fMax+"",fMax+"","",("RodFMax"+(i+1)).toUpperCase(),"","","","kN",1,1,0));
+						FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最小载荷",rodGrade+"最小载荷",fMin+"",fMin+"","",("RodFMin"+(i+1)).toUpperCase(),"","","","kN",1,1,0));
 					}
-					
-					FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最大应力百分比",rodGrade+"最大应力百分比",StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getMaxStressRatio()*100+"",2),"",("MaxRodStressRatio"+(i+1)).toUpperCase(),"","","","%",1,1,0));
-					FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"应力范围百分比",rodGrade+"应力范围百分比",StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()*100+"",2),StringManagerUtils.dataFormat(calculateResponseData.getRodString().getEveryRod().get(i).getStressRangeRatio()*100+"",2),"",("RodStressRangeRatio"+(i+1)).toUpperCase(),"","","","%",1,1,0));
-					FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最大应力",rodGrade+"最大应力",calculateResponseData.getRodString().getEveryRod().get(i).getMaxStress()+"",calculateResponseData.getRodString().getEveryRod().get(i).getMaxStress()+"","",("RodMaxStress"+(i+1)).toUpperCase(),"","","","MPa",1,1,0));
-					FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最小应力",rodGrade+"最小应力",calculateResponseData.getRodString().getEveryRod().get(i).getMinStress()+"",calculateResponseData.getRodString().getEveryRod().get(i).getMinStress()+"","",("RodMinStress"+(i+1)).toUpperCase(),"","","","MPa",1,1,0));
-					FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"许用应力",rodGrade+"许用应力",calculateResponseData.getRodString().getEveryRod().get(i).getAllowableStress()+"",calculateResponseData.getRodString().getEveryRod().get(i).getAllowableStress()+"","",("RodAllowableStress"+(i+1)).toUpperCase(),"","","","MPa",1,1,0));
-					
-					float fMax=0,fMin=0;
-					if(calculateResponseData.getFESDiagram().getFMax()!=null && calculateResponseData.getFESDiagram().getFMax().size()>i && calculateResponseData.getFESDiagram().getFMin().size()>i){
-						fMax=calculateResponseData.getFESDiagram().getFMax().get(i);
-						fMin=calculateResponseData.getFESDiagram().getFMin().get(i);
-					}
-					
-					FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最大载荷",rodGrade+"最大载荷",fMax+"",fMax+"","",("RodFMax"+(i+1)).toUpperCase(),"","","","kN",1,1,0));
-					FESDiagramCalItemList.add(new ProtocolItemResolutionData(rodGrade+"最小载荷",rodGrade+"最小载荷",fMin+"",fMin+"","",("RodFMin"+(i+1)).toUpperCase(),"","","","kN",1,1,0));
-				}
+				}	
 			}else{
 				FESDiagramCalItemList.add(new ProtocolItemResolutionData("冲程","冲程",calculateResponseData.getFESDiagram().getStroke()+"",calculateResponseData.getFESDiagram().getStroke()+"","","Stroke","","","","m",1,1,0));
 				//工况

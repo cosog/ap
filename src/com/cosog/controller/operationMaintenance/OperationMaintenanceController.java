@@ -166,6 +166,12 @@ public class OperationMaintenanceController  extends BaseController {
 					if(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_hist()!=null){
 						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_hist().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled());
 						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_hist().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime());
+						
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getSrpacqdata_hist().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled());
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getSrpacqdata_hist().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime());
+						
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getPcpacqdata_hist().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled());
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getPcpacqdata_hist().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime());
 					}
 					
 					if(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqrawdata()!=null){
@@ -186,16 +192,34 @@ public class OperationMaintenanceController  extends BaseController {
 					if(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getDailycalculationdata()!=null){
 						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getDailycalculationdata().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getDailycalculationdata().getEnabled());
 						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getDailycalculationdata().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getDailycalculationdata().getRetentionTime());
+						
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getSrpdailycalculationdata().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getDailycalculationdata().getEnabled());
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getSrpdailycalculationdata().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getDailycalculationdata().getRetentionTime());
+						
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getPcpdailycalculationdata().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getDailycalculationdata().getEnabled());
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getPcpdailycalculationdata().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getDailycalculationdata().getRetentionTime());
 					}
 					
 					if(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getTimingcalculationdata()!=null){
 						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getTimingcalculationdata().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getTimingcalculationdata().getEnabled());
 						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getTimingcalculationdata().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getTimingcalculationdata().getRetentionTime());
+						
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getSrptimingcalculationdata().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getTimingcalculationdata().getEnabled());
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getSrptimingcalculationdata().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getTimingcalculationdata().getRetentionTime());
+						
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getPcptimingcalculationdata().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getTimingcalculationdata().getEnabled());
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getPcptimingcalculationdata().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getTimingcalculationdata().getRetentionTime());
 					}
 					
 					if(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_vacuate()!=null){
 						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_vacuate().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_vacuate().getEnabled());
 						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_vacuate().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_vacuate().getRetentionTime());
+						
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getSrpacqdata_vacuate().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_vacuate().getEnabled());
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getSrpacqdata_vacuate().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_vacuate().getRetentionTime());
+						
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getPcpacqdata_vacuate().setEnabled(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_vacuate().getEnabled());
+						Config.getInstance().oemConfigFile.getDatabaseMaintenance().getTableConfig().getPcpacqdata_vacuate().setRetentionTime(updatedOEMConfigFile.getDatabaseMaintenance().getTableConfig().getAcqdata_vacuate().getRetentionTime());
 					}
 				}
 			}

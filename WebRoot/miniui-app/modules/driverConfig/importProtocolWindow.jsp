@@ -516,7 +516,7 @@ String context = path;
     }
 
     function doSaveSingleProtocol(protocolName, deviceType) {
-        var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.savingData });
+        var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.updateWait });
         $.ajax({
             url: context + '/acquisitionUnitManagerController/saveSingelImportedProtocol',
             type: 'POST',
@@ -585,7 +585,7 @@ String context = path;
         // 实际应从节点属性获取，但此处简化
         mini.confirm(_loginUserLanguageResource.confirmOperation, _loginUserLanguageResource.confirm, function(action) {
             if (action === 'ok') {
-                var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.savingData});
+                var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.updateWait});
                 $.ajax({
                     type: 'POST',
                     url: context + '/acquisitionUnitManagerController/saveAllImportedProtocol',
@@ -597,7 +597,7 @@ String context = path;
                     success: function(result) {
                         mini.unmask(document.body);
                         if (result.success) {
-                            mini.alert(_loginUserLanguageResource.savedSuccessfully || '保存成功');
+                            mini.alert(_loginUserLanguageResource.savedSuccessfully);
                             // 刷新树
                             var tree = mini.get('protocolTree');
                             if (tree) tree.load(context + '/acquisitionUnitManagerController/getUploadedProtocolTreeData');
@@ -606,12 +606,12 @@ String context = path;
                                 window.parent.refreshProtocolTree();
                             }
                         } else {
-                            mini.alert(_loginUserLanguageResource.saveFailed || '保存失败');
+                            mini.alert(_loginUserLanguageResource.saveFailed );
                         }
                     },
                     error: function() {
                         mini.unmask(document.body);
-                        mini.alert(_loginUserLanguageResource.requestFailed || '请求失败');
+                        mini.alert(_loginUserLanguageResource.requestFailed);
                     }
                 });
             }

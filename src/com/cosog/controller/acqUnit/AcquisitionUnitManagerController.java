@@ -326,6 +326,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String doAcquisitionGroupAdd(@ModelAttribute AcquisitionGroup acquisitionGroup) throws IOException {
 		String result = "";
 		String acqUnit = ParamUtils.getParameter(request, "acquisitionGroup.acqUnit");
+		if(!StringManagerUtils.isNotNull(acqUnit)){
+			acqUnit = ParamUtils.getParameter(request, "acqUnit");
+		}
 		PrintWriter out = response.getWriter();
 		try {
 			if(acquisitionGroup.getType()==0){
@@ -598,7 +601,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							for(int j=0;j<protocol.getItems().size();j++){
 								if(itemAddr==protocol.getItems().get(j).getAddr() && itemHighLowByte.equalsIgnoreCase(protocol.getItems().get(j).getHighLowByte())){
 									for(int k=0;protocol.getItems().get(j).getMeaning()!=null&&k<protocol.getItems().get(j).getMeaning().size();k++){
-										if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())
+										if( (itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning()) || itemName.equalsIgnoreCase(protocol.getItems().get(j).getTitle()+"/"+protocol.getItems().get(j).getMeaning().get(k).getMeaning()))
 												&&(StringManagerUtils.isNotNull(module_[4])&&StringManagerUtils.stringToInteger(module_[4])==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
 											itemName=protocol.getItems().get(j).getTitle();
 											bitIndex=protocol.getItems().get(j).getMeaning().get(k).getValue();

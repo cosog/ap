@@ -85,7 +85,8 @@ String context = path;
              showCheckbox="true"
              checkRecursive="true"
              onbeforeload="onTreeBeforeLoad"
-             onload="onTreeLoad">
+             onload="onTreeLoad"
+             ondrawnode=onTreeDrawnode>
             <div property="emptyText" class="empty-msg">No Protocol</div>
         </div>
     </div>
@@ -137,6 +138,9 @@ String context = path;
     function onTreeLoad(e) {
         var tree = e.sender;
         tree.expandAll();
+    }
+    function onTreeDrawnode(e){
+    	if (e.node.classes != 1) e.showCheckBox = false;
     }
 
     // 国际化

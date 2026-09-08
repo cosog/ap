@@ -181,18 +181,23 @@ String context = path;
                 mini.unmask(document.body);
                 if (resp.msg === true) {
                     // 设置新增标记
-                    window._newAcqUnitObjectName = unitName;
-                    window._newAcqUnitObjectClasses = 2;
-                    mini.alert(_loginUserLanguageResource.addedSuccessfully || '添加成功', function() {
+                    if (window._parentSetNewObject) {
+                        window._parentSetNewObject(unitName,2);
+                    }
+                    if (window._parentRefreshUnitTree) {
+                        window._parentRefreshUnitTree();
+                    }
+                    
+                    mini.alert(_loginUserLanguageResource.addedSuccessfully, function() {
                         window.CloseOwnerWindow('ok');
                     });
                 } else {
-                    mini.alert('<font color="red">' + (_loginUserLanguageResource.addFailure || '添加失败') + '</font>');
+                    mini.alert('<font color="red">' + (_loginUserLanguageResource.addFailure) + '</font>');
                 }
             },
             error: function() {
                 mini.unmask(document.body);
-                mini.alert((_loginUserLanguageResource.exceptionThrow || '异常') + ': ' + (_loginUserLanguageResource.contactAdmin || '请联系管理员'));
+                mini.alert((_loginUserLanguageResource.exceptionThrow) + ': ' + (_loginUserLanguageResource.contactAdmin));
             }
         });
     }

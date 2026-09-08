@@ -537,7 +537,7 @@ var grantAcquisitionItemsPermission = function (groupType) {
             		dailyTotalCalculate=1;
             		dailyTotalCalculateName=protocolAcqUnitConfigItemsHandsontableHelper.hot.getDataAtRowProp(index,'dailyTotalCalculateName');
             		if(!isNotVal(dailyTotalCalculateName)){
-            			dailyTotalCalculateName=itemName.replace('累计','').replace('累积','')+'日累计';
+            			dailyTotalCalculateName=itemName+loginUserLanguageResource.dailyTotalValue;
             		}
             	}
                 

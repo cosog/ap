@@ -230,6 +230,7 @@ function onDisplayUnitListSelect(e) {
 }
 
 function onDisplayUnitDetailTabChanged(e) {
+	if (isInitializing) return;
     if (!_currentDisplayUnitNode) return;
     var tabs = e.sender;
     var active = tabs.getActiveTab();
@@ -638,13 +639,172 @@ function refreshDisplayUnitList() {
 }
 
 function saveDisplayUnitConfigData() {
-    // 待实现保存逻辑
-    mini.alert(_loginUserLanguageResource.savedSuccessfully);
+	var tree = mini.get('displayUnitList');
+    if (!tree) return;
+    var selectedNode = tree.getSelectedNode();
+    if (!selectedNode) return;
+    if (selectedNode.classes !== 2) {
+        // 只对显示单元节点进行保存
+        return;
+    }
+
+    var tabs = mini.get('displayUnitRightTabs');
+    if (!tabs) return;
+    var activeTab = tabs.getActiveTab();
+    if (!activeTab) return;
+    var activeName = activeTab.name; // 'props' 或 'config'
+
+    if (activeName === 'props') {
+        // 保存属性
+        saveDisplayUnitProperties(tree,selectedNode);
+    } else if (activeName === 'config') {
+        // 保存配置（采集项和控制项）
+        grantDisplayAcqItemsPermission();
+        grantDisplayCtrlItemsPermission();
+    }
 }
 
+function saveDisplayUnitProperties(tree,node) {
+    var helper = protocolDisplayUnitPropertiesHandsontableHelper;
+    if (!helper || !helper.hot) {
+        mini.alert(_loginUserLanguageResource.noDataToSave);
+        return;
+    }
+
+    var propertiesData = helper.hot.getData();
+    // propertiesData 每行: [id, title, value]
+
+    // 获取单元名称（第0行，值列）
+    var unitName = propertiesData[0] && propertiesData[0][2] ? propertiesData[0][2] : '';
+    // 采控单元（第1行，值列）- 存储的是显示文本（boxval）
+    var acqUnitName = propertiesData[1] && propertiesData[1][2] ? propertiesData[1][2] : '';
+    // 计算类型（第2行，值列）- 存储的是显示文本（如 "功图计算"）
+    var calcTypeText = propertiesData[2] && propertiesData[2][2] ? propertiesData[2][2] : '';
+    // 排序（第3行，值列）
+    var sort = propertiesData[3] && propertiesData[3][2] ? propertiesData[3][2] : '';
+    // 备注（第4行，值列）
+    var remark = propertiesData[4] && propertiesData[4][2] ? propertiesData[4][2] : '';
+
+    // 计算类型转数字
+    var calculateType = 0;
+    if (calcTypeText === _loginUserLanguageResource.SRPCalculate) {
+        calculateType = 1;
+    } else if (calcTypeText === _loginUserLanguageResource.PCPCalculate) {
+        calculateType = 2;
+    }
+
+    var acqUnitId = node.acqUnitId || '';
+
+    // 构造保存数据
+    var displayUnitProperties = {
+        classes: node.classes,
+        id: node.id,
+        unitCode: node.code || '',
+        unitName: unitName,
+        acqUnitId: acqUnitId,
+        acqUnitName: acqUnitName,
+        calculateType: calculateType,
+        sort: sort,
+        remark: remark
+    };
+
+    var displayUnitSaveData = {
+        updatelist: [displayUnitProperties]
+    };
+
+    // 获取协议和 deviceType
+    var protocol ='';
+    if (_currentDisplayProtocolNode) {
+        if (_currentDisplayProtocolNode.classes === 1) {
+            protocol = _currentDisplayProtocolNode.code;
+        } else if (_currentDisplayProtocolNode.classes === 0) {
+            // 目录节点：收集所有子协议 code
+            var protocolList = [];
+            if (_currentDisplayProtocolNode.children) {
+                for (var i = 0; i < _currentDisplayProtocolNode.children.length; i++) {
+                    protocolList.push(_currentDisplayProtocolNode.children[i].code);
+                }
+            }
+            protocol = protocolList.join(',');
+        }
+    }
+    
+    var parent = tree.getParentNode(node);
+    
+    var deviceType = 0;
+    if(parent){
+    	deviceType=parent.deviceType;
+    }
+
+    saveDisplayUnitTreeData(displayUnitSaveData, protocol, deviceType);
+}
+
+
+
+//---- 打开添加显示单元窗口 ----
 function addDisplayUnitInfo() {
-    // 参考采集单元 addAcquisitionUnitInfo，打开添加窗口
-    mini.alert(_loginUserLanguageResource.addDisplayUnit);
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) {
+        mini.alert(_loginUserLanguageResource.selectDeviceType);
+        return;
+    }
+    var selectedDeviceNode = deviceTree.getSelectedNode();
+    if (!selectedDeviceNode) {
+        mini.alert(_loginUserLanguageResource.selectDeviceType);
+        return;
+    }
+    var deviceTypeIds = selectedDeviceTypeId || '';
+
+    // 获取当前选中的协议节点（可能为协议或目录）
+    var protocolTree = mini.get('displayUnitProtocolTree');
+    var selectedProtocolNode = protocolTree ? protocolTree.getSelectedNode() : null;
+    var protocolList = '';
+    if (selectedProtocolNode) {
+        if (selectedProtocolNode.classes === 1) {
+            protocolList = selectedProtocolNode.code || '';
+        } else if (selectedProtocolNode.classes === 0) {
+            var codes = [];
+            function collect(node) {
+                if (node.children && node.children.length > 0) {
+                    for (var i = 0; i < node.children.length; i++) collect(node.children[i]);
+                } else {
+                    if (node.classes === 1 && node.code) codes.push(node.code);
+                }
+            }
+            collect(selectedProtocolNode);
+            protocolList = codes.join(',');
+        }
+    }
+
+    mini.open({
+        title: _loginUserLanguageResource.addDisplayUnit,
+        url: context + '/miniui-app/modules/driverConfig/displayUnitAddWindow.jsp',
+        width: 450,
+        height: 480,
+        modal: true,
+        allowResize: true,
+        onload: function() {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                deviceTypeIds: deviceTypeIds,
+                protocolList: protocolList
+            });
+            // 暴露刷新父窗口单元列表树的函数
+            contentWindow.parent._parentRefreshUnitTree = function() {
+            	refreshDisplayUnitList();
+            };
+            contentWindow.parent._parentSetNewObject = function(name, classes) {
+                window._newDisplayUnitObjectName = name;
+                window._newDisplayUnitObjectClasses = classes;
+            };
+        },
+        ondestroy: function(action) {
+            if (action === 'ok') {
+                // 刷新树（已在子窗口中调用）
+            }
+        }
+    });
 }
 
 function openExportDisplayUnitWindow() {
@@ -656,7 +816,7 @@ function openImportDisplayUnitWindow() {
 }
 
 // ================================================================
-// 7. 右键菜单事件（如有需要可后续添加）
+// 7. 右键菜单事件
 // ================================================================
 
 function onDisplayUnitTreeBeforeMenu(e) {
@@ -676,4 +836,217 @@ function onDisplayUnitTreeBeforeMenu(e) {
     } else {
         deleteItem.enable();
     }
+}
+
+//================================================================
+//删除显示单元节点
+//================================================================
+function deleteDisplayUnitNode(e) {
+ var tree = mini.get('displayUnitList');
+ var node = tree.getSelectedNode();
+ if (!node) {
+     return;
+ }
+
+ var nodeId = node.id;
+ var nodeText = node.text;
+
+ // 确认删除
+ mini.confirm(
+     _loginUserLanguageResource.confirmDelete,
+     _loginUserLanguageResource.confirm,
+     function(action) {
+         if (action === 'ok') {
+             // 构造删除数据
+             var deleteData = {
+                 delidslist: [nodeId]
+             };
+             // 获取 protocol 和 deviceType（从父节点获取）
+             var protocol = node.protocolCode || '';
+             
+             var parent = tree.getParentNode(node);
+             
+             var deviceType = 0;
+             if(parent){
+             	deviceType=parent.deviceType;
+             }
+             // 调用保存接口（复用保存函数，传入删除数据）
+             saveDisplayUnitTreeData(deleteData, protocol, deviceType);
+         }
+     }
+ );
+}
+
+function saveDisplayUnitTreeData(displayUnitSaveData, protocol, deviceType) {
+    var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.updateWait });
+
+    $.ajax({
+        type: 'POST',
+        url: context + '/acquisitionUnitManagerController/saveDisplayUnitHandsontableData',
+        data: {
+            data: JSON.stringify(displayUnitSaveData),
+            protocol: protocol,
+            deviceType: deviceType
+        },
+        dataType: 'json',
+        success: function(response) {
+            mini.unmask(document.body);
+            if (response.success) {
+                var msg = displayUnitSaveData.delidslist && displayUnitSaveData.delidslist.length > 0
+                    ? _loginUserLanguageResource.deleteSuccessfully
+                    : _loginUserLanguageResource.savedSuccessfully;
+                mini.alert(msg);
+                // 刷新树
+                refreshDisplayUnitList();
+            } else {
+                mini.alert('<font color="red">' + (_loginUserLanguageResource.saveFailed) + '</font>');
+            }
+        },
+        error: function() {
+            mini.unmask(document.body);
+            mini.alert(_loginUserLanguageResource.requestFailed);
+        }
+    });
+}
+
+/**
+ * 更新曲线配置
+ * @param {number} row - 行索引
+ * @param {number} col - 列索引（12 或 19）
+ * @param {number} tableType - 表类型（0:采集项, 1:控制项等）
+ * @param {object} config - 曲线配置对象
+ */
+window.updateCurveConfig = function(row, col, tableType, config) {
+    var helper = null;
+    if (tableType === 0) {
+        helper = protocolDisplayUnitAcqItemsConfigHandsontableHelper;
+    } else if (tableType === 1) {
+        helper = protocolDisplayUnitCtrlItemsConfigHandsontableHelper;
+    } else {
+        return;
+    }
+    if (!helper || !helper.hot) return;
+
+    // 构造显示字符串（与 ExtJS 格式一致）
+    var showValue = _loginUserLanguageResource.curveGroup + ':' + (config.groupName || _loginUserLanguageResource.nothing) + ';' +
+                    config.sort + ';' +
+                    (config.yAxisOpposite ? _loginUserLanguageResource.right : _loginUserLanguageResource.left) + ';' +
+                    config.color;
+    // 更新显示列（col=12 实时曲线，col=19 历史曲线）
+    helper.hot.setDataAtCell(row, col, showValue);
+    // 更新隐藏的配置对象列（实时曲线对应索引21，历史曲线对应索引22）
+    var configCol = (col === 12) ? 21 : 22;
+    helper.hot.setDataAtCell(row, configCol, config);
+    helper.hot.render();
+};
+
+/**
+ * 更新颜色值
+ * @param {number} row - 行索引
+ * @param {number} col - 列索引
+ * @param {number} tableType - 表类型
+ * @param {string} color - 颜色值（不含#）
+ */
+window.updateColor = function(row, col, tableType, color) {
+    var helper = null;
+    if (tableType === 0) {
+        helper = protocolDisplayUnitAcqItemsConfigHandsontableHelper;
+    } else if (tableType === 1) {
+        helper = protocolDisplayUnitCtrlItemsConfigHandsontableHelper;
+    } else {
+        return;
+    }
+
+    if (!helper || !helper.hot) return;
+
+    helper.hot.setDataAtCell(row, col, color);
+    helper.hot.render();
+};
+
+// ================================================================
+// 打开曲线配置窗口
+// ================================================================
+function openCurveConfigWindow(row, column, tableType) {
+    // 确定使用的 Helper
+    var helper = null;
+    if (tableType === 0) {
+        helper = protocolDisplayUnitAcqItemsConfigHandsontableHelper;
+    } else if (tableType === 1) {
+        helper = protocolDisplayUnitCtrlItemsConfigHandsontableHelper;
+    } else {
+        return;
+    }
+    if (!helper || !helper.hot) return;
+
+    // 获取当前行数据，提取已有配置
+    var rowData = helper.hot.getDataAtRow(row);
+    var config = null;
+    if (column === 12 && rowData[21]) config = rowData[21];
+    else if (column === 19 && rowData[22]) config = rowData[22];
+    var curveType = (column === 12) ? 1 : 2; // 1:实时曲线，2:历史曲线
+    mini.open({
+        title: _loginUserLanguageResource.curveConfig,
+        url: context + '/miniui-app/modules/driverConfig/curveConfigWindow.jsp',
+        width: 480,
+        height: 520,
+        modal: true,
+        allowResize: true,
+        onload: function() {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                row: row,
+                col: column,
+                tableType: tableType,
+                curveType: curveType,
+                config: config
+            });
+            contentWindow._updateCurveConfig = function(row, col, tableType, config) {
+            	updateCurveConfig(row, col, tableType, config);
+            };
+        },
+        ondestroy: function() {
+            // 可选：清理
+        }
+    });
+}
+
+// ================================================================
+// 打开颜色选择窗口
+// ================================================================
+function openColorPickerWindow(row, column, tableType) {
+    var helper = null;
+    if (tableType === 0) {
+        helper = protocolDisplayUnitAcqItemsConfigHandsontableHelper;
+    } else if (tableType === 1) {
+        helper = protocolDisplayUnitCtrlItemsConfigHandsontableHelper;
+    } else {
+        return;
+    }
+
+    if (!helper || !helper.hot) return;
+
+    var currentColor = helper.hot.getDataAtCell(row, column) || 'ff0000';
+
+    mini.open({
+        title: _loginUserLanguageResource.colorSelect,
+        url: context + '/miniui-app/modules/driverConfig/colorSelectWindow.jsp',
+        width: 500,
+        height: 300,
+        modal: true,
+        allowResize: true,
+        onload: function() {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                row: row,
+                col: column,
+                tableType: tableType,
+                currentColor: currentColor
+            });
+            contentWindow._updateColor = function(row, col, tableType, color) {
+            	updateColor(row, col, tableType, color);
+            };
+        }
+    });
 }

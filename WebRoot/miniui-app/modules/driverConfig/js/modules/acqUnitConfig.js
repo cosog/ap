@@ -240,6 +240,7 @@ function onAcqUnitListSelect(e) {
 
 //Tab 切换事件
 function onAcqUnitDetailTabChanged(e) {
+	if (isInitializing) return;
     if (!_currentAcqUnitNode) return;
     var tabs = e.sender;
     var active = tabs.getActiveTab();

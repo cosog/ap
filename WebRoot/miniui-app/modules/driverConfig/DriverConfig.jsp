@@ -497,10 +497,9 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                         <!-- 左侧协议树 20% -->
                                                         <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
                                                             <div style="padding:4px;height:100%;background:#fafafa;">
-                                                                <div id="displayUnitProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onDisplayUnitProtocolTreeBeforeLoad" onload="onDisplayUnitProtocolTreeLoad" onnodeselect="onDisplayUnitProtocolTreeSelect">
+                                                                <div id="displayUnitProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onDisplayUnitProtocolTreeBeforeLoad" onload="onDisplayUnitProtocolTreeLoad" onnodeselect="onDisplayUnitProtocolTreeSelect" >
                                                                     <div property="emptyText" class="empty-msg">无协议</div>
                                                                 </div>
-                                                                <!-- 右键菜单（可后期添加） -->
                                                             </div>
                                                         </div>
                                                         <!-- 右侧：内层 Splitter（单元列表 + 详情） -->
@@ -509,10 +508,14 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                 <!-- 左侧单元列表 25% -->
                                                                 <div size="25%" showCollapseButton="true" collapseDirection="left" minSize="150">
                                                                     <div style="padding:4px;height:100%;background:#fafafa;">
-                                                                        <div id="displayUnitList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onDisplayUnitListBeforeLoad" onload="onDisplayUnitListLoad" onnodeselect="onDisplayUnitListSelect">
+                                                                        <div id="displayUnitList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onDisplayUnitListBeforeLoad" onload="onDisplayUnitListLoad" onnodeselect="onDisplayUnitListSelect" contextMenu="#displayUnitTreeMenu">
                                                                             <div property="emptyText" class="empty-msg">无单元</div>
                                                                         </div>
-                                                                        <!-- 右键菜单（可后期添加） -->
+                                                                		<ul id="displayUnitTreeMenu" class="mini-contextmenu" onbeforeopen="onDisplayUnitTreeBeforeMenu">
+    																		<li name="delete" iconCls="delete" onclick="deleteDisplayUnitNode">
+        																		<span id="displayUnitTreeMenuDeleteText">删除</span>
+    																		</li>
+																		</ul>
                                                                     </div>
                                                                 </div>
                                                                 <!-- 右侧详情 Tabs -->

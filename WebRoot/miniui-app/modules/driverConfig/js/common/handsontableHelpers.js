@@ -1603,8 +1603,6 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 
            // 获取父容器实际宽高（让表格撑满）
            var container = document.getElementById(helper.divid);
-           var width = container ? container.clientWidth : undefined;
-           var height = container ? container.clientHeight : undefined;
 
            helper.hot = new Handsontable(hotElement, {
                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
@@ -1619,8 +1617,8 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                columns: helper.columns,
                fixedColumnsStart: 3,
                stretchH: 'all',
-               width: width,
-               height: height,
+               width: '100%', 
+               height: '100%',
                autoWrapRow: true,
                rowHeaders: false,
                nestedHeaders: helper.colHeaders,
@@ -1678,7 +1676,7 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                        cellProperties.editor = false;
                        cellProperties.renderer = helper.addReadOnlyBg;
                    } else if (prop === 'realtimeCurveConfShowValue' || prop === 'historyCurveConfShowValue') {
-                       // 曲线显示值（只读显示，但点击可弹出配置窗口，暂不实现）
+                       // 曲线显示值
                        cellProperties.renderer = helper.addCurveBg;
                    } else if (prop === 'realtimeColor' || prop === 'realtimeBgColor' || prop === 'historyColor' || prop === 'historyBgColor') {
                        cellProperties.renderer = helper.addCellBgColor;
@@ -1704,12 +1702,63 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
                    // 可在此添加额外校验
                    return true;
                },
-               afterBeginEditing: function(row, column) {
-            	   
-               },
-               afterChange: function(changes, source) {
-            	   
-               },
+               afterBeginEditing: function (row, column) {
+            	    if (!editFlag) return;
+
+            	    var helper = protocolDisplayUnitAcqItemsConfigHandsontableHelper;
+            	    if (!helper || !helper.hot) return;
+
+            	    var rowData = helper.hot.getDataAtRow(row);
+            	    var realtimeData = rowData[8];  // 索引8: realtimeData
+            	    var historyData = rowData[15];  // 索引15: historyData
+
+            	    // 曲线配置列 (12:实时曲线显示值, 19:历史曲线显示值)
+            	    if ((realtimeData && column === 12) || (historyData && column === 19)) {
+            	        if (_currentDisplayUnitNode && _currentDisplayUnitNode.classes === 2) {
+            	            openCurveConfigWindow(row, column, 0); // 0:采集项表
+            	        }
+            	        return;
+            	    }
+
+            	    // 颜色列 (10:实时前景色, 11:实时背景色, 17:历史前景色, 18:历史背景色)
+            	    if ((realtimeData && (column === 10 || column === 11)) ||
+            	        (historyData && (column === 17 || column === 18))) {
+            	        if (_currentDisplayUnitNode && _currentDisplayUnitNode.classes === 2) {
+            	            openColorPickerWindow(row, column, 0);
+            	        }
+            	        return;
+            	    }
+            	},
+            	afterChange: function (changes, source) {
+            	    if (!changes) return;
+            	    var helper = protocolDisplayUnitAcqItemsConfigHandsontableHelper;
+            	    if (!helper || !helper.hot) return;
+
+            	    changes.forEach(([row, prop, oldValue, newValue]) => {
+            	        if (source === 'CopyPaste.paste' && (prop === 'realtimeCurveConfShowValue' || prop === 'historyCurveConfShowValue')) {
+            	            var configCol = (prop === 'realtimeCurveConfShowValue') ? 21 : 22;
+            	            if (newValue && newValue.split(';').length === 4) {
+            	                var arr = newValue.split(';');
+            	                var groupName = arr[0].replace(_loginUserLanguageResource.curveGroup + ':', '');
+            	                var sort = parseInt(arr[1]) || 0;
+            	                var yAxisOpposite = arr[2] === _loginUserLanguageResource.right;
+            	                var color = arr[3];
+            	                var config = {
+            	                    groupId: -1,
+            	                    groupName: groupName,
+            	                    sort: sort,
+            	                    lineWidth: 3,
+            	                    dashStyle: 'Solid',
+            	                    yAxisOpposite: yAxisOpposite,
+            	                    color: color
+            	                };
+            	                helper.hot.setDataAtCell(row, configCol, config);
+            	            } else {
+            	                helper.hot.setDataAtCell(row, configCol, '');
+            	            }
+            	        }
+            	    });
+            	},
                afterOnCellMouseOver: function(event, coords, TD) {
                    if (coords.col >= 0 && coords.row >= 0 &&
                        helper.columns[coords.col] && helper.columns[coords.col].type !== 'checkbox' &&
@@ -1776,8 +1825,6 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
          $('#' + helper.divid).empty();
          var hotElement = document.querySelector('#' + helper.divid);
          var container = document.getElementById(helper.divid);
-         var width = container ? container.clientWidth : undefined;
-         var height = container ? container.clientHeight : undefined;
 
          helper.hot = new Handsontable(hotElement, {
              licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
@@ -1791,8 +1838,8 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
              colWidths: helper.colWidths,
              columns: helper.columns,
              stretchH: 'all',
-             width: width,
-             height: height,
+             width: '100%',
+             height: '100%',
              autoWrapRow: true,
              rowHeaders: false,
              colHeaders: helper.colHeaders,

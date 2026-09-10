@@ -3,8 +3,6 @@
 String path = request.getContextPath();
 String otherStaticResourceTimestamp = (String)session.getAttribute("otherStaticResourceTimestamp");
 if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
-// 强制刷新缓存（开发时可去掉）
-//otherStaticResourceTimestamp = System.currentTimeMillis() + "";
 %>
 <!DOCTYPE html>
 <html>
@@ -12,75 +10,55 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 <meta charset="UTF-8">
 <title>颜色选择</title>
 <jsp:include page="../../layout/tags-miniui.jsp" flush="true" />
-<!-- 引入 Spectrum 资源（确保路径正确） -->
 <link rel="stylesheet" href="<%=path%>/scripts/miniui/third-party/spectrum/spectrum.css?timestamp=<%=otherStaticResourceTimestamp%>" />
 <script src="<%=path%>/scripts/miniui/third-party/spectrum/spectrum.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <style>
-    body { padding: 20px; background: #fff; }
-    .row { margin-bottom: 15px; display: flex; align-items: center; }
-    .label { width: 80px; text-align: right; padding-right: 10px; font-size: 13px; flex-shrink: 0; }
-    .control { flex: 1; display: flex; align-items: center; }
-    .btn-row { text-align: center; padding-top: 20px; border-top: 1px solid #e8e8e8; margin-top: 15px; }
-    .btn-row .mini-button { margin: 0 10px; width: 80px; }
-    /* 移除所有自定义 Spectrum 样式，使用默认 */
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    /* 只让容器撑满宽度，不改内部布局 */
+    .sp-container.sp-flat {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        border: none !important;
+        box-shadow: none !important;
+        box-sizing: border-box;
+        padding: 10px !important;
+        margin: 0 !important;
+    }
+
+    /* 让色域区域宽度占满 */
+    .sp-container.sp-flat .sp-top {
+        width: 100% !important;
+    }
 </style>
 </head>
 <body>
-    <!-- 隐藏域（用于回调父窗口） -->
-    <input id="colorRow" class="mini-hidden" />
-    <input id="colorCol" class="mini-hidden" />
-    <input id="colorTableType" class="mini-hidden" value="0" />
-
-    <div class="row">
-        <span id="currentColorLabel" class="label"></span>
-        <div class="control">
-            <span id="preview" class="color-preview" style="display:inline-block;width:30px;height:30px;border:1px solid #ccc;margin-left:10px;background-color:#ff0000;"></span>
-        </div>
-    </div>
-    <div class="row">
-        <span id="selectColorLabel" class="label"></span>
-        <div class="control">
-            <input id="colorText" class="mini-textbox" style="width:120px;" />
-            <input id="colorPicker" style="margin-left:10px;" />
-        </div>
-    </div>
-    <div class="btn-row">
-        <a id="confirmBtn" class="mini-button" onclick="onSave()"></a>
-        <a id="cancelBtn" class="mini-button" onclick="onCancel()"></a>
-    </div>
-
+    <input type="text" id="colorPicker" style="display:none;" />
     <script type="text/javascript">
         mini.parse();
 
-        // 从父窗口获取国际化对象（必须存在）
         var lang = window.parent._loginUserLanguageResource;
-
-        // 设置国际化文本
-        document.getElementById('currentColorLabel').innerHTML = lang.currentColor||'当前颜色' + '：';
-        document.getElementById('selectColorLabel').innerHTML = lang.selectColor||'选择颜色' + '：';
-        mini.get('confirmBtn').setText(lang.confirm);
-        mini.get('cancelBtn').setText(lang.cancel);
-        mini.get('colorText').setEmptyText(lang.selectColor);
+        var _row = null;
+        var _col = null;
+        var _tableType = null;
 
         var currentColor = 'ff0000';
-        var spectrumInited = false;
 
         function setData(data) {
             if (data) {
-                mini.get('colorRow').setValue(data.row || 0);
-                mini.get('colorCol').setValue(data.col || 0);
-                mini.get('colorTableType').setValue(data.tableType || 0);
-                var initColor = data.currentColor || 'ff0000';
-                currentColor = initColor;
-                $('#preview').css('background-color', '#' + initColor);
-                mini.get('colorText').setValue('#' + initColor);
-
-                if (!spectrumInited) {
-                    initSpectrum(initColor);
-                    spectrumInited = true;
-                } else {
-                    $('#colorPicker').spectrum('set', '#' + initColor);
-                }
+                _row = data.row;
+                _col = data.col;
+                _tableType = data.tableType;
+                currentColor = data.currentColor || 'ff0000';
+                initSpectrum(currentColor);
             }
         }
 
@@ -88,6 +66,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             try {
                 $('#colorPicker').spectrum({
                     color: '#' + initColor,
+                    flat: true,
                     showAlpha: true,
                     showInput: true,
                     showInitial: true,
@@ -95,7 +74,6 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     showButtons: true,
                     cancelText: lang.cancel,
                     chooseText: lang.confirm,
-                    appendTo: 'body',
                     preferredFormat: 'hex',
                     palette: [
                         ['#000','#444','#666','#999','#ccc','#eee','#f3f3f3','#fff'],
@@ -107,40 +85,23 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                         ['#900','#b45f06','#bf9000','#38761d','#134f5c','#0b5394','#351c75','#741b47'],
                         ['#600','#783f04','#7f6000','#274e13','#0c343d','#073763','#20124d','#4c1130']
                     ],
+                    // 拖动/选择色块时只更新 currentColor，不关闭
                     change: function(color) {
-                        if (color) {
-                            var hex = color.toHexString();
-                            currentColor = hex.replace('#','');
-                            mini.get('colorText').setValue(hex);
+                    	if (color) {
+                            currentColor = color.toHexString().replace('#', '');
                         }
-                    },
-                    move: function(color) {
-                        if (color) {
-                            var hex = color.toHexString();
+                        if (window._updateColor) {
+                            window._updateColor(_row, _col, _tableType, currentColor);
                         }
+                        closeWin();
                     }
                 });
-                $('#colorPicker').spectrum('set', '#' + initColor);
             } catch(e) {
                 console.error('Spectrum init error:', e);
             }
         }
 
-        function onSave() {
-            var row = parseInt(mini.get('colorRow').getValue() || 0);
-            var col = parseInt(mini.get('colorCol').getValue() || 0);
-            var tableType = parseInt(mini.get('colorTableType').getValue() || 0);
-            
-            if (window._updateColor) {
-                window._updateColor(row, col, tableType, currentColor);
-            }
-            
-            try { $('#colorPicker').spectrum('destroy'); } catch(e) {}
-            if (window.CloseOwnerWindow) window.CloseOwnerWindow('ok');
-            else window.close();
-        }
-
-        function onCancel() {
+        function closeWin() {
             try { $('#colorPicker').spectrum('destroy'); } catch(e) {}
             if (window.CloseOwnerWindow) window.CloseOwnerWindow('cancel');
             else window.close();

@@ -341,12 +341,19 @@ function loadDisplayUnitConfig(node) {
 //加载采集项配置数据
 //================================================================
 function loadDisplayUnitAcqItemsConfig(node) {
- // node 为当前选中的显示单元节点（classes===2）
  if (!node || node.classes !== 2) {
      // 如果不是单元节点，可清空表格或返回
      return;
  }
 
+//★ 设置标题：单元名称/采集项配置
+ var titleEl = document.getElementById('displayAcqItemsTitle');
+ if (titleEl) {
+     var unitName = node.text;
+     var acqItemsText = _loginUserLanguageResource.acquisitionItemConfig;
+     titleEl.innerHTML = unitName ? (unitName + '/' + acqItemsText) : acqItemsText;
+ }
+ 
  // 销毁已有 Helper（如有）
  if (protocolDisplayUnitAcqItemsConfigHandsontableHelper) {
      if (protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot) {
@@ -484,6 +491,14 @@ function loadDisplayUnitCtrlItemsConfig(node) {
  if (!node || node.classes !== 2) {
      return;
  }
+ 
+//★ 设置标题：单元名称/控制项配置
+ var titleEl = document.getElementById('displayCtrlItemsTitle');
+ if (titleEl) {
+     var unitName = node.text || '';
+     var ctrlItemsText = _loginUserLanguageResource.controlItemConfig;
+     titleEl.innerHTML = unitName ? (unitName + '/' + ctrlItemsText) : ctrlItemsText;
+ }
 
  if (protocolDisplayUnitCtrlItemsConfigHandsontableHelper) {
      if (protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot) {
@@ -553,7 +568,7 @@ function loadDisplayUnitCtrlItemsConfig(node) {
              protocolDisplayUnitCtrlItemsConfigHandsontableHelper.colHeaders = colHeaders;
              protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns = columns;
              protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hiddenColumns = [6, 7, 8, 9, 10, 11];
-             protocolDisplayUnitCtrlItemsConfigHandsontableHelper.colWidths = [25, 50, 140, 80, 60, 60, 80];
+             protocolDisplayUnitCtrlItemsConfigHandsontableHelper.colWidths = [30, 50, 140, 80, 60, 60, 80];
              protocolDisplayUnitCtrlItemsConfigHandsontableHelper.createTable(tableData);
          }else{
         	 protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.loadData(tableData);
@@ -582,7 +597,8 @@ function displayAcqSelectAll() {
         var rowCount = helper.hot.countRows();
         var updateData = [];
         for (var i = 0; i < rowCount; i++) {
-            updateData.push([i, 'checked', true]);
+            updateData.push([i, 'realtimeData', true]);
+            updateData.push([i, 'historyData', true]);
         }
         helper.hot.setDataAtRowProp(updateData);
     }
@@ -594,7 +610,8 @@ function displayAcqDeselectAll() {
         var rowCount = helper.hot.countRows();
         var updateData = [];
         for (var i = 0; i < rowCount; i++) {
-            updateData.push([i, 'checked', false]);
+            updateData.push([i, 'realtimeData', false]);
+            updateData.push([i, 'historyData', false]);
         }
         helper.hot.setDataAtRowProp(updateData);
     }
@@ -739,7 +756,267 @@ function saveDisplayUnitProperties(tree,node) {
     saveDisplayUnitTreeData(displayUnitSaveData, protocol, deviceType);
 }
 
+//================================================================
+//保存采集项配置（grantDisplayAcqItemsPermission）
+//================================================================
+function grantDisplayAcqItemsPermission() {
+ var helper = protocolDisplayUnitAcqItemsConfigHandsontableHelper;
+ if (!helper || !helper.hot) {
+     return false;
+ }
+ var node = _currentDisplayUnitNode;
+ if (!node || node.classes !== 2) {
+     return false;
+ }
 
+ var unitCode = node.code;
+ var unitId = node.id;
+ var protocol = node.protocolCode;
+ if (!isNotVal(unitCode)) {
+     return false;
+ }
+
+ var rowCount = helper.hot.countRows();
+ var addjson = [];
+ var addItemRealtimeSort = [];
+ var matrixData = '';
+
+ for (var i = 0; i < rowCount; i++) {
+     var realtimeDataSign = helper.hot.getDataAtRowProp(i, 'realtimeData');
+     var historyDataSign = helper.hot.getDataAtRowProp(i, 'historyData');
+     var itemEnable = helper.hot.getDataAtRowProp(i, 'checked');
+
+     realtimeDataSign = realtimeDataSign && (realtimeDataSign + '' == 'true');
+     historyDataSign = historyDataSign && (historyDataSign + '' == 'true');
+     itemEnable = itemEnable && (itemEnable + '' == 'true');
+
+     if (itemEnable || realtimeDataSign || historyDataSign) {
+         itemEnable = itemEnable ? 1 : 0;
+         itemEnable = 1;
+
+         var itemName = helper.hot.getDataAtRowProp(i, 'title');
+         var itemShowLevel = helper.hot.getDataAtRowProp(i, 'showLevel');
+
+         var realtimeOverview = helper.hot.getDataAtRowProp(i, 'realtimeOverview') ? 1 : 0;
+         var realtimeOverviewSort = helper.hot.getDataAtRowProp(i, 'realtimeOverviewSort');
+         var realtimeData = realtimeDataSign ? 1 : 0;
+
+         var itemRealtimeSort = helper.hot.getDataAtRowProp(i, 'realtimeSort');
+         var realtimeColor = helper.hot.getDataAtRowProp(i, 'realtimeColor');
+         var realtimeBgColor = helper.hot.getDataAtRowProp(i, 'realtimeBgColor');
+
+         var realtimeCurveConfigStr = '';
+         var realtimeCurveConfig = null;
+         if (isNotVal(helper.hot.getDataAtRowProp(i, 'realtimeCurveConfShowValue')) &&
+             isNotVal(helper.hot.getDataAtRowProp(i, 'realtimeCurveConf'))) {
+             realtimeCurveConfig = helper.hot.getDataAtRowProp(i, 'realtimeCurveConf');
+             realtimeCurveConfigStr = JSON.stringify(realtimeCurveConfig);
+         }
+
+         var historyOverview = helper.hot.getDataAtRowProp(i, 'historyOverview') ? 1 : 0;
+         var historyOverviewSort = helper.hot.getDataAtRowProp(i, 'historyOverviewSort');
+         var historyData = historyDataSign ? 1 : 0;
+
+         var itemHistorySort = helper.hot.getDataAtRowProp(i, 'historySort');
+         var historyColor = helper.hot.getDataAtRowProp(i, 'historyColor');
+         var historyBgColor = helper.hot.getDataAtRowProp(i, 'historyBgColor');
+         var historyCurveConfigStr = '';
+         var historyCurveConfig = null;
+         if (isNotVal(helper.hot.getDataAtRowProp(i, 'historyCurveConfShowValue')) &&
+             isNotVal(helper.hot.getDataAtRowProp(i, 'historyCurveConf'))) {
+             historyCurveConfig = helper.hot.getDataAtRowProp(i, 'historyCurveConf');
+             historyCurveConfigStr = JSON.stringify(historyCurveConfig);
+         }
+
+         var resolutionMode = helper.hot.getDataAtRowProp(i, 'resolutionMode');
+         var itemAddr = helper.hot.getDataAtRowProp(i, 'addr');
+         var itemHighLowByte = helper.hot.getDataAtRowProp(i, 'highLowByte');
+         var bitIndex = helper.hot.getDataAtRowProp(i, 'bitIndex');
+
+         var type = helper.hot.getDataAtRowProp(i, 'type');
+         var itemCode = helper.hot.getDataAtRowProp(i, 'code');
+
+         var switchingValueShowType = helper.hot.getDataAtRowProp(i, 'switchingValueShowType');
+
+         if (resolutionMode == _loginUserLanguageResource.switchingValue &&
+             switchingValueShowType == (_loginUserLanguageResource.dataColumn + '/' + _loginUserLanguageResource.meaning)) {
+             switchingValueShowType = 1;
+         } else {
+             switchingValueShowType = 0;
+         }
+
+         addjson.push(itemName);
+         addItemRealtimeSort.push(itemRealtimeSort);
+         var matrix_value = '0,0,0';
+         matrixData += itemName + '##'
+             + realtimeOverview + '##'
+             + realtimeOverviewSort + '##'
+             + realtimeData + '##'
+             + itemRealtimeSort + '##'
+             + realtimeColor + '##'
+             + realtimeBgColor + '##'
+             + historyOverview + '##'
+             + historyOverviewSort + '##'
+             + historyData + '##'
+             + itemHistorySort + '##'
+             + historyColor + '##'
+             + historyBgColor + '##'
+             + itemShowLevel + '##'
+             + realtimeCurveConfigStr + '##'
+             + historyCurveConfigStr + '##'
+             + resolutionMode + '##'
+             + itemAddr + '##'
+             + itemHighLowByte + '##'
+             + bitIndex + '##'
+             + type + '##'
+             + itemCode + '##'
+             + switchingValueShowType + '##'
+             + matrix_value + '##'
+             + itemEnable + '|';
+     }
+ }
+
+ if (matrixData.length > 0) {
+     matrixData = matrixData.substring(0, matrixData.length - 1);
+ }
+
+ var matrixCodes_ = '' + matrixData;
+ var addUrl = context + '/acquisitionUnitManagerController/grantAcqItemsToDisplayUnitPermission';
+
+ var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.updateWait });
+
+ $.ajax({
+     url: addUrl,
+     method: 'POST',
+     async: false,
+     data: {
+         protocol: protocol,
+         unitId: unitId,
+         itemType: 0,
+         matrixCodes: matrixCodes_
+     },
+     dataType: 'json',
+     success: function(result) {
+         mini.unmask(document.body);
+         if (result.msg == true) {
+             mini.alert(_loginUserLanguageResource.savedSuccessfully);
+         } else {
+             mini.alert('<font color="red">SORRY！' + _loginUserLanguageResource.saveFailed + '</font>');
+         }
+     },
+     error: function() {
+         mini.unmask(document.body);
+         mini.alert('【<font color="red">' + _loginUserLanguageResource.exceptionThrow + '</font>】：' + _loginUserLanguageResource.contactAdmin);
+     }
+ });
+
+ return false;
+}
+
+//================================================================
+//保存控制项配置（grantDisplayCtrlItemsPermission）
+//================================================================
+function grantDisplayCtrlItemsPermission() {
+ var helper = protocolDisplayUnitCtrlItemsConfigHandsontableHelper;
+ if (!helper || !helper.hot) {
+     return false;
+ }
+ var node = _currentDisplayUnitNode;
+ if (!node || node.classes !== 2) {
+     return false;
+ }
+
+ var unitCode = node.code || '';
+ var unitId = node.id || '';
+ var protocol = node.protocolCode || node.protocol || '';
+ if (!isNotVal(unitCode)) {
+     return false;
+ }
+
+ var ctrlItemsData = helper.hot.getData();
+ var addjson = [];
+ var addItemRealtimeSort = [];
+ var matrixData = '';
+
+ for (var index = 0; index < ctrlItemsData.length; index++) {
+     var itemEnable = helper.hot.getDataAtRowProp(index, 'checked');
+     var itemShowLevel = helper.hot.getDataAtRowProp(index, 'showLevel');
+     var itemRealtimeSort = helper.hot.getDataAtRowProp(index, 'realtimeSort');
+
+     if (itemEnable || isNotVal(itemShowLevel) || isNotVal(itemRealtimeSort)) {
+         itemEnable = itemEnable ? 1 : 0;
+         var itemName = helper.hot.getDataAtRowProp(index, 'title');
+         var resolutionMode = helper.hot.getDataAtRowProp(index, 'resolutionMode');
+         var itemAddr = helper.hot.getDataAtRowProp(index, 'addr');
+         var itemHighLowByte = helper.hot.getDataAtRowProp(index, 'highLowByte');
+         var bitIndex = helper.hot.getDataAtRowProp(index, 'bitIndex');
+
+         var switchingValueShowType = helper.hot.getDataAtRowProp(index, 'switchingValueShowType');
+
+         if (resolutionMode == _loginUserLanguageResource.switchingValue &&
+             switchingValueShowType == (_loginUserLanguageResource.dataColumn + '/' + _loginUserLanguageResource.meaning)) {
+             switchingValueShowType = 1;
+         } else {
+             switchingValueShowType = 0;
+         }
+
+         addjson.push(itemName);
+         addItemRealtimeSort.push(itemRealtimeSort);
+         var matrix_value = '0,0,0';
+         matrixData += itemName + ':'
+             + itemRealtimeSort + ':'
+             + itemShowLevel + ':'
+             + resolutionMode + ':'
+             + itemAddr + ':'
+             + itemHighLowByte + ':'
+             + bitIndex + ':'
+             + switchingValueShowType + ':'
+             + matrix_value + ':'
+             + itemEnable + '|';
+     }
+ }
+
+ if (matrixData.length > 0) {
+     matrixData = matrixData.substring(0, matrixData.length - 1);
+ }
+
+ var addparams = '' + addjson.join(',');
+ var addRealtimeSortParams = '' + addItemRealtimeSort.join(',');
+ var matrixCodes_ = '' + matrixData;
+ var addUrl = context + '/acquisitionUnitManagerController/grantCtrlItemsToDisplayUnitPermission';
+
+ var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.updateWait });
+
+ $.ajax({
+     url: addUrl,
+     method: 'POST',
+     async: false,
+     data: {
+         params: addparams,
+         realtimeSorts: addRealtimeSortParams,
+         protocol: protocol,
+         unitCode: unitCode,
+         unitId: unitId,
+         itemType: 2,
+         matrixCodes: matrixCodes_
+     },
+     dataType: 'json',
+     success: function(result) {
+         mini.unmask(document.body);
+         if (result.msg == true) {
+             mini.alert(_loginUserLanguageResource.savedSuccessfully);
+         } else {
+             mini.alert('<font color="red">SORRY！' + _loginUserLanguageResource.saveFailed + '</font>');
+         }
+     },
+     error: function() {
+         mini.unmask(document.body);
+         mini.alert('【<font color="red">' + _loginUserLanguageResource.exceptionThrow + '</font>】：' + _loginUserLanguageResource.contactAdmin);
+     }
+ });
+
+ return false;
+}
 
 //---- 打开添加显示单元窗口 ----
 function addDisplayUnitInfo() {
@@ -808,11 +1085,68 @@ function addDisplayUnitInfo() {
 }
 
 function openExportDisplayUnitWindow() {
-    mini.alert(_loginUserLanguageResource.exportData);
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) {
+        return;
+    }
+    var selectedNode = deviceTree.getSelectedNode();
+    if (!selectedNode) {
+        return;
+    }
+    var deviceTypeIds = selectedDeviceTypeId || '';
+
+    mini.open({
+        title: _loginUserLanguageResource.exportDisplayUnit,
+        url: context + '/miniui-app/modules/driverConfig/exportDisplayUnitWindow.jsp',
+        width: 420,
+        height: 600,
+        modal: true,
+        allowResize: true,
+        maxable: true,
+        onload: function() {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                deviceTypeIds: deviceTypeIds
+            });
+        }
+    });
 }
 
 function openImportDisplayUnitWindow() {
-    mini.alert(_loginUserLanguageResource.importData);
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) {
+        return;
+    }
+    var selectedNode = deviceTree.getSelectedNode();
+    if (!selectedNode) {
+        return;
+    }
+    var deviceTypeId = selectedNode.deviceTypeId;
+    var deviceTypeName = getNodePath(deviceTree, selectedNode);
+
+    mini.open({
+        title: _loginUserLanguageResource.importDisplayUnit,
+        url: context + '/miniui-app/modules/driverConfig/importDisplayUnitWindow.jsp',
+        width: '90%',
+        height: '80%',
+        modal: true,
+        allowResize: true,
+        maxable: true,
+        onload: function() {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                deviceTypeId: deviceTypeId,
+                deviceTypeName: deviceTypeName
+            });
+            // 暴露刷新父页面显示单元列表树的函数
+            contentWindow.parent.refreshDisplayUnitList = function() {
+                var tree = mini.get('displayUnitList');
+                if (tree) tree.load();
+            };
+        }
+    });
 }
 
 // ================================================================
@@ -936,6 +1270,7 @@ window.updateCurveConfig = function(row, col, tableType, config) {
     helper.hot.setDataAtCell(row, col, showValue);
     // 更新隐藏的配置对象列（实时曲线对应索引21，历史曲线对应索引22）
     var configCol = (col === 12) ? 21 : 22;
+    //alert(configCol+","+JSON.stringify(config));
     helper.hot.setDataAtCell(row, configCol, config);
     helper.hot.render();
 };
@@ -990,7 +1325,7 @@ function openCurveConfigWindow(row, column, tableType) {
         width: 480,
         height: 520,
         modal: true,
-        allowResize: true,
+        allowResize: false,
         onload: function() {
             var iframe = this.getIFrameEl();
             var contentWindow = iframe.contentWindow;
@@ -1027,14 +1362,14 @@ function openColorPickerWindow(row, column, tableType) {
     if (!helper || !helper.hot) return;
 
     var currentColor = helper.hot.getDataAtCell(row, column) || 'ff0000';
-
+    
     mini.open({
         title: _loginUserLanguageResource.colorSelect,
         url: context + '/miniui-app/modules/driverConfig/colorSelectWindow.jsp',
-        width: 500,
-        height: 300,
+        width: 400, 
+        height: 280,
         modal: true,
-        allowResize: true,
+        allowResize: false,
         onload: function() {
             var iframe = this.getIFrameEl();
             var contentWindow = iframe.contentWindow;
@@ -1045,7 +1380,7 @@ function openColorPickerWindow(row, column, tableType) {
                 currentColor: currentColor
             });
             contentWindow._updateColor = function(row, col, tableType, color) {
-            	updateColor(row, col, tableType, color);
+                updateColor(row, col, tableType, color);
             };
         }
     });

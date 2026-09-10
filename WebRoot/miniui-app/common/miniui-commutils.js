@@ -105,6 +105,8 @@ var _defaultGraghSize = getGlobalVar('defaultGraghSize', '');
 var _emailEnable = getGlobalVar('emailEnable', '');
 var _exportAdInitData = getGlobalVar('exportAdInitData', '');
 
+var _onlyMonitor = getGlobalVar('onlyMonitor', '');
+
 // ================================================================
 // 2. String 扩展
 // ================================================================

@@ -10,8 +10,6 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     <meta charset="UTF-8">
     <title>曲线配置</title>
     <jsp:include page="../../layout/tags-miniui.jsp" flush="true" />
-    <link rel="stylesheet" href="<%=path%>/scripts/miniui/third-party/spectrum/spectrum.css?timestamp=<%=otherStaticResourceTimestamp%>" />
-    <script src="<%=path%>/scripts/miniui/third-party/spectrum/spectrum.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <style>
         html, body { height:100%; margin:0; padding:0; overflow:hidden; }
         .form-row { margin-bottom:12px; display:flex; align-items:center; }
@@ -20,12 +18,10 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         .color-preview { display:inline-block; width:24px; height:24px; border:1px solid #ccc; border-radius:4px; margin-left:5px; cursor:pointer; vertical-align:middle; }
         .btn-row { text-align:center; padding:10px 0; border-top:1px solid #e8e8e8; background:#fff; flex-shrink:0; }
         .btn-row .mini-button { margin:0 10px; width:80px; }
-        .sp-container { z-index:10002 !important; }
         .group-tab-content { height:100%; display:flex; flex-direction:column; padding:0; box-sizing:border-box; }
         .group-tab-content .mini-splitter { flex:1; width:100%; }
         .group-tab-content .grid-wrapper { height:100%; padding:4px; box-sizing:border-box; background:#fafafa; display:flex; flex-direction:column; }
         .group-tab-content .grid-wrapper .mini-datagrid { flex:1; width:100%; }
-        /* 属性页容器：flex 列，高度100% */
         .property-tab-content {
             height:100%;
             display:flex;
@@ -63,7 +59,6 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     <div id="curveConfigTabs" class="mini-tabs" style="width:100%;height:100%;" activeIndex="1">
         <!-- ======== 曲线组 Tab ======== -->
         <div id="groupTab" name="groupTab" style="height:100%;">
-            <!-- 内容不变（略）... -->
             <div class="group-tab-content">
                 <div class="mini-toolbar" style="border-bottom:1px solid #e8e8e8;padding:2px 4px;flex-shrink:0;background:#fafafa;display:flex;align-items:center;">
                     <span style="flex:1;"></span>
@@ -98,10 +93,9 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             </div>
         </div>
 
-        <!-- ======== ★★★ 曲线属性 Tab（修改部分） ★★★ ======== -->
+        <!-- ======== 曲线属性 Tab ======== -->
         <div id="propertyTab" name="propertyTab" style="height:100%;">
             <div class="property-tab-content">
-                <!-- 可滚动的内容区域 -->
                 <div class="scroll-content">
                     <div class="form-row">
                         <span class="form-label"><font color="red">*</font><span id="lblCurveGroup">曲线组</span>：</span>
@@ -145,14 +139,13 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                         <span class="form-label"><font color="red">*</font><span id="lblColor">颜色</span>：</span>
                         <div class="form-control">
                             <div style="display:flex;align-items:center;">
-                                <input id="curveConfigColor" class="mini-buttonedit" style="width:160px;"
+                                <input id="curveConfigColor" class="mini-buttonedit" style="width:calc(100% - 20px);"
                                        onbuttonclick="onColorButtonClick" required="true" />
                                 <span id="colorPreview" class="color-preview" style="background-color:#ff0000;" onclick="onColorButtonClick()"></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- 固定在底部的按钮行 -->
                 <div class="btn-row">
                     <button id="btnSaveProp" class="mini-button" onclick="onSaveCurveConfig()">保存</button>
                     <button id="btnCancelProp" class="mini-button" onclick="onCancelCurveConfig()">取消</button>
@@ -166,7 +159,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         var lang = _loginUserLanguageResource;
         var currentColor = 'ff0000';
         var _curveType = 1;
-        var curveConfig={};
+        var curveConfig = {};
 
         function getGridColumns() {
             return [
@@ -221,8 +214,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             e.params.type = _curveType;
         }
         function onCurveGroupShowPopup(e) {
-            //var comb = e.sender;
-            //comb.load(comb.url, { type: _curveType });
+            // 无需特殊处理
         }
 
         function setData(data) {
@@ -235,7 +227,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 
             curveConfig = data.config || {};
             loadCurveGroupList();
-            
+
             mini.get('curveConfigSort').setValue(curveConfig.sort || 1);
             mini.get('curveConfigLineWidth').setValue(curveConfig.lineWidth || 3);
             mini.get('curveConfigDashStyle').setValue(curveConfig.dashStyle || 'Solid');
@@ -243,17 +235,16 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             currentColor = curveConfig.color || 'ff0000';
             var colorBtn = mini.get('curveConfigColor');
             colorBtn.setValue(currentColor);
-            colorBtn.setText(currentColor);
+            colorBtn.setText('#' + currentColor);
             document.getElementById('colorPreview').style.backgroundColor = '#' + currentColor;
 
             mini.get('realtimeCurveGroupGrid').load();
             mini.get('historyCurveGroupGrid').load();
         }
-        
+
         function loadCurveGroupList() {
             var combo = mini.get('curveGroupComb');
             if (!combo) return;
-            // 加载协议下拉列表
             $.ajax({
                 url: context + '/acquisitionUnitManagerController/getCurveGroupCombList',
                 type: 'POST',
@@ -265,15 +256,14 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     var list = result.list || [];
                     combo.setData(list);
                     if (curveConfig.groupId != undefined && curveConfig.groupId > 0) {
-                    	combo.setValue(curveConfig.groupId);
-                    	combo.setText(curveConfig.groupName);
+                        combo.setValue(curveConfig.groupId);
+                        combo.setText(curveConfig.groupName);
                     } else {
-                    	combo.setValue(-1);
-                    	combo.setText(_loginUserLanguageResource.nothing);
+                        combo.setValue(-1);
+                        combo.setText(_loginUserLanguageResource.nothing);
                     }
                 },
-                error: function() {
-                }
+                error: function() {}
             });
         }
 
@@ -324,76 +314,42 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             });
         }
 
+        // ================================================================
+        // ★★★ 颜色选择：改为调用独立的 colorSelectWindow.jsp ★★★
+        // ================================================================
         function onColorButtonClick() {
-            var win = new mini.Window();
-            win.set({
-                id:'colorPickerWindow',
-                title: _loginUserLanguageResource.selectColor,
-                width: 420,
-                height: 340,
-                modal: true,
-                showHeader: true,
-                allowResize: false,
-                showFooter: false,
-                ondestroy: function() { try { $('#colorPickerSpectrum').spectrum('destroy'); } catch(e) {} }
-            });
-            win.setBody(
-                '<div style="padding:20px;text-align:center;">' +
-                    '<input type="text" id="colorPickerSpectrum" style="width:300px;" />' +
-                    '<div style="margin-top:15px;">' +
-                        '<button class="mini-button" onclick="onColorConfirm()" style="width:80px;">' + _loginUserLanguageResource.confirm + '</button>' +
-                        '<button class="mini-button" onclick="onColorCancel()" style="width:80px;margin-left:10px;">' + _loginUserLanguageResource.cancel + '</button>' +
-                    '</div>' +
-                '</div>'
-            );
-            win.show();
-            mini.parse(win.getBodyEl());
+            var colorBtn = mini.get('curveConfigColor');
+            var currentColorVal = colorBtn.getValue() || '#ff0000';
+            if (currentColorVal.indexOf('#') === 0) {
+                currentColorVal = currentColorVal.substring(1);
+            }
 
-            var picker = document.getElementById('colorPickerSpectrum');
-            $(picker).spectrum({
-                color: '#' + currentColor,
-                showAlpha: true,
-                showInput: true,
-                showInitial: true,
-                showPalette: true,
-                showButtons: true,
-                cancelText: _loginUserLanguageResource.cancel,
-                chooseText: _loginUserLanguageResource.confirm,
-                clickoutFiresChange: false,
-                appendTo: 'body',
-                preferredFormat: 'hex',
-                palette: [
-                    ['#000','#444','#666','#999','#ccc','#eee','#f3f3f3','#fff'],
-                    ['#f00','#f90','#ff0','#0f0','#0ff','#00f','#90f','#f0f'],
-                    ['#f4cccc','#fce5cd','#fff2cc','#d9ead3','#d0e0e3','#cfe2f3','#d9d2e9','#ead1dc'],
-                    ['#ea9999','#f9cb9c','#ffe599','#b6d7a8','#a2c4c9','#9fc5e8','#b4a7d6','#d5a6bd'],
-                    ['#e06666','#f6b26b','#ffd966','#93c47d','#76a5af','#6fa8dc','#8e7cc3','#c27ba0'],
-                    ['#c00','#e69138','#f1c232','#6aa84f','#45818e','#3d85c6','#674ea7','#a64d79'],
-                    ['#900','#b45f06','#bf9000','#38761d','#134f5c','#0b5394','#351c75','#741b47'],
-                    ['#600','#783f04','#7f6000','#274e13','#0c343d','#073763','#20124d','#4c1130']
-                ],
-                change: function(color) {
-                    if (color) {
-                        var hex = color.toHexString().replace('#', '');
-                        currentColor = hex;
-                        var colorBtn = mini.get('curveConfigColor');
-                        colorBtn.setValue(hex);
-                        colorBtn.setText(hex);
-                        document.getElementById('colorPreview').style.backgroundColor = '#' + hex;
-                    }
+            mini.open({
+                title: _loginUserLanguageResource.colorSelect,
+                url: context + '/miniui-app/modules/driverConfig/colorSelectWindow.jsp',
+                width: 400,
+                height: 280,
+                modal: true,
+                allowResize: false,
+                onload: function() {
+                    var iframe = this.getIFrameEl();
+                    var contentWindow = iframe.contentWindow;
+                    contentWindow.setData({
+                        row: 0,
+                        col: 0,
+                        tableType: 0,
+                        currentColor: currentColorVal
+                    });
+                    // 自定义回调：颜色确认后回写 buttonedit 和预览色块
+                    contentWindow._updateColor = function(row, col, tableType, color) {
+                        currentColor = color;
+                        var btn = mini.get('curveConfigColor');
+                        btn.setValue(color);
+                        btn.setText('#' + color);
+                        document.getElementById('colorPreview').style.backgroundColor = '#' + color;
+                    };
                 }
             });
-            $(picker).spectrum('show');
-        }
-
-        function onColorConfirm() {
-            var win = mini.get('colorPickerWindow');
-            if (win) win.destroy();
-        }
-
-        function onColorCancel() {
-            var win = mini.get('colorPickerWindow');
-            if (win) win.destroy();
         }
 
         function onSaveCurveConfig() {
@@ -430,10 +386,10 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             if (window.CloseOwnerWindow) window.CloseOwnerWindow(action);
             else window.close();
         }
-        
+
         $(document).ready(function() {
             mini.parse();
-            
+
             var tabs = mini.get('curveConfigTabs');
             tabs.updateTab(tabs.getTab(0), { title: _loginUserLanguageResource.curveGroup });
             tabs.updateTab(tabs.getTab(1), { title: _loginUserLanguageResource.curveProperty });

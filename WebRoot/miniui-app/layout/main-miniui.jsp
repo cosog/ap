@@ -106,6 +106,20 @@ request.setAttribute("browserLang", browserLang);
         var defaultComboxSize = configFile.ap.others.defaultComboxSize;
         var defaultGraghSize = configFile.ap.others.defaultGraghSize;
         
+        var IoTConfig = configFile.ap.others.iot;     //物联网
+        var sceneConfig = configFile.ap.others.scene; //应用场景 all-全部 oil-油井 cbm-煤层气井
+        var moduleConfig = configFile.ap.others.module;//模块 ""-仅监测 all-全部 srp-抽油机井功图计算 pcp-螺杆泵井转速计算
+        
+        var pcpHidden = true;
+        if(moduleConfig=='all' || moduleConfig=='pcp'){
+        	pcpHidden = false
+        }
+        
+        var onlyMonitor=false;
+        if(IoTConfig && moduleConfig==""){
+        	onlyMonitor=true;
+        }
+        
         // 新增：第一个叶子节点的ID（在 onMenuTreeLoad 中动态获取）
         var FIRST_LEAF_MODULE_ID = null;
     </script>

@@ -17,6 +17,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
     <script src="js/modules/acqUnitConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <script src="js/modules/displayUnitConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <script src="js/modules/alarmUnitConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+    <script src="js/modules/reportUnitConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <style>
         html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; font-family:"Microsoft YaHei",Arial,sans-serif; background:#f0f2f5; }
         .driver-container { width:100%; height:100%; display:flex; flex-direction:column; background:#fff; }
@@ -36,15 +37,24 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
         .inner-toolbar { border-bottom:1px solid #e8e8e8; padding:2px 8px; display:flex; align-items:center; gap:4px; flex-shrink:0; background:#fafafa; }
         .mini-tree .tree-node { cursor:pointer; }
         .mini-tree .tree-node-selected { background:#e6f7ff; color:#1890ff; font-weight:bold; }
-        .unit-layout, .instance-layout { display:flex; flex:1; overflow:hidden; }
+        .unit-layout, .instance-layout { display:flex; flex:1; overflow:hidden; height:100%; }
         .unit-layout .left-protocol, .instance-layout .left-protocol { width:25%; border-right:1px solid #e8e8e8; overflow:auto; padding:4px; background:#fafafa; }
         .unit-layout .middle-list, .instance-layout .middle-list { width:30%; border-right:1px solid #e8e8e8; overflow:auto; padding:4px; background:#fafafa; }
-        .unit-layout .right-config, .instance-layout .right-property { flex:1; display:flex; flex-direction:column; overflow:hidden; padding:4px; background:#fff; }
+        .unit-layout .right-config, .instance-layout .right-property { flex:1; display:flex; flex-direction:column; overflow:hidden; padding:4px; background:#fff; height:100%; }
         .unit-layout .right-config .mini-tabs, .instance-layout .right-property .mini-tabs { flex:1; width:100%; height:100%; }
         .grid-title-bar { border-bottom:1px solid #e8e8e8; padding:4px 8px; background:#f5f5f5; font-weight:bold; font-size:13px; color:#333; }
-        .unit-layout .right-config .mini-tabs-body, .unit-layout .right-config .mini-tab-body,
-        .instance-layout .right-property .mini-tabs-body, .instance-layout .right-property .mini-tab-body {
+
+        /* ============================================================
+         * 让报表单元/实例区域内部所有层级的 mini-tabs body 都铺满
+         * ============================================================ */
+        .right-config .mini-tabs-body, .right-config .mini-tab-body,
+        .right-property .mini-tabs-body, .right-property .mini-tab-body {
             height:100% !important; padding:0 !important; margin:0 !important; overflow:hidden !important;
+        }
+        .right-config .mini-tab-body .mini-tabs,
+        .right-config .mini-tabs-body .mini-tabs {
+            width:100% !important;
+            height:100% !important;
         }
     </style>
 </head>
@@ -341,11 +351,11 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
                                                     <button id="alarmUnitRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshAlarmUnitProtocolTree">Refresh</button>
                                                     <span style="flex:1;"></span>
-                                                    <button id="alarmUnitAddBtn" class="mini-button" iconCls="add">Add</button>
-                                                    <button id="alarmUnitSaveBtn" class="mini-button" iconCls="save">Save</button>
-                                                    <button id="alarmUnitColorBtn" class="mini-button" iconCls="alarm">Alarm Color</button>
-                                                    <button id="alarmUnitExportBtn" class="mini-button" iconCls="export">Export</button>
-                                                    <button id="alarmUnitImportBtn" class="mini-button" iconCls="import">Import</button>
+                                                    <button id="alarmUnitAddBtn" class="mini-button" iconCls="add" onclick="addAlarmUnitInfo()">Add</button>
+                                                    <button id="alarmUnitSaveBtn" class="mini-button" iconCls="save" onclick="SaveModbusProtocolAlarmUnitConfigTreeData()">Save</button>
+                                                    <button id="alarmUnitColorBtn" class="mini-button" iconCls="alarm" onclick="openAlarmColorSelectWindow()">Alarm Color</button>
+                                                    <button id="alarmUnitExportBtn" class="mini-button" iconCls="export" onclick="openExportAlarmUnitWindow()">Export</button>
+                                                    <button id="alarmUnitImportBtn" class="mini-button" iconCls="import" onclick="openImportAlarmUnitWindow()">Import</button>
                                                     <span id="alarmUnitInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                 </div>
                                                 <!-- 主体：双层 Splitter（与显示单元一致） -->
@@ -375,9 +385,15 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
      																		idField="id" textField="text" parentField="pid" resultAsTree="true"
      																		onbeforeload="onAlarmUnitListBeforeLoad"
      																		onload="onAlarmUnitListLoad"
-     																		onnodeselect="onAlarmUnitListSelect">
+     																		onnodeselect="onAlarmUnitListSelect"
+     																		contextMenu="#alarmUnitTreeMenu">
     																		<div property="emptyText" class="empty-msg">No Unit</div>
 																		</div>
+																		<ul id="alarmUnitTreeMenu" class="mini-contextmenu" onbeforeopen="onAlarmUnitTreeBeforeMenu">
+    																		<li name="delete" iconCls="delete" onclick="deleteAlarmUnitNode">
+        																		<span id="alarmUnitTreeMenuDeleteText">删除</span>
+    																		</li>
+																		</ul>
                                                                     </div>
                                                                 </div>
                                                                 <!-- 右侧详情 Tabs -->
@@ -519,52 +535,248 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                         </div>
                                         <!-- 报表单元 -->
                                         <div title="ReportUnit" name="report" style="height:100%;">
-                                            <div class="unit-layout" style="flex-direction:column;">
+                                            <div class="unit-layout" style="flex-direction:column; height:100%;">
+                                                <!-- 工具栏 -->
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="reportUnitRefreshBtn" class="mini-button" iconCls="note-refresh">Refresh</button>
-                                                    <span class="separator"></span>
+                                                    <button id="reportUnitRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshReportUnitList()">Refresh</button>
+                                                    <span style="flex:1;"></span>
                                                     <button id="reportUnitAddBtn" class="mini-button" iconCls="add">Add</button>
-                                                    <span class="separator"></span>
                                                     <button id="reportUnitSaveBtn" class="mini-button" iconCls="save">Save</button>
-                                                    <span class="separator"></span>
                                                     <button id="reportUnitExportBtn" class="mini-button" iconCls="export">Export</button>
                                                     <button id="reportUnitImportBtn" class="mini-button" iconCls="import">Import</button>
-                                                    <span style="flex:1;"></span>
                                                     <span id="reportUnitInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                 </div>
-                                                <div style="display:flex;flex:1;overflow:hidden;">
-                                                    <div class="left-protocol" id="reportUnitProtocolTreeContainer">
-                                                        <div id="reportUnitProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Protocol</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="middle-list" id="reportUnitListContainer">
-                                                        <div id="reportUnitList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
+                                                <!-- 主体：单元列表 + 右侧详情 -->
+                                                <div style="display:flex;flex:1;overflow:hidden;height:100%;">
+                                                    <!-- 单元列表树 -->
+                                                    <div class="middle-list" id="reportUnitListContainer" style="width:20%;">
+                                                        <div id="reportUnitList" class="mini-tree" style="width:100%;height:100%;"
+                                                             showTreeIcon="true" expandOnNodeClick="false"
+                                                             idField="id" textField="text" parentField="pid" resultAsTree="true"
+                                                             onbeforeload="onReportUnitListBeforeLoad"
+                                                             onload="onReportUnitListLoad"
+                                                             onnodeselect="onReportUnitListSelect">
                                                             <div property="emptyText" class="empty-msg">No Unit</div>
                                                         </div>
                                                     </div>
-                                                    <div class="right-config">
-                                                        <div id="reportUnitRightTabs" class="mini-tabs" style="flex:1;width:100%;" activeIndex="0" tabPosition="top">
+                                                    <!-- 右侧详情 Tabs -->
+                                                    <div class="right-config" style="height:100%;">
+                                                        <div id="reportUnitRightTabs" class="mini-tabs" style="width:100%;height:100%;"
+                                                             activeIndex="1" tabPosition="top"
+                                                             onactivechanged="onReportUnitDetailTabChanged">
+
+                                                            <!-- ===================== Tab 1: 属性 ===================== -->
                                                             <div title="Properties" name="props" style="height:100%;">
-                                                                <div id="reportUnitPropsPlaceholder" class="sub-tab-placeholder">Properties</div>
+                                                                <div style="width:100%;height:100%;overflow:hidden;padding:4px;">
+                                                                    <div id="reportUnitPropertiesContainer" style="width:100%;height:100%;"></div>
+                                                                </div>
                                                             </div>
-                                                            <div title="Config" name="config" style="height:100%;">
-                                                                <div class="report-config-layout">
-                                                                    <div class="report-left-list">
-                                                                        <div id="reportTemplatesPlaceholder" class="sub-tab-placeholder">Report Templates</div>
-                                                                    </div>
-                                                                    <div class="report-right-detail">
-                                                                        <div id="reportConfigSubTabs" class="mini-tabs" style="flex:1;width:100%;" activeIndex="0" tabPosition="top" onactivechanged="onReportConfigSubTabChanged">
-                                                                            <div title="Single Well Report" name="single" style="height:100%;">
-                                                                                <div id="reportSinglePlaceholder" class="sub-tab-placeholder">Single Well Report Config</div>
+
+                                                            <!-- ============ Tab 2: 配置 - 标准报表 (unitClasses==0) ============ -->
+                                                            <div id="reportUnitStandardConfigTab" title="Config" name="configStandard"
+                                                                 style="height:100%;" visible="true">
+                                                                <div id="reportStandardConfigSubTabs" class="mini-tabs"
+                                                                     style="width:100%;height:100%;" activeIndex="0" tabPosition="top"
+                                                                     onactivechanged="onReportStandardConfigSubTabChanged">
+
+                                                                    <!-- ---------- 单井报表 ---------- -->
+                                                                    <div title="Single Well Report" name="singleWellReport" style="height:100%;">
+                                                                        <div id="singleWellReportSubTabs" class="mini-tabs"
+                                                                             style="width:100%;height:100%;" activeIndex="0" tabPosition="top"
+                                                                             onactivechanged="onSingleWellReportSubTabChanged">
+
+                                                                            <!-- 时报表 -->
+                                                                            <div title="Hourly Report" name="hourlyReport" style="height:100%;">
+                                                                                <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                                                    <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
+                                                                                        <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                                            <div id="hourlyTemplateListGrid" class="mini-datagrid"
+     																							style="width:100%;height:100%;"
+     																							multiSelect="false"
+     																							showPager="false"
+     																							allowResize="true"
+     																							allowAlternating="true"
+     																							idField="templateCode"
+     																							dataField="totalRoot" totalField="totalCount" 
+     																							onbeforeload="onHourlyTemplateListBeforeLoad"
+     																							onload="onHourlyTemplateListLoad"
+     																							onselect="onHourlyTemplateSelectionChanged">
+    																							<div property="columns"></div>
+    																							<div property="emptyText" class="empty-msg">No Template</div>
+																							</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div size="80%" showCollapseButton="false">
+                                                                                        <div class="mini-splitter" style="width:100%;height:100%;" vertical="true">
+                                                                                            <div size="50%" showCollapseButton="false">
+                                                                                                <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+                                                                                                    <div class="grid-title-bar" style="flex-shrink:0;">
+                                                                                                        <span id="hourlyReportTemplateTitle"></span>
+                                                                                                    </div>
+                                                                                                    <div style="flex:1;overflow:hidden;padding:4px;">
+                                                                                                        <div id="hourlyReportTemplateContainer"
+                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div size="50%" showCollapseButton="true" collapseDirection="bottom">
+                                                                                                <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+                                                                                                    <div class="grid-title-bar" style="flex-shrink:0;">
+                                                                                                        <span id="hourlyReportContentTitle"></span>
+                                                                                                    </div>
+                                                                                                    <div style="flex:1;overflow:hidden;padding:4px;">
+                                                                                                        <div id="hourlyReportContentContainer"
+                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
-                                                                            <div title="Area Report" name="area" style="height:100%;">
-                                                                                <div id="reportAreaPlaceholder" class="sub-tab-placeholder">Area Report Config</div>
+
+                                                                            <!-- 日报表 -->
+                                                                            <div title="Daily Report" name="dailyReport" style="height:100%;">
+                                                                                <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                                                    <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
+                                                                                        <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                                            <div id="dailyTemplateListGrid" class="mini-datagrid"
+     																							style="width:100%;height:100%;"
+     																							multiSelect="false"
+     																							showPager="false"
+     																							allowResize="true"
+     																							allowAlternating="true"
+     																							idField="templateCode"
+     																							dataField="totalRoot" totalField="totalCount" 
+     																							onbeforeload="onDailyTemplateListBeforeLoad"
+     																							onload="onDailyTemplateListLoad"
+     																							onselect="onDailyTemplateSelectionChanged">
+    																							<div property="columns"></div>
+    																							<div property="emptyText" class="empty-msg">No Template</div>
+																							</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div size="80%" showCollapseButton="false">
+                                                                                        <div class="mini-splitter" style="width:100%;height:100%;" vertical="true">
+                                                                                            <div size="40%" showCollapseButton="false">
+                                                                                                <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+                                                                                                    <div class="grid-title-bar" style="flex-shrink:0;">
+                                                                                                        <span id="dailyReportTemplateTitle"></span>
+                                                                                                    </div>
+                                                                                                    <div style="flex:1;overflow:hidden;padding:4px;">
+                                                                                                        <div id="dailyReportTemplateContainer"
+                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div size="60%" showCollapseButton="true" collapseDirection="bottom">
+                                                                                                <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+                                                                                                    <div class="grid-title-bar" style="flex-shrink:0;">
+                                                                                                        <span id="dailyReportContentTitle"></span>
+                                                                                                    </div>
+                                                                                                    <div style="flex:1;overflow:hidden;padding:4px;">
+                                                                                                        <div id="dailyReportContentContainer"
+                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- ---------- 区域报表：内部嵌套 tabpanel，仅一个"日报表"选项卡 ---------- -->
+                                                                    <div title="Area Report" name="areaReport" style="height:100%;">
+                                                                        <div id="areaReportSubTabs" class="mini-tabs"
+                                                                             style="width:100%;height:100%;" activeIndex="0" tabPosition="top"
+                                                                             onactivechanged="onAreaReportSubTabChanged">
+
+                                                                            <!-- 日报表 -->
+                                                                            <div title="Daily Report" name="dailyReport" style="height:100%;">
+                                                                                <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                                                    <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
+                                                                                        <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                                            <div id="areaTemplateListGrid" class="mini-datagrid"
+     																							style="width:100%;height:100%;"
+     																							multiSelect="false"
+     																							showPager="false"
+     																							allowResize="true"
+     																							allowAlternating="true"
+     																							idField="templateCode"
+     																							dataField="totalRoot" totalField="totalCount" 
+     																							onbeforeload="onAreaTemplateListBeforeLoad"
+     																							onload="onAreaTemplateListLoad"
+     																							onselect="onAreaTemplateSelectionChanged">
+    																							<div property="columns"></div>
+    																							<div property="emptyText" class="empty-msg">No Template</div>
+																							</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div size="80%" showCollapseButton="false">
+                                                                                        <div class="mini-splitter" style="width:100%;height:100%;" vertical="true">
+                                                                                            <div size="50%" showCollapseButton="false">
+                                                                                                <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+                                                                                                    <div class="grid-title-bar" style="flex-shrink:0;">
+                                                                                                        <span id="areaReportTemplateTitle"></span>
+                                                                                                    </div>
+                                                                                                    <div style="flex:1;overflow:hidden;padding:4px;">
+                                                                                                        <div id="areaReportTemplateContainer"
+                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div size="50%" showCollapseButton="true" collapseDirection="bottom">
+                                                                                                <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+                                                                                                    <div class="grid-title-bar" style="flex-shrink:0;">
+                                                                                                        <span id="areaReportContentTitle"></span>
+                                                                                                    </div>
+                                                                                                    <div style="flex:1;overflow:hidden;padding:4px;">
+                                                                                                        <div id="areaReportContentContainer"
+                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- ============ Tab 3: 配置 - 水文井报表 (unitClasses==1) ============ -->
+                                                            <div id="reportUnitHydrologicalConfigTab" title="Config" name="configHydrological"
+                                                                 style="height:100%;" visible=false>
+                                                                <div class="mini-splitter" style="width:100%;height:100%;" vertical="true">
+                                                                    <div size="50%" showCollapseButton="false">
+                                                                        <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+                                                                            <div class="grid-title-bar" style="flex-shrink:0;">
+                                                                                <span id="hydroReportTemplateTitle"></span>
+                                                                            </div>
+                                                                            <div style="flex:1;overflow:hidden;padding:4px;">
+                                                                                <div id="hydroReportTemplateContainer"
+                                                                                     style="width:100%;height:100%;"></div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div size="50%" showCollapseButton="true" collapseDirection="bottom">
+                                                                        <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+                                                                            <div class="grid-title-bar" style="flex-shrink:0;">
+                                                                                <span id="hydroReportContentTitle"></span>
+                                                                            </div>
+                                                                            <div style="flex:1;overflow:hidden;padding:4px;">
+                                                                                <div id="hydroReportContentContainer"
+                                                                                     style="width:100%;height:100%;"></div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -768,17 +980,6 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             editFlag = (loginUserProtocolConfigModuleRight.editFlag == 1);
         }
 
-        //报表单元
-        var reportUnitPropertiesHandsontableHelper = null;
-        var singleWellRangeReportTemplateHandsontableHelper = null;
-        var singleWellRangeReportTemplateContentHandsontableHelper = null;
-        var productionReportTemplateHandsontableHelper = null;
-        var productionReportTemplateContentHandsontableHelper = null;
-        var singleWellDailyReportTemplateHandsontableHelper = null;
-        var singleWellDailyReportTemplateContentHandsontableHelper = null;
-        var hydrologicalWellDailyReportTemplateHandsontableHelper = null;
-        var hydrologicalWellDailyReportContentHandsontableHelper = null;
-
         //采控实例
         var protocolConfigInstancePropertiesHandsontableHelper = null;
         //显示实例
@@ -862,19 +1063,23 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 var activeUnitTab = unitSub.getActiveTab();
                 if (!activeUnitTab) return;
                 var unitName = activeUnitTab.name;
-                var protocolTreeId = '', listTreeId = '';
 
+                if (unitName === 'report') {
+                	refreshReportUnitList();
+                    return;
+                }
+
+                var protocolTreeId = '', listTreeId = '';
                 if (unitName === 'acq') { protocolTreeId = 'acqUnitProtocolTree'; listTreeId = 'acqUnitListTree'; }
                 else if (unitName === 'display') { protocolTreeId = 'displayUnitProtocolTree'; listTreeId = 'displayUnitList'; }
                 else if (unitName === 'alarm') { protocolTreeId = 'alarmUnitProtocolTree'; listTreeId = 'alarmUnitList'; }
-                else if (unitName === 'report') { protocolTreeId = 'reportUnitProtocolTree'; listTreeId = 'reportUnitList'; }
 
-                var protocolTree = mini.get(protocolTreeId);
-                var listTree = mini.get(listTreeId);
+                var protocolTree = protocolTreeId ? mini.get(protocolTreeId) : null;
                 if (protocolTree) {
                     if (!protocolTree.getUrl()) protocolTree.setUrl(context + '/acquisitionUnitManagerController/modbusProtocolAddrMappingTreeData');
                     protocolTree.load();
                 }
+                // listTree 的加载由各单元模块自己处理（onbeforeload / 协议树选中事件）
             } else if (mainName === 'instance') {
                 var instanceSub = mini.get('instanceSubTabs');
                 if (!instanceSub) return;
@@ -957,7 +1162,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                     unitSub.updateTab(tabs[3], { title: _loginUserLanguageResource.reportUnit });
                 }
             }
-            ['acqUnitDetailTabs', 'displayUnitRightTabs', 'alarmUnitRightTabs', 'reportUnitRightTabs'].forEach(function(id) {
+            ['acqUnitDetailTabs', 'displayUnitRightTabs', 'alarmUnitRightTabs'].forEach(function(id) {
                 var tab = mini.get(id);
                 if (tab) {
                     var tabs = tab.getTabs();
@@ -968,12 +1173,67 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 }
             });
 
-         	// ★★★ 报警配置子标签：根据全局变量 _onlyMonitor 控制"工况诊断报警"的显示/隐藏和默认激活 ★★★
+            // ★ 报表单元右侧 Tabs（3 个：属性 / 配置 / 配置）
+            var reportUnitRightTabs = mini.get('reportUnitRightTabs');
+            if (reportUnitRightTabs) {
+                var tabs = reportUnitRightTabs.getTabs();
+                if (tabs && tabs.length >= 3) {
+                    reportUnitRightTabs.updateTab(tabs[0], { title: _loginUserLanguageResource.properties });
+                    reportUnitRightTabs.updateTab(tabs[1], { title: _loginUserLanguageResource.config });
+                    reportUnitRightTabs.updateTab(tabs[2], { title: _loginUserLanguageResource.config });
+                }
+            }
+
+            // ★ 标准报表配置子标签
+            var stdSub = mini.get('reportStandardConfigSubTabs');
+            if (stdSub) {
+                var ts = stdSub.getTabs();
+                if (ts && ts.length >= 2) {
+                    stdSub.updateTab(ts[0], { title: _loginUserLanguageResource.singleDeviceReport });
+                    stdSub.updateTab(ts[1], { title: _loginUserLanguageResource.areaReport });
+                }
+            }
+
+            // ★ 单井报表子标签（时报表 / 日报表）
+            var swSub = mini.get('singleWellReportSubTabs');
+            if (swSub) {
+                var ts = swSub.getTabs();
+                if (ts && ts.length >= 2) {
+                    swSub.updateTab(ts[0], { title: _loginUserLanguageResource.hourlyReport });
+                    swSub.updateTab(ts[1], { title: _loginUserLanguageResource.dailyReport });
+                }
+            }
+
+            // ★ 区域报表子标签（日报表）
+            var areaSub = mini.get('areaReportSubTabs');
+            if (areaSub) {
+                var ts = areaSub.getTabs();
+                if (ts && ts.length >= 1) {
+                    areaSub.updateTab(ts[0], { title: _loginUserLanguageResource.dailyReport });
+                }
+            }
+
+            // ★ 各网格标题
+            var titleMap = {
+                'hourlyReportTemplateTitle': 'deviceHourlyReportTemplate',
+                'hourlyReportContentTitle':  'deviceHourlyReportContentConfig',
+                'dailyReportTemplateTitle':  'deviceDailyReportTemplate',
+                'dailyReportContentTitle':   'deviceDailyReportContentConfig',
+                'areaReportTemplateTitle':   'areaDailyReportTemplate',
+                'areaReportContentTitle':    'areaDailyReportContentConfig',
+                'hydroReportTemplateTitle':  'reportTemplate',
+                'hydroReportContentTitle':   'reportContentConfig'
+            };
+            for (var id in titleMap) {
+                var el = document.getElementById(id);
+                if (el) el.innerText = _loginUserLanguageResource[titleMap[id]] || id;
+            }
+
+            // ★★★ 报警配置子标签：根据全局变量 _onlyMonitor 控制"工况诊断报警"的显示/隐藏和默认激活 ★★★
             var alarmConfigSub = mini.get('alarmConfigSubTabs');
             if (alarmConfigSub) {
                 var tabs = alarmConfigSub.getTabs();
                 if (tabs && tabs.length >= 6) {
-                    // 先设置标题
                     alarmConfigSub.updateTab(tabs[0], { title: _loginUserLanguageResource.FESDiagramResultAlarm });
                     alarmConfigSub.updateTab(tabs[1], { title: _loginUserLanguageResource.commStatus });
                     alarmConfigSub.updateTab(tabs[2], { title: _loginUserLanguageResource.runStatus });
@@ -981,16 +1241,11 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                     alarmConfigSub.updateTab(tabs[4], { title: _loginUserLanguageResource.enumValue });
                     alarmConfigSub.updateTab(tabs[5], { title: _loginUserLanguageResource.switchingValue });
 
-                    // ★ 根据 _onlyMonitor 决定 FESDiagram 是否显示
                     var onlyMonitor = (typeof _onlyMonitor !== 'undefined') ? _onlyMonitor : false;
-
                     if (onlyMonitor) {
-                        // 隐藏工况诊断报警标签
                         alarmConfigSub.updateTab(tabs[0], { visible: false });
-                        // 默认激活第一个可见标签（通信状态）
                         alarmConfigSub.activeTab(tabs[1]);
                     } else {
-                        // 默认激活工况诊断报警
                         alarmConfigSub.activeTab(tabs[0]);
                     }
                 }
@@ -1000,15 +1255,6 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (alarmEnumItemsTitle) alarmEnumItemsTitle.innerText = _loginUserLanguageResource.enumValueList;
             var alarmSwitchItemsTitle = document.getElementById('alarmSwitchItemsTitle');
             if (alarmSwitchItemsTitle) alarmSwitchItemsTitle.innerText = _loginUserLanguageResource.switchingValueList;
-
-            var reportConfigSub = mini.get('reportConfigSubTabs');
-            if (reportConfigSub) {
-                var tabs = reportConfigSub.getTabs();
-                if (tabs && tabs.length >= 2) {
-                    reportConfigSub.updateTab(tabs[0], { title: _loginUserLanguageResource.singleWellReport });
-                    reportConfigSub.updateTab(tabs[1], { title: _loginUserLanguageResource.areaReport });
-                }
-            }
 
             var instanceSub = mini.get('instanceSubTabs');
             if (instanceSub) {
@@ -1123,7 +1369,6 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 '#acqUnitProtocolTree .sub-tab-placeholder': 'protocolList',
                 '#displayUnitProtocolTree .sub-tab-placeholder': 'protocolList',
                 '#alarmUnitProtocolTree .sub-tab-placeholder': 'protocolList',
-                '#reportUnitProtocolTree .sub-tab-placeholder': 'protocolList',
                 '#acqInstanceProtocolTree .sub-tab-placeholder': 'protocolList',
                 '#displayInstanceProtocolTree .sub-tab-placeholder': 'protocolList',
                 '#alarmInstanceProtocolTree .sub-tab-placeholder': 'protocolList',
@@ -1146,12 +1391,18 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 if (el) el.innerHTML = '';
             });
 
+            ['protocolTreeMenuDeleteText','acqUnitTreeMenuDeleteText','displayUnitTreeMenuDeleteText','alarmUnitTreeMenuDeleteText'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.innerHTML = _loginUserLanguageResource.deleteData;
+            });
+
             updateBtnStatus();
         }
 
         function updateBtnStatus() {
             var btnIds = ['protocolAddBtn', 'protocolSaveBtn', 'protocolMappingBtn', 'protocolExportBtn', 'protocolImportBtn', 'protocolDeviceTypeChangeBtn',
-                'acqUnitAddBtn', 'acqUnitAddGroupBtn', 'acqUnitAddCtrlGroupBtn', 'acqUnitSaveBtn', 'acqUnitExportBtn', 'acqUnitImportBtn'
+                'acqUnitAddBtn', 'acqUnitAddGroupBtn', 'acqUnitAddCtrlGroupBtn', 'acqUnitSaveBtn', 'acqUnitExportBtn', 'acqUnitImportBtn',
+                'reportUnitAddBtn', 'reportUnitSaveBtn', 'reportUnitExportBtn', 'reportUnitImportBtn'
             ];
             for (var i = 0; i < btnIds.length; i++) {
                 var btn = mini.get(btnIds[i]);
@@ -1165,7 +1416,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
         $(document).ready(function() {
             mini.parse();
             initI18n();
-            console.log('驱动配置模块加载完成（报警单元已重构为 6 个报警类型子标签）');
+            console.log('驱动配置模块加载完成');
 
             var deviceTree = mini.get('deviceTypeTree');
             if (deviceTree) {

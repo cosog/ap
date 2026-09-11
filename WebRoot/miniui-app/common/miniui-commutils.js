@@ -4791,3 +4791,45 @@ function extractPieData(result, tabKey, alarmShowStyle) {
     }
     return data.length > 0 ? data : [{ name: _loginUserLanguageResource.emptyMsg, y: 1 }];
 }
+
+function _handsontableMakeReadOnlyBg(helper) {
+    return function(instance, td, row, col, prop, value, cellProperties) {
+        if (cellProperties.type === 'checkbox') {
+            Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(245, 245, 245)';
+        } else if (cellProperties.type === 'dropdown') {
+            Handsontable.renderers.DropdownRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(245, 245, 245)';
+            td.style.whiteSpace = 'nowrap';
+            td.style.overflow = 'hidden';
+            td.style.textOverflow = 'ellipsis';
+        } else {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(245, 245, 245)';
+            td.style.whiteSpace = 'nowrap';
+            td.style.overflow = 'hidden';
+            td.style.textOverflow = 'ellipsis';
+        }
+    };
+}
+
+function _handsontableMakeCellStyle() {
+    return function(instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments);
+        td.style.whiteSpace = 'nowrap';
+        td.style.overflow = 'hidden';
+        td.style.textOverflow = 'ellipsis';
+    };
+}
+
+function _handsontableMakeMouseOver(helper) {
+    return function(event, coords, TD) {
+        if (coords.col >= 0 && coords.row >= 0 && helper.columns[coords.col] && helper.columns[coords.col].type !== 'checkbox' &&
+            helper.hot && helper.hot.getDataAtCell) {
+            var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
+            if (rawValue && rawValue.length > 0) {
+                TD.title = rawValue;
+            }
+        }
+    };
+}

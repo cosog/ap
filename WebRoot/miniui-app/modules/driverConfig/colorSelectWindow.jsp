@@ -87,6 +87,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     ],
                     // 拖动/选择色块时只更新 currentColor，不关闭
                     change: function(color) {
+                    	//alert(color._a);
                     	if (color) {
                             currentColor = color.toHexString().replace('#', '');
                         }

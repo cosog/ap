@@ -828,7 +828,7 @@ function saveAlarmColor(){
 	        		Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=blue>" + loginUserLanguageResource.updateSuccessfully + "</font>");
 	        	}else {
                    Ext.Msg.alert(loginUserLanguageResource.tip,
-                       "<font color=red>SORRY！</font>" + loginUserLanguageResource.updatefail + "。");
+                       "<font color=red>" + loginUserLanguageResource.updatefail + "</font>");
                }
 	        },
 	        failure: function () {

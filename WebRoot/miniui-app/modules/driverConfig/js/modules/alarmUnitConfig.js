@@ -1403,17 +1403,7 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
                     }
                     return cellProperties;
                 },
-                afterOnCellMouseOver: function(event, coords, TD) {
-                    // 悬浮提示（title）
-                    if (coords.col >= 0 && coords.row >= 0 &&
-                        helper.columns[coords.col] && helper.columns[coords.col].type !== 'checkbox' &&
-                        helper.hot && helper.hot.getDataAtCell) {
-                        var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
-                        if (rawValue && rawValue.length > 0) {
-                            TD.title = rawValue;
-                        }
-                    }
-                }
+                afterOnCellMouseOver: _alarmMakeMouseOver(helper)
             });
         };
 
@@ -1533,4 +1523,620 @@ function alarmItemsDeselectAll() {
             helper.hot.setDataAtRowProp(updateData);
         }
     }
+}
+
+function addAlarmUnitInfo() {
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) {
+        return;
+    }
+    var selectedDeviceNode = deviceTree.getSelectedNode();
+    if (!selectedDeviceNode) {
+        return;
+    }
+    var deviceTypeIds = selectedDeviceTypeId || '';
+
+    // 获取当前选中的报警协议节点（可能为协议或目录）
+    var protocolTree = mini.get('alarmUnitProtocolTree');
+    var selectedProtocolNode = protocolTree ? protocolTree.getSelectedNode() : null;
+    var protocolList = '';
+    if (selectedProtocolNode) {
+        if (selectedProtocolNode.classes === 1) {
+            protocolList = selectedProtocolNode.code || '';
+        } else if (selectedProtocolNode.classes === 0) {
+            // 目录节点：收集所有子协议节点的 code
+            var codes = [];
+            function collect(node) {
+                if (node.children && node.children.length > 0) {
+                    for (var i = 0; i < node.children.length; i++) collect(node.children[i]);
+                } else {
+                    if (node.classes === 1 && node.code) codes.push(node.code);
+                }
+            }
+            collect(selectedProtocolNode);
+            protocolList = codes.join(',');
+        }
+    }
+
+    mini.open({
+        title: _loginUserLanguageResource.addAlarmUnit,
+        url: context + '/miniui-app/modules/driverConfig/alarmUnitAddWindow.jsp',
+        width: 450,
+        height: 420,
+        modal: true,
+        allowResize: true,
+        onload: function() {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                deviceTypeIds: deviceTypeIds,
+                protocolList: protocolList
+            });
+            // 暴露刷新父页面报警单元列表树的函数
+            contentWindow.parent._parentRefreshUnitTree = function() {
+            	refreshAlarmUnitList();
+            };
+            // 暴露设置新增对象高亮的函数
+            contentWindow.parent._parentSetNewObject = function(name, classes) {
+                window._newAlarmUnitObjectName = name;
+                window._newAlarmUnitObjectClasses = classes;
+            };
+        },
+        ondestroy: function(action) {
+            // 新增后已在子窗口回调中刷新树
+        }
+    });
+}
+
+//================================================================
+//保存报警单元数据
+//================================================================
+function SaveModbusProtocolAlarmUnitConfigTreeData() {
+ var tree = mini.get('alarmUnitList');
+ if (!tree) return;
+
+ var selectedNode = tree.getSelectedNode();
+ if (!selectedNode) return;
+
+ // 只对报警单元（classes === 3）保存
+ if (selectedNode.classes !== 3) return;
+
+ var tabs = mini.get('alarmUnitRightTabs');
+ if (!tabs) return;
+ var activeTab = tabs.getActiveTab();
+ if (!activeTab) return;
+ var activeName = activeTab.name; // 'props' 或 'config'
+
+ if (activeName === 'props') {
+     // 保存属性
+     saveAlarmUnitProperties(tree, selectedNode);
+ } else if (activeName === 'config') {
+     // 保存配置：根据当前激活的报警类型子标签
+     grantAlarmItemsPermission(tree, selectedNode);
+ }
+}
+
+//================================================================
+//保存报警单元属性
+//================================================================
+function saveAlarmUnitProperties(tree, node) {
+ var helper = protocolConfigAlarmUnitPropertiesHandsontableHelper;
+ if (!helper || !helper.hot) {
+     mini.alert(_loginUserLanguageResource.noDataToSave);
+     return;
+ }
+
+ var propertiesData = helper.hot.getData();
+ // propertiesData 每行: [id, title, value]
+ // 索引0: 单元名称
+ // 索引1: 计算类型（显示文本）
+ // 索引2: 排序
+ // 索引3: 备注
+
+ var unitName = propertiesData[0] && propertiesData[0][2] ? propertiesData[0][2] : '';
+ var calcTypeText = propertiesData[1] && propertiesData[1][2] ? propertiesData[1][2] : '';
+ var sort = propertiesData[2] && propertiesData[2][2] ? propertiesData[2][2] : '';
+ var remark = propertiesData[3] && propertiesData[3][2] ? propertiesData[3][2] : '';
+
+ // 计算类型文本转数字
+ var calculateType = 0;
+ if (calcTypeText === _loginUserLanguageResource.SRPCalculate) {
+     calculateType = 1;
+ } else if (calcTypeText === _loginUserLanguageResource.PCPCalculate) {
+     calculateType = 2;
+ }
+
+ var saveData = {
+     id: node.id,
+     unitCode: node.code || '',
+     unitName: unitName,
+     oldUnitName: node.text || '',
+     protocol: node.protocol || '',
+     calculateType: calculateType,
+     sort: sort,
+     remark: remark
+ };
+
+ SaveModbusProtocolAlarmUnitConfigData(saveData);
+}
+
+//================================================================
+//保存报警单元属性到后端
+//================================================================
+function SaveModbusProtocolAlarmUnitConfigData(saveData) {
+ var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.updateWait });
+ $.ajax({
+     type: 'POST',
+     url: context + '/acquisitionUnitManagerController/saveModbusProtocolAlarmUnitData',
+     data: { data: JSON.stringify(saveData) },
+     dataType: 'json',
+     success: function(response) {
+         mini.unmask(document.body);
+         if (response.success) {
+             if (saveData.delidslist && saveData.delidslist.length > 0) {
+                 _selectedAlarmUnitId = null;
+                 _selectedAlarmUnitClasses = null;
+                 mini.alert(_loginUserLanguageResource.deleteSuccessfully);
+             } else {
+                 mini.alert(_loginUserLanguageResource.savedSuccessfully);
+             }
+             refreshAlarmUnitList();
+         } else {
+             mini.alert('<font color="red">' + _loginUserLanguageResource.saveFailed + '</font>');
+         }
+     },
+     error: function() {
+         mini.unmask(document.body);
+         mini.alert(_loginUserLanguageResource.requestFailed);
+     }
+ });
+}
+//================================================================
+//7. 右键菜单事件
+//================================================================
+
+function onAlarmUnitTreeBeforeMenu(e) {
+ var tree = mini.get('alarmUnitList');
+ var menu = e.sender;
+ var node = tree.getSelectedNode();
+ if (!node || node.classes !== 3) {
+     e.cancel = true;
+     e.htmlEvent.preventDefault();
+     return;
+ }
+ var deleteText = _loginUserLanguageResource.deleteData;
+ document.getElementById('displayUnitTreeMenuDeleteText').textContent = deleteText;
+ var deleteItem = mini.getbyName('delete', menu);
+ if (!editFlag) {
+     deleteItem.disable();
+ } else {
+     deleteItem.enable();
+ }
+}
+
+//================================================================
+//删除显示单元节点
+//================================================================
+function deleteAlarmUnitNode(e) {
+var tree = mini.get('alarmUnitList');
+var node = tree.getSelectedNode();
+if (!node) {
+   return;
+}
+
+var nodeId = node.id;
+var nodeText = node.text;
+
+// 确认删除
+mini.confirm(
+   _loginUserLanguageResource.confirmDelete,
+   _loginUserLanguageResource.confirm,
+   function(action) {
+       if (action === 'ok') {
+           // 构造删除数据
+           var deleteData = {
+               delidslist: [nodeId]
+           };
+           SaveModbusProtocolAlarmUnitConfigData(deleteData);
+       }
+   }
+);
+}
+
+//================================================================
+//保存报警项配置（配置 Tab 下各报警类型）
+//================================================================
+function grantAlarmItemsPermission(tree, node) {
+ var subTabs = mini.get('alarmConfigSubTabs');
+ if (!subTabs) return;
+ var activeSub = subTabs.getActiveTab();
+ if (!activeSub) return;
+ var subName = activeSub.name; // fes / comm / run / numeric / enum / switching
+
+ var saveData = {
+     id: node.id,
+     unitCode: node.code || '',
+     unitName: node.text || '',
+     oldUnitName: node.text || '',
+     protocol: node.protocol || '',
+     alarmItems: []
+ };
+
+ // 根据报警类型收集数据
+ var helper = null;
+
+ if (subName === 'numeric') {
+     // 数值量
+     helper = protocolAlarmUnitConfigNumItemsHandsontableHelper;
+     saveData.resolutionMode = 2;
+     collectNumericItems(helper, saveData);
+ } else if (subName === 'switching') {
+     // 开关量
+     helper = protocolAlarmUnitConfigSwitchItemsHandsontableHelper;
+     saveData.resolutionMode = 0;
+     collectSwitchItems(tree, helper, saveData);
+ } else if (subName === 'enum') {
+     // 枚举量
+     helper = protocolAlarmUnitConfigEnumItemsHandsontableHelper;
+     saveData.resolutionMode = 1;
+     collectEnumItems(tree, helper, saveData);
+ } else if (subName === 'comm') {
+     // 通信状态
+     helper = protocolAlarmUnitConfigCommStatusItemsHandsontableHelper;
+     saveData.resolutionMode = 3;
+     collectCommStatusItems(helper, saveData);
+ } else if (subName === 'run') {
+     // 运行状态
+     helper = protocolAlarmUnitConfigRunStatusItemsHandsontableHelper;
+     saveData.resolutionMode = 6;
+     collectRunStatusItems(helper, saveData);
+ } else if (subName === 'fes') {
+     // 功图工况
+     helper = protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper;
+     saveData.resolutionMode = 4;
+     collectFESItems(helper, saveData);
+ }
+
+ if (!helper || !helper.hot) {
+     mini.alert(_loginUserLanguageResource.noDataToSave);
+     return;
+ }
+
+ // 提交
+ grantAlarmItemsToPermission(saveData);
+}
+
+//================================================================
+//各报警类型的数据收集
+//================================================================
+
+//数值量
+function collectNumericItems(helper, saveData) {
+ var data = helper.hot.getData();
+ for (var i = 0; i < data.length; i++) {
+     var item = {};
+     item.alarmSign = helper.hot.getDataAtRowProp(i, 'checked') ? 1 : 0;
+     item.itemName = helper.hot.getDataAtRowProp(i, 'title');
+     item.upperLimit = helper.hot.getDataAtRowProp(i, 'upperLimit');
+     item.lowerLimit = helper.hot.getDataAtRowProp(i, 'lowerLimit');
+     item.hystersis = helper.hot.getDataAtRowProp(i, 'hystersis');
+     item.delay = helper.hot.getDataAtRowProp(i, 'delay');
+     item.retriggerTime = helper.hot.getDataAtRowProp(i, 'retriggerTime');
+     item.alarmLevel = helper.hot.getDataAtRowProp(i, 'alarmLevel');
+     item.isSendMessage = helper.hot.getDataAtRowProp(i, 'isSendMessage');
+     item.isSendMail = helper.hot.getDataAtRowProp(i, 'isSendMail');
+     item.itemCode = helper.hot.getDataAtRowProp(i, 'code');
+     item.type = helper.hot.getDataAtRowProp(i, 'type');
+     if (item.type == 2) {
+         item.itemAddr = helper.hot.getDataAtRowProp(i, 'addr');
+     }
+     if (item.alarmSign == 1
+             || isNotVal(item.upperLimit)
+             || isNotVal(item.lowerLimit)
+             || isNotVal(item.hystersis)
+             || isNotVal(item.delay)
+             || isNotVal(item.retriggerTime)
+             || isNotVal(item.alarmLevel)
+             || isNotVal(item.isSendMessage)
+             || isNotVal(item.isSendMail)) {
+         saveData.alarmItems.push(item);
+     }
+ }
+}
+
+//开关量
+function collectSwitchItems(tree, helper, saveData) {
+ // 从上方 grid 获取当前选中项
+ var grid = mini.get('alarmSwitchItemsGrid');
+ var record = null;
+ if (grid) {
+     var records = grid.getSelecteds();
+     if (records && records.length > 0) record = records[0];
+ }
+
+ if (!record) {
+     // 没有选中报警项，不能保存
+     return;
+ }
+
+ saveData.alarmItemName = record.title || '';
+ saveData.alarmItemAddr = record.addr || '';
+ saveData.alarmItemCode = record.itemCode || '';
+ saveData.alarmItemHighLowByte = record.highLowByte || '';
+
+ var data = helper.hot.getData();
+ for (var i = 0; i < data.length; i++) {
+     var item = {};
+     item.bitIndex = helper.hot.getDataAtRowProp(i, 'bitIndex');
+     item.itemName = record.title || '';
+     item.itemAddr = record.addr || '';
+     item.itemCode = record.itemCode || '';
+     // 开关量 0/1 状态
+     var value0 = helper.hot.getDataAtRowProp(i, 'status0');
+     var value1 = helper.hot.getDataAtRowProp(i, 'status1');
+     var rowValue = helper.hot.getDataAtRowProp(i, 'value');
+     if (value1 != null && rowValue == value1) {
+         item.value = 1;
+     } else {
+         item.value = 0;
+     }
+
+     item.alarmSign = helper.hot.getDataAtRowProp(i, 'checked') ? 1 : 0;
+     item.delay = helper.hot.getDataAtRowProp(i, 'delay');
+     item.retriggerTime = helper.hot.getDataAtRowProp(i, 'retriggerTime');
+     item.alarmLevel = helper.hot.getDataAtRowProp(i, 'alarmLevel');
+     item.isSendMessage = helper.hot.getDataAtRowProp(i, 'isSendMessage');
+     item.isSendMail = helper.hot.getDataAtRowProp(i, 'isSendMail');
+     item.type = saveData.resolutionMode;
+
+     if (item.alarmSign == 1
+             || isNotVal(item.delay)
+             || isNotVal(item.retriggerTime)
+             || isNotVal(item.alarmLevel)
+             || item.isSendMessage == _loginUserLanguageResource.yes
+             || item.isSendMail == _loginUserLanguageResource.yes) {
+         saveData.alarmItems.push(item);
+     }
+ }
+}
+
+//枚举量
+function collectEnumItems(tree, helper, saveData) {
+ var grid = mini.get('alarmEnumItemsGrid');
+ var record = null;
+ if (grid) {
+     var records = grid.getSelecteds();
+     if (records && records.length > 0) record = records[0];
+ }
+
+ if (!record) {
+     return;
+ }
+
+ saveData.alarmItemName = record.title || '';
+ saveData.alarmItemAddr = record.addr || '';
+ saveData.alarmItemCode = record.itemCode || '';
+
+ var data = helper.hot.getData();
+ for (var i = 0; i < data.length; i++) {
+     var item = {};
+     item.itemName = record.title || '';
+     item.itemAddr = record.addr || '';
+     item.itemCode = record.itemCode || '';
+
+     item.alarmSign = helper.hot.getDataAtRowProp(i, 'checked') ? 1 : 0;
+     item.value = helper.hot.getDataAtRowProp(i, 'value');
+     item.delay = helper.hot.getDataAtRowProp(i, 'delay');
+     item.retriggerTime = helper.hot.getDataAtRowProp(i, 'retriggerTime');
+     item.alarmLevel = helper.hot.getDataAtRowProp(i, 'alarmLevel');
+     item.isSendMessage = helper.hot.getDataAtRowProp(i, 'isSendMessage');
+     item.isSendMail = helper.hot.getDataAtRowProp(i, 'isSendMail');
+     item.type = saveData.resolutionMode;
+
+     if (item.alarmSign == 1
+             || isNotVal(item.delay)
+             || isNotVal(item.retriggerTime)
+             || isNotVal(item.alarmLevel)
+             || isNotVal(item.isSendMessage)
+             || isNotVal(item.isSendMail)) {
+         saveData.alarmItems.push(item);
+     }
+ }
+}
+
+//通信状态
+function collectCommStatusItems(helper, saveData) {
+ var data = helper.hot.getData();
+ for (var i = 0; i < data.length; i++) {
+     var item = {};
+     item.alarmSign = helper.hot.getDataAtRowProp(i, 'checked') ? 1 : 0;
+     item.itemName = helper.hot.getDataAtRowProp(i, 'title');
+     item.delay = helper.hot.getDataAtRowProp(i, 'delay');
+     item.retriggerTime = helper.hot.getDataAtRowProp(i, 'retriggerTime');
+     item.alarmLevel = helper.hot.getDataAtRowProp(i, 'alarmLevel');
+     item.isSendMessage = helper.hot.getDataAtRowProp(i, 'isSendMessage');
+     item.isSendMail = helper.hot.getDataAtRowProp(i, 'isSendMail');
+     item.itemCode = helper.hot.getDataAtRowProp(i, 'code');
+     item.value = helper.hot.getDataAtRowProp(i, 'value');
+     item.type = saveData.resolutionMode;
+
+     if (item.alarmSign == 1
+             || isNotVal(item.delay)
+             || isNotVal(item.retriggerTime)
+             || isNotVal(item.alarmLevel)
+             || isNotVal(item.isSendMessage)
+             || isNotVal(item.isSendMail)) {
+         saveData.alarmItems.push(item);
+     }
+ }
+}
+
+//运行状态
+function collectRunStatusItems(helper, saveData) {
+ var data = helper.hot.getData();
+ for (var i = 0; i < data.length; i++) {
+     var item = {};
+     item.alarmSign = helper.hot.getDataAtRowProp(i, 'checked') ? 1 : 0;
+     item.itemName = helper.hot.getDataAtRowProp(i, 'title');
+     item.delay = helper.hot.getDataAtRowProp(i, 'delay');
+     item.retriggerTime = helper.hot.getDataAtRowProp(i, 'retriggerTime');
+     item.alarmLevel = helper.hot.getDataAtRowProp(i, 'alarmLevel');
+     item.isSendMessage = helper.hot.getDataAtRowProp(i, 'isSendMessage');
+     item.isSendMail = helper.hot.getDataAtRowProp(i, 'isSendMail');
+     item.itemCode = helper.hot.getDataAtRowProp(i, 'code');
+     item.value = helper.hot.getDataAtRowProp(i, 'value');
+     item.type = saveData.resolutionMode;
+
+     if (item.alarmSign == 1
+             || isNotVal(item.delay)
+             || isNotVal(item.retriggerTime)
+             || isNotVal(item.alarmLevel)
+             || isNotVal(item.isSendMessage)
+             || isNotVal(item.isSendMail)) {
+         saveData.alarmItems.push(item);
+     }
+ }
+}
+
+//功图工况
+function collectFESItems(helper, saveData) {
+ var data = helper.hot.getData();
+ for (var i = 0; i < data.length; i++) {
+     var item = {};
+     item.alarmSign = helper.hot.getDataAtRowProp(i, 'checked') ? 1 : 0;
+     item.itemName = helper.hot.getDataAtRowProp(i, 'title');
+     item.delay = helper.hot.getDataAtRowProp(i, 'delay');
+     item.retriggerTime = helper.hot.getDataAtRowProp(i, 'retriggerTime');
+     item.alarmLevel = helper.hot.getDataAtRowProp(i, 'alarmLevel');
+     item.isSendMessage = helper.hot.getDataAtRowProp(i, 'isSendMessage');
+     item.isSendMail = helper.hot.getDataAtRowProp(i, 'isSendMail');
+     item.itemCode = helper.hot.getDataAtRowProp(i, 'code');
+     item.value = helper.hot.getDataAtRowProp(i, 'code');
+     item.type = saveData.resolutionMode;
+
+     if (item.alarmSign == 1
+             || isNotVal(item.delay)
+             || isNotVal(item.retriggerTime)
+             || isNotVal(item.alarmLevel)
+             || isNotVal(item.isSendMessage)
+             || isNotVal(item.isSendMail)) {
+         saveData.alarmItems.push(item);
+     }
+ }
+}
+
+//================================================================
+//提交报警项权限到后端
+//================================================================
+function grantAlarmItemsToPermission(saveData) {
+ var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.updateWait });
+ $.ajax({
+     type: 'POST',
+     url: context + '/acquisitionUnitManagerController/grantAlarmItemsToAlarmUnitPermission',
+     data: { data: JSON.stringify(saveData) },
+     dataType: 'json',
+     success: function(response) {
+         mini.unmask(document.body);
+         if (response.success) {
+             if (saveData.delidslist && saveData.delidslist.length > 0) {
+                 _selectedAlarmUnitId = null;
+                 _selectedAlarmUnitClasses = null;
+                 mini.alert(_loginUserLanguageResource.deleteSuccessfully);
+             } else {
+                 mini.alert(_loginUserLanguageResource.savedSuccessfully);
+             }
+             refreshAlarmUnitList();
+         } else {
+             mini.alert('<font color="red">' + _loginUserLanguageResource.saveFailed + '</font>');
+         }
+     },
+     error: function() {
+         mini.unmask(document.body);
+         mini.alert(_loginUserLanguageResource.requestFailed);
+     }
+ });
+}
+
+//================================================================
+//打开导出报警单元窗口
+//================================================================
+function openExportAlarmUnitWindow() {
+ var deviceTree = mini.get('deviceTypeTree');
+ if (!deviceTree) {
+     return;
+ }
+ var selectedNode = deviceTree.getSelectedNode();
+ if (!selectedNode) {
+     return;
+ }
+ var deviceTypeIds = selectedDeviceTypeId || '';
+
+ mini.open({
+     title: _loginUserLanguageResource.exportAlarmUnit,
+     url: context + '/miniui-app/modules/driverConfig/exportAlarmUnitWindow.jsp',
+     width: 420,
+     height: 600,
+     modal: true,
+     allowResize: true,
+     maxable: true,
+     onload: function() {
+         var iframe = this.getIFrameEl();
+         var contentWindow = iframe.contentWindow;
+         contentWindow.setData({
+             deviceTypeIds: deviceTypeIds
+         });
+     }
+ });
+}
+
+//================================================================
+//打开导入报警单元窗口
+//================================================================
+function openImportAlarmUnitWindow() {
+ var deviceTree = mini.get('deviceTypeTree');
+ if (!deviceTree) return;
+ var selectedNode = deviceTree.getSelectedNode();
+ if (!selectedNode) return;
+ var deviceTypeId = selectedNode.deviceTypeId;
+ var deviceTypeName = getNodePath(deviceTree, selectedNode);
+
+ mini.open({
+     title: _loginUserLanguageResource.importAlarmUnit,
+     url: context + '/miniui-app/modules/driverConfig/importAlarmUnitWindow.jsp',
+     width: '90%',
+     height: '80%',
+     modal: true,
+     allowResize: true,
+     maxable: true,
+     onload: function() {
+         var iframe = this.getIFrameEl();
+         var contentWindow = iframe.contentWindow;
+         contentWindow.setData({
+             deviceTypeId: deviceTypeId,
+             deviceTypeName: deviceTypeName
+         });
+         // 暴露刷新父页面报警单元列表树的函数
+         contentWindow.parent.refreshAlarmUnitList = function() {
+        	 refreshAlarmUnitList();
+         };
+     }
+ });
+}
+
+//================================================================
+//打开报警颜色配置窗口
+//================================================================
+function openAlarmColorSelectWindow() {
+ mini.open({
+     title: _loginUserLanguageResource.alarmColorConfig,
+     url: context + '/miniui-app/modules/driverConfig/alarmColorSelectWindow.jsp',
+     width: 700,
+     height: 560,
+     modal: true,
+     allowResize: true,
+     maxable: true,
+     onload: function() {
+         // 数据加载由子窗口内部完成
+     }
+ });
 }

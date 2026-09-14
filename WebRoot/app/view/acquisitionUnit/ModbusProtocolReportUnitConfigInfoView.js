@@ -2060,6 +2060,7 @@ function SaveReportUnitData() {
 			var reportUnitProperties = {};
 			reportUnitProperties.classes = selectedItem.data.classes;
             reportUnitProperties.id = selectedItem.data.id;
+            reportUnitProperties.unitClasses = selectedItem.data.unitClasses;
             reportUnitProperties.unitCode = selectedItem.data.code;
 			
             reportUnitProperties.singleWellRangeReportTemplate = selectedItem.data.singleWellRangeReportTemplate;

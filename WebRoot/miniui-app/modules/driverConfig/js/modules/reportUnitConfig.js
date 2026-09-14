@@ -3,24 +3,24 @@
 // ================================================================
 
 // ---------- 状态变量 ----------
-var _currentReportUnitNode          = null;
-var _currentReportStandardSubTab    = 'singleWellReport';   // singleWellReport / areaReport
-var _currentSingleWellReportTab     = 'hourlyReport';        // hourlyReport / dailyReport
-var _currentAreaReportTab           = 'dailyReport';         // 区域报表内部子 Tab
+var _currentReportUnitNode = null;
+var _currentReportStandardSubTab = 'singleWellReport'; // singleWellReport / areaReport
+var _currentSingleWellReportTab = 'hourlyReport';      // hourlyReport / dailyReport
+var _currentAreaReportTab = 'dailyReport';             // 区域报表内部子 Tab
 
 // 新增报表单元后高亮标记（由添加窗口设置）
-var _newReportUnitObjectName        = null;
+var _newReportUnitObjectName = null;
 
 // ---------- Handsontable Helper 变量 ----------
-var reportUnitPropertiesHandsontableHelper                 = null;
-var singleWellRangeReportTemplateHandsontableHelper        = null;
+var reportUnitPropertiesHandsontableHelper = null;
+var singleWellRangeReportTemplateHandsontableHelper = null;
 var singleWellRangeReportTemplateContentHandsontableHelper = null;
-var productionReportTemplateHandsontableHelper             = null;
-var productionReportTemplateContentHandsontableHelper      = null;
-var singleWellDailyReportTemplateHandsontableHelper        = null;
+var productionReportTemplateHandsontableHelper = null;
+var productionReportTemplateContentHandsontableHelper = null;
+var singleWellDailyReportTemplateHandsontableHelper = null;
 var singleWellDailyReportTemplateContentHandsontableHelper = null;
-var hydrologicalWellDailyReportTemplateHandsontableHelper  = null;
-var hydrologicalWellDailyReportContentHandsontableHelper   = null;
+var hydrologicalWellDailyReportTemplateHandsontableHelper = null;
+var hydrologicalWellDailyReportContentHandsontableHelper = null;
 
 // ================================================================
 // 1. 报表单元列表树 - 加载前事件
@@ -64,6 +64,7 @@ function onReportUnitListLoad(e) {
     // ② 按上次选中的 id 恢复
     if (!targetNode && _currentReportUnitNode && _currentReportUnitNode.id) {
         var lastId = _currentReportUnitNode.id;
+
         function findById(node) {
             if (node.id === lastId && node.classes === 1) {
                 targetNode = node;
@@ -118,12 +119,6 @@ function refreshReportUnitList() {
 
 // ================================================================
 // 4. 报表单元列表树 - 节点选中事件
-//
-// 策略：
-//   - 记录节点
-//   - 调用 updateReportUnitConfigTabs 更新可见性（可能改变激活）
-//   - 若激活 Tab 被改变 → onReportUnitDetailTabChanged 触发加载
-//   - 若激活 Tab 未变 → 手动调用 loadReportUnitDataByCurrentTab 触发加载
 // ================================================================
 function onReportUnitListSelect(e) {
     var node = e.node;
@@ -153,7 +148,6 @@ function onReportUnitListSelect(e) {
                 loadReportUnitDataByCurrentTab();
             }, 10);
         }
-        // 否则由 onReportUnitDetailTabChanged 处理
     } else {
         _currentReportUnitNode = null;
         updateReportUnitConfigTabs(-1);
@@ -162,23 +156,23 @@ function onReportUnitListSelect(e) {
 }
 
 // ================================================================
-// 5. 更新 Tab 可见性（保留当前激活，若不可保留则按类别重新激活）
+// 5. 更新 Tab 可见性
 // ================================================================
 function updateReportUnitConfigTabs(unitClasses) {
     var tabs = mini.get('reportUnitRightTabs');
     if (!tabs) return;
 
     var standardTab = tabs.getTab('configStandard');
-    var hydroTab    = tabs.getTab('configHydrological');
-    var propsTab    = tabs.getTab('props');
+    var hydroTab = tabs.getTab('configHydrological');
+    var propsTab = tabs.getTab('props');
     if (!standardTab || !hydroTab || !propsTab) return;
 
     var uc = parseInt(unitClasses, 10);
     var showStandard = (uc === 0);
-    var showHydro    = (uc === 1);
+    var showHydro = (uc === 1);
 
     tabs.updateTab(standardTab, { visible: showStandard });
-    tabs.updateTab(hydroTab,    { visible: showHydro });
+    tabs.updateTab(hydroTab, { visible: showHydro });
 
     var activeTab = tabs.getActiveTab();
     var activeName = activeTab ? activeTab.name : '';
@@ -305,20 +299,15 @@ function loadStandardConfigByCurrentSubTab(node) {
 
 // ================================================================
 // 10. 加载各类模板列表（通用：mini-datagrid）
-//
-// @param {string} gridId        datagrid 的 id
-// @param {number} reportType    0: 单井区间日报表, 1: 区域报表, 2: 单井时报表
-// @param {string} unitFieldName 单元节点上保存的模板 code 字段
-// @param {Object} node          当前报表单元节点
 // ================================================================
 function loadTemplateList(gridId, reportType, unitFieldName, node) {
     var grid = mini.get(gridId);
     if (!grid) return;
 
     // 缓存上下文，供 beforeload / onload / selectionchanged 使用
-    grid._unitNode      = node;
+    grid._unitNode = node;
     grid._unitFieldName = unitFieldName;
-    grid._reportType    = reportType;
+    grid._reportType = reportType;
 
     // 首次调用时设置列
     if (!grid._columnsSet) {
@@ -358,6 +347,7 @@ function getTemplateListTitleByReportType(reportType) {
 
 // ================================================================
 // 11. 模板列表的三个入口
+//     ★ 只加载模板列表；模板表 + 内容表由模板列表 select 触发
 // ================================================================
 function loadHourlyReportTemplates(node) {
     loadTemplateList('hourlyTemplateListGrid', 2, 'singleWellDailyReportTemplate', node);
@@ -380,7 +370,7 @@ function onTemplateListBeforeLoad(e) {
     params.reportType = grid._reportType;
     params.calculateType = grid._unitNode ? (grid._unitNode.calculateType || 0) : 0;
     e.params = params;
-    
+
     grid._dataReady = false;
 }
 
@@ -390,16 +380,13 @@ function onAreaTemplateListBeforeLoad(e)   { onTemplateListBeforeLoad(e); }
 
 // ================================================================
 // 13. 模板列表 - 加载完成后自动选中
-//     - 优先匹配单元节点上的模板 code
-//     - 否则选第一行
-//     - 通过 grid.select 触发 selectionchanged → 加载详情
 // ================================================================
 function onTemplateListLoad(e) {
     var grid = e.sender;
     var data = e.data || [];
     var reportType = grid._reportType;
 
-    // 无数据 → 清空模板详情
+    // 无数据 → 清空模板表 + 内容表
     if (data.length === 0) {
         clearTemplateDetailByReportType(reportType);
         grid._dataReady = true;
@@ -408,7 +395,7 @@ function onTemplateListLoad(e) {
 
     // 找到要选中的行
     var targetCode = grid._unitNode ? (grid._unitNode[grid._unitFieldName] || '') : '';
-    var targetIndex = 0;
+    var targetIndex = -1;
     if (targetCode) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].templateCode === targetCode) {
@@ -417,35 +404,43 @@ function onTemplateListLoad(e) {
             }
         }
     }
-    
+
     grid._dataReady = true;
+    grid.deselectAll();
 
-    setTimeout(function () {
-        grid.select(targetIndex);
-    }, 30);
+    if (targetIndex >= 0) {
+        setTimeout(function () {
+            grid.select(targetIndex);
+        }, 30);
+    } else {
+        // ★ 无匹配模板 → 清空模板表 + 内容表
+        clearTemplateDetailByReportType(reportType);
+    }
 }
 
-function onHourlyTemplateListLoad(e) { 
-	onTemplateListLoad(e); 
-}
+function onHourlyTemplateListLoad(e) { onTemplateListLoad(e); }
 function onDailyTemplateListLoad(e)  { onTemplateListLoad(e); }
 function onAreaTemplateListLoad(e)   { onTemplateListLoad(e); }
 
 // ================================================================
 // 15. 模板列表 - 选中变化
-//     1) 同步 checkbox：只有选中行 checked=true
-//     2) 触发对应详情加载
+//     - 有选中 → 加载模板表 + 内容表
+//     - 无选中 → 清空模板表 + 内容表
 // ================================================================
 function onTemplateListSelectionChanged(e, reportType) {
     if (isInitializing) return;
     var grid = e.sender;
-    
-    if (!grid._dataReady) return;   // 数据未就绪 → 跳过第一次
-    
-    var selected = grid.getSelected();
-    if (!selected) return;
+    if (!grid._dataReady) return;
 
-    // 触发详情加载
+    var selected = grid.getSelected();
+
+    // ★ 无选中 → 清空两个表
+    if (!selected) {
+        clearTemplateDetailByReportType(reportType);
+        return;
+    }
+
+    // ★ 有选中 → 加载模板表 + 内容表
     if (reportType === 2) {
         loadHourlyTemplateDetail(grid._unitNode, selected);
     } else if (reportType === 0) {
@@ -455,20 +450,17 @@ function onTemplateListSelectionChanged(e, reportType) {
     }
 }
 
-function onHourlyTemplateSelectionChanged(e) {
-	onTemplateListSelectionChanged(e, 2); 
-}
+function onHourlyTemplateSelectionChanged(e) { onTemplateListSelectionChanged(e, 2); }
 function onDailyTemplateSelectionChanged(e)  { onTemplateListSelectionChanged(e, 0); }
 function onAreaTemplateSelectionChanged(e)   { onTemplateListSelectionChanged(e, 1); }
 
 // ================================================================
 // 16. 模板详情加载（模板表 + 内容表）
-//     目前给出骨架，具体 Handsontable 渲染留待下一步
 // ================================================================
 function loadHourlyTemplateDetail(unitNode, templateNode) {
     loadTemplateTable(unitNode, templateNode,
         'hourlyReportTemplateContainer', 'hourlyReportTemplateTitle',
-        'deviceHourlyReportTemplate',2);
+        'deviceHourlyReportTemplate', 2);
     loadTemplateContentTable(unitNode, templateNode, 2,
         'hourlyReportContentContainer', 'hourlyReportContentTitle',
         'deviceHourlyReportContentConfig');
@@ -477,7 +469,7 @@ function loadHourlyTemplateDetail(unitNode, templateNode) {
 function loadDailyTemplateDetail(unitNode, templateNode) {
     loadTemplateTable(unitNode, templateNode,
         'dailyReportTemplateContainer', 'dailyReportTemplateTitle',
-        'deviceDailyReportTemplate',0);
+        'deviceDailyReportTemplate', 0);
     loadTemplateContentTable(unitNode, templateNode, 0,
         'dailyReportContentContainer', 'dailyReportContentTitle',
         'deviceDailyReportContentConfig');
@@ -486,213 +478,236 @@ function loadDailyTemplateDetail(unitNode, templateNode) {
 function loadAreaTemplateDetail(unitNode, templateNode) {
     loadTemplateTable(unitNode, templateNode,
         'areaReportTemplateContainer', 'areaReportTemplateTitle',
-        'areaDailyReportTemplate',1);
+        'areaDailyReportTemplate', 1);
     loadTemplateContentTable(unitNode, templateNode, 1,
         'areaReportContentContainer', 'areaReportContentTitle',
         'areaDailyReportContentConfig');
 }
 
-//================================================================
-//17. 通用：加载模板表（Handsontable）
-//  reportType: 0=日报表(单井区间), 1=区域报表, 2=时报表
-//================================================================
+// ================================================================
+// 17. 通用：加载模板表（Handsontable）
+// ================================================================
 function loadTemplateTable(unitNode, templateNode, containerId, titleId, titleKey, reportType) {
- var container = document.getElementById(containerId);
- if (!container) return;
- container.innerHTML = '<div class="empty-msg">' + _loginUserLanguageResource.loadingData + '</div>';
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '<div class="empty-msg">' + _loginUserLanguageResource.loadingData + '</div>';
 
- var titleEl = document.getElementById(titleId);
- if (titleEl) {
-     var unitName = unitNode ? (unitNode.text || '') : '';
-     var titleText = _loginUserLanguageResource[titleKey] || titleKey;
-     titleEl.innerText = (unitName ? (unitName + '/') : '') + titleText;
- }
+    var titleEl = document.getElementById(titleId);
+    if (titleEl) {
+        var unitName = unitNode ? (unitNode.text || '') : '';
+        var titleText = _loginUserLanguageResource[titleKey] || titleKey;
+        titleEl.innerText = (unitName ? (unitName + '/') : '') + titleText;
+    }
 
- $.ajax({
-     type: 'POST',
-     url: context + '/acquisitionUnitManagerController/getReportTemplateData',
-     data: {
-         reportType: reportType,
-         code: templateNode.templateCode,
-         calculateType: templateNode.calculateType || 0
-     },
-     dataType: 'json',
-     success: function (result) {
-         container.innerHTML = '';
+    $.ajax({
+        type: 'POST',
+        url: context + '/acquisitionUnitManagerController/getReportTemplateData',
+        data: {
+            reportType: reportType,
+            code: templateNode.templateCode,
+            calculateType: templateNode.calculateType || 0
+        },
+        dataType: 'json',
+        success: function (result) {
+            container.innerHTML = '';
 
-         // 根据 reportType 分派到对应 helper
-         if (reportType === 2) {
-             if (singleWellDailyReportTemplateHandsontableHelper &&
-                 singleWellDailyReportTemplateHandsontableHelper.hot) {
-                 singleWellDailyReportTemplateHandsontableHelper.hot.destroy();
-             }
-             singleWellDailyReportTemplateHandsontableHelper =
-                 SingleWellDailyReportTemplateHandsontableHelper.createNew(containerId, result);
-             singleWellDailyReportTemplateHandsontableHelper.createTable();
+            if (reportType === 2) {
+                if (singleWellDailyReportTemplateHandsontableHelper &&
+                    singleWellDailyReportTemplateHandsontableHelper.hot) {
+                    singleWellDailyReportTemplateHandsontableHelper.hot.destroy();
+                }
+                singleWellDailyReportTemplateHandsontableHelper =
+                    SingleWellDailyReportTemplateHandsontableHelper.createNew(containerId, result);
+                singleWellDailyReportTemplateHandsontableHelper.createTable();
 
-         } else if (reportType === 0) {
-             if (singleWellRangeReportTemplateHandsontableHelper &&
-                 singleWellRangeReportTemplateHandsontableHelper.hot) {
-                 singleWellRangeReportTemplateHandsontableHelper.hot.destroy();
-             }
-             singleWellRangeReportTemplateHandsontableHelper =
-                 SingleWellRangeReportTemplateHandsontableHelper.createNew(containerId, result);
-             singleWellRangeReportTemplateHandsontableHelper.createTable();
+            } else if (reportType === 0) {
+                if (singleWellRangeReportTemplateHandsontableHelper &&
+                    singleWellRangeReportTemplateHandsontableHelper.hot) {
+                    singleWellRangeReportTemplateHandsontableHelper.hot.destroy();
+                }
+                singleWellRangeReportTemplateHandsontableHelper =
+                    SingleWellRangeReportTemplateHandsontableHelper.createNew(containerId, result);
+                singleWellRangeReportTemplateHandsontableHelper.createTable();
 
-         } else if (reportType === 1) {
-             if (productionReportTemplateHandsontableHelper &&
-                 productionReportTemplateHandsontableHelper.hot) {
-                 productionReportTemplateHandsontableHelper.hot.destroy();
-             }
-             productionReportTemplateHandsontableHelper =
-                 ProductionReportTemplateHandsontableHelper.createNew(containerId, result);
-             productionReportTemplateHandsontableHelper.createTable();
-         }
-     },
-     error: function () {
-         container.innerHTML = '<div class="empty-msg">' + _loginUserLanguageResource.requestFailed + '</div>';
-     }
- });
+            } else if (reportType === 1) {
+                if (productionReportTemplateHandsontableHelper &&
+                    productionReportTemplateHandsontableHelper.hot) {
+                    productionReportTemplateHandsontableHelper.hot.destroy();
+                }
+                productionReportTemplateHandsontableHelper =
+                    ProductionReportTemplateHandsontableHelper.createNew(containerId, result);
+                productionReportTemplateHandsontableHelper.createTable();
+            }
+        },
+        error: function () {
+            container.innerHTML = '<div class="empty-msg">' + _loginUserLanguageResource.requestFailed + '</div>';
+        }
+    });
 }
 
 // ================================================================
 // 18. 通用：加载模板内容表（Handsontable）
 // ================================================================
-//================================================================
-//18. 通用：加载模板内容表（Handsontable）
-//================================================================
 function loadTemplateContentTable(unitNode, templateNode, reportType, containerId, titleId, titleKey) {
- var container = document.getElementById(containerId);
- if (!container) return;
- container.innerHTML = '<div class="empty-msg">' + _loginUserLanguageResource.loadingData + '</div>';
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '<div class="empty-msg">' + _loginUserLanguageResource.loadingData + '</div>';
 
- var titleEl = document.getElementById(titleId);
- if (titleEl) {
-     var unitName = unitNode ? (unitNode.text || '') : '';
-     var titleText = _loginUserLanguageResource[titleKey] || titleKey;
-     titleEl.innerText = (unitName ? (unitName + '/') : '') + titleText;
- }
+    var titleEl = document.getElementById(titleId);
+    if (titleEl) {
+        var unitName = unitNode ? (unitNode.text || '') : '';
+        var titleText = _loginUserLanguageResource[titleKey] || titleKey;
+        titleEl.innerText = (unitName ? (unitName + '/') : '') + titleText;
+    }
 
- $.ajax({
-     type: 'POST',
-     url: context + '/acquisitionUnitManagerController/getReportUnitTotalCalItemsConfigData',
-     data: {
-         calculateType: unitNode ? (unitNode.calculateType || 0) : 0,
-         reportType: reportType,
-         unitId: unitNode ? unitNode.id : 0,
-         templateCode: templateNode.templateCode,
-         classes: unitNode ? unitNode.classes : 1
-     },
-     dataType: 'json',
-     success: function (result) {
-         container.innerHTML = '';
+    $.ajax({
+        type: 'POST',
+        url: context + '/acquisitionUnitManagerController/getReportUnitTotalCalItemsConfigData',
+        data: {
+            calculateType: unitNode ? (unitNode.calculateType || 0) : 0,
+            reportType: reportType,
+            unitId: unitNode ? unitNode.id : 0,
+            templateCode: templateNode.templateCode,
+            classes: unitNode ? unitNode.classes : 1
+        },
+        dataType: 'json',
+        success: function (result) {
+            container.innerHTML = '';
 
-         if (reportType === 2) {
-             // 时报表内容配置
-             if (singleWellDailyReportTemplateContentHandsontableHelper &&
-                 singleWellDailyReportTemplateContentHandsontableHelper.hot) {
-                 singleWellDailyReportTemplateContentHandsontableHelper.hot.destroy();
-             }
-             singleWellDailyReportTemplateContentHandsontableHelper =
-                 SingleWellDailyReportTemplateContentHandsontableHelper.createNew(containerId);
-             _initContentHelperColumns(singleWellDailyReportTemplateContentHandsontableHelper, result, 2);
-             singleWellDailyReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
+            if (reportType === 2) {
+                if (singleWellDailyReportTemplateContentHandsontableHelper &&
+                    singleWellDailyReportTemplateContentHandsontableHelper.hot) {
+                    singleWellDailyReportTemplateContentHandsontableHelper.hot.destroy();
+                }
+                singleWellDailyReportTemplateContentHandsontableHelper =
+                    SingleWellDailyReportTemplateContentHandsontableHelper.createNew(containerId);
+                _initContentHelperColumns(singleWellDailyReportTemplateContentHandsontableHelper, result, 2);
+                singleWellDailyReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
 
-         } else if (reportType === 0) {
-             // 日报表内容配置
-             if (singleWellRangeReportTemplateContentHandsontableHelper &&
-                 singleWellRangeReportTemplateContentHandsontableHelper.hot) {
-                 singleWellRangeReportTemplateContentHandsontableHelper.hot.destroy();
-             }
-             singleWellRangeReportTemplateContentHandsontableHelper =
-                 SingleWellRangeReportTemplateContentHandsontableHelper.createNew(containerId);
-             _initContentHelperColumns(singleWellRangeReportTemplateContentHandsontableHelper, result, 0);
-             singleWellRangeReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
+            } else if (reportType === 0) {
+                if (singleWellRangeReportTemplateContentHandsontableHelper &&
+                    singleWellRangeReportTemplateContentHandsontableHelper.hot) {
+                    singleWellRangeReportTemplateContentHandsontableHelper.hot.destroy();
+                }
+                singleWellRangeReportTemplateContentHandsontableHelper =
+                    SingleWellRangeReportTemplateContentHandsontableHelper.createNew(containerId);
+                _initContentHelperColumns(singleWellRangeReportTemplateContentHandsontableHelper, result, 0);
+                singleWellRangeReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
 
-         } else if (reportType === 1) {
-             // 区域报表内容配置
-             if (productionReportTemplateContentHandsontableHelper &&
-                 productionReportTemplateContentHandsontableHelper.hot) {
-                 productionReportTemplateContentHandsontableHelper.hot.destroy();
-             }
-             productionReportTemplateContentHandsontableHelper =
-                 ProductionReportTemplateContentHandsontableHelper.createNew(containerId);
-             _initContentHelperColumns(productionReportTemplateContentHandsontableHelper, result, 1);
-             productionReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
-         }
-     },
-     error: function () {
-         container.innerHTML = '<div class="empty-msg">' + _loginUserLanguageResource.requestFailed + '</div>';
-     }
- });
+            } else if (reportType === 1) {
+                if (productionReportTemplateContentHandsontableHelper &&
+                    productionReportTemplateContentHandsontableHelper.hot) {
+                    productionReportTemplateContentHandsontableHelper.hot.destroy();
+                }
+                productionReportTemplateContentHandsontableHelper =
+                    ProductionReportTemplateContentHandsontableHelper.createNew(containerId);
+                _initContentHelperColumns(productionReportTemplateContentHandsontableHelper, result, 1);
+                productionReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
+            }
+        },
+        error: function () {
+            container.innerHTML = '<div class="empty-msg">' + _loginUserLanguageResource.requestFailed + '</div>';
+        }
+    });
 }
 
-//内容表通用列初始化（三个内容 Helper 共用）
+// 内容表通用列初始化（三个内容 Helper 共用）
 function _initContentHelperColumns(helper, result, reportType) {
- helper.result = result;
- if (reportType === 1) {
-     // 区域报表：多 sumSign、averageSign、curveStatType
-     helper.colHeaders = [
-         _loginUserLanguageResource.idx, _loginUserLanguageResource.fiedName,
-         _loginUserLanguageResource.dataColumn, _loginUserLanguageResource.unit,
-         _loginUserLanguageResource.dataSource, _loginUserLanguageResource.totalType,
-         _loginUserLanguageResource.showLevel, _loginUserLanguageResource.prec,
-         _loginUserLanguageResource.sumSign, _loginUserLanguageResource.averageSign,
-         _loginUserLanguageResource.reportCurve, _loginUserLanguageResource.curveStatType,
-         _loginUserLanguageResource.config
-     ];
-     helper.columns = [
-         { data: 'id' },
-         { data: 'headerName' },
-         { data: 'itemName' },
-         { data: 'unit' },
-         { data: 'dataSource' },
-         { data: 'totalType' },
-         { data: 'showLevel' },
-         { data: 'prec' },
-         { data: 'sumSign', type: 'checkbox' },
-         { data: 'averageSign', type: 'checkbox' },
-         { data: 'reportCurveConfShowValue' },
-         { data: 'curveStatType' },
-         { data: 'config', renderer: renderReportUnitContentConfig }
-     ];
- } else {
-     // 单井时报表 / 日报表
-     helper.colHeaders = [
-         _loginUserLanguageResource.idx, _loginUserLanguageResource.fiedName,
-         _loginUserLanguageResource.dataColumn, _loginUserLanguageResource.unit,
-         _loginUserLanguageResource.dataSource, _loginUserLanguageResource.totalType,
-         _loginUserLanguageResource.showLevel, _loginUserLanguageResource.prec,
-         _loginUserLanguageResource.reportCurve, _loginUserLanguageResource.config
-     ];
-     helper.columns = [
-         { data: 'id' },
-         { data: 'headerName' },
-         { data: 'itemName' },
-         { data: 'unit' },
-         { data: 'dataSource' },
-         { data: 'totalType' },
-         { data: 'showLevel' },
-         { data: 'prec' },
-         { data: 'reportCurveConfShowValue' },
-         { data: 'config', renderer: renderReportUnitContentConfig }
-     ];
- }
+    helper.result = result;
+    if (reportType === 1) {
+        helper.colHeaders = [
+            _loginUserLanguageResource.idx, _loginUserLanguageResource.fiedName,
+            _loginUserLanguageResource.dataColumn, _loginUserLanguageResource.unit,
+            _loginUserLanguageResource.dataSource, _loginUserLanguageResource.totalType,
+            _loginUserLanguageResource.showLevel, _loginUserLanguageResource.prec,
+            _loginUserLanguageResource.sumSign, _loginUserLanguageResource.averageSign,
+            _loginUserLanguageResource.reportCurve, _loginUserLanguageResource.curveStatType,
+            _loginUserLanguageResource.config
+        ];
+        helper.columns = [
+            { data: 'id' }, { data: 'headerName' }, { data: 'itemName' },
+            { data: 'unit' }, { data: 'dataSource' }, { data: 'totalType' },
+            { data: 'showLevel' }, { data: 'prec' },
+            { data: 'sumSign', type: 'checkbox' },
+            { data: 'averageSign', type: 'checkbox' },
+            { data: 'reportCurveConfShowValue' }, { data: 'curveStatType' },
+            { data: 'config', renderer: renderReportUnitContentConfig }
+        ];
+    } else {
+        helper.colHeaders = [
+            _loginUserLanguageResource.idx, _loginUserLanguageResource.fiedName,
+            _loginUserLanguageResource.dataColumn, _loginUserLanguageResource.unit,
+            _loginUserLanguageResource.dataSource, _loginUserLanguageResource.totalType,
+            _loginUserLanguageResource.showLevel, _loginUserLanguageResource.prec,
+            _loginUserLanguageResource.reportCurve, _loginUserLanguageResource.config
+        ];
+        helper.columns = [
+            { data: 'id' }, { data: 'headerName' }, { data: 'itemName' },
+            { data: 'unit' }, { data: 'dataSource' }, { data: 'totalType' },
+            { data: 'showLevel' }, { data: 'prec' },
+            { data: 'reportCurveConfShowValue' },
+            { data: 'config', renderer: renderReportUnitContentConfig }
+        ];
+    }
 }
 
 // ================================================================
-// 19. 清空模板详情（无数据时调用）
+// 19. 清空模板表 + 内容表
 // ================================================================
 function clearTemplateDetailByReportType(reportType) {
     if (reportType === 2) {
+        if (singleWellDailyReportTemplateHandsontableHelper &&
+            singleWellDailyReportTemplateHandsontableHelper.hot) {
+            try { singleWellDailyReportTemplateHandsontableHelper.hot.destroy(); } catch (e) {}
+            singleWellDailyReportTemplateHandsontableHelper = null;
+        }
+        if (singleWellDailyReportTemplateContentHandsontableHelper &&
+            singleWellDailyReportTemplateContentHandsontableHelper.hot) {
+            try { singleWellDailyReportTemplateContentHandsontableHelper.hot.destroy(); } catch (e) {}
+            singleWellDailyReportTemplateContentHandsontableHelper = null;
+        }
         setInnerHTML('hourlyReportTemplateContainer', '');
         setInnerHTML('hourlyReportContentContainer', '');
+        var t1 = document.getElementById('hourlyReportTemplateTitle');
+        if (t1) t1.innerText = _loginUserLanguageResource.deviceHourlyReportTemplate || '';
+        var c1 = document.getElementById('hourlyReportContentTitle');
+        if (c1) c1.innerText = _loginUserLanguageResource.deviceHourlyReportContentConfig || '';
+
     } else if (reportType === 0) {
+        if (singleWellRangeReportTemplateHandsontableHelper &&
+            singleWellRangeReportTemplateHandsontableHelper.hot) {
+            try { singleWellRangeReportTemplateHandsontableHelper.hot.destroy(); } catch (e) {}
+            singleWellRangeReportTemplateHandsontableHelper = null;
+        }
+        if (singleWellRangeReportTemplateContentHandsontableHelper &&
+            singleWellRangeReportTemplateContentHandsontableHelper.hot) {
+            try { singleWellRangeReportTemplateContentHandsontableHelper.hot.destroy(); } catch (e) {}
+            singleWellRangeReportTemplateContentHandsontableHelper = null;
+        }
         setInnerHTML('dailyReportTemplateContainer', '');
         setInnerHTML('dailyReportContentContainer', '');
+        var t2 = document.getElementById('dailyReportTemplateTitle');
+        if (t2) t2.innerText = _loginUserLanguageResource.deviceDailyReportTemplate || '';
+        var c2 = document.getElementById('dailyReportContentTitle');
+        if (c2) c2.innerText = _loginUserLanguageResource.deviceDailyReportContentConfig || '';
+
     } else if (reportType === 1) {
+        if (productionReportTemplateHandsontableHelper &&
+            productionReportTemplateHandsontableHelper.hot) {
+            try { productionReportTemplateHandsontableHelper.hot.destroy(); } catch (e) {}
+            productionReportTemplateHandsontableHelper = null;
+        }
+        if (productionReportTemplateContentHandsontableHelper &&
+            productionReportTemplateContentHandsontableHelper.hot) {
+            try { productionReportTemplateContentHandsontableHelper.hot.destroy(); } catch (e) {}
+            productionReportTemplateContentHandsontableHelper = null;
+        }
         setInnerHTML('areaReportTemplateContainer', '');
         setInnerHTML('areaReportContentContainer', '');
+        var t3 = document.getElementById('areaReportTemplateTitle');
+        if (t3) t3.innerText = _loginUserLanguageResource.areaDailyReportTemplate || '';
+        var c3 = document.getElementById('areaReportContentTitle');
+        if (c3) c3.innerText = _loginUserLanguageResource.areaDailyReportContentConfig || '';
     }
 }
 
@@ -701,63 +716,45 @@ function setInnerHTML(id, html) {
     if (el) el.innerHTML = html;
 }
 
-//================================================================
-//加载报表单元属性（属性 Tab）
-//对应 ExtJS 的 CreateProtocolReportUnitPropertiesInfoTable
-//================================================================
+// ================================================================
+// 加载报表单元属性（属性 Tab）
+// ================================================================
 function loadReportUnitProperties(node) {
- if (!node) return;
+    if (!node) return;
 
- var container = document.getElementById('reportUnitPropertiesContainer');
- if (!container) return;
- var root = [];
- if (node.classes === 0) {
-     // 根节点
-     root.push({
-         id: 1,
-         title: _loginUserLanguageResource.rootNode,
-         value: _loginUserLanguageResource.unitList
-     });
- } else if (node.classes === 1) {
-     // 报表单元节点
-     root.push({
-         id: 1,
-         title: _loginUserLanguageResource.unitName,
-         value: node.text
-     });
-     root.push({
-         id: 2,
-         title: _loginUserLanguageResource.calculationType,
-         value: node.calculateTypeName
-     });
-     root.push({
-         id: 3,
-         title: _loginUserLanguageResource.sequenceNumber,
-         value: node.sort
-     });
- }
+    var container = document.getElementById('reportUnitPropertiesContainer');
+    if (!container) return;
+    var root = [];
+    if (node.classes === 0) {
+        root.push({
+            id: 1,
+            title: _loginUserLanguageResource.rootNode,
+            value: _loginUserLanguageResource.unitList
+        });
+    } else if (node.classes === 1) {
+        root.push({ id: 1, title: _loginUserLanguageResource.unitName,        value: node.text });
+        root.push({ id: 2, title: _loginUserLanguageResource.calculationType, value: node.calculateTypeName });
+        root.push({ id: 3, title: _loginUserLanguageResource.sequenceNumber,  value: node.sort });
+    }
 
- if (reportUnitPropertiesHandsontableHelper == null ||
-     reportUnitPropertiesHandsontableHelper.hot == undefined) {
-     reportUnitPropertiesHandsontableHelper = ReportUnitPropertiesHandsontableHelper.createNew('reportUnitPropertiesContainer');
-     reportUnitPropertiesHandsontableHelper.colHeaders = [
-         _loginUserLanguageResource.idx,
-         _loginUserLanguageResource.variable,
-         _loginUserLanguageResource.value
-     ];
-     reportUnitPropertiesHandsontableHelper.columns = [
-         { data: 'id' },
-         { data: 'title' },
-         { data: 'value' }
-     ];
-     reportUnitPropertiesHandsontableHelper.classes = node.classes;
-     reportUnitPropertiesHandsontableHelper.createTable(root);
- } else {
-     // 复用已有实例：更新 classes 后重新加载数据
-     reportUnitPropertiesHandsontableHelper.classes = node.classes;
-     reportUnitPropertiesHandsontableHelper.hot.loadData(root);
-     reportUnitPropertiesHandsontableHelper.hot.render();
- }
+    if (reportUnitPropertiesHandsontableHelper == null ||
+        reportUnitPropertiesHandsontableHelper.hot == undefined) {
+        reportUnitPropertiesHandsontableHelper = ReportUnitPropertiesHandsontableHelper.createNew('reportUnitPropertiesContainer');
+        reportUnitPropertiesHandsontableHelper.colHeaders = [
+            _loginUserLanguageResource.idx,
+            _loginUserLanguageResource.variable,
+            _loginUserLanguageResource.value
+        ];
+        reportUnitPropertiesHandsontableHelper.columns = [
+            { data: 'id' }, { data: 'title' }, { data: 'value' }
+        ];
+        reportUnitPropertiesHandsontableHelper.classes = node.classes;
+        reportUnitPropertiesHandsontableHelper.createTable(root);
+    } else {
+        reportUnitPropertiesHandsontableHelper.classes = node.classes;
+        reportUnitPropertiesHandsontableHelper.hot.loadData(root);
+        reportUnitPropertiesHandsontableHelper.hot.render();
+    }
 }
 
 // ================================================================
@@ -840,294 +837,367 @@ function loadHydrologicalReportContent(node) {
     });
 }
 
-//================================================================
-//报表模板表格 - 通用工厂
-//模板表格结构：由后端返回的 templateData 决定
-//- header: 每一行的单元格标题 + 样式
-//- rowHeights / colWidths / mergeCells / fixedRowsTop / fixedRowsBottom
-//整个表格只读（editor=false）
-//================================================================
+// ================================================================
+// 报表模板表格 - 通用工厂
+// ================================================================
 function _createReportTemplateHandsontableHelper(divid, templateData) {
- var helper = {};
- helper.templateData = templateData;
- helper.data = [];
- helper.hot = null;
- helper.container = document.getElementById(divid);
+    var helper = {};
+    helper.templateData = templateData;
+    helper.data = [];
+    helper.hot = null;
+    helper.container = document.getElementById(divid);
 
- // 列宽：按语言
- helper.colWidths = [];
- if (_loginUserLanguage === 'zh_CN') {
-     helper.colWidths = templateData.columnWidths_zh_CN;
- } else if (_loginUserLanguage === 'en') {
-     helper.colWidths = templateData.columnWidths_en;
- } else if (_loginUserLanguage === 'ru') {
-     helper.colWidths = templateData.columnWidths_ru;
- }
+    helper.colWidths = [];
+    if (_loginUserLanguage === 'zh_CN') {
+        helper.colWidths = templateData.columnWidths_zh_CN;
+    } else if (_loginUserLanguage === 'en') {
+        helper.colWidths = templateData.columnWidths_en;
+    } else if (_loginUserLanguage === 'ru') {
+        helper.colWidths = templateData.columnWidths_ru;
+    }
 
- // 组装数据：每行一个单元格（多行表头）
- helper.initData = function () {
-     helper.data = [];
-     if (!templateData.header) return;
-     for (var i = 0; i < templateData.header.length; i++) {
-         var h = templateData.header[i];
-         var title = '';
-         if (_loginUserLanguage === 'zh_CN') title = h.title_zh_CN;
-         else if (_loginUserLanguage === 'en') title = h.title_en;
-         else if (_loginUserLanguage === 'ru') title = h.title_ru;
-         helper.data.push(title);
-     }
- };
+    helper.initData = function () {
+        helper.data = [];
+        if (!templateData.header) return;
+        for (var i = 0; i < templateData.header.length; i++) {
+            var h = templateData.header[i];
+            var title = '';
+            if (_loginUserLanguage === 'zh_CN') title = h.title_zh_CN;
+            else if (_loginUserLanguage === 'en') title = h.title_en;
+            else if (_loginUserLanguage === 'ru') title = h.title_ru;
+            helper.data.push(title);
+        }
+    };
 
- // 单元格样式渲染器
- helper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
-     Handsontable.renderers.TextRenderer.apply(this, arguments);
-     if (helper.hot && templateData.header) {
-         for (var i = 0; i < templateData.header.length; i++) {
-             if (row === i) {
-                 var st = templateData.header[i].tdStyle;
-                 if (st) {
-                     if (st.fontWeight) td.style.fontWeight = st.fontWeight;
-                     if (st.fontSize) td.style.fontSize = st.fontSize;
-                     if (st.height) td.style.height = st.height;
-                     if (st.color) td.style.color = st.color;
-                     if (st.backgroundColor) td.style.backgroundColor = st.backgroundColor;
-                     if (st.textAlign) td.style.textAlign = st.textAlign;
-                 }
-                 break;
-             }
-         }
-     }
-     td.style.whiteSpace = 'nowrap';
-     td.style.overflow = 'hidden';
-     td.style.textOverflow = 'ellipsis';
- };
+    helper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments);
 
- helper.createTable = function () {
-     if (!helper.container) return;
-     helper.container.innerHTML = '';
-     helper.hot = new Handsontable(helper.container, {
-         licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-         theme: 'ht-theme-classic',
-         data: helper.data,
-         fixedRowsTop: templateData.fixedRowsTop || 0,
-         fixedRowsBottom: templateData.fixedRowsBottom || 0,
-         rowHeaders: false,
-         colHeaders: false,
-         rowHeights: templateData.rowHeights || undefined,
-         colWidths: helper.colWidths,
-         stretchH: 'all',
-         columnSorting: false,
-         allowInsertRow: false,
-         sortIndicator: false,
-         manualColumnResize: true,
-         manualRowResize: true,
-         filters: false,
-         renderAllRows: true,
-         search: false,
-         mergeCells: templateData.mergeCells || [],
-         contextMenu: {
-             items: {
-                 "copy": { name: _loginUserLanguageResource.contextMenu_copy },
-                 "cut":  { name: _loginUserLanguageResource.contextMenu_cut }
-             }
-         },
-         cells: function (row, col, prop) {
-             var cp = {};
-             cp.editor = false;
-             cp.renderer = helper.addStyle;
-             return cp;
-         },
-         afterOnCellMouseOver: function (event, coords, TD) {
-             if (coords.col >= 0 && coords.row >= 0 &&
-                 helper.hot && helper.hot.getDataAtCell) {
-                 var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
-                 if (rawValue && rawValue.length > 0) {
-                     TD.title = rawValue;
-                 }
-             }
-         }
-     });
- };
+        var idx = instance.toVisualRow(row);
+        if (templateData.header && templateData.header[idx]) {
+            var st = templateData.header[idx].tdStyle;
+            if (st) {
+                if (st.fontWeight)      td.style.fontWeight = st.fontWeight;
+                if (st.fontSize)        td.style.fontSize = st.fontSize;
+                if (st.height)          td.style.height = st.height;
+                if (st.color)           td.style.color = st.color;
+                if (st.backgroundColor) td.style.backgroundColor = st.backgroundColor;
+                if (st.textAlign)       td.style.textAlign = st.textAlign;
+            }
+        }
 
- helper.getData = function () { return helper.data; };
- helper.clearContainer = function () { helper.data = []; };
- helper.saveData = function () {};
+        td.style.whiteSpace = 'nowrap';
+        td.style.overflow = 'hidden';
+        td.style.textOverflow = 'ellipsis';
+    };
 
- helper.initData();
- return helper;
+    helper.createTable = function () {
+        if (!helper.container) return;
+        helper.container.innerHTML = '';
+        helper.hot = new Handsontable(helper.container, {
+            licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+            theme: 'ht-theme-classic',
+            data: helper.data,
+            fixedRowsTop: templateData.fixedRowsTop || 0,
+            fixedRowsBottom: templateData.fixedRowsBottom || 0,
+            rowHeaders: false,
+            colHeaders: false,
+            rowHeights: templateData.rowHeights || undefined,
+            colWidths: helper.colWidths,
+            stretchH: 'all',
+            columnSorting: false,
+            allowInsertRow: false,
+            sortIndicator: false,
+            manualColumnResize: true,
+            manualRowResize: true,
+            filters: false,
+            renderAllRows: true,
+            search: false,
+            mergeCells: templateData.mergeCells || [],
+            contextMenu: {
+                items: {
+                    "copy": { name: _loginUserLanguageResource.contextMenu_copy },
+                    "cut":  { name: _loginUserLanguageResource.contextMenu_cut }
+                }
+            },
+            cells: function (row, col, prop) {
+                var cp = {};
+                cp.editor = false;
+                cp.renderer = helper.addStyle;
+                return cp;
+            },
+            afterOnCellMouseOver: _handsontableMakeMouseOver(helper)
+        });
+    };
+
+    helper.getData = function () { return helper.data; };
+    helper.clearContainer = function () { helper.data = []; };
+    helper.saveData = function () {};
+
+    helper.initData();
+    return helper;
 }
 
-//4 个模板 Helper：内部都调用同一个工厂
+// 4 个模板 Helper
 var SingleWellRangeReportTemplateHandsontableHelper = {
- createNew: function (divid, templateData) {
-     return _createReportTemplateHandsontableHelper(divid, templateData);
- }
+    createNew: function (divid, templateData) {
+        return _createReportTemplateHandsontableHelper(divid, templateData);
+    }
 };
 var SingleWellDailyReportTemplateHandsontableHelper = {
- createNew: function (divid, templateData) {
-     return _createReportTemplateHandsontableHelper(divid, templateData);
- }
+    createNew: function (divid, templateData) {
+        return _createReportTemplateHandsontableHelper(divid, templateData);
+    }
 };
 var ProductionReportTemplateHandsontableHelper = {
- createNew: function (divid, templateData) {
-     return _createReportTemplateHandsontableHelper(divid, templateData);
- }
+    createNew: function (divid, templateData) {
+        return _createReportTemplateHandsontableHelper(divid, templateData);
+    }
 };
 var HydrologicalWellDailyReportTemplateHandsontableHelper = {
- createNew: function (divid, templateData) {
-     return _createReportTemplateHandsontableHelper(divid, templateData);
- }
+    createNew: function (divid, templateData) {
+        return _createReportTemplateHandsontableHelper(divid, templateData);
+    }
 };
 
-//================================================================
-//报表模板内容表格 - 通用工厂
-//列定义由 _initContentHelperColumns 提前设置
-//所有列 editor=false，config 列渲染为链接
-//================================================================
+// ================================================================
+// 报表模板内容表格 - 通用工厂
+// ================================================================
 function _createReportTemplateContentHandsontableHelper(divid) {
- var helper = {};
- helper.divid = divid;
- helper.hot = null;
- helper.colHeaders = [];
- helper.columns = [];
- helper.hiddenColumns = [];
+    var helper = {};
+    helper.divid = divid;
+    helper.hot = null;
+    helper.colHeaders = [];
+    helper.columns = [];
+    helper.hiddenColumns = [];
 
- helper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
-     Handsontable.renderers.TextRenderer.apply(this, arguments);
-     if (value != null) {
-         var arr = String(value).split(';');
-         if (arr.length === 3) td.style.backgroundColor = '#' + arr[2];
-     }
-     td.style.whiteSpace = 'nowrap';
-     td.style.overflow = 'hidden';
-     td.style.textOverflow = 'ellipsis';
- };
+    helper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments);
+        if (value != null) {
+            var arr = String(value).split(';');
+            if (arr.length === 3) td.style.backgroundColor = '#' + arr[2];
+        }
+        td.style.whiteSpace = 'nowrap';
+        td.style.overflow = 'hidden';
+        td.style.textOverflow = 'ellipsis';
+    };
 
- helper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-     Handsontable.renderers.TextRenderer.apply(this, arguments);
-     td.style.whiteSpace = 'nowrap';
-     td.style.overflow = 'hidden';
-     td.style.textOverflow = 'ellipsis';
- };
+    helper.addCellStyle = _handsontableMakeCellStyle(helper);
 
- helper.createTable = function (data) {
-     var container = document.getElementById(helper.divid);
-     if (!container) return;
-     container.innerHTML = '';
-     helper.hot = new Handsontable(container, {
-         licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-         theme: 'ht-theme-classic',
-         data: data || [],
-         hiddenColumns: {
-             columns: helper.hiddenColumns || [],
-             indicators: false,
-             copyPasteEnabled: false
-         },
-         colWidths: (helper.colHeaders && helper.colHeaders.length === 13)
-             ? [50, 130, 130, 60, 90, 100, 70, 50, 50, 50, 100, 100, 60]
-             : [50, 130, 130, 70, 80, 100, 70, 50, 90, 60],
-         columns: helper.columns,
-         fixedColumnsStart: 2,
-         stretchH: 'all',
-         width: '100%',
-         height: '100%',
-         autoWrapRow: true,
-         rowHeaders: false,
-         colHeaders: helper.colHeaders,
-         columnSorting: true,
-         sortIndicator: true,
-         manualColumnResize: true,
-         manualRowResize: true,
-         filters: true,
-         renderAllRows: true,
-         search: true,
-         contextMenu: {
-             items: {
-                 "copy": { name: _loginUserLanguageResource.contextMenu_copy },
-                 "cut":  { name: _loginUserLanguageResource.contextMenu_cut }
-             }
-         },
-         cells: function (row, col, prop) {
-             var cp = {};
-             var visualColIndex = this.instance.toVisualColumn(col);
-             cp.editor = false;
+    helper.createTable = function (data) {
+        var container = document.getElementById(helper.divid);
+        if (!container) return;
+        container.innerHTML = '';
+        helper.hot = new Handsontable(container, {
+            licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+            theme: 'ht-theme-classic',
+            data: data || [],
+            hiddenColumns: {
+                columns: helper.hiddenColumns || [],
+                indicators: false,
+                copyPasteEnabled: false
+            },
+            colWidths: (helper.colHeaders && helper.colHeaders.length === 13) ?
+                [50, 130, 130, 60, 90, 100, 70, 50, 50, 50, 100, 100, 60] :
+                [50, 130, 130, 70, 80, 100, 70, 50, 90, 60],
+            columns: helper.columns,
+            fixedColumnsStart: 2,
+            stretchH: 'all',
+            width: '100%',
+            height: '100%',
+            autoWrapRow: true,
+            rowHeaders: false,
+            colHeaders: helper.colHeaders,
+            columnSorting: true,
+            sortIndicator: true,
+            manualColumnResize: true,
+            manualRowResize: true,
+            filters: true,
+            renderAllRows: true,
+            search: true,
+            contextMenu: {
+                items: {
+                    "copy": { name: _loginUserLanguageResource.contextMenu_copy },
+                    "cut":  { name: _loginUserLanguageResource.contextMenu_cut }
+                }
+            },
+            cells: function (row, col, prop) {
+                var cp = {};
+                var visualColIndex = this.instance.toVisualColumn(col);
+                cp.editor = false;
 
-             // config 列：由 columns 里的 renderer 处理
-             if (helper.columns[visualColIndex] && helper.columns[visualColIndex].renderer) {
-                 return cp;
-             }
+                if (helper.columns[visualColIndex] && helper.columns[visualColIndex].renderer) {
+                    return cp;
+                }
 
-             // reportCurve 列（背景色）
-             if (prop === 'reportCurveConfShowValue') {
-                 cp.renderer = helper.addCurveBg;
-             } else if (helper.columns[visualColIndex] &&
-                        helper.columns[visualColIndex].type !== 'checkbox' &&
-                        prop !== 'config') {
-                 cp.renderer = helper.addCellStyle;
-             }
-             return cp;
-         },
-         afterOnCellMouseOver: function (event, coords, TD) {
-             if (coords.col >= 0 && coords.row >= 0 &&
-                 helper.columns[coords.col] &&
-                 helper.columns[coords.col].type !== 'checkbox' &&
-                 helper.hot && helper.hot.getDataAtCell) {
-                 var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
-                 if (rawValue && rawValue.length > 0) {
-                     TD.title = rawValue;
-                 }
-             }
-         }
-     });
- };
+                if (prop === 'reportCurveConfShowValue') {
+                    cp.renderer = helper.addCurveBg;
+                } else if (helper.columns[visualColIndex] &&
+                    helper.columns[visualColIndex].type !== 'checkbox' &&
+                    prop !== 'config') {
+                    cp.renderer = helper.addCellStyle;
+                }
+                return cp;
+            },
+            afterOnCellMouseOver: _handsontableMakeMouseOver(helper)
+        });
+    };
 
- helper.saveData = function () {};
- helper.clearContainer = function () {};
- return helper;
+    helper.saveData = function () {};
+    helper.clearContainer = function () {};
+    return helper;
 }
 
-//内容表 config 列渲染器（链接，点击弹出配置窗口）
+// 内容表 config 列渲染器
 function renderReportUnitContentConfig(instance, td, row, col, prop, value, cellProperties) {
- Handsontable.renderers.TextRenderer.apply(this, arguments);
- td.innerHTML = "<a href='javascript:void(0)' " +
-     "onclick='onReportUnitContentConfigClick(" + row + "," + col + ")' " +
-     "style='text-decoration:none;color:#1890ff;'>" +
-     (_loginUserLanguageResource.config || 'Config') + "...</a>";
+    Handsontable.renderers.TextRenderer.apply(this, arguments);
+    td.innerHTML = "<a href='javascript:void(0)' " +
+        "onclick='onReportUnitContentConfigClick(" + row + "," + col + ")' " +
+        "style='text-decoration:none;color:#1890ff;'>" +
+        (_loginUserLanguageResource.config || 'Config') + "...</a>";
 }
 
-//config 列点击：占位实现
+// ================================================================
+// 点击内容表"配置"链接 —— 打开报表内容配置窗口
+// ================================================================
 function onReportUnitContentConfigClick(row, col) {
- // TODO: 打开内容配置窗口
- console.log('config click, row=' + row + ', col=' + col);
+    var reportType = getActiveReportType();
+    if (reportType === -1) return;
+
+    var node = _currentReportUnitNode;
+    if (!node) {
+        mini.alert(_loginUserLanguageResource.checkOne);
+        return;
+    }
+
+    var classes       = node.classes;
+    var unitId        = node.id;
+    var unitName      = node.text;
+    var calculateType = node.calculateType || 0;
+    var unitClasses   = node.unitClasses || 0;
+
+    var templateCode = '';
+    if (parseInt(unitClasses) === 0) {
+        var grid = getActiveReportTemplateGrid();
+        if (grid) {
+            var sel = grid.getSelected();
+            if (sel) templateCode = sel.templateCode;
+        }
+    }
+
+    mini.open({
+        title: _loginUserLanguageResource.reportContentConfig,
+        url: context + '/miniui-app/modules/driverConfig/reportUnitContentConfigWindow.jsp',
+        width: '80%',
+        height: '90%',
+        modal: true,
+        allowResize: true,
+        maxable: true,
+        onload: function () {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                unitId: unitId,
+                unitName: unitName,
+                calculateType: calculateType,
+                classes: classes,
+                unitClasses: unitClasses,
+                reportType: reportType,
+                selectedRow: row,
+                selectedCol: col,
+                templateCode: templateCode,
+                editFlag: editFlag
+            });
+
+            contentWindow.parent.refreshReportUnitContentTable = function (reportType, unitClasses) {
+                refreshReportUnitContentTable(reportType, unitClasses);
+            };
+        }
+    });
 }
 
-//3 个内容 Helper
+// ================================================================
+// 供 reportUnitContentConfigWindow.jsp 保存成功后回调
+// ================================================================
+window.refreshReportUnitContentTable = function (reportType, unitClasses) {
+    var node = _currentReportUnitNode;
+    if (!node) return;
+
+    var rt = parseInt(reportType);
+    var uc = parseInt(unitClasses);
+
+    if (uc === 1) {
+        loadHydrologicalReportContent(node);
+        return;
+    }
+
+    var grid = null;
+    if (rt === 0) grid = mini.get('dailyTemplateListGrid');
+    else if (rt === 1) grid = mini.get('areaTemplateListGrid');
+    else if (rt === 2) grid = mini.get('hourlyTemplateListGrid');
+
+    if (!grid) return;
+    var sel = grid.getSelected();
+    if (!sel) return;
+
+    if (rt === 0) {
+        loadTemplateContentTable(node, sel, 0,
+            'dailyReportContentContainer', 'dailyReportContentTitle',
+            'deviceDailyReportContentConfig');
+    } else if (rt === 1) {
+        loadTemplateContentTable(node, sel, 1,
+            'areaReportContentContainer', 'areaReportContentTitle',
+            'areaDailyReportContentConfig');
+    } else if (rt === 2) {
+        loadTemplateContentTable(node, sel, 2,
+            'hourlyReportContentContainer', 'hourlyReportContentTitle',
+            'deviceHourlyReportContentConfig');
+    }
+};
+
+// ================================================================
+// 根据当前激活的三级 Tab 返回 reportType
+// ================================================================
+function getActiveReportType() {
+    var stdSub = mini.get('reportStandardConfigSubTabs');
+    if (!stdSub) return -1;
+    var stdActive = stdSub.getActiveTab();
+    if (!stdActive) return -1;
+
+    if (stdActive.name === 'singleWellReport') {
+        var swSub = mini.get('singleWellReportSubTabs');
+        if (!swSub) return -1;
+        var swActive = swSub.getActiveTab();
+        if (!swActive) return -1;
+        if (swActive.name === 'hourlyReport') return 2;
+        if (swActive.name === 'dailyReport')  return 0;
+    } else if (stdActive.name === 'areaReport') {
+        var areaSub = mini.get('areaReportSubTabs');
+        if (!areaSub) return -1;
+        var areaActive = areaSub.getActiveTab();
+        if (!areaActive) return -1;
+        if (areaActive.name === 'dailyReport') return 1;
+    }
+    return -1;
+}
+
+// 4 个内容 Helper
 var SingleWellRangeReportTemplateContentHandsontableHelper = {
- createNew: function (divid) {
-     return _createReportTemplateContentHandsontableHelper(divid);
- }
+    createNew: function (divid) { return _createReportTemplateContentHandsontableHelper(divid); }
 };
 var SingleWellDailyReportTemplateContentHandsontableHelper = {
- createNew: function (divid) {
-     return _createReportTemplateContentHandsontableHelper(divid);
- }
+    createNew: function (divid) { return _createReportTemplateContentHandsontableHelper(divid); }
 };
 var ProductionReportTemplateContentHandsontableHelper = {
- createNew: function (divid) {
-     return _createReportTemplateContentHandsontableHelper(divid);
- }
+    createNew: function (divid) { return _createReportTemplateContentHandsontableHelper(divid); }
 };
 var HydrologicalWellDailyReportContentHandsontableHelper = {
- createNew: function (divid) {
-     return _createReportTemplateContentHandsontableHelper(divid);
- }
+    createNew: function (divid) { return _createReportTemplateContentHandsontableHelper(divid); }
 };
 
 // ================================================================
 // 22. 清空全部报表单元数据
 // ================================================================
 function clearAllReportUnitData() {
-    // 销毁所有 helper
     var helperNames = [
         'reportUnitPropertiesHandsontableHelper',
         'singleWellRangeReportTemplateHandsontableHelper',
@@ -1147,7 +1217,6 @@ function clearAllReportUnitData() {
         window[helperNames[i]] = null;
     }
 
-    // 清空各容器
     setInnerHTML('reportUnitPropertiesContainer', '');
     setInnerHTML('hourlyReportTemplateContainer', '');
     setInnerHTML('hourlyReportContentContainer', '');
@@ -1158,7 +1227,6 @@ function clearAllReportUnitData() {
     setInnerHTML('hydroReportTemplateContainer', '');
     setInnerHTML('hydroReportContentContainer', '');
 
-    // 清空模板列表 datagrid
     var gridIds = ['hourlyTemplateListGrid', 'dailyTemplateListGrid', 'areaTemplateListGrid'];
     for (var j = 0; j < gridIds.length; j++) {
         var g = mini.get(gridIds[j]);
@@ -1169,136 +1237,399 @@ function clearAllReportUnitData() {
     }
 }
 
-
-//================================================================
-//报表单元属性 - Handsontable Helper
-//对应 ExtJS 的 ReportUnitPropertiesHandsontableHelper
-//列：[序号][变量][值]
-//- 根节点(classes==0)：全部只读
-//- 报表单元(classes==1)：
-//   · 第 0/1 列只读
-//   · 第 2 列（值）：
-//       第 0 行 = 单元名称（必填）
-//       第 1 行 = 计算类型（下拉：无/功图计算/转速计产）
-//       第 2 行 = 排序（可空数字）
-//       第 3 行 = 备注（普通文本）
-//================================================================
+// ================================================================
+// 报表单元属性 - Handsontable Helper
+// ================================================================
 var ReportUnitPropertiesHandsontableHelper = {
- createNew: function (divid) {
-     var helper = {};
-     helper.hot      = null;
-     helper.classes  = null;
-     helper.divid    = divid;
-     helper.validresult = true;
-     helper.colHeaders = [];
-     helper.columns = [];
-     helper.AllData = [];
-     
-     helper.addReadOnlyBg = _handsontableMakeReadOnlyBg(helper);
-     helper.addCellStyle = _handsontableMakeCellStyle(helper);
+    createNew: function (divid) {
+        var helper = {};
+        helper.hot = null;
+        helper.classes = null;
+        helper.divid = divid;
+        helper.validresult = true;
+        helper.colHeaders = [];
+        helper.columns = [];
+        helper.AllData = [];
 
-     helper.createTable = function (data) {
-         var container = document.getElementById(helper.divid);
-         if (!container) return;
-         container.innerHTML = '';
+        helper.addReadOnlyBg = _handsontableMakeReadOnlyBg(helper);
+        helper.addCellStyle = _handsontableMakeCellStyle(helper);
 
-         helper.hot = new Handsontable(container, {
-             licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
-             theme: 'ht-theme-classic',
-             data: data,
-             colWidths: [50, 180, 200],
-             columns: helper.columns,
-             stretchH: 'all',
-             width: '100%',
-             height: '100%',
-             autoWrapRow: true,
-             rowHeaders: false,
-             colHeaders: helper.colHeaders,
-             columnSorting: true,
-             sortIndicator: true,
-             manualColumnResize: true,
-             manualRowResize: true,
-             filters: true,
-             renderAllRows: true,
-             search: true,
-             contextMenu: {
-                 items: {
-                     "copy": { name: _loginUserLanguageResource.contextMenu_copy },
-                     "cut":  { name: _loginUserLanguageResource.contextMenu_cut }
-                 }
-             },
-             cells: function (row, col, prop) {
-                 var cellProperties = {};
-                 var visualRowIndex = this.instance.toVisualRow(row);
-                 var visualColIndex = this.instance.toVisualColumn(col);
+        helper.createTable = function (data) {
+            var container = document.getElementById(helper.divid);
+            if (!container) return;
+            container.innerHTML = '';
 
-                 // ---------- 无编辑权限：全部只读 ----------
-                 if (!editFlag) {
-                     cellProperties.editor = false;
-                     cellProperties.renderer = helper.addReadOnlyBg;
-                     return cellProperties;
-                 }
+            helper.hot = new Handsontable(container, {
+                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+                theme: 'ht-theme-classic',
+                data: data,
+                colWidths: [50, 180, 200],
+                columns: helper.columns,
+                stretchH: 'all',
+                width: '100%',
+                height: '100%',
+                autoWrapRow: true,
+                rowHeaders: false,
+                colHeaders: helper.colHeaders,
+                columnSorting: true,
+                sortIndicator: true,
+                manualColumnResize: true,
+                manualRowResize: true,
+                filters: true,
+                renderAllRows: true,
+                search: true,
+                contextMenu: {
+                    items: {
+                        "copy": { name: _loginUserLanguageResource.contextMenu_copy },
+                        "cut":  { name: _loginUserLanguageResource.contextMenu_cut }
+                    }
+                },
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    var visualRowIndex = this.instance.toVisualRow(row);
+                    var visualColIndex = this.instance.toVisualColumn(col);
 
-                 // ---------- 第 0/1 列始终只读 ----------
-                 if (visualColIndex === 0 || visualColIndex === 1) {
-                     cellProperties.editor = false;
-                     cellProperties.renderer = helper.addReadOnlyBg;
-                     return cellProperties;
-                 }
+                    if (!editFlag) {
+                        cellProperties.editor = false;
+                        cellProperties.renderer = helper.addReadOnlyBg;
+                        return cellProperties;
+                    }
 
-                 // ---------- classes === 0：根节点，全部只读 ----------
-                 if (helper.classes === 0) {
-                     cellProperties.editor = false;
-                     cellProperties.renderer = helper.addReadOnlyBg;
-                     return cellProperties;
-                 }
+                    if (visualColIndex === 0 || visualColIndex === 1) {
+                        cellProperties.editor = false;
+                        cellProperties.renderer = helper.addReadOnlyBg;
+                        return cellProperties;
+                    }
 
-                 // ---------- classes === 1：报表单元节点 ----------
-                 if (helper.classes === 1) {
-                     if (visualColIndex === 2) {
-                         if (visualRowIndex === 0) {
-                             // 第 0 行：单元名称（必填）
-                             this.validator = function (val, callback) {
-                                 return handsontableDataCheck_NotNull(
-                                     val, callback, row, col, helper
-                                 );
-                             };
-                             cellProperties.renderer = helper.addCellStyle;
-                         } else if (visualRowIndex === 1) {
-                             // 第 1 行：计算类型（下拉）
-                             this.type = 'dropdown';
-                             this.strict = true;
-                             this.allowInvalid = false;
-                             this.source = [
-                                 _loginUserLanguageResource.nothing,
-                                 _loginUserLanguageResource.SRPCalculate,
-                                 _loginUserLanguageResource.PCPCalculate
-                             ];
-                             cellProperties.renderer = helper.addCellStyle;
-                         } else if (visualRowIndex === 2) {
-                             // 第 2 行：排序（可空数字）
-                             this.validator = function (val, callback) {
-                                 return handsontableDataCheck_Num_Nullable(
-                                     val, callback, row, col, helper
-                                 );
-                             };
-                             cellProperties.renderer = helper.addCellStyle;
-                         } else {
-                             // 第 3 行：备注（普通文本）
-                        	 cellProperties.renderer = helper.addCellStyle;
-                         }
-                     }
-                 }
-                 return cellProperties;
-             },
-             afterOnCellMouseOver: _handsontableMakeMouseOver(helper)
-         });
-     };
+                    if (helper.classes === 0) {
+                        cellProperties.editor = false;
+                        cellProperties.renderer = helper.addReadOnlyBg;
+                        return cellProperties;
+                    }
 
-     helper.saveData = function () {};
-     helper.clearContainer = function () {
-         helper.AllData = [];
-     };
-     return helper;
- }
+                    if (helper.classes === 1) {
+                        if (visualColIndex === 2) {
+                            if (visualRowIndex === 0) {
+                                this.validator = function (val, callback) {
+                                    return handsontableDataCheck_NotNull(val, callback, row, col, helper);
+                                };
+                                cellProperties.renderer = helper.addCellStyle;
+                            } else if (visualRowIndex === 1) {
+                                this.type = 'dropdown';
+                                this.strict = true;
+                                this.allowInvalid = false;
+                                this.source = [
+                                    _loginUserLanguageResource.nothing,
+                                    _loginUserLanguageResource.SRPCalculate,
+                                    _loginUserLanguageResource.PCPCalculate
+                                ];
+                                cellProperties.renderer = helper.addCellStyle;
+                            } else if (visualRowIndex === 2) {
+                                this.validator = function (val, callback) {
+                                    return handsontableDataCheck_Num_Nullable(val, callback, row, col, helper);
+                                };
+                                cellProperties.renderer = helper.addCellStyle;
+                            } else {
+                                cellProperties.renderer = helper.addCellStyle;
+                            }
+                        }
+                    }
+                    return cellProperties;
+                },
+                afterOnCellMouseOver: _handsontableMakeMouseOver(helper)
+            });
+        };
+
+        helper.saveData = function () {};
+        helper.clearContainer = function () {
+            helper.AllData = [];
+        };
+        return helper;
+    }
 };
+
+// ================================================================
+// 打开添加报表单元窗口
+// ================================================================
+function addReportUnitInfo() {
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) {
+        mini.alert(_loginUserLanguageResource.selectDeviceType);
+        return;
+    }
+    var selectedDeviceNode = deviceTree.getSelectedNode();
+    if (!selectedDeviceNode) {
+        mini.alert(_loginUserLanguageResource.selectDeviceType);
+        return;
+    }
+    var deviceTypeIds = selectedDeviceTypeId || '';
+
+    mini.open({
+        title: _loginUserLanguageResource.addReportUnit,
+        url: context + '/miniui-app/modules/driverConfig/reportUnitAddWindow.jsp',
+        width: 420,
+        height: 380,
+        modal: true,
+        allowResize: true,
+        onload: function () {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                deviceTypeIds: deviceTypeIds
+            });
+
+            contentWindow.parent._parentRefreshUnitTree = function () {
+                refreshReportUnitList();
+            };
+            contentWindow.parent._parentSetNewObject = function (name, classes) {
+                window._newReportUnitObjectName = name;
+            };
+        }
+    });
+}
+
+// ================================================================
+// 保存报表单元数据
+// ================================================================
+function SaveReportUnitData() {
+    var tree = mini.get('reportUnitList');
+    if (!tree) return;
+
+    var selectedNode = tree.getSelectedNode();
+    if (!selectedNode) return;
+    if (selectedNode.classes !== 1) return;
+
+    var tabs = mini.get('reportUnitRightTabs');
+    if (!tabs) return;
+    var activeTab = tabs.getActiveTab();
+    if (!activeTab) return;
+
+    var saveType = 0;
+    if (activeTab.name === 'props') {
+        saveType = 0;
+    } else if (activeTab.name === 'configStandard' || activeTab.name === 'configHydrological') {
+        saveType = 1;
+    }
+
+    var saveData = {
+        classes: selectedNode.classes,
+        id: selectedNode.id,
+        unitCode: selectedNode.code || '',
+        unitClasses: selectedNode.unitClasses || 0,
+        singleWellRangeReportTemplate: selectedNode.singleWellRangeReportTemplate,
+        singleWellDailyReportTemplate: selectedNode.singleWellDailyReportTemplate,
+        productionReportTemplate: selectedNode.productionReportTemplate
+    };
+
+    if (saveType === 0) {
+        var helper = reportUnitPropertiesHandsontableHelper;
+        if (!helper || !helper.hot) {
+            mini.alert(_loginUserLanguageResource.noDataToSave);
+            return;
+        }
+
+        var propertiesData = helper.hot.getData();
+        saveData.unitName = (propertiesData[0] && propertiesData[0][2]) ? propertiesData[0][2] : '';
+        var calcTypeText = (propertiesData[1] && propertiesData[1][2]) ? propertiesData[1][2] : '';
+        saveData.calculateType = 0;
+        if (calcTypeText === _loginUserLanguageResource.SRPCalculate) {
+            saveData.calculateType = 1;
+        } else if (calcTypeText === _loginUserLanguageResource.PCPCalculate) {
+            saveData.calculateType = 2;
+        }
+        saveData.sort = (propertiesData[2] && propertiesData[2][2]) ? propertiesData[2][2] : '';
+    } else {
+        saveData.unitName      = selectedNode.text;
+        saveData.calculateType = selectedNode.calculateType;
+        saveData.sort          = selectedNode.sort;
+
+        var grid = getActiveReportTemplateGrid();
+        if (grid && grid._unitFieldName) {
+            var sel = grid.getSelected();
+            saveData[grid._unitFieldName] = sel ? sel.templateCode : '';
+        }
+    }
+
+    SaveModbusProtocolReportUnitData(saveData);
+}
+
+// ================================================================
+// 根据当前激活的一级/二级/三级 Tab，返回对应的模板列表 grid
+// ================================================================
+function getActiveReportTemplateGrid() {
+    var stdSub = mini.get('reportStandardConfigSubTabs');
+    if (!stdSub) return null;
+    var stdActive = stdSub.getActiveTab();
+    if (!stdActive) return null;
+
+    if (stdActive.name === 'singleWellReport') {
+        var swSub = mini.get('singleWellReportSubTabs');
+        if (!swSub) return null;
+        var swActive = swSub.getActiveTab();
+        if (!swActive) return null;
+        if (swActive.name === 'hourlyReport') {
+            return mini.get('hourlyTemplateListGrid');
+        } else if (swActive.name === 'dailyReport') {
+            return mini.get('dailyTemplateListGrid');
+        }
+    } else if (stdActive.name === 'areaReport') {
+        var areaSub = mini.get('areaReportSubTabs');
+        if (!areaSub) return null;
+        var areaActive = areaSub.getActiveTab();
+        if (!areaActive) return null;
+        if (areaActive.name === 'dailyReport') {
+            return mini.get('areaTemplateListGrid');
+        }
+    }
+    return null;
+}
+
+// ================================================================
+// 提交保存/删除到后端
+// ================================================================
+function SaveModbusProtocolReportUnitData(saveData) {
+    var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.updateWait });
+    $.ajax({
+        type: 'POST',
+        url: context + '/acquisitionUnitManagerController/saveProtocolReportUnitData',
+        data: { data: JSON.stringify(saveData) },
+        dataType: 'json',
+        success: function (response) {
+            mini.unmask(document.body);
+            if (response && response.success) {
+                if (saveData.delidslist && saveData.delidslist.length > 0) {
+                    _currentReportUnitNode = null;
+                    window._newReportUnitObjectName = null;
+                    mini.alert(_loginUserLanguageResource.deleteSuccessfully);
+                } else {
+                    mini.alert(_loginUserLanguageResource.savedSuccessfully);
+                }
+                refreshReportUnitList();
+            } else {
+                mini.alert('<font color="red">' + _loginUserLanguageResource.saveFailed + '</font>');
+            }
+        },
+        error: function () {
+            mini.unmask(document.body);
+            mini.alert(_loginUserLanguageResource.requestFailed);
+        }
+    });
+}
+
+// ================================================================
+// 报表单元树 - 右键菜单弹出前
+// ================================================================
+function onReportUnitTreeBeforeMenu(e) {
+    var tree = mini.get('reportUnitList');
+    var menu = e.sender;
+    var node = tree ? tree.getSelectedNode() : null;
+
+    if (!node || node.classes !== 1) {
+        e.cancel = true;
+        if (e.htmlEvent) e.htmlEvent.preventDefault();
+        return;
+    }
+
+    var deleteText = _loginUserLanguageResource.deleteData;
+    var el = document.getElementById('reportUnitTreeMenuDeleteText');
+    if (el) el.textContent = deleteText;
+
+    var deleteItem = mini.getbyName('delete', menu);
+    if (deleteItem) {
+        if (!editFlag) {
+            deleteItem.disable();
+        } else {
+            deleteItem.enable();
+        }
+    }
+}
+
+// ================================================================
+// 删除报表单元节点
+// ================================================================
+function deleteReportUnitNode(e) {
+    var tree = mini.get('reportUnitList');
+    var node = tree ? tree.getSelectedNode() : null;
+    if (!node) return;
+
+    var nodeId = node.id;
+
+    mini.confirm(
+        _loginUserLanguageResource.confirmDelete,
+        _loginUserLanguageResource.confirm,
+        function (action) {
+            if (action === 'ok') {
+                var deleteData = { delidslist: [nodeId] };
+                SaveModbusProtocolReportUnitData(deleteData);
+            }
+        }
+    );
+}
+
+// ================================================================
+// 打开导出报表单元窗口
+// ================================================================
+function openExportReportUnitWindow() {
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) {
+        mini.alert(_loginUserLanguageResource.selectDeviceType);
+        return;
+    }
+    var selectedNode = deviceTree.getSelectedNode();
+    if (!selectedNode) {
+        mini.alert(_loginUserLanguageResource.selectDeviceType);
+        return;
+    }
+
+    var deviceTypeIds = selectedDeviceTypeId || '';
+
+    mini.open({
+        title: _loginUserLanguageResource.exportReportUnit,
+        url: context + '/miniui-app/modules/driverConfig/exportReportUnitWindow.jsp',
+        width: 420,
+        height: 600,
+        modal: true,
+        allowResize: true,
+        maxable: true,
+        onload: function () {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                deviceTypeIds: deviceTypeIds
+            });
+        }
+    });
+}
+
+// ================================================================
+// 打开导入报表单元窗口
+// ================================================================
+function openImportReportUnitWindow() {
+    var deviceTree = mini.get('deviceTypeTree');
+    if (!deviceTree) return;
+    var selectedNode = deviceTree.getSelectedNode();
+    if (!selectedNode) return;
+    var deviceTypeId = selectedNode.deviceTypeId;
+    var deviceTypeName = getNodePath(deviceTree, selectedNode);
+
+    mini.open({
+        title: _loginUserLanguageResource.importReportUnit,
+        url: context + '/miniui-app/modules/driverConfig/importReportUnitWindow.jsp',
+        width: '90%',
+        height: '80%',
+        modal: true,
+        allowResize: true,
+        maxable: true,
+        onload: function () {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+            contentWindow.setData({
+                deviceTypeId: deviceTypeId,
+                deviceTypeName: deviceTypeName
+            });
+            contentWindow.parent.refreshReportUnitList = function () {
+                refreshReportUnitList();
+            };
+        }
+    });
+}

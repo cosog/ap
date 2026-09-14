@@ -4824,8 +4824,9 @@ function _handsontableMakeCellStyle() {
 
 function _handsontableMakeMouseOver(helper) {
     return function(event, coords, TD) {
-        if (coords.col >= 0 && coords.row >= 0 && helper.columns[coords.col] && helper.columns[coords.col].type !== 'checkbox' &&
-            helper.hot && helper.hot.getDataAtCell) {
+        if (coords.col >= 0 && coords.row >= 0 
+        		&& ( helper.columns==undefined || (helper.columns && helper.columns[coords.col] && helper.columns[coords.col].type !== 'checkbox') )
+        		&& helper.hot && helper.hot.getDataAtCell) {
             var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
             if (rawValue && rawValue.length > 0) {
                 TD.title = rawValue;

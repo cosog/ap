@@ -4,16 +4,17 @@ import java.util.List;
 
 public class ModbusProtocolReportUnitSaveData {
 
-	int id;
-	String unitCode;
-	String unitName;
-	String calculateType;
-	String singleWellRangeReportTemplate;
-	String singleWellDailyReportTemplate;
-	String productionReportTemplate;
-	String sort;
+	public int id;
+	public String unitCode;
+	public String unitName;
+	public String calculateType;
+	public int unitClasses;
+	public String singleWellRangeReportTemplate;
+	public String singleWellDailyReportTemplate;
+	public String productionReportTemplate;
+	public String sort;
 	
-	private List<String> delidslist;
+	public List<String> delidslist;
 
 	public int getId() {
 		return id;
@@ -85,5 +86,13 @@ public class ModbusProtocolReportUnitSaveData {
 
 	public void setCalculateType(String calculateType) {
 		this.calculateType = calculateType;
+	}
+
+	public int getUnitClasses() {
+		return unitClasses;
+	}
+
+	public void setUnitClasses(int unitClasses) {
+		this.unitClasses = unitClasses;
 	}
 }

@@ -56,6 +56,28 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             width:100% !important;
             height:100% !important;
         }
+        /* ---- Splitter ---- */
+		.mini-splitter {border: 0 !important;}
+		.mini-splitter-border {border: 0 !important;}
+		.mini-splitter-pane {padding: 0 !important;border: 0 !important;}
+		.mini-splitter-pane .mini-splitter-handler {background: transparent !important;border: 0 !important;}
+
+		/* ---- Panel ---- */
+		.mini-panel {border: 0 !important;}
+		.mini-panel-border {border: 0 !important;}
+		.mini-panel-header {border-bottom: 1px solid #e8e8e8 !important;padding: 0 8px !important;height: 28px !important;line-height: 28px !important;background: #f5f7fa !important;}
+		.mini-panel-body {padding: 0 !important;border: 0 !important;}
+
+		/* ---- Tabs ---- */
+		.mini-tabs {border: 0 !important;}
+		.mini-tabs-header {border-bottom: 1px solid #e8e8e8 !important;background: #fafafa !important;}
+		.mini-tabs-body {border: 0 !important;padding: 0 !important;}
+		.mini-tab-body {padding: 0 !important;margin: 0 !important;border: 0 !important;}
+		.mini-tabs-bodys {padding: 0 !important;}
+
+		/* ---- 内容表容器 ---- */
+		.hot-wrapper {width: 100%;height: 100%;padding: 0 !important;border: 0 !important;}
+		.hot-inner {width: 100%;height: 100%;border: 0 !important;}
     </style>
 </head>
 
@@ -540,11 +562,11 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
                                                     <button id="reportUnitRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshReportUnitList()">Refresh</button>
                                                     <span style="flex:1;"></span>
-                                                    <button id="reportUnitAddBtn" class="mini-button" iconCls="add">Add</button>
-                                                    <button id="reportUnitSaveBtn" class="mini-button" iconCls="save">Save</button>
-                                                    <button id="reportUnitExportBtn" class="mini-button" iconCls="export">Export</button>
-                                                    <button id="reportUnitImportBtn" class="mini-button" iconCls="import">Import</button>
-                                                    <span id="reportUnitInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
+                                                    <button id="reportUnitAddBtn" class="mini-button" iconCls="add" onclick="addReportUnitInfo()">Add</button>
+                                                    <button id="reportUnitSaveBtn" class="mini-button" iconCls="save" onclick="SaveReportUnitData()">Save</button>
+                                                    <button id="reportUnitExportBtn" class="mini-button" iconCls="export" onclick="openExportReportUnitWindow()">Export</button>
+                                                    <button id="reportUnitImportBtn" class="mini-button" iconCls="import" onclick="openImportReportUnitWindow()">Import</button>
+                                                    <span id="reportUnitInfoLabel" style="color:#2d6a9f;font-size:13px;" ></span>
                                                 </div>
                                                 <!-- 主体：单元列表 + 右侧详情 -->
                                                 <div style="display:flex;flex:1;overflow:hidden;height:100%;">
@@ -555,9 +577,15 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                              idField="id" textField="text" parentField="pid" resultAsTree="true"
                                                              onbeforeload="onReportUnitListBeforeLoad"
                                                              onload="onReportUnitListLoad"
-                                                             onnodeselect="onReportUnitListSelect">
+                                                             onnodeselect="onReportUnitListSelect"
+                                                             contextMenu="#reportUnitTreeMenu">
                                                             <div property="emptyText" class="empty-msg">No Unit</div>
                                                         </div>
+                                                        <ul id="reportUnitTreeMenu" class="mini-contextmenu" onbeforeopen="onReportUnitTreeBeforeMenu">
+    														<li name="delete" iconCls="delete" onclick="deleteReportUnitNode">
+        														<span id="reportUnitTreeMenuDeleteText">删除</span>
+    														</li>
+														</ul>
                                                     </div>
                                                     <!-- 右侧详情 Tabs -->
                                                     <div class="right-config" style="height:100%;">

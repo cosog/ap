@@ -4307,6 +4307,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if(StringManagerUtils.isNotNull(modbusProtocolReportUnitSaveData.getUnitName())){
 				ReportUnit reportUnit=new ReportUnit();
+				reportUnit.setClasses(modbusProtocolReportUnitSaveData.getUnitClasses());
 				reportUnit.setId(modbusProtocolReportUnitSaveData.getId());
 				reportUnit.setUnitCode(modbusProtocolReportUnitSaveData.getUnitCode());
 				reportUnit.setUnitName(modbusProtocolReportUnitSaveData.getUnitName());

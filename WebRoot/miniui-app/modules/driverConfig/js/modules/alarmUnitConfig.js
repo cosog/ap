@@ -40,9 +40,9 @@ function onAlarmProtocolTreeLoad(e) {
 
     var targetNode = null;
 
-    if (_selectedUnitConfigProtocolTreeNodeCode) {
+    if (_selectedProtocolTreeNodeCode) {
         function findNode(node) {
-            if (node.code === _selectedUnitConfigProtocolTreeNodeCode && node.classes === 1) {
+            if (node.code === _selectedProtocolTreeNodeCode && node.classes === 1) {
                 targetNode = node;
                 return true;
             }
@@ -80,7 +80,7 @@ function onAlarmProtocolTreeSelect(e) {
     var node = e.node;
     _currentAlarmProtocolNode = node;
     if (node && node.classes === 1) {
-        _selectedUnitConfigProtocolTreeNodeCode = node.code;
+        _selectedProtocolTreeNodeCode = node.code;
         _newAlarmUnitObjectName = null;
         _newAlarmUnitObjectClasses = null;
     }
@@ -833,7 +833,7 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
              theme: 'ht-theme-classic',
              data: data,
              hiddenColumns: {
-                 columns: (typeof _emailEnable !== 'undefined' && _emailEnable ? [13, 14, 15] : [11, 12, 13, 14, 15]),
+                 columns: (emailEnable ? [13, 14, 15] : [11, 12, 13, 14, 15]),
                  indicators: false,
                  copyPasteEnabled: false
              },
@@ -911,7 +911,7 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
              theme: 'ht-theme-classic',
              data: data,
              hiddenColumns: {
-                 columns: (typeof emailConfig !== 'undefined' && emailConfig.enable ? [8] : [6, 7, 8]),
+                 columns: (emailEnable ? [8] : [6, 7, 8]),
                  indicators: false,
                  copyPasteEnabled: false
              },
@@ -987,7 +987,7 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
              theme: 'ht-theme-classic',
              data: data,
              hiddenColumns: {
-                 columns: (typeof emailConfig !== 'undefined' && emailConfig.enable ? [8, 9] : [6, 7, 8, 9]),
+                 columns: (emailEnable ? [8, 9] : [6, 7, 8, 9]),
                  indicators: false,
                  copyPasteEnabled: false
              },
@@ -1063,7 +1063,7 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
              theme: 'ht-theme-classic',
              data: data,
              hiddenColumns: {
-                 columns: (typeof emailConfig !== 'undefined' && emailConfig.enable ? [8, 9] : [6, 7, 8, 9]),
+                 columns: (emailEnable ? [8, 9] : [6, 7, 8, 9]),
                  indicators: false,
                  copyPasteEnabled: false
              },
@@ -1139,7 +1139,7 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
              theme: 'ht-theme-classic',
              data: data,
              hiddenColumns: {
-                 columns: (typeof emailConfig !== 'undefined' && emailConfig.enable ? [] : [7, 8]),
+                 columns: (emailEnable ? [] : [7, 8]),
                  indicators: false,
                  copyPasteEnabled: false
              },
@@ -1216,7 +1216,7 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
              theme: 'ht-theme-classic',
              data: data,
              hiddenColumns: {
-                 columns: (typeof emailConfig !== 'undefined' && emailConfig.enable ? [10, 11] : [8, 9, 10, 11]),
+                 columns: (emailEnable ? [10, 11] : [8, 9, 10, 11]),
                  indicators: false,
                  copyPasteEnabled: false
              },

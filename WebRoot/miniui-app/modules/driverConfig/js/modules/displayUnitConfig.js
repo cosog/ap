@@ -29,9 +29,9 @@ function onDisplayUnitProtocolTreeLoad(e) {
     var targetNode = null;
 
     // 如果有记录的上次选中的协议 code，优先选中它
-    if (_selectedUnitConfigProtocolTreeNodeCode) {
+    if (_selectedProtocolTreeNodeCode) {
         function findNode(node) {
-            if (node.code === _selectedUnitConfigProtocolTreeNodeCode && node.classes === 1) {
+            if (node.code === _selectedProtocolTreeNodeCode && node.classes === 1) {
                 targetNode = node;
                 return true;
             }
@@ -71,7 +71,7 @@ function onDisplayUnitProtocolTreeSelect(e) {
     _currentDisplayProtocolNode = node;
     if (node && node.classes === 1) {
         // 保存选中的协议 code 到全局变量（与采集单元共用）
-        _selectedUnitConfigProtocolTreeNodeCode = node.code;
+        _selectedProtocolTreeNodeCode = node.code;
         // 清空新增标记
         _newDisplayUnitObjectName = null;
         _newDisplayUnitObjectClasses = null;

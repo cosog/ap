@@ -3,7 +3,7 @@
 String path = request.getContextPath();
 String otherStaticResourceTimestamp = (String)session.getAttribute("otherStaticResourceTimestamp");
 if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
-otherStaticResourceTimestamp=System.currentTimeMillis()+"";
+//otherStaticResourceTimestamp=System.currentTimeMillis()+"";
 %>
 <!DOCTYPE html>
 <html>
@@ -18,66 +18,298 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
     <script src="js/modules/displayUnitConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <script src="js/modules/alarmUnitConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <script src="js/modules/reportUnitConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+    <script src="js/modules/acqInstanceConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+    <script src="js/modules/displayInstanceConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+    <script src="js/modules/alarmInstanceConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+    <script src="js/modules/reportInstanceConfig.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <style>
-        html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; font-family:"Microsoft YaHei",Arial,sans-serif; background:#f0f2f5; }
-        .driver-container { width:100%; height:100%; display:flex; flex-direction:column; background:#fff; }
-        .driver-container .mini-splitter { flex:1; }
-        .left-panel { display:flex; flex-direction:column; height:100%; background:#f0f2f5; padding:4px; }
-        .left-panel .tree-area { flex:1; background:#fff; border-radius:4px; box-shadow:0 1px 4px rgba(0,0,0,0.06); overflow:hidden; display:flex; flex-direction:column; }
-        .left-panel .tree-area .mini-tree { flex:1; width:100%; height:100%; }
-        .right-panel { display:flex; flex-direction:column; height:100%; background:#f0f2f5; padding:4px; }
-        .right-panel .mini-tabs { flex:1; width:100%; height:100%; }
-        .right-panel .mini-tabs-body, .right-panel .mini-tab-body { height:100% !important; padding:0 !important; margin:0 !important; overflow:hidden !important; }
-        .tab-content-layout { width:100%; height:100%; display:flex; flex-direction:column; background:#fff; }
-        .tab-content-layout .mini-toolbar { flex-shrink:0; border-bottom:1px solid #e8e8e8; padding:4px 8px; display:flex; align-items:center; flex-wrap:wrap; gap:4px; background:#fafafa; }
-        .sub-tab-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:14px; }
-        .mini-toolbar .separator { width:1px; height:20px; background:#ddd; margin:0 4px; }
-        .empty-msg { color:#999; font-size:13px; text-align:center; padding:20px; }
-        .mini-tabs-body { overflow:hidden !important; }
-        .inner-toolbar { border-bottom:1px solid #e8e8e8; padding:2px 8px; display:flex; align-items:center; gap:4px; flex-shrink:0; background:#fafafa; }
-        .mini-tree .tree-node { cursor:pointer; }
-        .mini-tree .tree-node-selected { background:#e6f7ff; color:#1890ff; font-weight:bold; }
-        .unit-layout, .instance-layout { display:flex; flex:1; overflow:hidden; height:100%; }
-        .unit-layout .left-protocol, .instance-layout .left-protocol { width:25%; border-right:1px solid #e8e8e8; overflow:auto; padding:4px; background:#fafafa; }
-        .unit-layout .middle-list, .instance-layout .middle-list { width:30%; border-right:1px solid #e8e8e8; overflow:auto; padding:4px; background:#fafafa; }
-        .unit-layout .right-config, .instance-layout .right-property { flex:1; display:flex; flex-direction:column; overflow:hidden; padding:4px; background:#fff; height:100%; }
-        .unit-layout .right-config .mini-tabs, .instance-layout .right-property .mini-tabs { flex:1; width:100%; height:100%; }
-        .grid-title-bar { border-bottom:1px solid #e8e8e8; padding:4px 8px; background:#f5f5f5; font-weight:bold; font-size:13px; color:#333; }
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f0f2f5;
+        }
+
+        .driver-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .driver-container .mini-splitter {
+            flex: 1;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: #f0f2f5;
+            padding: 4px;
+        }
+
+        .left-panel .tree-area {
+            flex: 1;
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .left-panel .tree-area .mini-tree {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: #f0f2f5;
+            padding: 4px;
+        }
+
+        .right-panel .mini-tabs {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        .right-panel .mini-tabs-body,
+        .right-panel .mini-tab-body {
+            height: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden !important;
+        }
+
+        .tab-content-layout {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .tab-content-layout .mini-toolbar {
+            flex-shrink: 0;
+            border-bottom: 1px solid #e8e8e8;
+            padding: 4px 8px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+            background: #fafafa;
+        }
+
+        .sub-tab-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .mini-toolbar .separator {
+            width: 1px;
+            height: 20px;
+            background: #ddd;
+            margin: 0 4px;
+        }
+
+        .empty-msg {
+            color: #999;
+            font-size: 13px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .mini-tabs-body {
+            overflow: hidden !important;
+        }
+
+        .inner-toolbar {
+            border-bottom: 1px solid #e8e8e8;
+            padding: 2px 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+            background: #fafafa;
+        }
+
+        .mini-tree .tree-node {
+            cursor: pointer;
+        }
+
+        .mini-tree .tree-node-selected {
+            background: #e6f7ff;
+            color: #1890ff;
+            font-weight: bold;
+        }
+
+        .unit-layout,
+        .instance-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .unit-layout .left-protocol,
+        .instance-layout .left-protocol {
+            width: 25%;
+            border-right: 1px solid #e8e8e8;
+            overflow: auto;
+            padding: 4px;
+            background: #fafafa;
+        }
+
+        .unit-layout .middle-list,
+        .instance-layout .middle-list {
+            width: 30%;
+            border-right: 1px solid #e8e8e8;
+            overflow: auto;
+            padding: 4px;
+            background: #fafafa;
+        }
+
+        .unit-layout .right-config,
+        .instance-layout .right-property {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 4px;
+            background: #fff;
+            height: 100%;
+        }
+
+        .unit-layout .right-config .mini-tabs,
+        .instance-layout .right-property .mini-tabs {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        .grid-title-bar {
+            border-bottom: 1px solid #e8e8e8;
+            padding: 4px 8px;
+            background: #f5f5f5;
+            font-weight: bold;
+            font-size: 13px;
+            color: #333;
+        }
 
         /* ============================================================
          * 让报表单元/实例区域内部所有层级的 mini-tabs body 都铺满
          * ============================================================ */
-        .right-config .mini-tabs-body, .right-config .mini-tab-body,
-        .right-property .mini-tabs-body, .right-property .mini-tab-body {
-            height:100% !important; padding:0 !important; margin:0 !important; overflow:hidden !important;
+        .right-config .mini-tabs-body,
+        .right-config .mini-tab-body,
+        .right-property .mini-tabs-body,
+        .right-property .mini-tab-body {
+            height: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden !important;
         }
+
         .right-config .mini-tab-body .mini-tabs,
         .right-config .mini-tabs-body .mini-tabs {
-            width:100% !important;
-            height:100% !important;
+            width: 100% !important;
+            height: 100% !important;
         }
+
         /* ---- Splitter ---- */
-		.mini-splitter {border: 0 !important;}
-		.mini-splitter-border {border: 0 !important;}
-		.mini-splitter-pane {padding: 0 !important;border: 0 !important;}
-		.mini-splitter-pane .mini-splitter-handler {background: transparent !important;border: 0 !important;}
+        .mini-splitter {
+            border: 0 !important;
+        }
 
-		/* ---- Panel ---- */
-		.mini-panel {border: 0 !important;}
-		.mini-panel-border {border: 0 !important;}
-		.mini-panel-header {border-bottom: 1px solid #e8e8e8 !important;padding: 0 8px !important;height: 28px !important;line-height: 28px !important;background: #f5f7fa !important;}
-		.mini-panel-body {padding: 0 !important;border: 0 !important;}
+        .mini-splitter-border {
+            border: 0 !important;
+        }
 
-		/* ---- Tabs ---- */
-		.mini-tabs {border: 0 !important;}
-		.mini-tabs-header {border-bottom: 1px solid #e8e8e8 !important;background: #fafafa !important;}
-		.mini-tabs-body {border: 0 !important;padding: 0 !important;}
-		.mini-tab-body {padding: 0 !important;margin: 0 !important;border: 0 !important;}
-		.mini-tabs-bodys {padding: 0 !important;}
+        .mini-splitter-pane {
+            padding: 0 !important;
+            border: 0 !important;
+        }
 
-		/* ---- 内容表容器 ---- */
-		.hot-wrapper {width: 100%;height: 100%;padding: 0 !important;border: 0 !important;}
-		.hot-inner {width: 100%;height: 100%;border: 0 !important;}
+        .mini-splitter-pane .mini-splitter-handler {
+            background: transparent !important;
+            border: 0 !important;
+        }
+
+        /* ---- Panel ---- */
+        .mini-panel {
+            border: 0 !important;
+        }
+
+        .mini-panel-border {
+            border: 0 !important;
+        }
+
+        .mini-panel-header {
+            border-bottom: 1px solid #e8e8e8 !important;
+            padding: 0 8px !important;
+            height: 28px !important;
+            line-height: 28px !important;
+            background: #f5f7fa !important;
+        }
+
+        .mini-panel-body {
+            padding: 0 !important;
+            border: 0 !important;
+        }
+
+        /* ---- Tabs ---- */
+        .mini-tabs {
+            border: 0 !important;
+        }
+
+        .mini-tabs-header {
+            border-bottom: 1px solid #e8e8e8 !important;
+            background: #fafafa !important;
+        }
+
+        .mini-tabs-body {
+            border: 0 !important;
+            padding: 0 !important;
+        }
+
+        .mini-tab-body {
+            padding: 0 !important;
+            margin: 0 !important;
+            border: 0 !important;
+        }
+
+        .mini-tabs-bodys {
+            padding: 0 !important;
+        }
+
+        /* ---- 内容表容器 ---- */
+        .hot-wrapper {
+            width: 100%;
+            height: 100%;
+            padding: 0 !important;
+            border: 0 !important;
+        }
+
+        .hot-inner {
+            width: 100%;
+            height: 100%;
+            border: 0 !important;
+        }
     </style>
 </head>
 
@@ -298,7 +530,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                     <div class="mini-splitter" vertical="false" style="width:100%;height:100%;">
                                                         <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
                                                             <div style="padding:4px;height:100%;background:#fafafa;">
-                                                                <div id="displayUnitProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onDisplayUnitProtocolTreeBeforeLoad" onload="onDisplayUnitProtocolTreeLoad" onnodeselect="onDisplayUnitProtocolTreeSelect" >
+                                                                <div id="displayUnitProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onDisplayUnitProtocolTreeBeforeLoad" onload="onDisplayUnitProtocolTreeLoad" onnodeselect="onDisplayUnitProtocolTreeSelect">
                                                                     <div property="emptyText" class="empty-msg">无协议</div>
                                                                 </div>
                                                             </div>
@@ -310,11 +542,11 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                         <div id="displayUnitList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onDisplayUnitListBeforeLoad" onload="onDisplayUnitListLoad" onnodeselect="onDisplayUnitListSelect" contextMenu="#displayUnitTreeMenu">
                                                                             <div property="emptyText" class="empty-msg">无单元</div>
                                                                         </div>
-                                                                		<ul id="displayUnitTreeMenu" class="mini-contextmenu" onbeforeopen="onDisplayUnitTreeBeforeMenu">
-    																		<li name="delete" iconCls="delete" onclick="deleteDisplayUnitNode">
-        																		<span id="displayUnitTreeMenuDeleteText">删除</span>
-    																		</li>
-																		</ul>
+                                                                        <ul id="displayUnitTreeMenu" class="mini-contextmenu" onbeforeopen="onDisplayUnitTreeBeforeMenu">
+                                                                            <li name="delete" iconCls="delete" onclick="deleteDisplayUnitNode">
+                                                                                <span id="displayUnitTreeMenuDeleteText">删除</span>
+                                                                            </li>
+                                                                        </ul>
                                                                     </div>
                                                                 </div>
                                                                 <div size="75%" showCollapseButton="false">
@@ -330,9 +562,9 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                     <div size="50%" showCollapseButton="false">
                                                                                         <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
                                                                                             <div class="grid-title-bar" style="flex-shrink:0;">
-            																					<span id="displayAcqItemsTitle"></span>
-        																					</div>
-        																					<div class="mini-toolbar" style="border-bottom:1px solid #e8e8e8;padding:2px 8px;flex-shrink:0;background:#fafafa;">
+                                                                                                <span id="displayAcqItemsTitle"></span>
+                                                                                            </div>
+                                                                                            <div class="mini-toolbar" style="border-bottom:1px solid #e8e8e8;padding:2px 8px;flex-shrink:0;background:#fafafa;">
                                                                                                 <button id="displayAcqSelectAllBtn" class="mini-button" onclick="displayAcqSelectAll()">全选</button>
                                                                                                 <button id="displayAcqDeselectAllBtn" class="mini-button" onclick="displayAcqDeselectAll()">取消全选</button>
                                                                                             </div>
@@ -344,8 +576,8 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                     <div size="50%" showCollapseButton="true" collapseDirection="bottom">
                                                                                         <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
                                                                                             <div class="grid-title-bar" style="flex-shrink:0;">
-            																					<span id="displayCtrlItemsTitle"></span>
-        																					</div>
+                                                                                                <span id="displayCtrlItemsTitle"></span>
+                                                                                            </div>
                                                                                             <div class="mini-toolbar" style="border-bottom:1px solid #e8e8e8;padding:2px 8px;flex-shrink:0;background:#fafafa;">
                                                                                                 <button id="displayCtrlSelectAllBtn" class="mini-button" onclick="displayCtrlSelectAll()">全选</button>
                                                                                                 <button id="displayCtrlDeselectAllBtn" class="mini-button" onclick="displayCtrlDeselectAll()">取消全选</button>
@@ -386,14 +618,9 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                         <!-- 左侧协议树 20% -->
                                                         <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
                                                             <div style="padding:4px;height:100%;background:#fafafa;">
-                                                                <div id="alarmUnitProtocolTree" class="mini-tree" style="width:100%;height:100%;" 
-     																showTreeIcon="true" expandOnNodeClick="false" 
-     																idField="id" textField="text" parentField="pid" resultAsTree="true"
-     																onbeforeload="onAlarmProtocolTreeBeforeLoad"
-     																onload="onAlarmProtocolTreeLoad"
-     																onnodeselect="onAlarmProtocolTreeSelect">
-    																<div property="emptyText" class="empty-msg">No Protocol</div>
-																</div>
+                                                                <div id="alarmUnitProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onAlarmProtocolTreeBeforeLoad" onload="onAlarmProtocolTreeLoad" onnodeselect="onAlarmProtocolTreeSelect">
+                                                                    <div property="emptyText" class="empty-msg">No Protocol</div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <!-- 右侧：内层 Splitter（单元列表 + 详情） -->
@@ -402,20 +629,14 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                 <!-- 左侧单元列表 25% -->
                                                                 <div size="25%" showCollapseButton="true" collapseDirection="left" minSize="150">
                                                                     <div style="padding:4px;height:100%;background:#fafafa;">
-                                                                    	<div id="alarmUnitList" class="mini-tree" style="width:100%;height:100%;" 
-     																		showTreeIcon="true" expandOnNodeClick="false" 
-     																		idField="id" textField="text" parentField="pid" resultAsTree="true"
-     																		onbeforeload="onAlarmUnitListBeforeLoad"
-     																		onload="onAlarmUnitListLoad"
-     																		onnodeselect="onAlarmUnitListSelect"
-     																		contextMenu="#alarmUnitTreeMenu">
-    																		<div property="emptyText" class="empty-msg">No Unit</div>
-																		</div>
-																		<ul id="alarmUnitTreeMenu" class="mini-contextmenu" onbeforeopen="onAlarmUnitTreeBeforeMenu">
-    																		<li name="delete" iconCls="delete" onclick="deleteAlarmUnitNode">
-        																		<span id="alarmUnitTreeMenuDeleteText">删除</span>
-    																		</li>
-																		</ul>
+                                                                        <div id="alarmUnitList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onAlarmUnitListBeforeLoad" onload="onAlarmUnitListLoad" onnodeselect="onAlarmUnitListSelect" contextMenu="#alarmUnitTreeMenu">
+                                                                            <div property="emptyText" class="empty-msg">No Unit</div>
+                                                                        </div>
+                                                                        <ul id="alarmUnitTreeMenu" class="mini-contextmenu" onbeforeopen="onAlarmUnitTreeBeforeMenu">
+                                                                            <li name="delete" iconCls="delete" onclick="deleteAlarmUnitNode">
+                                                                                <span id="alarmUnitTreeMenuDeleteText">删除</span>
+                                                                            </li>
+                                                                        </ul>
                                                                     </div>
                                                                 </div>
                                                                 <!-- 右侧详情 Tabs -->
@@ -566,32 +787,24 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                     <button id="reportUnitSaveBtn" class="mini-button" iconCls="save" onclick="SaveReportUnitData()">Save</button>
                                                     <button id="reportUnitExportBtn" class="mini-button" iconCls="export" onclick="openExportReportUnitWindow()">Export</button>
                                                     <button id="reportUnitImportBtn" class="mini-button" iconCls="import" onclick="openImportReportUnitWindow()">Import</button>
-                                                    <span id="reportUnitInfoLabel" style="color:#2d6a9f;font-size:13px;" ></span>
+                                                    <span id="reportUnitInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                 </div>
                                                 <!-- 主体：单元列表 + 右侧详情 -->
                                                 <div style="display:flex;flex:1;overflow:hidden;height:100%;">
                                                     <!-- 单元列表树 -->
                                                     <div class="middle-list" id="reportUnitListContainer" style="width:20%;">
-                                                        <div id="reportUnitList" class="mini-tree" style="width:100%;height:100%;"
-                                                             showTreeIcon="true" expandOnNodeClick="false"
-                                                             idField="id" textField="text" parentField="pid" resultAsTree="true"
-                                                             onbeforeload="onReportUnitListBeforeLoad"
-                                                             onload="onReportUnitListLoad"
-                                                             onnodeselect="onReportUnitListSelect"
-                                                             contextMenu="#reportUnitTreeMenu">
+                                                        <div id="reportUnitList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onReportUnitListBeforeLoad" onload="onReportUnitListLoad" onnodeselect="onReportUnitListSelect" contextMenu="#reportUnitTreeMenu">
                                                             <div property="emptyText" class="empty-msg">No Unit</div>
                                                         </div>
                                                         <ul id="reportUnitTreeMenu" class="mini-contextmenu" onbeforeopen="onReportUnitTreeBeforeMenu">
-    														<li name="delete" iconCls="delete" onclick="deleteReportUnitNode">
-        														<span id="reportUnitTreeMenuDeleteText">删除</span>
-    														</li>
-														</ul>
+                                                            <li name="delete" iconCls="delete" onclick="deleteReportUnitNode">
+                                                                <span id="reportUnitTreeMenuDeleteText">删除</span>
+                                                            </li>
+                                                        </ul>
                                                     </div>
                                                     <!-- 右侧详情 Tabs -->
                                                     <div class="right-config" style="height:100%;">
-                                                        <div id="reportUnitRightTabs" class="mini-tabs" style="width:100%;height:100%;"
-                                                             activeIndex="1" tabPosition="top"
-                                                             onactivechanged="onReportUnitDetailTabChanged">
+                                                        <div id="reportUnitRightTabs" class="mini-tabs" style="width:100%;height:100%;" activeIndex="1" tabPosition="top" onactivechanged="onReportUnitDetailTabChanged">
 
                                                             <!-- ===================== Tab 1: 属性 ===================== -->
                                                             <div title="Properties" name="props" style="height:100%;">
@@ -601,37 +814,22 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                             </div>
 
                                                             <!-- ============ Tab 2: 配置 - 标准报表 (unitClasses==0) ============ -->
-                                                            <div id="reportUnitStandardConfigTab" title="Config" name="configStandard"
-                                                                 style="height:100%;" visible="true">
-                                                                <div id="reportStandardConfigSubTabs" class="mini-tabs"
-                                                                     style="width:100%;height:100%;" activeIndex="0" tabPosition="top"
-                                                                     onactivechanged="onReportStandardConfigSubTabChanged">
+                                                            <div id="reportUnitStandardConfigTab" title="Config" name="configStandard" style="height:100%;" visible="true">
+                                                                <div id="reportStandardConfigSubTabs" class="mini-tabs" style="width:100%;height:100%;" activeIndex="0" tabPosition="top" onactivechanged="onReportStandardConfigSubTabChanged">
 
                                                                     <!-- ---------- 单井报表 ---------- -->
                                                                     <div title="Single Well Report" name="singleWellReport" style="height:100%;">
-                                                                        <div id="singleWellReportSubTabs" class="mini-tabs"
-                                                                             style="width:100%;height:100%;" activeIndex="0" tabPosition="top"
-                                                                             onactivechanged="onSingleWellReportSubTabChanged">
+                                                                        <div id="singleWellReportSubTabs" class="mini-tabs" style="width:100%;height:100%;" activeIndex="0" tabPosition="top" onactivechanged="onSingleWellReportSubTabChanged">
 
                                                                             <!-- 时报表 -->
                                                                             <div title="Hourly Report" name="hourlyReport" style="height:100%;">
                                                                                 <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
                                                                                     <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
                                                                                         <div style="padding:4px;height:100%;background:#fafafa;">
-                                                                                            <div id="hourlyTemplateListGrid" class="mini-datagrid"
-     																							style="width:100%;height:100%;"
-     																							multiSelect="false"
-     																							showPager="false"
-     																							allowResize="true"
-     																							allowAlternating="true"
-     																							idField="templateCode"
-     																							dataField="totalRoot" totalField="totalCount" 
-     																							onbeforeload="onHourlyTemplateListBeforeLoad"
-     																							onload="onHourlyTemplateListLoad"
-     																							onselect="onHourlyTemplateSelectionChanged">
-    																							<div property="columns"></div>
-    																							<div property="emptyText" class="empty-msg">No Template</div>
-																							</div>
+                                                                                            <div id="hourlyTemplateListGrid" class="mini-datagrid" style="width:100%;height:100%;" multiSelect="false" showPager="false" allowResize="true" allowAlternating="true" idField="templateCode" dataField="totalRoot" totalField="totalCount" onbeforeload="onHourlyTemplateListBeforeLoad" onload="onHourlyTemplateListLoad" onselect="onHourlyTemplateSelectionChanged">
+                                                                                                <div property="columns"></div>
+                                                                                                <div property="emptyText" class="empty-msg">No Template</div>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div size="80%" showCollapseButton="false">
@@ -642,8 +840,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                                         <span id="hourlyReportTemplateTitle"></span>
                                                                                                     </div>
                                                                                                     <div style="flex:1;overflow:hidden;padding:4px;">
-                                                                                                        <div id="hourlyReportTemplateContainer"
-                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                        <div id="hourlyReportTemplateContainer" style="width:100%;height:100%;"></div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -653,8 +850,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                                         <span id="hourlyReportContentTitle"></span>
                                                                                                     </div>
                                                                                                     <div style="flex:1;overflow:hidden;padding:4px;">
-                                                                                                        <div id="hourlyReportContentContainer"
-                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                        <div id="hourlyReportContentContainer" style="width:100%;height:100%;"></div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -668,20 +864,10 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                 <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
                                                                                     <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
                                                                                         <div style="padding:4px;height:100%;background:#fafafa;">
-                                                                                            <div id="dailyTemplateListGrid" class="mini-datagrid"
-     																							style="width:100%;height:100%;"
-     																							multiSelect="false"
-     																							showPager="false"
-     																							allowResize="true"
-     																							allowAlternating="true"
-     																							idField="templateCode"
-     																							dataField="totalRoot" totalField="totalCount" 
-     																							onbeforeload="onDailyTemplateListBeforeLoad"
-     																							onload="onDailyTemplateListLoad"
-     																							onselect="onDailyTemplateSelectionChanged">
-    																							<div property="columns"></div>
-    																							<div property="emptyText" class="empty-msg">No Template</div>
-																							</div>
+                                                                                            <div id="dailyTemplateListGrid" class="mini-datagrid" style="width:100%;height:100%;" multiSelect="false" showPager="false" allowResize="true" allowAlternating="true" idField="templateCode" dataField="totalRoot" totalField="totalCount" onbeforeload="onDailyTemplateListBeforeLoad" onload="onDailyTemplateListLoad" onselect="onDailyTemplateSelectionChanged">
+                                                                                                <div property="columns"></div>
+                                                                                                <div property="emptyText" class="empty-msg">No Template</div>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div size="80%" showCollapseButton="false">
@@ -692,8 +878,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                                         <span id="dailyReportTemplateTitle"></span>
                                                                                                     </div>
                                                                                                     <div style="flex:1;overflow:hidden;padding:4px;">
-                                                                                                        <div id="dailyReportTemplateContainer"
-                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                        <div id="dailyReportTemplateContainer" style="width:100%;height:100%;"></div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -703,8 +888,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                                         <span id="dailyReportContentTitle"></span>
                                                                                                     </div>
                                                                                                     <div style="flex:1;overflow:hidden;padding:4px;">
-                                                                                                        <div id="dailyReportContentContainer"
-                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                        <div id="dailyReportContentContainer" style="width:100%;height:100%;"></div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -717,29 +901,17 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
 
                                                                     <!-- ---------- 区域报表：内部嵌套 tabpanel，仅一个"日报表"选项卡 ---------- -->
                                                                     <div title="Area Report" name="areaReport" style="height:100%;">
-                                                                        <div id="areaReportSubTabs" class="mini-tabs"
-                                                                             style="width:100%;height:100%;" activeIndex="0" tabPosition="top"
-                                                                             onactivechanged="onAreaReportSubTabChanged">
+                                                                        <div id="areaReportSubTabs" class="mini-tabs" style="width:100%;height:100%;" activeIndex="0" tabPosition="top" onactivechanged="onAreaReportSubTabChanged">
 
                                                                             <!-- 日报表 -->
                                                                             <div title="Daily Report" name="dailyReport" style="height:100%;">
                                                                                 <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
                                                                                     <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
                                                                                         <div style="padding:4px;height:100%;background:#fafafa;">
-                                                                                            <div id="areaTemplateListGrid" class="mini-datagrid"
-     																							style="width:100%;height:100%;"
-     																							multiSelect="false"
-     																							showPager="false"
-     																							allowResize="true"
-     																							allowAlternating="true"
-     																							idField="templateCode"
-     																							dataField="totalRoot" totalField="totalCount" 
-     																							onbeforeload="onAreaTemplateListBeforeLoad"
-     																							onload="onAreaTemplateListLoad"
-     																							onselect="onAreaTemplateSelectionChanged">
-    																							<div property="columns"></div>
-    																							<div property="emptyText" class="empty-msg">No Template</div>
-																							</div>
+                                                                                            <div id="areaTemplateListGrid" class="mini-datagrid" style="width:100%;height:100%;" multiSelect="false" showPager="false" allowResize="true" allowAlternating="true" idField="templateCode" dataField="totalRoot" totalField="totalCount" onbeforeload="onAreaTemplateListBeforeLoad" onload="onAreaTemplateListLoad" onselect="onAreaTemplateSelectionChanged">
+                                                                                                <div property="columns"></div>
+                                                                                                <div property="emptyText" class="empty-msg">No Template</div>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div size="80%" showCollapseButton="false">
@@ -750,8 +922,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                                         <span id="areaReportTemplateTitle"></span>
                                                                                                     </div>
                                                                                                     <div style="flex:1;overflow:hidden;padding:4px;">
-                                                                                                        <div id="areaReportTemplateContainer"
-                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                        <div id="areaReportTemplateContainer" style="width:100%;height:100%;"></div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -761,8 +932,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                                         <span id="areaReportContentTitle"></span>
                                                                                                     </div>
                                                                                                     <div style="flex:1;overflow:hidden;padding:4px;">
-                                                                                                        <div id="areaReportContentContainer"
-                                                                                                             style="width:100%;height:100%;"></div>
+                                                                                                        <div id="areaReportContentContainer" style="width:100%;height:100%;"></div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -777,8 +947,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                             </div>
 
                                                             <!-- ============ Tab 3: 配置 - 水文井报表 (unitClasses==1) ============ -->
-                                                            <div id="reportUnitHydrologicalConfigTab" title="Config" name="configHydrological"
-                                                                 style="height:100%;" visible=false>
+                                                            <div id="reportUnitHydrologicalConfigTab" title="Config" name="configHydrological" style="height:100%;" visible=false>
                                                                 <div class="mini-splitter" style="width:100%;height:100%;" vertical="true">
                                                                     <div size="50%" showCollapseButton="false">
                                                                         <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
@@ -786,8 +955,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                 <span id="hydroReportTemplateTitle"></span>
                                                                             </div>
                                                                             <div style="flex:1;overflow:hidden;padding:4px;">
-                                                                                <div id="hydroReportTemplateContainer"
-                                                                                     style="width:100%;height:100%;"></div>
+                                                                                <div id="hydroReportTemplateContainer" style="width:100%;height:100%;"></div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -797,8 +965,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                                                 <span id="hydroReportContentTitle"></span>
                                                                             </div>
                                                                             <div style="flex:1;overflow:hidden;padding:4px;">
-                                                                                <div id="hydroReportContentContainer"
-                                                                                     style="width:100%;height:100%;"></div>
+                                                                                <div id="hydroReportContentContainer" style="width:100%;height:100%;"></div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -818,150 +985,200 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                         <!-- ===================== 实例配置 ===================== -->
                         <div title="Instance" name="instance" style="height:100%;">
                             <div class="tab-content-layout">
-                                <div class="mini-toolbar">
-                                    <button id="instanceRefreshBtn" class="mini-button" iconCls="note-refresh">Refresh</button>
-                                    <span class="separator"></span>
-                                    <button id="instanceAddBtn" class="mini-button" iconCls="add">Add</button>
-                                    <button id="instanceSaveBtn" class="mini-button" iconCls="save">Save</button>
-                                    <span class="separator"></span>
-                                    <button id="instanceExportBtn" class="mini-button" iconCls="export">Export</button>
-                                    <button id="instanceImportBtn" class="mini-button" iconCls="import">Import</button>
-                                    <span style="flex:1;"></span>
-                                    <span id="instanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
-                                </div>
                                 <div style="flex:1;overflow:hidden;">
                                     <div id="instanceSubTabs" class="mini-tabs" style="width:100%;height:100%;" activeIndex="0" tabPosition="left" onactivechanged="onInstanceSubTabChanged">
-                                        <!-- 采控实例 -->
+
+                                        <!-- ========== 采控实例 ========== -->
                                         <div title="AcqInstance" name="acq" style="height:100%;">
-                                            <div class="instance-layout" style="flex-direction:column;">
+                                            <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="acqInstanceRefreshBtn" class="mini-button" iconCls="note-refresh">Refresh</button>
-                                                    <span class="separator"></span>
-                                                    <button id="acqInstanceAddBtn" class="mini-button" iconCls="add">Add</button>
-                                                    <span class="separator"></span>
-                                                    <button id="acqInstanceSaveBtn" class="mini-button" iconCls="save">Save</button>
-                                                    <span class="separator"></span>
-                                                    <button id="acqInstanceExportBtn" class="mini-button" iconCls="export">Export</button>
-                                                    <button id="acqInstanceImportBtn" class="mini-button" iconCls="import">Import</button>
-                                                    <span style="flex:1;"></span>
+                                                    <button id="acqInstanceRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshAcqInstanceProtocolTree()">Refresh</button>
                                                     <span id="acqInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
+                                                    <span style="flex:1;"></span>
+                                                    <button id="acqInstanceAddBtn" class="mini-button" iconCls="add" onclick="addAcqInstanceInfo()">Add</button>
+                                                    <button id="acqInstanceSaveBtn" class="mini-button" iconCls="save" onclick="saveAcqInstanceConfigData()">Save</button>
+                                                    <button id="acqInstanceExportBtn" class="mini-button" iconCls="export" onclick="openExportAcqInstanceWindow()">Export</button>
+                                                    <button id="acqInstanceImportBtn" class="mini-button" iconCls="import" onclick="openImportAcqInstanceWindow()">Import</button>
                                                 </div>
-                                                <div style="display:flex;flex:1;overflow:hidden;">
-                                                    <div class="left-protocol" id="acqInstanceProtocolTreeContainer">
-                                                        <div id="acqInstanceProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Protocol</div>
+                                                <div style="flex:1;overflow:hidden;">
+                                                    <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                        <!-- 左侧：协议树 -->
+                                                        <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
+                                                            <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                <div id="acqInstanceProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onAcqInstanceProtocolTreeBeforeLoad" onload="onAcqInstanceProtocolTreeLoad" onnodeselect="onAcqInstanceProtocolTreeSelect">
+                                                                    <div property="emptyText" class="empty-msg">No Protocol</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="middle-list" id="acqInstanceListContainer">
-                                                        <div id="acqInstanceList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Instance</div>
+                                                        <!-- 右侧：内层左右 splitter -->
+                                                        <div size="80%" showCollapseButton="false">
+                                                            <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                                <!-- 实例列表（向左收缩） -->
+                                                                <div size="40%" showCollapseButton="true" collapseDirection="left" minSize="200">
+                                                                    <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                        <div id="acqInstanceList" class="mini-treegrid" style="width:100%;height:100%;" showTreeIcon="true" treeColumn="taskname" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onAcqInstanceListBeforeLoad" onload="onAcqInstanceListLoad" onnodeselect="onAcqInstanceListSelect" contextMenu="#acqInstanceTreeMenu">
+                                                                            <div property="columns"></div>
+                                                                            <div property="emptyText" class="empty-msg">No Instance</div>
+                                                                        </div>
+                                                                        <ul id="acqInstanceTreeMenu" class="mini-contextmenu" onbeforeopen="onAcqInstanceTreeBeforeMenu">
+                                                                            <li name="delete" iconCls="delete" onclick="deleteAcqInstanceNode">
+                                                                                <span id="acqInstanceTreeMenuDeleteText">删除</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- 属性面板 -->
+                                                                <div size="60%" showCollapseButton="false">
+                                                                    <div id="acqInstancePropertiesPanel" class="mini-panel" title="" style="width:100%;height:100%;" showCollapseButton="false" showCloseButton="false" allowResize="false" bodyStyle="padding:0;">
+                                                                        <div id="acqInstancePropertiesContainer" style="width:100%;height:100%;"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="right-property">
-                                                        <div id="acqInstancePropsPlaceholder" class="sub-tab-placeholder" style="height:100%;">Instance Properties</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- 显示实例 -->
+
+                                        <!-- ========== 显示实例 ========== -->
                                         <div title="DisplayInstance" name="display" style="height:100%;">
-                                            <div class="instance-layout" style="flex-direction:column;">
+                                            <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="displayInstanceRefreshBtn" class="mini-button" iconCls="note-refresh">Refresh</button>
-                                                    <span class="separator"></span>
-                                                    <button id="displayInstanceAddBtn" class="mini-button" iconCls="add">Add</button>
-                                                    <span class="separator"></span>
-                                                    <button id="displayInstanceSaveBtn" class="mini-button" iconCls="save">Save</button>
-                                                    <span class="separator"></span>
-                                                    <button id="displayInstanceExportBtn" class="mini-button" iconCls="export">Export</button>
-                                                    <button id="displayInstanceImportBtn" class="mini-button" iconCls="import">Import</button>
-                                                    <span style="flex:1;"></span>
+                                                    <button id="displayInstanceRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshDisplayInstanceProtocolTree()">Refresh</button>
                                                     <span id="displayInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
+                                                    <span style="flex:1;"></span>
+                                                    <button id="displayInstanceAddBtn" class="mini-button" iconCls="add" onclick="addDisplayInstanceInfo()">Add</button>
+                                                    <button id="displayInstanceSaveBtn" class="mini-button" iconCls="save" onclick="saveDisplayInstanceConfigData()">Save</button>
+                                                    <button id="displayInstanceExportBtn" class="mini-button" iconCls="export" onclick="openExportDisplayInstanceWindow()">Export</button>
+                                                    <button id="displayInstanceImportBtn" class="mini-button" iconCls="import" onclick="openImportDisplayInstanceWindow()">Import</button>
                                                 </div>
-                                                <div style="display:flex;flex:1;overflow:hidden;">
-                                                    <div class="left-protocol" id="displayInstanceProtocolTreeContainer">
-                                                        <div id="displayInstanceProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Protocol</div>
+                                                <div style="flex:1;overflow:hidden;">
+                                                    <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                        <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
+                                                            <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                <div id="displayInstanceProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onDisplayInstanceProtocolTreeBeforeLoad" onload="onDisplayInstanceProtocolTreeLoad" onnodeselect="onDisplayInstanceProtocolTreeSelect">
+                                                                    <div property="emptyText" class="empty-msg">No Protocol</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="middle-list" id="displayInstanceListContainer">
-                                                        <div id="displayInstanceList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Instance</div>
+                                                        <div size="80%" showCollapseButton="false">
+                                                            <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                                <div size="40%" showCollapseButton="true" collapseDirection="left" minSize="200">
+                                                                    <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                        <div id="displayInstanceList" class="mini-treegrid" style="width:100%;height:100%;" showTreeIcon="true" treeColumn="taskname" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onDisplayInstanceListBeforeLoad" onload="onDisplayInstanceListLoad" onnodeselect="onDisplayInstanceListSelect" contextMenu="#displayInstanceTreeMenu">
+                                                                            <div property="columns"></div>
+                                                                            <div property="emptyText" class="empty-msg">No Instance</div>
+                                                                        </div>
+                                                                        <ul id="displayInstanceTreeMenu" class="mini-contextmenu" onbeforeopen="onDisplayInstanceTreeBeforeMenu">
+                                                                            <li name="delete" iconCls="delete" onclick="deleteDisplayInstanceNode">
+                                                                                <span id="displayInstanceTreeMenuDeleteText">删除</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <div size="60%" showCollapseButton="false">
+                                                                    <div id="displayInstancePropertiesPanel" class="mini-panel" title="" style="width:100%;height:100%;" showCollapseButton="false" showCloseButton="false" allowResize="false" bodyStyle="padding:0;">
+                                                                        <div id="displayInstancePropertiesContainer" style="width:100%;height:100%;"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="right-property">
-                                                        <div id="displayInstancePropsPlaceholder" class="sub-tab-placeholder" style="height:100%;">Instance Properties</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- 报警实例 -->
+
+                                        <!-- ========== 报警实例 ========== -->
                                         <div title="AlarmInstance" name="alarm" style="height:100%;">
-                                            <div class="instance-layout" style="flex-direction:column;">
+                                            <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="alarmInstanceRefreshBtn" class="mini-button" iconCls="note-refresh">Refresh</button>
-                                                    <span class="separator"></span>
-                                                    <button id="alarmInstanceAddBtn" class="mini-button" iconCls="add">Add</button>
-                                                    <span class="separator"></span>
-                                                    <button id="alarmInstanceSaveBtn" class="mini-button" iconCls="save">Save</button>
-                                                    <span class="separator"></span>
-                                                    <button id="alarmInstanceExportBtn" class="mini-button" iconCls="export">Export</button>
-                                                    <button id="alarmInstanceImportBtn" class="mini-button" iconCls="import">Import</button>
-                                                    <span style="flex:1;"></span>
+                                                    <button id="alarmInstanceRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshAlarmInstanceProtocolTree()">Refresh</button>
                                                     <span id="alarmInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
-                                                </div>
-                                                <div style="display:flex;flex:1;overflow:hidden;">
-                                                    <div class="left-protocol" id="alarmInstanceProtocolTreeContainer">
-                                                        <div id="alarmInstanceProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Protocol</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="middle-list" id="alarmInstanceListContainer">
-                                                        <div id="alarmInstanceList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Instance</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="right-property">
-                                                        <div id="alarmInstancePropsPlaceholder" class="sub-tab-placeholder" style="height:100%;">Instance Properties</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- 报表实例 -->
-                                        <div title="ReportInstance" name="report" style="height:100%;">
-                                            <div class="instance-layout" style="flex-direction:column;">
-                                                <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="reportInstanceRefreshBtn" class="mini-button" iconCls="note-refresh">Refresh</button>
-                                                    <span class="separator"></span>
-                                                    <button id="reportInstanceAddBtn" class="mini-button" iconCls="add">Add</button>
-                                                    <span class="separator"></span>
-                                                    <button id="reportInstanceSaveBtn" class="mini-button" iconCls="save">Save</button>
-                                                    <span class="separator"></span>
-                                                    <button id="reportInstanceExportBtn" class="mini-button" iconCls="export">Export</button>
-                                                    <button id="reportInstanceImportBtn" class="mini-button" iconCls="import">Import</button>
                                                     <span style="flex:1;"></span>
-                                                    <span id="reportInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
+                                                    <button id="alarmInstanceAddBtn" class="mini-button" iconCls="add" onclick="addAlarmInstanceInfo()">Add</button>
+                                                    <button id="alarmInstanceSaveBtn" class="mini-button" iconCls="save" onclick="saveAlarmInstanceConfigData()">Save</button>
+                                                    <button id="alarmInstanceExportBtn" class="mini-button" iconCls="export" onclick="openExportAlarmInstanceWindow()">Export</button>
+                                                    <button id="alarmInstanceImportBtn" class="mini-button" iconCls="import" onclick="openImportAlarmInstanceWindow()">Import</button>
                                                 </div>
-                                                <div style="display:flex;flex:1;overflow:hidden;">
-                                                    <div class="left-protocol" id="reportInstanceProtocolTreeContainer">
-                                                        <div id="reportInstanceProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Protocol</div>
+                                                <div style="flex:1;overflow:hidden;">
+                                                    <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                        <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
+                                                            <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                <div id="alarmInstanceProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onAlarmInstanceProtocolTreeBeforeLoad" onload="onAlarmInstanceProtocolTreeLoad" onnodeselect="onAlarmInstanceProtocolTreeSelect">
+                                                                    <div property="emptyText" class="empty-msg">No Protocol</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="middle-list" id="reportInstanceListContainer">
-                                                        <div id="reportInstanceList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Instance</div>
+                                                        <div size="80%" showCollapseButton="false">
+                                                            <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                                <div size="40%" showCollapseButton="true" collapseDirection="left" minSize="200">
+                                                                    <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                        <div id="alarmInstanceList" class="mini-treegrid" style="width:100%;height:100%;" showTreeIcon="true" treeColumn="taskname" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onAlarmInstanceListBeforeLoad" onload="onAlarmInstanceListLoad" onnodeselect="onAlarmInstanceListSelect" contextMenu="#alarmInstanceTreeMenu">
+                                                                            <div property="columns"></div>
+                                                                            <div property="emptyText" class="empty-msg">No Instance</div>
+                                                                        </div>
+                                                                        <ul id="alarmInstanceTreeMenu" class="mini-contextmenu" onbeforeopen="onAlarmInstanceTreeBeforeMenu">
+                                                                            <li name="delete" iconCls="delete" onclick="deleteAlarmInstanceNode">
+                                                                                <span id="alarmInstanceTreeMenuDeleteText">删除</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <div size="60%" showCollapseButton="false">
+                                                                    <div id="alarmInstancePropertiesPanel" class="mini-panel" title="" style="width:100%;height:100%;" showCollapseButton="false" showCloseButton="false" allowResize="false" bodyStyle="padding:0;">
+                                                                        <div id="alarmInstancePropertiesContainer" style="width:100%;height:100%;"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="right-property">
-                                                        <div id="reportInstancePropsPlaceholder" class="sub-tab-placeholder" style="height:100%;">Instance Properties</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- 短信实例 -->
+
+                                        <!-- ========== 报表实例（无协议树） ========== -->
+                                        <div title="ReportInstance" name="report" style="height:100%;">
+                                            <div class="tab-content-layout" style="height:100%;">
+                                                <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
+                                                    <button id="reportInstanceRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshReportInstanceList()">Refresh</button>
+                                                    <span id="reportInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
+                                                    <span style="flex:1;"></span>
+                                                    <button id="reportInstanceAddBtn" class="mini-button" iconCls="add" onclick="addReportInstanceInfo()">Add</button>
+                                                    <button id="reportInstanceSaveBtn" class="mini-button" iconCls="save" onclick="saveReportInstanceData()">Save</button>
+                                                    <button id="reportInstanceExportBtn" class="mini-button" iconCls="export" onclick="openExportReportInstanceWindow()">Export</button>
+                                                    <button id="reportInstanceImportBtn" class="mini-button" iconCls="import" onclick="openImportReportInstanceWindow()">Import</button>
+                                                </div>
+                                                <div style="flex:1;overflow:hidden;">
+                                                    <!-- ★ 报表实例：无协议树，直接左右 splitter -->
+                                                    <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                        <!-- 实例列表（向左收缩） -->
+                                                        <div size="30%" showCollapseButton="true" collapseDirection="left" minSize="200">
+                                                            <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                <div id="reportInstanceList" class="mini-treegrid" style="width:100%;height:100%;" showTreeIcon="true" treeColumn="taskname" idField="id" textField="text" parentField="pid" resultAsTree="true" onbeforeload="onReportInstanceTreeBeforeLoad" onload="onReportInstanceTreeLoad" onnodeselect="onReportInstanceTreeSelect" contextMenu="#reportInstanceTreeMenu">
+                                                                    <div property="columns"></div>
+                                                                    <div property="emptyText" class="empty-msg">No Instance</div>
+                                                                </div>
+                                                                <ul id="reportInstanceTreeMenu" class="mini-contextmenu" onbeforeopen="onReportInstanceTreeBeforeMenu">
+                                                                    <li name="delete" iconCls="delete" onclick="deleteReportInstanceNode">
+                                                                        <span id="reportInstanceTreeMenuDeleteText">删除</span>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <!-- 属性面板 -->
+                                                        <div size="70%" showCollapseButton="false">
+                                                            <div id="reportInstancePropertiesPanel" class="mini-panel" title="" style="width:100%;height:100%;" showCollapseButton="false" showCloseButton="false" allowResize="false" bodyStyle="padding:0;">
+                                                                <div id="reportInstancePropertiesContainer" style="width:100%;height:100%;"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- ========== 短信实例 ========== -->
                                         <div title="SMSInstance" name="sms" style="height:100%;">
-                                            <div class="instance-layout" style="flex-direction:column;">
+                                            <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
                                                     <button id="smsInstanceRefreshBtn" class="mini-button" iconCls="note-refresh">Refresh</button>
                                                     <span class="separator"></span>
@@ -971,23 +1188,34 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                                                     <span style="flex:1;"></span>
                                                     <span id="smsInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                 </div>
-                                                <div style="display:flex;flex:1;overflow:hidden;">
-                                                    <div class="left-protocol" id="smsInstanceProtocolTreeContainer">
-                                                        <div id="smsInstanceProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Protocol</div>
+                                                <div style="flex:1;overflow:hidden;">
+                                                    <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                        <div size="20%" showCollapseButton="true" collapseDirection="left" minSize="150">
+                                                            <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                <div id="smsInstanceProtocolTree" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
+                                                                    <div property="emptyText" class="empty-msg">No Protocol</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="middle-list" id="smsInstanceListContainer">
-                                                        <div id="smsInstanceList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
-                                                            <div property="emptyText" class="empty-msg">No Instance</div>
+                                                        <div size="80%" showCollapseButton="false">
+                                                            <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+                                                                <div size="40%" showCollapseButton="true" collapseDirection="left" minSize="200">
+                                                                    <div style="padding:4px;height:100%;background:#fafafa;">
+                                                                        <div id="smsInstanceList" class="mini-tree" style="width:100%;height:100%;" showTreeIcon="true" expandOnNodeClick="false" idField="id" textField="text" parentField="pid" resultAsTree="true">
+                                                                            <div property="emptyText" class="empty-msg">No Instance</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div size="60%" showCollapseButton="false">
+                                                                    <div id="smsInstancePropsPlaceholder" class="sub-tab-placeholder" style="height:100%;">Instance Properties</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="right-property">
-                                                        <div id="smsInstancePropsPlaceholder" class="sub-tab-placeholder" style="height:100%;">Instance Properties</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -1007,11 +1235,9 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
         if (typeof loginUserProtocolConfigModuleRight !== 'undefined') {
             editFlag = (loginUserProtocolConfigModuleRight.editFlag == 1);
         }
-
-        //采控实例
-        var protocolConfigInstancePropertiesHandsontableHelper = null;
-        //显示实例
-        var protocolDisplayInstancePropertiesHandsontableHelper = null;
+        var emailEnable = false;
+        var raw = (typeof _emailEnable !== 'undefined') ? _emailEnable : false;
+        emailEnable = (raw === true || raw === 'true' || raw === 1 || raw === '1');
         //报警实例
         var protocolAlarmInstancePropertiesHandsontableHelper = null;
         //报表实例
@@ -1022,11 +1248,12 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
         // ================================================================
         var selectedDeviceTypeId = null;
         var allDeviceTypeIds = null;
-        var _selectedUnitConfigProtocolTreeNodeCode = null;
+        var _selectedProtocolTreeNodeCode = null;
 
         function foreachAndSearchTabChildId(node) {
             if (!node) return '';
             var ids = [];
+
             function collect(currentNode) {
                 if (currentNode.deviceTypeId) ids.push(currentNode.deviceTypeId);
                 if (currentNode.children && currentNode.children.length > 0) {
@@ -1051,7 +1278,9 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             allDeviceTypeIds = foreachAndSearchTabChildId(root);
             if (root && root.children && root.children.length > 0) {
                 var firstChild = root.children[0];
-                setTimeout(function() { tree.selectNode(firstChild); }, 500);
+                setTimeout(function() {
+                    tree.selectNode(firstChild);
+                }, 500);
             }
         }
 
@@ -1059,14 +1288,17 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (isInitializing) return;
             if (selectedDeviceTypeId) loadDataForCurrentTab(selectedDeviceTypeId);
         }
+
         function onUnitSubTabChanged(e) {
             if (isInitializing) return;
             if (selectedDeviceTypeId) loadDataForCurrentTab(selectedDeviceTypeId);
         }
+
         function onReportConfigSubTabChanged(e) {
             if (isInitializing) return;
             if (selectedDeviceTypeId) loadDataForCurrentTab(selectedDeviceTypeId);
         }
+
         function onInstanceSubTabChanged(e) {
             if (isInitializing) return;
             if (selectedDeviceTypeId) loadDataForCurrentTab(selectedDeviceTypeId);
@@ -1093,14 +1325,22 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 var unitName = activeUnitTab.name;
 
                 if (unitName === 'report') {
-                	refreshReportUnitList();
+                    refreshReportUnitList();
                     return;
                 }
 
-                var protocolTreeId = '', listTreeId = '';
-                if (unitName === 'acq') { protocolTreeId = 'acqUnitProtocolTree'; listTreeId = 'acqUnitListTree'; }
-                else if (unitName === 'display') { protocolTreeId = 'displayUnitProtocolTree'; listTreeId = 'displayUnitList'; }
-                else if (unitName === 'alarm') { protocolTreeId = 'alarmUnitProtocolTree'; listTreeId = 'alarmUnitList'; }
+                var protocolTreeId = '',
+                    listTreeId = '';
+                if (unitName === 'acq') {
+                    protocolTreeId = 'acqUnitProtocolTree';
+                    listTreeId = 'acqUnitListTree';
+                } else if (unitName === 'display') {
+                    protocolTreeId = 'displayUnitProtocolTree';
+                    listTreeId = 'displayUnitList';
+                } else if (unitName === 'alarm') {
+                    protocolTreeId = 'alarmUnitProtocolTree';
+                    listTreeId = 'alarmUnitList';
+                }
 
                 var protocolTree = protocolTreeId ? mini.get(protocolTreeId) : null;
                 if (protocolTree) {
@@ -1114,19 +1354,34 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 var activeInstTab = instanceSub.getActiveTab();
                 if (!activeInstTab) return;
                 var instName = activeInstTab.name;
-                var protocolTreeId = '', listTreeId = '';
-                if (instName === 'acq') { protocolTreeId = 'acqInstanceProtocolTree'; listTreeId = 'acqInstanceList'; }
-                else if (instName === 'display') { protocolTreeId = 'displayInstanceProtocolTree'; listTreeId = 'displayInstanceList'; }
-                else if (instName === 'alarm') { protocolTreeId = 'alarmInstanceProtocolTree'; listTreeId = 'alarmInstanceList'; }
-                else if (instName === 'report') { protocolTreeId = 'reportInstanceProtocolTree'; listTreeId = 'reportInstanceList'; }
-                else if (instName === 'sms') { protocolTreeId = 'smsInstanceProtocolTree'; listTreeId = 'smsInstanceList'; }
+
+                // ★ 报表实例：只有一棵实例树
+                if (instName === 'report') {
+                    loadReportInstanceTree();
+                    return;
+                }
+                var protocolTreeId = '',
+                    listTreeId = '';
+                if (instName === 'acq') {
+                    protocolTreeId = 'acqInstanceProtocolTree';
+                    listTreeId = 'acqInstanceList';
+                } else if (instName === 'display') {
+                    protocolTreeId = 'displayInstanceProtocolTree';
+                    listTreeId = 'displayInstanceList';
+                } else if (instName === 'alarm') {
+                    protocolTreeId = 'alarmInstanceProtocolTree';
+                    listTreeId = 'alarmInstanceList';
+                } else if (instName === 'sms') {
+                    //protocolTreeId = 'smsInstanceProtocolTree';
+                    //listTreeId = 'smsInstanceList';
+                }
                 var protocolTree = mini.get(protocolTreeId);
                 var listTree = mini.get(listTreeId);
                 if (protocolTree) {
                     if (!protocolTree.getUrl()) protocolTree.setUrl(context + '/acquisitionUnitManagerController/modbusProtocolAddrMappingTreeData');
                     protocolTree.load();
                 }
-                if (listTree) listTree.loadData([]);
+                //if (listTree) listTree.loadData([]);
             }
         }
 
@@ -1156,9 +1411,15 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (mainTabs) {
                 var tabs = mainTabs.getTabs();
                 if (tabs && tabs.length >= 3) {
-                    mainTabs.updateTab(tabs[0], { title: _loginUserLanguageResource.protocolConfig });
-                    mainTabs.updateTab(tabs[1], { title: _loginUserLanguageResource.unitConfig });
-                    mainTabs.updateTab(tabs[2], { title: _loginUserLanguageResource.instanceConfig });
+                    mainTabs.updateTab(tabs[0], {
+                        title: _loginUserLanguageResource.protocolConfig
+                    });
+                    mainTabs.updateTab(tabs[1], {
+                        title: _loginUserLanguageResource.unitConfig
+                    });
+                    mainTabs.updateTab(tabs[2], {
+                        title: _loginUserLanguageResource.instanceConfig
+                    });
                 }
             }
 
@@ -1166,17 +1427,27 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (protoSub) {
                 var tabs = protoSub.getTabs();
                 if (tabs && tabs.length >= 3) {
-                    protoSub.updateTab(tabs[0], { title: _loginUserLanguageResource.properties });
-                    protoSub.updateTab(tabs[1], { title: _loginUserLanguageResource.config });
-                    protoSub.updateTab(tabs[2], { title: _loginUserLanguageResource.extendedField });
+                    protoSub.updateTab(tabs[0], {
+                        title: _loginUserLanguageResource.properties
+                    });
+                    protoSub.updateTab(tabs[1], {
+                        title: _loginUserLanguageResource.config
+                    });
+                    protoSub.updateTab(tabs[2], {
+                        title: _loginUserLanguageResource.extendedField
+                    });
                 }
             }
             var extSub = mini.get('extendedSubTabs');
             if (extSub) {
                 var tabs = extSub.getTabs();
                 if (tabs && tabs.length >= 2) {
-                    extSub.updateTab(tabs[0], { title: _loginUserLanguageResource.numericCalculation });
-                    extSub.updateTab(tabs[1], { title: _loginUserLanguageResource.highLowByte });
+                    extSub.updateTab(tabs[0], {
+                        title: _loginUserLanguageResource.numericCalculation
+                    });
+                    extSub.updateTab(tabs[1], {
+                        title: _loginUserLanguageResource.highLowByte
+                    });
                 }
             }
 
@@ -1184,10 +1455,18 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (unitSub) {
                 var tabs = unitSub.getTabs();
                 if (tabs && tabs.length >= 4) {
-                    unitSub.updateTab(tabs[0], { title: _loginUserLanguageResource.acqUnit });
-                    unitSub.updateTab(tabs[1], { title: _loginUserLanguageResource.displayUnit });
-                    unitSub.updateTab(tabs[2], { title: _loginUserLanguageResource.alarmUnit });
-                    unitSub.updateTab(tabs[3], { title: _loginUserLanguageResource.reportUnit });
+                    unitSub.updateTab(tabs[0], {
+                        title: _loginUserLanguageResource.acqUnit
+                    });
+                    unitSub.updateTab(tabs[1], {
+                        title: _loginUserLanguageResource.displayUnit
+                    });
+                    unitSub.updateTab(tabs[2], {
+                        title: _loginUserLanguageResource.alarmUnit
+                    });
+                    unitSub.updateTab(tabs[3], {
+                        title: _loginUserLanguageResource.reportUnit
+                    });
                 }
             }
             ['acqUnitDetailTabs', 'displayUnitRightTabs', 'alarmUnitRightTabs'].forEach(function(id) {
@@ -1195,8 +1474,12 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 if (tab) {
                     var tabs = tab.getTabs();
                     if (tabs && tabs.length >= 2) {
-                        tab.updateTab(tabs[0], { title: _loginUserLanguageResource.properties });
-                        tab.updateTab(tabs[1], { title: _loginUserLanguageResource.config });
+                        tab.updateTab(tabs[0], {
+                            title: _loginUserLanguageResource.properties
+                        });
+                        tab.updateTab(tabs[1], {
+                            title: _loginUserLanguageResource.config
+                        });
                     }
                 }
             });
@@ -1206,9 +1489,15 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (reportUnitRightTabs) {
                 var tabs = reportUnitRightTabs.getTabs();
                 if (tabs && tabs.length >= 3) {
-                    reportUnitRightTabs.updateTab(tabs[0], { title: _loginUserLanguageResource.properties });
-                    reportUnitRightTabs.updateTab(tabs[1], { title: _loginUserLanguageResource.config });
-                    reportUnitRightTabs.updateTab(tabs[2], { title: _loginUserLanguageResource.config });
+                    reportUnitRightTabs.updateTab(tabs[0], {
+                        title: _loginUserLanguageResource.properties
+                    });
+                    reportUnitRightTabs.updateTab(tabs[1], {
+                        title: _loginUserLanguageResource.config
+                    });
+                    reportUnitRightTabs.updateTab(tabs[2], {
+                        title: _loginUserLanguageResource.config
+                    });
                 }
             }
 
@@ -1217,8 +1506,12 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (stdSub) {
                 var ts = stdSub.getTabs();
                 if (ts && ts.length >= 2) {
-                    stdSub.updateTab(ts[0], { title: _loginUserLanguageResource.singleDeviceReport });
-                    stdSub.updateTab(ts[1], { title: _loginUserLanguageResource.areaReport });
+                    stdSub.updateTab(ts[0], {
+                        title: _loginUserLanguageResource.singleDeviceReport
+                    });
+                    stdSub.updateTab(ts[1], {
+                        title: _loginUserLanguageResource.areaReport
+                    });
                 }
             }
 
@@ -1227,8 +1520,12 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (swSub) {
                 var ts = swSub.getTabs();
                 if (ts && ts.length >= 2) {
-                    swSub.updateTab(ts[0], { title: _loginUserLanguageResource.hourlyReport });
-                    swSub.updateTab(ts[1], { title: _loginUserLanguageResource.dailyReport });
+                    swSub.updateTab(ts[0], {
+                        title: _loginUserLanguageResource.hourlyReport
+                    });
+                    swSub.updateTab(ts[1], {
+                        title: _loginUserLanguageResource.dailyReport
+                    });
                 }
             }
 
@@ -1237,20 +1534,33 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (areaSub) {
                 var ts = areaSub.getTabs();
                 if (ts && ts.length >= 1) {
-                    areaSub.updateTab(ts[0], { title: _loginUserLanguageResource.dailyReport });
+                    areaSub.updateTab(ts[0], {
+                        title: _loginUserLanguageResource.dailyReport
+                    });
                 }
             }
+
+
+
+            //实例属性title
+            ['acqInstancePropertiesPanel', 'displayInstancePropertiesPanel', 'alarmInstancePropertiesPanel', 'reportInstancePropertiesPanel'].forEach(function(id) {
+                var propsPanel = mini.get(id);
+                if (propsPanel) {
+                    propsPanel.setTitle(_loginUserLanguageResource.properties);
+                }
+            });
+
 
             // ★ 各网格标题
             var titleMap = {
                 'hourlyReportTemplateTitle': 'deviceHourlyReportTemplate',
-                'hourlyReportContentTitle':  'deviceHourlyReportContentConfig',
-                'dailyReportTemplateTitle':  'deviceDailyReportTemplate',
-                'dailyReportContentTitle':   'deviceDailyReportContentConfig',
-                'areaReportTemplateTitle':   'areaDailyReportTemplate',
-                'areaReportContentTitle':    'areaDailyReportContentConfig',
-                'hydroReportTemplateTitle':  'reportTemplate',
-                'hydroReportContentTitle':   'reportContentConfig'
+                'hourlyReportContentTitle': 'deviceHourlyReportContentConfig',
+                'dailyReportTemplateTitle': 'deviceDailyReportTemplate',
+                'dailyReportContentTitle': 'deviceDailyReportContentConfig',
+                'areaReportTemplateTitle': 'areaDailyReportTemplate',
+                'areaReportContentTitle': 'areaDailyReportContentConfig',
+                'hydroReportTemplateTitle': 'reportTemplate',
+                'hydroReportContentTitle': 'reportContentConfig'
             };
             for (var id in titleMap) {
                 var el = document.getElementById(id);
@@ -1262,16 +1572,30 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (alarmConfigSub) {
                 var tabs = alarmConfigSub.getTabs();
                 if (tabs && tabs.length >= 6) {
-                    alarmConfigSub.updateTab(tabs[0], { title: _loginUserLanguageResource.FESDiagramResultAlarm });
-                    alarmConfigSub.updateTab(tabs[1], { title: _loginUserLanguageResource.commStatus });
-                    alarmConfigSub.updateTab(tabs[2], { title: _loginUserLanguageResource.runStatus });
-                    alarmConfigSub.updateTab(tabs[3], { title: _loginUserLanguageResource.numericValue });
-                    alarmConfigSub.updateTab(tabs[4], { title: _loginUserLanguageResource.enumValue });
-                    alarmConfigSub.updateTab(tabs[5], { title: _loginUserLanguageResource.switchingValue });
+                    alarmConfigSub.updateTab(tabs[0], {
+                        title: _loginUserLanguageResource.FESDiagramResultAlarm
+                    });
+                    alarmConfigSub.updateTab(tabs[1], {
+                        title: _loginUserLanguageResource.commStatus
+                    });
+                    alarmConfigSub.updateTab(tabs[2], {
+                        title: _loginUserLanguageResource.runStatus
+                    });
+                    alarmConfigSub.updateTab(tabs[3], {
+                        title: _loginUserLanguageResource.numericValue
+                    });
+                    alarmConfigSub.updateTab(tabs[4], {
+                        title: _loginUserLanguageResource.enumValue
+                    });
+                    alarmConfigSub.updateTab(tabs[5], {
+                        title: _loginUserLanguageResource.switchingValue
+                    });
 
                     var onlyMonitor = (typeof _onlyMonitor !== 'undefined') ? _onlyMonitor : false;
                     if (onlyMonitor) {
-                        alarmConfigSub.updateTab(tabs[0], { visible: false });
+                        alarmConfigSub.updateTab(tabs[0], {
+                            visible: false
+                        });
                         alarmConfigSub.activeTab(tabs[1]);
                     } else {
                         alarmConfigSub.activeTab(tabs[0]);
@@ -1288,13 +1612,47 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
             if (instanceSub) {
                 var tabs = instanceSub.getTabs();
                 if (tabs && tabs.length >= 5) {
-                    instanceSub.updateTab(tabs[0], { title: _loginUserLanguageResource.acqInstance });
-                    instanceSub.updateTab(tabs[1], { title: _loginUserLanguageResource.displayInstance });
-                    instanceSub.updateTab(tabs[2], { title: _loginUserLanguageResource.alarmInstance });
-                    instanceSub.updateTab(tabs[3], { title: _loginUserLanguageResource.reportInstance });
-                    instanceSub.updateTab(tabs[4], { title: _loginUserLanguageResource.SMSInstance });
+                    instanceSub.updateTab(tabs[0], {
+                        title: _loginUserLanguageResource.acqInstance
+                    });
+                    instanceSub.updateTab(tabs[1], {
+                        title: _loginUserLanguageResource.displayInstance
+                    });
+                    instanceSub.updateTab(tabs[2], {
+                        title: _loginUserLanguageResource.alarmInstance
+                    });
+                    instanceSub.updateTab(tabs[3], {
+                        title: _loginUserLanguageResource.reportInstance
+                    });
+                    instanceSub.updateTab(tabs[4], {
+                        title: _loginUserLanguageResource.SMSInstance
+                    });
+
+
+
+                    var smsTab = tabs[4]; // SMSInstance 是第 5 个 tab
+                    instanceSub.updateTab(smsTab, {
+                        visible: emailEnable
+                    });
+
+                    // 如果当前激活的恰好是被隐藏的短信实例，则切换到第一个可见 Tab
+                    if (!emailEnable) {
+                        var activeTab = instanceSub.getActiveTab();
+                        if (activeTab && activeTab.name === 'sms') {
+                            // 从前往后找第一个可见 Tab 并激活
+                            var allTabs = instanceSub.getTabs();
+                            for (var i = 0; i < allTabs.length; i++) {
+                                var t = allTabs[i];
+                                if (t.name !== 'sms' && t.visible !== false) {
+                                    instanceSub.activeTab(t);
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
 
             var acqTitle = document.getElementById('displayAcqItemsTitle');
             if (acqTitle) acqTitle.innerText = _loginUserLanguageResource.acquisitionItemConfig;
@@ -1308,12 +1666,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 'protocolMappingBtn': 'fieldMappingTable',
                 'protocolExportBtn': 'exportData',
                 'protocolImportBtn': 'importData',
-                'protocolDeviceTypeChangeBtn': 'protocoDeviceTypeChange',
-                'instanceRefreshBtn': 'refresh',
-                'instanceAddBtn': 'addInstance',
-                'instanceSaveBtn': 'save',
-                'instanceExportBtn': 'exportData',
-                'instanceImportBtn': 'importData'
+                'protocolDeviceTypeChangeBtn': 'protocoDeviceTypeChange'
             };
             for (var id in btnMap) {
                 var btn = mini.get(id);
@@ -1411,7 +1764,7 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 }
             }
 
-            ['protocolInfoLabel', 'unitInfoLabel', 'instanceInfoLabel',
+            ['protocolInfoLabel', 'unitInfoLabel',
                 'acqUnitInfoLabel', 'displayUnitInfoLabel', 'alarmUnitInfoLabel', 'reportUnitInfoLabel',
                 'acqInstanceInfoLabel', 'displayInstanceInfoLabel', 'alarmInstanceInfoLabel', 'reportInstanceInfoLabel', 'smsInstanceInfoLabel'
             ].forEach(function(id) {
@@ -1419,7 +1772,11 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 if (el) el.innerHTML = '';
             });
 
-            ['protocolTreeMenuDeleteText','acqUnitTreeMenuDeleteText','displayUnitTreeMenuDeleteText','alarmUnitTreeMenuDeleteText'].forEach(function(id) {
+            // 右键菜单文字
+            ['protocolTreeMenuDeleteText',
+                'acqUnitTreeMenuDeleteText', 'displayUnitTreeMenuDeleteText', 'alarmUnitTreeMenuDeleteText', 'reportUnitTreeMenuDeleteText',
+                'acqInstanceTreeMenuDeleteText', 'displayInstanceTreeMenuDeleteText', 'alarmInstanceTreeMenuDeleteText', 'reportInstanceTreeMenuDeleteText'
+            ].forEach(function(id) {
                 var el = document.getElementById(id);
                 if (el) el.innerHTML = _loginUserLanguageResource.deleteData;
             });
@@ -1430,7 +1787,11 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
         function updateBtnStatus() {
             var btnIds = ['protocolAddBtn', 'protocolSaveBtn', 'protocolMappingBtn', 'protocolExportBtn', 'protocolImportBtn', 'protocolDeviceTypeChangeBtn',
                 'acqUnitAddBtn', 'acqUnitAddGroupBtn', 'acqUnitAddCtrlGroupBtn', 'acqUnitSaveBtn', 'acqUnitExportBtn', 'acqUnitImportBtn',
-                'reportUnitAddBtn', 'reportUnitSaveBtn', 'reportUnitExportBtn', 'reportUnitImportBtn'
+                'reportUnitAddBtn', 'reportUnitSaveBtn', 'reportUnitExportBtn', 'reportUnitImportBtn',
+                'acqInstanceAddBtn', 'acqInstanceSaveBtn', 'acqInstanceExportBtn', 'acqInstanceImportBtn',
+                'displayInstanceAddBtn', 'displayInstanceSaveBtn', 'displayInstanceExportBtn', 'displayInstanceImportBtn',
+                'alarmInstanceAddBtn', 'alarmInstanceSaveBtn', 'alarmInstanceExportBtn', 'alarmInstanceImportBtn',
+                'reportInstanceAddBtn', 'reportInstanceSaveBtn', 'reportInstanceExportBtn', 'reportInstanceImportBtn'
             ];
             for (var i = 0; i < btnIds.length; i++) {
                 var btn = mini.get(btnIds[i]);
@@ -1451,8 +1812,11 @@ otherStaticResourceTimestamp=System.currentTimeMillis()+"";
                 deviceTree.load(context + '/roleManagerController/constructProtocolConfigTabTreeGridTree');
             }
 
-            setTimeout(function() { isInitializing = false; }, 500);
+            setTimeout(function() {
+                isInitializing = false;
+            }, 500);
         });
+
     </script>
 </body>
 

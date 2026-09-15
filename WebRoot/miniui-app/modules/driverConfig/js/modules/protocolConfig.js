@@ -56,6 +56,18 @@ function onProtocolTreeLoad(e) {
             // 清除标记，避免重复选中
             window._newProtocolName = null;
         }
+        // 如果没有新协议，选中上次选择的协议
+        if (!targetNode) {
+        	if(_selectedProtocolTreeNodeCode){
+        		for (var i = 0; i < protocolNodes.length; i++) {
+                    if (protocolNodes[i].code === _selectedProtocolTreeNodeCode) {
+                        targetNode = protocolNodes[i];
+                        break;
+                    }
+                }
+        	}
+        	
+        }
         // 如果没有找到或没有新协议，默认选中第一个
         if (!targetNode) {
             targetNode = protocolNodes[0];
@@ -73,6 +85,7 @@ function onProtocolNodeSelect(e) {
         //if (infoLabel) {
         //    infoLabel.innerHTML = '【<font color="red">' + node.text + '</font>】';
         //}
+    	_selectedProtocolTreeNodeCode = node.code;
         // 根据当前激活的子标签加载对应数据
         loadProtocolDetailData(node);
     }

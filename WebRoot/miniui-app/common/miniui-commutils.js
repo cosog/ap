@@ -94,6 +94,26 @@ var _loginUserLanguageResourceFirstLower = (function() {
         return {};
     }
 })();
+
+var _loginUserLanguageList = (function() {
+    try {
+        // 优先从父窗口获取
+        var res = window.parent.loginUserLanguageList;
+        // 如果父窗口没有，再尝试当前窗口
+        if (typeof res === 'undefined') {
+            res = window.loginUserLanguageList;
+        }
+        // 如果值是字符串，尝试解析为对象
+        if (typeof res === 'string') {
+            try { res = JSON.parse(res); } catch(e) { res = {}; }
+        }
+        // 确保返回对象
+        return (res && typeof res === 'object') ? res : {};
+    } catch(e) {
+        return {};
+    }
+})();
+
 var _configFile = getGlobalVar('configFile', { ap: { others: {} } });
 var _productionUnit = _configFile.ap.others.productionUnit || getGlobalVar('productionUnit', '');
 var _loginUserLanguage = getGlobalVar('loginUserLanguage', '');

@@ -31,10 +31,10 @@ function onAcqProtocolTreeLoad(e) {
 
 	    var targetNode = null;
 	    // 如果有记录的上次选中的协议 code，优先选中它
-	    if (_selectedUnitConfigProtocolTreeNodeCode) {
+	    if (_selectedProtocolTreeNodeCode) {
 	        // 深度遍历查找
 	        function findNode(node) {
-	            if (node.code === _selectedUnitConfigProtocolTreeNodeCode && node.classes === 1) {
+	            if (node.code === _selectedProtocolTreeNodeCode && node.classes === 1) {
 	                targetNode = node;
 	                return true;
 	            }
@@ -73,7 +73,7 @@ function onAcqProtocolTreeSelect(e) {
     var node = e.node;
     _currentAcqProtocolNode = node;
     if (node && node.classes === 1) {
-    	_selectedUnitConfigProtocolTreeNodeCode = node.code;
+    	_selectedProtocolTreeNodeCode = node.code;
     	
     	_newAcqUnitObjectName = null;
         _newAcqUnitObjectClasses = null;

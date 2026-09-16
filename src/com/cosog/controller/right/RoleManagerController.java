@@ -179,13 +179,13 @@ public class RoleManagerController extends BaseController {
 			}
 			
 			
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -201,7 +201,7 @@ public class RoleManagerController extends BaseController {
 			String RoleIds = ParamUtils.getParameter(request, "paramsId");
 			this.roleService.bulkDelete(RoleIds);
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			String result = "{success:true,flag:true}";
+			String result = "{\"success\":true,\"flag\":true}";
 			response.getWriter().print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -234,7 +234,7 @@ public class RoleManagerController extends BaseController {
 	 */
 	@RequestMapping("/doRoleEdit")
 	public String doRoleEdit(@ModelAttribute Role role) {
-		String result ="{success:true,msg:false}";
+		String result ="{\"success\":true,\"msg\":false}";
 		try {
 			if(role.getShowLevel()==null||role.getRoleLevel()==null){
 				String sql="select t.role_level,t.showlevel from tbl_role t where t.role_id="+role.getRoleId();
@@ -255,7 +255,7 @@ public class RoleManagerController extends BaseController {
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
-			result= "{success:true,msg:true}";
+			result= "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 			pw.flush();
@@ -269,7 +269,7 @@ public class RoleManagerController extends BaseController {
 	
 	@RequestMapping("/updateRoleInfo")
 	public String updateRoleInfo() throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		try {
 			String roleId = ParamUtils.getParameter(request, "roleId");
 			String roleName_zh_CN = ParamUtils.getParameter(request, "roleName_zh_CN");
@@ -302,14 +302,14 @@ public class RoleManagerController extends BaseController {
 			int r=this.roleService.updateRoleInfo(role,prttentuser);
 			if(r==1){
 				MemoryDataManagerTask.loadUserInfoByRoleId(role.getRoleId()+"", "update");
-				result = "{success:true,flag:true}";
+				result = "{\"success\":true,\"flag\":true}";
 			}else if(r==2){
-				result = "{success:true,flag:false}";
+				result = "{\"success\":true,\"flag\":false}";
 			}else{
-				result = "{success:false,flag:false}";
+				result = "{\"success\":false,\"flag\":false}";
 			}
 		} catch (Exception e) {
-			result = "{success:false,flag:false}";
+			result = "{\"success\":false,\"flag\":false}";
 			e.printStackTrace();
 		}
 		response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -324,7 +324,7 @@ public class RoleManagerController extends BaseController {
 	
 	@RequestMapping("/batchUpdateRoleInfo")
 	public String batchUpdateRoleInfo() throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		try {
 			HttpSession session=request.getSession();
 			User prttentuser = (User) session.getAttribute("userLogin");
@@ -348,14 +348,14 @@ public class RoleManagerController extends BaseController {
 				}
 			}
 			if(r==1){
-				result = "{success:true,flag:true}";
+				result = "{\"success\":true,\"flag\":true}";
 			}else if(r==2){
-				result = "{success:true,flag:false}";
+				result = "{\"success\":true,\"flag\":false}";
 			}else{
-				result = "{success:false,flag:false}";
+				result = "{\"success\":false,\"flag\":false}";
 			}
 		} catch (Exception e) {
-			result = "{success:false,flag:false}";
+			result = "{\"success\":false,\"flag\":false}";
 			e.printStackTrace();
 		}
 		response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -534,9 +534,9 @@ public class RoleManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -818,7 +818,7 @@ public class RoleManagerController extends BaseController {
 		}
 		int r=this.roleService.saveAllImportedRole(uploadRoleList,user);
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

@@ -211,7 +211,7 @@ public class SystemdataInfoController extends BaseController {
 			jsonaddstr = systemdataInfoService.saveSystemdataInfo(systemdataInfo, userInfo, paramsdtblstringId);
 
 		} else {
-			jsonaddstr = "{success:true,msg:false}";
+			jsonaddstr = "{\"success\":true,\"msg\":false}";
 		}
 		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
@@ -234,7 +234,7 @@ public class SystemdataInfoController extends BaseController {
 			// 添加项值
 			jsonaddstr = systemdataInfoService.editSystemdataInfo(systemdataInfo, userInfo,getParamsId);
 		} else {
-			jsonaddstr = "{success:true,msg:false}";
+			jsonaddstr = "{\"success\":true,\"msg\":false}";
 		}
 //		systemdataInfoService.initDataDictionaryPutInCache();
 		// 处理乱码。
@@ -247,7 +247,7 @@ public class SystemdataInfoController extends BaseController {
 	
 	@RequestMapping("/batchUpdateDataDictionaryInfo")
 	public String batchUpdateDataDictionaryInfo() throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		try {
 			User userInfo = this.findCurrentUserInfo();
 			String data = ParamUtils.getParameter(request, "data");
@@ -261,14 +261,14 @@ public class SystemdataInfoController extends BaseController {
 			}
 			
 			if(r==1){
-				result = "{success:true,flag:true}";
+				result = "{\"success\":true,\"flag\":true}";
 			}else if(r==2){
-				result = "{success:true,flag:false}";
+				result = "{\"success\":true,\"flag\":false}";
 			}else{
-				result = "{success:false,flag:false}";
+				result = "{\"success\":false,\"flag\":false}";
 			}
 		} catch (Exception e) {
-			result = "{success:false,flag:false}";
+			result = "{\"success\":false,\"flag\":false}";
 			e.printStackTrace();
 		}
 		response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -283,7 +283,7 @@ public class SystemdataInfoController extends BaseController {
 	
 	@RequestMapping("/updateDataDictionaryInfo")
 	public String updateDataDictionaryInfo() throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		try {
 			String sysdataid = ParamUtils.getParameter(request, "sysdataid");
 			String name = ParamUtils.getParameter(request, "name");
@@ -293,14 +293,14 @@ public class SystemdataInfoController extends BaseController {
 			User userInfo = this.findCurrentUserInfo();
 			int r=this.systemdataInfoService.updateDataDictionaryInfo(sysdataid,name,code,sorts,moduleName,userInfo.getLanguageName());
 			if(r==1){
-				result = "{success:true,flag:true}";
+				result = "{\"success\":true,\"flag\":true}";
 			}else if(r==2){
-				result = "{success:true,flag:false}";
+				result = "{\"success\":true,\"flag\":false}";
 			}else{
-				result = "{success:false,flag:false}";
+				result = "{\"success\":false,\"flag\":false}";
 			}
 		} catch (Exception e) {
-			result = "{success:false,flag:false}";
+			result = "{\"success\":false,\"flag\":false}";
 			e.printStackTrace();
 		}
 		response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -324,12 +324,12 @@ public class SystemdataInfoController extends BaseController {
 		if (!StringUtils.isBlank(getSysDaId)) {
 			boolean boo = systemdataInfoService.deleteSystemdataInfoById(findCurrentUserInfo(), getSysDaId);
 			if (boo) {
-				jsondelete = "{success:true,flag:true}";
+				jsondelete = "{\"success\":true,\"flag\":true}";
 			} else {
-				jsondelete = "{success:false,flag:false}";
+				jsondelete = "{\"success\":false,\"flag\":false}";
 			}
 		} else {
-			jsondelete = "{success:true,flag:false}";
+			jsondelete = "{\"success\":true,\"flag\":false}";
 		}
 		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
@@ -441,7 +441,7 @@ public class SystemdataInfoController extends BaseController {
 		}
 		int r=this.systemdataInfoService.saveAllImportedDataDictionary(uploadDataDictionaryList,user);
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

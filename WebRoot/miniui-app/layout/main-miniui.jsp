@@ -122,6 +122,7 @@ request.setAttribute("browserLang", browserLang);
         
         // 新增：第一个叶子节点的ID（在 onMenuTreeLoad 中动态获取）
         var FIRST_LEAF_MODULE_ID = null;
+        var orgIframeSelectedRecord = null;
     </script>
 
     <!-- ===== 第二步：动态引入 MiniUI 资源（包含 miniui-commutils.js） ===== -->
@@ -432,6 +433,7 @@ request.setAttribute("browserLang", browserLang);
     function onOrgTreeSelect(e) {
         var node = e.node;
         if (!node) return;
+        orgIframeSelectedRecord=node;
         var orgIds = getOrgNodeIds(node);
         var orgNames = getOrgNodeNames(node);
         mini.get('leftOrg_Id').setValue(orgIds);
@@ -442,7 +444,39 @@ request.setAttribute("browserLang", browserLang);
     function onOrgTreeLoad(e) {
         var tree = e.sender;
         var data = tree.getData();
-        // 可选择性操作
+        var selectNode=tree.getSelectedNode();
+        if(!selectNode){
+        	var root = tree.getRootNode();
+            if (!root || !root.children || root.children.length === 0) return;
+            var targetNode = null;
+            if (orgIframeSelectedRecord) {
+                targetNode = findOrgTreeMenuNodeById(root, orgIframeSelectedRecord.orgId);
+            }
+
+            if (targetNode) {
+                setTimeout(function () {
+                    tree.selectNode(targetNode);
+                }, 50);
+            }
+        }
+    }
+    
+    function findOrgTreeMenuNodeById(root, orgId) {
+        var target = null;
+        (function collect(node) {
+            if (target) return;
+            if (node.orgId == orgId) {
+                target = node;
+                return;
+            }
+            if (node.children && node.children.length > 0) {
+                for (var i = 0; i < node.children.length; i++) {
+                    collect(node.children[i]);
+                    if (target) return;
+                }
+            }
+        })(root);
+        return target;
     }
 
     function onMenuTreeClick(e) {
@@ -799,7 +833,8 @@ request.setAttribute("browserLang", browserLang);
             'AP.view.log.DeviceOperationLogInfoView': context + '/miniui-app/modules/log/DeviceOperationLog.jsp',
             'AP.view.log.SystemLogInfoView': context + '/miniui-app/modules/log/SystemLog.jsp',
             'AP.view.dataMaintaining.CalculateMaintainingInfoView': context + '/miniui-app/modules/dataMaintaining/CalculateMaintaining.jsp',
-            'AP.view.acquisitionUnit.ProtocolConfigInfoView': context + '/miniui-app/modules/driverConfig/DriverConfig.jsp'
+            'AP.view.acquisitionUnit.ProtocolConfigInfoView': context + '/miniui-app/modules/driverConfig/DriverConfig.jsp',
+            'AP.view.orgAndUser.OrgAndUserInfoView': context + '/miniui-app/modules/orgAndUser/OrgAndUserInfo.jsp'
         };
         return mapping[viewSrc] || null;
     }
@@ -818,6 +853,22 @@ request.setAttribute("browserLang", browserLang);
                 } catch(e) {}
             });
         });
+        
+     // ================================================================
+     // 监听子模块的消息（iframe → 主界面）
+     // ================================================================
+     window.addEventListener('message', function (event) {
+         var message = event.data;
+         if (!message || !message.action) return;
+         var type=message.type;
+         switch (message.action) {
+             // ★ 子模块保存/新增/删除组织后通知主界面刷新左侧组织树
+             case 'refreshMainOrgTree':
+                 // 更新选中依据：刷新后按这个 orgId 恢复选中
+                 refreshOrgTree();
+                 break;
+         }
+     });
     });
 
     console.log('MiniUI 主页面加载完成');

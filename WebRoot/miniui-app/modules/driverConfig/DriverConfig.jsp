@@ -1238,10 +1238,6 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         var emailEnable = false;
         var raw = (typeof _emailEnable !== 'undefined') ? _emailEnable : false;
         emailEnable = (raw === true || raw === 'true' || raw === 1 || raw === '1');
-        //报警实例
-        var protocolAlarmInstancePropertiesHandsontableHelper = null;
-        //报表实例
-        var protocolReportInstancePropertiesHandsontableHelper = null;
 
         // ================================================================
         // 设备类型树联动逻辑

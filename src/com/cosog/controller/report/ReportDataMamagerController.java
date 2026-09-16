@@ -905,7 +905,7 @@ public class ReportDataMamagerController extends BaseController {
 	
 	@RequestMapping("/setReportDataGraphicInfo")
 	public String setReportDataGraphicInfo() throws Exception {
-		String json = "{success:false}";
+		String json = "{\"success\":false}";
 		HttpSession session=request.getSession();
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
@@ -914,7 +914,7 @@ public class ReportDataMamagerController extends BaseController {
 		String graphicSetData = ParamUtils.getParameter(request, "graphicSetData");
 		this.pager = new Page("pagerForm", request);
 		int result = reportDataManagerService.setReportDataGraphicInfo(deviceId,reportType,graphicSetData);
-		json = "{success:true}";
+		json = "{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -926,7 +926,7 @@ public class ReportDataMamagerController extends BaseController {
 	
 	@RequestMapping("/saveSingleWellRangeDailyReportData")
 	public String saveSingleWellRangeDailyReportData() throws Exception {
-		String json = "{success:false}";
+		String json = "{\"success\":false}";
 		HttpSession session=request.getSession();
 		String data = ParamUtils.getParameter(request, "data");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
@@ -934,7 +934,7 @@ public class ReportDataMamagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
 		int result = reportDataManagerService.saveSingleWellRangeDailyReportData(deviceId,deviceName,deviceType,data);
-		json = "{success:true}";
+		json = "{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -946,7 +946,7 @@ public class ReportDataMamagerController extends BaseController {
 	
 	@RequestMapping("/saveSingleWellDailyDailyReportData")
 	public String saveSingleWellDailyDailyReportData() throws Exception {
-		String json = "{success:false}";
+		String json = "{\"success\":false}";
 		HttpSession session=request.getSession();
 		String data = ParamUtils.getParameter(request, "data");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
@@ -954,7 +954,7 @@ public class ReportDataMamagerController extends BaseController {
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
 		int result = reportDataManagerService.saveSingleWellDailyDailyReportData(deviceId,deviceName,deviceType,data);
-		json = "{success:true}";
+		json = "{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -966,7 +966,7 @@ public class ReportDataMamagerController extends BaseController {
 	
 	@RequestMapping("/showTouchtest")
 	public String showTouchtest() throws Exception {
-		String json = "{success:true,totals:4,items:[{\"name\":\"Jean Luc2\",\"email\":\"jeanluc.picard@enterprise.com\",\"phone\": \"555-111-1111\"},{\"name\":\"Worf2\",\"email\":\"worf.moghsson@enterprise.com\",\"phone\":\"555-222-2222\"},{\"name\":\"Deanna2\",\"email\":\"deanna.troi@enterprise.com\",\"phone\":\"555-333-3333\" },{\"name\":\"Data2\",\"email\":\"mr.data@enterprise.com\",\"phone\":\"555-444-4444\"}]}";
+		String json = "{\"success\":true,\"total\"s:4,\"items\":[{\"name\":\"Jean Luc2\",\"email\":\"jeanluc.picard@enterprise.com\",\"phone\": \"555-111-1111\"},{\"name\":\"Worf2\",\"email\":\"worf.moghsson@enterprise.com\",\"phone\":\"555-222-2222\"},{\"name\":\"Deanna2\",\"email\":\"deanna.troi@enterprise.com\",\"phone\":\"555-333-3333\" },{\"name\":\"Data2\",\"email\":\"mr.data@enterprise.com\",\"phone\":\"555-444-4444\"}]}";
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -1426,14 +1426,14 @@ public class ReportDataMamagerController extends BaseController {
 	
 	@RequestMapping("/saveHydrologicalWellReportData")
 	public String saveHydrologicalWellReportData() throws Exception {
-		String json = "{success:false}";
+		String json = "{\"success\":false}";
 		HttpSession session=request.getSession();
 		String data = ParamUtils.getParameter(request, "data");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		this.pager = new Page("pagerForm", request);
 		int result = reportDataManagerService.saveHydrologicalWellReportData(deviceId,deviceName,data);
-		json = "{success:true}";
+		json = "{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

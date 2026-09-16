@@ -53,13 +53,13 @@ public class RightManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.rightService.addRight(Right);
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -92,13 +92,13 @@ public class RightManagerController extends BaseController {
 				r.setRtUserNo(userNo);
 				this.rightService.saveOrUpdateRight(r);
 			}
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -110,7 +110,7 @@ public class RightManagerController extends BaseController {
 			String RightIds = ParamUtils.getParameter(request, "paramsId");
 			this.rightService.bulkDelete(RightIds);
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			String result = "{success:true,flag:true}";
+			String result = "{\"success\":true,\"flag\":true}";
 			response.getWriter().print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -127,7 +127,7 @@ public class RightManagerController extends BaseController {
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
-			String result = "{success:true,msg:true}";
+			String result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 			pw.flush();

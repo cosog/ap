@@ -323,7 +323,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 			}
 	    }
 		
-		return  "{success:true,msg:"+r+"}";
+		return  "{\"success\":true,\"msg\":"+r+"}";
 	}
 	
 	public String getOperationMaintenanceMonitorCurveData(String startDate,String endDate,User user)throws Exception {

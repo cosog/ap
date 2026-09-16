@@ -258,7 +258,7 @@ public class ModuleMenuController extends BaseController {
 		MainModuleRecursion r = new MainModuleRecursion();
 		if (user != null) {
 			boolean expandedAll=Config.getInstance().configFile.getAp().getOthers().getExpandedAll();
-			strBuf.append("{list:[");
+			strBuf.append("{\"list\":[");
 			for (Module org : list) {
 				String orgName="";
 				if("zh_CN".equalsIgnoreCase(language)){
@@ -316,7 +316,7 @@ public class ModuleMenuController extends BaseController {
 			}
 			strBuf.append("]}");
 		}else{
-			strBuf.append("{success:true,flag:true,\"msg\":\"用户会话已经过期!\"}");
+			strBuf.append("{\"success\":true,\"flag\":true,\"msg\":\"用户会话已经过期!\"}");
 		}
 		json = strBuf.toString();
 		//HttpServletResponse response = ServletActionContext.getResponse();

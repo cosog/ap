@@ -209,7 +209,7 @@ public class OrgManagerController extends BaseController {
 			json = r.modifyOrgStr(json);
 			strBuf.append(json);
 		} else {
-			strBuf.append("{success:true,flag:true,\"msg\":\"用户会话已经过期!\"}");
+			strBuf.append("{\"success\":true,\"flag\":true,\"msg\":\"用户会话已经过期!\"}");
 		}
 		json = strBuf.toString();
 		pw.print(json);
@@ -373,7 +373,7 @@ public class OrgManagerController extends BaseController {
 //			}
 			
 			this.orgService.addOrg(org);
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			Map<String, Object> map = DataModelMap.getMapObject();
 			
 			userInfo.setUserParentOrgids(orgService.findParentIds(userInfo.getUserOrgid()));
@@ -391,7 +391,7 @@ public class OrgManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -415,7 +415,7 @@ public class OrgManagerController extends BaseController {
 				deleteCount=this.orgService.bulkDelete(OrgIds);
 			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			String result = "{success:true,flag:true,\"deleteCount\":"+deleteCount+"}";
+			String result = "{\"success\":true,\"flag\":true,\"deleteCount\":"+deleteCount+"}";
 			Map<String, Object> map = DataModelMap.getMapObject();
 			HttpSession session=request.getSession();
 			User userInfo = this.findCurrentUserInfo();
@@ -487,7 +487,7 @@ public class OrgManagerController extends BaseController {
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
-			String result = "{success:true,msg:true}";
+			String result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			Map<String, Object> map = DataModelMap.getMapObject();
 			
@@ -512,7 +512,7 @@ public class OrgManagerController extends BaseController {
 	
 	@RequestMapping("/batchUpdateOrgInfo")
 	public String batchUpdateOrgInfo() throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		HttpSession session=request.getSession();
 		User userInfo = this.findCurrentUserInfo();
 		try {
@@ -528,7 +528,7 @@ public class OrgManagerController extends BaseController {
 				}
 			}
 		} catch (Exception e) {
-			result = "{success:false,flag:false}";
+			result = "{\"success\":false,\"flag\":false}";
 			e.printStackTrace();
 		}
 		response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -595,7 +595,7 @@ public class OrgManagerController extends BaseController {
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
-			String result = "{success:true,msg:true" + ",orgLevel:" + this.orgService.findByPrimary(parentId).get(0) + "}";
+			String result = "{\"success\":true,\"msg\":true" + ",\"orgLevel\":" + this.orgService.findByPrimary(parentId).get(0) + "}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 			pw.flush();
@@ -630,7 +630,7 @@ public class OrgManagerController extends BaseController {
 				int code = Integer.parseInt(newCode) + 1;
 				newCode = code + "";
 			}
-			String result = "{success:true,msg:true" + ",orgCode:\"" + newCode + "\"}";
+			String result = "{\"success\":true,\"msg\":true" + ",\"orgCode\":\"" + newCode + "\"}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 			pw.flush();
@@ -650,7 +650,7 @@ public class OrgManagerController extends BaseController {
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
-			String result = "{success:true,msg:true,maxId:" + (maxId) + "}";
+			String result = "{\"success\":true,\"msg\":true,\"maxId\":" + (maxId) + "}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 			pw.flush();
@@ -689,7 +689,7 @@ public class OrgManagerController extends BaseController {
 				orgCode = "0" + (list.size() + 1);
 			}
 
-			String result = "{success:true,msg:true,childNodes:" + list.size() + ",orgCode:'" + orgCode + "'}";
+			String result = "{\"success\":true,\"msg\":true,\"childNodes\":" + list.size() + ",\"childNodes\":\"" + orgCode + "\"}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 			pw.flush();
@@ -867,7 +867,7 @@ public class OrgManagerController extends BaseController {
 		}
 		int r=orgService.saveAllImportedOrganization(uploadOrganizationList,user);
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

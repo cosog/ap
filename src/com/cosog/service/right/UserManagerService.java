@@ -175,7 +175,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		for (Object o : roleList) {
 			Object[] obj = (Object[]) o;
 			if(StringManagerUtils.isNotNull(obj[1]+"")){
-				role_json.append("['"+obj[1]+"','"+obj[1]+"'],");
+				role_json.append("[\""+obj[1]+"\",\""+obj[1]+"\"],");
 			}
 		}
 		if (role_json.toString().endsWith(",")) {
@@ -187,7 +187,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		while(it.hasNext()){
 			Map.Entry<String, Code> entry = it.next();
 			Code c=entry.getValue();
-			language_json.append("['"+c.getItemname()+"','"+c.getItemname()+"'],");
+			language_json.append("[\""+c.getItemname()+"\",\""+c.getItemname()+"\"],");
 		}
 		if (language_json.toString().endsWith(",")) {
 			language_json.deleteCharAt(language_json.length() - 1);

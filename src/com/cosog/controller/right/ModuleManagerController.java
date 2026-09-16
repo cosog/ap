@@ -261,7 +261,7 @@ public class ModuleManagerController extends BaseController {
 				module.setMdParentid(0);
 			}
 			this.moduleService.addModule(module);
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			// 当前登录用户
 			Map<String, Object> map = DataModelMap.getMapObject();
@@ -278,7 +278,7 @@ public class ModuleManagerController extends BaseController {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -296,7 +296,7 @@ public class ModuleManagerController extends BaseController {
 			String moduleIds = ParamUtils.getParameter(request, "paramsId");
 			this.moduleService.bulkDelete(moduleIds);
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			String result = "{success:true,flag:true}";
+			String result = "{\"success\":true,\"flag\":true}";
 			// 当前登录用户
 				Map<String, Object> map = DataModelMap.getMapObject();
 				User userInfo = this.findCurrentUserInfo();
@@ -318,7 +318,7 @@ public class ModuleManagerController extends BaseController {
 	
 	@RequestMapping("/batchUpdateModuleInfo")
 	public String batchUpdateModuleInfo() throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		HttpSession session=request.getSession();
 		User userInfo = this.findCurrentUserInfo();
 		try {
@@ -335,7 +335,7 @@ public class ModuleManagerController extends BaseController {
 					}
 				}
 			} catch (Exception e) {
-				result = "{success:false,flag:false}";
+				result = "{\"success\":false,\"flag\":false}";
 				e.printStackTrace();
 			}
 			
@@ -379,7 +379,7 @@ public class ModuleManagerController extends BaseController {
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
-			String result = "{success:true,msg:true}";
+			String result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			// 当前登录用户
 			Map<String, Object> map = DataModelMap.getMapObject();
@@ -469,7 +469,7 @@ public class ModuleManagerController extends BaseController {
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
-			String result = "{success:true,msg:true,maxId:" + (maxId) + "}";
+			String result = "{\"success\":true,\"msg\":true,maxId:" + (maxId) + "}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 			pw.flush();
@@ -646,7 +646,7 @@ public class ModuleManagerController extends BaseController {
 		}
 		int r=moduleService.saveAllImportedModule(uploadModuleList,user);
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

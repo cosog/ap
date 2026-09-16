@@ -373,9 +373,9 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 			}
 //			getBaseDao().updateObject(dinfo);
 			this.saveDataitemsInfo(dinfo);
-			jsonaddstr = "{success:true,msg:true}";
+			jsonaddstr = "{\"success\":true,\"msg\":true}";
 		} else {
-			jsonaddstr = "{success:true,msg:false,error:'此用户已创建了该数据项！'}";
+			jsonaddstr = "{\"success\":true,\"msg\":false,\"error\":\"此用户已创建了该数据项！\"}";
 		}
 		return jsonaddstr;
 	}
@@ -508,9 +508,9 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 				}
 			}
 			getBaseDao().updateObject(dinfo);
-			jsonaddstr = "{success:true,msg:true}";
+			jsonaddstr = "{\"success\":true,\"msg\":true}";
 		} else {
-			jsonaddstr = "{success:true,msg:false,error:'此用户已创建了该数据项！'}";
+			jsonaddstr = "{\"success\":true,\"msg\":false,\"error\":\"此用户已创建了该数据项！\"}";
 		}
 		return jsonaddstr;
 	}
@@ -529,9 +529,9 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 			dinfo.setUpdatetime(DateUtils.getTime());
 			//this.edit(dinfo);
 			getBaseDao().updateObject(dinfo);
-			jsonaddstr = "{success:true,msg:true}";
+			jsonaddstr = "{\"success\":true,\"msg\":true}";
 		} else {
-			jsonaddstr = "{success:true,msg:false,error:'此数据项修改失败!'}";
+			jsonaddstr = "{\"success\":true,\"msg\":false,\"error\":\"此数据项修改失败!\"}";
 		}
 		return jsonaddstr;
 	}

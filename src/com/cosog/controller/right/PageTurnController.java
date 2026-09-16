@@ -189,9 +189,9 @@ public class PageTurnController extends BaseController {
 		String result="";
 		Gson gson=new Gson();
 		if (null == username || "".equals(username)) {
-//			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户名不能为空!</font>'}");
+//			out.print("{\"success\":true,\"flag\":false,'msg':'<font color=\"purple\">用户名不能为空!</font>'}");
 		} else if (null == userPass || "".equals(userPass)) {
-//			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户密码不能为空!</font>'}");
+//			out.print("{\"success\":true,\"flag\":false,'msg':'<font color=\"purple\">用户密码不能为空!</font>'}");
 		} else {
 			User user = this.service.doLogin(username, StringManagerUtils.stringToMD5(userPass));
 			if (user != null && user.getUserEnable()==1) {
@@ -237,7 +237,7 @@ public class PageTurnController extends BaseController {
 				session.setAttribute("WW_TRANS_I18N_LOCALE", l);
 				session.setAttribute("browserLang", locale);
 				
-//				out.print("{success:true,flag:'normal'}");
+//				out.print("{\"success\":true,\"flag\":'normal'}");
 				
 				
 				
@@ -313,9 +313,9 @@ public class PageTurnController extends BaseController {
 				}
 				result=returnPage;
 			}else if(user != null && user.getUserEnable()!=1){
-//				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">"+languageResourceMap.get("disabledUser")+"</font>' }");
+//				out.print("{\"success\":true,\"flag\":false,'msg':'<font color=\"purple\">"+languageResourceMap.get("disabledUser")+"</font>' }");
 			} else {
-//				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">"+languageResourceMap.get("accountOrPasswordError")+"</font>' }");
+//				out.print("{\"success\":true,\"flag\":false,'msg':'<font color=\"purple\">"+languageResourceMap.get("accountOrPasswordError")+"</font>' }");
 			}
 		}
 		return result;

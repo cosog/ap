@@ -145,7 +145,7 @@ public class DataitemsInfoController extends BaseController {
 	
 	@RequestMapping("/updateDataDictionaryItemInfo")
 	public String updateDataDictionaryItemInfo() throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		try {
 			String dataitemid = ParamUtils.getParameter(request, "dataitemid");
 			String name = ParamUtils.getParameter(request, "name");
@@ -159,14 +159,14 @@ public class DataitemsInfoController extends BaseController {
 			User userInfo = this.findCurrentUserInfo();
 			int r=this.dataitemsInfoService.updateDataDictionaryItemInfo(dataitemid,name,code,sorts,datavalue,status,status_cn,status_en,status_ru,userInfo.getLanguageName());
 			if(r==1){
-				result = "{success:true,flag:true}";
+				result = "{\"success\":true,\"flag\":true}";
 			}else if(r==2){
-				result = "{success:true,flag:false}";
+				result = "{\"success\":true,\"flag\":false}";
 			}else{
-				result = "{success:false,flag:false}";
+				result = "{\"success\":false,\"flag\":false}";
 			}
 		} catch (Exception e) {
-			result = "{success:false,flag:false}";
+			result = "{\"success\":false,\"flag\":false}";
 			e.printStackTrace();
 		}
 		response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -181,7 +181,7 @@ public class DataitemsInfoController extends BaseController {
 	
 	@RequestMapping("/batchUpdateDictionaryItemInfo")
 	public String batchUpdateDictionaryItemInfo() throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		try {
 			String data = ParamUtils.getParameter(request, "data");
 			User userInfo = this.findCurrentUserInfo();
@@ -196,14 +196,14 @@ public class DataitemsInfoController extends BaseController {
 				}
 			}
 			if(r==1){
-				result = "{success:true,flag:true}";
+				result = "{\"success\":true,\"flag\":true}";
 			}else if(r==2){
-				result = "{success:true,flag:false}";
+				result = "{\"success\":true,\"flag\":false}";
 			}else{
-				result = "{success:false,flag:false}";
+				result = "{\"success\":false,\"flag\":false}";
 			}
 		} catch (Exception e) {
-			result = "{success:false,flag:false}";
+			result = "{\"success\":false,\"flag\":false}";
 			e.printStackTrace();
 		}
 		response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -233,7 +233,7 @@ public class DataitemsInfoController extends BaseController {
 			dataitemsInfo.setConfigItemBitIndex(StringManagerUtils.isInteger(itemBitIndex)?StringManagerUtils.stringToInteger(itemBitIndex):null);
 			jsonaddstr = dataitemsInfoService.saveDataitemsInfo(dataitemsInfo, userInfo, sysId);
 		} else {
-			jsonaddstr = "{success:true,msg:false}";
+			jsonaddstr = "{\"success\":true,\"msg\":false}";
 		}
 		response.setCharacterEncoding("utf-8");
 		PrintWriter pw;
@@ -263,7 +263,7 @@ public class DataitemsInfoController extends BaseController {
 			dataitemsInfo.setConfigItemBitIndex(StringManagerUtils.isInteger(itemBitIndex)?StringManagerUtils.stringToInteger(itemBitIndex):null);
 			jsonaddstr = dataitemsInfoService.updateDataitemsInfo(dataitemsInfo, userInfo, sysId);
 		} else {
-			jsonaddstr = "{success:true,msg:false}";
+			jsonaddstr = "{\"success\":true,\"msg\":false}";
 		}
 		response.setCharacterEncoding("utf-8");
 		PrintWriter pw;
@@ -287,7 +287,7 @@ public class DataitemsInfoController extends BaseController {
 			User userInfo = this.findCurrentUserInfo();
 			jsonaddstr = dataitemsInfoService.editDataitemsInfo(dataitemsInfo, userInfo);
 		} else {
-			jsonaddstr = "{success:true,msg:false}";
+			jsonaddstr = "{\"success\":true,\"msg\":false}";
 		}
 //		systemdataInfoService.initDataDictionaryPutInCache();
 		response.setCharacterEncoding("utf-8");
@@ -314,12 +314,12 @@ public class DataitemsInfoController extends BaseController {
 			if (StringUtils.isNotBlank(getDatatId)) {
 				boolean boo = dataitemsInfoService.deleteDataitemsInfoById(this.findCurrentUserInfo(), getDatatId);
 				if (boo) {
-					jsondelete = "{success:true,flag:true}";
+					jsondelete = "{\"success\":true,\"flag\":true}";
 				} else {
-					jsondelete = "{success:true,flag:false}";
+					jsondelete = "{\"success\":true,\"flag\":false}";
 				}
 			} else {
-				jsondelete = "{success:false,flag:false}";
+				jsondelete = "{\"success\":false,\"flag\":false}";
 			}
 			// 处理乱码。
 			response.setCharacterEncoding("utf-8");

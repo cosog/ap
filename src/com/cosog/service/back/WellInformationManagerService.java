@@ -1324,7 +1324,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	public String savePumpingPRTFData(String deviceId,String data) throws Exception {
-		String result = "{success:true,msg:true}";
+		String result = "{\"success\":true,\"msg\":true}";
 		try{
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;
@@ -1369,7 +1369,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 		}
 		return result;
 	}

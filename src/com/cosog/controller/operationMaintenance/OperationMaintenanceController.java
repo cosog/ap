@@ -234,7 +234,7 @@ public class OperationMaintenanceController  extends BaseController {
 			language=user.getLanguageName();
 		}
 		OEMConfigFile configFile=Config.getInstance().oemConfigFile;
-		json = "{success:true,msg:"+r+"}";
+		json = "{\"success\":true,\"msg\":"+r+"}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -366,7 +366,7 @@ public class OperationMaintenanceController  extends BaseController {
 
 	@RequestMapping("/saveDeviceTypeMaintenanceData")
 	public String saveDeviceTypeMaintenanceData() throws Exception {
-		String result ="{success:true,msg:false}";
+		String result ="{\"success\":true,\"msg\":false}";
 		HttpSession session=request.getSession();
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
@@ -433,13 +433,13 @@ public class OperationMaintenanceController  extends BaseController {
 //			}
 			
 			this.deviceTabManagerMaintenanceService.addDeviceTabManagerInstance(deviceTabManager);
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result = "{success:false,msg:false}";
+			result = "{\"success\":false,\"msg\":false}";
 			out.print(result);
 		}
 		return null;
@@ -447,7 +447,7 @@ public class OperationMaintenanceController  extends BaseController {
 	
 	@RequestMapping("/saveDeviceTabManagerInstance")
 	public String saveDeviceTabManagerInstance() throws Exception {
-		String result ="{success:true,msg:false}";
+		String result ="{\"success\":true,\"msg\":false}";
 		HttpSession session=request.getSession();
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
@@ -484,7 +484,7 @@ public class OperationMaintenanceController  extends BaseController {
 	
 	@RequestMapping("/deleteDeviceTabManagerInstance")
 	public String deleteDeviceTabManagerInstance() throws Exception {
-		String result ="{success:true,msg:false}";
+		String result ="{\"success\":true,\"msg\":false}";
 		HttpSession session=request.getSession();
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;

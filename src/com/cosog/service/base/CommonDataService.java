@@ -1541,9 +1541,9 @@ public class CommonDataService extends BaseService {
 		if (list2.size() == list1.size()) {
 			getResult = this.jsonPageRiverSql(list1, sql, pager);
 		} else if (list2.size() > list1.size()) {
-			jsonBuf.append("{success:true,start:" + pager.getStart());
-			jsonBuf.append(",totalCount:" + pager.getTotalCount());
-			jsonBuf.append(",totalRoot:[");
+			jsonBuf.append("{\"success\":true,\"start\":" + pager.getStart());
+			jsonBuf.append(",\"totalCount\":" + pager.getTotalCount());
+			jsonBuf.append(",\"totalRoot\":[");
 			if (null != list1 && list1.size() > 0) {
 				for (int i = 0; i < list1.size(); i++) {
 					Object[] obj = (Object[]) list1.get(i);

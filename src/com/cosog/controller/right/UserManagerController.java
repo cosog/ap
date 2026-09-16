@@ -155,9 +155,9 @@ public class UserManagerController extends BaseController {
 		try{
 			HttpSession session=request.getSession();
 			session.invalidate();
-			json = "{success:true,msg:true}";
+			json = "{\"success\":true,\"msg\":true}";
 		}catch(Exception e){
-			json = "{success:true,false}";
+			json = "{\"success\":true,false}";
 		}
 		
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
@@ -176,7 +176,7 @@ public class UserManagerController extends BaseController {
 	 */
 	@RequestMapping("/doUserAdd")
 	public String doUserAdd(@ModelAttribute User user) throws IOException {
-		String result = "{success:true,msg:false}";
+		String result = "{\"success\":true,\"msg\":false}";
 		try {
 			User loginUser = null;
 			HttpSession session=request.getSession();
@@ -211,13 +211,13 @@ public class UserManagerController extends BaseController {
 			List<String> userList=new ArrayList<String>();
 			userList.add(user.getUserId());
 			MemoryDataManagerTask.loadUserInfo(userList,1,"update");
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			if(StringManagerUtils.isMailLegal(user.getUserInEmail())){
 				receivingEMailAccount.add(user.getUserInEmail());
 				StringManagerUtils.sendEMail(emailTopic, emailContent, receivingEMailAccount);
 			}
 			
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 		} catch (Exception e) {
@@ -248,7 +248,7 @@ public class UserManagerController extends BaseController {
 			}
 			//销毁已
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			String result = "{success:true,flag:true}";
+			String result = "{\"success\":true,\"flag\":true}";
 			response.getWriter().print(result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -312,7 +312,7 @@ public class UserManagerController extends BaseController {
 			userList.add(user.getUserNo()+"");
 			MemoryDataManagerTask.loadUserInfo(userList,0,"update");
 			
-			String result = "{success:true,msg:true}";
+			String result = "{\"success\":true,\"msg\":true}";
 			if(user.getUserNo()==prttentuser.getUserNo()){
 				prttentuser.setUserOrgid(user.getUserOrgid());
 			}
@@ -329,7 +329,7 @@ public class UserManagerController extends BaseController {
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.setHeader("Cache-Control", "no-cache");
 			PrintWriter pw = response.getWriter();
-			result = "{success:true,msg:true}";
+			result = "{\"success\":true,\"msg\":true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			response.getWriter().print(result);
 			pw.flush();
@@ -343,7 +343,7 @@ public class UserManagerController extends BaseController {
 	
 	@RequestMapping("/doUserEditPassword")
 	public String doUserEditPassword(@ModelAttribute User user) throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		try {
 			log.debug("edit user password success==" + user.getUserNo());
 			String emailContent="账号:"+user.getUserId()+"<br/>新密码:"+user.getUserPwd();
@@ -355,7 +355,7 @@ public class UserManagerController extends BaseController {
 			
 			int r=this.userService.updateUserPassword(user);
 			if(r<1){
-				result = "{success:true,flag:false}";
+				result = "{\"success\":true,\"flag\":false}";
 			}else{
 				String email=this.userService.getUserEmail(user);
 				if(StringManagerUtils.isMailLegal(email)){
@@ -364,7 +364,7 @@ public class UserManagerController extends BaseController {
 				}
 			}
 		} catch (Exception e) {
-			result = "{success:false,flag:false}";
+			result = "{\"success\":false,\"flag\":false}";
 			e.printStackTrace();
 		}
 		response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -379,7 +379,7 @@ public class UserManagerController extends BaseController {
 	
 	@RequestMapping("/batchUpdateUserInfo")
 	public String batchUpdateUserInfo() throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		try {
 			boolean isLoginedUser=false;
 			HttpSession session=request.getSession();
@@ -436,14 +436,14 @@ public class UserManagerController extends BaseController {
 			}
 			
 			if(r==1){
-				result = "{success:true,flag:true}";
+				result = "{\"success\":true,\"flag\":true}";
 			}else if(r==2){
-				result = "{success:true,flag:false}";
+				result = "{\"success\":true,\"flag\":false}";
 			}else{
-				result = "{success:false,flag:false}";
+				result = "{\"success\":false,\"flag\":false}";
 			}
 		} catch (Exception e) {
-			result = "{success:false,flag:false}";
+			result = "{\"success\":false,\"flag\":false}";
 			e.printStackTrace();
 		}
 		response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -458,7 +458,7 @@ public class UserManagerController extends BaseController {
 	
 	@RequestMapping("/updateUserInfo")
 	public String updateUserInfo() throws IOException {
-		String result = "{success:true,flag:true}";
+		String result = "{\"success\":true,\"flag\":true}";
 		try {
 			boolean isLoginedUser=false;
 			HttpSession session=request.getSession();
@@ -533,12 +533,12 @@ public class UserManagerController extends BaseController {
 					SessionLockHelper.destroySessionByUserNo(user.getUserNo());
 				}
 			}else if(r==2){
-				result = "{success:true,flag:false}";
+				result = "{\"success\":true,\"flag\":false}";
 			}else{
-				result = "{success:false,flag:false}";
+				result = "{\"success\":false,\"flag\":false}";
 			}
 		} catch (Exception e) {
-			result = "{success:false,flag:false}";
+			result = "{\"success\":false,\"flag\":false}";
 			e.printStackTrace();
 		}
 		response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -658,9 +658,9 @@ public class UserManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{success:true,msg:'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{success:true,msg:'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -952,7 +952,7 @@ public class UserManagerController extends BaseController {
 		}
 		int r=userService.saveAllImportedUser(uploadUserList,user);
 		
-		String json ="{success:true}";
+		String json ="{\"success\":true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

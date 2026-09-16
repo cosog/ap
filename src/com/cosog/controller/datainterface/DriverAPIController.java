@@ -244,7 +244,7 @@ public class DriverAPIController extends BaseController{
 				infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
 			}
 			
-			String json = "{success:true,flag:true}";
+			String json = "{\"success\":true,\"flag\":true}";
 			response.setContentType("application/json;charset=utf-8");
 			response.setHeader("Cache-Control", "no-cache");
 			pw = response.getWriter();
@@ -266,7 +266,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss=null;
 		Gson gson=new Gson();
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-		String json = "{success:true,flag:true}";
+		String json = "{\"success\":true,\"flag\":true}";
 		PrintWriter pw=null;
 		try {
 			if(EquipmentDriverServerTask.initFinished){
@@ -713,7 +713,7 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 				}else{
-					json = "{success:true,flag:false}";
+					json = "{\"success\":true,\"flag\":false}";
 				}
 				response.setContentType("application/json;charset=utf-8");
 				response.setHeader("Cache-Control", "no-cache");
@@ -744,7 +744,7 @@ public class DriverAPIController extends BaseController{
 		Gson gson=new Gson();
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		PrintWriter pw=null;
-		String json = "{success:true,flag:true}";
+		String json = "{\"success\":true,\"flag\":true}";
 		try {
 			if(EquipmentDriverServerTask.initFinished){
 				String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
@@ -1188,7 +1188,7 @@ public class DriverAPIController extends BaseController{
 						}
 					}
 				}else{
-					json = "{success:true,flag:false}";
+					json = "{\"success\":true,\"flag\":false}";
 				}
 				
 				response.setContentType("application/json;charset=utf-8");
@@ -1218,7 +1218,7 @@ public class DriverAPIController extends BaseController{
 	public String AcqGroupData(){
 		CounterUtils.incr();
 		ServletInputStream ss=null;
-		String json = "{success:true,flag:true}";
+		String json = "{\"success\":true,\"flag\":true}";
 		PrintWriter pw=null;
 		try {
 			if(EquipmentDriverServerTask.initFinished){
@@ -1254,7 +1254,7 @@ public class DriverAPIController extends BaseController{
 						StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据无对应设备："+acqGroup.getID()+","+acqGroup.getSlave(),0);
 					}
 				}else{
-					json = "{success:true,flag:false}";
+					json = "{\"success\":true,\"flag\":false}";
 				}
 				response.setContentType("application/json;charset=utf-8");
 				response.setHeader("Cache-Control", "no-cache");
@@ -1284,7 +1284,7 @@ public class DriverAPIController extends BaseController{
 	public String IPPortAcqGroupData(){
 		CounterUtils.incr();
 		ServletInputStream ss=null;
-		String json = "{success:true,flag:true}";
+		String json = "{\"success\":true,\"flag\":true}";
 		PrintWriter pw=null;
 		try {
 			if(EquipmentDriverServerTask.initFinished){
@@ -1311,7 +1311,7 @@ public class DriverAPIController extends BaseController{
 						StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据无对应设备："+acqGroup.getIPPort()+","+acqGroup.getSlave(),0);
 					}
 				}else{
-					json = "{success:true,flag:false}";
+					json = "{\"success\":true,\"flag\":false}";
 				}
 				response.setContentType("application/json;charset=utf-8");
 				response.setHeader("Cache-Control", "no-cache");

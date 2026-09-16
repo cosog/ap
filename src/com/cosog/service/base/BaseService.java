@@ -483,7 +483,7 @@ public class BaseService<T> {
 	 */
 	public String jsonPageRiverSql(List<?> oList, String sql, Page pager) {
 		String[] str = splitPageSql(sql);
-		String jsonString = "{success:true,jssj:\"" + pager.getJssj() + "\",start_date:\"" + pager.getStart_date() + "\",end_date:\"" + pager.getEnd_date() + "\",jh:\"" + pager.getJh() + "\",totals:" + pager.getTotalCount() + ",start:" + pager.getStart() + ",totalCount:" + pager.getTotalCount();
+		String jsonString = "{\"success\":true,\"jssj\":\"" + pager.getJssj() + "\",\"start_date\":\"" + pager.getStart_date() + "\",\"end_date\":\"" + pager.getEnd_date() + "\",\"jh\":\"" + pager.getJh() + "\",\"totals\":" + pager.getTotalCount() + ",\"start\":" + pager.getStart() + ",\"totalCount\":" + pager.getTotalCount();
 		if (null != oList && oList.size() > 0) {
 			try {
 				String strs = "";
@@ -533,7 +533,7 @@ public class BaseService<T> {
 	 */
 	public String jsonPageSql(List<?> oList, String sql, Page pager) {
 		String[] str = splitPageSql(sql);
-		String jsonString = "{start:" + pager.getStart() + ",limit:" + pager.getLimit() + ",totalCount:" + pager.getTotalCount();
+		String jsonString = "{\"start\":" + pager.getStart() + ",limit:" + pager.getLimit() + ",\"totalCount\":" + pager.getTotalCount();
 		if (null != oList && oList.size() > 0) {
 			try {
 				String strs = "";
@@ -590,7 +590,7 @@ public class BaseService<T> {
 
 		String[] str = splitPageSql(sql);
 		StringBuffer jsonString = new StringBuffer();
-		jsonString.append("{success:true,columns:" + columns + ",jssj:\"" + pager.getJssj() + "\",start_date:\"" + pager.getStart_date() + "\",end_date:\"" + pager.getEnd_date() + "\",jh:\"" + pager.getJh() + "\",totals:" + pager.getTotalCount() + ",start:" + pager.getStart() + ",totalCount:" + pager.getTotalCount());
+		jsonString.append("{\"success\":true,\"columns\":" + columns + ",\"jssj\":\"" + pager.getJssj() + "\",\"start_date\":\"" + pager.getStart_date() + "\",\"end_date\":\"" + pager.getEnd_date() + "\",\"jh\":\"" + pager.getJh() + "\",\"totals\":" + pager.getTotalCount() + ",\"start\":" + pager.getStart() + ",\"totalCount\":" + pager.getTotalCount());
 		if (null != oList && !oList.equals("") && oList.size() > 0) {
 			try {
 
@@ -724,7 +724,7 @@ public class BaseService<T> {
 
 		String[] str = splitPageSql(sql);
 		StringBuffer jsonString = new StringBuffer();
-		jsonString.append("{success:true,columns:" + columns + ",jssj:\"" + pager.getJssj() + "\",start_date:\"" + pager.getStart_date() + "\",end_date:\"" + pager.getEnd_date() + "\",jh:\"" + pager.getJh() + "\",totals:" + pager.getTotalCount() + ",start:" + pager.getStart() + ",totalCount:" + pager.getTotalCount());
+		jsonString.append("{\"success\":true,\"columns\":" + columns + ",\"jssj\":\"" + pager.getJssj() + "\",\"start_date\":\"" + pager.getStart_date() + "\",\"end_date\":\"" + pager.getEnd_date() + "\",\"jh\":\"" + pager.getJh() + "\",\"totals\":" + pager.getTotalCount() + ",\"start\":" + pager.getStart() + ",\"totalCount\":" + pager.getTotalCount());
 		if (null != oList && !oList.equals("")) {
 			try {
 				StringBuffer strs = new StringBuffer();
@@ -817,7 +817,7 @@ public class BaseService<T> {
 		String[] str = splitPageSql(sql);
 		// long f=System.currentTimeMillis();
 		StringBuffer jsonString = new StringBuffer();
-		jsonString.append("{success:true,columns:" + columns + ",jssj:\"" + pager.getJssj() + "\",start_date:\"" + pager.getStart_date() + "\",end_date:\"" + pager.getEnd_date() + "\",jh:\"" + pager.getJh() + "\",totals:" + pager.getTotalCount() + ",start:" + pager.getStart() + ",totalCount:" + pager.getTotalCount());
+		jsonString.append("{\"success\":true,\"columns\":" + columns + ",\"jssj\":\"" + pager.getJssj() + "\",\"start_date\":\"" + pager.getStart_date() + "\",\"end_date\":\"" + pager.getEnd_date() + "\",\"jh\":\"" + pager.getJh() + "\",\"totals\":" + pager.getTotalCount() + ",\"start\":" + pager.getStart() + ",\"totalCount\":" + pager.getTotalCount());
 		if (null != oList && oList.size() > 0) {
 			try {
 

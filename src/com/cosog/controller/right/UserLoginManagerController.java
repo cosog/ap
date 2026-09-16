@@ -104,13 +104,13 @@ public class UserLoginManagerController extends BaseController {
 				userInfo.setUserPwd(StringManagerUtils.stringToMD5(newPassword));
 				//service.edit(userInfo);
 				this.service.modifyUser(userInfo);
-				jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>密码修改成功。</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":true,\"msg\":\"<font color=blue>密码修改成功。</font>\"}";
 			} else {
-				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>您输入的旧密码有误！</font>'}";
+				jsonLogin = "{\"success\":true,\"flag\":true,\"error\":false,\"msg\":\"<font color=red>您输入的旧密码有误！</font>\"}";
 			}
 
 		} else {
-			jsonLogin = "{success:true,flag:false}";
+			jsonLogin = "{\"success\":true,\"flag\":false}";
 		}
 		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
@@ -128,7 +128,7 @@ public class UserLoginManagerController extends BaseController {
 	public String userExit() throws IOException {
 		PrintWriter out = response.getWriter();
 		request.getSession().removeAttribute("userLogin");
-		out.print("{success:true,flag:true}");
+		out.print("{\"success\":true,\"flag\":true}");
 		return null;
 
 	}
@@ -178,9 +178,9 @@ public class UserLoginManagerController extends BaseController {
 //		ActionContext.getContext().setLocale(l);   
 		
 		if (null == username || "".equals(username)) {
-			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户名不能为空!</font>'}");
+			out.print("{\"success\":true,\"flag\":false,'msg':'<font color=\"purple\">用户名不能为空!</font>'}");
 		} else if (null == userPass || "".equals(userPass)) {
-			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户密码不能为空!</font>'}");
+			out.print("{\"success\":true,\"flag\":false,'msg':'<font color=\"purple\">用户密码不能为空!</font>'}");
 		} else {
 			if("1".equals(autoLogin)){
 				user = this.service.doLogin(username, userPass);
@@ -220,12 +220,12 @@ public class UserLoginManagerController extends BaseController {
 				session.setAttribute("userLogin", user);
 				session.setAttribute("SESSION_USERNAME", username);
 				SessionLockHelper.putSession(session);
-				out.print("{success:true,flag:'normal'}");
+				out.print("{\"success\":true,\"flag\":'normal'}");
 				this.service.saveSystemLog(user,0,languageResourceMap.get("userLogin"));
 			}else if(user != null && user.getUserEnable()!=1){
-				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">"+languageResourceMap.get("disabledUser")+"</font>' }");
+				out.print("{\"success\":true,\"flag\":false,'msg':'<font color=\"purple\">"+languageResourceMap.get("disabledUser")+"</font>' }");
 			} else {
-				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">"+languageResourceMap.get("accountOrPasswordError")+"</font>' }");
+				out.print("{\"success\":true,\"flag\":false,'msg':'<font color=\"purple\">"+languageResourceMap.get("accountOrPasswordError")+"</font>' }");
 			}
 		}
 		

@@ -308,10 +308,10 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 					dataitemsInfoService.saveDataitemsInfo(dinfo);
 				}
 			}
-			jsonaddstr = "{success:true,msg:true}";
+			jsonaddstr = "{\"success\":true,\"msg\":true}";
 		} else {
 			String errorInfo=languageResourceMap.get("dataModuleCode")+":"+systemdataInfo.getCode()+","+ languageResourceMap.get("alreadyExist")+"";
-			jsonaddstr = "{success:true,msg:false,error:'"+errorInfo+"'}";
+			jsonaddstr = "{\"success\":true,\"msg\":false,\"error\":\""+errorInfo+"\"}";
 		}
 		return jsonaddstr;
 		
@@ -351,9 +351,9 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 				}
 
 			}
-			jsonaddstr = "{success:true,msg:true}";
+			jsonaddstr = "{\"success\":true,\"msg\":true}";
 		} else {
-			jsonaddstr = "{success:true,msg:false,error:'此数据字典信息修改失败!'}";
+			jsonaddstr = "{\"success\":true,\"msg\":false,\"error\":\"此数据字典信息修改失败!\"}";
 		}
 		return jsonaddstr;
 	}

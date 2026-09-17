@@ -125,6 +125,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         			},
         			{
         				xtype:"toolbar",
+        				width:0,
+        				height:30,
         				border: false,
         				id:'ResourceMonitoringToolbar_Id',
         				style: 'background-color: transparent; background-image: none;align-items: center;',

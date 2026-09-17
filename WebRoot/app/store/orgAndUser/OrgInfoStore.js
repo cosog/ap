@@ -108,8 +108,10 @@ Ext.define('AP.store.orgAndUser.OrgInfoStore', {
                         			Ext.getCmp("editOrgLableClassBtn_Id").disable();
                                 	Ext.getCmp("delOrgLableClassBtn_Id").disable();
                         		}else{
-                        			Ext.getCmp("editOrgLableClassBtn_Id").enable();
-                                	Ext.getCmp("delOrgLableClassBtn_Id").enable();
+                        			if(loginUserOrgAndUserModuleRight.editFlag){
+                        				Ext.getCmp("editOrgLableClassBtn_Id").enable();
+                                    	Ext.getCmp("delOrgLableClassBtn_Id").enable();
+                        			}
                         		}
                         	}
                         },

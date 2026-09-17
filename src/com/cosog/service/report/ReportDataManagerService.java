@@ -5795,8 +5795,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\" ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\" ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+totals+",");
@@ -5830,8 +5830,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\" ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"deviceName\" ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+totals+",");
@@ -5864,8 +5864,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		sql+=" group by t3.singleWellRangeReportTemplate,t3.productionreporttemplate";
 		
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("template")+"\",\"dataIndex\":\"templateName\" ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("template")+"\",\"dataIndex\":\"templateName\" ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
@@ -5919,8 +5919,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		sql+=" group by t2.id,t2.name_"+language+",t2.code,t2.unitid,t2.sort order by t2.sort";
 		List<?> list = this.findCallSql(sql);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("reportInstance")+"\",\"dataIndex\":\"instanceName\" ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("reportInstance")+"\",\"dataIndex\":\"instanceName\" ,\"children\":[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"totalCount\":"+list.size()+",");
 		result_json.append("\"totalRoot\":[");

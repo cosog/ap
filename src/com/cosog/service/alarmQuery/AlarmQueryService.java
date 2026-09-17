@@ -510,7 +510,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				+ "{\"header\":\""+languageResourceMap.get("alarmTime")+"\",\"dataIndex\":\"alarmTime\",\"flex\":12,\"children\":[]},"
 				+ "{\"header\":\""+languageResourceMap.get("alarmLevel")+"\",\"dataIndex\":\"alarmLevelAgg\",\"flex\":20,\"children\":[]},"
 				+ "{\"header\":\""+languageResourceMap.get("alarmType")+"\",\"dataIndex\":\"alarmTypeAgg\",\"flex\":20,\"children\":[]}"
-//				+ "{ \"header\":\""+languageResourceMap.get("deviceType")+"\",\"dataIndex\":\"deviceTypeName\",flex:6,\"children\":[] }"
+//				+ "{ \"header\":\""+languageResourceMap.get("deviceType")+"\",\"dataIndex\":\"deviceTypeName\",\"flex\":6,\"children\":[] }"
 				+ "]";
 		
 

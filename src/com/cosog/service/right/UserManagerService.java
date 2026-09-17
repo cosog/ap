@@ -513,10 +513,10 @@ public class UserManagerService<T> extends BaseService<T> {
 		}	
 		sql+= " order by r.role_level,t.user_no";
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("userName")+"\",\"dataIndex\":\"userName\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("userAccount")+"\",\"dataIndex\":\"userID\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("owningOrg")+"\",\"dataIndex\":\"orgName\",width:120 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("userName")+"\",\"dataIndex\":\"userName\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("userAccount")+"\",\"dataIndex\":\"userID\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("owningOrg")+"\",\"dataIndex\":\"orgName\",\"width\":120 ,\"children\":[] }"
 				+ "]";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");

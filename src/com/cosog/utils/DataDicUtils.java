@@ -68,16 +68,16 @@ public class DataDicUtils {
 		for (DataDictionary val : dataList) {
 			String columnString = val.getColunn().trim();
 			if (map.containsKey(columnString)) { // 判断第二层的子节点是否还存在子节点
-				allBuffer.append(" { header: \"" + val.getHead() + " \",dataIndex:\""+val.getColunn().trim()+"\",children:[");
+				allBuffer.append(" { header: \"" + val.getHead() + " \",\"dataIndex\":\""+val.getColunn().trim()+"\",\"children\":[");
 				createChildHeader(columnString, map);// 递归调用获取子节点信息
 				allBuffer.append("] },");
 			} else {
 				// 不存在子节点
-				allBuffer.append(" { header: \"" + val.getHead() + " \", dataIndex:\"" + columnString.trim() +"\"");
+				allBuffer.append(" { header: \"" + val.getHead() + " \", \"dataIndex\":\"" + columnString.trim() +"\"");
 				if(StringManagerUtils.isNotNull(val.getDataValue())&&!"null".equals(val.getDataValue())){
 				allBuffer.append(","+val.getDataValue());
 				}
-				allBuffer.append( ",children:[] },");
+				allBuffer.append( ",\"children\":[] },");
 			}
 
 		}

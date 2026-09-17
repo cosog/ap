@@ -725,7 +725,7 @@ public List<DataitemsInfo> getDataDictionaryItemList2(Page pager, User user, Str
 						if (index >= 0) {
 							String[] rootVal = dataCode.split("_");// 判断当前节点是根节点
 							String key = rootVal[0];
-							strBuf.append(" { header: \"" + header + "\",dataIndex:\"" + key + "\",\"children\":[");
+							strBuf.append(" { header: \"" + header + "\",\"dataIndex\":\"" + key + "\",\"children\":[");
 							DataDicUtils.emptyBuffer();
 							String resultString = DataDicUtils.createChildHeader(key, treemap);// 调用递归函数创建子节点数据信息
 							strBuf.append(resultString);

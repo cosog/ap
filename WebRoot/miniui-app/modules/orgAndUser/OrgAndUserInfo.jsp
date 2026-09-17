@@ -5,6 +5,7 @@
 String path = request.getContextPath();
 User userLogin = (User)session.getAttribute("userLogin");
 String userLoginNo = userLogin != null ? userLogin.getUserNo() + "" : "";
+String userLoginOrgId=userLogin!=null?userLogin.getUserOrgid()+"":"";
 
 String otherStaticResourceTimestamp = (String)session.getAttribute("otherStaticResourceTimestamp");
 if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
@@ -107,7 +108,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
         <!-- ==================== 左侧：组织信息 ==================== -->
         <div size="40%" showCollapseButton="true" collapseDirection="left" minSize="300">
-            <div class="org-panel">
+            <div class="org-panel" id="orgPanel">
                 <div class="panel-toolbar">
                     <button id="orgRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="loadOrgTree()"></button>
                     <span style="flex:1;"></span>
@@ -115,9 +116,9 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     <button id="editOrgLableClassBtn_Id" class="mini-button" iconCls="edit" visible="false"></button>
                     <button id="delOrgLableClassBtn_Id" class="mini-button" iconCls="delete" onclick="delOrgInfo()"></button>
                     <button id="orgSaveBtn" class="mini-button" iconCls="save" onclick="saveOrgInfo()"></button>
-                    <button id="orgParentChangeBtn" class="mini-button" iconCls="move"></button>
-                    <button id="orgExportBtn" class="mini-button" iconCls="export"></button>
-                    <button id="orgImportBtn" class="mini-button" iconCls="import"></button>
+                    <button id="orgParentChangeBtn" class="mini-button" iconCls="move" onclick="orgParentChangeInfo()"></button>
+                    <button id="orgExportBtn" class="mini-button" iconCls="export" onclick="exportOrganizationCompleteData()"></button>
+                    <button id="orgImportBtn" class="mini-button" iconCls="import" onclick="openImportOrganizationWindow()"></button>
                 </div>
 
                 <div class="panel-body">
@@ -154,7 +155,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 
         <!-- ==================== 右侧：用户信息 ==================== -->
         <div size="60%" showCollapseButton="false" minSize="300">
-            <div class="user-panel">
+            <div class="user-panel" id ="userPanel">
                 <div class="panel-toolbar">
                     <span id="userNameLabel"></span>
                     <input id="UserName_Id" class="mini-textbox" style="width:180px;" />
@@ -163,10 +164,10 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     <button id="addUserLableClassBtn_Id" class="mini-button" iconCls="add" onclick="addUserInfo()"></button>
                     <button id="userDeleteBtn" class="mini-button" iconCls="delete" onclick="batchDeleteUser()"></button>
                     <button id="userSaveBtn" class="mini-button" iconCls="save" onclick="batchUpdateUserInfo()"></button>
-                    <button id="editUserLableClassBtn_Id" class="mini-button" iconCls="edit"></button>
-                    <button id="userOrgChangeBtn" class="mini-button" iconCls="move"></button>
-                    <button id="userExportBtn" class="mini-button" iconCls="export"></button>
-                    <button id="userImportBtn" class="mini-button" iconCls="import"></button>
+                    <button id="editUserLableClassBtn_Id" class="mini-button" iconCls="edit" onclick="modifyUserInfo()"></button>
+                    <button id="userOrgChangeBtn" class="mini-button" iconCls="move" onclick="userOrgChangeInfo()"></button>
+                    <button id="userExportBtn" class="mini-button" iconCls="export" onclick="exportUserCompleteData()"></button>
+                    <button id="userImportBtn" class="mini-button" iconCls="import" onclick="openImportUserWindow()"></button>
                 </div>
 
                 <div class="panel-body">
@@ -203,6 +204,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 <script>
     var context = '<%=path%>';
     var user_ = '<%=userLoginNo%>';
+    var userOrg_Id = '<%=userLoginOrgId%>';
     var isInitializing = true;
 
     // ================================================================
@@ -375,16 +377,33 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     	var node = e.node;
         if (!node) return;
 
-        var btn = mini.get('delOrgLableClassBtn_Id');
-        if (btn) btn.setEnabled(editFlag);
-
         _currentOrgNode = node;
         _selectedOrgId = node.orgId;
-
         _allOrgIds = foreachAndSearchOrgChildId(node);
 
+     // ★ 判断当前节点是否为"根节点"或"当前登录用户所属组织"
+        var isRootNode = isOrgRootNode(tree, node);
+        var isLoginUserOrg = (String(node.orgId) === String(userOrg_Id));
+
+        // 删除按钮：根节点 或 登录用户所属组织 时禁用
+        var delBtn = mini.get('delOrgLableClassBtn_Id');
+        if (delBtn) delBtn.setEnabled(editFlag && !isRootNode && !isLoginUserOrg);
+
+        // 编辑按钮：如果有独立的编辑按钮，同样处理
+        var editBtn = mini.get('editOrgLableClassBtn_Id');
+        if (editBtn) editBtn.setEnabled(editFlag && !isRootNode && !isLoginUserOrg);
+        
         // ★ 刷新右侧用户列表
         loadUserList();
+    }
+    
+    function isOrgRootNode(tree, node) {
+        if (!node) return false;
+        var parent = tree.getParentNode(node);
+        // 父节点是 MiniUI 的隐藏 root（无 orgId 或 orgId=0）
+        if (!parent) return true;
+        var pid = parent.orgId;
+        return (pid === undefined || pid === null || pid === 0 || pid === '0');
     }
 
     // ================================================================
@@ -1208,6 +1227,208 @@ function batchDeleteUser() {
                         _loginUserLanguageResource.tip);
          }
      });
+ });
+}
+
+//================================================================
+//组织隶属迁移
+//================================================================
+function orgParentChangeInfo() {
+ if (!editFlag) return;
+
+ mini.open({
+     title: _loginUserLanguageResource.orgParentChange,
+     url: context + '/miniui-app/modules/orgAndUser/orgParentChangeWindow.jsp',
+     width: 600,
+     height: 600,
+     modal: true,
+     allowResize: true,
+     maxable: true,
+     onload: function () {
+    	 var iframe = this.getIFrameEl();
+         var contentWindow = iframe.contentWindow;
+         // ★ 子窗口回调：刷新本地组织树 + 通知主界面
+         contentWindow._parentRefreshOrgTree = function () {
+        	 loadOrgTree();
+             refreshMainOrgTree("update");
+         };
+     }
+ });
+}
+
+//================================================================
+//用户隶属迁移（打开独立窗口）
+//================================================================
+function userOrgChangeInfo() {
+ if (!editFlag) return;
+
+ // 当前用户列表使用的组织筛选和用户名搜索，直接传给子窗口
+ var orgIds = _allOrgIds || '';
+ if (!orgIds) {
+     // 兜底：用左侧主界面的组织树选中值
+     var tree = mini.get('OrgInfoTreeGridView_Id');
+     var node = tree ? tree.getSelectedNode() : null;
+     if (node) orgIds = foreachAndSearchOrgChildId(node);
+ }
+
+ var userInput = mini.get('UserName_Id');
+ var userName = userInput ? (userInput.getValue() || '') : '';
+
+ mini.open({
+     title: _loginUserLanguageResource.userOrgChange,
+     url: context + '/miniui-app/modules/orgAndUser/userOrgChangeWindow.jsp',
+     width: 750,
+     height: 600,
+     modal: true,
+     allowResize: true,
+     maxable: true,
+     onload: function () {
+    	 var iframe = this.getIFrameEl();
+         var contentWindow = iframe.contentWindow;
+         contentWindow.setData({
+             orgIds: orgIds,
+             userName: userName,
+             user_:user_
+         });
+         // ★ 子窗口回调：刷新本地组织树 + 通知主界面
+         contentWindow._parentRefreshData = function () {
+        	 loadUserList();
+             refreshMainOrgTree("update");
+         };
+     }
+ });
+}
+
+//================================================================
+//10.6 修改密码（打开独立窗口）
+//   对应 ExtJS 的 modifyUserInfo()
+//================================================================
+function modifyUserInfo() {
+ if (!editFlag) return;
+
+ var grid = mini.get('UserInfoGridPanel_Id');
+ if (!grid) return;
+
+ // 只允许操作一行（ExtJS 用的 getLastSelected，这里保持一致）
+ var selected = grid.getSelected();
+ if (!selected) {
+     mini.alert(_loginUserLanguageResource.checkOne,
+                _loginUserLanguageResource.tip);
+     return;
+ }
+
+ mini.open({
+     title: _loginUserLanguageResource.passwordReset,
+     url: context + '/miniui-app/modules/orgAndUser/userEditPasswordWindow.jsp',
+     width: 380,
+     height: 260,
+     modal: true,
+     allowResize: true,
+     onload: function () {
+         var iframe = this.getIFrameEl();var iframe = this.getIFrameEl();
+         var contentWindow = iframe.contentWindow;
+         contentWindow.setData({
+             userNo:   selected.userNo,
+             userName: selected.userName,
+             userId:   selected.userId
+         });
+         contentWindow._parentRefreshData = function () {
+        	 loadUserList();
+         };
+     }
+ });
+}
+
+//================================================================
+//导出组织完整数据
+//================================================================
+function exportOrganizationCompleteData() {
+ if (!editFlag) return;
+
+ var url = context + '/orgManagerController/exportOrganizationCompleteData';
+
+ var timestamp = new Date().getTime();
+ var key = 'exportOrganizationCompleteData' + '_' + timestamp;
+ var maskPanelId = 'orgPanel';
+
+ var param = "&recordCount=10000"
+     + "&fileName=" + URLencode(URLencode(_loginUserLanguageResource.organizationExportFileName))
+     + '&key=' + key;
+
+ exportDataMask(key, maskPanelId, _loginUserLanguageResource.loadingData);
+ downloadFile(url + '?flag=true' + param);
+}
+
+//================================================================
+//导出用户完整数据
+//================================================================
+function exportUserCompleteData() {
+ if (!editFlag) return;
+
+ var url = context + '/userManagerController/exportUserCompleteData';
+
+ var timestamp = new Date().getTime();
+ var key = 'exportUserCompleteData' + '_' + timestamp;
+ var maskPanelId = 'userPanel';
+
+ var param = "&recordCount=10000"
+     + "&fileName=" + URLencode(URLencode(_loginUserLanguageResource.userExportFileName))
+     + '&key=' + key;
+
+ exportDataMask(key, maskPanelId, _loginUserLanguageResource.loadingData);
+ downloadFile(url + '?flag=true' + param);
+}
+
+//================================================================
+//打开"导入组织"窗口
+//================================================================
+function openImportOrganizationWindow() {
+ if (!editFlag) return;
+
+ mini.open({
+     title: _loginUserLanguageResource.importOrganization,
+     url: context + '/miniui-app/modules/orgAndUser/importOrganizationWindow.jsp',
+     width: 700,
+     height: 620,
+     modal: true,
+     allowResize: true,
+     maxable: true,
+     onload: function () {
+         var iframe = this.getIFrameEl();
+         var contentWindow = iframe.contentWindow;
+
+         // ★ 暴露给子窗口的刷新回调：导入后刷新组织树 + 通知主界面
+         contentWindow.parent.refreshOrgTreeAfterImport = function () {
+             loadOrgTree();
+             refreshMainOrgTree("import");
+         };
+     }
+ });
+}
+
+//================================================================
+//打开"导入用户"窗口
+//================================================================
+function openImportUserWindow() {
+ if (!editFlag) return;
+
+ mini.open({
+     title: _loginUserLanguageResource.importUser,
+     url: context + '/miniui-app/modules/orgAndUser/importUserWindow.jsp',
+     width: 900,
+     height: 620,
+     modal: true,
+     allowResize: true,
+     maxable: true,
+     onload: function () {
+         var iframe = this.getIFrameEl();
+         var contentWindow = iframe.contentWindow;
+
+         // ★ 暴露给子窗口的刷新回调：导入后刷新用户列表
+         contentWindow.parent.refreshUserListAfterImport = function () {
+             loadUserList();
+         };
+     }
  });
 }
 	

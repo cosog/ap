@@ -80,11 +80,11 @@ public class XmlParseToolsHandler {
 		strBuf.append(" [ ");
 		for (int i = 0; i < headers.size(); i++) {
 			strBuf.append("{ ");
-			strBuf.append("header:'" + headers.get(i) + "',");
-			strBuf.append("dataIndex:'" + fields.get(i) + "',");
-			strBuf.append("dataType:'" + dataTypes.get(i) + "',");
-			strBuf.append("width:'" + widths.get(i) + "',");
-			strBuf.append("hidden:'" + hiddens.get(i) + "'");
+			strBuf.append("\"header\":\"" + headers.get(i) + "\",");
+			strBuf.append("\"dataIndex\":\"" + fields.get(i) + "\",");
+			strBuf.append("\"dataType\":\"" + dataTypes.get(i) + "\",");
+			strBuf.append("\"width\":\"" + widths.get(i) + "\",");
+			strBuf.append("\"hidden\":\"" + hiddens.get(i) + "\"");
 			strBuf.append(" }");
 			if (i != headers.size() - 1) {
 				strBuf.append(",");

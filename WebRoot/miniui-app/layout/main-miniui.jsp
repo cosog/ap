@@ -834,7 +834,8 @@ request.setAttribute("browserLang", browserLang);
             'AP.view.log.SystemLogInfoView': context + '/miniui-app/modules/log/SystemLog.jsp',
             'AP.view.dataMaintaining.CalculateMaintainingInfoView': context + '/miniui-app/modules/dataMaintaining/CalculateMaintaining.jsp',
             'AP.view.acquisitionUnit.ProtocolConfigInfoView': context + '/miniui-app/modules/driverConfig/DriverConfig.jsp',
-            'AP.view.orgAndUser.OrgAndUserInfoView': context + '/miniui-app/modules/orgAndUser/OrgAndUserInfo.jsp'
+            'AP.view.orgAndUser.OrgAndUserInfoView': context + '/miniui-app/modules/orgAndUser/OrgAndUserInfo.jsp',
+            'AP.view.role.RoleInfoView': context + '/miniui-app/modules/role/RoleInfo.jsp'
         };
         return mapping[viewSrc] || null;
     }

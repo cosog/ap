@@ -2095,7 +2095,7 @@ public class WellInformationManagerController extends BaseController {
 		
 		String json = "";
 		String tablecolumns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50},"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50},"
 				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"wellName\"},"
 				+ "{ \"header\":\""+languageResourceMap.get("applicationScenarios")+"\",\"dataIndex\":\"applicationScenariosName\"},"
 				+ "{ \"header\":\""+languageResourceMap.get("acqInstance")+"\",\"dataIndex\":\"instanceName\"},"

@@ -173,7 +173,7 @@ public class ModbusProtocolConfig implements Serializable{
 //			if(StringManagerUtils.isNotNull(this.Unit)){
 //				result.append("("+this.Unit+")");
 //			}
-//			result.append("\",\"dataIndex\": \""+this.Name+"\", children: []}");
+//			result.append("\",\"dataIndex\": \""+this.Name+"\", \"children\": []}");
 //			return result.toString();
 //		}
 		

@@ -386,8 +386,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}	
 		sql+= " order by t.sortNum, t.deviceName";
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"deviceName\",width:120 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"deviceName\",\"width\":120 ,\"children\":[] }"
 				+ "]";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
@@ -411,8 +411,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,Code> codeMap=MemoryDataManagerTask.getCodeMap("APPLICATIONSCENARIOS",language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("applicationScenarios")+"\",\"dataIndex\":\"applicationScenariosName\",width:120 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("applicationScenarios")+"\",\"dataIndex\":\"applicationScenariosName\",\"width\":120 ,\"children\":[] }"
 				+ "]";
 		result_json.append("{\"success\":true,\"totalCount\":"+codeMap.size()+",\"columns\":"+columns+",\"totalRoot\":[");
 		Iterator<Map.Entry<String,Code>> it = codeMap.entrySet().iterator();
@@ -2428,9 +2428,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",width:120 ,children:[] },"
-				+ "{ \"header\":\"规格型号\",\"dataIndex\":\"model\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\"规格型号\",\"dataIndex\":\"model\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		String sql = "select t3.id,t3.manufacturer,t3.model "
 				+ " from tbl_device t,tbl_auxiliary2master t2,tbl_auxiliarydevice t3 "
@@ -2485,9 +2485,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue1\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue2\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemValue1\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue2\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		String sql = "select t.stroke,t.balanceinfo from tbl_device t where t.id="+deviceId;
 		String auxiliaryDeviceSql="select t3.name,t3.manufacturer,t3.model "
@@ -2662,9 +2662,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		try{
 			String columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",\"width\":120 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",\"width\":120 ,\"children\":[] }"
 					+ "]";
 			String deviceTableName="tbl_device";
 			String sql = "select t.productiondata,to_char(t.productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss'),t.applicationscenarios "
@@ -3109,9 +3109,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		try{
 			String columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",\"width\":120 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",\"width\":120 ,\"children\":[] }"
 					+ "]";
 			String deviceTableName="tbl_device";
 			String sql = "select t.constructiondata "
@@ -3193,9 +3193,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		try{
 			String columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",\"width\":120 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",\"width\":120 ,\"children\":[] }"
 					+ "]";
 			
 			result_json.append("{\"success\":true,\"totalCount\":2,\"columns\":"+columns+",\"totalRoot\":[");
@@ -3218,9 +3218,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		try{
 			String columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",\"width\":120 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",\"width\":120 ,\"children\":[] }"
 					+ "]";
 			
 			String deviceTableName="tbl_device";
@@ -3306,9 +3306,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		try{
 			String columns = "["
-					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",\"width\":120 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",\"width\":120 ,\"children\":[] }"
 					+ "]";
 			
 			String deviceTableName="tbl_device";
@@ -3372,10 +3372,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer videoKeyDropdownData = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",flex:1 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",flex:1 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("videoUrl")+"\",\"dataIndex\":\"videoUrl\",flex:5 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("videoKey")+"\",\"dataIndex\":\"videoKey\",flex:1 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"flex\":1 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"flex\":1 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("videoUrl")+"\",\"dataIndex\":\"videoUrl\",\"flex\":5 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("videoKey")+"\",\"dataIndex\":\"videoKey\",\"flex\":1 ,\"children\":[] }"
 				+ "]";
 		String deviceTableName="tbl_device";
 		String sql = "select t.videourl1,t2.account as videokey1,t.videourl2,t3.account as videokey2"
@@ -3420,10 +3420,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",flex:1 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"account\",flex:1 ,children:[] },"
-				+ "{ \"header\":\"appKey\",\"dataIndex\":\"appKey\",flex:5 ,children:[] },"
-				+ "{ \"header\":\"secret\",\"dataIndex\":\"secret\",flex:5 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"flex\":1 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"account\",\"flex\":1 ,\"children\":[] },"
+				+ "{ \"header\":\"appKey\",\"dataIndex\":\"appKey\",\"flex\":5 ,\"children\":[] },"
+				+ "{ \"header\":\"secret\",\"dataIndex\":\"secret\",\"flex\":5 ,\"children\":[] }"
 				+ "]";
 		String sql="select t.id,t.account,t.appkey,t.secret from TBL_VIDEOKEY t where t.orgid in("+orgId+") order by t.id";
 		List<?> list = this.findCallSql(sql);
@@ -3688,11 +3688,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String tableName="tbl_acqdata_latest";
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"wellName\",flex:1,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("commStatus")+"\",\"dataIndex\":\"commStatusName\",width:90,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("signInId")+"\",\"dataIndex\":\"signinId\",flex:1,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("slave")+"\",\"dataIndex\":\"slave\",flex:1,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("deviceName")+"\",\"dataIndex\":\"wellName\",\"flex\":1,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("commStatus")+"\",\"dataIndex\":\"commStatusName\",\"width\":90,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("signInId")+"\",\"dataIndex\":\"signinId\",\"flex\":1,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("slave")+"\",\"dataIndex\":\"slave\",\"flex\":1,\"children\":[] }"
 				+ "]";
 		
 		String sql="select t.id,t.devicename,"
@@ -3827,12 +3827,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		int totals=0;
 		String acqTime="";
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50,children:[] },"
-				+ "{ \"header\":\"采样时间\",\"dataIndex\":\"pointAcqTime\",flex:2,children:[] },"
-				+ "{ \"header\":\"采样间隔(ms)\",\"dataIndex\":\"interval\",flex:1,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("waterCut")+"(%)\",\"dataIndex\":\"waterCut\",flex:1,children:[] },"
-				+ "{ \"header\":\"压力(MPa)\",\"dataIndex\":\"tubingPressure\",flex:1,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("position")+"\",\"dataIndex\":\"position\",flex:1,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50,\"children\":[] },"
+				+ "{ \"header\":\"采样时间\",\"dataIndex\":\"pointAcqTime\",\"flex\":2,\"children\":[] },"
+				+ "{ \"header\":\"采样间隔(ms)\",\"dataIndex\":\"interval\",\"flex\":1,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("waterCut")+"(%)\",\"dataIndex\":\"waterCut\",\"flex\":1,\"children\":[] },"
+				+ "{ \"header\":\"压力(MPa)\",\"dataIndex\":\"tubingPressure\",\"flex\":1,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("position")+"\",\"dataIndex\":\"position\",\"flex\":1,\"children\":[] }"
 				+ "]";
 		result_json+="{ \"success\":true,\"columns\":"+columns+",";
 		result_json+="\"totalRoot\":[";
@@ -4084,10 +4084,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"itemUnit\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"itemUnit\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		 
 		int totalCount=0;
@@ -4190,10 +4190,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"itemUnit\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("unit")+"\",\"dataIndex\":\"itemUnit\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		 
 		int totalCount=0;
@@ -4407,9 +4407,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		List<Integer> auxiliaryIdList=new ArrayList<Integer>();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",width:120 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("model")+"\",\"dataIndex\":\"model\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("model")+"\",\"dataIndex\":\"model\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		String deviceTableName="tbl_device";
 		
@@ -4464,10 +4464,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		List<Integer> auxiliaryIdList=new ArrayList<Integer>();
 		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
 		String columns = "["
-				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-				+ "{ \"header\":\"值\",\"dataIndex\":\"itemValue\",width:120 ,children:[] },"
-				+ "{ \"header\":\"单位\",\"dataIndex\":\"itemUnit\",width:80 ,children:[] }"
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"itemName\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\"值\",\"dataIndex\":\"itemValue\",\"width\":120 ,\"children\":[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"itemUnit\",\"width\":80 ,\"children\":[] }"
 				+ "]";
 		String deviceTableName="tbl_device";
 		String infoTableName="tbl_deviceaddinfo";

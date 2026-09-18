@@ -93,8 +93,8 @@ String context = path;
         var context = '<%=context%>';
         var orgId = '';
         var orgName = '';
-        var language = 'zh_CN';
-        var languageValue = 1;
+        var language = _loginUserLanguage;
+        var languageValue = _loginUserLanguageValue;
         var emailEnable = false;
 
         // ================================================================
@@ -146,8 +146,7 @@ String context = path;
         function setData(data) {
             orgId = data.orgId || '';
             orgName = data.orgName || '';
-            language = data.language || 'zh_CN';
-            languageValue = data.languageValue || 1;
+            
             document.getElementById('orgInfo').innerHTML =
                 _loginUserLanguageResource.owningOrg
                 + "：【<font color='red'>" + orgName + "</font>】，"

@@ -88,10 +88,10 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                             </td>
                             <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
                                 <button id="addroleLabelClassBtn_Id" class="mini-button" iconCls="add" plain="true" onclick="addroleInfo()"></button>
-                                <button id="delRoleBtn" class="mini-button" iconCls="delete" plain="true"></button>
-                                <button id="roleSaveBtn" class="mini-button" iconCls="save" plain="true"></button>
-                                <button id="roleExportBtn" class="mini-button" iconCls="export" plain="true"></button>
-                                <button id="roleImportBtn" class="mini-button" iconCls="import" plain="true"></button>
+                                <button id="delRoleBtn" class="mini-button" iconCls="delete" plain="true" onclick="delroleInfo()"></button>
+                                <button id="roleSaveBtn" class="mini-button" iconCls="save" plain="true" onclick="updateRoleInfo()"></button>
+                                <button id="roleExportBtn" class="mini-button" iconCls="export" plain="true" onclick="exportRoleCompleteData()"></button>
+                                <button id="roleImportBtn" class="mini-button" iconCls="import" plain="true" onclick="openImportRoleWindow()"></button>
                             </td>
                         </tr>
                     </table>
@@ -112,7 +112,7 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                      cellEditAction="celldblclick"
                      onbeforeload="onRoleGridBeforeLoad"
                      onload="onRoleGridLoad"
-                     onselectionchanged="onRoleGridSelectionChanged"
+                     onselect="onRoleGridSelect"
                      oncellbeginedit="onRoleGridCellBeginEdit">
                     <div property="columns"></div>
                     <div property="emptyText" class="empty-msg"></div>
@@ -130,7 +130,7 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                 <span id="permissionLabel"></span>
                             </td>
                             <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
-                                <button id="roleGrantRightBtn_Id" class="mini-button" iconCls="save" plain="true"></button>
+                                <button id="roleGrantRightBtn_Id" class="mini-button" iconCls="save" plain="true" onclick="grantRoleRight()"></button>
                             </td>
                         </tr>
                     </table>
@@ -350,7 +350,12 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     }
 
     function onRoleGridBeforeLoad(e) {
-        var params = e.params || {};
+    	var grid=e.sender;
+    	var params = e.params || {};
+    	
+    	// 主动清理：请求发出前清掉选中，避免数据返回后 MiniUI 自动恢复
+    	grid.deselectAll(false);
+        
         var input = mini.get('RoleName_Id');
         params.roleName = input ? (input.getValue() || '') : '';
         e.params = params;
@@ -374,45 +379,48 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         }
 
         var rows = grid.getData();
-        if (rows.length > 0) {
-            var targetRow = null;
+        if (!rows || rows.length === 0) return;
 
-            // ★ 优先：新添加的角色（按当前语言的名字匹配）
-            if (_addRoleFlag) {
-                var lang = (loginUserLanguage || '').toUpperCase();
-                for (var i = 0; i < rows.length; i++) {
-                    var row = rows[i];
-                    var rowName = '';
-                    if (lang === 'ZH_CN')      rowName = row.roleName_zh_CN || '';
-                    else if (lang === 'EN')    rowName = row.roleName_en || '';
-                    else if (lang === 'RU')    rowName = row.roleName_ru || '';
-
-                    if (rowName === _addRoleFlag) {
-                        targetRow = row;
-                        break;
-                    }
-                }
-                // 用完清空，避免下次刷新还按它选
-                _addRoleFlag = null;
-            }
-
-            // 次优：之前选中的角色
-            if (!targetRow && _selectedRoleId) {
-                for (var j = 0; j < rows.length; j++) {
-                    if (String(rows[j].roleId) === String(_selectedRoleId)) {
-                        targetRow = rows[j];
-                        break;
-                    }
+        // ★ 情况 1：有新添加的角色 → 我们手动选中新角色
+        if (_addRoleFlag) {
+            var lang = (loginUserLanguage || '').toUpperCase();
+            var newRow = null;
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var rowName = '';
+                if (lang === 'ZH_CN')      rowName = row.roleName_zh_CN || '';
+                else if (lang === 'EN')    rowName = row.roleName_en || '';
+                else if (lang === 'RU')    rowName = row.roleName_ru || '';
+                if (rowName === _addRoleFlag) {
+                    newRow = row;
+                    break;
                 }
             }
-
-            // 兜底：第一行
-            if (!targetRow) targetRow = rows[0];
-
-            setTimeout(function () {
-                grid.select(targetRow);
-            }, 30);
+            _addRoleFlag = null;
+            if (newRow) {
+                grid.select(newRow);
+                return;
+            }
+            // 找不到新角色，继续往下走
         }
+
+        // ★ 情况 2：MiniUI 已经自动恢复了上次选中行 → 什么都不做
+        if (grid.getSelected()) return;
+
+        // ★ 情况 3：MiniUI 没有恢复 → 我们手动按 _selectedRoleId 恢复
+        var targetRow = null;
+        if (_selectedRoleId) {
+            for (var j = 0; j < rows.length; j++) {
+                if (String(rows[j].roleId) === String(_selectedRoleId)) {
+                    targetRow = rows[j];
+                    break;
+                }
+            }
+        }
+
+        // ★ 兜底：选中第一行
+        if (!targetRow) targetRow = rows[0];
+        grid.select(targetRow);
     }
 
     // ================================================================
@@ -548,13 +556,15 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         if (!record) return;
 
         if (editFlag){
-            if (String(record.roleId) === String(currentId)) {
-                var f = (e.field || '').toLowerCase();
+        	var f = (e.field || '').toLowerCase();
+        	if (String(record.roleId) === String(currentId)) {
                 if (f === 'rolelevel'
                     || f === 'showlevel'
                     || f === 'rolevideokeyeditname') {
                     e.cancel = true;
                 }
+            }else if(f === 'roleVideoKeyEditName'.toLowerCase() && currentVideoKeyEdit == 0){
+            	e.cancel = true;
             }
         } else {
             e.cancel = true;
@@ -564,9 +574,9 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     // ================================================================
     // 3. 角色选中 → 更新三棵树
     // ================================================================
-    function onRoleGridSelectionChanged(e) {
+    function onRoleGridSelect(e) {
         var grid = e.sender;
-        var row = grid.getSelected();
+        var row = e.record;
         if (!row) return;
 
         _selectedRoleId = row.roleId;
@@ -906,7 +916,8 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     if (!children || children.length === 0) {
                         allLeaves.push(node);
                     } else {
-                        for (var i = 0; i < children.length; i++) {
+                    	allLeaves.push(node);
+                    	for (var i = 0; i < children.length; i++) {
                             collectLeaves(children[i]);
                         }
                     }
@@ -917,7 +928,7 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                         collectLeaves(root.children[i]);
                     }
                 }
-
+                
                 for (var j = 0; j < allLeaves.length; j++) {
                     tree.uncheckNode(allLeaves[j]);
                 }
@@ -1065,8 +1076,419 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
          }
      });
  }
+ 
+//================================================================
+//删除角色
+//================================================================
+function delroleInfo() {
+  if (!editFlag) return;
 
+  var grid = mini.get('RoleInfoGridPanel_Id');
+  if (!grid) return;
 
+  // 取当前选中行（multiSelect=false，只有一行）
+  var selectedRows = grid.getSelecteds() || [];
+  if (selectedRows.length === 0) {
+      mini.alert(_loginUserLanguageResource.checkOne,_loginUserLanguageResource.tip);
+      return;
+  }
+
+  // 只选了一行且是当前登录用户的角色 → 直接拒绝
+  if (selectedRows.length === 1
+      && String(selectedRows[0].roleId) === String(currentId)) {
+      mini.alert(_loginUserLanguageResource.cannotDeleteLoginUserRole,_loginUserLanguageResource.tip);
+      return;
+  }
+
+  // 过滤掉当前登录用户的角色
+  var selectRoleId = [];
+  for (var i = 0; i < selectedRows.length; i++) {
+      if (String(selectedRows[i].roleId) !== String(currentId)) {
+          selectRoleId.push(selectedRows[i].roleId);
+      }
+  }
+
+  if (selectRoleId.length === 0) {
+      mini.alert(_loginUserLanguageResource.cannotDeleteLoginUserRole,_loginUserLanguageResource.tip);
+      return;
+  }
+
+  mini.confirm(_loginUserLanguageResource.confirmDelete,_loginUserLanguageResource.tip,
+      function (action) {
+          if (action !== 'ok') return;
+          $.ajax({
+              url: context + '/roleManagerController/doRoleBulkDelete',
+              type: 'POST',
+              data: { paramsId: selectRoleId.join(',') },
+              dataType: 'json',
+              success: function (result) {
+                  if (result.flag === true) {
+                      mini.alert(_loginUserLanguageResource.deleteSuccessfully,_loginUserLanguageResource.tip);
+                  } else {
+                      mini.alert('<font color=red>'+ _loginUserLanguageResource.deleteFailed+ '</font>', _loginUserLanguageResource.tip);
+                  }
+                  // 清掉选中记录，避免刷新后按已删除的角色ID恢复选中
+                  _selectedRoleId = null;
+                  loadRoleList();
+              },
+              error: function () {
+                  mini.alert(_loginUserLanguageResource.requestFailed,_loginUserLanguageResource.tip);
+              }
+          });
+      });
+}
+	
+//================================================================
+//保存角色列表修改
+//================================================================
+function updateRoleInfo() {
+ if (!editFlag) return;
+
+ var grid = mini.get('RoleInfoGridPanel_Id');
+ if (!grid) return;
+
+ // 先提交正在编辑的单元格
+ grid.commitEdit();
+
+ var modifiedRecords = grid.getChanges('modified', false);
+ if (!modifiedRecords || modifiedRecords.length === 0) {
+     mini.alert(_loginUserLanguageResource.noDataChange,_loginUserLanguageResource.tip);
+     return;
+ }
+
+ // 组装提交数据
+ var modifiedRole = [];
+ for (var i = 0; i < modifiedRecords.length; i++) {
+     var rec = modifiedRecords[i];
+     var role = {};
+
+     role.roleId        = rec.roleId;
+     role.roleName_zh_CN = rec.roleName_zh_CN;
+     role.roleName_en    = rec.roleName_en;
+     role.roleName_ru    = rec.roleName_ru;
+     role.remark_zh_CN   = rec.remark_zh_CN;
+     role.remark_en      = rec.remark_en;
+     role.remark_ru      = rec.remark_ru;
+
+     role.roleLevel        = rec.roleLevel;
+     role.showLevel        = rec.showLevel;
+     role.roleVideoKeyEdit = isTrueVal(rec.roleVideoKeyEditName) ? 1 : 0;
+     role.roleLanguageEdit = isTrueVal(rec.roleLanguageEditName) ? 1 : 0;
+
+     modifiedRole.push(role);
+ }
+
+ $.ajax({
+     url: context + '/roleManagerController/batchUpdateRoleInfo',
+     type: 'POST',
+     data: { data: JSON.stringify(modifiedRole) },
+     dataType: 'json',
+     success: function (result) {
+         if (result.success === true && result.flag === true) {
+             mini.alert(_loginUserLanguageResource.savedSuccessfully,_loginUserLanguageResource.tip);
+             // 清空变更标记
+             grid.accept();
+             loadRoleList();
+         } else if (result.success === true && result.flag === false) {
+             mini.alert('<font color=red>'+ _loginUserLanguageResource.saveFailed+ '</font>', _loginUserLanguageResource.tip);
+         } else {
+             mini.alert('<font color=red>'+ _loginUserLanguageResource.saveFailed+ '</font>', _loginUserLanguageResource.tip);
+         }
+     },
+     error: function () {
+         mini.alert(_loginUserLanguageResource.requestFailed,_loginUserLanguageResource.tip);
+     }
+ });
+}
+
+//================================================================
+//授权保存主入口
+//================================================================
+function grantRoleRight() {
+ if (!editFlag) return;
+
+ var grid = mini.get('RoleInfoGridPanel_Id');
+ if (!grid) return;
+
+ var row = grid.getSelected();
+ if (!row) {
+     mini.alert(_loginUserLanguageResource.pleaseChooseRole, _loginUserLanguageResource.tip);
+     return;
+ }
+
+ var roleId    = row.roleId;
+ var roleLevel = row.roleLevel;
+
+ // 判断是否为超级管理员（roleLevel == 1）
+ var isSuperAdmin = (parseInt(roleLevel) === 1);
+
+ // ---------- 1) 收集模块权限 ----------
+ var moduleTree = mini.get('RightModuleTreeInfoGridPanel_Id');
+ var addModule = [];
+ var moduleMatrixData = '';
+ (function collectModule(node) {
+     if (node && isTrueVal(node.viewFlagName)) {
+         addModule.push(node.mdId);
+         var matrix = (isTrueVal(node.viewFlagName) ? 1 : 0) + ','
+                    + (isTrueVal(node.editFlagName) ? 1 : 0) + ','
+                    + (isTrueVal(node.controlFlagName) ? 1 : 0);
+         moduleMatrixData += node.mdId + ':' + matrix + '|';
+     }
+     if (node && node.children && node.children.length > 0) {
+         for (var i = 0; i < node.children.length; i++) {
+             collectModule(node.children[i]);
+         }
+     }
+ })(moduleTree.getRootNode());
+ if (moduleMatrixData.length > 0) {
+     moduleMatrixData = moduleMatrixData.substring(0, moduleMatrixData.length - 1);
+ }
+
+ // ---------- 2) 收集设备类型权限 ----------
+ var devTree = mini.get('RightTabTreeInfoGridPanel_Id');
+ var addDeviceType = [];
+ var devMatrixData = '';
+
+ // 所有叶子节点
+ var devLeaves = collectLeafNodes(devTree);
+
+ if (isSuperAdmin) {
+     // 超级管理员：全部授予
+     for (var di = 0; di < devLeaves.length; di++) {
+         addDeviceType.push(devLeaves[di].deviceTypeId);
+         devMatrixData += devLeaves[di].deviceTypeId + ':0,0,0|';
+     }
+ } else {
+     var devChecked = devTree.getCheckedNodes() || [];
+     for (var dj = 0; dj < devChecked.length; dj++) {
+         if (devChecked[dj].deviceTypeId !== undefined
+             && devChecked[dj].deviceTypeId !== null) {
+             addDeviceType.push(devChecked[dj].deviceTypeId);
+             devMatrixData += devChecked[dj].deviceTypeId + ':0,0,0|';
+         }
+     }
+ }
+ if (devMatrixData.length > 0) {
+     devMatrixData = devMatrixData.substring(0, devMatrixData.length - 1);
+ }
+
+ // ---------- 3) 收集语言权限 ----------
+ var langTree = mini.get('RightLanguageTreeInfoGridPanel_Id');
+ var addLanguage = [];
+ var langMatrixData = '';
+
+ var langLeaves = collectLeafNodes(langTree);
+
+ if (isSuperAdmin) {
+     for (var li = 0; li < langLeaves.length; li++) {
+         addLanguage.push(langLeaves[li].languageId);
+         langMatrixData += langLeaves[li].languageId + ':0,0,0|';
+     }
+ } else {
+     var langChecked = langTree.getCheckedNodes() || [];
+     for (var lj = 0; lj < langChecked.length; lj++) {
+         if (langChecked[lj].languageId !== undefined
+             && langChecked[lj].languageId !== null) {
+             addLanguage.push(langChecked[lj].languageId);
+             langMatrixData += langChecked[lj].languageId + ':0,0,0|';
+         }
+     }
+ }
+ if (langMatrixData.length > 0) {
+     langMatrixData = langMatrixData.substring(0, langMatrixData.length - 1);
+ }
+
+ // ---------- 4) 校验 ----------
+ if (addModule.length === 0
+     || addDeviceType.length === 0
+     || addLanguage.length === 0) {
+     mini.alert(_loginUserLanguageResource.checkOne, _loginUserLanguageResource.tip);
+     return;
+ }
+
+ // ---------- 5) 依次调用三个接口，全部完成后统一提示 ----------
+ var total = 3;
+ var done = 0;
+ var allSuccess = true;
+
+ function onDone(success) {
+     if (!success) allSuccess = false;
+     done++;
+     if (done < total) return;
+
+     if (allSuccess) {
+         mini.alert(_loginUserLanguageResource.grantSuccess,
+             _loginUserLanguageResource.tip);
+
+         // 清缓存，让三棵树重新拉权限
+         if (moduleTree) moduleTree._appliedRoleId = null;
+         if (devTree)    devTree._appliedRoleId    = null;
+         if (langTree)   langTree._appliedRoleId   = null;
+
+         loadRoleList();
+     } else {
+         mini.alert('<font color=red>SORRY！'
+             + _loginUserLanguageResource.grantFailure
+             + '</font>', _loginUserLanguageResource.tip);
+     }
+ }
+
+ var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.submittingData });
+
+ grantRolePermission(roleId, addModule, moduleMatrixData, function (ok) {
+     if (done + 1 === total) mini.unmask(document.body);
+     onDone(ok);
+ });
+ grantRoleTabPermission(roleId, addDeviceType, devMatrixData, function (ok) {
+     if (done + 1 === total) mini.unmask(document.body);
+     onDone(ok);
+ });
+ grantRoleLanguagePermission(roleId, addLanguage, langMatrixData, function (ok) {
+     if (done + 1 === total) mini.unmask(document.body);
+     onDone(ok);
+ });
+}
+
+//收集树的所有叶子节点（用于超级管理员授权）
+function collectLeafNodes(tree) {
+ var leaves = [];
+ if (!tree) return leaves;
+
+ function collect(node) {
+     var children = node.children;
+     if (!children || children.length === 0) {
+         leaves.push(node);
+     } else {
+         for (var i = 0; i < children.length; i++) {
+             collect(children[i]);
+         }
+     }
+ }
+
+ var root = tree.getRootNode();
+ if (root && root.children) {
+     for (var i = 0; i < root.children.length; i++) {
+         collect(root.children[i]);
+     }
+ }
+ return leaves;
+}
+
+//================================================================
+//三个子接口
+//================================================================
+function grantRolePermission(roleId, addModule, matrixData, callback) {
+ $.ajax({
+     url: context + '/moduleShowRightManagerController/doModuleSaveOrUpdate',
+     type: 'POST',
+     data: {
+         paramsId:     addModule.join(','),
+         oldModuleIds: '',
+         roleId:       roleId,
+         matrixCodes:  matrixData
+     },
+     dataType: 'json',
+     success: function (result) {
+         callback(result && result.msg === true);
+     },
+     error: function () {
+         callback(false);
+     }
+ });
+}
+
+function grantRoleTabPermission(roleId, addDeviceType, matrixData, callback) {
+ $.ajax({
+     url: context + '/moduleShowRightManagerController/doRoleDeviceTypeSaveOrUpdate',
+     type: 'POST',
+     data: {
+         paramsId:     addDeviceType.join(','),
+         oldModuleIds: '',
+         roleId:       roleId,
+         matrixCodes:  matrixData
+     },
+     dataType: 'json',
+     success: function (result) {
+         callback(result && result.msg === true);
+     },
+     error: function () {
+         callback(false);
+     }
+ });
+}
+
+function grantRoleLanguagePermission(roleId, addLanguage, matrixData, callback) {
+ $.ajax({
+     url: context + '/moduleShowRightManagerController/doRoleLanguageSaveOrUpdate',
+     type: 'POST',
+     data: {
+         paramsId:     addLanguage.join(','),
+         roleId:       roleId,
+         matrixCodes:  matrixData
+     },
+     dataType: 'json',
+     success: function (result) {
+         callback(result && result.msg === true);
+     },
+     error: function () {
+         callback(false);
+     }
+ });
+}
+
+//================================================================
+//导出角色完整数据
+//================================================================
+function exportRoleCompleteData() {
+ if (!editFlag) return;
+
+ var url = context + '/roleManagerController/exportRoleCompleteData';
+
+ var timestamp = new Date().getTime();
+ var key = 'exportRoleCompleteData' + '_' + timestamp;
+ var maskPanelId = 'roleListPanel';   // ★ 用面板 id 做遮罩容器
+
+ var param = '&recordCount=10000'
+     + '&fileName=' + URLencode(URLencode(_loginUserLanguageResource.roleExportFileName))
+     + '&key=' + key;
+
+ exportDataMask(key, maskPanelId, _loginUserLanguageResource.loadingData);
+ downloadFile(url + '?flag=true' + param);
+}
+
+//================================================================
+//打开"导入角色"窗口
+//对应 ExtJS ImportRoleWindow
+//================================================================
+function openImportRoleWindow() {
+ if (!editFlag) return;
+
+ mini.open({
+     title: _loginUserLanguageResource.importRole,
+     url: context + '/miniui-app/modules/role/importRoleWindow.jsp',
+     width: '65%',
+     minWidth: 600,
+     height: '70%',
+     modal: true,
+     allowResize: true,
+     maxable: true,
+     onload: function () {
+         var iframe = this.getIFrameEl();
+         var contentWindow = iframe.contentWindow;
+         contentWindow.setData({
+        	 loginUserLanguage: loginUserLanguage,
+        	 loginUserLanguageList: loginUserLanguageList
+         });
+         // ★ 暴露给子窗口的刷新回调
+         contentWindow.parent.refreshRoleListAfterImport = function () {
+             // 清掉选中标记，让刷新后自动选中第一行
+             _selectedRoleId = null;
+             _addRoleFlag = null;
+             loadRoleList();
+         };
+     }
+ });
+}
     // ================================================================
     // 页面初始化
     // ================================================================

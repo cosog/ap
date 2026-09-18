@@ -60,15 +60,18 @@ String context = path;
                     <table class="form-table">
                         <tr id="rowZhCN">
                             <td class="label"><span style="color:red;">*</span><span id="lblRoleNameZhCN"></span>：</td>
-                            <td><input id="roleName_zh_CN" class="mini-textbox" /></td>
+                            <td><input id="roleName_zh_CN" class="mini-textbox"
+                                       onblur="checkRoleName('roleName_zh_CN')" /></td>
                         </tr>
                         <tr id="rowEn">
                             <td class="label"><span style="color:red;">*</span><span id="lblRoleNameEn"></span>：</td>
-                            <td><input id="roleName_en" class="mini-textbox" /></td>
+                            <td><input id="roleName_en" class="mini-textbox"
+                                       onblur="checkRoleName('roleName_en')" /></td>
                         </tr>
                         <tr id="rowRu">
                             <td class="label"><span style="color:red;">*</span><span id="lblRoleNameRu"></span>：</td>
-                            <td><input id="roleName_ru" class="mini-textbox" /></td>
+                            <td><input id="roleName_ru" class="mini-textbox"
+                                       onblur="checkRoleName('roleName_ru')" /></td>
                         </tr>
                         <tr>
                             <td class="label"><span style="color:red;">*</span><span id="lblRoleLevel"></span>：</td>
@@ -302,6 +305,44 @@ String context = path;
         loadModuleTreeStructure();
         loadDeviceTypeTreeStructure();
         loadLanguageTreeStructure();
+    }
+
+    // ================================================================
+    // 角色名称判重（失焦触发）
+    //   参照 ExtJS 的 judgeRoleExistsOrNot
+    // ================================================================
+    function checkRoleName(fieldId) {
+        var input = mini.get(fieldId);
+        if (!input) return;
+
+        var value = (input.getValue() || '').trim();
+        if (!value) return;   // 空值不校验，交给 form 的 required 处理
+
+        $.ajax({
+            url: context + '/roleManagerController/judgeRoleExistsOrNot',
+            type: 'POST',
+            data: { roleName: value },
+            dataType: 'json',
+            success: function (resp) {
+                // 后端返回 msg == "1" 表示已存在
+                if (resp && resp.msg == '1') {
+                    var confirmMsg = '<font color="red">【'+ _loginUserLanguageResource.role + ':' + value+ '】</font>' + _loginUserLanguageResource.alreadyExist;
+                    mini.confirm(confirmMsg, _loginUserLanguageResource.confirm, function (action) {
+                        if (action == 'ok') {
+                        	//input.setValue('');
+                        	input.focus();
+                        	input.selectText();
+                        }
+                    });
+                }
+            },
+            error: function () {
+                mini.alert(
+                    _loginUserLanguageResource.dataQueryFailure,
+                    _loginUserLanguageResource.tip
+                );
+            }
+        });
     }
 
     // ================================================================
@@ -548,6 +589,7 @@ String context = path;
                 'role.remark_zh_CN':   mini.get('remark_zh_CN').getValue()   || '',
                 'role.remark_en':      mini.get('remark_en').getValue()      || '',
                 'role.remark_ru':      mini.get('remark_ru').getValue()      || '',
+                'role.roleLanguageEdit': 0,
 
                 addModuleIds:     addModule.join(','),
                 matrixCodes:      matrixData,
@@ -558,7 +600,7 @@ String context = path;
             success: function (result) {
                 mini.unmask(document.body);
                 if (result && result.msg === true) {
-                	// ★ 按当前语言取新角色的名字，回传给父窗口
+                    // ★ 按当前语言取新角色的名字，回传给父窗口
                     var newRoleName = '';
                     var langUpper = (loginUserLanguage || '').toUpperCase();
                     if (langUpper === 'ZH_CN') {

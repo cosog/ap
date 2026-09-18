@@ -1513,7 +1513,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		if(deviceTypeList.size()>0){
 			for(int i=0;i<deviceTypeList.size();i++){
-				deviceTypeDropdownData.append("'"+deviceTypeList.get(i)+"',");
+				deviceTypeDropdownData.append("\""+deviceTypeList.get(i)+"\",");
 			}
 			if(deviceTypeDropdownData.toString().endsWith(",")){
 				deviceTypeDropdownData.deleteCharAt(deviceTypeDropdownData.length() - 1);
@@ -1523,7 +1523,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(deviceTabInstanceList.size()>0){
 			tabInstanceDropdownData.append("\"\",");
 			for(int i=0;i<deviceTabInstanceList.size();i++){
-				tabInstanceDropdownData.append("'"+deviceTabInstanceList.get(i)+"',");
+				tabInstanceDropdownData.append("\""+deviceTabInstanceList.get(i)+"\",");
 			}
 			if(tabInstanceDropdownData.toString().endsWith(",")){
 				tabInstanceDropdownData.deleteCharAt(tabInstanceDropdownData.length() - 1);
@@ -1533,7 +1533,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(instanceList.size()>0){
 			instanceDropdownData.append("\"\",");
 			for(int i=0;i<instanceList.size();i++){
-				instanceDropdownData.append("'"+instanceList.get(i)+"',");
+				instanceDropdownData.append("\""+instanceList.get(i)+"\",");
 			}
 			if(instanceDropdownData.toString().endsWith(",")){
 				instanceDropdownData.deleteCharAt(instanceDropdownData.length() - 1);
@@ -1543,7 +1543,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(displayInstanceList.size()>0){
 			displayInstanceDropdownData.append("\"\",");
 			for(int i=0;i<displayInstanceList.size();i++){
-				displayInstanceDropdownData.append("'"+displayInstanceList.get(i)+"',");
+				displayInstanceDropdownData.append("\""+displayInstanceList.get(i)+"\",");
 			}
 			if(displayInstanceDropdownData.toString().endsWith(",")){
 				displayInstanceDropdownData.deleteCharAt(displayInstanceDropdownData.length() - 1);
@@ -1553,7 +1553,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(reportInstanceList.size()>0){
 			reportInstanceDropdownData.append("\"\",");
 			for(int i=0;i<reportInstanceList.size();i++){
-				reportInstanceDropdownData.append("'"+reportInstanceList.get(i)+"',");
+				reportInstanceDropdownData.append("\""+reportInstanceList.get(i)+"\",");
 			}
 			if(reportInstanceDropdownData.toString().endsWith(",")){
 				reportInstanceDropdownData.deleteCharAt(reportInstanceDropdownData.length() - 1);
@@ -1564,7 +1564,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(alarmInstanceList.size()>0){
 			alarmInstanceDropdownData.append("\"\",");
 			for(int i=0;i<alarmInstanceList.size();i++){
-				alarmInstanceDropdownData.append("'"+alarmInstanceList.get(i)+"',");
+				alarmInstanceDropdownData.append("\""+alarmInstanceList.get(i)+"\",");
 			}
 			if(alarmInstanceDropdownData.toString().endsWith(",")){
 				alarmInstanceDropdownData.deleteCharAt(alarmInstanceDropdownData.length() - 1);
@@ -1576,7 +1576,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		while(it.hasNext()){
 			Map.Entry<String, Code> entry = it.next();
 			Code c=entry.getValue();
-			applicationScenariosDropdownData.append("'"+c.getItemname()+"',");
+			applicationScenariosDropdownData.append("\""+c.getItemname()+"\",");
 		}
 		if(applicationScenariosDropdownData.toString().endsWith(",")){
 			applicationScenariosDropdownData.deleteCharAt(applicationScenariosDropdownData.length() - 1);

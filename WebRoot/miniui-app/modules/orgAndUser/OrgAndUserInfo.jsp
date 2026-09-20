@@ -313,7 +313,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         var showRussianName = (result.showRussianName === undefined) ? true : !!result.showRussianName;
 
         var textEditor = editFlag ? { type: 'textbox', allowBlank: true } : null;
-        var seqEditor = editFlag ? { type: 'spinner', minValue: 1 } : null;
+        var seqEditor = editFlag ? { type: 'spinner', minValue: 1, maxValue:9999999999 } : null;
 
         var columns = [
             {

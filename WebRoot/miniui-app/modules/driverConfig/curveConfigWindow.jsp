@@ -108,13 +108,13 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     <div class="form-row">
                         <span class="form-label"><font color="red">*</font><span id="lblSort">排序</span>：</span>
                         <div class="form-control">
-                            <input id="curveConfigSort" class="mini-spinner" style="width:100%;" minValue="1" value="1" required="true" />
+                            <input id="curveConfigSort" class="mini-spinner" style="width:100%;" minValue="1" value="1" maxValue="9999999999" required="true" />
                         </div>
                     </div>
                     <div class="form-row">
                         <span class="form-label"><font color="red">*</font><span id="lblLineWidth">线宽</span>：</span>
                         <div class="form-control">
-                            <input id="curveConfigLineWidth" class="mini-spinner" style="width:100%;" minValue="1" value="3" required="true" />
+                            <input id="curveConfigLineWidth" class="mini-spinner" style="width:100%;" minValue="1" value="3" maxValue="9999999999" required="true" />
                         </div>
                     </div>
                     <div class="form-row">

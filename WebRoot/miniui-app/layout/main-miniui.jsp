@@ -106,7 +106,7 @@ request.setAttribute("browserLang", browserLang);
         var defaultComboxSize = configFile.ap.others.defaultComboxSize;
         var defaultGraghSize = configFile.ap.others.defaultGraghSize;
         
-        var IoTConfig = configFile.ap.others.iot;     //物联网
+        window.IoTConfig = configFile.ap.others.iot;     //物联网
         var sceneConfig = configFile.ap.others.scene; //应用场景 all-全部 oil-油井 cbm-煤层气井
         var moduleConfig = configFile.ap.others.module;//模块 ""-仅监测 all-全部 srp-抽油机井功图计算 pcp-螺杆泵井转速计算
         
@@ -318,6 +318,7 @@ request.setAttribute("browserLang", browserLang);
                         resultAsTree="true"
                         expandOnLoad="true"
                         url="<%=path%>/moduleMenuController/obtainFunctionModuleList"
+                        autoLoad="false"
                         onnodeclick="onMenuTreeClick"
                         onload="onMenuTreeLoad">
                     </ul>
@@ -339,6 +340,7 @@ request.setAttribute("browserLang", browserLang);
                         resultAsTree="true"
                         expandOnLoad="true"
                         idField="orgId"
+                        autoLoad="false"
                         url="<%=path%>/orgManagerController/constructOrgTree"
                         onnodeselect="onOrgTreeSelect"
                         onload="onOrgTreeLoad">
@@ -444,10 +446,12 @@ request.setAttribute("browserLang", browserLang);
     function onOrgTreeLoad(e) {
         var tree = e.sender;
         var data = tree.getData();
+        
+        var root = tree.getRootNode();
+        if (!root || !root.children || root.children.length === 0) return;
+        
         var selectNode=tree.getSelectedNode();
         if(!selectNode){
-        	var root = tree.getRootNode();
-            if (!root || !root.children || root.children.length === 0) return;
             var targetNode = null;
             if (orgIframeSelectedRecord) {
                 targetNode = findOrgTreeMenuNodeById(root, orgIframeSelectedRecord.orgId);
@@ -457,9 +461,54 @@ request.setAttribute("browserLang", browserLang);
                 setTimeout(function () {
                     tree.selectNode(targetNode);
                 }, 50);
+            }else{
+            	var orgIds = getOrgNodeIds(root.children[0]);
+                var orgNames = getOrgNodeNames(root.children[0]);
+                mini.get('leftOrg_Id').setValue(orgIds);
+                mini.get('leftOrg_Name').setValue(orgNames);
             }
+        }else{
+        	var orgIds = getOrgNodeIds(selectNode);
+            var orgNames = getOrgNodeNames(selectNode);
+            
+            mini.get('leftOrg_Id').setValue(orgIds);
+            mini.get('leftOrg_Name').setValue(orgNames);
         }
     }
+    
+    window.getSelectOrgNodeId = function(e) {
+    	var tree = mini.get('orgTree');
+    	if(!tree){
+    		return 0;
+    	}
+    	var selectNode=tree.getSelectedNode();
+    	
+    	if(selectNode){
+    		return selectNode.orgId;
+    	}
+    	
+    	var root = tree.getRootNode();
+        if (!root || !root.children || root.children.length === 0) return 0;
+    	
+    	return root.children[0].orgId;
+    };
+    
+    window.getSelectOrgNodePath = function(e) {
+    	var tree = mini.get('orgTree');
+    	if(!tree){
+    		return '';
+    	}
+    	var selectNode=tree.getSelectedNode();
+    	
+    	if(selectNode){
+    		return getMainOrgTreeNodeFullPath(selectNode,tree);
+    	}
+    	
+    	var root = tree.getRootNode();
+        if (!root || !root.children || root.children.length === 0) return '';
+    	
+    	return root.children[0].text;
+    };
     
     function findOrgTreeMenuNodeById(root, orgId) {
         var target = null;
@@ -628,7 +677,7 @@ request.setAttribute("browserLang", browserLang);
                 orgId: mini.get('leftOrg_Id').getValue()
             };
             console.log('向子模块发送刷新消息:', msg, 'iframe.src:', iframe.src);
-            iframe.contentWindow.postMessage(msg, '*');
+            iframe.contentWindow.postMessage(msg, window.location.origin); //第二个参数 目标源 '*' 表示不限制目标源（任何 origin 都收）。生产环境更安全的写法是传具体 origin，比如 window.location.origin
         } else {
             console.warn('refreshCurrentModule: 未找到 iframe 或 contentWindow 不可用');
         }
@@ -837,8 +886,55 @@ request.setAttribute("browserLang", browserLang);
             'AP.view.orgAndUser.OrgAndUserInfoView': context + '/miniui-app/modules/orgAndUser/OrgAndUserInfo.jsp',
             'AP.view.role.RoleInfoView': context + '/miniui-app/modules/role/RoleInfo.jsp',
             'AP.view.well.DeviceManagerInfoView': context + '/miniui-app/modules/device/DeviceManagerInfo.jsp',
+            'AP.view.well.AuxiliaryDeviceInfoView': context + '/miniui-app/modules/auxiliarydevice/AuxiliaryDeviceManagerInfo.jsp'
         };
         return mapping[viewSrc] || null;
+    }
+    
+  //拼接组织全路径（同级节点 -> 根节点）
+    function getMainOrgTreeNodeFullPath(node, tree) {
+        if (!node || !tree) return '';
+
+        var path = [];
+        var visited = {};        // 防止脏数据成环
+        var guard = 0;           // 硬上限兜底
+        var current = node;
+
+        while (current && guard++ < 200) {
+            // ① 访问去重：同一个 orgId 处理过一次就停
+            var key = (current.orgId !== undefined && current.orgId !== null)
+                ? String(current.orgId)
+                : null;
+            if (key !== null) {
+                if (visited[key]) break;
+                visited[key] = true;
+            }
+
+            // ② 收集当前节点文本
+            path.unshift(current.text || '');
+
+            // ③ 到根即停
+            var parentId = current.orgParent;
+            if (parentId === undefined || parentId === null || parentId === ''
+                || parentId === '0' || parentId === 0) {
+                break;
+            }
+
+            // ④ 用 MiniUI 官方 API 取父节点
+            var parent = null;
+            try {
+                parent = tree.getParentNode(current);
+            } catch (e) {
+                parent = null;
+            }
+
+            // ⑤ 取不到父，或父就是自己 → 停
+            if (!parent || parent === current) break;
+
+            current = parent;
+        }
+
+        return path.join('/');
     }
 
     // 页面初始化
@@ -847,6 +943,11 @@ request.setAttribute("browserLang", browserLang);
         initBannerDisplayInformation();
         $('#loading_div_id').hide();
         initWebSocket();
+        
+        
+        refreshOrgTree();
+        refreshMenuTree();
+        
         $(window).resize(function() {
             $('.highcharts-container').each(function() {
                 try {

@@ -448,7 +448,7 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             };
         }
         function seqEditor(minValue) {
-            return editFlag ? { type: 'spinner', minValue: minValue } : null;
+            return editFlag ? { type: 'spinner', minValue: minValue, maxValue:9999999999 } : null;
         }
 
         if (editFlag) {

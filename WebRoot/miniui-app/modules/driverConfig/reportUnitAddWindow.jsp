@@ -53,7 +53,7 @@ String context = path;
             </tr>
             <tr>
                 <td class="label">排序：</td>
-                <td><input id="sort" class="mini-spinner" style="width:100%;" minValue="1" /></td>
+                <td><input id="sort" class="mini-spinner" style="width:100%;" minValue="1" maxValue="9999999999"/></td>
             </tr>
         </table>
         <div style="text-align:center;padding-top:20px;">

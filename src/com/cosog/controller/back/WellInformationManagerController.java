@@ -1069,9 +1069,9 @@ public class WellInformationManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{\"success\":true,\"msg\":'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{\"success\":true,\"msg\":'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -2433,9 +2433,9 @@ public class WellInformationManagerController extends BaseController {
 						TimeUnit.SECONDS, 
 						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 				executor.execute(dataSynchronizationThread);
-				result = "{\"success\":true,\"msg\":true,resultCode:1}";
+				result = "{\"success\":true,\"msg\":true,\"resultCode\":1}";
 			}else{
-				result = "{\"success\":true,\"msg\":true,resultCode:-66}";
+				result = "{\"success\":true,\"msg\":true,\"resultCode\":-66}";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2523,9 +2523,9 @@ public class WellInformationManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{\"success\":true,\"msg\":'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{\"success\":true,\"msg\":'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -2576,9 +2576,9 @@ public class WellInformationManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{\"success\":true,\"msg\":'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{\"success\":true,\"msg\":'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -2595,9 +2595,9 @@ public class WellInformationManagerController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		String json = "";
 		if (flag) {
-			json = "{\"success\":true,\"msg\":'1'}";
+			json = "{\"success\":true,\"msg\":1}";
 		} else {
-			json = "{\"success\":true,\"msg\":'0'}";
+			json = "{\"success\":true,\"msg\":0}";
 		}
 		PrintWriter pw = response.getWriter();
 		pw.print(json);

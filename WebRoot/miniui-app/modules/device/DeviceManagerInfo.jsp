@@ -182,7 +182,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     </div>
 
                     <!-- 右侧：附加信息 -->
-                    <div id="dmRightPane" size="50%" showCollapseButton="false" minSize="300" visible="false">
+                    <div id="dmRightPane" size="50%" showCollapseButton="true" collapseDirection="right" minSize="300" visible="false">
                         <div id="deviceAdditionalTabs" class="mini-tabs" style="width:100%;height:100%;" tabPosition="top" onactivechanged="onDmAdditionalTabChanged">
 
                             <div id="additionalInfoTab" title="" name="additionalInfo" visible="false">
@@ -197,7 +197,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                 <div id="deviceCalculateDataTabs" class="mini-tabs" style="width:100%;height:100%;" tabPosition="top" onactivechanged="onDmCalculateDataTabChanged">
 
                                     <div id="wellboreDataTab" title="" name="wellboreData" visible="false">
-                                        <div class="mini-panel" style="width:100%;height:100%;"
+                                        <div id="wellboreDataPanel" class="mini-panel" style="width:100%;height:100%;"
                                              showHeader="false" showToolbar="true" showCloseButton="false"
                                              bodyStyle="padding:0;">
                                             <div property="toolbar">
@@ -210,12 +210,12 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="AdditionalInfoTableDiv_id" class="hot-container"></div>
+                                            <div id="DeviceProductionDataTableDiv_id" class="hot-container"></div>
                                         </div>
                                     </div>
 
                                     <div id="pumpingUnitDataTab" title="" name="pumpingUnitData" visible="false">
-                                        <div class="mini-panel" style="width:100%;height:100%;"
+                                        <div id="pumpingUnitDataPanel" class="mini-panel" style="width:100%;height:100%;"
                                              showHeader="false" showToolbar="true" showCloseButton="false"
                                              bodyStyle="padding:0;">
                                             <div property="toolbar">
@@ -266,7 +266,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                             </div>
 
                             <div id="videoInfoTab" title="" name="videoInfo" visible="false">
-                                <div class="mini-panel" style="width:100%;height:100%;"
+                                <div id="videoInfoPanel" class="mini-panel" style="width:100%;height:100%;"
                                      showHeader="false" showToolbar="true" showCloseButton="false"
                                      bodyStyle="padding:0;">
                                     <div property="toolbar">
@@ -282,7 +282,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                             </div>
 
                             <div id="fsDiagramConstructionTab" title="" name="fsDiagramConstruction" visible="false">
-                                <div class="mini-panel" style="width:100%;height:100%;"
+                                <div id="fsDiagramConstructionPanel" class="mini-panel" style="width:100%;height:100%;"
                                      showHeader="false" showToolbar="true" showCloseButton="false"
                                      bodyStyle="padding:0;">
                                     <div property="toolbar">
@@ -300,7 +300,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                             </div>
 
                             <div id="systemParameterTab" title="" name="systemParameter" visible="false">
-                                <div class="mini-panel" style="width:100%;height:100%;"
+                                <div id="systemParameterPanel" class="mini-panel" style="width:100%;height:100%;"
                                      showHeader="false" showToolbar="true" showCloseButton="false"
                                      bodyStyle="padding:0;">
                                     <div property="toolbar">
@@ -318,7 +318,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                             </div>
 
                             <div id="intelligentFrequencyConversionTab" title="" name="intelligentFrequencyConversion" visible="false">
-                                <div class="mini-panel" style="width:100%;height:100%;"
+                                <div id="intelligentFrequencyConversionPanel" class="mini-panel" style="width:100%;height:100%;"
                                      showHeader="false" showToolbar="true" showCloseButton="false"
                                      bodyStyle="padding:0;">
                                     <div property="toolbar">
@@ -336,7 +336,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                             </div>
 
                             <div id="interlockProtectionTab" title="" name="interlockProtection" visible="false">
-                                <div class="mini-panel" style="width:100%;height:100%;"
+                                <div id="interlockProtectionPanel" class="mini-panel" style="width:100%;height:100%;"
                                      showHeader="false" showToolbar="true" showCloseButton="false"
                                      bodyStyle="padding:0;">
                                     <div property="toolbar">

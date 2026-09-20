@@ -5409,7 +5409,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											int bitIndex=displayInstanceOwnItem.getItemList().get(j).getBitIndex();
 											for(ModbusProtocolConfig.ItemsMeaning itemsMeaning:protocol.getItems().get(k).getMeaning()){
 												if(itemsMeaning.getValue()==bitIndex){
-													switchingValueMeaning="[['1','"+(StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():languageResourceMap.get("switchingOpenValue"))+"'],['0','"+(StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():languageResourceMap.get("switchingCloseValue"))+"']]";
+													switchingValueMeaning="[[1,\""+(StringManagerUtils.isNotNull(itemsMeaning.getStatus1())?itemsMeaning.getStatus1():languageResourceMap.get("switchingOpenValue"))+"\"],[0,\""+(StringManagerUtils.isNotNull(itemsMeaning.getStatus0())?itemsMeaning.getStatus0():languageResourceMap.get("switchingCloseValue"))+"\"]]";
 													if(displayInstanceOwnItem.getItemList().get(j).getSwitchingValueShowType()==1){
 														title+="/"+itemsMeaning.getMeaning();
 													}else{

@@ -44,7 +44,7 @@ String context = path;
             </tr>
             <tr>
                 <td class="label">排序：</td>
-                <td><input id="sort" class="mini-spinner" style="width:100%;" minValue="1" value="1" /></td>
+                <td><input id="sort" class="mini-spinner" style="width:100%;" minValue="1" value="1" maxValue="9999999999"/></td>
             </tr>
             <tr>
                 <td class="label">备注：</td>
@@ -125,7 +125,7 @@ String context = path;
             },
             dataType: 'json',
             success: function(resp) {
-                if (resp.msg === '1') {
+                if (resp.msg === 1) {
                     mini.confirm(
                         '<font color="red">' + (_loginUserLanguageResource.acqUnitExist || '单元已存在') + '，' + (_loginUserLanguageResource.pleaseConfirm || '请确认') + '</font>',
                         _loginUserLanguageResource.confirm || '确认',

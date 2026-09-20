@@ -72,7 +72,7 @@ String context = path;
             </tr>
             <tr>
                 <td class="label" id="lblSort">排序：</td>
-                <td><input id="sort" class="mini-spinner" name="sort" style="width:100%;" minValue="1" /></td>
+                <td><input id="sort" class="mini-spinner" name="sort" style="width:100%;" minValue="1" maxValue="9999999999"/></td>
             </tr>
             <tr>
                 <td class="label" id="lblRemark">备注：</td>

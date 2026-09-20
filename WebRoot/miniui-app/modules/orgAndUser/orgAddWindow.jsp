@@ -48,7 +48,7 @@ String context = path;
                 </tr>
                 <tr>
                     <td class="label"><span id="lblSort"></span>：</td>
-                    <td><input id="orgSeq" class="mini-spinner" minValue="1" value="1" /></td>
+                    <td><input id="orgSeq" class="mini-spinner" minValue="1" value="1" maxValue="9999999999"/></td>
                 </tr>
             </table>
             <div style="text-align:center;padding-top:20px;">

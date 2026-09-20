@@ -26,13 +26,13 @@ String context = path;
             <div class="form-row">
                 <span class="form-label"><font color="red">*</font><span id="lblSort">排序</span>：</span>
                 <div class="form-control">
-                    <input id="curveSort" class="mini-spinner" style="width:100%;" minValue="1" value="1" required="true" />
+                    <input id="curveSort" class="mini-spinner" style="width:100%;" minValue="1" value="1" maxValue="9999999999" required="true" />
                 </div>
             </div>
             <div class="form-row">
                 <span class="form-label"><font color="red">*</font><span id="lblLineWidth">线宽</span>：</span>
                 <div class="form-control">
-                    <input id="curveLineWidth" class="mini-spinner" style="width:100%;" minValue="1" value="3" required="true" />
+                    <input id="curveLineWidth" class="mini-spinner" style="width:100%;" minValue="1" value="3" maxValue="9999999999" required="true" />
                 </div>
             </div>
             <div class="form-row">

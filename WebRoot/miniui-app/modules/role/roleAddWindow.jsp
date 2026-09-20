@@ -75,11 +75,11 @@ String context = path;
                         </tr>
                         <tr>
                             <td class="label"><span style="color:red;">*</span><span id="lblRoleLevel"></span>：</td>
-                            <td><input id="roleLevel" class="mini-spinner" minValue="1" value="1" /></td>
+                            <td><input id="roleLevel" class="mini-spinner" minValue="1" value="1" maxValue="9999999999"/></td>
                         </tr>
                         <tr>
                             <td class="label"><span style="color:red;">*</span><span id="lblShowLevel"></span>：</td>
-                            <td><input id="showLevel" class="mini-spinner" minValue="1" value="1" /></td>
+                            <td><input id="showLevel" class="mini-spinner" minValue="1" value="1" maxValue="9999999999"/></td>
                         </tr>
                         <tr>
                             <td class="label"><span style="color:red;">*</span><span id="lblRoleVideoKeyEdit"></span>：</td>
@@ -325,7 +325,7 @@ String context = path;
             dataType: 'json',
             success: function (resp) {
                 // 后端返回 msg == "1" 表示已存在
-                if (resp && resp.msg == '1') {
+                if (resp && resp.msg == 1) {
                     var confirmMsg = '<font color="red">【'+ _loginUserLanguageResource.role + ':' + value+ '】</font>' + _loginUserLanguageResource.alreadyExist;
                     mini.confirm(confirmMsg, _loginUserLanguageResource.confirm, function (action) {
                         if (action == 'ok') {

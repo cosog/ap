@@ -58,7 +58,7 @@ String context = path;
             </tr>
             <tr>
                 <td class="label">排序：</td>
-                <td><input id="sort" class="mini-spinner" style="width:100%;" minValue="1" value="1" /></td>
+                <td><input id="sort" class="mini-spinner" style="width:100%;" minValue="1" value="1" maxValue="9999999999"/></td>
             </tr>
             <tr>
                 <td class="label">备注：</td>

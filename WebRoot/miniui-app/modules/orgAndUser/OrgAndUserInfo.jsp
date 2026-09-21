@@ -779,7 +779,7 @@ function isTrueVal(v) {
 				type:type,
 				orgId: _selectedOrgId,
 				orgName: _currentOrgNode ? _currentOrgNode.text : ''
-			}, '*');
+			}, window.location.origin);
 		}
     }
     

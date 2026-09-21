@@ -50,6 +50,7 @@ function initAuxiliaryDeviceManagerPage() {
     _adModuleRight.viewFlag    = parseInt(_adModuleRight.viewFlag)    || 0;
     _adModuleRight.editFlag    = parseInt(_adModuleRight.editFlag)    || 0;
     _adModuleRight.controlFlag = parseInt(_adModuleRight.controlFlag) || 0;
+    
 
     initAdI18n();
     updateAdBtnStatus();
@@ -560,6 +561,109 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
                 helper.AllData.updatelist = helper.updatelist;
             }
         };
+        
+        helper.saveData = function () {
+            var auxiliaryDeviceInfoHandsontableData = helper.hot.getData();
+            if (auxiliaryDeviceInfoHandsontableData.length == 0) {
+                mini.alert(_loginUserLanguageResource.noDataChange, _loginUserLanguageResource.tip);
+                return;
+            }
+
+            helper.insertExpressCount();
+
+            var auxiliaryDeviceSpecificType = 0;
+            var rb = mini.get('AuxiliaryDeviceSpecificType_Id');
+            if (rb) {
+                auxiliaryDeviceSpecificType = parseInt(rb.getValue()) || 0;
+            }
+
+            var DeviceSelectRow = _adDeviceSelectRow;
+            if (DeviceSelectRow === '' || DeviceSelectRow == undefined) DeviceSelectRow = 0;
+            var rowdata = helper.hot.getDataAtRow(DeviceSelectRow);
+
+            var deviceId = rowdata ? rowdata[0] : 0;
+            var manufacturer = rowdata ? rowdata[3] : '';
+            var model = rowdata ? rowdata[4] : '';
+
+            var auxiliaryDeviceDetailsSaveData = {};
+            auxiliaryDeviceDetailsSaveData.deviceId = deviceId;
+            auxiliaryDeviceDetailsSaveData.auxiliaryDeviceSpecificType = auxiliaryDeviceSpecificType;
+            auxiliaryDeviceDetailsSaveData.auxiliaryDeviceDetailsList = [];
+
+            if (auxiliaryDeviceDetailsHandsontableHelper != null
+                && auxiliaryDeviceDetailsHandsontableHelper.hot != undefined) {
+                var detailsData = auxiliaryDeviceDetailsHandsontableHelper.hot.getData();
+                for (var i = 0; i < detailsData.length; i++) {
+                    if (isNotVal(detailsData[i][1])) {
+                        var detail = {};
+                        detail.deviceId = deviceId;
+
+                        var itemName = detailsData[i][1];
+                        var itemValue = isNotVal(detailsData[i][2]) ? detailsData[i][2] : "";
+                        var itemUnit = isNotVal(detailsData[i][3]) ? detailsData[i][3] : "";
+                        var itemCode = isNotVal(detailsData[i][4]) ? detailsData[i][4] : "";
+
+                        if (auxiliaryDeviceSpecificType == 1 && itemCode.toUpperCase() == 'structureType'.toUpperCase()) {
+                            if (itemValue == _loginUserLanguageResource.pumpingUnitStructureType1) itemValue = 1;
+                            else if (itemValue == _loginUserLanguageResource.pumpingUnitStructureType2) itemValue = 2;
+                            else if (itemValue == _loginUserLanguageResource.pumpingUnitStructureType3) itemValue = 3;
+                        } else if (auxiliaryDeviceSpecificType == 1 && itemCode.toUpperCase() == 'crankRotationDirection'.toUpperCase()) {
+                            if (itemValue == _loginUserLanguageResource.clockwise) itemValue = 'Clockwise';
+                            else if (itemValue == _loginUserLanguageResource.anticlockwise) itemValue = 'Anticlockwise';
+                            else itemValue = '';
+                        }
+
+                        detail.itemName = itemName;
+                        detail.itemValue = itemValue;
+                        detail.itemUnit = itemUnit;
+                        detail.itemCode = itemCode;
+                        auxiliaryDeviceDetailsSaveData.auxiliaryDeviceDetailsList.push(detail);
+                    }
+                }
+            }
+
+            var deviceType = getAdCurrentDeviceType();
+            var maskEl = 'AuxiliaryDeviceTableDiv_id';
+            mini.mask({ el: maskEl, cls: 'mini-mask-loading', html: _loginUserLanguageResource.submittingData });
+
+            $.ajax({
+                url: context + '/wellInformationManagerController/saveAuxiliaryDeviceHandsontableData',
+                type: 'POST',
+                data: {
+                    deviceId: deviceId,
+                    auxiliaryDeviceSpecificType: auxiliaryDeviceSpecificType,
+                    data: JSON.stringify(helper.AllData),
+                    deviceType: deviceType,
+                    auxiliaryDeviceDetailsSaveData: JSON.stringify(auxiliaryDeviceDetailsSaveData)
+                },
+                dataType: 'json',
+                success: function (rdata) {
+                    mini.unmask(maskEl);
+                    if (rdata && rdata.success) {
+                        var saveInfo = _loginUserLanguageResource.savedSuccessfully;
+                        if (rdata.collisionCount > 0) {
+                            saveInfo = _loginUserLanguageResource.savedSuccessfully
+                                + ':' + rdata.successCount + ','
+                                + _loginUserLanguageResource.saveFailed
+                                + ':<font color="red">' + rdata.collisionCount + '</font>';
+                            for (var i = 0; i < rdata.list.length; i++) {
+                                saveInfo += '<br/><font color="red"> ' + rdata.list[i] + '</font>';
+                            }
+                        }
+                        mini.alert(saveInfo, _loginUserLanguageResource.tip);
+                        helper.clearContainer();
+                        CreateAndLoadAuxiliaryDeviceInfoTable(true);
+                    } else {
+                        mini.alert('<font color=red>' + _loginUserLanguageResource.saveFailed + '</font>', _loginUserLanguageResource.tip);
+                    }
+                },
+                error: function () {
+                    mini.unmask(maskEl);
+                    mini.alert(_loginUserLanguageResource.requestFailed, _loginUserLanguageResource.tip);
+                    helper.clearContainer();
+                }
+            });
+        };
 
         helper.clearContainer = function () {
             helper.AllData = {};
@@ -577,35 +681,148 @@ var AuxiliaryDeviceInfoHandsontableHelper = {
 // 事件占位（后续实现）
 // ================================================================
 function onAdAddDevice() {
-    console.log('[辅件设备] 添加');
-}
-
-function onAdDelDevice() {
-    console.log('[辅件设备] 删除');
-}
-
-function onAdSaveDevice() {
-    console.log('[辅件设备] 保存');
-    return;
     if (parseInt(_adModuleRight.editFlag) != 1) return;
-	if (!auxiliaryDeviceInfoHandsontableHelper) return;
 
-	// 保存设备列表
-	auxiliaryDeviceInfoHandsontableHelper.saveData();
+    var deviceType = getAdCurrentDeviceType();
 
-	// 保存 PRTF（若存在）
-	if (auxiliaryDevicePRTFHandsontableHelper != null
-	    && auxiliaryDevicePRTFHandsontableHelper.hot != null
-	    && auxiliaryDevicePRTFHandsontableHelper.hot != undefined) {
-	    auxiliaryDevicePRTFHandsontableHelper.saveData();
-	}
+    mini.open({
+        title: _loginUserLanguageResource.addDevice,
+        url: context + '/miniui-app/modules/auxiliarydevice/auxiliaryDeviceAddWindow.jsp',
+        width: 400,
+        height: 380,
+        modal: true,
+        allowResize: true,
+        maxable: false,
+        onload: function () {
+            var iframe = this.getIFrameEl();
+            var contentWindow = iframe.contentWindow;
+
+            contentWindow.setData({
+                deviceType: deviceType
+            });
+
+            contentWindow._parentRefreshDeviceList = function () {
+                CreateAndLoadAuxiliaryDeviceInfoTable(true);
+            };
+        }
+    });
+}
+
+//================================================================
+//删除辅件设备
+//================================================================
+function onAdDelDevice() {
+    if (parseInt(_adModuleRight.editFlag) != 1) return;
+
+    var startRow = _adDeviceSelectRow;
+    var endRow   = _adDeviceSelectEndRow;
+
+    if (startRow === '' || endRow === ''
+        || startRow == undefined || endRow == undefined) {
+        mini.alert(_loginUserLanguageResource.checkOne, _loginUserLanguageResource.tip);
+        return;
+    }
+
+    startRow = parseInt(startRow);
+    endRow = parseInt(endRow);
+    if (startRow > endRow) {
+        var t = startRow; startRow = endRow; endRow = t;
+    }
+
+    var delidslist = [];
+    var delDeviceNameList = [];
+    var delManufacturerList = [];
+    var delModelList = [];
+
+    for (var i = startRow; i <= endRow; i++) {
+        var deviceId     = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(i, 'id');
+        var name         = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(i, 'name');
+        var manufacturer = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(i, 'manufacturer');
+        var model        = auxiliaryDeviceInfoHandsontableHelper.hot.getDataAtRowProp(i, 'model');
+        if (deviceId != null && parseInt(deviceId) > 0) {
+            delidslist.push(deviceId);
+            delDeviceNameList.push(name);
+            delManufacturerList.push(manufacturer);
+            delModelList.push(model);
+        }
+    }
+
+    if (delidslist.length === 0) {
+        mini.alert(_loginUserLanguageResource.checkOne, _loginUserLanguageResource.tip);
+        return;
+    }
+
+    var deleteInfo = _loginUserLanguageResource.confirmDelete;
+    if (delidslist.length === 1) {
+        deleteInfo =
+            _loginUserLanguageResource.deviceName + ":<font color=red>" + delDeviceNameList[0] + "</font>" +
+            "</br>" + _loginUserLanguageResource.manufacturer + ":<font color=red>" + delManufacturerList[0] + "</font>" +
+            "</br>" + _loginUserLanguageResource.model + ":<font color=red>" + delModelList[0] + "</font>" +
+            "</br>" + _loginUserLanguageResource.confirmDelete;
+    } else {
+        deleteInfo =
+            _loginUserLanguageResource.sparseRecordCount + ":<font color=red>" + delidslist.length + "</font>" +
+            "</br>" + _loginUserLanguageResource.confirmDelete;
+    }
+
+    mini.confirm(deleteInfo, _loginUserLanguageResource.tip, function (action) {
+        if (action !== 'ok') return;
+
+        var saveData = {
+            updatelist: [],
+            insertlist: [],
+            delidslist: delidslist
+        };
+
+        var deviceType = getAdCurrentDeviceType();
+
+        mini.mask({ el: 'AuxiliaryDeviceTableDiv_id', cls: 'mini-mask-loading', html: _loginUserLanguageResource.submittingData });
+
+        $.ajax({
+            url: context + '/wellInformationManagerController/saveAuxiliaryDeviceHandsontableData',
+            type: 'POST',
+            data: {
+                data: JSON.stringify(saveData),
+                deviceType: deviceType
+            },
+            dataType: 'json',
+            success: function (rdata) {
+                mini.unmask('AuxiliaryDeviceTableDiv_id');
+                if (rdata && rdata.success) {
+                    mini.alert(_loginUserLanguageResource.deleteSuccessfully, _loginUserLanguageResource.tip);
+                    auxiliaryDeviceInfoHandsontableHelper.clearContainer();
+                    _adDeviceSelectRow = '';
+                    _adDeviceSelectEndRow = '';
+                    CreateAndLoadAuxiliaryDeviceInfoTable(true);
+                } else {
+                    mini.alert('<font color=red>' + _loginUserLanguageResource.saveFailed + '</font>', _loginUserLanguageResource.tip);
+                }
+            },
+            error: function () {
+                mini.unmask('AuxiliaryDeviceTableDiv_id');
+                mini.alert(_loginUserLanguageResource.requestFailed, _loginUserLanguageResource.tip);
+                auxiliaryDeviceInfoHandsontableHelper.clearContainer();
+            }
+        });
+    });
+}
+
+//================================================================
+//保存（设备列表 + 详细信息）
+//================================================================
+function onAdSaveDevice() {
+ if (parseInt(_adModuleRight.editFlag) != 1) return;
+ if (!auxiliaryDeviceInfoHandsontableHelper) return;
+
+ auxiliaryDeviceInfoHandsontableHelper.saveData();
+
+ onAdSavePRTF();
 }
 
 //================================================================
 //保存 PRTF
 //================================================================
 function onAdSavePRTF() {
-	return;
 	if (parseInt(_adModuleRight.editFlag) != 1) return;
 	if (auxiliaryDevicePRTFHandsontableHelper != null
 	    && auxiliaryDevicePRTFHandsontableHelper.hot != null
@@ -614,12 +831,113 @@ function onAdSavePRTF() {
 	}
 }
 
+//================================================================
+//批量添加辅件设备
+//================================================================
 function onAdBatchAddDevice() {
-    console.log('[辅件设备] 批量添加');
+ if (parseInt(_adModuleRight.editFlag) != 1) return;
+
+ var deviceType = getAdCurrentDeviceType();
+ var dictDeviceType = deviceType;
+ if (dictDeviceType && dictDeviceType.indexOf(',') > -1) {
+     dictDeviceType = dictDeviceType.split(',')[0];
+ }
+
+ // 组织信息
+ var orgId = window.parent && window.parent.getSelectOrgNodeId ? window.parent.getSelectOrgNodeId() : '';
+ var orgName = window.parent && window.parent.getSelectOrgNodePath ? window.parent.getSelectOrgNodePath() : '';
+
+ mini.open({
+     title: _loginUserLanguageResource.batchAdd,
+     url: context + '/miniui-app/modules/auxiliarydevice/batchAddAuxiliaryDeviceWindow.jsp',
+     width: 1200,
+     height: 600,
+     modal: true,
+     allowResize: true,
+     maxable: true,
+     onload: function () {
+         var iframe = this.getIFrameEl();
+         var contentWindow = iframe.contentWindow;
+
+         contentWindow.setData({
+             orgId: orgId,
+             orgName: orgName,
+             deviceType: deviceType,
+             dictDeviceType: dictDeviceType
+         });
+
+         // 刷新主列表回调
+         contentWindow._parentRefreshDeviceList = function () {
+             CreateAndLoadAuxiliaryDeviceInfoTable(true);
+         };
+
+         // 由主页面打开冲突窗口
+         contentWindow._parentOpenCollisionWindow = function (rdata, deviceType, orgId) {
+             openBatchAddAuxiliaryDeviceCollisionWindow(rdata, deviceType, orgId);
+         };
+     }
+ });
 }
 
+//================================================================
+//打开批量添加辅件设备的覆盖数据窗口
+//================================================================
+function openBatchAddAuxiliaryDeviceCollisionWindow(rdata, deviceType, orgId) {
+ mini.open({
+     title: _loginUserLanguageResource.exceptionData,
+     url: context + '/miniui-app/modules/auxiliarydevice/batchAddAuxiliaryDeviceCollisionDataWindow.jsp',
+     width: 1400,
+     height: 600,
+     modal: true,
+     allowResize: true,
+     onload: function () {
+         var iframe = this.getIFrameEl();
+         var contentWindow = iframe.contentWindow;
+
+         contentWindow.setData({
+             result: rdata,
+             deviceType: deviceType,
+             orgId: orgId
+         });
+
+         contentWindow._parentRefreshDeviceList = function () {
+             CreateAndLoadAuxiliaryDeviceInfoTable(true);
+         };
+     }
+ });
+}
+
+//================================================================
+//辅件设备完整数据导出
+//================================================================
 function onAdExportDevice() {
-    console.log('[辅件设备] 导出');
+ if (parseInt(_adModuleRight.editFlag) != 1) return;
+
+ // 组织 ID（父窗口）
+ var leftOrgId = window.parent && window.parent.mini
+     ? window.parent.mini.get('leftOrg_Id').getValue()
+     : '';
+
+ // 当前设备类型
+ var deviceType = getAdCurrentDeviceType();
+
+ // 国际化文件名
+ var fileName = _loginUserLanguageResource.auxiliaryDdeviceExportFileName;
+
+ var url = context + '/wellInformationManagerController/exportAuxiliaryDeviceCompleteData';
+
+ var timestamp = new Date().getTime();
+ var key = 'exportAuxiliaryDeviceCompleteData' + deviceType + '_' + timestamp;
+ var maskPanelId = 'auxiliaryDevicePanel';
+
+ var param = '&orgId=' + leftOrgId
+     + '&deviceType=' + deviceType
+     + '&recordCount=10000'
+     + '&fileName=' + URLencode(URLencode(fileName))
+     + '&key=' + key;
+
+ exportDataMask(key, maskPanelId, _loginUserLanguageResource.loadingData);
+ downloadFile(url + '?flag=true' + param);
 }
 
 // ================================================================
@@ -762,7 +1080,7 @@ function CreateAuxiliaryDeviceDetailsTable(deviceId, name) {
  var rb = mini.get('AuxiliaryDeviceSpecificType_Id');
  var auxiliaryDeviceSpecificType = rb ? (parseInt(rb.getValue()) || 0) : 0;
 
- var maskEl = 'AuxiliaryDeviceDetailsTableDiv_id';
+ var maskEl = 'auxiliaryDeviceDetailsPanel';
  mini.mask({
      el: maskEl,
      cls: 'mini-mask-loading',
@@ -844,10 +1162,19 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
      };
 
      helper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
-         Handsontable.renderers.TextRenderer.apply(this, arguments);
-         td.style.whiteSpace = 'nowrap';
-         td.style.overflow = 'hidden';
-         td.style.textOverflow = 'ellipsis';
+    	 if (cellProperties.type == 'checkbox') {
+    	        Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+    	    } else if (cellProperties.type == 'dropdown') {
+    	        Handsontable.renderers.DropdownRenderer.apply(this, arguments);
+    	        td.style.whiteSpace = 'nowrap';
+    	        td.style.overflow = 'hidden';
+    	        td.style.textOverflow = 'ellipsis';
+    	    } else {
+    	        Handsontable.renderers.TextRenderer.apply(this, arguments);
+    	        td.style.whiteSpace = 'nowrap';
+    	        td.style.overflow = 'hidden';
+    	        td.style.textOverflow = 'ellipsis';
+    	    }
      };
 
      helper.createTable = function (data) {
@@ -858,7 +1185,7 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
              theme: 'ht-theme-classic',
              data: data,
              width: '100%',
-             height: 'auto',
+             height: '100%',
              hiddenColumns: { columns: [0, 4], indicators: false },
              columns: helper.columns,
              stretchH: 'all',
@@ -922,7 +1249,7 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
                                  this.allowInvalid = false;
                              }
                              // 曲柄旋转方向
-                             if (visualRowIndex === 2) {
+                             else if (visualRowIndex === 2) {
                                  this.type = 'dropdown';
                                  this.source = [
                                      _loginUserLanguageResource.clockwise,
@@ -934,9 +1261,9 @@ var AuxiliaryDeviceDetailsHandsontableHelper = {
                              cellProperties.renderer = helper.addCellStyle;
                          }
                      } else {
-                         // 无类型：所有列只读
-                         cellProperties.editor = false;
-                         cellProperties.renderer = helper.addBoldBg;
+                         // 无类型
+                         //cellProperties.editor = false;
+                         cellProperties.renderer = helper.addCellStyle;
                      }
                  }
                  return cellProperties;
@@ -1134,7 +1461,7 @@ var PumpingUnitPRTFHandsontableHelper = {
              theme: 'ht-theme-classic',
              data: data,
              width: '100%',
-             height: 'auto',
+             height: '100%',
              columns: helper.columns,
              stretchH: 'all',
              autoWrapRow: true,
@@ -1177,6 +1504,9 @@ var PumpingUnitPRTFHandsontableHelper = {
          var combo = mini.get('AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id');
          var stroke = combo ? (combo.getValue() || '') : '';
 
+         if(!isNotVal(stroke)){
+        	 return;
+         }
          var strokePRTFData = {};
          strokePRTFData.Stroke = stroke;
          strokePRTFData.PRTF = [];

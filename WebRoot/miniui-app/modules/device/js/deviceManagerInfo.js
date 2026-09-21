@@ -1960,15 +1960,6 @@ function updateDeviceAdditionalInfoTabs(deviceTabInstanceInfo) {
         showIntelligentFrequencyConversion = (pd.IntelligentFrequencyConversion != undefined) ? pd.IntelligentFrequencyConversion : false;
         showInterlockProtection = (pd.InterlockProtection != undefined) ? pd.InterlockProtection : false;
     }
-    
-    showAdditionalInformation = true;
-    showAuxiliaryDevice = true;
-    showVideoConfig = true;
-    showCalculateDataConfig = true;
-    showFSDiagramConstruction = true;
-    showSystemParameterConfig = true;
-    showIntelligentFrequencyConversion = true;
-    showInterlockProtection = true;
 
     if (calculateType == 0) {
         showCalculateDataConfig = false;

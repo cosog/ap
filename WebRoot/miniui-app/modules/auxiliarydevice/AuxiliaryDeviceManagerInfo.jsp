@@ -2,14 +2,16 @@
 <%
 String path = request.getContextPath();
 String context = path;
+String otherStaticResourceTimestamp = (String)session.getAttribute("otherStaticResourceTimestamp");
+if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>辅件设备</title>
-    <jsp:include page="../../layout/tags-miniui.jsp" flush="true" />
-    <script src="js/auxiliaryDeviceManagerInfo.js"></script>
+    <jsp:include page="../../layout/tags-miniui.jsp?timestamp=<%=otherStaticResourceTimestamp%>" flush="true" />
+    <script src="js/auxiliaryDeviceManagerInfo.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     <style>
         html, body {
             margin: 0; padding: 0; width: 100%; height: 100%;

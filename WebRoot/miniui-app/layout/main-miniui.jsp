@@ -579,7 +579,10 @@ request.setAttribute("browserLang", browserLang);
     function onMenuTreeLoad(e) {
         var tree = e.sender;
         var root = tree.getRootNode();
-        if (root) {
+        if (!root || !root.children || root.children.length === 0) return;
+        
+        var selectNode=tree.getSelectedNode();
+        if(!selectNode){
             tree.expandNode(root);
             var firstLeaf = findFirstLeaf(root, tree);
             if (firstLeaf) {
@@ -777,7 +780,7 @@ request.setAttribute("browserLang", browserLang);
         // 在内容区域内查找 iframe
         var iframe = $(bodyEl).find('iframe')[0];
         if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage(message, '*');
+            iframe.contentWindow.postMessage(message, window.location.origin);
         } else {
             console.warn('未找到模块 ' + moduleId + ' 的 iframe');
         }
@@ -793,7 +796,7 @@ request.setAttribute("browserLang", browserLang);
             if (!bodyEl) continue;
             var iframe = $(bodyEl).find('iframe')[0];
             if (iframe && iframe.contentWindow) {
-                iframe.contentWindow.postMessage(message, '*');
+                iframe.contentWindow.postMessage(message, window.location.origin);
             }
         }
     }
@@ -886,7 +889,9 @@ request.setAttribute("browserLang", browserLang);
             'AP.view.orgAndUser.OrgAndUserInfoView': context + '/miniui-app/modules/orgAndUser/OrgAndUserInfo.jsp',
             'AP.view.role.RoleInfoView': context + '/miniui-app/modules/role/RoleInfo.jsp',
             'AP.view.well.DeviceManagerInfoView': context + '/miniui-app/modules/device/DeviceManagerInfo.jsp',
-            'AP.view.well.AuxiliaryDeviceInfoView': context + '/miniui-app/modules/auxiliarydevice/AuxiliaryDeviceManagerInfo.jsp'
+            'AP.view.well.AuxiliaryDeviceInfoView': context + '/miniui-app/modules/auxiliarydevice/AuxiliaryDeviceManagerInfo.jsp',
+            'AP.view.module.ModuleInfoView': context + '/miniui-app/modules/module/ModuleInfo.jsp',
+            'AP.view.operationMaintenance.OperationMaintenanceInfoView': context + '/miniui-app/modules/operationMaintenance/OperationMaintenanceInfo.jsp'
         };
         return mapping[viewSrc] || null;
     }
@@ -969,6 +974,10 @@ request.setAttribute("browserLang", browserLang);
              case 'refreshMainOrgTree':
                  // 更新选中依据：刷新后按这个 orgId 恢复选中
                  refreshOrgTree();
+                 break;
+             case 'refreshMainMenuTree':
+                 // 更新选中依据：刷新后按这个 orgId 恢复选中
+                 refreshMenuTree();
                  break;
          }
      });

@@ -120,7 +120,7 @@ public class ModuleManagerController extends BaseController {
 			Code c=entry.getValue();
 			String get_key = c.getItemvalue()+"";
 			String get_val = c.getItemname();
-			moduleTypeBuff.append("['"+get_val+"','"+get_val+"'],");
+			moduleTypeBuff.append("[\""+get_val+"\",\""+get_val+"\"],");
 		}
 		if (moduleTypeBuff.toString().endsWith(",")) {
 			moduleTypeBuff.deleteCharAt(moduleTypeBuff.length() - 1);

@@ -378,6 +378,9 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 				+"]},");
 				
 			}
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
 			result_json.append("],\"minAcqTime\":\""+minAcqTime+"\",\"maxAcqTime\":\""+maxAcqTime+"\"}");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -433,7 +436,7 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 				+ "\"showRussianName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 3)+","
 				+ "\"columns\":"+columns+",");
 		
-		result_json.append("\"calculateTypeList\":[['"+languageResourceMap.get("nothing")+"','"+languageResourceMap.get("nothing")+"'],['"+languageResourceMap.get("SRPCalculate")+"','"+languageResourceMap.get("SRPCalculate")+"'],['"+languageResourceMap.get("PCPCalculate")+"','"+languageResourceMap.get("PCPCalculate")+"']],");
+		result_json.append("\"calculateTypeList\":[[\""+languageResourceMap.get("nothing")+"\",\""+languageResourceMap.get("nothing")+"\"],[\""+languageResourceMap.get("SRPCalculate")+"\",\""+languageResourceMap.get("SRPCalculate")+"\"],[\""+languageResourceMap.get("PCPCalculate")+"\",\""+languageResourceMap.get("PCPCalculate")+"\"]],");
 		result_json.append("\"totalRoot\":[");
 		for (Object o : list) {
 			Object[] obj = (Object[]) o;

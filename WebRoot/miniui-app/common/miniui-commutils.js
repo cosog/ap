@@ -4854,3 +4854,7 @@ function _handsontableMakeMouseOver(helper) {
         }
     };
 }
+
+function isTrueVal(v) {
+	return v === true || v === 1 || v === '1' || v === 'true';
+}

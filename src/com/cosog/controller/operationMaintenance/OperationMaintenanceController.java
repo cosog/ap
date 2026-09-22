@@ -345,7 +345,7 @@ public class OperationMaintenanceController  extends BaseController {
 			}
 
 		}
-//		json = r.modifyStr(json).replaceAll("null", "");
+		json = r.modifyStr(json);
 		
 		json="{\"success\": true,"
 				+ "\"showChineseName\":"+StringManagerUtils.existOrNot(languageList, 1)+","

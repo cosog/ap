@@ -750,15 +750,9 @@ function onUserGridCellEndEdit(e) {
   }
 }
 
-//================================================================
-//11.1 判断是否为真值（勾选列渲染用）
-//================================================================
-function isTrueVal(v) {
- return v === true || v === 1 || v === '1' || v === 'true';
-}
 
     // ================================================================
-    // 11. 当前登录用户名加 * 前缀（对应 ExtJS adviceCurrentUserName）
+    // 当前登录用户名加 * 前缀（对应 ExtJS adviceCurrentUserName）
     // ================================================================
     function adviceCurrentUserName(val, record) {
         var showVal = val;

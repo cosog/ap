@@ -125,6 +125,16 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         .mini-splitter-handler { background: transparent !important; border: 1px solid #e8e8e8 !important; }
         .mini-tabs-buttons-left { background: #fafafa; }
         .hot-container { width: 100%; height: 100%; }
+        
+        #omLowerComputerPanel .mini-panel-body {
+    		padding: 0 !important;
+    		overflow: hidden !important;
+		}
+		#omLowerComputerInnerPanel {
+    		width: 100% !important;
+    		height: 100% !important;
+		}
+
         .empty-msg { color: #999; font-size: 13px; text-align: center; padding: 20px; }
     </style>
 </head>
@@ -511,7 +521,6 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                             <td style="padding:0;vertical-align:middle;white-space:nowrap;">
                                                 <button id="omImportPrevBtn" class="mini-button" iconCls="forward" plain="true"
                                                         onclick="onOmImportPrev()"></button>
-                                                <span class="om-toolbar-sep"></span>
                                                 <form id="omImportForm" style="display:inline;"
                                                       action="<%=path%>/moduleManagerController/uploadImportedModuleFile"
                                                       method="post" enctype="multipart/form-data" target="omUploadFrame">
@@ -644,378 +653,353 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 
                 <!-- 项目标签 -->
                 <div id="omProjectTagTab" title="" name="projectTag">
-                    <div id="omProjectTagPanel" class="mini-panel" style="width:100%;height:100%;"
-                         showHeader="false" showToolbar="true" showCloseButton="false"
-                         bodyStyle="padding:0;">
-                        <div property="toolbar">
-                            <table style="width:100%;border-collapse:collapse;">
-                                <tr>
-                                    <td style="padding:0;vertical-align:middle;white-space:nowrap;">
-                                        <button id="omProjectTagRefreshBtn" class="mini-button" iconCls="note-refresh" plain="true"
-                                                onclick="onOmProjectTagRefresh()"></button>
-                                    </td>
-                                    <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
-                                        <button id="omProjectTagSaveBtn" class="mini-button" iconCls="save" plain="true"
-                                                onclick="onOmProjectTagSave()"></button>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+    <div id="omProjectTagPanel" class="mini-panel" style="width:100%;height:100%;"
+         showHeader="false" showToolbar="true" showCloseButton="false"
+         bodyStyle="padding:0;">
+        <div property="toolbar">
+            <table style="width:100%;border-collapse:collapse;">
+                <tr>
+                    <td style="padding:0;vertical-align:middle;white-space:nowrap;">
+                        <button id="omProjectTagRefreshBtn" class="mini-button" iconCls="note-refresh" plain="true"
+                                onclick="onOmProjectTagRefresh()"></button>
+                    </td>
+                    <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
+                        <button id="omProjectTagSaveBtn" class="mini-button" iconCls="save" plain="true"
+                                onclick="onOmProjectTagSave()"></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-                        <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
-                            <div size="45%" showCollapseButton="false" minSize="250">
-                                <div id="omDeviceTypeListPanel" class="mini-panel"
-                                     style="width:100%;height:100%;"
-                                     showHeader="true" showToolbar="false" showCloseButton="false"
-                                     bodyStyle="padding:0;overflow:hidden;">
-                                    <div id="deviceTypeMaintenanceTreeGridView_Id" class="mini-treegrid"
-                                         style="width:100%;height:100%;"
-                                         showTreeIcon="true"
-                                         treeColumn="taskname"
-                                         idField="deviceTypeId"
-                                         textField="text"
-                                         parentField="parentId"
-                                         dataField="children"
-                                         resultAsTree="false"
-                                         allowResize="false"
-                                         allowCellEdit="true"
-                                         allowCellSelect="true"
-                                         showEmptyText="true"
-                                         autoLoad="false"
-                                         onload="onOmDeviceTypeTreeLoad"
-                                         onnodeselect="onOmDeviceTypeNodeSelect">
-                                        <div property="columns"></div>
-                                        <div property="emptyText" class="empty-msg"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div size="55%" showCollapseButton="true" collapseDirection="right" minSize="300">
-                                <div id="omDeviceTypeContentConfigPanel" class="mini-panel"
-                                     style="width:100%;height:100%;"
-                                     showHeader="true" showToolbar="false" showCloseButton="false"
-                                     bodyStyle="padding:0;overflow:hidden;">
-                                    <div class="om-tab-content">
-                                        <fieldset class="mini-fieldset">
-                                            <legend id="omLegendRealtimeMonitoring"></legend>
-                                            <table class="om-form-table">
-                                                <colgroup>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.34%;"/>
-                                                </colgroup>
-                                                <tr>
-                                                    <td class="label" id="omLblFESDiagramStatPie"></td>
-                                                    <td class="input-cell"><input id="om_realtime_FESDiagramStatPie" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblCommStatusStatPie"></td>
-                                                    <td class="input-cell"><input id="om_realtime_CommStatusStatPie" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblRunStatusStatPie"></td>
-                                                    <td class="input-cell"><input id="om_realtime_RunStatusStatPie" class="mini-checkbox" /></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" id="omLblNumStatusStatPie"></td>
-                                                    <td class="input-cell"><input id="om_realtime_NumStatusStatPie" class="mini-checkbox" /></td>
-                                                    <td></td><td></td><td></td><td></td>
-                                                </tr>
-                                            </table>
-                                        </fieldset>
+        <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
 
-                                        <fieldset class="mini-fieldset">
-                                            <legend id="omLegendHistoryQuery"></legend>
-                                            <table class="om-form-table">
-                                                <colgroup>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.34%;"/>
-                                                </colgroup>
-                                                <tr>
-                                                    <td class="label" id="omLblHistoryFESDiagramStatPie"></td>
-                                                    <td class="input-cell"><input id="om_history_FESDiagramStatPie" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblHistoryCommStatusStatPie"></td>
-                                                    <td class="input-cell"><input id="om_history_CommStatusStatPie" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblHistoryRunStatusStatPie"></td>
-                                                    <td class="input-cell"><input id="om_history_RunStatusStatPie" class="mini-checkbox" /></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" id="omLblHistoryNumStatusStatPie"></td>
-                                                    <td class="input-cell"><input id="om_history_NumStatusStatPie" class="mini-checkbox" /></td>
-                                                    <td></td><td></td><td></td><td></td>
-                                                </tr>
-                                            </table>
-                                        </fieldset>
-
-                                        <fieldset class="mini-fieldset">
-                                            <legend id="omLegendAlarmQuery"></legend>
-                                            <table class="om-form-table">
-                                                <colgroup>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.34%;"/>
-                                                </colgroup>
-                                                <tr>
-                                                    <td class="label" id="omLblAlarmFESDiagramResultAlarm"></td>
-                                                    <td class="input-cell"><input id="om_alarm_FESDiagramResultAlarm" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblAlarmRunStatusAlarm"></td>
-                                                    <td class="input-cell"><input id="om_alarm_RunStatusAlarm" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblAlarmCommStatusAlarm"></td>
-                                                    <td class="input-cell"><input id="om_alarm_CommStatusAlarm" class="mini-checkbox" /></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" id="omLblAlarmNumericValueAlarm"></td>
-                                                    <td class="input-cell"><input id="om_alarm_NumericValueAlarm" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblAlarmEnumValueAlarm"></td>
-                                                    <td class="input-cell"><input id="om_alarm_EnumValueAlarm" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblAlarmSwitchingValueAlarm"></td>
-                                                    <td class="input-cell"><input id="om_alarm_SwitchingValueAlarm" class="mini-checkbox" /></td>
-                                                </tr>
-                                            </table>
-                                        </fieldset>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- ===== 左侧：设备类型树（可编辑 treegrid） ===== -->
+            <div size="60%" showCollapseButton="false" minSize="300">
+                <div id="omDeviceTypeListPanel" class="mini-panel"
+                     style="width:100%;height:100%;"
+                     showHeader="true" showToolbar="false" showCloseButton="false"
+                     bodyStyle="padding:0;overflow:hidden;">
+                    <div id="deviceTypeMaintenanceTreeGridView_Id" class="mini-treegrid"
+                         style="width:100%;height:100%;"
+                         showTreeIcon="true"
+                         treeColumn="taskname"
+                         idField="deviceTypeId"
+                         textField="text"
+                         parentField="parentNodeId"
+                         dataField="children"
+                         resultAsTree="true"
+                         allowResize="false"
+                         allowAlternating="true"
+                         showPager="false"
+                         allowCellEdit="false"
+                         allowCellSelect="false"
+                         showEmptyText="true"
+                         autoLoad="false"
+                         showLoading="true"
+                         showCellTip="true"
+                         cellEditAction="celldblclick"
+                         expandOnDblClick="false"
+                         expandOnNodeClick="false"
+                         onbeforeload="onOmDeviceTypeTreeBeforeLoad"
+                         onload="onOmDeviceTypeTreeLoad"
+                         onnodeselect="onOmDeviceTypeNodeSelect"
+                         oncellbeginedit="onOmDeviceTypeCellBeginEdit">
+                        <div property="columns"></div>
+                        <div property="emptyText" class="empty-msg"></div>
                     </div>
                 </div>
+            </div>
 
+            <!-- ===== 右侧：功能列表配置（带 checkbox 的 tree） ===== -->
+            <div size="40%" showCollapseButton="true" collapseDirection="right" minSize="250">
+                <div id="omDeviceTypeContentConfigPanel" class="mini-panel"
+                     style="width:100%;height:100%;"
+                     showHeader="true" showToolbar="false" showCloseButton="false"
+                     bodyStyle="padding:0;overflow:hidden;">
+                    <div id="projectTabConfigTreeGridView_Id" class="mini-tree"
+                         style="width:100%;height:100%;"
+                         showTreeIcon="true"
+                         showTreeLines="true"
+                         showCheckBox="true"
+                         checkRecursive="false"
+                         checkField="checked"
+                         expandOnNodeClick="false"
+                         textField="text"
+                         idField="code"
+                         dataField="children"
+                         resultAsTree="true"
+                         onbeforeload="onProjectTabConfigTreeBeforeLoad"
+                         onload="onProjectTabConfigTreeLoad"
+                         onbeforenodecheck="onProjectTabConfigTreeBeforeNodeCheck"
+                         ondrawnode=onProjectTabConfigTreeDrawnode>
+                        <div property="emptyText" class="empty-msg"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
                 <!-- 设备标签 -->
-                <div id="omDeviceTagTab" title="" name="deviceTag">
-                    <div id="omDeviceTagPanel" class="mini-panel" style="width:100%;height:100%;"
-                         showHeader="false" showToolbar="true" showCloseButton="false"
-                         bodyStyle="padding:0;">
-                        <div property="toolbar">
-                            <table style="width:100%;border-collapse:collapse;">
-                                <tr>
-                                    <td style="padding:0;vertical-align:middle;white-space:nowrap;">
-                                        <button id="omDeviceTagRefreshBtn" class="mini-button" iconCls="note-refresh" plain="true"
-                                                onclick="onOmDeviceTagRefresh()"></button>
-                                    </td>
-                                    <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
-                                        <button id="omDeviceTagAddBtn" class="mini-button" iconCls="add" plain="true"
-                                                onclick="onOmDeviceTagAdd()"></button>
-                                        <button id="omDeviceTagDelBtn" class="mini-button" iconCls="delete" plain="true"
-                                                onclick="onOmDeviceTagDel()"></button>
-                                        <button id="omDeviceTagSaveBtn" class="mini-button" iconCls="save" plain="true"
-                                                onclick="onOmDeviceTagSave()"></button>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+<div id="omDeviceTagTab" title="" name="deviceTag">
+    <div id="omDeviceTagPanel" class="mini-panel" style="width:100%;height:100%;"
+         showHeader="false" showToolbar="true" showCloseButton="false"
+         bodyStyle="padding:0;">
+        <div property="toolbar">
+            <table style="width:100%;border-collapse:collapse;">
+                <tr>
+                    <td style="padding:0;vertical-align:middle;white-space:nowrap;">
+                        <button id="omDeviceTagRefreshBtn" class="mini-button" iconCls="note-refresh" plain="true"
+                                onclick="onOmDeviceTagRefresh()"></button>
+                    </td>
+                    <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
+                        <button id="omDeviceTagAddBtn" class="mini-button" iconCls="add" plain="true"
+                                onclick="onOmDeviceTagAdd()"></button>
+                        <button id="omDeviceTagDelBtn" class="mini-button" iconCls="delete" plain="true"
+                                onclick="onOmDeviceTagDel()"></button>
+                        <button id="omDeviceTagSaveBtn" class="mini-button" iconCls="save" plain="true"
+                                onclick="onOmDeviceTagSave()"></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-                        <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
-                            <div size="45%" showCollapseButton="false" minSize="250">
-                                <div id="omDeviceTabManagerPanel" class="mini-panel"
-                                     style="width:100%;height:100%;"
-                                     showHeader="true" showToolbar="false" showCloseButton="false"
-                                     bodyStyle="padding:0;overflow:hidden;">
-                                    <div id="operationMaintenanceDeviceTabManagerGridView_Id" class="mini-treegrid"
-                                         style="width:100%;height:100%;"
-                                         showTreeIcon="true"
-                                         treeColumn="taskname"
-                                         idField="instanceId"
-                                         textField="text"
-                                         parentField="pid"
-                                         dataField="children"
-                                         resultAsTree="false"
-                                         allowResize="false"
-                                         allowCellEdit="true"
-                                         allowCellSelect="true"
-                                         multiSelect="true"
-                                         showEmptyText="true"
-                                         autoLoad="false"
-                                         onload="onOmDeviceTabTreeLoad"
-                                         onnodeselect="onOmDeviceTabNodeSelect">
-                                        <div property="columns"></div>
-                                        <div property="emptyText" class="empty-msg"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div size="55%" showCollapseButton="true" collapseDirection="right" minSize="300">
-                                <div id="omDeviceTabContentConfigPanel" class="mini-panel"
-                                     style="width:100%;height:100%;"
-                                     showHeader="true" showToolbar="false" showCloseButton="false"
-                                     bodyStyle="padding:0;overflow:hidden;">
-                                    <div class="om-tab-content">
-                                        <fieldset class="mini-fieldset">
-                                            <legend id="omLegendRealtimeMonitoring2"></legend>
-                                            <table class="om-form-table">
-                                                <colgroup>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.34%;"/>
-                                                </colgroup>
-                                                <tr>
-                                                    <td class="label" id="omLblWellboreAnalysis"></td>
-                                                    <td class="input-cell"><input id="om_realtime_WellboreAnalysis" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblSurfaceAnalysis"></td>
-                                                    <td class="input-cell"><input id="om_realtime_SurfaceAnalysis" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblTrendCurve"></td>
-                                                    <td class="input-cell"><input id="om_realtime_TrendCurve" class="mini-checkbox" /></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" id="omLblDynamicData"></td>
-                                                    <td class="input-cell"><input id="om_realtime_DynamicData" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblDeviceControl"></td>
-                                                    <td class="input-cell"><input id="om_realtime_DeviceControl" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblDeviceInformation"></td>
-                                                    <td class="input-cell"><input id="om_realtime_DeviceInformation" class="mini-checkbox" /></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" id="omLblRodStressChartMax"></td>
-                                                    <td class="input-cell"><input id="om_realtime_RodStressMax" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblRodStressChartRange"></td>
-                                                    <td class="input-cell"><input id="om_realtime_RodStressRange" class="mini-checkbox" /></td>
-                                                    <td></td><td></td>
-                                                </tr>
-                                            </table>
-                                        </fieldset>
-
-                                        <fieldset class="mini-fieldset">
-                                            <legend id="omLegendHistoryQuery2"></legend>
-                                            <table class="om-form-table">
-                                                <colgroup>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.34%;"/>
-                                                </colgroup>
-                                                <tr>
-                                                    <td class="label" id="omLblHistoryTrendCurve"></td>
-                                                    <td class="input-cell"><input id="om_history_TrendCurve" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblHistoryTiledDiagram"></td>
-                                                    <td class="input-cell"><input id="om_history_TiledDiagram" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblHistoryDiagramOverlay"></td>
-                                                    <td class="input-cell"><input id="om_history_DiagramOverlay" class="mini-checkbox" /></td>
-                                                </tr>
-                                            </table>
-                                        </fieldset>
-
-                                        <fieldset class="mini-fieldset">
-                                            <legend id="omLegendPrimaryDevice"></legend>
-                                            <table class="om-form-table">
-                                                <colgroup>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.33%;"/>
-                                                    <col style="width:20%;"/>
-                                                    <col style="width:13.34%;"/>
-                                                </colgroup>
-                                                <tr>
-                                                    <td class="label" id="omLblAdditionalInformation"></td>
-                                                    <td class="input-cell"><input id="om_pd_AdditionalInformation" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblAuxiliaryDevice"></td>
-                                                    <td class="input-cell"><input id="om_pd_AuxiliaryDevice" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblVideoConfig"></td>
-                                                    <td class="input-cell"><input id="om_pd_VideoConfig" class="mini-checkbox" /></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" id="omLblCalculateDataConfig"></td>
-                                                    <td class="input-cell"><input id="om_pd_CalculateDataConfig" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblFSDiagramConstruction"></td>
-                                                    <td class="input-cell"><input id="om_pd_FSDiagramConstruction" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblSystemParameterConfiguration"></td>
-                                                    <td class="input-cell"><input id="om_pd_SystemParameterConfig" class="mini-checkbox" /></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="label" id="omLblIntelligentFrequencyConversion"></td>
-                                                    <td class="input-cell"><input id="om_pd_IntelligentFrequencyConversion" class="mini-checkbox" /></td>
-                                                    <td class="label" id="omLblInterlockProtection"></td>
-                                                    <td class="input-cell"><input id="om_pd_InterlockProtection" class="mini-checkbox" /></td>
-                                                    <td></td><td></td>
-                                                </tr>
-                                            </table>
-                                        </fieldset>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
+            <!-- 左侧：实例列表（datagrid） -->
+            <div size="55%" showCollapseButton="false" minSize="300">
+                <div id="omDeviceTabManagerPanel" class="mini-panel"
+                     style="width:100%;height:100%;"
+                     showHeader="true" showToolbar="false" showCloseButton="false"
+                     bodyStyle="padding:0;overflow:hidden;">
+                    <div id="operationMaintenanceDeviceTabManagerGridView_Id" class="mini-datagrid"
+                         style="width:100%;height:100%;"
+                         idField="instanceId"
+                         allowResize="false"
+                         allowAlternating="true"
+                         showPager="false"
+                         pageSize="100"
+                         showPageInfo="false"
+                         multiSelect="false"
+                         allowCellEdit="false"
+                         allowCellSelect="false"
+                         showEmptyText="true"
+                         dataField="totalRoot"
+                         totalField="totalCount"
+                         onbeforeload="onOmDeviceTabGridBeforeLoad"
+                         onload="onOmDeviceTabGridLoad"
+                         onselectionchanged="onOmDeviceTabGridSelectionChanged"
+                         oncellbeginedit="onOmDeviceTabCellBeginEdit"
+                         cellEditAction="celldblclick">
+                        <div property="columns"></div>
+                        <div property="emptyText" class="empty-msg"></div>
                     </div>
                 </div>
+            </div>
+
+            <!-- 右侧：显示内容配置 -->
+            <div size="45%" showCollapseButton="true" collapseDirection="right" minSize="350">
+                <div id="omDeviceTabContentConfigPanel" class="mini-panel"
+                     style="width:100%;height:100%;"
+                     showHeader="true" showToolbar="false" showCloseButton="false"
+                     bodyStyle="padding:0;overflow:hidden;">
+                    <div class="om-tab-content">
+
+                        <fieldset class="mini-fieldset">
+                            <legend id="omLegendRealtimeMonitoring2"></legend>
+                            <table class="om-form-table">
+                                <colgroup>
+                                    <col style="width:20%;"/>
+                                    <col style="width:13.33%;"/>
+                                    <col style="width:20%;"/>
+                                    <col style="width:13.33%;"/>
+                                    <col style="width:20%;"/>
+                                    <col style="width:13.34%;"/>
+                                </colgroup>
+                                <tr>
+                                    <td class="label" id="omLblWellboreAnalysis"></td>
+                                    <td class="input-cell"><input id="om_realtime_WellboreAnalysis" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblSurfaceAnalysis"></td>
+                                    <td class="input-cell"><input id="om_realtime_SurfaceAnalysis" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblTrendCurve"></td>
+                                    <td class="input-cell"><input id="om_realtime_TrendCurve" class="mini-checkbox" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="label" id="omLblDynamicData"></td>
+                                    <td class="input-cell"><input id="om_realtime_DynamicData" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblDeviceControl"></td>
+                                    <td class="input-cell"><input id="om_realtime_DeviceControl" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblDeviceInformation"></td>
+                                    <td class="input-cell"><input id="om_realtime_DeviceInformation" class="mini-checkbox" /></td>
+                                </tr>
+                                <tr>
+    								<td class="label" id="omLblRodStressChartDisplay"></td>
+    									<td class="input-cell" colspan="5">
+        									<input id="om_realtime_RodStressChart" class="mini-checkboxlist"
+               									textField="text" valueField="id"
+               									repeatLayout="flow" repeatDirection="horizontal" repeatItems="2" />
+    									</td>
+								</tr>
+                            </table>
+                        </fieldset>
+
+                        <fieldset class="mini-fieldset">
+                            <legend id="omLegendHistoryQuery2"></legend>
+                            <table class="om-form-table">
+                                <colgroup>
+                                    <col style="width:20%;"/>
+                                    <col style="width:13.33%;"/>
+                                    <col style="width:20%;"/>
+                                    <col style="width:13.33%;"/>
+                                    <col style="width:20%;"/>
+                                    <col style="width:13.34%;"/>
+                                </colgroup>
+                                <tr>
+                                    <td class="label" id="omLblHistoryTrendCurve"></td>
+                                    <td class="input-cell"><input id="om_history_TrendCurve" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblHistoryTiledDiagram"></td>
+                                    <td class="input-cell"><input id="om_history_TiledDiagram" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblHistoryDiagramOverlay"></td>
+                                    <td class="input-cell"><input id="om_history_DiagramOverlay" class="mini-checkbox" /></td>
+                                </tr>
+                            </table>
+                        </fieldset>
+
+                        <fieldset class="mini-fieldset">
+                            <legend id="omLegendPrimaryDevice"></legend>
+                            <table class="om-form-table">
+                                <colgroup>
+                                    <col style="width:20%;"/>
+                                    <col style="width:13.33%;"/>
+                                    <col style="width:20%;"/>
+                                    <col style="width:13.33%;"/>
+                                    <col style="width:20%;"/>
+                                    <col style="width:13.34%;"/>
+                                </colgroup>
+                                <tr>
+                                    <td class="label" id="omLblAdditionalInformation"></td>
+                                    <td class="input-cell"><input id="om_pd_AdditionalInformation" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblAuxiliaryDevice"></td>
+                                    <td class="input-cell"><input id="om_pd_AuxiliaryDevice" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblVideoConfig"></td>
+                                    <td class="input-cell"><input id="om_pd_VideoConfig" class="mini-checkbox" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="label" id="omLblCalculateDataConfig"></td>
+                                    <td class="input-cell"><input id="om_pd_CalculateDataConfig" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblFSDiagramConstruction"></td>
+                                    <td class="input-cell"><input id="om_pd_FSDiagramConstruction" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblSystemParameterConfiguration"></td>
+                                    <td class="input-cell"><input id="om_pd_SystemParameterConfig" class="mini-checkbox" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="label" id="omLblIntelligentFrequencyConversion"></td>
+                                    <td class="input-cell"><input id="om_pd_IntelligentFrequencyConversion" class="mini-checkbox" /></td>
+                                    <td class="label" id="omLblInterlockProtection"></td>
+                                    <td class="input-cell"><input id="om_pd_InterlockProtection" class="mini-checkbox" /></td>
+                                    <td></td><td></td>
+                                </tr>
+                            </table>
+                        </fieldset>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
             </div>
         </div>
 
         <!-- ============ 5. 内存曲线 ============ -->
         <div id="omMonitorCurveTab" title="" name="monitorCurve" visible="false">
-            <div id="omMonitorCurvePanel" class="mini-panel" style="width:100%;height:100%;"
-                 showHeader="false" showToolbar="true" showCloseButton="false"
-                 bodyStyle="padding:0;">
-                <div property="toolbar">
-                    <table style="width:100%;border-collapse:collapse;">
-                        <tr>
-                            <td style="padding:0;vertical-align:middle;white-space:nowrap;">
-                                <button id="omCurveRefreshBtn" class="mini-button" iconCls="note-refresh" plain="true"
-                                        onclick="onOmCurveRefresh()"></button>
-                                <span class="om-toolbar-sep"></span>
-                                <span id="omLblCurveRange" style="font-size:12px;color:#333;"></span>
-                                <input id="om_curveStartDate" class="mini-datepicker" format="yyyy-MM-dd" style="width:130px;" />
-                                <input id="om_curveStartHour" class="mini-spinner" minValue="0" maxValue="23" style="width:60px;" />
-                                <input id="om_curveStartMinute" class="mini-spinner" minValue="0" maxValue="59" style="width:60px;" />
-                                <span class="om-toolbar-sep"></span>
-                                <span id="omLblCurveTo" style="font-size:12px;color:#333;"></span>
-                                <input id="om_curveEndDate" class="mini-datepicker" format="yyyy-MM-dd" style="width:130px;" />
-                                <input id="om_curveEndHour" class="mini-spinner" minValue="0" maxValue="23" style="width:60px;" />
-                                <input id="om_curveEndMinute" class="mini-spinner" minValue="0" maxValue="59" style="width:60px;" />
-                                <span class="om-toolbar-sep"></span>
-                                <button id="omCurveSearchBtn" class="mini-button" iconCls="search" plain="true"
-                                        onclick="onOmCurveSearch()"></button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div id="OperationMaintenanceMonitorCurveDiv_Id" class="hot-container"></div>
-            </div>
+    <div id="omMonitorCurvePanel" class="mini-panel" style="width:100%;height:100%;"
+         showHeader="false" showToolbar="true" showCloseButton="false"
+         bodyStyle="padding:0;overflow:hidden;">
+        <div property="toolbar">
+            <table style="width:100%;border-collapse:collapse;">
+                <tr>
+                    <td style="padding:0;vertical-align:middle;white-space:nowrap;">
+                        <button id="omCurveRefreshBtn" class="mini-button" iconCls="note-refresh" plain="true"
+                                onclick="onOmCurveRefresh()"></button>
+                        <span id="omLblCurveRange" style="font-size:12px;color:#333;"></span>
+                        <input id="om_curveStartDate" class="mini-datepicker" style="width:150px;" 
+                               format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" 
+                               showOkButton="true" showClearButton="false" allowInput="false" />
+                        <span id="omLblCurveTo" style="margin-left: 6px;font-size:12px;color:#333;"></span>
+                        <input id="om_curveEndDate" class="mini-datepicker" style="width:150px;" 
+                               format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" 
+                               showOkButton="true" showClearButton="false" allowInput="false" />
+                        <button id="omCurveSearchBtn" class="mini-button" iconCls="search" plain="true"
+                                onclick="onOmCurveSearch()"></button>
+                    </td>
+                </tr>
+            </table>
         </div>
+        <!-- Highcharts 容器 -->
+        <div id="OperationMaintenanceMonitorCurveDiv_Id" class="hot-container" style="width:100%;height:100%;"></div>
+    </div>
+</div>
 
         <!-- ============ 6. 下位机程序升级 ============ -->
         <div id="omLowerComputerTab" title="" name="lowerComputer">
-            <div id="omLowerComputerPanel" class="mini-panel" style="width:100%;height:100%;"
-                 showHeader="false" showToolbar="true" showCloseButton="false"
-                 bodyStyle="padding:0;">
-                <div property="toolbar">
-                    <table style="width:100%;border-collapse:collapse;">
-                        <tr>
-                            <td style="padding:0;vertical-align:middle;white-space:nowrap;">
-                                <button id="omLowerComputerRefreshBtn" class="mini-button" iconCls="note-refresh" plain="true"
-                                        onclick="onOmLowerComputerRefresh()"></button>
-                                <span class="om-toolbar-sep"></span>
-                                <span id="omLblLowerComputerDeviceName" style="font-size:12px;color:#333;"></span>
-                                <input id="lowerComputerProgramUpgradeDeviceListComb_Id" class="mini-combobox"
-                                       style="width:180px;"
-                                       valueField="boxkey" textField="boxval" allowInput="true"
-                                       onvaluechanged="onOmLowerComputerDeviceChange" />
-                            </td>
-                            <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
-                                <button id="omLowerComputerSelectAllBtn" class="mini-button" iconCls="check" plain="true"
-                                        onclick="onOmLowerComputerSelectAll()"></button>
-                                <button id="omLowerComputerDeselectAllBtn" class="mini-button" iconCls="close" plain="true"
-                                        onclick="onOmLowerComputerDeselectAll()"></button>
-                                <span class="om-toolbar-sep"></span>
-                                <button id="omBoxUpgradeBtn" class="mini-button" iconCls="downlink" plain="true"
-                                        onclick="onOmBoxUpgrade()"></button>
-                                <button id="omAcUpgradeBtn" class="mini-button" iconCls="downlink" plain="true"
-                                        onclick="onOmAcUpgrade()"></button>
-                                <button id="omLowerComputerUplinkBtn" class="mini-button" iconCls="uplink" plain="true"
-                                        onclick="onOmLowerComputerUplink()"></button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div id="OperationMaintenanceLowerComputerProgramUpgradeDiv_Id" class="hot-container"></div>
-            </div>
+    <!-- 外层面板：第一行工具条 -->
+    <div id="omLowerComputerPanel" class="mini-panel" style="width:100%;height:100%;"
+         showHeader="false" showToolbar="true" showCloseButton="false"
+         bodyStyle="padding:0;overflow:hidden;">
+
+        <!-- ===== 第一行工具条 ===== -->
+        <div property="toolbar">
+            <table style="width:100%;border-collapse:collapse;">
+                <tr>
+                    <td style="padding:0;vertical-align:middle;white-space:nowrap;">
+                        <button id="omLowerComputerRefreshBtn" class="mini-button" iconCls="note-refresh" plain="true"
+                                onclick="onOmLowerComputerRefresh()"></button>
+                        <span id="omLblLowerComputerDeviceName" style="font-size:12px;color:#333;"></span>
+                        <input id="lowerComputerProgramUpgradeDeviceListComb_Id" class="mini-combobox" style="width:150px;" emptyText="-- 全部 --"
+       						url="<%=path%>/wellInformationManagerController/loadWellComboxList"
+       						dataField="list" valueField="boxkey" textField="boxval"
+       						onbeforeload="onDmDeviceComboBeforeLoad"
+       						onshowpopup="onDmDeviceComboShowPopup"
+       						onvaluechanged="onDmDeviceComboChange" />
+                    </td>
+                    <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
+                        <button id="omBoxUpgradeBtn" class="mini-button" iconCls="downlink" plain="true"
+                                onclick="onOmBoxUpgrade()"></button>
+                        <button id="omAcUpgradeBtn" class="mini-button" iconCls="downlink" plain="true"
+                                onclick="onOmAcUpgrade()"></button>
+                        <button id="omLowerComputerUplinkBtn" class="mini-button" iconCls="uplink" plain="true"
+                                onclick="onOmLowerComputerUplink()"></button>
+                    </td>
+                </tr>
+            </table>
         </div>
+
+        <!-- ===== 内层面板：第二行工具条 + handsontable 容器 ===== -->
+        <div id="omLowerComputerInnerPanel" class="mini-panel"
+             style="width:100%;height:100%;"
+             showHeader="false" showToolbar="true" showCloseButton="false"
+             bodyStyle="padding:0;overflow:hidden;">
+
+            <!-- 第二行工具条：全选、取消全选 -->
+            <div property="toolbar">
+                <table style="width:100%;border-collapse:collapse;">
+                    <tr>
+                        <td style="padding:0;vertical-align:middle;white-space:nowrap;">
+                            <button id="omLowerComputerSelectAllBtn" class="mini-button" plain="true"
+                                    onclick="onOmLowerComputerSelectAll()"></button>
+                            <button id="omLowerComputerDeselectAllBtn" class="mini-button" plain="true"
+                                    onclick="onOmLowerComputerDeselectAll()"></button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- handsontable 容器 -->
+            <div id="OperationMaintenanceLowerComputerProgramUpgradeDiv_Id"
+                 class="hot-container" style="width:100%;height:100%;"></div>
+        </div>
+    </div>
+</div>
 
     </div>
 </div>
@@ -1024,7 +1008,6 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     var context = '<%=path%>';
     var user_ = '<%=userLoginNo%>';
     var loginUserLanguage = '<%=loginUserLanguage%>';
-
     $(document).ready(function () {
         mini.parse();
         setTimeout(function () {

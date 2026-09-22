@@ -891,7 +891,8 @@ request.setAttribute("browserLang", browserLang);
             'AP.view.well.DeviceManagerInfoView': context + '/miniui-app/modules/device/DeviceManagerInfo.jsp',
             'AP.view.well.AuxiliaryDeviceInfoView': context + '/miniui-app/modules/auxiliarydevice/AuxiliaryDeviceManagerInfo.jsp',
             'AP.view.module.ModuleInfoView': context + '/miniui-app/modules/module/ModuleInfo.jsp',
-            'AP.view.operationMaintenance.OperationMaintenanceInfoView': context + '/miniui-app/modules/operationMaintenance/OperationMaintenanceInfo.jsp'
+            'AP.view.operationMaintenance.OperationMaintenanceInfoView': context + '/miniui-app/modules/operationMaintenance/OperationMaintenanceInfo.jsp',
+            'AP.view.data.SystemdataInfoView': context + '/miniui-app/modules/dataDictionary/dataDictionary.jsp'
         };
         return mapping[viewSrc] || null;
     }

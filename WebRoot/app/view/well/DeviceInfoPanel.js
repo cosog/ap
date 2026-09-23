@@ -13,6 +13,7 @@ var deviceSystemParameterHandsontableHelper = null;
 
 var deviceIntelligentFrequencyConversionHandsontableHelper = null;
 var deviceInterlockProtectionHandsontableHelper = null;
+var deviceDiagramFilteringHandsontableHelper = null;
 
 var deviceCalculateDataTabPanelItems=[{
 	title:loginUserLanguageResource.wellboreData,
@@ -451,6 +452,26 @@ var deviceAdditionalInformationTabPanelItems=[{
         			newHeight=newHeight-header.lastBox.height-2;
         		}
         		deviceInterlockProtectionHandsontableHelper.hot.updateSettings({
+        			width:newWidth,
+        			height:newHeight
+        		});
+            }
+        }
+    }
+},{
+	title:loginUserLanguageResource.diagramFiltering,
+	id:'DeviceDiagramFilteringInfoPanel_Id',
+	html: '<div class="DeviceDiagramFilteringInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceDiagramFilteringInfoTableDiv_id"></div></div>',
+    listeners: {
+        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+        	if (deviceDiagramFilteringHandsontableHelper != null && deviceDiagramFilteringHandsontableHelper.hot != null && deviceDiagramFilteringHandsontableHelper.hot != undefined) {
+        		var newWidth=width;
+        		var newHeight=height-23-1;
+        		var header=thisPanel.getHeader();
+        		if(header){
+        			newHeight=newHeight-header.lastBox.height-2;
+        		}
+        		deviceDiagramFilteringHandsontableHelper.hot.updateSettings({
         			width:newWidth,
         			height:newHeight
         		});
@@ -1026,6 +1047,8 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 		
 	}else if(activeId=='DeviceSystemParameterConfigurationInfoPanel_Id'){
 		CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,applicationScenarios,isNew);
+	}else if(activeId=='DeviceDiagramFilteringInfoPanel_Id'){
+		CreateAndLoadDeviceDiagramFilteringTable(deviceId,deviceName,applicationScenarios,isNew);
 	}
 }
 
@@ -1092,6 +1115,8 @@ function getDeviceAdditionalInformationType(){
 		type=7;
 	}else if(activeId=='DeviceInterlockProtectionInfoPanel_Id'){
 		type=8;
+	}else if(activeId=='DeviceDiagramFilteringInfoPanel_Id'){
+		type=9;
 	}
 	return type;
 }
@@ -2683,6 +2708,30 @@ var DeviceInfoHandsontableHelper = {
                     	interlockProtectionData.FSDiagramWorkTypeEnable.FSDiagramWorkType1232=interlockProtectionHandsontableData[28][3]?1:0;
             		}
             		deviceAdditionalInformationData.data=JSON.stringify(interlockProtectionData);
+            	}else if(additionalInformationType==9){
+            		var DiagramFilteringData={};
+            		if(deviceDiagramFilteringHandsontableHelper!=null && deviceDiagramFilteringHandsontableHelper.hot!=undefined){
+            			var rowCount = deviceDiagramFilteringHandsontableHelper.hot.countRows();
+            			for(var i=0;i<rowCount;i++){
+            				var itemCode=deviceDiagramFilteringHandsontableHelper.hot.getDataAtRowProp(i,'itemCode');
+            				var itemValue=deviceDiagramFilteringHandsontableHelper.hot.getDataAtRowProp(i,'itemValue');
+            				if(itemCode.toUpperCase()=="fTimes".toUpperCase()){
+            					if(isNumber(parseInt(itemValue))){
+            						DiagramFilteringData.FTimes=parseInt(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="iTimes".toUpperCase()){
+            					if(isNumber(parseInt(itemValue))){
+            						DiagramFilteringData.ITimes=parseInt(itemValue);
+                        		}
+            				}else if(itemCode.toUpperCase()=="wattTimes".toUpperCase()){
+            					if(isNumber(parseInt(itemValue))){
+            						DiagramFilteringData.WattTimes=parseInt(itemValue);
+                        		}
+            				}
+            			}
+            		}
+            		
+            		deviceAdditionalInformationData.data=JSON.stringify(DiagramFilteringData);
             	}
             	
             	Ext.Ajax.request({
@@ -4074,7 +4123,7 @@ var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
 	                    columns: [6,7],
 	                    indicators: false
 	                },
-	        		colWidths: [20,30,70,70,70,70],
+	        		colWidths: [40,50,100,100,100,100,0,0],
 	                columns:deviceAuxiliaryDeviceInfoHandsontableHelper.columns,
 	                columns:deviceAuxiliaryDeviceInfoHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -5942,6 +5991,188 @@ var FSDiagramConstructionHandsontableHelper = {
 	    }
 	};
 
+function CreateAndLoadDeviceDiagramFilteringTable(deviceId,deviceName,applicationScenarios,isNew){
+	if(deviceDiagramFilteringHandsontableHelper!=null){
+		if(deviceDiagramFilteringHandsontableHelper.hot!=undefined){
+			deviceDiagramFilteringHandsontableHelper.hot.destroy();
+		}
+		deviceDiagramFilteringHandsontableHelper=null;
+	}
+	if(Ext.getCmp("DeviceDiagramFilteringInfoPanel_Id")!=undefined){
+		Ext.getCmp("DeviceDiagramFilteringInfoPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();	
+	}
+	
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/wellInformationManagerController/getDiagramFilteringDataInfo',
+		success:function(response) {
+			if(Ext.getCmp("DeviceDiagramFilteringInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceDiagramFilteringInfoPanel_Id").getEl().unmask();
+				var result =  Ext.JSON.decode(response.responseText);
+				if(deviceDiagramFilteringHandsontableHelper==null || deviceDiagramFilteringHandsontableHelper.hot==undefined){
+					deviceDiagramFilteringHandsontableHelper = DeviceDiagramFilteringHandsontableHelper.createNew("DeviceDiagramFilteringInfoTableDiv_id");;
+					var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','','"+loginUserLanguageResource.downlinkStatus+"','"+loginUserLanguageResource.uplinkStatus+"']";
+					var columns="[{data:'id'}," 
+						+"{data:'itemName'}," 
+						+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,deviceDiagramFilteringHandsontableHelper);}}," 
+						+"{data:'itemCode'}," 
+						+"{data:'downlinkStatus'}," 
+						+"{data:'uplinkStatus'}" 
+						+"]";
+					deviceDiagramFilteringHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+					deviceDiagramFilteringHandsontableHelper.columns=Ext.JSON.decode(columns);
+					if(result.totalRoot.length==0){
+						deviceDiagramFilteringHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					}else{
+						deviceDiagramFilteringHandsontableHelper.createTable(result.totalRoot);
+					}
+				}else{
+					if(result.totalRoot.length==0){
+						deviceDiagramFilteringHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					}else{
+						deviceDiagramFilteringHandsontableHelper.hot.loadData(result.totalRoot);
+					}
+				}
+			}
+		},
+		failure:function(){
+			if(Ext.getCmp("DeviceDiagramFilteringInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceDiagramFilteringInfoPanel_Id").getEl().unmask();
+			}
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
+		},
+		params: {
+			deviceId:deviceId
+        }
+	});
+};
+
+var DeviceDiagramFilteringHandsontableHelper = {
+	    createNew: function (divid) {
+	        var deviceDiagramFilteringHandsontableHelper = {};
+	        deviceDiagramFilteringHandsontableHelper.hot = '';
+	        deviceDiagramFilteringHandsontableHelper.divid = divid;
+	        deviceDiagramFilteringHandsontableHelper.colHeaders = [];
+	        deviceDiagramFilteringHandsontableHelper.columns = [];
+	        
+	        deviceDiagramFilteringHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        deviceDiagramFilteringHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+
+	        deviceDiagramFilteringHandsontableHelper.createTable = function (data) {
+	            $('#' + deviceDiagramFilteringHandsontableHelper.divid).empty();
+	            var hotElement = document.querySelector('#' + deviceDiagramFilteringHandsontableHelper.divid);
+	            deviceDiagramFilteringHandsontableHelper.hot = new Handsontable(hotElement, {
+	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
+	            	data: data,
+	            	colWidths: [50,100,100],
+	                hiddenColumns: {
+	                    columns: [0,3,4,5],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                hiddenRows: {
+	                    rows: [],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                columns: deviceDiagramFilteringHandsontableHelper.columns,
+	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false, //显示行头
+	                colHeaders: deviceDiagramFilteringHandsontableHelper.colHeaders, //显示列头
+	                columnSorting: true, //允许排序
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    
+	                    if(DeviceManagerModuleEditFlag==1){
+	                    	if (visualColIndex !=2) {
+								cellProperties.editor = false;
+								cellProperties.renderer = deviceDiagramFilteringHandsontableHelper.addCellStyle;
+			                }
+	                    }else{
+	                    	cellProperties.editor = false;
+	                    	if (visualColIndex !=2) {
+	                    		cellProperties.renderer = deviceDiagramFilteringHandsontableHelper.addCellStyle;
+	                    	}
+	                    }
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(coords.col>=0 && coords.row>=0 && deviceDiagramFilteringHandsontableHelper!=null&&deviceDiagramFilteringHandsontableHelper.hot!=''&&deviceDiagramFilteringHandsontableHelper.hot!=undefined && deviceDiagramFilteringHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=deviceDiagramFilteringHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	            });
+	        }
+	        return deviceDiagramFilteringHandsontableHelper;
+	    }
+	};
+
 function CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,applicationScenarios,isNew){
 	if(deviceSystemParameterHandsontableHelper!=null){
 		if(deviceSystemParameterHandsontableHelper.hot!=undefined){
@@ -7549,10 +7780,11 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 	var showAuxiliaryDevice=false;
 	var showVideoConfig=false;
 	var showCalculateDataConfig=false;
-	var showFSDiagramConstruction=false;
+	varDiagramFilteringction=false;
 	var showSystemParameterConfig=false;
 	var showIntelligentFrequencyConversion=false;
 	var showInterlockProtection=false;
+	var showDiagramFiltering=false;
 	
 	if(deviceTabInstanceConfig!=undefined && deviceTabInstanceConfig.PrimaryDevice!=undefined){
 		showAdditionalInformation=deviceTabInstanceConfig.PrimaryDevice.AdditionalInformation!=undefined?deviceTabInstanceConfig.PrimaryDevice.AdditionalInformation:false;
@@ -7564,13 +7796,16 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 		
 		showIntelligentFrequencyConversion=deviceTabInstanceConfig.PrimaryDevice.IntelligentFrequencyConversion!=undefined?deviceTabInstanceConfig.PrimaryDevice.IntelligentFrequencyConversion:false;
 		showInterlockProtection=deviceTabInstanceConfig.PrimaryDevice.InterlockProtection!=undefined?deviceTabInstanceConfig.PrimaryDevice.InterlockProtection:false;
+		showDiagramFiltering=deviceTabInstanceConfig.PrimaryDevice.DiagramFiltering!=undefined?deviceTabInstanceConfig.PrimaryDevice.DiagramFiltering:false;
 	}
 	
 	if(calculateType==0){
 		showCalculateDataConfig=false;
 		showFSDiagramConstruction=false;
+		showDiagramFiltering=false;
 	}else if(calculateType==2){
 		showFSDiagramConstruction=false;
+		showDiagramFiltering=false;
 	}
 	
 	if( !(showAdditionalInformation||showAuxiliaryDevice||showVideoConfig||showCalculateDataConfig||showFSDiagramConstruction||showSystemParameterConfig) ){
@@ -7637,6 +7872,13 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceInterlockProtectionInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[7]);
 		}else if(!showInterlockProtection && DeviceInterlockProtectionInfoPanel!=undefined){
 			tabPanel.remove("DeviceInterlockProtectionInfoPanel_Id");
+		}
+		
+		var DeviceDiagramFilteringInfoPanel = tabPanel.getComponent("DeviceDiagramFilteringInfoPanel_Id");
+		if(showDiagramFiltering && DeviceDiagramFilteringInfoPanel==undefined){
+			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceDiagramFilteringInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[8]);
+		}else if(!showDiagramFiltering && DeviceDiagramFilteringInfoPanel!=undefined){
+			tabPanel.remove("DeviceDiagramFilteringInfoPanel_Id");
 		}
 	}else{
 		tabPanel.hide();

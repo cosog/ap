@@ -1475,6 +1475,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                		
 		                		instanceConfig.PrimaryDevice.IntelligentFrequencyConversion=Ext.getCmp('calculationModel_showPrimaryDeviceIntelligentFrequencyConversion_Id').getValue();
 		                		instanceConfig.PrimaryDevice.InterlockProtection=Ext.getCmp('calculationModel_showPrimaryDeviceInterlockProtection_Id').getValue();
+		                		instanceConfig.PrimaryDevice.DiagramFiltering=Ext.getCmp('calculationModel_showPrimaryDeviceDiagramFiltering_Id').getValue();
 		                		
 		                		Ext.Ajax.request({
 		                			method:'POST',
@@ -1718,6 +1719,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        	    fieldLabel: loginUserLanguageResource.systemParameterConfiguration,
 	                                        	    name: 'calculationModel.showPrimaryDeviceSystemParameterConfiguration',
 	                                        	    id: 'calculationModel_showPrimaryDeviceSystemParameterConfiguration_Id',
+	                                        	    checked: false
+	    				                        },{
+	    				                        	xtype: 'checkboxfield',
+	                                        	    fieldLabel: loginUserLanguageResource.diagramFiltering,
+	                                        	    name: 'calculationModel.showPrimaryDeviceDiagramFiltering',
+	                                        	    id: 'calculationModel_showPrimaryDeviceDiagramFiltering_Id',
 	                                        	    checked: false
 	    				                        }]
 	        				                }]
@@ -4213,6 +4220,7 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 	
 	Ext.getCmp("calculationModel_showPrimaryDeviceIntelligentFrequencyConversion_Id").setValue(false);
 	Ext.getCmp("calculationModel_showPrimaryDeviceInterlockProtection_Id").setValue(false);
+	Ext.getCmp("calculationModel_showPrimaryDeviceDiagramFiltering_Id").setValue(false);
 	
 	if(instanceConfig!=undefined){
 		if(instanceConfig.DeviceRealTimeMonitoring!=undefined){
@@ -4243,6 +4251,7 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 			
 			Ext.getCmp("calculationModel_showPrimaryDeviceIntelligentFrequencyConversion_Id").setValue(instanceConfig.PrimaryDevice.IntelligentFrequencyConversion!=undefined?instanceConfig.PrimaryDevice.IntelligentFrequencyConversion:false);
 			Ext.getCmp("calculationModel_showPrimaryDeviceInterlockProtection_Id").setValue(instanceConfig.PrimaryDevice.InterlockProtection!=undefined?instanceConfig.PrimaryDevice.InterlockProtection:false);
+			Ext.getCmp("calculationModel_showPrimaryDeviceDiagramFiltering_Id").setValue(instanceConfig.PrimaryDevice.DiagramFiltering!=undefined?instanceConfig.PrimaryDevice.DiagramFiltering:false);
 		}
 	}
 }

@@ -37,6 +37,7 @@ import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.DeviceInfo;
+import com.cosog.model.calculate.DiagramFilteringData;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.EnergyCalculateResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
@@ -2645,7 +2646,7 @@ public class DriverAPIController extends BaseController{
 			surfaceChartsData.append("\"upStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getUpStrokeIMax():"")+"\",");
 			surfaceChartsData.append("\"downStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getDownStrokeIMax():"")+"\",");
 			surfaceChartsData.append("\"iDegreeBalance\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
-			surfaceChartsData.append("\"deltaRadius\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
+			surfaceChartsData.append("\"deltaRadius\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getFESDiagram().getDeltaRadius()*100+"",2):"")+"\",");
 			
 			surfaceChartsData.append("\"positionCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getS()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getS(), ",")):"")+"\",");
 			surfaceChartsData.append("\"loadCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getF()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getF(), ",")):"")+"\",");
@@ -4004,6 +4005,7 @@ public class DriverAPIController extends BaseController{
 					int FESDiagramAcqCount=0;
 					boolean FESDiagramCalculate=false;
 					boolean isAcqCalResultData=false;
+					int fDataPrec=0,iDataPrec=0,wattDataPrec=0;
 					for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
 						for(int j=0;j<protocol.getItems().size();j++){
 							if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr() && loadProtocolMappingColumnByTitleMap.containsKey(protocol.getItems().get(j).getTitle())){
@@ -4027,6 +4029,8 @@ public class DriverAPIController extends BaseController{
 								String unit=protocol.getItems().get(j).getUnit();
 								int alarmLevel=0;
 								int sort=9999;
+								
+								int prec=protocol.getItems().get(j).getPrec();
 								
 								if(calculateEnable==1 && StringManagerUtils.existAcqItem(acqInstanceOwnItem.getItemList(), title, false)){
 									for(AcqInstanceOwnItem.AcqItem acqItem:acqInstanceOwnItem.getItemList()){
@@ -4138,6 +4142,7 @@ public class DriverAPIController extends BaseController{
 										}
 										FESDiagramCalculate=true;
 									}else if("Load_Curve".equalsIgnoreCase(calColumn)){
+										fDataPrec=prec;
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
@@ -4146,6 +4151,7 @@ public class DriverAPIController extends BaseController{
 										}
 										FESDiagramCalculate=true;
 									}else if("Power_Curve".equalsIgnoreCase(calColumn)){
+										wattDataPrec=prec;
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
@@ -4154,6 +4160,7 @@ public class DriverAPIController extends BaseController{
 										}
 										FESDiagramCalculate=true;
 									}else if("Current_Curve".equalsIgnoreCase(calColumn)){
+										iDataPrec=prec;
 										if(StringManagerUtils.isNotNull(rawValue)){
 											String[] dataArr=rawValue.split(",");
 											for(int k=0;k<dataArr.length;k++){
@@ -4446,6 +4453,17 @@ public class DriverAPIController extends BaseController{
 								    srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setI(curveArr);
 								}
 								
+								//滤波
+								DiagramFilteringData diagramFilteringData=deviceInfo.getDiagramFilteringData();
+								if(diagramFilteringData!=null && diagramFilteringData.getFTimes()>0){
+									srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setF(StringManagerUtils.dataMedianFilter(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getF(), diagramFilteringData.getFTimes(), fDataPrec));
+								}
+								if(diagramFilteringData!=null && diagramFilteringData.getITimes()>0){
+									srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setI(StringManagerUtils.dataMedianFilter(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getI(), diagramFilteringData.getITimes(), iDataPrec));
+								}
+								if(diagramFilteringData!=null && diagramFilteringData.getWattTimes()>0){
+									srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().setWatt(StringManagerUtils.dataMedianFilter(srpCalculateReturnData.getSrpCalculateRequestData().getFESDiagram().getWatt(), diagramFilteringData.getWattTimes(), wattDataPrec));
+								}
 							}
 							
 							if(srpCalculateReturnData.getSrpCalculateRequestData().getProduction()!=null && srpCalculateReturnData.getSrpCalculateRequestData().getFluidPVT()!=null){

@@ -730,7 +730,25 @@ function onDictItemSearch() {
     loadDictItemGrid();
 }
 
-function onSysDataAdd()     { console.log('[数据字典] 新增数据模块'); }
+function onSysDataAdd() {
+    mini.open({
+        title: _loginUserLanguageResource.addDictionary,
+        url: context + '/miniui-app/modules/dataDictionary/dataDictionaryAddWindow.jsp',
+        width: 1000,
+        height: 700,
+        modal: true,
+        allowResize: true,
+        maxable: true,
+        onload: function () {
+            var iframe = this.getIFrameEl();
+            var cw = iframe.contentWindow;
+            // ★ 子窗口保存成功后回调刷新左侧字典主表
+            cw._parentRefreshDictList = function () {
+                loadSysDataGrid();
+            };
+        }
+    });
+}
 function onSysDataDel()     { console.log('[数据字典] 删除数据模块'); }
 function onSysDataSave()    { console.log('[数据字典] 保存数据模块'); }
 function onSysDataExport()  { console.log('[数据字典] 导出数据模块'); }

@@ -88,6 +88,8 @@ public class DeviceInfo implements Serializable {
 	
 	private Integer resultStatus;
 	
+	private DiagramFilteringData diagramFilteringData;
+	
 	public static class DailyTotalItem implements Serializable {
 		private static final long serialVersionUID = 1L;
 		private String itemColumn;
@@ -565,6 +567,14 @@ public class DeviceInfo implements Serializable {
 
 	public void setProtocolDeviceTypeAllPath_zh_CN(String protocolDeviceTypeAllPath_zh_CN) {
 		this.protocolDeviceTypeAllPath_zh_CN = protocolDeviceTypeAllPath_zh_CN;
+	}
+
+	public DiagramFilteringData getDiagramFilteringData() {
+		return diagramFilteringData;
+	}
+
+	public void setDiagramFilteringData(DiagramFilteringData diagramFilteringData) {
+		this.diagramFilteringData = diagramFilteringData;
 	}
 
 }

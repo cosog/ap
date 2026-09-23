@@ -112,6 +112,11 @@ var _OM_DEVICE_TAB_CONFIG_FIELDS = [
         id: 'om_pd_InterlockProtection',
         group: 'PrimaryDevice',
         field: 'InterlockProtection'
+    },
+    { 
+    	id: 'om_pd_DiagramFiltering',         
+    	group: 'PrimaryDevice', 
+    	field: 'DiagramFiltering'
     }
 ];
 
@@ -587,6 +592,7 @@ function initOmLabels() {
         'omLblSystemParameterConfiguration': 'systemParameterConfiguration',
         'omLblIntelligentFrequencyConversion': 'intelligentFrequencyConversion',
         'omLblInterlockProtection': 'interlockProtection',
+        'omLblDiagramFiltering': 'diagramFiltering', 
         'omLblCurveRange': 'range',
         'omLblCurveTo': 'timeTo',
         'omLblLowerComputerDeviceName': 'deviceName'

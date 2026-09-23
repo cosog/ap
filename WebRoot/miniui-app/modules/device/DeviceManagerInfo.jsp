@@ -352,7 +352,14 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                     <div id="DeviceInterlockProtectionInfoTableDiv_id" class="hot-container"></div>
                                 </div>
                             </div>
-
+							
+							<div id="diagramFilteringTab" title="" name="diagramFiltering" visible="false">
+							    <div id="diagramFilteringPanel" class="mini-panel" style="width:100%;height:100%;"
+							         showHeader="false" showToolbar="false" showCloseButton="false"
+							         bodyStyle="padding:0;">
+							        <div id="DeviceDiagramFilteringInfoTableDiv_id" class="hot-container"></div>
+							    </div>
+							</div>
                         </div>
                     </div>
 

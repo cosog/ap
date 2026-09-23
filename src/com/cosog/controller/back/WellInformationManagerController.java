@@ -1358,8 +1358,8 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getFSDiagramConstructionDataInfo")
-	public String getFSDiagramConstructionDataInfo() throws IOException {
+	@RequestMapping("/getDiagramFilteringDataInfo")
+	public String getDiagramFilteringDataInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String deviceId= ParamUtils.getParameter(request, "deviceId");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
@@ -1371,7 +1371,7 @@ public class WellInformationManagerController extends BaseController {
 		if(user!=null){
 			language=user.getLanguageName();
 		}
-		String json = this.wellInformationManagerService.getFSDiagramConstructionDataInfo(deviceId,language);
+		String json = this.wellInformationManagerService.getDiagramFilteringDataInfo(deviceId,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1990,6 +1990,8 @@ public class WellInformationManagerController extends BaseController {
 				this.wellInformationManagerService.saveFrequencyConversionData(deviceId,additionalInformationSaveData.getData());
 			}else if(additionalInformationSaveData.getType()==8){
 				this.wellInformationManagerService.saveInterlockProtectionData(deviceId,additionalInformationSaveData.getData());
+			}else if(additionalInformationSaveData.getType()==9){
+				this.wellInformationManagerService.saveDiagramFilteringData(deviceId,additionalInformationSaveData.getData());
 			}
 		}
 		

@@ -49,6 +49,11 @@ public class EquipmentDriverServerTask {
 	private static boolean initEnable=initSwitch && Config.getInstance().configFile.getAp().getOthers().getIot();
 	
 	public static boolean initFinished=false;
+	
+	public static boolean exampleData_zh_CN=true;
+	public static boolean exampleData_en=true;
+	public static boolean exampleData_ru=true;
+	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
 	}
@@ -400,49 +405,54 @@ public class EquipmentDriverServerTask {
 				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
 //				sendCycle=60;
 //				timeDifference=0;
-				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"zh_CN").start();
-				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"zh_CN").start();
-				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"zh_CN").start();
-				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"zh_CN").start();
-				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"zh_CN").start();
-				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"zh_CN").start();
-				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"zh_CN").start();
-				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"zh_CN").start();
-//				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"zh_CN").start();
-//				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"zh_CN").start();
 				
-//				new ExampleDataManageThread("srp11",sendCycle,timeDifference*0,"zh_CN").start();
-//				new ExampleDataManageThread("srp12",sendCycle,timeDifference*0,"zh_CN").start();
+				if(exampleData_zh_CN){
+					new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"zh_CN").start();
+					new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"zh_CN").start();
+					new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"zh_CN").start();
+					new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"zh_CN").start();
+					new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"zh_CN").start();
+					new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"zh_CN").start();
+					new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"zh_CN").start();
+					new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"zh_CN").start();
+//					new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"zh_CN").start();
+//					new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"zh_CN").start();
+					
+//					new ExampleDataManageThread("srp11",sendCycle,timeDifference*0,"zh_CN").start();
+//					new ExampleDataManageThread("srp12",sendCycle,timeDifference*0,"zh_CN").start();
+					
+					new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"zh_CN").start();
+				}
 				
-				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"zh_CN").start();
+				if(exampleData_en){
+					new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"en").start();
+					new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"en").start();
+					new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"en").start();
+					new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"en").start();
+					new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"en").start();
+					new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"en").start();
+					new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"en").start();
+					new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"en").start();
+//					new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"en").start();
+//					new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"en").start();
+					
+					new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"en").start();
+				}
 				
-				
-				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"en").start();
-				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"en").start();
-				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"en").start();
-				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"en").start();
-				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"en").start();
-				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"en").start();
-				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"en").start();
-				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"en").start();
-//				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"en").start();
-//				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"en").start();
-				
-				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"en").start();
-				
-				
-				new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"ru").start();
-				new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"ru").start();
-				new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"ru").start();
-				new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"ru").start();
-				new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"ru").start();
-				new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"ru").start();
-				new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"ru").start();
-				new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"ru").start();
-//				new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"ru").start();
-//				new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"ru").start();
-				
-				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"ru").start();
+				if(exampleData_en){
+					new ExampleDataManageThread("srp01",sendCycle,timeDifference*0,"ru").start();
+					new ExampleDataManageThread("srp02",sendCycle,timeDifference*1,"ru").start();
+					new ExampleDataManageThread("srp03",sendCycle,timeDifference*2,"ru").start();
+					new ExampleDataManageThread("srp04",sendCycle,timeDifference*0,"ru").start();
+					new ExampleDataManageThread("srp05",sendCycle,timeDifference*1,"ru").start();
+					new ExampleDataManageThread("srp06",sendCycle,timeDifference*2,"ru").start();
+					new ExampleDataManageThread("srp07",sendCycle,timeDifference*0,"ru").start();
+					new ExampleDataManageThread("srp08",sendCycle,timeDifference*1,"ru").start();
+//					new ExampleDataManageThread("srp09",sendCycle,timeDifference*2,"ru").start();
+//					new ExampleDataManageThread("srp10",sendCycle,timeDifference*3,"ru").start();
+					
+					new ExampleDataManageThread("pcp01",sendCycle,timeDifference*0,"ru").start();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

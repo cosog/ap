@@ -46,6 +46,7 @@ import com.cosog.model.calculate.AlarmInstanceOwnItem.AlarmItem;
 import com.cosog.model.calculate.CalculateColumnInfo;
 import com.cosog.model.calculate.CalculateColumnInfo.CalculateColumn;
 import com.cosog.model.calculate.DeviceInfo;
+import com.cosog.model.calculate.DiagramFilteringData;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
 import com.cosog.model.calculate.PCPCalculateRequestData;
@@ -1370,6 +1371,7 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	public static void loadDeviceInfo(List<String> wellList,int condition,String method){//condition 0 -设备ID 1-设备名称
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1453,15 +1455,18 @@ public class MemoryDataManagerTask {
 					String dailyTotalSql="select t.id,t.deviceid,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.itemcolumn,t.itemName,t.totalvalue,t.todayvalue "
 							+ "from TBL_DAILYTOTALCALCULATE_LATEST t,tbl_device t2 "
 							+ "where t.deviceid=t2.id";
+					String diagramFilteringSql="select t.id, t.diagramfiltering from tbl_device t where 1=1 ";
 					if(StringManagerUtils.isNotNull(wells)){
 						if(condition==0){
 							sql+=" and t.id in("+wells+")";
 							auxiliaryDeviceSql+=" and t.id in("+wells+")";
 							dailyTotalSql+=" and t2.id in("+wells+")";
+							diagramFilteringSql+=" and t.id in("+wells+")";
 						}else{
 							sql+=" and t.devicename in("+wells+")";
 							auxiliaryDeviceSql+=" and t.devicename in("+wells+")";
-							dailyTotalSql+=" and t2.devicename in("+wells+")";
+							dailyTotalSql+=" and t.devicename in("+wells+")";
+							diagramFilteringSql+=" and t.devicename in("+wells+")";
 						}
 					}
 					sql+=" order by t.sortNum,t.devicename";
@@ -1471,6 +1476,19 @@ public class MemoryDataManagerTask {
 					
 					List<Object[]> auxiliaryDeviceList=OracleJdbcUtis.query(auxiliaryDeviceSql);
 					List<Object[]> dailyTotalList=OracleJdbcUtis.query(dailyTotalSql);
+					
+					List<Object[]> diagramFilteringList=OracleJdbcUtis.query(diagramFilteringSql);
+					
+					Map<Integer,DiagramFilteringData> diagramFilteringDataMap=new HashMap<>();
+					for(Object[] obj:diagramFilteringList){
+						String data=obj[1]+"";
+						type = new TypeToken<DiagramFilteringData>() {}.getType();
+						DiagramFilteringData diagramFilteringData=gson.fromJson(data, type);
+						if(diagramFilteringData==null){
+							diagramFilteringData=new DiagramFilteringData(0,0,0);
+						}
+						diagramFilteringDataMap.put(StringManagerUtils.stringToInteger(obj[0]+""), diagramFilteringData);
+					}
 					
 					List<AuxiliaryDeviceAddInfo> auxiliaryDeviceAddInfoList=new ArrayList<>();
 					for(Object[] obj:auxiliaryDeviceList){
@@ -1485,6 +1503,8 @@ public class MemoryDataManagerTask {
 					}
 					while(rs.next()){
 						DeviceInfo deviceInfo=new DeviceInfo();
+						
+						
 						
 						deviceInfo.setId(rs.getInt(1));
 						deviceInfo.setOrgId(rs.getInt(2));
@@ -1652,6 +1672,8 @@ public class MemoryDataManagerTask {
 								deviceInfo.getDailyTotalItemMap().put(dailyTotalItem.getItemColumn(), dailyTotalItem);
 							}
 						}
+						
+						deviceInfo.setDiagramFilteringData(diagramFilteringDataMap.containsKey(deviceInfo.getId())?diagramFilteringDataMap.get(deviceInfo.getId()):new DiagramFilteringData(0,0,0));
 						
 						String key=deviceInfo.getId()+"";
 						jedis.hset("DeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceInfo));//哈希(Hash)

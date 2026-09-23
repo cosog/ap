@@ -54,6 +54,7 @@ import com.cosog.model.ExportDataDictionary.DataDictionaryItem;
 import com.cosog.model.ExportPrimaryDeviceData;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
 import com.cosog.model.calculate.DeviceInfo;
+import com.cosog.model.calculate.DiagramFilteringData;
 import com.cosog.model.calculate.FSDiagramConstructionRequestData;
 import com.cosog.model.calculate.IntelligentFrequencyConversionData;
 import com.cosog.model.calculate.InterlockProtectionData;
@@ -1288,6 +1289,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public void saveInterlockProtectionData(int deviceId,String data) throws Exception {
 		String sql = "update tbl_device t set t.interlockprotectiondata='"+data+"' where t.id="+deviceId;
+		this.getBaseDao().updateOrDeleteBySql(sql);
+	}
+	
+	public void saveDiagramFilteringData(int deviceId,String data) throws Exception {
+		String sql = "update tbl_device t set t.diagramfiltering='"+data+"' where t.id="+deviceId;
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
@@ -3173,6 +3179,49 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":12,\"itemName\":\""+languageResourceMap.get("positiveXWatt")+"\",\"itemCode\":\"positiveXWatt\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":13,\"itemName\":\""+languageResourceMap.get("negativeXWatt")+"\",\"itemCode\":\"negativeXWatt\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":14,\"itemName\":\""+languageResourceMap.get("PRTFSrc")+"\",\"itemCode\":\"PRTFSrc\",\"itemValue\":\"\"}");
+					
+				}
+			}
+			result_json.append("]");
+			result_json.append("}");
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			
+		}
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getDiagramFilteringDataInfo(String deviceId,String language) {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		try{
+			String columns = "["
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",\"width\":120 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",\"width\":120 ,\"children\":[] }"
+					+ "]";
+			String deviceTableName="tbl_device";
+			String sql = "select t.diagramfiltering "
+					+ " from "+deviceTableName+" t "
+					+ " where t.id="+deviceId;
+			List<?> list = this.findCallSql(sql);
+			result_json.append("{\"success\":true,\"totalCount\":13,\"columns\":"+columns+",\"totalRoot\":[");
+			if(list.size()>0){
+				String data=list.get(0)+"";
+				type = new TypeToken<DiagramFilteringData>() {}.getType();
+				DiagramFilteringData diagramFilteringData=gson.fromJson(data, type);
+				if(diagramFilteringData!=null){
+					result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("fTimes")+"\",\"itemCode\":\"fTimes\",\"itemValue\":\""+diagramFilteringData.getFTimes()+"\"},");
+					result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("iTimes")+"\",\"itemCode\":\"iTimes\",\"itemValue\":\""+diagramFilteringData.getITimes()+"\"},");
+					result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("wattTimes")+"\",\"itemCode\":\"wattTimes\",\"itemValue\":\""+diagramFilteringData.getWattTimes()+"\"}");
+					
+				}else{
+					result_json.append("{\"id\":1,\"itemName\":\""+languageResourceMap.get("fTimes")+"\",\"itemCode\":\"fTimes\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":2,\"itemName\":\""+languageResourceMap.get("iTimes")+"\",\"itemCode\":\"iTimes\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":3,\"itemName\":\""+languageResourceMap.get("wattTimes")+"\",\"itemCode\":\"wattTimes\",\"itemValue\":\"\"}");
 					
 				}
 			}

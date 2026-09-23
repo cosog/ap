@@ -7321,7 +7321,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			surfaceChartsData.append("\"upStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getUpStrokeIMax():"")+"\",");
 			surfaceChartsData.append("\"downStrokeIMax\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getDownStrokeIMax():"")+"\",");
 			surfaceChartsData.append("\"iDegreeBalance\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
-			surfaceChartsData.append("\"deltaRadius\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?srpCalculateResponseData.getFESDiagram().getIDegreeBalance():"")+"\",");
+			surfaceChartsData.append("\"deltaRadius\":\""+(srpCalculateResponseData!=null&&srpCalculateResponseData.getFESDiagram()!=null?StringManagerUtils.dataAccuracyConversion(srpCalculateResponseData.getFESDiagram().getDeltaRadius()*100+"",2):"")+"\",");
 			
 			surfaceChartsData.append("\"positionCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getS()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getS(), ",")):"")+"\",");
 			surfaceChartsData.append("\"loadCurveData\":\""+((srpCalculateRequestData!=null && srpCalculateRequestData.getFESDiagram()!=null && srpCalculateRequestData.getFESDiagram().getF()!=null)?(StringUtils.join(srpCalculateRequestData.getFESDiagram().getF(), ",")):"")+"\",");

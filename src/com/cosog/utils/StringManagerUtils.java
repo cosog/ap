@@ -5329,4 +5329,57 @@ public class StringManagerUtils {
         
         return false;
     }
+    
+    /**
+     * 中值滤波（代码逻辑：前后两点均值，首尾环形）
+     *
+     * @param data   曲线数据
+     * @param FTimes 滤波次数
+     * @return 滤波后的新 List
+     */
+    public static List < Float > dataMedianFilter(List < Float > data, int FTimes, int scale) {
+    	if (data == null || data.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 复制一份，避免修改传入的 List
+        List<Float> result = new ArrayList<>(data);
+        int cnt = result.size();
+
+        // 长度不足 4，无需滤波，直接返回
+        if (cnt <= 3) {
+            return result;
+        }
+
+        for (int i = 0; i < FTimes; i++) {
+            for (int k = 0; k < cnt; k++) {
+                float front;
+                float back;
+
+                if (k == 0) {
+                    front = result.get(cnt - 1);
+                    back = result.get(k + 1);
+                } else if (k == cnt - 1) {
+                    front = result.get(k - 1);
+                    back = result.get(0);
+                } else {
+                    front = result.get(k - 1);
+                    back = result.get(k + 1);
+                }
+
+                result.set(k, avg(front, back, scale));
+            }
+        }
+
+        return result;
+    }
+    
+    /**
+     * 求两个数的平均值，并保留 scale 位小数（四舍五入）
+     */
+    private static float avg(float a, float b, int scale) {
+        BigDecimal sum = BigDecimal.valueOf(a).add(BigDecimal.valueOf(b));
+        BigDecimal mean = sum.divide(BigDecimal.valueOf(2), scale, RoundingMode.HALF_UP);
+        return mean.floatValue();
+    }
 }

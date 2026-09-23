@@ -896,7 +896,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                     <td class="input-cell"><input id="om_pd_IntelligentFrequencyConversion" class="mini-checkbox" /></td>
                                     <td class="label" id="omLblInterlockProtection"></td>
                                     <td class="input-cell"><input id="om_pd_InterlockProtection" class="mini-checkbox" /></td>
-                                    <td></td><td></td>
+                                    <td class="label" id="omLblDiagramFiltering"></td>
+    								<td class="input-cell"><input id="om_pd_DiagramFiltering" class="mini-checkbox" /></td>
                                 </tr>
                             </table>
                         </fieldset>

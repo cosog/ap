@@ -18,6 +18,7 @@ var deviceSystemParameterHandsontableHelper = null;
 
 var deviceIntelligentFrequencyConversionHandsontableHelper = null;
 var deviceInterlockProtectionHandsontableHelper = null;
+var deviceDiagramFilteringHandsontableHelper = null;
 
 // ---------- 全局状态 ----------
 var _dmTabInfo = null;
@@ -121,7 +122,7 @@ function initDeviceManagerI18n() {
     var additionalTabs = mini.get('deviceAdditionalTabs');
     if (additionalTabs) {
         var tabs = additionalTabs.getTabs();
-        if (tabs && tabs.length >= 8) {
+        if (tabs && tabs.length >= 9) {
             additionalTabs.updateTab(tabs[0], { title: R.additionalInformation });
             additionalTabs.updateTab(tabs[1], { title: R.auxiliaryDevice });
             additionalTabs.updateTab(tabs[2], { title: R.calculateDataConfig });
@@ -130,6 +131,7 @@ function initDeviceManagerI18n() {
             additionalTabs.updateTab(tabs[5], { title: R.systemParameterConfiguration });
             additionalTabs.updateTab(tabs[6], { title: R.intelligentFrequencyConversion });
             additionalTabs.updateTab(tabs[7], { title: R.interlockProtection });
+            additionalTabs.updateTab(tabs[8], { title: R.diagramFiltering }); 
         }
     }
 
@@ -1598,6 +1600,8 @@ function loadAdditionalInfoByTabName(tabName) {
 	     CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId, deviceName, appScen, true);
 	 } else if (tabName === 'interlockProtection') {
 	     CreateAndLoadDeviceInterlockProtectionTable(deviceId, deviceName, appScen, true);
+	 } else if (tabName === 'diagramFiltering') {
+		    CreateAndLoadDeviceDiagramFilteringTable(deviceId, deviceName, appScen, true);
 	 }
 }
 
@@ -1948,6 +1952,7 @@ function updateDeviceAdditionalInfoTabs(deviceTabInstanceInfo) {
     var showSystemParameterConfig = false;
     var showIntelligentFrequencyConversion = false;
     var showInterlockProtection = false;
+    var showDiagramFiltering = false; 
 
     if (cfg != undefined && cfg.PrimaryDevice != undefined) {
         var pd = cfg.PrimaryDevice;
@@ -1959,13 +1964,16 @@ function updateDeviceAdditionalInfoTabs(deviceTabInstanceInfo) {
         showSystemParameterConfig = (pd.SystemParameterConfig != undefined) ? pd.SystemParameterConfig : false;
         showIntelligentFrequencyConversion = (pd.IntelligentFrequencyConversion != undefined) ? pd.IntelligentFrequencyConversion : false;
         showInterlockProtection = (pd.InterlockProtection != undefined) ? pd.InterlockProtection : false;
+        showDiagramFiltering = (pd.DiagramFiltering != undefined) ? pd.DiagramFiltering : false; 
     }
 
     if (calculateType == 0) {
         showCalculateDataConfig = false;
         showFSDiagramConstruction = false;
+        showDiagramFiltering = false;
     } else if (calculateType == 2) {
         showFSDiagramConstruction = false;
+        showDiagramFiltering = false;
     }
 
     // ---------- 2) 是否要显示整个右侧 ----------
@@ -1976,7 +1984,8 @@ function updateDeviceAdditionalInfoTabs(deviceTabInstanceInfo) {
         || showFSDiagramConstruction
         || showSystemParameterConfig
         || showIntelligentFrequencyConversion
-        || showInterlockProtection;
+        || showInterlockProtection
+        || showDiagramFiltering;
 
     if (!anyVisible) {
         splitter.hidePane(2);
@@ -1994,7 +2003,8 @@ function updateDeviceAdditionalInfoTabs(deviceTabInstanceInfo) {
         'fsDiagramConstruction': showFSDiagramConstruction,
         'systemParameter': showSystemParameterConfig,
         'intelligentFrequencyConversion': showIntelligentFrequencyConversion,
-        'interlockProtection': showInterlockProtection
+        'interlockProtection': showInterlockProtection,
+        'diagramFiltering': showDiagramFiltering
     };
 
     additionalTabs.updateTab(tabs[0], { visible: showAdditionalInformation });
@@ -2005,6 +2015,7 @@ function updateDeviceAdditionalInfoTabs(deviceTabInstanceInfo) {
     additionalTabs.updateTab(tabs[5], { visible: showSystemParameterConfig });
     additionalTabs.updateTab(tabs[6], { visible: showIntelligentFrequencyConversion });
     additionalTabs.updateTab(tabs[7], { visible: showInterlockProtection });
+    additionalTabs.updateTab(tabs[8], { visible: showDiagramFiltering }); 
 
     // ---------- 4) 决定激活的标签 ----------
     var currentActive = additionalTabs.getActiveTab();
@@ -4746,6 +4757,149 @@ var DeviceInterlockProtectionHandsontableHelper = {
  }
 };
 
+function CreateAndLoadDeviceDiagramFilteringTable(deviceId, deviceName, applicationScenarios, isNew) {
+    if (deviceDiagramFilteringHandsontableHelper != null) {
+        if (deviceDiagramFilteringHandsontableHelper.hot != undefined) {
+            deviceDiagramFilteringHandsontableHelper.hot.destroy();
+        }
+        deviceDiagramFilteringHandsontableHelper = null;
+    }
+
+    var maskEl = 'diagramFilteringPanel';
+    mini.mask({
+        el: maskEl,
+        cls: 'mini-mask-loading',
+        html: _loginUserLanguageResource.loadingData
+    });
+
+    $.ajax({
+        method: 'POST',
+        url: context + '/wellInformationManagerController/getDiagramFilteringDataInfo',
+        data: { deviceId: deviceId },
+        dataType: 'json',
+        success: function (result) {
+            mini.unmask(maskEl);
+            var R = _loginUserLanguageResource;
+
+            if (deviceDiagramFilteringHandsontableHelper == null || deviceDiagramFilteringHandsontableHelper.hot == undefined) {
+                deviceDiagramFilteringHandsontableHelper = DeviceDiagramFilteringHandsontableHelper.createNew("DeviceDiagramFilteringInfoTableDiv_id");
+                var colHeaders = [R.idx, R.variable, R.value, '', R.downlinkStatus, R.uplinkStatus];
+                var columns = [
+                    { data: 'id' },
+                    { data: 'itemName' },
+                    {
+                        data: 'itemValue', type: 'text', allowInvalid: true,
+                        validator: function (val, callback) {
+                            return handsontableDataCheck_Num_Nullable(val, callback, this.row, this.col, deviceDiagramFilteringHandsontableHelper);
+                        }
+                    },
+                    { data: 'itemCode' },
+                    { data: 'downlinkStatus' },
+                    { data: 'uplinkStatus' }
+                ];
+                deviceDiagramFilteringHandsontableHelper.colHeaders = colHeaders;
+                deviceDiagramFilteringHandsontableHelper.columns = columns;
+
+                if (result.totalRoot.length == 0) {
+                    var emptyArr = [];
+                    for (var i = 0; i < 40; i++) emptyArr.push({});
+                    deviceDiagramFilteringHandsontableHelper.createTable(emptyArr);
+                } else {
+                    deviceDiagramFilteringHandsontableHelper.createTable(result.totalRoot);
+                }
+            } else {
+                if (result.totalRoot.length == 0) {
+                    var emptyArr = [];
+                    for (var i = 0; i < 40; i++) emptyArr.push({});
+                    deviceDiagramFilteringHandsontableHelper.hot.loadData(emptyArr);
+                } else {
+                    deviceDiagramFilteringHandsontableHelper.hot.loadData(result.totalRoot);
+                }
+            }
+        },
+        error: function () {
+            mini.unmask(maskEl);
+            mini.alert(_loginUserLanguageResource.ajaxError, _loginUserLanguageResource.error);
+        }
+    });
+}
+
+var DeviceDiagramFilteringHandsontableHelper = {
+    createNew: function (divid) {
+        var helper = {};
+        helper.hot = '';
+        helper.divid = divid;
+        helper.colHeaders = [];
+        helper.columns = [];
+
+        helper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(245, 245, 245)';
+            td.style.whiteSpace = 'nowrap';
+            td.style.overflow = 'hidden';
+            td.style.textOverflow = 'ellipsis';
+        };
+
+        helper.createTable = function (data) {
+            $('#' + helper.divid).empty();
+            var hotElement = document.querySelector('#' + helper.divid);
+            helper.hot = new Handsontable(hotElement, {
+                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+                theme: 'ht-theme-classic',
+                data: data,
+                width: '100%',      // ★ 用百分比
+                height: 'auto',
+                colWidths: [50, 100, 100],
+                hiddenColumns: { columns: [0, 3, 4, 5], indicators: false, copyPasteEnabled: false },
+                hiddenRows: { rows: [], indicators: false, copyPasteEnabled: false },
+                columns: helper.columns,
+                stretchH: 'all',
+                autoWrapRow: true,
+                rowHeaders: false,
+                colHeaders: helper.colHeaders,
+                columnSorting: true,
+                sortIndicator: true,
+                manualColumnResize: true,
+                manualRowResize: true,
+                filters: true,
+                renderAllRows: true,
+                search: true,
+                contextMenu: {
+                    items: {
+                        "copy": { name: _loginUserLanguageResource.contextMenu_copy },
+                        "cut":  { name: _loginUserLanguageResource.contextMenu_cut }
+                    }
+                },
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    var visualColIndex = this.instance.toVisualColumn(col);
+                    var editFlag = parseInt(_dmModuleRight.editFlag);
+
+                    if (editFlag == 1) {
+                        if (visualColIndex != 2) {
+                            cellProperties.editor = false;
+                            cellProperties.renderer = helper.addCellStyle;
+                        }
+                    } else {
+                        cellProperties.editor = false;
+                        if (visualColIndex != 2) {
+                            cellProperties.renderer = helper.addCellStyle;
+                        }
+                    }
+                    return cellProperties;
+                },
+                afterOnCellMouseOver: function (event, coords, TD) {
+                    if (coords.col >= 0 && coords.row >= 0 && helper.hot) {
+                        var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
+                        if (isNotVal(rawValue)) TD.title = String(rawValue);
+                    }
+                }
+            });
+        };
+        return helper;
+    }
+};
+
 //================================================================
 //获取当前激活的附加信息 Tab 类型
 //================================================================
@@ -4763,6 +4917,7 @@ function getCurrentAdditionalInfoType() {
 	if (name === 'intelligentFrequencyConversion') return 5;
 	if (name === 'systemParameter') return 7;
 	if (name === 'interlockProtection') return 8;
+	if (name === 'diagramFiltering') return 9;
 
 	if (name === 'calculateData') {
 	   var calculateDataTabs = mini.get('deviceCalculateDataTabs');
@@ -5237,6 +5392,32 @@ else if (additionalInformationType === 8) { // 联锁保护
        }
    }
    deviceAdditionalInformationData.data = JSON.stringify(interlockProtectionData);
+}else if (additionalInformationType === 9) { // ★ 功图滤波
+    var DiagramFilteringData = {};
+    if (deviceDiagramFilteringHandsontableHelper != null && deviceDiagramFilteringHandsontableHelper.hot != undefined) {
+        var rowCount = deviceDiagramFilteringHandsontableHelper.hot.countRows();
+        for (var i = 0; i < rowCount; i++) {
+            var itemCode = deviceDiagramFilteringHandsontableHelper.hot.getDataAtRowProp(i, 'itemCode');
+            var itemValue = deviceDiagramFilteringHandsontableHelper.hot.getDataAtRowProp(i, 'itemValue');
+            if (itemCode == null) continue;
+            var upperCode = itemCode.toUpperCase();
+
+            if (upperCode == "FTIMES") {
+                if (isNumber(parseInt(itemValue))) {
+                    DiagramFilteringData.FTimes = parseInt(itemValue);
+                }
+            } else if (upperCode == "ITIMES") {
+                if (isNumber(parseInt(itemValue))) {
+                    DiagramFilteringData.ITimes = parseInt(itemValue);
+                }
+            } else if (upperCode == "WATTTIMES") {
+                if (isNumber(parseInt(itemValue))) {
+                    DiagramFilteringData.WattTimes = parseInt(itemValue);
+                }
+            }
+        }
+    }
+    deviceAdditionalInformationData.data = JSON.stringify(DiagramFilteringData);
 }
 
 return deviceAdditionalInformationData;

@@ -55,7 +55,7 @@ String context = path;
     <!-- 工具条 -->
     <div class="mini-toolbar">
         <span style="flex:1;"></span>
-        <button id="btnSave" class="mini-button" iconCls="save" onclick="onSave()">Save</button>
+        <button id="btnSave" class="mini-button"  plain="true" iconCls="save" onclick="onSave()">Save</button>
     </div>
     <!-- 外层滚动容器 -->
     <div class="grid-wrapper">

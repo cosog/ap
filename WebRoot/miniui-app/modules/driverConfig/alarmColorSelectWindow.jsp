@@ -73,7 +73,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 <div class="main-container">
     <!-- 工具栏 -->
     <div class="mini-toolbar">
-        <button id="btnSave" class="mini-button" iconCls="save" onclick="onSave()"></button>
+        <button id="btnSave" class="mini-button"  plain="true" iconCls="save" onclick="onSave()"></button>
     </div>
 
     <!-- 颜色配置主体 -->

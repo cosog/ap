@@ -38,7 +38,7 @@ String context = path;
                     <span id="batchAddDeviceWinOrgLabel_Id"></span>
                 </td>
                 <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
-                    <button id="btnBatchSave" class="mini-button" iconCls="save" onclick="onBatchSave()"></button>
+                    <button id="btnBatchSave" class="mini-button"  plain="true" iconCls="save" onclick="onBatchSave()"></button>
                 </td>
             </tr>
         </table>

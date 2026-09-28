@@ -48,7 +48,7 @@ String context = path;
 <div class="main-container">
     <!-- 工具栏 -->
     <div class="mini-toolbar">
-        <button id="exportBtn" class="mini-button" iconCls="export" onclick="onExport()"></button>
+        <button id="exportBtn" class="mini-button"  plain="true" iconCls="export" onclick="onExport()"></button>
     </div>
     <!-- 树区域 -->
     <div class="tree-wrapper">

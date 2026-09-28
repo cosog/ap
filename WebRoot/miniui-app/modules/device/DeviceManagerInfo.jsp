@@ -385,7 +385,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         
         setTimeout(function () {
         	initDeviceManagerPage();
-        }, 100);
+        }, 10);
         
     });
 </script>

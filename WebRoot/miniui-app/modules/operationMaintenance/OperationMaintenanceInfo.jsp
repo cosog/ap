@@ -595,49 +595,49 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                 <td class="label" id="omLblProjectLogo"></td>
                                 <td class="input-cell">
                                     <input id="om_oem_projectLogo" class="mini-textbox" style="width:70%;" />
-                                    <button class="mini-button" iconCls="upload" onclick="onOmUpload('logo')"></button>
+                                    <button class="mini-button"  plain="true" iconCls="upload" onclick="onOmUpload('logo')"></button>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label" id="omLblProjectFavicon"></td>
                                 <td class="input-cell">
                                     <input id="om_oem_projectFavicon" class="mini-textbox" style="width:70%;" />
-                                    <button class="mini-button" iconCls="upload" onclick="onOmUpload('favicon')"></button>
+                                    <button class="mini-button"  plain="true" iconCls="upload" onclick="onOmUpload('favicon')"></button>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label" id="omLblLoginBackgroundImage"></td>
                                 <td class="input-cell">
                                     <input id="om_oem_loginBackgroundImage" class="mini-textbox" style="width:70%;" />
-                                    <button class="mini-button" iconCls="upload" onclick="onOmUpload('loginBg')"></button>
+                                    <button class="mini-button"  plain="true" iconCls="upload" onclick="onOmUpload('loginBg')"></button>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label" id="omLblHelpButtonIcon"></td>
                                 <td class="input-cell">
                                     <input id="om_oem_helpButtonIcon" class="mini-textbox" style="width:70%;" />
-                                    <button class="mini-button" iconCls="upload" onclick="onOmUpload('help')"></button>
+                                    <button class="mini-button"  plain="true" iconCls="upload" onclick="onOmUpload('help')"></button>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label" id="omLblExitButtonIcon"></td>
                                 <td class="input-cell">
                                     <input id="om_oem_exitButtonIcon" class="mini-textbox" style="width:70%;" />
-                                    <button class="mini-button" iconCls="upload" onclick="onOmUpload('exit')"></button>
+                                    <button class="mini-button"  plain="true" iconCls="upload" onclick="onOmUpload('exit')"></button>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label" id="omLblSwitchButtonIcon"></td>
                                 <td class="input-cell">
                                     <input id="om_oem_switchButtonIcon" class="mini-textbox" style="width:70%;" />
-                                    <button class="mini-button" iconCls="upload" onclick="onOmUpload('switch')"></button>
+                                    <button class="mini-button"  plain="true" iconCls="upload" onclick="onOmUpload('switch')"></button>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label" id="omLblSwitchDisabledButtonIcon"></td>
                                 <td class="input-cell">
                                     <input id="om_oem_switchDisabledButtonIcon" class="mini-textbox" style="width:70%;" />
-                                    <button class="mini-button" iconCls="upload" onclick="onOmUpload('switchDisabled')"></button>
+                                    <button class="mini-button"  plain="true" iconCls="upload" onclick="onOmUpload('switchDisabled')"></button>
                                 </td>
                             </tr>
                         </table>
@@ -1013,7 +1013,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         mini.parse();
         setTimeout(function () {
             initOperationMaintenancePage();
-        }, 100);
+        }, 10);
     });
 </script>
 </body>

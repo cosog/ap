@@ -74,7 +74,7 @@ String context = path;
                      bodyStyle="padding:0;overflow:hidden;">
                     <div property="toolbar" style="padding:4px 8px;background:#fafafa;border-bottom:1px solid #e8e8e8;">
                         <div style="text-align:right;">
-                            <button id="btnChangeOrg" class="mini-button" iconCls="move" onclick="onChangeOrg()"></button>
+                            <button id="btnChangeOrg" class="mini-button"  plain="true" iconCls="move" onclick="onChangeOrg()"></button>
                         </div>
                     </div>
                     <div id="orgTree" class="mini-tree" style="width:100%;height:100%;"
@@ -99,7 +99,7 @@ String context = path;
                      bodyStyle="padding:0;overflow:hidden;">
                     <div property="toolbar" style="padding:4px 8px;background:#fafafa;border-bottom:1px solid #e8e8e8;">
                         <div style="text-align:right;">
-                            <button id="btnChangeType" class="mini-button" iconCls="move" onclick="onChangeType()"></button>
+                            <button id="btnChangeType" class="mini-button"  plain="true" iconCls="move" onclick="onChangeType()"></button>
                         </div>
                     </div>
                     <div id="deviceTypeTree" class="mini-tree" style="width:100%;height:100%;"

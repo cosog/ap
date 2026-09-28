@@ -33,7 +33,7 @@ String context = path;
             <iframe name="uploadFrame" style="display:none;"></iframe>
         </form>
         <span style="flex:1;"></span>
-        <button id="saveAllBtn" class="mini-button" iconCls="save" onclick="onSaveAll()"></button>
+        <button id="saveAllBtn" class="mini-button"  plain="true" iconCls="save" onclick="onSaveAll()"></button>
     </div>
 
     <!-- 主体：左右 Splitter -->

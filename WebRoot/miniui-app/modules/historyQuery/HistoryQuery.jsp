@@ -281,10 +281,10 @@ String moduleId = request.getParameter("moduleId");
                                 <div id="deviceGridPanel" size="50%" showCollapseButton="false">
                                     <div class="device-grid-wrapper" style="height:100%; display:flex; flex-direction:column;">
                                         <div class="mini-toolbar" style="border:0;border-bottom:1px solid #e8e8e8;padding:4px 8px;display:flex;align-items:center;gap:6px;flex-shrink:0;">
-                                            <button id="btnRefresh" class="mini-button" iconCls="note-refresh" onclick="refreshDeviceList()">刷新</button>
+                                            <button id="btnRefresh" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshDeviceList()">刷新</button>
                                             <input id="deviceCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --" allowInput="true" url="<%=path%>/wellInformationManagerController/loadWellComboxList" onbeforeload="onDeviceComboBeforeLoad" onshowpopup="onDeviceComboShowPopup" onload="onDeviceComboLoad" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onDeviceComboChange" />
                                             <span style="flex:1;"></span>
-                                            <button id="exportHistoryQueryDeviceListBtn" class="mini-button" iconCls="export" onclick="exportDeviceList()">导出</button>
+                                            <button id="exportHistoryQueryDeviceListBtn" class="mini-button"  plain="true" iconCls="export" onclick="exportDeviceList()">导出</button>
                                             <!-- 隐藏域 -->
                                             <input id="HistoryQueryInfoDeviceListSelectRow_Id" type="hidden" value="-1" />
                                             <input id="HistoryQueryStatSelectFESdiagramResult_Id" type="hidden" value="" />
@@ -1379,8 +1379,8 @@ String moduleId = request.getParameter("moduleId");
                 '<input id="startDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
                 '<span style="margin-left:8px; font-size:12px; color:#333;">' + _loginUserLanguageResource.timeTo + '：</span>' +
                 '<input id="endDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd HH:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
-                '<button class="mini-button" iconCls="search" onclick="doQuery()">' + (_loginUserLanguageResource.search) + '</button>' +
-                '<button class="mini-button" iconCls="export" onclick="exportData()">' + (_loginUserLanguageResource.exportData) + '</button>' +
+                '<button class="mini-button"  plain="true" iconCls="search" onclick="doQuery()">' + (_loginUserLanguageResource.search) + '</button>' +
+                '<button class="mini-button"  plain="true" iconCls="export" onclick="exportData()">' + (_loginUserLanguageResource.exportData) + '</button>' +
                 '<span style="flex:1;"></span>' +
                 '<span id="vacuateCountLabel" style="font-size:12px; color:#999; display:none;">' + _loginUserLanguageResource.vacuateCount + '：<span id="vacuateCountSpan">0</span></span>' +
                 '<input id="HistoryQueryVacuateCount_Id" type="hidden" value="" />' +
@@ -1428,8 +1428,8 @@ String moduleId = request.getParameter("moduleId");
                 '<input id="tiledStartDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
                 '<span style="margin-left:8px; font-size:12px; color:#333;">' + _loginUserLanguageResource.timeTo + '：</span>' +
                 '<input id="tiledEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd HH:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
-                '<button class="mini-button" iconCls="search" onclick="doTiledWorkTypeComboLoad()">' + (_loginUserLanguageResource.search) + '</button>' +
-                '<button class="mini-button" iconCls="export" onclick="exportData()">' + (_loginUserLanguageResource.exportData) + '</button>' +
+                '<button class="mini-button"  plain="true" iconCls="search" onclick="doTiledWorkTypeComboLoad()">' + (_loginUserLanguageResource.search) + '</button>' +
+                '<button class="mini-button"  plain="true" iconCls="export" onclick="exportData()">' + (_loginUserLanguageResource.exportData) + '</button>' +
                 '<span style="flex:1;"></span>' +
                 '<span id="tiledTotalCountLabel" style="font-size:12px; color:#999; display:none;">' + _loginUserLanguageResource.totalCount + '：<span id="tiledTotalCountSpan">0</span></span>' +
                 '</div>';
@@ -1490,8 +1490,8 @@ String moduleId = request.getParameter("moduleId");
                 '<input id="overlayStartDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
                 '<span style="margin-left:8px; font-size:12px; color:#333;">' + _loginUserLanguageResource.timeTo + '：</span>' +
                 '<input id="overlayEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd HH:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
-                '<button class="mini-button" iconCls="search" onclick="overlayWorkTypeComboLoad()">' + (_loginUserLanguageResource.search) + '</button>' +
-                '<button class="mini-button" iconCls="export" onclick="exportData()">' + (_loginUserLanguageResource.exportData) + '</button>' +
+                '<button class="mini-button"  plain="true" iconCls="search" onclick="overlayWorkTypeComboLoad()">' + (_loginUserLanguageResource.search) + '</button>' +
+                '<button class="mini-button"  plain="true" iconCls="export" onclick="exportData()">' + (_loginUserLanguageResource.exportData) + '</button>' +
                 '<span style="flex:1;"></span>' +
                 '<span id="overlayVacuateCountLabel" style="font-size:12px; color:#999; display:none;">' + _loginUserLanguageResource.vacuateCount + '：<span id="overlayVacuateCountSpan">0</span></span>' +
                 '<span id="overlayTotalCountLabel" style="font-size:12px; color:#999; display:none;">' + _loginUserLanguageResource.totalCount + '：<span id="overlayTotalCountSpan">0</span></span>' +

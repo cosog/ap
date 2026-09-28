@@ -64,8 +64,8 @@ String context = path;
             </div>
         </div>
         <div class="btn-row">
-            <button id="btnSave" class="mini-button" iconCls="save" onclick="onSave()">保存</button>
-            <button id="btnCancel" class="mini-button" iconCls="cancel" onclick="onCancel()">取消</button>
+            <button id="btnSave" class="mini-button"  plain="true" iconCls="save" onclick="onSave()">保存</button>
+            <button id="btnCancel" class="mini-button"  plain="true" iconCls="cancel" onclick="onCancel()">取消</button>
         </div>
     </div>
 

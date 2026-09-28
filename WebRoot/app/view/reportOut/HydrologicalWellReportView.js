@@ -794,7 +794,18 @@ function CreateHydrologicalWellReportTable(){
 //				            "colspan": 1
 //				        });
 //					}
-					hydrologicalWellReportHelper = HydrologicalWellReportHelper.createNew(divId,containerId,result.template,result.data,result.columns);
+					var columns=result.columns;
+					if(columns.length==0){
+						columns=[
+					        "SaveTime",
+					        "SaveTime",
+					        "",
+					        "",
+					        "Remark",
+					        "recordId"
+					    ];
+					}
+					hydrologicalWellReportHelper = HydrologicalWellReportHelper.createNew(divId,containerId,result.template,result.data,columns);
 					hydrologicalWellReportHelper.createTable();
 				}
 			}else{
@@ -1015,7 +1026,7 @@ var HydrologicalWellReportHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    var colConfig = hydrologicalWellReportHelper.columns[col];
-	                    var colType = colConfig.type || 'text';
+	                    var colType = (colConfig?colConfig.type:'') || 'text';
 	                    cellProperties.renderer = hydrologicalWellReportHelper.addStyle;
 	                    cellProperties.editor = false;
 	                    if(hydrologicalWellReportHelper.templateData.editable!=null && hydrologicalWellReportHelper.templateData.editable.length>0){

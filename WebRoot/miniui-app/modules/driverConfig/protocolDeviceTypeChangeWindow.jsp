@@ -71,7 +71,7 @@ String context = path;
     </div>
     <!-- 底部工具栏 -->
     <div class="footer-toolbar">
-        <button id="changeOwnerBtn" class="mini-button" iconCls="move" onclick="onChangeOwner()"></button>
+        <button id="changeOwnerBtn" class="mini-button"  plain="true" iconCls="move" onclick="onChangeOwner()"></button>
     </div>
 </div>
 

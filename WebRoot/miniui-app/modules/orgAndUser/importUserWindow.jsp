@@ -40,7 +40,7 @@ String context = path;
         </form>
         <span id="infoLabel" style="color:#2d6a9f;font-size:12px;"></span>
         <span style="flex:1;"></span>
-        <button id="saveAllBtn" class="mini-button" iconCls="save" onclick="onSaveAll()"></button>
+        <button id="saveAllBtn" class="mini-button"  plain="true" iconCls="save" onclick="onSaveAll()"></button>
     </div>
 
     <!-- 主体：预导入用户列表 -->

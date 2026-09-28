@@ -70,7 +70,7 @@ String context = path;
         	</div>
     	</div>
     	<span style="flex:1;"></span>
-    	<button id="exportBtn" class="mini-button" iconCls="export" onclick="onExport()"></button>
+    	<button id="exportBtn" class="mini-button"  plain="true" iconCls="export" onclick="onExport()"></button>
 	</div>
     <!-- 树区域 -->
     <div class="tree-wrapper">

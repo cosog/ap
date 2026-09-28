@@ -175,9 +175,9 @@ String context = path;
 
     <!-- ==================== 底部按钮区 ==================== -->
     <div class="dict-add-footer">
-        <button id="addParamBtn"  class="mini-button" iconCls="add"    onclick="onAddParam()"></button>
-        <button id="saveDictBtn"  class="mini-button" iconCls="save"   onclick="onSaveDict()"></button>
-        <button id="cancelDictBtn" class="mini-button" iconCls="cancel" onclick="onCancel()"></button>
+        <button id="addParamBtn"  class="mini-button" iconCls="add"    onclick="onAddParam()" plain="true"></button>
+        <button id="saveDictBtn"  class="mini-button" iconCls="save"   onclick="onSaveDict()" plain="true"></button>
+        <button id="cancelDictBtn" class="mini-button" iconCls="cancel" onclick="onCancel()" plain="true"></button>
     </div>
 </div>
 
@@ -297,8 +297,8 @@ String context = path;
         mini.open({
             title: R.addDataItem,
             url: context + '/miniui-app/modules/dataDictionary/dataDictionaryItemAddWindow.jsp',
-            width: 620,
-            height: 480,
+            width: '60%',
+            height: '80%',
             modal: true,
             allowResize: true,
             onload: function () {

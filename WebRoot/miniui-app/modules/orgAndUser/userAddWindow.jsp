@@ -83,8 +83,8 @@ String context = path;
                 </tr>
             </table>
             <div style="text-align:center;padding-top:16px;">
-                <a class="mini-button" onclick="onSave()" style="width:80px;" id="btnSave"></a>
-                <a class="mini-button" onclick="onCancel()" style="width:80px;margin-left:10px;" id="btnCancel"></a>
+                <a class="mini-button"  plain="true" iconCls="save" onclick="onSave()" style="width:80px;" id="btnSave"></a>
+                <a class="mini-button"  plain="true" iconCls="cancel" onclick="onCancel()" style="width:80px;margin-left:10px;" id="btnCancel"></a>
             </div>
         </form>
     </div>
@@ -119,9 +119,10 @@ String context = path;
             document.getElementById('lblReceiveSMS').textContent     = R.receiveAlarmSMS;
             document.getElementById('lblReceiveMail').textContent    = R.receiveAlarmMail;
             document.getElementById('lblUserEnable').textContent     = R.status;
-            document.getElementById('btnSave').textContent           = R.save;
-            document.getElementById('btnCancel').textContent         = R.cancel;
             document.title = R.addUser;
+            
+            mini.get('btnSave').setText(R.save);
+            mini.get('btnCancel').setText(R.cancel);
 
             var yesNo = [{ id: 1, text: R.yes }, { id: 0, text: R.no }];
             mini.get('userQuickLogin').setData(yesNo);

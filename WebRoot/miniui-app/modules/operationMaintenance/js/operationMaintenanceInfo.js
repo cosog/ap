@@ -2827,8 +2827,8 @@ function onOmDeviceTagAdd() {
     mini.open({
         title: _loginUserLanguageResource.addDeviceTagInstance || _loginUserLanguageResource.deviceTag,
         url: context + '/miniui-app/modules/operationMaintenance/deviceTabManagerAddWindow.jsp',
-        width: 480,
-        height: 320,
+        width: 400,
+        height: 200,
         modal: true,
         allowResize: true,
         onload: function () {

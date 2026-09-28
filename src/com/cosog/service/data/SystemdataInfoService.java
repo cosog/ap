@@ -258,7 +258,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 					String add_paramobj = "" + k_paramt[k];
 					DataitemsInfo dinfo = new DataitemsInfo();
 					String[] param = add_paramobj.split("\\&");
-					if(param.length>0){
+					if(param.length>=7){
 						String name_zh_CN=param[0];
 						String name_en=param[1];
 						String name_ru=param[2];
@@ -304,8 +304,9 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 //							dinfo.setName_zh_CN(dinfo.getName_ru());
 //							dinfo.setName_en(dinfo.getName_ru());
 //						}
+
+						dataitemsInfoService.saveDataitemsInfo(dinfo);
 					}
-					dataitemsInfoService.saveDataitemsInfo(dinfo);
 				}
 			}
 			jsonaddstr = "{\"success\":true,\"msg\":true}";

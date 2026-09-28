@@ -199,7 +199,7 @@ String moduleId = request.getParameter("moduleId");
                     <div class="left-panel" style="height:100%; background:#f0f2f5; padding:4px; display:flex; flex-direction:column; overflow:hidden;">
                         <div class="device-overview-area" style="height:100%;">
                             <div class="mini-toolbar" style="border:0;border-bottom:1px solid #e8e8e8;padding:4px 8px;display:flex;align-items:center;gap:6px;flex-shrink:0;">
-                                <button id="refreshDeviceBtn" class="mini-button" iconCls="note-refresh" onclick="refreshDeviceBtnClick()">刷新</button>
+                                <button id="refreshDeviceBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshDeviceBtnClick()">刷新</button>
                                 <span class="separator"></span>
                                 <input id="deviceListCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --"  url="<%=path%>/wellInformationManagerController/loadWellComboxList" onbeforeload="onDeviceComboBeforeLoad" onshowpopup="onDeviceComboShowPopup" onload="onDeviceComboLoad" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onDeviceCombChange" />
                             </div>
@@ -233,9 +233,9 @@ String moduleId = request.getParameter("moduleId");
                                                         <span style="margin-left:8px;font-size:12px;color:#333;" id="acqRealtimeToLabel">至：</span>
                                                         <input id="acqRealtimeEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" enabled="false" />
                                                         <span class="separator"></span>
-                                                        <button id="acqRealtimeQueryBtn" class="mini-button" iconCls="search" onclick="onAcqRealtimeQuery()">查询</button>
+                                                        <button id="acqRealtimeQueryBtn" class="mini-button"  plain="true" iconCls="search" onclick="onAcqRealtimeQuery()">查询</button>
                                                         <span style="flex:1;"></span>
-                                                        <button id="acqRealtimeDeleteBtn" class="mini-button" iconCls="delete" onclick="deleteRealtimeData()">删除</button>
+                                                        <button id="acqRealtimeDeleteBtn" class="mini-button"  plain="true" iconCls="delete" onclick="deleteRealtimeData()">删除</button>
                                                     </div>
                                                     <div id="realtimeAcqGrid" class="mini-datagrid"
                                                     	style="width:100%; height:100%;"
@@ -257,9 +257,9 @@ String moduleId = request.getParameter("moduleId");
                                                         <span style="margin-left:8px;font-size:12px;color:#333;" id="acqHistoryToLabel">至：</span>
                                                         <input id="acqHistoryEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                                                         <span class="separator"></span>
-                                                        <button id="acqHistoryQueryBtn" class="mini-button" iconCls="search" onclick="onAcqHistoryQuery()">查询</button>
+                                                        <button id="acqHistoryQueryBtn" class="mini-button"  plain="true" iconCls="search" onclick="onAcqHistoryQuery()">查询</button>
                                                         <span style="flex:1;"></span>
-                                                        <button id="acqHistoryDeleteBtn" class="mini-button" iconCls="delete" onclick="deleteHistoryData()">删除</button>
+                                                        <button id="acqHistoryDeleteBtn" class="mini-button"  plain="true" iconCls="delete" onclick="deleteHistoryData()">删除</button>
                                                     </div>
                                                     <div id="historyAcqGrid" class="mini-datagrid"
                                                          style="width:100%; height:100%;"
@@ -311,14 +311,14 @@ String moduleId = request.getParameter("moduleId");
    	 														onload="onSRPResultComboLoad"
    	 														onshowpopup="onSRPResultComboShowPopup" />
                                                         <span class="separator"></span>
-                                                        <button id="srpSingleQueryBtn" class="mini-button" iconCls="search" onclick="loadSRPSingleData()">查询</button>
+                                                        <button id="srpSingleQueryBtn" class="mini-button"  plain="true" iconCls="search" onclick="loadSRPSingleData()">查询</button>
                                                     </div>
                                                     <div class="mini-toolbar">
                                                         <span style="flex:1;"></span>
-                                                        <button id="srpSingleEditBtn" class="mini-button" iconCls="save" onclick="saveSRPSingleData()">修改历史数据计算</button>
-                                                        <button id="srpSingleLinkBtn" class="mini-button" iconCls="save" onclick="linkSRPSingleData()">关联生产数据计算</button>
-                                                        <button id="srpSingleExportBtn" class="mini-button" iconCls="export" onclick="exportSRPSingleData()">导出请求数据</button>
-                                                        <button id="srpSingleDeleteBtn" class="mini-button" iconCls="delete" onclick="deleteSRPSingleData()">删除</button>
+                                                        <button id="srpSingleEditBtn" class="mini-button"  plain="true" iconCls="save" onclick="saveSRPSingleData()">修改历史数据计算</button>
+                                                        <button id="srpSingleLinkBtn" class="mini-button"  plain="true" iconCls="save" onclick="linkSRPSingleData()">关联生产数据计算</button>
+                                                        <button id="srpSingleExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="exportSRPSingleData()">导出请求数据</button>
+                                                        <button id="srpSingleDeleteBtn" class="mini-button"  plain="true" iconCls="delete" onclick="deleteSRPSingleData()">删除</button>
                                                     </div>
                                                     <div id="srpSingleGrid" class="mini-datagrid" style="width:100%; height:100%;"
      													idField="id" pageSize="100" allowResize="true" allowAlternating="true"
@@ -344,9 +344,9 @@ String moduleId = request.getParameter("moduleId");
                                                         <span style="margin-left:8px;font-size:12px;color:#333;" id="srpTotalToLabel">至：</span>
                                                         <input id="srpTotalEndDate" class="mini-datepicker" style="width:100px;" format="yyyy-MM-dd" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                                                         <span style="flex:1;"></span>
-                                                        <button id="srpTotalQueryBtn" class="mini-button" iconCls="search" onclick="loadSRPTotalData()">查询</button>
-                                                        <button id="srpTotalReCalcBtn" class="mini-button" iconCls="edit" onclick="reTotalSRP()">重新汇总</button>
-                                                        <button id="srpTotalExportBtn" class="mini-button" iconCls="export" onclick="exportSRPTotalData()">导出请求数据</button>
+                                                        <button id="srpTotalQueryBtn" class="mini-button"  plain="true" iconCls="search" onclick="loadSRPTotalData()">查询</button>
+                                                        <button id="srpTotalReCalcBtn" class="mini-button"  plain="true" iconCls="edit" onclick="reTotalSRP()">重新汇总</button>
+                                                        <button id="srpTotalExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="exportSRPTotalData()">导出请求数据</button>
                                                     </div>
                                                     <div id="srpTotalGrid" class="mini-datagrid" style="width:100%; height:100%;"
      													idField="id" pageSize="100" allowResize="true" allowAlternating="true"
@@ -385,14 +385,14 @@ String moduleId = request.getParameter("moduleId");
     														onbeforeload="onPCPStatusComboBeforeLoad" 
     														onshowpopup="onPCPStatusComboShowPopup" />
                                                         <span class="separator"></span>
-                                                        <button id="pcpSingleQueryBtn" class="mini-button" iconCls="search" onclick="loadPCPSingleData()">查询</button>
+                                                        <button id="pcpSingleQueryBtn" class="mini-button"  plain="true" iconCls="search" onclick="loadPCPSingleData()">查询</button>
                                                     </div>
                                                     <div class="mini-toolbar">
                                                         <span style="flex:1;"></span>
-                                                        <button id="pcpSingleEditBtn" class="mini-button" iconCls="save" onclick="savePCPSingleData()">修改历史数据计算</button>
-                                                        <button id="pcpSingleLinkBtn" class="mini-button" iconCls="save" onclick="linkPCPSingleData()">关联生产数据计算</button>
-                                                        <button id="pcpSingleExportBtn" class="mini-button" iconCls="export" onclick="exportPCPSingleData()">导出请求数据</button>
-                                                        <button id="pcpSingleDeleteBtn" class="mini-button" iconCls="delete" onclick="deletePCPSingleData()">删除</button>
+                                                        <button id="pcpSingleEditBtn" class="mini-button"  plain="true" iconCls="save" onclick="savePCPSingleData()">修改历史数据计算</button>
+                                                        <button id="pcpSingleLinkBtn" class="mini-button"  plain="true" iconCls="save" onclick="linkPCPSingleData()">关联生产数据计算</button>
+                                                        <button id="pcpSingleExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="exportPCPSingleData()">导出请求数据</button>
+                                                        <button id="pcpSingleDeleteBtn" class="mini-button"  plain="true" iconCls="delete" onclick="deletePCPSingleData()">删除</button>
                                                     </div>
                                                     <div id="pcpSingleGrid" class="mini-datagrid" 
      													style="width:100%; height:100%;"
@@ -418,9 +418,9 @@ String moduleId = request.getParameter("moduleId");
                                                         <span style="margin-left:8px;font-size:12px;color:#333;" id="pcpTotalToLabel">至：</span>
                                                         <input id="pcpTotalEndDate" class="mini-datepicker" style="width:100px;" format="yyyy-MM-dd" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                                                         <span style="flex:1;"></span>
-                                                        <button id="pcpTotalQueryBtn" class="mini-button" iconCls="search" onclick="loadPCPTotalData()">查询</button>
-                                                        <button id="pcpTotalReCalcBtn" class="mini-button" iconCls="edit" onclick="reTotalPCP()">重新汇总</button>
-                                                        <button id="pcpTotalExportBtn" class="mini-button" iconCls="export" onclick="exportPCPTotalData()">导出请求数据</button>
+                                                        <button id="pcpTotalQueryBtn" class="mini-button"  plain="true" iconCls="search" onclick="loadPCPTotalData()">查询</button>
+                                                        <button id="pcpTotalReCalcBtn" class="mini-button"  plain="true" iconCls="edit" onclick="reTotalPCP()">重新汇总</button>
+                                                        <button id="pcpTotalExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="exportPCPTotalData()">导出请求数据</button>
                                                     </div>
                                                     <div id="pcpTotalGrid" class="mini-datagrid" 
      													style="width:100%; height:100%;"

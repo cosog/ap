@@ -95,7 +95,7 @@ String path = request.getContextPath();
             <span class="icon">⚠</span>
             <span id="tipMessage"></span>
         </div>
-        <button id="saveBtn" class="mini-button" iconCls="save" onclick="saveCurveSet()" style="margin-left:auto;"></button>
+        <button id="saveBtn" class="mini-button"  plain="true" iconCls="save" onclick="saveCurveSet()" style="margin-left:auto;"></button>
     </div>
 
     <!-- 主体布局 -->

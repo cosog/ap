@@ -31,7 +31,7 @@ String context = path;
     	</form>
     	<span id="infoLabel"></span>
     	<span style="flex:1;"></span>
-    	<button id="saveAllBtn" class="mini-button" iconCls="save" onclick="onSaveAll()">保存全部</button>
+    	<button id="saveAllBtn" class="mini-button"  plain="true" iconCls="save" onclick="onSaveAll()">保存全部</button>
 	</div>
     <div class="mini-splitter" vertical="false" style="width:100%;height:100%;">
         <!-- 左侧区域 -->

@@ -62,7 +62,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             <div class="group-tab-content">
                 <div class="mini-toolbar" style="border-bottom:1px solid #e8e8e8;padding:2px 4px;flex-shrink:0;background:#fafafa;display:flex;align-items:center;">
                     <span style="flex:1;"></span>
-                    <button id="btnSaveGroup" class="mini-button" iconCls="save" onclick="saveCurveGroup()">保存</button>
+                    <button id="btnSaveGroup" class="mini-button"  plain="true" iconCls="save" onclick="saveCurveGroup()">保存</button>
                 </div>
                 <div class="mini-splitter" vertical="true" style="flex:1;width:100%;">
                     <div size="50%" showCollapseButton="false">
@@ -147,8 +147,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     </div>
                 </div>
                 <div class="btn-row">
-                    <button id="btnSaveProp" class="mini-button" onclick="onSaveCurveConfig()">保存</button>
-                    <button id="btnCancelProp" class="mini-button" onclick="onCancelCurveConfig()">取消</button>
+                    <button id="btnSaveProp" class="mini-button"  plain="true" onclick="onSaveCurveConfig()">保存</button>
+                    <button id="btnCancelProp" class="mini-button"  plain="true" onclick="onCancelCurveConfig()">取消</button>
                 </div>
             </div>
         </div>

@@ -21,6 +21,33 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             background: #f5f5f5;
             font-family: "Microsoft YaHei", Arial, sans-serif;
         }
+
+        /* ============ 外层：flex 上下布局 ============ */
+        .main-container {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            background: #fff;
+        }
+        .main-body {
+            flex: 1; min-height: 0;
+            overflow: hidden;
+        }
+
+        /* ============ 底部按钮区（与添加设备窗口一致） ============ */
+        .footer {
+            flex-shrink: 0;
+            padding: 8px 10px;
+            border-top: 1px solid #e8e8e8;
+            background: #fafafa;
+            text-align: right;
+        }
+
+        .mini-panel { border: 0 !important; }
+        .mini-panel-border { border: 0 !important; }
+        .mini-panel-header { border-bottom: 1px solid #e8e8e8 !important; }
+        .mini-panel-body { padding: 0 !important; overflow: hidden !important; }
+
+        /* ============ 表单样式 ============ */
         .add-form-wrap { padding: 16px 20px; }
         .add-form-wrap .mini-textbox,
         .add-form-wrap .mini-combobox,
@@ -42,59 +69,60 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 </head>
 <body>
 
-<div id="addDeviceTabPanel" class="mini-panel"
-     style="width:100%;height:100%;"
-     showHeader="false" showToolbar="true" showCloseButton="false"
-     bodyStyle="padding:0;">
-    <div property="toolbar">
-        <table style="width:100%;border-collapse:collapse;">
-            <tr>
-                <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
-                    <button id="addSaveBtn" class="mini-button" iconCls="save" plain="true"
-                            onclick="onAddSave()"></button>
-                    <button id="addCancelBtn" class="mini-button" iconCls="cancel" plain="true"
-                            onclick="onAddCancel()"></button>
-                </td>
-            </tr>
-        </table>
+<div class="main-container">
+    <!-- ============ 主体：表单面板 ============ -->
+    <div class="main-body">
+        <div id="addDeviceTabPanel" class="mini-panel"
+             style="width:100%;height:100%;"
+             showHeader="false" showToolbar="false" showCloseButton="false"
+             bodyStyle="padding:0;overflow:auto;">
+
+            <div class="add-form-wrap">
+                <table style="width:100%;border-collapse:collapse;">
+                    <!-- ★ 三行：中文/英文/俄文，只显示当前语言对应的那一行 -->
+                    <tr id="rowName_zh_CN" style="display:none;">
+                        <td class="label" id="lblName_zh_CN"></td>
+                        <td class="input-cell">
+                            <input id="add_name_zh_CN" class="mini-textbox" />
+                        </td>
+                    </tr>
+                    <tr id="rowName_en" style="display:none;">
+                        <td class="label" id="lblName_en"></td>
+                        <td class="input-cell">
+                            <input id="add_name_en" class="mini-textbox" />
+                        </td>
+                    </tr>
+                    <tr id="rowName_ru" style="display:none;">
+                        <td class="label" id="lblName_ru"></td>
+                        <td class="input-cell">
+                            <input id="add_name_ru" class="mini-textbox" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label" id="lblCalculateType"></td>
+                        <td class="input-cell">
+                            <input id="add_calculateType" class="mini-combobox"
+                                   valueField="id" textField="text" allowInput="false" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label" id="lblSort"></td>
+                        <td class="input-cell">
+                            <input id="add_sort" class="mini-spinner" minValue="1" maxValue="9999999999" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div class="add-form-wrap">
-        <table style="width:100%;border-collapse:collapse;">
-            <!-- ★ 三行：中文/英文/俄文，只显示当前语言对应的那一行 -->
-            <tr id="rowName_zh_CN" style="display:none;">
-                <td class="label" id="lblName_zh_CN"></td>
-                <td class="input-cell">
-                    <input id="add_name_zh_CN" class="mini-textbox" />
-                </td>
-            </tr>
-            <tr id="rowName_en" style="display:none;">
-                <td class="label" id="lblName_en"></td>
-                <td class="input-cell">
-                    <input id="add_name_en" class="mini-textbox" />
-                </td>
-            </tr>
-            <tr id="rowName_ru" style="display:none;">
-                <td class="label" id="lblName_ru"></td>
-                <td class="input-cell">
-                    <input id="add_name_ru" class="mini-textbox" />
-                </td>
-            </tr>
-
-            <tr>
-                <td class="label" id="lblCalculateType"></td>
-                <td class="input-cell">
-                    <input id="add_calculateType" class="mini-combobox"
-                           valueField="id" textField="text" allowInput="false" />
-                </td>
-            </tr>
-            <tr>
-                <td class="label" id="lblSort"></td>
-                <td class="input-cell">
-                    <input id="add_sort" class="mini-spinner" minValue="1" maxValue="9999999999" />
-                </td>
-            </tr>
-        </table>
+    <!-- ============ 底部按钮区 ============ -->
+    <div class="footer">
+        <button id="addSaveBtn"   class="mini-button" plain="true" iconCls="save"
+                onclick="onAddSave()"></button>
+        <button id="addCancelBtn" class="mini-button" plain="true" iconCls="cancel"
+                onclick="onAddCancel()"></button>
     </div>
 </div>
 

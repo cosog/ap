@@ -225,14 +225,14 @@ String moduleId = request.getParameter("moduleId");
                             <div id="alarmOverviewPanel" size="50%" showCollapseButton="false" minSize="120">
                                 <div class="device-overview-area" style="height:100%;">
                                     <div class="mini-toolbar" style="border:0;border-bottom:1px solid #e8e8e8;padding:4px 8px;display:flex;align-items:center;gap:6px;flex-shrink:0;">
-                                        <button id="btnRefreshOverview" class="mini-button" iconCls="note-refresh" onclick="refreshData()">刷新</button>
+                                        <button id="btnRefreshOverview" class="mini-button" plain="true" iconCls="note-refresh" onclick="refreshData()">刷新</button>
                                         <span class="separator"></span>
                                         <span id="statRangeTypeLabel" style="font-size:12px;color:#333;margin-right:4px;">统计类型：</span>
                                         <input id="alarmStatRangeType" class="mini-radiobuttonlist" valueField="id" textField="text" value="0" onvaluechanged="onStatRangeChanged" />
                                         <span class="separator"></span>
                                         <input id="overviewDeviceCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --" url="<%=path%>/wellInformationManagerController/loadWellComboxList" onbeforeload="onDeviceComboBeforeLoad" onshowpopup="onDeviceComboShowPopup" onload="onDeviceComboLoad" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onOverviewDeviceChange" />
                                         <span style="flex:1;"></span>
-                                        <button id="exportAlarmOverviewBtn" class="mini-button" iconCls="export" onclick="exportAlarmOverview()">导出</button>
+                                        <button id="exportAlarmOverviewBtn" class="mini-button" plain="true" iconCls="export" onclick="exportAlarmOverview()">导出</button>
                                         <input id="AlarmOverviewSelectRow_Id" type="hidden" value="-1" />
                                         <input id="AlarmOverviewColumnStr_Id" type="hidden" value="" />
                                         <input id="AlarmDetailsColumnStr_Id" type="hidden" value="" />
@@ -281,8 +281,8 @@ String moduleId = request.getParameter("moduleId");
                             <input id="detailEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                             <span style="font-size:12px;color:#333;margin-left:8px;" id="detailAlarmLevelLabel">报警级别：</span>
                             <input id="detailAlarmLevel" class="mini-combobox" style="width:100px;" emptyText="-- 全部 --" valueField="id" textField="text" />
-                            <button id="detailQueryBtn" class="mini-button" iconCls="search" onclick="refreshDetailData()">查询</button>
-                            <button id="detailExportBtn" class="mini-button" iconCls="export" onclick="exportAlarmDetail()">导出</button>
+                            <button id="detailQueryBtn" class="mini-button" plain="true" iconCls="search" onclick="refreshDetailData()">查询</button>
+                            <button id="detailExportBtn" class="mini-button" plain="true" iconCls="export" onclick="exportAlarmDetail()">导出</button>
                             <span style="flex:1;"></span>
                             <span id="detailTotalCountLabel">总记录数：</span><span id="detailTotalCountSpan">0</span>
                         </div>

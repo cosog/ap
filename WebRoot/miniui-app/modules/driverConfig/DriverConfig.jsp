@@ -338,14 +338,14 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                         <div title="Protocol" name="protocol" style="height:100%;">
                             <div class="tab-content-layout" style="height:100%;">
                                 <div class="mini-toolbar">
-                                    <button id="protocolRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="loadProtocolTree()">Refresh</button>
+                                    <button id="protocolRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="loadProtocolTree()">Refresh</button>
                                     <span style="flex:1;"></span>
-                                    <button id="protocolAddBtn" class="mini-button" iconCls="add" onclick="addProtocolData()">Add</button>
-                                    <button id="protocolSaveBtn" class="mini-button" iconCls="save" onclick="saveProtocolConfigData()">Save</button>
-                                    <button id="protocolMappingBtn" class="mini-button" onclick="openFieldMappingWindow()">Mapping</button>
-                                    <button id="protocolExportBtn" class="mini-button" iconCls="export" onclick="openExportProtocolWindow()">Export</button>
-                                    <button id="protocolImportBtn" class="mini-button" iconCls="import" onclick="openImportProtocolWindow()">Import</button>
-                                    <button id="protocolDeviceTypeChangeBtn" class="mini-button" iconCls="move" onclick="openProtocolDeviceTypeChangeWindow()">Move</button>
+                                    <button id="protocolAddBtn" class="mini-button"  plain="true" iconCls="add" onclick="addProtocolData()">Add</button>
+                                    <button id="protocolSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="saveProtocolConfigData()">Save</button>
+                                    <button id="protocolMappingBtn" class="mini-button"  plain="true" onclick="openFieldMappingWindow()">Mapping</button>
+                                    <button id="protocolExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="openExportProtocolWindow()">Export</button>
+                                    <button id="protocolImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportProtocolWindow()">Import</button>
+                                    <button id="protocolDeviceTypeChangeBtn" class="mini-button"  plain="true" iconCls="move" onclick="openProtocolDeviceTypeChangeWindow()">Move</button>
                                     <span id="protocolInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                     <input type="hidden" id="ModbusProtocolAddrMappingItemsSelectRow_Id" value="0" />
                                     <input type="hidden" id="ProtocolExtendedFieldHighLowByteSelectRow_Id" value="0" />
@@ -455,14 +455,14 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                         <div title="AcqUnit" name="acq" style="height:100%;">
                                             <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="acqUnitRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshAcqUnitProtocolTree">Refresh</button>
+                                                    <button id="acqUnitRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshAcqUnitProtocolTree">Refresh</button>
                                                     <span style="flex:1;"></span>
-                                                    <button id="acqUnitAddBtn" class="mini-button" iconCls="add" onclick="addAcquisitionUnitInfo()">Add Unit</button>
-                                                    <button id="acqUnitAddGroupBtn" class="mini-button" iconCls="add" onclick="addAcquisitionGroupInfo()">Add Group</button>
-                                                    <button id="acqUnitAddCtrlGroupBtn" class="mini-button" iconCls="add" onclick="addControlGroupInfo()">Add Ctrl Group</button>
-                                                    <button id="acqUnitSaveBtn" class="mini-button" iconCls="save" onclick="SaveModbusProtocolAcqUnitConfigTreeData()">Save</button>
-                                                    <button id="acqUnitExportBtn" class="mini-button" iconCls="export" onclick="openExportAcqUnitWindow()">Export</button>
-                                                    <button id="acqUnitImportBtn" class="mini-button" iconCls="import" onclick="openImportAcqUnitWindow()">Import</button>
+                                                    <button id="acqUnitAddBtn" class="mini-button"  plain="true" iconCls="add" onclick="addAcquisitionUnitInfo()">Add Unit</button>
+                                                    <button id="acqUnitAddGroupBtn" class="mini-button"  plain="true" iconCls="add" onclick="addAcquisitionGroupInfo()">Add Group</button>
+                                                    <button id="acqUnitAddCtrlGroupBtn" class="mini-button"  plain="true" iconCls="add" onclick="addControlGroupInfo()">Add Ctrl Group</button>
+                                                    <button id="acqUnitSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="SaveModbusProtocolAcqUnitConfigTreeData()">Save</button>
+                                                    <button id="acqUnitExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="openExportAcqUnitWindow()">Export</button>
+                                                    <button id="acqUnitImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportAcqUnitWindow()">Import</button>
                                                     <span id="acqUnitInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                 </div>
                                                 <div style="flex:1;overflow:hidden;">
@@ -498,8 +498,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                                             </div>
                                                                             <div id="acqUnitConfigTab" title="Config" name="config" style="height:100%;">
                                                                                 <div class="mini-toolbar" style="flex-shrink:0; padding:4px 8px; border-bottom:1px solid #e8e8e8; background:#fafafa;">
-                                                                                    <button id="acqUnitConfigSelectAllBtn" class="mini-button" onclick="acqUnitConfigSelectAll()">全选</button>
-                                                                                    <button id="acqUnitConfigDeselectAllBtn" class="mini-button" onclick="acqUnitConfigDeselectAll()">取消全选</button>
+                                                                                    <button id="acqUnitConfigSelectAllBtn" class="mini-button"  plain="true" onclick="acqUnitConfigSelectAll()">全选</button>
+                                                                                    <button id="acqUnitConfigDeselectAllBtn" class="mini-button"  plain="true" onclick="acqUnitConfigDeselectAll()">取消全选</button>
                                                                                 </div>
                                                                                 <div style="width:100%;height:100%;overflow:hidden;padding:4px;">
                                                                                     <div id="acqUnitConfigContainer" style="width:100%;height:100%;"></div>
@@ -518,12 +518,12 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                         <div title="DisplayUnit" name="display" style="height:100%;">
                                             <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="displayUnitRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshDisplayUnitProtocolTree()">刷新</button>
+                                                    <button id="displayUnitRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshDisplayUnitProtocolTree()">刷新</button>
                                                     <span style="flex:1;"></span>
-                                                    <button id="displayUnitAddBtn" class="mini-button" iconCls="add" onclick="addDisplayUnitInfo()">添加</button>
-                                                    <button id="displayUnitSaveBtn" class="mini-button" iconCls="save" onclick="saveDisplayUnitConfigData()">保存</button>
-                                                    <button id="displayUnitExportBtn" class="mini-button" iconCls="export" onclick="openExportDisplayUnitWindow()">导出</button>
-                                                    <button id="displayUnitImportBtn" class="mini-button" iconCls="import" onclick="openImportDisplayUnitWindow()">导入</button>
+                                                    <button id="displayUnitAddBtn" class="mini-button"  plain="true" iconCls="add" onclick="addDisplayUnitInfo()">添加</button>
+                                                    <button id="displayUnitSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="saveDisplayUnitConfigData()">保存</button>
+                                                    <button id="displayUnitExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="openExportDisplayUnitWindow()">导出</button>
+                                                    <button id="displayUnitImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportDisplayUnitWindow()">导入</button>
                                                     <span id="displayUnitInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                 </div>
                                                 <div style="flex:1;overflow:hidden;">
@@ -565,8 +565,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                                                                 <span id="displayAcqItemsTitle"></span>
                                                                                             </div>
                                                                                             <div class="mini-toolbar" style="border-bottom:1px solid #e8e8e8;padding:2px 8px;flex-shrink:0;background:#fafafa;">
-                                                                                                <button id="displayAcqSelectAllBtn" class="mini-button" onclick="displayAcqSelectAll()">全选</button>
-                                                                                                <button id="displayAcqDeselectAllBtn" class="mini-button" onclick="displayAcqDeselectAll()">取消全选</button>
+                                                                                                <button id="displayAcqSelectAllBtn" class="mini-button"  plain="true" onclick="displayAcqSelectAll()">全选</button>
+                                                                                                <button id="displayAcqDeselectAllBtn" class="mini-button"  plain="true" onclick="displayAcqDeselectAll()">取消全选</button>
                                                                                             </div>
                                                                                             <div id="displayAcqItemsContainer" style="flex:1;padding:4px;">
                                                                                                 <div id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id" style="width:100%;height:100%;"></div>
@@ -579,8 +579,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                                                                 <span id="displayCtrlItemsTitle"></span>
                                                                                             </div>
                                                                                             <div class="mini-toolbar" style="border-bottom:1px solid #e8e8e8;padding:2px 8px;flex-shrink:0;background:#fafafa;">
-                                                                                                <button id="displayCtrlSelectAllBtn" class="mini-button" onclick="displayCtrlSelectAll()">全选</button>
-                                                                                                <button id="displayCtrlDeselectAllBtn" class="mini-button" onclick="displayCtrlDeselectAll()">取消全选</button>
+                                                                                                <button id="displayCtrlSelectAllBtn" class="mini-button"  plain="true" onclick="displayCtrlSelectAll()">全选</button>
+                                                                                                <button id="displayCtrlDeselectAllBtn" class="mini-button"  plain="true" onclick="displayCtrlDeselectAll()">取消全选</button>
                                                                                             </div>
                                                                                             <div id="displayCtrlItemsContainer" style="flex:1;padding:4px;">
                                                                                                 <div id="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id" style="width:100%;height:100%;"></div>
@@ -603,13 +603,13 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                             <div class="tab-content-layout" style="height:100%;">
                                                 <!-- 工具栏 -->
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="alarmUnitRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshAlarmUnitProtocolTree">Refresh</button>
+                                                    <button id="alarmUnitRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshAlarmUnitProtocolTree">Refresh</button>
                                                     <span style="flex:1;"></span>
-                                                    <button id="alarmUnitAddBtn" class="mini-button" iconCls="add" onclick="addAlarmUnitInfo()">Add</button>
-                                                    <button id="alarmUnitSaveBtn" class="mini-button" iconCls="save" onclick="SaveModbusProtocolAlarmUnitConfigTreeData()">Save</button>
-                                                    <button id="alarmUnitColorBtn" class="mini-button" iconCls="alarm" onclick="openAlarmColorSelectWindow()">Alarm Color</button>
-                                                    <button id="alarmUnitExportBtn" class="mini-button" iconCls="export" onclick="openExportAlarmUnitWindow()">Export</button>
-                                                    <button id="alarmUnitImportBtn" class="mini-button" iconCls="import" onclick="openImportAlarmUnitWindow()">Import</button>
+                                                    <button id="alarmUnitAddBtn" class="mini-button"  plain="true" iconCls="add" onclick="addAlarmUnitInfo()">Add</button>
+                                                    <button id="alarmUnitSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="SaveModbusProtocolAlarmUnitConfigTreeData()">Save</button>
+                                                    <button id="alarmUnitColorBtn" class="mini-button"  plain="true" iconCls="alarm" onclick="openAlarmColorSelectWindow()">Alarm Color</button>
+                                                    <button id="alarmUnitExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="openExportAlarmUnitWindow()">Export</button>
+                                                    <button id="alarmUnitImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportAlarmUnitWindow()">Import</button>
                                                     <span id="alarmUnitInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                 </div>
                                                 <!-- 主体：双层 Splitter（与显示单元一致） -->
@@ -657,8 +657,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                                                     <div title="FESDiagram" name="fes" style="height:100%;">
                                                                                         <div class="tab-content-layout" style="height:100%;">
                                                                                             <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;background:#fafafa;">
-                                                                                                <button id="alarmFESSelectAll" class="mini-button" onclick="alarmItemsSelectAll()">Select All</button>
-                                                                                                <button id="alarmFESDeselectAll" class="mini-button" onclick="alarmItemsDeselectAll()">Deselect All</button>
+                                                                                                <button id="alarmFESSelectAll" class="mini-button"  plain="true" onclick="alarmItemsSelectAll()">Select All</button>
+                                                                                                <button id="alarmFESDeselectAll" class="mini-button"  plain="true" onclick="alarmItemsDeselectAll()">Deselect All</button>
                                                                                                 <span style="flex:1;"></span>
                                                                                             </div>
                                                                                             <div style="flex:1;min-height:0;overflow:hidden;padding:4px;">
@@ -671,8 +671,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                                                     <div title="CommStatus" name="comm" style="height:100%;">
                                                                                         <div class="tab-content-layout" style="height:100%;">
                                                                                             <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;background:#fafafa;">
-                                                                                                <button id="alarmCommSelectAll" class="mini-button" onclick="alarmItemsSelectAll()">Select All</button>
-                                                                                                <button id="alarmCommDeselectAll" class="mini-button" onclick="alarmItemsDeselectAll()">Deselect All</button>
+                                                                                                <button id="alarmCommSelectAll" class="mini-button"  plain="true" onclick="alarmItemsSelectAll()">Select All</button>
+                                                                                                <button id="alarmCommDeselectAll" class="mini-button"  plain="true" onclick="alarmItemsDeselectAll()">Deselect All</button>
                                                                                                 <span style="flex:1;"></span>
                                                                                             </div>
                                                                                             <div style="flex:1;min-height:0;overflow:hidden;padding:4px;">
@@ -685,8 +685,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                                                     <div title="RunStatus" name="run" style="height:100%;">
                                                                                         <div class="tab-content-layout" style="height:100%;">
                                                                                             <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;background:#fafafa;">
-                                                                                                <button id="alarmRunSelectAll" class="mini-button" onclick="alarmItemsSelectAll()">Select All</button>
-                                                                                                <button id="alarmRunDeselectAll" class="mini-button" onclick="alarmItemsDeselectAll()">Deselect All</button>
+                                                                                                <button id="alarmRunSelectAll" class="mini-button"  plain="true" onclick="alarmItemsSelectAll()">Select All</button>
+                                                                                                <button id="alarmRunDeselectAll" class="mini-button"  plain="true" onclick="alarmItemsDeselectAll()">Deselect All</button>
                                                                                                 <span style="flex:1;"></span>
                                                                                             </div>
                                                                                             <div style="flex:1;min-height:0;overflow:hidden;padding:4px;">
@@ -699,8 +699,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                                                     <div title="Numeric" name="numeric" style="height:100%;">
                                                                                         <div class="tab-content-layout" style="height:100%;">
                                                                                             <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;background:#fafafa;">
-                                                                                                <button id="alarmNumericSelectAll" class="mini-button" onclick="alarmItemsSelectAll()">Select All</button>
-                                                                                                <button id="alarmNumericDeselectAll" class="mini-button" onclick="alarmItemsDeselectAll()">Deselect All</button>
+                                                                                                <button id="alarmNumericSelectAll" class="mini-button"  plain="true" onclick="alarmItemsSelectAll()">Select All</button>
+                                                                                                <button id="alarmNumericDeselectAll" class="mini-button"  plain="true" onclick="alarmItemsDeselectAll()">Deselect All</button>
                                                                                                 <span style="flex:1;"></span>
                                                                                             </div>
                                                                                             <div style="flex:1;min-height:0;overflow:hidden;padding:4px;">
@@ -725,8 +725,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                                                             <div size="50%" showCollapseButton="false">
                                                                                                 <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;overflow:hidden;">
                                                                                                     <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;background:#fafafa;">
-                                                                                                        <button id="alarmEnumSelectAll" class="mini-button" onclick="alarmItemsSelectAll()">Select All</button>
-                                                                                                        <button id="alarmEnumDeselectAll" class="mini-button" onclick="alarmItemsDeselectAll()">Deselect All</button>
+                                                                                                        <button id="alarmEnumSelectAll" class="mini-button"  plain="true" onclick="alarmItemsSelectAll()">Select All</button>
+                                                                                                        <button id="alarmEnumDeselectAll" class="mini-button"  plain="true" onclick="alarmItemsDeselectAll()">Deselect All</button>
                                                                                                         <span style="flex:1;"></span>
                                                                                                     </div>
                                                                                                     <div style="flex:1;min-height:0;overflow:hidden;padding:4px;">
@@ -753,8 +753,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                                                             <div size="50%" showCollapseButton="false">
                                                                                                 <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;overflow:hidden;">
                                                                                                     <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;background:#fafafa;">
-                                                                                                        <button id="alarmSwitchSelectAll" class="mini-button" onclick="alarmItemsSelectAll()">Select All</button>
-                                                                                                        <button id="alarmSwitchDeselectAll" class="mini-button" onclick="alarmItemsDeselectAll()">Deselect All</button>
+                                                                                                        <button id="alarmSwitchSelectAll" class="mini-button"  plain="true" onclick="alarmItemsSelectAll()">Select All</button>
+                                                                                                        <button id="alarmSwitchDeselectAll" class="mini-button"  plain="true" onclick="alarmItemsDeselectAll()">Deselect All</button>
                                                                                                         <span style="flex:1;"></span>
                                                                                                     </div>
                                                                                                     <div style="flex:1;min-height:0;overflow:hidden;padding:4px;">
@@ -781,12 +781,12 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                             <div class="unit-layout" style="flex-direction:column; height:100%;">
                                                 <!-- 工具栏 -->
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="reportUnitRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshReportUnitList()">Refresh</button>
+                                                    <button id="reportUnitRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshReportUnitList()">Refresh</button>
                                                     <span style="flex:1;"></span>
-                                                    <button id="reportUnitAddBtn" class="mini-button" iconCls="add" onclick="addReportUnitInfo()">Add</button>
-                                                    <button id="reportUnitSaveBtn" class="mini-button" iconCls="save" onclick="SaveReportUnitData()">Save</button>
-                                                    <button id="reportUnitExportBtn" class="mini-button" iconCls="export" onclick="openExportReportUnitWindow()">Export</button>
-                                                    <button id="reportUnitImportBtn" class="mini-button" iconCls="import" onclick="openImportReportUnitWindow()">Import</button>
+                                                    <button id="reportUnitAddBtn" class="mini-button"  plain="true" iconCls="add" onclick="addReportUnitInfo()">Add</button>
+                                                    <button id="reportUnitSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="SaveReportUnitData()">Save</button>
+                                                    <button id="reportUnitExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="openExportReportUnitWindow()">Export</button>
+                                                    <button id="reportUnitImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportReportUnitWindow()">Import</button>
                                                     <span id="reportUnitInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                 </div>
                                                 <!-- 主体：单元列表 + 右侧详情 -->
@@ -992,13 +992,13 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                         <div title="AcqInstance" name="acq" style="height:100%;">
                                             <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="acqInstanceRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshAcqInstanceProtocolTree()">Refresh</button>
+                                                    <button id="acqInstanceRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshAcqInstanceProtocolTree()">Refresh</button>
                                                     <span id="acqInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                     <span style="flex:1;"></span>
-                                                    <button id="acqInstanceAddBtn" class="mini-button" iconCls="add" onclick="addAcqInstanceInfo()">Add</button>
-                                                    <button id="acqInstanceSaveBtn" class="mini-button" iconCls="save" onclick="saveAcqInstanceConfigData()">Save</button>
-                                                    <button id="acqInstanceExportBtn" class="mini-button" iconCls="export" onclick="openExportAcqInstanceWindow()">Export</button>
-                                                    <button id="acqInstanceImportBtn" class="mini-button" iconCls="import" onclick="openImportAcqInstanceWindow()">Import</button>
+                                                    <button id="acqInstanceAddBtn" class="mini-button"  plain="true" iconCls="add" onclick="addAcqInstanceInfo()">Add</button>
+                                                    <button id="acqInstanceSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="saveAcqInstanceConfigData()">Save</button>
+                                                    <button id="acqInstanceExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="openExportAcqInstanceWindow()">Export</button>
+                                                    <button id="acqInstanceImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportAcqInstanceWindow()">Import</button>
                                                 </div>
                                                 <div style="flex:1;overflow:hidden;">
                                                     <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
@@ -1044,13 +1044,13 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                         <div title="DisplayInstance" name="display" style="height:100%;">
                                             <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="displayInstanceRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshDisplayInstanceProtocolTree()">Refresh</button>
+                                                    <button id="displayInstanceRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshDisplayInstanceProtocolTree()">Refresh</button>
                                                     <span id="displayInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                     <span style="flex:1;"></span>
-                                                    <button id="displayInstanceAddBtn" class="mini-button" iconCls="add" onclick="addDisplayInstanceInfo()">Add</button>
-                                                    <button id="displayInstanceSaveBtn" class="mini-button" iconCls="save" onclick="saveDisplayInstanceConfigData()">Save</button>
-                                                    <button id="displayInstanceExportBtn" class="mini-button" iconCls="export" onclick="openExportDisplayInstanceWindow()">Export</button>
-                                                    <button id="displayInstanceImportBtn" class="mini-button" iconCls="import" onclick="openImportDisplayInstanceWindow()">Import</button>
+                                                    <button id="displayInstanceAddBtn" class="mini-button"  plain="true" iconCls="add" onclick="addDisplayInstanceInfo()">Add</button>
+                                                    <button id="displayInstanceSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="saveDisplayInstanceConfigData()">Save</button>
+                                                    <button id="displayInstanceExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="openExportDisplayInstanceWindow()">Export</button>
+                                                    <button id="displayInstanceImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportDisplayInstanceWindow()">Import</button>
                                                 </div>
                                                 <div style="flex:1;overflow:hidden;">
                                                     <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
@@ -1092,13 +1092,13 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                         <div title="AlarmInstance" name="alarm" style="height:100%;">
                                             <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="alarmInstanceRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshAlarmInstanceProtocolTree()">Refresh</button>
+                                                    <button id="alarmInstanceRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshAlarmInstanceProtocolTree()">Refresh</button>
                                                     <span id="alarmInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                     <span style="flex:1;"></span>
-                                                    <button id="alarmInstanceAddBtn" class="mini-button" iconCls="add" onclick="addAlarmInstanceInfo()">Add</button>
-                                                    <button id="alarmInstanceSaveBtn" class="mini-button" iconCls="save" onclick="saveAlarmInstanceConfigData()">Save</button>
-                                                    <button id="alarmInstanceExportBtn" class="mini-button" iconCls="export" onclick="openExportAlarmInstanceWindow()">Export</button>
-                                                    <button id="alarmInstanceImportBtn" class="mini-button" iconCls="import" onclick="openImportAlarmInstanceWindow()">Import</button>
+                                                    <button id="alarmInstanceAddBtn" class="mini-button"  plain="true" iconCls="add" onclick="addAlarmInstanceInfo()">Add</button>
+                                                    <button id="alarmInstanceSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="saveAlarmInstanceConfigData()">Save</button>
+                                                    <button id="alarmInstanceExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="openExportAlarmInstanceWindow()">Export</button>
+                                                    <button id="alarmInstanceImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportAlarmInstanceWindow()">Import</button>
                                                 </div>
                                                 <div style="flex:1;overflow:hidden;">
                                                     <div class="mini-splitter" style="width:100%;height:100%;" vertical="false">
@@ -1140,13 +1140,13 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                         <div title="ReportInstance" name="report" style="height:100%;">
                                             <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="reportInstanceRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshReportInstanceList()">Refresh</button>
+                                                    <button id="reportInstanceRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshReportInstanceList()">Refresh</button>
                                                     <span id="reportInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                     <span style="flex:1;"></span>
-                                                    <button id="reportInstanceAddBtn" class="mini-button" iconCls="add" onclick="addReportInstanceInfo()">Add</button>
-                                                    <button id="reportInstanceSaveBtn" class="mini-button" iconCls="save" onclick="saveReportInstanceData()">Save</button>
-                                                    <button id="reportInstanceExportBtn" class="mini-button" iconCls="export" onclick="openExportReportInstanceWindow()">Export</button>
-                                                    <button id="reportInstanceImportBtn" class="mini-button" iconCls="import" onclick="openImportReportInstanceWindow()">Import</button>
+                                                    <button id="reportInstanceAddBtn" class="mini-button"  plain="true" iconCls="add" onclick="addReportInstanceInfo()">Add</button>
+                                                    <button id="reportInstanceSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="saveReportInstanceData()">Save</button>
+                                                    <button id="reportInstanceExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="openExportReportInstanceWindow()">Export</button>
+                                                    <button id="reportInstanceImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportReportInstanceWindow()">Import</button>
                                                 </div>
                                                 <div style="flex:1;overflow:hidden;">
                                                     <!-- ★ 报表实例：无协议树，直接左右 splitter -->
@@ -1180,11 +1180,11 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                         <div title="SMSInstance" name="sms" style="height:100%;">
                                             <div class="tab-content-layout" style="height:100%;">
                                                 <div class="mini-toolbar" style="flex-shrink:0;border-bottom:1px solid #e8e8e8;padding:2px 8px;display:flex;align-items:center;gap:4px;background:#fafafa;">
-                                                    <button id="smsInstanceRefreshBtn" class="mini-button" iconCls="note-refresh">Refresh</button>
+                                                    <button id="smsInstanceRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh">Refresh</button>
                                                     <span class="separator"></span>
-                                                    <button id="smsInstanceAddBtn" class="mini-button" iconCls="add">Add</button>
-                                                    <button id="smsInstanceUpdateBtn" class="mini-button" iconCls="edit">Update</button>
-                                                    <button id="smsInstanceDeleteBtn" class="mini-button" iconCls="delete">Delete</button>
+                                                    <button id="smsInstanceAddBtn" class="mini-button"  plain="true" iconCls="add">Add</button>
+                                                    <button id="smsInstanceUpdateBtn" class="mini-button"  plain="true" iconCls="edit">Update</button>
+                                                    <button id="smsInstanceDeleteBtn" class="mini-button"  plain="true" iconCls="delete">Delete</button>
                                                     <span style="flex:1;"></span>
                                                     <span id="smsInstanceInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
                                                 </div>
@@ -1810,7 +1810,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 
             setTimeout(function() {
                 isInitializing = false;
-            }, 500);
+            }, 50);
         });
 
     </script>

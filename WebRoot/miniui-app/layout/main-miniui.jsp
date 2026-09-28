@@ -892,7 +892,9 @@ request.setAttribute("browserLang", browserLang);
             'AP.view.well.AuxiliaryDeviceInfoView': context + '/miniui-app/modules/auxiliarydevice/AuxiliaryDeviceManagerInfo.jsp',
             'AP.view.module.ModuleInfoView': context + '/miniui-app/modules/module/ModuleInfo.jsp',
             'AP.view.operationMaintenance.OperationMaintenanceInfoView': context + '/miniui-app/modules/operationMaintenance/OperationMaintenanceInfo.jsp',
-            'AP.view.data.SystemdataInfoView': context + '/miniui-app/modules/dataDictionary/dataDictionary.jsp'
+            'AP.view.data.SystemdataInfoView': context + '/miniui-app/modules/dataDictionary/dataDictionary.jsp',
+            'AP.view.reportOut.ReportOutDailyReportView': context + '/miniui-app/modules/report/ProductionReport.jsp',
+            'AP.view.reportOut.HydrologicalWellReportView': context + '/miniui-app/modules/report/HydrologicalWellReport.jsp'
         };
         return mapping[viewSrc] || null;
     }

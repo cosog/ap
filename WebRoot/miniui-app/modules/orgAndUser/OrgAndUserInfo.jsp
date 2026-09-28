@@ -110,15 +110,15 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         <div size="40%" showCollapseButton="true" collapseDirection="left" minSize="300">
             <div class="org-panel" id="orgPanel">
                 <div class="panel-toolbar">
-                    <button id="orgRefreshBtn" class="mini-button" iconCls="note-refresh" onclick="loadOrgTree()"></button>
+                    <button id="orgRefreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="loadOrgTree()"></button>
                     <span style="flex:1;"></span>
-                    <button id="addOrgLableClassBtn_Id" class="mini-button" iconCls="add" onclick="addOrgInfo()"></button>
-                    <button id="editOrgLableClassBtn_Id" class="mini-button" iconCls="edit" visible="false"></button>
-                    <button id="delOrgLableClassBtn_Id" class="mini-button" iconCls="delete" onclick="delOrgInfo()"></button>
-                    <button id="orgSaveBtn" class="mini-button" iconCls="save" onclick="saveOrgInfo()"></button>
-                    <button id="orgParentChangeBtn" class="mini-button" iconCls="move" onclick="orgParentChangeInfo()"></button>
-                    <button id="orgExportBtn" class="mini-button" iconCls="export" onclick="exportOrganizationCompleteData()"></button>
-                    <button id="orgImportBtn" class="mini-button" iconCls="import" onclick="openImportOrganizationWindow()"></button>
+                    <button id="addOrgLableClassBtn_Id" class="mini-button"  plain="true" iconCls="add" onclick="addOrgInfo()"></button>
+                    <button id="editOrgLableClassBtn_Id" class="mini-button"  plain="true" iconCls="edit" visible="false"></button>
+                    <button id="delOrgLableClassBtn_Id" class="mini-button"  plain="true" iconCls="delete" onclick="delOrgInfo()"></button>
+                    <button id="orgSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="saveOrgInfo()"></button>
+                    <button id="orgParentChangeBtn" class="mini-button"  plain="true" iconCls="move" onclick="orgParentChangeInfo()"></button>
+                    <button id="orgExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="exportOrganizationCompleteData()"></button>
+                    <button id="orgImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportOrganizationWindow()"></button>
                 </div>
 
                 <div class="panel-body">
@@ -159,15 +159,15 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                 <div class="panel-toolbar">
                     <span id="userNameLabel"></span>
                     <input id="UserName_Id" class="mini-textbox" style="width:180px;" />
-                    <button id="userSearchBtn" class="mini-button" iconCls="search" onclick="loadUserList()"></button>
+                    <button id="userSearchBtn" class="mini-button"  plain="true" iconCls="search" onclick="loadUserList()"></button>
                     <span style="flex:1;"></span>
-                    <button id="addUserLableClassBtn_Id" class="mini-button" iconCls="add" onclick="addUserInfo()"></button>
-                    <button id="userDeleteBtn" class="mini-button" iconCls="delete" onclick="batchDeleteUser()"></button>
-                    <button id="userSaveBtn" class="mini-button" iconCls="save" onclick="batchUpdateUserInfo()"></button>
-                    <button id="editUserLableClassBtn_Id" class="mini-button" iconCls="edit" onclick="modifyUserInfo()"></button>
-                    <button id="userOrgChangeBtn" class="mini-button" iconCls="move" onclick="userOrgChangeInfo()"></button>
-                    <button id="userExportBtn" class="mini-button" iconCls="export" onclick="exportUserCompleteData()"></button>
-                    <button id="userImportBtn" class="mini-button" iconCls="import" onclick="openImportUserWindow()"></button>
+                    <button id="addUserLableClassBtn_Id" class="mini-button"  plain="true" iconCls="add" onclick="addUserInfo()"></button>
+                    <button id="userDeleteBtn" class="mini-button"  plain="true" iconCls="delete" onclick="batchDeleteUser()"></button>
+                    <button id="userSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="batchUpdateUserInfo()"></button>
+                    <button id="editUserLableClassBtn_Id" class="mini-button"  plain="true" iconCls="edit" onclick="modifyUserInfo()"></button>
+                    <button id="userOrgChangeBtn" class="mini-button"  plain="true" iconCls="move" onclick="userOrgChangeInfo()"></button>
+                    <button id="userExportBtn" class="mini-button"  plain="true" iconCls="export" onclick="exportUserCompleteData()"></button>
+                    <button id="userImportBtn" class="mini-button"  plain="true" iconCls="import" onclick="openImportUserWindow()"></button>
                 </div>
 
                 <div class="panel-body">
@@ -1511,7 +1511,7 @@ function openImportUserWindow() {
         setTimeout(function () {
             isInitializing = false;
             loadOrgTree();
-        }, 100);
+        }, 10);
 
         window.addEventListener('message', function (event) {
             var message = event.data;

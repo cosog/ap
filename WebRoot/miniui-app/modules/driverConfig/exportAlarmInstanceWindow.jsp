@@ -21,7 +21,7 @@ String context = path;
 <div class="main-container">
     <div class="mini-toolbar">
         <span style="flex:1;"></span>
-        <button id="exportBtn" class="mini-button" iconCls="export" onclick="onExport()"></button>
+        <button id="exportBtn" class="mini-button"  plain="true" iconCls="export" onclick="onExport()"></button>
     </div>
 
     <div class="tree-wrapper">

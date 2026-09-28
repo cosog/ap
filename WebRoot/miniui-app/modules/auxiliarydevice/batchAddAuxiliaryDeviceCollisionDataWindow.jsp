@@ -36,7 +36,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     <span id="batchAddAuxiliaryDeviceCollisionInfoLabel_Id"></span>
                 </td>
                 <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
-                    <button id="btnCollisionSave" class="mini-button" iconCls="save" onclick="onCollisionSave()"></button>
+                    <button id="btnCollisionSave" class="mini-button" iconCls="save" onclick="onCollisionSave()" plain="true"></button>
                 </td>
             </tr>
         </table>

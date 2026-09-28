@@ -39,7 +39,7 @@ String context = path;
                             <span id="batchAddDeviceCollisionInfoLabel_Id"></span>
                         </td>
                         <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
-                            <button id="btnCollisionSave" class="mini-button" iconCls="save" onclick="onCollisionSave()"></button>
+                            <button id="btnCollisionSave" class="mini-button"  plain="true" iconCls="save" onclick="onCollisionSave()"></button>
                         </td>
                     </tr>
                 </table>

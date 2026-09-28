@@ -52,8 +52,8 @@ String context = path;
             </tr>
         </table>
         <div style="text-align:center;padding-top:20px;">
-            <a class="mini-button" onclick="onSave()" style="width:80px;" id="btnSave">保存</a>
-            <a class="mini-button" onclick="onCancel()" style="width:80px;margin-left:10px;" id="btnCancel">取消</a>
+            <a class="mini-button"  plain="true" onclick="onSave()" style="width:80px;" id="btnSave">保存</a>
+            <a class="mini-button"  plain="true" onclick="onCancel()" style="width:80px;margin-left:10px;" id="btnCancel">取消</a>
         </div>
     </form>
 </div>

@@ -105,7 +105,7 @@ String context = path;
                                 <div class="mini-toolbar">
                                     <span style="flex:1;"></span>
                                     <span id="runStatusInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
-                                    <button id="runStatusSaveBtn" class="mini-button" iconCls="save" onclick="onRunStatusSave()">保存</button>
+                                    <button id="runStatusSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="onRunStatusSave()">保存</button>
                                 </div>
                                 <div class="tab-body">
                                     <!-- 左右 splitter -->
@@ -146,7 +146,7 @@ String context = path;
                                 <div class="mini-toolbar">
                                     <span style="flex:1;"></span>
                                     <span id="calcInfoLabel" style="color:#2d6a9f;font-size:13px;"></span>
-                                    <button id="calcSaveBtn" class="mini-button" iconCls="save" onclick="onCalcSave()">保存</button>
+                                    <button id="calcSaveBtn" class="mini-button"  plain="true" iconCls="save" onclick="onCalcSave()">保存</button>
                                 </div>
                                 <div class="tab-body" style="weight:100%;height:100%;">
                                     <div id="calcHandsontableContainer" class="handsontable-container" style="weight:100%;height:100%;"></div>

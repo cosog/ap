@@ -47,8 +47,8 @@ String context = path;
         </table>
     </div>
     <div class="footer">
-        <button id="btnSave" class="mini-button" iconCls="save" onclick="onSave()"></button>
-        <button id="btnCancel" class="mini-button" iconCls="cancel" onclick="onCancel()"></button>
+        <button id="btnSave" class="mini-button"  plain="true" iconCls="save" onclick="onSave()"></button>
+        <button id="btnCancel" class="mini-button"  plain="true" iconCls="cancel" onclick="onCancel()"></button>
     </div>
 </div>
 

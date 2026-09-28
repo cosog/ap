@@ -421,12 +421,12 @@ String moduleId = request.getParameter("moduleId");
                                     <div id="deviceOverviewPanel" size="50%" showCollapseButton="false" minSize="120">
                                         <div class="device-overview-area" style="height:100%;">
                                             <div class="mini-toolbar" style="border:0;border-bottom:1px solid #e8e8e8;padding:4px 8px;display:flex;align-items:center;gap:6px;">
-                                                <button id="btnRefresh" class="mini-button" iconCls="note-refresh" onclick="refreshDeviceList()">刷新</button>
+                                                <button id="btnRefresh" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshDeviceList()">刷新</button>
                                                 <span class="separator"></span>
                                                 <input id="deviceCombo" class="mini-combobox" style="width:140px;" emptyText="-- 全部 --" url="<%=path%>/wellInformationManagerController/loadWellComboxList" onbeforeload="onDeviceComboBeforeLoad" onshowpopup="onDeviceComboShowPopup" onload="onDeviceComboLoad" dataField="list" totalField="totals" valueField="boxkey" textField="boxval" onvaluechanged="onDeviceComboChange" />
                                                 <span style="flex:1;"></span>
-                                                <button id="exportRealTimeMonitoringDeviceListBtn" class="mini-button" iconCls="export" onclick="exportRealTimeMonitoringData()">导出</button>
-                                                <button id="queryDeviceHistoryDataBtn" class="mini-button" onclick="gotoHistory()">查看历史</button>
+                                                <button id="exportRealTimeMonitoringDeviceListBtn" class="mini-button"  plain="true" iconCls="export" onclick="exportRealTimeMonitoringData()">导出</button>
+                                                <button id="queryDeviceHistoryDataBtn" class="mini-button"  plain="true" onclick="gotoHistory()">查看历史</button>
                                                 <!-- 隐藏控件 -->
                                                 <input id="RealTimeMonitoringInfoDeviceListSelectRow_Id" type="hidden" value="-1" />
                                                 <input id="RealTimeMonitoringStatSelectFESdiagramResult_Id" type="hidden" value="" />
@@ -1667,7 +1667,7 @@ String moduleId = request.getParameter("moduleId");
                     '<div class="mini-toolbar" style="border:0;border-bottom:1px solid #ddd;padding:4px 8px;flex-shrink:0;display:flex;align-items:center;gap:6px;">' +
                     '<span style="font-size:12px;color:#333;">' + (_loginUserLanguageResource.viewCurveOrTableData) + '</span>' +
                     '<span style="flex:1;"></span>' +
-                    '<button id="dynamicDataExportBtn" class="mini-button" iconCls="export" style="padding:2px 12px;" onclick="exportDeviceRealTimeMonitoringData()">' + (_loginUserLanguageResource.exportData) + '</button>' +
+                    '<button id="dynamicDataExportBtn" class="mini-button"  plain="true" iconCls="export" style="padding:2px 12px;" onclick="exportDeviceRealTimeMonitoringData()">' + (_loginUserLanguageResource.exportData) + '</button>' +
                     '</div>' +
                     '<div id="RealTimeMonitoringInfoDataTableInfoDiv_id" style="flex:1; overflow:hidden; background:#fff; min-height:0;"></div>' +
                     '</div>',
@@ -2715,7 +2715,7 @@ String moduleId = request.getParameter("moduleId");
             html += '<div style="flex-shrink:0; padding:4px 8px; background:#f5f5f5; border-bottom:1px solid #ddd; display:flex; align-items:center; gap:6px;">';
             html += '<span style="font-size:12px; color:#333;">' + (_loginUserLanguageResource.totalCount) + ': <span id="itemRealtimeDataCount_' + containerId + '">0</span></span>';
             html += '<span style="flex:1;"></span>';
-            html += '<button id="exportItemRealtimeDataBtn_' + containerId + '" class="mini-button" iconCls="export" style="padding:2px 12px;">' + (_loginUserLanguageResource.exportData) + '</button>';
+            html += '<button id="exportItemRealtimeDataBtn_' + containerId + '" class="mini-button"  plain="true" iconCls="export" style="padding:2px 12px;">' + (_loginUserLanguageResource.exportData) + '</button>';
             html += '</div>';
             html += '<div id="' + containerId + '" style="flex:1; overflow:hidden; min-height:0;"></div>';
             html += '</div>';
@@ -2990,7 +2990,7 @@ String moduleId = request.getParameter("moduleId");
                                         for (var i = 0; i < btnCount; i++) {
                                             var text = itemMeaning[i][1];
                                             var value = itemMeaning[i][0];
-                                            html += '<button class="mini-button" style="' + btnStyle + '" ' +
+                                            html += '<button class="mini-button"  plain="true" style="' + btnStyle + '" ' +
                                                 (disabled ? 'disabled' : '') +
                                                 ' onclick="onEnumControlClick(' + record.id + ', \'' + record.item + '\', \'' + record.itemcode + '\', \'' + record.quantity + '\', \'' + value + '\', \'' + text + '\', ' + disabled + ')">' + text + '</button>';
                                         }
@@ -2999,12 +2999,12 @@ String moduleId = request.getParameter("moduleId");
                                             var text = itemMeaning[i].status;
                                             var value = itemMeaning[i].value;
                                             var bitIndex = itemMeaning[i].bitIndex;
-                                            html += '<button class="mini-button" style="' + btnStyle + '" ' +
+                                            html += '<button class="mini-button"  plain="true" style="' + btnStyle + '" ' +
                                                 (disabled ? 'disabled' : '') +
                                                 ' onclick="onSwitchControlClick(' + record.id + ', \'' + record.item + '\', \'' + record.itemcode + '\', \'' + record.quantity + '\', ' + value + ', ' + bitIndex + ', \'' + text + '\', ' + disabled + ')">' + text + '</button>';
                                         }
                                     } else {
-                                        html += '<button class="mini-button" style="' + btnStyle + '" ' +
+                                        html += '<button class="mini-button"  plain="true" style="' + btnStyle + '" ' +
                                             (disabled ? 'disabled' : '') +
                                             ' onclick="onNumericControlClick(' + record.id + ', \'' + record.itemcode + '\', \'' + record.itemName + '\', \'' + (record.unit || '') + '\', ' + record.quantity + ', \'' + record.storeDataType + '\', ' + disabled + ')">' + _loginUserLanguageResource.set + '</button>';
                                     }
@@ -4559,8 +4559,8 @@ String moduleId = request.getParameter("moduleId");
             html += '<div id="toolbar_' + containerId + '" style="flex-shrink:0; padding:4px 8px; background:#f5f5f5; border-bottom:1px solid #ddd; display:flex; align-items:center; gap:6px;">';
             html += '<span style="font-size:12px; color:#333;">' + (itemName || '') + (unit ? ' (' + unit + ')' : '') + '</span>';
             html += '<span style="flex:1;"></span>';
-            html += '<button id="uplinkBtn_' + containerId + '" class="mini-button" style="padding:2px 12px;">' + (_loginUserLanguageResource.uplink) + '</button>';
-            html += '<button id="downlinkBtn_' + containerId + '" class="mini-button" style="padding:2px 12px;">' + (_loginUserLanguageResource.downlink) + '</button>';
+            html += '<button id="uplinkBtn_' + containerId + '" class="mini-button"  plain="true" style="padding:2px 12px;">' + (_loginUserLanguageResource.uplink) + '</button>';
+            html += '<button id="downlinkBtn_' + containerId + '" class="mini-button"  plain="true" style="padding:2px 12px;">' + (_loginUserLanguageResource.downlink) + '</button>';
             html += '</div>';
             html += '<div id="' + containerId + '" style="flex:1; overflow:hidden; margin:0; min-height:0; background:#fff;"></div>';
             html += '</div>';

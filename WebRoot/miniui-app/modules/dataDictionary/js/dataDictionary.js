@@ -157,10 +157,10 @@ function onSysDataGridLoad(e) {
             grid.select(0);
         } else {
             // 已有选中，手动触发一次字典项加载
-            var firstRow = selected[0];
-            _selectedSysDataId = firstRow.sysdataid || '';
-            _selectedSysDataCode = firstRow.code || '';
-            loadDictItemGrid();
+            //var firstRow = selected[0];
+            //_selectedSysDataId = firstRow.sysdataid || '';
+            //_selectedSysDataCode = firstRow.code || '';
+            //loadDictItemGrid();
         }
     } else {
         clearDictItemGrid();
@@ -402,14 +402,14 @@ function createDictItemGridColumns(grid) {
         headerAlign: 'center', align: 'center',
         width: 120,
         renderer: function (e) {
+            var record = e.record;
+            if (!record || record.columnDataSource == 0) return '';
             var val = e.value;
             if (val === undefined || val === null || val === '') return '';
             var s = String(val).replace(/"/g, '&quot;');
-            var status = e.record ? e.record.status : false;
-            var color = status ? '' : 'color:gray;';
-            // 与 ExtJS 的 iconDictItemConfigureField 行为一致，用链接形式渲染
+            var color = record.status ? '' : 'color:gray;';
             return '<a href="javascript:void(0)" style="text-decoration:none;' + color
-                 + '" onclick="onConfigFieldClick(\'' + (e.record ? e.record.dataitemid : '') + '\')">'
+                 + '" onclick="onConfigFieldClick(\'' + (record.dataitemid || '') + '\')">'
                  + s + '...</a>';
         }
     });
@@ -525,9 +525,51 @@ function onDictItemGridCellBeginEdit(e) {
 // ================================================================
 // 配置字段 - 点击弹窗（占位，后续实现弹窗）
 // ================================================================
+//================================================================
+//配置字段 - 点击超链接，打开编辑窗口（对照 ExtJS callBackDictItemConfig）
+//================================================================
 function onConfigFieldClick(dataitemid) {
-    console.log('[数据字典] 点击配置字段, dataitemid=', dataitemid);
-    // TODO：弹出配置窗口
+ var R = _loginUserLanguageResource;
+
+ if (_dataDictModuleRight.editFlag != 1) return;
+
+ // 从当前表格拿整行数据
+ var grid = mini.get('dictItemGrid');
+ if (!grid) return;
+ var data = grid.getData() || [];
+ var record = null;
+ for (var i = 0; i < data.length; i++) {
+     if (String(data[i].dataitemid) === String(dataitemid)) {
+         record = data[i];
+         break;
+     }
+ }
+ if (!record) return;
+
+ mini.open({
+     title: R.editDataItem,
+     url: context + '/miniui-app/modules/dataDictionary/dataDictionaryItemAddWindow.jsp',
+     width: '60%',
+     height: '80%',
+     modal: true,
+     allowResize: true,
+     maxable: true,
+     onload: function () {
+         var iframe = this.getIFrameEl();
+         var cw = iframe.contentWindow;
+         // ★ 把整行 record 交给子窗口回填（对照 ExtJS callBackDictItemConfig 的一堆 setValue）
+         cw.setData({
+             mode: 'edit',
+             lang: (loginUserLanguage || '').toUpperCase(),
+             sysDataId: _selectedSysDataId,
+             record: record
+         });
+         cw._parentRefreshDictItem = function () {
+             loadDictItemGrid();
+             loadSysDataGrid();
+         };
+     }
+ });
 }
 
 // ================================================================
@@ -749,11 +791,303 @@ function onSysDataAdd() {
         }
     });
 }
-function onSysDataDel()     { console.log('[数据字典] 删除数据模块'); }
-function onSysDataSave()    { console.log('[数据字典] 保存数据模块'); }
-function onSysDataExport()  { console.log('[数据字典] 导出数据模块'); }
+//================================================================
+//数据字典删除
+//================================================================
+function onSysDataDel() {
+	 var R = _loginUserLanguageResource;
+	 var grid = mini.get('sysDataGrid');
+	 if (!grid) return;
+	
+	 var rows = grid.getSelecteds() || [];
+	 if (rows.length === 0) {
+	     mini.alert(R.checkOne, R.tip);
+	     return;
+	 }
+	
+	 // ★ 与 ExtJS 完全一致：按语言取名称，用 dataModuleName 前缀
+	 var idList = [];
+	 var nameList = [];
+	 var lang = (loginUserLanguage || '').toUpperCase();
+	 for (var i = 0; i < rows.length; i++) {
+	     idList.push(rows[i].sysdataid);
+	     var nm = '';
+	     if (lang === 'ZH_CN')      nm = rows[i].name_zh_CN;
+	     else if (lang === 'EN')    nm = rows[i].name_en;
+	     else if (lang === 'RU')    nm = rows[i].name_ru;
+	     nameList.push(nm);
+	 }
+	
+	 var deleteInfo;
+	 if (idList.length === 1) {
+	     deleteInfo = R.dataModuleName
+	         + ":<font color=red>" + nameList[0] + "</font>"
+	         + "<br/>" + R.confirmDelete;
+	 } else {
+	     deleteInfo = R.sparseRecordCount
+	         + ":<font color=red>" + idList.length + "</font>"
+	         + "<br/>" + R.confirmDelete;
+	 }
+	
+	 mini.confirm(deleteInfo, R.tip, function (action) {
+	     if (action !== 'ok') return;
+	     $.ajax({
+	         url: context + '/systemdataInfoController/deleteSystemdataInfoById',
+	         type: 'POST',
+	         data: { paramsId: idList.join(',') },
+	         dataType: 'json',
+	         success: function (result) {
+	             if (result.flag === true) {
+	                 mini.alert(R.deleteSuccessfully, R.tip);
+	             } else {
+	                 mini.alert('<font color="red">' + R.deleteFailed + '</font>', R.tip);
+	             }
+	             _selectedSysDataId = '';
+	             _selectedSysDataCode = '';
+	             loadSysDataGrid();
+	         },
+	         error: function () {
+	             mini.alert(R.requestFailed, R.tip);
+	         }
+	     });
+	 });
+}
+
+//================================================================
+//数据字典主表 - 批量保存（对照 ExtJS batchUpdateDataDictionaryInfo）
+//================================================================
+function onSysDataSave() {
+	 var R = _loginUserLanguageResource;
+	 var grid = mini.get('sysDataGrid');
+	 if (!grid) return;
+	
+	 // ★ 提交当前单元格编辑，确保 getChanges 拿到最新值
+	 grid.commitEdit();
+	
+	 // ★ 只取修改过的行（等价 ExtJS store.getModifiedRecords()）
+	 var modified = grid.getChanges('modified', false) || [];
+	 if (modified.length === 0) {
+	     mini.alert(R.noDataChange, R.tip);
+	     return;
+	 }
+	
+	 // ★ 字段与 ExtJS 完全一致：sysdataid / name_zh_CN / name_en / name_ru / sorts
+	 var arr = [];
+	 for (var i = 0; i < modified.length; i++) {
+	     var rec = modified[i];
+	     arr.push({
+	         sysdataid: rec.sysdataid,
+	         name_zh_CN: rec.name_zh_CN,
+	         name_en:    rec.name_en,
+	         name_ru:    rec.name_ru,
+	         sorts:      rec.sorts
+	     });
+	 }
+	
+	 $.ajax({
+	     url: context + '/systemdataInfoController/batchUpdateDataDictionaryInfo',
+	     type: 'POST',
+	     data: { data: JSON.stringify(arr) },
+	     dataType: 'json',
+	     success: function (result) {
+	         if (result.success === true && result.flag === true) {
+	             mini.alert(R.savedSuccessfully, R.tip);
+	         } else if (result.success === true && result.flag === false) {
+	             mini.alert('<font color="red">' + R.saveFailed + '</font>', R.tip);
+	         } else {
+	             mini.alert('<font color="red">' + R.saveFailed + '</font>', R.tip);
+	         }
+	         grid.accept();
+	         loadSysDataGrid();
+	     },
+	     error: function () {
+	         mini.alert(R.requestFailed, R.tip);
+	     }
+	 });
+}
+
+//================================================================
+//数据字典主表 - 导出完整数据（对照 ExtJS exportDataDictionaryCompleteData）
+//================================================================
+function onSysDataExport() {
+	 var R = _loginUserLanguageResource;
+	 var url = context + '/systemdataInfoController/exportDataDictionaryCompleteData';
+	
+	 var timestamp = new Date().getTime();
+	 var key = 'exportDataDictionaryCompleteData' + '_' + timestamp;
+	 var maskPanelId = 'sysDataModulePanel';
+	
+	 var param = "&recordCount=10000"
+	           + "&fileName=" + URLencode(URLencode(R.dataDictionaryExportFileName))
+	           + '&key=' + key;
+	
+	 exportDataMask(key, maskPanelId, R.loadingData);
+	 downloadFile(url + '?flag=true' + param);
+}
 function onSysDataImport()  { console.log('[数据字典] 导入数据模块'); }
 
-function onDictItemAdd()    { console.log('[数据字典] 新增字典项'); }
-function onDictItemDel()    { console.log('[数据字典] 删除字典项'); }
-function onDictItemSave()   { console.log('[数据字典] 保存字典项'); }
+//================================================================
+//右侧字典项 - 新增（对照 ExtJS addfindtattxtInfo + savetoSysDataItems）
+//================================================================
+function onDictItemAdd() {
+	 var R = _loginUserLanguageResource;
+	
+	 if (!_selectedSysDataId) {
+	     mini.alert(R.checkOne, R.tip);
+	     return;
+	 }
+	 // 与 ExtJS 一致：只有指定字典 code 才允许添加
+	 if (_selectedSysDataCode !== 'realTimeMonitoring_Overview'
+	     && _selectedSysDataCode !== 'historyQuery_Overview') {
+	     return;
+	 }
+	
+	 // 当前设备类型（取当前二级标签的 deviceTypeId）
+	 var deviceType = currentLevel2 ? (currentLevel2.deviceTypeId || '') : '';
+	 if (deviceType && deviceType.indexOf(',') > -1) {
+	     deviceType = currentLevel1 ? (currentLevel1.deviceTypeId || '') : '';
+	 }
+	
+	 mini.open({
+	     title: R.addDataItem,
+	     url: context + '/miniui-app/modules/dataDictionary/dataDictionaryItemAddWindow.jsp',
+	     width: '60%',
+	     height: '80%',
+	     modal: true,
+	     allowResize: true,
+	     maxable: true,
+	     onload: function () {
+	         var iframe = this.getIFrameEl();
+	         var cw = iframe.contentWindow;
+	         cw.setData({
+	             lang: (loginUserLanguage || '').toUpperCase(),
+	             mode: 'save',
+	             sysDataId: _selectedSysDataId,
+	             deviceType: deviceType
+	         });
+	         // 子窗口保存成功后刷新右侧字典项列表 + 左侧字典主表
+	         cw._parentRefreshDictItem = function () {
+	             loadDictItemGrid();
+	             loadSysDataGrid();
+	         };
+	     }
+	 });
+}
+
+//================================================================
+//右侧字典项 - 批量删除（对照 ExtJS delfindtattxtInfo）
+//================================================================
+function onDictItemDel() {
+	 var R = _loginUserLanguageResource;
+	 var grid = mini.get('dictItemGrid');
+	 if (!grid) return;
+	
+	 var rows = grid.getSelecteds() || [];
+	 if (rows.length === 0) {
+	     mini.alert(R.checkOne, R.tip);
+	     return;
+	 }
+	
+	 var lang = (loginUserLanguage || '').toUpperCase();
+	 var idList = [];
+	 var nameList = [];
+	 for (var i = 0; i < rows.length; i++) {
+	     idList.push(rows[i].dataitemid);
+	     var nm = '';
+	     if (lang === 'ZH_CN')      nm = rows[i].name_zh_CN;
+	     else if (lang === 'EN')    nm = rows[i].name_en;
+	     else if (lang === 'RU')    nm = rows[i].name_ru;
+	     nameList.push(nm);
+	 }
+	
+	 var deleteInfo;
+	 if (idList.length === 1) {
+	     deleteInfo = R.fiedName
+	         + ":<font color=red>" + nameList[0] + "</font>"
+	         + "<br/>" + R.confirmDelete;
+	 } else {
+	     deleteInfo = R.sparseRecordCount
+	         + ":<font color=red>" + idList.length + "</font>"
+	         + "<br/>" + R.confirmDelete;
+	 }
+	
+	 mini.confirm(deleteInfo, R.tip, function (action) {
+	     if (action !== 'ok') return;
+	     $.ajax({
+	         url: context + '/dataitemsInfoController/deleteDataitemsInfoById',
+	         type: 'POST',
+	         data: { paramsId: idList.join(',') },
+	         dataType: 'json',
+	         success: function (result) {
+	             if (result.flag === true) {
+	                 mini.alert(R.deleteSuccessfully, R.tip, function () {
+	                     loadDictItemGrid();
+	                 });
+	             } else {
+	                 mini.alert('<font color="red">' + R.deleteFailed + '</font>', R.tip);
+	             }
+	         },
+	         error: function () {
+	             mini.alert(R.requestFailed, R.tip);
+	         }
+	     });
+	 });
+}
+
+//================================================================
+//右侧字典项 - 批量保存（对照 ExtJS batchUpdateDictionaryItemInfo）
+//================================================================
+function onDictItemSave() {
+	 var R = _loginUserLanguageResource;
+	 var grid = mini.get('dictItemGrid');
+	 if (!grid) return;
+	
+	 // ★ 提交当前单元格编辑，确保 getChanges 拿到最新值
+	 grid.commitEdit();
+	
+	 // ★ 只取修改过的行（等价 ExtJS store.getModifiedRecords()）
+	 var modified = grid.getChanges('modified', false) || [];
+	 if (modified.length === 0) {
+	     mini.alert(R.noDataChange, R.tip);
+	     return;
+	 }
+	
+	 var arr = [];
+	 for (var i = 0; i < modified.length; i++) {
+	     var rec = modified[i];
+	     arr.push({
+	         dataitemid: rec.dataitemid,
+	         name_zh_CN: rec.name_zh_CN,
+	         name_en:    rec.name_en,
+	         name_ru:    rec.name_ru,
+	         datavalue:  rec.datavalue,
+	         status_cn:  rec.status_cn ? 1 : 0,
+	         status_en:  rec.status_en ? 1 : 0,
+	         status_ru:  rec.status_ru ? 1 : 0,
+	         sorts:      rec.sorts,
+	         status:     rec.status    ? 1 : 0
+	     });
+	 }
+	
+	 $.ajax({
+	     url: context + '/dataitemsInfoController/batchUpdateDictionaryItemInfo',
+	     type: 'POST',
+	     data: { data: JSON.stringify(arr) },
+	     dataType: 'json',
+	     success: function (result) {
+	         if (result.success === true && result.flag === true) {
+	             mini.alert(R.savedSuccessfully, R.tip);
+	             grid.accept();
+	             loadDictItemGrid();
+	             loadSysDataGrid();     // ExtJS 保存后额外刷新主表
+	         } else if (result.success === true && result.flag === false) {
+	             mini.alert('<font color="red">' + R.saveFailed + '</font>', R.tip);
+	         } else {
+	             mini.alert('<font color="red">' + R.saveFailed + '</font>', R.tip);
+	         }
+	     },
+	     error: function () {
+	         mini.alert(R.requestFailed, R.tip);
+	     }
+	 });
+}

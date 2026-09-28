@@ -22,7 +22,7 @@ String path = request.getContextPath();
     <div class="detail-toolbar">
         <span style="font-size:12px;color:#333;" id="detailTitle"></span>
         <span style="flex:1;"></span>
-        <button id="exportHistoryDetailBtn" class="mini-button" iconCls="export" onclick="exportDetailData()"></button>
+        <button id="exportHistoryDetailBtn" class="mini-button"  plain="true" iconCls="export" onclick="exportDetailData()"></button>
     </div>
     <!-- 表格容器 -->
     <div class="detail-grid-wrapper">
@@ -308,7 +308,7 @@ String path = request.getContextPath();
         '<input id="itemCurveStartDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
         '<span style="margin-left:8px; font-size:12px; color:#333;">' + _loginUserLanguageResource.timeTo + '：</span>' +
         '<input id="itemCurveEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
-        '<button class="mini-button" iconCls="search" onclick="refreshCurveData(\'' + containerId + '\', \'' + itemName + '\', \'' + cellInfo.column + '\', \'' + cellInfo.type + '\', \'' + cellInfo.resolutionMode + '\')">' + _loginUserLanguageResource.search + '</button>' +
+        '<button class="mini-button"  plain="true" iconCls="search" onclick="refreshCurveData(\'' + containerId + '\', \'' + itemName + '\', \'' + cellInfo.column + '\', \'' + cellInfo.type + '\', \'' + cellInfo.resolutionMode + '\')">' + _loginUserLanguageResource.search + '</button>' +
         '<span style="flex:1;"></span>' +
         '<span id="curveVacuateCountLabel" style="font-size:12px; color:#999; display:none;">' + _loginUserLanguageResource.vacuateCount + '：<span id="curveVacuateCountSpan">0</span></span>' +
         '<span id="curveTotalCountLabel" style="font-size:12px; color:#999; display:none;">' + _loginUserLanguageResource.totalCount + '：<span id="curveTotalCountSpan">0</span></span>' +
@@ -571,9 +571,9 @@ function viewItemHistoryDataTable(itemName, itemValue, cellInfo) {
         '<input id="itemHistoryDataStartDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
         '<span style="margin-left:8px; font-size:12px; color:#333;">' + _loginUserLanguageResource.timeTo + '：</span>' +
         '<input id="itemHistoryDataEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />' +
-        '<button class="mini-button" iconCls="search" onclick="refreshHistoryDataGrid(\'' + containerId + '\')">' + _loginUserLanguageResource.search + '</button>' +
+        '<button class="mini-button"  plain="true" iconCls="search" onclick="refreshHistoryDataGrid(\'' + containerId + '\')">' + _loginUserLanguageResource.search + '</button>' +
         '<span style="flex:1;"></span>' +
-        '<button class="mini-button" iconCls="export" onclick="exportItemHistoryData(\'' + containerId + '\', \'' + itemName + '\', \'' + itemCode + '\', \'' + itemType + '\', \'' + itemResolutionMode + '\', \'' + bitIndex + '\')">' + (_loginUserLanguageResource.exportData || '导出') + '</button>' +
+        '<button class="mini-button"  plain="true" iconCls="export" onclick="exportItemHistoryData(\'' + containerId + '\', \'' + itemName + '\', \'' + itemCode + '\', \'' + itemType + '\', \'' + itemResolutionMode + '\', \'' + bitIndex + '\')">' + (_loginUserLanguageResource.exportData || '导出') + '</button>' +
         // ★ 总记录数标签（初始隐藏）
         '<span id="historyDataTotalCountLabel" style="font-size:12px; color:#999; margin-left:8px;">' + _loginUserLanguageResource.totalCount + '：<span id="historyDataTotalCountSpan">0</span></span>' +
         '</div>';

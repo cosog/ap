@@ -206,7 +206,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         mini.parse();
         setTimeout(function () {
             initAuxiliaryDeviceManagerPage();
-        }, 100);
+        }, 10);
     });
 </script>
 </body>

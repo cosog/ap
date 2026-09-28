@@ -62,7 +62,7 @@ String moduleId = request.getParameter("moduleId");
         <div class="system-log-area">
             <!-- 工具栏 -->
             <div class="mini-toolbar" style="border-bottom:1px solid #e8e8e8; padding:4px 8px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; flex-shrink:0;">
-                <button id="refreshBtn" class="mini-button" iconCls="note-refresh" onclick="refreshData()">刷新</button>
+                <button id="refreshBtn" class="mini-button"  plain="true" iconCls="note-refresh" onclick="refreshData()">刷新</button>
                 <span class="separator"></span>
                 <span id="userLabel" style="font-size:12px;color:#333;">用户：</span>
                 <input id="userCombo" class="mini-combobox" style="width:150px;" emptyText="-- 全部 --" url="<%=path%>/userManagerController/loadUserComboxList" onbeforeload="onUserComboBeforeLoad" onshowpopup="onUserComboShowPopup" dataField="list" valueField="boxkey" textField="boxval" />
@@ -75,9 +75,9 @@ String moduleId = request.getParameter("moduleId");
                 <span id="endTimeLabel" style="font-size:12px;color:#333;">结束：</span>
                 <input id="endDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showClearButton="false" allowInput="false" />
                 <span class="separator"></span>
-                <button id="queryBtn" class="mini-button" iconCls="search" onclick="doQuery()">查询</button>
+                <button id="queryBtn" class="mini-button"  plain="true" iconCls="search" onclick="doQuery()">查询</button>
                 <span class="separator"></span>
-                <button id="exportBtn" class="mini-button" iconCls="export" onclick="doExport()">导出</button>
+                <button id="exportBtn" class="mini-button"  plain="true" iconCls="export" onclick="doExport()">导出</button>
                 <input id="logColumnStr" type="hidden" value="" />
             </div>
             <!-- 表格 -->

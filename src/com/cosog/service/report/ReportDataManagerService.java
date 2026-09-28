@@ -4997,7 +4997,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		for(int i=0;i<calTimeList.size();i++){
 			result_json.append("{\"calDate\":\"" + calTimeList.get(i) + "\",\"data\":[");
 			for (Integer key : itemNameMap.keySet()) {
-				result_json.append(""+curveDataMap.get(key).get(i)+",");
+				result_json.append(""+(StringManagerUtils.isNum(curveDataMap.get(key).get(i))?curveDataMap.get(key).get(i):"\"\"")+",");
 	        }
 			if (result_json.toString().endsWith(",")) {
 				result_json.deleteCharAt(result_json.length() - 1);
@@ -6153,6 +6153,22 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			sqlBuff.append(" order by t.SaveTime");
 			
 			List<String> allColList=new ArrayList<String>();
+			if(allColList.size()==0){
+				for(int j=0;j<columnCount;j++){
+					allColList.add("\"\"");
+				}
+				allColList.add("\"recordId\"");
+				for(int j=0;j<reportAcqItemList.size();j++){
+					if(reportAcqItemList.get(j).getSort()>=1){
+						allColList.set(reportAcqItemList.get(j).getSort()-1, "\""+reportAcqItemList.get(j).getItemCode()+"\"");
+					}
+				}
+				for(int j=0;j<reportOtherItemList.size();j++){
+					if(reportOtherItemList.get(j).getSort()>=1){
+						allColList.set(reportOtherItemList.get(j).getSort()-1, "\""+reportOtherItemList.get(j).getItemCode()+"\"");
+					}
+				}
+			}
 			
 			String sql=sqlBuff.toString().replaceAll("@", ",");
 			List<?> reportDataList = this.findCallSql(sql);
@@ -6222,22 +6238,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 				}
 				dataList.add(everyDaya);
-				if(allColList.size()==0){
-					for(int j=0;j<columnCount;j++){
-						allColList.add("\"\"");
-					}
-					allColList.add("\"recordId\"");
-					for(int j=0;j<reportAcqItemList.size();j++){
-						if(reportAcqItemList.get(j).getSort()>=1){
-							allColList.set(reportAcqItemList.get(j).getSort()-1, "\""+reportAcqItemList.get(j).getItemCode()+"\"");
-						}
-					}
-					for(int j=0;j<reportOtherItemList.size();j++){
-						if(reportOtherItemList.get(j).getSort()>=1){
-							allColList.set(reportOtherItemList.get(j).getSort()-1, "\""+reportOtherItemList.get(j).getItemCode()+"\"");
-						}
-					}
-				}
+				
 			}
 			
 			List<String> dateList = StringManagerUtils.getDatesBetween(reportDate,reportDate);

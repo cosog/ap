@@ -80,8 +80,8 @@ String context = path;
             </tr>
         </table>
         <div class="btn-row">
-            <button id="btnSave" class="mini-button" onclick="onSave()">保存</button>
-            <button id="btnCancel" class="mini-button" onclick="onCancel()">取消</button>
+            <button id="btnSave" class="mini-button"  plain="true" onclick="onSave()">保存</button>
+            <button id="btnCancel" class="mini-button"  plain="true" onclick="onCancel()">取消</button>
         </div>
     </form>
 </div>

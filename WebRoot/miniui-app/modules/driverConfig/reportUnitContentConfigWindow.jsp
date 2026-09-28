@@ -23,7 +23,7 @@ String context = path;
     <div class="mini-toolbar">
         <span id="infoLabel" style="font-size:12px;color:#333;"></span>
         <span style="flex:1;"></span>
-        <button id="saveBtn" class="mini-button" iconCls="save" onclick="onSave()">保存</button>
+        <button id="saveBtn" class="mini-button"  plain="true" iconCls="save" onclick="onSave()">保存</button>
     </div>
     <div class="mini-splitter" vertical="false" style="flex:1;width:100%;">
         <div size="35%" showCollapseButton="false">

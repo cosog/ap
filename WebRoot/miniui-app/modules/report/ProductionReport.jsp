@@ -57,6 +57,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             align-self: stretch;
             box-sizing: border-box;
         }
+        .level2-sidebar.hidden { display: none; }
         .level2-sidebar .tab-item {
             padding: 10px 2px;
             font-size: 12px; cursor: pointer;

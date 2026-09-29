@@ -4858,3 +4858,143 @@ function _handsontableMakeMouseOver(helper) {
 function isTrueVal(v) {
 	return v === true || v === 1 || v === '1' || v === 'true';
 }
+
+//================================================================
+//全局选中状态（跨模块共享，用于新打开/切换模块时恢复）
+//================================================================
+/**
+* 保存全局选中状态到父窗口
+* @param {string} deviceTypeId  二级标签的 deviceTypeId（一级无子标签时传一级自身）
+* @param {string} deviceId      选中的设备 ID（二级切换时清空传 ''）
+* @param {object} [opts]        { suppress: true 时抑制保存 }
+*/
+function saveGlobalSelection(deviceTypeId, deviceId, opts) {
+ if (opts && opts.suppress) return;
+ try {
+     if (window.parent && window.parent !== window) {
+         window.parent.selectedDeviceType_global = deviceTypeId || '';
+         window.parent.selectedDeviceId_global   = deviceId     || '';
+     }
+ } catch (e) {
+     console.warn('saveGlobalSelection 失败', e);
+ }
+}
+
+/**
+* 读取父窗口的全局选中状态
+* @returns {{deviceTypeId:string, deviceId:string}}
+*/
+function loadGlobalSelection() {
+ try {
+     if (window.parent && window.parent !== window) {
+         return {
+             deviceTypeId: window.parent.selectedDeviceType_global || '',
+             deviceId:     window.parent.selectedDeviceId_global     || ''
+         };
+     }
+ } catch (e) {
+     console.warn('loadGlobalSelection 失败', e);
+ }
+ return { deviceTypeId: '', deviceId: '' };
+}
+
+/**
+ * 根据 deviceTypeId 在 level1 数据中反查 level1/level2 索引
+ *
+ * 规则：仅当 children.length > 1 时才生成"全部"tab；只有一个二级时没有"全部"
+ *  - level2Index = 0  → 有"全部"时匹配"全部"
+ *  - level2Index = j+1 → 有"全部"时匹配第 j 个具体二级
+ *  - level2Index = j   → 无"全部"时匹配第 j 个具体二级
+ *  - level2Index = -1  → 一级下无子标签，直接用一级自身
+ *  - 返回 null         → 找不到
+ */
+function findTargetLevels(level1Data, deviceTypeId) {
+    if (!deviceTypeId || !level1Data || level1Data.length === 0) return null;
+    var target = String(deviceTypeId);
+
+    for (var i = 0; i < level1Data.length; i++) {
+        var item = level1Data[i];
+        var children = item.children || [];
+
+        // 情况 1：一级下无子标签 → 匹配一级自身
+        if (children.length === 0) {
+            if (String(item.deviceTypeId) === target) {
+                return { level1Index: i, level2Index: -1 };
+            }
+            continue;
+        }
+
+        var hasAll = (children.length > 1);
+
+        // 情况 2：匹配"全部"（仅有 hasAll 时）
+        if (hasAll) {
+            var allIds = [];
+            for (var k = 0; k < children.length; k++) {
+                if (children[k].deviceTypeId) allIds.push(children[k].deviceTypeId);
+            }
+            if (String(allIds.join(',')) === target) {
+                return { level1Index: i, level2Index: 0 };
+            }
+        }
+
+        // 情况 3：匹配具体二级
+        for (var j = 0; j < children.length; j++) {
+            if (String(children[j].deviceTypeId) === target) {
+                return {
+                    level1Index: i,
+                    level2Index: hasAll ? (j + 1) : j
+                };
+            }
+        }
+    }
+    return null;
+}
+
+/**
+* 创建模块级恢复状态对象（在 initXxxPage 中调用）
+* @returns {{deviceTypeId:string, level1Index:number, level2Index:number, deviceId:string}}
+*/
+function createRestoreState() {
+ var g = loadGlobalSelection();
+ return {
+     deviceTypeId: g.deviceTypeId || '',
+     level1Index:  -1,
+     level2Index:  -1,
+     deviceId:     g.deviceId || ''
+ };
+}
+
+/**
+* 在设备列表 grid 上尝试恢复选中；并处理首次加载后的"解除抑制"
+* @param {mini.DataGrid} grid
+* @param {object}   restoreState  由 createRestoreState 产生
+* @param {object}   suppressSave  { value:true/false } 布尔包装对象（首次加载后会被置为 false）
+* @param {Function} [onRestored]  恢复后的回调
+*/
+function restoreDeviceSelection(grid, restoreState, suppressSave, onRestored) {
+	 if (!grid) return;
+	 var data = grid.getData();
+	 if (data && data.length > 0) {
+	     var targetId = restoreState.deviceId;
+	     var targetRecord = null;
+	     var selectRow=null;
+	     if (targetId) {
+	         for (var k = 0; k < data.length; k++) {
+	             if (String(data[k].id) === String(targetId)) {
+	                 targetRecord = data[k];
+	                 selectRow=k;
+	                 break;
+	             }
+	         }
+	     }
+	     grid.select(selectRow || 0);
+	     setTimeout(function () {
+	    	 grid.scrollIntoView(selectRow);
+	        }, 150);
+	     
+	 }
+	 if (suppressSave && suppressSave.value) {
+	     setTimeout(function () { suppressSave.value = false; }, 100);
+	 }
+	 if (typeof onRestored === 'function') onRestored();
+}

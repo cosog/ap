@@ -41,6 +41,10 @@ var _dmCurrentCalculateType        = 0;
 
 var isInitializing = true;
 
+//---------- 全局选中状态 ----------
+var _dmRestoreState = null;              // 在 initDeviceManagerPage 中赋值
+var _dmSuppressSave = { value: true };   // 对象包装，便于异步修改
+
 // ================================================================
 // 页面初始化
 // ================================================================
@@ -58,6 +62,10 @@ function initDeviceManagerPage() {
     _dmModuleRight.editFlag    = parseInt(_dmModuleRight.editFlag)    || 0;
     _dmModuleRight.controlFlag = parseInt(_dmModuleRight.controlFlag) || 0;
 
+    // ★ 初始化全局恢复状态
+    _dmRestoreState = createRestoreState();
+    _dmSuppressSave = { value: true };
+    
     initDeviceManagerI18n();
     initDeviceManagerMessageListener();
     updateDmBtnStatus();
@@ -161,12 +169,43 @@ function initDeviceManagerMessageListener() {
         if (!message || !message.action) return;
         switch (message.action) {
             case 'refresh':
-                onDmRefreshDeviceList();
+            	handleDmRefreshFromParent(message);
                 break;
         }
     });
 }
 
+/**
+ * 父窗口发出 refresh（组织切换 / 从其他模块切回本模块）时的处理
+ */
+function handleDmRefreshFromParent(message) {
+    console.log('主设备管理收到刷新指令, orgId:', message.orgId);
+
+    var deviceCombo = mini.get('dmDeviceCombo');
+    if (deviceCombo) deviceCombo.setValue('');
+    var signInIdCombo = mini.get('dmSignInIdCombo');
+    if (signInIdCombo) signInIdCombo.setValue('');
+
+    var gsel = loadGlobalSelection();
+    var curType = getCurrentDeviceType();
+
+    // 情况 1：一级/二级标签不一致
+    if (gsel.deviceTypeId && String(curType) !== String(gsel.deviceTypeId)) {
+        var t = findTargetLevels(_dmLevel1Data, gsel.deviceTypeId);
+        if (t) {
+            _dmRestoreState.deviceId    = gsel.deviceId || '';
+            _dmRestoreState.level2Index = t.level2Index;
+            selectDmLevel1(t.level1Index);
+            return;
+        }
+    }
+
+    // 情况 2 & 3：统一重新加载设备列表
+    if (gsel.deviceId) {
+        _dmRestoreState.deviceId = String(gsel.deviceId);
+    }
+    CreateAndLoadDeviceInfoTable(true);
+}
 
 // ================================================================
 // 一级标签
@@ -193,7 +232,17 @@ function buildDmLevel1Tabs() {
     }
 
     if (_dmLevel1Data.length > 0) {
-        selectDmLevel1(0);
+        // ★ 使用恢复状态决定起始一级
+        var startIndex = 0;
+        if (_dmRestoreState.deviceTypeId) {
+            var t = findTargetLevels(_dmLevel1Data, _dmRestoreState.deviceTypeId);
+            if (t) {
+                _dmRestoreState.level2Index = t.level2Index;
+                startIndex = t.level1Index;
+            }
+            _dmRestoreState.deviceTypeId = '';
+        }
+        selectDmLevel1(startIndex);
     }
 }
 
@@ -220,43 +269,64 @@ function buildDmLevel2Tabs(level1Item) {
 
     var children = level1Item.children || [];
 
+    // ============ 一级无子标签 ============
     if (!children || children.length === 0) {
         sidebar.classList.add('hidden');
         _dmLevel2Data = [];
         _dmCurrentLevel2 = null;
+        _dmRestoreState.level2Index = -1;
 
         applyCurrentDeviceType(level1Item.deviceTypeId, level1Item.text);
+        // ★ 用恢复候选 deviceId 保存全局
+        saveGlobalSelection(level1Item.deviceTypeId,
+            _dmRestoreState.deviceId || '',
+            { suppress: _dmSuppressSave.value });
         return;
     }
 
+    // ============ 一级有子标签 ============
     sidebar.classList.remove('hidden');
     _dmLevel2Data = children;
 
-    var allIds = [];
-    for (var i = 0; i < children.length; i++) {
-        allIds.push(children[i].deviceTypeId);
+    var allTabs = [];
+    // ★ 只有多个二级时才生成"全部"tab
+    if (children.length > 1) {
+        var allIds = [];
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].deviceTypeId) allIds.push(children[i].deviceTypeId);
+        }
+        allTabs.push({
+            text: _loginUserLanguageResource.all,
+            deviceTypeId: allIds.join(','),
+            isAll: true
+        });
     }
-    var allTab = {
-        text: _loginUserLanguageResource.all,
-        deviceTypeId: allIds.join(','),
-        isAll: true
-    };
+    for (var i = 0; i < children.length; i++) allTabs.push(children[i]);
 
-    var allTabs = [allTab].concat(children);
-    _dmCurrentLevel2 = allTabs[0];
+    // ★ 使用恢复状态决定默认二级
+    var defaultIndex = 0;
+    if (_dmRestoreState.level2Index >= 0 && _dmRestoreState.level2Index < allTabs.length) {
+        defaultIndex = _dmRestoreState.level2Index;
+    }
+    _dmRestoreState.level2Index = -1;
 
     for (var i = 0; i < allTabs.length; i++) {
-        (function (idx, tabItem) {
+        (function (idx, tabItem, tabsArr) {
             var div = document.createElement('div');
-            div.className = 'tab-item' + (idx === 0 ? ' active' : '');
+            div.className = 'tab-item' + (idx === defaultIndex ? ' active' : '');
             div.textContent = tabItem.text;
             div.title = tabItem.text;
-            div.onclick = function () { selectDmLevel2(idx, allTabs); };
+            div.onclick = function () { selectDmLevel2(idx, tabsArr); };
             sidebar.appendChild(div);
-        })(i, allTabs[i]);
+        })(i, allTabs[i], allTabs);
     }
 
-    applyCurrentDeviceType(allTabs[0].deviceTypeId, allTabs[0].text);
+    _dmCurrentLevel2 = allTabs[defaultIndex];
+    applyCurrentDeviceType(_dmCurrentLevel2.deviceTypeId, _dmCurrentLevel2.text);
+    // ★ 用恢复候选 deviceId 保存全局
+    saveGlobalSelection(_dmCurrentLevel2.deviceTypeId,
+        _dmRestoreState.deviceId || '',
+        { suppress: _dmSuppressSave.value });
 }
 
 function selectDmLevel2(index, allTabs) {
@@ -270,6 +340,10 @@ function selectDmLevel2(index, allTabs) {
     }
 
     applyCurrentDeviceType(_dmCurrentLevel2.deviceTypeId, _dmCurrentLevel2.text);
+    // ★ 用恢复候选 deviceId 保存全局
+    saveGlobalSelection(_dmCurrentLevel2.deviceTypeId,
+        _dmRestoreState.deviceId || '',
+        { suppress: _dmSuppressSave.value });
 }
 
 // ================================================================
@@ -1738,18 +1812,23 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 
                 updateDeviceAdditionalInfoTabs({});
             } else {
+            	// ★ 恢复目标：优先 _dmRestoreState.deviceId（切标签保留的），其次 _dmSelectedDeviceId
+                var restoreId = _dmRestoreState.deviceId || _dmSelectedDeviceId
+
                 var selectRow = 0;
-                for (var i = 0; i < result.totalRoot.length; i++) {
-                    if (result.totalRoot[i].id == _dmSelectedDeviceId) {
-                        selectRow = i;
-                        break;
+                if (restoreId > 0) {
+                    for (var i = 0; i < result.totalRoot.length; i++) {
+                        if (String(result.totalRoot[i].id) === String(restoreId)) {
+                            selectRow = i;
+                            break;
+                        }
                     }
                 }
                 _dmDeviceSelectRow = selectRow;
                 deviceInfoHandsontableHelper.hot.selectCell(selectRow, 'deviceName');
 
                 var recordId = deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow, 'id');
-                var devName = deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow, 'deviceName');
+                var devName  = deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow, 'deviceName');
 
                 var deviceTabInstance = deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow, 'deviceTabInstance');
                 var deviceTabInstanceInfo = getDeviceTabInstanceInfo(deviceTabInstance);
@@ -1758,13 +1837,11 @@ function CreateAndLoadDeviceInfoTable(isNew) {
                 var applicationScenarios = getApplicationScenariosValue(
                     deviceInfoHandsontableHelper.hot.getDataAtRowProp(selectRow, 'applicationScenariosName'));
 
-                // ★ 先更新上下文
                 _dmSelectedDeviceId            = recordId;
                 _dmCurrentDeviceName           = devName;
                 _dmCurrentApplicationScenarios = applicationScenarios;
                 _dmCurrentCalculateType        = calculateType;
 
-                // ★ 再更新 tab（内部触发一次加载）
                 updateDeviceAdditionalInfoTabs(deviceTabInstanceInfo);
             }
 
@@ -1776,6 +1853,11 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 
             deviceInfoHandsontableHelper.initSignInIdAndSlaveMap(result.totalRoot);
             deviceInfoHandsontableHelper.hot.render();
+            
+            // ★ 首次加载完成后解除抑制
+            if (_dmSuppressSave.value) {
+                setTimeout(function () { _dmSuppressSave.value = false; }, 100);
+            }
         },
         error: function () {
             mini.unmask(maskEl);
@@ -2327,6 +2409,16 @@ var DeviceInfoHandsontableHelper = {
                             _dmCurrentDeviceName           = deviceName;
                             _dmCurrentApplicationScenarios = applicationScenarios;
                             _dmCurrentCalculateType        = calculateType;
+
+                            // ★ 记录为恢复候选（后续刷新/切标签/跨模块都基于它）
+                            if (recordId > 0) {
+                                _dmRestoreState.deviceId = String(recordId);
+                                saveGlobalSelection(
+                                    getCurrentDeviceType(),
+                                    recordId,
+                                    { suppress: _dmSuppressSave.value }
+                                );
+                            }
 
                             // ★ 再更新 tab（内部触发一次加载）
                             updateDeviceAdditionalInfoTabs(deviceTabInstanceInfo);

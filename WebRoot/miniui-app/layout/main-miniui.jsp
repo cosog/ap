@@ -78,6 +78,8 @@ request.setAttribute("browserLang", browserLang);
             window.location.href = context + "/login";
         }
         
+        window.selectedDeviceType_global;
+        window.selectedDeviceId_global;
         
         var user_Type = '<%=userLoginType%>';
         var userOrg_Ids = '<%=userLoginOrgIds%>';

@@ -32,11 +32,19 @@ var _pdSelectedRowId        = 0;
 
 var isInitializing = true;
 
+//---------- 全局选中状态 ----------
+var _reportRestoreState = null;              // 在 initProductionReportPage 中赋值
+var _reportSuppressSave = { value: true };   // 对象包装，便于异步修改
+
 // ================================================================
 // 页面初始化
 // ================================================================
 function initProductionReportPage() {
     initReportModuleRight();
+ // ★ 初始化全局恢复状态
+    _reportRestoreState = createRestoreState();
+    _reportSuppressSave = { value: true };
+    
     buildReportLevel1Tabs();
     initReportI18n();
     initReportDefaultDates();
@@ -84,18 +92,49 @@ function initProductionReportMessageListener() {
         if (!message || !message.action) return;
         switch (message.action) {
             case 'refresh':
-                var tabs = mini.get('dailyReportInnerTabs');
-                if (!tabs) return;
-                var tab = tabs.getActiveTab();
-                if (!tab) return;
-                if (tab.name === 'singleWell') {
-                    loadSingleWellDeviceGrid();
-                } else if (tab.name === 'area') {
-                    loadProductionDailyReportInstanceGrid();
-                }
+                handleReportRefreshFromParent(message);
                 break;
         }
     });
+}
+
+/**
+ * 父窗口发出 refresh（组织切换 / 从其他模块切回本模块）时的处理
+ */
+function handleReportRefreshFromParent(message) {
+    console.log('生产报表收到刷新指令, orgId:', message.orgId);
+
+    var tabs = mini.get('dailyReportInnerTabs');
+    var tab = tabs ? tabs.getActiveTab() : null;
+    var tabName = tab ? tab.name : '';
+
+    // area tab：常规刷新
+    if (tabName !== 'singleWell') {
+        if (tabName === 'area') {
+            loadProductionDailyReportInstanceGrid();
+        }
+        return;
+    }
+
+    var gsel = loadGlobalSelection();
+    var curType = _reportCurrentDeviceType ? String(_reportCurrentDeviceType) : '';
+
+    // 情况 1：二级（或一级）标签不一致
+    if (gsel.deviceTypeId && curType !== String(gsel.deviceTypeId)) {
+        var t = findTargetLevels(_reportLevel1Data, gsel.deviceTypeId);
+        if (t) {
+            _reportRestoreState.deviceId    = gsel.deviceId || '';
+            _reportRestoreState.level2Index = t.level2Index;
+            selectReportLevel1(t.level1Index);
+            return;
+        }
+    }
+
+    // 情况 2 & 3：统一重新加载设备列表
+    if (gsel.deviceId) {
+        _reportRestoreState.deviceId = String(gsel.deviceId);
+    }
+    loadSingleWellDeviceGrid();
 }
 
 // ================================================================
@@ -138,7 +177,20 @@ function buildReportLevel1Tabs() {
             container.appendChild(span);
         })(i);
     }
-    if (_reportLevel1Data.length > 0) selectReportLevel1(0);
+    
+    if (_reportLevel1Data.length > 0) {
+        // ★ 使用恢复状态决定起始一级
+        var startIndex = 0;
+        if (_reportRestoreState.deviceTypeId) {
+            var t = findTargetLevels(_reportLevel1Data, _reportRestoreState.deviceTypeId);
+            if (t) {
+                _reportRestoreState.level2Index = t.level2Index;
+                startIndex = t.level1Index;
+            }
+            _reportRestoreState.deviceTypeId = '';
+        }
+        selectReportLevel1(startIndex);
+    }
 }
 
 function selectReportLevel1(index) {
@@ -161,15 +213,26 @@ function buildReportLevel2Tabs(parentItem) {
 
     var children = (parentItem && parentItem.children) ? parentItem.children : [];
 
+    // ============ 一级无子标签：隐藏侧边栏，用一级 deviceTypeId 加载 ============
     if (children.length === 0) {
-        container.innerHTML = '<div class="no-child-tip">'
-            + _loginUserLanguageResource.emptyMsg + '</div>';
-        _reportCurrentLevel2 = null;
-        _reportCurrentDeviceType = parentItem.deviceTypeId || '';
+        container.classList.add('hidden');        // ★ 隐藏侧边栏
+        _reportLevel2Data = [];
+
+        _reportCurrentLevel2 = {
+            text: parentItem.text,
+            deviceTypeId: parentItem.deviceTypeId,
+            isAll: false,
+            isLevel1Direct: true
+        };
+        _reportCurrentDeviceType = _reportCurrentLevel2.deviceTypeId || '';
+        _reportRestoreState.level2Index = -1;
+
         onReportDeviceTypeChanged();
         return;
     }
 
+    // ============ 一级有子标签 ============
+    container.classList.remove('hidden');         // ★ 显示侧边栏
     _reportLevel2Data = children;
 
     var allIds = [];
@@ -178,6 +241,7 @@ function buildReportLevel2Tabs(parentItem) {
     }
 
     var allTabs = [];
+    // ★ 只有多个二级时才生成"全部"tab
     if (children.length > 1) {
         allTabs.push({
             text: _loginUserLanguageResource.all,
@@ -190,7 +254,7 @@ function buildReportLevel2Tabs(parentItem) {
     for (var i = 0; i < allTabs.length; i++) {
         (function (idx, item) {
             var div = document.createElement('div');
-            div.className = 'tab-item' + (idx === 0 ? ' active' : '');
+            div.className = 'tab-item';           // ★ 不预设 active
             div.dataset.index = idx;
             div.dataset.deviceTypeId = item.deviceTypeId || '';
             div.textContent = item.text;
@@ -200,7 +264,23 @@ function buildReportLevel2Tabs(parentItem) {
         })(i, allTabs[i]);
     }
 
-    if (allTabs.length > 0) selectReportLevel2(0);
+    // ★ 使用恢复状态决定默认二级
+    var defaultIndex = 0;
+    if (_reportRestoreState.level2Index >= 0 && _reportRestoreState.level2Index < allTabs.length) {
+        defaultIndex = _reportRestoreState.level2Index;
+    }
+    _reportRestoreState.level2Index = -1;
+
+    var tabEls = container.querySelectorAll('.tab-item');
+    for (var t = 0; t < tabEls.length; t++) {
+        tabEls[t].className = 'tab-item' + (t === defaultIndex ? ' active' : '');
+    }
+
+    if (allTabs.length > 0) {
+        _reportCurrentLevel2 = allTabs[defaultIndex];
+        _reportCurrentDeviceType = _reportCurrentLevel2.deviceTypeId || '';
+        onReportDeviceTypeChanged();
+    }
 }
 
 function selectReportLevel2(index) {
@@ -236,8 +316,7 @@ function selectReportLevel2(index) {
 }
 
 function onReportDeviceTypeChanged() {
-    // 重置单井日报
-    _reportSelectedDeviceId     = 0;
+    // ★ 保留 _reportSelectedDeviceId 作为恢复候选，由 onSwDeviceGridLoad 消费
     _reportSelectedRowIndex     = 0;
     _reportCurrentDeviceName    = '';
     _reportCurrentCalculateType = 0;
@@ -255,7 +334,7 @@ function onReportDeviceTypeChanged() {
 
     clearProductionDailyReportContent();
 
-    // ★ 只加载当前激活 tab 的数据
+    // 只加载当前激活 tab 的数据
     var tabs = mini.get('dailyReportInnerTabs');
     if (!tabs) return;
     var tab = tabs.getActiveTab();
@@ -489,25 +568,39 @@ function onSwDeviceGridLoad(e) {
     _reportDeviceTotalCount = result.totalCount || 0;
 
     if (data.length > 0) {
-        var selected = grid.getSelecteds() || [];
-        if (selected.length === 0) {
-            var selectRow = 0;
-            if (_reportSelectedDeviceId > 0) {
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i].id == _reportSelectedDeviceId) {
-                        selectRow = i;
-                        break;
-                    }
+        // ★ 恢复目标：优先 _reportRestoreState.deviceId（跨模块同步 / 切标签时设置的目标），
+        //   其次 _reportSelectedDeviceId（本模块内刷新时用）
+        var restoreId = _reportRestoreState.deviceId;
+        if (!restoreId) {
+            restoreId = _reportSelectedDeviceId;
+        }
+        // ★ 不再清空 _reportRestoreState.deviceId
+
+        var selectRow = 0;
+        if (restoreId > 0) {
+            for (var i = 0; i < data.length; i++) {
+                if (String(data[i].id) === String(restoreId)) {
+                    selectRow = i;
+                    break;
                 }
             }
-            grid.select(data[selectRow]);
         }
+        // ★ 无论当前是否已有选中，都按恢复目标选中
+        grid.select(data[selectRow]);
+        setTimeout(function () {
+	    	 grid.scrollIntoView(selectRow);
+	        }, 150);
     } else {
         _reportSelectedDeviceId     = 0;
         _reportSelectedRowIndex     = 0;
         _reportCurrentDeviceName    = '';
         _reportCurrentCalculateType = 0;
         clearSingleWellReportContent();
+    }
+
+    // ★ 首次加载后解除抑制
+    if (_reportSuppressSave.value) {
+        setTimeout(function () { _reportSuppressSave.value = false; }, 100);
     }
 }
 
@@ -561,6 +654,15 @@ function onSwDeviceGridSelectionChanged(e) {
 
     CreateSingleWellReportTable();
     CreateSingleWellReportCurve();
+
+    // ★ 记录为恢复候选
+    _reportRestoreState.deviceId = String(_reportSelectedDeviceId);
+    // ★ 保存全局状态
+    saveGlobalSelection(
+        _reportCurrentDeviceType,
+        _reportSelectedDeviceId,
+        { suppress: _reportSuppressSave.value }
+    );
 }
 
 // ================================================================

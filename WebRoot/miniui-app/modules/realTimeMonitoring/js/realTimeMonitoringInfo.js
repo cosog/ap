@@ -3178,7 +3178,7 @@ function gotoHistory() {
         window.parent.postMessage({
             action: 'switchModule',
             moduleId: 'DeviceHistoryQuery'
-        }, '*');
+        }, window.location.origin);
     }
 }
 

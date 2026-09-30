@@ -10,6 +10,29 @@ var _selectedAlarmInstanceId = null;
 
 var protocolAlarmInstancePropertiesHandsontableHelper = null;
 
+function clearAlarmInstanceRightSide() {
+    safeDestroyHotHelpers(['protocolAlarmInstancePropertiesHandsontableHelper']);
+
+    clearContainers(['alarmInstancePropertiesContainer']);
+
+    _currentAlarmInstanceNode = null;
+    _selectedAlarmInstanceId = null;
+}
+
+function clearAlarmInstanceListTree() {
+    var tree = mini.get('alarmInstanceList');
+    if (tree) tree.setData([
+        {
+            "classes": 0,
+            "deviceType": 0,
+            "text": _loginUserLanguageResource.instanceList,
+            "iconCls": "device",
+            "expanded": true,
+            "children": []
+        }
+    ]);
+}
+
 // ================================================================
 // 1. 协议树事件
 // ================================================================
@@ -57,11 +80,16 @@ function onAlarmInstanceProtocolTreeLoad(e) {
         })(root);
     }
 
-    if (targetNode) {
-        setTimeout(function () {
-            tree.selectNode(targetNode);
-        }, 50);
+    if (!targetNode) {
+        _currentAlarmInstanceProtocolNode = null;
+        _selectedProtocolTreeNodeCode = null;
+
+        clearAlarmInstanceListTree();
+        clearAlarmInstanceRightSide();
+        return;
     }
+
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 
 function onAlarmInstanceProtocolTreeSelect(e) {
@@ -186,13 +214,12 @@ function onAlarmInstanceListLoad(e) {
         })(root);
     }
 
-    setTimeout(function () {
-        if (targetNode) {
-            tree.selectNode(targetNode);
-        } else if (root.children && root.children.length > 0) {
-            tree.selectNode(root.children[0]);
-        }
-    }, 50);
+    if (!targetNode) {
+        clearAlarmInstanceRightSide();
+        return;
+    }
+
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 
 function onAlarmInstanceListSelect(e) {

@@ -234,6 +234,8 @@ function selectAdLevel1(index) {
     _adCurrentSpecificType     = 0;
     _adDeviceSelectRow         = '';
     _adDeviceSelectEndRow      = '';
+    
+    clearAdRightSide();
 
     // ★ 加载设备列表
     CreateAndLoadAuxiliaryDeviceInfoTable(true);
@@ -265,6 +267,10 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
             auxiliaryDeviceInfoHandsontableHelper.hot.destroy();
         }
         auxiliaryDeviceInfoHandsontableHelper = null;
+        
+        if (!deviceType) {
+            clearAdRightSide();
+        }
     }
 
     var deviceType = getAdCurrentDeviceType();
@@ -321,18 +327,11 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
 
             // ---------- 默认选中 ----------
             if (!result.totalRoot || result.totalRoot.length == 0) {
-                _adDeviceSelectRow    = '';
+            	_adDeviceSelectRow    = '';
                 _adDeviceSelectEndRow = '';
-                _adSelectedDeviceId   = 0;
-                _adCurrentDeviceName  = '';
-                _adCurrentSpecificType = 0;
 
-                auxiliaryDeviceInfoHandsontableHelper.hot.selectCell(0, 'name');
-                // ★ 清空右侧
-                _adSelectedDeviceId    = 0;
-                _adCurrentDeviceName   = '';
-                _adCurrentSpecificType = 0;
-                CreateAndLoadAuxiliaryDeviceDetailsTable(0, 0, '');
+                // ★ 左侧为空 → 右侧全部清空
+                clearAdRightSide();
             } else {
                 _adDeviceSelectRow    = 0;
                 _adDeviceSelectEndRow = 0;
@@ -1000,60 +999,124 @@ function onAdPRTFStrokeChanged(e) {
 }
 
 //================================================================
+//清空右侧内容（设备详情 + PRTF）
+//触发场景：左侧列表无记录 / 切换一级标签 / 取消选中 / 删除后重载
+//================================================================
+function clearAdRightSide() {
+	 // 1) 重置设备上下文
+	 _adSelectedDeviceId    = 0;
+	 _adCurrentDeviceName   = '';
+	 _adCurrentSpecificType = 0;
+	
+	 // 2) 类型单选强制回到「无」，加标志位避免触发 onvaluechanged
+	 var rb = mini.get('AuxiliaryDeviceSpecificType_Id');
+	 if (rb) {
+	     _adSpecificTypeInitializing = true;
+	     rb.setValue(0);
+	     _adSpecificTypeInitializing = false;
+	 }
+	
+	 // 3) 隐藏 PRTF 面板（右 splitter 的 pane 2）
+	 var splitter = mini.get('adRightSplitter');
+	 if (splitter) {
+	     splitter.hidePane(2);
+	 }
+	
+	 // 4) 清空冲程下拉框
+	 var combo = mini.get('AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id');
+	 if (combo) {
+	     _adPRTFStrokeInitializing = true;
+	     combo.setData([]);
+	     combo.setValue('');
+	     _adPRTFStrokeInitializing = false;
+	 }
+	
+	 // 5) 面板标题重置（不带设备名）
+	 var detailsPanel = mini.get('auxiliaryDeviceDetailsPanel');
+	 if (detailsPanel && _loginUserLanguageResource.detailedInformation) {
+	     detailsPanel.setTitle(_loginUserLanguageResource.detailedInformation);
+	 }
+	 var prtfPanel = mini.get('auxiliaryDevicePRTFPanel');
+	 if (prtfPanel && _loginUserLanguageResource.pumpingUnitPRTF) {
+	     prtfPanel.setTitle(_loginUserLanguageResource.pumpingUnitPRTF);
+	 }
+	
+	 // 6) 清空详情表（保留控件，只清空数据）
+	 if (auxiliaryDeviceDetailsHandsontableHelper != null
+	     && auxiliaryDeviceDetailsHandsontableHelper.hot != undefined
+	     && auxiliaryDeviceDetailsHandsontableHelper.hot != null) {
+	     auxiliaryDeviceDetailsHandsontableHelper.hot.loadData([]);
+	 }
+	
+	 // 7) 清空 PRTF 表
+	 if (auxiliaryDevicePRTFHandsontableHelper != null
+	     && auxiliaryDevicePRTFHandsontableHelper.hot != undefined
+	     && auxiliaryDevicePRTFHandsontableHelper.hot != null) {
+	     auxiliaryDevicePRTFHandsontableHelper.hot.loadData([]);
+	 }
+}
+
+//================================================================
 //中间层：根据设备类型加载详情 / PRTF
 //若当前 radiogroup 值与设备 specificType 不同 → 触发 radiogroup change
 //   → onAdSpecificTypeChanged 里会加载详情 + PRTF
 //若相同 → 直接调用详情 + PRTF
 //================================================================
 function CreateAndLoadAuxiliaryDeviceDetailsTable(deviceId, specificType, name) {
- var rb = mini.get('AuxiliaryDeviceSpecificType_Id');
- var currentType = rb ? (parseInt(rb.getValue()) || 0) : 0;
- var targetType  = parseInt(specificType) || 0;
+	// ★ 无设备 → 右侧整体清空，直接返回
+    if (!deviceId || parseInt(deviceId) <= 0) {
+        clearAdRightSide();
+        return;
+    }
 
- if (targetType != currentType) {
-     // setValue 会触发 onvaluechanged → 里面会加载详情 + PRTF
-     if (rb) {
-         _adSpecificTypeInitializing = true;
-         rb.setValue(targetType);
-         _adSpecificTypeInitializing = false;
-     }
-     // 由于加了标志位屏蔽了 onvaluechanged，这里需要主动加载
-     var splitter = mini.get('adRightSplitter');
-     if (targetType === 1) {
-         if (splitter) splitter.showPane(2);
-     } else {
-         if (splitter) splitter.hidePane(2);
-     }
-
-     if (deviceId > 0) {
-         CreateAuxiliaryDeviceDetailsTable(deviceId, name);
-     }
-     var combo = mini.get('AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id');
-     if (combo) {
-         _adPRTFStrokeInitializing = true;
-         combo.setData([]);
-         combo.setValue('');
-         _adPRTFStrokeInitializing = false;
-     }
-     if (deviceId > 0) {
-         CreateAndLoadPumpingUnitPTFTable(deviceId, name);
-     }
- } else {
-     // 类型相同，直接加载
-     if (deviceId > 0) {
-         CreateAuxiliaryDeviceDetailsTable(deviceId, name);
-     }
-     var combo2 = mini.get('AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id');
-     if (combo2) {
-         _adPRTFStrokeInitializing = true;
-         combo2.setData([]);
-         combo2.setValue('');
-         _adPRTFStrokeInitializing = false;
-     }
-     if (deviceId > 0) {
-         CreateAndLoadPumpingUnitPTFTable(deviceId, name);
-     }
- }
+	 var rb = mini.get('AuxiliaryDeviceSpecificType_Id');
+	 var currentType = rb ? (parseInt(rb.getValue()) || 0) : 0;
+	 var targetType  = parseInt(specificType) || 0;
+	
+	 if (targetType != currentType) {
+	     // setValue 会触发 onvaluechanged → 里面会加载详情 + PRTF
+	     if (rb) {
+	         _adSpecificTypeInitializing = true;
+	         rb.setValue(targetType);
+	         _adSpecificTypeInitializing = false;
+	     }
+	     // 由于加了标志位屏蔽了 onvaluechanged，这里需要主动加载
+	     var splitter = mini.get('adRightSplitter');
+	     if (targetType === 1) {
+	         if (splitter) splitter.showPane(2);
+	     } else {
+	         if (splitter) splitter.hidePane(2);
+	     }
+	
+	     if (deviceId > 0) {
+	         CreateAuxiliaryDeviceDetailsTable(deviceId, name);
+	     }
+	     var combo = mini.get('AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id');
+	     if (combo) {
+	         _adPRTFStrokeInitializing = true;
+	         combo.setData([]);
+	         combo.setValue('');
+	         _adPRTFStrokeInitializing = false;
+	     }
+	     if (deviceId > 0) {
+	         CreateAndLoadPumpingUnitPTFTable(deviceId, name);
+	     }
+	 } else {
+	     // 类型相同，直接加载
+	     if (deviceId > 0) {
+	         CreateAuxiliaryDeviceDetailsTable(deviceId, name);
+	     }
+	     var combo2 = mini.get('AuxiliaryDevicePumpingUnitPRTFStrokeComb_Id');
+	     if (combo2) {
+	         _adPRTFStrokeInitializing = true;
+	         combo2.setData([]);
+	         combo2.setValue('');
+	         _adPRTFStrokeInitializing = false;
+	     }
+	     if (deviceId > 0) {
+	         CreateAndLoadPumpingUnitPTFTable(deviceId, name);
+	     }
+	 }
 }
 
 //================================================================

@@ -9,6 +9,50 @@ var protocolExtendedFieldHighLowByteConfigHandsontableHelper = null;
 var protocolExtendedFieldMeaningConfigHandsontableHelper = null;
 var protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper = null;
 
+//================================================================
+//协议树无数据时：清空右侧所有内容
+//================================================================
+function clearProtocolConfigRightSide() {
+	 // 1. 销毁所有 Handsontable
+	 safeDestroyHotHelpers([
+	     'protocolPropertiesHandsontableHelper',
+	     'protocolItemsConfigHandsontableHelper',
+	     'protocolItemsMeaningConfigHandsontableHelper',
+	     'protocolSwitchingValueBitStatusConfigHandsontableHelper',
+	     'protocolExtendedFieldConfigHandsontableHelper',
+	     'protocolExtendedFieldHighLowByteConfigHandsontableHelper',
+	     'protocolExtendedFieldMeaningConfigHandsontableHelper',
+	     'protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper'
+	 ]);
+	
+	 // 2. 清空所有容器
+	 clearContainers([
+	     'ModbusProtocolAddrMappingPropertiesTableInfoDiv_id',
+	     'ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id',
+	     'ModbusProtocolAddrMappingItemsMeaningTableInfoDiv_id',
+	     'ProtocolSwitchingValueBitStatusTableInfoDiv_id',
+	     'ProtocolExtendedFieldTableInfoDiv_id',
+	     'ProtocolExtendedFieldHighLowByteTableInfoDiv_id',
+	     'ProtocolExtendedFieldConfigHighLowByteItemsMeaningTableInfoDiv_id',
+	     'ProtocolExtendedFieldSwitchingValueBitStatusConfigTableInfoDiv_id'
+	 ]);
+	
+	 // 3. 隐藏含义/位状态两个分栏
+	 var splitter1 = mini.get('meaningAndBitStatusSplitter_Id');
+	 if (splitter1) splitter1.hidePane(2);
+	 var splitter2 = mini.get('highLowBitStatusSplitter_Id');
+	 if (splitter2) splitter2.hidePane(2);
+	
+	 // 4. 清空信息标签与缓存
+	 var infoLabel = document.getElementById('protocolInfoLabel');
+	 if (infoLabel) infoLabel.innerHTML = '';
+	
+	 $('#ModbusProtocolAddrMappingItemsSelectRow_Id').val(0);
+	 $('#ProtocolExtendedFieldHighLowByteSelectRow_Id').val(0);
+	
+	 _selectedProtocolTreeNodeCode = null;
+}
+
 function loadProtocolTree() {
     var protocolTree = mini.get('protocolTree');
     if (protocolTree) {
@@ -42,6 +86,12 @@ function onProtocolTreeLoad(e) {
         }
     }
     collect(root);
+    
+    // ★ 无协议 → 清空右侧全部，直接返回
+    if (protocolNodes.length === 0) {
+        clearProtocolConfigRightSide();
+        return;
+    }
 
     if (protocolNodes.length > 0) {
         var targetNode = null;
@@ -80,14 +130,10 @@ function onProtocolTreeLoad(e) {
 function onProtocolNodeSelect(e) {
     var node = e.node;
     if (node && node.classes === 1) { // 协议节点
-        // 显示信息标签
-        //var infoLabel = document.getElementById('protocolInfoLabel');
-        //if (infoLabel) {
-        //    infoLabel.innerHTML = '【<font color="red">' + node.text + '</font>】';
-        //}
     	_selectedProtocolTreeNodeCode = node.code;
-        // 根据当前激活的子标签加载对应数据
         loadProtocolDetailData(node);
+    }else{
+    	clearProtocolConfigRightSide();
     }
 }
 function onProtocolSubTabChanged2(e) {

@@ -21,6 +21,60 @@ var _selectedAlarmUnitClasses = null;
 var _newAlarmUnitObjectName = null;
 var _newAlarmUnitObjectClasses = null;
 
+function clearAlarmUnitRightSide() {
+    safeDestroyHotHelpers([
+        'protocolConfigAlarmUnitPropertiesHandsontableHelper',
+        'protocolAlarmUnitConfigNumItemsHandsontableHelper',
+        'protocolAlarmUnitConfigSwitchItemsHandsontableHelper',
+        'protocolAlarmUnitConfigEnumItemsHandsontableHelper',
+        'protocolAlarmUnitConfigCommStatusItemsHandsontableHelper',
+        'protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper',
+        'protocolAlarmUnitConfigRunStatusItemsHandsontableHelper'
+    ]);
+
+    clearContainers([
+        'alarmUnitPropertiesContainer',
+        'alarmFESTableDiv_id',
+        'alarmCommTableDiv_id',
+        'alarmRunTableDiv_id',
+        'alarmNumericTableDiv_id',
+        'alarmEnumTableDiv_id',
+        'alarmSwitchTableDiv_id'
+    ]);
+
+    // 枚举/开关量上下布局的上方两个 mini-datagrid
+    var enumGrid = mini.get('alarmEnumItemsGrid');
+    if (enumGrid) enumGrid.setData([]);
+    var switchGrid = mini.get('alarmSwitchItemsGrid');
+    if (switchGrid) switchGrid.setData([]);
+
+    var tabs = mini.get('alarmUnitRightTabs');
+    if (tabs) {
+        var propsTab  = tabs.getTab('props');
+        var configTab = tabs.getTab('config');
+        if (propsTab)  tabs.updateTab(propsTab,  { visible: false });
+        if (configTab) tabs.updateTab(configTab, { visible: false });
+    }
+
+    _currentAlarmUnitNode = null;
+    _selectedAlarmUnitId = null;
+    _selectedAlarmUnitClasses = null;
+}
+
+function clearAlarmUnitListTree() {
+    var tree = mini.get('alarmUnitList');
+    if (tree) tree.setData([
+        {
+            "classes": 0,
+            "text":  _loginUserLanguageResource.unitList,
+            "deviceType": 0,
+            "iconCls": "device",
+            "expanded": true,
+            "children": []
+        }
+    ]);
+}
+
 // ================================================================
 // 1. 报警单元 - 协议树事件
 // ================================================================
@@ -69,11 +123,16 @@ function onAlarmProtocolTreeLoad(e) {
         if (protocolNodes.length > 0) targetNode = protocolNodes[0];
     }
 
-    if (targetNode) {
-        setTimeout(function() {
-            tree.selectNode(targetNode);
-        }, 50);
+    if (!targetNode) {
+        _currentAlarmProtocolNode = null;
+        _selectedProtocolTreeNodeCode = null;
+
+        clearAlarmUnitListTree();
+        clearAlarmUnitRightSide();
+        return;
     }
+
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 
 function onAlarmProtocolTreeSelect(e) {
@@ -181,15 +240,12 @@ function onAlarmUnitListLoad(e) {
         collect(root);
     }
 
-    setTimeout(function() {
-        if (targetNode) {
-            tree.selectNode(targetNode);
-        } else {
-            if (root.children && root.children.length > 0) {
-                tree.selectNode(root.children[0]);
-            }
-        }
-    }, 50);
+    if (!targetNode) {
+        clearAlarmUnitRightSide();
+        return;
+    }
+
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 
 /**

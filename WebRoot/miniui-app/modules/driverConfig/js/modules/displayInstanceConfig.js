@@ -10,6 +10,28 @@ var _selectedDisplayInstanceId = null;
 
 var protocolDisplayInstancePropertiesHandsontableHelper = null;
 
+function clearDisplayInstanceRightSide() {
+    safeDestroyHotHelpers(['protocolDisplayInstancePropertiesHandsontableHelper']);
+
+    clearContainers(['displayInstancePropertiesContainer']);
+
+    _currentDisplayInstanceNode = null;
+    _selectedDisplayInstanceId = null;
+}
+
+function clearDisplayInstanceListTree() {
+    var tree = mini.get('displayInstanceList');
+    if (tree) tree.setData([
+        {
+            "classes": 0,
+            "text": _loginUserLanguageResource.instanceList,
+            "iconCls": "device",
+            "expanded": true,
+            "children": []
+        }
+    ]);
+}
+
 // ================================================================
 // 1. 协议树事件
 // ================================================================
@@ -59,11 +81,16 @@ function onDisplayInstanceProtocolTreeLoad(e) {
         })(root);
     }
 
-    if (targetNode) {
-        setTimeout(function () {
-            tree.selectNode(targetNode);
-        }, 50);
+    if (!targetNode) {
+        _currentDisplayInstanceProtocolNode = null;
+        _selectedProtocolTreeNodeCode = null;
+
+        clearDisplayInstanceListTree();
+        clearDisplayInstanceRightSide();
+        return;
     }
+
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 
 function onDisplayInstanceProtocolTreeSelect(e) {
@@ -188,13 +215,11 @@ function onDisplayInstanceListLoad(e) {
         })(root);
     }
 
-    setTimeout(function () {
-        if (targetNode) {
-            tree.selectNode(targetNode);
-        } else if (root.children && root.children.length > 0) {
-            tree.selectNode(root.children[0]);
-        }
-    }, 50);
+    if (!targetNode) {
+        clearDisplayInstanceRightSide();
+        return;
+    }
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 
 function onDisplayInstanceListSelect(e) {

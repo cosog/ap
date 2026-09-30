@@ -191,6 +191,8 @@ String moduleId = request.getParameter("moduleId");
     var currentLevel1 = null, currentLevel2 = null;
     var level1Data = [], level2Data = [];
     var grid = null;
+  //---------- 全局恢复状态（仅设备类型） ----------
+    var _logRestoreState = null;    // 在 $(document).ready 中赋值
 
     // ================================================================
     // 1. 构建一级标签
@@ -214,7 +216,19 @@ String moduleId = request.getParameter("moduleId");
             span.onclick = function() { selectLevel1(parseInt(this.dataset.index)); };
             container.appendChild(span);
         }
-        if (level1Data.length > 0) selectLevel1(0);
+        if (level1Data.length > 0) {
+            // ★ 使用恢复状态决定起始一级
+            var startIndex = 0;
+            if (_logRestoreState.deviceTypeId) {
+                var t = findTargetLevels(level1Data, _logRestoreState.deviceTypeId);
+                if (t) {
+                    _logRestoreState.level2Index = t.level2Index;
+                    startIndex = t.level1Index;
+                }
+                _logRestoreState.deviceTypeId = '';
+            }
+            selectLevel1(startIndex);
+        }
     }
 
     function selectLevel1(index) {
@@ -236,21 +250,59 @@ String moduleId = request.getParameter("moduleId");
         var container = document.getElementById('level2Sidebar');
         if (!container) return;
         container.innerHTML = '';
+
         var children = parentItem.children || [];
+
+        // ============ 一级无子标签：隐藏侧边栏，用一级 deviceTypeId 加载 ============
         if (!children || children.length === 0) {
-            container.innerHTML = '<div class="no-child-tip" id="noChildTip">' + _loginUserLanguageResource.emptyMsg + '</div>';
-            currentLevel2 = null;
+            container.classList.add('hidden');
+            level2Data = [];
+
+            currentLevel2 = {
+                text: parentItem.text,
+                deviceTypeId: parentItem.deviceTypeId,
+                isAll: false,
+                isLevel1Direct: true
+            };
+            _logRestoreState.level2Index = -1;
+
+            // ★ 只更新设备类型，保留设备 ID 不动
+            saveGlobalDeviceTypeOnly(currentLevel2.deviceTypeId);
+
+            loadData(currentLevel2);
             return;
         }
+
+        // ============ 一级有子标签 ============
+        container.classList.remove('hidden');
         level2Data = children;
-        var allIds = [];
-        for (var i = 0; i < children.length; i++) allIds.push(children[i].deviceTypeId);
-        var allTabs = [{ text: _loginUserLanguageResource.all, deviceTypeId: allIds.join(','), isAll: true }];
+
+        var allTabs = [];
+        // ★ 只有多个二级时才生成"全部"tab
+        if (children.length > 1) {
+            var allIds = [];
+            for (var i = 0; i < children.length; i++) {
+                if (children[i].deviceTypeId) allIds.push(children[i].deviceTypeId);
+            }
+            allTabs.push({
+                text: _loginUserLanguageResource.all,
+                deviceTypeId: allIds.join(','),
+                isAll: true
+            });
+        }
         for (var i = 0; i < children.length; i++) allTabs.push(children[i]);
+
+        // ★ 使用恢复状态决定默认二级
+        var defaultIndex = 0;
+        if (_logRestoreState.level2Index >= 0 && _logRestoreState.level2Index < allTabs.length) {
+            defaultIndex = _logRestoreState.level2Index;
+        }
+        _logRestoreState.level2Index = -1;
+
         for (var i = 0; i < allTabs.length; i++) {
             var item = allTabs[i];
             var div = document.createElement('div');
-            div.className = 'tab-item' + (i === 0 ? ' active' : '');
+            div.className = 'tab-item' + (i === defaultIndex ? ' active' : '');
             div.dataset.index = i;
             div.dataset.deviceTypeId = item.deviceTypeId;
             div.dataset.isAll = item.isAll || false;
@@ -259,8 +311,13 @@ String moduleId = request.getParameter("moduleId");
             div.onclick = function() { selectLevel2(parseInt(this.dataset.index)); };
             container.appendChild(div);
         }
+
         if (allTabs.length > 0) {
-            currentLevel2 = allTabs[0];
+            currentLevel2 = allTabs[defaultIndex];
+
+            // ★ 只更新设备类型，保留设备 ID 不动
+            saveGlobalDeviceTypeOnly(currentLevel2.deviceTypeId);
+
             loadData(currentLevel2);
         }
     }
@@ -278,6 +335,10 @@ String moduleId = request.getParameter("moduleId");
             tabs[i].className = 'tab-item' + (i === index ? ' active' : '');
         }
         currentLevel2 = allTabs[index];
+
+        // ★ 只更新设备类型，保留设备 ID 不动
+        saveGlobalDeviceTypeOnly(currentLevel2.deviceTypeId);
+
         loadData(currentLevel2);
     }
 
@@ -535,31 +596,66 @@ String moduleId = request.getParameter("moduleId");
         mini.get('startDate').setValue('');
         mini.get('endDate').setValue('');
     }
+    
+    /**
+     * 只更新全局的 deviceTypeId，保留全局 deviceId 不动
+     */
+    function saveGlobalDeviceTypeOnly(deviceTypeId) {
+        var g = loadGlobalSelection();
+        saveGlobalSelection(deviceTypeId, g.deviceId || '');
+    }
 
     // ================================================================
     // 7. 页面初始化
     // ================================================================
     $(document).ready(function() {
         mini.parse();
+
+        // ★ 初始化全局恢复状态
+        _logRestoreState = createRestoreState();
+
         initI18n();
-        
+
         var grid = mini.get('logGrid');
         if (grid && typeof _defaultPageSize !== 'undefined' && _defaultPageSize) {
             grid.setPageSize(parseInt(_defaultPageSize, 10));
         }
-        
+
         buildLevel1Tabs();
-        
+
         window.addEventListener('message', function(event) {
             var message = event.data;
             if (!message || !message.action) return;
             if (message.action === 'refresh') {
-                refreshData();
+                handleLogRefreshFromParent(message);
             }
         });
-        console.log('报警查询模块加载完成');
         console.log('设备操作日志模块加载完成');
     });
+    
+    /**
+     * 父窗口发出 refresh（组织切换 / 从其他模块切回本模块）时的处理
+     */
+    function handleLogRefreshFromParent(message) {
+        console.log('设备操作日志收到刷新指令, orgId:', message.orgId);
+
+        // ★ 只恢复设备类型，不涉及设备 ID
+        var gsel = loadGlobalSelection();
+        var curType = currentLevel2 ? String(currentLevel2.deviceTypeId) : '';
+
+        // 情况 1：一级/二级标签不一致 → 重建标签
+        if (gsel.deviceTypeId && curType !== String(gsel.deviceTypeId)) {
+            var t = findTargetLevels(level1Data, gsel.deviceTypeId);
+            if (t) {
+                _logRestoreState.level2Index = t.level2Index;
+                selectLevel1(t.level1Index);
+                return;
+            }
+        }
+
+        // 情况 2 & 3：标签一致 → 常规刷新
+        refreshData();
+    }
 
     // 暴露全局函数
     window.selectLevel1 = selectLevel1;

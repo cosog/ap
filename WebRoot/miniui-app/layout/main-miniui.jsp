@@ -971,22 +971,110 @@ request.setAttribute("browserLang", browserLang);
      // 监听子模块的消息（iframe → 主界面）
      // ================================================================
      window.addEventListener('message', function (event) {
-         var message = event.data;
-         if (!message || !message.action) return;
-         var type=message.type;
-         switch (message.action) {
-             // ★ 子模块保存/新增/删除组织后通知主界面刷新左侧组织树
-             case 'refreshMainOrgTree':
-                 // 更新选中依据：刷新后按这个 orgId 恢复选中
-                 refreshOrgTree();
-                 break;
-             case 'refreshMainMenuTree':
-                 // 更新选中依据：刷新后按这个 orgId 恢复选中
-                 refreshMenuTree();
-                 break;
-         }
-     });
+	         var message = event.data;
+	         if (!message || !message.action) return;
+	         var type=message.type;
+	         switch (message.action) {
+	             // ★ 子模块保存/新增/删除组织后通知主界面刷新左侧组织树
+	             case 'refreshMainOrgTree':
+	                 // 更新选中依据：刷新后按这个 orgId 恢复选中
+	                 refreshOrgTree();
+	                 break;
+	             case 'refreshMainMenuTree':
+	                 // 更新选中依据：刷新后按这个 orgId 恢复选中
+	                 refreshMenuTree();
+	                 break;
+	             case 'switchModule':
+	            	 handleSwitchModule(message.moduleId);
+	            	 break;
+	         }
+	     });
     });
+    
+ // ================================================================
+ // 处理子模块请求切换模块
+ //  1. 已打开 → 激活
+ //  2. 未打开 → 从菜单树找节点 → 创建 tab → 激活
+ //  3. 不传任何业务参数，目标模块自己恢复状态
+ // ================================================================
+ function handleSwitchModule(moduleId) {
+     if (!moduleId) return;
+
+     var tabs = mini.get('mainTabs');
+     if (!tabs) return;
+
+     // ---------- 1. 已打开 → 激活 ----------
+     var existingTab = tabs.getTab(moduleId);
+     if (existingTab) {
+         tabs.activeTab(existingTab);
+         return;
+     }
+
+     // ---------- 2. 未打开 → 菜单树中查找节点 ----------
+     var menuTree = mini.get('menuTree');
+     if (!menuTree) {
+         console.warn('menuTree 未就绪，无法打开模块:', moduleId);
+         return;
+     }
+     var root = menuTree.getRootNode();
+     if (!root) {
+         console.warn('menuTree 根节点为空，无法打开模块:', moduleId);
+         return;
+     }
+
+     var menuNode = findMenuTreeNodeById(root, moduleId);
+     if (!menuNode) {
+         console.warn('未在功能菜单中找到模块:', moduleId);
+         return;
+     }
+
+     var moduleCode = menuNode.mdCode;
+     var viewSrc    = menuNode.viewsrc;
+     var title      = menuNode.text;
+     var iconCls    = menuNode.md_icon || '';
+
+     var miniuiPath = convertExtToMiniuiPath(viewSrc);
+     if (!miniuiPath) {
+         miniuiPath = context + '/miniui-app/modules/under-construction.jsp';
+     }
+
+     var tab = {
+         name: moduleCode,
+         id:   moduleId,
+         title: title,
+         iconCls: iconCls,
+         showCloseButton: true,
+         body: '<iframe src="' + miniuiPath + '?moduleId=' + moduleId + '" ' +
+               'style="width:100%;height:100%;border:0;"></iframe>'
+     };
+     tabs.addTab(tab);
+     tabs.activeTab(tab);
+     mini.get('topModule_Id').setValue(moduleCode);
+
+     // 菜单树同步选中
+     try { menuTree.select(menuNode); } catch (e) { /* ignore */ }
+ }
+
+ // ================================================================
+ // 在菜单树中按 moduleId 查找节点
+ // ================================================================
+ function findMenuTreeNodeById(root, moduleId) {
+     var target = null;
+     (function collect(node) {
+         if (target || !node) return;
+         if (String(node.id) === String(moduleId)) {
+             target = node;
+             return;
+         }
+         if (node.children && node.children.length > 0) {
+             for (var i = 0; i < node.children.length; i++) {
+                 collect(node.children[i]);
+                 if (target) return;
+             }
+         }
+     })(root);
+     return target;
+ }
 
     console.log('MiniUI 主页面加载完成');
     </script>

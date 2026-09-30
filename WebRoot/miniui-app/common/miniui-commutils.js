@@ -4998,3 +4998,38 @@ function restoreDeviceSelection(grid, restoreState, suppressSave, onRestored) {
 	 }
 	 if (typeof onRestored === 'function') onRestored();
 }
+
+/**
+ * 安全销毁单个 Handsontable helper（helper 需有 .hot 属性）
+ * @param {Object} helper
+ */
+function safeDestroyHotHelper(helper) {
+    if (helper && helper.hot) {
+        try { helper.hot.destroy(); } catch (e) { /* ignore */ }
+    }
+}
+
+/**
+ * 批量销毁全局 Handsontable helper（按全局变量名）
+ * 每个 name 对应的全局变量在销毁后置为 null
+ * @param {string[]} names
+ */
+function safeDestroyHotHelpers(names) {
+    if (!names) return;
+    for (var i = 0; i < names.length; i++) {
+        safeDestroyHotHelper(window[names[i]]);
+        window[names[i]] = null;
+    }
+}
+
+/**
+ * 批量清空 DOM 容器（只清 innerHTML，不销毁控件）
+ * @param {string[]} ids
+ */
+function clearContainers(ids) {
+    if (!ids) return;
+    for (var i = 0; i < ids.length; i++) {
+        var el = document.getElementById(ids[i]);
+        if (el) el.innerHTML = '';
+    }
+}

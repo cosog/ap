@@ -13,6 +13,52 @@ var _selectedDisplayUnitClasses = null;
 var _newDisplayUnitObjectName = null;
 var _newDisplayUnitObjectClasses = null;
 
+function clearDisplayUnitRightSide() {
+    safeDestroyHotHelpers([
+        'protocolDisplayUnitPropertiesHandsontableHelper',
+        'protocolDisplayUnitAcqItemsConfigHandsontableHelper',
+        'protocolDisplayUnitCtrlItemsConfigHandsontableHelper'
+    ]);
+
+    clearContainers([
+        'displayUnitPropertiesContainer',
+        'ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id',
+        'ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id'
+    ]);
+
+    // 重置两个小标题
+    var acqTitle = document.getElementById('displayAcqItemsTitle');
+    if (acqTitle) acqTitle.innerHTML = _loginUserLanguageResource.acquisitionItemConfig || '';
+    var ctrlTitle = document.getElementById('displayCtrlItemsTitle');
+    if (ctrlTitle) ctrlTitle.innerHTML = _loginUserLanguageResource.controlItemConfig || '';
+
+    var tabs = mini.get('displayUnitRightTabs');
+    if (tabs) {
+        var propsTab  = tabs.getTab('props');
+        var configTab = tabs.getTab('config');
+        if (propsTab)  tabs.updateTab(propsTab,  { visible: false });
+        if (configTab) tabs.updateTab(configTab, { visible: false });
+    }
+
+    _currentDisplayUnitNode = null;
+    _selectedDisplayUnitId = null;
+    _selectedDisplayUnitClasses = null;
+}
+
+function clearDisplayUnitListTree() {
+    var tree = mini.get('displayUnitList');
+    if (tree) tree.setData([
+        {
+            "classes": 0,
+            "text":  _loginUserLanguageResource.unitList,
+            "deviceType": 0,
+            "iconCls": "device",
+            "expanded": true,
+            "children": []
+        }
+    ]);
+}
+
 function onDisplayUnitProtocolTreeBeforeLoad(e) {
     var params = e.params || {};
     if (selectedDeviceTypeId) {
@@ -59,11 +105,16 @@ function onDisplayUnitProtocolTreeLoad(e) {
         if (protocolNodes.length > 0) targetNode = protocolNodes[0];
     }
 
-    if (targetNode) {
-        setTimeout(function() {
-            tree.selectNode(targetNode);
-        }, 50);
+    if (!targetNode) {
+        _currentDisplayProtocolNode = null;
+        _selectedProtocolTreeNodeCode = null;
+
+        clearDisplayUnitListTree();
+        clearDisplayUnitRightSide();
+        return;
     }
+
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 
 function onDisplayUnitProtocolTreeSelect(e) {
@@ -172,16 +223,12 @@ function onDisplayUnitListLoad(e) {
         collect(root);
     }
 
-    setTimeout(function() {
-        if (targetNode) {
-            tree.selectNode(targetNode);
-        } else {
-            // 如果无任何单元，选择根节点的第一个子节点（通常是协议节点）
-            if (root.children && root.children.length > 0) {
-                tree.selectNode(root.children[0]);
-            }
-        }
-    }, 50);
+    if (!targetNode) {
+        clearDisplayUnitRightSide();
+        return;
+    }
+
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 
 function onDisplayUnitListSelect(e) {

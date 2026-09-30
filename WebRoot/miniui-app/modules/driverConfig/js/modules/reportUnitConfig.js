@@ -22,6 +22,54 @@ var singleWellDailyReportTemplateContentHandsontableHelper = null;
 var hydrologicalWellDailyReportTemplateHandsontableHelper = null;
 var hydrologicalWellDailyReportContentHandsontableHelper = null;
 
+function clearAllReportUnitData() {
+    safeDestroyHotHelpers([
+        'reportUnitPropertiesHandsontableHelper',
+        'singleWellRangeReportTemplateHandsontableHelper',
+        'singleWellRangeReportTemplateContentHandsontableHelper',
+        'productionReportTemplateHandsontableHelper',
+        'productionReportTemplateContentHandsontableHelper',
+        'singleWellDailyReportTemplateHandsontableHelper',
+        'singleWellDailyReportTemplateContentHandsontableHelper',
+        'hydrologicalWellDailyReportTemplateHandsontableHelper',
+        'hydrologicalWellDailyReportContentHandsontableHelper'
+    ]);
+
+    clearContainers([
+        'reportUnitPropertiesContainer',
+        'hourlyReportTemplateContainer',
+        'hourlyReportContentContainer',
+        'dailyReportTemplateContainer',
+        'dailyReportContentContainer',
+        'areaReportTemplateContainer',
+        'areaReportContentContainer',
+        'hydroReportTemplateContainer',
+        'hydroReportContentContainer'
+    ]);
+
+    // 三个模板列表 mini-datagrid 也要清空
+    var gridIds = ['hourlyTemplateListGrid', 'dailyTemplateListGrid', 'areaTemplateListGrid'];
+    for (var j = 0; j < gridIds.length; j++) {
+        var g = mini.get(gridIds[j]);
+        if (g) { g.setData([]); g._columnsSet = false; }
+    }
+
+    // ★ 隐藏详情 Tabs 的所有 Tab
+    var tabs = mini.get('reportUnitRightTabs');
+    if (tabs) {
+        var propsTab = tabs.getTab('props');
+        var stdTab   = tabs.getTab('configStandard');
+        var hyTab    = tabs.getTab('configHydrological');
+        if (propsTab) tabs.updateTab(propsTab, { visible: false });
+        if (stdTab)   tabs.updateTab(stdTab,   { visible: false });
+        if (hyTab)    tabs.updateTab(hyTab,    { visible: false });
+    }
+
+    // ★ 重置选中状态
+    _currentReportUnitNode = null;
+    _newReportUnitObjectName = null;
+}
+
 // ================================================================
 // 1. 报表单元列表树 - 加载前事件
 // ================================================================
@@ -96,13 +144,11 @@ function onReportUnitListLoad(e) {
         collect(root);
     }
 
-    setTimeout(function () {
-        if (targetNode) {
-            tree.selectNode(targetNode);
-        } else if (root.children && root.children.length > 0) {
-            tree.selectNode(root.children[0]);
-        }
-    }, 50);
+    if (!targetNode) {
+        clearAllReportUnitData();
+        return;
+    }
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 
 // ================================================================

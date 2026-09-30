@@ -123,6 +123,22 @@ function initHistoryQueryPage() {
 
     // 监听消息
     initHistoryQueryMessageListener();
+    
+ // ★ 事件代理：设备名称悬停提示（与实时监控模块一致）
+    document.addEventListener('mouseover', function (e) {
+        var target = e.target.closest('.device-name-cell');
+        if (target && !target._tipShown) {
+            target._tipShown = true;
+            handleDeviceNameCellMouseEnter(target, e);
+        }
+    });
+    document.addEventListener('mouseout', function (e) {
+        var target = e.target.closest('.device-name-cell');
+        if (target) {
+            target._tipShown = false;
+            hideDeviceNameTip();
+        }
+    });
 
     
     setTimeout(function () {
@@ -661,7 +677,13 @@ function onDeviceGridDrawCell(e) {
         if (counts[100] > 0) badges += createAlarmBadge(counts[100], Data.FirstLevel ? Data.FirstLevel.Color : 'dc2828');
         if (counts[200] > 0) badges += createAlarmBadge(counts[200], Data.SecondLevel ? Data.SecondLevel.Color : 'f09614');
         if (counts[300] > 0) badges += createAlarmBadge(counts[300], Data.ThirdLevel ? Data.ThirdLevel.Color : 'fae600');
-        e.cellHtml = '<span class="device-name-cell">' + badges + (value || '') + '</span>';
+
+        // ★ 加上 data-alarm / data-name，供悬停提示读取
+        var deviceName = value || '';
+        var alarmData = JSON.stringify(counts);
+        e.cellHtml = '<span class="device-name-cell" data-alarm=\''
+            + alarmData + '\' data-name="' + deviceName
+            + '" style="white-space:nowrap;">' + badges + deviceName + '</span>';
         return;
     }
     if (fieldUpper === 'COMMSTATUSNAME') {
@@ -2576,6 +2598,75 @@ function refreshData() {
         loadStatCharts(deviceTypeId, orgId);
         refreshDeviceList();
     }
+}
+
+//================================================================
+//设备名称悬停提示
+//================================================================
+function handleDeviceNameCellMouseEnter(cellElement, event) {
+	 var alarmData = cellElement.getAttribute('data-alarm');
+	 if (!alarmData) return;
+	 var counts;
+	 try { counts = JSON.parse(alarmData); } catch (e) { return; }
+	
+	 var deviceName = cellElement.getAttribute('data-name') || '';
+	 var hasAlarm = (counts[100] + counts[200] + counts[300]) > 0;
+	 if (!hasAlarm) return;
+	
+	 var alarmShowStyle = getAlarmShowStyle() || {};
+	 var Data = alarmShowStyle.Data || {};
+	
+	 var parts = [];
+	 function badge(text, bg, tx) {
+	     return '<span style="display:inline-block;background:' + bg
+	         + ';color:' + tx + ';padding:0 8px;border-radius:12px;'
+	         + 'font-size:11px;font-weight:bold;line-height:18px;'
+	         + 'margin-right:4px;white-space:nowrap;">' + text + '</span>';
+	 }
+	
+	 var R = _loginUserLanguageResource;
+	 if (counts[100] > 0) {
+	     parts.push(badge((R.alarmLevel1 || '一级') + ':' + counts[100],
+	         '#' + (Data.FirstLevel && Data.FirstLevel.Color || 'dc2828'),
+	         '#' + (Data.FirstLevel && Data.FirstLevel.ColorText || 'ffffff')));
+	 }
+	 if (counts[200] > 0) {
+	     parts.push(badge((R.alarmLevel2 || '二级') + ':' + counts[200],
+	         '#' + (Data.SecondLevel && Data.SecondLevel.Color || 'f09614'),
+	         '#' + (Data.SecondLevel && Data.SecondLevel.ColorText || 'ffffff')));
+	 }
+	 if (counts[300] > 0) {
+	     parts.push(badge((R.alarmLevel3 || '三级') + ':' + counts[300],
+	         '#' + (Data.ThirdLevel && Data.ThirdLevel.Color || 'fae600'),
+	         '#' + (Data.ThirdLevel && Data.ThirdLevel.ColorText || '333333')));
+	 }
+	
+	 var tipHtml = deviceName + ' ' + parts.join(' ');
+	
+	 var x = event.clientX + 12;
+	 var y = event.clientY + 12;
+	 var tipWidth = 300, tipHeight = 80;
+	 if (x + tipWidth > window.innerWidth)  x = event.clientX - tipWidth - 12;
+	 if (y + tipHeight > window.innerHeight) y = event.clientY - tipHeight - 12;
+	
+	 hideDeviceNameTip();
+	
+	 var tipDiv = document.createElement('div');
+	 tipDiv.id = 'deviceNameTip';
+	 tipDiv.style.cssText =
+	     'position:fixed;background:#fff;border:1px solid #ccc;padding:6px 10px;' +
+	     'border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:99999;' +
+	     'max-width:400px;font-size:12px;font-family:"Microsoft YaHei",Arial,sans-serif;' +
+	     'pointer-events:none;';
+	 tipDiv.innerHTML = tipHtml;
+	 tipDiv.style.left = x + 'px';
+	 tipDiv.style.top  = y + 'px';
+	 document.body.appendChild(tipDiv);
+}
+
+function hideDeviceNameTip() {
+	var tip = document.getElementById('deviceNameTip');
+	if (tip && tip.parentNode) tip.parentNode.removeChild(tip);
 }
 
 // ================================================================

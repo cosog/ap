@@ -9,6 +9,28 @@ var _selectedAcqInstanceId = null;            // 上次选中的实例 ID（用�
 
 var protocolConfigInstancePropertiesHandsontableHelper = null;
 
+function clearAcqInstanceRightSide() {
+    safeDestroyHotHelpers(['protocolConfigInstancePropertiesHandsontableHelper']);
+
+    clearContainers(['acqInstancePropertiesContainer']);
+
+    _currentAcqInstanceNode = null;
+    _selectedAcqInstanceId = null;
+}
+
+function clearAcqInstanceListTree() {
+    var tree = mini.get('acqInstanceList');
+    if (tree) tree.setData([
+        {
+            "classes": 0,
+            "text": _loginUserLanguageResource.instanceList,
+            "iconCls": "device",
+            "expanded": true,
+            "children": []
+        }
+    ]);
+}
+
 // ================================================================
 // 1. 协议树事件
 // ================================================================
@@ -66,11 +88,17 @@ function onAcqInstanceProtocolTreeLoad(e) {
         })(root);
     }
 
-    if (targetNode) {
-        setTimeout(function () {
-            tree.selectNode(targetNode);
-        }, 50);
+    if (!targetNode) {
+        _currentAcqInstanceProtocolNode = null;
+        _selectedProtocolTreeNodeCode = null;
+
+        clearAcqInstanceListTree();
+        clearAcqInstanceRightSide();
+        return;
     }
+
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
+
 }
 
 /**
@@ -217,13 +245,12 @@ function onAcqInstanceListLoad(e) {
         })(root);
     }
 
-    setTimeout(function () {
-        if (targetNode) {
-            tree.selectNode(targetNode);
-        } else if (root.children && root.children.length > 0) {
-            tree.selectNode(root.children[0]);
-        }
-    }, 50);
+    if (!targetNode) {
+        clearAcqInstanceRightSide();
+        return;
+    }
+
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 /**
  * 实例列表节点选中：显示实例属性

@@ -9,6 +9,16 @@ var _selectedReportInstanceId = null;
 
 var protocolReportInstancePropertiesHandsontableHelper = null;
 
+function clearReportInstanceRightSide() {
+    safeDestroyHotHelpers(['protocolReportInstancePropertiesHandsontableHelper']);
+
+    clearContainers(['reportInstancePropertiesContainer']);
+
+    _currentReportInstanceNode = null;
+    _selectedReportInstanceId = null;
+}
+
+
 // ================================================================
 // 1. 实例树事件
 // ================================================================
@@ -95,13 +105,11 @@ function onReportInstanceTreeLoad(e) {
         })(root);
     }
 
-    setTimeout(function () {
-        if (targetNode) {
-            tree.selectNode(targetNode);
-        } else if (root.children && root.children.length > 0) {
-            tree.selectNode(root.children[0]);
-        }
-    }, 50);
+    if (!targetNode) {
+        clearReportInstanceRightSide();
+        return;
+    }
+    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 }
 
 function onReportInstanceTreeSelect(e) {

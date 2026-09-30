@@ -12,6 +12,47 @@ var _selectedAcqUnitClasses = null;
 var _newAcqUnitObjectName = null;
 var _newAcqUnitObjectClasses = null;
 
+function clearAcqUnitRightSide() {
+    // 销毁两个 Handsontable
+    safeDestroyHotHelpers([
+        'protocolConfigAcqUnitPropertiesHandsontableHelper',
+        'protocolAcqUnitConfigItemsHandsontableHelper'
+    ]);
+
+    // 清空容器
+    clearContainers([
+        'acqUnitPropertiesContainer',
+        'acqUnitConfigContainer'
+    ]);
+
+    // 隐藏详情 Tabs 的 props / config
+    var tabs = mini.get('acqUnitDetailTabs');
+    if (tabs) {
+        var propsTab  = tabs.getTab('props');
+        var configTab = tabs.getTab('config');
+        if (propsTab)  tabs.updateTab(propsTab,  { visible: false });
+        if (configTab) tabs.updateTab(configTab, { visible: false });
+    }
+
+    _currentAcqUnitNode = null;
+    _selectedAcqUnitId = null;
+    _selectedAcqUnitClasses = null;
+}
+
+function clearAcqUnitListTree() {
+    var tree = mini.get('acqUnitListTree');
+    if (tree) tree.setData([
+        {
+            "classes": 0,
+            "text": _loginUserLanguageResource.unitList,
+            "iconCls": "device",
+            "nodeType": _loginUserLanguageResource.rootNode,
+            "expanded": true,
+            "children": []
+        }
+    ]);
+}
+
 //================================================================
 // 采控单元 - 协议树事件
 // ================================================================
@@ -61,7 +102,15 @@ function onAcqProtocolTreeLoad(e) {
 	        collect(root);
 	        if (protocolNodes.length > 0) targetNode = protocolNodes[0];
 	    }
+	    // ★ 无协议 → 清空单元树 + 右侧详情
+	    if (!targetNode) {
+	        _currentAcqProtocolNode = null;
+	        _selectedProtocolTreeNodeCode = null;
 
+	        clearAcqUnitListTree();
+	        clearAcqUnitRightSide();
+	        return;
+	    }
 	    if (targetNode) {
 	    	setTimeout(function() {
 	    		tree.selectNode(targetNode);
@@ -173,16 +222,13 @@ function onAcqUnitListLoad(e) {
 	        collect(root);
 	    }
 
-	    setTimeout(function () {
-	        if (targetNode) {
-	            tree.selectNode(targetNode);
-	        } else {
-	            // 如果仍无目标，选根节点的第一个子节点（通常是协议节点）
-	            if (root.children && root.children.length > 0) {
-	                tree.selectNode(root.children[0]);
-	            }
-	        }
-	    }, 50);
+	    // ★ 无单元/组节点 → 清空右侧
+	    if (!targetNode) {
+	        clearAcqUnitRightSide();
+	        return;
+	    }
+
+	    setTimeout(function () { tree.selectNode(targetNode); }, 50);
 	}
 
 //采控单元列表选中事件

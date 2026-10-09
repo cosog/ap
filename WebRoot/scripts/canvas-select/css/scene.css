@@ -1,0 +1,30 @@
+.scene-annotation-canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.scene-canvas-label {
+    font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    transition: background 0.15s;
+}
+.scene-canvas-label:hover {
+    filter: brightness(1.1);
+}
+
+/* Í¼Æ¬Ñ¡ÔñÆ÷ */
+.scene-image-item-over {
+    border-color: #667eea !important;
+    background: #f8f9ff;
+}
+.scene-image-item-selected {
+    border-color: #4A6CF7 !important;
+    background: #eef2ff;
+    box-shadow: 0 0 0 2px #4A6CF7 inset;
+}
+
+.x-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+    border: none !important;
+}

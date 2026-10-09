@@ -33,6 +33,8 @@ request.setAttribute("showVideo", showVideo);
 <link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/handsontable.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/ht-theme-classic.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/table.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+
+<link rel="stylesheet" href="<%=path%>/scripts/canvas-select/css/scene.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <!-- 样式区 （结束） --> 
 <!-- 定义Extjs常量 -->
 <script type="text/javascript">
@@ -91,6 +93,9 @@ request.setAttribute("showVideo", showVideo);
 
 <!-- reconnecting-websocket -->
 <script type="text/javascript" src="<%=path%>/scripts/reconnecting-websocket/reconnecting-websocket.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+
+<!-- canvas-select -->
+<script type="text/javascript" src="<%=path%>/scripts/canvas-select/js/canvas-select.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 
 <script type="text/javascript" src="<%=path%>/app/app.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <!-- JavaScript （结束） -->

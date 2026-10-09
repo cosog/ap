@@ -176,6 +176,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "UpstreamAndDownstreamInteraction"
 		&& module_Code != "CalculateMaintaining"
 		&& module_Code != "OperationMaintenance"
+		&& module_Code != "SceneModel"
 //		&& module_Code != "RoleManagement"
 			) {
 		if (modules.length > 2) {
@@ -480,6 +481,13 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var tabPanel = Ext.getCmp("OperationMaintenanceTabPanel_Id");
 		if(tabPanel.getActiveTab().id=='OperationMaintenanceLowerComputerProgramUpgradeTabPanel_Id'){
 			loadLowerComputerProgramUpgradeDeviceList();
+		}
+	}else if(module_Code == "SceneModel"){
+		var gridPanel = Ext.getCmp("SceneModelGridView_Id");
+		if (isNotVal(gridPanel)) {
+			gridPanel.getStore().load();
+		}else{
+			Ext.create('AP.store.sceneModel.SceneModelInfoStore');
 		}
 	}
 	if(module_Code != "DeviceRealTimeMonitoring"){

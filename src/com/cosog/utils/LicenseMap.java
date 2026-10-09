@@ -45,6 +45,7 @@ public final class LicenseMap {
 		
 		moduleList0.add(1777);//驱动配置
 		moduleList0.add(2318);//收益管理
+		moduleList0.add(2338);//场景模型
 		moduleMap.put(0, moduleList0);
 		
 	}

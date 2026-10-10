@@ -129,12 +129,13 @@ Ext.define('AP.store.sceneModel.SceneModelInfoStore', {
                     }],
                     listeners: {
                     	selectionchange: function (sm, selected) {
-                    		if(selected.length>0){
-                    			var configPanel = Ext.getCmp('SceneModelConfigPanel_Id');
-                    	        if (configPanel && configPanel.loadScene) {
-                    	            configPanel.loadScene(selected[0]);
-                    	        }
-                    		}
+                    		var configPanel = Ext.getCmp('SceneModelConfigPanel_Id');
+                    	    if (!configPanel || !configPanel.loadScene) return;
+                    	    if (selected.length > 0) {
+                    	        configPanel.loadScene(selected[0]);
+                    	    } else {
+                    	        configPanel.loadScene(null);
+                    	    }
                     	},
                     	celldblclick : function( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                     		

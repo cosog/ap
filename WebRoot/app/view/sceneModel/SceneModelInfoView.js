@@ -7,14 +7,17 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     border: false,
 
     // ========================================================
-    // 内部状态（属性直接挂在实例上）
+    // 内部状态
     // ========================================================
     cs: null,
     labelLayer: null,
     currentRecord: null,
+    imageUrl: '',
     cachedOrigin: { x: 0, y: 0, scale: 1, ready: false },
     bindingMap: null,
     labelStyleMap: null,
+    userColorMap: null,
+    userLineWidthMap: null,
     lastSelectedUuid: null,
     defaultLabelStyle: {
         font: '12px', bgColor: '#4A6CF7', bgOpacity: 100,
@@ -24,20 +27,28 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         strokeStyle: '#00FF00', fillColor: '#0000FF', fillOpacity: 25,
         lineWidth: 1, ctrlRadius: 3
     },
-    TRANSPARENT_STROKE: 'rgba(0,0,0,0)',
+    TRANSPARENT_STROKE: 'rgba(0,0,0,0.01)',
+
+    _canvasCurrentUrl: null,
+    _lastDataKey: null,
+    _settingImage: false,
+    _rebuilding: false,
+
+    BLANK_IMAGE: context + '/sceneModelController/getSceneImage?name=__blank__.svg&_v=2',
 
     // ========================================================
-    // 一次性内联所有布局
+    // 布局
     // ========================================================
     initComponent: function() {
         var me = this;
         me.bindingMap = new Map();
         me.labelStyleMap = new Map();
+        me.userColorMap = new Map();
+        me.userLineWidthMap = new Map();
 
         Ext.apply(me, {
             tbar: [],
             items: [
-                // ============ 左侧：场景列表 ============
                 {
                     region: 'west',
                     width: '32%',
@@ -56,54 +67,49 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                             if (isNotVal(gridPanel)) gridPanel.getStore().load();
                         }
                     }, '->', {
-                        xtype: 'button',
-                        text: loginUserLanguageResource.add,
-                        iconCls: 'add',
+                        xtype: 'button', text: loginUserLanguageResource.add, iconCls: 'add',
                         disabled: loginUserSceneModelRight.editFlag != 1,
                         handler: function() { me.onCreateScene(); }
                     }, "-", {
-                        xtype: 'button',
-                        text: loginUserLanguageResource.deleteData,
-                        iconCls: 'delete',
+                        xtype: 'button', text: loginUserLanguageResource.deleteData, iconCls: 'delete',
                         disabled: loginUserSceneModelRight.editFlag != 1,
                         handler: function() { me.onDeleteScene(); }
                     }, "-", {
-                        xtype: 'button',
-                        text: loginUserLanguageResource.save,
-                        iconCls: 'save',
+                        xtype: 'button', text: loginUserLanguageResource.save, iconCls: 'save',
                         disabled: loginUserSceneModelRight.editFlag != 1,
                         handler: function() { me.onSaveScene(); }
                     }, "-", {
-                        xtype: 'button',
-                        text: loginUserLanguageResource.exportData,
-                        iconCls: 'export',
+                        xtype: 'button', text: loginUserLanguageResource.exportData, iconCls: 'export',
                         disabled: loginUserSceneModelRight.editFlag != 1,
                         handler: function() { me.onExportScenes(); }
                     }, "-", {
-                        xtype: 'button',
-                        text: loginUserLanguageResource.importData,
-                        iconCls: 'import',
+                        xtype: 'button', text: loginUserLanguageResource.importData, iconCls: 'import',
                         disabled: loginUserSceneModelRight.editFlag != 1,
                         handler: function() { me.onImportScenes(); }
+                    },{
+                        id: 'SceneModelSelectId_Id',
+                        xtype: 'textfield',
+                        value: 0,
+                        hidden: true
+                    },{
+                        id: 'addSceneModelSelectName_Id',
+                        xtype: 'textfield',
+                        value: '',
+                        hidden: true
                     }]
                 },
-
-                // ============ 右侧：场景配置（图形标注） ============
                 {
                     region: 'center',
                     id: 'SceneModelConfigPanel_Id',
                     layout: 'border',
                     border: false,
-                    // ★ 工具条直接配置在 tbar 里
                     tbar: [
                         { xtype: 'button', text: '✋ 选择', itemId: 'btnSelect',
                           enableToggle: true, pressed: true, toggleGroup: 'createType',
-                          handler: function(b) { if (b.pressed && me.cs) me.cs.createType = 0; }
-                        },
+                          handler: function(b) { if (b.pressed && me.cs) me.cs.createType = 0; } },
                         { xtype: 'button', text: '▭ 矩形', itemId: 'btnRect',
                           enableToggle: true, toggleGroup: 'createType',
-                          handler: function(b) { if (b.pressed && me.cs) me.cs.createType = 1; }
-                        },
+                          handler: function(b) { if (b.pressed && me.cs) me.cs.createType = 1; } },
                         '-',
                         { xtype: 'button', text: '🔍+', tooltip: '放大',
                           handler: function() { if (me.cs) { me.cs.setScale(true); me.afterZoom(); } } },
@@ -120,7 +126,6 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                         { xtype: 'button', text: '💾 保存标注', cls: 'x-btn-primary',
                           handler: function() { me.onSaveAnnotations(); } }
                     ],
-                    // ★ items 里只剩画布和样式面板，不再需要 region: north
                     items: [
                         {
                             xtype: 'container',
@@ -128,21 +133,16 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                             itemId: 'canvasWrap',
                             layout: 'absolute',
                             style: {
-                                position: 'relative',
-                                background: '#f8f9fa',
-                                border: '2px dashed #dee2e6',
-                                borderRadius: '8px',
-                                overflow: 'hidden',
-                                margin: '12px'
+                                position: 'relative', background: '#f8f9fa',
+                                border: '2px dashed #dee2e6', borderRadius: '8px',
+                                overflow: 'hidden', margin: '12px'
                             },
                             items: [{
-                                xtype: 'component',
-                                itemId: 'canvas',
+                                xtype: 'component', itemId: 'canvas',
                                 autoEl: { tag: 'canvas', cls: 'scene-annotation-canvas' },
                                 style: { display: 'block', width: '100%', height: '100%' }
                             }, {
-                                xtype: 'component',
-                                itemId: 'labelLayer',
+                                xtype: 'component', itemId: 'labelLayer',
                                 autoEl: { tag: 'div', cls: 'scene-label-layer' },
                                 style: {
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
@@ -151,55 +151,108 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                             }]
                         },
                         {
-                            xtype: 'panel',
-                            region: 'east',
-                            width: 280,
-                            title: '样式设置',
-                            collapsible: true,
-                            split: true,
-                            bodyPadding: 12,
-                            autoScroll: true,
+                            xtype: 'panel', region: 'east', width: 280,
+                            title: '样式设置', collapsible: true, split: true,
+                            bodyPadding: 12, autoScroll: true,
                             items: [{
+                                // ========================================================
+                                // 图形样式
+                                // ========================================================
                                 xtype: 'fieldset',
                                 title: '图形样式',
-                                defaults: { anchor: '100%', margin: '6 0' },
+                                defaults: { anchor: '100%', labelWidth: 90, margin: '6 0' },
                                 items: [
-                                    { xtype: 'textfield', fieldLabel: '边框颜色', itemId: 'strokeStyle',
-                                      value: '#00FF00',
-                                      listeners: { change: function() { me.onGraphicStyleChange(); } } },
-                                    { xtype: 'numberfield', fieldLabel: '边框宽度', itemId: 'lineWidth',
-                                      value: 1, minValue: 0, maxValue: 10, allowDecimals: false,
-                                      listeners: { change: function() { me.onGraphicStyleChange(); } } },
-                                    { xtype: 'textfield', fieldLabel: '填充颜色', itemId: 'fillStyle',
-                                      value: '#0000FF',
-                                      listeners: { change: function() { me.onGraphicStyleChange(); } } },
-                                    { xtype: 'numberfield', fieldLabel: '填充透明度%', itemId: 'fillOpacity',
-                                      value: 25, minValue: 0, maxValue: 100, allowDecimals: false,
-                                      listeners: { change: function() { me.onGraphicStyleChange(); } } },
-                                    { xtype: 'numberfield', fieldLabel: '控制点大小', itemId: 'ctrlRadius',
-                                      value: 3, minValue: 2, maxValue: 10, allowDecimals: false,
-                                      listeners: { change: function() { me.onGraphicStyleChange(); } } }
+                                    {
+                                        xtype: 'colorfield',
+                                        fieldLabel: '边框颜色',
+                                        itemId: 'strokeStyle',
+                                        listeners: {
+                                            collapse: function (field, eOpts) {
+                                                me.applyColorFieldVisual(field, 1);
+                                                me.onGraphicStyleChange();
+                                            }
+                                        }
+                                    },
+                                    {
+                                        xtype: 'numberfield',
+                                        fieldLabel: '边框宽度',
+                                        itemId: 'lineWidth',
+                                        value: 1, minValue: 0, maxValue: 10, allowDecimals: false,
+                                        listeners: { change: function() { me.onGraphicStyleChange(); } }
+                                    },
+                                    {
+                                        xtype: 'colorfield',
+                                        fieldLabel: '填充颜色',
+                                        itemId: 'fillStyle',
+                                        listeners: {
+                                            collapse: function (field, eOpts) {
+                                                me.applyColorFieldVisual(field, null);
+                                                me.onGraphicStyleChange();
+                                            }
+                                        }
+                                    },
+                                    {
+                                        xtype: 'numberfield',
+                                        fieldLabel: '控制点大小',
+                                        itemId: 'ctrlRadius',
+                                        value: 3, minValue: 2, maxValue: 10, allowDecimals: false,
+                                        listeners: { change: function() { me.onGraphicStyleChange(); } }
+                                    }
                                 ]
                             }, {
+                                // ========================================================
+                                // 标签样式
+                                // ========================================================
                                 xtype: 'fieldset',
                                 title: '标签样式',
-                                defaults: { anchor: '100%', margin: '6 0' },
+                                defaults: { anchor: '100%', labelWidth: 90, margin: '6 0' },
                                 items: [
-                                    { xtype: 'combo', fieldLabel: '字体', itemId: 'labelFont',
-                                      store: ['11px', '12px', '13px', '14px'],
-                                      value: '12px', editable: false,
-                                      listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                    { xtype: 'textfield', fieldLabel: '标签背景', itemId: 'labelBg',
-                                      value: '#4A6CF7',
-                                      listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                    { xtype: 'numberfield', fieldLabel: '背景透明度%', itemId: 'labelBgOpacity',
-                                      value: 100, minValue: 0, maxValue: 100, allowDecimals: false,
-                                      listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                    { xtype: 'textfield', fieldLabel: '文字颜色', itemId: 'labelText',
-                                      value: '#FFFFFF',
-                                      listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                    { xtype: 'checkbox', fieldLabel: '隐藏标签', itemId: 'hideLabel',
-                                      listeners: { change: function() { me.onLabelStyleChange(); } } }
+                                    {
+                                        xtype: 'combo',
+                                        fieldLabel: '字体',
+                                        itemId: 'labelFont',
+                                        store: ['11px', '12px', '13px', '14px'],
+                                        value: '12px',
+                                        editable: false,
+                                        matchFieldWidth: true,
+                                        listeners: { change: function() { me.onLabelStyleChange(); } }
+                                    },
+                                    {
+                                        xtype: 'colorfield',
+                                        fieldLabel: '标签背景',
+                                        itemId: 'labelBg',
+                                        listeners: {
+                                            collapse: function (field, eOpts) {
+                                                me.applyColorFieldVisual(field, null);
+                                                me.onLabelStyleChange();
+                                            }
+                                        }
+                                    },
+                                    {
+                                        xtype: 'colorfield',
+                                        fieldLabel: '文字颜色',
+                                        itemId: 'labelText',
+                                        listeners: {
+                                            collapse: function (field, eOpts) {
+                                                me.applyColorFieldVisual(field, 1);
+                                                me.onLabelStyleChange();
+                                            }
+                                        }
+                                    },
+                                    {
+                                        xtype: 'checkbox',
+                                        fieldLabel: '隐藏标签',
+                                        itemId: 'hideLabel',
+                                        listeners: { change: function() { me.onLabelStyleChange(); } }
+                                    },
+                                    // ★ 新增：标签显示在上方
+                                    {
+                                        xtype: 'checkbox',
+                                        fieldLabel: '标签在上方',
+                                        itemId: 'labelUp',
+                                        value: true,
+                                        listeners: { change: function() { me.onLabelStyleChange(); } }
+                                    }
                                 ]
                             }]
                         }
@@ -210,16 +263,300 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
 
         me.callParent(arguments);
 
-        // ★ 给中心面板挂上 loadScene/resetPanel，供 Store 里的 Ext.getCmp('SceneModelConfigPanel_Id') 调用
         var centerPanel = Ext.getCmp('SceneModelConfigPanel_Id');
         centerPanel.loadScene = function(r) { me.loadScene(r); };
         centerPanel.resetPanel = function() { me.resetPanel(); };
         centerPanel.getSceneConfig = function() { return me.getConfig(); };
 
-        // DOM 就绪后初始化 canvas-select
         me.on('afterrender', function() {
-            Ext.defer(me.initCanvasSelect, 100, me);
+            Ext.defer(function() {
+                me.initCanvasSelect();
+                Ext.defer(function() { me.resetStylePanel(); }, 50, me);
+            }, 100, me);
         });
+    },
+
+    // ========================================================
+    // 颜色工具方法（参考报警颜色模块）
+    // ========================================================
+    ensureHashColor: function(color) {
+        if (!color || typeof color !== 'string') return '';
+        color = color.trim();
+        if (color.indexOf('#') !== 0) color = '#' + color;
+        return color;
+    },
+
+    /**
+     * 按报警模块的方式刷新 colorfield 的显示
+     */
+    applyColorFieldVisual: function(field, alphaOverride) {
+        if (!field || !field.inputEl) return;
+
+        var hexRaw = field.getValue() || '';
+        var hex = String(hexRaw).replace('#', '').toUpperCase();
+        if (hex.length !== 6) return;
+
+        var alpha = alphaOverride;
+        if (alpha == null) {
+            alpha = 1;
+            try {
+                if (field.color && field.color.a != null) alpha = field.color.a;
+            } catch (e) {}
+        }
+        alpha = Math.max(0, Math.min(1, alpha));
+
+        try {
+            field.inputEl.applyStyles({
+                background: '#' + hex,
+                opacity: alpha
+            });
+        } catch (e) {}
+
+        try {
+            var colorObj = field.color;
+            if (!colorObj || typeof colorObj !== 'object') colorObj = {};
+            colorObj.a = alpha;
+            field.setColor(colorObj);
+        } catch (e) {
+            console.warn('[applyColorFieldVisual] setColor 失败', e);
+        }
+    },
+
+    setColorFieldValue: function(itemId, hex, alphaPercent) {
+        var me = this;
+        var panel = me.down('panel[region=east]');
+        if (!panel) return;
+        var field = panel.down('#' + itemId);
+        if (!field) return;
+
+        var cleanHex = (hex || '#000000').replace('#', '').toUpperCase();
+        var alpha = Math.max(0, Math.min(1, (alphaPercent != null ? alphaPercent : 100) / 100));
+
+        try {
+            field.setValue(cleanHex);
+        } catch (e) {
+            console.warn('[setColorFieldValue] setValue 失败', itemId, e);
+        }
+
+        try {
+            var colorObj = field.color;
+            if (!colorObj || typeof colorObj !== 'object') {
+                colorObj = {};
+                field.color = colorObj;
+            }
+            colorObj.a = alpha;
+        } catch (e) {}
+
+        if (field.inputEl) {
+            try {
+                field.inputEl.applyStyles({
+                    background: '#' + cleanHex,
+                    opacity: alpha
+                });
+            } catch (e) {}
+        }
+
+        try {
+            field.setColor(field.color);
+        } catch (e) {
+            console.warn('[setColorFieldValue] setColor 失败', itemId, e);
+        }
+    },
+
+    getColorFieldValue: function(itemId) {
+        var me = this;
+        var panel = me.down('panel[region=east]');
+        if (!panel) return { hex: '#000000', alphaPercent: 100 };
+        var field = panel.down('#' + itemId);
+        if (!field) return { hex: '#000000', alphaPercent: 100 };
+
+        var raw = field.getValue() || '';
+        var cleanHex = ('#' + String(raw).replace('#', '')).toUpperCase();
+
+        var alphaPercent = 100;
+        try {
+            if (field.color && field.color.a != null) {
+                alphaPercent = Math.round(field.color.a * 100);
+            }
+        } catch (e) {}
+
+        return { hex: cleanHex, alphaPercent: alphaPercent };
+    },
+
+    // ========================================================
+    // 颜色规范化
+    // ========================================================
+    normalizeColor: function(color, fallback) {
+        if (!color || typeof color !== 'string') return fallback;
+        color = color.trim();
+
+        if (/^rgba?\(/i.test(color)) return color;
+
+        if (/^#[0-9a-f]{3}$/i.test(color)) {
+            return '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+        }
+        if (/^#[0-9a-f]{6}$/i.test(color)) return color;
+
+        if (/^#[0-9a-f]{8}$/i.test(color)) {
+            var r = parseInt(color.slice(1, 3), 16);
+            var g = parseInt(color.slice(3, 5), 16);
+            var b = parseInt(color.slice(5, 7), 16);
+            var a = parseInt(color.slice(7, 9), 16) / 255;
+            if (a === 0) a = 0.01;
+            return 'rgba(' + r + ',' + g + ',' + b + ',' + a.toFixed(3) + ')';
+        }
+
+        return fallback;
+    },
+
+    // ========================================================
+    // 读写 record.config
+    // ========================================================
+    readRecordConfig: function(record) {
+        if (!record) return { imageUrl: '', shapes: [] };
+        var raw = record.get('config');
+        if (!raw) return { imageUrl: '', shapes: [] };
+        if (typeof raw === 'object') return raw;
+        try {
+            var parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') return parsed;
+        } catch (e) {
+            console.warn('[readRecordConfig] config 解析失败', e);
+        }
+        return { imageUrl: '', shapes: [] };
+    },
+
+    writeRecordConfig: function(record, cfg) {
+        if (!record) return;
+        try {
+            if (!cfg || typeof cfg !== 'object') {
+                cfg = { imageUrl: '', shapes: [] };
+            }
+            record.set('config', JSON.stringify(cfg));
+        } catch (e) {
+            console.error('[writeRecordConfig] 写入 config 失败', e);
+        }
+    },
+
+    // ========================================================
+    // 安全 setData
+    // ========================================================
+    safeSetData: function(shapes) {
+        var me = this;
+        if (!me.cs) return;
+        var data = Ext.isArray(shapes) ? shapes : [];
+
+        var newKey = data.map(function(s) { return s.uuid || ''; }).join('|');
+        if (newKey === me._lastDataKey) {
+            return;
+        }
+        me._lastDataKey = newKey;
+
+        try {
+            me.cs.setData(data);
+        } catch (e) {
+            console.error('[safeSetData] setData 异常', e);
+            me._lastDataKey = null;
+            try { me.cs.setData([]); } catch (e2) {}
+        }
+    },
+
+    // ========================================================
+    // 图片加载
+    // ========================================================
+    setCanvasImage: function(url) {
+        var me = this;
+        if (!me.cs) return;
+        if (me._rebuilding) return;
+        if (!url) url = me.BLANK_IMAGE;
+
+        if (url === me._canvasCurrentUrl) {
+            return;
+        }
+
+        if (url === me.BLANK_IMAGE) {
+            me.imageUrl = '';
+            me.rebuildCanvasSelect();
+            return;
+        }
+
+        if (me._settingImage) return;
+        me._settingImage = true;
+
+        var probe = new Image();
+        probe.onload = function() {
+            me._settingImage = false;
+            if (!me.cs) return;
+            try {
+                me.cs.setImage(url);
+                me.imageUrl = url;
+                me._canvasCurrentUrl = url;
+            } catch (e) {
+                console.error('[setCanvasImage] setImage 失败，重建 canvas-select', e);
+                me.imageUrl = '';
+                me._canvasCurrentUrl = null;
+                me.rebuildCanvasSelect();
+            }
+        };
+        probe.onerror = function() {
+            me._settingImage = false;
+            console.warn('[setCanvasImage] 图片加载失败，回退到空白图:', url);
+            me.imageUrl = '';
+            me._canvasCurrentUrl = null;
+            me.rebuildCanvasSelect();
+        };
+        probe.src = url;
+    },
+
+    // ========================================================
+    // 重建 canvas-select（cloneNode 换 DOM）
+    // ========================================================
+    rebuildCanvasSelect: function() {
+        var me = this;
+        if (me._rebuilding) return;
+        me._rebuilding = true;
+
+        try {
+            if (me.originTimer) {
+                clearInterval(me.originTimer);
+                me.originTimer = null;
+            }
+
+            try {
+                if (me.cs) {
+                    if (typeof me.cs.destroy === 'function')      me.cs.destroy();
+                    else if (typeof me.cs.dispose === 'function') me.cs.dispose();
+                }
+            } catch (e) {
+                console.warn('[rebuildCanvasSelect] destroy 失败（忽略）', e);
+            }
+            me.cs = null;
+
+            var canvasCmp = me.down('#canvas');
+            if (canvasCmp && canvasCmp.el && canvasCmp.el.dom) {
+                var oldDom  = canvasCmp.el.dom;
+                var parentEl = oldDom.parentNode;
+                if (parentEl) {
+                    var newDom = oldDom.cloneNode(false);
+                    newDom.width  = oldDom.width  || 800;
+                    newDom.height = oldDom.height || 600;
+                    parentEl.replaceChild(newDom, oldDom);
+                    canvasCmp.el = Ext.get(newDom);
+                }
+            }
+
+            me._canvasCurrentUrl = null;
+            me._lastDataKey      = null;
+            me._settingImage     = false;
+            me.cachedOrigin      = { x: 0, y: 0, scale: 1, ready: false };
+
+            if (me.labelLayer) me.labelLayer.innerHTML = '';
+
+            me.initCanvasSelect();
+            me._canvasCurrentUrl = me.BLANK_IMAGE;
+        } finally {
+            me._rebuilding = false;
+        }
     },
 
     // ========================================================
@@ -231,6 +568,18 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         var layerCmp = me.down('#labelLayer');
         if (!canvasCmp || !layerCmp) return;
 
+        if (me.originTimer) {
+            clearInterval(me.originTimer);
+            me.originTimer = null;
+        }
+
+        try {
+            if (me.cs && typeof me.cs.destroy === 'function') {
+                me.cs.destroy();
+            }
+        } catch (e) {}
+        me.cs = null;
+
         var canvasEl = canvasCmp.el.dom;
         me.labelLayer = layerCmp.el.dom;
 
@@ -239,7 +588,9 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             return;
         }
 
-        me.cs = new CanvasSelect(canvasEl, '');
+        me.cs = new CanvasSelect(canvasEl, me.BLANK_IMAGE);
+        me._canvasCurrentUrl = me.BLANK_IMAGE;
+        me._lastDataKey = '';
         me.cs.ctrlRadius = me.globalStyle.ctrlRadius;
         me.cs.createType = 0;
         me.cs.scrollZoom = true;
@@ -275,6 +626,18 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         var me = this;
         var uuid = me.extractUuid(info);
         if (!uuid) return;
+        me.userColorMap.set(uuid, me.globalStyle.strokeStyle || '#00FF00');
+        me.userLineWidthMap.set(uuid, me.globalStyle.lineWidth != null ? me.globalStyle.lineWidth : 1);
+        try {
+            var shapes = me.cs.dataset;
+            for (var i = 0; i < shapes.length; i++) {
+                if (shapes[i].uuid === uuid) {
+                    shapes[i]._userStrokeStyle = me.globalStyle.strokeStyle || '#00FF00';
+                    shapes[i]._userLineWidth = me.globalStyle.lineWidth != null ? me.globalStyle.lineWidth : 1;
+                    break;
+                }
+            }
+        } catch (e) {}
         Ext.defer(function() { me.openDataSourceWindow(uuid, false); }, 30);
     },
 
@@ -289,13 +652,45 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         }
         if (!shape) return;
 
-        var fillParts = me.parseFillStyle(shape.fillStyle || '#0000FF40');
         var panel = me.down('panel[region=east]');
-        panel.down('#strokeStyle').setValue(shape._userStrokeStyle || shape.strokeStyle || '#00FF00');
-        panel.down('#lineWidth').setValue(shape.lineWidth != null ? shape.lineWidth : 1);
-        panel.down('#fillStyle').setValue(fillParts.hex);
-        panel.down('#fillOpacity').setValue(fillParts.alpha);
-        panel.down('#ctrlRadius').setValue(shape.ctrlRadius || 3);
+        if (!panel) return;
+
+        // ★ 1) 回填图形样式
+        var fillParts = me.parseFillStyle(shape.fillStyle || 'rgba(0,0,255,0.25)');
+
+        var userColor = me.userColorMap.get(uuid) || shape._userStrokeStyle || '#00FF00';
+        if (userColor === me.TRANSPARENT_STROKE) {
+            userColor = me.globalStyle.strokeStyle || '#00FF00';
+        }
+
+        var userLw = me.userLineWidthMap.get(uuid);
+        if (userLw == null) userLw = shape._userLineWidth != null ? shape._userLineWidth
+                              : (shape.lineWidth != null ? shape.lineWidth : 1);
+
+        me.setColorFieldValue('strokeStyle', userColor, 100);
+        me.setColorFieldValue('fillStyle', fillParts.hex, fillParts.alpha);
+
+        var lwField = panel.down('#lineWidth');
+        if (lwField) lwField.setValue(userLw);
+        var crField = panel.down('#ctrlRadius');
+        if (crField) crField.setValue(shape.ctrlRadius || 3);
+
+        // ★ 2) 回填标签样式
+        var labelStyle = me.labelStyleMap.get(uuid) || me.defaultLabelStyle || {};
+
+        me.setColorFieldValue('labelBg', labelStyle.bgColor || '#4A6CF7',
+            labelStyle.bgOpacity != null ? labelStyle.bgOpacity : 100);
+        me.setColorFieldValue('labelText', labelStyle.textColor || '#FFFFFF', 100);
+
+        var fontField = panel.down('#labelFont');
+        if (fontField) fontField.setValue(labelStyle.font || '12px');
+
+        var hideField = panel.down('#hideLabel');
+        if (hideField) hideField.setValue(!!labelStyle.hide);
+
+        // ★ 3) 回填"标签在上方"
+        var upField = panel.down('#labelUp');
+        if (upField) upField.setValue(labelStyle.up !== false);
     },
 
     afterZoom: function() {
@@ -312,7 +707,6 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     onSelectServerImage: function() {
         var me = this;
 
-        // 图片列表 store
         var imageStore = Ext.create('Ext.data.Store', {
             fields: ['name', 'url', 'size', 'lastModified'],
             proxy: {
@@ -326,21 +720,15 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         var win = Ext.create('Ext.window.Window', {
             title: '选择场景图片',
             width: 820, height: 580,
-            modal: true,
-            layout: 'fit',
-            closeAction: 'destroy',
+            modal: true, layout: 'fit', closeAction: 'destroy',
             items: [{
-                xtype: 'panel',
-                layout: 'fit',
+                xtype: 'panel', layout: 'fit',
                 tbar: [
                     { xtype: 'textfield', itemId: 'searchField',
                       emptyText: '搜索文件名...', width: 220,
-                      listeners: { change: function(f, v) { win.filterImages(v); } }
-                    },
+                      listeners: { change: function(f, v) { win.filterImages(v); } } },
                     '->',
-                    { xtype: 'button', text: '📤 上传本地图片',
-                      handler: function() { win.doUpload(); }
-                    },
+                    { xtype: 'button', text: '📤 上传本地图片', handler: function() { win.doUpload(); } },
                     { xtype: 'button', text: '🔄 刷新',
                       handler: function() {
                           imageStore.reload({
@@ -348,17 +736,14 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                                   win.allImages = imageStore.getRange().map(function(r) { return r.getData(); });
                               }
                           });
-                      }
-                    }
+                      } }
                 ],
                 items: [{
-                    xtype: 'dataview',
-                    itemId: 'imageView',
+                    xtype: 'dataview', itemId: 'imageView',
                     itemSelector: 'div.scene-image-item',
                     overItemCls: 'scene-image-item-over',
                     selectedItemCls: 'scene-image-item-selected',
-                    emptyText: '<div style="padding:40px;color:#aaa;text-align:center;">'
-                              + '暂无图片，请点击右上角"上传本地图片"</div>',
+                    emptyText: '<div style="padding:40px;color:#aaa;text-align:center;">暂无图片</div>',
                     store: imageStore,
                     tpl: [
                         '<tpl for=".">',
@@ -375,9 +760,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                         '</tpl>'
                     ],
                     listeners: {
-                        itemdblclick: function(view, record) {
-                            win.doSelect(record.get('url'));
-                        }
+                        itemdblclick: function(view, record) { win.doSelect(record.get('url')); }
                     }
                 }]
             }],
@@ -391,35 +774,28 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 }}
             ],
 
-            // ---- 方法 ----
-            // 本地过滤
             filterImages: function(keyword) {
                 var view = this.down('[itemId=imageView]');
                 var allData = this.allImages || [];
                 view.getStore().removeAll();
-                if (!keyword) {
-                    view.getStore().add(allData);
-                    return;
-                }
+                if (!keyword) { view.getStore().add(allData); return; }
                 var filtered = allData.filter(function(item) {
                     return item.name.toLowerCase().indexOf(keyword.toLowerCase()) >= 0;
                 });
                 view.getStore().add(filtered);
             },
 
-            // 选中图片
             doSelect: function(url) {
-                me.cs.setImage(url);
+                me.setCanvasImage(url);
                 if (me.currentRecord) {
-                    var cfg = me.currentRecord.getConfig();
-                    cfg.imageUrl = url;
+                    var cfg = me.readRecordConfig(me.currentRecord);
+                    cfg.imageUrl = me.imageUrl;
                     cfg.imageSource = 'server';
-                    me.currentRecord.setConfig(cfg);
+                    me.writeRecordConfig(me.currentRecord, cfg);
                 }
                 win.close();
             },
 
-            // 弹窗内上传
             doUpload: function() {
                 var input = document.createElement('input');
                 input.type = 'file';
@@ -427,7 +803,6 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 input.onchange = function(e) {
                     var file = e.target.files[0];
                     if (!file) return;
-
                     var formData = new FormData();
                     formData.append('file', file);
 
@@ -442,7 +817,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                             Ext.MessageBox.hide();
                             var result = Ext.decode(resp.responseText);
                             if (result.success) {
-                                Ext.toast('上传成功');
+                                Ext.Msg.alert(loginUserLanguageResource.tip, '上传成功');
                                 imageStore.reload({
                                     callback: function() {
                                         win.allImages = imageStore.getRange().map(function(r) { return r.getData(); });
@@ -462,7 +837,6 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             }
         });
 
-        // 首次加载完成后缓存完整列表，用于本地过滤
         imageStore.on('load', function(store) {
             win.allImages = store.getRange().map(function(r) { return r.getData(); });
         });
@@ -472,12 +846,15 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
 
     onUploadLocalImage: function() {
         var me = this;
+        var targetRecord = me.currentRecord;
+
         var input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*,.svg';
         input.onchange = function(e) {
             var file = e.target.files[0];
             if (!file) return;
+
             var formData = new FormData();
             formData.append('file', file);
 
@@ -490,23 +867,26 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 headers: { 'Content-Type': null },
                 success: function(resp) {
                     Ext.MessageBox.hide();
-                    try {
-                        var result = Ext.decode(resp.responseText);
-                        if (result.success) {
-                            me.cs.setImage(result.imageUrl);
-                            if (me.currentRecord) {
-                                var cfg = me.currentRecord.getConfig();
-                                cfg.imageUrl = result.imageUrl;
-                                cfg.imageSource = 'uploaded';
-                                me.currentRecord.setConfig(cfg);
-                            }
-                            Ext.toast('上传成功');
-                        } else {
-                            Ext.Msg.alert('失败', result.message || '上传失败');
-                        }
-                    } catch (err) {
-                        Ext.Msg.alert('错误', '上传返回数据异常');
+                    var result;
+                    try { result = Ext.decode(resp.responseText); }
+                    catch (err) { Ext.Msg.alert('错误', '服务器返回数据异常'); return; }
+
+                    if (!result.success) {
+                        Ext.Msg.alert('失败', result.message || '上传失败');
+                        return;
                     }
+
+                    me.setCanvasImage(result.imageUrl);
+
+                    if (targetRecord) {
+                        var cfg = me.readRecordConfig(targetRecord);
+                        if (!Ext.isArray(cfg.shapes)) cfg.shapes = [];
+                        cfg.imageUrl = me.imageUrl;
+                        cfg.imageSource = 'uploaded';
+                        me.writeRecordConfig(targetRecord, cfg);
+                    }
+
+                    Ext.Msg.alert(loginUserLanguageResource.tip, '上传成功');
                 },
                 failure: function() {
                     Ext.MessageBox.hide();
@@ -523,33 +903,19 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     onSaveAnnotations: function() {
         var me = this;
 
-        if (!me.currentRecord) {
-            Ext.Msg.alert('提示', '请先选择场景');
-            return;
-        }
-        if (!me.cs) {
-            Ext.Msg.alert('提示', '画布未初始化');
-            return;
-        }
+        if (!me.currentRecord) { Ext.Msg.alert('提示', '请先选择场景'); return; }
+        if (!me.cs) { Ext.Msg.alert('提示', '画布未初始化'); return; }
 
-        // 检查图片是否已选择
-        var imageUrl = me.cs.image ? (me.cs.image.src || '') : '';
-        if (!imageUrl) {
-            Ext.Msg.alert('提示', '请先选择场景图片');
-            return;
-        }
+        var imageUrl = me.imageUrl || '';
+        if (!imageUrl) { Ext.Msg.alert('提示', '请先选择场景图片'); return; }
 
-        // 检查图片是否是本地临时 URL（blob/data），未上传
         if (imageUrl.indexOf('blob:') === 0 || imageUrl.indexOf('data:') === 0) {
             Ext.Msg.confirm('提示', '当前图片还未上传到服务器，是否先上传？', function(btn) {
-                if (btn === 'yes') {
-                    me.onUploadLocalImage();   // 上传后再点保存
-                }
+                if (btn === 'yes') me.onUploadLocalImage();
             });
             return;
         }
 
-        // 组装 config
         var cfg = me.getConfig();
         if (!cfg.shapes || cfg.shapes.length === 0) {
             Ext.Msg.confirm('提示', '当前场景还没有任何标注，仍要保存吗？', function(btn) {
@@ -561,28 +927,22 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         me.submitSaveScene(cfg);
     },
 
-    // ============================================================
-    // 提交保存到后端
-    // ============================================================
     submitSaveScene: function(cfg) {
         var me = this;
         var record = me.currentRecord;
 
-        // 先写回本地 record，防止切换场景时数据丢失
-        record.setConfig(cfg);
+        me.writeRecordConfig(record, cfg);
+
         Ext.MessageBox.show({
-            msg: '正在保存场景标注...',
-            progressText: '保存中',
-            width: 300,
-            wait: true,
-            waitConfig: { interval: 200 }
+            msg: '正在保存场景标注...', progressText: '保存中',
+            width: 300, wait: true, waitConfig: { interval: 200 }
         });
 
         Ext.Ajax.request({
             url: context + '/sceneModelController/saveSceneModel',
             method: 'POST',
             params: {
-                id: record.get('modelId'),
+                id: record.get('modelId') || record.get('id'),
                 config: JSON.stringify(cfg)
             },
             success: function(resp) {
@@ -590,20 +950,10 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 try {
                     var result = Ext.decode(resp.responseText);
                     if (result.success) {
-                        // ★ 提交本地修改，标记为 clean，避免下次切换场景时出现"未保存"提示
                         record.commit();
-
-                        // ★ 刷新左侧列表里当前行的 config 列（如果 grid 显示 config 字段的话）
-                        // record.set('config', JSON.stringify(cfg));
-
-                        Ext.toast({
-                            html: '保存成功',
-                            title: '成功',
-                            width: 200,
-                            align: 't'
-                        });
+                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
                     } else {
-                        Ext.Msg.alert('保存失败', result.message || '未知错误');
+                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveFailed);
                     }
                 } catch (e) {
                     Ext.Msg.alert('错误', '服务器返回数据异常');
@@ -615,9 +965,6 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             }
         });
     },
-    
-    
-    
 
     // ========================================================
     // 数据源绑定弹窗
@@ -627,17 +974,13 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         if (!uuid) return;
 
         var existing = me.bindingMap.get(uuid) || {};
-
-        // 从当前场景记录取组织 id
         var orgId = '';
         if (me.currentRecord) {
             orgId = me.currentRecord.get('orgid') || me.currentRecord.get('orgId') || '';
         }
 
-        // 先销毁可能存在的旧窗口，避免 id 冲突
         var oldWin = Ext.getCmp('sceneDataSourceWindow');
         if (oldWin) oldWin.close();
-
         var oldDeviceGrid = Ext.getCmp('SceneDeviceGrid_Id');
         if (oldDeviceGrid) oldDeviceGrid.destroy();
         var oldFieldGrid = Ext.getCmp('SceneDeviceFieldGrid_Id');
@@ -648,7 +991,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             targetOrgId: orgId,
             currentBinding: {
                 deviceId:   existing.deviceId   || '',
-                fieldName:  existing.fieldName  || '',   // 逻辑键，等于 itemCode
+                fieldName:  existing.fieldName  || '',
                 unit:       existing.unit       || ''
             },
             onConfirm: function(binding, uuid) {
@@ -656,8 +999,8 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 me.bindingMap.set(uuid, {
                     deviceId:     binding.deviceId,
                     deviceName:   binding.deviceName,
-                    fieldName:    binding.fieldName,      // = itemCode
-                    fieldLabel:   binding.fieldLabel,     // = itemName
+                    fieldName:    binding.fieldName,
+                    fieldLabel:   binding.fieldLabel,
                     unit:         binding.unit || '',
                     dataSource:   binding.dataSource || '',
                     currentValue: old.currentValue != null ? old.currentValue : '--'
@@ -671,21 +1014,30 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     },
 
     // ========================================================
-    // 样式变更
+    // 图形样式变更
     // ========================================================
     onGraphicStyleChange: function() {
         var me = this;
+        if (!me.cs) return;
+
         var panel = me.down('panel[region=east]');
-        var strokeStyle = panel.down('#strokeStyle').getValue();
-        var lineWidth = panel.down('#lineWidth').getValue();
-        var fillColor = panel.down('#fillStyle').getValue();
-        var fillOpacity = panel.down('#fillOpacity').getValue();
-        var ctrlRadius = panel.down('#ctrlRadius').getValue();
+        if (!panel) return;
+
+        var strokeVal = me.getColorFieldValue('strokeStyle');
+        var fillVal   = me.getColorFieldValue('fillStyle');
+
+        var strokeStyle = me.normalizeColor(strokeVal.hex, '#00FF00');
+        var fillColor   = me.normalizeColor(fillVal.hex, '#0000FF');
+        var fillOpacity = fillVal.alphaPercent;
+
+        var lineWidth = panel.down('#lineWidth') ? panel.down('#lineWidth').getValue() : 1;
+        var ctrlRadius = panel.down('#ctrlRadius') ? panel.down('#ctrlRadius').getValue() : 3;
 
         if (!strokeStyle || !fillColor) return;
 
-        var fillStyle = fillColor + me.toHexAlpha(fillOpacity);
-        var effectiveStroke = lineWidth === 0 ? me.TRANSPARENT_STROKE : strokeStyle;
+        var fillStyle = me.buildFillColor(fillColor, fillOpacity);
+        var canvasStroke = (lineWidth <= 0) ? me.TRANSPARENT_STROKE : strokeStyle;
+        var canvasLw = (lineWidth <= 0) ? 1 : lineWidth;
 
         if (me.lastSelectedUuid && me.cs) {
             var idx = -1;
@@ -693,38 +1045,54 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 if (me.cs.dataset[i].uuid === me.lastSelectedUuid) { idx = i; break; }
             }
             if (idx >= 0) {
+                me.userColorMap.set(me.lastSelectedUuid, strokeStyle);
+                me.userLineWidthMap.set(me.lastSelectedUuid, lineWidth);
+
                 var shape = me.cs.dataset[idx];
-                shape._userStrokeStyle = strokeStyle;
-                shape.strokeStyle = effectiveStroke;
-                shape.lineWidth = lineWidth;
+                shape.strokeStyle = canvasStroke;
+                shape.lineWidth = canvasLw;
                 shape.fillStyle = fillStyle;
                 shape.ctrlRadius = ctrlRadius;
+                shape._userStrokeStyle = strokeStyle;
+                shape._userLineWidth = lineWidth;
+
                 var snapshot = me.cs.dataset.map(function(s) { return Ext.apply({}, s); });
-                me.cs.setData(snapshot);
+                me._lastDataKey = null;
+                me.safeSetData(snapshot);
             }
         } else if (me.cs) {
             me.globalStyle = {
                 strokeStyle: strokeStyle, fillColor: fillColor, fillOpacity: fillOpacity,
                 lineWidth: lineWidth, ctrlRadius: ctrlRadius
             };
-            me.cs.strokeStyle = effectiveStroke;
+            me.cs.strokeStyle = canvasStroke;
             me.cs.fillStyle = fillStyle;
-            me.cs.lineWidth = lineWidth;
+            me.cs.lineWidth = canvasLw;
             me.cs.ctrlRadius = ctrlRadius;
             me.cs.update();
         }
     },
 
+    // ========================================================
+    // 标签样式变更
+    // ========================================================
     onLabelStyleChange: function() {
         var me = this;
+        if (!me.cs) return;
+
         var panel = me.down('panel[region=east]');
+        if (!panel) return;
+
+        var bgVal   = me.getColorFieldValue('labelBg');
+        var textVal = me.getColorFieldValue('labelText');
+
         var style = {
-            font: panel.down('#labelFont').getValue(),
-            bgColor: panel.down('#labelBg').getValue(),
-            bgOpacity: panel.down('#labelBgOpacity').getValue(),
-            textColor: panel.down('#labelText').getValue(),
-            hide: panel.down('#hideLabel').getValue(),
-            up: true
+            font: panel.down('#labelFont') ? panel.down('#labelFont').getValue() : '12px',
+            bgColor: me.normalizeColor(bgVal.hex, '#4A6CF7'),
+            bgOpacity: bgVal.alphaPercent,
+            textColor: me.normalizeColor(textVal.hex, '#FFFFFF'),
+            hide: panel.down('#hideLabel') ? panel.down('#hideLabel').getValue() : false,
+            up: panel.down('#labelUp') ? panel.down('#labelUp').getValue() : true   // ★ 新增
         };
         if (!style.bgColor || !style.textColor) return;
 
@@ -737,12 +1105,26 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     },
 
     // ========================================================
+    // 颜色拼接
+    // ========================================================
+    buildFillColor: function(hexColor, alphaPercent) {
+        var hex = hexColor.replace('#', '');
+        if (hex.length !== 6) return 'rgba(0,0,255,0.25)';
+        var r = parseInt(hex.slice(0, 2), 16);
+        var g = parseInt(hex.slice(2, 4), 16);
+        var b = parseInt(hex.slice(4, 6), 16);
+        var a = Math.max(0, Math.min(1, (alphaPercent || 0) / 100));
+        return 'rgba(' + r + ',' + g + ',' + b + ',' + a.toFixed(3) + ')';
+    },
+
+    // ========================================================
     // 标签覆盖层
     // ========================================================
     updateOriginIfNeeded: function(force) {
         if (!this.cs) return false;
         var cs = this.cs;
         var scale = cs.scale || 1;
+        if (!cs.mouse || !cs.position) return false;
         var newX = cs.mouse[0] - cs.position[0] * scale;
         var newY = cs.mouse[1] - cs.position[1] * scale;
         var co = this.cachedOrigin;
@@ -787,6 +1169,10 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             var cy = Math.round(origin.y + anchor.y * origin.scale);
             var style = me.labelStyleMap.get(shape.uuid) || me.defaultLabelStyle;
 
+            // ★ 根据 up 决定 transform
+            var up = style.up !== false;   // 默认向上
+            var translateY = up ? '-100%' : '0';
+
             var el = existing[shape.uuid];
             if (!el) {
                 el = document.createElement('div');
@@ -799,10 +1185,10 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 layer.appendChild(el);
             }
             el.style.cssText = 'position:absolute;padding:4px 10px;border-radius:4px;white-space:nowrap;' +
-                'font-weight:600;transform:translate(-50%,-100%);box-shadow:0 2px 6px rgba(0,0,0,0.18);' +
+                'font-weight:600;transform:translate(-50%,' + translateY + ');box-shadow:0 2px 6px rgba(0,0,0,0.18);' +
                 'pointer-events:auto;cursor:pointer;' +
                 'left:' + cx + 'px;top:' + cy + 'px;' +
-                'background:' + style.bgColor + me.toHexAlpha(style.bgOpacity) + ';' +
+                'background:' + me.buildFillColor(style.bgColor, style.bgOpacity) + ';' +
                 'color:' + style.textColor + ';font-size:' + style.font + ';' +
                 'display:' + (style.hide ? 'none' : 'block') + ';';
             el.textContent = me.buildLabelText(binding);
@@ -818,8 +1204,8 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
 
     buildLabelText: function(b) {
         if (!b || !b.deviceId || !b.fieldName) return '未绑定';
-        var devName = b.deviceName || b.deviceId;    // 兜底：用设备 ID
-        var fldName = b.fieldLabel || b.fieldName;   // 兜底：用字段编码
+        var devName = b.deviceName || b.deviceId;
+        var fldName = b.fieldLabel || b.fieldName;
         return devName + '：' + fldName;
     },
 
@@ -843,152 +1229,265 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     },
 
     // ========================================================
-    // 加载 / 导出 config
+    // 加载场景
     // ========================================================
- // ========================================================
- // 点击场景时加载（从数据库读取 config）
- // ========================================================
- loadScene: function(record) {
-     var me = this;
+    loadScene: function(record) {
+        var me = this;
+        if (!me.cs) { Ext.defer(function() { me.loadScene(record); }, 100, me); return; }
+        if (!record) { me.currentRecord = null; me.clearScene(); return; }
 
-     if (!me.cs) {
-         // canvas 还没初始化，延后重试
-         Ext.defer(function() { me.loadScene(record); }, 100, me);
-         return;
-     }
+        me.currentRecord = record;
+        me.clearScene();
 
-     // 无记录 → 清空
-     if (!record) {
-         me.currentRecord = null;
-         me.clearScene();
-         return;
-     }
+        Ext.MessageBox.show({
+            msg: '正在加载场景配置...', progressText: '加载中',
+            width: 300, wait: true, waitConfig: { interval: 200 }
+        });
 
-     // 先清空当前内容
-     me.currentRecord = record;
-     me.clearScene();
+        Ext.Ajax.request({
+            url: context + '/sceneModelController/getSceneModelConfig',
+            method: 'POST',
+            params: { id: record.get('modelId') || record.get('id') },
+            success: function(resp) {
+                Ext.MessageBox.hide();
+                try {
+                    var result = Ext.decode(resp.responseText);
+                    if (result.success) {
+                        var cfg = result.config;
+                        if (typeof cfg === 'string') {
+                            try { cfg = JSON.parse(cfg); } catch (e) { cfg = null; }
+                        }
+                        if (!cfg) cfg = { imageUrl: '', shapes: [] };
+                        me.renderSceneConfig(cfg);
+                    } else {
+                        Ext.Msg.alert('加载失败', result.message || '未知错误');
+                    }
+                } catch (e) {
+                    Ext.Msg.alert('错误', '服务器返回数据异常');
+                }
+            },
+            failure: function() {
+                Ext.MessageBox.hide();
+                Ext.Msg.alert('错误', '网络请求失败');
+            }
+        });
+    },
 
-     // 请求数据库拿 config
-     Ext.MessageBox.show({
-         msg: '正在加载场景配置...',
-         progressText: '加载中',
-         width: 300,
-         wait: true,
-         waitConfig: { interval: 200 }
-     });
+    // ========================================================
+    // 清空
+    // ========================================================
+    clearScene: function() {
+        var me = this;
+        me.bindingMap.clear();
+        me.labelStyleMap.clear();
+        me.userColorMap.clear();
+        me.userLineWidthMap.clear();
+        me.lastSelectedUuid = null;
+        me.imageUrl = '';
 
-     Ext.Ajax.request({
-         url: context + '/sceneModelController/getSceneModelConfig',
-         method: 'POST',
-         params: { id: record.get('modelId') || record.get('id') },
-         success: function(resp) {
-             Ext.MessageBox.hide();
-             try {
-                 var result = Ext.decode(resp.responseText);
-                 if (result.success) {
-                     var cfg = result.config;
-                     // config 可能是字符串，也可能是对象
-                     if (typeof cfg === 'string') {
-                         try { cfg = JSON.parse(cfg); } catch (e) { cfg = null; }
-                     }
-                     if (!cfg) cfg = { imageUrl: '', shapes: [] };
+        me.resetStylePanel();
 
-                     me.renderSceneConfig(cfg);
-                 } else {
-                     Ext.Msg.alert('加载失败', result.message || '未知错误');
-                 }
-             } catch (e) {
-                 Ext.Msg.alert('错误', '服务器返回数据异常');
-             }
-         },
-         failure: function() {
-             Ext.MessageBox.hide();
-             Ext.Msg.alert('错误', '网络请求失败');
-         }
-     });
- },
+        if (me.cs) {
+            me.safeSetData([]);
+        }
+        if (me.labelLayer) me.labelLayer.innerHTML = '';
+    },
 
- // ========================================================
- // 清空画布和状态
- // ========================================================
- clearScene: function() {
-     var me = this;
-     me.bindingMap.clear();
-     me.labelStyleMap.clear();
-     me.lastSelectedUuid = null;
+    // ========================================================
+    // 重置样式面板
+    // ========================================================
+    resetStylePanel: function() {
+        var me = this;
+        try {
+            var panel = me.down('panel[region=east]');
+            if (!panel) return;
 
-     if (me.cs) {
-         me.cs.setData([]);
-     }
-     if (me.labelLayer) {
-         me.labelLayer.innerHTML = '';
-     }
- },
+            me.setColorFieldValue('strokeStyle', '#00FF00', 100);
+            me.setColorFieldValue('fillStyle',   '#0000FF', 25);
 
- // ========================================================
- // 用 config 渲染图片 + 标注 + 标签
- // ========================================================
- renderSceneConfig: function(cfg) {
-     var me = this;
-     if (!cfg) cfg = { imageUrl: '', shapes: [] };
+            var lwField = panel.down('#lineWidth');
+            if (lwField) lwField.setValue(1);
+            var crField = panel.down('#ctrlRadius');
+            if (crField) crField.setValue(3);
 
-     // 恢复默认样式
-     if (cfg.defaultLabelStyle) Ext.apply(me.defaultLabelStyle, cfg.defaultLabelStyle);
-     if (cfg.globalStyle) Ext.apply(me.globalStyle, cfg.globalStyle);
+            var fontField = panel.down('#labelFont');
+            if (fontField) fontField.setValue('12px');
 
-     // 加载图片
-     if (cfg.imageUrl) {
-         me.cs.setImage(cfg.imageUrl);
-     }
+            me.setColorFieldValue('labelBg',   '#4A6CF7', 100);
+            me.setColorFieldValue('labelText', '#FFFFFF', 100);
 
-     // 恢复 binding 和 labelStyle
-     var shapes = cfg.shapes || [];
-     shapes.forEach(function(s) {
-         if (s.deviceId && s.fieldName) {
-             me.bindingMap.set(s.uuid, {
-                 deviceId:     s.deviceId,
-                 deviceName:   s.deviceName,
-                 fieldName:    s.fieldName,
-                 fieldLabel:   s.fieldLabel,
-                 unit:         s.unit,
-                 dataSource:   s.dataSource,
-                 currentValue: s.currentValue
-             });
-         }
-         if (s.labelStyle) me.labelStyleMap.set(s.uuid, s.labelStyle);
-     });
+            var hideField = panel.down('#hideLabel');
+            if (hideField) hideField.setValue(false);
 
-     // 把纯 shape 数据传给 canvas-select
-     var pureShapes = shapes.map(function(s) {
-         return {
-             uuid: s.uuid, type: s.type, coor: s.coor,
-             strokeStyle: s.strokeStyle, fillStyle: s.fillStyle,
-             lineWidth: s.lineWidth, ctrlRadius: s.ctrlRadius
-         };
-     });
-     me.cs.setData(pureShapes);
+            // ★ 重置"标签在上方"
+            var upField = panel.down('#labelUp');
+            if (upField) upField.setValue(true);
+        } catch (e) {
+            console.warn('[resetStylePanel] 失败', e);
+        }
+    },
 
-     // 等图片和图形都加载完，刷新标签
-     Ext.defer(function() {
-         me.updateOriginIfNeeded(true);
-         me.scheduleRenderLabels();
-     }, 100);
- },
+    // ========================================================
+    // 用 config 渲染
+    // ========================================================
+    renderSceneConfig: function(cfg) {
+        var me = this;
+        if (!cfg) cfg = { imageUrl: '', shapes: [] };
 
+        if (cfg.defaultLabelStyle) Ext.apply(me.defaultLabelStyle, cfg.defaultLabelStyle);
+        if (cfg.globalStyle) Ext.apply(me.globalStyle, cfg.globalStyle);
+
+        try { me.syncStylePanelFromState(); } catch (e) { console.warn('[renderSceneConfig] 同步样式面板失败', e); }
+
+        if (cfg.imageUrl) {
+            me.setCanvasImage(cfg.imageUrl);
+        } else {
+            me.setCanvasImage(me.BLANK_IMAGE);
+        }
+
+        var shapes = cfg.shapes || [];
+        shapes.forEach(function(s) {
+            me.userColorMap.set(s.uuid, s.strokeStyle || '#00FF00');
+            me.userLineWidthMap.set(s.uuid, s.lineWidth != null ? s.lineWidth : 1);
+
+            if (s.deviceId && s.fieldName) {
+                me.bindingMap.set(s.uuid, {
+                    deviceId:     s.deviceId,
+                    deviceName:   s.deviceName,
+                    fieldName:    s.fieldName,
+                    fieldLabel:   s.fieldLabel,
+                    unit:         s.unit,
+                    dataSource:   s.dataSource,
+                    currentValue: s.currentValue
+                });
+            }
+            if (s.labelStyle) me.labelStyleMap.set(s.uuid, s.labelStyle);
+        });
+
+        var pureShapes = [];
+        shapes.forEach(function(s) {
+            if (!s || !s.uuid) return;
+            if (s.type == null) return;
+            if (!s.coor) return;
+
+            var t = parseInt(s.type, 10);
+            if (isNaN(t)) return;
+
+            var coor = s.coor;
+
+            if (t === 1) {
+                if (!Ext.isArray(coor) || coor.length < 2) return;
+                var a = coor[0], b = coor[1];
+                if (!Ext.isArray(a) || !Ext.isArray(b)) return;
+                if (a.length < 2 || b.length < 2) return;
+                if (isNaN(a[0]) || isNaN(a[1]) || isNaN(b[0]) || isNaN(b[1])) return;
+            } else if (t === 2 || t === 4) {
+                if (!Ext.isArray(coor) || coor.length < 2) return;
+                for (var i = 0; i < coor.length; i++) {
+                    var p = coor[i];
+                    if (!Ext.isArray(p) || p.length < 2) return;
+                    if (isNaN(p[0]) || isNaN(p[1])) return;
+                }
+            } else if (t === 3 || t === 5) {
+                if (!Ext.isArray(coor) || coor.length < 2) return;
+                if (isNaN(coor[0]) || isNaN(coor[1])) return;
+            } else {
+                return;
+            }
+
+            var userLw = (s.lineWidth != null && !isNaN(s.lineWidth)) ? parseInt(s.lineWidth, 10) : 1;
+            var userStroke = me.normalizeColor(s.strokeStyle, '#00FF00');
+            var canvasLw = (userLw <= 0) ? 1 : userLw;
+            var canvasStroke = (userLw <= 0) ? me.TRANSPARENT_STROKE : userStroke;
+            var fillStyle = me.normalizeColor(s.fillStyle, 'rgba(0,0,255,0.25)');
+
+            pureShapes.push({
+                uuid: s.uuid,
+                type: t,
+                coor: coor,
+                strokeStyle: canvasStroke,
+                fillStyle: fillStyle,
+                lineWidth: canvasLw,
+                ctrlRadius: (s.ctrlRadius != null && !isNaN(s.ctrlRadius)) ? parseInt(s.ctrlRadius, 10) : 3,
+                _userStrokeStyle: userStroke,
+                _userLineWidth: userLw
+            });
+        });
+
+        me._lastDataKey = null;
+        me.safeSetData(pureShapes);
+
+        Ext.defer(function() {
+            me.updateOriginIfNeeded(true);
+            me.scheduleRenderLabels();
+        }, 100);
+    },
+
+    // ========================================================
+    // 用当前的 globalStyle / defaultLabelStyle 刷新 colorfield
+    // ========================================================
+    syncStylePanelFromState: function() {
+        var me = this;
+        try {
+            var gs = me.globalStyle || {};
+            var ls = me.defaultLabelStyle || {};
+
+            me.setColorFieldValue('strokeStyle', gs.strokeStyle || '#00FF00', 100);
+            me.setColorFieldValue('fillStyle',   gs.fillColor   || '#0000FF',
+                gs.fillOpacity != null ? gs.fillOpacity : 25);
+            me.setColorFieldValue('labelBg',     ls.bgColor     || '#4A6CF7',
+                ls.bgOpacity != null ? ls.bgOpacity : 100);
+            me.setColorFieldValue('labelText',   ls.textColor   || '#FFFFFF', 100);
+
+            var panel = me.down('panel[region=east]');
+            if (panel) {
+                var lwField = panel.down('#lineWidth');
+                if (lwField) lwField.setValue(gs.lineWidth != null ? gs.lineWidth : 1);
+                var crField = panel.down('#ctrlRadius');
+                if (crField) crField.setValue(gs.ctrlRadius != null ? gs.ctrlRadius : 3);
+                var fontField = panel.down('#labelFont');
+                if (fontField) fontField.setValue(ls.font || '12px');
+                var hideField = panel.down('#hideLabel');
+                if (hideField) hideField.setValue(!!ls.hide);
+
+                // ★ 同步"标签在上方"
+                var upField = panel.down('#labelUp');
+                if (upField) upField.setValue(ls.up !== false);
+            }
+        } catch (e) {
+            console.warn('[syncStylePanelFromState] 失败', e);
+        }
+    },
+
+    // ========================================================
+    // 导出 config
+    // ========================================================
     getConfig: function() {
         var me = this;
         return {
-            imageUrl: me.cs && me.cs.image ? (me.cs.image.src || '') : '',
+            imageUrl: me.imageUrl || '',
             defaultLabelStyle: Ext.apply({}, me.defaultLabelStyle),
             globalStyle: Ext.apply({}, me.globalStyle),
             shapes: me.cs ? me.cs.dataset.map(function(s) {
                 var binding = me.bindingMap.get(s.uuid) || {};
                 var labelStyle = me.labelStyleMap.get(s.uuid) || me.defaultLabelStyle;
+
+                var userColor = me.userColorMap.get(s.uuid)
+                              || s._userStrokeStyle
+                              || s.strokeStyle
+                              || '#00FF00';
+                if (userColor === me.TRANSPARENT_STROKE) {
+                    userColor = me.globalStyle.strokeStyle || '#00FF00';
+                }
+                var userLw = me.userLineWidthMap.get(s.uuid);
+                if (userLw == null) userLw = (s._userLineWidth != null ? s._userLineWidth
+                                            : (s.lineWidth != null ? s.lineWidth : 1));
+
                 return {
                     uuid: s.uuid, type: s.type, coor: s.coor,
-                    strokeStyle: s._userStrokeStyle || s.strokeStyle,
+                    strokeStyle: userColor,
                     fillStyle: s.fillStyle,
-                    lineWidth: s.lineWidth,
+                    lineWidth: userLw,
                     ctrlRadius: s.ctrlRadius,
                     labelStyle: Ext.apply({}, labelStyle),
 
@@ -1004,78 +1503,150 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         };
     },
 
+    // ========================================================
+    // resetPanel
+    // ========================================================
     resetPanel: function() {
         var me = this;
         me.currentRecord = null;
         me.bindingMap.clear();
         me.labelStyleMap.clear();
+        me.userColorMap.clear();
+        me.userLineWidthMap.clear();
         me.lastSelectedUuid = null;
-        if (me.cs) me.cs.setData([]);
+        me.imageUrl = '';
+        me.resetStylePanel();
+        if (me.cs) {
+            me.safeSetData([]);
+        }
         if (me.labelLayer) me.labelLayer.innerHTML = '';
     },
 
     // ========================================================
-    // 场景增删改（工具栏按钮调用）
+    // 场景增删改
     // ========================================================
     onCreateScene: function() {
-        var grid = Ext.getCmp("SceneModelGridView_Id");
-        if (!isNotVal(grid)) return;
-        var store = grid.getStore();
-        var rec = Ext.create('AP.model.sceneModel.SceneModel', {
-            id: 0,
-            orgid: Ext.getCmp('leftOrg_Id') ? Ext.getCmp('leftOrg_Id').getValue() : 0,
-            devicetype: 101,
-            name_zh_CN: '', name_en: '', name_ru: '',
-            config: JSON.stringify({ imageUrl: '', shapes: [] }),
-            sort: store.getCount() + 1
-        });
-        store.add(rec);
-        grid.getSelectionModel().select(rec);
+    	var selectedOrgId="";
+    	var IframeViewStore = Ext.getCmp("IframeView_Id").getStore();
+		var count=IframeViewStore.getCount();
+    	var IframeViewSelection = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
+    	if (IframeViewSelection.length > 0) {
+    		selectedOrgId=IframeViewSelection[0].data.orgId;
+    	} else {
+    		if(count>0){
+    			selectedOrgId=IframeViewStore.getAt(0).data.orgId;
+    		}
+    	}
+    	
+    	var win = Ext.create("AP.view.sceneModel.SceneModelInfoWindow");
+    	win.show();
+    	
+    	Ext.getCmp("addSceneModelOrg_Id").setValue(selectedOrgId);
     },
 
     onDeleteScene: function() {
-        var me = this;
-        var grid = Ext.getCmp("SceneModelGridView_Id");
-        if (!isNotVal(grid)) return;
-        var selected = grid.getSelectionModel().getSelection();
-        if (selected.length === 0) { Ext.Msg.alert('提示', '请选择要删除的场景'); return; }
-        Ext.Msg.confirm('确认', '确定要删除选中的场景吗？', function(btn) {
-            if (btn !== 'yes') return;
-            Ext.Ajax.request({
-                url: context + '/sceneModelController/deleteSceneModel',
-                method: 'POST',
-                params: { ids: selected.map(function(r) { return r.get('id'); }).join(',') },
-                success: function() {
-                    grid.getStore().load();
-                    me.resetPanel();
+    	var selectModelId=[];
+    	var selectModelNameList=[];
+    	var sceneModelGridView = Ext.getCmp("SceneModelGridView_Id");
+    	var selectionModel = sceneModelGridView.getSelectionModel();
+        var selectionRecord = selectionModel.getSelection();
+    	if(selectionRecord.length>0){
+    		selectionRecord.forEach(function(record) {
+    			selectModelId.push(record.data.modelId);
+    			var selectModelName='';
+    			if(loginUserLanguage.toUpperCase()=='ZH_CN'){
+    				selectModelName=record.data.name_zh_CN;
+    			}else if(loginUserLanguage.toUpperCase()=='EN'){
+    				selectModelName=record.data.name_en;
+    			}else if(loginUserLanguage.toUpperCase()=='RU'){
+    				selectModelName=record.data.name_ru;
+    			}
+    			selectModelNameList.push(selectModelName);
+    	    });
+    		
+    		var deleteInfo=loginUserLanguageResource.confirmDelete;
+    		if(selectModelId.length==1){
+    			deleteInfo=loginUserLanguageResource.name+":<font color=red>"+selectModelNameList[0]+"</font>" 
+				+"</br>"+loginUserLanguageResource.confirmDelete;
+    		}else{
+    			deleteInfo=loginUserLanguageResource.sparseRecordCount+":<font color=red>"+selectModelId.length+"</font>" 
+				+"</br>"+loginUserLanguageResource.confirmDelete;
+    		}
+
+    		Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
+                if (btn == "yes") {
+            		Ext.Ajax.request({
+            			method:'POST',
+            			url:context + '/sceneModelController/deleteSceneModel',
+            			success:function(response) {
+            				var data=Ext.JSON.decode(response.responseText);
+            				if (data.success) {
+            					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.deleteSuccessfully);
+            	            	Ext.getCmp("SceneModelGridView_Id").getStore().load();
+            	            } else {
+            	            	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.deleteFailed+"</font>");
+            	            }
+            			},
+            			failure:function(){
+            				Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
+            			},
+            			params: {
+            				ids: selectModelId.join(",")
+            	        }
+            		});
                 }
             });
-        });
+    	} else {
+            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+        }
+    	
     },
 
     onSaveScene: function() {
         var grid = Ext.getCmp("SceneModelGridView_Id");
-        if (!isNotVal(grid)) return;
-        var store = grid.getStore();
-        var payload = store.getRange().map(function(r) {
-            return {
-                id: r.get('id'), orgid: r.get('orgid'), devicetype: r.get('devicetype'),
-                name_zh_CN: r.get('name_zh_CN'),
-                name_en: r.get('name_en'),
-                name_ru: r.get('name_ru'),
-                sort: r.get('sort'),
-                config: r.get('config') || JSON.stringify({ imageUrl: '', shapes: [] })
-            };
-        });
-        Ext.Ajax.request({
-            url: context + '/sceneModelController/saveSceneModelList',
-            method: 'POST',
-            jsonData: { list: payload },
-            success: function() {
-                Ext.Msg.alert('成功', '场景列表已保存');
-                store.load();
-            }
-        });
+        var store=grid.getStore();
+    	var modifiedRecords = store.getModifiedRecords();
+    	
+		var modifiedModels=[];
+		
+		modifiedRecords.forEach(function(record) {
+			var modified={};
+			modified.id=record.data.modelId;
+			modified.name_zh_CN=record.data.name_zh_CN;
+			modified.name_en=record.data.name_en;
+			modified.name_ru=record.data.name_ru;
+			if(isNotVal(record.data.sort) && isNumber(record.data.sort)){
+				modified.sort=record.data.sort;
+			}
+			
+			
+			modifiedModels.push(modified);
+	    });
+		if(modifiedModels.length>0){
+			Ext.Ajax.request({
+				method:'POST',
+				url: context + '/sceneModelController/saveSceneModelInfo',
+				success:function(response) {
+					var data=Ext.JSON.decode(response.responseText);
+					if (data.success) {
+		            	Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.savedSuccessfully);
+		            	store.commitChanges();
+		            	Ext.getCmp("SceneModelGridView_Id").getStore().load();
+		            } else {
+		            	Ext.MessageBox.alert(loginUserLanguageResource.tip,"<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
+		            }
+				},
+				failure:function(){
+					Ext.MessageBox.alert(loginUserLanguageResource.tip,loginUserLanguageResource.requestFailed);
+				},
+				params: {
+					data: JSON.stringify(modifiedModels)
+		        }
+			});
+		}else{
+			Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.noDataChange);
+		}
+		
     },
 
     onExportScenes: function() {
@@ -1132,23 +1703,44 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         return null;
     },
 
-    toHexAlpha: function(percent) {
-        var a = Math.max(0, Math.min(100, Math.round(percent)));
-        return Math.round(a / 100 * 255).toString(16).padStart(2, '0').toUpperCase();
-    },
-
     parseFillStyle: function(fillStyle) {
         if (!fillStyle) return { hex: '#0000FF', alpha: 25 };
-        var m = fillStyle.match(/^#([0-9a-f]{6})([0-9a-f]{2})?$/i);
+
+        var m = fillStyle.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/i);
         if (m) {
-            var alpha = m[2] ? Math.round(parseInt(m[2], 16) / 255 * 100) : 100;
-            return { hex: '#' + m[1], alpha: alpha };
+            var hex = '#' + [m[1], m[2], m[3]].map(function(n) {
+                return (+n).toString(16).padStart(2, '0');
+            }).join('');
+            var alpha = m[4] != null ? Math.round(parseFloat(m[4]) * 100) : 100;
+            return { hex: hex, alpha: alpha };
         }
+
+        if (/^#[0-9a-f]{8}$/i.test(fillStyle)) {
+            var hex2 = fillStyle.slice(0, 7);
+            var alpha2 = Math.round(parseInt(fillStyle.slice(7, 9), 16) / 255 * 100);
+            return { hex: hex2, alpha: alpha2 };
+        }
+
+        if (/^#[0-9a-f]{6}$/i.test(fillStyle)) {
+            return { hex: fillStyle, alpha: 100 };
+        }
+
+        if (/^#[0-9a-f]{3}$/i.test(fillStyle)) {
+            var hex3 = '#' + fillStyle[1] + fillStyle[1] + fillStyle[2] + fillStyle[2] + fillStyle[3] + fillStyle[3];
+            return { hex: hex3, alpha: 100 };
+        }
+
         return { hex: '#0000FF', alpha: 25 };
     },
 
     beforeDestroy: function() {
-        if (this.originTimer) clearInterval(this.originTimer);
+        if (this.originTimer) {
+            clearInterval(this.originTimer);
+            this.originTimer = null;
+        }
+        try {
+            if (this.cs && typeof this.cs.destroy === 'function') this.cs.destroy();
+        } catch (e) {}
         this.callParent(arguments);
     }
 });

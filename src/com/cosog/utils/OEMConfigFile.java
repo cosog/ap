@@ -62,6 +62,8 @@ public class OEMConfigFile {
 	    
 	    private String languageResourcePath;
 	    
+	    private String sceneImagePath;
+	    
 	    private String logo;
 	    
 	    private String favicon;
@@ -179,6 +181,12 @@ public class OEMConfigFile {
 		}
 		public void setSwitchDisabledButtonIcon(String switchDisabledButtonIcon) {
 			this.switchDisabledButtonIcon = switchDisabledButtonIcon;
+		}
+		public String getSceneImagePath() {
+			return sceneImagePath;
+		}
+		public void setSceneImagePath(String sceneImagePath) {
+			this.sceneImagePath = sceneImagePath;
 		}
 	}
 	

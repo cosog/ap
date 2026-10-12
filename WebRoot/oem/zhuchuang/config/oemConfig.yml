@@ -1,5 +1,6 @@
 oem:                    #oem配置 名称、简介、背景、图标、样式等
    languageResourcePath: oem/zhuchuang/locale
+   sceneImagePath: "/oem/zhuchuang/sceneImage"                  #场景模型目录
    favicon: "./oem/zhuchuang/images/logo/favicon.ico"
    logo: "./oem/zhuchuang/images/logo/logo.png"
    loginBackgroundImage: "./oem/zhuchuang/images/login/login.jpg"

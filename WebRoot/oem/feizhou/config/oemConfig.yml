@@ -1,5 +1,6 @@
 oem:                    #oem配置 名称、简介、背景、图标、样式等
    languageResourcePath: "oem/feizhou/locale"                #语言资源文件所在目录
+   sceneImagePath: "/oem/feizhou/sceneImage"                  #场景模型目录
    favicon: "./oem/feizhou/images/logo/logo.png"             #网页图标
    logo: "./oem/feizhou/images/logo/logo.png"                #软件图标
    loginBackgroundImage: "./oem/feizhou/images/login/login.jpg"  #登录界面背景图片

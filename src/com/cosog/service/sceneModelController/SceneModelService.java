@@ -12,8 +12,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.cosog.model.Code;
+import com.cosog.model.DeviceTabManager;
 import com.cosog.model.ExportModuleData;
 import com.cosog.model.Module;
+import com.cosog.model.SceneModel;
 import com.cosog.model.User;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.service.base.BaseService;
@@ -235,5 +237,26 @@ public class SceneModelService<T> extends BaseService<T> {
 	    }
 
 	    return result;
+	}
+	
+	public int saveSceneModelInfo(SceneModel sceneModel) throws Exception {
+		String sql="update tbl_scenemodel t set "
+				+ " t.name_zh_CN='"+sceneModel.getName_zh_CN()+"',"
+				+ " t.name_en='"+sceneModel.getName_en()+"',"
+				+ " t.name_ru='"+sceneModel.getName_ru()+"',"
+				+ " t.sort="+sceneModel.getSort()+" "
+				+ " where t.id="+sceneModel.getId();
+		int r=getBaseDao().updateOrDeleteBySql(sql);
+		return r;
+	}
+	
+	public void addSceneModel(T sceneModel) throws Exception {
+		getBaseDao().addObject(sceneModel);
+	}
+	
+	public int deleteSceneModel(String ids) throws IOException, SQLException {
+		String sql="delete from tbl_scenemodel t where t.id in ("+ids+")";
+		int r=getBaseDao().updateOrDeleteBySql(sql);
+		return r;
 	}
 }

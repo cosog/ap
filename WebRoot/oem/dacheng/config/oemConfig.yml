@@ -1,5 +1,6 @@
 oem:                    #oem配置 名称、简介、背景、图标、样式等
    languageResourcePath: "oem/dacheng/locale"
+   sceneImagePath: "/oem/dacheng/sceneImage"                  #场景模型目录
    favicon: "./oem/dacheng/images/logo/favicon.ico"
    logo: "./oem/dacheng/images/logo/logo.png"
    loginBackgroundImage: "./oem/dacheng/images/login/login.jpg"

@@ -1,5 +1,6 @@
 oem:                    #oem配置 名称、简介、背景、图标、样式等
    languageResourcePath: oem/cnooc/locale
+   sceneImagePath: "/oem/cnooc/sceneImage"                  #场景模型目录
    favicon: "./oem/cnooc/images/logo/favicon.ico"
    logo: "./oem/cnooc/images/logo/logo.png"
    loginBackgroundImage: "./oem/cnooc/images/login/login.jpg"

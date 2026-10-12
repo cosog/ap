@@ -1057,6 +1057,34 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getSceneModelList")
+	public String getSceneModelList() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		
+		String json = this.wellInformationManagerService.getSceneModelList(orgId,deviceId,language);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/judgeAuxiliaryDeviceExistOrNot")
 	public String judgeAuxiliaryDeviceExistOrNot() throws IOException {
 		orgId=ParamUtils.getParameter(request, "orgId");
@@ -1992,6 +2020,8 @@ public class WellInformationManagerController extends BaseController {
 				this.wellInformationManagerService.saveInterlockProtectionData(deviceId,additionalInformationSaveData.getData());
 			}else if(additionalInformationSaveData.getType()==9){
 				this.wellInformationManagerService.saveDiagramFilteringData(deviceId,additionalInformationSaveData.getData());
+			}else if(additionalInformationSaveData.getType()==10){
+				this.wellInformationManagerService.saveSceneModelInfo(deviceId,additionalInformationSaveData.getData());
 			}
 		}
 		

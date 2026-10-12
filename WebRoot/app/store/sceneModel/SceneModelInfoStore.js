@@ -140,7 +140,7 @@ Ext.define('AP.store.sceneModel.SceneModelInfoStore', {
                     	celldblclick : function( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                     		
                     	},select( v, record, index, eOpts ){
-                    		
+                    		Ext.getCmp("SceneModelSelectId_Id").setValue(record.data.modelId);
                     	}
                     }
                 });
@@ -150,6 +150,48 @@ Ext.define('AP.store.sceneModel.SceneModelInfoStore', {
                 }
             }
             var selectedRow=0;
+            var selectedModelId=parseInt(Ext.getCmp("SceneModelSelectId_Id").getValue());
+            var addedModelName=Ext.getCmp('addSceneModelSelectName_Id').getValue();
+            if(isNotVal(addedModelName)){
+            	Ext.getCmp('addSceneModelSelectName_Id').setValue('');
+            	var maxModelId=0;
+            	var modelCount=0;
+            	
+            	for(var i=0;i<store.data.length;i++){
+            		if( (loginUserLanguage.toUpperCase()=='ZH_CN' && store.getAt(i).data.name_zh_CN==addedModelName)
+            				|| (loginUserLanguage.toUpperCase()=='EN' && store.getAt(i).data.name_en==addedModelName)
+            				|| (loginUserLanguage.toUpperCase()=='RU' && store.getAt(i).data.name_ru==addedModelName)
+            		){
+            			selectedRow=i;
+            			modelCount++;
+            		}
+            	}
+            	if(modelCount>1){
+            		for(var i=0;i<store.data.length;i++){
+                		if( (loginUserLanguage.toUpperCase()=='ZH_CN' && store.getAt(i).data.name_zh_CN==addedModelName)
+                				|| (loginUserLanguage.toUpperCase()=='EN' && store.getAt(i).data.name_en==addedModelName)
+                				|| (loginUserLanguage.toUpperCase()=='RU' && store.getAt(i).data.name_ru==addedModelName)
+                		){
+                			if(store.getAt(i).data.modelId>maxModelId){
+                				maxModelId=store.getAt(i).data.modelId;
+                				selectedRow=i;
+                			}
+                		}
+                	}
+            	}
+            }else{
+            	if(selectedModelId>0){
+                	for(var i=0;i<store.data.length;i++){
+                		if(store.getAt(i).data.modelId==selectedModelId){
+                			selectedRow=i;
+                			break;
+                		}
+                	}
+                }
+            }
+            
+            
+            
             gridPanel.getSelectionModel().deselectAll(true);
             gridPanel.getSelectionModel().select(selectedRow, true);
         },

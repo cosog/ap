@@ -1292,6 +1292,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
+	public void saveSceneModelInfo(int deviceId,String data) throws Exception {
+		String sql = "update tbl_device t set t.scenemodel="+data+" where t.id="+deviceId;
+		this.getBaseDao().updateOrDeleteBySql(sql);
+	}
+	
 	public void saveDiagramFilteringData(int deviceId,String data) throws Exception {
 		String sql = "update tbl_device t set t.diagramfiltering='"+data+"' where t.id="+deviceId;
 		this.getBaseDao().updateOrDeleteBySql(sql);
@@ -4499,6 +4504,53 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"model\":\""+obj[4]+"\",");
 			result_json.append("\"specificTypeName\":\""+obj[7]+"\",");
 			result_json.append("\"specificType\":\""+obj[8]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		json=result_json.toString().replaceAll("null", "");
+		return json;
+	}
+	
+	public String getSceneModelList(String orgId,String deviceId,String language) {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		String columns = "["
+				+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+				+ "{ \"header\":\""+languageResourceMap.get("name")+"\",\"dataIndex\":\"name\",\"width\":120 ,\"children\":[] }"
+				+ "]";
+		
+		String sql = "select t.id,t.name_"+language 
+				+ " from TBL_SCENEMODEL t "
+				+ " where t.orgid in("+orgId+") order by t.sort";
+		
+		String currentModelSql="select t.id,t.scenemodel from tbl_device t where t.id="+deviceId;
+		
+		String json = "";
+		
+		List<?> list = this.findCallSql(sql);
+		List<?> currentModelList = this.findCallSql(currentModelSql);
+		
+		int currentModel=0;
+		if(currentModelList.size()>0){
+			Object[] obj = (Object[]) currentModelList.get(0);
+			currentModel=StringManagerUtils.stringToInteger(obj[1]+"");
+		}
+		
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			boolean checked=false;
+			String modelId=obj[0]+"";
+			if(currentModel==StringManagerUtils.stringToInteger(modelId)){
+				checked=true;
+			}
+			result_json.append("{\"checked\":"+checked+",");
+			result_json.append("\"id\":\""+(i+1)+"\",");
+			result_json.append("\"modelId\":\""+modelId+"\",");
+			result_json.append("\"name\":\""+obj[1]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

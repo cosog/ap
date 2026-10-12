@@ -1,21 +1,22 @@
 oem:                    #oem配置 名称、简介、背景、图标、样式等
-   languageResourcePath: "oem/cnpc/locale"                 #语言资源文件所在目录
-   favicon: "./oem/cnpc/images/logo/favicon.ico"               #网页图标
-   logo: "./oem/cnpc/images/logo/logo.png"                     #软件图标
-   loginBackgroundImage: "./oem/cnpc/images/login/login.jpg"   #登录界面背景图片
-   loginCSS: "./oem/cnpc/styles"                           #css文件所在目录
-   bannerCSS: "./oem/cnpc/styles"                          #css文件所在目录
-   helpButtonIcon: "./oem/cnpc/images/help.svg"            #帮助按钮图标
-   exitButtonIcon: "./oem/cnpc/images/exit.svg"            #退出按钮图标
-   switchButtonIcon: "./oem/cnpc/images/switch.svg"        #语言切换按钮图标
-   switchDisabledButtonIcon: "./oem/cnpc/images/switch_disabled.svg"        #语言切换不可用按钮图标
-   zoomInButtonIcon: "./oem/cnpc/images/zoomin.svg"        #放大按钮图标
-   zoomoutButtonIcon: "./oem/cnpc/images/zooout.svg"       #缩小按钮图标
+   languageResourcePath: "oem/ycdj/locale"                 #语言资源文件所在目录
+   sceneImagePath: "/oem/ycdj/sceneImage"                  #场景模型目录
+   favicon: "./oem/ycdj/images/logo/favicon.ico"               #网页图标
+   logo: "./oem/ycdj/images/logo/logo.png"                     #软件图标
+   loginBackgroundImage: "./oem/ycdj/images/login/login.jpg"   #登录界面背景图片
+   loginCSS: "./oem/ycdj/styles"                           #css文件所在目录
+   bannerCSS: "./oem/ycdj/styles"                          #css文件所在目录
+   helpButtonIcon: "./oem/ycdj/images/help.svg"            #帮助按钮图标
+   exitButtonIcon: "./oem/ycdj/images/exit.svg"            #退出按钮图标
+   switchButtonIcon: "./oem/ycdj/images/switch.svg"        #语言切换按钮图标
+   switchDisabledButtonIcon: "./oem/ycdj/images/switch_disabled.svg"        #语言切换不可用按钮图标
+   zoomInButtonIcon: "./oem/ycdj/images/zoomin.svg"        #放大按钮图标
+   zoomoutButtonIcon: "./oem/ycdj/images/zooout.svg"       #缩小按钮图标
    staticResourceTimestamp: 20260831162500  #oem相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
-   helpDocument: "./oem/cnpc/readme"             #帮助文档所在目录
+   helpDocument: "./oem/ycdj/readme"             #帮助文档所在目录
    helpDocumentTimestamp: 20260831162500  #帮助文档相关的静态资源时间戳，修改此项重新加载资源，无需清理浏览器缓存，即可使其他修改生效
 report:                                   #报表配置
-   template: "oem/cnpc/reportTemplate/reportTemplate.json"    #报表模板
+   template: "oem/ycdj/reportTemplate/reportTemplate.json"    #报表模板
    offsetHour: 0                          #偏移小时 数值范围：0~12
    interval: 1                            #间隔 单位：小时 数值范围：1~12
    delay: 5                               #跨天汇总延时，单位：分钟 数值范围：0~30

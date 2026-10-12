@@ -1378,8 +1378,6 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 
 	    	                		Ext.Msg.confirm(loginUserLanguageResource.tip, deleteInfo, function (btn) {
 	    	                            if (btn == "yes") {
-	    	                            	
-	    	    	                		
 	    	    	                		Ext.Ajax.request({
 	    	    	                			method:'POST',
 	    	    	                			url:context + '/operationMaintenanceController/deleteDeviceTabManagerInstance',
@@ -1477,6 +1475,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                		instanceConfig.PrimaryDevice.InterlockProtection=Ext.getCmp('calculationModel_showPrimaryDeviceInterlockProtection_Id').getValue();
 		                		instanceConfig.PrimaryDevice.DiagramFiltering=Ext.getCmp('calculationModel_showPrimaryDeviceDiagramFiltering_Id').getValue();
 		                		
+		                		instanceConfig.PrimaryDevice.SceneModel=Ext.getCmp('calculationModel_showSceneModel_Id').getValue();
 		                		Ext.Ajax.request({
 		                			method:'POST',
 		                			url:context + '/operationMaintenanceController/saveDeviceTabManagerInstance',
@@ -1685,6 +1684,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        	    fieldLabel: loginUserLanguageResource.intelligentFrequencyConversion,
 	                                        	    name: 'calculationModel.showPrimaryDeviceIntelligentFrequencyConversion',
 	                                        	    id: 'calculationModel_showPrimaryDeviceIntelligentFrequencyConversion_Id',
+	                                        	    checked: false
+	    				                        },{
+	                                            	xtype: 'checkboxfield',
+	                                        	    fieldLabel: loginUserLanguageResource.sceneModel,
+	                                        	    name: 'calculationModel.showSceneModel',
+	                                        	    id: 'calculationModel_showSceneModel_Id',
 	                                        	    checked: false
 	    				                        }]
 	        				                }, {
@@ -4222,6 +4227,8 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 	Ext.getCmp("calculationModel_showPrimaryDeviceInterlockProtection_Id").setValue(false);
 	Ext.getCmp("calculationModel_showPrimaryDeviceDiagramFiltering_Id").setValue(false);
 	
+	Ext.getCmp("calculationModel_showSceneModel_Id").setValue(false);
+	
 	if(instanceConfig!=undefined){
 		if(instanceConfig.DeviceRealTimeMonitoring!=undefined){
 			Ext.getCmp("calculationModel_showRealtimeWellboreAnalysis_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis!=undefined?instanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis:false);
@@ -4252,6 +4259,8 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 			Ext.getCmp("calculationModel_showPrimaryDeviceIntelligentFrequencyConversion_Id").setValue(instanceConfig.PrimaryDevice.IntelligentFrequencyConversion!=undefined?instanceConfig.PrimaryDevice.IntelligentFrequencyConversion:false);
 			Ext.getCmp("calculationModel_showPrimaryDeviceInterlockProtection_Id").setValue(instanceConfig.PrimaryDevice.InterlockProtection!=undefined?instanceConfig.PrimaryDevice.InterlockProtection:false);
 			Ext.getCmp("calculationModel_showPrimaryDeviceDiagramFiltering_Id").setValue(instanceConfig.PrimaryDevice.DiagramFiltering!=undefined?instanceConfig.PrimaryDevice.DiagramFiltering:false);
+			
+			Ext.getCmp("calculationModel_showSceneModel_Id").setValue(instanceConfig.PrimaryDevice.SceneModel!=undefined?instanceConfig.PrimaryDevice.SceneModel:false);
 		}
 	}
 }

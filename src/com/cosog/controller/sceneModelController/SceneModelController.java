@@ -437,6 +437,47 @@ public class SceneModelController extends BaseController {
         return null;
     }
     
+    @RequestMapping("/getSceneModelConfigByDeviceId")
+    public String getSceneModelConfigByDeviceId() throws IOException, SQLException {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        try {
+            String deviceId = ParamUtils.getParameter(request, "deviceId");
+
+            if (!StringManagerUtils.isNotNull(deviceId)) {
+                result.put("success", false);
+                result.put("message", "缺少设备 id");
+            } else {
+                Map<String, Object> data = sceneModelService.getSceneModelConfigByDeviceId(
+                        Integer.parseInt(deviceId));
+                if (data == null) {
+                    // 设备不存在 → 返回默认 config
+                    Map<String, Object> defaultCfg = new HashMap<String, Object>();
+                    defaultCfg.put("imageUrl", "");
+                    defaultCfg.put("shapes", new ArrayList<Object>());
+                    result.put("success", true);
+                    result.put("config", new Gson().toJson(defaultCfg));
+                } else {
+                    result.put("success", true);
+                    result.put("modelId", data.get("id"));
+                    result.put("config", data.get("config"));
+                }
+            }
+        } catch (Exception e) {
+            log.error("按设备获取场景配置失败", e);
+            result.put("success", false);
+            result.put("message", e.getMessage());
+        }
+
+        response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+        response.setHeader("Cache-Control", "no-cache");
+        PrintWriter pw = response.getWriter();
+        pw.print(new Gson().toJson(result));
+        pw.flush();
+        pw.close();
+        return null;
+    }
+    
     @RequestMapping("/saveSceneModelInfo")
 	public String saveSceneModelInfo() throws Exception {
 		String result ="{\"success\":true,\"msg\":false}";

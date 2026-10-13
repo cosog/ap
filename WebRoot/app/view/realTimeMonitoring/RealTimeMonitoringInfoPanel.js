@@ -205,6 +205,10 @@ var realtimeStatTabItems=[{
 ];
 
 var realtimeCurveAndTableTabPanelItems=[{
+	title:loginUserLanguageResource.sceneModel,
+	id:"RealTimeMonitoringSceneModelTabPanel_Id",
+	layout: 'fit'
+},{
     title: loginUserLanguageResource.wellboreAnalysis,
     margin: '0 0 0 0',
     padding: 0,
@@ -850,7 +854,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
             					var gridPanel=Ext.getCmp("RealTimeMonitoringListGridPanel_Id");
             					
             					if(isNotVal(gridPanel)&&gridPanel.getSelectionModel().getSelection().length>0){
-            						if(newCard.id=="RealTimeMonitoringCurveTabPanel_Id"){
+            						if(newCard.id=="RealTimeMonitoringSceneModelTabPanel_Id"){
+                						var selectedItem=gridPanel.getSelectionModel().getSelection()[0];
+                						CreateDeviceSceneModel(selectedItem.data.id,selectedItem.data.deviceName,getDeviceTypeFromTabId("RealTimeMonitoringTabPanel"),selectedItem.data.calculateType);
+                					}else if(newCard.id=="RealTimeMonitoringCurveTabPanel_Id"){
             							deviceRealtimeMonitoringCurve(0);
                 					}else if(newCard.id=="RealTimeMonitoringTableTabPanel_Id"){
                 						var selectedItem=gridPanel.getSelectionModel().getSelection()[0];
@@ -1076,6 +1083,23 @@ function viewDeviceRealTimeMonitoringData(row,col){
 		}
 	}
 	
+}
+
+function CreateDeviceSceneModel(deviceId, deviceName, deviceType, calculateType){
+	var panelId = "RealTimeMonitoringSceneModelTabPanel_Id";
+    var panel = Ext.getCmp(panelId);
+    if (!panel) return;
+
+    // 清空原有内容
+    panel.removeAll(true);
+
+    // 只传 deviceId，是否有配置由后端判断
+    var scenePanel = Ext.create('AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel', {
+        deviceId: deviceId,
+        deviceName: deviceName
+    });
+
+    panel.add(scenePanel);
 }
 
 function CreateDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType,calculateType){

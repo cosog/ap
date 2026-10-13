@@ -1448,6 +1448,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                		instanceConfig.DeviceHistoryQuery={};
 		                		instanceConfig.PrimaryDevice={};
 		                		
+		                		instanceConfig.DeviceRealTimeMonitoring.SceneModel=Ext.getCmp('calculationModel_showRealtimeSceneModel_Id').getValue();
 		                		instanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis=Ext.getCmp('calculationModel_showRealtimeWellboreAnalysis_Id').getValue();
 		                		instanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis=Ext.getCmp('calculationModel_showRealtimeSurfaceAnalysis_Id').getValue();
 		                		instanceConfig.DeviceRealTimeMonitoring.TrendCurve=Ext.getCmp('calculationModel_showRealtimeTrendCurve_Id').getValue();
@@ -1545,18 +1546,38 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        },
 	                                        items: [{
 	                                            items: [{
-	                                            		xtype: 'checkboxfield',
-	                                            	    fieldLabel: loginUserLanguageResource.wellboreAnalysis,
-	                                            	    name: 'calculationModel.showRealtimeWellboreAnalysis',
-	                                            	    id: 'calculationModel_showRealtimeWellboreAnalysis_Id',
-	                                            	    checked: false
-	                                            	},{
-	                                            		xtype: 'checkboxfield',
-	                                            	    fieldLabel: loginUserLanguageResource.dynamicData,
-	                                            	    name: 'calculationModel.showRealtimeDynamicData',
-	                                            	    id: 'calculationModel_showRealtimeDynamicData_Id',
-	                                            	    checked: false
-	                                            	}]
+                                            			xtype: 'checkboxfield',
+                                            			fieldLabel: loginUserLanguageResource.sceneModel,
+                                            			name: 'calculationModel.showRealtimeSceneModel',
+                                            			id: 'calculationModel_showRealtimeSceneModel_Id',
+                                            			checked: false
+                                            		},{
+    	    				                        	xtype: 'checkboxfield',
+    	                                        	    fieldLabel: loginUserLanguageResource.trendCurve,
+    	                                        	    name: 'calculationModel.showRealtimeTrendCurve',
+    	                                        	    id: 'calculationModel_showRealtimeTrendCurve_Id',
+    	                                        	    checked: false
+    	    				                        },{
+    	    				                        	xtype: 'checkboxfield',
+    	                                        	    fieldLabel: loginUserLanguageResource.deviceInformation,
+    	                                        	    name: 'calculationModel.showRealtimeDeviceInformation',
+    	                                        	    id: 'calculationModel_showRealtimeDeviceInformation_Id',
+    	                                        	    checked: false
+    	    				                        }]
+	        				                }, {
+	                                            items: [{
+                                            		xtype: 'checkboxfield',
+                                            	    fieldLabel: loginUserLanguageResource.wellboreAnalysis,
+                                            	    name: 'calculationModel.showRealtimeWellboreAnalysis',
+                                            	    id: 'calculationModel_showRealtimeWellboreAnalysis_Id',
+                                            	    checked: false
+                                            	},{
+                                            		xtype: 'checkboxfield',
+                                            	    fieldLabel: loginUserLanguageResource.dynamicData,
+                                            	    name: 'calculationModel.showRealtimeDynamicData',
+                                            	    id: 'calculationModel_showRealtimeDynamicData_Id',
+                                            	    checked: false
+                                            	}]
 	        				                }, {
 	                                            items: [{
 	                                            	xtype: 'checkboxfield',
@@ -1569,20 +1590,6 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        	    fieldLabel: loginUserLanguageResource.deviceControl,
 	                                        	    name: 'calculationModel.showRealtimeDeviceControl',
 	                                        	    id: 'calculationModel_showRealtimeDeviceControl_Id',
-	                                        	    checked: false
-	    				                        }]
-	        				                }, {
-	                                            items: [{
-	    				                        	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.trendCurve,
-	                                        	    name: 'calculationModel.showRealtimeTrendCurve',
-	                                        	    id: 'calculationModel_showRealtimeTrendCurve_Id',
-	                                        	    checked: false
-	    				                        },{
-	    				                        	xtype: 'checkboxfield',
-	                                        	    fieldLabel: loginUserLanguageResource.deviceInformation,
-	                                        	    name: 'calculationModel.showRealtimeDeviceInformation',
-	                                        	    id: 'calculationModel_showRealtimeDeviceInformation_Id',
 	                                        	    checked: false
 	    				                        }]
 	        				                },{
@@ -4203,6 +4210,7 @@ function initDeviceTabManagerInstance(instanceId){
 }
 
 function initDeviceTabManagerInstanceConfig(instanceConfig){
+	Ext.getCmp("calculationModel_showRealtimeSceneModel_Id").setValue(false);
 	Ext.getCmp("calculationModel_showRealtimeWellboreAnalysis_Id").setValue(false);
 	Ext.getCmp("calculationModel_showRealtimeSurfaceAnalysis_Id").setValue(false);
 	Ext.getCmp("calculationModel_showRealtimeTrendCurve_Id").setValue(false);
@@ -4231,6 +4239,7 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 	
 	if(instanceConfig!=undefined){
 		if(instanceConfig.DeviceRealTimeMonitoring!=undefined){
+			Ext.getCmp("calculationModel_showRealtimeSceneModel_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.SceneModel!=undefined?instanceConfig.DeviceRealTimeMonitoring.SceneModel:false);
 			Ext.getCmp("calculationModel_showRealtimeWellboreAnalysis_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis!=undefined?instanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis:false);
 			Ext.getCmp("calculationModel_showRealtimeSurfaceAnalysis_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis!=undefined?instanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis:false);
 			Ext.getCmp("calculationModel_showRealtimeTrendCurve_Id").setValue(instanceConfig.DeviceRealTimeMonitoring.TrendCurve!=undefined?instanceConfig.DeviceRealTimeMonitoring.TrendCurve:false);

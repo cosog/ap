@@ -137,7 +137,7 @@ Ext.define('AP.view.sceneModel.DataSourceWindow', {
             fieldName:  fieldRec.get('itemCode'),      // ★ 字段编码
             fieldLabel: fieldRec.get('itemName'),      // ★ 字段名称
             unit:       fieldRec.get('unit') || '',
-            dataSource: fieldRec.get('dataSource') || ''
+            dataSource: fieldRec.get('dataSourceValue') || ''
         };
 
         if (Ext.isFunction(me.onConfirm)) {

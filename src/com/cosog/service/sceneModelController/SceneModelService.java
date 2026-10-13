@@ -142,30 +142,35 @@ public class SceneModelService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) o;
 			String unit="";
 			String dataSource="";
+			String dataSourceValue="";
 			String itemName=obj[1]+"";
 			String itemCode=obj[2]+"";
 			String type=obj[3]+"";
 			if("0".equalsIgnoreCase(type)){
-				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE", "0", language);
+				dataSourceValue="0";
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE", dataSourceValue, language);
 				ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItemByMappingColumn(protocol, itemCode);
 				if(item!=null){
 					unit=item.getUnit();
 				}
 			}else if("5".equalsIgnoreCase(type)){
-				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE", "5", language);
+				dataSourceValue="5";
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE", dataSourceValue, language);
 				ModbusProtocolConfig.ExtendedField item=MemoryDataManagerTask.getProtocolExtendedFieldByMappingColumn(protocol, itemCode);
 				if(item!=null){
 					unit=item.getUnit();
 				}
 			}else if("1".equalsIgnoreCase(type)){
-				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE", "1", language);
+				dataSourceValue="1";
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE", dataSourceValue, language);
 				CalItem calItem=MemoryDataManagerTask.getCalItemByCode(itemCode, language);
 				if(calItem!=null){
 					unit=calItem.getUnit();
 					itemName=calItem.getName();
 				}
 			}else if("3".equalsIgnoreCase(type)){
-				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE", "2", language);
+				dataSourceValue="2";
+				dataSource=MemoryDataManagerTask.getCodeName("DATASOURCE", dataSourceValue, language);
 				CalItem calItem=MemoryDataManagerTask.getInputItemByCode(itemCode, language);
 				if(calItem!=null){
 					unit=calItem.getUnit();
@@ -177,6 +182,7 @@ public class SceneModelService<T> extends BaseService<T> {
 			result_json.append("\"itemCode\":\""+itemCode+"\",");
 			result_json.append("\"type\":\""+type+"\",");
 			result_json.append("\"bitindex\":\""+obj[4]+"\",");
+			result_json.append("\"dataSourceValue\":\""+dataSourceValue+"\",");
 			result_json.append("\"dataSource\":\""+dataSource+"\",");
 			result_json.append("\"unit\":\""+unit+"\"},");
 		}
@@ -231,6 +237,69 @@ public class SceneModelService<T> extends BaseService<T> {
 	            result = new HashMap<String, Object>();
 	            result.put("id", obj[0]);
 	            result.put("config", StringManagerUtils.CLOBObjectToString(obj[1]));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return result;
+	}
+	
+	/**
+	 * 根据设备 id 获取关联的场景模型 config
+	 *  - 查 tbl_device.scenemodel
+	 *  - scenemodel 有值 → 查 tbl_scenemodel 返回 config
+	 *  - scenemodel 为空 / 场景不存在 → 返回 {imageUrl:"", shapes:[]}
+	 */
+	public Map<String, Object> getSceneModelConfigByDeviceId(int deviceId) {
+	    Map<String, Object> result = new HashMap<String, Object>();
+
+	    try {
+	        // 1. 查设备表拿到 scenemodel
+	        String sql1 = "select t.scenemodel from TBL_DEVICE t where t.id = " + deviceId;
+	        List<?> list1 = this.findCallSql(sql1);
+
+	        int sceneModelId = 0;
+	        if (list1 != null && !list1.isEmpty()) {
+	            Object obj = list1.get(0);
+	            if (obj != null) {
+	                try { sceneModelId = Integer.parseInt(obj.toString()); } catch (Exception e) {}
+	            }
+	        }
+
+	        // 2. 没有关联场景 → 返回默认空 config
+	        if (sceneModelId <= 0) {
+	            Map<String, Object> cfg = new HashMap<String, Object>();
+	            cfg.put("imageUrl", "");
+	            cfg.put("shapes", new java.util.ArrayList<Object>());
+	            result.put("id", 0);
+	            result.put("config", new com.google.gson.Gson().toJson(cfg));
+	            return result;
+	        }
+
+	        // 3. 有关联场景 → 查场景 config
+	        String sql2 = "select t.id, t.config from TBL_SCENEMODEL t where t.id = " + sceneModelId;
+	        List<?> list2 = this.findCallSql(sql2);
+
+	        if (list2 != null && !list2.isEmpty()) {
+	            Object[] obj = (Object[]) list2.get(0);
+	            result.put("id", obj[0]);
+	            String cfgStr = StringManagerUtils.CLOBObjectToString(obj[1]);
+	            if (!StringManagerUtils.isNotNull(cfgStr)) {
+	                // config 为空 → 返回默认空 config
+	                Map<String, Object> cfg = new HashMap<String, Object>();
+	                cfg.put("imageUrl", "");
+	                cfg.put("shapes", new java.util.ArrayList<Object>());
+	                cfgStr = new com.google.gson.Gson().toJson(cfg);
+	            }
+	            result.put("config", cfgStr);
+	        } else {
+	            // 场景 id 存在但记录被删了 → 默认空 config
+	            Map<String, Object> cfg = new HashMap<String, Object>();
+	            cfg.put("imageUrl", "");
+	            cfg.put("shapes", new java.util.ArrayList<Object>());
+	            result.put("id", 0);
+	            result.put("config", new com.google.gson.Gson().toJson(cfg));
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();

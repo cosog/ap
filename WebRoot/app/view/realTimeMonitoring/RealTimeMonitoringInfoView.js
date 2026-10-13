@@ -3027,6 +3027,7 @@ function continueUpdateDeviceMonitoringData(deviceInfo, deviceId, deviceName, de
     var deviceTabInstanceConfig = deviceTabInstanceInfo.config;
     var calculateType = deviceTabInstanceInfo.calculateType == undefined ? 0 : deviceTabInstanceInfo.calculateType;
 
+    var showRealtimeSceneModel = false;
     var showRealtimeWellboreAnalysis = false;
     var showRealtimeSurfaceAnalysis = false;
     var showRealtimeTrendCurve = false;
@@ -3037,6 +3038,7 @@ function continueUpdateDeviceMonitoringData(deviceInfo, deviceId, deviceName, de
     var rodStressChart_RodStressRange = false;
 
     if (deviceTabInstanceConfig != undefined && deviceTabInstanceConfig.DeviceRealTimeMonitoring != undefined) {
+    	showRealtimeSceneModel = deviceTabInstanceConfig.DeviceRealTimeMonitoring.SceneModel != undefined ? deviceTabInstanceConfig.DeviceRealTimeMonitoring.SceneModel : false;
         showRealtimeWellboreAnalysis = deviceTabInstanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis != undefined ? deviceTabInstanceConfig.DeviceRealTimeMonitoring.WellboreAnalysis : false;
         showRealtimeSurfaceAnalysis = deviceTabInstanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis != undefined ? deviceTabInstanceConfig.DeviceRealTimeMonitoring.SurfaceAnalysis : false;
         showRealtimeTrendCurve = deviceTabInstanceConfig.DeviceRealTimeMonitoring.TrendCurve != undefined ? deviceTabInstanceConfig.DeviceRealTimeMonitoring.TrendCurve : false;
@@ -3058,6 +3060,19 @@ function continueUpdateDeviceMonitoringData(deviceInfo, deviceId, deviceName, de
     var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
     var activeId = tabPanel.getActiveTab() != undefined ? tabPanel.getActiveTab().id : '';
     var tabChange = false;
+    
+    // 场景模型标签处理
+    if (showRealtimeSceneModel == false) {
+        tabPanel.remove(Ext.getCmp("RealTimeMonitoringSceneModelTabPanel_Id"));
+        if (activeId == "RealTimeMonitoringSceneModelTabPanel_Id") {
+            tabChange = true;
+        }
+    } else {
+        var RealTimeMonitoringSceneModelTabPanel = tabPanel.getComponent("RealTimeMonitoringSceneModelTabPanel_Id");
+        if (RealTimeMonitoringSceneModelTabPanel == undefined) {
+            tabPanel.insert(0, realtimeCurveAndTableTabPanelItems[0]);
+        }
+    }
 
     // 井筒分析标签处理
     if (showRealtimeWellboreAnalysis == false) {
@@ -3068,7 +3083,7 @@ function continueUpdateDeviceMonitoringData(deviceInfo, deviceId, deviceName, de
     } else {
         var RealTimeMonitoringFSDiagramAnalysisTabPanel = tabPanel.getComponent("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id");
         if (calculateType == 1 && RealTimeMonitoringFSDiagramAnalysisTabPanel == undefined) {
-            tabPanel.insert(0, realtimeCurveAndTableTabPanelItems[0]);
+            tabPanel.insert(1, realtimeCurveAndTableTabPanelItems[1]);
         } else if (calculateType != 1 && RealTimeMonitoringFSDiagramAnalysisTabPanel != undefined) {
             tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisTabPanel_Id"));
             if (activeId == "RealTimeMonitoringFSDiagramAnalysisTabPanel_Id") {
@@ -3085,7 +3100,7 @@ function continueUpdateDeviceMonitoringData(deviceInfo, deviceId, deviceName, de
     } else {
         var RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel = tabPanel.getComponent("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id");
         if (calculateType == 1 && RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel == undefined) {
-            tabPanel.insert(1, realtimeCurveAndTableTabPanelItems[1]);
+            tabPanel.insert(2, realtimeCurveAndTableTabPanelItems[2]);
         } else if (calculateType != 1 && RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel != undefined) {
             tabPanel.remove(Ext.getCmp("RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"));
             if (activeId == "RealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id") {
@@ -3102,7 +3117,7 @@ function continueUpdateDeviceMonitoringData(deviceInfo, deviceId, deviceName, de
     } else {
         var RealTimeMonitoringCurveTabPanel = tabPanel.getComponent("RealTimeMonitoringCurveTabPanel_Id");
         if (RealTimeMonitoringCurveTabPanel == undefined) {
-            tabPanel.insert(2, realtimeCurveAndTableTabPanelItems[2]);
+            tabPanel.insert(3, realtimeCurveAndTableTabPanelItems[3]);
         }
     }
     // 动态数据标签处理
@@ -3114,12 +3129,12 @@ function continueUpdateDeviceMonitoringData(deviceInfo, deviceId, deviceName, de
     } else {
         var RealTimeMonitoringTableTabPanel = tabPanel.getComponent("RealTimeMonitoringTableTabPanel_Id");
         if (RealTimeMonitoringTableTabPanel == undefined) {
-            tabPanel.insert(3, realtimeCurveAndTableTabPanelItems[3]);
+            tabPanel.insert(4, realtimeCurveAndTableTabPanelItems[4]);
         }
     }
 
     var showDeviceDataTab = true;
-    if (showRealtimeWellboreAnalysis == false && showRealtimeSurfaceAnalysis == false && showRealtimeTrendCurve == false && showRealtimeDynamicData == false) {
+    if (showRealtimeSceneModel == false && showRealtimeWellboreAnalysis == false && showRealtimeSurfaceAnalysis == false && showRealtimeTrendCurve == false && showRealtimeDynamicData == false) {
         showDeviceDataTab = false;
     }
     if (!showDeviceDataTab) {
@@ -3135,7 +3150,9 @@ function continueUpdateDeviceMonitoringData(deviceInfo, deviceId, deviceName, de
                 }
             } else {
                 activeId = tabPanel.getActiveTab() != undefined ? tabPanel.getActiveTab().id : '';
-                if (activeId == "RealTimeMonitoringCurveTabPanel_Id") {
+                if (activeId == "RealTimeMonitoringSceneModelTabPanel_Id") {
+                	CreateDeviceSceneModel(deviceId, deviceName, deviceType, calculateType);
+                }else if (activeId == "RealTimeMonitoringCurveTabPanel_Id") {
                     deviceRealtimeMonitoringCurve(deviceType);
                 } else if (activeId == "RealTimeMonitoringTableTabPanel_Id") {
                     CreateDeviceRealTimeMonitoringDataTable(deviceId, deviceName, deviceType, calculateType);

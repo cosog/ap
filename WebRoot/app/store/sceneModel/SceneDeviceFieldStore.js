@@ -20,6 +20,7 @@ Ext.define('AP.store.sceneModel.SceneDeviceFieldStore', {
         { name: 'itemCode',   type: 'string' },
         { name: 'itemName',   type: 'string' },
         { name: 'unit',       type: 'string' },
+        { name: 'dataSourceValue', type: 'string' },
         { name: 'dataSource', type: 'string' }
     ],
     listeners: {

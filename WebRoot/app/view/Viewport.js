@@ -325,6 +325,23 @@ function websocketOnMessage(evt) {
                         }
                     }
                 }
+                
+             // ★★★ 更新场景模型上绑定的项的实时值
+                try {
+                    var curveTabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");
+                    if (isNotVal(curveTabPanel)) {
+                        var activeTab = curveTabPanel.getActiveTab();
+                        if (activeTab && activeTab.id === "RealTimeMonitoringSceneModelTabPanel_Id") {
+                            var scenePanel = Ext.getCmp("RealTimeMonitoringSceneModelPanel_Id");
+                            if (scenePanel && Ext.isFunction(scenePanel.updateRealtimeValuesFromPush)) {
+                                scenePanel.updateRealtimeValuesFromPush(data.deviceId, data.allItemInfo);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // 静默失败，不影响主流程
+                }
+                
                 //更新实时表和实时曲线
                 if (isSelectWell) {
                     var tabPanel = Ext.getCmp("RealTimeMonitoringCurveAndTableTabPanel");

@@ -6,16 +6,15 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
     title: loginUserLanguageResource.trendCurve,
     border: false,
     hidden: false,
-    constrainHeader:true,//True表示为将window header约束在视图中显示， false表示为允许header在视图之外的地方显示（默认为false）
-//    constrain: true,
-    closable: false,          // 禁用内置按钮，完全自定义
+    constrainHeader:true,
+    closable: false,
     maximizable: false,
     minimizable: false,
     collapsible: false,
     width: '65%',
     height: '50%',
-    draggable: true, // 是否可拖曳
-    modal: true, // 是否为模态窗口
+    draggable: true,
+    modal: true,
     initComponent: function () {
         var me = this;
         Ext.apply(me, {
@@ -25,32 +24,22 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
         		layout: 'fit',
         		autoScroll: true,
         		border: false,
-        		tbar:[{
-                    id: 'RealtimeCurveItemName_Id',
-                    xtype: 'textfield',
-                    value: '',
-                    hidden: true
-                },{
-                    id: 'RealtimeCurveItemCode_Id',
-                    xtype: 'textfield',
-                    value: '',
-                    hidden: true
-                },{
-                    id: 'RealtimeCurveItemType_Id',
-                    xtype: 'textfield',
-                    value: '',
-                    hidden: true
-                },{
-                    id: 'RealtimeCurveItemResolutionMode_Id',
-                    xtype: 'textfield',
-                    value: '',
-                    hidden: true
-                }],
+        		tbar:[
+        		    { id: 'RealtimeCurveItemName_Id',              xtype: 'textfield', value: '', hidden: true },
+        		    { id: 'RealtimeCurveItemCode_Id',              xtype: 'textfield', value: '', hidden: true },
+        		    { id: 'RealtimeCurveItemType_Id',              xtype: 'textfield', value: '', hidden: true },
+        		    { id: 'RealtimeCurveItemResolutionMode_Id',    xtype: 'textfield', value: '', hidden: true },
+        		    // ★ 新增：用于"场景模型标注双击"时携带绑定设备信息
+        		    //   从实时监控动态数据表进入时这些字段为空，函数内部会回退到旧逻辑
+        		    { id: 'RealtimeCurveDeviceId_Id',              xtype: 'textfield', value: '', hidden: true },
+        		    { id: 'RealtimeCurveDeviceName_Id',            xtype: 'textfield', value: '', hidden: true },
+        		    { id: 'RealtimeCurveCalculateType_Id',         xtype: 'textfield', value: '', hidden: true }
+        		],
                 items:[{
                 	xtype: 'panel',
                     layout: 'fit',
-                    minHeight: otherCardMinHeight,   // 图表最小可视高度
-                    autoScroll: false,                // 禁止内部滚动
+                    minHeight: otherCardMinHeight,
+                    autoScroll: false,
                     border: false,
                     id: 'ItemRealtimeCurvePanel_Id',
                 	html: '<div id="ItemRealtimeCurveContainer" class="hbox" style="width:100%;height:100%;display:flex;flex-wrap:wrap;align-content:flex-start;"></div>',
@@ -81,7 +70,6 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
                 beforeclose: function (panel) {
                 	
                 },
-                // 最大化时，确保窗口处于展开状态，并刷新表格
                 maximize: function (win) {
                     win._minimized = false;
                     win.setTitle(win.originalTitle);
@@ -163,24 +151,19 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
                             'font-family:sans-serif; line-height:1;' +
                             'min-width:30px; min-height:30px;';
 
-                        // 使用 pointerdown 事件（统一鼠标和触摸）
                         btn.addEventListener('pointerdown', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            // 视觉反馈
                             if (isClose) {
                                 this.style.background = '#e81123';
                                 this.style.color = '#ffffff';
                             } else {
                                 this.style.background = 'rgba(0,0,0,0.15)';
                             }
-                            // 执行业务逻辑
                             clickHandler(e);
-                            // 释放指针捕获（如果有）
                             this.releasePointerCapture(e.pointerId);
                         }, { passive: false });
 
-                        // 指针释放时恢复样式
                         btn.addEventListener('pointerup', function(e) {
                             this.style.background = 'transparent';
                             this.style.color = isClose ? defaultColor : defaultColor;
@@ -194,7 +177,6 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
                         return btn;
                     }
 
-                    // ---- 创建各按钮 ----
                     var minBtn = createButton('─', '', function () {
                         win._savedHeight = win.getHeight();
                         var headerH = win.getHeader() ? win.getHeader().getHeight() : 30;
@@ -202,7 +184,6 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
                         if (win._toolbar) win._toolbar.hide();
                         win.setHeight(headerH);
                         win._minimized = true;
-//                        win.setTitle(win.originalTitle + ' (已最小化)');
                         minBtn.style.display = 'none';
                         expandBtn.style.display = 'inline-block';
                     });
@@ -254,7 +235,6 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeCurveWindow", {
                     }, true);
                     btnContainer.appendChild(closeBtn);
 
-                    // 标题栏点击展开（忽略按钮区域）
                     header.el.on('click', function (e) {
                         if (btnContainer.contains(e.target)) {
                             return;
@@ -298,18 +278,32 @@ function getItemRealTimeCurveData(){
 	var gridPanelId="RealTimeMonitoringListGridPanel_Id";
 	var panelId="ItemRealtimeCurveWindow_Id";
 	var deviceName='';
-	var deviceId=0;
-	var calculateType=0;
+	var deviceId='';
+	var calculateType='';
 	var itemName=Ext.getCmp("RealtimeCurveItemName_Id").getValue();
 	var itemCode=Ext.getCmp("RealtimeCurveItemCode_Id").getValue();
 	var itemType=Ext.getCmp("RealtimeCurveItemType_Id").getValue();
 	var itemResolutionMode=Ext.getCmp("RealtimeCurveItemResolutionMode_Id").getValue();
-	var selectRow= Ext.getCmp(selectRowId).getValue();
-	if(Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
-		calculateType=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
-		deviceId=Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
-		deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
+
+	// ★ 优先读窗口隐藏字段（场景模型标注双击时写入）
+	//   为空时回退到实时表选中行（旧路径，兼容原行为）
+	var devIdField = Ext.getCmp("RealtimeCurveDeviceId_Id");
+	var devNameField = Ext.getCmp("RealtimeCurveDeviceName_Id");
+	var calcTypeField = Ext.getCmp("RealtimeCurveCalculateType_Id");
+	if (devIdField && isNotVal(devIdField.getValue())) {
+		deviceId = devIdField.getValue();
+		deviceName = (devNameField && isNotVal(devNameField.getValue())) ? devNameField.getValue() : '';
+		calculateType = (calcTypeField && isNotVal(calcTypeField.getValue())) ? calcTypeField.getValue() : 0;
 	}
+	if (!isNotVal(deviceId) || deviceId === 0 || deviceId === '0') {
+		if (Ext.getCmp(gridPanelId) && Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length > 0) {
+			var sel = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data;
+			calculateType = sel.calculateType;
+			deviceId = sel.id;
+			deviceName = sel.deviceName;
+		}
+	}
+
 	if(Ext.getCmp(panelId)!=undefined){
 		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
 	}
@@ -347,20 +341,19 @@ function getItemRealTimeCurveData(){
 		    
 		    var maxValue=null;
 	        var minValue=null;
-	        var allPositive=true;//全部是非负数
-	        var allNegative=true;//全部是负值
+	        var allPositive=true;
+	        var allNegative=true;
 	        
 	        var yAxisOpposite=false;
 	        
-	        var series = [];  // 直接定义为数组
+	        var series = [];
 	        var seriesItem = {
 	            name: legendName[0],
 	            lineWidth: 2,
 	            marker: { enabled: true },
 	            dataGrouping: { enabled: false },
-	            data: []  // 空数组，下面填充
+	            data: []
 	        };
-	        
 	        
 	        for (var j = 0; j < data.length; j++) {
 	            var timestamp = Date.parse(data[j].acqTime.replace(/-/g, '/'));

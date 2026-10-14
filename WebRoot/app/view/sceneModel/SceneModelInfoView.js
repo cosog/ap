@@ -16,6 +16,17 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     userColorMap: null,
     userLineWidthMap: null,
     lastSelectedUuid: null,
+    _suppressStyleChange: false,
+    _clearingSelection: false,
+
+    // 记录用户点击 tbar 时选择的创建类型（0=选择 1=矩形 3=点）
+    _userCreateType: 0,
+
+    _resizing: false,
+    _resizeTimer: null,
+    _originTimer: null,
+    _visibilityHandler: null,
+
     defaultLabelStyle: {
         font: '12px', bgColor: '#4A6CF7', bgOpacity: 100,
         textColor: '#FFFFFF', hide: false, hideDeviceName: true, up: true
@@ -34,6 +45,92 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     BLANK_IMAGE: context + '/sceneModelController/getSceneImage?name=__blank__.svg&_v=2',
 
     // ========================================================
+    // ★ 工具：统一的安全调用包装
+    // ========================================================
+    safe: function(fn, label) {
+        try { return fn(); }
+        catch (e) {
+            if (label) console.warn('[SceneModelPanel] ' + label + ':', e);
+        }
+    },
+
+    // ========================================================
+    // ★ 工具：统一获取真实的 canvas DOM
+    // ========================================================
+    getCanvasEl: function() {
+        var me = this;
+        if (me.cs && me.cs.canvas && me.cs.canvas.tagName === 'CANVAS') {
+            return me.cs.canvas;
+        }
+        var canvasCmp = me.down('#canvas');
+        if (canvasCmp && canvasCmp.el && canvasCmp.el.dom) {
+            return canvasCmp.el.dom;
+        }
+        return null;
+    },
+
+    // ========================================================
+    // ★ 工具：origin 轮询定时器的启动/停止
+    // ========================================================
+    startOriginTimer: function() {
+        var me = this;
+        if (me._originTimer) return;
+        if (document.hidden) return;
+        me._originTimer = setInterval(function() {
+            if (me.updateOriginIfNeeded()) me.scheduleRenderLabels();
+        }, 100);
+    },
+
+    stopOriginTimer: function() {
+        var me = this;
+        if (me._originTimer) {
+            clearInterval(me._originTimer);
+            me._originTimer = null;
+        }
+    },
+
+    // ========================================================
+    // ★ 关键：主动派发一次"鼠标移到画布中心"的合成 mousemove
+    // --------------------------------------------------------
+    // 首次打开模块时，用户还没有移动鼠标，canvas-select 内部的
+    // cs.mouse / cs.position 尚未初始化，导致 updateOriginIfNeeded
+    // 无法计算出正确的 origin，标签位置错乱。
+    //
+    // 这里主动派发一次合成事件，等价于"用户把鼠标移到画布上"，
+    // 让库内部完成 mouse/position 初始化。之后 origin 就能算对。
+    // ========================================================
+    _nudgeCanvasMouseCenter: function() {
+        var me = this;
+        var canvasEl = me.getCanvasEl();
+        if (!canvasEl) return;
+
+        var rect = canvasEl.getBoundingClientRect();
+        if (rect.width < 10 || rect.height < 10) return;
+
+        // offsetX/offsetY 是相对 canvas 元素的 CSS 像素坐标
+        var offX = rect.width  / 2;
+        var offY = rect.height / 2;
+        var clientX = rect.left + offX;
+        var clientY = rect.top  + offY;
+
+        var ev;
+        try {
+            ev = new MouseEvent('mousemove', {
+                bubbles: true, cancelable: true, view: window,
+                clientX: clientX, clientY: clientY,
+                screenX: clientX, screenY: clientY,
+                button: 0
+            });
+        } catch (e) { return; }
+
+        // 合成事件的 offsetX/offsetY 是只读的，必须显式定义
+        try { Object.defineProperty(ev, 'offsetX', { get: function() { return offX; } }); } catch (e) {}
+        try { Object.defineProperty(ev, 'offsetY', { get: function() { return offY; } }); } catch (e) {}
+
+        try { canvasEl.dispatchEvent(ev); } catch (e) {}
+    },
+
+    // ========================================================
     // 布局
     // ========================================================
     initComponent: function() {
@@ -43,12 +140,16 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         me.userColorMap = new Map();
         me.userLineWidthMap = new Map();
 
+        var bindingTreeStore = Ext.create('Ext.data.TreeStore', {
+            root: { expanded: true, children: [] }
+        });
+
         Ext.apply(me, {
             tbar: [],
             items: [
                 {
                     region: 'west',
-                    width: '32%',
+                    width: '25%',
                     layout: 'fit',
                     title: '场景列表',
                     header: false,
@@ -97,13 +198,28 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                     tbar: [
                         { xtype: 'button', text: '✋ 选择', itemId: 'btnSelect',
                           enableToggle: true, pressed: true, toggleGroup: 'createType',
-                          handler: function(b) { if (b.pressed && me.cs) me.cs.createType = 0; } },
+                          handler: function(b) {
+                              if (b.pressed && me.cs) {
+                                  me.cs.createType = 0;
+                                  me._userCreateType = 0;
+                              }
+                          } },
                         { xtype: 'button', text: '▭ 矩形', itemId: 'btnRect',
                           enableToggle: true, toggleGroup: 'createType',
-                          handler: function(b) { if (b.pressed && me.cs) me.cs.createType = 1; } },
+                          handler: function(b) {
+                              if (b.pressed && me.cs) {
+                                  me.cs.createType = 1;
+                                  me._userCreateType = 1;
+                              }
+                          } },
                         { xtype: 'button', text: '• 点', itemId: 'btnPoint',
                           enableToggle: true, toggleGroup: 'createType', tooltip: '点击画布添加点标注',
-                          handler: function(b) { if (b.pressed && me.cs) me.cs.createType = 3; } },
+                          handler: function(b) {
+                              if (b.pressed && me.cs) {
+                                  me.cs.createType = 3;
+                                  me._userCreateType = 3;
+                              }
+                          } },
                         '-',
                         { xtype: 'button', text: '🔍+', tooltip: '放大',
                           handler: function() { if (me.cs) { me.cs.setScale(true); me.afterZoom(); } } },
@@ -145,46 +261,86 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                             }]
                         },
                         {
-                            xtype: 'panel', region: 'east', width: 280,
-                            title: '样式设置', collapsible: true, split: true,
-                            bodyPadding: 12, autoScroll: true,
-                            items: [{
-                                xtype: 'fieldset',
-                                title: '图形样式',
-                                defaults: { anchor: '100%', labelWidth: 90, margin: '6 0' },
-                                items: [
-                                    { xtype: 'colorfield', fieldLabel: '边框颜色', itemId: 'strokeStyle',
-                                      listeners: { collapse: function (field) { me.applyColorFieldVisual(field, 1); me.onGraphicStyleChange(); } } },
-                                    { xtype: 'numberfield', fieldLabel: '边框宽度', itemId: 'lineWidth',
-                                      value: 1, minValue: 0, maxValue: 10, allowDecimals: false,
-                                      listeners: { change: function() { me.onGraphicStyleChange(); } } },
-                                    { xtype: 'colorfield', fieldLabel: '填充颜色', itemId: 'fillStyle',
-                                      listeners: { collapse: function (field) { me.applyColorFieldVisual(field, null); me.onGraphicStyleChange(); } } },
-                                    { xtype: 'numberfield', fieldLabel: '控制点大小', itemId: 'ctrlRadius',
-                                      value: 3, minValue: 2, maxValue: 10, allowDecimals: false,
-                                      tooltip: '同时控制点标注的半径大小',
-                                      listeners: { change: function() { me.onGraphicStyleChange(); } } }
-                                ]
-                            }, {
-                                xtype: 'fieldset',
-                                title: '标签样式',
-                                defaults: { anchor: '100%', labelWidth: 90, margin: '6 0' },
-                                items: [
-                                    { xtype: 'combo', fieldLabel: '字体', itemId: 'labelFont',
-                                      store: ['11px', '12px', '13px', '14px'], value: '12px', editable: false, matchFieldWidth: true,
-                                      listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                    { xtype: 'colorfield', fieldLabel: '标签背景', itemId: 'labelBg',
-                                      listeners: { collapse: function (field) { me.applyColorFieldVisual(field, null); me.onLabelStyleChange(); } } },
-                                    { xtype: 'colorfield', fieldLabel: '文字颜色', itemId: 'labelText',
-                                      listeners: { collapse: function (field) { me.applyColorFieldVisual(field, 1); me.onLabelStyleChange(); } } },
-                                    { xtype: 'checkbox', fieldLabel: '标签在上方', itemId: 'labelUp', value: true,
-                                      listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                    { xtype: 'checkbox', fieldLabel: '隐藏设备名称', itemId: 'hideDeviceName', value: true,
-                                      listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                    { xtype: 'checkbox', fieldLabel: '隐藏标签', itemId: 'hideLabel',
-                                      listeners: { change: function() { me.onLabelStyleChange(); } } }
-                                ]
-                            }]
+                            xtype: 'panel',
+                            region: 'east',
+                            width: 320,
+                            split: true,
+                            collapsible: true,
+                            title: '样式与标注',
+                            layout: 'border',
+                            border: false,
+                            items: [
+                                {
+                                    region: 'north',
+                                    height: '50%',
+                                    split: true,
+                                    collapsible: true,
+                                    title: '样式设置',
+                                    itemId: 'styleFormPanel',
+                                    autoScroll: true,
+                                    bodyPadding: 12,
+                                    border: false,
+                                    items: [{
+                                        xtype: 'fieldset',
+                                        title: '图形样式',
+                                        defaults: { anchor: '100%', labelWidth: 90, margin: '6 0' },
+                                        items: [
+                                            { xtype: 'colorfield', fieldLabel: '边框颜色', itemId: 'strokeStyle',
+                                              listeners: { collapse: function (field) { me.applyColorFieldVisual(field, 1); me.onGraphicStyleChange(); } } },
+                                            { xtype: 'numberfield', fieldLabel: '边框宽度', itemId: 'lineWidth',
+                                              value: 1, minValue: 0, maxValue: 10, allowDecimals: false,
+                                              listeners: { change: function() { me.onGraphicStyleChange(); } } },
+                                            { xtype: 'colorfield', fieldLabel: '填充颜色', itemId: 'fillStyle',
+                                              listeners: { collapse: function (field) { me.applyColorFieldVisual(field, null); me.onGraphicStyleChange(); } } },
+                                            { xtype: 'numberfield', fieldLabel: '控制点大小', itemId: 'ctrlRadius',
+                                              value: 3, minValue: 2, maxValue: 10, allowDecimals: false,
+                                              tooltip: '同时控制点标注的半径大小',
+                                              listeners: { change: function() { me.onGraphicStyleChange(); } } }
+                                        ]
+                                    }, {
+                                        xtype: 'fieldset',
+                                        title: '标签样式',
+                                        defaults: { anchor: '100%', labelWidth: 90, margin: '6 0' },
+                                        items: [
+                                            { xtype: 'combo', fieldLabel: '字体', itemId: 'labelFont',
+                                              store: ['11px', '12px', '13px', '14px'], value: '12px', editable: false, matchFieldWidth: true,
+                                              listeners: { change: function() { me.onLabelStyleChange(); } } },
+                                            { xtype: 'colorfield', fieldLabel: '标签背景', itemId: 'labelBg',
+                                              listeners: { collapse: function (field) { me.applyColorFieldVisual(field, null); me.onLabelStyleChange(); } } },
+                                            { xtype: 'colorfield', fieldLabel: '文字颜色', itemId: 'labelText',
+                                              listeners: { collapse: function (field) { me.applyColorFieldVisual(field, 1); me.onLabelStyleChange(); } } },
+                                            { xtype: 'checkbox', fieldLabel: '标签在上方', itemId: 'labelUp', value: true,
+                                              listeners: { change: function() { me.onLabelStyleChange(); } } },
+                                            { xtype: 'checkbox', fieldLabel: '隐藏设备名称', itemId: 'hideDeviceName', value: true,
+                                              listeners: { change: function() { me.onLabelStyleChange(); } } },
+                                            { xtype: 'checkbox', fieldLabel: '隐藏标签', itemId: 'hideLabel',
+                                              listeners: { change: function() { me.onLabelStyleChange(); } } }
+                                        ]
+                                    }]
+                                },
+                                {
+                                    region: 'center',
+                                    title: '标注列表',
+                                    layout: 'fit',
+                                    border: false,
+                                    items: [{
+                                        xtype: 'treepanel',
+                                        itemId: 'bindingTree',
+                                        id: 'SceneBindingTree_Id',
+                                        rootVisible: false,
+                                        border: false,
+                                        useArrows: true,
+                                        lines: false,
+                                        store: bindingTreeStore,
+                                        emptyText: '<div style="padding:30px;color:#aaa;text-align:center;">暂无标注</div>',
+                                        listeners: {
+                                            itemclick: function(view, record, item, index, e, eOpts) {
+                                                me.onBindingTreeItemClick(view, record);
+                                            }
+                                        }
+                                    }]
+                                }
+                            ]
                         }
                     ]
                 }
@@ -202,8 +358,448 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             Ext.defer(function() {
                 me.initCanvasSelect();
                 Ext.defer(function() { me.resetStylePanel(); }, 50, me);
+
+                Ext.defer(function() { me.fixStylePanelLayout(); }, 80, me);
+                Ext.defer(function() { me.fixStylePanelLayout(); }, 350, me);
+
+                me._bindResizeSources();
             }, 100, me);
         });
+
+        me.on('boxready', function() {
+            Ext.defer(function() { me.fixStylePanelLayout(); }, 60, me);
+        });
+
+        me.mon(me, 'resize', me._scheduleResize, me);
+    },
+
+    // ========================================================
+    // ★ 把画布切回"选择"模式
+    // ========================================================
+    resetToSelectMode: function() {
+        var me = this;
+        me.safe(function() {
+            me._userCreateType = 0;
+            if (me.cs) me.cs.createType = 0;
+
+            var btnSelect = me.down('#btnSelect');
+            var btnRect   = me.down('#btnRect');
+            var btnPoint  = me.down('#btnPoint');
+
+            if (btnSelect) {
+                try { btnSelect.toggle(true, true); } catch (e) { try { btnSelect.setPressed(true); } catch (e2) {} }
+            }
+            if (btnRect) {
+                try { btnRect.toggle(false, true); } catch (e) { try { btnRect.setPressed(false); } catch (e2) {} }
+            }
+            if (btnPoint) {
+                try { btnPoint.toggle(false, true); } catch (e) { try { btnPoint.setPressed(false); } catch (e2) {} }
+            }
+        }, 'resetToSelectMode');
+    },
+
+    // ========================================================
+    // ★ 绑定所有可能影响画布可视区域的 resize 触发源
+    // ========================================================
+    _bindResizeSources: function() {
+        var me = this;
+
+        Ext.EventManager.onWindowResize(me._scheduleResize, me);
+
+        var cfgPanel = me.down('#SceneModelConfigPanel_Id');
+        if (cfgPanel) {
+            me.mon(cfgPanel, 'resize', me._scheduleResize, me);
+        }
+
+        var east = me.down('panel[region=east]');
+        if (east) {
+            me.mon(east, 'resize', me._scheduleResize, me);
+            me.mon(east, 'collapse', function() {
+                Ext.defer(function() { me.handleResize(); }, 120, me);
+                Ext.defer(function() { me.handleResize(); }, 380, me);
+            });
+            me.mon(east, 'expand', function() {
+                Ext.defer(function() { me.handleResize(); }, 120, me);
+                Ext.defer(function() { me.handleResize(); }, 380, me);
+            });
+        }
+
+        var west = me.down('panel[region=west]');
+        if (west) {
+            me.mon(west, 'resize', me._scheduleResize, me);
+        }
+    },
+
+    _scheduleResize: function() {
+        var me = this;
+        if (me._resizeTimer) clearTimeout(me._resizeTimer);
+        me._resizeTimer = setTimeout(function() {
+            me.safe(function() { me.handleResize(); }, 'handleResize');
+        }, 120);
+    },
+
+    // ========================================================
+    // 修正右侧样式面板的首次布局
+    // ========================================================
+    fixStylePanelLayout: function() {
+        var me = this;
+        me.safe(function() {
+            var east = me.down('panel[region=east]');
+            if (!east) return;
+
+            try { east.updateLayout(); } catch (e) {}
+
+            var north = east.down('panel[region=north]');
+            if (north) {
+                try { north.updateLayout(); } catch (e) {}
+
+                var w = north.getWidth();
+                if (w && w > 10) {
+                    try { north.setWidth(w - 1); north.setWidth(w); } catch (e) {}
+                }
+
+                try {
+                    north.query('fieldset').forEach(function(fs) {
+                        try {
+                            var fw = fs.getWidth();
+                            if (fw && fw > 10) {
+                                fs.setWidth(fw - 1);
+                                fs.setWidth(fw);
+                            }
+                        } catch (e) {}
+                    });
+                } catch (e) {}
+            }
+
+            var center = east.down('panel[region=center]');
+            if (center) {
+                try { center.updateLayout(); } catch (e) {}
+            }
+        }, 'fixStylePanelLayout');
+    },
+
+    // ========================================================
+    // 尺寸变化
+    // ========================================================
+    handleResize: function() {
+        var me = this;
+        if (!me.cs) return;
+        if (me._resizing) return;
+        me._resizing = true;
+
+        try {
+            var dom = me.getCanvasEl();
+            if (!dom) return;
+
+            var rect = dom.getBoundingClientRect();
+            var cssW = Math.round(rect.width);
+            var cssH = Math.round(rect.height);
+            if (cssW < 20 || cssH < 20) return;
+
+            if (dom.tagName === 'CANVAS') {
+                if (dom.width  !== cssW) dom.width  = cssW;
+                if (dom.height !== cssH) dom.height = cssH;
+            }
+
+            if (typeof me.cs.resize === 'function') me.cs.resize();
+            if (typeof me.cs.fitZoom === 'function') me.cs.fitZoom();
+
+            // resize 后同样给一次 mouse 初始化，防止 origin 依赖未初始化字段
+            me._nudgeCanvasMouseCenter();
+
+            me.updateOriginIfNeeded(true);
+            me.scheduleRenderLabels();
+        } catch (e) {
+            console.warn('[SceneModelPanel] handleResize 失败:', e);
+        } finally {
+            me._resizing = false;
+        }
+    },
+
+    // ========================================================
+    // 统一取消选中
+    // ========================================================
+    clearSelectionUI: function() {
+        var me = this;
+        if (me._clearingSelection) return;
+        me._clearingSelection = true;
+        try {
+            me.lastSelectedUuid = null;
+
+            var tree = me.down('#bindingTree');
+            if (tree) {
+                try { tree.getSelectionModel().deselectAll(); } catch (e) {}
+            }
+
+            try { me.resetStylePanel(); } catch (e) {}
+
+            if (me.cs) {
+                try { me.cs.activeShape = null; } catch (e) {}
+                try { if ('selected' in me.cs) me.cs.selected = null; } catch (e) {}
+                try { if ('selectedShape' in me.cs) me.cs.selectedShape = null; } catch (e) {}
+                try { if ('selectedIndex' in me.cs) me.cs.selectedIndex = -1; } catch (e) {}
+                try { if ('activeIndex' in me.cs) me.cs.activeIndex = -1; } catch (e) {}
+                try { if ('hoverShape' in me.cs) me.cs.hoverShape = null; } catch (e) {}
+
+                try { me.dispatchClickOnBlank(); } catch (e) {}
+
+                try {
+                    if (typeof me.cs.draw === 'function')        me.cs.draw();
+                    else if (typeof me.cs.update === 'function') me.cs.update();
+                } catch (e) {}
+
+                var csRef = me.cs;
+                setTimeout(function() {
+                    if (!me.cs || me.cs !== csRef) return;
+                    try {
+                        try { me.cs.activeShape = null; } catch (e) {}
+                        try { if ('selected' in me.cs) me.cs.selected = null; } catch (e) {}
+                        try { if ('selectedShape' in me.cs) me.cs.selectedShape = null; } catch (e) {}
+                        if (typeof me.cs.draw === 'function')        me.cs.draw();
+                        else if (typeof me.cs.update === 'function') me.cs.update();
+                    } catch (e) {}
+                }, 30);
+            }
+
+            me.scheduleRenderLabels();
+        } finally {
+            me._clearingSelection = false;
+        }
+    },
+
+    dispatchClickOnBlank: function() {
+        var me = this;
+        var canvasEl = me.getCanvasEl();
+        if (!canvasEl) return;
+
+        var rect = canvasEl.getBoundingClientRect();
+        var clientX = rect.left + 1;
+        var clientY = rect.top + 1;
+
+        var baseProps = {
+            bubbles: true, cancelable: true, composed: true, view: window,
+            clientX: clientX, clientY: clientY,
+            screenX: clientX, screenY: clientY, button: 0
+        };
+        var pointerProps = Object.assign({}, baseProps, {
+            pointerId: 1, pointerType: 'mouse', isPrimary: true,
+            width: 1, height: 1, pressure: 0.5
+        });
+
+        try {
+            if (typeof PointerEvent !== 'undefined') {
+                canvasEl.dispatchEvent(new PointerEvent('pointerover',  Object.assign({}, pointerProps, { buttons: 0 })));
+                canvasEl.dispatchEvent(new PointerEvent('pointerenter', Object.assign({}, pointerProps, { buttons: 0 })));
+                canvasEl.dispatchEvent(new PointerEvent('pointermove',  Object.assign({}, pointerProps, { buttons: 0 })));
+                canvasEl.dispatchEvent(new PointerEvent('pointerdown',  Object.assign({}, pointerProps, { buttons: 1 })));
+                canvasEl.dispatchEvent(new PointerEvent('pointerup',    Object.assign({}, pointerProps, { buttons: 0 })));
+            }
+            canvasEl.dispatchEvent(new MouseEvent('mouseover', Object.assign({}, baseProps, { buttons: 0 })));
+            canvasEl.dispatchEvent(new MouseEvent('mousemove', Object.assign({}, baseProps, { buttons: 0 })));
+            canvasEl.dispatchEvent(new MouseEvent('mousedown', Object.assign({}, baseProps, { buttons: 1 })));
+            canvasEl.dispatchEvent(new MouseEvent('mouseup',   Object.assign({}, baseProps, { buttons: 0 })));
+            canvasEl.dispatchEvent(new MouseEvent('click',     Object.assign({}, baseProps, { buttons: 0 })));
+        } catch (e) {
+            console.warn('[SceneModelPanel] 派发空白点击失败', e);
+        }
+    },
+
+    // ========================================================
+    // 树形列表：刷新
+    // ========================================================
+    refreshBindingTree: function() {
+        var me = this;
+        var tree = me.down('#bindingTree');
+        if (!tree) return;
+
+        var store = tree.getStore();
+        if (!store) return;
+        var root = store.getRootNode ? store.getRootNode() : store.getRoot();
+        if (!root) return;
+
+        root.removeAll();
+
+        var deviceMap = {};
+        var deviceOrder = [];
+
+        me.bindingMap.forEach(function(binding, uuid) {
+            if (!binding || !binding.deviceId) return;
+
+            var devKey = String(binding.deviceId);
+            if (!deviceMap[devKey]) {
+                deviceMap[devKey] = {
+                    text: binding.deviceName || devKey,
+                    deviceId: devKey,
+                    expanded: true,
+                    leaf: false,
+                    children: []
+                };
+                deviceOrder.push(devKey);
+            }
+
+            deviceMap[devKey].children.push({
+                text: (binding.fieldLabel || binding.fieldName || uuid),
+                leaf: true,
+                uuid: uuid,
+                fieldName: binding.fieldName
+            });
+        });
+
+        deviceOrder.forEach(function(devKey) {
+            root.appendChild(deviceMap[devKey]);
+        });
+
+        if (me.lastSelectedUuid) {
+            me.selectTreeNodeByUuid(me.lastSelectedUuid);
+        }
+    },
+
+    selectTreeNodeByUuid: function(uuid) {
+        var me = this;
+        var tree = me.down('#bindingTree');
+        if (!tree || !uuid) return;
+        var store = tree.getStore();
+        var root = store.getRootNode ? store.getRootNode() : store.getRoot();
+        if (!root) return;
+
+        var found = null;
+        root.cascadeBy(function(node) {
+            if (!found && node.isLeaf() && node.get('uuid') === uuid) {
+                found = node;
+            }
+        });
+        if (found) {
+            try {
+                tree.getSelectionModel().select(found);
+                tree.ensureVisible(found);
+            } catch (e) {}
+        }
+    },
+
+    onBindingTreeItemClick: function(view, record) {
+        var me = this;
+        if (!record) return;
+
+        if (record.isLeaf()) {
+            var uuid = record.get('uuid');
+            if (!uuid) return;
+            me.selectShapeByUuid(uuid);
+        } else {
+            //me.clearSelectionUI();
+        }
+    },
+
+    // ========================================================
+    // 根据 uuid 选中形状
+    // ========================================================
+    selectShapeByUuid: function(uuid) {
+        var me = this;
+        if (!me.cs || !me.cs.dataset || !uuid) return;
+
+        try {
+            if (me.cs.createType !== 0) {
+                me.cs.createType = 0;
+                me._userCreateType = 0;
+                var btn = me.down('#btnSelect');
+                if (btn) {
+                    try { btn.toggle(true, true); }
+                    catch (e) { try { btn.setPressed(true); } catch (e2) {} }
+                }
+            }
+        } catch (e) {}
+
+        var idx = -1;
+        var shape = null;
+        for (var i = 0; i < me.cs.dataset.length; i++) {
+            if (me.cs.dataset[i].uuid === uuid) {
+                idx = i;
+                shape = me.cs.dataset[i];
+                break;
+            }
+        }
+        if (idx < 0 || !shape) return;
+
+        try { me.updateOriginIfNeeded(true); } catch (e) {}
+
+        me.onShapeSelected({ uuid: uuid, index: idx });
+
+        try { me.cs.activeShape = shape; } catch (e) {}
+
+        try { me.dispatchClickOnShape(shape); } catch (e) {}
+
+        try {
+            if (typeof me.cs.draw === 'function')        me.cs.draw();
+            else if (typeof me.cs.update === 'function') me.cs.update();
+        } catch (e) {}
+
+        me.scheduleRenderLabels();
+    },
+
+    getShapeCenterInWorld: function(shape) {
+        if (!shape || !shape.coor) return null;
+        var coor = shape.coor;
+        var t = shape.type;
+
+        if (t === 1) {
+            var a = coor[0], b = coor[1];
+            if (!Ext.isArray(a) || !Ext.isArray(b)) return null;
+            return { x: (a[0] + b[0]) / 2, y: (a[1] + b[1]) / 2 };
+        }
+        if (t === 3 || t === 5) {
+            return { x: coor[0], y: coor[1] };
+        }
+        if (t === 2 || t === 4) {
+            var sx = 0, sy = 0;
+            for (var i = 0; i < coor.length; i++) { sx += coor[i][0]; sy += coor[i][1]; }
+            return { x: sx / coor.length, y: sy / coor.length };
+        }
+        return null;
+    },
+
+    dispatchClickOnShape: function(shape) {
+        var me = this;
+        if (!me.cs || !shape) return;
+        if (!me.cachedOrigin.ready) return;
+
+        var canvasEl = me.getCanvasEl();
+        if (!canvasEl) return;
+
+        var center = me.getShapeCenterInWorld(shape);
+        if (!center) return;
+
+        var screenX = me.cachedOrigin.x + center.x * me.cachedOrigin.scale;
+        var screenY = me.cachedOrigin.y + center.y * me.cachedOrigin.scale;
+
+        var rect = canvasEl.getBoundingClientRect();
+        var clientX = rect.left + screenX;
+        var clientY = rect.top  + screenY;
+
+        var baseProps = {
+            bubbles: true, cancelable: true, composed: true, view: window,
+            clientX: clientX, clientY: clientY,
+            screenX: clientX, screenY: clientY, button: 0
+        };
+        var pointerProps = Object.assign({}, baseProps, {
+            pointerId: 1, pointerType: 'mouse', isPrimary: true,
+            width: 1, height: 1, pressure: 0.5
+        });
+
+        try {
+            if (typeof PointerEvent !== 'undefined') {
+                canvasEl.dispatchEvent(new PointerEvent('pointerover',  Object.assign({}, pointerProps, { buttons: 0 })));
+                canvasEl.dispatchEvent(new PointerEvent('pointerenter', Object.assign({}, pointerProps, { buttons: 0 })));
+                canvasEl.dispatchEvent(new PointerEvent('pointermove',  Object.assign({}, pointerProps, { buttons: 0 })));
+                canvasEl.dispatchEvent(new PointerEvent('pointerdown',  Object.assign({}, pointerProps, { buttons: 1 })));
+                canvasEl.dispatchEvent(new PointerEvent('pointerup',    Object.assign({}, pointerProps, { buttons: 0 })));
+            }
+            canvasEl.dispatchEvent(new MouseEvent('mouseover', Object.assign({}, baseProps, { buttons: 0 })));
+            canvasEl.dispatchEvent(new MouseEvent('mousemove', Object.assign({}, baseProps, { buttons: 0 })));
+            canvasEl.dispatchEvent(new MouseEvent('mousedown', Object.assign({}, baseProps, { buttons: 1 })));
+            canvasEl.dispatchEvent(new MouseEvent('mouseup',   Object.assign({}, baseProps, { buttons: 0 })));
+            canvasEl.dispatchEvent(new MouseEvent('click',     Object.assign({}, baseProps, { buttons: 0 })));
+        } catch (e) {
+            console.warn('[SceneModelPanel] 事件派发失败', e);
+        }
     },
 
     // ========================================================
@@ -315,9 +911,14 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         var me = this;
         if (!me.cs) return;
         var data = Ext.isArray(shapes) ? shapes : [];
-        var newKey = data.map(function(s) { return s.uuid || ''; }).join('|');
+
+        var newKey;
+        try { newKey = JSON.stringify(data); }
+        catch (e) { newKey = data.map(function(s) { return s.uuid || ''; }).join('|'); }
+
         if (newKey === me._lastDataKey) return;
         me._lastDataKey = newKey;
+
         try { me.cs.setData(data); }
         catch (e) {
             me._lastDataKey = null;
@@ -329,8 +930,20 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         var me = this;
         if (!me.cs || me._rebuilding) return;
         if (!url) url = me.BLANK_IMAGE;
+
+        // ★ 关键修复：用户一选中，立即同步记录 imageUrl
+        //   不再等 probe.onload 异步回调；即便 SVG 加载 onerror 也不会丢
+        me.imageUrl = url;
+
+        if (url === me.BLANK_IMAGE) {
+            me.imageUrl = '';
+            me.rebuildCanvasSelect();
+            return;
+        }
+
+        // 已加载过相同图片 → 直接返回（但上面已经同步 imageUrl，是安全的）
         if (url === me._canvasCurrentUrl) return;
-        if (url === me.BLANK_IMAGE) { me.imageUrl = ''; me.rebuildCanvasSelect(); return; }
+
         if (me._settingImage) return;
         me._settingImage = true;
 
@@ -340,17 +953,21 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             if (!me.cs) return;
             try {
                 me.cs.setImage(url);
-                me.imageUrl = url;
                 me._canvasCurrentUrl = url;
+                // me.imageUrl 已在前面同步设置，这里不再重复赋值
             } catch (e) {
-                me.imageUrl = '';
+                // 内部渲染异常时保留 imageUrl，交给用户重新选图
                 me._canvasCurrentUrl = null;
                 me.rebuildCanvasSelect();
             }
         };
         probe.onerror = function() {
             me._settingImage = false;
-            me.imageUrl = '';
+            // ★ 只有当前 imageUrl 仍然是这个失败的 url 时才清空
+            //   避免并发情况下把新选的图片 url 误清
+            if (me.imageUrl === url) {
+                me.imageUrl = '';
+            }
             me._canvasCurrentUrl = null;
             me.rebuildCanvasSelect();
         };
@@ -362,7 +979,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         if (me._rebuilding) return;
         me._rebuilding = true;
         try {
-            if (me.originTimer) { clearInterval(me.originTimer); me.originTimer = null; }
+            me.stopOriginTimer();
             try {
                 if (me.cs) {
                     if (typeof me.cs.destroy === 'function')      me.cs.destroy();
@@ -395,12 +1012,16 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         }
     },
 
+    // ========================================================
+    // ★ 初始化 canvas-select
+    // ========================================================
     initCanvasSelect: function() {
         var me = this;
         var canvasCmp = me.down('#canvas');
         var layerCmp = me.down('#labelLayer');
         if (!canvasCmp || !layerCmp) return;
-        if (me.originTimer) { clearInterval(me.originTimer); me.originTimer = null; }
+
+        me.stopOriginTimer();
         try { if (me.cs && typeof me.cs.destroy === 'function') me.cs.destroy(); } catch (e) {}
         me.cs = null;
 
@@ -416,53 +1037,145 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         me.cs.scrollZoom = true;
         me.cs.hideLabel = true;
 
-        me.cs.on('load', function() { me.updateOriginIfNeeded(true); me.scheduleRenderLabels(); });
-        me.cs.on('add', function(info) { me.onShapeAdded(info); });
-        me.cs.on('select', function(info) { me.onShapeSelected(info); });
-        me.cs.on('updated', function() { me.scheduleRenderLabels(); });
-        me.cs.on('coor', function() { me.scheduleRenderLabels(); });
+        // ★ 关键改动：load 事件里主动 nudge 一次鼠标，触发 canvas-select 内部初始化
+        me.cs.on('load', function() {
+            try { if (typeof me.cs.fitZoom === 'function') me.cs.fitZoom(); }
+            catch (e) { console.warn('[SceneModelPanel] load fitZoom 失败', e); }
+
+            me.enforceReadOnly();
+
+            // 关键：让库内部完成 mouse/position 初始化
+            me._nudgeCanvasMouseCenter();
+
+            me.updateOriginIfNeeded(true);
+            me.scheduleRenderLabels();
+
+            // 兜底：延时再适应一次，应对异步渲染
+            Ext.defer(function() {
+                if (!me.cs) return;
+                me._nudgeCanvasMouseCenter();
+                me.updateOriginIfNeeded(true);
+                me.scheduleRenderLabels();
+            }, 150, me);
+        });
+
+        me.cs.on('add',     function(info) { me.onShapeAdded(info); });
+
+        me.cs.on('select',  function(info) {
+            if (me._clearingSelection) return;
+            var uuid = me.extractUuid(info);
+            if (!uuid) {
+                if (me.lastSelectedUuid) me.clearSelectionUI();
+            } else {
+                me.onShapeSelected(info);
+            }
+        });
+
+        me.cs.on('delete',  function(info) { me.onShapeDeleted(info); });
+        me.cs.on('updated', function()     { me.scheduleRenderLabels(); me.refreshBindingTree(); });
+        me.cs.on('coor',    function()     { me.scheduleRenderLabels(); });
+
+        canvasEl.addEventListener('click', function() {
+            if (!me.cs || me.cs.createType !== 0) return;
+            setTimeout(function() {
+                if (!me.cs || me.cs.createType !== 0) return;
+                if (me._clearingSelection) return;
+                var active = me.cs.activeShape;
+                if (!active && me.lastSelectedUuid) {
+                    me.clearSelectionUI();
+                }
+            }, 50);
+        });
 
         canvasEl.addEventListener('dblclick', function() {
             if (me.cs.createType !== 0) return;
             var info = me.cs.activeShape;
             if (info) {
                 var uuid = me.extractUuid(info);
-                if (uuid) me.openDataSourceWindow(uuid);
+                if (uuid) me.openDataSourceWindow(uuid, true);
             }
         });
 
-        me.originTimer = setInterval(function() {
-            if (me.updateOriginIfNeeded()) me.scheduleRenderLabels();
-        }, 60);
+        me.startOriginTimer();
+
+        if (me._visibilityHandler) {
+            try { document.removeEventListener('visibilitychange', me._visibilityHandler); } catch (e) {}
+            me._visibilityHandler = null;
+        }
+        me._visibilityHandler = function() {
+            if (document.hidden) {
+                me.stopOriginTimer();
+            } else {
+                me.startOriginTimer();
+                if (me.cs) {
+                    me.updateOriginIfNeeded(true);
+                    me.scheduleRenderLabels();
+                }
+            }
+        };
+        document.addEventListener('visibilitychange', me._visibilityHandler);
+    },
+
+    // ========================================================
+    // 强制只读
+    // ========================================================
+    enforceReadOnly: function() {
+        var me = this;
+        if (!me.cs) return;
+        try { me.cs.drag = false; }     catch (e) {}
+        try { me.cs.readonly = true; }  catch (e) {}
+        try { me.cs.locked = true; }    catch (e) {}
+        try {
+            if (Ext.isArray(me.cs.dataset)) {
+                me.cs.dataset.forEach(function(s) {
+                    if (!s) return;
+                    s.drag = false;
+                    s.locked = true;
+                    s.readonly = true;
+                });
+            }
+        } catch (e) {}
     },
 
     onShapeAdded: function(info) {
         var me = this;
         var uuid = me.extractUuid(info);
         if (!uuid) return;
+
         me.userColorMap.set(uuid, me.globalStyle.strokeStyle || '#00FF00');
         me.userLineWidthMap.set(uuid, me.globalStyle.lineWidth != null ? me.globalStyle.lineWidth : 1);
-        try {
-            var shapes = me.cs.dataset;
-            for (var i = 0; i < shapes.length; i++) {
-                if (shapes[i].uuid === uuid) {
-                    shapes[i]._userStrokeStyle = me.globalStyle.strokeStyle || '#00FF00';
-                    shapes[i]._userLineWidth = me.globalStyle.lineWidth != null ? me.globalStyle.lineWidth : 1;
-                    if (shapes[i].type === 3) {
-                        var r = (me.cs && me.cs.ctrlRadius != null) ? me.cs.ctrlRadius
-                              : (me.globalStyle.ctrlRadius != null ? me.globalStyle.ctrlRadius : 3);
-                        shapes[i].ctrlRadius = r;
-                        shapes[i]._userCtrlRadius = r;
-                    }
-                    break;
-                }
-            }
-        } catch (e) {}
+
         Ext.defer(function() { me.openDataSourceWindow(uuid, false); }, 30);
+    },
+
+    onShapeDeleted: function(info) {
+        var me = this;
+
+        var uuid = null;
+        if (info) {
+            if (info.uuid)         uuid = info.uuid;
+            else if (info.oldUuid) uuid = info.oldUuid;
+        }
+
+        if (uuid) {
+            me.bindingMap.delete(uuid);
+            me.labelStyleMap.delete(uuid);
+            me.userColorMap.delete(uuid);
+            me.userLineWidthMap.delete(uuid);
+            if (me.lastSelectedUuid === uuid) {
+                me.lastSelectedUuid = null;
+                try { me.resetStylePanel(); } catch (e) {}
+            }
+        }
+
+        me.refreshBindingTree();
+        me.scheduleRenderLabels();
     },
 
     onShapeSelected: function(info) {
         var me = this;
+        if (!me.cs || !me.cs.dataset) return;
+
         var uuid = me.extractUuid(info);
         if (!uuid) return;
         me.lastSelectedUuid = uuid;
@@ -483,38 +1196,45 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         if (userLw == null) userLw = shape._userLineWidth != null ? shape._userLineWidth
                               : (shape.lineWidth != null ? shape.lineWidth : 1);
 
-        me.setColorFieldValue('strokeStyle', userColor, 100);
-        me.setColorFieldValue('fillStyle', fillParts.hex, fillParts.alpha);
-
-        var lwField = panel.down('#lineWidth');
-        if (lwField) lwField.setValue(userLw);
-
-        // ★ 点类型：面板显示的值 = canvas-select 实际绘制用的全局 ctrlRadius
         var crVal;
         if (shape.type === 3) {
             crVal = me.cs.ctrlRadius != null ? me.cs.ctrlRadius : 3;
         } else {
             crVal = shape.ctrlRadius != null ? shape.ctrlRadius : 3;
         }
-        var crField = panel.down('#ctrlRadius');
-        if (crField) crField.setValue(crVal);
 
-        var labelStyle = me.labelStyleMap.get(uuid) || me.defaultLabelStyle || {};
-        me.setColorFieldValue('labelBg', labelStyle.bgColor || '#4A6CF7',
-            labelStyle.bgOpacity != null ? labelStyle.bgOpacity : 100);
-        me.setColorFieldValue('labelText', labelStyle.textColor || '#FFFFFF', 100);
+        me._suppressStyleChange = true;
+        try {
+            me.setColorFieldValue('strokeStyle', userColor, 100);
+            me.setColorFieldValue('fillStyle', fillParts.hex, fillParts.alpha);
 
-        var fontField = panel.down('#labelFont');
-        if (fontField) fontField.setValue(labelStyle.font || '12px');
+            var lwField = panel.down('#lineWidth');
+            if (lwField) lwField.setValue(userLw);
 
-        var hideDevField = panel.down('#hideDeviceName');
-        if (hideDevField) hideDevField.setValue(labelStyle.hideDeviceName !== false);
+            var crField = panel.down('#ctrlRadius');
+            if (crField) crField.setValue(crVal);
 
-        var hideField = panel.down('#hideLabel');
-        if (hideField) hideField.setValue(!!labelStyle.hide);
+            var labelStyle = me.labelStyleMap.get(uuid) || me.defaultLabelStyle || {};
+            me.setColorFieldValue('labelBg', labelStyle.bgColor || '#4A6CF7',
+                labelStyle.bgOpacity != null ? labelStyle.bgOpacity : 100);
+            me.setColorFieldValue('labelText', labelStyle.textColor || '#FFFFFF', 100);
 
-        var upField = panel.down('#labelUp');
-        if (upField) upField.setValue(labelStyle.up !== false);
+            var fontField = panel.down('#labelFont');
+            if (fontField) fontField.setValue(labelStyle.font || '12px');
+
+            var hideDevField = panel.down('#hideDeviceName');
+            if (hideDevField) hideDevField.setValue(labelStyle.hideDeviceName !== false);
+
+            var hideField = panel.down('#hideLabel');
+            if (hideField) hideField.setValue(!!labelStyle.hide);
+
+            var upField = panel.down('#labelUp');
+            if (upField) upField.setValue(labelStyle.up !== false);
+        } finally {
+            me._suppressStyleChange = false;
+        }
+
+        me.selectTreeNodeByUuid(uuid);
     },
 
     afterZoom: function() {
@@ -545,6 +1265,8 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                       handler: function() {
                           imageStore.reload({ callback: function() {
                               win.allImages = imageStore.getRange().map(function(r) { return r.getData(); });
+                              // ★ 刷新后也恢复选中当前图片
+                              Ext.defer(function() { win.selectCurrentImage(); }, 50);
                           }});
                       } }
                 ],
@@ -579,26 +1301,68 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                     win.doSelect(sel[0].get('url'));
                 }}
             ],
+
+            // ========================================================
+            // ★ 新增：默认选中当前配置的图片
+            // --------------------------------------------------------
+            // 打开窗口后，根据 me.imageUrl 在 store 里找到对应 record，
+            // 选中它并滚动到可见区域，让用户一眼看到当前配置的是哪张图。
+            // ========================================================
+            selectCurrentImage: function() {
+                var view = this.down('[itemId=imageView]');
+                if (!view) return;
+                var store = view.getStore();
+                if (!store || store.getCount() === 0) return;
+
+                var currentUrl = me.imageUrl || '';
+                if (!currentUrl) return;   // 无当前图片 → 不选中任何
+
+                // 在 store 中查找 url 匹配的 record
+                var matched = null;
+                store.each(function(rec) {
+                    if (rec.get('url') === currentUrl) {
+                        matched = rec;
+                        return false;   // 停止遍历
+                    }
+                });
+                if (!matched) return;
+
+                // 选中 + 滚动到可见
+                try {
+                    view.getSelectionModel().select(matched);
+                    view.ensureVisible(matched);
+                } catch (e) {}
+            },
+
             filterImages: function(keyword) {
                 var view = this.down('[itemId=imageView]');
                 var allData = this.allImages || [];
                 view.getStore().removeAll();
-                if (!keyword) { view.getStore().add(allData); return; }
+                if (!keyword) {
+                    view.getStore().add(allData);
+                    // ★ 无关键字过滤后，恢复选中当前图片
+                    Ext.defer(function() { win.selectCurrentImage(); }, 30);
+                    return;
+                }
                 var filtered = allData.filter(function(item) {
                     return item.name.toLowerCase().indexOf(keyword.toLowerCase()) >= 0;
                 });
                 view.getStore().add(filtered);
+                // ★ 过滤后也尝试恢复选中（当前图片若被过滤掉则不会选中，符合预期）
+                Ext.defer(function() { win.selectCurrentImage(); }, 30);
             },
+
             doSelect: function(url) {
                 me.setCanvasImage(url);
                 if (me.currentRecord) {
                     var cfg = me.readRecordConfig(me.currentRecord);
-                    cfg.imageUrl = me.imageUrl;
+                    cfg.imageUrl = url;
                     cfg.imageSource = 'server';
                     me.writeRecordConfig(me.currentRecord, cfg);
                 }
                 win.close();
             },
+
             doUpload: function() {
                 var input = document.createElement('input');
                 input.type = 'file'; input.accept = 'image/*,.svg';
@@ -619,6 +1383,8 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                                 Ext.Msg.alert(loginUserLanguageResource.tip, '上传成功');
                                 imageStore.reload({ callback: function() {
                                     win.allImages = imageStore.getRange().map(function(r) { return r.getData(); });
+                                    // ★ 上传成功后也恢复选中
+                                    Ext.defer(function() { win.selectCurrentImage(); }, 50);
                                 }});
                             } else { Ext.Msg.alert('失败', result.message || '上传失败'); }
                         },
@@ -629,9 +1395,24 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             }
         });
 
+        // ========================================================
+        // ★ store 加载完成后，自动选中当前配置的图片
+        // --------------------------------------------------------
+        // store 与 window 谁先就绪不确定，所以两边各挂一次：
+        //   1) store.on('load') → 窗口已渲染就立即选中
+        //   2) win.on('show')   → 窗口已显示后也尝试一次
+        // ========================================================
         imageStore.on('load', function(store) {
             win.allImages = store.getRange().map(function(r) { return r.getData(); });
+            if (win.rendered) {
+                Ext.defer(function() { win.selectCurrentImage(); }, 50);
+            }
         });
+
+        win.on('show', function() {
+            Ext.defer(function() { win.selectCurrentImage(); }, 100);
+        });
+
         win.show();
     },
 
@@ -656,14 +1437,17 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                     try { result = Ext.decode(resp.responseText); }
                     catch (err) { Ext.Msg.alert('错误', '服务器返回数据异常'); return; }
                     if (!result.success) { Ext.Msg.alert('失败', result.message || '上传失败'); return; }
+                    
                     me.setCanvasImage(result.imageUrl);
                     if (targetRecord) {
                         var cfg = me.readRecordConfig(targetRecord);
                         if (!Ext.isArray(cfg.shapes)) cfg.shapes = [];
-                        cfg.imageUrl = me.imageUrl;
+                        // ★ 直接用服务器返回的 imageUrl
+                        cfg.imageUrl = result.imageUrl;
                         cfg.imageSource = 'uploaded';
                         me.writeRecordConfig(targetRecord, cfg);
                     }
+                    
                     Ext.Msg.alert(loginUserLanguageResource.tip, '上传成功');
                 },
                 failure: function() { Ext.MessageBox.hide(); Ext.Msg.alert('错误', '上传失败'); }
@@ -723,6 +1507,9 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         });
     },
 
+    // ========================================================
+    // 数据源绑定窗口
+    // ========================================================
     openDataSourceWindow: function(uuid, isEdit) {
         var me = this;
         if (!uuid) return;
@@ -756,16 +1543,35 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 if (!me.labelStyleMap.has(uuid)) {
                     me.labelStyleMap.set(uuid, Ext.apply({}, me.defaultLabelStyle));
                 }
+                me.refreshBindingTree();
                 me.scheduleRenderLabels();
+
+                Ext.defer(function() {
+                    me.safe(function() {
+                        if (isEdit) {
+                            me.selectShapeByUuid(uuid);
+                        } else {
+                            if (me.cs) {
+                                me.cs.createType = me._userCreateType;
+                                var btnId = (me._userCreateType === 1) ? 'btnRect'
+                                          : (me._userCreateType === 3) ? 'btnPoint'
+                                          : 'btnSelect';
+                                var btn = me.down('#' + btnId);
+                                if (btn) {
+                                    try { btn.toggle(true, true); } catch (e) {}
+                                }
+                            }
+                            me.scheduleRenderLabels();
+                        }
+                    }, 'onConfirm 后处理');
+                }, 100);
             }
         }).show();
     },
 
-    // ========================================================
-    // 图形样式变更
-    // ========================================================
     onGraphicStyleChange: function() {
         var me = this;
+        if (me._suppressStyleChange) return;
         if (!me.cs) return;
         var panel = me.down('panel[region=east]');
         if (!panel) return;
@@ -786,7 +1592,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         var canvasStroke = (lineWidth <= 0) ? me.TRANSPARENT_STROKE : strokeStyle;
         var canvasLw = (lineWidth <= 0) ? 1 : lineWidth;
 
-        if (me.lastSelectedUuid && me.cs) {
+        if (me.lastSelectedUuid && me.cs && me.cs.dataset) {
             var idx = -1;
             for (var i = 0; i < me.cs.dataset.length; i++) {
                 if (me.cs.dataset[i].uuid === me.lastSelectedUuid) { idx = i; break; }
@@ -799,14 +1605,13 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 shape.strokeStyle = canvasStroke;
                 shape.lineWidth = canvasLw;
                 shape.fillStyle = fillStyle;
-                shape.ctrlRadius = ctrlRadius;
                 shape._userStrokeStyle = strokeStyle;
                 shape._userLineWidth = lineWidth;
 
-                // ★★★ 点类型：canvas-select 用全局 ctrlRadius 渲染，必须同步
                 if (shape.type === 3) {
-                    shape._userCtrlRadius = ctrlRadius;
                     me.cs.ctrlRadius = ctrlRadius;
+                } else {
+                    shape.ctrlRadius = ctrlRadius;
                 }
 
                 me._lastDataKey = null;
@@ -816,7 +1621,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 requestAnimationFrame(function() {
                     try {
                         if (me.cs) {
-                            try { me.cs.activeShape = { index: idx }; } catch (e) {}
+                            try { me.cs.activeShape = me.cs.dataset[idx]; } catch (e) {}
                             try { if (typeof me.cs.update === 'function') me.cs.update(); } catch (e) {}
                         }
                     } catch (e) {}
@@ -841,6 +1646,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
 
     onLabelStyleChange: function() {
         var me = this;
+        if (me._suppressStyleChange) return;
         if (!me.cs) return;
         var panel = me.down('panel[region=east]');
         if (!panel) return;
@@ -907,7 +1713,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     renderLabels: function() {
         var me = this;
         var layer = me.labelLayer;
-        if (!layer || !me.cachedOrigin.ready || !me.cs) return;
+        if (!layer || !me.cachedOrigin.ready || !me.cs || !me.cs.dataset) return;
 
         var origin = me.cachedOrigin;
         var existing = {};
@@ -973,7 +1779,6 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             return { x: (a[0] + b[0]) / 2, y: Math.min(a[1], b[1]) };
         }
         if (shape.type === 3) {
-            // ★ 点锚点距离 = canvas-select 实际绘制用的全局 ctrlRadius
             var r = (this.cs && this.cs.ctrlRadius != null) ? this.cs.ctrlRadius
                   : (shape.ctrlRadius != null ? shape.ctrlRadius
                   : ((this.globalStyle && this.globalStyle.ctrlRadius) || 3));
@@ -987,9 +1792,15 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         return null;
     },
 
+    // ========================================================
+    // 加载场景
+    // ========================================================
     loadScene: function(record) {
         var me = this;
         if (!me.cs) { Ext.defer(function() { me.loadScene(record); }, 100, me); return; }
+
+        me.resetToSelectMode();
+
         if (!record) { me.currentRecord = null; me.clearScene(); return; }
         me.currentRecord = record;
         me.clearScene();
@@ -1031,6 +1842,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         me.resetStylePanel();
         if (me.cs) me.safeSetData([]);
         if (me.labelLayer) me.labelLayer.innerHTML = '';
+        me.refreshBindingTree();
     },
 
     resetStylePanel: function() {
@@ -1039,34 +1851,38 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             var panel = me.down('panel[region=east]');
             if (!panel) return;
 
-            me.setColorFieldValue('strokeStyle', '#00FF00', 100);
-            me.setColorFieldValue('fillStyle',   '#0000FF', 25);
+            me._suppressStyleChange = true;
+            try {
+                me.setColorFieldValue('strokeStyle', '#00FF00', 100);
+                me.setColorFieldValue('fillStyle',   '#0000FF', 25);
 
-            var lwField = panel.down('#lineWidth');
-            if (lwField) lwField.setValue(1);
-            var crField = panel.down('#ctrlRadius');
-            if (crField) crField.setValue(3);
+                var lwField = panel.down('#lineWidth');
+                if (lwField) lwField.setValue(1);
+                var crField = panel.down('#ctrlRadius');
+                if (crField) crField.setValue(3);
 
-            if (me.cs) me.cs.ctrlRadius = 3;
+                if (me.cs) me.cs.ctrlRadius = 3;
 
-            var fontField = panel.down('#labelFont');
-            if (fontField) fontField.setValue('12px');
+                var fontField = panel.down('#labelFont');
+                if (fontField) fontField.setValue('12px');
 
-            me.setColorFieldValue('labelBg',   '#4A6CF7', 100);
-            me.setColorFieldValue('labelText', '#FFFFFF', 100);
+                me.setColorFieldValue('labelBg',   '#4A6CF7', 100);
+                me.setColorFieldValue('labelText', '#FFFFFF', 100);
 
-            var hideDevField = panel.down('#hideDeviceName');
-            if (hideDevField) hideDevField.setValue(true);
-            var hideField = panel.down('#hideLabel');
-            if (hideField) hideField.setValue(false);
-            var upField = panel.down('#labelUp');
-            if (upField) upField.setValue(true);
-        } catch (e) {}
+                var hideDevField = panel.down('#hideDeviceName');
+                if (hideDevField) hideDevField.setValue(true);
+                var hideField = panel.down('#hideLabel');
+                if (hideField) hideField.setValue(false);
+                var upField = panel.down('#labelUp');
+                if (upField) upField.setValue(true);
+            } finally {
+                me._suppressStyleChange = false;
+            }
+        } catch (e) {
+            me._suppressStyleChange = false;
+        }
     },
 
-    // ========================================================
-    // 用 config 渲染（★ 本次修复重点：从 shapes 提取点半径同步到全局 ctrlRadius）
-    // ========================================================
     renderSceneConfig: function(cfg) {
         var me = this;
         if (!cfg) cfg = { imageUrl: '', shapes: [] };
@@ -1076,9 +1892,6 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
 
         try { me.syncStylePanelFromState(); } catch (e) {}
 
-        // ★★★ 关键修复：从 shapes 中提取点半径，同步到 canvas-select 的全局 ctrlRadius
-        //   canvas-select 绘制 type=3 的点时，半径用的是 this.ctrlRadius（全局），
-        //   而不是 shape.ctrlRadius。所以必须从持久化的数据里恢复这个全局值。
         var pointRadius = null;
         (cfg.shapes || []).forEach(function(s) {
             var tt = parseInt(s.type, 10);
@@ -1091,8 +1904,6 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         if (pointRadius != null && me.cs) {
             me.cs.ctrlRadius = pointRadius;
             me.globalStyle.ctrlRadius = pointRadius;
-            // 同步 UI 面板（不触发 loop：setValue 会走 onGraphicStyleChange 的"无选中"分支，
-            // 那里写入的也是同一个值，幂等）
             var panel = me.down('panel[region=east]');
             if (panel) {
                 var crField = panel.down('#ctrlRadius');
@@ -1167,10 +1978,22 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         me._lastDataKey = null;
         me.safeSetData(pureShapes);
 
+        me.refreshBindingTree();
+
+        // ★ 加载完成后：派发一次鼠标移动到画布中心，让 canvas-select 内部初始化
+        //   然后计算 origin、重绘标签；并延时兜底再适应一次
         Ext.defer(function() {
+            me._nudgeCanvasMouseCenter();
             me.updateOriginIfNeeded(true);
             me.scheduleRenderLabels();
-        }, 100);
+
+            Ext.defer(function() {
+                if (!me.cs) return;
+                me._nudgeCanvasMouseCenter();
+                me.updateOriginIfNeeded(true);
+                me.scheduleRenderLabels();
+            }, 200, me);
+        }, 100, me);
     },
 
     syncStylePanelFromState: function() {
@@ -1179,38 +2002,46 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             var gs = me.globalStyle || {};
             var ls = me.defaultLabelStyle || {};
 
-            me.setColorFieldValue('strokeStyle', gs.strokeStyle || '#00FF00', 100);
-            me.setColorFieldValue('fillStyle',   gs.fillColor   || '#0000FF',
-                gs.fillOpacity != null ? gs.fillOpacity : 25);
-            me.setColorFieldValue('labelBg',     ls.bgColor     || '#4A6CF7',
-                ls.bgOpacity != null ? ls.bgOpacity : 100);
-            me.setColorFieldValue('labelText',   ls.textColor   || '#FFFFFF', 100);
+            me._suppressStyleChange = true;
+            try {
+                me.setColorFieldValue('strokeStyle', gs.strokeStyle || '#00FF00', 100);
+                me.setColorFieldValue('fillStyle',   gs.fillColor   || '#0000FF',
+                    gs.fillOpacity != null ? gs.fillOpacity : 25);
+                me.setColorFieldValue('labelBg',     ls.bgColor     || '#4A6CF7',
+                    ls.bgOpacity != null ? ls.bgOpacity : 100);
+                me.setColorFieldValue('labelText',   ls.textColor   || '#FFFFFF', 100);
 
-            var panel = me.down('panel[region=east]');
-            if (panel) {
-                var lwField = panel.down('#lineWidth');
-                if (lwField) lwField.setValue(gs.lineWidth != null ? gs.lineWidth : 1);
-                var crField = panel.down('#ctrlRadius');
-                if (crField) crField.setValue(gs.ctrlRadius != null ? gs.ctrlRadius : 3);
-                var fontField = panel.down('#labelFont');
-                if (fontField) fontField.setValue(ls.font || '12px');
-                var hideDevField = panel.down('#hideDeviceName');
-                if (hideDevField) hideDevField.setValue(ls.hideDeviceName !== false);
-                var hideField = panel.down('#hideLabel');
-                if (hideField) hideField.setValue(!!ls.hide);
-                var upField = panel.down('#labelUp');
-                if (upField) upField.setValue(ls.up !== false);
+                var panel = me.down('panel[region=east]');
+                if (panel) {
+                    var lwField = panel.down('#lineWidth');
+                    if (lwField) lwField.setValue(gs.lineWidth != null ? gs.lineWidth : 1);
+                    var crField = panel.down('#ctrlRadius');
+                    if (crField) crField.setValue(gs.ctrlRadius != null ? gs.ctrlRadius : 3);
+                    var fontField = panel.down('#labelFont');
+                    if (fontField) fontField.setValue(ls.font || '12px');
+                    var hideDevField = panel.down('#hideDeviceName');
+                    if (hideDevField) hideDevField.setValue(ls.hideDeviceName !== false);
+                    var hideField = panel.down('#hideLabel');
+                    if (hideField) hideField.setValue(!!ls.hide);
+                    var upField = panel.down('#labelUp');
+                    if (upField) upField.setValue(ls.up !== false);
+                }
+            } finally {
+                me._suppressStyleChange = false;
             }
-        } catch (e) {}
+        } catch (e) {
+            me._suppressStyleChange = false;
+        }
     },
 
     getConfig: function() {
         var me = this;
+        var dataset = (me.cs && me.cs.dataset) ? me.cs.dataset : [];
         return {
             imageUrl: me.imageUrl || '',
             defaultLabelStyle: Ext.apply({}, me.defaultLabelStyle),
             globalStyle: Ext.apply({}, me.globalStyle),
-            shapes: me.cs ? me.cs.dataset.map(function(s) {
+            shapes: dataset.map(function(s) {
                 var binding = me.bindingMap.get(s.uuid) || {};
                 var labelStyle = me.labelStyleMap.get(s.uuid) || me.defaultLabelStyle;
 
@@ -1223,7 +2054,6 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 if (userLw == null) userLw = (s._userLineWidth != null ? s._userLineWidth
                                             : (s.lineWidth != null ? s.lineWidth : 1));
 
-                // 点半径：全局（canvas-select 限制）
                 var cr;
                 if (s.type === 3) {
                     cr = (me.cs && me.cs.ctrlRadius != null) ? me.cs.ctrlRadius : 3;
@@ -1241,7 +2071,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                     unit: binding.unit, dataSource: binding.dataSource,
                     currentValue: binding.currentValue
                 };
-            }) : []
+            })
         };
     },
 
@@ -1257,6 +2087,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         me.resetStylePanel();
         if (me.cs) me.safeSetData([]);
         if (me.labelLayer) me.labelLayer.innerHTML = '';
+        me.refreshBindingTree();
     },
 
     onCreateScene: function() {
@@ -1404,7 +2235,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     extractUuid: function(info) {
         if (!info) return null;
         if (info.uuid) return info.uuid;
-        if (info.index !== undefined && this.cs.dataset[info.index]) {
+        if (info.index !== undefined && this.cs && this.cs.dataset && this.cs.dataset[info.index]) {
             return this.cs.dataset[info.index].uuid;
         }
         return null;
@@ -1430,9 +2261,23 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         return { hex: '#0000FF', alpha: 25 };
     },
 
+    // ========================================================
+    // ★ beforeDestroy
+    // ========================================================
     beforeDestroy: function() {
-        if (this.originTimer) { clearInterval(this.originTimer); this.originTimer = null; }
+        if (this._originTimer) { clearInterval(this._originTimer); this._originTimer = null; }
+        if (this._resizeTimer) { clearTimeout(this._resizeTimer); this._resizeTimer = null; }
+
+        try { Ext.EventManager.removeResizeListener(this._scheduleResize, this); } catch (e) {}
+
+        if (this._visibilityHandler) {
+            try { document.removeEventListener('visibilitychange', this._visibilityHandler); } catch (e) {}
+            this._visibilityHandler = null;
+        }
+
         try { if (this.cs && typeof this.cs.destroy === 'function') this.cs.destroy(); } catch (e) {}
+        this.cs = null;
+
         this.callParent(arguments);
     }
 });

@@ -9,6 +9,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
 
     deviceId: null,
     deviceName: null,
+    // 由 CreateDeviceSceneModel 传入，双击时随 cellInfo 一起给窗口
+    calculateType: 0,
 
     cs: null,
     labelLayer: null,
@@ -18,6 +20,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
     labelStyleMap: null,
     userColorMap: null,
     userLineWidthMap: null,
+
+    // 报警配色（来自后端 alarmShowStyle）
+    alarmShowStyle: null,
+
     defaultLabelStyle: {
         font: '12px', bgColor: '#4A6CF7', bgOpacity: 100,
         textColor: '#FFFFFF', hide: false, hideDeviceName: true, up: true
@@ -34,8 +40,89 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
     _rebuilding: false,
     _resizing: false,
     _resizeTimer: null,
+    _originTimer: null,
+    _visibilityHandler: null,
 
     BLANK_IMAGE: context + '/sceneModelController/getSceneImage?name=__blank__.svg&_v=2',
+
+    // ========================================================
+    // 工具：统一的安全调用包装
+    // ========================================================
+    safe: function(fn, label) {
+        try { return fn(); }
+        catch (e) {
+            if (label) console.warn('[RealtimeSceneModelPanel] ' + label + ':', e);
+        }
+    },
+
+    // ========================================================
+    // 工具：统一获取真实的 canvas DOM
+    // ========================================================
+    getCanvasEl: function() {
+        var me = this;
+        if (me.cs && me.cs.canvas && me.cs.canvas.tagName === 'CANVAS') {
+            return me.cs.canvas;
+        }
+        var canvasCmp = me.down('#canvas');
+        if (canvasCmp && canvasCmp.el && canvasCmp.el.dom) {
+            return canvasCmp.el.dom;
+        }
+        return null;
+    },
+
+    // ========================================================
+    // 工具：origin 轮询定时器的启动/停止
+    // ========================================================
+    startOriginTimer: function() {
+        var me = this;
+        if (me._originTimer) return;
+        if (document.hidden) return;
+        me._originTimer = setInterval(function() {
+            if (me.updateOriginIfNeeded()) me.scheduleRenderLabels();
+        }, 100);
+    },
+
+    stopOriginTimer: function() {
+        var me = this;
+        if (me._originTimer) {
+            clearInterval(me._originTimer);
+            me._originTimer = null;
+        }
+    },
+
+    // ========================================================
+    // 关键：主动派发一次"鼠标移到画布中心"的合成 mousemove
+    // ========================================================
+    _nudgeCanvasMouseCenter: function() {
+        var me = this;
+        var canvasEl = me.getCanvasEl();
+        if (!canvasEl) return;
+
+        var rect = canvasEl.getBoundingClientRect();
+        if (rect.width < 10 || rect.height < 10) return;
+
+        // offsetX/offsetY 是相对 canvas 元素的 CSS 像素坐标
+        var offX = rect.width  / 2;
+        var offY = rect.height / 2;
+        var clientX = rect.left + offX;
+        var clientY = rect.top  + offY;
+
+        var ev;
+        try {
+            ev = new MouseEvent('mousemove', {
+                bubbles: true, cancelable: true, view: window,
+                clientX: clientX, clientY: clientY,
+                screenX: clientX, screenY: clientY,
+                button: 0
+            });
+        } catch (e) { return; }
+
+        // 合成事件的 offsetX/offsetY 是只读的，必须显式定义
+        try { Object.defineProperty(ev, 'offsetX', { get: function() { return offX; } }); } catch (e) {}
+        try { Object.defineProperty(ev, 'offsetY', { get: function() { return offY; } }); } catch (e) {}
+
+        try { canvasEl.dispatchEvent(ev); } catch (e) {}
+    },
 
     // ========================================================
     // 布局
@@ -93,11 +180,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
             }, 100, me);
         });
 
-        me.on('resize', function() {
+        // 用 mon 让销毁时自动清理
+        me.mon(me, 'resize', function() {
             if (me._resizeTimer) clearTimeout(me._resizeTimer);
             me._resizeTimer = setTimeout(function() {
-                try { me.handleResize(); }
-                catch (e) { console.warn('[SceneModelPanel] resize 异常', e); }
+                me.safe(function() { me.handleResize(); }, 'handleResize');
             }, 150);
         });
     },
@@ -112,21 +199,30 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         me._resizing = true;
 
         try {
-            var canvasCmp = me.down('#canvas');
-            if (!canvasCmp || !canvasCmp.el || !canvasCmp.el.dom) return;
-            var dom = canvasCmp.el.dom;
-            var w = dom.offsetWidth || dom.clientWidth || 0;
-            var h = dom.offsetHeight || dom.clientHeight || 0;
-            if (w < 20 || h < 20) return;
+            var dom = me.getCanvasEl();
+            if (!dom) return;
 
-            try { if (typeof me.cs.resize === 'function') me.cs.resize(); }
-            catch (e) { console.warn('[SceneModelPanel] resize 失败', e); }
+            var rect = dom.getBoundingClientRect();
+            var cssW = Math.round(rect.width);
+            var cssH = Math.round(rect.height);
+            if (cssW < 20 || cssH < 20) return;
 
-            try { if (typeof me.cs.fitZoom === 'function') me.cs.fitZoom(); }
-            catch (e) { console.warn('[SceneModelPanel] fitZoom 失败', e); }
+            // 同步绘图缓冲尺寸，避免拉伸变形
+            if (dom.tagName === 'CANVAS') {
+                if (dom.width  !== cssW) dom.width  = cssW;
+                if (dom.height !== cssH) dom.height = cssH;
+            }
+
+            if (typeof me.cs.resize === 'function') me.cs.resize();
+            if (typeof me.cs.fitZoom === 'function') me.cs.fitZoom();
+
+            // resize 后 nudge 一次，确保 origin 依赖字段已初始化
+            me._nudgeCanvasMouseCenter();
 
             me.updateOriginIfNeeded(true);
             me.scheduleRenderLabels();
+        } catch (e) {
+            console.warn('[RealtimeSceneModelPanel] handleResize 失败:', e);
         } finally {
             me._resizing = false;
         }
@@ -154,8 +250,19 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
     },
 
     // ========================================================
-    // ★★★ 初始化 canvas-select（照抄场景模型模块的做法）
-    //   关键：加 originTimer 60ms 轮询
+    // 工具：从 canvas-select 的 info / shape 中取 uuid
+    // ========================================================
+    extractUuid: function(info) {
+        if (!info) return null;
+        if (info.uuid) return info.uuid;
+        if (info.index !== undefined && this.cs && this.cs.dataset && this.cs.dataset[info.index]) {
+            return this.cs.dataset[info.index].uuid;
+        }
+        return null;
+    },
+
+    // ========================================================
+    // 初始化 canvas-select
     // ========================================================
     initCanvasSelect: function() {
         var me = this;
@@ -163,7 +270,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         var layerCmp = me.down('#labelLayer');
         if (!canvasCmp || !layerCmp) return;
 
-        if (me.originTimer) { clearInterval(me.originTimer); me.originTimer = null; }
+        me.stopOriginTimer();
         try { if (me.cs && typeof me.cs.destroy === 'function') me.cs.destroy(); } catch (e) {}
         me.cs = null;
 
@@ -183,25 +290,69 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         me.cs.scrollZoom = true;
         me.cs.hideLabel = true;
 
-        // 只读
         me.enforceReadOnly();
 
         me.cs.on('load', function() {
             try { if (typeof me.cs.fitZoom === 'function') me.cs.fitZoom(); }
-            catch (e) { console.warn('[SceneModelPanel] load fitZoom 失败', e); }
+            catch (e) { console.warn('[RealtimeSceneModelPanel] load fitZoom 失败', e); }
 
             me.enforceReadOnly();
+
+            // 让库内部完成 mouse/position 初始化
+            me._nudgeCanvasMouseCenter();
+
             me.updateOriginIfNeeded(true);
             me.scheduleRenderLabels();
+
+            // 兜底：延时再适应一次，应对异步渲染
+            Ext.defer(function() {
+                if (!me.cs) return;
+                me._nudgeCanvasMouseCenter();
+                me.updateOriginIfNeeded(true);
+                me.scheduleRenderLabels();
+            }, 150, me);
         });
-        // ★ 事件里只刷标签，不刷 origin，origin 交给 originTimer
+
         me.cs.on('updated', function() { me.scheduleRenderLabels(); });
         me.cs.on('coor',    function() { me.scheduleRenderLabels(); });
 
-        // ★★★ 关键：60ms 轮询，避免鼠标移动时读到 mouse/position 的中间状态
-        me.originTimer = setInterval(function() {
-            if (me.updateOriginIfNeeded()) me.scheduleRenderLabels();
-        }, 60);
+        // 图形双击 → 打开历史数据 / 历史曲线
+        canvasEl.addEventListener('dblclick', function(e) {
+            if (!me.cs) return;
+            var info = me.cs.activeShape;
+            if (!info) return;
+
+            var uuid = me.extractUuid(info);
+            if (!uuid) return;
+
+            var binding = me.bindingMap.get(uuid);
+            if (!binding) return;
+
+            e.stopPropagation();
+            e.preventDefault();
+            try { me.openBindingItemHistory(binding); }
+            catch (err) { console.warn('[RealtimeSceneModelPanel] 图形双击打开历史失败', err); }
+        });
+
+        me.startOriginTimer();
+
+        // 页面可见性监听
+        if (me._visibilityHandler) {
+            try { document.removeEventListener('visibilitychange', me._visibilityHandler); } catch (e) {}
+            me._visibilityHandler = null;
+        }
+        me._visibilityHandler = function() {
+            if (document.hidden) {
+                me.stopOriginTimer();
+            } else {
+                me.startOriginTimer();
+                if (me.cs) {
+                    me.updateOriginIfNeeded(true);
+                    me.scheduleRenderLabels();
+                }
+            }
+        };
+        document.addEventListener('visibilitychange', me._visibilityHandler);
     },
 
     // ========================================================
@@ -221,6 +372,19 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
             success: function(resp) {
                 try {
                     var result = Ext.decode(resp.responseText);
+
+                    if (result.alarmShowStyle) {
+                        try {
+                            me.alarmShowStyle = (typeof result.alarmShowStyle === 'string')
+                                ? Ext.decode(result.alarmShowStyle)
+                                : result.alarmShowStyle;
+                        } catch (e) {
+                            me.alarmShowStyle = null;
+                        }
+                    } else {
+                        me.alarmShowStyle = null;
+                    }
+
                     var cfg = null;
                     if (result.success) {
                         cfg = result.config;
@@ -286,7 +450,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         if (me._rebuilding) return;
         me._rebuilding = true;
         try {
-            if (me.originTimer) { clearInterval(me.originTimer); me.originTimer = null; }
+            me.stopOriginTimer();
             try {
                 if (me.cs) {
                     if (typeof me.cs.destroy === 'function')      me.cs.destroy();
@@ -359,7 +523,15 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                     fieldLabel:   s.fieldLabel,
                     unit:         s.unit,
                     dataSource:   s.dataSource,
-                    currentValue: s.currentValue
+                    currentValue: s.currentValue,
+                    // 保存报警等级（字符串/数字都兼容）
+                    alarmLevel:   (s.alarmLevel != null) ? s.alarmLevel : 0,
+
+                    // 双击查看历史数据 / 历史曲线所需的附加元信息
+                    itemType:       s.itemType,
+                    resolutionMode: s.resolutionMode,
+                    bitIndex:       s.bitIndex,
+                    columnDataType: s.columnDataType
                 });
             }
             if (s.labelStyle) me.labelStyleMap.set(s.uuid, s.labelStyle);
@@ -418,18 +590,34 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         me.safeSetData(pureShapes);
 
         Ext.defer(function() {
+            me._nudgeCanvasMouseCenter();
             me.updateOriginIfNeeded(true);
             me.scheduleRenderLabels();
-        }, 100);
+
+            Ext.defer(function() {
+                if (!me.cs) return;
+                me._nudgeCanvasMouseCenter();
+                me.updateOriginIfNeeded(true);
+                me.scheduleRenderLabels();
+            }, 200, me);
+        }, 100, me);
     },
 
+    // ========================================================
+    // safeSetData：用完整 JSON 比较代替"只比 uuid"
+    // ========================================================
     safeSetData: function(shapes) {
         var me = this;
         if (!me.cs) return;
         var data = Ext.isArray(shapes) ? shapes : [];
-        var newKey = data.map(function(s) { return s.uuid || ''; }).join('|');
+
+        var newKey;
+        try { newKey = JSON.stringify(data); }
+        catch (e) { newKey = data.map(function(s) { return s.uuid || ''; }).join('|'); }
+
         if (newKey === me._lastDataKey) return;
         me._lastDataKey = newKey;
+
         try {
             me.cs.setData(data);
             me.enforceReadOnly();
@@ -472,7 +660,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
     },
 
     // ========================================================
-    // origin 计算（与场景模型模块完全一致）
+    // origin 计算
     // ========================================================
     updateOriginIfNeeded: function(force) {
         if (!this.cs) return false;
@@ -501,10 +689,13 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         });
     },
 
+    // ========================================================
+    // 渲染标签
+    // ========================================================
     renderLabels: function() {
         var me = this;
         var layer = me.labelLayer;
-        if (!layer || !me.cachedOrigin.ready || !me.cs) return;
+        if (!layer || !me.cachedOrigin.ready || !me.cs || !me.cs.dataset) return;
 
         var origin = me.cachedOrigin;
         var existing = {};
@@ -531,16 +722,31 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                 el = document.createElement('div');
                 el.className = 'scene-canvas-label';
                 el.dataset.uuid = shape.uuid;
+
+                el.addEventListener('dblclick', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var uuid = el.dataset.uuid;
+                    var b = me.bindingMap.get(uuid);
+                    if (b) {
+                        try { me.openBindingItemHistory(b); }
+                        catch (err) {
+                            console.warn('[RealtimeSceneModelPanel] 标签双击打开历史失败', err);
+                        }
+                    }
+                });
+
                 layer.appendChild(el);
             }
             el.style.cssText = 'position:absolute;padding:4px 10px;border-radius:4px;white-space:nowrap;' +
                 'font-weight:600;transform:translate(-50%,' + translateY + ');box-shadow:0 2px 6px rgba(0,0,0,0.18);' +
-                'pointer-events:auto;' +
+                'pointer-events:auto;cursor:pointer;' +
                 'left:' + cx + 'px;top:' + cy + 'px;' +
                 'background:' + me.buildFillColor(style.bgColor, style.bgOpacity) + ';' +
                 'color:' + style.textColor + ';font-size:' + style.font + ';' +
                 'display:' + (style.hide ? 'none' : 'block') + ';';
-            el.textContent = me.buildLabelText(binding, style);
+
+            el.innerHTML = me.buildLabelText(binding, style);
             visible[shape.uuid] = true;
         });
 
@@ -551,20 +757,135 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         });
     },
 
+    // ========================================================
+    // ★ 双击标注（图形 / 标签）：打开绑定数据项的历史数据 / 历史曲线
+    // --------------------------------------------------------
+    //  ★ 关键：cellInfo 里带 fromSceneModelAnnotation 标记，
+    //    让下游窗口识别"从场景模型标注双击进入"这个场景，
+    //    从而在窗口标题追加设备名，与"从动态数据表双击进入"做区分。
+    // ========================================================
+    openBindingItemHistory: function(binding) {
+        var me = this;
+        if (!binding) return;
+
+        var itemName  = binding.fieldLabel || binding.fieldName;
+        var itemValue = binding.currentValue;
+
+        var cellInfo = {
+            column:         binding.fieldName,
+            type:           (binding.itemType != null && binding.itemType !== '')
+                                ? parseInt(binding.itemType, 10) : NaN,
+            resolutionMode: (binding.resolutionMode != null && binding.resolutionMode !== '')
+                                ? parseInt(binding.resolutionMode, 10) : NaN,
+            bitIndex:       binding.bitIndex,
+            columnDataType: binding.columnDataType || '',
+            // 设备信息取"当前标注绑定的设备"
+            deviceId:       binding.deviceId,
+            deviceName:     binding.deviceName,
+            calculateType:  me.calculateType,
+            // ★ 新增：显式标记本次调用的来源是"场景模型标注双击"
+            //   viewItemRealTimeCurve / viewItemRealTimeDataTable 会据此在标题后追加设备名
+            fromSceneModelAnnotation: true
+        };
+
+        // ---- 兜底：无法识别类型时按值的类型决定 ----
+        if (isNaN(cellInfo.type)) {
+            if (isNumber(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+            else                     viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+            return;
+        }
+
+        // ---- 与 viewDeviceRealTimeMonitoringData 里的分支一致 ----
+        if (cellInfo.type == 0) {
+            if (cellInfo.resolutionMode == 2) {
+                if (isNotVal(cellInfo.columnDataType)
+                    && cellInfo.columnDataType.toUpperCase() != 'string'.toUpperCase()
+                    && isNumber(itemValue)) {
+                    viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+                } else {
+                    viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+                }
+            } else if (cellInfo.resolutionMode == 0) {
+                viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+            } else if (cellInfo.resolutionMode == 1) {
+                viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+            } else {
+                if (isNumber(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+                else                     viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+            }
+        } else if (cellInfo.type == 1) {
+            var isNumItem = false;
+            try {
+                isNumItem = (typeof isNumByCalculateItemCode === 'function')
+                          && isNumByCalculateItemCode(cellInfo.column);
+            } catch (e) { isNumItem = false; }
+            if (isNumItem) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+            else           viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        } else if (cellInfo.type == 3) {
+            if (isNumber(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+            else                     viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        } else if (cellInfo.type == 5) {
+            if (cellInfo.resolutionMode == 2) {
+                if (isNumber(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+                else                     viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+            } else if (cellInfo.resolutionMode == 0) {
+                viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+            } else if (cellInfo.resolutionMode == 1) {
+                viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+            } else if (cellInfo.resolutionMode == 7) {
+                if (isNumber(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+                else                     viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+            } else {
+                if (isNumber(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+                else                     viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+            }
+        } else {
+            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        }
+    },
+
+    // ========================================================
+    // 构建标签文本
+    // ========================================================
     buildLabelText: function(b, labelStyle) {
         if (!b || !b.deviceId || !b.fieldName) return '未绑定';
 
+        var me = this;
         var fldName = b.fieldLabel || b.fieldName;
         var hideDev = !labelStyle || labelStyle.hideDeviceName !== false;
         var prefix = hideDev ? fldName : ((b.deviceName || b.deviceId) + '.' + fldName);
 
         var val = b.currentValue;
-        if (val != null && val !== '' && val !== '--') {
-            var unit = b.unit;
-            var unitStr = (unit != null && unit !== '') ? ('(' + unit + ')') : '';
-            return prefix + '：' + val + unitStr;
+        if (val == null || val === '' || val === '--') {
+            return Ext.String.htmlEncode(prefix);
         }
-        return prefix;
+
+        var unit = b.unit;
+        var unitStr = (unit != null && unit !== '') ? ('(' + unit + ')') : '';
+        var prefixHtml = Ext.String.htmlEncode(prefix);
+        var valHtml    = Ext.String.htmlEncode(val + unitStr);
+
+        var alarmLevel = parseInt(b.alarmLevel, 10) || 0;
+        var valColor = null;
+
+        if (alarmLevel > 0 && me.alarmShowStyle && me.alarmShowStyle.Data) {
+            var cfg = null;
+            if (alarmLevel === 100)      cfg = me.alarmShowStyle.Data.FirstLevel;
+            else if (alarmLevel === 200) cfg = me.alarmShowStyle.Data.SecondLevel;
+            else if (alarmLevel === 300) cfg = me.alarmShowStyle.Data.ThirdLevel;
+
+            if (cfg && cfg.Color) {
+                var c = (cfg.Color + '').trim();
+                if (c) {
+                    valColor = (c.charAt(0) === '#') ? c : ('#' + c);
+                }
+            }
+        }
+
+        if (valColor) {
+            return prefixHtml + '：<span style="color:' + valColor + ';font-weight:bold;">' + valHtml + '</span>';
+        }
+        return prefixHtml + '：' + valHtml;
     },
 
     getShapeTopAnchor: function(shape) {
@@ -599,6 +920,9 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         }, 30);
     },
 
+    // ========================================================
+    // WebSocket 推送：同步值 + 报警等级
+    // ========================================================
     updateRealtimeValuesFromPush: function(pushDeviceId, itemList) {
         var me = this;
         if (pushDeviceId == null) return;
@@ -611,6 +935,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         });
 
         var changed = false;
+
         me.bindingMap.forEach(function(binding, uuid) {
             if (!binding || !binding.fieldName) return;
             if (String(binding.deviceId) !== String(pushDeviceId)) return;
@@ -622,9 +947,21 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                          ? item.value
                          : item.rawValue;
 
-            if (binding.currentValue !== newValue) {
+            if (String(binding.currentValue) !== String(newValue)) {
                 binding.currentValue = newValue;
                 changed = true;
+            }
+
+            if (item.alarmLevel !== undefined && item.alarmLevel !== null) {
+                var newLevelStr = String(item.alarmLevel);
+                var oldLevelStr = (binding.alarmLevel !== undefined && binding.alarmLevel !== null)
+                                ? String(binding.alarmLevel)
+                                : '0';
+
+                if (oldLevelStr !== newLevelStr) {
+                    binding.alarmLevel = newLevelStr;
+                    changed = true;
+                }
             }
         });
 
@@ -644,30 +981,37 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
     updateRealtimeValues: function(list) {
         var me = this;
         if (!Ext.isArray(list)) return;
+        var changed = false;
         list.forEach(function(item) {
             var binding = me.bindingMap.get(item.uuid);
-            if (binding) {
+            if (!binding) return;
+            if (item.value !== undefined) {
                 binding.currentValue = item.value;
-                if (item.unit != null) binding.unit = item.unit;
+                changed = true;
+            }
+            if (item.unit != null) binding.unit = item.unit;
+            if (item.alarmLevel !== undefined && item.alarmLevel !== null) {
+                binding.alarmLevel = item.alarmLevel;
+                changed = true;
             }
         });
-        me.scheduleRenderLabels();
+        if (changed) me.scheduleRenderLabels();
     },
 
     beforeDestroy: function() {
-        if (this._resizeTimer) {
-            clearTimeout(this._resizeTimer);
-            this._resizeTimer = null;
+        if (this._originTimer) { clearInterval(this._originTimer); this._originTimer = null; }
+        if (this._resizeTimer) { clearTimeout(this._resizeTimer); this._resizeTimer = null; }
+
+        if (this._visibilityHandler) {
+            try { document.removeEventListener('visibilitychange', this._visibilityHandler); } catch (e) {}
+            this._visibilityHandler = null;
         }
-        if (this.originTimer) {
-            clearInterval(this.originTimer);
-            this.originTimer = null;
-        }
-        this._resizing = false;
-        try {
-            if (this.cs && typeof this.cs.destroy === 'function') this.cs.destroy();
-        } catch (e) {}
+
+        try { if (this.cs && typeof this.cs.destroy === 'function') this.cs.destroy(); } catch (e) {}
         this.cs = null;
+
+        this._resizing = false;
+
         this.callParent(arguments);
     }
 });

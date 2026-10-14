@@ -9,7 +9,7 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
     border: false,
     hidden: false,
     constrainHeader: true,
-    closable: false,          // 禁用内置按钮，完全自定义
+    closable: false,
     maximizable: false,
     minimizable: false,
     width: 500,
@@ -23,11 +23,16 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
 
         Ext.apply(me, {
             tbar: [
-                { id: 'RealtimeDataItemName_Id', xtype: 'textfield', value: '', hidden: true },
-                { id: 'RealtimeDataItemCode_Id', xtype: 'textfield', value: '', hidden: true },
-                { id: 'RealtimeDataItemType_Id', xtype: 'textfield', value: '', hidden: true },
+                { id: 'RealtimeDataItemName_Id',           xtype: 'textfield', value: '', hidden: true },
+                { id: 'RealtimeDataItemCode_Id',           xtype: 'textfield', value: '', hidden: true },
+                { id: 'RealtimeDataItemType_Id',           xtype: 'textfield', value: '', hidden: true },
                 { id: 'RealtimeDataItemResolutionMode_Id', xtype: 'textfield', value: '', hidden: true },
-                { id: 'RealtimeDataItemBitIndex_Id', xtype: 'textfield', value: '', hidden: true },
+                { id: 'RealtimeDataItemBitIndex_Id',       xtype: 'textfield', value: '', hidden: true },
+                // ★ 新增：用于"场景模型标注双击"时携带绑定设备信息
+                //   从实时监控动态数据表进入时这些字段为空，函数内部会回退到旧逻辑
+                { id: 'RealtimeDataDeviceId_Id',           xtype: 'textfield', value: '', hidden: true },
+                { id: 'RealtimeDataDeviceName_Id',         xtype: 'textfield', value: '', hidden: true },
+                { id: 'RealtimeDataCalculateType_Id',      xtype: 'textfield', value: '', hidden: true },
                 '->',
                 { xtype: 'button', text: loginUserLanguageResource.exportData, iconCls: 'export', handler: exportItemRealtimeDataTable },
                 '-',
@@ -66,7 +71,6 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
                         itemRealtimeDataHandsontableHelper = null;
                     }
                 },
-                // 最大化时，确保窗口处于展开状态，并刷新表格
                 maximize: function (win) {
                     win._minimized = false;
                     win.setTitle(win.originalTitle);
@@ -111,195 +115,6 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
                         Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 50);
                     }
                 },
-//                afterrender: function (panel) {
-//                    var win = panel;
-//                    win.originalTitle = win.title;
-//                    win._savedHeight = null;
-//                    win._minimized = false;
-//                    win._defaultHeight = win.getHeight();
-//
-//                    win._panel = win.down('#ItemRealtimeDataPanel_Id');
-//                    win._toolbar = win.down('toolbar');
-//                    if (win._toolbar) win._toolbar.show();
-//
-//                    var header = win.getHeader();
-//                    if (!header) return;
-//
-//                    var headerEl = header.el.dom;
-//                    var btnContainer = document.createElement('div');
-//                    btnContainer.style.cssText = 
-//                        'position:absolute; right:2px; top:0; height:100%;' +
-//                        'display:flex; align-items:center; gap:2px; z-index:10;' +
-//                        'padding:0 4px;';
-//                    headerEl.style.position = 'relative';
-//                    headerEl.appendChild(btnContainer);
-//
-//                    /**
-//                     * 创建标题栏按钮（支持自定义图标类）
-//                     * @param {String} text         备选文本（当 iconCls 为空时显示）
-//                     * @param {String} title        提示文字
-//                     * @param {Function} clickHandler 点击回调
-//                     * @param {Boolean} isClose     是否为关闭按钮（影响悬停背景色）
-//                     * @param {String} iconCls      可选，自定义图标类名（例如 'cancel'）
-//                     */
-//                    function createButton(text, title, clickHandler, isClose, iconCls) {
-//                        var el;
-//                        if (iconCls) {
-//                            // 使用图标类
-//                            el = document.createElement('div');
-//                            el.className = iconCls;
-//                            el.style.cssText = 
-//                                'width:20px; height:20px; cursor:pointer;' +
-//                                'background-position:center center; background-repeat:no-repeat;' +
-//                                'background-size:contain; border-radius:2px;' +
-//                                'transition:background-color 0.15s;' +
-//                                'margin:0 2px; touch-action:manipulation;';
-//                        } else {
-//                            // 使用文本
-//                            el = document.createElement('button');
-//                            el.textContent = text;
-//                            var defaultColor = '#404040';
-//                            el.style.cssText = 
-//                                'background:transparent; border:none; font-size:16px; font-weight:300;' +
-//                                'cursor:pointer; padding:0 8px;' +
-//                                'display:flex; align-items:center; justify-content:center; border-radius:2px;' +
-//                                'transition:background 0.15s, color 0.15s;' +
-//                                'color:' + defaultColor + '; touch-action:manipulation;' +
-//                                'font-family:sans-serif; line-height:1;' +
-//                                'min-width:30px; min-height:30px;';
-//                        }
-//                        el.title = title;
-//
-//                        // pointerdown 事件：执行业务逻辑 + 视觉反馈
-//                        el.addEventListener('pointerdown', function(e) {
-//                            e.preventDefault();
-//                            e.stopPropagation();
-//                            // 视觉反馈
-//                            if (isClose) {
-//                                this.style.background = '#e81123';
-//                                if (!iconCls) this.style.color = '#ffffff';
-//                            } else {
-//                                this.style.background = 'rgba(0,0,0,0.15)';
-//                            }
-//                            // 执行业务逻辑
-//                            clickHandler(e);
-//                            // 释放指针捕获（如果有）
-//                            this.releasePointerCapture(e.pointerId);
-//                        }, { passive: false });
-//
-//                        // 指针释放和离开时恢复样式
-//                        el.addEventListener('pointerup', function(e) {
-//                            this.style.background = 'transparent';
-//                            if (!iconCls) this.style.color = isClose ? '#404040' : '#404040';
-//                        }, { passive: false });
-//
-//                        el.addEventListener('pointerleave', function(e) {
-//                            this.style.background = 'transparent';
-//                            if (!iconCls) this.style.color = isClose ? '#404040' : '#404040';
-//                        }, { passive: false });
-//
-//                        return el;
-//                    }
-//
-//                    // ---- 创建各按钮，指定图标类（如果不需要图标，传 null 或不传）----
-//                    // 1. 最小化 - 使用 'down' 类（您已有）
-//                    var minBtn = createButton('─', '最小化', function () {
-//                        win._savedHeight = win.getHeight();
-//                        var headerH = win.getHeader() ? win.getHeader().getHeight() : 30;
-//                        if (win._panel) win._panel.hide();
-//                        if (win._toolbar) win._toolbar.hide();
-//                        win.setHeight(headerH);
-//                        win._minimized = true;
-//                        win.setTitle(win.originalTitle + ' (已最小化)');
-//                        minBtn.style.display = 'none';
-//                        expandBtn.style.display = 'inline-block';
-//                    }, false, 'down');  // 使用 'down' 图标
-//
-//                    btnContainer.appendChild(minBtn);
-//                    win._minimizeBtn = minBtn;
-//
-//                    // 2. 展开 - 使用 'sync' 或 'up'（您可新增或选用已有类）
-//                    var expandBtn = createButton('⤢', '展开', function () {
-//                        if (win._savedHeight) {
-//                            win.setHeight(win._savedHeight);
-//                            win._savedHeight = null;
-//                        } else {
-//                            win.setHeight(win._defaultHeight || '80%');
-//                        }
-//                        win._minimized = false;
-//                        win.setTitle(win.originalTitle);
-//                        if (win._panel) win._panel.show();
-//                        if (win._toolbar) win._toolbar.show();
-//                        win.updateLayout();
-//                        expandBtn.style.display = 'none';
-//                        minBtn.style.display = 'inline-block';
-//                        var panel = Ext.getCmp('ItemRealtimeDataPanel_Id');
-//                        if (panel) {
-//                            Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 100);
-//                        }
-//                    }, false, 'sync');  // 使用 'sync' 图标
-//                    expandBtn.style.display = 'none';
-//                    btnContainer.appendChild(expandBtn);
-//                    win._expandBtn = expandBtn;
-//
-//                    // 3. 最大化 - 使用 'forward' 或 'add'
-//                    var maxBtn = createButton('☐', '最大化', function () {
-//                        if (!win.maximized) {
-//                            win.maximize();
-//                        }
-//                    }, false, 'forward');
-//                    btnContainer.appendChild(maxBtn);
-//                    win._maximizeBtn = maxBtn;
-//
-//                    // 4. 还原 - 使用 'backwards' 或 'check1'
-//                    var restoreBtn = createButton('⧉', '还原', function () {
-//                        if (win.maximized) {
-//                            win.restore();
-//                        }
-//                    }, false, 'backwards');
-//                    restoreBtn.style.display = 'none';
-//                    btnContainer.appendChild(restoreBtn);
-//                    win._restoreBtn = restoreBtn;
-//
-//                    // 5. 关闭 - 使用 'cancel'（您已有）
-//                    var closeBtn = createButton('✕', '关闭', function () {
-//                        win.close();
-//                    }, true, 'cancel');
-//                    btnContainer.appendChild(closeBtn);
-//
-//                    // 标题栏点击展开（忽略按钮区域）
-//                    header.el.on('click', function (e) {
-//                        if (btnContainer.contains(e.target)) {
-//                            return;
-//                        }
-//                        if (win._minimized && !win.maximized) {
-//                            e.stopEvent();
-//                            if (win._savedHeight) {
-//                                win.setHeight(win._savedHeight);
-//                                win._savedHeight = null;
-//                            } else {
-//                                win.setHeight(win._defaultHeight || '80%');
-//                            }
-//                            win._minimized = false;
-//                            win.setTitle(win.originalTitle);
-//                            win.updateLayout();
-//                            if (win._panel) win._panel.show();
-//                            if (win._toolbar) win._toolbar.show();
-//                            expandBtn.style.display = 'none';
-//                            minBtn.style.display = 'inline-block';
-//                            var panel = Ext.getCmp('ItemRealtimeDataPanel_Id');
-//                            if (panel) {
-//                                Ext.defer(function () { panel.fireEvent('resize', panel, panel.getWidth(), panel.getHeight()); }, 100);
-//                            }
-//                        }
-//                    });
-//
-//                    win.on('destroy', function () {
-//                        if (btnContainer.parentNode) {
-//                            btnContainer.parentNode.removeChild(btnContainer);
-//                        }
-//                    });
-//                }
                 afterrender: function (panel) {
                     var win = panel;
                     win.originalTitle = win.title;
@@ -337,24 +152,19 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
                             'font-family:sans-serif; line-height:1;' +
                             'min-width:30px; min-height:30px;';
 
-                        // 使用 pointerdown 事件（统一鼠标和触摸）
                         btn.addEventListener('pointerdown', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            // 视觉反馈
                             if (isClose) {
                                 this.style.background = '#e81123';
                                 this.style.color = '#ffffff';
                             } else {
                                 this.style.background = 'rgba(0,0,0,0.15)';
                             }
-                            // 执行业务逻辑
                             clickHandler(e);
-                            // 释放指针捕获（如果有）
                             this.releasePointerCapture(e.pointerId);
                         }, { passive: false });
 
-                        // 指针释放时恢复样式
                         btn.addEventListener('pointerup', function(e) {
                             this.style.background = 'transparent';
                             this.style.color = isClose ? defaultColor : defaultColor;
@@ -368,7 +178,6 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
                         return btn;
                     }
 
-                    // ---- 创建各按钮 ----
                     var minBtn = createButton('─', '', function () {
                         win._savedHeight = win.getHeight();
                         var headerH = win.getHeader() ? win.getHeader().getHeight() : 30;
@@ -427,7 +236,6 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
                     }, true);
                     btnContainer.appendChild(closeBtn);
 
-                    // 标题栏点击展开（忽略按钮区域）
                     header.el.on('click', function (e) {
                         if (btnContainer.contains(e.target)) {
                             return;
@@ -466,24 +274,50 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
     }
 });
 
-// ---------- 以下为原有函数，保持不变 ----------
-function exportItemRealtimeDataTable() {
-    var selectRowId = "RealTimeMonitoringInfoDeviceListSelectRow_Id";
+// ---------- 以下为原有函数，兼容原有路径 ----------
+
+/**
+ * 从窗口隐藏字段取设备信息；为空时回退到实时表选中行。
+ * 返回 {deviceId, deviceName, calculateType}
+ */
+function _resolveItemRealtimeDeviceInfo(deviceIdFieldId, deviceNameFieldId, calcTypeFieldId) {
     var gridPanelId = "RealTimeMonitoringListGridPanel_Id";
-    var deviceName = '';
-    var deviceId = 0;
-    var calculateType = 0;
+    var result = { deviceId: '', deviceName: '', calculateType: '' };
+
+    var devIdField = Ext.getCmp(deviceIdFieldId);
+    if (devIdField && isNotVal(devIdField.getValue())) {
+        result.deviceId = devIdField.getValue();
+        var devNameField = Ext.getCmp(deviceNameFieldId);
+        result.deviceName = (devNameField && isNotVal(devNameField.getValue())) ? devNameField.getValue() : '';
+        var calcTypeField = Ext.getCmp(calcTypeFieldId);
+        result.calculateType = (calcTypeField && isNotVal(calcTypeField.getValue())) ? calcTypeField.getValue() : 0;
+    }
+
+    // 回退：旧路径 —— 从实时表选中行取
+    if (!isNotVal(result.deviceId) || result.deviceId === 0 || result.deviceId === '0') {
+        if (Ext.getCmp(gridPanelId) && Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length > 0) {
+            var sel = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data;
+            result.calculateType = sel.calculateType;
+            result.deviceId = sel.id;
+            result.deviceName = sel.deviceName;
+        }
+    }
+    return result;
+}
+
+function exportItemRealtimeDataTable() {
     var itemName = Ext.getCmp("RealtimeDataItemName_Id").getValue();
     var itemCode = Ext.getCmp("RealtimeDataItemCode_Id").getValue();
     var itemType = Ext.getCmp("RealtimeDataItemType_Id").getValue();
     var itemResolutionMode = Ext.getCmp("RealtimeDataItemResolutionMode_Id").getValue();
     var itemBitIndex = Ext.getCmp("RealtimeDataItemBitIndex_Id").getValue();
-    var selectRow = Ext.getCmp(selectRowId).getValue();
-    if (Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length > 0) {
-        calculateType = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
-        deviceId = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
-        deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
-    }
+
+    var dev = _resolveItemRealtimeDeviceInfo(
+        "RealtimeDataDeviceId_Id", "RealtimeDataDeviceName_Id", "RealtimeDataCalculateType_Id");
+
+    var deviceId = dev.deviceId;
+    var deviceName = dev.deviceName;
+    var calculateType = dev.calculateType;
 
     var timestamp = new Date().getTime();
     var key = 'exportItemRealTimeData_' + deviceId + '_' + itemCode + '_' + timestamp;
@@ -504,22 +338,18 @@ function exportItemRealtimeDataTable() {
 }
 
 function CreateItemRealtimeDataTable() {
-    var selectRowId = "RealTimeMonitoringInfoDeviceListSelectRow_Id";
-    var gridPanelId = "RealTimeMonitoringListGridPanel_Id";
-    var deviceName = '';
-    var deviceId = 0;
-    var calculateType = 0;
     var itemName = Ext.getCmp("RealtimeDataItemName_Id").getValue();
     var itemCode = Ext.getCmp("RealtimeDataItemCode_Id").getValue();
     var itemType = Ext.getCmp("RealtimeDataItemType_Id").getValue();
     var itemResolutionMode = Ext.getCmp("RealtimeDataItemResolutionMode_Id").getValue();
     var itemBitIndex = Ext.getCmp("RealtimeDataItemBitIndex_Id").getValue();
-    var selectRow = Ext.getCmp(selectRowId).getValue();
-    if (Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length > 0) {
-        calculateType = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.calculateType;
-        deviceId = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.id;
-        deviceName = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.deviceName;
-    }
+
+    var dev = _resolveItemRealtimeDeviceInfo(
+        "RealtimeDataDeviceId_Id", "RealtimeDataDeviceName_Id", "RealtimeDataCalculateType_Id");
+
+    var deviceId = dev.deviceId;
+    var deviceName = dev.deviceName;
+    var calculateType = dev.calculateType;
 
     if (itemRealtimeDataHandsontableHelper != null) {
         if (itemRealtimeDataHandsontableHelper.hot != undefined) {

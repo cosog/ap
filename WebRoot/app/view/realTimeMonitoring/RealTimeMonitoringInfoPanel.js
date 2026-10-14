@@ -893,7 +893,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
                 	}]
                 },{
                 	region: 'east',
-                	width: '21%',
+                	width: '18%',
                 	xtype: 'tabpanel',
                 	id:"RealTimeMonitoringRightTabPanel",
             		activeTab: 0,
@@ -975,32 +975,77 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoPanel", {
     }
 });
 
-function viewItemRealTimeCurve(itemName,itemValue,cellInfo){
+function viewItemRealTimeCurve(itemName, itemValue, cellInfo) {
     var curveWin = Ext.create('AP.view.realTimeMonitoring.ItemRealtimeCurveWindow');
-    // 设置子组件值（注意：窗口可能还没渲染，使用 afterrender 或直接 setValue 如果组件已存在）
-    curveWin.on('afterrender', function() {
-    	Ext.getCmp('RealtimeCurveItemName_Id').setValue(itemName);
-    	Ext.getCmp('RealtimeCurveItemCode_Id').setValue(cellInfo.column);
-    	Ext.getCmp('RealtimeCurveItemType_Id').setValue(cellInfo.type);
-    	Ext.getCmp('RealtimeCurveItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
+    curveWin.on('afterrender', function () {
+        Ext.getCmp('RealtimeCurveItemName_Id').setValue(itemName);
+        Ext.getCmp('RealtimeCurveItemCode_Id').setValue(cellInfo.column);
+        Ext.getCmp('RealtimeCurveItemType_Id').setValue(cellInfo.type);
+        Ext.getCmp('RealtimeCurveItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
+
+        // ★ 新增：可选写入设备信息（来自场景模型标注双击）
+        //   若 cellInfo 里没有这些字段，则保持空 → 窗口内部会回退到实时表选中行（旧行为）
+        var devIdField = Ext.getCmp('RealtimeCurveDeviceId_Id');
+        if (devIdField) devIdField.setValue(cellInfo.deviceId != null ? cellInfo.deviceId : '');
+
+        var devNameField = Ext.getCmp('RealtimeCurveDeviceName_Id');
+        if (devNameField) devNameField.setValue(cellInfo.deviceName != null ? cellInfo.deviceName : '');
+
+        var calcTypeField = Ext.getCmp('RealtimeCurveCalculateType_Id');
+        if (calcTypeField) calcTypeField.setValue(cellInfo.calculateType != null ? cellInfo.calculateType : '');
     }, { single: true });
     curveWin.show();
 }
 
-function viewItemRealTimeDataTable(itemName,itemValue,cellInfo){
-	var dataWin = Ext.create('AP.view.realTimeMonitoring.ItemRealtimeDataWindow');
-    // 设置子组件值（注意：窗口可能还没渲染，使用 afterrender 或直接 setValue 如果组件已存在）
-    dataWin.on('afterrender', function() {
-    	Ext.getCmp('RealtimeDataItemName_Id').setValue(itemName);
-    	Ext.getCmp('RealtimeDataItemCode_Id').setValue(cellInfo.column);
-    	Ext.getCmp('RealtimeDataItemType_Id').setValue(cellInfo.type);
-    	Ext.getCmp('RealtimeDataItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
-    	if((cellInfo.type==0||cellInfo.type==5) && cellInfo.resolutionMode==0){
-        	Ext.getCmp('RealtimeDataItemBitIndex_Id').setValue(cellInfo.bitIndex);
-        }else{
-        	Ext.getCmp('RealtimeDataItemBitIndex_Id').setValue('');
+/**
+ * 打开"实时数据表"窗口
+ *
+ * ★ 若 cellInfo.fromSceneModelAnnotation 为真（从场景模型标注双击进入），
+ *   窗口标题改为"动态数据 - 设备名.数据项"，与从动态数据表双击进入的场景做区分。
+ *
+ * ★ 同时把 cellInfo 里的设备信息写入窗口隐藏字段，
+ *   否则 CreateItemRealtimeDataTable 会回退到概览表选中行，用错设备查询数据。
+ */
+function viewItemRealTimeDataTable(itemName, itemValue, cellInfo) {
+    var dataWin = Ext.create('AP.view.realTimeMonitoring.ItemRealtimeDataWindow');
+
+    // ★ 根据来源区分窗口标题
+    if (cellInfo && cellInfo.fromSceneModelAnnotation) {
+        var devName = isNotVal(cellInfo.deviceName) ? cellInfo.deviceName
+                    : (isNotVal(cellInfo.deviceId)   ? cellInfo.deviceId : '');
+        var titleText = loginUserLanguageResource.dynamicData;
+        if (isNotVal(devName)) {
+            titleText = titleText + ' - ' + devName + "." + itemName;
         }
+        try { dataWin.setTitle(titleText); } catch (e) {}
+    }
+
+    dataWin.on('afterrender', function() {
+        Ext.getCmp('RealtimeDataItemName_Id').setValue(itemName);
+        Ext.getCmp('RealtimeDataItemCode_Id').setValue(cellInfo.column);
+        Ext.getCmp('RealtimeDataItemType_Id').setValue(cellInfo.type);
+        Ext.getCmp('RealtimeDataItemResolutionMode_Id').setValue(cellInfo.resolutionMode);
+
+        if ((cellInfo.type == 0 || cellInfo.type == 5) && cellInfo.resolutionMode == 0) {
+            Ext.getCmp('RealtimeDataItemBitIndex_Id').setValue(cellInfo.bitIndex);
+        } else {
+            Ext.getCmp('RealtimeDataItemBitIndex_Id').setValue('');
+        }
+
+        // ★★★ 新增：写入设备信息到窗口隐藏字段
+        //   _resolveItemRealtimeDeviceInfo 优先读这些字段；
+        //   为空时才回退到实时表选中行（旧路径）。
+        //   这一步是修复"双击标注后查询的是概览表选中设备"的关键。
+        var devIdField = Ext.getCmp('RealtimeDataDeviceId_Id');
+        if (devIdField) devIdField.setValue(cellInfo.deviceId != null ? cellInfo.deviceId : '');
+
+        var devNameField = Ext.getCmp('RealtimeDataDeviceName_Id');
+        if (devNameField) devNameField.setValue(cellInfo.deviceName != null ? cellInfo.deviceName : '');
+
+        var calcTypeField = Ext.getCmp('RealtimeDataCalculateType_Id');
+        if (calcTypeField) calcTypeField.setValue(cellInfo.calculateType != null ? cellInfo.calculateType : '');
     }, { single: true });
+
     dataWin.show();
 }
 

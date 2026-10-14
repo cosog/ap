@@ -1246,6 +1246,7 @@ public class RealTimeMonitoringController extends BaseController {
 	                result.put("success", true);
 	                result.put("modelId", data.get("id"));
 	                result.put("config", data.get("config"));
+	                result.put("alarmShowStyle", data.get("alarmShowStyle"));
 	            }
 	        }
 	    } catch (Exception e) {

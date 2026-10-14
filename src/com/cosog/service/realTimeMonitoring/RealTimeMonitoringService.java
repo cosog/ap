@@ -74,6 +74,7 @@ import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.excel.ExcelUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -7631,7 +7632,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	
 	/**
 	 * 根据设备 id 获取场景模型 config，并解析 config 里所有 shapes 的 (deviceId, fieldName)
-	 * 从实时数据里填充 currentValue
+	 * 从实时数据里填充 currentValue 和 alarmLevel
+	 *
+	 * ★ currentValue 和 alarmLevel 都作为「字符串」原样传递，
+	 *   避免 Gson → Double 中转导致的小数精度 / 尾零丢失。
 	 */
 	public Map<String, Object> getSceneModelConfigWithRealtimeValues(int deviceId, User user) {
 	    Map<String, Object> result = new HashMap<String, Object>();
@@ -7649,8 +7653,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 
 	        // 2. 解析 config JSON
 	        Gson gson = new Gson();
-	        JsonObject cfgObj = new JsonParser().parse(cfgStr).getAsJsonObject();
+	        JsonParser jsonParser = new JsonParser();
+	        JsonObject cfgObj = jsonParser.parse(cfgStr).getAsJsonObject();
 	        JsonArray shapes = cfgObj.getAsJsonArray("shapes");
+	        AlarmShowStyle alarmShowStyle = MemoryDataManagerTask.getAlarmShowStyle();
 
 	        if (shapes == null || shapes.size() == 0) {
 	            result.put("id", sceneCfg.get("id"));
@@ -7667,25 +7673,91 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	            if (StringManagerUtils.isNotNull(devId)) involvedDevices.add(devId);
 	        }
 
-	        // 4. 按设备拉实时值，构建 valueLookup: key = "deviceId::COLUMN_UPPER"
-	        Map<String, String> valueLookup = new HashMap<String, String>();
+	        // 4. 按设备拉实时值
+	        //    ★ 用 allItemInfo 里的 column（大写）作为 key，与 shape.fieldName 语义一致
+	        //    ★ 值 / 报警等级 / 附加元信息全部用字符串原样传递，避免精度丢失
+	        Map<String, String> valueLookup       = new HashMap<String, String>();
+	        Map<String, String> alarmLevelLookup  = new HashMap<String, String>();
+	        Map<String, String> itemTypeLookup    = new HashMap<String, String>();
+	        Map<String, String> resModeLookup     = new HashMap<String, String>();
+	        Map<String, String> bitIndexLookup    = new HashMap<String, String>();
+	        Map<String, String> colDataTypeLookup = new HashMap<String, String>();
+
 	        for (String devId : involvedDevices) {
-	            List<Map<String, Object>> allItems = getDeviceAllItemValues(Integer.parseInt(devId), user);
-	            for (Map<String, Object> item : allItems) {
-	                Object colObj = item.get("column");
-	                if (colObj == null) continue;
-	                String col = colObj.toString().toUpperCase();
-	                if (col.isEmpty()) continue;
+	            String allItemJson = "[]";
+	            try {
+	                Map<String, Object> realData = getDeviceRealTimeMonitoringData(Integer.parseInt(devId), user);
+	                if (realData != null) {
+	                    Object allItem = realData.get("allItemInfo");
+	                    if (allItem != null) allItemJson = allItem.toString();
+	                }
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
 
-	                Object v = item.get("value");
-	                if (v == null || v.toString().isEmpty()) v = item.get("rawValue");
-	                if (v == null) continue;
+	            if (!StringManagerUtils.isNotNull(allItemJson) || "[]".equals(allItemJson.trim())) {
+	                continue;
+	            }
 
-	                valueLookup.put(devId + "::" + col, v.toString());
+	            JsonArray itemArr;
+	            try {
+	                itemArr = jsonParser.parse(allItemJson).getAsJsonArray();
+	            } catch (Exception e) {
+	                continue;
+	            }
+
+	            for (int i = 0; i < itemArr.size(); i++) {
+	                JsonElement el = itemArr.get(i);
+	                if (el == null || !el.isJsonObject()) continue;
+	                JsonObject item = el.getAsJsonObject();
+
+	                JsonElement colEl = item.get("column");
+	                if (colEl == null || colEl.isJsonNull()) continue;
+	                String col = colEl.getAsString();
+	                if (!StringManagerUtils.isNotNull(col)) continue;
+
+	                String key = devId + "::" + col.toUpperCase();
+
+	                // ---- 值：优先 value，其次 rawValue，字符串原样 ----
+	                String valueStr = null;
+	                JsonElement vEl = item.get("value");
+	                if (vEl != null && !vEl.isJsonNull()) {
+	                    valueStr = vEl.getAsString();
+	                }
+	                if (valueStr == null || valueStr.isEmpty()) {
+	                    JsonElement rawEl = item.get("rawValue");
+	                    if (rawEl != null && !rawEl.isJsonNull()) {
+	                        valueStr = rawEl.getAsString();
+	                    }
+	                }
+	                if (valueStr != null) {
+	                    valueLookup.put(key, valueStr);
+	                }
+
+	                // ---- 报警等级 ----
+	                String alarmStr = "0";
+	                JsonElement alarmEl = item.get("alarmLevel");
+	                if (alarmEl != null && !alarmEl.isJsonNull()) {
+	                    alarmStr = alarmEl.getAsString();
+	                }
+	                alarmLevelLookup.put(key, alarmStr);
+
+	                // ---- ★ 附加元信息（供前台双击查看历史数据 / 历史曲线用） ----
+	                JsonElement tEl = item.get("type");
+	                if (tEl != null && !tEl.isJsonNull())          itemTypeLookup.put(key, tEl.getAsString());
+
+	                JsonElement rEl = item.get("resolutionMode");
+	                if (rEl != null && !rEl.isJsonNull())          resModeLookup.put(key, rEl.getAsString());
+
+	                JsonElement bEl = item.get("bitIndex");
+	                if (bEl != null && !bEl.isJsonNull())          bitIndexLookup.put(key, bEl.getAsString());
+
+	                JsonElement dEl = item.get("columnDataType");
+	                if (dEl != null && !dEl.isJsonNull())          colDataTypeLookup.put(key, dEl.getAsString());
 	            }
 	        }
 
-	        // ★★★ 5. 遍历 shapes，把值写回 currentValue（这一步你之前漏了）
+	        // 5. 遍历 shapes，把值 + 报警等级 + 附加元信息一起写回
 	        for (int i = 0; i < shapes.size(); i++) {
 	            JsonObject s = shapes.get(i).getAsJsonObject();
 	            if (!s.has("deviceId") || s.get("deviceId").isJsonNull()) continue;
@@ -7695,16 +7767,34 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	            String fieldName = s.get("fieldName").getAsString();
 	            if (!StringManagerUtils.isNotNull(devId) || !StringManagerUtils.isNotNull(fieldName)) continue;
 
+	            // ★ fieldName 就是 allItemInfo 里的 column（语义一致）
 	            String key = devId + "::" + fieldName.toUpperCase();
+
+	            // 值
 	            if (valueLookup.containsKey(key)) {
 	                s.addProperty("currentValue", valueLookup.get(key));
 	            } else {
 	                s.addProperty("currentValue", "--");
 	            }
+
+	            // 报警等级
+	            s.addProperty("alarmLevel",
+	                alarmLevelLookup.containsKey(key) ? alarmLevelLookup.get(key) : "0");
+
+	            // ★ 双击查看历史数据 / 历史曲线所需的附加元信息
+	            s.addProperty("itemType",
+	                itemTypeLookup.containsKey(key) ? itemTypeLookup.get(key) : "");
+	            s.addProperty("resolutionMode",
+	                resModeLookup.containsKey(key) ? resModeLookup.get(key) : "");
+	            s.addProperty("bitIndex",
+	                bitIndexLookup.containsKey(key) ? bitIndexLookup.get(key) : "");
+	            s.addProperty("columnDataType",
+	                colDataTypeLookup.containsKey(key) ? colDataTypeLookup.get(key) : "");
 	        }
 
 	        result.put("id", sceneCfg.get("id"));
 	        result.put("config", gson.toJson(cfgObj));
+	        result.put("alarmShowStyle", gson.toJson(alarmShowStyle));
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
@@ -8689,6 +8779,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		    }
 		}
 		result.put("allItemInfo", info_json.toString());
+		result.put("AlarmShowStyle", alarmShowStyle!=null?new Gson().toJson(alarmShowStyle):"{}");
 		return result;
 	}
 }

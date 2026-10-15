@@ -2926,6 +2926,22 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				if(reportTemplate!=null && reportTemplate.getClasses1()!=null){
 					template=reportTemplate.getClasses1();
 				}
+			}else if(StringManagerUtils.stringToInteger(unitClasses)==2){
+				if(reportTemplate!=null && reportTemplate.getClasses2()!=null){
+					if("0".equalsIgnoreCase(reportType)){
+						if(reportTemplate.getClasses2().getSingleWellRangeReportTemplate()!=null && reportTemplate.getClasses2().getSingleWellRangeReportTemplate().size()>0){
+							template=reportTemplate.getClasses2().getSingleWellRangeReportTemplate().get(0);
+						}
+					}else if("1".equalsIgnoreCase(reportType)){
+						if(reportTemplate.getClasses2().getProductionReportTemplate()!=null && reportTemplate.getClasses2().getProductionReportTemplate().size()>0){
+							template=reportTemplate.getClasses2().getProductionReportTemplate().get(0);
+						}
+					}else if("2".equalsIgnoreCase(reportType)){
+						if(reportTemplate.getClasses2().getSingleWellDailyReportTemplate()!=null && reportTemplate.getClasses2().getSingleWellDailyReportTemplate().size()>0){
+							template=reportTemplate.getClasses2().getSingleWellDailyReportTemplate().get(0);
+						}
+					}
+				}
 			}else{
 				List<Template> templateList=null;
 				if(StringManagerUtils.stringToInteger(reportType)==0){
@@ -2951,6 +2967,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		rawData.append("[");
 		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths_zh_CN().size()>0 || template.getColumnWidths_en().size()>0 || template.getColumnWidths_ru().size()>0  )   ){
 			Map<String,DataMapping> loadProtocolMappingColumnMap=MemoryDataManagerTask.getProtocolMappingColumn();
+			
+			List<Integer> hiddenColumns=template.getHiddenColumns();
 			
 			int columnCoumnt=template.getColumnWidths_zh_CN().size();
 			if("zh_CN".equalsIgnoreCase(language)){
@@ -3054,170 +3072,172 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			int index=1;
 			for(int i=0;i<columnCoumnt;i++){
-				String headerName="";
-				if(template.getHeader().size()>0){
-					if("zh_CN".equalsIgnoreCase(language)){
-						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN().get(i);
-						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_zh_CN().size()>=i ){
-							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_zh_CN().get(i);
+				if( !(hiddenColumns!=null && hiddenColumns.indexOf(index-1)>=0) ){
+					String headerName="";
+					if(template.getHeader().size()>0){
+						if("zh_CN".equalsIgnoreCase(language)){
+							headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN().get(i);
+							if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_zh_CN().size()>=i ){
+								headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_zh_CN().get(i);
+							}
+						}else if("en".equalsIgnoreCase(language)){
+							headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_en().get(i);
+							if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_en().size()>=i ){
+								headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_en().get(i);
+							}
+						}else if("ru".equalsIgnoreCase(language)){
+							headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_ru().get(i);
+							if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_ru().size()>=i ){
+								headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_ru().get(i);
+							}
 						}
-					}else if("en".equalsIgnoreCase(language)){
-						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_en().get(i);
-						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_en().size()>=i ){
-							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_en().get(i);
-						}
-					}else if("ru".equalsIgnoreCase(language)){
-						headerName=template.getHeader().get(template.getHeader().size()-1).getTitle_ru().get(i);
-						if( (!StringManagerUtils.isNotNull(headerName)) && template.getHeader().size()>=2 &&  template.getHeader().get(template.getHeader().size()-2).getTitle_ru().size()>=i ){
-							headerName=template.getHeader().get(template.getHeader().size()-2).getTitle_ru().get(i);
+						
+						String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
+						if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode()) ||
+							    "oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode()) ||
+							    "oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())
+							){
+							if ("stere".equalsIgnoreCase(productionUnit)) {
+							    headerName = headerName.replaceAll("t/d", "m^3/d");
+							} else if ("ton".equalsIgnoreCase(productionUnit)) {
+							    headerName = headerName.replaceAll("m^3/d", "t/d");
+							}
 						}
 					}
 					
-					String productionUnit = Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
-					if ("oilWell_PumpingProductionReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpProductionReoirt".equalsIgnoreCase(template.getTemplateCode()) ||
-						    "oilWell_PumpingDailyReport".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPumpDailyReport".equalsIgnoreCase(template.getTemplateCode()) ||
-						    "oilWell_Pumping".equalsIgnoreCase(template.getTemplateCode()) || "oilWell_ScrewPump".equalsIgnoreCase(template.getTemplateCode())
-						){
-						if ("stere".equalsIgnoreCase(productionUnit)) {
-						    headerName = headerName.replaceAll("t/d", "m^3/d");
-						} else if ("ton".equalsIgnoreCase(productionUnit)) {
-						    headerName = headerName.replaceAll("m^3/d", "t/d");
+					String itemName="";
+					String itemCode="";
+					String itemBitIndex="";
+					
+					String unit="";
+					String dataSource="";
+					
+					String totalType="";
+					
+					String sort="";
+					String showLevel="";
+					
+					String prec="";
+					
+					boolean sumSign=false;
+					boolean averageSign=false;
+					
+					String reportCurveConf="\"\"";
+					String reportCurveConfShowValue="";
+					
+					String curveStatType="";
+					
+					String dataType="";
+					
+					String action="config";
+					
+					for(int k=0;k<itemsList.size();k++){
+						if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==index){
+							itemName=itemsList.get(k);
+							itemCode=itemsCodeList.get(k);
+							unit=itemsUnitList.get(k);
+							itemBitIndex=itemsBitIndexList.get(k);
+							
+							sort=itemsSortList.get(k);
+							showLevel=itemsShowLevelList.get(k);
+							
+							prec=itemsPrecList.get(k);
+							
+							if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
+								if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
+									sumSign=true;
+								}else{
+									sumSign=false;
+								}
+							}
+							
+							if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
+								if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
+									averageSign=true;
+								}else{
+									averageSign=false;
+								}
+							}
+							
+							reportCurveConf=reportCurveConfList.get(k);
+							
+							CurveConf reportCurveConfObj=null;
+							if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
+								type = new TypeToken<CurveConf>() {}.getType();
+								reportCurveConfObj=gson.fromJson(reportCurveConf, type);
+							}
+							
+							if(reportCurveConfObj!=null){
+								reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
+							}
+							
+							
+							String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
+							if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
+								if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
+									curveStatType=languageResourceMap.get("curveStatType_sum");
+								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
+									curveStatType=languageResourceMap.get("curveStatType_avg");
+								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
+									curveStatType=languageResourceMap.get("curveStatType_max");
+								}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
+									curveStatType=languageResourceMap.get("curveStatType_min");
+								}
+							}
+							
+							dataSource=dataSourceList.get(k);
+							totalType=itemsTotalTypeList.get(k);
+							dataType=dataTypeList.get(k);
+							break;
 						}
 					}
+					
+					result_json.append("{"
+							+ "\"id\":"+(index)+","
+							+ "\"headerName\":\""+headerName+"\","
+							+ "\"itemName\":\""+itemName+"\","
+							+ "\"unit\":\""+unit+"\","
+							+ "\"dataSource\":\""+dataSource+"\","
+							+ "\"totalType\":\""+totalType+"\","
+							+ "\"showLevel\":\""+showLevel+"\","
+							+ "\"sort\":\""+sort+"\","
+							+ "\"prec\":\""+prec+"\","
+							+ "\"sumSign\":"+sumSign+","
+							+ "\"averageSign\":"+averageSign+","
+							+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+							+ "\"reportCurveConf\":"+reportCurveConf+","
+							+ "\"curveStatType\":\""+curveStatType+"\","
+							+ "\"dataType\":\""+dataType+"\","
+							+ "\"itemCode\":\""+itemCode+"\","
+							+ "\"itemBitIndex\":\""+itemBitIndex+"\","
+							+ "\"remark\":\"\","
+							+ "\"action\":\""+action+"\","
+							+ "\"dataChange\":0"
+							+ "},");
+					
+					rawData.append("{"
+							+ "\"id\":"+(index)+","
+							+ "\"headerName\":\""+headerName+"\","
+							+ "\"itemName\":\""+itemName+"\","
+							+ "\"unit\":\""+unit+"\","
+							+ "\"dataSource\":\""+dataSource+"\","
+							+ "\"totalType\":\""+totalType+"\","
+							+ "\"showLevel\":\""+showLevel+"\","
+							+ "\"sort\":\""+sort+"\","
+							+ "\"prec\":\""+prec+"\","
+							+ "\"sumSign\":"+sumSign+","
+							+ "\"averageSign\":"+averageSign+","
+							+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
+							+ "\"reportCurveConf\":"+reportCurveConf+","
+							+ "\"curveStatType\":\""+curveStatType+"\","
+							+ "\"dataType\":\""+dataType+"\","
+							+ "\"itemCode\":\""+itemCode+"\","
+							+ "\"itemBitIndex\":\""+itemBitIndex+"\","
+							+ "\"remark\":\"\","
+							+ "\"action\":\""+action+"\","
+							+ "\"dataChange\":0"
+							+ "},");
 				}
-				
-				String itemName="";
-				String itemCode="";
-				String itemBitIndex="";
-				
-				String unit="";
-				String dataSource="";
-				
-				String totalType="";
-				
-				String sort="";
-				String showLevel="";
-				
-				String prec="";
-				
-				boolean sumSign=false;
-				boolean averageSign=false;
-				
-				String reportCurveConf="\"\"";
-				String reportCurveConfShowValue="";
-				
-				String curveStatType="";
-				
-				String dataType="";
-				
-				String action="config";
-				
-				for(int k=0;k<itemsList.size();k++){
-					if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==index){
-						itemName=itemsList.get(k);
-						itemCode=itemsCodeList.get(k);
-						unit=itemsUnitList.get(k);
-						itemBitIndex=itemsBitIndexList.get(k);
-						
-						sort=itemsSortList.get(k);
-						showLevel=itemsShowLevelList.get(k);
-						
-						prec=itemsPrecList.get(k);
-						
-						if(StringManagerUtils.isNum(sumSignList.get(k))||StringManagerUtils.isNumber(sumSignList.get(k))){
-							if(StringManagerUtils.stringToInteger(sumSignList.get(k))==1){
-								sumSign=true;
-							}else{
-								sumSign=false;
-							}
-						}
-						
-						if(StringManagerUtils.isNum(averageSignList.get(k))||StringManagerUtils.isNumber(averageSignList.get(k))){
-							if(StringManagerUtils.stringToInteger(averageSignList.get(k))==1){
-								averageSign=true;
-							}else{
-								averageSign=false;
-							}
-						}
-						
-						reportCurveConf=reportCurveConfList.get(k);
-						
-						CurveConf reportCurveConfObj=null;
-						if(StringManagerUtils.isNotNull(reportCurveConf) && !"\"\"".equals(reportCurveConf)){
-							type = new TypeToken<CurveConf>() {}.getType();
-							reportCurveConfObj=gson.fromJson(reportCurveConf, type);
-						}
-						
-						if(reportCurveConfObj!=null){
-							reportCurveConfShowValue=reportCurveConfObj.getSort()+";"+(reportCurveConfObj.getYAxisOpposite()?languageResourceMap.get("right"):languageResourceMap.get("left"))+";"+reportCurveConfObj.getColor();
-						}
-						
-						
-						String curveStatTypeStr=curveStatTypeList.get(k).replaceAll("null", "");
-						if(StringManagerUtils.isNum(curveStatTypeStr) || StringManagerUtils.isNumber(curveStatTypeStr)){
-							if(StringManagerUtils.stringToInteger(curveStatTypeStr)==1){
-								curveStatType=languageResourceMap.get("curveStatType_sum");
-							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==2){
-								curveStatType=languageResourceMap.get("curveStatType_avg");
-							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==3){
-								curveStatType=languageResourceMap.get("curveStatType_max");
-							}else if(StringManagerUtils.stringToInteger(curveStatTypeStr)==4){
-								curveStatType=languageResourceMap.get("curveStatType_min");
-							}
-						}
-						
-						dataSource=dataSourceList.get(k);
-						totalType=itemsTotalTypeList.get(k);
-						dataType=dataTypeList.get(k);
-						break;
-					}
-				}
-				
-				result_json.append("{"
-						+ "\"id\":"+(index)+","
-						+ "\"headerName\":\""+headerName+"\","
-						+ "\"itemName\":\""+itemName+"\","
-						+ "\"unit\":\""+unit+"\","
-						+ "\"dataSource\":\""+dataSource+"\","
-						+ "\"totalType\":\""+totalType+"\","
-						+ "\"showLevel\":\""+showLevel+"\","
-						+ "\"sort\":\""+sort+"\","
-						+ "\"prec\":\""+prec+"\","
-						+ "\"sumSign\":"+sumSign+","
-						+ "\"averageSign\":"+averageSign+","
-						+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
-						+ "\"reportCurveConf\":"+reportCurveConf+","
-						+ "\"curveStatType\":\""+curveStatType+"\","
-						+ "\"dataType\":\""+dataType+"\","
-						+ "\"itemCode\":\""+itemCode+"\","
-						+ "\"itemBitIndex\":\""+itemBitIndex+"\","
-						+ "\"remark\":\"\","
-						+ "\"action\":\""+action+"\","
-						+ "\"dataChange\":0"
-						+ "},");
-				
-				rawData.append("{"
-						+ "\"id\":"+(index)+","
-						+ "\"headerName\":\""+headerName+"\","
-						+ "\"itemName\":\""+itemName+"\","
-						+ "\"unit\":\""+unit+"\","
-						+ "\"dataSource\":\""+dataSource+"\","
-						+ "\"totalType\":\""+totalType+"\","
-						+ "\"showLevel\":\""+showLevel+"\","
-						+ "\"sort\":\""+sort+"\","
-						+ "\"prec\":\""+prec+"\","
-						+ "\"sumSign\":"+sumSign+","
-						+ "\"averageSign\":"+averageSign+","
-						+ "\"reportCurveConfShowValue\":\""+reportCurveConfShowValue+"\","
-						+ "\"reportCurveConf\":"+reportCurveConf+","
-						+ "\"curveStatType\":\""+curveStatType+"\","
-						+ "\"dataType\":\""+dataType+"\","
-						+ "\"itemCode\":\""+itemCode+"\","
-						+ "\"itemBitIndex\":\""+itemBitIndex+"\","
-						+ "\"remark\":\"\","
-						+ "\"action\":\""+action+"\","
-						+ "\"dataChange\":0"
-						+ "},");
 				index++;
 			}
 		}
@@ -5677,6 +5697,31 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(reportTemplate!=null && reportTemplate.getClasses1()!=null){
 			Gson gson=new Gson();
 			result=gson.toJson(reportTemplate.getClasses1()).replaceAll("deviceNameLabel", "label").replaceAll("label", "***");
+		}
+		
+		return result;
+	}
+	
+	public String getClasses2ReportTemplateData(String reportType){
+		ReportTemplate reportTemplate=MemoryDataManagerTask.getReportTemplateConfig();
+		String result="{}";
+		
+		if(reportTemplate!=null && reportTemplate.getClasses2()!=null){
+			Gson gson=new Gson();
+			if("0".equalsIgnoreCase(reportType)){
+				if(reportTemplate.getClasses2().getSingleWellRangeReportTemplate()!=null && reportTemplate.getClasses2().getSingleWellRangeReportTemplate().size()>0){
+					result=gson.toJson(reportTemplate.getClasses2().getSingleWellRangeReportTemplate().get(0)).replaceAll("deviceNameLabel", "label").replaceAll("label", "***");
+				}
+			}else if("1".equalsIgnoreCase(reportType)){
+				if(reportTemplate.getClasses2().getProductionReportTemplate()!=null && reportTemplate.getClasses2().getProductionReportTemplate().size()>0){
+					result=gson.toJson(reportTemplate.getClasses2().getProductionReportTemplate().get(0)).replaceAll("orgNameLabel", "label").replaceAll("label", "***");
+				}
+			}else if("2".equalsIgnoreCase(reportType)){
+				if(reportTemplate.getClasses2().getSingleWellDailyReportTemplate()!=null && reportTemplate.getClasses2().getSingleWellDailyReportTemplate().size()>0){
+					result=gson.toJson(reportTemplate.getClasses2().getSingleWellDailyReportTemplate().get(0)).replaceAll("deviceNameLabel", "label").replaceAll("label", "***");
+				}
+			}
+			
 		}
 		
 		return result;

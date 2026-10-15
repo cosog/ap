@@ -1583,6 +1583,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getClasses2ReportTemplateData")
+	public String getClasses2ReportTemplateData() throws Exception {
+		String json = "";
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		json = acquisitionUnitItemManagerService.getClasses2ReportTemplateData(reportType);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getModbusProtocolNumAlarmItemsConfigData")
 	public String getModbusProtocolNumAlarmItemsConfigData() throws Exception {
 		String protocolCode = ParamUtils.getParameter(request, "protocolCode");
@@ -1769,6 +1785,31 @@ public class AcquisitionUnitManagerController extends BaseController {
 		}
 		String json = "";
 		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(calculateType,reportType,templateCode,unitId,classes,unitClasses,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getClasses2ReportUnitTotalCalItemsConfigData")
+	public String getClasses2ReportUnitTotalCalItemsConfigData() throws Exception {
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String templateCode = ParamUtils.getParameter(request, "templateCode");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String unitClasses = ParamUtils.getParameter(request, "unitClasses");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = "";
+		json = acquisitionUnitItemManagerService.getReportUnitTotalCalItemsConfigData(calculateType,reportType,templateCode,unitId,classes,"2",language);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

@@ -2555,20 +2555,47 @@ var grantReportTotalCalItemsPermission = function (calculateType) {
 
 function getReportType() {
     var reportType = 0;
-    var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportConfigPanel_Id");
-    if(tabPanel!=undefined){
-    	var activeId = tabPanel.getActiveTab().id;
-        if (activeId == "ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id") {
-            var singleWellReportActiveId = Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
-            if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id') {
-                reportType = 2;
-            } else if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id') {
-                reportType = 0;
-            }
-        } else if (activeId == "ModbusProtocolReportUnitProductionReportTemplatePanel_Id") {
-            reportType = 1;
+    
+    var unitClasses = 0;
+    var reportUnitConfigTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
+    if (reportUnitConfigTreeSelection.length > 0) {
+        var record = reportUnitConfigTreeSelection[0];
+        if (record.data.classes == 1) {
+        	unitClasses = record.data.unitClasses;
+        	calculateType = record.data.calculateType;
+            unitName = record.data.text;
+            classes = record.data.classes;
         }
     }
+    
+    if(unitClasses==0){
+    	var tabPanel = Ext.getCmp("ModbusProtocolReportUnitReportConfigPanel_Id");
+        if(tabPanel!=undefined){
+        	var activeId = tabPanel.getActiveTab().id;
+            if (activeId == "ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id") {
+                var singleWellReportActiveId = Ext.getCmp("ModbusProtocolReportUnitSingleWellReportTemplatePanel_Id").getActiveTab().id;
+                if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellDailyReportTemplatePanel_Id') {
+                    reportType = 2;
+                } else if (singleWellReportActiveId == 'ModbusProtocolReportUnitSingleWellRangeReportTemplatePanel_Id') {
+                    reportType = 0;
+                }
+            } else if (activeId == "ModbusProtocolReportUnitProductionReportTemplatePanel_Id") {
+                reportType = 1;
+            }
+        }
+    }else if(unitClasses==2){
+    	var tabPanel = Ext.getCmp("ModbusProtocolReportUnitClasses2ReportConfigPanel_Id");
+        if(tabPanel!=undefined){
+        	var activeId = tabPanel.getActiveTab().id;
+            if (activeId == "ModbusProtocolReportUnitClasses2SingleWellReportTemplatePanel_Id") {
+            	 reportType = 0;
+            } else if (activeId == "ModbusProtocolReportUnitClasses2ProductionReportTemplatePanel_Id") {
+                reportType = 1;
+            }
+        }
+    }
+    
+    
     
     return reportType;
 }
@@ -3091,5 +3118,1086 @@ var HydrologicalWellDailyReportContentHandsontableHelper = {
             hydrologicalWellDailyReportContentHandsontableHelper.AllData = [];
         }
         return hydrologicalWellDailyReportContentHandsontableHelper;
+    }
+};
+
+function CreateClasses2ReportTemplateInfoTable() {
+	var tabPanel=Ext.getCmp("ModbusProtocolReportUnitClasses2ReportConfigPanel_Id");
+	var activeId = tabPanel.getActiveTab().id;
+	if(activeId=='ModbusProtocolReportUnitClasses2SingleWellReportTemplatePanel_Id'){
+		CreateClasses2SingleWellRangeReportTemplateInfoTable();
+	}else if(activeId=='ModbusProtocolReportUnitClasses2ProductionReportTemplatePanel_Id'){
+		CreateClasses2ProductionDailyReportTemplateInfoTable();
+	}
+}
+
+function CreateClasses2SingleWellRangeReportTemplateInfoTable() {
+	if (singleWellRangeClasses2ReportTemplateHandsontableHelper != null) {
+        if (singleWellRangeClasses2ReportTemplateHandsontableHelper.hot != undefined) {
+            singleWellRangeClasses2ReportTemplateHandsontableHelper.hot.destroy();
+        }
+        singleWellRangeClasses2ReportTemplateHandsontableHelper = null;
+    }
+	
+	var calculateType = 0;
+    var unitId = 0;
+    var unitName = '';
+    var classes = 0;
+    var reportUnitConfigTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
+    if (reportUnitConfigTreeSelection.length > 0) {
+        var record = reportUnitConfigTreeSelection[0];
+        if (record.data.classes == 1) {
+            unitId = record.data.id;
+        }
+        calculateType = record.data.calculateType;
+        unitName = record.data.text;
+        classes = record.data.classes;
+    }
+	
+    if(Ext.getCmp("ReportUnitClasses2SingleWellRangeReportTemplateTableInfoPanel_Id")!=undefined){
+        Ext.getCmp("ReportUnitClasses2SingleWellRangeReportTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
+    Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/acquisitionUnitManagerController/getClasses2ReportTemplateData',
+        success: function (response) {
+            if(Ext.getCmp("ReportUnitClasses2SingleWellRangeReportTemplateTableInfoPanel_Id")!=undefined){
+                Ext.getCmp("ReportUnitClasses2SingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
+        	}
+            if (classes == 0) {
+                Ext.getCmp("ReportUnitClasses2SingleWellRangeReportTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.reportTemplate);
+            } else {
+                Ext.getCmp("ReportUnitClasses2SingleWellRangeReportTemplateTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.reportTemplate);
+            }
+            var result = Ext.JSON.decode(response.responseText);
+            if (singleWellRangeClasses2ReportTemplateHandsontableHelper == null || singleWellRangeClasses2ReportTemplateHandsontableHelper.hot == undefined) {
+                singleWellRangeClasses2ReportTemplateHandsontableHelper = SingleWellRangeClasses2ReportTemplateHandsontableHelper.createNew("ReportUnitClasses2SingleWellRangeReportTemplateTableInfoDiv_id", "ReportUnitClasses2SingleWellRangeReportTemplateTableInfoContainer", result);
+                singleWellRangeClasses2ReportTemplateHandsontableHelper.createTable();
+            }
+        },
+        failure: function () {
+        	if(Ext.getCmp("ReportUnitClasses2SingleWellRangeReportTemplateTableInfoPanel_Id")!=undefined){
+                Ext.getCmp("ReportUnitClasses2SingleWellRangeReportTemplateTableInfoPanel_Id").getEl().unmask();
+        	}
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
+        },
+        params: {
+        	classes:classes,
+        	unitId:unitId,
+        	reportType: 0
+        }
+    });
+}
+
+var SingleWellRangeClasses2ReportTemplateHandsontableHelper = {
+    createNew: function (divid, containerid, templateData) {
+        var singleWellRangeClasses2ReportTemplateHandsontableHelper = {};
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData = templateData;
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.get_data = {};
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.data = [];
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.hot = '';
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.container = document.getElementById(divid);
+        
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.hiddenColumns=templateData.hiddenColumns;
+
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.colWidths=[];
+        if(loginUserLanguage=='zh_CN'){
+        	singleWellRangeClasses2ReportTemplateHandsontableHelper.colWidths=singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.columnWidths_zh_CN
+        }else if(loginUserLanguage=='en'){
+        	singleWellRangeClasses2ReportTemplateHandsontableHelper.colWidths=singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.columnWidths_en
+	    }else if(loginUserLanguage=='ru'){
+        	singleWellRangeClasses2ReportTemplateHandsontableHelper.colWidths=singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.columnWidths_ru
+	    }
+
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.initData = function () {
+            singleWellRangeClasses2ReportTemplateHandsontableHelper.data = [];
+            if(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header!=undefined){
+            	for (var i = 0; i < singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header.length; i++) {
+            		if(loginUserLanguage=='zh_CN'){
+            			singleWellRangeClasses2ReportTemplateHandsontableHelper.data.push(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].title_zh_CN);
+            		}else if(loginUserLanguage=='en'){
+            			singleWellRangeClasses2ReportTemplateHandsontableHelper.data.push(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].title_en);
+            		}else if(loginUserLanguage=='ru'){
+            			singleWellRangeClasses2ReportTemplateHandsontableHelper.data.push(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].title_ru);
+            		} 
+                }
+            }
+        }
+
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (singleWellRangeClasses2ReportTemplateHandsontableHelper != null && singleWellRangeClasses2ReportTemplateHandsontableHelper.hot != null) {
+                for (var i = 0; i < singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header.length; i++) {
+                    if (row == i) {
+                        if (isNotVal(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle)) {
+                            if (isNotVal(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontWeight)) {
+                                td.style.fontWeight = singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontWeight;
+                            }
+                            if (isNotVal(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize)) {
+                                td.style.fontSize = singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontSize;
+                            }
+                            if (isNotVal(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily)) {
+//                                td.style.fontFamily = singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.fontFamily;
+                            }
+                            if (isNotVal(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.height)) {
+                                td.style.height = singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.height;
+                            }
+                            if (isNotVal(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.color)) {
+                                td.style.color = singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.color;
+                            }
+                            if (isNotVal(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor)) {
+                                td.style.backgroundColor = singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.backgroundColor;
+                            }
+                            if (isNotVal(singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.textAlign)) {
+                                td.style.textAlign = singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header[i].tdStyle.textAlign;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(242, 242, 242)';
+            if (row <= 2 && row >= 1) {
+                td.style.fontWeight = 'bold';
+                td.style.fontSize = '13px';
+                td.style.color = 'rgb(0, 0, 51)';
+//                td.style.fontFamily = 'SimSun'; //SimHei-黑体 SimSun-宋体
+            }
+        }
+
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (row < 1) {
+                td.style.fontWeight = 'bold';
+                td.style.fontSize = '25px';
+//                td.style.fontFamily = 'SimSun';
+                td.style.height = '50px';
+            }
+        }
+
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(242, 242, 242)';
+            if (row < 3) {
+                td.style.fontWeight = 'bold';
+                td.style.fontSize = '5px';
+//                td.style.fontFamily = 'SimHei';
+            }
+        }
+
+
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(183, 222, 232)';
+        }
+
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.addBgGreen = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(216, 228, 188)';
+        }
+
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.display = 'none';
+        }
+
+        // 实现标题居中
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.titleCenter = function () {
+            $(containerid).width($($('.wtHider')[0]).width());
+        }
+
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.createTable = function () {
+            singleWellRangeClasses2ReportTemplateHandsontableHelper.container.innerHTML = "";
+            singleWellRangeClasses2ReportTemplateHandsontableHelper.hot = new Handsontable(singleWellRangeClasses2ReportTemplateHandsontableHelper.container, {
+                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
+                data: singleWellRangeClasses2ReportTemplateHandsontableHelper.data,
+                
+                hiddenColumns: {
+                    columns: singleWellRangeClasses2ReportTemplateHandsontableHelper.hiddenColumns,
+                    indicators: false,
+                    copyPasteEnabled: false
+                },
+                
+                fixedRowsTop: singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.fixedRowsTop,
+                fixedRowsBottom: singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.fixedRowsBottom,
+                //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
+                rowHeaders: false,
+                colHeaders: false,
+                rowHeights: singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.rowHeights,
+                colWidths: singleWellRangeClasses2ReportTemplateHandsontableHelper.colWidths,
+//                colWidths: [80, 100, 80, 80, 120, 120, 100, 100, 100, 100, 100, 100, 160, 1000],
+                //					rowHeaders: true, //显示行头
+                rowHeaders(index) {
+                    return 'Row ' + (index + 1);
+                },
+                //					colHeaders: true, //显示列头
+                colHeaders(index) {
+                    return 'Col ' + (index + 1);
+                },
+                stretchH: 'all',
+                columnSorting: true, //允许排序
+                allowInsertRow: false,
+                sortIndicator: true,
+                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                filters: true,
+                renderAllRows: true,
+                search: true,
+                mergeCells: singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.mergeCells,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    var visualRowIndex = this.instance.toVisualRow(row);
+                    var visualColIndex = this.instance.toVisualColumn(col);
+                    cellProperties.editor = false;
+                    cellProperties.renderer = singleWellRangeClasses2ReportTemplateHandsontableHelper.addStyle;
+                    return cellProperties;
+                },
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(coords.col>=0 && coords.row>=0 && singleWellRangeClasses2ReportTemplateHandsontableHelper!=null
+                		&& singleWellRangeClasses2ReportTemplateHandsontableHelper.hot!=''
+                		&& singleWellRangeClasses2ReportTemplateHandsontableHelper.hot!=undefined 
+                		&& singleWellRangeClasses2ReportTemplateHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=singleWellRangeClasses2ReportTemplateHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
+            });
+        }
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.getData = function (data) {
+
+        }
+
+        var init = function () {
+            singleWellRangeClasses2ReportTemplateHandsontableHelper.initData();
+        }
+
+        init();
+        return singleWellRangeClasses2ReportTemplateHandsontableHelper;
+    }
+};
+
+function CreateClasses2ProductionDailyReportTemplateInfoTable() {
+	if (productionReportTemplateClasses2HandsontableHelper != null) {
+        if (productionReportTemplateClasses2HandsontableHelper.hot != undefined) {
+            productionReportTemplateClasses2HandsontableHelper.hot.destroy();
+        }
+        productionReportTemplateClasses2HandsontableHelper = null;
+    }
+	
+	var calculateType = 0;
+    var unitId = 0;
+    var unitName = '';
+    var classes = 0;
+    var reportUnitConfigTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
+    if (reportUnitConfigTreeSelection.length > 0) {
+        var record = reportUnitConfigTreeSelection[0];
+        if (record.data.classes == 1) {
+            unitId = record.data.id;
+        }
+        calculateType = record.data.calculateType;
+        unitName = record.data.text;
+        classes = record.data.classes;
+    }
+	
+    if(Ext.getCmp("ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoPanel_Id")!=undefined){
+        Ext.getCmp("ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
+    Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/acquisitionUnitManagerController/getClasses2ReportTemplateData',
+        success: function (response) {
+            if(Ext.getCmp("ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoPanel_Id")!=undefined){
+                Ext.getCmp("ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoPanel_Id").getEl().unmask();
+        	}
+            if (classes == 0) {
+                Ext.getCmp("ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoPanel_Id").setTitle(loginUserLanguageResource.reportTemplate);
+            } else {
+                Ext.getCmp("ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoPanel_Id").setTitle(unitName+'/'+loginUserLanguageResource.reportTemplate);
+            }
+            var result = Ext.JSON.decode(response.responseText);
+            if (productionReportTemplateClasses2HandsontableHelper == null || productionReportTemplateClasses2HandsontableHelper.hot == undefined) {
+                productionReportTemplateClasses2HandsontableHelper = ProductionReportTemplateClasses2HandsontableHelper.createNew("ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoDiv_id", "ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoContainer", result);
+                productionReportTemplateClasses2HandsontableHelper.createTable();
+            }
+        },
+        failure: function () {
+        	if(Ext.getCmp("ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoPanel_Id")!=undefined){
+                Ext.getCmp("ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoPanel_Id").getEl().unmask();
+        	}
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
+        },
+        params: {
+        	classes:classes,
+        	unitId:unitId,
+        	reportType: 1
+        }
+    });
+}
+
+var ProductionReportTemplateClasses2HandsontableHelper = {
+    createNew: function (divid, containerid, templateData) {
+        var productionReportTemplateClasses2HandsontableHelper = {};
+        productionReportTemplateClasses2HandsontableHelper.templateData = templateData;
+        productionReportTemplateClasses2HandsontableHelper.get_data = {};
+        productionReportTemplateClasses2HandsontableHelper.data = [];
+        productionReportTemplateClasses2HandsontableHelper.hot = '';
+        productionReportTemplateClasses2HandsontableHelper.container = document.getElementById(divid);
+        
+        productionReportTemplateClasses2HandsontableHelper.hiddenColumns=templateData.hiddenColumns;
+
+        productionReportTemplateClasses2HandsontableHelper.colWidths=[];
+        if(loginUserLanguage=='zh_CN'){
+        	productionReportTemplateClasses2HandsontableHelper.colWidths=productionReportTemplateClasses2HandsontableHelper.templateData.columnWidths_zh_CN
+        }else if(loginUserLanguage=='en'){
+        	productionReportTemplateClasses2HandsontableHelper.colWidths=productionReportTemplateClasses2HandsontableHelper.templateData.columnWidths_en
+	    }else if(loginUserLanguage=='ru'){
+        	productionReportTemplateClasses2HandsontableHelper.colWidths=productionReportTemplateClasses2HandsontableHelper.templateData.columnWidths_ru
+	    }
+
+        productionReportTemplateClasses2HandsontableHelper.initData = function () {
+            productionReportTemplateClasses2HandsontableHelper.data = [];
+            if(productionReportTemplateClasses2HandsontableHelper.templateData.header!=undefined){
+            	for (var i = 0; i < productionReportTemplateClasses2HandsontableHelper.templateData.header.length; i++) {
+            		if(loginUserLanguage=='zh_CN'){
+            			productionReportTemplateClasses2HandsontableHelper.data.push(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].title_zh_CN);
+            		}else if(loginUserLanguage=='en'){
+            			productionReportTemplateClasses2HandsontableHelper.data.push(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].title_en);
+            		}else if(loginUserLanguage=='ru'){
+            			productionReportTemplateClasses2HandsontableHelper.data.push(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].title_ru);
+            		} 
+                }
+            }
+        }
+
+        productionReportTemplateClasses2HandsontableHelper.addStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (productionReportTemplateClasses2HandsontableHelper != null && productionReportTemplateClasses2HandsontableHelper.hot != null) {
+                for (var i = 0; i < productionReportTemplateClasses2HandsontableHelper.templateData.header.length; i++) {
+                    if (row == i) {
+                        if (isNotVal(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle)) {
+                            if (isNotVal(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.fontWeight)) {
+                                td.style.fontWeight = productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.fontWeight;
+                            }
+                            if (isNotVal(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.fontSize)) {
+                                td.style.fontSize = productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.fontSize;
+                            }
+                            if (isNotVal(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.fontFamily)) {
+//                                td.style.fontFamily = productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.fontFamily;
+                            }
+                            if (isNotVal(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.height)) {
+                                td.style.height = productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.height;
+                            }
+                            if (isNotVal(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.color)) {
+                                td.style.color = productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.color;
+                            }
+                            if (isNotVal(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.backgroundColor)) {
+                                td.style.backgroundColor = productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.backgroundColor;
+                            }
+                            if (isNotVal(productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.textAlign)) {
+                                td.style.textAlign = productionReportTemplateClasses2HandsontableHelper.templateData.header[i].tdStyle.textAlign;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        productionReportTemplateClasses2HandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(242, 242, 242)';
+            if (row <= 2 && row >= 1) {
+                td.style.fontWeight = 'bold';
+                td.style.fontSize = '13px';
+                td.style.color = 'rgb(0, 0, 51)';
+//                td.style.fontFamily = 'SimSun'; //SimHei-黑体 SimSun-宋体
+            }
+        }
+
+        productionReportTemplateClasses2HandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (row < 1) {
+                td.style.fontWeight = 'bold';
+                td.style.fontSize = '25px';
+//                td.style.fontFamily = 'SimSun';
+                td.style.height = '50px';
+            }
+        }
+
+        productionReportTemplateClasses2HandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(242, 242, 242)';
+            if (row < 3) {
+                td.style.fontWeight = 'bold';
+                td.style.fontSize = '5px';
+//                td.style.fontFamily = 'SimHei';
+            }
+        }
+
+
+        productionReportTemplateClasses2HandsontableHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(183, 222, 232)';
+        }
+
+        productionReportTemplateClasses2HandsontableHelper.addBgGreen = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.backgroundColor = 'rgb(216, 228, 188)';
+        }
+
+        productionReportTemplateClasses2HandsontableHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.display = 'none';
+        }
+
+        // 实现标题居中
+        productionReportTemplateClasses2HandsontableHelper.titleCenter = function () {
+            $(containerid).width($($('.wtHider')[0]).width());
+        }
+
+        productionReportTemplateClasses2HandsontableHelper.createTable = function () {
+            productionReportTemplateClasses2HandsontableHelper.container.innerHTML = "";
+            productionReportTemplateClasses2HandsontableHelper.hot = new Handsontable(productionReportTemplateClasses2HandsontableHelper.container, {
+                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
+                data: productionReportTemplateClasses2HandsontableHelper.data,
+                
+                hiddenColumns: {
+                    columns: productionReportTemplateClasses2HandsontableHelper.hiddenColumns,
+                    indicators: false,
+                    copyPasteEnabled: false
+                },
+                
+                fixedRowsTop: productionReportTemplateClasses2HandsontableHelper.templateData.fixedRowsTop,
+                fixedRowsBottom: productionReportTemplateClasses2HandsontableHelper.templateData.fixedRowsBottom,
+                //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
+                rowHeaders: false,
+                colHeaders: false,
+                rowHeights: productionReportTemplateClasses2HandsontableHelper.templateData.rowHeights,
+                colWidths: productionReportTemplateClasses2HandsontableHelper.colWidths,
+//                colWidths: [80, 100, 80, 80, 120, 120, 100, 100, 100, 100, 100, 100, 160, 1000],
+                //					rowHeaders: true, //显示行头
+                rowHeaders(index) {
+                    return 'Row ' + (index + 1);
+                },
+                //					colHeaders: true, //显示列头
+                colHeaders(index) {
+                    return 'Col ' + (index + 1);
+                },
+                stretchH: 'all',
+                columnSorting: true, //允许排序
+                allowInsertRow: false,
+                sortIndicator: true,
+                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                filters: true,
+                renderAllRows: true,
+                search: true,
+                mergeCells: productionReportTemplateClasses2HandsontableHelper.templateData.mergeCells,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    var visualRowIndex = this.instance.toVisualRow(row);
+                    var visualColIndex = this.instance.toVisualColumn(col);
+                    cellProperties.editor = false;
+                    cellProperties.renderer = productionReportTemplateClasses2HandsontableHelper.addStyle;
+                    return cellProperties;
+                },
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(coords.col>=0 && coords.row>=0 && productionReportTemplateClasses2HandsontableHelper!=null
+                		&& productionReportTemplateClasses2HandsontableHelper.hot!=''
+                		&& productionReportTemplateClasses2HandsontableHelper.hot!=undefined 
+                		&& productionReportTemplateClasses2HandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=productionReportTemplateClasses2HandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
+            });
+        }
+        productionReportTemplateClasses2HandsontableHelper.getData = function (data) {
+
+        }
+
+        var init = function () {
+            productionReportTemplateClasses2HandsontableHelper.initData();
+        }
+
+        init();
+        return productionReportTemplateClasses2HandsontableHelper;
+    }
+};
+
+function CreateClasses2ReportContentInfoTable() {
+	var tabPanel=Ext.getCmp("ModbusProtocolReportUnitClasses2ReportConfigPanel_Id");
+	var activeId = tabPanel.getActiveTab().id;
+	if(activeId=='ModbusProtocolReportUnitClasses2SingleWellReportTemplatePanel_Id'){
+		CreateClasses2SingleWellRangeReportContentInfoTable();
+	}else if(activeId=='ModbusProtocolReportUnitClasses2ProductionReportTemplatePanel_Id'){
+		CreateClasses2ProductionDailyReportContentInfoTable();
+	}
+}
+
+function CreateClasses2SingleWellRangeReportContentInfoTable() {
+	if(singleWellRangeClasses2ReportTemplateContentHandsontableHelper!=null){
+		if(singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot!=undefined){
+			singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot.destroy();
+		}
+		singleWellRangeClasses2ReportTemplateContentHandsontableHelper=null;
+	}
+	if(Ext.getCmp("ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoPanel_Id")!=undefined){
+		Ext.getCmp("ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
+
+    var calculateType = 0;
+    var unitId = 0;
+    var unitName = '';
+    var classes = 0;
+    var reportUnitConfigTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
+    if (reportUnitConfigTreeSelection.length > 0) {
+        var record = reportUnitConfigTreeSelection[0];
+        if (record.data.classes == 0) {
+            if (isNotVal(record.data.children) && record.data.children.length > 0) {
+                unitId = record.data.children[0].id;
+            }
+        } else if (record.data.classes == 1) {
+            unitId = record.data.id;
+        }
+        calculateType = record.data.calculateType;
+        unitName = record.data.text;
+        classes = record.data.classes;
+    }
+
+    var templateCode = "";
+
+    Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/acquisitionUnitManagerController/getReportUnitTotalCalItemsConfigData',
+        success: function (response) {
+            if(Ext.getCmp("ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoPanel_Id")!=undefined){
+                Ext.getCmp("ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
+        	}
+            var result = Ext.JSON.decode(response.responseText);
+            if (classes == 0) {
+                Ext.getCmp("ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.deviceDailyReportContentConfig);
+            } else {
+                Ext.getCmp("ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.deviceDailyReportContentConfig);
+            }
+            if (singleWellRangeClasses2ReportTemplateContentHandsontableHelper == null || singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot == undefined) {
+                singleWellRangeClasses2ReportTemplateContentHandsontableHelper = SingleWellRangeClasses2ReportTemplateContentHandsontableHelper.createNew("ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoDiv_id");
+                var colHeaders = [loginUserLanguageResource.idx, loginUserLanguageResource.fiedName,loginUserLanguageResource.dataColumn, loginUserLanguageResource.unit, loginUserLanguageResource.dataSource, loginUserLanguageResource.totalType, loginUserLanguageResource.showLevel, loginUserLanguageResource.prec, loginUserLanguageResource.reportCurve, loginUserLanguageResource.config];
+                var columns = [
+                    {
+                        data: 'id'
+                    },
+                    {
+                        data: 'headerName'
+                    },
+                    {
+                        data: 'itemName'
+                    },
+                    {
+                        data: 'unit'
+                    },
+                    {
+                        data: 'dataSource'
+                    },
+                    {
+                        data: 'totalType'
+                    },
+                    {
+                        data: 'showLevel'
+                    },
+                    {
+                        data: 'prec'
+                    },
+                    {
+                        data: 'reportCurveConfShowValue'
+                    },
+                    {
+                        data: 'config',
+                        renderer: renderReportUnitContentConfig
+                    }];
+                singleWellRangeClasses2ReportTemplateContentHandsontableHelper.colHeaders = colHeaders;
+                singleWellRangeClasses2ReportTemplateContentHandsontableHelper.columns = columns;
+                singleWellRangeClasses2ReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
+            } else {
+                singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot.loadData(result.totalRoot);
+            }
+        },
+        failure: function () {
+        	if(Ext.getCmp("ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoPanel_Id")!=undefined){
+                Ext.getCmp("ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoPanel_Id").getEl().unmask();
+        	}
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
+        },
+        params: {
+            calculateType: calculateType,
+            reportType: 0,
+            unitId: unitId,
+            templateCode: templateCode,
+            classes: classes,
+            unitClasses:2
+        }
+    });
+};
+
+var SingleWellRangeClasses2ReportTemplateContentHandsontableHelper = {
+    createNew: function (divid) {
+        var singleWellRangeClasses2ReportTemplateContentHandsontableHelper = {};
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot1 = '';
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.divid = divid;
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.validresult = true; //数据校验
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.colHeaders = [];
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.columns = [];
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.AllData = [];
+
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (value != null) {
+                var arr = value.split(';');
+                if (arr.length == 3) {
+                    td.style.backgroundColor = '#' + arr[2];
+                }
+            }
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+        
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.createTable = function (data) {
+            $('#' + singleWellRangeClasses2ReportTemplateContentHandsontableHelper.divid).empty();
+            var hotElement = document.querySelector('#' + singleWellRangeClasses2ReportTemplateContentHandsontableHelper.divid);
+            singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot = new Handsontable(hotElement, {
+                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
+                data: data,
+                hiddenColumns: {
+                    columns: [],
+                    indicators: false,
+                    copyPasteEnabled: false
+                },
+                colWidths: [50, 150, 150, 80, 90, 120, 80, 60, 110, 80],
+                columns: singleWellRangeClasses2ReportTemplateContentHandsontableHelper.columns,
+                fixedColumnsStart:2,
+                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+                autoWrapRow: true,
+                rowHeaders: false, //显示行头
+                colHeaders: singleWellRangeClasses2ReportTemplateContentHandsontableHelper.colHeaders, //显示列头
+                columnSorting: true, //允许排序
+                sortIndicator: true,
+                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                filters: true,
+                renderAllRows: true,
+                search: true,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    var visualRowIndex = this.instance.toVisualRow(row);
+                    var visualColIndex = this.instance.toVisualColumn(col);
+                    cellProperties.editor = false;
+                    if (visualColIndex == 8) {
+                        cellProperties.renderer = singleWellRangeClasses2ReportTemplateContentHandsontableHelper.addCurveBg;
+                    }else{
+                    	if(singleWellRangeClasses2ReportTemplateContentHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& singleWellRangeClasses2ReportTemplateContentHandsontableHelper.columns[visualColIndex].type!='checkbox'
+	    	            		&& prop.toUpperCase() != "config".toUpperCase()){
+	                    	cellProperties.renderer = singleWellRangeClasses2ReportTemplateContentHandsontableHelper.addCellStyle;
+	    	            }
+                    }
+                    return cellProperties;
+                },
+                afterBeginEditing: function (row, column) {
+                    if (singleWellRangeClasses2ReportTemplateContentHandsontableHelper != null && singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot != undefined) {
+                        if (column == 9) {
+                            alert("配置此列内容!");
+                        }
+                    }
+                },
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(coords.col>=0 && coords.row>=0 && singleWellRangeClasses2ReportTemplateContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+                		&& singleWellRangeClasses2ReportTemplateContentHandsontableHelper!=null
+                		&& singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot!=''
+                		&& singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot!=undefined 
+                		&& singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
+            });
+        }
+        //保存数据
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.saveData = function () {}
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.clearContainer = function () {
+            singleWellRangeClasses2ReportTemplateContentHandsontableHelper.AllData = [];
+        }
+        return singleWellRangeClasses2ReportTemplateContentHandsontableHelper;
+    }
+};
+
+function CreateClasses2ProductionDailyReportContentInfoTable(calculateType, unitId, unitName, classes) {
+	if(productionReportTemplateClasses2ContentHandsontableHelper!=null){
+		if(productionReportTemplateClasses2ContentHandsontableHelper.hot!=undefined){
+			productionReportTemplateClasses2ContentHandsontableHelper.hot.destroy();
+		}
+		productionReportTemplateClasses2ContentHandsontableHelper=null;
+	}
+    if(Ext.getCmp("ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoPanel_Id")!=undefined){
+        Ext.getCmp("ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoPanel_Id").el.mask(loginUserLanguageResource.updateWait+'...').show();
+	}
+    var calculateType = 0;
+    var unitId = 0;
+    var unitName = '';
+    var classes = 0;
+    var reportUnitConfigTreeSelection = Ext.getCmp("ModbusProtocolReportUnitConfigTreeGridPanel_Id").getSelectionModel().getSelection();
+    if (reportUnitConfigTreeSelection.length > 0) {
+        var record = reportUnitConfigTreeSelection[0];
+        if (record.data.classes == 0) {
+            if (isNotVal(record.data.children) && record.data.children.length > 0) {
+                unitId = record.data.children[0].id;
+            }
+        } else if (record.data.classes == 1) {
+            unitId = record.data.id;
+        }
+        calculateType = record.data.calculateType;
+        unitName = record.data.text;
+        classes = record.data.classes;
+    }
+
+    var templateCode = "";
+    
+    Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/acquisitionUnitManagerController/getReportUnitTotalCalItemsConfigData',
+        success: function (response) {
+            if(Ext.getCmp("ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoPanel_Id")!=undefined){
+                Ext.getCmp("ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoPanel_Id").getEl().unmask();
+        	}
+            var result = Ext.JSON.decode(response.responseText);
+            if (classes == 0) {
+                Ext.getCmp("ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoPanel_Id").setTitle(loginUserLanguageResource.areaDailyReportContentConfig);
+            } else {
+                Ext.getCmp("ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoPanel_Id").setTitle(unitName + '/'+loginUserLanguageResource.areaDailyReportContentConfig);
+            }
+            if (productionReportTemplateClasses2ContentHandsontableHelper == null || productionReportTemplateClasses2ContentHandsontableHelper.hot == undefined) {
+                productionReportTemplateClasses2ContentHandsontableHelper = ProductionReportTemplateClasses2ContentHandsontableHelper.createNew("ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoDiv_id");
+                var colHeaders = [loginUserLanguageResource.idx,loginUserLanguageResource.fiedName,loginUserLanguageResource.dataColumn,loginUserLanguageResource.unit,loginUserLanguageResource.dataSource,loginUserLanguageResource.totalType,loginUserLanguageResource.showLevel,loginUserLanguageResource.prec,loginUserLanguageResource.sumSign,loginUserLanguageResource.averageSign,loginUserLanguageResource.reportCurve,loginUserLanguageResource.curveStatType, loginUserLanguageResource.config];
+                var columns = [
+                    {data:'id'},
+                    {data:'headerName'},
+                    {data:'itemName'},
+                    {data:'unit'},
+                    {data:'dataSource'},
+                    {data:'totalType'},
+                    {data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateClasses2ContentHandsontableHelper);}},
+                    {data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,productionReportTemplateClasses2ContentHandsontableHelper);}},
+                    {data:'sumSign',type:'checkbox'},
+                    {data:'averageSign',type:'checkbox'},
+                    {data:'reportCurveConfShowValue'},
+                    {data:'curveStatType',type:'dropdown',strict:true,allowInvalid:false,source:[loginUserLanguageResource.curveStatType_sum, loginUserLanguageResource.curveStatType_avg]},
+                    {data: 'config',renderer: renderReportUnitContentConfig}
+                    ];
+                productionReportTemplateClasses2ContentHandsontableHelper.colHeaders = colHeaders;
+                productionReportTemplateClasses2ContentHandsontableHelper.columns = columns;
+                productionReportTemplateClasses2ContentHandsontableHelper.createTable(result.totalRoot);
+            } else {
+                productionReportTemplateClasses2ContentHandsontableHelper.hot.loadData(result.totalRoot);
+            }
+        },
+        failure: function () {
+        	if(Ext.getCmp("ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoPanel_Id")!=undefined){
+                Ext.getCmp("ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoPanel_Id").getEl().unmask();
+        	}
+            Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
+        },
+        params: {
+            calculateType: calculateType,
+            reportType: 1,
+            unitId: unitId,
+            templateCode: templateCode,
+            classes: classes,
+            unitClasses:2
+        }
+    });
+};
+
+var ProductionReportTemplateClasses2ContentHandsontableHelper = {
+    createNew: function (divid) {
+        var productionReportTemplateClasses2ContentHandsontableHelper = {};
+        productionReportTemplateClasses2ContentHandsontableHelper.hot1 = '';
+        productionReportTemplateClasses2ContentHandsontableHelper.divid = divid;
+        productionReportTemplateClasses2ContentHandsontableHelper.validresult = true; //数据校验
+        productionReportTemplateClasses2ContentHandsontableHelper.colHeaders = [];
+        productionReportTemplateClasses2ContentHandsontableHelper.columns = [];
+        productionReportTemplateClasses2ContentHandsontableHelper.AllData = [];
+
+        productionReportTemplateClasses2ContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            if (value != null) {
+                var arr = value.split(';');
+                if (arr.length == 3) {
+                    td.style.backgroundColor = '#' + arr[2];
+                }
+            }
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+        
+        productionReportTemplateClasses2ContentHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+            Handsontable.renderers.TextRenderer.apply(this, arguments);
+            td.style.whiteSpace='nowrap'; //文本不换行
+        	td.style.overflow='hidden';//超出部分隐藏
+        	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+        }
+
+        productionReportTemplateClasses2ContentHandsontableHelper.createTable = function (data) {
+            $('#' + productionReportTemplateClasses2ContentHandsontableHelper.divid).empty();
+            var hotElement = document.querySelector('#' + productionReportTemplateClasses2ContentHandsontableHelper.divid);
+            productionReportTemplateClasses2ContentHandsontableHelper.hot = new Handsontable(hotElement, {
+                licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+        		theme: 'ht-theme-classic',
+                data: data,
+                hiddenColumns: {
+//                    columns: [12, 13, 14, 15],
+                    indicators: false,
+                    copyPasteEnabled: false
+                },
+                colWidths: [50, 150, 150, 60, 90, 120, 80, 60, 50, 50, 110, 110, 60],
+                columns: productionReportTemplateClasses2ContentHandsontableHelper.columns,
+                fixedColumnsStart:2,
+                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+                autoWrapRow: true,
+                rowHeaders: false, //显示行头
+                colHeaders: productionReportTemplateClasses2ContentHandsontableHelper.colHeaders, //显示列头
+                columnSorting: true, //允许排序
+                sortIndicator: true,
+                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+                filters: true,
+                renderAllRows: true,
+                search: true,
+                contextMenu: {
+                    items: {
+                        "copy": {
+                            name: loginUserLanguageResource.contextMenu_copy
+                        },
+                        "cut": {
+                            name: loginUserLanguageResource.contextMenu_cut
+                        }
+                    }
+                }, 
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    var visualRowIndex = this.instance.toVisualRow(row);
+                    var visualColIndex = this.instance.toVisualColumn(col);
+                    if (visualColIndex == 10) {
+                        cellProperties.renderer = productionReportTemplateClasses2ContentHandsontableHelper.addCurveBg;
+                    }else{
+                    	if(productionReportTemplateClasses2ContentHandsontableHelper.columns[visualColIndex].type!='dropdown' 
+	    	            	&& productionReportTemplateClasses2ContentHandsontableHelper.columns[visualColIndex].type!='checkbox'
+	    	            		&& prop.toUpperCase() != "config".toUpperCase()){
+	                    	cellProperties.renderer = productionReportTemplateClasses2ContentHandsontableHelper.addCellStyle;
+	    	            }
+                    }
+                    cellProperties.editor = false;
+                    return cellProperties;
+                },
+                afterOnCellMouseOver: function(event, coords, TD){
+                	if(coords.col>=0 && coords.row>=0 && productionReportTemplateClasses2ContentHandsontableHelper.columns[coords.col].type!='checkbox' 
+                		&& productionReportTemplateClasses2ContentHandsontableHelper!=null
+                		&& productionReportTemplateClasses2ContentHandsontableHelper.hot!=''
+                		&& productionReportTemplateClasses2ContentHandsontableHelper.hot!=undefined 
+                		&& productionReportTemplateClasses2ContentHandsontableHelper.hot.getDataAtCell!=undefined){
+                		var rawValue=productionReportTemplateClasses2ContentHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+                		if(isNotVal(rawValue)){
+            				var showValue=rawValue;
+        					var rowChar=90;
+        					var maxWidth=rowChar*10;
+        					if(rawValue.length>rowChar){
+        						showValue='';
+        						let arr = [];
+        						let index = 0;
+        						while(index<rawValue.length){
+        							arr.push(rawValue.slice(index,index +=rowChar));
+        						}
+        						for(var i=0;i<arr.length;i++){
+        							showValue+=arr[i];
+        							if(i<arr.length-1){
+        								showValue+='<br>';
+        							}
+        						}
+        					}
+            				if(!isNotVal(TD.tip)){
+            					var height=28;
+            					TD.tip = Ext.create('Ext.tip.ToolTip', {
+	                			    target: event.target,
+	                			    maxWidth:maxWidth,
+	                			    html: showValue,
+	                			    listeners: {
+	                			    	hide: function (thisTip, eOpts) {
+	                                	},
+	                                	close: function (thisTip, eOpts) {
+	                                	}
+	                                }
+	                			});
+            				}else{
+            					TD.tip.setHtml(showValue);
+            				}
+            			}
+                	}
+                }
+            });
+        }
+        //保存数据
+        productionReportTemplateClasses2ContentHandsontableHelper.saveData = function () {}
+        productionReportTemplateClasses2ContentHandsontableHelper.clearContainer = function () {
+            productionReportTemplateClasses2ContentHandsontableHelper.AllData = [];
+        }
+        return productionReportTemplateClasses2ContentHandsontableHelper;
     }
 };

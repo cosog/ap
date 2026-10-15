@@ -236,7 +236,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses0ConfigInfoVi
                             border: false,
                             items: [{
                                 region: 'center',
-                                title: '区间日报模板',
+                                title: loginUserLanguageResource.areaDailyReportTemplate,
                                 id: "ModbusProtocolReportUnitProductionTemplateTableInfoPanel_Id",
                                 layout: 'fit',
                                 border: false,
@@ -260,7 +260,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses0ConfigInfoVi
                         	}, {
                                 region: 'south',
                                 height: '50%',
-                                title: loginUserLanguageResource.deviceDailyReportContentConfig,
+                                title: loginUserLanguageResource.areaDailyReportContentConfig,
                                 collapsible: true,
                                 split: true,
                                 layout: 'fit',

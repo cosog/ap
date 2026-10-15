@@ -64,6 +64,7 @@ import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.RedisUtil;
+import com.cosog.utils.ReportTemplateColumnUtils;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.excel.ExcelUtils;
@@ -6547,16 +6548,24 @@ public class MemoryDataManagerTask {
 			reportTemplate=new ReportTemplate();
 			reportTemplate.setClasses0(new ReportTemplate.Classes0());
 			reportTemplate.setClasses1(new ReportTemplate.Template());
+			reportTemplate.setClasses2(new ReportTemplate.Classes0());
 			
 			reportTemplate.getClasses0().setSingleWellDailyReportTemplate(new ArrayList<ReportTemplate.Template>());
 			reportTemplate.getClasses0().setSingleWellRangeReportTemplate(new ArrayList<ReportTemplate.Template>());
 			reportTemplate.getClasses0().setProductionReportTemplate(new ArrayList<ReportTemplate.Template>());
+			
+			reportTemplate.getClasses2().setSingleWellDailyReportTemplate(new ArrayList<ReportTemplate.Template>());
+			reportTemplate.getClasses2().setSingleWellRangeReportTemplate(new ArrayList<ReportTemplate.Template>());
+			reportTemplate.getClasses2().setProductionReportTemplate(new ArrayList<ReportTemplate.Template>());
 		}else{
 			if(reportTemplate.getClasses0()==null){
 				reportTemplate.setClasses0(new ReportTemplate.Classes0());
 			}
 			if(reportTemplate.getClasses1()==null){
 				reportTemplate.setClasses1(new ReportTemplate.Template());
+			}
+			if(reportTemplate.getClasses2()==null){
+				reportTemplate.setClasses2(new ReportTemplate.Classes0());
 			}
 			
 			if(reportTemplate.getClasses0().getSingleWellDailyReportTemplate()==null){
@@ -6574,7 +6583,27 @@ public class MemoryDataManagerTask {
 			}else if(reportTemplate.getClasses0().getProductionReportTemplate().size()>0){
 				Collections.sort(reportTemplate.getClasses0().getProductionReportTemplate());
 			}
+			
+			
+			if(reportTemplate.getClasses2().getSingleWellDailyReportTemplate()==null){
+				reportTemplate.getClasses2().setSingleWellDailyReportTemplate(new ArrayList<ReportTemplate.Template>());
+			}else if(reportTemplate.getClasses2().getSingleWellDailyReportTemplate().size()>0){
+				Collections.sort(reportTemplate.getClasses2().getSingleWellDailyReportTemplate());
+			}
+			if(reportTemplate.getClasses2().getSingleWellRangeReportTemplate()==null){
+				reportTemplate.getClasses2().setSingleWellRangeReportTemplate(new ArrayList<ReportTemplate.Template>());
+			}else if(reportTemplate.getClasses2().getSingleWellRangeReportTemplate().size()>0){
+				Collections.sort(reportTemplate.getClasses2().getSingleWellRangeReportTemplate());
+			}
+			if(reportTemplate.getClasses2().getProductionReportTemplate()==null){
+				reportTemplate.getClasses2().setProductionReportTemplate(new ArrayList<ReportTemplate.Template>());
+			}else if(reportTemplate.getClasses2().getProductionReportTemplate().size()>0){
+				Collections.sort(reportTemplate.getClasses2().getProductionReportTemplate());
+			}
 		}
+		
+		// 根据 hiddenColumns 物理删除列
+		ReportTemplateColumnUtils.removeHiddenColumns(reportTemplate);
 		
 		Jedis jedis=null;
 		try {

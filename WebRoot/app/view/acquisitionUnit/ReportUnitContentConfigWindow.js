@@ -1531,25 +1531,52 @@ function grantReportUnitContentItemsPermission(unitId,reportType,calculateType,s
             },
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
+                
                 if (result.msg == true) {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
-                	CreateReportUnitContentConfigColInfoTable();
-                	CreateReportUnitContentConfigTable();
-                	
-                	if(unitClasses==1){
-                		CreateHydrologicalWellDailyReportConfigItemsInfoTable();
-                	}else{
-                		if(reportType==0){
-                    		CreateSingleWellRangeReportTotalItemsInfoTable();
-                    	}else if(reportType==1){
-                    		CreateproductionReportTotalItemsInfoTable();
-                    	}else if(reportType==2){
-                    		CreateSingleWellDailyReportTotalItemsInfoTable();
-                    	}
-                	}
-                	
-                	
+                    Ext.Msg.alert(
+                        loginUserLanguageResource.tip,
+                        loginUserLanguageResource.savedSuccessfully,
+                        function () {
+                            // 用户点 OK 后再重建
+                            CreateReportUnitContentConfigColInfoTable();
+                            CreateReportUnitContentConfigTable();
+
+                            if (unitClasses == 1) {
+                                CreateHydrologicalWellDailyReportConfigItemsInfoTable();
+                            } else if (unitClasses == 2) {
+                                CreateClasses2ReportContentInfoTable();
+                            } else {
+                                if (reportType == 0) {
+                                    CreateSingleWellRangeReportTotalItemsInfoTable();
+                                } else if (reportType == 1) {
+                                    CreateproductionReportTotalItemsInfoTable();
+                                } else if (reportType == 2) {
+                                    CreateSingleWellDailyReportTotalItemsInfoTable();
+                                }
+                            }
+                        }
+                    );
                 }
+                
+//                if (result.msg == true) {
+//                	CreateReportUnitContentConfigColInfoTable();
+//                	CreateReportUnitContentConfigTable();
+//                	
+//                	if(unitClasses==1){
+//                		CreateHydrologicalWellDailyReportConfigItemsInfoTable();
+//                	}else if(unitClasses==2){
+//        				CreateClasses2ReportContentInfoTable();
+//                	}else{
+//                		if(reportType==0){
+//                    		CreateSingleWellRangeReportTotalItemsInfoTable();
+//                    	}else if(reportType==1){
+//                    		CreateproductionReportTotalItemsInfoTable();
+//                    	}else if(reportType==2){
+//                    		CreateSingleWellDailyReportTotalItemsInfoTable();
+//                    	}
+//                	}
+//                	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
+//                }
                 if (result.msg == false) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>SORRY！" + loginUserLanguageResource.saveFailed + "</font>");
                 }

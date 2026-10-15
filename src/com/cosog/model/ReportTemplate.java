@@ -12,6 +12,8 @@ public class ReportTemplate  implements Serializable{
 	
 	private Template classes1;
 	
+	private Classes0 classes2;
+	
 	public static class Classes0 implements Serializable
 	{
 		private static final long serialVersionUID = 1L;
@@ -252,6 +254,8 @@ public class ReportTemplate  implements Serializable{
 	    private List<MergeCells> mergeCells;
 
 	    private List<Editable> editable;
+	    
+	    private List<Integer> hiddenColumns;
 
 	    @Override
 		public int compareTo(Template template) {     //重写Comparable接口的compareTo方法
@@ -344,6 +348,14 @@ public class ReportTemplate  implements Serializable{
 		public void setColumnWidths_ru(List<Integer> columnWidths_ru) {
 			this.columnWidths_ru = columnWidths_ru;
 		}
+
+		public List<Integer> getHiddenColumns() {
+			return hiddenColumns;
+		}
+
+		public void setHiddenColumns(List<Integer> hiddenColumns) {
+			this.hiddenColumns = hiddenColumns;
+		}
 	}
 
 	public Classes0 getClasses0() {
@@ -360,5 +372,13 @@ public class ReportTemplate  implements Serializable{
 
 	public void setClasses1(Template classes1) {
 		this.classes1 = classes1;
+	}
+
+	public Classes0 getClasses2() {
+		return classes2;
+	}
+
+	public void setClasses2(Classes0 classes2) {
+		this.classes2 = classes2;
 	}
 }

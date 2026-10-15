@@ -88,6 +88,8 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         			if(record.data.unitClasses==1){
                         				CreateHydrologicalWellDailyReportTemplateInfoTable();
                         				CreateHydrologicalWellDailyReportConfigItemsInfoTable();
+                        			}else if(record.data.unitClasses==2){
+                        				
                         			}else{
                         				if(Ext.getCmp("ReportUnitConfigRightTabPanel_Id").getActiveTab().id=='ReportUnitPropertiesConfigRightTabPanel_Id'){
                                     		CreateProtocolReportUnitPropertiesInfoTable(record.data);
@@ -132,6 +134,13 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolReportUnitTreeInfoStore', {
                         				
                         				CreateHydrologicalWellDailyReportTemplateInfoTable();
                         				CreateHydrologicalWellDailyReportConfigItemsInfoTable();
+                        			}else if(record.data.unitClasses==2){
+                        				var classes2ConfigInfoView=Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses2ConfigInfoView');
+                        				if(isNotVal(Ext.getCmp('ModbusProtocolReportUnitReportTemplateTabPanel_Id'))){
+                        					Ext.getCmp('ModbusProtocolReportUnitReportTemplateTabPanel_Id').add(classes2ConfigInfoView);
+                                        }
+                        				CreateClasses2ReportTemplateInfoTable();
+                        				CreateClasses2ReportContentInfoTable();
                         			}else{
                         				var ModbusProtocolReportUnitClasses0ConfigInfoView=Ext.create('AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses0ConfigInfoView');
                         				

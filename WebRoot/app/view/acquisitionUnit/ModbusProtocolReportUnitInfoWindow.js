@@ -27,6 +27,138 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.sequenceNumber,loginUserLanguage);
         }
+        
+        var reportClassesStore = new Ext.data.SimpleStore({
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/wellInformationManagerController/loadCodeComboxListWithoutAll',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+            },
+            autoLoad: true,
+            listeners: {
+                beforeload: function (store, options) {
+                    var new_params = {
+                        itemCode: 'REPORTCLASSES'
+                    };
+                    Ext.apply(store.proxy.extraParams, new_params);
+                },
+                load: function ( store, records, successful, operation, eOpts) {
+                	var comb=Ext.getCmp("modbusProtocolReportUnitCalculateClassesComb_Id");
+                	if(isNotVal(comb) && !isNotVal(comb.getValue()) && records.length>0){
+                		comb.setValue(records[0].data.boxkey);
+                		Ext.getCmp("modbusProtocolReportUnitCalculateClasses_Id").setValue(records[0].data.boxkey);
+                	}
+                	
+                }
+            }
+        });
+        
+        var reportClassesComb = Ext.create(
+                'Ext.form.field.ComboBox', {
+                	xtype : "combobox",
+    				fieldLabel : loginUserLanguageResource.reportClasses+'<font color=red>*</font>',
+    				labelWidth: labelWidth,
+    				id : 'modbusProtocolReportUnitCalculateClassesComb_Id',
+    				store : reportClassesStore,
+    				anchor : '100%',
+    				queryMode: 'remote',
+                    typeAhead: true,
+                    allowBlank: false,
+                    triggerAction: 'all',
+                    editable: false,
+                    autoSelect: true,
+                    displayField: "boxval",
+                    valueField: "boxkey",
+    				emptyText : loginUserLanguageResource.selectReportClasses,
+    				blankText : loginUserLanguageResource.selectReportClasses,
+    				listeners : {
+    					select:function(v,o){
+    						Ext.getCmp("modbusProtocolReportUnitCalculateClasses_Id").setValue(v.value);
+    					}
+    				}
+                });
+        
+        
+        
+        var calculateTypeStore = new Ext.data.SimpleStore({
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/wellInformationManagerController/loadCodeComboxListWithoutAll',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+            },
+            autoLoad: true,
+            listeners: {
+                beforeload: function (store, options) {
+                    var new_params = {
+                        itemCode: 'CALCULATETYPE'
+                    };
+                    Ext.apply(store.proxy.extraParams, new_params);
+                },
+                load: function ( store, records, successful, operation, eOpts) {
+                	var comb=Ext.getCmp("modbusProtocolReportUnitCalculateTypeComb_Id");
+                	if(isNotVal(comb) && !isNotVal(comb.getValue()) && records.length>0){
+                		comb.setValue(records[0].data.boxkey);
+                		Ext.getCmp("modbusProtocolReportUnitCalculateType_Id").setValue(records[0].data.boxkey);
+                	}
+                	
+                }
+            }
+        });
+        
+        var calculateTypeComb = Ext.create(
+                'Ext.form.field.ComboBox', {
+                	xtype : "combobox",
+    				fieldLabel : loginUserLanguageResource.calculationType+'<font color=red>*</font>',
+    				labelWidth: labelWidth,
+    				id : 'modbusProtocolReportUnitCalculateTypeComb_Id',
+    				store : calculateTypeStore,
+    				anchor : '100%',
+    				queryMode: 'remote',
+                    typeAhead: true,
+                    allowBlank: false,
+                    triggerAction: 'all',
+                    editable: false,
+                    autoSelect: true,
+                    displayField: "boxval",
+                    valueField: "boxkey",
+    				emptyText : loginUserLanguageResource.selectCalculateType,
+    				blankText : loginUserLanguageResource.selectCalculateType,
+    				listeners : {
+    					select:function(v,o){
+    						Ext.getCmp("modbusProtocolReportUnitCalculateType_Id").setValue(this.value);
+    						
+    					}
+    				}
+                });
+        
         var postModbusProtocolEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             defaultType: 'textfield',
@@ -82,61 +214,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitInfoWindow", {
 				id : 'modbusProtocolReportUnitCalculateType_Id',
 				value: 0,
 				name : "reportUnit.calculateType"
-			},{
-            	xtype : "combobox",
-				fieldLabel : loginUserLanguageResource.calculationType+'<font color=red>*</font>',
-				labelWidth: labelWidth,
-				id : 'modbusProtocolReportUnitCalculateTypeComb_Id',
-				anchor : '100%',
-				triggerAction : 'all',
-				selectOnFocus : false,
-			    forceSelection : true,
-			    value:0,
-			    allowBlank: false,
-				editable : false,
-				store : new Ext.data.SimpleStore({
-							fields : ['value', 'text'],
-							data : [[0, loginUserLanguageResource.nothing],[1, loginUserLanguageResource.SRPCalculate],[2, loginUserLanguageResource.PCPCalculate]]
-						}),
-				displayField : 'text',
-				valueField : 'value',
-				queryMode : 'local',
-				emptyText : loginUserLanguageResource.selectCalculateType,
-				blankText : loginUserLanguageResource.selectCalculateType,
-				listeners : {
-					select:function(v,o){
-						Ext.getCmp("modbusProtocolReportUnitCalculateType_Id").setValue(this.value);
-						
-					}
-				}
-            },{
-            	xtype : "combobox",
-				fieldLabel : loginUserLanguageResource.reportClasses+'<font color=red>*</font>',
-				labelWidth: labelWidth,
-				id : 'modbusProtocolReportUnitCalculateClassesComb_Id',
-				anchor : '100%',
-				triggerAction : 'all',
-				selectOnFocus : false,
-			    forceSelection : true,
-			    value:0,
-			    allowBlank: false,
-				editable : false,
-				store : new Ext.data.SimpleStore({
-							fields : ['value', 'text'],
-							data : [[0, loginUserLanguageResource.standardReport],[1, loginUserLanguageResource.hydrologicalWellReport]]
-						}),
-				displayField : 'text',
-				valueField : 'value',
-				queryMode : 'local',
-				emptyText : loginUserLanguageResource.selectReportClasses,
-				blankText : loginUserLanguageResource.selectReportClasses,
-				listeners : {
-					select:function(v,o){
-						Ext.getCmp("modbusProtocolReportUnitCalculateClasses_Id").setValue(this.value);
-						
-					}
-				}
-            }, {
+			},calculateTypeComb,reportClassesComb, {
 				xtype : "hidden",
 				id : 'modbusUnitReportUnitCode_Id',
 				value: '',

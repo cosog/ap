@@ -40,6 +40,12 @@ var singleWellDailyReportTemplateContentHandsontableHelper = null;
 var hydrologicalWellDailyReportTemplateHandsontableHelper=null;
 var hydrologicalWellDailyReportContentHandsontableHelper=null;
 
+var singleWellRangeClasses2ReportTemplateHandsontableHelper=null;
+var singleWellRangeClasses2ReportTemplateContentHandsontableHelper=null;
+var productionReportTemplateClasses2HandsontableHelper=null;
+var productionReportTemplateClasses2ContentHandsontableHelper=null;
+
+
 //采控实例
 var protocolConfigInstancePropertiesHandsontableHelper=null;
 
@@ -476,6 +482,31 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     						hydrologicalWellDailyReportContentHandsontableHelper.hot.destroy();
     					}
     					hydrologicalWellDailyReportContentHandsontableHelper=null;
+    				}
+    				
+    				if(singleWellRangeClasses2ReportTemplateHandsontableHelper!=null){
+    					if(singleWellRangeClasses2ReportTemplateHandsontableHelper.hot!=undefined){
+    						singleWellRangeClasses2ReportTemplateHandsontableHelper.hot.destroy();
+    					}
+    					singleWellRangeClasses2ReportTemplateHandsontableHelper=null;
+    				}
+    				if(singleWellRangeClasses2ReportTemplateContentHandsontableHelper!=null){
+    					if(singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot!=undefined){
+    						singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot.destroy();
+    					}
+    					singleWellRangeClasses2ReportTemplateContentHandsontableHelper=null;
+    				}
+    				if(productionReportTemplateClasses2HandsontableHelper!=null){
+    					if(productionReportTemplateClasses2HandsontableHelper.hot!=undefined){
+    						productionReportTemplateClasses2HandsontableHelper.hot.destroy();
+    					}
+    					productionReportTemplateClasses2HandsontableHelper=null;
+    				}
+    				if(productionReportTemplateClasses2ContentHandsontableHelper!=null){
+    					if(productionReportTemplateClasses2ContentHandsontableHelper.hot!=undefined){
+    						productionReportTemplateClasses2ContentHandsontableHelper.hot.destroy();
+    					}
+    					productionReportTemplateClasses2ContentHandsontableHelper=null;
     				}
     			},
     			afterrender: function ( panel, eOpts) {}

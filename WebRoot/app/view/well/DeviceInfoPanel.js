@@ -2520,12 +2520,12 @@ var DeviceInfoHandsontableHelper = {
                     	
                     	balanceInfo.EveryBalance=[];
                     	for(var i=6;i<pumpingInfoHandsontableData.length;i++){
-                    		if(isNotVal(pumpingInfoHandsontableData[i][1]) || isNotVal(pumpingInfoHandsontableData[i][2])){
+                    		if( (isNotVal(pumpingInfoHandsontableData[i][1]) && isNumber(pumpingInfoHandsontableData[i][1])) || (isNotVal(pumpingInfoHandsontableData[i][2])  && isNumber(pumpingInfoHandsontableData[i][2]))){
                         		var EveryBalance={};
-                        		if(isNotVal(pumpingInfoHandsontableData[i][1])){
+                        		if(isNotVal(pumpingInfoHandsontableData[i][1]) && isNumber(pumpingInfoHandsontableData[i][1])){
                         			EveryBalance.Position=pumpingInfoHandsontableData[i][1];
                         		}
-                        		if(isNotVal(pumpingInfoHandsontableData[i][2])){
+                        		if(isNotVal(pumpingInfoHandsontableData[i][2])  && isNumber(pumpingInfoHandsontableData[i][2])){
                         			EveryBalance.Weight=pumpingInfoHandsontableData[i][2];
                         		}
                         		balanceInfo.EveryBalance.push(EveryBalance);

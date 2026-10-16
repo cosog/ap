@@ -1,4 +1,5 @@
 var deviceReportCurveSetHandsontableHelper=null;
+var unitClasses=0;
 Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.reportCurveSetWindow',
@@ -7,6 +8,7 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
     title:loginUserLanguageResource.reportDiagramSet,
     border: false,
     hidden: false,
+    unitClasses: 0,
     constrainHeader:true,//True表示为将window header约束在视图中显示， false表示为允许header在视图之外的地方显示（默认为false）
 //    constrain: true,
 //    closable: 'sides',
@@ -27,13 +29,19 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
     padding:0,
     initComponent: function () {
         var me = this;
+        unitClasses=me.unitClasses;
         Ext.apply(me, {
         	layout:'border',
             tbar:[{
                 xtype: 'label',
                 margin: '0 0 0 0',
                 html: '<font color=red>'+loginUserLanguageResource.diagramSetTooltip+'</font>'
-            },'->',{
+            },{
+            	id: 'ReportCurveSetWin_Classes_Id',
+            	xtype: 'textfield',
+                value: 0,
+                hidden: true
+             },'->',{
                 xtype: 'button',
                 text: loginUserLanguageResource.save,
                 iconCls: 'save',
@@ -65,6 +73,11 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
         				}else if(activeId=='HydrologicalWellReportTabPanel5_id'){
         					divId='HydrologicalWellReport5CurveDiv_Id';
         				}
+        			}else if(module_Code=='AcquisitionDataReport'){
+        				reportType=0;
+        				selectRowId="SingleWellAcquisitionDataReportDeviceListSelectRow_Id";
+        				gridPanelId="SingleWellAcquisitionDataReportDeviceListGridPanel_Id";
+        				divId='SingleWellAcquisitionDataReportCurveDiv_Id';
         			}else{
         				deviceType=getDeviceTypeFromTabId("ProductionReportRootTabPanel");
         				var secondActiveId = Ext.getCmp("DailyReportTabPanel").getActiveTab().id;
@@ -509,6 +522,11 @@ function CreateDeviceReportCurveSetTable(){
 		}else if(activeId=='HydrologicalWellReportTabPanel5_id'){
 			divId='HydrologicalWellReport5CurveDiv_Id';
 		}
+	}else if(module_Code=='AcquisitionDataReport'){
+		reportType=0;
+		selectRowId="SingleWellAcquisitionDataReportDeviceListSelectRow_Id";
+		gridPanelId="SingleWellAcquisitionDataReportDeviceListGridPanel_Id";
+		divId='SingleWellAcquisitionDataReportCurveDiv_Id';
 	}else{
 		var secondActiveId = Ext.getCmp("DailyReportTabPanel").getActiveTab().id;
 		if(secondActiveId=="SingleWellDailyReportTabPanel_Id"){

@@ -169,6 +169,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "DeviceHistoryQuery"
 		&& module_Code != "DailyReport"
 		&& module_Code != "HydrologicalWellReport"
+		&& module_Code != "AcquisitionDataReport"
 		&& module_Code != "DeviceOperationLogQuery"
 		&& module_Code != "SystemLogQuery"
 		&& module_Code != "AlarmQuery"
@@ -365,6 +366,23 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			}
 		}else{
 			reportDataRefresh();
+		}
+	}else if(module_Code == "AcquisitionDataReport"){
+		var selectedDeviceType_global=Ext.getCmp('selectedDeviceType_global').getValue();
+		var deviceType=getDeviceTypeFromTabId("AcquisitionDataReportRootTabPanel");
+		var tabPanel = Ext.getCmp("AcquisitionDataReportRootTabPanel");
+		if(selectedDeviceType_global!=deviceType){
+			var deviceTypeActiveId=getDeviceTypeActiveId();
+			if(tabPanel.getActiveTab().id!=tabPanel.getComponent(deviceTypeActiveId.firstActiveTab).id){
+				tabPanel.setActiveTab(deviceTypeActiveId.firstActiveTab);
+			}
+			if(tabPanel.getActiveTab().xtype=='tabpanel'){
+				if(tabPanel.getActiveTab().getActiveTab().id!=tabPanel.getActiveTab().getComponent(deviceTypeActiveId.secondActiveTab).id){
+					tabPanel.getActiveTab().setActiveTab(deviceTypeActiveId.secondActiveTab);
+				}
+			}
+		}else{
+			acquisitionDataReportRefresh();
 		}
 	}else if(module_Code == "HydrologicalWellReport"){
 		var gridPanel = Ext.getCmp("HydrologicalWellReportDeviceListGridPanel_Id");

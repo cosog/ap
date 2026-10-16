@@ -6638,6 +6638,62 @@ public class MemoryDataManagerTask {
 		return reportTemplate;
 	}
 	
+	public static ReportTemplate.Template getSingelWellAcquisitionDataTemplate(){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		Jedis jedis=null;
+		ReportTemplate reportTemplate=null;
+		ReportTemplate.Template template=null;
+		if(!existsKey("ReportTemplateConfig")){
+			MemoryDataManagerTask.loadReportTemplateConfig();
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
+			if(reportTemplate!=null && reportTemplate.getClasses2()!=null && reportTemplate.getClasses2().getSingleWellRangeReportTemplate()!=null && reportTemplate.getClasses2().getSingleWellRangeReportTemplate().size()>0 ){
+				ReportTemplate.Template template2=reportTemplate.getClasses2().getSingleWellRangeReportTemplate().get(0);
+				type = new TypeToken<ReportTemplate.Template>() {}.getType();
+				template=gson.fromJson(gson.toJson(template2), type);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return template;
+	}
+	
+	public static ReportTemplate.Template getProductionAcquisitionDataTemplate(){
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		Jedis jedis=null;
+		ReportTemplate reportTemplate=null;
+		ReportTemplate.Template template=null;
+		if(!existsKey("ReportTemplateConfig")){
+			MemoryDataManagerTask.loadReportTemplateConfig();
+		}
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			reportTemplate=(ReportTemplate)SerializeObjectUnils.unserizlize(jedis.get("ReportTemplateConfig".getBytes()));
+			if(reportTemplate!=null && reportTemplate.getClasses2()!=null && reportTemplate.getClasses2().getProductionReportTemplate()!=null && reportTemplate.getClasses2().getProductionReportTemplate().size()>0 ){
+				ReportTemplate.Template template2=reportTemplate.getClasses2().getProductionReportTemplate().get(0);
+				type = new TypeToken<ReportTemplate.Template>() {}.getType();
+				template=gson.fromJson(gson.toJson(template2), type);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return template;
+	}
+	
 	public static ReportTemplate.Template getHydrologicalWellTemplate(){
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;

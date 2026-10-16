@@ -525,12 +525,12 @@ public class OperationMaintenanceService<T> extends BaseService<T>  {
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
 			instanceId=obj[0]+"";
-			instanceName_zh_CN=obj[1]+"";
-			instanceName_en=obj[2]+"";
-			instanceName_ru=obj[3]+"";
+			instanceName_zh_CN=obj[1]==null?"":(obj[1]+"");
+			instanceName_en=obj[2]==null?"":(obj[2]+"");
+			instanceName_ru=obj[3]==null?"":(obj[3]+"");
 			
-			calculateType=obj[4]+"";
-			if(obj[3]!=null){
+			calculateType=StringManagerUtils.stringToInteger(obj[4]+"")+"";
+			if(obj[5]!=null){
 				config=(obj[5]+"").replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
 			}else{
 				config="{}";

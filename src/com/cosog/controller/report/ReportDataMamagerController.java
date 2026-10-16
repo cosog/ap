@@ -1087,6 +1087,33 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getAcquisitionDataReportDeviceList")
+	public String getAcquisitionDataReportDeviceList() throws Exception {
+		String json = "";
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		json = reportDataManagerService.getAcquisitionDataReportDeviceList(orgId,deviceName,language);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getReportTemplateList")
 	public String getReportTemplateList() throws Exception {
 		String json = "";
@@ -1187,6 +1214,33 @@ public class ReportDataMamagerController extends BaseController {
 			}
 		}
 		String json = this.reportDataManagerService.loadHydrologicalWellReportDeviceComboxList(pager,orgId, deviceName,language);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/loadAcquisitionDataReportDeviceComboxList")
+	public String loadAcquisitionDataReportDeviceComboxList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		orgId=ParamUtils.getParameter(request, "orgId");
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		String language="";
+		if (user != null) {
+			language = "" + user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		String json = this.reportDataManagerService.loadAcquisitionDataReportDeviceComboxList(pager,orgId, deviceName,language);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -1440,6 +1494,356 @@ public class ReportDataMamagerController extends BaseController {
 		pw.print(json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getSingleWellAcquisitionDataRangeReportData")
+	public String getSingleWellAcquisitionDataRangeReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String tableName="tbl_dailycalculationdata";
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			if(StringManagerUtils.isNotNull(deviceId)){
+				sql+= " and t.deviceId="+deviceId+" ";
+			}	
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		if(user!=null){
+			json = reportDataManagerService.getSingleWellAcquisitionDataRangeReportData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user.getUserNo(),user.getLanguageName());
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/exportSingleWellAcquisitionDataReportData")
+	public String exportSingleWellAcquisitionDataReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		HttpSession session=request.getSession();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String key = ParamUtils.getParameter(request, "key");
+		
+		User user=null;
+		if(session!=null){
+			user = (User) session.getAttribute("userLogin");
+			session.removeAttribute(key);
+			session.setAttribute(key, 0);
+		}
+		
+		String tableName="tbl_dailycalculationdata";
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			if(StringManagerUtils.isNotNull(deviceId)){
+				sql+= " and t.deviceId="+deviceId+" ";
+			}	
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		
+		String fileName = deviceName;
+		String title = deviceName+"生产报表";
+        if(StringManagerUtils.isNotNull(deviceName)){
+        	fileName+=deviceName;
+        }
+        fileName+="生产报表-"+startDate;
+        if(!startDate.equalsIgnoreCase(endDate)){
+        	fileName+="~"+endDate;
+        }
+		boolean bool = reportDataManagerService.exportSingleWellAcquisitionDataReportData(user,response,pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user.getUserNo(),user.getLanguageName());
+		if(session!=null){
+			session.setAttribute(key, 1);
+		}
+		
+		return null;
+	}
+	
+	@RequestMapping("/batchExportSingleWellAcquisitionDataReportData")
+	public String batchExportSingleWellAcquisitionDataReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String deviceTypeName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceTypeName"),"utf-8");
+		String key = ParamUtils.getParameter(request, "key");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
+		String tableName="tbl_dailycalculationdata";
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		
+		boolean bool = reportDataManagerService.batchExportSingleWellAcquisitionDataReportData(user,response,pager, orgId,deviceType,deviceTypeName,reportType, deviceName, startDate,endDate,user.getUserNo(),user.getLanguageName());
+		session.setAttribute(key, 1);
+		return null;
+	}
+	
+	@RequestMapping("/getProductionAcquisitionDataDailyReportData")
+	public String getProductionAcquisitionDataDailyReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String selectedOrgName = ParamUtils.getParameter(request, "selectedOrgName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String tableName="tbl_dailycalculationdata";
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1 ";
+			sql+= " order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+				endDate=StringManagerUtils.getCurrentTime();
+				if(!StringManagerUtils.timeMatchDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd"), endDate, offsetHour)){
+					endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-1);
+				}
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			String sql = " select * from "
+					+ " (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t "
+					+ " where t.commstatus=1 "
+					+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')"
+					+ " order by calDate desc) "
+					+ " where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				reportDate = list.get(0).toString();
+			} else {
+				reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			}
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		if(user!=null){
+			json = reportDataManagerService.getProductionAcquisitionDataDailyReportData(pager, orgId,selectedOrgName,deviceType,reportType,deviceName, startDate,endDate,reportDate,user.getUserNo(),language);
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/exportProductionAcquisitionDataReportData")
+	public String exportProductionAcquisitionDataReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String selectedOrgName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "selectedOrgName"),"utf-8");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportDate= ParamUtils.getParameter(request, "reportDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String key = ParamUtils.getParameter(request, "key");
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		session.removeAttribute(key);
+		session.setAttribute(key, 0);
+		String tableName="tbl_dailycalculationdata";
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			sql+= " order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				int offsetHour=Config.getInstance().configFile.getAp().getReport().getOffsetHour();
+				endDate=StringManagerUtils.getCurrentTime();
+				if(!StringManagerUtils.timeMatchDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd"), endDate, offsetHour)){
+					endDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-1);
+				}
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		if(!StringManagerUtils.isNotNull(reportDate)){
+			String sql = " select * from "
+					+ " (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t "
+					+ " where t.commstatus=1 "
+					+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')"
+					+ " order by calDate desc) "
+					+ " where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				reportDate = list.get(0).toString();
+			} else {
+				reportDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+			}
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		
+		
+		boolean bool = reportDataManagerService.exportProductionAcquisitionDataReportData(user,response,pager, orgId,selectedOrgName,deviceType,reportType, startDate,endDate,reportDate,user.getUserNo(),language);
+		session.setAttribute(key, 1);
+		return null;
+	}
+	
+	@RequestMapping("/getProductionAcquisitionDataDailyReportCurveData")
+	public String getProductionAcquisitionDataDailyReportCurveData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String selectedOrgName = ParamUtils.getParameter(request, "selectedOrgName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		
+		String tableName="tbl_dailycalculationdata";
+		
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+		}
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		if(user!=null){
+			json = reportDataManagerService.getProductionAcquisitionDataDailyReportCurveData(pager, orgId,selectedOrgName,deviceType,reportType, startDate,endDate,user.getUserNo(),language);
+		}
+		
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

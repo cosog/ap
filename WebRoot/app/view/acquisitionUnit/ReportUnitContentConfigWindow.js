@@ -975,7 +975,7 @@ var ReportUnitContentConfigHandsontableHelper = {
 	                            				var colIndex=8;
 	                            				if(reportType==0){
 	                            					colIndex=8;
-	                            				}else if(reportType==2){
+	                            				}else if(reportType==1){
 	                            					colIndex=10;
 	                            				}else if(reportType==2){
 	                            					colIndex=8;

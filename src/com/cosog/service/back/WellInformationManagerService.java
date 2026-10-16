@@ -2604,7 +2604,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			balanceInfo=obj[1]+"";
 		}
 		type = new TypeToken<SRPCalculateRequestData.Balance>() {}.getType();
-		SRPCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+		
+		SRPCalculateRequestData.Balance balance=null;
+		try{
+			balance=gson.fromJson(balanceInfo, type);
+		}catch(Exception e){
+			balance=null;
+		}
+		
 		if(balance!=null&&balance.getEveryBalance()!=null&&balance.getEveryBalance().size()>0){
 			if(balance.getEveryBalance().size()>0){
 				weight1=balance.getEveryBalance().get(0).getWeight()+"";

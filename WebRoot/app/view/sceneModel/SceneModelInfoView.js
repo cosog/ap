@@ -1042,7 +1042,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             try { if (typeof me.cs.fitZoom === 'function') me.cs.fitZoom(); }
             catch (e) { console.warn('[SceneModelPanel] load fitZoom 失败', e); }
 
-            me.enforceReadOnly();
+            //me.enforceReadOnly();
 
             // 关键：让库内部完成 mouse/position 初始化
             me._nudgeCanvasMouseCenter();

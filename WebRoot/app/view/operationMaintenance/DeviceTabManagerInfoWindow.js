@@ -105,6 +105,7 @@ Ext.define("AP.view.operationMaintenance.DeviceTabManagerInfoWindow", {
                 fieldLabel: loginUserLanguageResource.calculationType,
                 labelWidth: labelWidth,
                 id: 'addDeviceTabManagerInstanceCalculateType_Id',
+                value: '0',
                 name: "deviceTabManager.calculateType"
             },{
             	xtype: 'numberfield',

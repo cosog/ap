@@ -3273,6 +3273,63 @@ public class DriverAPIController extends BaseController{
 										totalItem.getTotalStatus().setDailyTotalValue(dailyTotalItemMap.get(totalCode).getTodayValue());
 									}
 									totalItemMap.put(mappingColumn, totalItem);
+								}else if(StringManagerUtils.stringToInteger(protocolItemResolutionDataList.get(i).getResolutionMode())==1){
+									float newValue=StringManagerUtils.stringToFloat(rawValue);
+									Map<String, RealtimeTotalInfo.TotalItem> totalItemMap=realtimeTotalInfo.getTotalItemMap();
+									RealtimeTotalInfo.TotalItem totalItem=totalItemMap.get(mappingColumn);
+									if(totalItem==null){
+										totalItem=new RealtimeTotalInfo.TotalItem();
+										totalItem.setItem(mappingColumn);
+										totalItem.setTotalStatus(new RealtimeTotalInfo.ItemTotalStatus());
+										totalItem.getTotalStatus().setCalTime(acqTime);
+										totalItem.getTotalStatus().setCount(1);
+										totalItem.getTotalStatus().setSum(newValue);
+										totalItem.getTotalStatus().setMaxValue(newValue);
+										totalItem.getTotalStatus().setMinValue(newValue);
+										totalItem.getTotalStatus().setAvgValue(newValue);
+										totalItem.getTotalStatus().setOldestValue(newValue);
+										totalItem.getTotalStatus().setNewestValue(newValue);
+									}else{
+										if(totalItem.getTotalStatus()==null){
+											totalItem.setTotalStatus(new RealtimeTotalInfo.ItemTotalStatus());
+										}
+										totalItem.getTotalStatus().setCalTime(acqTime);
+										totalItem.getTotalStatus().setCount(totalItem.getTotalStatus().getCount()+1);
+										totalItem.getTotalStatus().setSum(newValue);
+										float avgValue=newValue;
+										
+										if(isExtendedField==0){
+											if(item!=null){
+												avgValue=StringManagerUtils.stringToFloat(avgValue+"",item.getPrec());
+											}else{
+												
+											}
+										}else if(isExtendedField==1){
+											if(extendedField!=null){
+												avgValue=StringManagerUtils.stringToFloat(avgValue+"",extendedField.getPrec());
+											}else{
+												
+											}
+										}
+										
+										totalItem.getTotalStatus().setAvgValue(avgValue);
+										
+										
+										if(newValue>totalItem.getTotalStatus().getMaxValue()){
+											totalItem.getTotalStatus().setMaxValue(newValue);
+										}
+										if(newValue<totalItem.getTotalStatus().getMinValue()){
+											totalItem.getTotalStatus().setMinValue(newValue);
+										}
+										totalItem.getTotalStatus().setNewestValue(newValue);
+									}
+									//判断该项是否进行日汇总计算
+									String totalCode=(mappingColumn+"_total").toUpperCase();
+									if(dailyTotalItemMap!=null && dailyTotalItemMap.containsKey(totalCode)){
+										totalItem.getTotalStatus().setDailyTotalSign(true);
+										totalItem.getTotalStatus().setDailyTotalValue(dailyTotalItemMap.get(totalCode).getTodayValue());
+									}
+									totalItemMap.put(mappingColumn, totalItem);
 								}
 							}
 						}

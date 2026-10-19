@@ -215,7 +215,7 @@ var realtimeCurveAndTableTabPanelItems=[{
     autoScroll: false,
     scrollable: false,
     id: 'RealTimeMonitoringFSDiagramAnalysisTabPanel_Id',
-    iconCls: 'check3',
+    //iconCls: 'check3',
     layout: {
         type: 'vbox',
         pack: 'start',

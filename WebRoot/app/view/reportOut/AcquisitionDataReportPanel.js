@@ -654,6 +654,13 @@ var SingleWellAcquisitionDataReportHelper = {
 	        singleWellAcquisitionDataReportHelper.editData={};
 	        singleWellAcquisitionDataReportHelper.contentUpdateList = [];
 	        
+	        singleWellAcquisitionDataReportHelper.hiddenColumns=[];
+	        if(singleWellAcquisitionDataReportHelper.templateData.hiddenColumns!=undefined){
+	        	singleWellAcquisitionDataReportHelper.hiddenColumns=singleWellAcquisitionDataReportHelper.templateData.hiddenColumns
+	        }
+	        
+	        
+	        
 	        singleWellAcquisitionDataReportHelper.colWidths=[];
 	        if(loginUserLanguage=='zh_CN'){
 	        	singleWellAcquisitionDataReportHelper.colWidths=singleWellAcquisitionDataReportHelper.templateData.columnWidths_zh_CN
@@ -676,6 +683,7 @@ var SingleWellAcquisitionDataReportHelper = {
 	        		
 	        		singleWellAcquisitionDataReportHelper.templateData.header[i].title.push('');
 	        		singleWellAcquisitionDataReportHelper.columnCount=singleWellAcquisitionDataReportHelper.templateData.header[i].title.length;
+	        		singleWellAcquisitionDataReportHelper.hiddenColumns.push(singleWellAcquisitionDataReportHelper.columnCount-1);
 	        		
 	        		var valueArr=[];
 	        		var sourceValueArr=[];
@@ -786,7 +794,7 @@ var SingleWellAcquisitionDataReportHelper = {
 	        		theme: 'ht-theme-classic',
 	            	data: singleWellAcquisitionDataReportHelper.data,
 	            	hiddenColumns: {
-	                    columns: [singleWellAcquisitionDataReportHelper.columnCount-1],
+	                    columns: singleWellAcquisitionDataReportHelper.hiddenColumns,
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },
@@ -1434,6 +1442,11 @@ var ProductionAcquisitionDataReportHelper = {
 	        productionAcquisitionDataReportHelper.editData={};
 	        productionAcquisitionDataReportHelper.contentUpdateList = [];
 	        
+	        productionAcquisitionDataReportHelper.hiddenColumns=[];
+	        if(productionAcquisitionDataReportHelper.templateData.hiddenColumns!=undefined){
+	        	productionAcquisitionDataReportHelper.hiddenColumns=productionAcquisitionDataReportHelper.templateData.hiddenColumns
+	        }
+	        
 	        productionAcquisitionDataReportHelper.colWidths=[];
 	        if(loginUserLanguage=='zh_CN'){
 	        	productionAcquisitionDataReportHelper.colWidths=productionAcquisitionDataReportHelper.templateData.columnWidths_zh_CN
@@ -1455,6 +1468,7 @@ var ProductionAcquisitionDataReportHelper = {
 	        		}
 	        		productionAcquisitionDataReportHelper.templateData.header[i].title.push('');
 	        		productionAcquisitionDataReportHelper.columnCount=productionAcquisitionDataReportHelper.templateData.header[i].title.length;
+	        		productionAcquisitionDataReportHelper.hiddenColumns.push(productionAcquisitionDataReportHelper.columnCount-1);
 	        		
 	        		var valueArr=[];
 	        		var sourceValueArr=[];
@@ -1580,7 +1594,7 @@ var ProductionAcquisitionDataReportHelper = {
 	        		theme: 'ht-theme-classic',
 	            	data: productionAcquisitionDataReportHelper.data,
 	            	hiddenColumns: {
-	                    columns: [productionAcquisitionDataReportHelper.columnCount-1],
+	                    columns: productionAcquisitionDataReportHelper.hiddenColumns,
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },

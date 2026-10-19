@@ -49,8 +49,19 @@ Ext.define('AP.view.sceneModel.DataSourceWindow', {
         }];
 
         me.buttons = [
-            { text: '取消', handler: function() { me.close(); } },
-            { text: '确定', cls: 'x-btn-primary', handler: function() { me.doConfirm(); } }
+            { 
+            	text: '取消', 
+            	handler: function() { 
+            		me.close(); 
+            	} 
+            },
+            { 
+            	text: '确定', 
+//            	cls: 'x-btn-primary', 
+            	handler: function() { 
+            		me.doConfirm(); 
+            	} 
+            }
         ];
 
         me.callParent(arguments);

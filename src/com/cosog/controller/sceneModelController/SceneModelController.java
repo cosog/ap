@@ -288,6 +288,61 @@ public class SceneModelController extends BaseController {
         pw.close();
         return null;
     }
+    
+    // ============================================================
+    // 删除场景图片
+    // ============================================================
+    @RequestMapping("/deleteSceneImage")
+    public String deleteSceneImage() throws IOException {
+        Map<String, Object> result = new HashMap<String, Object>();
+        String name = ParamUtils.getParameter(request, "name");
+
+        if (!StringManagerUtils.isNotNull(name)) {
+            result.put("success", false);
+            result.put("message", "缺少图片名称");
+        } else {
+            // 安全检查：防目录穿越
+            if (name.contains("..") || name.contains("/") || name.contains("\\")) {
+                result.put("success", false);
+                result.put("message", "非法的文件名");
+            } else if ("__blank__.svg".equals(name)) {
+                // 保护系统自带的空白背景图不被误删
+                result.put("success", false);
+                result.put("message", "系统内置空白背景图不能删除");
+            } else {
+                try {
+                    String sceneImagePath = Config.getInstance().configFile.getAp().getOem().getSceneImagePath();
+                    String realPath = request.getSession().getServletContext().getRealPath(sceneImagePath);
+                    File file = new File(realPath, name);
+
+                    if (file.exists() && file.isFile()) {
+                        if (file.delete()) {
+                            result.put("success", true);
+                            result.put("message", "删除成功");
+                        } else {
+                            result.put("success", false);
+                            result.put("message", "文件删除失败，可能被服务器占用");
+                        }
+                    } else {
+                        result.put("success", false);
+                        result.put("message", "文件不存在或已被删除");
+                    }
+                } catch (Exception e) {
+                    log.error("删除场景图片失败", e);
+                    result.put("success", false);
+                    result.put("message", e.getMessage());
+                }
+            }
+        }
+
+        response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+        response.setHeader("Cache-Control", "no-cache");
+        PrintWriter pw = response.getWriter();
+        pw.print(new Gson().toJson(result));
+        pw.flush();
+        pw.close();
+        return null;
+    }
 
     // ============================================================
     // 以流的形式返回场景图片（解决中文文件名 404）

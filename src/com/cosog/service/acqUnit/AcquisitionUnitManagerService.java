@@ -2963,6 +2963,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		}
 		
 		result_json.append("{ \"success\":true,");
+		result_json.append("\"template\":"+(template!=null?gson.toJson(template):"{}")+",");
 		result_json.append("\"totalRoot\":[");
 		rawData.append("[");
 		if(template!=null && (template.getHeader().size()>0 || template.getColumnWidths_zh_CN().size()>0 || template.getColumnWidths_en().size()>0 || template.getColumnWidths_ru().size()>0  )   ){
@@ -3072,7 +3073,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			}
 			int index=1;
 			for(int i=0;i<columnCoumnt;i++){
-				if( !(hiddenColumns!=null && hiddenColumns.indexOf(index-1)>=0) ){
+//				if( !(hiddenColumns!=null && hiddenColumns.indexOf(index-1)>=0) ){
 					String headerName="";
 					if(template.getHeader().size()>0){
 						if("zh_CN".equalsIgnoreCase(language)){
@@ -3132,7 +3133,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 					String action="config";
 					
 					for(int k=0;k<itemsList.size();k++){
-						if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==index){
+						if(StringManagerUtils.stringToInteger(itemsSortList.get(k))==(i+1)){
 							itemName=itemsList.get(k);
 							itemCode=itemsCodeList.get(k);
 							unit=itemsUnitList.get(k);
@@ -3237,8 +3238,11 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 							+ "\"action\":\""+action+"\","
 							+ "\"dataChange\":0"
 							+ "},");
-				}
-				index++;
+//				}
+					
+					if( !(hiddenColumns!=null && hiddenColumns.indexOf(i)>=0) ){
+						index++;
+					}
 			}
 		}
 		if(result_json.toString().endsWith(",")){

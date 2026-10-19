@@ -3257,6 +3257,26 @@ var SingleWellRangeClasses2ReportTemplateHandsontableHelper = {
                 }
             }
         }
+        
+        // 视觉列 -> 物理列 的映射（隐藏列不占序号，但能查到它真实的位置）
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.buildVisibleColMap = function () {
+            // 列总数：优先用列宽数组长度，退而用 templateData 里的列数
+            var totalCols =
+                (singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.columnWidths_zh_CN || []).length ||
+                (singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.columnWidths_en || []).length ||
+                (singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.columnWidths_ru || []).length ||
+                (singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.header || []).length;
+
+            var hidden = singleWellRangeClasses2ReportTemplateHandsontableHelper.hiddenColumns || [];
+            var hiddenMap = {};
+            for (var i = 0; i < hidden.length; i++) { hiddenMap[hidden[i]] = true; }
+
+            var map = [];
+            for (var c = 0; c < totalCols; c++) {
+                if (!hiddenMap[c]) { map.push(c); }   // 只保留可见列，按物理顺序
+            }
+            return map;   // map[视觉列下标] = 物理列下标
+        };
 
 
         singleWellRangeClasses2ReportTemplateHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
@@ -3313,6 +3333,7 @@ var SingleWellRangeClasses2ReportTemplateHandsontableHelper = {
 
         singleWellRangeClasses2ReportTemplateHandsontableHelper.createTable = function () {
             singleWellRangeClasses2ReportTemplateHandsontableHelper.container.innerHTML = "";
+            var visibleColMap = singleWellRangeClasses2ReportTemplateHandsontableHelper.buildVisibleColMap();
             singleWellRangeClasses2ReportTemplateHandsontableHelper.hot = new Handsontable(singleWellRangeClasses2ReportTemplateHandsontableHelper.container, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
         		theme: 'ht-theme-classic',
@@ -3326,19 +3347,21 @@ var SingleWellRangeClasses2ReportTemplateHandsontableHelper = {
                 
                 fixedRowsTop: singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.fixedRowsTop,
                 fixedRowsBottom: singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.fixedRowsBottom,
-                //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
-                rowHeaders: false,
-                colHeaders: false,
                 rowHeights: singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData.rowHeights,
                 colWidths: singleWellRangeClasses2ReportTemplateHandsontableHelper.colWidths,
-//                colWidths: [80, 100, 80, 80, 120, 120, 100, 100, 100, 100, 100, 100, 160, 1000],
-                //					rowHeaders: true, //显示行头
                 rowHeaders(index) {
                     return 'Row ' + (index + 1);
                 },
-                //					colHeaders: true, //显示列头
-                colHeaders(index) {
-                    return 'Col ' + (index + 1);
+                colHeaders: function (index) {
+                    var physicalCol = index;
+                    var visualIndex = visibleColMap.indexOf(physicalCol);
+                    var seq;
+                    if (visualIndex !== -1) {
+                        seq = visualIndex + 1;
+                    } else {
+                        seq = '';
+                    }
+                    return 'Col ' + seq;
                 },
                 stretchH: 'all',
                 columnSorting: true, //允许排序
@@ -3553,6 +3576,25 @@ var ProductionReportTemplateClasses2HandsontableHelper = {
             }
         }
 
+        // 视觉列 -> 物理列 的映射（隐藏列不占序号，但能查到它真实的位置）
+        productionReportTemplateClasses2HandsontableHelper.buildVisibleColMap = function () {
+            // 列总数：优先用列宽数组长度，退而用 templateData 里的列数
+            var totalCols =
+                (productionReportTemplateClasses2HandsontableHelper.templateData.columnWidths_zh_CN || []).length ||
+                (productionReportTemplateClasses2HandsontableHelper.templateData.columnWidths_en || []).length ||
+                (productionReportTemplateClasses2HandsontableHelper.templateData.columnWidths_ru || []).length ||
+                (productionReportTemplateClasses2HandsontableHelper.templateData.header || []).length;
+
+            var hidden = productionReportTemplateClasses2HandsontableHelper.hiddenColumns || [];
+            var hiddenMap = {};
+            for (var i = 0; i < hidden.length; i++) { hiddenMap[hidden[i]] = true; }
+
+            var map = [];
+            for (var c = 0; c < totalCols; c++) {
+                if (!hiddenMap[c]) { map.push(c); }   // 只保留可见列，按物理顺序
+            }
+            return map;   // map[视觉列下标] = 物理列下标
+        };
 
         productionReportTemplateClasses2HandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -3608,6 +3650,7 @@ var ProductionReportTemplateClasses2HandsontableHelper = {
 
         productionReportTemplateClasses2HandsontableHelper.createTable = function () {
             productionReportTemplateClasses2HandsontableHelper.container.innerHTML = "";
+            var visibleColMap = productionReportTemplateClasses2HandsontableHelper.buildVisibleColMap();
             productionReportTemplateClasses2HandsontableHelper.hot = new Handsontable(productionReportTemplateClasses2HandsontableHelper.container, {
                 licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
         		theme: 'ht-theme-classic',
@@ -3621,19 +3664,21 @@ var ProductionReportTemplateClasses2HandsontableHelper = {
                 
                 fixedRowsTop: productionReportTemplateClasses2HandsontableHelper.templateData.fixedRowsTop,
                 fixedRowsBottom: productionReportTemplateClasses2HandsontableHelper.templateData.fixedRowsBottom,
-                //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
-                rowHeaders: false,
-                colHeaders: false,
                 rowHeights: productionReportTemplateClasses2HandsontableHelper.templateData.rowHeights,
                 colWidths: productionReportTemplateClasses2HandsontableHelper.colWidths,
-//                colWidths: [80, 100, 80, 80, 120, 120, 100, 100, 100, 100, 100, 100, 160, 1000],
-                //					rowHeaders: true, //显示行头
                 rowHeaders(index) {
                     return 'Row ' + (index + 1);
                 },
-                //					colHeaders: true, //显示列头
-                colHeaders(index) {
-                    return 'Col ' + (index + 1);
+                colHeaders: function (index) {
+                    var physicalCol = index;
+                    var visualIndex = visibleColMap.indexOf(physicalCol);
+                    var seq;
+                    if (visualIndex !== -1) {
+                        seq = visualIndex + 1;
+                    } else {
+                        seq = '';
+                    }
+                    return 'Col ' + seq;
                 },
                 stretchH: 'all',
                 columnSorting: true, //允许排序
@@ -3813,6 +3858,7 @@ function CreateClasses2SingleWellRangeReportContentInfoTable() {
                     }];
                 singleWellRangeClasses2ReportTemplateContentHandsontableHelper.colHeaders = colHeaders;
                 singleWellRangeClasses2ReportTemplateContentHandsontableHelper.columns = columns;
+                singleWellRangeClasses2ReportTemplateContentHandsontableHelper.templateData=result.template;
                 singleWellRangeClasses2ReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
             } else {
                 singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot.loadData(result.totalRoot);
@@ -3844,6 +3890,7 @@ var SingleWellRangeClasses2ReportTemplateContentHandsontableHelper = {
         singleWellRangeClasses2ReportTemplateContentHandsontableHelper.colHeaders = [];
         singleWellRangeClasses2ReportTemplateContentHandsontableHelper.columns = [];
         singleWellRangeClasses2ReportTemplateContentHandsontableHelper.AllData = [];
+        singleWellRangeClasses2ReportTemplateContentHandsontableHelper.templateData=null;
 
         singleWellRangeClasses2ReportTemplateContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -3877,6 +3924,15 @@ var SingleWellRangeClasses2ReportTemplateContentHandsontableHelper = {
                     indicators: false,
                     copyPasteEnabled: false
                 },
+                hiddenRows: {
+                    rows: singleWellRangeClasses2ReportTemplateContentHandsontableHelper.templateData.hiddenColumns==undefined?[]:singleWellRangeClasses2ReportTemplateContentHandsontableHelper.templateData.hiddenColumns,
+                    indicators: false,
+                    copyPasteEnabled: false
+                },
+                
+                
+                
+                
                 colWidths: [50, 150, 150, 80, 90, 120, 80, 60, 110, 80],
                 columns: singleWellRangeClasses2ReportTemplateContentHandsontableHelper.columns,
                 fixedColumnsStart:2,
@@ -4043,6 +4099,7 @@ function CreateClasses2ProductionDailyReportContentInfoTable(calculateType, unit
                     ];
                 productionReportTemplateClasses2ContentHandsontableHelper.colHeaders = colHeaders;
                 productionReportTemplateClasses2ContentHandsontableHelper.columns = columns;
+                productionReportTemplateClasses2ContentHandsontableHelper.templateData=result.template;
                 productionReportTemplateClasses2ContentHandsontableHelper.createTable(result.totalRoot);
             } else {
                 productionReportTemplateClasses2ContentHandsontableHelper.hot.loadData(result.totalRoot);
@@ -4074,6 +4131,7 @@ var ProductionReportTemplateClasses2ContentHandsontableHelper = {
         productionReportTemplateClasses2ContentHandsontableHelper.colHeaders = [];
         productionReportTemplateClasses2ContentHandsontableHelper.columns = [];
         productionReportTemplateClasses2ContentHandsontableHelper.AllData = [];
+        productionReportTemplateClasses2ContentHandsontableHelper.templateData=null;
 
         productionReportTemplateClasses2ContentHandsontableHelper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -4104,6 +4162,11 @@ var ProductionReportTemplateClasses2ContentHandsontableHelper = {
                 data: data,
                 hiddenColumns: {
 //                    columns: [12, 13, 14, 15],
+                    indicators: false,
+                    copyPasteEnabled: false
+                },
+                hiddenRows: {
+                    rows: productionReportTemplateClasses2ContentHandsontableHelper.templateData.hiddenColumns==undefined?[]:productionReportTemplateClasses2ContentHandsontableHelper.templateData.hiddenColumns,
                     indicators: false,
                     copyPasteEnabled: false
                 },

@@ -1107,6 +1107,8 @@ function CreateReportUnitContentConfigColInfoTable(){
 				reportUnitContentConfigColInfoHandsontableHelper.colHeaders=colHeaders;
 				reportUnitContentConfigColInfoHandsontableHelper.columns=columns;
 				reportUnitContentConfigColInfoHandsontableHelper.rawData=result.rawData;
+				reportUnitContentConfigColInfoHandsontableHelper.templateData=result.template;
+				
 				reportUnitContentConfigColInfoHandsontableHelper.createTable(result.totalRoot);
 			}else{
 				reportUnitContentConfigColInfoHandsontableHelper.hot.loadData(result.totalRoot);
@@ -1141,6 +1143,7 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	        reportUnitContentConfigColInfoHandsontableHelper.columns=[];
 	        reportUnitContentConfigColInfoHandsontableHelper.AllData=[];
 	        reportUnitContentConfigColInfoHandsontableHelper.rawData=[];
+	        reportUnitContentConfigColInfoHandsontableHelper.templateData=null;
 	        
 	        reportUnitContentConfigColInfoHandsontableHelper.addWhiteBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -1239,6 +1242,11 @@ var ReportUnitContentConfigColInfoHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                hiddenRows: {
+	                    rows: reportUnitContentConfigColInfoHandsontableHelper.templateData.hiddenColumns==undefined?[]:reportUnitContentConfigColInfoHandsontableHelper.templateData.hiddenColumns,
 	                    indicators: false,
 	                    copyPasteEnabled: false
 	                },

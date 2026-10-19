@@ -7995,10 +7995,20 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 							
 							if(StringManagerUtils.isNum(addValue)){
-								if(prec<0  && protocol!=null ){
+								if(protocol!=null ){
 									ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
 									if(item!=null){
-										prec=item.getPrec();
+										if(prec<0){
+											prec=item.getPrec();
+										}
+										if(item.getResolutionMode()==1 && item.getMeaning()!=null && item.getMeaning().size()>0){
+											for(int l=0;l<item.getMeaning().size();l++){
+												if(StringManagerUtils.stringToFloat(addValue)==(item.getMeaning().get(l).getValue())){
+													addValue=item.getMeaning().get(l).getMeaning();
+													break;
+												}
+											}
+										}
 									}
 								}
 								if(prec>=0){
@@ -8422,10 +8432,20 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									addValue=totalValueArr[5];
 								}
 								if(StringManagerUtils.isNum(addValue)){
-									if(prec<0  && protocol!=null ){
+									if(protocol!=null ){
 										ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
 										if(item!=null){
-											prec=item.getPrec();
+											if(prec<0){
+												prec=item.getPrec();
+											}
+											if(item.getResolutionMode()==1 && item.getMeaning()!=null && item.getMeaning().size()>0){
+												for(int l=0;l<item.getMeaning().size();l++){
+													if(StringManagerUtils.stringToFloat(addValue)==(item.getMeaning().get(l).getValue())){
+														addValue=item.getMeaning().get(l).getMeaning();
+														break;
+													}
+												}
+											}
 										}
 									}
 									if(prec>=0){
@@ -8910,10 +8930,20 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									}
 									
 									if(StringManagerUtils.isNum(addValue)){
-										if(prec<0  && protocol!=null ){
+										if(protocol!=null ){
 											ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
 											if(item!=null){
-												prec=item.getPrec();
+												if(prec<0){
+													prec=item.getPrec();
+												}
+												if(item.getResolutionMode()==1 && item.getMeaning()!=null && item.getMeaning().size()>0){
+													for(int l=0;l<item.getMeaning().size();l++){
+														if(StringManagerUtils.stringToFloat(addValue)==(item.getMeaning().get(l).getValue())){
+															addValue=item.getMeaning().get(l).getMeaning();
+															break;
+														}
+													}
+												}
 											}
 										}
 										if(prec>=0){
@@ -9175,7 +9205,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			}
 			
 			StringBuffer sqlBuff = new StringBuffer();
-			sqlBuff.append("select t.id");
+			sqlBuff.append("select t.id,t.protocol");
 			
 			if(reportAcqItemList.size()>0){
 				sqlBuff.append(",t.caldata");
@@ -9232,6 +9262,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			for(int i=0;i<reportDataList.size();i++){
 				Object[] reportDataObj=(Object[]) reportDataList.get(i);
 				String recordId=reportDataObj[0]+"";
+				String protocolCode=reportDataObj[1]!=null?(reportDataObj[1]+""):"";
+				
+				ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
+				
 				List<String> everyDaya=new ArrayList<String>();
 				for(int j=0;j<columnCount;j++){
 					everyDaya.add("");
@@ -9240,10 +9274,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				everyDaya.add(recordId);
 				
 				
-				int startIndex=1;
+				int startIndex=2;
 				if(reportAcqItemList.size()>0){
-					startIndex=2;
-					String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[1]);
+					startIndex=3;
+					String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[2]);
 					type = new TypeToken<List<KeyValue>>() {}.getType();
 					List<KeyValue> calDataList=gson.fromJson(calData, type);
 					
@@ -9280,7 +9314,25 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 							
 							if(StringManagerUtils.isNum(addValue)){
-								addValue=StringManagerUtils.dataFormat(addValue, prec);
+								if(protocol!=null ){
+									ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+									if(item!=null){
+										if(prec<0){
+											prec=item.getPrec();
+										}
+										if(item.getResolutionMode()==1 && item.getMeaning()!=null && item.getMeaning().size()>0){
+											for(int l=0;l<item.getMeaning().size();l++){
+												if(StringManagerUtils.stringToFloat(addValue)==(item.getMeaning().get(l).getValue())){
+													addValue=item.getMeaning().get(l).getMeaning();
+													break;
+												}
+											}
+										}
+									}
+								}
+								if(prec>=0){
+									addValue=StringManagerUtils.dataFormat(addValue, prec);
+								}
 							}
 						}
 						everyDaya.set(reportUnitItem.getSort()-1, addValue);
@@ -9624,7 +9676,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				}
 				
 				StringBuffer sqlBuff = new StringBuffer();
-				sqlBuff.append("select t.id");
+				sqlBuff.append("select t.id,t.protocol");
 				
 				if(reportAcqItemList.size()>0){
 					sqlBuff.append(",t.caldata");
@@ -9681,16 +9733,18 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				for(int i=0;i<reportDataList.size();i++){
 					Object[] reportDataObj=(Object[]) reportDataList.get(i);
 					String recordId=reportDataObj[0]+"";
+					String protocolCode=reportDataObj[1]!=null?(reportDataObj[1]+""):"";
+					ModbusProtocolConfig.Protocol protocol=MemoryDataManagerTask.getProtocolByCode(protocolCode);
 					List<String> everyDaya=new ArrayList<String>();
 					for(int j=0;j<columnCount;j++){
 						everyDaya.add("");
 					}
 					everyDaya.set(0, (i+1)+"");
 					
-					int startIndex=1;
+					int startIndex=2;
 					if(reportAcqItemList.size()>0){
-						startIndex=2;
-						String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[1]);
+						startIndex=3;
+						String calData=StringManagerUtils.CLOBObjectToString(reportDataObj[2]);
 						type = new TypeToken<List<KeyValue>>() {}.getType();
 						List<KeyValue> calDataList=gson.fromJson(calData, type);
 						
@@ -9726,7 +9780,25 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 									addValue=totalValueArr[5];
 								}
 								if(StringManagerUtils.isNum(addValue)){
-									addValue=StringManagerUtils.dataFormat(addValue, prec);
+									if(protocol!=null ){
+										ModbusProtocolConfig.Items item=MemoryDataManagerTask.getProtocolItem(protocol, reportUnitItem.getItemName());
+										if(item!=null){
+											if(prec<0){
+												prec=item.getPrec();
+											}
+											if(item.getResolutionMode()==1 && item.getMeaning()!=null && item.getMeaning().size()>0){
+												for(int l=0;l<item.getMeaning().size();l++){
+													if(StringManagerUtils.stringToFloat(addValue)==(item.getMeaning().get(l).getValue())){
+														addValue=item.getMeaning().get(l).getMeaning();
+														break;
+													}
+												}
+											}
+										}
+									}
+									if(prec>=0){
+										addValue=StringManagerUtils.dataFormat(addValue, prec);
+									}
 								}
 							}
 							everyDaya.set(reportUnitItem.getSort()-1, addValue.replaceAll("null", ""));

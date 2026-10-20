@@ -168,7 +168,16 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
 
         Ext.apply(me, {
             id: 'RealTimeMonitoringSceneModelPanel_Id',
-            tbar: [
+            tbar: [{
+            	xtype: 'label',
+            	html: '双击标注查看曲线或数据',
+            	style: {
+                    marginLeft: '10px',
+                    fontSize: '11px',
+                    fontFamily: 'tahoma,arial,verdana,sans-serif',
+                    color: '#333333'
+                }
+            },'->',
                 { xtype: 'button', text: '🔍+', tooltip: '放大',
                   handler: function() { if (me.cs) { me.cs.setScale(true); me.afterZoom(); } } },
                 { xtype: 'button', text: '🔍−', tooltip: '缩小',
@@ -602,6 +611,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                         dataSource:   s.dataSource,
                         currentValue: s.currentValue,
                         alarmLevel:   (s.alarmLevel != null) ? s.alarmLevel : 0,
+                        commStatus:   (s.commStatus != null) ? s.commStatus : 0,
 
                         itemType:       s.itemType,
                         resolutionMode: s.resolutionMode,
@@ -876,20 +886,52 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
             var bgColor = me.buildFillColor(style.bgColor, style.bgOpacity);
             var boxShadow = (style.bgOpacity == 0) ? 'none' : '0 2px 6px rgba(0,0,0,0.18)';
             
-            // ★ 核心修改：获取文本内容，并判断是否真正需要显示
             var labelText = me.buildLabelText(binding, style);
             el.innerHTML = labelText;
             
-            // 如果勾选了“隐藏标签” 或者 文本为空（设备名和字段名都隐藏了），则设为 none
             var isHidden = style.hide || (labelText === '');
+
+            // ★ 核心修改：处理设备通信状态改变字色
+//            var textColor = style.textColor;
+//            var commStatus = binding.commStatus != null ? parseInt(binding.commStatus, 10) : 0;
+//            
+//            if (commStatus === 2) {
+//                // 状态 2：上线中
+//                if (me.alarmShowStyle && me.alarmShowStyle.Comm && me.alarmShowStyle.Comm.goOnline && me.alarmShowStyle.Comm.goOnline.Color) {
+//                    var c = (me.alarmShowStyle.Comm.goOnline.Color + '').trim();
+//                    if (/^#?[0-9a-fA-F]{6}$/.test(c)) {
+//                        textColor = (c.charAt(0) === '#') ? c : ('#' + c);
+//                    }
+//                }
+//            } else if (commStatus === 0 || (commStatus !== 1 && commStatus !== 2)) {
+//                // 状态 0 或 非1非2：离线
+//                if (me.alarmShowStyle && me.alarmShowStyle.Comm && me.alarmShowStyle.Comm.offline && me.alarmShowStyle.Comm.offline.Color) {
+//                    var c = (me.alarmShowStyle.Comm.offline.Color + '').trim();
+//                    if (/^#?[0-9a-fA-F]{6}$/.test(c)) {
+//                        textColor = (c.charAt(0) === '#') ? c : ('#' + c);
+//                    }
+//                }
+//            }
+//
+//            el.style.cssText = 'position:absolute;padding:4px 10px;border-radius:4px;white-space:nowrap;' +
+//                'font-weight:600;transform:translate(-50%,' + translateY + ');box-shadow:' + boxShadow + ';' +
+//                'pointer-events:auto;cursor:pointer;' +
+//                'left:' + cx + 'px;top:' + cy + 'px;' +
+//                'background:' + bgColor + ';' +
+//                'color:' + textColor + ';font-size:' + style.font + ';' + // ★ 使用动态 textColor
+//                'display:' + (isHidden ? 'none' : 'block') + ';';
+            
+            
+            // 使用配置的原始文字颜色，不关联通信状态
+            var textColor = style.textColor;
 
             el.style.cssText = 'position:absolute;padding:4px 10px;border-radius:4px;white-space:nowrap;' +
                 'font-weight:600;transform:translate(-50%,' + translateY + ');box-shadow:' + boxShadow + ';' +
                 'pointer-events:auto;cursor:pointer;' +
                 'left:' + cx + 'px;top:' + cy + 'px;' +
                 'background:' + bgColor + ';' +
-                'color:' + style.textColor + ';font-size:' + style.font + ';' +
-                'display:' + (isHidden ? 'none' : 'block') + ';'; // ★ 使用 isHidden 判断
+                'color:' + textColor + ';font-size:' + style.font + ';' +
+                'display:' + (isHidden ? 'none' : 'block') + ';';
 
             visible[shape.uuid] = true;
         });
@@ -1086,8 +1128,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
 
     // ========================================================
     // WebSocket 推送：同步值 + 报警等级
-    //
-    //   ★ 索引优化（O(1) 命中 + O(k) 更新）
     // ========================================================
     updateRealtimeValuesFromPush: function(pushDeviceId, itemList) {
         var me = this;
@@ -1113,6 +1153,12 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         uuidSet.forEach(function(uuid) {
             var binding = me.bindingMap.get(uuid);
             if (!binding || !binding.fieldName) return;
+
+            // 收到实时数据，说明设备在线，强制更新通信状态为 1
+            if (binding.commStatus !== 1) {
+                binding.commStatus = 1;
+                changed = true;
+            }
 
             var item = valueMap[String(binding.fieldName).toUpperCase()];
             if (!item) return;
@@ -1173,6 +1219,37 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                 changed = true;
             }
         });
+        if (changed) me.scheduleRenderLabels();
+    },
+    
+    // ========================================================
+    // WebSocket 推送：同步设备通信状态
+    // ========================================================
+    updateRealtimeCommStatus: function(pushDeviceId, commStatus) {
+        var me = this;
+        if (me._destroyed) return;
+        if (pushDeviceId == null || commStatus == null) return;
+        if (!me.deviceIndexMap || me.deviceIndexMap.size === 0) return;
+
+        // 判断该设备是否在当前场景中
+        var uuidSet = me.deviceIndexMap.get(String(pushDeviceId));
+        if (!uuidSet || uuidSet.size === 0) return;
+
+        var changed = false;
+        var newStatus = parseInt(commStatus, 10);
+        
+        // 遍历该设备绑定的所有标注，更新 commStatus
+        uuidSet.forEach(function(uuid) {
+            var binding = me.bindingMap.get(uuid);
+            if (binding) {
+                var oldStatus = binding.commStatus != null ? parseInt(binding.commStatus, 10) : 0;
+                if (oldStatus !== newStatus) {
+                    binding.commStatus = newStatus;
+                    changed = true;
+                }
+            }
+        });
+
         if (changed) me.scheduleRenderLabels();
     },
 

@@ -5661,29 +5661,44 @@ function getRoleModuleRight(moduleCode){
 //    return getStringLength(str)*ratio;
 //}
 
+//function getLabelWidth(str, language) {
+//    if (!str || str === '') return 0;
+//    
+//    // 优先使用 Canvas（最准确）
+//    try {
+//        var canvas = document.createElement('canvas');
+//        var ctx = canvas.getContext('2d');
+//        ctx.font = '12px tahoma,arial,verdana,sans-serif';
+//        var width = ctx.measureText(str).width;
+//        
+//        // 添加一点额外边距，避免文字贴边
+//        return width + 5;
+//    } catch(e) {
+//        // 降级：使用原生 DOM 测量
+//        var measureDiv = document.createElement('div');
+//        measureDiv.style.cssText = 'position:absolute;visibility:hidden;height:auto;width:auto;white-space:nowrap;font-size:12px;font-family:tahoma,arial,verdana,sans-serif;';
+//        measureDiv.textContent = str; // 使用 textContent 避免 HTML 转义
+//        document.body.appendChild(measureDiv);
+//        var width = measureDiv.offsetWidth;
+//        document.body.removeChild(measureDiv);
+//        
+//        return width + 5;
+//    }
+//}
+
+//function getLabelWidth(str, language) {
+//    if (!str || str === '') return 0;
+//    var tm = new Ext.util.TextMetrics();
+//    var width = tm.getWidth(str + ':');
+//    tm.destroy();
+//    return width + 8; 
+//}
+
 function getLabelWidth(str, language) {
     if (!str || str === '') return 0;
-    
-    // 优先使用 Canvas（最准确）
-    try {
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        ctx.font = '12px tahoma,arial,verdana,sans-serif';
-        var width = ctx.measureText(str).width;
-        
-        // 添加一点额外边距，避免文字贴边
-        return width + 5;
-    } catch(e) {
-        // 降级：使用原生 DOM 测量
-        var measureDiv = document.createElement('div');
-        measureDiv.style.cssText = 'position:absolute;visibility:hidden;height:auto;width:auto;white-space:nowrap;font-size:12px;font-family:tahoma,arial,verdana,sans-serif;';
-        measureDiv.textContent = str; // 使用 textContent 避免 HTML 转义
-        document.body.appendChild(measureDiv);
-        var width = measureDiv.offsetWidth;
-        document.body.removeChild(measureDiv);
-        
-        return width + 5;
-    }
+    var size = Ext.util.TextMetrics.measure(document.body, str + ':');
+    var width = size.width;
+    return width + 8; 
 }
 
 function getStringLength(str) {

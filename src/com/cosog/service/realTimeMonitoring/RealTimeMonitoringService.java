@@ -7672,6 +7672,28 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	            String devId = s.get("deviceId").getAsString();
 	            if (StringManagerUtils.isNotNull(devId)) involvedDevices.add(devId);
 	        }
+	        
+	     // ★ 统一批量查询设备通信状态，避免循环内单独查询（N+1 问题）
+	        Map<String, Integer> commStatusMap = new HashMap<String, Integer>();
+	        if (involvedDevices.size() > 0) {
+	            try {
+	                // 拼装 IN 查询条件
+	                String deviceIdsStr = String.join(",", involvedDevices);
+	                String commSql = "select t.deviceid, t.commstatus from tbl_acqdata_latest t where t.deviceid in (" + deviceIdsStr + ")";
+	                List<?> commList = this.findCallSql(commSql);
+	                if (commList != null) {
+	                    for (Object obj : commList) {
+	                        Object[] row = (Object[]) obj;
+	                        String dId = row[0] + "";
+	                        int cStatus = StringManagerUtils.stringToInteger(row[1] + "");
+	                        commStatusMap.put(dId, cStatus);
+	                    }
+	                }
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	        }
+
 
 	        // 4. 按设备拉实时值
 	        //    ★ 用 allItemInfo 里的 column（大写）作为 key，与 shape.fieldName 语义一致
@@ -7766,6 +7788,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	            String devId = s.get("deviceId").getAsString();
 	            String fieldName = s.get("fieldName").getAsString();
 	            if (!StringManagerUtils.isNotNull(devId) || !StringManagerUtils.isNotNull(fieldName)) continue;
+	            
+	            // ★ 从 Map 中取出通信状态，若查不到则默认0 (离线)
+	            Integer cStatus = commStatusMap.get(devId);
+	            s.addProperty("commStatus", cStatus != null ? cStatus : 0);
 
 	            // ★ fieldName 就是 allItemInfo 里的 column（语义一致）
 	            String key = devId + "::" + fieldName.toUpperCase();

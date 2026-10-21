@@ -120,7 +120,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoWindow", {
                                 }
                             },
                             failure: function () {
-                                Ext.Msg.alert(loginUserLanguageResource.tip, "【<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font> 】:" + loginUserLanguageResource.contactAdmin);
+                                Ext.Msg.alert(loginUserLanguageResource.tip, "[<font color=red>" + loginUserLanguageResource.exceptionThrow + "</font>]:" + loginUserLanguageResource.contactAdmin);
                             }
                         });
                     } else {

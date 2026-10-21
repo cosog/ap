@@ -459,7 +459,8 @@ public class SceneModelController extends BaseController {
     @RequestMapping("/getSceneModelConfig")
     public String getSceneModelConfig() throws IOException, SQLException {
         Map<String, Object> result = new HashMap<String, Object>();
-
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("userLogin");
         try {
             String id = ParamUtils.getParameter(request, "id");
 
@@ -467,7 +468,7 @@ public class SceneModelController extends BaseController {
                 result.put("success", false);
                 result.put("message", "缺少场景 id");
             } else {
-                Map<String, Object> data = sceneModelService.getSceneModelConfig(Integer.parseInt(id));
+                Map<String, Object> data = sceneModelService.getSceneModelConfig(Integer.parseInt(id),user != null ? user.getLanguageName() : "");
                 if (data == null) {
                     result.put("success", false);
                     result.put("message", "场景不存在");

@@ -26,6 +26,8 @@ import com.cosog.utils.LicenseMap;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 
 @Service("sceneModelService")
@@ -225,9 +227,35 @@ public class SceneModelService<T> extends BaseService<T> {
 	 * @param id 场景主键
 	 * @return { id, config } 或 null
 	 */
-	public Map<String, Object> getSceneModelConfig(int id) {
+//	public Map<String, Object> getSceneModelConfig(int id,User user) {
+//	    Map<String, Object> result = null;
+//
+//	    try {
+//	        String sql = "select t.id, t.config from TBL_SCENEMODEL t where t.id = " + id;
+//	        List<?> list = this.findCallSql(sql);
+//
+//	        if (list != null && !list.isEmpty()) {
+//	            Object[] obj = (Object[]) list.get(0);
+//	            result = new HashMap<String, Object>();
+//	            result.put("id", obj[0]);
+//	            result.put("config", StringManagerUtils.CLOBObjectToString(obj[1]));
+//	        }
+//	    } catch (Exception e) {
+//	        e.printStackTrace();
+//	    }
+//
+//	    return result;
+//	}
+	
+	/**
+	 * 根据 id 从数据库获取单个场景的 config
+	 *
+	 * @param id 场景主键
+	 * @param language 语言
+	 * @return { id, config } 或 null
+	 */
+	public Map<String, Object> getSceneModelConfig(int id, String language) {
 	    Map<String, Object> result = null;
-
 	    try {
 	        String sql = "select t.id, t.config from TBL_SCENEMODEL t where t.id = " + id;
 	        List<?> list = this.findCallSql(sql);
@@ -236,13 +264,34 @@ public class SceneModelService<T> extends BaseService<T> {
 	            Object[] obj = (Object[]) list.get(0);
 	            result = new HashMap<String, Object>();
 	            result.put("id", obj[0]);
-	            result.put("config", StringManagerUtils.CLOBObjectToString(obj[1]));
+	            
+	            String cfgStr = StringManagerUtils.CLOBObjectToString(obj[1]);
+	            
+	            if (StringManagerUtils.isNotNull(cfgStr)) {
+	                try {
+	                    Gson gson = new Gson();
+	                    JsonParser jsonParser = new JsonParser();
+	                    JsonObject cfgObj = jsonParser.parse(cfgStr).getAsJsonObject();
+	                    
+	                    // ★ 调用公共方法转换
+	                    processCalculateItemLabelAndUnit(cfgObj, language);
+	                    
+	                    cfgStr = gson.toJson(cfgObj);
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	            result.put("config", cfgStr);
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-
 	    return result;
+	}
+	
+	// ★ 保留原有方法签名作为重载，兼容其它可能未传语言的调用
+	public Map<String, Object> getSceneModelConfig(int id) {
+	    return getSceneModelConfig(id, "");
 	}
 	
 	/**

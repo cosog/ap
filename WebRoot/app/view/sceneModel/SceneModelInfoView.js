@@ -155,6 +155,31 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         me.labelStyleMap = new Map();
         me.userColorMap = new Map();
         me.userLineWidthMap = new Map();
+        
+        var styleLabelWidth = 90;
+        var styleLabels = [
+            loginUserLanguageResource.borderColor,
+            loginUserLanguageResource.borderWidth,
+            loginUserLanguageResource.fillColor,
+            loginUserLanguageResource.ctrlPointSize,
+            loginUserLanguageResource.font,
+            loginUserLanguageResource.labelBg,
+            loginUserLanguageResource.textColor,
+            loginUserLanguageResource.labelOnTop,
+            loginUserLanguageResource.hideDeviceName,
+            loginUserLanguageResource.hideFieldName,
+            loginUserLanguageResource.hideLabel
+        ];
+        for (var i = 0; i < styleLabels.length; i++) {
+            if (styleLabels[i]) {
+                var w = getLabelWidth(styleLabels[i], loginUserLanguage);
+                if (w > styleLabelWidth) {
+                    styleLabelWidth = w;
+                }
+            }
+        }
+        // 稍微加一点余量，避免文字紧贴输入框
+        //styleLabelWidth += 10;
 
         var bindingTreeStore = Ext.create('Ext.data.TreeStore', {
             root: { expanded: true, children: [] }
@@ -167,7 +192,6 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                     region: 'west',
                     width: '25%',
                     layout: 'fit',
-                    title: '场景列表',
                     header: false,
                     split: true,
                     collapsible: true,
@@ -214,7 +238,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                     layout: 'border',
                     border: false,
                     tbar: [
-                        { xtype: 'button', text: '✋ 选择', itemId: 'btnSelect',
+                        { xtype: 'button', text: '✋ '+loginUserLanguageResource.select, itemId: 'btnSelect',
                           enableToggle: true, pressed: true, toggleGroup: 'createType',
                           handler: function(b) {
                               if (b.pressed && me.cs) {
@@ -222,7 +246,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                                   me._userCreateType = 0;
                               }
                           } },
-                        { xtype: 'button', text: '▭ 矩形', itemId: 'btnRect',
+                        { xtype: 'button', text: '▭ '+loginUserLanguageResource.rectangle, itemId: 'btnRect',
                           enableToggle: true, toggleGroup: 'createType',
                           handler: function(b) {
                               if (b.pressed && me.cs) {
@@ -233,8 +257,8 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                                   me.resetStylePanel();
                               }
                           } },
-                        { xtype: 'button', text: '• 点', itemId: 'btnPoint',
-                          enableToggle: true, toggleGroup: 'createType', tooltip: '点击画布添加点标注',
+                        { xtype: 'button', text: '• '+loginUserLanguageResource.point, itemId: 'btnPoint',
+                          enableToggle: true, toggleGroup: 'createType', tooltip: loginUserLanguageResource.addPointTooltip,
                           handler: function(b) {
                               if (b.pressed && me.cs) {
                                   me.cs.createType = 3;
@@ -245,19 +269,19 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                               }
                           } },
                         '-',
-                        { xtype: 'button', text: '🔍+', tooltip: '放大',
+                        { xtype: 'button', text: '🔍+', tooltip: loginUserLanguageResource.zoomIn,
                           handler: function() { if (me.cs) { me.cs.setScale(true); me.afterZoom(); } } },
-                        { xtype: 'button', text: '🔍−', tooltip: '缩小',
+                        { xtype: 'button', text: '🔍−', tooltip: loginUserLanguageResource.zoomOut,
                           handler: function() { if (me.cs) { me.cs.setScale(false); me.afterZoom(); } } },
-                        { xtype: 'button', text: '适配',
+                        { xtype: 'button', text: loginUserLanguageResource.fitZoom,
                           handler: function() { if (me.cs) { me.cs.fitZoom(); me.afterZoom(); } } },
                         '-',
-                        { xtype: 'button', text: '🖼️ 选择服务器图片',
+                        { xtype: 'button', text: '🖼️ '+loginUserLanguageResource.selectServerImage,
                           handler: function() { me.onSelectServerImage(); } },
-                        { xtype: 'button', text: '📤 上传本地图片',
+                        { xtype: 'button', text: '📤 '+loginUserLanguageResource.uploadLocalImage,
                           handler: function() { me.onUploadLocalImage(); } },
                         '->',
-                        { xtype: 'button', text: '💾 保存标注',
+                        { xtype: 'button', text: loginUserLanguageResource.saveAnnotations,iconCls: 'save',
                           handler: function() { me.onSaveAnnotations(); } }
                     ],
                     items: [
@@ -290,7 +314,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                             width: 320,
                             split: true,
                             collapsible: true,
-                            title: '样式与标注',
+                            title: loginUserLanguageResource.styleAndAnnotations	,
                             layout: 'border',
                             border: false,
                             items: [
@@ -299,54 +323,54 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                                     height: '50%',
                                     split: true,
                                     collapsible: true,
-                                    title: '样式设置',
+                                    title: loginUserLanguageResource.styleSettings,
                                     itemId: 'styleFormPanel',
                                     autoScroll: true,
                                     bodyPadding: 12,
                                     border: false,
                                     items: [{
                                         xtype: 'fieldset',
-                                        title: '图形样式',
-                                        defaults: { anchor: '100%', labelWidth: 90, margin: '6 0' },
+                                        title: loginUserLanguageResource.graphicStyle,
+                                        defaults: { anchor: '100%', labelWidth: styleLabelWidth, margin: '6 0' },
                                         items: [
-                                            { xtype: 'colorfield', fieldLabel: '边框颜色', itemId: 'strokeStyle',
+                                            { xtype: 'colorfield', fieldLabel: loginUserLanguageResource.borderColor, itemId: 'strokeStyle',
                                               listeners: { collapse: function (field) { me.applyColorFieldVisual(field, 1); me.onGraphicStyleChange(); } } },
-                                            { xtype: 'numberfield', fieldLabel: '边框宽度', itemId: 'lineWidth',
+                                            { xtype: 'numberfield', fieldLabel: loginUserLanguageResource.borderWidth, itemId: 'lineWidth',
                                               value: 1, minValue: 0, maxValue: 10, allowDecimals: false,
                                               listeners: { change: function() { me.onGraphicStyleChange(); } } },
-                                            { xtype: 'colorfield', fieldLabel: '填充颜色', itemId: 'fillStyle',
+                                            { xtype: 'colorfield', fieldLabel: loginUserLanguageResource.fillColor, itemId: 'fillStyle',
                                               listeners: { collapse: function (field) { me.applyColorFieldVisual(field, null); me.onGraphicStyleChange(); } } },
-                                            { xtype: 'numberfield', fieldLabel: '控制点大小', itemId: 'ctrlRadius',
+                                            { xtype: 'numberfield', fieldLabel: loginUserLanguageResource.ctrlPointSize, itemId: 'ctrlRadius',
                                               value: 3, minValue: 2, maxValue: 10, allowDecimals: false,
-                                              tooltip: '同时控制点标注的半径大小',
+                                              tooltip: loginUserLanguageResource.ctrlRadiusTooltip,
                                               listeners: { change: function() { me.onGraphicStyleChange(); } } }
                                         ]
                                     }, {
                                         xtype: 'fieldset',
-                                        title: '标签样式',
-                                        defaults: { anchor: '100%', labelWidth: 90, margin: '6 0' },
+                                        title: loginUserLanguageResource.labelStyle,
+                                        defaults: { anchor: '100%', labelWidth: styleLabelWidth, margin: '6 0' },
                                         items: [
-                                            { xtype: 'combo', fieldLabel: '字体', itemId: 'labelFont',
+                                            { xtype: 'combo', fieldLabel: loginUserLanguageResource.font, itemId: 'labelFont',
                                               store: ['11px', '12px', '13px', '14px'], value: '12px', editable: false, matchFieldWidth: true,
                                               listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                            { xtype: 'colorfield', fieldLabel: '标签背景', itemId: 'labelBg',
+                                            { xtype: 'colorfield', fieldLabel: loginUserLanguageResource.labelBg, itemId: 'labelBg',
                                               listeners: { collapse: function (field) { me.applyColorFieldVisual(field, null); me.onLabelStyleChange(); } } },
-                                            { xtype: 'colorfield', fieldLabel: '文字颜色', itemId: 'labelText',
+                                            { xtype: 'colorfield', fieldLabel: loginUserLanguageResource.textColor, itemId: 'labelText',
                                               listeners: { collapse: function (field) { me.applyColorFieldVisual(field, 1); me.onLabelStyleChange(); } } },
-                                            { xtype: 'checkbox', fieldLabel: '标签在上方', itemId: 'labelUp', value: true,
+                                            { xtype: 'checkbox', fieldLabel: loginUserLanguageResource.labelOnTop, itemId: 'labelUp', value: true,
                                               listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                            { xtype: 'checkbox', fieldLabel: '隐藏设备名称', itemId: 'hideDeviceName', value: true,
+                                            { xtype: 'checkbox', fieldLabel: loginUserLanguageResource.hideDeviceName, itemId: 'hideDeviceName', value: true,
                                               listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                            { xtype: 'checkbox', fieldLabel: '隐藏字段名称', itemId: 'hideFieldName',
+                                            { xtype: 'checkbox', fieldLabel: loginUserLanguageResource.hideFieldName, itemId: 'hideFieldName',
                                               listeners: { change: function() { me.onLabelStyleChange(); } } },
-                                            { xtype: 'checkbox', fieldLabel: '隐藏标签', itemId: 'hideLabel', hidden:true,
+                                            { xtype: 'checkbox', fieldLabel: loginUserLanguageResource.hideLabel, itemId: 'hideLabel', hidden:true,
                                               listeners: { change: function() { me.onLabelStyleChange(); } } }
                                         ]
                                     }]
                                 },
                                 {
                                     region: 'center',
-                                    title: '标注列表',
+                                    title: loginUserLanguageResource.annotationList,
                                     layout: 'fit',
                                     border: false,
                                     items: [{
@@ -358,7 +382,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                                         useArrows: true,
                                         lines: false,
                                         store: bindingTreeStore,
-                                        emptyText: '<div style="padding:30px;color:#aaa;text-align:center;">暂无标注</div>',
+                                        emptyText: '<div style="padding:30px;color:#aaa;text-align:center;">'+loginUserLanguageResource.emptyMsg+'</div>',
                                         listeners: {
                                             itemclick: function(view, record, item, index, e, eOpts) {
                                                 me.onBindingTreeItemClick(view, record);
@@ -1119,7 +1143,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
 
         var canvasEl = canvasCmp.el.dom;
         me.labelLayer = layerCmp.el.dom;
-        if (typeof CanvasSelect === 'undefined') { Ext.Msg.alert('错误', 'CanvasSelect 库未加载'); return; }
+        if (typeof CanvasSelect === 'undefined') { Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.canvasSelectNotLoaded); return; }
 
         me.cs = new CanvasSelect(canvasEl, me.BLANK_IMAGE);
         me._canvasCurrentUrl = me.BLANK_IMAGE;
@@ -1418,18 +1442,18 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         });
 
         var win = Ext.create('Ext.window.Window', {
-            title: '选择场景图片', width: 820, height: 580,
+            title: loginUserLanguageResource.selectSceneImage, width: 820, height: 580,
             modal: true, layout: 'fit', closeAction: 'destroy',
             items: [{
                 xtype: 'panel', layout: 'fit',
                 tbar: [
-                    { xtype: 'textfield', itemId: 'searchField', emptyText: '搜索文件名...', width: 220,
+                    { xtype: 'textfield', itemId: 'searchField', emptyText: loginUserLanguageResource.searchFileName+'...', width: 220,
                       listeners: { change: function(f, v) { win.filterImages(v); } } },
                     '->',
-                    { xtype: 'button', text: '📤 上传本地图片', handler: function() { win.doUpload(); } },
+                    { xtype: 'button', text: '📤 '+loginUserLanguageResource.uploadLocalImage, handler: function() { win.doUpload(); } },
                     // ★ 新增：删除选中的图片按钮（默认禁用）
-                    { xtype: 'button', itemId: 'btnDeleteImg', text: '删除图片', iconCls: 'delete', disabled: true, tooltip: '删除选中的图片', handler: function() { win.doDelete(); } },
-                    { xtype: 'button', text: '刷新', iconCls: 'note-refresh',
+                    { xtype: 'button', itemId: 'btnDeleteImg', text: loginUserLanguageResource.deleteImage, iconCls: 'delete', disabled: true, tooltip: loginUserLanguageResource.deleteSelectedImgTip, handler: function() { win.doDelete(); } },
+                    { xtype: 'button', text: loginUserLanguageResource.refresh, iconCls: 'note-refresh',
                       handler: function() {
                           imageStore.reload({ callback: function() {
                               win.allImages = imageStore.getRange().map(function(r) { return r.getData(); });
@@ -1442,7 +1466,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                     itemSelector: 'div.scene-image-item',
                     overItemCls: 'scene-image-item-over',
                     selectedItemCls: 'scene-image-item-selected',
-                    emptyText: '<div style="padding:40px;color:#aaa;text-align:center;">暂无图片</div>',
+                    emptyText: '<div style="padding:40px;color:#aaa;text-align:center;">'+loginUserLanguageResource.noImages+'</div>',
                     store: imageStore,
                     tpl: [
                         '<tpl for=".">',
@@ -1465,7 +1489,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                             
                             if (selections.length === 0) {
                                 btnDelete.setDisabled(true);
-                                btnDelete.setTooltip('请先选择一张图片');
+                                btnDelete.setTooltip(loginUserLanguageResource.selectImgFirstTip);
                                 return;
                             }
                             var selectedUrl = selections[0].get('url');
@@ -1473,21 +1497,21 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                             // 如果选中的图正是当前场景正在使用的图
                             if (me.imageUrl && selectedUrl === me.imageUrl) {
                                 btnDelete.setDisabled(true);
-                                btnDelete.setTooltip('不能删除当前场景正在使用的背景图');
+                                btnDelete.setTooltip(loginUserLanguageResource.cannotDeleteUsedImgTip);
                             } else {
                                 btnDelete.setDisabled(false);
-                                btnDelete.setTooltip('删除选中的图片');
+                                btnDelete.setTooltip(loginUserLanguageResource.deleteSelectedImgTip);
                             }
                         }
                     }
                 }]
             }],
             buttons: [
-                { text: '取消', handler: function() { win.close(); } },
-                { text: '确定', handler: function() {
+                { text: loginUserLanguageResource.cancel, iconCls: 'cancel',handler: function() { win.close(); } },
+                { text: loginUserLanguageResource.confirm,iconCls: 'save', handler: function() {
                     var view = win.down('[itemId=imageView]');
                     var sel = view.getSelection();
-                    if (sel.length === 0) { Ext.Msg.alert('提示', '请选择一张图片'); return; }
+                    if (sel.length === 0) { Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.selectImgFirst); return; }
                     win.doSelect(sel[0].get('url'));
                 }}
             ],
@@ -1550,7 +1574,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                 if (!view) return;
                 var sel = view.getSelection();
                 if (sel.length === 0) {
-                    Ext.Msg.alert('提示', '请先选择要删除的图片');
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.selectImgToDel);
                     return;
                 }
                 var record = sel[0];
@@ -1559,13 +1583,13 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
 
                 // ★ 二次保险：如果强行调用删除，也拦住
                 if (me.imageUrl && url === me.imageUrl) {
-                    Ext.Msg.alert('提示', '不能删除当前场景正在使用的背景图，请先更换背景图！');
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.cannotDeleteUsedImgAlert);
                     return;
                 }
 
-                Ext.Msg.confirm('确认删除', '确定要删除图片【' + name + '】吗？', function(btn) {
+                Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.confirmDeleteImage+'[<font color=red>' + name + '</font>]?', function(btn) {
                     if (btn === 'yes') {
-                        Ext.MessageBox.show({ msg: '正在删除...', progressText: '删除中', width: 300, wait: true });
+                        Ext.MessageBox.show({ msg: loginUserLanguageResource.deleting+'...', progressText: loginUserLanguageResource.deletingProgress, width: 300, wait: true });
                         Ext.Ajax.request({
                             url: context + '/sceneModelController/deleteSceneImage',
                             method: 'POST',
@@ -1575,7 +1599,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                                 try {
                                     var result = Ext.decode(resp.responseText);
                                     if (result.success) {
-                                        Ext.Msg.alert('提示', '删除成功');
+                                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
                                         
                                         // 如果当前画布用的就是这张图，替换为空白图，保留标注
                                         if (me.imageUrl === url) {
@@ -1595,15 +1619,15 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                                             win.allImages = imageStore.getRange().map(function(r) { return r.getData(); });
                                         }});
                                     } else {
-                                        Ext.Msg.alert('失败', result.message || '删除失败');
+                                        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteFailed);
                                     }
                                 } catch (e) {
-                                    Ext.Msg.alert('错误', '服务器返回数据异常');
+                                    Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.serverDataError);
                                 }
                             },
                             failure: function() {
                                 Ext.MessageBox.hide();
-                                Ext.Msg.alert('错误', '网络请求失败，无法删除');
+                                Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.networkErrorCannotDelete);
                             }
                         });
                     }
@@ -1618,7 +1642,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                     if (!file) return;
                     var formData = new FormData();
                     formData.append('file', file);
-                    Ext.MessageBox.show({ msg: '正在上传...', progressText: '上传中', width: 300 });
+                    Ext.MessageBox.show({ msg: loginUserLanguageResource.uploading+'...', progressText: loginUserLanguageResource.uploadingProgress, width: 300 });
                     Ext.Ajax.request({
                         url: context + '/sceneModelController/uploadSceneImage',
                         method: 'POST', rawData: formData,
@@ -1627,14 +1651,14 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                             Ext.MessageBox.hide();
                             var result = Ext.decode(resp.responseText);
                             if (result.success) {
-                                Ext.Msg.alert(loginUserLanguageResource.tip, '上传成功');
+                                Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadSuccess);
                                 imageStore.reload({ callback: function() {
                                     win.allImages = imageStore.getRange().map(function(r) { return r.getData(); });
                                     Ext.defer(function() { win.selectCurrentImage(); }, 50);
                                 }});
-                            } else { Ext.Msg.alert('失败', result.message || '上传失败'); }
+                            } else { Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadFail); }
                         },
-                        failure: function() { Ext.MessageBox.hide(); Ext.Msg.alert('错误', '上传失败'); }
+                        failure: function() { Ext.MessageBox.hide(); Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.uploadFail); }
                     });
                 };
                 input.click();
@@ -1666,7 +1690,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
             if (!file) return;
             var formData = new FormData();
             formData.append('file', file);
-            Ext.MessageBox.show({ msg: '正在上传...', progressText: '上传中', width: 300 });
+            Ext.MessageBox.show({ msg: loginUserLanguageResource.uploading+'...', progressText: loginUserLanguageResource.uploadingProgress, width: 300 });
             Ext.Ajax.request({
                 url: context + '/sceneModelController/uploadSceneImage',
                 method: 'POST', rawData: formData,
@@ -1676,8 +1700,8 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                     if (me._destroyed) return;
                     var result;
                     try { result = Ext.decode(resp.responseText); }
-                    catch (err) { Ext.Msg.alert('错误', '服务器返回数据异常'); return; }
-                    if (!result.success) { Ext.Msg.alert('失败', result.message || '上传失败'); return; }
+                    catch (err) { Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.serverDataError); return; }
+                    if (!result.success) { Ext.Msg.alert(loginUserLanguageResource.tip, result.message || loginUserLanguageResource.uploadFail); return; }
 
                     me.setCanvasImage(result.imageUrl);
                     if (targetRecord) {
@@ -1688,12 +1712,12 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                         me.writeRecordConfig(targetRecord, cfg);
                     }
 
-                    Ext.Msg.alert(loginUserLanguageResource.tip, '上传成功');
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadSuccess);
                 },
                 failure: function() {
                     Ext.MessageBox.hide();
                     if (me._destroyed) return;
-                    Ext.Msg.alert('错误', '上传失败');
+                    Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.uploadFail);
                 }
             });
         };
@@ -1703,19 +1727,19 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     onSaveAnnotations: function() {
         var me = this;
         if (me._destroyed) return;
-        if (!me.currentRecord) { Ext.Msg.alert('提示', '请先选择场景'); return; }
-        if (!me.cs) { Ext.Msg.alert('提示', '画布未初始化'); return; }
+        if (!me.currentRecord) { Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.selectSceneFirst); return; }
+        if (!me.cs) { Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.canvasNotInitialized); return; }
         var imageUrl = me.imageUrl || '';
-        if (!imageUrl) { Ext.Msg.alert('提示', '请先选择场景图片'); return; }
+        if (!imageUrl) { Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.selectSceneImgFirst); return; }
         if (imageUrl.indexOf('blob:') === 0 || imageUrl.indexOf('data:') === 0) {
-            Ext.Msg.confirm('提示', '当前图片还未上传到服务器，是否先上传？', function(btn) {
+            Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.imgNotUploadedConfirm+'?', function(btn) {
                 if (btn === 'yes') me.onUploadLocalImage();
             });
             return;
         }
         var cfg = me.getConfig();
         if (!cfg.shapes || cfg.shapes.length === 0) {
-            Ext.Msg.confirm('提示', '当前场景还没有任何标注，仍要保存吗？', function(btn) {
+            Ext.Msg.confirm(loginUserLanguageResource.tip, loginUserLanguageResource.noAnnotationsConfirm+'?', function(btn) {
                 if (btn === 'yes') me.submitSaveScene(cfg);
             });
             return;
@@ -1728,7 +1752,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         if (me._destroyed) return;
         var record = me.currentRecord;
         me.writeRecordConfig(record, cfg);
-        Ext.MessageBox.show({ msg: '正在保存场景标注...', progressText: '保存中',
+        Ext.MessageBox.show({ msg: loginUserLanguageResource.savingAnnotations+'...', progressText: loginUserLanguageResource.savingProgress,
                               width: 300, wait: true, waitConfig: { interval: 200 } });
         Ext.Ajax.request({
             url: context + '/sceneModelController/saveSceneModel',
@@ -1745,12 +1769,12 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                     } else {
                         Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.saveFailed);
                     }
-                } catch (e) { Ext.Msg.alert('错误', '服务器返回数据异常'); }
+                } catch (e) { Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.serverDataError); }
             },
             failure: function(response) {
                 Ext.MessageBox.hide();
                 if (me._destroyed) return;
-                Ext.Msg.alert('错误', '网络请求失败：' + (response.status || ''));
+                Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.requestFailed+':' + (response.status || ''));
             }
         });
     },
@@ -2071,7 +2095,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
     },
 
     buildLabelText: function(b, labelStyle) {
-        if (!b || !b.deviceId || !b.fieldName) return '未绑定';
+        if (!b || !b.deviceId || !b.fieldName) return loginUserLanguageResource.unbound;
         
         var hideDev = !labelStyle || labelStyle.hideDeviceName !== false;
         var hideFld = labelStyle && labelStyle.hideFieldName === true;
@@ -2136,7 +2160,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
         var seq = ++me._loadSceneSeq;
         var recordId = record.get('modelId') || record.get('id');
 
-        Ext.MessageBox.show({ msg: '正在加载场景配置...', progressText: '加载中',
+        Ext.MessageBox.show({ msg: loginUserLanguageResource.loadingSceneConfig+'...', progressText: loginUserLanguageResource.loadingProgress,
                               width: 300, wait: true, waitConfig: { interval: 200 } });
         Ext.Ajax.request({
             url: context + '/sceneModelController/getSceneModelConfig',
@@ -2157,16 +2181,16 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                         if (!cfg) cfg = { imageUrl: '', shapes: [] };
                         me.renderSceneConfig(cfg);
                     } else {
-                        Ext.Msg.alert('加载失败', result.message || '未知错误');
+                        Ext.Msg.alert(loginUserLanguageResource.loadFailed, result.message || loginUserLanguageResource.unknownError);
                     }
-                } catch (e) { Ext.Msg.alert('错误', '服务器返回数据异常'); }
+                } catch (e) { Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.serverDataError); }
             },
             failure: function() {
                 if (seq !== me._loadSceneSeq) return;
                 if (me._destroyed) return;
 
                 Ext.MessageBox.hide();
-                Ext.Msg.alert('错误', '网络请求失败');
+                Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.requestFailed);
             }
         });
     },
@@ -2601,7 +2625,7 @@ Ext.define("AP.view.sceneModel.SceneModelInfoView", {
                             if (isNotVal(grid)) grid.getStore().load();
                         }
                     });
-                } catch (err) { Ext.Msg.alert('错误', '文件格式不正确'); }
+                } catch (err) { Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.invalidFileFormat); }
             };
             reader.readAsText(file);
         };

@@ -23,6 +23,10 @@ if(browserLang == null) browserLang = "zh_CN";
 <link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/ht-theme-classic.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/table.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 
+<link rel="stylesheet" href="<%=path%>/scripts/canvas-select/css/scene.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<!-- 引入 Spectrum 颜色选择器 -->
+<link rel="stylesheet" href="<%=path%>/scripts/miniui/third-party/spectrum/spectrum.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+
 <!-- ============================================================== -->
 <!--  JavaScript 库                                                  -->
 <!-- ============================================================== -->
@@ -67,3 +71,7 @@ if(browserLang == null) browserLang = "zh_CN";
 <!-- MiniUI 版通用工具 -->
 <script src="<%=path%>/miniui-app/common/miniui-commutils.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 <script src="<%=path%>/miniui-app/common/miniui-ajaxfilter.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+
+<!-- canvas-select -->
+<script type="text/javascript" src="<%=path%>/scripts/canvas-select/js/canvas-select.min.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
+<script src="<%=path%>/scripts/miniui/third-party/spectrum/spectrum.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>

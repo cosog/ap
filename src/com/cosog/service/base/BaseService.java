@@ -21,11 +21,14 @@ import com.cosog.dao.BaseDao;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.User;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.task.MemoryDataManagerTask.CalItem;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.GenericsUtils;
 import com.cosog.utils.Page;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 /**
  * <p>
@@ -1190,5 +1193,43 @@ public class BaseService<T> {
 			matrix=orgList.get(0)+"";
 		}
 		return matrix;
+	}
+	
+	/**
+	 * ★ 新增：处理 JSON 配置中的计算项名称和单位替换
+	 * @param cfgObj 已经解析好的 JsonObject
+	 * @param language 语言
+	 */
+	public void processCalculateItemLabelAndUnit(JsonObject cfgObj, String language) {
+	    if (cfgObj == null || !cfgObj.has("shapes")) return;
+	    try {
+	        JsonArray shapes = cfgObj.getAsJsonArray("shapes");
+	        if (shapes == null || shapes.size() == 0) return;
+
+	        for (int i = 0; i < shapes.size(); i++) {
+	            JsonObject s = shapes.get(i).getAsJsonObject();
+	            if (!s.has("fieldName") || s.get("fieldName").isJsonNull()) continue;
+	            
+	            String fieldName = s.get("fieldName").getAsString();
+	            String dataSource = s.has("dataSource") && !s.get("dataSource").isJsonNull() ? s.get("dataSource").getAsString() : "";
+	            
+	            // dataSource 为 1 代表是计算项
+	            if ("1".equals(dataSource)) {
+	                CalItem calItem = MemoryDataManagerTask.getCalItemByCode(fieldName, language);
+	                if (calItem != null) {
+	                    s.addProperty("fieldLabel", calItem.getName());
+	                    s.addProperty("unit", calItem.getUnit());
+	                }
+	            }else if ("2".equals(dataSource)) {
+	                CalItem calItem = MemoryDataManagerTask.getInputItemByCode(fieldName, language);
+	                if (calItem != null) {
+	                    s.addProperty("fieldLabel", calItem.getName());
+	                    s.addProperty("unit", calItem.getUnit());
+	                }
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 }

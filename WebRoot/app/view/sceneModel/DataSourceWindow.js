@@ -3,7 +3,7 @@ Ext.define('AP.view.sceneModel.DataSourceWindow', {
     alias: 'widget.sceneDataSourceWindow',
     id: 'sceneDataSourceWindow',
 
-    title: '配置数据源',
+    title: loginUserLanguageResource.configureDataSource,
     width: 900,
     height: 560,
     modal: true,
@@ -36,13 +36,13 @@ Ext.define('AP.view.sceneModel.DataSourceWindow', {
                     width: 340,
                     split: true,
                     layout: 'fit',
-                    title: '设备列表',
+                    title: loginUserLanguageResource.deviceList,
                     id: 'SceneDeviceContainer_Id'
                 },
                 {
                     region: 'center',
                     layout: 'fit',
-                    title: '数据项',
+                    title: loginUserLanguageResource.dataColumn,
                     id: 'SceneDeviceFieldContainer_Id'
                 }
             ]
@@ -50,13 +50,15 @@ Ext.define('AP.view.sceneModel.DataSourceWindow', {
 
         me.buttons = [
             { 
-            	text: '取消', 
+            	text: loginUserLanguageResource.cancel, 
+            	iconCls: 'cancel',
             	handler: function() { 
             		me.close(); 
             	} 
             },
             { 
-            	text: '确定', 
+            	text: loginUserLanguageResource.confirm,
+            	iconCls: 'save',
 //            	cls: 'x-btn-primary', 
             	handler: function() { 
             		me.doConfirm(); 
@@ -133,14 +135,14 @@ Ext.define('AP.view.sceneModel.DataSourceWindow', {
         var deviceGrid = Ext.getCmp('SceneDeviceGrid_Id');
         var fieldGrid  = Ext.getCmp('SceneDeviceFieldGrid_Id');
 
-        if (!isNotVal(deviceGrid)) { Ext.Msg.alert('提示', '请选择设备'); return; }
-        if (!isNotVal(fieldGrid))  { Ext.Msg.alert('提示', '请选择数据项'); return; }
+        if (!isNotVal(deviceGrid)) { Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.selectDevice); return; }
+        if (!isNotVal(fieldGrid))  { Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.selectField); return; }
 
         var deviceRec = deviceGrid.getSelectionModel().getSelection()[0];
         var fieldRec  = fieldGrid.getSelectionModel().getSelection()[0];
 
-        if (!deviceRec) { Ext.Msg.alert('提示', '请选择设备'); return; }
-        if (!fieldRec)  { Ext.Msg.alert('提示', '请选择数据项'); return; }
+        if (!deviceRec) { Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.selectDevice); return; }
+        if (!fieldRec)  { Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.selectField); return; }
 
         var binding = {
             deviceId:   deviceRec.get('deviceId'),

@@ -7640,6 +7640,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public Map<String, Object> getSceneModelConfigWithRealtimeValues(int deviceId, User user) {
 	    Map<String, Object> result = new HashMap<String, Object>();
 	    try {
+	        String language = user != null ? user.getLanguageName() : "";
 	        // 1. 拿设备关联的场景 config
 	        Map<String, Object> sceneCfg = getSceneModelConfigByDeviceId(deviceId, user);
 	        if (sceneCfg == null) return null;
@@ -7657,6 +7658,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        JsonObject cfgObj = jsonParser.parse(cfgStr).getAsJsonObject();
 	        JsonArray shapes = cfgObj.getAsJsonArray("shapes");
 	        AlarmShowStyle alarmShowStyle = MemoryDataManagerTask.getAlarmShowStyle();
+	        
+	        processCalculateItemLabelAndUnit(cfgObj, language);
 
 	        if (shapes == null || shapes.size() == 0) {
 	            result.put("id", sceneCfg.get("id"));

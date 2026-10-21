@@ -170,7 +170,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
             id: 'RealTimeMonitoringSceneModelPanel_Id',
             tbar: [{
             	xtype: 'label',
-            	html: '双击标注查看曲线或数据',
+            	html: loginUserLanguageResource.viewCurveOrTableDataByAnnotation,
             	style: {
                     marginLeft: '10px',
                     fontSize: '11px',
@@ -178,11 +178,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                     color: '#333333'
                 }
             },'->',
-                { xtype: 'button', text: '🔍+', tooltip: '放大',
+                { xtype: 'button', text: '🔍+', tooltip: loginUserLanguageResource.zoomIn,
                   handler: function() { if (me.cs) { me.cs.setScale(true); me.afterZoom(); } } },
-                { xtype: 'button', text: '🔍−', tooltip: '缩小',
+                { xtype: 'button', text: '🔍−', tooltip: loginUserLanguageResource.zoomOut,
                   handler: function() { if (me.cs) { me.cs.setScale(false); me.afterZoom(); } } },
-                { xtype: 'button', text: '适配',
+                { xtype: 'button', text: loginUserLanguageResource.fitZoom,
                   handler: function() { me.handleResize(); } }
             ],
             items: [{
@@ -325,7 +325,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         me.labelLayer = layerCmp.el.dom;
 
         if (typeof CanvasSelect === 'undefined') {
-            Ext.Msg.alert('错误', 'CanvasSelect 库未加载');
+            Ext.Msg.alert(loginUserLanguageResource.tip, 'CanvasSelect 库未加载');
             return;
         }
 
@@ -1028,7 +1028,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
     // 构建标签文本
     // ========================================================
     buildLabelText: function(b, labelStyle) {
-        if (!b || !b.deviceId || !b.fieldName) return '未绑定';
+        if (!b || !b.deviceId || !b.fieldName) return loginUserLanguageResource.unbound;
 
         var me = this;
         var fldName = b.fieldLabel || b.fieldName;

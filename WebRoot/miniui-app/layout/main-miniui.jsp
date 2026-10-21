@@ -896,7 +896,8 @@ request.setAttribute("browserLang", browserLang);
             'AP.view.operationMaintenance.OperationMaintenanceInfoView': context + '/miniui-app/modules/operationMaintenance/OperationMaintenanceInfo.jsp',
             'AP.view.data.SystemdataInfoView': context + '/miniui-app/modules/dataDictionary/dataDictionary.jsp',
             'AP.view.reportOut.ReportOutDailyReportView': context + '/miniui-app/modules/report/ProductionReport.jsp',
-            'AP.view.reportOut.HydrologicalWellReportView': context + '/miniui-app/modules/report/HydrologicalWellReport.jsp'
+            'AP.view.reportOut.HydrologicalWellReportView': context + '/miniui-app/modules/report/HydrologicalWellReport.jsp',
+            'AP.view.sceneModel.SceneModelInfoView': context + '/miniui-app/modules/sceneModel/SceneModelInfo.jsp'
         };
         return mapping[viewSrc] || null;
     }

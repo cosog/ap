@@ -23,6 +23,11 @@ var _DM_DEVICE_COMBO_PAGE_SIZE =
 //checkbox id → 后端字段路径 映射
 var _OM_DEVICE_TAB_CONFIG_FIELDS = [
     // 实时监控模块（普通 checkbox）
+	{
+        id: 'om_realtime_SceneModel',     // ★ 新增
+        group: 'DeviceRealTimeMonitoring',
+        field: 'SceneModel'
+    },
     {
         id: 'om_realtime_WellboreAnalysis',
         group: 'DeviceRealTimeMonitoring',
@@ -117,6 +122,11 @@ var _OM_DEVICE_TAB_CONFIG_FIELDS = [
     	id: 'om_pd_DiagramFiltering',         
     	group: 'PrimaryDevice', 
     	field: 'DiagramFiltering'
+    },
+    {
+        id: 'om_pd_SceneModel',           // ★ 新增
+        group: 'PrimaryDevice',
+        field: 'SceneModel'
     }
 ];
 
@@ -593,6 +603,8 @@ function initOmLabels() {
         'omLblIntelligentFrequencyConversion': 'intelligentFrequencyConversion',
         'omLblInterlockProtection': 'interlockProtection',
         'omLblDiagramFiltering': 'diagramFiltering', 
+        'omLblRealtimeSceneModel': 'sceneModel',
+        'omLblSceneModel': 'sceneModel',
         'omLblCurveRange': 'range',
         'omLblCurveTo': 'timeTo',
         'omLblLowerComputerDeviceName': 'deviceName'

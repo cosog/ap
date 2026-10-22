@@ -108,6 +108,9 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             font-size: 13px;
         }
     </style>
+    <script>
+    	var context = '<%=context%>';
+	</script>
 </head>
 <body>
 
@@ -134,26 +137,22 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                 </table>
             </div>
             <div id="sceneModelGrid" class="mini-datagrid" style="width:100%;height:100%;"
-                         idField="modelId"
-                         allowResize="false"
-                         allowAlternating="true"
-                         showPager="false"
-                         pageSize="100"
-                         showPageInfo="false"
-                         multiSelect="false"
-                         allowCellEdit="false"
-                         allowCellSelect="false"
-                         showEmptyText="true"
-                         dataField="totalRoot"
-                         totalField="totalCount"
-                         onbeforeload="onSceneGridBeforeLoad"
-                         onload="onSceneGridLoad"
-                         onselectionchanged="onSceneGridSelectionChanged"
-                         oncellbeginedit="onSceneGridCellBeginEdit"
-                         cellEditAction="celldblclick">
-                        <div property="columns"></div>
-                        <div property="emptyText" class="empty-msg"></div>
-            </div>
+			     idField="modelId"
+			     allowResize="false"
+			     allowAlternating="true"
+			     showPager="false"
+			     pageSize="100"
+			     showPageInfo="false"
+			     multiSelect="false"
+			     allowCellEdit="false"
+			     allowCellSelect="false"
+			     showEmptyText="true"
+			     dataField="totalRoot"
+			     totalField="totalCount"
+			     cellEditAction="celldblclick">
+			    <div property="columns"></div>
+			    <div property="emptyText" class="empty-msg"></div>
+			</div>
         </div>
     </div>
 
@@ -168,9 +167,9 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                 <table style="width:100%;border-collapse:collapse;">
                     <tr>
                         <td style="padding:0;vertical-align:middle;white-space:nowrap;">
-                            <button id="btnSelect" class="mini-button" plain="true" style="margin-right:2px;" onclick="onCanvasSelect()"></button>
-                            <button id="btnRect" class="mini-button" plain="true" style="margin-right:2px;" onclick="onCanvasRect()"></button>
-                            <button id="btnPoint" class="mini-button" plain="true" style="margin-right:2px;" onclick="onCanvasPoint()"></button>
+                            <button id="btnSelect" class="mini-button" plain="true" enableToggle="true" style="margin-right:2px;" onclick="onCanvasSelect()"></button>
+                            <button id="btnRect" class="mini-button" plain="true" enableToggle="true" style="margin-right:2px;" onclick="onCanvasRect()"></button>
+                            <button id="btnPoint" class="mini-button" plain="true" enableToggle="true" style="margin-right:2px;" onclick="onCanvasPoint()"></button>
                             <span class="mini-toolbar-sep" style="display:inline-block;width:1px;height:16px;background:#ddd;margin:0 6px;vertical-align:middle;"></span>
                             <button id="btnZoomIn" class="mini-button" plain="true" style="margin-right:2px;" onclick="onCanvasZoomIn()"></button>
                             <button id="btnZoomOut" class="mini-button" plain="true" style="margin-right:2px;" onclick="onCanvasZoomOut()"></button>
@@ -289,7 +288,6 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 </div>
 
 <script>
-    var context = '<%=context%>';
     $(document).ready(function () {
         mini.parse();
         initSceneModelPage();

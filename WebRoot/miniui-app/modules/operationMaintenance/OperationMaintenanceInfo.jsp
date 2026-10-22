@@ -803,46 +803,49 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                      showHeader="true" showToolbar="false" showCloseButton="false"
                      bodyStyle="padding:0;overflow:hidden;">
                     <div class="om-tab-content">
-
-                        <fieldset class="mini-fieldset">
-                            <legend id="omLegendRealtimeMonitoring2"></legend>
-                            <table class="om-form-table">
-                                <colgroup>
-                                    <col style="width:20%;"/>
-                                    <col style="width:13.33%;"/>
-                                    <col style="width:20%;"/>
-                                    <col style="width:13.33%;"/>
-                                    <col style="width:20%;"/>
-                                    <col style="width:13.34%;"/>
-                                </colgroup>
-                                <tr>
-                                    <td class="label" id="omLblWellboreAnalysis"></td>
-                                    <td class="input-cell"><input id="om_realtime_WellboreAnalysis" class="mini-checkbox" /></td>
-                                    <td class="label" id="omLblSurfaceAnalysis"></td>
-                                    <td class="input-cell"><input id="om_realtime_SurfaceAnalysis" class="mini-checkbox" /></td>
-                                    <td class="label" id="omLblTrendCurve"></td>
-                                    <td class="input-cell"><input id="om_realtime_TrendCurve" class="mini-checkbox" /></td>
-                                </tr>
-                                <tr>
-                                    <td class="label" id="omLblDynamicData"></td>
-                                    <td class="input-cell"><input id="om_realtime_DynamicData" class="mini-checkbox" /></td>
-                                    <td class="label" id="omLblDeviceControl"></td>
-                                    <td class="input-cell"><input id="om_realtime_DeviceControl" class="mini-checkbox" /></td>
-                                    <td class="label" id="omLblDeviceInformation"></td>
-                                    <td class="input-cell"><input id="om_realtime_DeviceInformation" class="mini-checkbox" /></td>
-                                </tr>
-                                <tr>
-    								<td class="label" id="omLblRodStressChartDisplay"></td>
-    									<td class="input-cell" colspan="5">
-        									<input id="om_realtime_RodStressChart" class="mini-checkboxlist"
-               									textField="text" valueField="id"
-               									repeatLayout="flow" repeatDirection="horizontal" repeatItems="2" />
-    									</td>
-								</tr>
-                            </table>
-                        </fieldset>
-
-                        <fieldset class="mini-fieldset">
+						<fieldset class="mini-fieldset">
+						    <legend id="omLegendRealtimeMonitoring2"></legend>
+						    <table class="om-form-table">
+						        <colgroup>
+						            <col style="width:20%;"/>
+						            <col style="width:13.33%;"/>
+						            <col style="width:20%;"/>
+						            <col style="width:13.33%;"/>
+						            <col style="width:20%;"/>
+						            <col style="width:13.34%;"/>
+						        </colgroup>
+						        <tr>
+						            <td class="label" id="omLblRealtimeSceneModel"></td>
+						            <td class="input-cell"><input id="om_realtime_SceneModel" class="mini-checkbox" /></td>
+						            <td class="label" id="omLblWellboreAnalysis"></td>
+						            <td class="input-cell"><input id="om_realtime_WellboreAnalysis" class="mini-checkbox" /></td>
+						            <td class="label" id="omLblSurfaceAnalysis"></td>
+						            <td class="input-cell"><input id="om_realtime_SurfaceAnalysis" class="mini-checkbox" /></td>
+						        </tr>
+						        <tr>
+						            <td class="label" id="omLblTrendCurve"></td>
+						            <td class="input-cell"><input id="om_realtime_TrendCurve" class="mini-checkbox" /></td>
+						            <td class="label" id="omLblDynamicData"></td>
+						            <td class="input-cell"><input id="om_realtime_DynamicData" class="mini-checkbox" /></td>
+						            <td class="label" id="omLblDeviceControl"></td>
+						            <td class="input-cell"><input id="om_realtime_DeviceControl" class="mini-checkbox" /></td>
+						        </tr>
+						        <tr>
+						            <td class="label" id="omLblDeviceInformation"></td>
+						            <td class="input-cell"><input id="om_realtime_DeviceInformation" class="mini-checkbox" /></td>
+						            <td></td><td></td><td></td><td></td>
+						        </tr>
+						        <tr>
+						            <td class="label" id="omLblRodStressChartDisplay"></td>
+						            <td class="input-cell" colspan="5">
+						                <input id="om_realtime_RodStressChart" class="mini-checkboxlist"
+						                       textField="text" valueField="id"
+						                       repeatLayout="flow" repeatDirection="horizontal" repeatItems="2" />
+						            </td>
+						        </tr>
+						    </table>
+						</fieldset>
+                       	<fieldset class="mini-fieldset">
                             <legend id="omLegendHistoryQuery2"></legend>
                             <table class="om-form-table">
                                 <colgroup>
@@ -863,45 +866,49 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                 </tr>
                             </table>
                         </fieldset>
-
                         <fieldset class="mini-fieldset">
-                            <legend id="omLegendPrimaryDevice"></legend>
-                            <table class="om-form-table">
-                                <colgroup>
-                                    <col style="width:20%;"/>
-                                    <col style="width:13.33%;"/>
-                                    <col style="width:20%;"/>
-                                    <col style="width:13.33%;"/>
-                                    <col style="width:20%;"/>
-                                    <col style="width:13.34%;"/>
-                                </colgroup>
-                                <tr>
-                                    <td class="label" id="omLblAdditionalInformation"></td>
-                                    <td class="input-cell"><input id="om_pd_AdditionalInformation" class="mini-checkbox" /></td>
-                                    <td class="label" id="omLblAuxiliaryDevice"></td>
-                                    <td class="input-cell"><input id="om_pd_AuxiliaryDevice" class="mini-checkbox" /></td>
-                                    <td class="label" id="omLblVideoConfig"></td>
-                                    <td class="input-cell"><input id="om_pd_VideoConfig" class="mini-checkbox" /></td>
-                                </tr>
-                                <tr>
-                                    <td class="label" id="omLblCalculateDataConfig"></td>
-                                    <td class="input-cell"><input id="om_pd_CalculateDataConfig" class="mini-checkbox" /></td>
-                                    <td class="label" id="omLblFSDiagramConstruction"></td>
-                                    <td class="input-cell"><input id="om_pd_FSDiagramConstruction" class="mini-checkbox" /></td>
-                                    <td class="label" id="omLblSystemParameterConfiguration"></td>
-                                    <td class="input-cell"><input id="om_pd_SystemParameterConfig" class="mini-checkbox" /></td>
-                                </tr>
-                                <tr>
-                                    <td class="label" id="omLblIntelligentFrequencyConversion"></td>
-                                    <td class="input-cell"><input id="om_pd_IntelligentFrequencyConversion" class="mini-checkbox" /></td>
-                                    <td class="label" id="omLblInterlockProtection"></td>
-                                    <td class="input-cell"><input id="om_pd_InterlockProtection" class="mini-checkbox" /></td>
-                                    <td class="label" id="omLblDiagramFiltering"></td>
-    								<td class="input-cell"><input id="om_pd_DiagramFiltering" class="mini-checkbox" /></td>
-                                </tr>
-                            </table>
-                        </fieldset>
-
+						    <legend id="omLegendPrimaryDevice"></legend>
+						    <table class="om-form-table">
+						        <colgroup>
+						            <col style="width:20%;"/>
+						            <col style="width:13.33%;"/>
+						            <col style="width:20%;"/>
+						            <col style="width:13.33%;"/>
+						            <col style="width:20%;"/>
+						            <col style="width:13.34%;"/>
+						        </colgroup>
+						        <tr>
+						            <td class="label" id="omLblAdditionalInformation"></td>
+						            <td class="input-cell"><input id="om_pd_AdditionalInformation" class="mini-checkbox" /></td>
+						            <td class="label" id="omLblAuxiliaryDevice"></td>
+						            <td class="input-cell"><input id="om_pd_AuxiliaryDevice" class="mini-checkbox" /></td>
+						            <td class="label" id="omLblVideoConfig"></td>
+						            <td class="input-cell"><input id="om_pd_VideoConfig" class="mini-checkbox" /></td>
+						        </tr>
+						        <tr>
+						            <td class="label" id="omLblCalculateDataConfig"></td>
+						            <td class="input-cell"><input id="om_pd_CalculateDataConfig" class="mini-checkbox" /></td>
+						            <td class="label" id="omLblFSDiagramConstruction"></td>
+						            <td class="input-cell"><input id="om_pd_FSDiagramConstruction" class="mini-checkbox" /></td>
+						            <td class="label" id="omLblSystemParameterConfiguration"></td>
+						            <td class="input-cell"><input id="om_pd_SystemParameterConfig" class="mini-checkbox" /></td>
+						        </tr>
+						        <tr>
+						            <td class="label" id="omLblIntelligentFrequencyConversion"></td>
+						            <td class="input-cell"><input id="om_pd_IntelligentFrequencyConversion" class="mini-checkbox" /></td>
+						            <td class="label" id="omLblInterlockProtection"></td>
+						            <td class="input-cell"><input id="om_pd_InterlockProtection" class="mini-checkbox" /></td>
+						            <td class="label" id="omLblDiagramFiltering"></td>
+						            <td class="input-cell"><input id="om_pd_DiagramFiltering" class="mini-checkbox" /></td>
+						        </tr>
+						        <!-- ★ 新增：场景模型 独占第四行第一列 -->
+						        <tr>
+						            <td class="label" id="omLblSceneModel"></td>
+						            <td class="input-cell"><input id="om_pd_SceneModel" class="mini-checkbox" /></td>
+						            <td></td><td></td><td></td><td></td>
+						        </tr>
+						    </table>
+						</fieldset>
                     </div>
                 </div>
             </div>

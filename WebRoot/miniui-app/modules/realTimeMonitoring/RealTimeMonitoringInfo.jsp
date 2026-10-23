@@ -337,7 +337,32 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                  style="width:100%;height:100%;"
                                  activeIndex="0"
                                  onactivechanged="onMiddleTabChanged">
-
+						        <!-- ★ 场景模型 Tab -->
+								<div title="" name="middle_SceneModel" visible="false">
+								    <div id="middle_SceneModel_panel" class="mini-panel" style="width:100%;height:100%;"
+								         showHeader="false" showToolbar="true" showCloseButton="false"
+								         bodyStyle="padding:0;overflow:hidden;">
+								         
+								        <!-- 工具条 -->
+								        <div property="toolbar">
+								            <div class="panel-toolbar">
+								                <span id="middleSceneModelLabel" style="font-size:12px;color:#333;"></span>
+								                <span class="spacer"></span>
+								                <button id="sceneModelZoomInBtn" class="mini-button" plain="true" onclick="sceneModelZoomIn()"></button>
+								                <button id="sceneModelZoomOutBtn" class="mini-button" plain="true" onclick="sceneModelZoomOut()"></button>
+								                <button id="sceneModelFitBtn" class="mini-button" plain="true" onclick="sceneModelFit()"></button>
+								            </div>
+								        </div>
+								
+								        <!-- 画布区域 -->
+								        <div id="middle_SceneModel_body" style="width:100%;height:100%;position:relative;">
+								            <div style="position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;">
+								                <canvas id="realtimeSceneCanvas" style="width:100%;height:100%;display:block;"></canvas>
+								                <div id="realtimeSceneLabelLayer" style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;overflow:hidden;z-index:10;"></div>
+								            </div>
+								        </div>
+								    </div>
+								</div>
                                 <!-- 井筒分析 -->
                                 <div title="" name="middle_WellboreAnalysis" visible="false">
                                     <div id="wellboreAnalysisPanel" class="mini-panel"

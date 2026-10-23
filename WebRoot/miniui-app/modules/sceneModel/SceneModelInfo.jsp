@@ -13,10 +13,6 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     <!-- 统一引入 tags-miniui.jsp，里面已经包含了 canvas-select 的相关资源 -->
     <jsp:include page="../../layout/tags-miniui.jsp" flush="true" />
     
-    <!-- 引入 Spectrum 颜色选择器 -->
-    <link rel="stylesheet" href="<%=path%>/scripts/miniui/third-party/spectrum/spectrum.css?timestamp=<%=otherStaticResourceTimestamp%>" />
-    <script src="<%=path%>/scripts/miniui/third-party/spectrum/spectrum.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
-    
     <!-- 引入独立的业务逻辑 JS -->
     <script src="js/sceneModelInfo.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
     
@@ -175,8 +171,8 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                             <button id="btnZoomOut" class="mini-button" plain="true" style="margin-right:2px;" onclick="onCanvasZoomOut()"></button>
                             <button id="btnFitZoom" class="mini-button" plain="true" style="margin-right:2px;" onclick="onCanvasFitZoom()"></button>
                             <span class="mini-toolbar-sep" style="display:inline-block;width:1px;height:16px;background:#ddd;margin:0 6px;vertical-align:middle;"></span>
-                            <button id="btnSelectImg" class="mini-button" plain="true" style="margin-right:2px;"></button>
-                            <button id="btnUploadImg" class="mini-button" plain="true" style="margin-right:2px;"></button>
+                            <button id="btnSelectImg" class="mini-button" plain="true" style="margin-right:2px;" onclick="onSelectServerImage()"></button>
+                            <button id="btnUploadImg" class="mini-button" plain="true" style="margin-right:2px;" onclick="onUploadLocalImage()"></button>
                         </td>
                         <td style="padding:0;vertical-align:middle;text-align:right;white-space:nowrap;">
                             <button id="btnSaveAnnotation" class="mini-button" iconCls="save" plain="true" onclick="onSaveAnnotations()"></button>

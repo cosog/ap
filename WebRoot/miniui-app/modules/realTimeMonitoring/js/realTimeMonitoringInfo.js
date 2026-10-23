@@ -20,8 +20,43 @@ var deviceGrid = null;
 var deviceRealTimeMonitoringGrid = null;
 
 //---------- 全局选中状态 ----------
-var _rmRestoreState = null;              // 在 initRealTimeMonitoringPage 中赋值
-var _rmSuppressSave = { value: true };   // 对象包装，便于异步修改
+var _rmRestoreState = null;
+var _rmSuppressSave = { value: true };
+
+//---------- 场景模型相关 ----------
+var _rmSceneCS = null;
+var _rmSceneBindingMap = new Map();
+var _rmSceneLabelStyleMap = new Map();
+var _rmSceneDeviceIndexMap = new Map();
+var _rmSceneLoadSeq = 0;
+var _rmSceneData = [];
+var _rmSceneImageUrl = '';
+var _rmSceneCachedOrigin = { x: 0, y: 0, scale: 1, ready: false };
+var _rmSceneRafPending = false;
+var _rmSceneResizeTimer = null;
+var _rmSceneOriginTimer = null;
+var _rmSceneAlarmShowStyle = null;
+
+// ★ P0-3：全局双击点击时间戳（避免事件监听器累积时用闭包变量导致互相干扰）
+var _rmSceneLastClickTime = 0;
+
+// ★ P1-9：可见性标志
+var _rmSceneVisibilityBound = false;
+
+// ★ P0-2：各请求序号（竞态保护）
+var _rmWellboreLoadSeq = 0;
+var _rmSurfaceLoadSeq = 0;
+var _rmTrendCurveLoadSeq = 0;
+var _rmDynamicDataLoadSeq = 0;
+var _rmDeviceControlLoadSeq = 0;
+var _rmDeviceInfoLoadSeq = 0;
+
+// ★ P1-8：饼图刷新节流
+var _rmStatRefreshTimer = null;
+var _rmStatPendingTab = null;
+
+// ★ P1-8：每个 divId 独立的请求序号（防止切换 tab 时旧响应覆盖）
+var _rmStatLoadSeqMap = {};
 
 // ---------- 统计 Tab 静态映射 ----------
 var STAT_TAB_INFO = {
@@ -56,8 +91,7 @@ function initRealTimeMonitoringPage() {
     } catch (e) {
         console.warn('无法获取 tabInfo', e);
     }
-    
-    // ★ 初始化全局恢复状态
+
     _rmRestoreState  = createRestoreState();
     _rmSuppressSave  = { value: true };
 
@@ -70,12 +104,10 @@ function initRealTimeMonitoringPage() {
         deviceGrid.setPageSize(parseInt(_defaultPageSize, 10));
     }
 
-    // 先国际化（含 tab 标题、网格列定义、图表最小高度等）
     initRealTimeMonitoringI18n();
 
     buildRtmLevel1Tabs();
 
-    // 事件代理：设备名称悬停提示
     document.addEventListener('mouseover', function (e) {
         var target = e.target.closest('.device-name-cell');
         if (target && !target._tipShown) {
@@ -93,7 +125,61 @@ function initRealTimeMonitoringPage() {
 
     initRealTimeMonitoringMessageListener();
 
+    // ★ P0-4：绑定场景画布 resize 监听（只绑一次）
+    _bindSceneResizeListener();
+    // ★ P1-9：绑定页面可见性监听
+    _bindSceneVisibilityListener();
+
     console.log('实时监控模块加载完成');
+}
+
+// ★ P0-4：场景画布 resize 监听（用 ResizeObserver，resize 后同步 canvas 尺寸并 fit）
+function _bindSceneResizeListener() {
+    var canvasEl = document.getElementById('realtimeSceneCanvas');
+    if (!canvasEl || canvasEl._rmResizeBound) return;
+    canvasEl._rmResizeBound = true;
+
+    if (!window.ResizeObserver) return;
+
+    var ro = new ResizeObserver(function () {
+        if (_rmSceneResizeTimer) clearTimeout(_rmSceneResizeTimer);
+        _rmSceneResizeTimer = setTimeout(function () {
+            _rmSceneResizeTimer = null;
+            if (!_rmSceneCS) return;
+            var rect = canvasEl.getBoundingClientRect();
+            var cssW = Math.round(rect.width);
+            var cssH = Math.round(rect.height);
+            if (cssW < 20 || cssH < 20) return;
+            if (canvasEl.width  !== cssW) canvasEl.width  = cssW;
+            if (canvasEl.height !== cssH) canvasEl.height = cssH;
+            try { if (typeof _rmSceneCS.resize === 'function')  _rmSceneCS.resize(); } catch (e) {}
+            try { if (typeof _rmSceneCS.fitZoom === 'function') _rmSceneCS.fitZoom(); } catch (e) {}
+            _nudgeRealtimeCanvas();
+            updateRealtimeSceneOrigin(true);
+            renderRealtimeSceneLabels();
+        }, 200);
+    });
+    ro.observe(canvasEl);
+}
+
+// ★ P1-9：页面可见性监听（隐藏时停止 timer，显示时恢复）
+function _bindSceneVisibilityListener() {
+    if (_rmSceneVisibilityBound) return;
+    _rmSceneVisibilityBound = true;
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            if (_rmSceneOriginTimer) {
+                clearInterval(_rmSceneOriginTimer);
+                _rmSceneOriginTimer = null;
+            }
+        } else {
+            if (_rmSceneCS) {
+                updateRealtimeSceneOrigin(true);
+                renderRealtimeSceneLabels();
+                startRealtimeSceneTimer();
+            }
+        }
+    });
 }
 
 // ================================================================
@@ -102,7 +188,6 @@ function initRealTimeMonitoringPage() {
 function initRealTimeMonitoringI18n() {
     var R = _loginUserLanguageResource;
 
-    // 1. 工具栏按钮
     var btnRefresh = mini.get('btnRefresh');
     if (btnRefresh) btnRefresh.setText(R.refresh);
 
@@ -115,101 +200,70 @@ function initRealTimeMonitoringI18n() {
     var dynExpBtn = mini.get('dynamicDataExportBtn');
     if (dynExpBtn) dynExpBtn.setText(R.exportData);
 
-    // 2. 设备下拉框
     var deviceCombo = mini.get('deviceCombo');
     if (deviceCombo) deviceCombo.setEmptyText('--' + R.all + '--');
 
-    // 3. 动态数据工具栏标签
     var ddLabel = document.getElementById('middleDynamicDataLabel');
     if (ddLabel) ddLabel.textContent = R.viewCurveOrTableData;
 
-    // 4. 统计 tab 标题
     setRtmTabTitleByName('statTabs', 'FESdiagramResult', R.workType);
     setRtmTabTitleByName('statTabs', 'CommStatus',       R.commStatus);
     setRtmTabTitleByName('statTabs', 'RunStatus',        R.runStatus);
     setRtmTabTitleByName('statTabs', 'NumStatus',        R.numStatus);
 
-    // 5. 中间 tab 标题
+    setRtmTabTitleByName('middleTabs', 'middle_SceneModel',       R.sceneModel);
     setRtmTabTitleByName('middleTabs', 'middle_WellboreAnalysis', R.wellboreAnalysis);
     setRtmTabTitleByName('middleTabs', 'middle_SurfaceAnalysis',  R.surfaceAnalysis);
     setRtmTabTitleByName('middleTabs', 'middle_TrendCurve',       R.trendCurve);
     setRtmTabTitleByName('middleTabs', 'middle_DynamicData',      R.dynamicData);
 
-    // 6. 右侧 tab 标题
+    var sceneLbl = document.getElementById('middleSceneModelLabel');
+    if (sceneLbl) sceneLbl.textContent = R.viewCurveOrTableDataByAnnotation;
+
+    var zoomInBtn = mini.get('sceneModelZoomInBtn');
+    if (zoomInBtn) { zoomInBtn.setText('🔍+'); zoomInBtn.setTooltip(R.zoomIn); }
+    var zoomOutBtn = mini.get('sceneModelZoomOutBtn');
+    if (zoomOutBtn) { zoomOutBtn.setText('🔍−'); zoomOutBtn.setTooltip(R.zoomOut); }
+    var fitBtn = mini.get('sceneModelFitBtn');
+    if (fitBtn) fitBtn.setText(R.fitZoom);
+
     setRtmTabTitleByName('rightTabs', 'right_DeviceControl', R.deviceControl);
     setRtmTabTitleByName('rightTabs', 'right_DeviceInfo',    R.deviceInformation);
 
-    // 7. 设备信息-附加信息表列
     var addGrid = mini.get('deviceInfoAdditionalGrid');
     if (addGrid) {
         addGrid.setColumns([
-            {
-                field: 'name',
-                header: R.variable,
-                headerAlign: 'left', align: 'left',
-                width: '50%'
-            },
-            {
-                field: 'value',
-                header: R.value,
-                headerAlign: 'center', align: 'center',
-                width: '50%'
-            }
+            { field: 'name',  header: R.variable, headerAlign: 'left',   align: 'left',   width: '50%' },
+            { field: 'value', header: R.value,    headerAlign: 'center', align: 'center', width: '50%' }
         ]);
     }
 
-    // 8. 设备信息-辅件设备表列（带展开行）
     var auxGrid = mini.get('deviceInfoAuxiliaryGrid');
     if (auxGrid) {
         auxGrid.setColumns([
             { type: 'expandcolumn', width: 15 },
-            {
-                type: 'indexcolumn',
-                header: R.idx,
-                headerAlign: 'center', align: 'center',
-                width: 50
-            },
-            {
-                field: 'name',
-                header: R.deviceName,
-                headerAlign: 'center', align: 'center'
-            }
+            { type: 'indexcolumn', header: R.idx, headerAlign: 'center', align: 'center', width: 50 },
+            { field: 'name', header: R.deviceName, headerAlign: 'center', align: 'center' }
         ]);
     }
 
-    // 9. 井筒/地面分析 chart-item 最小高度
     var minH = (typeof dynamometerCardMinHeight !== 'undefined' && dynamometerCardMinHeight)
         ? dynamometerCardMinHeight : 350;
     var wellboreItems = document.querySelectorAll('#middle_WellboreAnalysis_body .chart-item');
-    for (var wi = 0; wi < wellboreItems.length; wi++) {
-        wellboreItems[wi].style.minHeight = minH + 'px';
-    }
+    for (var wi = 0; wi < wellboreItems.length; wi++) wellboreItems[wi].style.minHeight = minH + 'px';
     var surfaceItems = document.querySelectorAll('#middle_SurfaceAnalysis_body .chart-item');
-    for (var si = 0; si < surfaceItems.length; si++) {
-        surfaceItems[si].style.minHeight = minH + 'px';
-    }
-    
-    // ★ 统计饼图内层 div 最小高度
+    for (var si = 0; si < surfaceItems.length; si++) surfaceItems[si].style.minHeight = minH + 'px';
+
     var pieMinH = (typeof otherCardMinHeight !== 'undefined' && otherCardMinHeight)
         ? otherCardMinHeight : 300;
-
-    var pieIds = [
-        'pieChart_FESdiagramResult',
-        'pieChart_CommStatus',
-        'pieChart_RunStatus',
-        'pieChart_NumStatus'
-    ];
+    var pieIds = ['pieChart_FESdiagramResult', 'pieChart_CommStatus',
+                  'pieChart_RunStatus', 'pieChart_NumStatus'];
     for (var pi = 0; pi < pieIds.length; pi++) {
         var pieEl = document.getElementById(pieIds[pi]);
-        if (pieEl) {
-            pieEl.style.minHeight = pieMinH + 'px';
-        }
+        if (pieEl) pieEl.style.minHeight = pieMinH + 'px';
     }
 }
 
-/**
- * 按 name 更新 tab 标题
- */
 function setRtmTabTitleByName(tabsId, name, title) {
     var tabs = mini.get(tabsId);
     if (!tabs || title == null) return;
@@ -230,32 +284,16 @@ function initRealTimeMonitoringMessageListener() {
         var message = event.data;
         if (!message || !message.action) return;
         switch (message.action) {
-            case 'updateDeviceData':
-                handleRealTimeData(message.data);
-                break;
-            case 'updateResourceData':
-                updateResourceMonitorUI(message.data);
-                break;
-            case 'updateDBData':
-                updateDBMonitorUI(message.data);
-                break;
-            case 'adExitAndDeviceOffline':
-                handleAdExit(message.data);
-                break;
-            case 'refresh':
-            	handleRefreshFromParent(message);
-                break;
-            default:
-                break;
+            case 'updateDeviceData':        handleRealTimeData(message.data);       break;
+            case 'updateResourceData':      updateResourceMonitorUI(message.data);  break;
+            case 'updateDBData':            updateDBMonitorUI(message.data);        break;
+            case 'adExitAndDeviceOffline':  handleAdExit(message.data);             break;
+            case 'refresh':                 handleRefreshFromParent(message);       break;
+            default: break;
         }
     });
 }
 
-/**
- * 父窗口发出 refresh（组织切换 / 从其他模块切回本模块）时的处理
- * 1. 优先按全局状态同步标签 + 设备
- * 2. 无差异时按常规刷新
- */
 function handleRefreshFromParent(message) {
     console.log('实时监控收到刷新指令, orgId:', message.orgId);
 
@@ -266,7 +304,6 @@ function handleRefreshFromParent(message) {
     var gsel = loadGlobalSelection();
     var curType = _rmCurrentLevel2 ? String(_rmCurrentLevel2.deviceTypeId) : '';
 
-    // ============ 情况 1：二级（或一级）标签不一致 → 重建标签 + 恢复设备 ============
     if (gsel.deviceTypeId && curType !== String(gsel.deviceTypeId)) {
         var target = findTargetLevels(_rmLevel1Data, gsel.deviceTypeId);
         if (target) {
@@ -277,8 +314,6 @@ function handleRefreshFromParent(message) {
         }
     }
 
-    // ============ 情况 2 & 3：统一重新加载设备列表 ============
-    // 无论设备是否相同，都走 grid.load() → onDeviceGridLoad → restoreDeviceSelection
     if (gsel.deviceId) {
         _rmRestoreState.deviceId = String(gsel.deviceId);
     }
@@ -293,9 +328,7 @@ function buildRtmLevel1Tabs() {
     if (!container) return;
     container.innerHTML = '';
 
-    if (!_rmTabInfo || !_rmTabInfo.children || _rmTabInfo.children.length === 0) {
-        return;
-    }
+    if (!_rmTabInfo || !_rmTabInfo.children || _rmTabInfo.children.length === 0) return;
 
     _rmLevel1Data = _rmTabInfo.children;
 
@@ -307,9 +340,7 @@ function buildRtmLevel1Tabs() {
             span.dataset.index = idx;
             span.dataset.deviceTypeId = item.deviceTypeId;
             span.textContent = item.text;
-            span.onclick = function () {
-                selectRtmLevel1(parseInt(this.dataset.index));
-            };
+            span.onclick = function () { selectRtmLevel1(parseInt(this.dataset.index)); };
             container.appendChild(span);
         })(i);
     }
@@ -317,7 +348,6 @@ function buildRtmLevel1Tabs() {
     buildResourceMonitorArea(container);
 
     if (_rmLevel1Data.length > 0) {
-        // ★ 使用恢复状态决定起始一级
         var startIndex = 0;
         if (_rmRestoreState.deviceTypeId) {
             var t = findTargetLevels(_rmLevel1Data, _rmRestoreState.deviceTypeId);
@@ -405,7 +435,6 @@ function buildRtmLevel2Tabs(parentItem) {
 
     var children = parentItem.children || [];
 
-    // ============ 一级无子标签 ============
     if (!children || children.length === 0) {
         container.classList.add('hidden');
         _rmLevel2Data = [];
@@ -419,19 +448,16 @@ function buildRtmLevel2Tabs(parentItem) {
         _rmRestoreState.level2Index = -1;
 
         loadAllData(_rmCurrentLevel2);
-        // ★ 保留设备选中：用恢复候选 deviceId 而非清空
         saveGlobalSelection(_rmCurrentLevel2.deviceTypeId,
             _rmRestoreState.deviceId || '',
             { suppress: _rmSuppressSave.value });
         return;
     }
 
-    // ============ 一级有子标签 ============
     container.classList.remove('hidden');
     _rmLevel2Data = children;
 
     var allTabs = [];
-    // ★ 只有多个二级时才生成"全部"tab
     if (children.length > 1) {
         var allIds = [];
         for (var i = 0; i < children.length; i++) {
@@ -448,20 +474,17 @@ function buildRtmLevel2Tabs(parentItem) {
     for (var i = 0; i < allTabs.length; i++) {
         (function (idx, item) {
             var div = document.createElement('div');
-            div.className = 'tab-item';           // ← 不再直接标 active
+            div.className = 'tab-item';
             div.dataset.index = idx;
             div.dataset.deviceTypeId = item.deviceTypeId;
             div.dataset.isAll = item.isAll || false;
             div.textContent = item.text;
             div.title = item.text;
-            div.onclick = function () {
-                selectRtmLevel2(parseInt(this.dataset.index));
-            };
+            div.onclick = function () { selectRtmLevel2(parseInt(this.dataset.index)); };
             container.appendChild(div);
         })(i, allTabs[i]);
     }
 
-    // 使用恢复状态决定默认二级
     var defaultIndex = 0;
     if (_rmRestoreState.level2Index >= 0 && _rmRestoreState.level2Index < allTabs.length) {
         defaultIndex = _rmRestoreState.level2Index;
@@ -484,7 +507,6 @@ function selectRtmLevel2(index) {
     var tabs = container.querySelectorAll('.tab-item');
 
     var allTabs = [];
-    // ★ 只有多个二级时才生成"全部"tab
     if (_rmLevel2Data.length > 1) {
         var allIds = [];
         for (var i = 0; i < _rmLevel2Data.length; i++) {
@@ -505,9 +527,8 @@ function selectRtmLevel2(index) {
     }
 
     _rmCurrentLevel2 = allTabs[index];
-    loadAllData(_rmCurrentLevel2);   // 会 resetMiddleAndRightPanels（currentDeviceId=0）
+    loadAllData(_rmCurrentLevel2);
 
-    // ★ 用恢复候选 deviceId 而非清空；真正选中的设备由 onDeviceGridSelectChanged 再写回
     saveGlobalSelection(_rmCurrentLevel2.deviceTypeId,
         _rmRestoreState.deviceId || '',
         { suppress: _rmSuppressSave.value });
@@ -526,7 +547,6 @@ function loadAllData(level2Item) {
         ? window.parent.mini.get('leftOrg_Id').getValue() : '';
 
     resetMiddleAndRightPanels();
-
     clearStatFilters();
     refreshDeviceList();
     loadStatCharts(deviceTypeId, orgId);
@@ -538,75 +558,68 @@ function resetMiddleAndRightPanels() {
     clearMiddleAndRightContent();
 }
 
-/**
- * 清空中间/右侧所有数据（保留结构）
- */
+// ★ P1-5：销毁一个 Highcharts 实例
+function _destroyChartById(divId) {
+    var el = document.getElementById(divId);
+    if (!el) return;
+    if (window.$ && $.fn && typeof $(el).highcharts === 'function') {
+        var chart = $(el).highcharts();
+        if (chart) { try { chart.destroy(); } catch (e) {} }
+    }
+    el.innerHTML = '';
+}
+
+// ★ P1-5：清空中间/右侧所有数据（销毁 Highcharts 实例，避免泄漏）
 function clearMiddleAndRightContent() {
-    // 井筒分析
-    ['wellboreChart1', 'wellboreChart2', 'wellboreChart3', 'wellboreChart4'].forEach(function (id) {
-        var el = document.getElementById(id);
-        if (el) el.innerHTML = '';
-    });
+    ['wellboreChart1', 'wellboreChart2', 'wellboreChart3', 'wellboreChart4',
+     'surfaceChart1',  'surfaceChart2',  'surfaceChart3',  'surfaceChart4']
+        .forEach(_destroyChartById);
 
-    // 地面分析
-    ['surfaceChart1', 'surfaceChart2', 'surfaceChart3', 'surfaceChart4'].forEach(function (id) {
-        var el = document.getElementById(id);
-        if (el) el.innerHTML = '';
-    });
-
-    // 趋势曲线
     var trendBody = document.getElementById('middle_TrendCurve_body');
-    if (trendBody) trendBody.innerHTML = '';
+    if (trendBody) {
+        var trendContainers = trendBody.querySelectorAll('.trend-chart-container');
+        for (var i = 0; i < trendContainers.length; i++) {
+            _destroyChartById(trendContainers[i].id);
+        }
+        trendBody.innerHTML = '';
+    }
 
-    // 动态数据
+    // 动态数据网格
+    if (deviceRealTimeMonitoringGrid) {
+        try { deviceRealTimeMonitoringGrid.destroy(); } catch (e) {}
+        deviceRealTimeMonitoringGrid = null;
+    }
     var dynBody = document.getElementById('RealTimeMonitoringInfoDataTableInfoDiv_id');
     if (dynBody) dynBody.innerHTML = '';
 
-    // 设备控制
     var dcContainer = document.getElementById('right_DeviceControl_container');
     if (dcContainer) dcContainer.innerHTML = '';
 
-    // 设备信息 - 清空两个 datagrid
     var addGrid = mini.get('deviceInfoAdditionalGrid');
     if (addGrid) addGrid.setData([]);
     var auxGrid = mini.get('deviceInfoAuxiliaryGrid');
     if (auxGrid) auxGrid.setData([]);
 }
 
-/**
- * 无设备时：隐藏统计 / 中间 / 右侧三个面板
- */
 function hideAllPanelsWhenNoDevice() {
     var splitterLeft  = mini.get('rmLeftVerticalSplitter');
     if (splitterLeft)  splitterLeft.hidePane(2);
-
     var splitterInner = mini.get('rmInnerSplitter');
     if (splitterInner) splitterInner.hidePane(2);
-
     var splitterMain  = mini.get('rmMainSplitter');
     if (splitterMain)  splitterMain.hidePane(2);
 }
 
-/**
- * 有设备时：若统计面板之前被隐藏，且仍有可见 tab，则恢复显示
- */
 function restoreStatPanelIfHasVisibleTabs() {
     var tabs = mini.get('statTabs');
     if (!tabs) return;
-
     var arr = tabs.getTabs();
     var hasVisible = false;
     for (var i = 0; i < arr.length; i++) {
-        if (arr[i].visible !== false) {
-            hasVisible = true;
-            break;
-        }
+        if (arr[i].visible !== false) { hasVisible = true; break; }
     }
-
     var splitter = mini.get('rmLeftVerticalSplitter');
-    if (splitter && hasVisible) {
-        splitter.showPane(2);
-    }
+    if (splitter && hasVisible) splitter.showPane(2);
 }
 
 // ================================================================
@@ -714,7 +727,6 @@ function onDeviceGridLoad(e) {
 
     var data = grid.getData();
     if (data && data.length > 0) {
-        // ★ 尝试恢复全局设备选中
         restoreDeviceSelection(grid, _rmRestoreState, _rmSuppressSave, null);
     } else {
         currentDeviceId = 0;
@@ -735,9 +747,7 @@ function onDeviceGridSelectChanged(e) {
         currentDeviceId = selected.id;
         console.log('选中设备:', selected.deviceName, 'ID:', selected.id);
         refreshDeviceTabs(selected);
-        // ★ 记录为恢复候选（后续刷新/切标签都基于它恢复）
         _rmRestoreState.deviceId = String(selected.id);
-        // ★ 保存全局状态
         saveGlobalSelection(
             _rmCurrentLevel2 ? _rmCurrentLevel2.deviceTypeId : '',
             selected.id,
@@ -762,7 +772,6 @@ function onDeviceGridDrawCell(e) {
     var alarmInfo = record.alarmInfo || [];
     var fieldUpper = field.toUpperCase();
 
-    // 设备名称（徽章）
     if (fieldUpper === 'DEVICENAME') {
         var badges = '';
         var counts = { 100: 0, 200: 0, 300: 0 };
@@ -785,7 +794,6 @@ function onDeviceGridDrawCell(e) {
         return;
     }
 
-    // 通信状态
     if (fieldUpper === 'COMMSTATUSNAME') {
         var status = record.commStatus;
         var offlineColor  = (Comm.offline  && Comm.offline.Color)  ? '#' + Comm.offline.Color  : '#ff4d4f';
@@ -799,7 +807,6 @@ function onDeviceGridDrawCell(e) {
         return;
     }
 
-    // 运行状态
     if (fieldUpper === 'RUNSTATUSNAME') {
         var commStatus = record.commStatus;
         var runStatus = record.runStatus;
@@ -815,7 +822,6 @@ function onDeviceGridDrawCell(e) {
         return;
     }
 
-    // 其他数据列（报警高亮）
     if (fieldUpper !== 'ID' && fieldUpper !== 'DEVICENAME' &&
         fieldUpper !== 'COMMSTATUSNAME' && fieldUpper !== 'RUNSTATUSNAME') {
         var alarmLevel = 0;
@@ -940,7 +946,6 @@ function updateStatTabs(config, deviceTypeId, orgId) {
     if (!statTabs) return;
 
     var paramDeviceType = deviceTypeId || '0';
-
     var order = ['FESdiagramResult', 'CommStatus', 'RunStatus', 'NumStatus'];
     var tabs = statTabs.getTabs();
     var visibleCount = 0;
@@ -997,12 +1002,8 @@ function onStatTabChanged(e) {
     if (!tab) return;
 
     clearStatFilters();
-
     var deviceCombo = mini.get('deviceCombo');
-    if (deviceCombo) {
-        deviceCombo.setValue('');
-        deviceCombo.setText('');
-    }
+    if (deviceCombo) { deviceCombo.setValue(''); deviceCombo.setText(''); }
 
     var deviceTypeId = _rmCurrentLevel2 ? _rmCurrentLevel2.deviceTypeId : '0';
     var orgId = window.parent && window.parent.mini
@@ -1010,6 +1011,18 @@ function onStatTabChanged(e) {
 
     loadStatData(tab, deviceTypeId, orgId);
     refreshDeviceList();
+}
+
+// ★ P1-8：统计刷新节流（500ms 内多次推送只刷新一次）
+function _scheduleStatRefresh(tab, deviceTypeId, orgId) {
+    _rmStatPendingTab = { tab: tab, deviceTypeId: deviceTypeId, orgId: orgId };
+    if (_rmStatRefreshTimer) return;
+    _rmStatRefreshTimer = setTimeout(function () {
+        _rmStatRefreshTimer = null;
+        var p = _rmStatPendingTab;
+        _rmStatPendingTab = null;
+        if (p && p.tab) loadStatData(p.tab, p.deviceTypeId, p.orgId);
+    }, 500);
 }
 
 function loadStatData(tab, deviceTypeId, orgId) {
@@ -1024,6 +1037,10 @@ function loadStatData(tab, deviceTypeId, orgId) {
         container.innerHTML = '';
     }
 
+    // ★ P1-8：每个 divId 独立的请求序号
+    var seq = (_rmStatLoadSeqMap[divId] || 0) + 1;
+    _rmStatLoadSeqMap[divId] = seq;
+
     mini.mask({
         el: divId,
         cls: 'mini-mask-loading',
@@ -1037,12 +1054,21 @@ function loadStatData(tab, deviceTypeId, orgId) {
         dataType: 'text',
         timeout: 10000,
         success: function (responseText) {
+            // ★ P1-8：过期响应直接 return，不动 mask（新请求会处理）
+            if (_rmStatLoadSeqMap[divId] !== seq) return;
             mini.unmask(divId);
+
             try {
-                var fixedJson = responseText
-                    .replace(/(\{|\,)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*(\:)/g, '$1"$2"$3')
-                    .replace(/'([^']*)'/g, '"$1"');
-                var result = JSON.parse(fixedJson);
+                // ★ P1-8：优先严格 JSON.parse，失败时才 fallback 到正则修复（降低副作用风险）
+                var result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (parseErr) {
+                    var fixedJson = responseText
+                        .replace(/(\{|\,)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*(\:)/g, '$1"$2"$3')
+                        .replace(/'([^']*)'/g, '"$1"');
+                    result = JSON.parse(fixedJson);
+                }
 
                 if (result.AlarmShowStyle && window.parent && window.parent.mini) {
                     var alarmInput = window.parent.mini.get('AlarmShowStyle_Id');
@@ -1058,6 +1084,7 @@ function loadStatData(tab, deviceTypeId, orgId) {
             }
         },
         error: function () {
+            if (_rmStatLoadSeqMap[divId] !== seq) return;
             mini.unmask(divId);
             if (container) {
                 container.innerHTML = '<div class="loading-placeholder" style="color:#ff4d4f;">'
@@ -1129,10 +1156,7 @@ function handlePieClick(e, tabKey) {
     }
 
     var deviceCombo = mini.get('deviceCombo');
-    if (deviceCombo) {
-        deviceCombo.setValue('');
-        deviceCombo.setText('');
-    }
+    if (deviceCombo) { deviceCombo.setValue(''); deviceCombo.setText(''); }
     refreshDeviceList();
 }
 
@@ -1167,9 +1191,7 @@ function createPieChartInstance(divId, data, title, tabKey) {
                     format: '<b>{point.name}</b>: {point.y}'
                 },
                 showInLegend: true,
-                events: {
-                    click: function (e) { handlePieClick(e, tabKey); }
-                }
+                events: { click: function (e) { handlePieClick(e, tabKey); } }
             }
         },
         exporting: { enabled: true, filename: title, fallbackToExportServer: false },
@@ -1261,7 +1283,6 @@ function clearStatFilters() {
 // ================================================================
 function refreshDeviceTabs(selected) {
     if (!selected) return;
-
     restoreStatPanelIfHasVisibleTabs();
 
     var deviceInfo = getDeviceTabInstanceInfoByDeviceId(selected.id);
@@ -1269,8 +1290,8 @@ function refreshDeviceTabs(selected) {
     var drt = config.DeviceRealTimeMonitoring || {};
     var calculateType = selected.calculateType || 0;
 
-    // ---------- 中间 tab ----------
     var allowedMiddleNames = [];
+    if (drt.SceneModel === true) allowedMiddleNames.push('middle_SceneModel');
     if (drt.WellboreAnalysis === true && calculateType == 1) allowedMiddleNames.push('middle_WellboreAnalysis');
     if (drt.SurfaceAnalysis  === true && calculateType == 1) allowedMiddleNames.push('middle_SurfaceAnalysis');
     if (drt.TrendCurve === true) allowedMiddleNames.push('middle_TrendCurve');
@@ -1278,7 +1299,6 @@ function refreshDeviceTabs(selected) {
 
     applyMiddleTabsVisibility(allowedMiddleNames);
 
-    // ---------- 右侧 tab ----------
     var allowedRightNames = [];
     if (drt.DeviceControl    === true) allowedRightNames.push('right_DeviceControl');
     if (drt.DeviceInformation === true) allowedRightNames.push('right_DeviceInfo');
@@ -1305,13 +1325,11 @@ function applyMiddleTabsVisibility(allowedNames) {
     }
 
     var splitterInner = mini.get('rmInnerSplitter');
-
     if (visibleCount === 0) {
         if (splitterInner) splitterInner.hidePane(2);
         currentMiddleTab = null;
         return;
     }
-
     if (splitterInner) splitterInner.showPane(2);
 
     var currentActive = middleTabs.getActiveTab();
@@ -1343,12 +1361,10 @@ function applyRightTabsVisibility(allowedNames) {
     }
 
     var splitterMain = mini.get('rmMainSplitter');
-
     if (visibleCount === 0) {
         if (splitterMain) splitterMain.hidePane(2);
         return;
     }
-
     if (splitterMain) splitterMain.showPane(2);
 
     var currentActive = rightTabs.getActiveTab();
@@ -1370,14 +1386,13 @@ function onMiddleTabChanged(e) {
     currentMiddleTab = tab.name;
     console.log('中间Tab切换:', currentMiddleTab);
 
-    if (currentDeviceId > 0) {
-        refreshMiddleTabs();
-    }
+    if (currentDeviceId > 0) refreshMiddleTabs();
 }
 
 function refreshMiddleTabs() {
     if (!currentMiddleTab || currentDeviceId <= 0) return;
     switch (currentMiddleTab) {
+        case 'middle_SceneModel':       loadRealtimeSceneModel(currentDeviceId); break;
         case 'middle_WellboreAnalysis': loadWellboreAnalysis(currentDeviceId); break;
         case 'middle_SurfaceAnalysis':  loadSurfaceAnalysis(currentDeviceId);  break;
         case 'middle_TrendCurve':       loadTrendCurve(currentDeviceId);       break;
@@ -1386,17 +1401,447 @@ function refreshMiddleTabs() {
     }
 }
 
+//================================================================
+//实时监控 - 场景模型加载与渲染
+//================================================================
+function loadRealtimeSceneModel(deviceId) {
+    if (!deviceId || deviceId <= 0) return;
+    var container = document.getElementById('middle_SceneModel_body');
+    if (!container) return;
+
+    if (_rmSceneOriginTimer) {
+        clearInterval(_rmSceneOriginTimer);
+        _rmSceneOriginTimer = null;
+    }
+    if (_rmSceneCS && typeof _rmSceneCS.destroy === 'function') {
+        try { _rmSceneCS.destroy(); } catch (e) {}
+    }
+    _rmSceneCS = null;
+    _rmSceneBindingMap.clear();
+    _rmSceneLabelStyleMap.clear();
+    _rmSceneDeviceIndexMap.clear();
+
+    // ★ P1-6：重置 rAF 标志和缓存原点
+    _rmSceneRafPending = false;
+    _rmSceneCachedOrigin = { x: 0, y: 0, scale: 1, ready: false };
+
+    var layerEl = document.getElementById('realtimeSceneLabelLayer');
+    if (layerEl) layerEl.innerHTML = '';
+
+    var seq = ++_rmSceneLoadSeq;
+
+    mini.mask({
+        el: 'middle_SceneModel_body',
+        cls: 'mini-mask-loading',
+        html: _loginUserLanguageResource.loadingData
+    });
+
+    $.ajax({
+        url: context + '/realTimeMonitoringController/getSceneModelConfigWithRealtimeValues',
+        type: 'POST',
+        data: { deviceId: deviceId },
+        dataType: 'json',
+        timeout: 15000,
+        success: function (result) {
+            if (seq !== _rmSceneLoadSeq) return;
+            mini.unmask('middle_SceneModel_body');
+            if (result.success && result.config) {
+                if (result.alarmShowStyle) {
+                    try {
+                        _rmSceneAlarmShowStyle = (typeof result.alarmShowStyle === 'string')
+                            ? JSON.parse(result.alarmShowStyle)
+                            : result.alarmShowStyle;
+                    } catch (e) {
+                        _rmSceneAlarmShowStyle = null;
+                    }
+                } else {
+                    _rmSceneAlarmShowStyle = null;
+                }
+
+                var cfg = result.config;
+                if (typeof cfg === 'string') {
+                    try { cfg = JSON.parse(cfg); } catch (e) { cfg = null; }
+                }
+                if (!cfg) cfg = { imageUrl: '', shapes: [] };
+                initRealtimeSceneCanvas(cfg, deviceId);
+            } else {
+                container.innerHTML = '<div class="loading-placeholder">'
+                    + _loginUserLanguageResource.emptyMsg + '</div>';
+            }
+        },
+        error: function () {
+            if (seq !== _rmSceneLoadSeq) return;
+            mini.unmask('middle_SceneModel_body');
+            container.innerHTML = '<div class="loading-placeholder error">'
+                + _loginUserLanguageResource.requestFailed + '</div>';
+        }
+    });
+}
+
+function initRealtimeSceneCanvas(cfg, deviceId) {
+    var canvasEl = document.getElementById('realtimeSceneCanvas');
+    var labelLayer = document.getElementById('realtimeSceneLabelLayer');
+    if (!canvasEl || !labelLayer) return;
+
+    if (typeof CanvasSelect === 'undefined') {
+        console.error('CanvasSelect 库未加载');
+        return;
+    }
+
+    // ★ P0-4：new CanvasSelect 前同步 canvas drawing buffer 尺寸到 CSS 尺寸
+    var rect = canvasEl.getBoundingClientRect();
+    var cssW = Math.round(rect.width);
+    var cssH = Math.round(rect.height);
+    if (cssW >= 20 && cssH >= 20) {
+        if (canvasEl.width  !== cssW) canvasEl.width  = cssW;
+        if (canvasEl.height !== cssH) canvasEl.height = cssH;
+    }
+
+    var blankImage = context + '/sceneModelController/getSceneImage?name=__blank__.svg&_v=2';
+    _rmSceneCS = new CanvasSelect(canvasEl, cfg.imageUrl || blankImage);
+    _rmSceneCS.createType = 0;
+    _rmSceneCS.scrollZoom = true;
+    _rmSceneCS.hideLabel = true;
+
+    try { _rmSceneCS.readonly = true; _rmSceneCS.locked = true; } catch (e) {}
+
+    _rmSceneImageUrl = cfg.imageUrl || '';
+
+    _rmSceneDeviceIndexMap.clear();
+
+    var pureShapes = [];
+    var shapes = cfg.shapes || [];
+
+    shapes.forEach(function (s) {
+        if (!s || !s.uuid) return;
+        if (s.type == null || !s.coor) return;
+
+        var t = parseInt(s.type, 10);
+        if (isNaN(t)) return;
+
+        var coor = s.coor;
+        if (t === 1) {
+            if (!Array.isArray(coor) || coor.length < 2) return;
+            var a = coor[0], b = coor[1];
+            if (!Array.isArray(a) || !Array.isArray(b)) return;
+            if (a.length < 2 || b.length < 2) return;
+            if (isNaN(a[0]) || isNaN(a[1]) || isNaN(b[0]) || isNaN(b[1])) return;
+        } else if (t === 2 || t === 4) {
+            if (!Array.isArray(coor) || coor.length < 2) return;
+            for (var i = 0; i < coor.length; i++) {
+                var p = coor[i];
+                if (!Array.isArray(p) || p.length < 2) return;
+                if (isNaN(p[0]) || isNaN(p[1])) return;
+            }
+        } else if (t === 3 || t === 5) {
+            if (!Array.isArray(coor) || coor.length < 2) return;
+            if (isNaN(coor[0]) || isNaN(coor[1])) return;
+        } else {
+            return;
+        }
+
+        if (s.deviceId && s.fieldName) {
+            var devKey = String(s.deviceId);
+            _rmSceneBindingMap.set(s.uuid, {
+                deviceId: devKey,
+                deviceName: s.deviceName,
+                fieldName: s.fieldName,
+                fieldLabel: s.fieldLabel || s.fieldName,
+                currentValue: s.currentValue != null ? s.currentValue : '--',
+                unit: s.unit || '',
+                commStatus: s.commStatus != null ? s.commStatus : 0,
+                alarmLevel: s.alarmLevel || 0,
+                itemType: s.itemType,
+                resolutionMode: s.resolutionMode,
+                bitIndex: s.bitIndex,
+                columnDataType: s.columnDataType
+            });
+
+            var uuidSet = _rmSceneDeviceIndexMap.get(devKey);
+            if (!uuidSet) {
+                uuidSet = new Set();
+                _rmSceneDeviceIndexMap.set(devKey, uuidSet);
+            }
+            uuidSet.add(s.uuid);
+        }
+
+        if (s.labelStyle) {
+            _rmSceneLabelStyleMap.set(s.uuid, s.labelStyle);
+        } else {
+            _rmSceneLabelStyleMap.set(s.uuid, {
+                font: '12px', bgColor: '#4A6CF7', bgOpacity: 100,
+                textColor: '#FFFFFF', hide: false, hideDeviceName: true, hideFieldName: false, up: true
+            });
+        }
+
+        var sLw = s.lineWidth != null ? parseInt(s.lineWidth, 10) : 1;
+        var sStroke = s.strokeStyle || '#00FF00';
+
+        pureShapes.push({
+            uuid: s.uuid, type: t, coor: coor,
+            strokeStyle: sLw <= 0 ? 'rgba(0,0,0,0.01)' : sStroke,
+            fillStyle: s.fillStyle || 'rgba(0,0,255,0.25)',
+            lineWidth: sLw <= 0 ? 1 : sLw,
+            ctrlRadius: s.ctrlRadius || 3,
+            _userStrokeStyle: sStroke,
+            _userLineWidth: sLw
+        });
+    });
+
+    _rmSceneCS.setData(pureShapes);
+    try { _rmSceneCS.locked = true; _rmSceneCS.readonly = true; } catch (e) {}
+
+    // ★ P0-3：mousedown 监听器只绑一次，避免切设备累积导致双击弹多窗
+    if (!canvasEl._rmDblClickBound) {
+        canvasEl._rmDblClickBound = true;
+        canvasEl.addEventListener('mousedown', function (e) {
+            if (!_rmSceneCS) return;
+            var now = Date.now();
+            if (now - _rmSceneLastClickTime < 300) {
+                var info = _rmSceneCS.activeShape;
+                if (!info) return;
+
+                var uuid = info.uuid;
+                if (!uuid && info.index !== undefined && _rmSceneCS.dataset[info.index]) {
+                    uuid = _rmSceneCS.dataset[info.index].uuid;
+                }
+                if (!uuid) return;
+
+                var binding = _rmSceneBindingMap.get(uuid);
+                if (!binding) return;
+
+                e.stopPropagation();
+                e.preventDefault();
+                openRealtimeBindingItemHistory(binding);
+            }
+            _rmSceneLastClickTime = now;
+        });
+    }
+
+    // ★ P1-7：捕获当前 CS 实例，setTimeout 回调校验一致性
+    var myCS = _rmSceneCS;
+    setTimeout(function () {
+        if (!_rmSceneCS || _rmSceneCS !== myCS) return;
+        try { _rmSceneCS.fitZoom(); } catch (e) {}
+        _nudgeRealtimeCanvas();
+        updateRealtimeSceneOrigin(true);
+        renderRealtimeSceneLabels();
+        startRealtimeSceneTimer();
+    }, 300);
+}
+
+//派发鼠标移动到中心的事件，强制 canvas-select 计算坐标
+function _nudgeRealtimeCanvas() {
+    if (!_rmSceneCS) return;
+    var canvasEl = document.getElementById('realtimeSceneCanvas');
+    if (!canvasEl) return;
+    var rect = canvasEl.getBoundingClientRect();
+    if (rect.width < 10 || rect.height < 10) return;
+    var offX = rect.width / 2;
+    var offY = rect.height / 2;
+    var clientX = rect.left + offX;
+    var clientY = rect.top + offY;
+    var ev;
+    try {
+        ev = new MouseEvent('mousemove', { bubbles: true, cancelable: true, view: window, clientX: clientX, clientY: clientY, screenX: clientX, screenY: clientY, button: 0 });
+    } catch (e) {
+        try {
+            ev = document.createEvent('MouseEvents');
+            ev.initMouseEvent('mousemove', true, true, window, 0, 0, 0, clientX, clientY, false, false, false, false, 0, null);
+        } catch (e2) { return; }
+    }
+    try { Object.defineProperty(ev, 'offsetX', { get: function() { return offX; } }); } catch (e) {}
+    try { Object.defineProperty(ev, 'offsetY', { get: function() { return offY; } }); } catch (e) {}
+    try { canvasEl.dispatchEvent(ev); } catch (e) {}
+}
+
+//更新坐标原点
+function updateRealtimeSceneOrigin(force) {
+    if (!_rmSceneCS) return false;
+    var cs = _rmSceneCS;
+    var scale = cs.scale || 1;
+    if (!cs.mouse || !cs.position || cs.mouse.length < 2 || cs.position.length < 2) return false;
+
+    var mx = cs.mouse[0], my = cs.mouse[1];
+    var px = cs.position[0], py = cs.position[1];
+    var newX = mx - px * scale;
+    var newY = my - py * scale;
+
+    var co = _rmSceneCachedOrigin;
+    if (!co.ready || force || Math.abs(newX - co.x) > 1 || Math.abs(newY - co.y) > 1 || Math.abs(scale - co.scale) > 0.001) {
+        _rmSceneCachedOrigin = { x: newX, y: newY, scale: scale, ready: true };
+        return true;
+    }
+    return false;
+}
+
+//定时器，应对缩放和平移
+function startRealtimeSceneTimer() {
+    if (_rmSceneOriginTimer) return;
+    _rmSceneOriginTimer = setInterval(function () {
+        if (updateRealtimeSceneOrigin()) {
+            renderRealtimeSceneLabels();
+        }
+    }, 100);
+}
+
+//渲染标签
+function renderRealtimeSceneLabels() {
+    if (_rmSceneRafPending) return;
+    _rmSceneRafPending = true;
+    requestAnimationFrame(function () {
+        _rmSceneRafPending = false;
+        var layer = document.getElementById('realtimeSceneLabelLayer');
+        if (!layer || !_rmSceneCS || !_rmSceneCS.dataset) return;
+
+        var origin = _rmSceneCachedOrigin;
+        if (!origin.ready) return;
+
+        var existing = {};
+        Array.from(layer.children).forEach(function (el) { existing[el.dataset.uuid] = el; });
+        var visible = {};
+
+        _rmSceneCS.dataset.forEach(function (shape) {
+            var binding = _rmSceneBindingMap.get(shape.uuid);
+            if (!binding) return;
+
+            var anchor = getRealtimeShapeAnchor(shape);
+            if (!anchor) return;
+
+            var cx = Math.round(origin.x + anchor.x * origin.scale);
+            var cy = Math.round(origin.y + anchor.y * origin.scale);
+            var style = _rmSceneLabelStyleMap.get(shape.uuid);
+            if (!style) style = { font: '12px', bgColor: '#4A6CF7', bgOpacity: 100, textColor: '#FFFFFF', hide: false, hideDeviceName: true, hideFieldName: false, up: true };
+            var up = style.up !== false;
+            var translateY = up ? '-100%' : '0';
+
+            var el = existing[shape.uuid];
+            if (!el) {
+                el = document.createElement('div');
+                el.className = 'scene-canvas-label';
+                el.dataset.uuid = shape.uuid;
+                el.addEventListener('dblclick', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var b = _rmSceneBindingMap.get(shape.uuid);
+                    if (b) openRealtimeBindingItemHistory(b);
+                });
+                layer.appendChild(el);
+            }
+
+            var labelText = buildRealtimeLabelText(binding, style);
+            el.innerHTML = labelText;
+
+            var isHidden = style.hide || (labelText === '');
+            var bgColor = buildRealtimeFillColor(style.bgColor, style.bgOpacity);
+            var boxShadow = (style.bgOpacity == 0) ? 'none' : '0 2px 6px rgba(0,0,0,0.18)';
+            var textColor = style.textColor;
+
+            el.style.cssText = 'position:absolute;padding:4px 10px;border-radius:4px;white-space:nowrap;' +
+                'font-weight:600;transform:translate(-50%,' + translateY + ');box-shadow:' + boxShadow + ';' +
+                'pointer-events:auto;cursor:pointer;' +
+                'left:' + cx + 'px;top:' + cy + 'px;' +
+                'background:' + bgColor + ';' +
+                'color:' + textColor + ';font-size:' + style.font + ';' +
+                'display:' + (isHidden ? 'none' : 'block') + ';';
+
+            visible[shape.uuid] = true;
+        });
+
+        Object.keys(existing).forEach(function (uuid) {
+            if (!visible[uuid] && existing[uuid].parentNode) {
+                existing[uuid].parentNode.removeChild(existing[uuid]);
+            }
+        });
+    });
+}
+
+//工具：计算锚点
+function getRealtimeShapeAnchor(shape) {
+    var coor = shape.coor;
+    if (!coor) return null;
+    if (shape.type === 1) return { x: (coor[0][0] + coor[1][0]) / 2, y: Math.min(coor[0][1], coor[1][1]) };
+    if (shape.type === 3) {
+        var r = shape.ctrlRadius != null ? shape.ctrlRadius : 3;
+        return { x: coor[0], y: coor[1] - r };
+    }
+    if (shape.type === 2 || shape.type === 4) {
+        var xs = coor.map(function (p) { return p[0]; });
+        var ys = coor.map(function (p) { return p[1]; });
+        return { x: (Math.min.apply(null, xs) + Math.max.apply(null, xs)) / 2, y: Math.min.apply(null, ys) };
+    }
+    return null;
+}
+
+//工具：构建标签文本
+function buildRealtimeLabelText(b, style) {
+    if (!b || !b.deviceId || !b.fieldName) return _loginUserLanguageResource.unbound;
+    var fldName = b.fieldLabel || b.fieldName;
+    var devName = b.deviceName || b.deviceId;
+
+    var hideDev = !style || style.hideDeviceName !== false;
+    var hideFld = style && style.hideFieldName === true;
+
+    var prefix = '';
+    if (!hideDev && !hideFld) prefix = devName + '.' + fldName;
+    else if (!hideDev && hideFld) prefix = devName;
+    else if (hideDev && !hideFld) prefix = fldName;
+
+    var val = b.currentValue;
+
+    if (prefix === '' && (val == null || val === '' || val === '--')) return '';
+    if (val == null || val === '' || val === '--') return encodeHTML(prefix);
+
+    var unit = b.unit;
+    var unitStr = (unit != null && unit !== '') ? ('(' + unit + ')') : '';
+
+    var prefixHtml = prefix ? (encodeHTML(prefix) + '：') : '';
+    var valHtml = encodeHTML(val + unitStr);
+
+    var alarmLevel = parseInt(b.alarmLevel, 10) || 0;
+    var valColor = null;
+
+    if (alarmLevel > 0 && _rmSceneAlarmShowStyle && _rmSceneAlarmShowStyle.Data) {
+        var cfg = null;
+        if (alarmLevel === 100)      cfg = _rmSceneAlarmShowStyle.Data.FirstLevel;
+        else if (alarmLevel === 200) cfg = _rmSceneAlarmShowStyle.Data.SecondLevel;
+        else if (alarmLevel === 300) cfg = _rmSceneAlarmShowStyle.Data.ThirdLevel;
+
+        if (cfg && cfg.Color) {
+            var c = (cfg.Color + '').trim();
+            if (/^#?[0-9a-fA-F]{6}$/.test(c)) {
+                valColor = (c.charAt(0) === '#') ? c : ('#' + c);
+            }
+        }
+    }
+
+    if (valColor) {
+        return prefixHtml + '<span style="color:' + valColor + ';font-weight:bold;">' + valHtml + '</span>';
+    }
+    return prefixHtml + valHtml;
+}
+
+function buildRealtimeFillColor(hexColor, alphaPercent) {
+    var hex = (hexColor || '#4A6CF7').replace('#', '');
+    if (hex.length !== 6) return 'rgba(74,108,247,0.25)';
+    var r = parseInt(hex.slice(0, 2), 16);
+    var g = parseInt(hex.slice(2, 4), 16);
+    var b = parseInt(hex.slice(4, 6), 16);
+    var a = Math.max(0, Math.min(1, (alphaPercent || 0) / 100));
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + a.toFixed(3) + ')';
+}
+
 // ---------- 井筒分析 ----------
 function loadWellboreAnalysis(deviceId) {
     if (!deviceId || deviceId <= 0) return;
     var body = document.getElementById('middle_WellboreAnalysis_body');
     if (!body) return;
 
-    // 清空 4 个图表容器，保留结构
-    ['wellboreChart1', 'wellboreChart2', 'wellboreChart3', 'wellboreChart4'].forEach(function (id) {
-        var el = document.getElementById(id);
-        if (el) el.innerHTML = '';
-    });
+    // ★ P0-2：请求序号，过期响应丢弃
+    var seq = ++_rmWellboreLoadSeq;
+
+    // ★ P1-5：销毁旧图表实例
+    ['wellboreChart1', 'wellboreChart2', 'wellboreChart3', 'wellboreChart4'].forEach(_destroyChartById);
 
     mini.mask({
         el: 'middle_WellboreAnalysis_body',
@@ -1411,6 +1856,7 @@ function loadWellboreAnalysis(deviceId) {
         dataType: 'json',
         timeout: 15000,
         success: function (result) {
+            if (seq !== _rmWellboreLoadSeq) return;
             mini.unmask('middle_WellboreAnalysis_body');
 
             if (result && result.positionCurveData && result.loadCurveData) {
@@ -1426,6 +1872,7 @@ function loadWellboreAnalysis(deviceId) {
             }
         },
         error: function (xhr, status) {
+            if (seq !== _rmWellboreLoadSeq) return;
             mini.unmask('middle_WellboreAnalysis_body');
             console.log('请求失败:', status);
             ['wellboreChart1', 'wellboreChart2', 'wellboreChart3', 'wellboreChart4'].forEach(function (id) {
@@ -1443,10 +1890,9 @@ function loadSurfaceAnalysis(deviceId) {
     var body = document.getElementById('middle_SurfaceAnalysis_body');
     if (!body) return;
 
-    ['surfaceChart1', 'surfaceChart2', 'surfaceChart3', 'surfaceChart4'].forEach(function (id) {
-        var el = document.getElementById(id);
-        if (el) el.innerHTML = '';
-    });
+    var seq = ++_rmSurfaceLoadSeq;
+
+    ['surfaceChart1', 'surfaceChart2', 'surfaceChart3', 'surfaceChart4'].forEach(_destroyChartById);
 
     mini.mask({
         el: 'middle_SurfaceAnalysis_body',
@@ -1461,6 +1907,7 @@ function loadSurfaceAnalysis(deviceId) {
         dataType: 'json',
         timeout: 15000,
         success: function (result) {
+            if (seq !== _rmSurfaceLoadSeq) return;
             mini.unmask('middle_SurfaceAnalysis_body');
 
             if (result && result.positionCurveData && result.powerCurveData) {
@@ -1511,6 +1958,7 @@ function loadSurfaceAnalysis(deviceId) {
             }
         },
         error: function () {
+            if (seq !== _rmSurfaceLoadSeq) return;
             mini.unmask('middle_SurfaceAnalysis_body');
             ['surfaceChart1', 'surfaceChart2', 'surfaceChart3', 'surfaceChart4'].forEach(function (id) {
                 var el = document.getElementById(id);
@@ -1527,6 +1975,11 @@ function loadTrendCurve(deviceId) {
     var body = document.getElementById('middle_TrendCurve_body');
     if (!body) return;
 
+    var seq = ++_rmTrendCurveLoadSeq;
+
+    // ★ P1-5：销毁旧图表
+    var oldContainers = body.querySelectorAll('.trend-chart-container');
+    for (var i = 0; i < oldContainers.length; i++) _destroyChartById(oldContainers[i].id);
     body.innerHTML = '';
 
     mini.mask({
@@ -1560,6 +2013,7 @@ function loadTrendCurve(deviceId) {
         dataType: 'json',
         timeout: 15000,
         success: function (result) {
+            if (seq !== _rmTrendCurveLoadSeq) return;
             mini.unmask('middle_TrendCurve_body');
             body.innerHTML = '';
 
@@ -1665,6 +2119,7 @@ function loadTrendCurve(deviceId) {
             }
         },
         error: function (xhr, status) {
+            if (seq !== _rmTrendCurveLoadSeq) return;
             mini.unmask('middle_TrendCurve_body');
             console.error(_loginUserLanguageResource.requestFailed + ':', status);
             body.innerHTML = '<div class="loading-placeholder error">'
@@ -1792,6 +2247,21 @@ function loadDynamicData(deviceId) {
     var container = document.getElementById('RealTimeMonitoringInfoDataTableInfoDiv_id');
     if (!container) return;
 
+    var seq = ++_rmDynamicDataLoadSeq;
+
+    // ★ P1-5：销毁旧 grid
+    if (deviceRealTimeMonitoringGrid) {
+        try { deviceRealTimeMonitoringGrid.destroy(); } catch (e) {}
+        deviceRealTimeMonitoringGrid = null;
+    }
+    container.innerHTML = '';
+
+    mini.mask({
+        el: 'RealTimeMonitoringInfoDataTableInfoDiv_id',
+        cls: 'mini-mask-loading',
+        html: _loginUserLanguageResource.loadingData
+    });
+
     var grid = mini.get('deviceGrid');
     var deviceName = '';
     var calculateType = 0;
@@ -1805,13 +2275,6 @@ function loadDynamicData(deviceId) {
     }
     var deviceType = _rmCurrentLevel2 ? _rmCurrentLevel2.deviceTypeId : '0';
 
-    container.innerHTML = '';
-    mini.mask({
-        el: 'RealTimeMonitoringInfoDataTableInfoDiv_id',
-        cls: 'mini-mask-loading',
-        html: _loginUserLanguageResource.loadingData
-    });
-
     $.ajax({
         url: context + '/realTimeMonitoringController/getDeviceRealTimeMonitoringData',
         type: 'POST',
@@ -1819,6 +2282,7 @@ function loadDynamicData(deviceId) {
         dataType: 'json',
         timeout: 15000,
         success: function (result) {
+            if (seq !== _rmDynamicDataLoadSeq) return;
             mini.unmask('RealTimeMonitoringInfoDataTableInfoDiv_id');
 
             if (result.totalRoot && result.totalRoot.length > 0) {
@@ -1829,6 +2293,7 @@ function loadDynamicData(deviceId) {
             }
         },
         error: function (xhr, status) {
+            if (seq !== _rmDynamicDataLoadSeq) return;
             mini.unmask('RealTimeMonitoringInfoDataTableInfoDiv_id');
             console.error(_loginUserLanguageResource.requestFailed + ':', status);
             container.innerHTML = '<div class="loading-placeholder error">'
@@ -1880,6 +2345,7 @@ function createDeviceRealTimeMonitoringGrid(containerId, data, cellInfo) {
 
     if (data && data.length > 0) {
         setTimeout(function () {
+            if (!deviceRealTimeMonitoringGrid) return;
             var merges = [{ rowIndex: 0, columnIndex: 0, rowSpan: 1, colSpan: 6 }];
             mergeDataGridCell(deviceRealTimeMonitoringGrid, merges);
             deviceRealTimeMonitoringGrid.setStyle('visibility:visible;');
@@ -2024,13 +2490,19 @@ function viewDeviceRealTimeMonitoringData(row, col) {
     }
 }
 
-/**
- * 双击查看曲线 - 打开独立 JSP
- */
 function viewItemRealTimeCurve(itemName, itemValue, cellInfo) {
-    var grid = mini.get('deviceGrid');
-    var selected = grid ? grid.getSelected() : null;
-    if (!selected) { mini.alert(_loginUserLanguageResource.checkOne); return; }
+    var deviceId = cellInfo.deviceId;
+    var deviceName = cellInfo.deviceName;
+    var calculateType = cellInfo.calculateType || 0;
+
+    if (!deviceId) {
+        var grid = mini.get('deviceGrid');
+        var selected = grid ? grid.getSelected() : null;
+        if (!selected) { mini.alert(_loginUserLanguageResource.checkOne); return; }
+        deviceId = selected.id;
+        deviceName = selected.deviceName;
+        calculateType = selected.calculateType || 0;
+    }
 
     mini.open({
         title: _loginUserLanguageResource.trendCurve,
@@ -2044,9 +2516,9 @@ function viewItemRealTimeCurve(itemName, itemValue, cellInfo) {
             var iframe = this.getIFrameEl();
             if (!iframe || !iframe.contentWindow) return;
             iframe.contentWindow.setData({
-                deviceId:           selected.id,
-                deviceName:         selected.deviceName,
-                calculateType:      selected.calculateType || 0,
+                deviceId:           deviceId,
+                deviceName:         deviceName,
+                calculateType:      calculateType,
                 itemName:           itemName,
                 itemCode:           cellInfo.column,
                 itemType:           cellInfo.type,
@@ -2056,16 +2528,30 @@ function viewItemRealTimeCurve(itemName, itemValue, cellInfo) {
     });
 }
 
-/**
- * 双击查看数据表 - 打开独立 JSP
- */
 function viewItemRealTimeDataTable(itemName, itemValue, cellInfo) {
-    var grid = mini.get('deviceGrid');
-    var selected = grid ? grid.getSelected() : null;
-    if (!selected) { mini.alert(_loginUserLanguageResource.checkOne); return; }
+    var deviceId = cellInfo.deviceId;
+    var deviceName = cellInfo.deviceName;
+    var calculateType = cellInfo.calculateType || 0;
+
+    if (!deviceId) {
+        var grid = mini.get('deviceGrid');
+        var selected = grid ? grid.getSelected() : null;
+        if (!selected) { mini.alert(_loginUserLanguageResource.checkOne); return; }
+        deviceId = selected.id;
+        deviceName = selected.deviceName;
+        calculateType = selected.calculateType || 0;
+    }
+
+    var winTitle = _loginUserLanguageResource.dynamicData;
+    if (cellInfo && cellInfo.fromSceneModelAnnotation) {
+        var devName = deviceName || deviceId || '';
+        if (isNotVal(devName)) {
+            winTitle = winTitle + ' - ' + devName + '.' + itemName;
+        }
+    }
 
     mini.open({
-        title: _loginUserLanguageResource.dynamicData,
+        title: winTitle,
         url: context + '/miniui-app/modules/realTimeMonitoring/deviceItemRealTimeDataWindow.jsp',
         width: 500,
         height: '80%',
@@ -2076,9 +2562,9 @@ function viewItemRealTimeDataTable(itemName, itemValue, cellInfo) {
             var iframe = this.getIFrameEl();
             if (!iframe || !iframe.contentWindow) return;
             iframe.contentWindow.setData({
-                deviceId:           selected.id,
-                deviceName:         selected.deviceName,
-                calculateType:      selected.calculateType || 0,
+                deviceId:           deviceId,
+                deviceName:         deviceName,
+                calculateType:      calculateType,
                 itemName:           itemName,
                 itemCode:           cellInfo.column,
                 itemType:           cellInfo.type,
@@ -2132,6 +2618,9 @@ function loadDeviceControl() {
     var selected = grid.getSelected();
     var deviceType = _rmCurrentLevel2 ? _rmCurrentLevel2.deviceTypeId : '0';
 
+    // ★ P0-2：请求序号
+    var seq = ++_rmDeviceControlLoadSeq;
+
     container.innerHTML = '';
     mini.mask({
         el: 'right_DeviceControl_container',
@@ -2146,6 +2635,7 @@ function loadDeviceControl() {
         dataType: 'json',
         timeout: 10000,
         success: function (result) {
+            if (seq !== _rmDeviceControlLoadSeq) return;
             mini.unmask('right_DeviceControl_container');
             container.innerHTML = '';
 
@@ -2214,6 +2704,7 @@ function loadDeviceControl() {
             g.render(container);
         },
         error: function () {
+            if (seq !== _rmDeviceControlLoadSeq) return;
             mini.unmask('right_DeviceControl_container');
             container.innerHTML = '<div class="loading-placeholder error">'
                 + _loginUserLanguageResource.requestFailed + '</div>';
@@ -2256,9 +2747,6 @@ function onSwitchControlClick(recordId, item, controlType, quantity, value, bitI
     });
 }
 
-/**
- * 数值型控制项 - 打开设置窗口（独立 JSP）
- */
 function onNumericControlClick(recordId, controlType, itemName, unit, quantity, storeDataType, disabled) {
     if (disabled) return;
 
@@ -2309,8 +2797,7 @@ function sendDeviceControl(deviceId, deviceName, controlType, quantity, controlV
         type: 'POST', data: params, dataType: 'json', timeout: 10000,
         success: function (result) {
             mini.unmask(document.body);
-            if (result.flag == false) mini.alert(result.msg);
-            else mini.alert(result.msg);
+            mini.alert(result.msg);
         },
         error: function (xhr, status) {
             mini.unmask(document.body);
@@ -2319,13 +2806,16 @@ function sendDeviceControl(deviceId, deviceName, controlType, quantity, controlV
     });
 }
 
-// ---------- 设备信息（miniui datagrid） ----------
+// ---------- 设备信息 ----------
 function loadDeviceInfo() {
     var grid = mini.get('deviceGrid');
     if (!grid || !grid.getSelected()) return;
 
     var selected = grid.getSelected();
     var deviceType = _rmCurrentLevel1 ? _rmCurrentLevel1.deviceTypeId : '0';
+
+    // ★ P0-2：请求序号
+    var seq = ++_rmDeviceInfoLoadSeq;
 
     var addGrid = mini.get('deviceInfoAdditionalGrid');
     var auxGrid = mini.get('deviceInfoAuxiliaryGrid');
@@ -2345,10 +2835,11 @@ function loadDeviceInfo() {
         dataType: 'json',
         timeout: 10000,
         success: function (result) {
+            if (seq !== _rmDeviceInfoLoadSeq) return;
+
             var infoList = (result && result.deviceInfoDataList) || [];
             var auxList  = (result && result.auxiliaryDeviceList) || [];
 
-            // ---------- 附加信息 ----------
             if (addGrid) {
                 var addData = [];
                 for (var i = 0; i < infoList.length; i++) {
@@ -2361,7 +2852,6 @@ function loadDeviceInfo() {
                 addGrid.setData(addData);
             }
 
-            // ---------- 辅件设备 ----------
             if (auxGrid) {
                 var auxData = [];
                 for (var k = 0; k < auxList.length; k++) {
@@ -2373,24 +2863,20 @@ function loadDeviceInfo() {
                 }
                 auxGrid.setData(auxData);
 
-                // 默认全部展开详情
                 setTimeout(function () {
-                	if(auxData.length>0){
-                		auxGrid.showRowDetail(0);
-                	}
+                    if (seq !== _rmDeviceInfoLoadSeq) return;
+                    if (auxData.length > 0) auxGrid.showRowDetail(0);
                 }, 50);
             }
         },
         error: function () {
+            if (seq !== _rmDeviceInfoLoadSeq) return;
             if (addGrid) addGrid.setData([]);
             if (auxGrid) auxGrid.setData([]);
         }
     });
 }
 
-/**
- * 辅件设备 - 展开行详情渲染
- */
 function onAuxiliaryShowRowDetail(e) {
     var grid = e.sender;
     var record = e.record;
@@ -2418,7 +2904,7 @@ function handleRealTimeData(data) {
     var grid = mini.get('deviceGrid');
     var selected = grid ? grid.getSelected() : null;
     var selectedId = selected ? selected.id : null;
-    var isSelectWell = (selectedId === data.deviceId);
+    var isSelectWell = (String(selectedId) === String(data.deviceId));
     var commStatusChange = false;
 
     // ===== 更新设备概览表格 =====
@@ -2426,7 +2912,7 @@ function handleRealTimeData(data) {
         var rows = grid.getData();
         var foundRow = null;
         for (var i = 0; i < rows.length; i++) {
-            if (rows[i].id === data.deviceId) { foundRow = rows[i]; break; }
+            if (String(rows[i].id) === String(data.deviceId)) { foundRow = rows[i]; break; }
         }
         if (foundRow) {
             var updateObj = {};
@@ -2512,7 +2998,7 @@ function handleRealTimeData(data) {
                     else if (key.toUpperCase() === 'COMMSTATUSNAME') commStatusNameKey2 = key;
                 }
                 if (commStatusKey2 !== null && data.commStatus !== undefined) {
-                    if (foundRow[commStatusKey2] !== data.commStatus) commStatusChange = true;
+                    if (String(foundRow[commStatusKey2]) !== String(data.commStatus)) commStatusChange = true;
                     updateObj[commStatusKey2] = data.commStatus;
                 }
                 if (commStatusNameKey2 !== null && data.commStatusName !== undefined) {
@@ -2577,7 +3063,7 @@ function handleRealTimeData(data) {
         }
     }
 
-    // ===== 统计饼图刷新 =====
+    // ===== 统计饼图刷新（★ P1-10：节流 500ms） =====
     var deviceTypeId = _rmCurrentLevel2 ? _rmCurrentLevel2.deviceTypeId : '0';
     var orgId = window.parent && window.parent.mini
         ? window.parent.mini.get('leftOrg_Id').getValue() : '';
@@ -2587,14 +3073,48 @@ function handleRealTimeData(data) {
         if (activeStatTab) {
             var key = activeStatTab.name;
             if (isFullData) {
-                loadStatData(activeStatTab, deviceTypeId, orgId);
+                _scheduleStatRefresh(activeStatTab, deviceTypeId, orgId);
             } else if (isStatusData) {
-                if (key !== 'FESdiagramResult') loadStatData(activeStatTab, deviceTypeId, orgId);
+                if (key !== 'FESdiagramResult') _scheduleStatRefresh(activeStatTab, deviceTypeId, orgId);
             }
         }
     }
 
     // ===== 中间区域更新 =====
+    if (isFullData) {
+        if (middleTabs) {
+            var activeMiddleTab = middleTabs.getActiveTab();
+            if (activeMiddleTab) {
+                var tabName = activeMiddleTab.name;
+                if (tabName === 'middle_SceneModel') {
+                    var pushDeviceId = String(data.deviceId);
+                    var uuidSet = _rmSceneDeviceIndexMap.get(pushDeviceId);
+                    if (uuidSet && uuidSet.size > 0) {
+                        if (data.allItemInfo && data.allItemInfo.length > 0) {
+                            var valueMap = {};
+                            data.allItemInfo.forEach(function (it) {
+                                if (!it || !it.column) return;
+                                valueMap[it.column.toUpperCase()] = it;
+                            });
+
+                            uuidSet.forEach(function (uuid) {
+                                var binding = _rmSceneBindingMap.get(uuid);
+                                if (!binding || !binding.fieldName) return;
+                                binding.commStatus = 1;
+                                var item = valueMap[binding.fieldName.toUpperCase()];
+                                if (!item) return;
+                                binding.currentValue = item.value;
+                                binding.alarmLevel = item.alarmLevel || 0;
+                            });
+
+                            renderRealtimeSceneLabels();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     if (isFullData && isSelectWell) {
         if (middleTabs) {
             var activeMiddleTab = middleTabs.getActiveTab();
@@ -2684,6 +3204,7 @@ function handleRealTimeData(data) {
                                 deviceRealTimeMonitoringGrid.setData(newData);
                                 deviceRealTimeMonitoringGrid._cellInfo = data.CellInfo;
                                 setTimeout(function () {
+                                    if (!deviceRealTimeMonitoringGrid) return;
                                     mergeDataGridCell(deviceRealTimeMonitoringGrid,
                                         [{ rowIndex: 0, columnIndex: 0, rowSpan: 1, colSpan: 6 }]);
                                     deviceRealTimeMonitoringGrid.setStyle('visibility:visible;');
@@ -2697,7 +3218,24 @@ function handleRealTimeData(data) {
         }
     }
 
-    // ===== 状态数据且当前是动态数据 tab =====
+    // ===== 状态数据且当前是场景模型 =====
+    if (isStatusData) {
+        if (middleTabs) {
+            var activeMiddleTab2 = middleTabs.getActiveTab();
+            if (activeMiddleTab2 && activeMiddleTab2.name === 'middle_SceneModel') {
+                var pushDeviceId2 = String(data.deviceId);
+                var uuidSet2 = _rmSceneDeviceIndexMap.get(pushDeviceId2);
+                if (uuidSet2 && uuidSet2.size > 0) {
+                    uuidSet2.forEach(function (uuid) {
+                        var binding = _rmSceneBindingMap.get(uuid);
+                        if (binding) binding.commStatus = data.commStatus;
+                    });
+                    renderRealtimeSceneLabels();
+                }
+            }
+        }
+    }
+
     if (isStatusData && isSelectWell) {
         if (middleTabs) {
             var activeMiddleTab2 = middleTabs.getActiveTab();
@@ -2833,8 +3371,8 @@ function loadResourceChartData(itemCode, itemName, divId, win) {
         dataType: 'json', timeout: 10000,
         success: function (result) {
             if (!result || !result.totalRoot || result.totalRoot.length === 0) {
-                document.getElementById(divId).innerHTML =
-                    '<div style="text-align:center;padding:20px;">' + _loginUserLanguageResource.emptyMsg + '</div>';
+                var el = document.getElementById(divId);
+                if (el) el.innerHTML = '<div style="text-align:center;padding:20px;">' + _loginUserLanguageResource.emptyMsg + '</div>';
                 return;
             }
             var chartData = result.totalRoot;
@@ -2857,8 +3395,8 @@ function loadResourceChartData(itemCode, itemName, divId, win) {
                 _loginUserLanguageResource.time, yTitle, color, legend, timeFormat);
         },
         error: function () {
-            document.getElementById(divId).innerHTML =
-                '<div style="text-align:center;padding:20px;color:red;">' + _loginUserLanguageResource.requestFailed + '</div>';
+            var el = document.getElementById(divId);
+            if (el) el.innerHTML = '<div style="text-align:center;padding:20px;color:red;">' + _loginUserLanguageResource.requestFailed + '</div>';
         }
     });
 }
@@ -3182,8 +3720,138 @@ function gotoHistory() {
     }
 }
 
+//================================================================
+//场景模型工具条 - 缩放与适配
+//================================================================
+window.sceneModelZoomIn = function() {
+    if (_rmSceneCS) {
+        _rmSceneCS.setScale(true);
+        _nudgeRealtimeCanvas();
+        updateRealtimeSceneOrigin(true);
+        renderRealtimeSceneLabels();
+    }
+};
+
+window.sceneModelZoomOut = function() {
+    if (_rmSceneCS) {
+        _rmSceneCS.setScale(false);
+        _nudgeRealtimeCanvas();
+        updateRealtimeSceneOrigin(true);
+        renderRealtimeSceneLabels();
+    }
+};
+
+window.sceneModelFit = function() {
+    if (_rmSceneCS) {
+        _rmSceneCS.fitZoom();
+        _nudgeRealtimeCanvas();
+        updateRealtimeSceneOrigin(true);
+        renderRealtimeSceneLabels();
+    }
+};
+
+//================================================================
+//实时监控 - 双击标签或图形查看历史数据/曲线
+//================================================================
+function openRealtimeBindingItemHistory(binding) {
+    if (!binding) return;
+
+    if (!binding.deviceId) {
+        console.warn('[RealtimeSceneModel] binding 缺少 deviceId，无法查询历史', binding);
+        return;
+    }
+
+    var itemName = binding.fieldLabel || binding.fieldName;
+    var itemValue = binding.currentValue;
+
+    var grid = mini.get('deviceGrid');
+    var selected = grid ? grid.getSelected() : null;
+    var deviceCalculateType = selected ? (selected.calculateType || 0) : 0;
+
+    var cellInfo = {
+        column: binding.fieldName,
+        type: (binding.itemType != null && binding.itemType !== '')
+            ? parseInt(binding.itemType, 10) : NaN,
+        resolutionMode: (binding.resolutionMode != null && binding.resolutionMode !== '')
+            ? parseInt(binding.resolutionMode, 10) : NaN,
+        bitIndex: binding.bitIndex,
+        columnDataType: binding.columnDataType || '',
+        deviceId: binding.deviceId,
+        deviceName: binding.deviceName,
+        calculateType: deviceCalculateType,
+        fromSceneModelAnnotation: true
+    };
+
+    var isNumberVal = function (val) {
+        return val !== undefined && val !== null && val !== '' && !isNaN(parseFloat(val));
+    };
+
+    if (isNaN(cellInfo.type)) {
+        if (isNumberVal(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+        else                        viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        return;
+    }
+
+    if (cellInfo.type == 0) {
+        if (cellInfo.resolutionMode == 2) {
+            if (isNotVal(cellInfo.columnDataType)
+                && cellInfo.columnDataType.toUpperCase() != 'string'.toUpperCase()
+                && isNumberVal(itemValue)) {
+                viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+            } else {
+                viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+            }
+        } else if (cellInfo.resolutionMode == 0) {
+            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        } else if (cellInfo.resolutionMode == 1) {
+            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        } else {
+            if (isNumberVal(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+            else                        viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        }
+    } else if (cellInfo.type == 1) {
+        var isNumItem = false;
+        try {
+            isNumItem = (typeof isNumByCalculateItemCode === 'function')
+                      && isNumByCalculateItemCode(cellInfo.column);
+        } catch (e) { isNumItem = false; }
+        if (isNumItem) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+        else           viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+    } else if (cellInfo.type == 3) {
+        if (isNumberVal(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+        else                        viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+    } else if (cellInfo.type == 5) {
+        if (cellInfo.resolutionMode == 2) {
+            if (isNumberVal(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+            else                        viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        } else if (cellInfo.resolutionMode == 0) {
+            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        } else if (cellInfo.resolutionMode == 1) {
+            viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        } else if (cellInfo.resolutionMode == 7) {
+            if (isNumberVal(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+            else                        viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        } else {
+            if (isNumberVal(itemValue)) viewItemRealTimeCurve(itemName, itemValue, cellInfo);
+            else                        viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+        }
+    } else {
+        viewItemRealTimeDataTable(itemName, itemValue, cellInfo);
+    }
+}
+
+function encodeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 // ================================================================
-// 暴露到 window（onclick / onevent 里直接调用）
+// 暴露到 window
 // ================================================================
 window.refreshData                        = refreshData;
 window.refreshDeviceList                  = refreshDeviceList;

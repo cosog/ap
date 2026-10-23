@@ -905,9 +905,17 @@ function getShapeTopAnchor(shape) {
 // ================================================================
 function onShapeAdded(info) {
     var uuid = extractUuid(info);
+    
+    // ★只有在新增图形时，如果没拿到 uuid，才去取 dataset 的最后一项兜底
+    if (!uuid) {
+        if (cs && cs.dataset && cs.dataset.length > 0) {
+            uuid = cs.dataset[cs.dataset.length - 1].uuid;
+        }
+    }
+    
     if (!uuid) return;
 
-    // ★ 核心修复：画完立刻锁定 lastSelectedUuid，防止弹窗关闭后丢失
+    // 画完立刻锁定 lastSelectedUuid，防止弹窗关闭后丢失
     lastSelectedUuid = uuid;
 
     userColorMap.set(uuid, '#00FF00');
@@ -1205,7 +1213,12 @@ function clearScene() {
     userLineWidthMap.clear();
     lastSelectedUuid = null;
     imageUrl = '';
+    
     if (cs) cs.setData([]);
+    
+    //清空背景图，还原为默认的空白 SVG
+    setCanvasImage(getBlankImage());
+
     var layer = document.getElementById('sceneLabelLayer');
     if (layer) layer.innerHTML = '';
     refreshBindingTree();
@@ -1545,18 +1558,10 @@ function onSaveAnnotations() {
 // 11. 其他工具方法与监听
 // ================================================================
 function extractUuid(info) {
-    if (!info) {
-        if (cs && cs.dataset && cs.dataset.length > 0) {
-            return cs.dataset[cs.dataset.length - 1].uuid;
-        }
-        return null;
-    }
+    if (!info) return null;
     if (info.uuid) return info.uuid;
     if (info.index !== undefined && cs && cs.dataset && cs.dataset[info.index]) {
         return cs.dataset[info.index].uuid;
-    }
-    if (cs && cs.dataset && cs.dataset.length > 0) {
-        return cs.dataset[cs.dataset.length - 1].uuid;
     }
     return null;
 }
@@ -1599,6 +1604,125 @@ function initSceneMessageListener() {
             loadSceneGrid();
         }
     });
+}
+
+//================================================================
+//★ 辅助：读写 config 数据
+//================================================================
+function readRecordConfig(record) {
+ if (!record) return { imageUrl: '', shapes: [] };
+ var raw = record.config;
+ if (!raw) return { imageUrl: '', shapes: [] };
+ if (typeof raw === 'object') return raw;
+ try {
+     var parsed = JSON.parse(raw);
+     if (parsed && typeof parsed === 'object') return parsed;
+ } catch (e) {}
+ return { imageUrl: '', shapes: [] };
+}
+
+function writeRecordConfig(record, cfg) {
+ if (!record) return;
+ try {
+     if (!cfg || typeof cfg !== 'object') cfg = { imageUrl: '', shapes: [] };
+     record.config = JSON.stringify(cfg);
+ } catch (e) {}
+}
+
+//================================================================
+//8.1 选择服务器图片（打开独立 JSP）
+//================================================================
+function onSelectServerImage() {
+ if (_destroyed) return;
+ var targetRecord = currentRecord;
+
+ mini.open({
+     title: _loginUserLanguageResource.selectSceneImage || '选择场景图片',
+     url: context + '/miniui-app/modules/sceneModel/SelectSceneImageWindow.jsp',
+     width: 820,
+     height: 580,
+     modal: true,
+     allowResize: true,
+     onload: function () {
+         var iframe = this.getIFrameEl();
+         // 传入当前使用的图片 URL，用于 JSP 里的选中回显和删除保护
+         iframe.contentWindow.setData({
+             currentImageUrl: imageUrl || ''
+         });
+         
+         // 接收 JSP 里点击确定的回调
+         iframe.contentWindow.onConfirmCallback = function (url) {
+             if (_destroyed) return;
+             
+             // 1. 设置画布图片
+             setCanvasImage(url);
+             
+             // 2. 更新记录的数据
+             if (targetRecord) {
+                 var cfg = readRecordConfig(targetRecord);
+                 cfg.imageUrl = url;
+                 cfg.imageSource = 'server';
+                 writeRecordConfig(targetRecord, cfg);
+             }
+         };
+     }
+ });
+}
+
+//================================================================
+//8.2 上传本地图片（主界面直接触发隐藏 input）
+//================================================================
+function onUploadLocalImage() {
+ if (_destroyed) return;
+ var targetRecord = currentRecord;
+
+ var input = document.createElement('input');
+ input.type = 'file';
+ input.accept = 'image/*,.svg';
+ input.onchange = function (e) {
+     var file = e.target.files[0];
+     if (!file) return;
+
+     var formData = new FormData();
+     formData.append('file', file);
+
+     mini.mask({ el: 'canvasPanel', html: _loginUserLanguageResource.uploading + '...' });
+
+     $.ajax({
+         url: context + '/sceneModelController/uploadSceneImage',
+         type: 'POST',
+         data: formData,
+         processData: false,
+         contentType: false,
+         success: function (resp) {
+             mini.unmask('canvasPanel');
+             if (_destroyed) return;
+             if (!resp || !resp.success) {
+                 mini.alert(resp.message || _loginUserLanguageResource.uploadFail);
+                 return;
+             }
+
+             // 设置新图
+             setCanvasImage(resp.imageUrl);
+
+             // 同步更新 config
+             if (targetRecord) {
+                 var cfg = readRecordConfig(targetRecord);
+                 cfg.imageUrl = resp.imageUrl;
+                 cfg.imageSource = 'uploaded';
+                 writeRecordConfig(targetRecord, cfg);
+             }
+
+             mini.alert(_loginUserLanguageResource.uploadSuccess);
+         },
+         error: function () {
+             mini.unmask('canvasPanel');
+             if (_destroyed) return;
+             mini.alert(_loginUserLanguageResource.uploadFail);
+         }
+     });
+ };
+ input.click();
 }
 
 // ================================================================

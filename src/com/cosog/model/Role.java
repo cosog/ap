@@ -30,6 +30,7 @@ public class Role implements java.io.Serializable {
 	private String remark_zh_CN;
 	private String remark_en;
 	private String remark_ru;
+	private Integer alarmAlert;
 
 	// Constructors
 
@@ -44,7 +45,8 @@ public class Role implements java.io.Serializable {
 			Integer roleVideoKeyEdit,
 			Integer roleLanguageEdit,
 			Integer showLevel, 
-			String remark_zh_CN,String remark_en,String remark_ru) {
+			String remark_zh_CN,String remark_en,String remark_ru,
+			Integer alarmAlert) {
 		super();
 		this.roleId = roleId;
 		this.roleName_zh_CN = roleName_zh_CN;
@@ -57,6 +59,7 @@ public class Role implements java.io.Serializable {
 		this.remark_zh_CN = remark_zh_CN;
 		this.remark_en = remark_en;
 		this.remark_ru = remark_ru;
+		this.alarmAlert = alarmAlert;
 	}
 
 	@Id
@@ -158,6 +161,15 @@ public class Role implements java.io.Serializable {
 
 	public void setRemark_ru(String remark_ru) {
 		this.remark_ru = remark_ru;
+	}
+
+	@Column(name = "ALARMALERT", nullable = false, length = 10)
+	public Integer getAlarmAlert() {
+		return alarmAlert;
+	}
+
+	public void setAlarmAlert(Integer alarmAlert) {
+		this.alarmAlert = alarmAlert;
 	}
 
 	

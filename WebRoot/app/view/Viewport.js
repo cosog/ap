@@ -10,6 +10,11 @@ var chartTitleFontSize='14px';
 
 Ext.define('AP.view.Viewport', {
     extend: 'Ext.container.Viewport',
+    requires : [
+        'AP.alert.AlarmSoundManager',
+        'AP.alert.AlarmManager',
+        'AP.view.alert.AlarmWindow'
+    ],
     id: 'frame_imivport_ids',
     layout: 'border',
     items: [{
@@ -145,9 +150,17 @@ Ext.define('AP.view.Viewport', {
             websocketClient.onerror = websocketOnError;
             websocketClient.onclose = websocketOnClose;
 
+            // ★ 只有开启时才加载音频配置、解锁音频
+            if (typeof alarmAlert !== 'undefined' && alarmAlert) {
+                AP.alert.AlarmSoundManager.initUnlock();
+                AP.alert.AlarmSoundManager.loadConfig();
+            }
         },
         beforeclose: function (panel, eOpts) {
             websocketClose(websocketClient);
+            if (typeof alarmAlert !== 'undefined' && alarmAlert) {
+                AP.alert.AlarmSoundManager.stop();
+            }
         }
     }
 });
@@ -227,18 +240,48 @@ function detectZoom(){
     return ratio;
 };
 
-function websocketOnMessage(evt) {
-    var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
-    var receiveData = evt.data;
-    if (evt.data.indexOf("}{") >= 0) {
-        var dataStr = evt.data.replace("}{", "}@@@@{");
-        receiveData = dataStr.split("@@@@")[0];
+function parseWebSocketMessages(raw) {
+    var list = [], str = raw, idx;
+    if (!str) return list;
+    while ((idx = str.indexOf('}{')) >= 0) {
+        list.push(str.substring(0, idx + 1));
+        str = str.substring(idx + 1);
     }
-    var data = Ext.JSON.decode(receiveData);
-    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-    var orgIdArr = leftOrg_Id.split(",");
-    
-//    console.log(data.functionCode);
+    if (str && str.length > 1) list.push(str);
+    return list;
+}
+
+function websocketOnMessage(evt) {
+    var messages = parseWebSocketMessages(evt.data);
+    for (var mi = 0; mi < messages.length; mi++) {
+        var data;
+        try { data = Ext.JSON.decode(messages[mi]); } catch (e) { continue; }
+        if (!data || !data.functionCode) continue;
+
+        // ★ 只有开启时才处理报警，避免加载 AlarmWindow / AlarmSoundManager
+        if (typeof alarmAlert !== 'undefined' && alarmAlert) {
+            try {
+                AP.alert.AlarmManager.handle(data);
+            } catch (e) {
+                if (window.console) console.error('alarm handle error', e);
+            }
+        }
+
+        try {
+            handleBusinessMessage(data);
+        } catch (e) {
+            if (window.console) console.error('business handle error', e);
+        }
+    }
+}
+
+function handleBusinessMessage(data) {
+    var centerTab = Ext.getCmp("frame_center_ids");
+    var activeId = (centerTab && centerTab.getActiveTab()) ? centerTab.getActiveTab().id : '';
+
+    var leftOrgCmp = Ext.getCmp('leftOrg_Id');
+    var leftOrg_Id = leftOrgCmp ? leftOrgCmp.getValue() : '';
+    var orgIdArr = leftOrg_Id ? leftOrg_Id.split(",") : [];
     
     if (data.functionCode.toUpperCase() == "adExitAndDeviceOffline".toUpperCase()) { //ad退出，所有设备离线
         if (activeId.toUpperCase() == "DeviceRealTimeMonitoring".toUpperCase()) {

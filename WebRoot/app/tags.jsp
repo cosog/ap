@@ -35,6 +35,7 @@ request.setAttribute("showVideo", showVideo);
 <link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/table.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 
 <link rel="stylesheet" href="<%=path%>/scripts/canvas-select/css/scene.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/app/alert/alarm.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <!-- 样式区 （结束） --> 
 <!-- 定义Extjs常量 -->
 <script type="text/javascript">

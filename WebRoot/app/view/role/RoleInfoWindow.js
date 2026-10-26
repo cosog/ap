@@ -34,6 +34,9 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.roleRemark,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.roleRemark,loginUserLanguage);
         }
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.alarmAlert,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.alarmAlert,loginUserLanguage);
+        }
         
         var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
         var tabStore = Ext.create("AP.store.role.RightTabTreeInfoStore");
@@ -62,6 +65,33 @@ Ext.define("AP.view.role.RoleInfoWindow", {
             listeners: {
             	select: function (v,o) {
 					Ext.getCmp("roleVideoKeyEdit_Id").setValue(this.value);
+                }
+            }
+        });
+        
+        var RoleAlarmAlertCombox = new Ext.form.ComboBox({
+            id: 'roleAlarmAlertComboxfield_Id',
+            value: 0,
+            fieldLabel: loginUserLanguageResource.alarmAlert+'<font color=red>*</font>',
+            labelWidth: labelWidth,
+            typeAhead : true,
+            allowBlank: false,
+            autoSelect:true,
+            editable:false,
+            anchor: '100%',
+            emptyText: '--',
+            triggerAction: 'all',
+            store: new Ext.data.SimpleStore({
+            	autoLoad : false,
+                fields: ['key', 'value'],
+                data: [['0', loginUserLanguageResource.no], ['1', loginUserLanguageResource.yes]]
+            }),
+            displayField: 'value',
+            valueField: 'key',
+            queryMode : 'local',
+            listeners: {
+            	select: function (v,o) {
+					Ext.getCmp("roleAlarmAlert_Id").setValue(this.value);
                 }
             }
         });
@@ -107,6 +137,11 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 xtype: "hidden",
                 name: 'role.roleVideoKeyEdit',
                 id: 'roleVideoKeyEdit_Id',
+                value: 0
+            }, {
+                xtype: "hidden",
+                name: 'role.alarmAlert',
+                id: 'roleAlarmAlert_Id',
                 value: 0
             }, {
                 xtype: "hidden",
@@ -225,7 +260,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 value:1,
                 anchor: '100%',
                 msgTarget: 'side'
-            },RoleVideoKeyEditCombox, RoleLanguageEditCombox,{
+            },RoleVideoKeyEditCombox, RoleLanguageEditCombox,RoleAlarmAlertCombox,{
                 fieldLabel: loginUserLanguageResource.roleRemark,
                 labelWidth: labelWidth,
                 hidden:(loginUserLanguage.toUpperCase()=='ZH_CN'?false:true),

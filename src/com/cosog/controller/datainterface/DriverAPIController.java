@@ -3771,7 +3771,7 @@ public class DriverAPIController extends BaseController{
 										alarmShowStyle,
 										protocol,
 										checkSign);
-//								StringManagerUtils.printLog(webSocketSendDataStr,0);
+								StringManagerUtils.printLog(webSocketSendDataStr,0);
 								infoHandler().sendMessageToUserId(websocketClientUserId, webSocketSendDataStr);
 							}
 						}

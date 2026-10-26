@@ -16,6 +16,11 @@ Ext.application({
 	// classes. This path will be registered via Ext.Loader.setPath for
 	// the namespace specified in the name config.
 	appFolder : context + '/app',
+	requires : [
+        'AP.alert.AlarmSoundManager',
+        'AP.alert.AlarmManager',
+        'AP.view.alert.AlarmWindow'
+    ],
 	// 应用初始化时，调用的controller
 	controllers : [ 'frame.IframeControl', 'frame.MainIframeControl', 'right.RightOrgInfoControl', 'right.RightInfoControl'],
 	launch : function() {

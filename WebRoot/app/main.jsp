@@ -91,7 +91,7 @@
         
         var loginUserLanguageList=JSON.parse('<%=loginUserLanguageListJson%>');
         
-        
+        var alarmAlert=true;
         
         
         var loginUserLanguageResource='<%= loginUserLanguageResource.replace("'", "\\'") %>';

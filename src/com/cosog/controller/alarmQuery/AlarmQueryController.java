@@ -1,7 +1,11 @@
 package com.cosog.controller.alarmQuery;
 
+import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,6 +25,7 @@ import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.StringManagerUtils;
+import com.google.gson.Gson;
 
 @Controller
 @RequestMapping("/alarmQueryController")
@@ -29,6 +34,7 @@ public class AlarmQueryController extends BaseController{
 
 	private static final long serialVersionUID = 1L;
 	private static Log log = LogFactory.getLog(RealTimeMonitoringController.class);
+	private static final Gson gson = new Gson();
 	@Autowired
 	private AlarmQueryService<?> alarmQueryService;
 	@Autowired
@@ -302,6 +308,208 @@ public class AlarmQueryController extends BaseController{
 		session.setAttribute(key, 1);
 		return null;
 	}
+	
+    /**
+     * 批量确认报警
+     * 请求：POST /alarmQueryController/batchAck
+     * Body：{"alertIds":[1001,1002,1003]}
+     * 返回：{"success":true,"message":"","data":{"successIds":[...],"alreadyAckedIds":[],"failedIds":[]}}
+     */
+    @RequestMapping("/batchAck")
+    public String batchAck() throws Exception {
+        String json;
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            String body = sb.toString();
+            log.info("batchAck body=" + body);
+
+            List<Number> alertIds = new ArrayList<Number>();
+            try {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> req = gson.fromJson(body, Map.class);
+                if (req != null && req.get("alertIds") != null) {
+                    alertIds = (List<Number>) req.get("alertIds");
+                }
+            } catch (Exception e) {
+                log.warn("batchAck parse body failed", e);
+            }
+
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("userLogin");
+            String userNo = user != null ? user.getUserNo() + "" : "";
+            log.info("batchAck userNo=" + userNo + ", size=" + alertIds.size());
+
+            // ============================================================
+            // TODO: 真正落库时替换这里
+            // 逐条执行：
+            //   UPDATE t_alarm_record
+            //      SET status='ACK', ack_user=?, ack_time=NOW()
+            //    WHERE id=? AND status='NEW'
+            // 影响 1 行 → successIds
+            // 影响 0 行且查 status='ACK' 或记录不存在 → alreadyAckedIds
+            // 其它异常 → failedIds
+            // ============================================================
+            List<Long> successIds = new ArrayList<Long>();
+            for (Number n : alertIds) {
+                if (n != null) {
+                    successIds.add(n.longValue());
+                }
+            }
+
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("successIds", successIds);
+            data.put("alreadyAckedIds", new ArrayList<Long>());
+            data.put("failedIds", new ArrayList<Long>());
+
+            Map<String, Object> resp = new HashMap<String, Object>();
+            resp.put("success", true);
+            resp.put("message", "");
+            resp.put("data", data);
+            json = gson.toJson(resp);
+        } catch (Exception e) {
+            log.error("batchAck error", e);
+            Map<String, Object> resp = new HashMap<String, Object>();
+            resp.put("success", false);
+            resp.put("message", "系统异常");
+            resp.put("data", new HashMap<String, Object>());
+            json = gson.toJson(resp);
+        }
+
+        response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+        response.setHeader("Cache-Control", "no-cache");
+        PrintWriter pw = response.getWriter();
+        pw.print(json);
+        pw.flush();
+        pw.close();
+        return null;
+    }
+
+    /**
+     * 待确认报警列表
+     * 请求：GET /alarmQueryController/getPendingAlarms?orgId=3
+     * 返回：{"success":true,"data":[{...},{...}]}
+     */
+    @RequestMapping("/getPendingAlarms")
+    public String getPendingAlarms() throws Exception {
+        String json;
+        try {
+            String orgIdParam = ParamUtils.getParameter(request, "orgId");
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("userLogin");
+            String userNo = user != null ? user.getUserNo() + "" : "";
+            String orgIds = (user != null && !StringManagerUtils.isNotNull(orgIdParam))
+                          ? user.getUserOrgIds() : orgIdParam;
+            log.info("getPendingAlarms userNo=" + userNo + ", orgIds=" + orgIds);
+
+            // ============================================================
+            // TODO: 真正查询时替换这里
+            // SELECT id, device_id, device_name, org_id,
+            //        column_code, column_name, alarm_value,
+            //        alarm_level, acq_time
+            //   FROM t_alarm_record
+            //  WHERE status = 'NEW'
+            //    AND org_id IN (${orgIds})
+            //  ORDER BY alarm_level ASC, acq_time DESC
+            //  LIMIT 200
+            // ============================================================
+            List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+
+            // 联调前端时若想立即看到弹窗，可放开下面 mock：
+            // Map<String, Object> item = new HashMap<String, Object>();
+            // item.put("alertId",    1001L);
+            // item.put("deviceId",   1);
+            // item.put("deviceName", "SRP01_CN");
+            // item.put("orgId",      3);
+            // item.put("column",     "C_CLOUMN35");
+            // item.put("columnName", "油压");
+            // item.put("value",      "0.64");
+            // item.put("alarmLevel", 100);
+            // item.put("acqTime",    "2026-10-26 09:14:33");
+            // data.add(item);
+
+            Map<String, Object> resp = new HashMap<String, Object>();
+            resp.put("success", true);
+            resp.put("data", data);
+            json = gson.toJson(resp);
+        } catch (Exception e) {
+            log.error("getPendingAlarms error", e);
+            Map<String, Object> resp = new HashMap<String, Object>();
+            resp.put("success", false);
+            resp.put("data", new ArrayList<Map<String, Object>>());
+            json = gson.toJson(resp);
+        }
+
+        response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+        response.setHeader("Cache-Control", "no-cache");
+        PrintWriter pw = response.getWriter();
+        pw.print(json);
+        pw.flush();
+        pw.close();
+        return null;
+    }
+
+    /**
+     * 报警音配置列表（只读，上传/删除留到后续报警等级配置页）
+     * 请求：GET /alarmQueryController/getAlarmSoundList
+     * 返回：{"success":true,"data":[{"level":100,"name":"一级报警","url":"/ctx/resources/alarm/level1.mp3"}, ...]}
+     */
+    @RequestMapping("/getAlarmSoundList")
+    public String getAlarmSoundList() throws Exception {
+        String json;
+        try {
+            String ctx = request.getContextPath();
+
+            // ============================================================
+            // TODO: 真正查询时替换这里
+            // SELECT alarm_level, file_name, file_path
+            //   FROM t_alarm_sound
+            //  WHERE enabled = 1
+            // ============================================================
+            List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+
+            Map<String, Object> l1 = new HashMap<String, Object>();
+            l1.put("level", 100);
+            l1.put("name",  "一级报警");
+            l1.put("url",   ctx + "/resources/alarm/level1.mp3");
+            data.add(l1);
+
+            Map<String, Object> l2 = new HashMap<String, Object>();
+            l2.put("level", 200);
+            l2.put("name",  "二级报警");
+            l2.put("url",   ctx + "/resources/alarm/level2.mp3");
+            data.add(l2);
+
+            Map<String, Object> l3 = new HashMap<String, Object>();
+            l3.put("level", 300);
+            l3.put("name",  "三级报警");
+            l3.put("url",   ctx + "/resources/alarm/level3.mp3");
+            data.add(l3);
+
+            Map<String, Object> resp = new HashMap<String, Object>();
+            resp.put("success", true);
+            resp.put("data", data);
+            json = gson.toJson(resp);
+        } catch (Exception e) {
+            log.error("getAlarmSoundList error", e);
+            Map<String, Object> resp = new HashMap<String, Object>();
+            resp.put("success", false);
+            resp.put("data", new ArrayList<Map<String, Object>>());
+            json = gson.toJson(resp);
+        }
+
+        response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+        response.setHeader("Cache-Control", "no-cache");
+        PrintWriter pw = response.getWriter();
+        pw.print(json);
+        pw.flush();
+        pw.close();
+        return null;
+    }
 	
 	public String getLimit() {
 		return limit;

@@ -212,6 +212,7 @@ function addroleInfo() {
     var currentUserRoleLevel=parseInt(Ext.getCmp("currentUserRoleLevel_Id").getValue());
     var currentUserRoleShowLevel=parseInt(Ext.getCmp("currentUserRoleShowLevel_Id").getValue());
     var currentUserRoleVideoKeyEdit=parseInt(Ext.getCmp("currentUserRoleVideoKeyEdit_Id").getValue());
+    var currentUserRoleAlarmAlert=parseInt(Ext.getCmp("currentUserRoleAlarmAlert_Id").getValue());
     
     Ext.getCmp("roleLevel_Id").setMinValue(currentUserRoleLevel+1);
     Ext.getCmp("roleLevel_Id").setValue(currentUserRoleLevel+1);
@@ -225,6 +226,13 @@ function addroleInfo() {
     	Ext.getCmp("roleVideoKeyEditComboxfield_Id").setValue(0);
     	Ext.getCmp("roleVideoKeyEditComboxfield_Id").setRawValue(loginUserLanguageResource.no);
     	Ext.getCmp("roleVideoKeyEditComboxfield_Id").disable();
+    }
+    
+    if(currentUserRoleAlarmAlert==0){
+    	Ext.getCmp("roleAlarmAlert_Id").setValue(0);
+    	Ext.getCmp("roleAlarmAlertComboxfield_Id").setValue(0);
+    	Ext.getCmp("roleAlarmAlertComboxfield_Id").setRawValue(loginUserLanguageResource.no);
+    	Ext.getCmp("roleAlarmAlertComboxfield_Id").disable();
     }
     
     Ext.getCmp("addFormrole_Id").show();
@@ -606,6 +614,7 @@ function updateRoleInfo() {
 		    role.roleVideoKeyEdit=record.get("roleVideoKeyEditName")?1:0;
 		    role.roleLanguageEdit=record.get("roleLanguageEditName")?1:0;
 		    role.showLevel=record.get("showLevel");
+		    role.alarmAlert=record.get("roleAlarmAlertName")?1:0;
 			
 			modifiedRole.push(role);
 	    });

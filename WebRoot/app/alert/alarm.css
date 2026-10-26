@@ -1,0 +1,30 @@
+/* 报警弹窗行样式 */
+.alarm-row-device {
+    background: #f4f6f8;
+    font-weight: bold;
+}
+.alarm-row-unack {
+    background: #fff4f4;
+}
+.alarm-row-ack {
+    color: #888;
+    background: #fafafa;
+}
+.alarm-row-ack td {
+    color: #888;
+}
+
+/* 行内确认链接 */
+.alarm-row-unack .ack-one,
+.alarm-row-unack a.ack-one {
+    color: #1677ff;
+    text-decoration: none;
+}
+.alarm-row-unack a.ack-one:hover {
+    text-decoration: underline;
+}
+
+/* 折叠态标题栏更醒目一点 */
+#AlarmWindow_Id .x-window-header {
+    cursor: pointer;
+}

@@ -83,7 +83,8 @@ public class RoleManagerService<T> extends BaseService<T> {
 		String currentShowLevel="";
 		String currentVideoKeyEdit="";
 		String currentLanguageEdit="";
-		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_videokeyedit,t3.role_languageedit "
+		String currentAlarmAlert="";
+		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_videokeyedit,t3.role_languageedit,t3.alarmAlert "
 				+ "from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo();
 		String sql="select role_id as roleId,"
 				+ " role_name_zh_CN,remark_zh_CN,"
@@ -92,6 +93,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 				+ " role_level as roleLevel,"
 				+ " role_videokeyedit as roleVideoKeyEdit,decode(t.role_videokeyedit,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as roleVideoKeyEditName,"
 				+ " role_languageedit as roleLanguageEdit,decode(t.role_languageedit,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as roleLanguageEditName,"
+				+ " alarmAlert as alarmAlert,decode(t.alarmAlert,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as alarmAlertName,"
 				+ " showLevel"
 				+ " from  viw_role t"
 				+ " where 1=1 "
@@ -112,6 +114,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 			currentShowLevel=obj[2]+"";
 			currentVideoKeyEdit=obj[3]+"";
 			currentLanguageEdit=obj[4]+"";
+			currentAlarmAlert=obj[5]+"";
 		}
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+","
 				+ "\"showChineseName\":"+StringManagerUtils.existOrNot(user.getLanguageList(), 1)+","
@@ -122,6 +125,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 				+ "\"currentShowLevel\":"+currentShowLevel+","
 				+ "\"currentVideoKeyEdit\":"+currentVideoKeyEdit+","
 				+ "\"currentLanguageEdit\":"+currentLanguageEdit+","
+				+ "\"currentAlarmAlert\":"+currentAlarmAlert+","
 				+ "\"columns\":"+columns+","
 				+ "\"totalRoot\":[");
 		
@@ -140,7 +144,12 @@ public class RoleManagerService<T> extends BaseService<T> {
 			result_json.append("\"roleVideoKeyEditName\":"+(StringManagerUtils.stringToInteger(obj[8]+"")==1)+",");
 			result_json.append("\"roleLanguageEdit\":"+(obj[10]==null?null:obj[10])+",");
 			result_json.append("\"roleLanguageEditName\":"+(StringManagerUtils.stringToInteger(obj[10]+"")==1)+",");
-			result_json.append("\"showLevel\":"+(obj[12]==null?null:obj[12])+"},");
+			
+			result_json.append("\"alarmAlert\":"+(obj[12]==null?null:obj[12])+",");
+			result_json.append("\"roleAlarmAlertName\":"+(StringManagerUtils.stringToInteger(obj[12]+"")==1)+",");
+			
+			
+			result_json.append("\"showLevel\":"+(obj[14]==null?null:obj[14])+"},");
 			
 		}
 		if (result_json.toString().endsWith(",")) {
@@ -323,6 +332,7 @@ public class RoleManagerService<T> extends BaseService<T> {
 				sql+= " t.role_level="+role.getRoleLevel()+", "
 						+ " t.role_videokeyedit="+role.getRoleVideoKeyEdit()+", "
 						+ " t.role_languageedit="+role.getRoleLanguageEdit()+", "
+						+ " t.alarmAlert="+role.getAlarmAlert()+", "
 						+ " t.showlevel="+role.getShowLevel()+", ";
 			}	
 			sql+= " t.role_name_zh_CN='"+role.getRoleName_zh_CN()+"', "

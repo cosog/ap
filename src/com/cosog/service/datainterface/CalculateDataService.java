@@ -51,6 +51,9 @@ import com.cosog.thread.calculate.TimingTotalCalculateThread;
 import com.cosog.utils.AlarmInfoMap;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
+import com.cosog.utils.DeviceAlarmInfo;
+import com.cosog.utils.DeviceAlarmInfo.AlarmInfo;
+import com.cosog.utils.DeviceAlarmInfoMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -92,13 +95,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				}else if(acquisitionItemInfoList.get(i).getAlarmLevel()==300){
 					alarmLevelName="三级报警";
 				}
-//				String key=deviceId+","+deviceType+","+(acquisitionItemInfoList.get(i).getColumn()+"_"+acquisitionItemInfoList.get(i).getBitIndex())+","+acquisitionItemInfoList.get(i).getAlarmInfo();
-//				String lastAlarmTime=alarmInfoMap.get(key);
-				
-//				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-//				if(timeDiff>=StringManagerUtils.stringToInteger(acquisitionItemInfoList.get(i).getRetriggerTime())*1000){
 				if(acquisitionItemInfoList.get(i).getTriggerAlarm()){
-//					alarmInfoMap.put(key, acqTime);
 					saveAcquisitionItemInfoList.add(acquisitionItemInfoList.get(i));
 					if(acquisitionItemInfoList.get(i).getIsSendMessage()==1){//如果该报警项发送短信
 						isSendSMS=true;
@@ -157,7 +154,24 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		}
 		if(saveAcquisitionItemInfoList.size()>0){
-			getBaseDao().saveAlarmInfo(deviceId,deviceType,acqTime,saveAcquisitionItemInfoList);
+			// ★ 调用Dao执行入库，内部会将 alertId 回填到 saveAcquisitionItemInfoList 中的对象上
+	        getBaseDao().saveAlarmInfo(deviceId,deviceType,acqTime,saveAcquisitionItemInfoList);
+	        
+	        // ★ 将回填的 alertId 同步到内存中
+	        Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+	        DeviceAlarmInfo deviceAlarmInfo = deviceAlarmInfoMap.get(deviceId);
+	        if(deviceAlarmInfo != null && deviceAlarmInfo.getAlarmInfoMap() != null){
+	            for(AcquisitionItemInfo info : saveAcquisitionItemInfoList){
+	                String alarmKey = deviceId + "_" + info.getColumn();
+	                if(StringManagerUtils.isNotNull(info.getBitIndex())){
+	                    alarmKey += "_" + info.getBitIndex();
+	                }
+	                AlarmInfo memAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().get(alarmKey);
+	                if(memAlarmInfo != null && info.getAlertId() != null){
+	                    memAlarmInfo.setAlertId(info.getAlertId());
+	                }
+	            }
+	        }
 		}
 		if(isSendSMS || isSendMail){
 			sendAlarmSMS(deviceName,deviceType,deviceTypeName,isSendSMS,isSendMail,SMSContent.toString(),EMailContent.toString());

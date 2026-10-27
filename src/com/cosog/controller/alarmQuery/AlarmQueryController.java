@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +20,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.cosog.controller.base.BaseController;
 import com.cosog.controller.realTimeMonitoring.RealTimeMonitoringController;
 import com.cosog.model.User;
+import com.cosog.model.calculate.DeviceInfo;
+import com.cosog.model.calculate.UserInfo;
 import com.cosog.service.alarmQuery.AlarmQueryService;
 import com.cosog.service.base.CommonDataService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.StringManagerUtils;
+import com.cosog.websocket.config.WebSocketByJavax;
 import com.google.gson.Gson;
 
 @Controller
@@ -52,6 +57,11 @@ public class AlarmQueryController extends BaseController{
 	private String alarmLevel;
 	private String isSendMessage;
 	private int totals;
+	
+	@Bean
+	public static WebSocketByJavax infoHandler() {
+	    return new WebSocketByJavax();
+	}
 	
 	@RequestMapping("/getAlarmStatData")
 	public String getAlarmStatData() throws Exception {
@@ -315,143 +325,167 @@ public class AlarmQueryController extends BaseController{
      * Body：{"alertIds":[1001,1002,1003]}
      * 返回：{"success":true,"message":"","data":{"successIds":[...],"alreadyAckedIds":[],"failedIds":[]}}
      */
-    @RequestMapping("/batchAck")
-    public String batchAck() throws Exception {
-        String json;
-        try {
-            StringBuilder sb = new StringBuilder();
-            String line;
-            BufferedReader reader = request.getReader();
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            String body = sb.toString();
-            log.info("batchAck body=" + body);
+	@RequestMapping("/batchAck")
+	public String batchAck() throws Exception {
+	    String json;
+	    try {
+	        StringBuilder sb = new StringBuilder();
+	        String line;
+	        BufferedReader reader = request.getReader();
+	        while ((line = reader.readLine()) != null) sb.append(line);
+	        String body = sb.toString();
+	        log.info("batchAck body=" + body);
 
-            List<Number> alertIds = new ArrayList<Number>();
-            try {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> req = gson.fromJson(body, Map.class);
-                if (req != null && req.get("alertIds") != null) {
-                    alertIds = (List<Number>) req.get("alertIds");
-                }
-            } catch (Exception e) {
-                log.warn("batchAck parse body failed", e);
-            }
+	        List<Number> alertIds = new ArrayList<Number>();
+	        try {
+	            @SuppressWarnings("unchecked")
+	            Map<String, Object> req = gson.fromJson(body, Map.class);
+	            if (req != null && req.get("alertIds") != null) {
+	                alertIds = (List<Number>) req.get("alertIds");
+	            }
+	        } catch (Exception e) {
+	            log.warn("batchAck parse body failed", e);
+	        }
 
-            HttpSession session = request.getSession();
-            User user = (User) session.getAttribute("userLogin");
-            String userNo = user != null ? user.getUserNo() + "" : "";
-            log.info("batchAck userNo=" + userNo + ", size=" + alertIds.size());
+	        HttpSession session = request.getSession();
+	        User user = (User) session.getAttribute("userLogin");
+	        String userNo = user != null ? user.getUserNo() + "" : "";
+	        log.info("batchAck userNo=" + userNo + ", size=" + alertIds.size());
 
-            // ============================================================
-            // TODO: 真正落库时替换这里
-            // 逐条执行：
-            //   UPDATE t_alarm_record
-            //      SET status='ACK', ack_user=?, ack_time=NOW()
-            //    WHERE id=? AND status='NEW'
-            // 影响 1 行 → successIds
-            // 影响 0 行且查 status='ACK' 或记录不存在 → alreadyAckedIds
-            // 其它异常 → failedIds
-            // ============================================================
-            List<Long> successIds = new ArrayList<Long>();
-            for (Number n : alertIds) {
-                if (n != null) {
-                    successIds.add(n.longValue());
-                }
-            }
+	        // 1) 落库 + 内存同步（全部交给 AlarmQueryService）
+	        Map<String, Object> ackResult = alarmQueryService.batchAckAlarm(alertIds, userNo);
 
-            Map<String, Object> data = new HashMap<String, Object>();
-            data.put("successIds", successIds);
-            data.put("alreadyAckedIds", new ArrayList<Long>());
-            data.put("failedIds", new ArrayList<Long>());
+	        // 2) 广播 alarmAcked
+	        List<Integer> deviceIds = (List<Integer>) ackResult.get("deviceIds");
+	        List<Long> successIds = (List<Long>) ackResult.get("successIds");
+	        if (deviceIds != null && !deviceIds.isEmpty() && successIds != null && !successIds.isEmpty()) {
+	            String ackTime = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 
-            Map<String, Object> resp = new HashMap<String, Object>();
-            resp.put("success", true);
-            resp.put("message", "");
-            resp.put("data", data);
-            json = gson.toJson(resp);
-        } catch (Exception e) {
-            log.error("batchAck error", e);
-            Map<String, Object> resp = new HashMap<String, Object>();
-            resp.put("success", false);
-            resp.put("message", "系统异常");
-            resp.put("data", new HashMap<String, Object>());
-            json = gson.toJson(resp);
-        }
+	            // 手动拼 JSON（和 DataProcessing 里 getWebSocketSendData 风格一致）
+	            StringBuffer webSocketSendData = new StringBuffer();
+	            webSocketSendData.append("{\"functionCode\":\"alarmAcked\",");
+	            webSocketSendData.append("\"alertIds\":[");
+	            for (int i = 0; i < successIds.size(); i++) {
+	                if (i > 0) webSocketSendData.append(",");
+	                webSocketSendData.append(successIds.get(i));
+	            }
+	            webSocketSendData.append("],");
+	            webSocketSendData.append("\"deviceIds\":[");
+	            for (int i = 0; i < deviceIds.size(); i++) {
+	                if (i > 0) webSocketSendData.append(",");
+	                webSocketSendData.append(deviceIds.get(i));
+	            }
+	            webSocketSendData.append("],");
+	            webSocketSendData.append("\"ackUser\":\"" + userNo + "\",");
+	            webSocketSendData.append("\"ackTime\":\"" + ackTime + "\"");
+	            webSocketSendData.append("}");
 
-        response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
-        response.setHeader("Cache-Control", "no-cache");
-        PrintWriter pw = response.getWriter();
-        pw.print(json);
-        pw.flush();
-        pw.close();
-        return null;
-    }
+	            String wsJson = webSocketSendData.toString();
+
+	            // 完全复刻 DataProcessing 的推送方式
+	            for (String websocketClientUserId : WebSocketByJavax.clients.keySet()) {
+	                try {
+	                    String websocketClientUser = "";
+	                    String[] clientInfo = websocketClientUserId.split("_");
+	                    if (clientInfo != null && clientInfo.length == 3) {
+	                        websocketClientUser = clientInfo[1];
+	                    }
+	                    UserInfo userInfo = MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
+	                    if (userInfo == null) continue;
+
+	                    // 只要对其中任一 deviceId 有权限就推
+	                    boolean hasPermission = false;
+	                    for (Integer did : deviceIds) {
+	                        DeviceInfo deviceInfo = MemoryDataManagerTask.getDeviceInfo(did + "");
+	                        if (deviceInfo == null) continue;
+	                        if (StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId())
+	                                && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())) {
+	                            hasPermission = true;
+	                            break;
+	                        }
+	                    }
+	                    if (!hasPermission) continue;
+
+	                    infoHandler().sendMessageToUserId(websocketClientUserId, wsJson);
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	        }
+
+	        Map<String, Object> data = new HashMap<String, Object>();
+	        data.put("successIds",      ackResult.get("successIds"));
+	        data.put("alreadyAckedIds", ackResult.get("alreadyAckedIds"));
+	        data.put("failedIds",       ackResult.get("failedIds"));
+
+	        Map<String, Object> resp = new HashMap<String, Object>();
+	        resp.put("success", true);
+	        resp.put("message", "");
+	        resp.put("data", data);
+	        json = gson.toJson(resp);
+	    } catch (Exception e) {
+	        log.error("batchAck error", e);
+	        Map<String, Object> resp = new HashMap<String, Object>();
+	        resp.put("success", false);
+	        resp.put("message", "系统异常");
+	        resp.put("data", new HashMap<String, Object>());
+	        json = gson.toJson(resp);
+	    }
+
+	    response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+	    response.setHeader("Cache-Control", "no-cache");
+	    PrintWriter pw = response.getWriter();
+	    pw.print(json);
+	    pw.flush();
+	    pw.close();
+	    return null;
+	}
 
     /**
      * 待确认报警列表
      * 请求：GET /alarmQueryController/getPendingAlarms?orgId=3
      * 返回：{"success":true,"data":[{...},{...}]}
      */
-    @RequestMapping("/getPendingAlarms")
-    public String getPendingAlarms() throws Exception {
-        String json;
-        try {
-            String orgIdParam = ParamUtils.getParameter(request, "orgId");
-            HttpSession session = request.getSession();
-            User user = (User) session.getAttribute("userLogin");
-            String userNo = user != null ? user.getUserNo() + "" : "";
-            String orgIds = (user != null && !StringManagerUtils.isNotNull(orgIdParam))
-                          ? user.getUserOrgIds() : orgIdParam;
-            log.info("getPendingAlarms userNo=" + userNo + ", orgIds=" + orgIds);
+	@RequestMapping("/getPendingAlarms")
+	public String getPendingAlarms() throws Exception {
+	    String json;
+	    try {
+	        String orgIdParam = ParamUtils.getParameter(request, "orgId");
+	        String deviceTypeParam = ParamUtils.getParameter(request, "deviceType");
+	        String limitParam = ParamUtils.getParameter(request, "limit");
+	        int maxRows = StringManagerUtils.isNotNull(limitParam)
+	                    ? StringManagerUtils.stringToInteger(limitParam) : 200;
 
-            // ============================================================
-            // TODO: 真正查询时替换这里
-            // SELECT id, device_id, device_name, org_id,
-            //        column_code, column_name, alarm_value,
-            //        alarm_level, acq_time
-            //   FROM t_alarm_record
-            //  WHERE status = 'NEW'
-            //    AND org_id IN (${orgIds})
-            //  ORDER BY alarm_level ASC, acq_time DESC
-            //  LIMIT 200
-            // ============================================================
-            List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+	        HttpSession session = request.getSession();
+	        User user = (User) session.getAttribute("userLogin");
+	        String userNo = user != null ? user.getUserNo() + "" : "";
+	        String orgIds = (user != null && !StringManagerUtils.isNotNull(orgIdParam))
+	                      ? user.getUserOrgIds() : orgIdParam;
 
-            // 联调前端时若想立即看到弹窗，可放开下面 mock：
-            // Map<String, Object> item = new HashMap<String, Object>();
-            // item.put("alertId",    1001L);
-            // item.put("deviceId",   1);
-            // item.put("deviceName", "SRP01_CN");
-            // item.put("orgId",      3);
-            // item.put("column",     "C_CLOUMN35");
-            // item.put("columnName", "油压");
-            // item.put("value",      "0.64");
-            // item.put("alarmLevel", 100);
-            // item.put("acqTime",    "2026-10-26 09:14:33");
-            // data.add(item);
+	        log.info("getPendingAlarms userNo=" + userNo + ", orgIds=" + orgIds);
 
-            Map<String, Object> resp = new HashMap<String, Object>();
-            resp.put("success", true);
-            resp.put("data", data);
-            json = gson.toJson(resp);
-        } catch (Exception e) {
-            log.error("getPendingAlarms error", e);
-            Map<String, Object> resp = new HashMap<String, Object>();
-            resp.put("success", false);
-            resp.put("data", new ArrayList<Map<String, Object>>());
-            json = gson.toJson(resp);
-        }
+	        List<Map<String, Object>> data = alarmQueryService.getPendingAlarms(orgIds, deviceTypeParam, maxRows,user!=null?user.getLanguageName():"");
 
-        response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
-        response.setHeader("Cache-Control", "no-cache");
-        PrintWriter pw = response.getWriter();
-        pw.print(json);
-        pw.flush();
-        pw.close();
-        return null;
-    }
+	        Map<String, Object> resp = new HashMap<String, Object>();
+	        resp.put("success", true);
+	        resp.put("data", data);
+	        json = gson.toJson(resp);
+	    } catch (Exception e) {
+	        log.error("getPendingAlarms error", e);
+	        Map<String, Object> resp = new HashMap<String, Object>();
+	        resp.put("success", false);
+	        resp.put("data", new ArrayList<Map<String, Object>>());
+	        json = gson.toJson(resp);
+	    }
+
+	    response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+	    response.setHeader("Cache-Control", "no-cache");
+	    PrintWriter pw = response.getWriter();
+	    pw.print(json);
+	    pw.flush();
+	    pw.close();
+	    return null;
+	}
 
     /**
      * 报警音配置列表（只读，上传/删除留到后续报警等级配置页）

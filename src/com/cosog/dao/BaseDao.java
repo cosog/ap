@@ -2279,71 +2279,78 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		return true;
 	}
-	public Boolean saveAlarmInfo(int deviceId,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		
+	
+	public Boolean saveAlarmInfo(int deviceId, String deviceType, String acqTime, List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException {
+		Connection conn = SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs = null;
 		try {
-			cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-			for(int i=0;i<acquisitionItemInfoList.size();i++){
-				if(acquisitionItemInfoList.get(i).getAlarmLevel()>0){
-					String title=acquisitionItemInfoList.get(i).getTitle();
+			// 18 个参数，第 18 个为 OUT 参数
+			cs = conn.prepareCall("{call prd_save_alarminfo(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			
+			for (int i = 0; i < acquisitionItemInfoList.size(); i++) {
+				AcquisitionItemInfo info = acquisitionItemInfoList.get(i);
+				// 只处理真正触发了报警的项
+				if (info.getAlarmLevel() > 0 && info.getTriggerAlarm()) {
+					String title = info.getTitle();
 					cs.setInt(1, deviceId);
 					cs.setString(2, deviceType);
 					cs.setString(3, acqTime);
 					cs.setString(4, acqTime);
 					
-					if(acquisitionItemInfoList.get(i).getType()==0 && StringManagerUtils.stringToInteger(acquisitionItemInfoList.get(i).getResolutionMode())==0   ){
-						title=acquisitionItemInfoList.get(i).getRawTitle()+"/"+title;
+					if (info.getType() == 0 && StringManagerUtils.stringToInteger(info.getResolutionMode()) == 0) {
+					   title = info.getRawTitle() + "/" + title;
 					}
-					
 					cs.setString(5, title);
-					cs.setInt(6, acquisitionItemInfoList.get(i).getAlarmType());
-					if(StringManagerUtils.isNum(acquisitionItemInfoList.get(i).getRawValue())){
-						cs.setString(7, acquisitionItemInfoList.get(i).getRawValue());
-					}else{
-						cs.setString(7, null);
-					}
-					cs.setString(8, acquisitionItemInfoList.get(i).getAlarmInfo());
-					if(StringManagerUtils.isNum(acquisitionItemInfoList.get(i).getAlarmLimit())){
-						cs.setString(9, acquisitionItemInfoList.get(i).getAlarmLimit());
-					}else{
-						cs.setString(9, null);
-					}
-					if(StringManagerUtils.isNum(acquisitionItemInfoList.get(i).getHystersis())){
-						cs.setString(10, acquisitionItemInfoList.get(i).getHystersis());
-					}else{
-						cs.setString(10, null);
-					}
-					cs.setInt(11, acquisitionItemInfoList.get(i).getAlarmLevel());
+					cs.setInt(6, info.getAlarmType());
 					
-					if(StringManagerUtils.isNum(acquisitionItemInfoList.get(i).getAlarmDelay())){
-						cs.setString(12, acquisitionItemInfoList.get(i).getAlarmDelay());
-					}else{
-						cs.setString(12, null);
+					if (StringManagerUtils.isNum(info.getRawValue())) {
+					   cs.setString(7, info.getRawValue());
+					} else {
+					   cs.setString(7, null);
 					}
+					cs.setString(8, info.getAlarmInfo());
 					
-					if(StringManagerUtils.isNum(acquisitionItemInfoList.get(i).getRetriggerTime())){
-						cs.setString(13, acquisitionItemInfoList.get(i).getRetriggerTime());
-					}else{
-						cs.setString(13, null);
+					if (StringManagerUtils.isNum(info.getAlarmLimit())) {
+					   cs.setString(9, info.getAlarmLimit());
+					} else {
+					   cs.setString(9, null);
 					}
+					if (StringManagerUtils.isNum(info.getHystersis())) {
+					   cs.setString(10, info.getHystersis());
+					} else {
+					   cs.setString(10, null);
+					}
+					cs.setInt(11, info.getAlarmLevel());
 					
-					cs.setInt(14, acquisitionItemInfoList.get(i).getIsSendMessage());
-					cs.setInt(15, acquisitionItemInfoList.get(i).getIsSendMail());
+					if (StringManagerUtils.isNum(info.getAlarmDelay())) {
+					   cs.setString(12, info.getAlarmDelay());
+					} else {
+					   cs.setString(12, null);
+					}
+					if (StringManagerUtils.isNum(info.getRetriggerTime())) {
+					   cs.setString(13, info.getRetriggerTime());
+					} else {
+					   cs.setString(13, null);
+					}
+					cs.setInt(14, info.getIsSendMessage());
+					cs.setInt(15, info.getIsSendMail());
+					cs.setString(16, info.getColumn());
+					cs.setString(17, info.getBitIndex());
 					
-					cs.setString(16, acquisitionItemInfoList.get(i).getColumn());
-					cs.setString(17, acquisitionItemInfoList.get(i).getBitIndex());
-					
+					// 注册 OUT 参数并执行
+					cs.registerOutParameter(18, Types.INTEGER);
 					cs.executeUpdate();
+					
+					// 获取历史表 ID，回填到对象
+					int alertId = cs.getInt(18);
+					info.setAlertId(alertId);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}finally{
-			if(cs!=null)
-				cs.close();
-			conn.close();
+		} finally {
+			if (cs != null) cs.close();
+			if (conn != null) conn.close();
 		}
 		return true;
 	}

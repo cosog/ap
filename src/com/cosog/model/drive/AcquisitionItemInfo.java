@@ -30,6 +30,7 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 	public int isSendMessage;
 	public int isSendMail;
 	public boolean triggerAlarm;
+	private Integer alertId; 
 	
 	public int type;
 	public int displayItemId;
@@ -299,6 +300,14 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 
 	public void setDisplayItemId(int displayItemId) {
 		this.displayItemId = displayItemId;
+	}
+
+	public Integer getAlertId() {
+		return alertId;
+	}
+
+	public void setAlertId(Integer alertId) {
+		this.alertId = alertId;
 	}
 	
 }

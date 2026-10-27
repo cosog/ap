@@ -3,8 +3,11 @@ package com.cosog.service.alarmQuery;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.User;
+import com.cosog.model.WorkType;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
@@ -21,6 +25,8 @@ import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
+import com.cosog.utils.DeviceAlarmInfo;
+import com.cosog.utils.DeviceAlarmInfoMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.excel.ExcelUtils;
@@ -834,5 +840,204 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			return false;
 		}
 		return true;
+	}
+	
+	// ============================================================
+	// 新增：批量确认报警
+	// 返回 { successIds, alreadyAckedIds, failedIds, deviceIds }
+	// ============================================================
+	public Map<String, Object> batchAckAlarm(List<Number> alertIds, String ackUser) {
+	    Map<String, Object> result = new HashMap<String, Object>();
+	    List<Long> successIds = new ArrayList<Long>();
+	    List<Long> alreadyAckedIds = new ArrayList<Long>();
+	    List<Long> failedIds = new ArrayList<Long>();
+	    Set<Integer> deviceIdSet = new HashSet<Integer>();
+
+	    if (alertIds == null || alertIds.isEmpty()) {
+	        result.put("successIds", successIds);
+	        result.put("alreadyAckedIds", alreadyAckedIds);
+	        result.put("failedIds", failedIds);
+	        result.put("deviceIds", new ArrayList<Integer>());
+	        return result;
+	    }
+
+	    String ackTime = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+	    String safeUser = ackUser == null ? "" : ackUser.replace("'", "''");
+
+	    for (Number n : alertIds) {
+	        if (n == null) continue;
+	        long id = n.longValue();
+	        try {
+	            // 查记录（拿 deviceid / itemcode / bitindex / ack_status）
+	            String querySql = "select t.deviceid, t.itemcode, t.bitindex, nvl(t.ack_status,0) "
+	                    + " from tbl_alarminfo_hist t where t.id = " + id;
+	            List<?> ql = findCallSql(querySql);
+	            if (ql == null || ql.isEmpty()) {
+	                failedIds.add(id);
+	                continue;
+	            }
+	            Object[] row = (Object[]) ql.get(0);
+	            int deviceId = StringManagerUtils.stringToInteger(row[0] + "");
+	            String itemCode = row[1] == null ? "" : row[1].toString().replace("'", "''");
+	            String bitIndex = row[2] == null ? "" : row[2].toString();
+	            int ackStatus = StringManagerUtils.stringToInteger(row[3] + "");
+
+	            if (ackStatus == 1) {
+	                alreadyAckedIds.add(id);
+	                deviceIdSet.add(deviceId);
+	                continue;
+	            }
+
+	            // 更新历史表
+	            String updateHist = "update tbl_alarminfo_hist t "
+	                    + " set t.ack_status = 1, "
+	                    + "     t.ack_user   = '" + safeUser + "', "
+	                    + "     t.ack_time   = to_date('" + ackTime + "','yyyy-mm-dd hh24:mi:ss') "
+	                    + " where t.id = " + id + " and (t.ack_status is null or t.ack_status = 0)";
+	            int n1 = getBaseDao().updateOrDeleteBySql(updateHist);
+
+	            if (n1 > 0) {
+	                successIds.add(id);
+	                deviceIdSet.add(deviceId);
+
+	                // 更新实时表（按 deviceid + itemcode + bitindex 匹配）
+	                String updateLatest = "update tbl_alarminfo_latest t "
+	                        + " set t.ack_status = 1, "
+	                        + "     t.ack_user   = '" + safeUser + "', "
+	                        + "     t.ack_time   = to_date('" + ackTime + "','yyyy-mm-dd hh24:mi:ss') "
+	                        + " where t.deviceid = " + deviceId
+	                        + "   and t.itemcode = '" + itemCode + "'"
+	                        + "   and (t.ack_status is null or t.ack_status = 0)";
+	                if (StringManagerUtils.isNotNull(bitIndex)) {
+	                    updateLatest += " and t.bitindex = " + bitIndex;
+	                } else {
+	                    updateLatest += " and t.bitindex is null";
+	                }
+	                getBaseDao().updateOrDeleteBySql(updateLatest);
+
+	                // 同步内存：alarmInfo.alertId=null, triggerAlarm=false
+	                try { syncMemoryAck(deviceId, itemCode, bitIndex); }
+	                catch (Exception e) { e.printStackTrace(); }
+	            } else {
+	                alreadyAckedIds.add(id);
+	                deviceIdSet.add(deviceId);
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            failedIds.add(id);
+	        }
+	    }
+
+	    result.put("successIds", successIds);
+	    result.put("alreadyAckedIds", alreadyAckedIds);
+	    result.put("failedIds", failedIds);
+	    result.put("deviceIds", new ArrayList<Integer>(deviceIdSet));
+	    return result;
+	}
+
+	/** 同步内存：alarmInfo.alertId=null, triggerAlarm=false（避免下一轮采集被当成新报警） */
+	private void syncMemoryAck(int deviceId, String column, String bitIndex) {
+	    Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+	    if (deviceAlarmInfoMap == null) return;
+	    DeviceAlarmInfo dai = deviceAlarmInfoMap.get(deviceId);
+	    if (dai == null || dai.getAlarmInfoMap() == null) return;
+	    String alarmKey = deviceId + "_" + column;
+	    if (StringManagerUtils.isNotNull(bitIndex)) alarmKey += "_" + bitIndex;
+	    DeviceAlarmInfo.AlarmInfo ai = dai.getAlarmInfoMap().get(alarmKey);
+	    if (ai != null) {
+	        ai.setAlertId(null);
+	        ai.setTriggerAlarm(false);
+	    }
+	}
+
+	// ============================================================
+	// 查询未确认报警（前端初次进入拉取）
+	// ============================================================
+	public List<Map<String, Object>> getPendingAlarms(String orgIds, String deviceType, int limit,String language) {
+	    List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+	    StringBuilder sql = new StringBuilder();
+	    Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+	    // ★ 用 row_number() 按 (deviceid, itemcode, bitindex) 分组，按 alarmtime 倒序，只取 rn=1（最新一条）
+	    sql.append("select * from ( ")
+	       .append("  select a.*, rownum rn2 from ( ")
+	       .append("    select t.id, t.deviceid, d.devicename, d.orgid, d.devicetype, ")
+	       .append("           t.itemcode, t.itemname, ")
+	       .append("           to_char(t.alarmvalue) as alarmvalue, ")
+	       .append("           t.alarmlevel, ")
+	       .append("           to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as acqtime, ")
+	       .append("           row_number() over ( ")
+	       .append("               partition by t.deviceid, t.itemcode, nvl(t.bitindex,-1) ")
+	       .append("               order by t.alarmtime desc ")
+	       .append("           ) as rn ")
+	       .append("      from tbl_alarminfo_hist t, tbl_device d ")
+	       .append("     where t.deviceid = d.id ")
+	       .append("       and (t.ack_status is null or t.ack_status = 0) ")
+	       .append("       and t.recoverytime is null ")
+	       .append("       and t.alarmlevel > 0 ");
+
+	    if (StringManagerUtils.isNotNull(orgIds)) {
+	        sql.append(" and d.orgid in (").append(orgIds).append(") ");
+	    }
+	    if (StringManagerUtils.isNotNull(deviceType)) {
+	        sql.append(" and d.devicetype in (").append(deviceType).append(") ");
+	    }
+
+	    // 只保留 rn=1（每个测点最新一条），再按级别 + 时间排序
+	    sql.append("  ) a where a.rn = 1 ")
+	       .append("    order by a.alarmlevel asc, a.acqtime desc ")
+	       .append(") where rownum <= ").append(limit);
+
+	    List<?> list = findCallSql(sql.toString());
+	    if (list != null) {
+	        for (Object o : list) {
+	            Object[] row = (Object[]) o;
+	            String column=row[5] == null ? "" : row[5].toString();
+	            String columnName=row[6] == null ? "" : row[6].toString();
+	            String value=row[7] == null ? "" : row[7].toString();
+	            
+	            if("resultCode".equalsIgnoreCase(column)||"resultName".equalsIgnoreCase(column)){
+	            	WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
+					if(workType!=null){
+						value=workType.getResultName();
+					}
+					columnName=languageResourceMap.get("FSDiagramWorkType");
+	            }else if("runStatus".equalsIgnoreCase(column)||"RunStatusName".equalsIgnoreCase(column)){
+	            	if("1".equalsIgnoreCase(value)){
+	            		value=languageResourceMap.get("run");
+					}else if("0".equalsIgnoreCase(value)){
+						value=languageResourceMap.get("stop");
+					}else{
+						value=languageResourceMap.get("emptyMsg");
+					}
+	            	columnName=languageResourceMap.get("runStatus");
+				}else if("commStatus".equalsIgnoreCase(column)||"CommStatusName".equalsIgnoreCase(column)){
+	            	if("1".equalsIgnoreCase(value)){
+	            		value=languageResourceMap.get("online");
+					}else if("2".equalsIgnoreCase(value)){
+						value=languageResourceMap.get("goOnline");
+					}else{
+						value=languageResourceMap.get("offline");
+					}
+	            	columnName=languageResourceMap.get("commStatus");
+				}else{
+//					value=deviceCalDataMap.containsKey(column.toUpperCase())?deviceCalDataMap.get(column.toUpperCase()):"";
+				}
+	            
+	            
+	            Map<String, Object> item = new HashMap<String, Object>();
+	            item.put("alertId",    StringManagerUtils.stringToLong(row[0] + ""));
+	            item.put("deviceId",   StringManagerUtils.stringToInteger(row[1] + ""));
+	            item.put("deviceName", row[2] == null ? "" : row[2].toString());
+	            item.put("orgId",      StringManagerUtils.stringToInteger(row[3] + ""));
+	            item.put("deviceType", StringManagerUtils.stringToInteger(row[4] + ""));
+	            item.put("column",     column);
+	            item.put("columnName", columnName);
+	            item.put("value",      value);
+	            item.put("alarmLevel", StringManagerUtils.stringToInteger(row[8] + ""));
+	            item.put("acqTime",    row[9] == null ? "" : row[9].toString());
+	            result.add(item);
+	        }
+	    }
+	    return result;
 	}
 }

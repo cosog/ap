@@ -145,7 +145,16 @@ Ext.define('AP.view.Viewport', {
             } else {
                 websocketClient = new SockJS(getBaseUrl() + "/websocketServer/" + moduleCode);
             }
-            websocketClient.onopen = websocketOnOpen;
+            websocketClient.onopen = function (evt) {
+                websocketOnOpen(evt);
+                Ext.defer(function () {
+                    if (typeof alarmAlert !== 'undefined' && alarmAlert &&
+                        AP.alert && AP.alert.AlarmManager &&
+                        Ext.isFunction(AP.alert.AlarmManager.loadPendingAlarms)) {
+                        AP.alert.AlarmManager.loadPendingAlarms();
+                    }
+                }, 1000);
+            };
             websocketClient.onmessage = websocketOnMessage;
             websocketClient.onerror = websocketOnError;
             websocketClient.onclose = websocketOnClose;
@@ -160,6 +169,9 @@ Ext.define('AP.view.Viewport', {
             websocketClose(websocketClient);
             if (typeof alarmAlert !== 'undefined' && alarmAlert) {
                 AP.alert.AlarmSoundManager.stop();
+            }
+            if (typeof AP !== 'undefined' && AP.alert && AP.alert.AlarmManager) {
+                AP.alert.AlarmManager.reset();
             }
         }
     }
@@ -817,6 +829,14 @@ function handleBusinessMessage(data) {
             if (isNotVal(gridPanel)) {
                 gridPanel.getSelectionModel().deselectAll(true);
                 gridPanel.getStore().load();
+            }
+        }
+    } else if (data.functionCode.toUpperCase() == "ALARMACKED") {
+        if (typeof alarmAlert !== 'undefined' && alarmAlert) {
+            try {
+                AP.alert.AlarmManager.onRemoteAck(data.alertIds, data.ackUser, data.ackTime);
+            } catch (e) {
+                if (window.console) console.error('remote ack error', e);
             }
         }
     } else if (data.functionCode.toUpperCase() == "DatabaseDataCleaning".toUpperCase()) {

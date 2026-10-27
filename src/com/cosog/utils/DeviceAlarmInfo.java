@@ -15,6 +15,15 @@ import java.util.concurrent.TimeUnit;
 import com.cosog.model.drive.AcquisitionItemInfo;
 
 public class DeviceAlarmInfo {
+	
+	// ★ 报警触发时的回调接口
+    public interface AlarmTriggerCallback {
+        void onAlarmTriggered(int deviceId, String alarmKey, AlarmInfo alarmInfo);
+    }
+    
+    // ★ 全局回调实现（由 Controller 启动时注入）
+    public static AlarmTriggerCallback alarmTriggerCallback = null;
+	
 	public int deviceId;
 	
 	public String deviceName;
@@ -269,6 +278,8 @@ public class DeviceAlarmInfo {
 		
 		public boolean triggerAlarm;
 		
+		public Integer alertId;
+		
 		public String getAlarmTime() {
 			return alarmTime;
 		}
@@ -401,6 +412,13 @@ public class DeviceAlarmInfo {
 		public void setTriggerAlarm(boolean triggerAlarm) {
 			this.triggerAlarm = triggerAlarm;
 		}
+		public Integer getAlertId() {
+			return alertId;
+		}
+		public void setAlertId(Integer alertId) {
+			this.alertId = alertId;
+		}
+		
 	}
 
 	public int getDeviceId() {

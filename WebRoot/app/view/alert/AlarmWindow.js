@@ -43,11 +43,14 @@ Ext.define('AP.view.alert.AlarmWindow', {
             rootVisible: false,
             useArrows: true,
             border: false,
+            // ★ 开启树的复选框模式，默认只有叶子节点显示复选框
+            checkable: true, 
             columns: [{
                 xtype: 'treecolumn',
                 text: '设备 / 报警内容',
                 dataIndex: 'text',
                 width: 300,
+                // 如果有需要，在 renderer 里可以控制复选框的显示逻辑
                 renderer: function (v, meta, rec) {
                     if (rec.isLeaf() && rec.get('status') === 'NEW') {
                         var s = AP.alert.AlarmManager.levelStyle[rec.get('alarmLevel')];
@@ -89,16 +92,6 @@ Ext.define('AP.view.alert.AlarmWindow', {
                     return '<a href="javascript:void(0)" class="ack-one">确认</a>';
                 }
             }],
-            selModel: {
-                type: 'checkboxmodel',
-                checkOnly: true,
-                showHeaderCheckbox: false,
-                listeners: {
-                    selectionchange: function () {
-                        self.updateToolbar();
-                    }
-                }
-            },
             viewConfig: {
                 getRowClass: function (rec) {
                     if (!rec.isLeaf()) return 'alarm-row-device';
@@ -106,11 +99,16 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 }
             },
             listeners: {
+                // ★ 1. 单元格点击（行内“确认”链接）
                 cellclick: function (view, td, cellIndex, record, tr, rowIndex, e) {
                     var target = e.getTarget('a.ack-one');
                     if (target && record.isLeaf() && record.get('status') === 'NEW') {
                         self.doAck([record.get('alarmKey')]);
                     }
+                },
+                // ★ 2. 复选框勾选状态改变
+                checkchange: function (node, checked, eOpts) {
+                    self.updateToolbar();
                 }
             }
         });
@@ -121,7 +119,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
             text: '待确认：0'
         }];
 
-        this.bbar = [{
+        this.tbar = [{
             xtype: 'tbtext',
             itemId: 'selText',
             text: '已选：0'
@@ -130,12 +128,22 @@ Ext.define('AP.view.alert.AlarmWindow', {
             itemId: 'ackBtn',
             disabled: true,
             handler: function () {
-                self.doAck(self.getCheckedUnackKeys());
+            	var keys = self.getCheckedUnackKeys();
+                if (keys.length === 0) {
+                	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+                    return;
+                }
+                self.doAck(keys);
             }
         }, {
             text: '全部确认',
             handler: function () {
-                self.doAck(self.getAllUnackKeys());
+            	var keys = self.getAllUnackKeys();
+                if (keys.length === 0) {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, '当前没有待确认的报警');
+                    return;
+                }
+                self.doAck(keys);
             }
         }];
 
@@ -180,8 +188,13 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 me.setSize(me.expandedWidth, me.expandedHeight);
                 me.alignToBottomRight(me.expandedWidth, me.expandedHeight);
                 
-                me.doLayout();
-                if (me.tree) me.tree.doLayout();
+                if (me.updateLayout) {
+                    me.updateLayout();
+                }
+                if (me.tree && me.tree.updateLayout) {
+                    me.tree.updateLayout();
+                }
+                
                 me.updateTitle();
             }, 20);
         });
@@ -270,6 +283,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
             node.set('status', 'NEW');
             node.set('checked', false);
         }
+        node.commit(); 
         this.updateToolbar();
     },
 
@@ -323,16 +337,13 @@ Ext.define('AP.view.alert.AlarmWindow', {
     // ============ 选择与确认 ============
     getCheckedUnackKeys: function () {
         var keys = [];
-        var root = this.store.getRootNode();
-        root.eachChild(function (deviceNode) {
-            deviceNode.eachChild(function (leaf) {
-                if (leaf.isLeaf()
-                    && leaf.get('alarmKey')
-                    && leaf.get('status') === 'NEW'
-                    && leaf.get('checked') === true) {
-                    keys.push(leaf.get('alarmKey'));
-                }
-            });
+        var checkedNodes = this.tree.getChecked();
+        Ext.Array.each(checkedNodes, function (node) {
+            if (node.isLeaf() 
+                && node.get('alarmKey') 
+                && node.get('status') === 'NEW') {
+                keys.push(node.get('alarmKey'));
+            }
         });
         return keys;
     },
@@ -360,9 +371,12 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 var node = self.findByKey(self.store.getRootNode(), key);
                 if (node) {
                     node.set('status', 'ACK');
-                    node.set('checked', false);
+                    node.set('checked', false); // ★ 取消勾选
                 }
             });
+            
+            // 手动触发一次，确保视图刷新
+            self.tree.getView().refresh();
             self.updateToolbar();
 
             var playing = AP.alert.AlarmSoundManager.currentLevel;
@@ -376,6 +390,26 @@ Ext.define('AP.view.alert.AlarmWindow', {
             }
         });
     },
+    // 远程确认（其他用户已确认）
+    markRemoteAck: function (ackSet) {
+        var self = this;
+        var root = this.store.getRootNode();
+        root.eachChild(function (deviceNode) {
+            deviceNode.eachChild(function (leaf) {
+                if (leaf.isLeaf() && leaf.get('alertId') && ackSet[leaf.get('alertId')]) {
+                    leaf.set('status', 'ACK');
+                    leaf.set('checked', false);
+                    leaf.commit();
+                }
+            });
+        });
+        this.updateToolbar();
+        if (!this.hasUnacknowledged()) {
+            this.stopBlink();
+            this.collapse();
+        }
+    },
+
 
     // ============ 统计与标题 ============
     getTotalLeafCount: function () {

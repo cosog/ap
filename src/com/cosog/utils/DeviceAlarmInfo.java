@@ -280,6 +280,9 @@ public class DeviceAlarmInfo {
 		
 		public Integer alertId;
 		
+		public String ackUser; // ★ 新增：确认人
+        public String ackTime; // ★ 新增：确认时间
+		
 		public String getAlarmTime() {
 			return alarmTime;
 		}
@@ -417,6 +420,18 @@ public class DeviceAlarmInfo {
 		}
 		public void setAlertId(Integer alertId) {
 			this.alertId = alertId;
+		}
+		public String getAckUser() {
+			return ackUser;
+		}
+		public void setAckUser(String ackUser) {
+			this.ackUser = ackUser;
+		}
+		public String getAckTime() {
+			return ackTime;
+		}
+		public void setAckTime(String ackTime) {
+			this.ackTime = ackTime;
 		}
 		
 	}

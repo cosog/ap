@@ -843,8 +843,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	}
 	
 	// ============================================================
-	// 新增：批量确认报警
-	// 返回 { successIds, alreadyAckedIds, failedIds, deviceIds }
+	// 批量确认报警（同时批量确认同测点的历史积压记录）
 	// ============================================================
 	public Map<String, Object> batchAckAlarm(List<Number> alertIds, String ackUser) {
 	    Map<String, Object> result = new HashMap<String, Object>();
@@ -868,8 +867,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	        if (n == null) continue;
 	        long id = n.longValue();
 	        try {
-	            // 查记录（拿 deviceid / itemcode / bitindex / ack_status）
-	            String querySql = "select t.deviceid, t.itemcode, t.bitindex, nvl(t.ack_status,0) "
+	            // 查出该条报警的详细信息（不查 alarmvalue）
+	            String querySql = "select t.deviceid, t.itemcode, t.bitindex, nvl(t.ack_status,0), t.alarminfo, t.alarmlevel "
 	                    + " from tbl_alarminfo_hist t where t.id = " + id;
 	            List<?> ql = findCallSql(querySql);
 	            if (ql == null || ql.isEmpty()) {
@@ -881,6 +880,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            String itemCode = row[1] == null ? "" : row[1].toString().replace("'", "''");
 	            String bitIndex = row[2] == null ? "" : row[2].toString();
 	            int ackStatus = StringManagerUtils.stringToInteger(row[3] + "");
+	            String alarmInfo = row[4] == null ? "" : row[4].toString().replace("'", "''");
+	            int alarmLevel = StringManagerUtils.stringToInteger(row[5] + "");
 
 	            if (ackStatus == 1) {
 	                alreadyAckedIds.add(id);
@@ -888,25 +889,36 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	                continue;
 	            }
 
-	            // 更新历史表
+	            // ★ 核心修改：同设备、同项、同信息（如“高报”）、同级别，统一确认
 	            String updateHist = "update tbl_alarminfo_hist t "
 	                    + " set t.ack_status = 1, "
 	                    + "     t.ack_user   = '" + safeUser + "', "
 	                    + "     t.ack_time   = to_date('" + ackTime + "','yyyy-mm-dd hh24:mi:ss') "
-	                    + " where t.id = " + id + " and (t.ack_status is null or t.ack_status = 0)";
+	                    + " where t.deviceid = " + deviceId
+	                    + "   and t.itemcode = '" + itemCode + "'"
+	                    + "   and t.alarminfo = '" + alarmInfo + "'"
+	                    + "   and t.alarmlevel = " + alarmLevel
+	                    + "   and (t.ack_status is null or t.ack_status = 0)";
+	            
+	            if (StringManagerUtils.isNotNull(bitIndex)) {
+	                updateHist += " and t.bitindex = " + bitIndex;
+	            } else {
+	                updateHist += " and t.bitindex is null";
+	            }
 	            int n1 = getBaseDao().updateOrDeleteBySql(updateHist);
 
 	            if (n1 > 0) {
 	                successIds.add(id);
 	                deviceIdSet.add(deviceId);
 
-	                // 更新实时表（按 deviceid + itemcode + bitindex 匹配）
+	                // 同步更新实时表
 	                String updateLatest = "update tbl_alarminfo_latest t "
 	                        + " set t.ack_status = 1, "
 	                        + "     t.ack_user   = '" + safeUser + "', "
 	                        + "     t.ack_time   = to_date('" + ackTime + "','yyyy-mm-dd hh24:mi:ss') "
 	                        + " where t.deviceid = " + deviceId
 	                        + "   and t.itemcode = '" + itemCode + "'"
+	                        + "   and t.alarminfo = '" + alarmInfo + "'"
 	                        + "   and (t.ack_status is null or t.ack_status = 0)";
 	                if (StringManagerUtils.isNotNull(bitIndex)) {
 	                    updateLatest += " and t.bitindex = " + bitIndex;
@@ -915,8 +927,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	                }
 	                getBaseDao().updateOrDeleteBySql(updateLatest);
 
-	                // 同步内存：alarmInfo.alertId=null, triggerAlarm=false
-	                try { syncMemoryAck(deviceId, itemCode, bitIndex); }
+	                // 同步内存
+	                try { syncMemoryAck(deviceId, itemCode, bitIndex, safeUser, ackTime); }
 	                catch (Exception e) { e.printStackTrace(); }
 	            } else {
 	                alreadyAckedIds.add(id);
@@ -936,7 +948,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	}
 
 	/** 同步内存：alarmInfo.alertId=null, triggerAlarm=false（避免下一轮采集被当成新报警） */
-	private void syncMemoryAck(int deviceId, String column, String bitIndex) {
+	private void syncMemoryAck(int deviceId, String column, String bitIndex, String ackUser, String ackTime) {
 	    Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
 	    if (deviceAlarmInfoMap == null) return;
 	    DeviceAlarmInfo dai = deviceAlarmInfoMap.get(deviceId);
@@ -945,19 +957,22 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	    if (StringManagerUtils.isNotNull(bitIndex)) alarmKey += "_" + bitIndex;
 	    DeviceAlarmInfo.AlarmInfo ai = dai.getAlarmInfoMap().get(alarmKey);
 	    if (ai != null) {
-	        ai.setAlertId(null);
+	        ai.setAlertId(null); // 内存中置空，表示已确认
 	        ai.setTriggerAlarm(false);
+	        ai.setAckUser(ackUser); // ★ 记录确认人
+	        ai.setAckTime(ackTime); // ★ 记录确认时间
 	    }
 	}
 
 	// ============================================================
 	// 查询未确认报警（前端初次进入拉取）
 	// ============================================================
-	public List<Map<String, Object>> getPendingAlarms(String orgIds, String deviceType, int limit,String language) {
+	public List<Map<String, Object>> getPendingAlarms(String orgIds, String deviceType, int limit, String language) {
 	    List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 	    StringBuilder sql = new StringBuilder();
-	    Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
-	    // ★ 用 row_number() 按 (deviceid, itemcode, bitindex) 分组，按 alarmtime 倒序，只取 rn=1（最新一条）
+	    Map<String,String> languageResourceMap = MemoryDataManagerTask.getLanguageResource(language);
+	    
+	    // 拉取所有未恢复的报警（包括已确认的）
 	    sql.append("select * from ( ")
 	       .append("  select a.*, rownum rn2 from ( ")
 	       .append("    select t.id, t.deviceid, d.devicename, d.orgid, d.devicetype, ")
@@ -965,13 +980,14 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	       .append("           to_char(t.alarmvalue) as alarmvalue, ")
 	       .append("           t.alarmlevel, ")
 	       .append("           to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as acqtime, ")
+	       .append("           nvl(t.ack_status, 0) as ack_status, ")  // ★ 增加确认状态
 	       .append("           row_number() over ( ")
 	       .append("               partition by t.deviceid, t.itemcode, nvl(t.bitindex,-1) ")
 	       .append("               order by t.alarmtime desc ")
 	       .append("           ) as rn ")
 	       .append("      from tbl_alarminfo_hist t, tbl_device d ")
 	       .append("     where t.deviceid = d.id ")
-	       .append("       and (t.ack_status is null or t.ack_status = 0) ")
+	       // .append("       and (t.ack_status is null or t.ack_status = 0) ") // ★ 去掉未确认过滤
 	       .append("       and t.recoverytime is null ")
 	       .append("       and t.alarmlevel > 0 ");
 
@@ -982,7 +998,6 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	        sql.append(" and d.devicetype in (").append(deviceType).append(") ");
 	    }
 
-	    // 只保留 rn=1（每个测点最新一条），再按级别 + 时间排序
 	    sql.append("  ) a where a.rn = 1 ")
 	       .append("    order by a.alarmlevel asc, a.acqtime desc ")
 	       .append(") where rownum <= ").append(limit);
@@ -991,38 +1006,27 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	    if (list != null) {
 	        for (Object o : list) {
 	            Object[] row = (Object[]) o;
-	            String column=row[5] == null ? "" : row[5].toString();
-	            String columnName=row[6] == null ? "" : row[6].toString();
-	            String value=row[7] == null ? "" : row[7].toString();
+	            String column = row[5] == null ? "" : row[5].toString();
+	            String columnName = row[6] == null ? "" : row[6].toString();
+	            String value = row[7] == null ? "" : row[7].toString();
+	            int ackStatus = StringManagerUtils.stringToInteger(row[10] + ""); // ★ 取出 ack_status
 	            
-	            if("resultCode".equalsIgnoreCase(column)||"resultName".equalsIgnoreCase(column)){
-	            	WorkType workType=MemoryDataManagerTask.getWorkTypeByCode(value,language);
-					if(workType!=null){
-						value=workType.getResultName();
-					}
-					columnName=languageResourceMap.get("FSDiagramWorkType");
-	            }else if("runStatus".equalsIgnoreCase(column)||"RunStatusName".equalsIgnoreCase(column)){
-	            	if("1".equalsIgnoreCase(value)){
-	            		value=languageResourceMap.get("run");
-					}else if("0".equalsIgnoreCase(value)){
-						value=languageResourceMap.get("stop");
-					}else{
-						value=languageResourceMap.get("emptyMsg");
-					}
-	            	columnName=languageResourceMap.get("runStatus");
-				}else if("commStatus".equalsIgnoreCase(column)||"CommStatusName".equalsIgnoreCase(column)){
-	            	if("1".equalsIgnoreCase(value)){
-	            		value=languageResourceMap.get("online");
-					}else if("2".equalsIgnoreCase(value)){
-						value=languageResourceMap.get("goOnline");
-					}else{
-						value=languageResourceMap.get("offline");
-					}
-	            	columnName=languageResourceMap.get("commStatus");
-				}else{
-//					value=deviceCalDataMap.containsKey(column.toUpperCase())?deviceCalDataMap.get(column.toUpperCase()):"";
-				}
-	            
+	            // 多语言及枚举值翻译（维持原有逻辑）
+	            if ("resultCode".equalsIgnoreCase(column) || "resultName".equalsIgnoreCase(column)) {
+	                WorkType workType = MemoryDataManagerTask.getWorkTypeByCode(value, language);
+	                if (workType != null) value = workType.getResultName();
+	                columnName = languageResourceMap.get("FSDiagramWorkType");
+	            } else if ("runStatus".equalsIgnoreCase(column) || "RunStatusName".equalsIgnoreCase(column)) {
+	                if ("1".equalsIgnoreCase(value)) value = languageResourceMap.get("run");
+	                else if ("0".equalsIgnoreCase(value)) value = languageResourceMap.get("stop");
+	                else value = languageResourceMap.get("emptyMsg");
+	                columnName = languageResourceMap.get("runStatus");
+	            } else if ("commStatus".equalsIgnoreCase(column) || "CommStatusName".equalsIgnoreCase(column)) {
+	                if ("1".equalsIgnoreCase(value)) value = languageResourceMap.get("online");
+	                else if ("2".equalsIgnoreCase(value)) value = languageResourceMap.get("goOnline");
+	                else value = languageResourceMap.get("offline");
+	                columnName = languageResourceMap.get("commStatus");
+	            }
 	            
 	            Map<String, Object> item = new HashMap<String, Object>();
 	            item.put("alertId",    StringManagerUtils.stringToLong(row[0] + ""));
@@ -1035,6 +1039,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            item.put("value",      value);
 	            item.put("alarmLevel", StringManagerUtils.stringToInteger(row[8] + ""));
 	            item.put("acqTime",    row[9] == null ? "" : row[9].toString());
+	            item.put("ackStatus",  ackStatus);  // ★ 增加确认状态
 	            result.add(item);
 	        }
 	    }

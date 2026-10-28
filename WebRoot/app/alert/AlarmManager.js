@@ -17,6 +17,10 @@ Ext.define('AP.alert.AlarmManager', {
         if (!data || !data.functionCode) return;
         var fc = data.functionCode.toUpperCase();
 
+        if (!AP.alert.AlarmSoundManager._loaded) {
+            AP.alert.AlarmSoundManager.loadConfig();
+        }
+
         if (fc === 'DEVICEREALTIMEMONITORINGDATA') {
             var list = this.extract(data);
             for (var i = 0; i < list.length; i++) this.upsert(list[i]);
@@ -67,10 +71,15 @@ Ext.define('AP.alert.AlarmManager', {
         if (this.ackKeys[alarm.key] && old && alarm.alarmLevel >= old.alarmLevel) {
             old.value = alarm.value;
             old.acqTime = alarm.acqTime;
+            old.alertId = alarm.alertId || old.alertId;
             this.updateNode(old);
             return;
         }
-        if (this.ackKeys[alarm.key]) delete this.ackKeys[alarm.key];
+        
+        if (this.ackKeys[alarm.key]) {
+            delete this.ackKeys[alarm.key];
+            this.updateNode(old);
+        }
 
         if (!old) {
             this.alarms[alarm.key] = alarm;
@@ -84,9 +93,10 @@ Ext.define('AP.alert.AlarmManager', {
             old.alarmLevel = alarm.alarmLevel;
             old.alertId = alarm.alertId || old.alertId;
             this.updateNode(old);
+            
             if (levelUp) {
                 this.ensureWindowExpanded();
-                AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
+                AP.alert.AlarmSoundManager.play(alarm.alarmLevel); 
             }
         }
     },
@@ -187,7 +197,6 @@ Ext.define('AP.alert.AlarmManager', {
         });
     },
 
-    // 远程确认（其他用户已确认）
     onRemoteAck: function (alertIds, ackUser, ackTime) {
         if (!alertIds || alertIds.length === 0) return;
         var self = this;
@@ -199,7 +208,6 @@ Ext.define('AP.alert.AlarmManager', {
         if (this.win) this.win.markRemoteAck(ackSet);
     },
 
-    // 登出重置
     reset: function () {
         this.alarms = {};
         this.ackKeys = {};
@@ -210,10 +218,10 @@ Ext.define('AP.alert.AlarmManager', {
         }
     },
 
-    // 初次进入拉取未确认报警
     loadPendingAlarms: function () {
         var self = this;
         if (typeof alarmAlert !== 'undefined' && !alarmAlert) return;
+
         var orgIdCmp = Ext.getCmp('leftOrg_Id');
         var orgId = orgIdCmp ? orgIdCmp.getValue() : '';
         var deviceType = '';
@@ -230,9 +238,20 @@ Ext.define('AP.alert.AlarmManager', {
             success: function (resp) {
                 var r; try { r = Ext.JSON.decode(resp.responseText); } catch (e) { return; }
                 if (!r || !r.success || !r.data || r.data.length === 0) return;
+                
+                var hasNewUnack = false;
+                
                 Ext.Array.each(r.data, function (item) {
+                    var key = item.deviceId + '|' + item.column;
+                    
+                    if (item.ackStatus == 1) {
+                        self.ackKeys[key] = true;
+                    } else {
+                        hasNewUnack = true;
+                    }
+                    
                     self.upsertSilent({
-                        key: item.deviceId + '|' + item.column,
+                        key: key,
                         alertId: item.alertId,
                         deviceId: item.deviceId,
                         deviceName: item.deviceName,
@@ -241,13 +260,30 @@ Ext.define('AP.alert.AlarmManager', {
                         columnName: item.columnName,
                         value: item.value,
                         alarmLevel: item.alarmLevel,
-                        acqTime: item.acqTime
+                        acqTime: item.acqTime,
+                        ackStatus: item.ackStatus
                     });
                 });
-                if (self.win && self.win.hasUnacknowledged && self.win.hasUnacknowledged()) {
-                    self.ensureWindowExpanded();
-                    var maxLevel = self._getHighestUnackLevel();
-                    if (maxLevel) AP.alert.AlarmSoundManager.play(maxLevel);
+                
+                if (self.win && self.win.getTotalLeafCount() > 0) {
+                    if (hasNewUnack) {
+                        self.ensureWindowExpanded();
+                        
+                        if (!AP.alert.AlarmSoundManager.unlocked) {
+                            var tip = self.win.down('#muteTip');
+                            if (tip) tip.show();
+                        }
+
+                        var maxLevel = self._getHighestUnackLevel();
+                        if (maxLevel) {
+                            AP.alert.AlarmSoundManager.play(maxLevel);
+                        }
+                    } else {
+                        var win = self.ensureWindow();
+                        if (!win.isVisible()) win.show();
+                        if (!win.collapsed) win.collapse();
+                        win.updateTitle(); 
+                    }
                 }
             }
         });
@@ -259,6 +295,7 @@ Ext.define('AP.alert.AlarmManager', {
             this.addNode(alarm);
         }
     },
+    
     _getHighestUnackLevel: function () {
         var min = null;
         Ext.Object.each(this.alarms, function (k, a) {

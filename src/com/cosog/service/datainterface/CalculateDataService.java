@@ -84,6 +84,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		SMSContent.append(deviceTypeName+deviceName+"于"+acqTime+"发生报警:");
 		Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
 		List<AcquisitionItemInfo> saveAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
+		
 		for(int i=0;i<acquisitionItemInfoList.size();i++){
 
 			if(acquisitionItemInfoList.get(i).getAlarmLevel()>0 && acquisitionItemInfoList.get(i).getTriggerAlarm()){
@@ -99,11 +100,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 					saveAcquisitionItemInfoList.add(acquisitionItemInfoList.get(i));
 					if(acquisitionItemInfoList.get(i).getIsSendMessage()==1){//如果该报警项发送短信
 						isSendSMS=true;
-						if(acquisitionItemInfoList.get(i).getAlarmType()==3){//开关量报警
+						if(acquisitionItemInfoList.get(i).getAlarmType()==3){
 							SMSContent.append(acquisitionItemInfoList.get(i).getTitle()+":"+acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
-						}else if(acquisitionItemInfoList.get(i).getAlarmType()==2){//枚举量报警
+						}else if(acquisitionItemInfoList.get(i).getAlarmType()==2){
 							SMSContent.append(acquisitionItemInfoList.get(i).getTitle()+":"+acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
-						}else if(acquisitionItemInfoList.get(i).getAlarmType()==1){//数值量报警
+						}else if(acquisitionItemInfoList.get(i).getAlarmType()==1){
 							SMSContent.append(acquisitionItemInfoList.get(i).getTitle()+acquisitionItemInfoList.get(i).getAlarmInfo()
 									+",报警值"+acquisitionItemInfoList.get(i).getValue()
 									+",限值"+acquisitionItemInfoList.get(i).getAlarmLimit()
@@ -114,13 +115,13 @@ public class CalculateDataService<T> extends BaseService<T> {
 							SMSContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}
 					}
-					if(acquisitionItemInfoList.get(i).getIsSendMail()==1){//如果该报警项发送邮件
+					if(acquisitionItemInfoList.get(i).getIsSendMail()==1){
 						isSendMail=true;
-						if(acquisitionItemInfoList.get(i).getAlarmType()==3){//开关量报警
+						if(acquisitionItemInfoList.get(i).getAlarmType()==3){
 							EMailContent.append(acquisitionItemInfoList.get(i).getTitle()+":"+acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
-						}else if(acquisitionItemInfoList.get(i).getAlarmType()==2){//枚举量报警
+						}else if(acquisitionItemInfoList.get(i).getAlarmType()==2){
 							EMailContent.append(acquisitionItemInfoList.get(i).getTitle()+":"+acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
-						}else if(acquisitionItemInfoList.get(i).getAlarmType()==1){//数值量报警
+						}else if(acquisitionItemInfoList.get(i).getAlarmType()==1){
 							EMailContent.append(acquisitionItemInfoList.get(i).getTitle()+acquisitionItemInfoList.get(i).getAlarmInfo()
 									+",报警值"+acquisitionItemInfoList.get(i).getValue()
 									+",限值"+acquisitionItemInfoList.get(i).getAlarmLimit()
@@ -144,20 +145,16 @@ public class CalculateDataService<T> extends BaseService<T> {
 							 break;
 						 }
 					}
-					if(reset){
-						 
-					 }
 				}catch(Exception e){
-//					e.printStackTrace();
 				}
 			}
-		
 		}
+		
 		if(saveAcquisitionItemInfoList.size()>0){
-			// ★ 调用Dao执行入库，内部会将 alertId 回填到 saveAcquisitionItemInfoList 中的对象上
+			// ★ 1. 调用Dao执行入库，内部会将 alertId 回填到 saveAcquisitionItemInfoList 中的对象上
 	        getBaseDao().saveAlarmInfo(deviceId,deviceType,acqTime,saveAcquisitionItemInfoList);
 	        
-	        // ★ 将回填的 alertId 同步到内存中
+	        // ★ 2. 将回填的 alertId 同步到内存中，并自动继承“已确认”状态（双重校验机制）
 	        Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
 	        DeviceAlarmInfo deviceAlarmInfo = deviceAlarmInfoMap.get(deviceId);
 	        if(deviceAlarmInfo != null && deviceAlarmInfo.getAlarmInfoMap() != null){
@@ -167,12 +164,66 @@ public class CalculateDataService<T> extends BaseService<T> {
 	                    alarmKey += "_" + info.getBitIndex();
 	                }
 	                AlarmInfo memAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().get(alarmKey);
+	                
 	                if(memAlarmInfo != null && info.getAlertId() != null){
-	                    memAlarmInfo.setAlertId(info.getAlertId());
+	                    // 如果内存中该项的 alertId 为 null，说明该报警事件操作员已经确认过了
+	                    if (memAlarmInfo.getAlertId() == null) {
+	                        
+	                        String inheritUser = null;
+	                        String inheritTime = null;
+	                        
+	                        // 优先从内存中继承（如果是当前运行期间用户点击的确认）
+	                        if (StringManagerUtils.isNotNull(memAlarmInfo.getAckUser()) && StringManagerUtils.isNotNull(memAlarmInfo.getAckTime())) {
+	                            inheritUser = memAlarmInfo.getAckUser();
+	                            inheritTime = memAlarmInfo.getAckTime();
+	                        } else {
+	                            // ★ 如果内存里没有（比如系统刚重启），去历史表查上一条记录的确认状态
+	                            String prevAckSql = "select nvl(ack_status,0), ack_user, to_char(ack_time,'yyyy-mm-dd hh24:mi:ss') "
+	                                    + " from tbl_alarminfo_hist "
+	                                    + " where deviceid = " + deviceId
+	                                    + "   and itemcode = '" + info.getColumn().replace("'", "''") + "'"
+	                                    + "   and alarminfo = '" + (info.getAlarmInfo() != null ? info.getAlarmInfo().replace("'", "''") : "") + "'"
+	                                    + "   and alarmlevel = " + info.getAlarmLevel()
+	                                    + "   and id < " + info.getAlertId(); 
+	                            if (StringManagerUtils.isNotNull(info.getBitIndex())) {
+	                                prevAckSql += " and bitindex = " + info.getBitIndex();
+	                            } else {
+	                                prevAckSql += " and bitindex is null";
+	                            }
+	                            prevAckSql += " order by id desc";
+	                            
+	                            List<?> prevList = getBaseDao().findCallSql(prevAckSql);
+	                            int prevAckStatus = 0;
+	                            if (prevList != null && !prevList.isEmpty()) {
+	                                Object[] row = (Object[]) prevList.get(0);
+	                                prevAckStatus = StringManagerUtils.stringToInteger(row[0] + "");
+	                                if (prevAckStatus == 1) {
+	                                    inheritUser = row[1] == null ? null : row[1].toString();
+	                                    inheritTime = row[2] == null ? null : row[2].toString();
+	                                }
+	                            }
+	                        }
+	                        
+	                        // 如果最终拿到了确认状态（内存或历史表里有），就更新新插入的这条历史记录
+	                        if (StringManagerUtils.isNotNull(inheritUser) && StringManagerUtils.isNotNull(inheritTime)) {
+	                            String safeUser = inheritUser.replace("'", "''");
+	                            String updateHistAckSql = "update tbl_alarminfo_hist t "
+	                                    + " set t.ack_status = 1, "
+	                                    + "     t.ack_user   = '" + safeUser + "', "
+	                                    + "     t.ack_time   = to_date('" + inheritTime + "','yyyy-mm-dd hh24:mi:ss') "
+	                                    + " where t.id = " + info.getAlertId();
+	                            getBaseDao().updateOrDeleteBySql(updateHistAckSql);
+	                        }
+	                        
+	                    } else {
+	                        // 正常的新报警，将新生成的 alertId 回填到内存
+	                        memAlarmInfo.setAlertId(info.getAlertId());
+	                    }
 	                }
 	            }
 	        }
 		}
+		
 		if(isSendSMS || isSendMail){
 			sendAlarmSMS(deviceName,deviceType,deviceTypeName,isSendSMS,isSendMail,SMSContent.toString(),EMailContent.toString());
 		}

@@ -69,6 +69,8 @@ public class User implements java.io.Serializable {
 	private String languageResource;
 	
 	private String languageResourceFirstLower;
+	
+	private Integer roleAlarmAlert;
 
 	/**
 	 * 组织节点orgCode集合
@@ -463,5 +465,14 @@ public class User implements java.io.Serializable {
 
 	public void setUserTypeName_en(String userTypeName_en) {
 		this.userTypeName_en = userTypeName_en;
+	}
+
+	@Transient
+	public Integer getRoleAlarmAlert() {
+		return roleAlarmAlert;
+	}
+
+	public void setRoleAlarmAlert(Integer roleAlarmAlert) {
+		this.roleAlarmAlert = roleAlarmAlert;
 	}
 }

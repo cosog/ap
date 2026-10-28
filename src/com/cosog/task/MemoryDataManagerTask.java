@@ -5088,6 +5088,23 @@ public class MemoryDataManagerTask {
 				}
 			}
 			
+			
+			// ★ 加载报警声音文件名
+			if (rs != null) { try { rs.close(); } catch (Exception ignore) {} }
+			String soundSql = "select t.itemvalue, t.itemname from tbl_code t "
+			                + " where t.itemcode='ALARMSOUND' order by t.itemvalue";
+			pstmt = conn.prepareStatement(soundSql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+			    int level = rs.getInt(1);
+			    String fileName = rs.getString(2) == null ? "" : rs.getString(2).trim();
+			    AlarmShowStyle.AlarmStyle target = null;
+			    if (level == 100)      target = alarmShowStyle.getData().getFirstLevel();
+			    else if (level == 200) target = alarmShowStyle.getData().getSecondLevel();
+			    else if (level == 300) target = alarmShowStyle.getData().getThirdLevel();
+			    if (target != null) target.setSoundFile(fileName);
+			}	
+			
 			jedis = RedisUtil.jedisPool.getResource();
 			jedis.set("AlarmShowStyle".getBytes(), SerializeObjectUnils.serialize(alarmShowStyle));
 			

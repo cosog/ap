@@ -155,6 +155,8 @@ public class AlarmShowStyle implements java.io.Serializable {
 	    private String Opacity;
 
 	    private String FontStyle;
+	    
+	    private String SoundFile;
 
 	    public void setValue(int Value){
 	        this.Value = Value;
@@ -185,6 +187,12 @@ public class AlarmShowStyle implements java.io.Serializable {
 		}
 		public void setOpacity(String opacity) {
 			Opacity = opacity;
+		}
+		public String getSoundFile() {
+			return SoundFile;
+		}
+		public void setSoundFile(String soundFile) {
+			SoundFile = soundFile;
 		}
 	}
 

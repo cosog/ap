@@ -5,122 +5,159 @@ Ext.define('AP.alert.AlarmSoundManager', {
     pendingLevel: null,
     currentLevel: null,
     audio: null,
-    lastPlayTime: 0,
-    minInterval: 1500,   // 同级别最小间隔，防刷屏
 
-    // 默认配置；实际以 loadConfig 从后端覆盖
-    config: {
-        100: { url: context + '/resources/alarm/level1.mp3' },
-        200: { url: context + '/resources/alarm/level2.mp3' },
-        300: { url: context + '/resources/alarm/level3.mp3' }
-    },
+    config: {},
+    baseUrl: '',
+    _loaded: false,
+    _retryTask: null,
 
-    // 浏览器音频自动播放限制：必须在用户交互后解锁
     initUnlock: function () {
         var self = this;
-        if (this.unlocked) return;
-
+        
         var unlock = function () {
             if (self.unlocked) return;
-            try {
-                var Ctx = window.AudioContext || window.webkitAudioContext;
-                if (Ctx) {
-                    var ctx = new Ctx();
-                    if (ctx.state === 'suspended') ctx.resume();
-                }
-                var a = new Audio();
-                a.muted = true;
-                var p = a.play();
-                if (p && p.then) {
-                    p.then(function () {
-                        self.unlocked = true;
-                        document.removeEventListener('click', unlock);
-                        document.removeEventListener('keydown', unlock);
-                        if (self.pendingLevel !== null) {
-                            var lv = self.pendingLevel;
-                            self.pendingLevel = null;
-                            self.play(lv);
-                        }
-                    }).catch(function () {
-                        // 保持 unlocked = false，下次点击继续尝试
-                    });
-                } else {
-                    self.unlocked = true;
-                }
-            } catch (e) {}
+            self.unlocked = true;
+            console.log('【报警声音】用户点击页面，已激活音频。');
+            
+            document.removeEventListener('click', unlock, true);
+            document.removeEventListener('pointerdown', unlock, true);
+            document.removeEventListener('keydown', unlock, true);
+            
+            // 隐藏弹窗里的静音提示
+            if (AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.win) {
+                var tip = AP.alert.AlarmManager.win.down('#muteTip');
+                if (tip) tip.hide();
+            }
+
+            if (self.pendingLevel !== null) {
+                var lv = self.pendingLevel;
+                self.pendingLevel = null;
+                self.play(lv);
+            }
         };
 
-        document.addEventListener('click', unlock);
-        document.addEventListener('keydown', unlock);
+        document.addEventListener('click', unlock, true);
+        document.addEventListener('pointerdown', unlock, true);
+        document.addEventListener('keydown', unlock, true);
     },
 
-    // 只拉"级别 -> URL"，上传/删除放在报警等级配置页面
     loadConfig: function () {
         var self = this;
         Ext.Ajax.request({
-        	url: context + '/alarmQueryController/getAlarmSoundList',
+            url: context + '/alarmSetManagerController/getAlarmLevelColor',
             method: 'GET',
             success: function (resp) {
                 var r;
                 try { r = Ext.JSON.decode(resp.responseText); } catch (e) { return; }
-                if (r && r.success && r.data) {
-                    Ext.Array.each(r.data, function (item) {
-                        if (item.level && item.url) {
-                            self.config[item.level] = { url: item.url };
-                        }
-                    });
-                }
-            },
-            failure: function () {
-            	if (window.console) console.warn('报警音配置加载失败，使用默认音频');
+                if (!r || !r.Data) return;
+
+                self.config = {};
+                self.baseUrl = context + '/alarmSetManagerController/playAlarmSound?fileName=';
+
+                var mk = function (style) {
+                    if (style && style.SoundFile) return { fileName: style.SoundFile };
+                    return null;
+                };
+                
+                var c1 = mk(r.Data.FirstLevel);
+                var c2 = mk(r.Data.SecondLevel);
+                var c3 = mk(r.Data.ThirdLevel);
+                
+                if (c1) self.config[100] = c1;
+                if (c2) self.config[200] = c2;
+                if (c3) self.config[300] = c3;
+                
+                self._loaded = true;
             }
         });
     },
 
     play: function (level) {
         if (!level || level <= 0) return;
-        if (!this.unlocked) {
-            if (this.pendingLevel === null || level < this.pendingLevel) {
-                this.pendingLevel = level;
-            }
+
+        if (!this._loaded) {
+            this.loadConfig();
+            var self = this;
+            Ext.defer(function() { self.play(level); }, 500);
             return;
         }
-        var cfg = this.config[level];
-        if (!cfg || !cfg.url) return;
 
-        // 正在播更高级别，不打断
-        if (this.currentLevel !== null && level > this.currentLevel) return;
-        // 同级别正在播，不叠加
+        var cfg = this.config[level];
+        if (!cfg || !cfg.fileName) return;
+
         if (this.currentLevel === level && this.audio && !this.audio.paused) return;
-        // 同级别最小间隔
-        if (this.currentLevel === level &&
-            (Date.now() - this.lastPlayTime) < this.minInterval) return;
 
         this.stop();
-        var self = this;
-        var a = new Audio(cfg.url);
+        
+        var url = this.baseUrl + encodeURIComponent(cfg.fileName) + '&_t=' + new Date().getTime();
+        var a = new Audio(url);
+        
         this.audio = a;
         this.currentLevel = level;
-        this.lastPlayTime = Date.now();
-        a.onended = function () {
-            if (self.audio === a) {
-                self.currentLevel = null;
-                self.audio = null;
+        
+        // ★ 核心：手动控制重播
+        a.onended = function() {
+            if (AP.alert.AlarmSoundManager.audio === a) {
+                a.currentTime = 0;
+                a.play().catch(function() {
+                    console.warn('【报警声音】重播被浏览器拦截，等待用户点击。');
+                });
             }
         };
-        a.play().catch(function () {
-            if (self.audio === a) {
-                self.currentLevel = null;
-                self.audio = null;
+
+        a.play().then(function() {
+            console.log('【报警声音】开始播放级别:', level);
+            if (AP.alert.AlarmSoundManager) {
+                AP.alert.AlarmSoundManager.unlocked = true;
+            }
+            if (AP.alert.AlarmSoundManager._retryTask) {
+                clearInterval(AP.alert.AlarmSoundManager._retryTask);
+                AP.alert.AlarmSoundManager._retryTask = null;
+            }
+        }).catch(function (err) {
+            console.warn('【报警声音】自动播放被拦截，等待用户交互。');
+            AP.alert.AlarmSoundManager.pendingLevel = level;
+            AP.alert.AlarmSoundManager.unlocked = false;
+            
+            // 轮询重试机制
+            if (!AP.alert.AlarmSoundManager._retryTask) {
+                AP.alert.AlarmSoundManager._retryTask = setInterval(function() {
+                    if (AP.alert.AlarmSoundManager.unlocked) {
+                        clearInterval(AP.alert.AlarmSoundManager._retryTask);
+                        AP.alert.AlarmSoundManager._retryTask = null;
+                        return;
+                    }
+                    if (AP.alert.AlarmSoundManager.audio) {
+                        AP.alert.AlarmSoundManager.audio.play().then(function(){
+                            AP.alert.AlarmSoundManager.unlocked = true;
+                            clearInterval(AP.alert.AlarmSoundManager._retryTask);
+                            AP.alert.AlarmSoundManager._retryTask = null;
+                        }).catch(function(){});
+                    }
+                }, 2000);
             }
         });
     },
 
     stop: function () {
         if (this.audio) {
-            try { this.audio.pause(); this.audio.currentTime = 0; } catch (e) {}
+            try { 
+                this.audio.pause(); 
+                this.audio.currentTime = 0; 
+                this.audio.onended = null;
+            } catch (e) {}
         }
         this.audio = null;
         this.currentLevel = null;
+        
+        if (this._retryTask) {
+            clearInterval(this._retryTask);
+            this._retryTask = null;
+        }
+    },
+
+    refresh: function () {
+        this._loaded = false;
+        this.loadConfig();
     }
 });

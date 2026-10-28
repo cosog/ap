@@ -655,7 +655,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	}
 	
 	public void setUserRoleRight(User user){
-		String sql="select t.role_level,t.showlevel,t.role_videokeyedit,t.role_languageedit "
+		String sql="select t.role_level,t.showlevel,t.role_videokeyedit,t.role_languageedit,t.alarmAlert "
 				+ " from tbl_role t,tbl_user t2 "
 				+ " where t2.user_type=t.role_id "
 				+ " and t2.user_no="+user.getUserNo();
@@ -672,6 +672,7 @@ public class UserManagerService<T> extends BaseService<T> {
 			user.setRoleShowLevel(StringManagerUtils.stringToInteger(obj[1]+""));
 			user.setRoleVideoKeyEdit(StringManagerUtils.stringToInteger(obj[2]+""));
 			user.setRoleLanguageEdit(StringManagerUtils.stringToInteger(obj[3]+""));
+			user.setRoleAlarmAlert(StringManagerUtils.stringToInteger(obj[4]+""));
 		}
 		List<RoleModule> roleModuleList= new ArrayList<>();
 		if(userModuleList.size()>0){

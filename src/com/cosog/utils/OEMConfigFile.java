@@ -64,6 +64,8 @@ public class OEMConfigFile {
 	    
 	    private String sceneImagePath;
 	    
+	    private String alarmSound;
+	    
 	    private String logo;
 	    
 	    private String favicon;
@@ -187,6 +189,12 @@ public class OEMConfigFile {
 		}
 		public void setSceneImagePath(String sceneImagePath) {
 			this.sceneImagePath = sceneImagePath;
+		}
+		public String getAlarmSound() {
+			return alarmSound;
+		}
+		public void setAlarmSound(String alarmSound) {
+			this.alarmSound = alarmSound;
 		}
 	}
 	

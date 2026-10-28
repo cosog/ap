@@ -36,6 +36,7 @@
 	int loginUserLanguageKeyEdit=userLogin!=null?userLogin.getRoleLanguageEdit():0;
 	String loginUserLanguage=userLogin!=null?userLogin.getLanguageName()+"":"zh_CN";
 	int loginUserLanguageValue=userLogin!=null?userLogin.getLanguage():0;
+	int loginUserRoleAlarmAlert=userLogin!=null?userLogin.getRoleAlarmAlert():0;
 	
 	String loginUserLanguageListJson = gson.toJson(userLogin!=null&&userLogin.getLanguageList()!=null?userLogin.getLanguageList():new ArrayList<>());
 	String loginUserLanguageResource=userLogin!=null?userLogin.getLanguageResource():"{}";
@@ -91,7 +92,8 @@
         
         var loginUserLanguageList=JSON.parse('<%=loginUserLanguageListJson%>');
         
-        var alarmAlert=true;
+        var loginUserRoleAlarmAlert = <%=loginUserRoleAlarmAlert%>;
+        var alarmAlert=loginUserRoleAlarmAlert==1;
         
         
         var loginUserLanguageResource='<%= loginUserLanguageResource.replace("'", "\\'") %>';

@@ -454,14 +454,7 @@
                 options.withCredentials = true;               // 确保携带凭证
             });
             
-            // 5. 统一处理 401/999 错误（如跳转回登录页）
-            //Ext.Ajax.on('requestexception', function(conn, response, options) {
-            //    if (response.status === 401 || response.status === 999) {
-            //        // 会话失效，重新跳转到外部登录入口（可携带当前页作为回调）
-            //        var loginUrl = context + '/external/login?callback=' + encodeURIComponent(window.location.href);
-            //        window.location.href = loginUrl;
-            //    }
-            //});
+            
             
             (function(H) {
                 if (H && H.wrap) {
@@ -481,6 +474,44 @@
                     });
                 }
             })(Highcharts);
+            
+            
+         // ★ 核心：无论是不是首次登录、无论怎么刷新，只要页面加载，立刻唤醒 AudioContext
+            if (typeof alarmAlert !== 'undefined' && alarmAlert === true) {
+                setTimeout(function() {
+                    try {
+                        var Ctx = window.AudioContext || window.webkitAudioContext;
+                        if (Ctx && !window._globalAudioCtx) {
+                            window._globalAudioCtx = new Ctx();
+                            if (window._globalAudioCtx.state === 'suspended') {
+                                window._globalAudioCtx.resume();
+                            }
+                        }
+                    } catch(e) {}
+                }, 500);
+
+                // 延迟 1.5 秒，如果还是没解锁，弹提示让用户点
+                setTimeout(function() {
+                    if (window.AP && AP.alert && AP.alert.AlarmSoundManager && !AP.alert.AlarmSoundManager.unlocked) {
+                        
+                        
+                        Ext.Msg.alert(loginUserLanguageResource.tip, '<b style="color:#dc2828;">⚠️ 提示</b><br/>请点击屏幕任意位置，以激活报警声音。');
+                        
+                        var unlockEvt = function() {
+                            document.removeEventListener('click', unlockEvt, true);
+                            document.removeEventListener('pointerdown', unlockEvt, true);
+                            if (window.AP && AP.alert && AP.alert.AlarmSoundManager) {
+                                AP.alert.AlarmSoundManager.unlocked = true;
+                                if (window._globalAudioCtx && window._globalAudioCtx.state === 'suspended') {
+                                    window._globalAudioCtx.resume();
+                                }
+                            }
+                        };
+                        document.addEventListener('click', unlockEvt, true);
+                        document.addEventListener('pointerdown', unlockEvt, true);
+                    }
+                }, 1500);
+            }
         });
         
      // 工具函数：从 URL 获取参数

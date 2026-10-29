@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -52,6 +53,7 @@ import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
+import com.cosog.websocket.config.WebSocketByJavax;
 import com.cosog.utils.DeviceTypeInfoRecursion;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -92,6 +94,11 @@ public class RoleManagerController extends BaseController {
 	public void initBinder2(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("role.");
 	}
+	
+	@Bean
+    public static WebSocketByJavax infoHandler() {
+        return new WebSocketByJavax();
+    }
 
 	/**<p>描述：角儿添加</p>
 	 * 
@@ -268,105 +275,192 @@ public class RoleManagerController extends BaseController {
 	}
 	
 	@RequestMapping("/updateRoleInfo")
-	public String updateRoleInfo() throws IOException {
-		String result = "{\"success\":true,\"flag\":true}";
-		try {
-			String roleId = ParamUtils.getParameter(request, "roleId");
-			String roleName_zh_CN = ParamUtils.getParameter(request, "roleName_zh_CN");
-			String roleName_en = ParamUtils.getParameter(request, "roleName_en");
-			String roleName_ru = ParamUtils.getParameter(request, "roleName_ru");
-			String roleLevel = ParamUtils.getParameter(request, "roleLevel");
-			String roleVideoKeyEditName = ParamUtils.getParameter(request, "roleVideoKeyEditName");
-			String roleLanguageEditName = ParamUtils.getParameter(request, "roleLanguageEditName");
-			String showLevel = ParamUtils.getParameter(request, "showLevel");
-			String remark_zh_CN = ParamUtils.getParameter(request, "remark_zh_CN");
-			String remark_en = ParamUtils.getParameter(request, "remark_en");
-			String remark_ru = ParamUtils.getParameter(request, "remark_ru");
-			
-			Role role=new Role();
-			role.setRoleId(StringManagerUtils.stringToInteger(roleId));
-			role.setRoleName_zh_CN(roleName_zh_CN);
-			role.setRoleName_en(roleName_en);
-			role.setRoleName_ru(roleName_ru);
-			role.setRoleLevel(StringManagerUtils.stringToInteger(roleLevel));
-			role.setRoleVideoKeyEdit("true".equalsIgnoreCase(roleVideoKeyEditName)?1:0);
-			role.setRoleLanguageEdit("true".equalsIgnoreCase(roleLanguageEditName)?1:0);
-			role.setShowLevel(StringManagerUtils.stringToInteger(showLevel));
-			role.setRemark_zh_CN(remark_zh_CN);
-			role.setRemark_en(remark_en);
-			role.setRemark_ru(remark_ru);
-			
-			log.debug("edit role ==" + role.getRoleId());
-			HttpSession session=request.getSession();
-			User prttentuser = (User) session.getAttribute("userLogin");
-			int r=this.roleService.updateRoleInfo(role,prttentuser);
-			if(r==1){
-				MemoryDataManagerTask.loadUserInfoByRoleId(role.getRoleId()+"", "update");
-				result = "{\"success\":true,\"flag\":true}";
-			}else if(r==2){
-				result = "{\"success\":true,\"flag\":false}";
-			}else{
-				result = "{\"success\":false,\"flag\":false}";
-			}
-		} catch (Exception e) {
-			result = "{\"success\":false,\"flag\":false}";
-			e.printStackTrace();
-		}
-		response.setCharacterEncoding(Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		response.setCharacterEncoding(Constants.ENCODING_UTF8);
-		response.getWriter().print(result);
-		pw.flush();
-		pw.close();
-		return null;
-	}
+    public String updateRoleInfo() throws IOException {
+        String result = "{\"success\":true,\"flag\":true}";
+        try {
+            String roleId = ParamUtils.getParameter(request, "roleId");
+            String roleName_zh_CN = ParamUtils.getParameter(request, "roleName_zh_CN");
+            String roleName_en = ParamUtils.getParameter(request, "roleName_en");
+            String roleName_ru = ParamUtils.getParameter(request, "roleName_ru");
+            String roleLevel = ParamUtils.getParameter(request, "roleLevel");
+            String roleVideoKeyEditName = ParamUtils.getParameter(request, "roleVideoKeyEditName");
+            String roleLanguageEditName = ParamUtils.getParameter(request, "roleLanguageEditName");
+            String showLevel = ParamUtils.getParameter(request, "showLevel");
+            String remark_zh_CN = ParamUtils.getParameter(request, "remark_zh_CN");
+            String remark_en = ParamUtils.getParameter(request, "remark_en");
+            String remark_ru = ParamUtils.getParameter(request, "remark_ru");
+            
+            // ★ 1. 获取前端传来的报警权限值
+            String alarmAlertStr = ParamUtils.getParameter(request, "alarmAlert");
+            int newAlarmAlert = StringManagerUtils.stringToInteger(alarmAlertStr);
+            
+            Role role=new Role();
+            role.setRoleId(StringManagerUtils.stringToInteger(roleId));
+            role.setRoleName_zh_CN(roleName_zh_CN);
+            role.setRoleName_en(roleName_en);
+            role.setRoleName_ru(roleName_ru);
+            role.setRoleLevel(StringManagerUtils.stringToInteger(roleLevel));
+            role.setRoleVideoKeyEdit("true".equalsIgnoreCase(roleVideoKeyEditName)?1:0);
+            role.setRoleLanguageEdit("true".equalsIgnoreCase(roleLanguageEditName)?1:0);
+            role.setShowLevel(StringManagerUtils.stringToInteger(showLevel));
+            role.setRemark_zh_CN(remark_zh_CN);
+            role.setRemark_en(remark_en);
+            role.setRemark_ru(remark_ru);
+            role.setAlarmAlert(newAlarmAlert); // 设置新权限
+            
+            // ★ 2. 先查出数据库里旧的权限状态，用于对比
+            int oldAlarmAlert = roleService.getRoleOldAlarmAlert(roleId);
+            
+            log.debug("edit role ==" + role.getRoleId());
+            HttpSession session=request.getSession();
+            User prttentuser = (User) session.getAttribute("userLogin");
+            
+            // ★ 3. 统一保存：执行修改并更新缓存
+            int r=this.roleService.updateRoleInfo(role, prttentuser);
+            
+            if(r==1){
+                MemoryDataManagerTask.loadUserInfoByRoleId(role.getRoleId()+"", "update");
+                result = "{\"success\":true,\"flag\":true}";
+                
+                // ★ 4. 保存完成后：如果报警权限发生了变更，再统一推送
+                if (oldAlarmAlert != newAlarmAlert) {
+                    List<String> userNos = roleService.getUserNosByRoleId(roleId);
+                    
+                    if (userNos != null && !userNos.isEmpty()) {
+                        // 组装推送的 JSON 数据
+                        String wsJson = "{\"functionCode\":\"ROLE_ALARM_ALERT_CHANGED\",\"roleId\":" + roleId + ",\"alarmAlert\":" + newAlarmAlert + "}";
+                        
+                        // 遍历当前在线的 WebSocket 客户端
+                        for (String websocketClientUserId : WebSocketByJavax.clients.keySet()) {
+                            try {
+                                String[] clientInfo = websocketClientUserId.split("_");
+                                // 假设格式是 XXX_userNo_XXX，取中间的用户号进行比对
+                                if (clientInfo != null && clientInfo.length == 3) {
+                                    String clientUserNo = clientInfo[1];
+                                    if (userNos.contains(clientUserNo)) {
+                                        infoHandler().sendMessageToUserId(websocketClientUserId, wsJson);
+                                        log.info("已向用户推送报警权限变更: " + clientUserNo);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                log.error("推送权限变更失败: " + websocketClientUserId, e);
+                            }
+                        }
+                    }
+                }
+                
+            }else if(r==2){
+                result = "{\"success\":true,\"flag\":false}";
+            }else{
+                result = "{\"success\":false,\"flag\":false}";
+            }
+        } catch (Exception e) {
+            result = "{\"success\":false,\"flag\":false}";
+            log.error("修改角色信息异常", e);
+        }
+        
+        response.setCharacterEncoding(Constants.ENCODING_UTF8);
+        response.setHeader("Cache-Control", "no-cache");
+        PrintWriter pw = response.getWriter();
+        pw.print(result);
+        pw.flush();
+        pw.close();
+        return null;
+    }
 	
 	@RequestMapping("/batchUpdateRoleInfo")
-	public String batchUpdateRoleInfo() throws IOException {
-		String result = "{\"success\":true,\"flag\":true}";
-		try {
-			HttpSession session=request.getSession();
-			User prttentuser = (User) session.getAttribute("userLogin");
-			
-			String data = ParamUtils.getParameter(request, "data");
-			Gson gson=new Gson();
-			java.lang.reflect.Type type=null;
-			type = new TypeToken<List<Role>>() {}.getType();
-			List<Role> list=gson.fromJson(data, type);
-			
-			int r=0;
-			if(list!=null){
-				List<String> updateIds=new ArrayList<>();
-				for(Role role:list){
-					log.debug("edit role ==" + role.getRoleId());
-					r=this.roleService.updateRoleInfo(role,prttentuser);
-					updateIds.add(role.getRoleId()+"");
-				}
-				if(updateIds.size()>0){
-					MemoryDataManagerTask.loadUserInfoByRoleId(StringUtils.join(updateIds, ","), "update");
-				}
-			}
-			if(r==1){
-				result = "{\"success\":true,\"flag\":true}";
-			}else if(r==2){
-				result = "{\"success\":true,\"flag\":false}";
-			}else{
-				result = "{\"success\":false,\"flag\":false}";
-			}
-		} catch (Exception e) {
-			result = "{\"success\":false,\"flag\":false}";
-			e.printStackTrace();
-		}
-		response.setCharacterEncoding(Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		response.setCharacterEncoding(Constants.ENCODING_UTF8);
-		response.getWriter().print(result);
-		pw.flush();
-		pw.close();
-		return null;
-	}
+    public String batchUpdateRoleInfo() throws IOException {
+        String result = "{\"success\":true,\"flag\":true}";
+        try {
+            HttpSession session = request.getSession();
+            User prttentuser = (User) session.getAttribute("userLogin");
+            
+            String data = ParamUtils.getParameter(request, "data");
+            Gson gson = new Gson();
+            java.lang.reflect.Type type = new TypeToken<List<Role>>(){}.getType();
+            List<Role> list = gson.fromJson(data, type);
+            
+            int r = 0;
+            if (list != null && !list.isEmpty()) {
+                List<String> updateIds = new ArrayList<>();
+                // ★ 核心：用于记录旧权限和新权限的对比
+                Map<String, Integer> oldAlarmAlertMap = new HashMap<>();
+                Map<String, Integer> newAlarmAlertMap = new HashMap<>();
+                
+                // 1. 统一执行保存
+                for (Role role : list) {
+                    log.debug("batch edit role ==" + role.getRoleId());
+                    String roleIdStr = role.getRoleId() + "";
+                    
+                    // 记录修改前的旧权限状态
+                    int oldAlert = roleService.getRoleOldAlarmAlert(roleIdStr);
+                    oldAlarmAlertMap.put(roleIdStr, oldAlert);
+                    
+                    // 记录前端传来的新权限状态
+                    int newAlert = role.getAlarmAlert() != null ? role.getAlarmAlert() : 0;
+                    newAlarmAlertMap.put(roleIdStr, newAlert);
+                    
+                    // 执行更新
+                    r = this.roleService.updateRoleInfo(role, prttentuser);
+                    updateIds.add(roleIdStr);
+                }
+                
+                // 刷新缓存
+                if (updateIds.size() > 0) {
+                    MemoryDataManagerTask.loadUserInfoByRoleId(StringUtils.join(updateIds, ","), "update");
+                }
+                
+                // 2. 保存完毕后，统一处理权限变更推送
+                for (String roleIdStr : updateIds) {
+                    int oldAlert = oldAlarmAlertMap.get(roleIdStr);
+                    int newAlert = newAlarmAlertMap.get(roleIdStr);
+                    
+                    if (oldAlert != newAlert) {
+                        // 权限发生变更，获取关联用户
+                        List<String> userNos = roleService.getUserNosByRoleId(roleIdStr);
+                        if (userNos != null && !userNos.isEmpty()) {
+                            String wsJson = "{\"functionCode\":\"ROLE_ALARM_ALERT_CHANGED\",\"roleId\":" + roleIdStr + ",\"alarmAlert\":" + newAlert + "}";
+                            
+                            // 遍历在线用户推送
+                            for (String websocketClientUserId : WebSocketByJavax.clients.keySet()) {
+                                try {
+                                    String[] clientInfo = websocketClientUserId.split("_");
+                                    if (clientInfo != null && clientInfo.length == 3) {
+                                        String clientUserNo = clientInfo[1];
+                                        if (userNos.contains(clientUserNo)) {
+                                            infoHandler().sendMessageToUserId(websocketClientUserId, wsJson);
+                                            log.info("【批量修改】已向用户推送角色[" + roleIdStr + "]报警权限变更，新状态: " + newAlert + "，用户: " + clientUserNo);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    log.error("推送权限变更失败: " + websocketClientUserId, e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (r == 1) {
+                result = "{\"success\":true,\"flag\":true}";
+            } else if (r == 2) {
+                result = "{\"success\":true,\"flag\":false}";
+            } else {
+                result = "{\"success\":false,\"flag\":false}";
+            }
+        } catch (Exception e) {
+            result = "{\"success\":false,\"flag\":false}";
+            log.error("批量修改角色异常", e);
+        }
+        
+        response.setCharacterEncoding(Constants.ENCODING_UTF8);
+        response.setHeader("Cache-Control", "no-cache");
+        PrintWriter pw = response.getWriter();
+        pw.print(result);
+        pw.flush();
+        pw.close();
+        return null;
+    }
 
 	/**<p>描述：角色模块显示方法</p>
 	 * @return

@@ -13,6 +13,11 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
     currentFile: '',
     // 确认回调
     onConfirm: Ext.emptyFn,
+    
+    // 记录当前已配置的三个级别的音频（不可删除）
+    configFiles: [],
+    // 全局试听音频实例
+    _previewAudio: null,
 
     initComponent: function () {
         var me = this;
@@ -70,6 +75,14 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
                     text: '刷新', 
                     iconCls: 'note-refresh',
                     handler: function() { me.loadData(true); } 
+                },
+                {
+                    xtype: 'button',
+                    text: '删除',
+                    iconCls: 'delete',
+                    itemId: 'btnDelete',
+                    disabled: true, // 默认禁用
+                    handler: function() { me.doDelete(); }
                 }
             ],
             items: [{
@@ -82,7 +95,6 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
                 store: me.store,
                 tpl: [
                     '<tpl for=".">',
-                        // ★ 内置样式应用
                         '<div class="scene-audio-item">',
                             iconTpl,
                             '<div style="font-size:12px;color:#333;margin-top:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:bold;" title="{fileName}">{fileName}</div>',
@@ -92,6 +104,14 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
                 listeners: { 
                     itemclick: function(view, record) {
                         view.getSelectionModel().select(record);
+                        me.updateDeleteBtnStatus(record.get('fileName'));
+                    },
+                    selectionchange: function(view, selections) {
+                        if (selections.length > 0) {
+                            me.updateDeleteBtnStatus(selections[0].get('fileName'));
+                        } else {
+                            me.down('#btnDelete').setDisabled(true);
+                        }
                     },
                     itemdblclick: function(view, record) { 
                         me.doSelect(record.get('fileName')); 
@@ -100,20 +120,22 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
             }]
         }];
 
+        // ★ 扩展底部按钮：播放、暂停、停止、取消、确定
         me.buttons = [
             { 
-                text: '试听', 
+                text: '▶ 播放', 
                 iconCls: 'play',
-                handler: function() {
-                    var view = me.down('[itemId=audioView]');
-                    var sel = view.getSelection();
-                    if (sel.length === 0) {
-                        Ext.Msg.alert('提示', '请先选择一个音频');
-                        return;
-                    }
-                    me.playPreview(sel[0].get('fileName'));
-                }
+                handler: function() { me.playPreview(); }
             },
+            { 
+                text: '⏸ 暂停', 
+                handler: function() { me.pausePreview(); }
+            },
+            { 
+                text: '⏹ 停止', 
+                handler: function() { me.stopPreview(); }
+            },
+            '->',
             { 
                 text: '取消', 
                 iconCls: 'cancel', 
@@ -146,6 +168,29 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
 
     loadData: function(keepSelection) {
         var me = this;
+        
+        // 1. 先获取已配置的声音（用于判断是否可删除）
+        Ext.Ajax.request({
+            url: context + '/alarmSetManagerController/getAlarmLevelColor',
+            method: 'GET',
+            success: function (resp) {
+                var r;
+                try { r = Ext.JSON.decode(resp.responseText); } catch (e) { return; }
+                if (r && r.Data) {
+                    me.configFiles = [];
+                    if (r.Data.FirstLevel && r.Data.FirstLevel.SoundFile) me.configFiles.push(r.Data.FirstLevel.SoundFile);
+                    if (r.Data.SecondLevel && r.Data.SecondLevel.SoundFile) me.configFiles.push(r.Data.SecondLevel.SoundFile);
+                    if (r.Data.ThirdLevel && r.Data.ThirdLevel.SoundFile) me.configFiles.push(r.Data.ThirdLevel.SoundFile);
+                }
+                
+                // 2. 获取音频列表
+                me._loadAudioList(keepSelection);
+            }
+        });
+    },
+
+    _loadAudioList: function(keepSelection) {
+        var me = this;
         Ext.Ajax.request({
             url: context + '/alarmSetManagerController/getAlarmSoundPool',
             method: 'GET',
@@ -158,6 +203,15 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
                     
                     if (keepSelection || me.currentFile) {
                         me.selectCurrentFile();
+                    }
+                    
+                    // 刷新后更新删除按钮状态
+                    var view = me.down('[itemId=audioView]');
+                    var sel = view.getSelection();
+                    if (sel.length > 0) {
+                        me.updateDeleteBtnStatus(sel[0].get('fileName'));
+                    } else {
+                        me.down('#btnDelete').setDisabled(true);
                     }
                 }
             }
@@ -182,14 +236,34 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
         
         if (matched) {
             try {
-                // 延迟一点点执行，确保 dataview 的 DOM 已经渲染完毕
                 Ext.defer(function() {
                     view.getSelectionModel().select(matched);
                     view.ensureVisible(matched);
+                    me.updateDeleteBtnStatus(matched.get('fileName'));
                 }, 50);
-            } catch (e) {
-                console.warn('默认选中失败', e);
-            }
+            } catch (e) {}
+        }
+    },
+
+    // 判断选中的文件是否可删除
+    updateDeleteBtnStatus: function(fileName) {
+        var me = this;
+        var btnDelete = me.down('#btnDelete');
+        if (!btnDelete) return;
+        
+        if (!fileName) {
+            btnDelete.setDisabled(true);
+            btnDelete.setTooltip('请先选择音频');
+            return;
+        }
+        
+        // 如果选中的文件在正在配置的三个级别中，则不可删除
+        if (me.configFiles.indexOf(fileName) > -1) {
+            btnDelete.setDisabled(true);
+            btnDelete.setTooltip('当前音频正在被报警级别使用，无法删除');
+        } else {
+            btnDelete.setDisabled(false);
+            btnDelete.setTooltip('删除选中的音频');
         }
     },
 
@@ -212,16 +286,86 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
         me.selectCurrentFile();
     },
 
-    playPreview: function(fileName) {
-        // 走后端流式接口，避免浏览器阻止或 404
+    // ============ 音频试听控制 ============
+    playPreview: function() {
+        var me = this;
+        var view = me.down('[itemId=audioView]');
+        var sel = view.getSelection();
+        if (sel.length === 0) {
+            Ext.Msg.alert('提示', '请先选择一个音频');
+            return;
+        }
+        
+        var fileName = sel[0].get('fileName');
         var url = context + '/alarmSetManagerController/playAlarmSound?fileName=' + encodeURIComponent(fileName) + '&_t=' + new Date().getTime();
-        var audio = new Audio(url);
-        audio.play().catch(function() {
+
+        if (!me._previewAudio) {
+            me._previewAudio = new Audio();
+        }
+        
+        // 如果当前播放的已经是这首，并且是暂停状态，直接恢复
+        if (me._previewAudio.src && me._previewAudio.src.indexOf(encodeURIComponent(fileName)) > -1 && me._previewAudio.paused) {
+            me._previewAudio.play();
+            return;
+        }
+        
+        // 否则切换新音源
+        me._previewAudio.src = url;
+        me._previewAudio.play().catch(function() {
             Ext.Msg.alert('提示', '音频播放失败，请检查文件格式或网络');
         });
     },
 
+    pausePreview: function() {
+        var me = this;
+        if (me._previewAudio && !me._previewAudio.paused) {
+            me._previewAudio.pause();
+        }
+    },
+
+    stopPreview: function() {
+        var me = this;
+        if (me._previewAudio) {
+            me._previewAudio.pause();
+            me._previewAudio.currentTime = 0;
+        }
+    },
+
+    // ============ 删除音频 ============
+    doDelete: function() {
+        var me = this;
+        var view = me.down('[itemId=audioView]');
+        var sel = view.getSelection();
+        if (sel.length === 0) return;
+        
+        var fileName = sel[0].get('fileName');
+        
+        Ext.Msg.confirm('确认', '确定要永久删除音频文件 <b>' + fileName + '</b> 吗？', function(btn) {
+            if (btn === 'yes') {
+                Ext.Ajax.request({
+                    url: context + '/alarmSetManagerController/deleteAlarmSoundPool',
+                    method: 'POST',
+                    params: { fileName: fileName },
+                    success: function(response) {
+                        var r = Ext.decode(response.responseText);
+                        if (r.success) {
+//                            Ext.toast({ html: '删除成功', title: '提示', width: 200, align: 't' });
+                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
+                            me.stopPreview(); // 如果正在播，先停掉
+                            me.currentFile = ''; // 清空当前选中
+                            me.loadData(true); // 刷新列表
+                        } else {
+                        	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteFailed);
+                        }
+                    }
+                });
+            }
+        });
+    },
+
     doSelect: function(fileName) {
+        // 关闭前停止试听
+        this.stopPreview();
         if (this.onConfirm) {
             this.onConfirm(fileName);
         }
@@ -250,21 +394,28 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
                 var r;
                 try { r = JSON.parse(xhr.responseText); } catch (e) { r = { success: false }; }
                 if (r.success) {
-                    Ext.toast({ html: '上传成功', title: '提示', width: 200, align: 't' });
+                	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadSuccess);
                     var newFileName = r.fileName || fileInput.files[0].name;
-                    me.currentFile = newFileName; // 自动选中刚刚上传的
+                    me.currentFile = newFileName; // 自动选中刚刚上传的（如果是重名被加了时间戳，这里也是最新的文件名）
                     me.loadData(true); 
                 } else {
-                    Ext.Msg.alert('提示', r.message || '上传失败');
+                	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadFail);
                 }
                 document.body.removeChild(fileInput);
             };
             xhr.onerror = function() {
-                Ext.Msg.alert('错误', '上传失败');
+            	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.uploadFail);
                 document.body.removeChild(fileInput);
             };
             xhr.send(formData);
         };
         fileInput.click();
+    },
+    
+    // 窗口关闭时清理音频资源
+    onDestroy: function() {
+        this.stopPreview();
+        this._previewAudio = null;
+        this.callParent(arguments);
     }
 });

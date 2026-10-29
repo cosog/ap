@@ -327,26 +327,67 @@ public class AlarmSetManagerController extends BaseController {
             MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
             MultipartFile file = multipartRequest.getFile("file");
             
-            if (file != null && level != null) {
-                String basePath = Config.getInstance().configFile.getAp().getOem().getAlarmSound();
-                File dir = new File(basePath);
+            if (file != null && !file.isEmpty()) {
+                String dirPath = getAlarmSoundPhysicalDir();
+                if (!StringManagerUtils.isNotNull(dirPath)) {
+                    resp.put("success", false);
+                    resp.put("message", "找不到音频目录");
+                    return new Gson().toJson(resp);
+                }
+                
+                File dir = new File(dirPath);
                 if (!dir.exists()) dir.mkdirs();
                 
-                String fileName = file.getOriginalFilename(); 
+                String originalName = file.getOriginalFilename();
+                if (originalName == null) originalName = "audio.mp3";
+                originalName = originalName.replace("\\", "/");
+                int slashIdx = originalName.lastIndexOf("/");
+                if (slashIdx >= 0) originalName = originalName.substring(slashIdx + 1);
+                
+                String lower = originalName.toLowerCase();
+                if (!lower.endsWith(".mp3") && !lower.endsWith(".wav") && !lower.endsWith(".ogg")) {
+                    resp.put("success", false);
+                    resp.put("message", "仅支持 mp3/wav/ogg 格式");
+                    return new Gson().toJson(resp);
+                }
+
+                // ★ 参考场景图片上传逻辑：同名文件自动加时间戳
+                String fileName = originalName;
                 File dest = new File(dir, fileName);
+                if (dest.exists()) {
+                    int dotIdx = originalName.lastIndexOf(".");
+                    if (dotIdx > 0) {
+                        fileName = originalName.substring(0, dotIdx)
+                                + "_" + System.currentTimeMillis()
+                                + originalName.substring(dotIdx);
+                    } else {
+                        fileName = originalName + "_" + System.currentTimeMillis();
+                    }
+                    dest = new File(dir, fileName);
+                }
+                
                 file.transferTo(dest);
                 
                 resp.put("success", true);
+                resp.put("fileName", fileName); // 返回最终生成的文件名
             } else {
                 resp.put("success", false);
-                resp.put("message", "文件或级别为空");
+                resp.put("message", "文件为空");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("uploadAlarmSound error", e);
             resp.put("success", false);
             resp.put("message", e.getMessage());
         }
-        return new Gson().toJson(resp);
+        
+        response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+        try {
+            PrintWriter pw = response.getWriter();
+            pw.print(new Gson().toJson(resp));
+            pw.flush();
+            pw.close();
+        } catch (Exception ignore) {}
+        return null;
     }
 
     /**
@@ -439,6 +480,41 @@ public class AlarmSetManagerController extends BaseController {
             e.printStackTrace();
             response.setStatus(500);
         }
+    }
+    
+    @RequestMapping("/deleteAlarmSoundPool")
+    public String deleteAlarmSoundPool(String fileName) {
+        Map<String, Object> resp = new HashMap<String, Object>();
+        try {
+            if (StringManagerUtils.isNotNull(fileName)) {
+                String dir = getAlarmSoundPhysicalDir();
+                if (StringManagerUtils.isNotNull(dir)) {
+                    File file = new File(dir, fileName);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                    resp.put("success", true);
+                } else {
+                    resp.put("success", false);
+                    resp.put("message", "找不到音频目录");
+                }
+            } else {
+                resp.put("success", false);
+                resp.put("message", "文件名为空");
+            }
+        } catch (Exception e) {
+            log.error("deleteAlarmSoundPool error", e);
+            resp.put("success", false);
+            resp.put("message", e.getMessage());
+        }
+        response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+        try {
+            PrintWriter pw = response.getWriter();
+            pw.print(new Gson().toJson(resp));
+            pw.flush();
+            pw.close();
+        } catch (Exception ignore) {}
+        return null;
     }
 
 	public String getOrgId() {

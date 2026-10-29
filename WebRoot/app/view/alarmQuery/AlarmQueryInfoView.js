@@ -375,8 +375,9 @@ function exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceNam
     + "&alarmLevel=" + alarmLevel
     + "&isSendMessage=" + isSendMessage
     + "&fileName=" + URLencode(URLencode(fileName)) 
-    + "&title=" + URLencode(URLencode(title));
-    exportDataMask(key, 'AlarmQuerySecondTabPanel', _loginUserLanguageResource.loadingData);
+    + "&title=" + URLencode(URLencode(title))
+    + "&key=" + key;
+    exportDataMask(key, 'AlarmQuerySecondTabPanel', loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
 };
 

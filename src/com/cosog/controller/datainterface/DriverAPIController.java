@@ -2717,6 +2717,8 @@ public class DriverAPIController extends BaseController{
 		            + "\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\","
 		            + "\"triggerAlarm\":" + (acquisitionItemInfoList.get(j).getTriggerAlarm()) + ","
 		            + "\"alertId\":" + (acquisitionItemInfoList.get(j).getAlertId() != null ? acquisitionItemInfoList.get(j).getAlertId() : "null") + ","
+		            + "\"alarmType\":"+(acquisitionItemInfoList.get(j).getAlarmType())+","
+		            + "\"alarmInfo\":\""+(acquisitionItemInfoList.get(j).getAlarmInfo())+"\","
 		            + "\"alarmLevel\":"+(acquisitionItemInfoList.get(j).getAlarmLevel())+"},");
 		}
 		

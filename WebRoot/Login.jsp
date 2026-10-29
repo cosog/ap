@@ -277,24 +277,26 @@
 	 
 	// 登录前台的返调函数处理
 	 function callback(data,username) {
-		var obj;
-		var resultObj = $("#errorName");
-		if(data!=""||data!=null){
-			obj= eval("(" + data + ")");
-		}else{
-			window.location.href = "<%=path%>/errorinfo.html";
+			var obj;
+			var resultObj = $("#errorName");
+			if(data!=""||data!=null){
+				obj= eval("(" + data + ")");
+			}else{
+				window.location.href = "<%=path%>/errorinfo.html";
+			}
+			if (obj.flag == "normal") {
+				// ★ 记录登录成功标识，传递给主界面，用于主动打开音频权限
+				sessionStorage.setItem("justLoggedIn", "true"); 
+				window.location.href = "<%=path%>/home";
+			} else if (obj.flag == "admin") {
+				resultObj.html(obj.msg);
+				window.location.href = "<%=path%>/toBackLogin";
+			} else {
+				resultObj.html(obj.msg);
+			}
+			return false;
 		}
-		if (obj.flag == "normal") {
-			//$.cookie("username", username, { expires: 7 });
-			window.location.href = "<%=path%>/home";
-		} else if (obj.flag == "admin") {
-			resultObj.html(obj.msg);
-			window.location.href = "<%=path%>/toBackLogin";
-		} else {
-			resultObj.html(obj.msg);
-		}
-		return false;
-	}
+	
 	// 登录账号处理
 	 function error_NameFn(){
 	     $("#userId").focus();

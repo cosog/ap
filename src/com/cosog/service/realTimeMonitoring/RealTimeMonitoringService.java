@@ -7479,8 +7479,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			accessToken=MemoryDataManagerTask.getUIKitAccessTokenById(StringManagerUtils.stringToInteger(videoKeyId));
 			if(accessToken!=null&&"200".equalsIgnoreCase(accessToken.getCode())){
 				success=true;
-				accessTokenStr=accessToken.getData().getAccessToken();
-				expireTime=accessToken.getData().getExpireTime();
+				accessTokenStr=accessToken.getData()!=null?accessToken.getData().getAccessToken():"";
+				expireTime=accessToken.getData()!=null?accessToken.getData().getExpireTime():0;
 			}
 			dataSbf.append("{\"success\":"+success+",\"accessToken\":\""+accessTokenStr+"\",\"expireTime\":"+expireTime+"}");
 		} catch (Exception e) {

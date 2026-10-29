@@ -253,6 +253,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
         this.setPosition(x, y);
     },
 
+    
     addAlarmNode: function (alarm) {
         var deviceNode = this.getOrCreateDeviceNode(alarm);
         var exists = deviceNode.findChild('alarmKey', alarm.key, true);
@@ -263,8 +264,13 @@ Ext.define('AP.view.alert.AlarmWindow', {
         
         var initialStatus = (alarm.ackStatus == 1) ? 'ACK' : 'NEW'; 
         
+        var displayText = alarm.columnName + '：' + alarm.value;
+        if ((alarm.alarmType == 2 || alarm.alarmType == 5) && alarm.alarminfo) {
+            displayText = alarm.columnName + '（' + alarm.alarminfo + '）：' + alarm.value;
+        }
+        
         deviceNode.appendChild({
-            text: alarm.columnName + '：' + alarm.value,
+            text: displayText,
             leaf: true,
             alarmKey: alarm.key,
             alarmLevel: alarm.alarmLevel,
@@ -296,7 +302,12 @@ Ext.define('AP.view.alert.AlarmWindow', {
     },
 
     updateNode: function (node, alarm) {
-        node.set('text', alarm.columnName + '：' + alarm.value);
+    	var displayText = alarm.columnName + '：' + alarm.value;
+    	if ((alarm.alarmType == 2 || alarm.alarmType == 5) && alarm.alarminfo) {
+    	    displayText = alarm.columnName + '（' + alarm.alarminfo + '）：' + alarm.value;
+    	}
+    	
+        node.set('text', displayText);
         node.set('value', alarm.value);
         node.set('alarmLevel', alarm.alarmLevel);
         node.set('acqTime', alarm.acqTime);

@@ -269,6 +269,34 @@ function websocketOnMessage(evt) {
         var data;
         try { data = Ext.JSON.decode(messages[mi]); } catch (e) { continue; }
         if (!data || !data.functionCode) continue;
+        
+        
+     // ★ 新增：拦截角色报警权限变更指令
+        if (data.functionCode.toUpperCase() === 'ROLE_ALARM_ALERT_CHANGED') {
+            var hasAlertRight = (data.alarmAlert == 1);
+            
+            window.alarmAlert = hasAlertRight; 
+            alarmAlert = hasAlertRight;
+            
+            if (!hasAlertRight) {
+                // 失去权限：清空界面，停止声音
+                if (window.AP && AP.alert && AP.alert.AlarmManager) {
+                    AP.alert.AlarmManager.clearAllForPermissionLoss();
+                }
+                Ext.toast({ html: '您的角色报警提醒权限已被管理员关闭', title: '权限变更', width: 300, align: 'br' });
+            } else {
+                // 获得权限：初始化声音，拉取未确认报警
+                if (window.AP && AP.alert && AP.alert.AlarmManager) {
+                    if (AP.alert.AlarmSoundManager) {
+                        AP.alert.AlarmSoundManager.initUnlock();
+                        AP.alert.AlarmSoundManager.loadConfig();
+                    }
+                    AP.alert.AlarmManager.loadPendingAlarms();
+                }
+                Ext.toast({ html: '您的角色报警提醒权限已被管理员开启', title: '权限变更', width: 300, align: 'br' });
+            }
+            continue; // 处理完权限变更，不再走后续业务逻辑
+        }
 
         // ★ 只有开启时才处理报警，避免加载 AlarmWindow / AlarmSoundManager
         if (typeof alarmAlert !== 'undefined' && alarmAlert) {

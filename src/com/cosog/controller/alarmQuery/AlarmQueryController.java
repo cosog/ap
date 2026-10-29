@@ -349,11 +349,14 @@ public class AlarmQueryController extends BaseController{
 
 	        HttpSession session = request.getSession();
 	        User user = (User) session.getAttribute("userLogin");
-	        String userNo = user != null ? user.getUserNo() + "" : "";
-	        log.info("batchAck userNo=" + userNo + ", size=" + alertIds.size());
+	        
+	        // ★ 核心修改：获取用户账号 userId，而不是 userNo
+	        String ackUser = user != null ? user.getUserId() + "" : "";
+	        
+	        log.info("batchAck user=" + ackUser + ", size=" + alertIds.size());
 
-	        // 1) 落库 + 内存同步（全部交给 AlarmQueryService）
-	        Map<String, Object> ackResult = alarmQueryService.batchAckAlarm(alertIds, userNo);
+	        // 1) 落库 + 内存同步（把 ackUser 传进去）
+	        Map<String, Object> ackResult = alarmQueryService.batchAckAlarm(alertIds, ackUser);
 
 	        // 2) 广播 alarmAcked
 	        List<Integer> deviceIds = (List<Integer>) ackResult.get("deviceIds");
@@ -361,7 +364,7 @@ public class AlarmQueryController extends BaseController{
 	        if (deviceIds != null && !deviceIds.isEmpty() && successIds != null && !successIds.isEmpty()) {
 	            String ackTime = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 
-	            // 手动拼 JSON（和 DataProcessing 里 getWebSocketSendData 风格一致）
+	            // 手动拼 JSON
 	            StringBuffer webSocketSendData = new StringBuffer();
 	            webSocketSendData.append("{\"functionCode\":\"alarmAcked\",");
 	            webSocketSendData.append("\"alertIds\":[");
@@ -376,24 +379,28 @@ public class AlarmQueryController extends BaseController{
 	                webSocketSendData.append(deviceIds.get(i));
 	            }
 	            webSocketSendData.append("],");
-	            webSocketSendData.append("\"ackUser\":\"" + userNo + "\",");
+	            
+	            // ★ 推送的 ackUser 也是账号
+	            webSocketSendData.append("\"ackUser\":\"" + ackUser + "\","); 
+	            
 	            webSocketSendData.append("\"ackTime\":\"" + ackTime + "\"");
 	            webSocketSendData.append("}");
 
 	            String wsJson = webSocketSendData.toString();
 
-	            // 完全复刻 DataProcessing 的推送方式
+	            // 遍历在线客户端推送
 	            for (String websocketClientUserId : WebSocketByJavax.clients.keySet()) {
 	                try {
-	                    String websocketClientUser = "";
+	                    String websocketClientUserNo = "";
 	                    String[] clientInfo = websocketClientUserId.split("_");
 	                    if (clientInfo != null && clientInfo.length == 3) {
-	                        websocketClientUser = clientInfo[1];
+	                        websocketClientUserNo = clientInfo[1]; // 注意这里获取的是 WS 连接的 userNo
 	                    }
-	                    UserInfo userInfo = MemoryDataManagerTask.getUserInfoByNo(websocketClientUser);
+	                    
+	                    // 权限校验还是用 userNo 查 UserInfo
+	                    UserInfo userInfo = MemoryDataManagerTask.getUserInfoByNo(websocketClientUserNo);
 	                    if (userInfo == null) continue;
 
-	                    // 只要对其中任一 deviceId 有权限就推
 	                    boolean hasPermission = false;
 	                    for (Integer did : deviceIds) {
 	                        DeviceInfo deviceInfo = MemoryDataManagerTask.getDeviceInfo(did + "");

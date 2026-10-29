@@ -755,4 +755,31 @@ public class RoleManagerService<T> extends BaseService<T> {
 		
 		return result;
 	}
+	
+	/**
+     * 根据角色 ID 获取关联的用户 No 列表
+     */
+    public List<String> getUserNosByRoleId(String roleId) {
+        List<String> userNos = new ArrayList<>();
+        String sql = "select t.user_no from tbl_user t where t.user_type = " + roleId;
+        List<?> list = this.findCallSql(sql);
+        for (Object o : list) {
+            if (o != null) {
+                userNos.add(o.toString());
+            }
+        }
+        return userNos;
+    }
+
+    /**
+     * 查询数据库中该角色当前的报警权限状态 (用于对比)
+     */
+    public int getRoleOldAlarmAlert(String roleId) {
+        String sql = "select t.alarmAlert from tbl_role t where t.role_id = " + roleId;
+        List<?> list = this.findCallSql(sql);
+        if (list != null && list.size() > 0 && list.get(0) != null) {
+            return StringManagerUtils.stringToInteger(list.get(0).toString());
+        }
+        return 0;
+    }
 }

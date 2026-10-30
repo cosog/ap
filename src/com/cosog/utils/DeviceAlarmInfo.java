@@ -281,6 +281,7 @@ public class DeviceAlarmInfo {
 		public Integer alertId;
 		
 		public String ackUser; // ★ 新增：确认人
+		public String ackIp; // ★ 新增：确认IP
         public String ackTime; // ★ 新增：确认时间
 		
 		public String getAlarmTime() {
@@ -432,6 +433,12 @@ public class DeviceAlarmInfo {
 		}
 		public void setAckTime(String ackTime) {
 			this.ackTime = ackTime;
+		}
+		public String getAckIp() {
+			return ackIp;
+		}
+		public void setAckIp(String ackIp) {
+			this.ackIp = ackIp;
 		}
 		
 	}

@@ -274,13 +274,18 @@ Ext.define('AP.alert.AlarmManager', {
             this.win.getEl().unmask();
         }
     },
-    onRemoteAck: function (alertIds, ackUser, ackTime) {
+    onRemoteAck: function (alertIds, ackUser, ackIp, ackTime) {
         if (!alertIds || alertIds.length === 0) return;
         var self = this;
         var ackSet = {};
         Ext.Array.each(alertIds, function (id) { ackSet[id] = true; });
         Ext.Object.each(this.alarms, function (key, alarm) {
-            if (alarm.alertId && ackSet[alarm.alertId]) self.ackKeys[key] = true;
+            if (alarm.alertId && ackSet[alarm.alertId]) {
+                self.ackKeys[key] = true;
+                alarm.ackUser = ackUser; // 记录确认人
+                alarm.ackIp = ackIp;     // 记录确认IP
+                alarm.ackTime = ackTime; // 记录确认时间
+            }
         });
         if (this.win) this.win.markRemoteAck(ackSet);
     },

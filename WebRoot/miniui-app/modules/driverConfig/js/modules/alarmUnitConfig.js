@@ -2184,7 +2184,7 @@ function openImportAlarmUnitWindow() {
 //================================================================
 function openAlarmColorSelectWindow() {
  mini.open({
-     title: _loginUserLanguageResource.alarmColorConfig,
+     title: _loginUserLanguageResource.alarmAlertSettings,
      url: context + '/miniui-app/modules/driverConfig/alarmColorSelectWindow.jsp',
      width: 700,
      height: 560,

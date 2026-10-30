@@ -213,13 +213,13 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     	    }
                     	}
                     }, {
-                        header: loginUserLanguageResource.alarmAlert,
+                        header: loginUserLanguageResource.alarmPopup,
                         xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
                         sortable: true,
                         disabled:loginUserRoleManagerModuleRight.editFlag!=1,
-                        width: getLabelWidth(loginUserLanguageResource.alarmAlert,loginUserLanguage)+'px',
+                        width: getLabelWidth(loginUserLanguageResource.alarmPopup,loginUserLanguage)+'px',
                         dataIndex: 'roleAlarmAlertName',
                         editor: {
                         	xtype: 'checkbox',

@@ -227,7 +227,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 				+ " t.recoverytime,"
 				+ " t.ack_status,decode(t.ack_status,1,'"+languageResourceMap.get("confirmed")+"','"+languageResourceMap.get("unconfirmed")+"') as ackStatusName,"
-				+ " t.ack_user,to_char(t.ack_time,'yyyy-mm-dd hh24:mi:ss') as ackTime,"
+				+ " decode(t.ack_status,1,t.ack_user,''),"
+				+ " decode(t.ack_status,1,t.ack_ip,''),"
+				+ " decode(t.ack_status,1,to_char(t.ack_time,'yyyy-mm-dd hh24:mi:ss'),'') as ackTime,"
 				+ " t.orgid "
 				+ " from "+tableName+" t where t.orgid in ("+orgId+") "
 				+ " and t.alarmtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
@@ -337,9 +339,10 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			result_json.append("\"ackStatus\":\""+obj[18]+"\",");
 			result_json.append("\"ackStatusName\":\""+obj[19]+"\",");
 			result_json.append("\"ackUser\":\""+obj[20]+"\",");
-			result_json.append("\"ackTime\":\""+obj[21]+"\",");
+			result_json.append("\"ackIP\":\""+obj[21]+"\",");
+			result_json.append("\"ackTime\":\""+obj[22]+"\",");
 			
-			result_json.append("\"orgId\":\""+obj[22]+"\"},");
+			result_json.append("\"orgId\":\""+obj[23]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -370,7 +373,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		    List<List<Object>> sheetDataList = new ArrayList<>();
 		    sheetDataList.add(headRow);
 			
-			String sql="select t.id,t.deviceid,t.devicename,t.devicetype,t.deviceTypeName_"+language+",to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as alarmtime,"
+		    String sql="select t.id,t.deviceid,t.devicename,t.devicetype,t.deviceTypeName_"+language+",to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as alarmtime,"
 					+ " t.itemname,t.alarmtype,"
 					+ " t.alarmvalue,t.alarminfo,t.alarmlimit,t.hystersis,"
 					+ " t.alarmlevel,"
@@ -379,7 +382,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 					+ " decode(t.issendmail,1,'"+languageResourceMap.get("yes")+"','"+languageResourceMap.get("no")+"') as issendmail,"
 					+ " t.recoverytime,"
 					+ " t.ack_status,decode(t.ack_status,1,'"+languageResourceMap.get("confirmed")+"','"+languageResourceMap.get("unconfirmed")+"') as ackStatusName,"
-					+ " t.ack_user,to_char(t.ack_time,'yyyy-mm-dd hh24:mi:ss') as ackTime,"
+					+ " decode(t.ack_status,1,t.ack_user,''),"
+					+ " decode(t.ack_status,1,t.ack_ip,''),"
+					+ " decode(t.ack_status,1,to_char(t.ack_time,'yyyy-mm-dd hh24:mi:ss'),'') as ackTime,"
 					+ " t.orgid "
 					+ " from "+tableName+" t where t.orgid in ("+orgId+") "
 					+ " and t.alarmtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
@@ -490,9 +495,10 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				
 				result_json.append("\"ackStatusName\":\""+obj[19]+"\",");
 				result_json.append("\"ackUser\":\""+obj[20]+"\",");
-				result_json.append("\"ackTime\":\""+obj[21]+"\",");
+				result_json.append("\"ackIP\":\""+obj[21]+"\",");
+				result_json.append("\"ackTime\":\""+obj[22]+"\",");
 				
-				result_json.append("\"orgId\":\""+obj[22]+"\"}");
+				result_json.append("\"orgId\":\""+obj[23]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {
@@ -865,7 +871,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	// ============================================================
 	// 批量确认报警（同时批量确认同测点的历史积压记录）
 	// ============================================================
-	public Map<String, Object> batchAckAlarm(List<Number> alertIds, String ackUser) {
+	public Map<String, Object> batchAckAlarm(List<Number> alertIds, String ackUser, String ackIp) {
 	    Map<String, Object> result = new HashMap<String, Object>();
 	    List<Long> successIds = new ArrayList<Long>();
 	    List<Long> alreadyAckedIds = new ArrayList<Long>();
@@ -882,6 +888,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 
 	    String ackTime = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 	    String safeUser = ackUser == null ? "" : ackUser.replace("'", "''");
+	    String safeIp = ackIp == null ? "" : ackIp.replace("'", "''");
 
 	    for (Number n : alertIds) {
 	        if (n == null) continue;
@@ -937,6 +944,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            String updateHist = "update tbl_alarminfo_hist t "
 	                    + " set t.ack_status = 1, "
 	                    + "     t.ack_user   = '" + safeUser + "', "
+	                    + "     t.ack_ip     = '" + safeIp + "', "
 	                    + "     t.ack_time   = to_date('" + ackTime + "','yyyy-mm-dd hh24:mi:ss') "
 	                    + whereCondition;
 	            
@@ -950,13 +958,14 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	                String updateLatest = "update tbl_alarminfo_latest t "
 	                        + " set t.ack_status = 1, "
 	                        + "     t.ack_user   = '" + safeUser + "', "
+	                        + "     t.ack_ip     = '" + safeIp + "', "
 	                        + "     t.ack_time   = to_date('" + ackTime + "','yyyy-mm-dd hh24:mi:ss') "
 	                        + whereCondition;
 	                getBaseDao().updateOrDeleteBySql(updateLatest);
 
 	                // 同步内存（这里要考虑 Key 的生成逻辑，确保内存里的也置为确认）
 	                try { 
-	                    syncMemoryAck(deviceId, itemCode, bitIndex, alarmType, alarmInfo, alarmValue, safeUser, ackTime); 
+	                    syncMemoryAck(deviceId, itemCode, bitIndex, alarmType, alarmInfo, alarmValue, safeUser, safeIp, ackTime); 
 	                } catch (Exception e) { 
 	                    e.printStackTrace(); 
 	                }
@@ -981,7 +990,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	/**
 	 * 同步内存：将内存中匹配的报警状态置为已确认
 	 */
-	private void syncMemoryAck(int deviceId, String column, String bitIndex, int alarmType, String alarmInfo, String alarmValue, String ackUser, String ackTime) {
+	private void syncMemoryAck(int deviceId, String column, String bitIndex, int alarmType, String alarmInfo, String alarmValue, String ackUser, String ackIp, String ackTime) {
 	    Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
 	    if (deviceAlarmInfoMap == null) return;
 	    DeviceAlarmInfo dai = deviceAlarmInfoMap.get(deviceId);
@@ -1032,6 +1041,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            ai.setAlertId(null); 
 	            ai.setTriggerAlarm(false);
 	            ai.setAckUser(ackUser);
+	            ai.setAckIp(ackIp);
 	            ai.setAckTime(ackTime);
 	            break; // 找到对应项并确认后，跳出循环
 	        }

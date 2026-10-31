@@ -1691,7 +1691,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                 'alarmUnitRefreshBtn': 'refresh',
                 'alarmUnitAddBtn': 'addAlarmUnit',
                 'alarmUnitSaveBtn': 'save',
-                'alarmUnitColorBtn': 'alarmColorConfig',
+                'alarmUnitColorBtn': 'alarmAlertSettings',
                 'alarmUnitExportBtn': 'exportData',
                 'alarmUnitImportBtn': 'importData',
                 'alarmNumericSelectAll': 'selectAll',

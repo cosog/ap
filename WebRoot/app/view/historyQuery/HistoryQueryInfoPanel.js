@@ -788,7 +788,16 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                            	 	
                            	 	exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,dictDeviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,numStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                             }
-                        }]
+                        },'->',{
+                            xtype: 'button',
+                            text: loginUserLanguageResource.comparativeAnalysis,
+                            iconCls: 'wellboreTrajectory',
+                            hidden:false,
+                            handler: function (v, o) {
+                            	var HistoryDataComparativeAnalysisWindow = Ext.create("AP.view.historyQuery.HistoryDataComparativeAnalysisWindow");
+                            	HistoryDataComparativeAnalysisWindow.show();
+                    		}
+                		}]
                     },{
                     	region: 'south',
                     	split: true,

@@ -204,7 +204,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 
     // ---- 国际化 ----
     function initI18n() {
-        document.title = _loginUserLanguageResource.alarmColorConfig;
+        document.title = _loginUserLanguageResource.alarmAlertSettings;
         var btnSave = mini.get('btnSave');
         if (btnSave) btnSave.setText(_loginUserLanguageResource.save);
 

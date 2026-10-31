@@ -862,7 +862,7 @@ function handleBusinessMessage(data) {
     } else if (data.functionCode.toUpperCase() == "ALARMACKED") {
         if (typeof alarmAlert !== 'undefined' && alarmAlert) {
             try {
-                AP.alert.AlarmManager.onRemoteAck(data.alertIds, data.ackUser, data.ackTime);
+            	AP.alert.AlarmManager.onRemoteAck(data.alertIds, data.ackUser, data.ackIp, data.ackTime);
             } catch (e) {
                 if (window.console) console.error('remote ack error', e);
             }

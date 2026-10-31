@@ -2,7 +2,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.alarmColorSelectWindow',
     layout: 'fit',
-    title: loginUserLanguageResource.alarmColorConfig,
+    title: loginUserLanguageResource.alarmAlertSettings,
     iframe: true,
     id: 'AlarmColorSelectWindow_Id',
     closeAction: 'destroy',

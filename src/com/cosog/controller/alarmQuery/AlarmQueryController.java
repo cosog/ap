@@ -352,11 +352,12 @@ public class AlarmQueryController extends BaseController{
 	        
 	        // ★ 核心修改：获取用户账号 userId，而不是 userNo
 	        String ackUser = user != null ? user.getUserId() + "" : "";
+	        String ackIp = user != null ? user.getLoginIp() : "";
 	        
-	        log.info("batchAck user=" + ackUser + ", size=" + alertIds.size());
+	        log.info("batchAck user=" + ackUser + ", ackIp=" + ackIp + ", size=" + alertIds.size());
 
 	        // 1) 落库 + 内存同步（把 ackUser 传进去）
-	        Map<String, Object> ackResult = alarmQueryService.batchAckAlarm(alertIds, ackUser);
+	        Map<String, Object> ackResult = alarmQueryService.batchAckAlarm(alertIds, ackUser, ackIp);
 
 	        // 2) 广播 alarmAcked
 	        List<Integer> deviceIds = (List<Integer>) ackResult.get("deviceIds");
@@ -382,7 +383,7 @@ public class AlarmQueryController extends BaseController{
 	            
 	            // ★ 推送的 ackUser 也是账号
 	            webSocketSendData.append("\"ackUser\":\"" + ackUser + "\","); 
-	            
+	            webSocketSendData.append("\"ackIp\":\"" + ackIp + "\","); 
 	            webSocketSendData.append("\"ackTime\":\"" + ackTime + "\"");
 	            webSocketSendData.append("}");
 

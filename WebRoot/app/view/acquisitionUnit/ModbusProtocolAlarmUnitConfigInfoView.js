@@ -594,12 +594,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
         			}
                 },"-",{
                 	xtype: 'button',
-        			text: loginUserLanguageResource.alarmColorConfig,
+        			text: loginUserLanguageResource.alarmAlertSettings,
         			disabled:loginUserProtocolConfigModuleRight.editFlag!=1,
         			iconCls: 'alarm',
         			handler: function (v, o) {
         				var window = Ext.create("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
-        			        title: loginUserLanguageResource.alarmColorConfig
+        			        title: loginUserLanguageResource.alarmAlertSettings
         			    });
         			    window.show();
         			    getAlarmLevelSetColor();

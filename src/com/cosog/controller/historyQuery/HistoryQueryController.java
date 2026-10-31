@@ -1074,6 +1074,106 @@ public class HistoryQueryController extends BaseController  {
 		return null;
 	}
 	
+	@RequestMapping("/getComparativeAnalysisDeviceList")
+	public String getComparativeAnalysisDeviceList() throws Exception {
+		String json = "";
+		int dataPage=1;
+		orgId = ParamUtils.getParameter(request, "orgId");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		json = historyQueryService.getComparativeAnalysisDeviceList(orgId,deviceType,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getComparativeAnalysisItemList")
+	public String getComparativeAnalysisItemList() throws Exception {
+		String json = "";
+		int dataPage=1;
+		orgId = ParamUtils.getParameter(request, "orgId");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		json = historyQueryService.getComparativeAnalysisItemList(orgId,deviceType,user);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getComparativeAnalysisCurveData")
+	public String getComparativeAnalysisCurveData() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceNames = ParamUtils.getParameter(request, "deviceNames");
+		String deviceIds = ParamUtils.getParameter(request, "deviceIds");
+		String itemName = ParamUtils.getParameter(request, "itemName");
+		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
+		String itemUnit = ParamUtils.getParameter(request, "itemUnit");
+		String dataSource = ParamUtils.getParameter(request, "dataSource");
+		
+		startDate = ParamUtils.getParameter(request, "startDate");
+		endDate = ParamUtils.getParameter(request, "endDate");
+		String hours = ParamUtils.getParameter(request, "hours");
+		String deviceTableName="tbl_device";
+		String tableName="tbl_acqdata_hist";
+		if(user!=null){
+			if(!StringManagerUtils.isNotNull(endDate)){
+				String sql = " select to_char(t.acqTime+1/(24*60),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t "
+						+ " where t.id=  (select max(t2.id) from "+tableName+" t2 where t2.deviceId in ( "+deviceIds+"))";
+				List list = this.service.reportDateJssj(sql);
+				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+					endDate = list.get(0).toString();
+				} else {
+					endDate = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+				}
+				if(!StringManagerUtils.isNotNull(startDate)){
+					startDate=endDate.split(" ")[0]+" 00:00:00";
+				}
+			}
+			
+			
+			this.pager = new Page("pagerForm", request);
+			json = historyQueryService.getComparativeAnalysisCurveData(deviceIds,deviceNames,itemName,itemColumn,itemUnit,dataSource,startDate,endDate,user);
+		}
+		
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	public String getLimit() {
 		return limit;
 	}

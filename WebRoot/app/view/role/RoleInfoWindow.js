@@ -34,8 +34,8 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         if(labelWidth<getLabelWidth(loginUserLanguageResource.roleRemark,loginUserLanguage)){
         	labelWidth=getLabelWidth(loginUserLanguageResource.roleRemark,loginUserLanguage);
         }
-        if(labelWidth<getLabelWidth(loginUserLanguageResource.alarmAlert,loginUserLanguage)){
-        	labelWidth=getLabelWidth(loginUserLanguageResource.alarmAlert,loginUserLanguage);
+        if(labelWidth<getLabelWidth(loginUserLanguageResource.alarmPopup,loginUserLanguage)){
+        	labelWidth=getLabelWidth(loginUserLanguageResource.alarmPopup,loginUserLanguage);
         }
         
         var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
@@ -72,7 +72,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
         var RoleAlarmAlertCombox = new Ext.form.ComboBox({
             id: 'roleAlarmAlertComboxfield_Id',
             value: 0,
-            fieldLabel: loginUserLanguageResource.alarmAlert+'<font color=red>*</font>',
+            fieldLabel: loginUserLanguageResource.alarmPopup+'<font color=red>*</font>',
             labelWidth: labelWidth,
             typeAhead : true,
             allowBlank: false,

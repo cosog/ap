@@ -1092,6 +1092,7 @@ public class ReportDataMamagerController extends BaseController {
 		String json = "";
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
@@ -1104,8 +1105,64 @@ public class ReportDataMamagerController extends BaseController {
 				orgId = "" + user.getUserOrgIds();
 			}
 		}
-		json = reportDataManagerService.getAcquisitionDataReportDeviceList(orgId,deviceName,language);
+		json = reportDataManagerService.getAcquisitionDataReportDeviceList(orgId,deviceType,deviceName,language);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getComparativeAnalysisDeviceList")
+	public String getComparativeAnalysisDeviceList() throws Exception {
+		String json = "";
+		int dataPage=1;
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String unitClasses = ParamUtils.getParameter(request, "unitClasses");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		json = reportDataManagerService.getComparativeAnalysisDeviceList(orgId,deviceType,unitClasses,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getComparativeAnalysisItemList")
+	public String getComparativeAnalysisItemList() throws Exception {
+		String json = "";
+		int dataPage=1;
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String unitClasses = ParamUtils.getParameter(request, "unitClasses");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserOrgIds();
+			}
+		}
+		json = reportDataManagerService.getComparativeAnalysisItemList(orgId,deviceType,unitClasses,user);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -1855,7 +1912,53 @@ public class ReportDataMamagerController extends BaseController {
 		return time;
 	}
 
-
+	@RequestMapping("/getComparativeAnalysisCurveData")
+	public String getComparativeAnalysisCurveData() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceNames = ParamUtils.getParameter(request, "deviceNames");
+		String deviceIds = ParamUtils.getParameter(request, "deviceIds");
+		String itemName = ParamUtils.getParameter(request, "itemName");
+		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
+		String itemUnit = ParamUtils.getParameter(request, "itemUnit");
+		String dataSource = ParamUtils.getParameter(request, "dataSource");
+		
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate = ParamUtils.getParameter(request, "endDate");
+		String hours = ParamUtils.getParameter(request, "hours");
+		String deviceTableName="tbl_device";
+		String tableName="tbl_acqdata_hist";
+		if(user!=null){
+			if(!StringManagerUtils.isNotNull(endDate)){
+				String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where 1=1";
+				if(StringManagerUtils.isNotNull(deviceIds)){
+					sql+= " and t.deviceId in ("+deviceIds+") ";
+				}	
+				sql+= "order by calDate desc) where rownum=1 ";
+				List<?> list = this.commonDataService.findCallSql(sql);
+				if (list.size() > 0 && list.get(0)!=null ) {
+					endDate = list.get(0).toString();
+				} else {
+					endDate = StringManagerUtils.getCurrentTime();
+				}
+			}
+			if(!StringManagerUtils.isNotNull(startDate)){
+				startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+			}
+			
+			this.pager = new Page("pagerForm", request);
+			json = reportDataManagerService.getComparativeAnalysisCurveData(deviceIds,deviceNames,itemName,itemColumn,itemUnit,dataSource,startDate,endDate,user);
+		}
+		
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 	
 	public String getDeviceName() {
 		return deviceName;

@@ -63,12 +63,22 @@ Ext.define('AP.store.historyQuery.ComparativeAnalysisFieldListStore', {
                         header: loginUserLanguageResource.unit,
                         align: 'center',
                         dataIndex: 'itemUnit',
-                        width: 80
+                        width: 80,
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+    			        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
+			        		}
+                        }
                     }, {
                         header: loginUserLanguageResource.columnDataSource,
                         align: 'center',
                         dataIndex: 'dataSourceName',
-                        flex: 1
+                        flex: 1,
+                        renderer: function (value) {
+                        	if(isNotVal(value)){
+    			        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
+			        		}
+                        }
                     }]
                 });
                 var deviceListPanel = Ext.getCmp("HistoryDataComparativeAnalysisFieldListPanel_Id");

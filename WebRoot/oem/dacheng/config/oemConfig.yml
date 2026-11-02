@@ -127,6 +127,7 @@ others:
    showLogo: true                  #是否显示图标
    showProjectProfile: true        #是否显示项目简介
    showHelp: true                  #是否显示帮助文档
+   showComparativeAnalysis: true   #是否显示对比分析
    printLog: false                  #是否打印日志
    printAdLog: true                #是否打印ad交互日志
    printExceptionLog: true         #是否打印异常日志

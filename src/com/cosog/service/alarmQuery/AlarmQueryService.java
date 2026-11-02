@@ -1062,18 +1062,15 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	       .append("    select t.id, t.deviceid, d.devicename, d.orgid, d.devicetype, ")
 	       .append("           t.itemcode, t.itemname, ")
 	       .append("           to_char(t.alarmvalue) as alarmvalue, ")
-	       .append("           t.alarminfo, ")        // ★ 新增：用于分组和翻译
-	       .append("           t.alarmtype, ")         // ★ 新增：用于判断报警类型
+	       .append("           t.alarminfo, ")
+	       .append("           t.alarmtype, ")
 	       .append("           t.alarmlevel, ")
 	       .append("           to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as acqtime, ")
 	       .append("           nvl(t.ack_status, 0) as ack_status, ")
 	       .append("           row_number() over ( ")
-	       // ★ 核心修改：动态分组逻辑
 	       .append("               partition by t.deviceid, t.itemcode, nvl(t.bitindex,-1), ")
 	       .append("               CASE ")
-	       // 如果是数据量报警(2)或数值报警(5)，按报警信息分组
 	       .append("                   WHEN t.alarmtype in (2, 5) THEN t.alarminfo ")
-	       // 其他类型（通信、工况、开关量等），按报警值分组
 	       .append("                   ELSE to_char(t.alarmvalue) ")
 	       .append("               END ")
 	       .append("               order by t.alarmtime desc ")
@@ -1081,7 +1078,16 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	       .append("      from tbl_alarminfo_hist t, tbl_device d ")
 	       .append("     where t.deviceid = d.id ")
 	       .append("       and t.recoverytime is null ")
-	       .append("       and t.alarmlevel >= 0 "); // ★ 修改：>= 0 保证上线也能查出来
+	       // 强制过滤，只保留该测点最新的一条未恢复记录
+	       .append("       and t.id = ( ")
+	       .append("           select max(t2.id) ")
+	       .append("           from tbl_alarminfo_hist t2 ")
+	       .append("           where t2.deviceid = t.deviceid ")
+	       .append("             and t2.itemcode = t.itemcode ")
+	       .append("             and nvl(t2.bitindex,-1) = nvl(t.bitindex,-1) ")
+	       .append("             and t2.recoverytime is null ")
+	       .append("       ) ")
+	       .append("       and t.alarmlevel >= 0 "); 
 
 	    if (StringManagerUtils.isNotNull(orgIds)) {
 	        sql.append(" and d.orgid in (").append(orgIds).append(") ");

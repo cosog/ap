@@ -166,106 +166,118 @@ public class CalculateDataService<T> extends BaseService<T> {
 	                AlarmInfo memAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().get(alarmKey);
 	                
 	                // 不仅要 Key 匹配上，还要二次校验报警信息是否完全一致（防止内存对象被同项的高报/低报覆盖）
+	                // ★ isMatch 判断（null 安全 + 双值都匹配才算同一报警）
 	                boolean isMatch = false;
-	                if (memAlarmInfo != null) {
-	                    if (memAlarmInfo.getAlarmLevel() == info.getAlarmLevel()) {
-	                        if (info.getAlarmType() == 2 || info.getAlarmType() == 5) {
-	                            String memInfo = memAlarmInfo.getAlarmInfo() == null ? "" : memAlarmInfo.getAlarmInfo();
-	                            String currentInfo = info.getAlarmInfo() == null ? "" : info.getAlarmInfo();
-	                            if (memInfo.equals(currentInfo)) {
-	                                isMatch = true;
-	                            }
-	                        } else {
-	                            if (StringManagerUtils.isNotNull(info.getValue())) {
-	                                if (info.getValue().equals(memAlarmInfo.getValue()) || info.getRawValue().equals(memAlarmInfo.getRawValue())) {
-	                                    isMatch = true;
-	                                }
-	                            } else if (memAlarmInfo.getValue() == null && memAlarmInfo.getRawValue() == null) {
-	                                isMatch = true;
-	                            }
+	                if (memAlarmInfo != null && memAlarmInfo.getAlarmLevel() == info.getAlarmLevel()) {
+	                    if (info.getAlarmType() == 2 || info.getAlarmType() == 5) {
+	                        String memInfo = memAlarmInfo.getAlarmInfo() == null ? "" : memAlarmInfo.getAlarmInfo();
+	                        String curInfo = info.getAlarmInfo() == null ? "" : info.getAlarmInfo();
+	                        if (memInfo.equals(curInfo)) {
+	                            isMatch = true;
+	                        }
+	                    } else {
+	                        String memVal = memAlarmInfo.getValue() == null ? "" : memAlarmInfo.getValue();
+	                        String curVal = info.getValue() == null ? "" : info.getValue();
+	                        String memRaw = memAlarmInfo.getRawValue() == null ? "" : memAlarmInfo.getRawValue();
+	                        String curRaw = info.getRawValue() == null ? "" : info.getRawValue();
+	                        if (memVal.equals(curVal) && memRaw.equals(curRaw)) {
+	                            isMatch = true;
 	                        }
 	                    }
 	                }
-	                
-	                if(isMatch && info.getAlertId() != null){
-	                    // 如果内存中该项的 alertId 为 null，说明该报警事件操作员已经确认过了
-	                    if (memAlarmInfo.getAlertId() == null) {
-	                        
-	                        String inheritUser = null;
-	                        String inheritIP = null;
-	                        String inheritTime = null;
-	                        
-	                        // 优先从内存中继承（如果是当前运行期间用户点击的确认）
-	                        if (StringManagerUtils.isNotNull(memAlarmInfo.getAckUser()) && StringManagerUtils.isNotNull(memAlarmInfo.getAckTime())  && StringManagerUtils.isNotNull(memAlarmInfo.getAckIp())) {
-	                            inheritUser = memAlarmInfo.getAckUser();
-	                            inheritIP = memAlarmInfo.getAckIp();
-	                            inheritTime = memAlarmInfo.getAckTime();
+
+	                if (isMatch && info.getAlertId() != null) {
+	                    // 内存中“确实确认过”的判定：ackUser / ackIp / ackTime 三者都非空
+	                    // 仅靠 alertId == null 不可靠：新建 AlarmInfo 时 alertId 默认也是 null
+	                    boolean ackedInMemory = StringManagerUtils.isNotNull(memAlarmInfo.getAckUser())
+	                            && StringManagerUtils.isNotNull(memAlarmInfo.getAckIp())
+	                            && StringManagerUtils.isNotNull(memAlarmInfo.getAckTime());
+
+	                    String inheritUser = null;
+	                    String inheritIP = null;
+	                    String inheritTime = null;
+
+	                    if (ackedInMemory) {
+	                        // 本轮报警周期内用户确认过 → 直接继承
+	                        inheritUser = memAlarmInfo.getAckUser();
+	                        inheritIP   = memAlarmInfo.getAckIp();
+	                        inheritTime = memAlarmInfo.getAckTime();
+	                    } else {
+	                        // 内存里没确认过（系统重启、或新周期新对象），去历史表查“最近一条”同测点同报警特征记录
+	                        // 注意：这里不能把 recoverytime is null 放进 where，
+	                        // 否则会跳过最新已恢复记录、命中更古早的未恢复脏记录
+	                        String prevAckSql = "select * from ( "
+	                                          + "  select nvl(t.ack_status,0) as ack_status, t.ack_user, "
+	                                          + "         to_char(t.ack_time,'yyyy-mm-dd hh24:mi:ss') as ack_time, "
+	                                          + "         t.ack_ip, t.recoverytime, t.id "
+	                                          + "  from tbl_alarminfo_hist t "
+	                                          + "  where t.deviceid = " + deviceId
+	                                          + "    and t.itemcode = '" + info.getColumn().replace("'", "''") + "'"
+	                                          + "    and t.alarmlevel = " + info.getAlarmLevel()
+	                                          + "    and t.alarmtype = " + info.getAlarmType();
+
+	                        if (info.getAlarmType() == 2 || info.getAlarmType() == 5) {
+	                            String alarmInfoVal = info.getAlarmInfo() == null ? "" : info.getAlarmInfo();
+	                            if (StringManagerUtils.isNotNull(alarmInfoVal)) {
+	                                prevAckSql += " and t.alarminfo = '" + alarmInfoVal.replace("'", "''") + "'";
+	                            } else {
+	                                prevAckSql += " and (t.alarminfo is null or t.alarminfo = '')";
+	                            }
 	                        } else {
-	                        	// ★ 如果内存里没有（比如系统刚重启），去历史表查上一条记录的确认状态
-	                        	String prevAckSql = "select * from ( "
-	                        	                  + "  select nvl(t.ack_status,0) as ack_status, t.ack_user, "
-	                        	                  + "         to_char(t.ack_time,'yyyy-mm-dd hh24:mi:ss') as ack_time, t.ack_ip "
-	                        	                  + "  from tbl_alarminfo_hist t "
-	                        	                  + "  where t.deviceid = " + deviceId
-	                        	                  + "    and t.itemcode = '" + info.getColumn().replace("'", "''") + "'"
-	                        	                  + "    and t.alarmlevel = " + info.getAlarmLevel()
-	                        	                  + "    and t.alarmtype = " + info.getAlarmType(); // ★ 核心：必须区分报警类型
-
-	                        	// ★ 根据报警类型追加具体的匹配字段
-	                        	if (info.getAlarmType() == 2 || info.getAlarmType() == 5) {
-	                        	    // 类型 2、5：匹配报警信息（高报/低报）
-	                        	    prevAckSql += " and t.alarminfo = '" + (info.getAlarmInfo() != null ? info.getAlarmInfo().replace("'", "''") : "") + "'";
+	                        	String rawValue = info.getRawValue();
+	                        	if (StringManagerUtils.isNotNull(rawValue)) {
+	                        	    prevAckSql += " and t.alarmvalue = " + (StringManagerUtils.isNum(rawValue) ? rawValue : "'" + rawValue.replace("'", "''") + "'");
 	                        	} else {
-	                        	    // 其他类型：匹配报警值（上线/离线、运行/停止）
-	                        	    // 注意兼容 value 是数字还是字符串的情况
-	                        	    String rawValue = info.getRawValue();
-	                        	    prevAckSql += " and t.alarmvalue = " + (StringManagerUtils.isNum(rawValue) ? rawValue : "'" + (rawValue != null ? rawValue.replace("'", "''") : "") + "'");
+	                        	    prevAckSql += " and t.alarmvalue is null";
 	                        	}
+	                        }
 
-	                        	if (StringManagerUtils.isNotNull(info.getBitIndex())) {
-	                        	    prevAckSql += " and t.bitindex = " + info.getBitIndex();
-	                        	} else {
-	                        	    prevAckSql += " and t.bitindex is null";
-	                        	}
-	                        	
-	                        	// 限定查询范围（必须在主键范围内）
-	                        	prevAckSql += "    and t.id < " + info.getAlertId();
-	                        	
-	                        	// ★ 核心：按确认时间倒序，只查最新的一条
-	                        	prevAckSql += "  order by t.ack_time desc nulls last ";
-	                        	prevAckSql += ") where rownum = 1";
-	                            
-	                            List<?> prevList = getBaseDao().findCallSql(prevAckSql);
-	                            int prevAckStatus = 0;
-	                            if (prevList != null && !prevList.isEmpty()) {
-	                                Object[] row = (Object[]) prevList.get(0);
-	                                prevAckStatus = StringManagerUtils.stringToInteger(row[0] + "");
-	                                if (prevAckStatus == 1) {
-	                                    inheritUser = row[1] == null ? null : row[1].toString();
-	                                    inheritTime = row[2] == null ? null : row[2].toString();
-	                                    inheritIP = row[3] == null ? null : row[3].toString();
-	                                }
+	                        if (StringManagerUtils.isNotNull(info.getBitIndex())) {
+	                            prevAckSql += " and t.bitindex = " + info.getBitIndex();
+	                        } else {
+	                            prevAckSql += " and t.bitindex is null";
+	                        }
+
+	                        prevAckSql += "    and t.id < " + info.getAlertId();
+	                        prevAckSql += "  order by t.id desc ";   // 按 id 倒序取最近一条
+	                        prevAckSql += ") where rownum = 1";
+
+	                        List<?> prevList = getBaseDao().findCallSql(prevAckSql);
+	                        if (prevList != null && !prevList.isEmpty()) {
+	                            Object[] row = (Object[]) prevList.get(0);
+	                            int prevAckStatus = StringManagerUtils.stringToInteger(row[0] + "");
+	                            String prevUser = row[1] == null ? null : row[1].toString();
+	                            String prevTime = row[2] == null ? null : row[2].toString();
+	                            String prevIP   = row[3] == null ? null : row[3].toString();
+	                            boolean prevRecovered = row[4] != null;
+
+	                            // ★ 最近一条必须“已确认且未恢复”才继承；
+	                            //   已恢复说明中间经历过正常状态，属于新报警周期，必须重新确认
+	                            if (prevAckStatus == 1 && !prevRecovered
+	                                    && StringManagerUtils.isNotNull(prevUser)
+	                                    && StringManagerUtils.isNotNull(prevTime)) {
+	                                inheritUser = prevUser;
+	                                inheritIP   = prevIP;
+	                                inheritTime = prevTime;
 	                            }
 	                        }
-	                        
-	                        // 如果最终拿到了确认状态（内存或历史表里有），就更新新插入的这条历史记录
-	                        if (StringManagerUtils.isNotNull(inheritUser) && StringManagerUtils.isNotNull(inheritTime)) {
-	                            String safeUser = inheritUser.replace("'", "''");
-	                            String safeIP = (inheritIP != null && !inheritIP.trim().isEmpty()) ? inheritIP.replace("'", "''") : "127.0.0.1";
-	                            
-	                            String updateHistAckSql = "update tbl_alarminfo_hist t "
-	                                    + " set t.ack_status = 1, "
-	                                    + "     t.ack_user   = '" + safeUser + "', "
-	                                    + "     t.ack_ip     = '" + safeIP + "', "
-	                                    + "     t.ack_time   = to_date('" + inheritTime + "','yyyy-mm-dd hh24:mi:ss') "
-	                                    + " where t.id = " + info.getAlertId();
-	                            getBaseDao().updateOrDeleteBySql(updateHistAckSql);
-	                        }
-	                        
-	                    } else {
-	                        // 正常的新报警，将新生成的 alertId 回填到内存
-	                        memAlarmInfo.setAlertId(info.getAlertId());
 	                    }
+
+	                    if (StringManagerUtils.isNotNull(inheritUser) && StringManagerUtils.isNotNull(inheritTime)) {
+	                        String safeUser = inheritUser.replace("'", "''");
+	                        String safeIP = (inheritIP != null && !inheritIP.trim().isEmpty())
+	                                ? inheritIP.replace("'", "''") : "127.0.0.1";
+
+	                        String updateHistAckSql = "update tbl_alarminfo_hist t "
+	                                + " set t.ack_status = 1, "
+	                                + "     t.ack_user   = '" + safeUser + "', "
+	                                + "     t.ack_ip     = '" + safeIP + "', "
+	                                + "     t.ack_time   = to_date('" + inheritTime + "','yyyy-mm-dd hh24:mi:ss') "
+	                                + " where t.id = " + info.getAlertId();
+	                        getBaseDao().updateOrDeleteBySql(updateHistAckSql);
+	                    }
+	                    // 不继承时：新插入的行本身就是未确认状态，无需 update；只把 alertId 回填到内存
+	                    memAlarmInfo.setAlertId(info.getAlertId());
 	                }
 	            }
 	        }

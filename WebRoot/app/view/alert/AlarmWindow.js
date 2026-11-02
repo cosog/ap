@@ -8,13 +8,13 @@ Ext.define('AP.view.alert.AlarmWindow', {
     height: 520,
     layout: 'fit',
     modal: false,
-    closeAction: 'hide',        
-    closable: false,            
-    collapsible: true,          
-    animateCollapse: false,     
+    closeAction: 'hide',
+    closable: false,
+    collapsible: true,
+    animateCollapse: false,
     maximizable: true,
     resizable: true,
-    draggable: true,            
+    draggable: true,
     bodyPadding: 0,
 
     expandedWidth: 820,
@@ -43,14 +43,14 @@ Ext.define('AP.view.alert.AlarmWindow', {
             rootVisible: false,
             useArrows: true,
             border: false,
-            columnLines: false, 
-            checkable: true, 
+            columnLines: false,
+            checkable: true,
             columns: [{
                 xtype: 'treecolumn',
                 text: '设备 / 报警内容',
                 dataIndex: 'text',
                 flex: 3,
-                minWidth: 200, 
+                minWidth: 200,
                 renderer: function (v, meta, rec) {
                     if (rec.isLeaf() && rec.get('status') === 'NEW') {
                         var s = AP.alert.AlarmManager.levelStyle[rec.get('alarmLevel')];
@@ -66,7 +66,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 flex: 1,
                 minWidth: 60,
                 renderer: function (v, meta, rec) {
-                    if (!rec.isLeaf()) return ''; 
+                    if (!rec.isLeaf()) return '';
                     var s = AP.alert.AlarmManager.levelStyle[v];
                     return s ? '<span style="color:' + s.color + ';">' + s.text + '</span>' : '';
                 }
@@ -76,7 +76,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 flex: 1,
                 minWidth: 80,
                 renderer: function (v, meta, rec) {
-                    if (!rec.isLeaf()) return ''; 
+                    if (!rec.isLeaf()) return '';
                     return v;
                 }
             }, {
@@ -85,7 +85,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 flex: 2,
                 minWidth: 140,
                 renderer: function (v, meta, rec) {
-                    if (!rec.isLeaf()) return ''; 
+                    if (!rec.isLeaf()) return '';
                     return v;
                 }
             }, {
@@ -93,16 +93,16 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 dataIndex: 'status',
                 flex: 1,
                 minWidth: 70,
-                align: 'center', 
-                renderer: function (v, meta, rec) { 
-                    if (!rec.isLeaf()) return ''; 
+                align: 'center',
+                renderer: function (v, meta, rec) {
+                    if (!rec.isLeaf()) return '';
                     return v === 'ACK' ? '<span style="color:#888;">已确认</span>' : '<span style="color:#dc2828;">待确认</span>';
                 }
             }, {
                 text: '操作',
                 flex: 1,
                 minWidth: 70,
-                align: 'center', 
+                align: 'center',
                 renderer: function (v, meta, rec) {
                     if (!rec.isLeaf()) return '';
                     if (rec.get('status') === 'ACK') return '';
@@ -128,14 +128,13 @@ Ext.define('AP.view.alert.AlarmWindow', {
             }
         });
 
-        // ★ 核心：在最前面加上静音提示
         this.tbar = [{
             xtype: 'tbtext',
             itemId: 'muteTip',
             hidden: true,
             html: '<span style="color:#dc2828;font-weight:bold;cursor:pointer;">⚠️ 当前浏览器已静音，请点击此处开启声音提醒！</span>',
             listeners: {
-                click: function() {
+                click: function () {
                     var unlockEvt = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
                     document.dispatchEvent(unlockEvt);
                     this.hide();
@@ -150,9 +149,9 @@ Ext.define('AP.view.alert.AlarmWindow', {
             itemId: 'ackBtn',
             disabled: true,
             handler: function () {
-            	var keys = self.getCheckedUnackKeys();
+                var keys = self.getCheckedUnackKeys();
                 if (keys.length === 0) {
-                	Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+                    Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
                     return;
                 }
                 self.doAck(keys);
@@ -160,7 +159,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
         }, {
             text: '全部确认',
             handler: function () {
-            	var keys = self.getAllUnackKeys();
+                var keys = self.getAllUnackKeys();
                 if (keys.length === 0) {
                     Ext.Msg.alert(loginUserLanguageResource.tip, '当前没有待确认的报警');
                     return;
@@ -172,12 +171,11 @@ Ext.define('AP.view.alert.AlarmWindow', {
         this.items = [this.tree];
         this.callParent(arguments);
 
-        this.on('headerclick', function() {
+        this.on('headerclick', function () {
             var evt = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
             document.dispatchEvent(evt);
         });
 
-        // 1. 折叠前
         this.on('beforecollapse', function () {
             this.isMinimized = true;
             if (this.tbar && this.tbar.rendered) this.tbar.getEl().hide();
@@ -185,7 +183,6 @@ Ext.define('AP.view.alert.AlarmWindow', {
             if (this.tree && this.tree.rendered) this.tree.getEl().hide();
         });
 
-        // 2. 折叠后
         this.on('collapse', function () {
             var me = this;
             Ext.defer(function () {
@@ -195,26 +192,24 @@ Ext.define('AP.view.alert.AlarmWindow', {
             }, 20);
         });
 
-        // 3. 展开前
         this.on('beforeexpand', function () {
             this.isMinimized = false;
             this.setSize(this.expandedWidth, this.expandedHeight);
         });
 
-        // 4. 展开后
         this.on('expand', function () {
             var me = this;
             Ext.defer(function () {
                 if (me.tbar && me.tbar.rendered) me.tbar.getEl().show();
                 if (me.bbar && me.bbar.rendered) me.bbar.getEl().show();
                 if (me.tree && me.tree.rendered) me.tree.getEl().show();
-                
+
                 me.setSize(me.expandedWidth, me.expandedHeight);
                 me.alignToBottomRight(me.expandedWidth, me.expandedHeight);
-                
+
                 if (me.updateLayout) me.updateLayout();
                 if (me.tree && me.tree.updateLayout) me.tree.updateLayout();
-                
+
                 me.updateTitle();
             }, 20);
         });
@@ -226,7 +221,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
             }
             this.updateTitle();
         });
-        
+
         this.on('afterrender', function () {
             var me = this;
             var resizeTask = null;
@@ -249,11 +244,10 @@ Ext.define('AP.view.alert.AlarmWindow', {
         var docW = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
         var docH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
         var x = Math.max(0, docW - w - 20);
-        var y = Math.max(0, docH - h - 20);
+        var y = Math.max(0, docH - h - 40);
         this.setPosition(x, y);
     },
 
-    
     addAlarmNode: function (alarm) {
         var deviceNode = this.getOrCreateDeviceNode(alarm);
         var exists = deviceNode.findChild('alarmKey', alarm.key, true);
@@ -261,14 +255,14 @@ Ext.define('AP.view.alert.AlarmWindow', {
             this.updateNode(exists, alarm);
             return;
         }
-        
-        var initialStatus = (alarm.ackStatus == 1) ? 'ACK' : 'NEW'; 
-        
+
+        var initialStatus = (alarm.ackStatus == 1) ? 'ACK' : 'NEW';
+
         var displayText = alarm.columnName + '：' + alarm.value;
         if ((alarm.alarmType == 2 || alarm.alarmType == 5) && alarm.alarminfo) {
             displayText = alarm.columnName + '（' + alarm.alarminfo + '）：' + alarm.value;
         }
-        
+
         deviceNode.appendChild({
             text: displayText,
             leaf: true,
@@ -283,7 +277,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
             acqTime: alarm.acqTime,
             alertId: alarm.alertId,
             status: initialStatus,
-            checked: false 
+            checked: false
         });
         deviceNode.expand();
         this.updateToolbar();
@@ -302,11 +296,11 @@ Ext.define('AP.view.alert.AlarmWindow', {
     },
 
     updateNode: function (node, alarm) {
-    	var displayText = alarm.columnName + '：' + alarm.value;
-    	if ((alarm.alarmType == 2 || alarm.alarmType == 5) && alarm.alarminfo) {
-    	    displayText = alarm.columnName + '（' + alarm.alarminfo + '）：' + alarm.value;
-    	}
-    	
+        var displayText = alarm.columnName + '：' + alarm.value;
+        if ((alarm.alarmType == 2 || alarm.alarmType == 5) && alarm.alarminfo) {
+            displayText = alarm.columnName + '（' + alarm.alarminfo + '）：' + alarm.value;
+        }
+
         node.set('text', displayText);
         node.set('value', alarm.value);
         node.set('alarmLevel', alarm.alarmLevel);
@@ -318,7 +312,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
             node.set('status', 'NEW');
             node.set('checked', false);
         }
-        node.commit(); 
+        node.commit();
         this.updateToolbar();
     },
 
@@ -333,12 +327,16 @@ Ext.define('AP.view.alert.AlarmWindow', {
             }
         }
         this.updateToolbar();
+
         if (this.getTotalLeafCount() === 0) {
             this.collapse();
             this.stopBlink();
             AP.alert.AlarmSoundManager.stop();
             var tip = this.down('#muteTip');
             if (tip) tip.hide();
+        } else {
+            // ★ 还有剩余报警：按剩余最高优先级重算声音，避免停止后没有切到次高级
+            AP.alert.AlarmManager._refreshSoundAfterAck();
         }
     },
 
@@ -376,9 +374,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
         var keys = [];
         var checkedNodes = this.tree.getChecked();
         Ext.Array.each(checkedNodes, function (node) {
-            if (node.isLeaf() 
-                && node.get('alarmKey') 
-                && node.get('status') === 'NEW') {
+            if (node.isLeaf() && node.get('alarmKey') && node.get('status') === 'NEW') {
                 keys.push(node.get('alarmKey'));
             }
         });
@@ -402,33 +398,25 @@ Ext.define('AP.view.alert.AlarmWindow', {
         var self = this;
 
         AP.alert.AlarmManager.ack(keys, function (ok) {
+            // ★ 仅在成功时才反映为已确认，避免 UI 与后端状态不一致
             if (!ok) return;
 
             Ext.Array.each(keys, function (key) {
                 var node = self.findByKey(self.store.getRootNode(), key);
                 if (node) {
                     node.set('status', 'ACK');
-                    node.set('checked', false); 
+                    node.set('checked', false);
                 }
             });
-            
+
             self.tree.getView().refresh();
             self.updateToolbar();
 
-            var playing = AP.alert.AlarmSoundManager.currentLevel;
-            if (playing !== null && !self.hasUnackAtLevel(playing)) {
-                AP.alert.AlarmSoundManager.stop();
-            }
-
-            if (!self.hasUnacknowledged()) {
-                self.stopBlink();
-                self.collapse(); 
-                var tip = self.down('#muteTip');
-                if (tip) tip.hide();
-            }
+            // 统一在这里按剩余未确认状态重算声音
+            AP.alert.AlarmManager._refreshSoundAfterAck();
         });
     },
-    
+
     markRemoteAck: function (ackSet) {
         var self = this;
         var root = this.store.getRootNode();
@@ -442,13 +430,8 @@ Ext.define('AP.view.alert.AlarmWindow', {
             });
         });
         this.updateToolbar();
-        if (!this.hasUnacknowledged()) {
-            this.stopBlink();
-            this.collapse();
-            AP.alert.AlarmSoundManager.stop();
-            var tip = this.down('#muteTip');
-            if (tip) tip.hide();
-        }
+        // ★ 统一交给 AlarmManager 处理：全部确认完会 stop + 折叠；未全部确认会切到剩余最高优先级
+        AP.alert.AlarmManager._refreshSoundAfterAck();
     },
 
     getTotalLeafCount: function () {

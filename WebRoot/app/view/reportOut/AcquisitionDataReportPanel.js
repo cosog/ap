@@ -156,7 +156,16 @@ Ext.define("AP.view.reportOut.AcquisitionDataReportPanel", {
     	                handler: function (v, o) {
     	                	batchExportSingleWellAcquisitionDataReportData();
     	                }
-    	            },{
+    	            },'->',{
+                        xtype: 'button',
+                        text: loginUserLanguageResource.comparativeAnalysis,
+                        iconCls: 'wellboreTrajectory',
+                        hidden: !showComparativeAnalysis,
+                        handler: function (v, o) {
+                        	var ComparativeAnalysisWindow = Ext.create("AP.view.reportOut.DailyDataComparativeAnalysisWindow");
+                        	ComparativeAnalysisWindow.show();
+                		}
+            		},{
     	            	id: 'SingleWellAcquisitionDataReportDeviceListSelectRow_Id',
     	            	xtype: 'textfield',
     	                value: -1,

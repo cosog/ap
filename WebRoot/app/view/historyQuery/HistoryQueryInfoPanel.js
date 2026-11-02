@@ -792,7 +792,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoPanel", {
                             xtype: 'button',
                             text: loginUserLanguageResource.comparativeAnalysis,
                             iconCls: 'wellboreTrajectory',
-                            hidden:false,
+                            hidden: !showComparativeAnalysis,
                             handler: function (v, o) {
                             	var HistoryDataComparativeAnalysisWindow = Ext.create("AP.view.historyQuery.HistoryDataComparativeAnalysisWindow");
                             	HistoryDataComparativeAnalysisWindow.show();

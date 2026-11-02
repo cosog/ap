@@ -157,6 +157,7 @@
         
         var showLogo = configFile.ap.others.showLogo;
         var showHelp = configFile.ap.others.showHelp;
+        var showComparativeAnalysis = configFile.ap.others.showComparativeAnalysis===true;
         
         var oemStaticResourceTimestamp = configFile.ap.oem.staticResourceTimestamp;
         var otherStaticResourceTimestamp = configFile.ap.others.otherStaticResourceTimestamp;

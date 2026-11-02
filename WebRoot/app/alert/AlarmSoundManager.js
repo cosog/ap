@@ -13,21 +13,24 @@ Ext.define('AP.alert.AlarmSoundManager', {
     baseUrl: '',
     _loaded: false,
 
+    // ★ 每次 play 唯一 token：让所有在途异步解码/播放回调失效
+    _playToken: 0,
+
     initUnlock: function () {
         var self = this;
-        
+
         // 全局点击兜底
         var unlock = function () {
             if (self.unlocked) return;
             self.unlocked = true;
             if (self.audioCtx && self.audioCtx.state === 'suspended') {
-                self.audioCtx.resume().catch(function(){});
+                self.audioCtx.resume().catch(function () {});
             }
-            
+
             document.removeEventListener('click', unlock, true);
             document.removeEventListener('pointerdown', unlock, true);
             document.removeEventListener('keydown', unlock, true);
-            
+
             if (AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.win) {
                 var tip = AP.alert.AlarmManager.win.down('#muteTip');
                 if (tip) tip.hide();
@@ -48,7 +51,7 @@ Ext.define('AP.alert.AlarmSoundManager', {
         this._initAudioCtx();
     },
 
-    _initAudioCtx: function() {
+    _initAudioCtx: function () {
         try {
             if (!this.audioCtx) {
                 var Ctx = window.AudioContext || window.webkitAudioContext;
@@ -68,7 +71,7 @@ Ext.define('AP.alert.AlarmSoundManager', {
                     this.unlocked = true;
                 }
             }
-        } catch(e) {}
+        } catch (e) {}
     },
 
     loadConfig: function () {
@@ -88,15 +91,15 @@ Ext.define('AP.alert.AlarmSoundManager', {
                     if (style && style.SoundFile) return { fileName: style.SoundFile };
                     return null;
                 };
-                
+
                 var c1 = mk(r.Data.FirstLevel);
                 var c2 = mk(r.Data.SecondLevel);
                 var c3 = mk(r.Data.ThirdLevel);
-                
+
                 if (c1) self.config[100] = c1;
                 if (c2) self.config[200] = c2;
                 if (c3) self.config[300] = c3;
-                
+
                 self._loaded = true;
             }
         });
@@ -108,7 +111,7 @@ Ext.define('AP.alert.AlarmSoundManager', {
         if (!this._loaded) {
             this.loadConfig();
             var self = this;
-            Ext.defer(function() { self.play(level); }, 500);
+            Ext.defer(function () { self.play(level); }, 500);
             return;
         }
 
@@ -121,44 +124,52 @@ Ext.define('AP.alert.AlarmSoundManager', {
         this.stop();
         this.currentLevel = level;
 
+        // ★ 递增 token：让此前的异步回调全部失效
+        var token = ++this._playToken;
         var url = this.baseUrl + encodeURIComponent(cfg.fileName) + '&_t=' + new Date().getTime();
 
         // 如果解锁成功，优先走底层（体验最好，支持无限循环）
         if (this.unlocked && this.audioCtx && this.audioCtx.state === 'running') {
-            this._playWithWebAudio(url, level);
+            this._playWithWebAudio(url, level, token);
         } else {
             // 兜底方案：如果底层被拦截，尝试用传统 Audio 元素（少数浏览器对 Audio 标签宽容）
-            this._playWithHtmlAudio(url, level);
+            this._playWithHtmlAudio(url, level, token);
         }
     },
 
-    _playWithWebAudio: function(url, level) {
+    _playWithWebAudio: function (url, level, token) {
         var self = this;
-        
+
+        // 用缓存也必须校验 token
         if (this.audioBufferCache[url]) {
-            this._doPlayBuffer(this.audioBufferCache[url], level);
+            if (this._playToken === token) {
+                this._doPlayBuffer(this.audioBufferCache[url], level, token);
+            }
             return;
         }
 
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.responseType = 'arraybuffer';
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                self.audioCtx.decodeAudioData(xhr.response, function(buffer) {
-                    self.audioBufferCache[url] = buffer;
-                    self._doPlayBuffer(buffer, level);
-                }, function(err) {
-                    console.error('【报警声音】解码失败', err);
-                    // 解码失败退回传统播放
-                    self._playWithHtmlAudio(url, level);
-                });
-            }
+        xhr.onload = function () {
+            if (xhr.status !== 200) return;
+            if (self._playToken !== token) return; // ★ 发出前 token 已过期，直接丢弃
+            self.audioCtx.decodeAudioData(xhr.response, function (buffer) {
+                self.audioBufferCache[url] = buffer;
+                if (self._playToken !== token) return; // ★ 解码完成时 token 已过期，丢弃
+                self._doPlayBuffer(buffer, level, token);
+            }, function (err) {
+                console.error('【报警声音】解码失败', err);
+                if (self._playToken !== token) return;
+                // 解码失败退回传统播放
+                self._playWithHtmlAudio(url, level, token);
+            });
         };
         xhr.send();
     },
 
-    _doPlayBuffer: function(buffer, level) {
+    _doPlayBuffer: function (buffer, level, token) {
+        if (this._playToken !== token) return;
         if (this.currentLevel !== level) return;
 
         try {
@@ -168,31 +179,40 @@ Ext.define('AP.alert.AlarmSoundManager', {
             this.sourceNode.connect(this.audioCtx.destination);
             this.sourceNode.start(0);
             console.log('【报警声音】Web Audio API 开始循环播放级别:', level);
-            
+
             if (AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.win) {
                 var tip = AP.alert.AlarmManager.win.down('#muteTip');
-                if (tip) tip.hide(); // 如果底层播成功了，把提示隐藏
+                if (tip) tip.hide();
             }
         } catch (e) {
             console.error('【报警声音】底层播放失败', e);
         }
     },
 
-    _playWithHtmlAudio: function(url, level) {
+    _playWithHtmlAudio: function (url, level, token) {
         var self = this;
         this.stop(); // 清空之前的
-        
+        this.currentLevel = level; // stop 会置 null，重新赋值
+        this._playToken = token;   // 保持与本次 token 一致（stop 已 ++，这里同步回当前 token）
+
         this.htmlAudio = new Audio(url);
         this.htmlAudio.loop = true;
-        
-        this.htmlAudio.play().then(function() {
+
+        this.htmlAudio.play().then(function () {
+            if (self._playToken !== token) {
+                // 已被后续 stop/play 取代
+                try { self.htmlAudio.pause(); } catch (e) {}
+                self.htmlAudio = null;
+                return;
+            }
             self.unlocked = true;
             console.log('【报警声音】传统 Audio 播放成功级别:', level);
             if (AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.win) {
                 var tip = AP.alert.AlarmManager.win.down('#muteTip');
                 if (tip) tip.hide();
             }
-        }).catch(function(err) {
+        }).catch(function (err) {
+            if (self._playToken !== token) return;
             console.warn('【报警声音】播放彻底被拦截，等待用户点击。');
             self.pendingLevel = level;
             if (AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.win) {
@@ -203,6 +223,9 @@ Ext.define('AP.alert.AlarmSoundManager', {
     },
 
     stop: function () {
+        // ★ 让所有在途异步回调失效
+        this._playToken++;
+
         if (this.sourceNode) {
             try {
                 this.sourceNode.stop();
@@ -210,15 +233,15 @@ Ext.define('AP.alert.AlarmSoundManager', {
             } catch (e) {}
             this.sourceNode = null;
         }
-        
+
         if (this.htmlAudio) {
             try {
                 this.htmlAudio.pause();
                 this.htmlAudio.currentTime = 0;
-            } catch(e) {}
+            } catch (e) {}
             this.htmlAudio = null;
         }
-        
+
         this.currentLevel = null;
         console.log('【报警声音】已停止播放');
     },

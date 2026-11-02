@@ -297,6 +297,8 @@ public class OEMConfigFile {
 	    private boolean showProjectProfile;
 	    
 	    private boolean showHelp;
+	    
+	    private boolean showComparativeAnalysis;
 
 	    private boolean printLog;
 	    
@@ -528,6 +530,12 @@ public class OEMConfigFile {
 		}
 		public void setShowProjectProfile(boolean showProjectProfile) {
 			this.showProjectProfile = showProjectProfile;
+		}
+		public boolean getShowComparativeAnalysis() {
+			return showComparativeAnalysis;
+		}
+		public void setShowComparativeAnalysis(boolean showComparativeAnalysis) {
+			this.showComparativeAnalysis = showComparativeAnalysis;
 		}
 	}
 	

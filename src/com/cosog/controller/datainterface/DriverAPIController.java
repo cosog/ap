@@ -405,14 +405,26 @@ public class DriverAPIController extends BaseController{
 								}
 								
 								if(commAlarmLevel==0){
-									if(deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)){
-										deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
-									}
+									// 1. 尝试从内存中移除
+									DeviceAlarmInfo.AlarmInfo removedAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
+									
+									// 2. 清理定时器残留
 									if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 										if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
 											deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
 										}
 										deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
+									}
+									
+									// 3. 更新数据库恢复时间（★ 核心修改：兼容服务重启后第一条数据即为正常的情况）
+									try {
+										String recoverSql = "update " + alarmTableName + " set recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss') " +
+												" where deviceid = " + deviceId + 
+												" and itemcode = 'commStatusName' " +
+												" and recoverytime is null ";
+										commonDataService.getBaseDao().updateOrDeleteBySql(recoverSql);
+									} catch (Exception e) {
+										e.printStackTrace();
 									}
 								}else{
 									String alarmStartTime =alarmInfo.getAlarmStartTime();
@@ -876,15 +888,27 @@ public class DriverAPIController extends BaseController{
 								}
 								
 								if(commAlarmLevel==0){
-									if(deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)){
-										deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
-									}
+									// 1. 尝试从内存中移除
+									DeviceAlarmInfo.AlarmInfo removedAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
+									// 2. 清理定时器残留
 									if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 										if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
 											deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
 										}
 										deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
 									}
+									
+									// 3. 更新数据库恢复时间（★ 核心修改：兼容服务重启后第一条数据即为正常的情况）
+									try {
+										String recoverSql = "update " + alarmTableName + " set recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss') " +
+												" where deviceid = " + deviceId + 
+												" and itemcode = 'commStatusName' " +
+												" and recoverytime is null ";
+										commonDataService.getBaseDao().updateOrDeleteBySql(recoverSql);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								
 								}else{
 									String alarmStartTime =alarmInfo.getAlarmStartTime();
 									long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
@@ -1565,14 +1589,37 @@ public class DriverAPIController extends BaseController{
 			}
 			
 			if(acquisitionItemInfo.getAlarmLevel()==0){
-				if(deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)){
-					deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
-				}
+				// 1. 尝试从内存中移除（兼容系统运行期间正常恢复的场景）
+				DeviceAlarmInfo.AlarmInfo removedAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
+				
+				// 2. 清理定时器残留
 				if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 					if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
 						deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
 					}
 					deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
+				}
+				
+				// 3. 更新数据库恢复时间
+				// ★ 核心优化：不管是内存有（正常恢复），还是内存没有（服务刚重启后第一次采集即为0），都要尝试去闭环数据库
+				try {
+					// 使用当前的采集信息拼装 SQL，或者借用 removedAlarmInfo 的字段（如果有的话）
+					// 为了保证无论哪种情况都能精准定位，优先取内存中的，如果没有则用当前的
+					String column = removedAlarmInfo != null ? removedAlarmInfo.getColumn() : acquisitionItemInfo.getColumn();
+					String bitIndex = removedAlarmInfo != null ? removedAlarmInfo.getBitIndex() : acquisitionItemInfo.getBitIndex();
+					
+					String recoverSql = "update tbl_alarminfo_hist set recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss') " +
+							" where deviceid = " + deviceInfo.getId() + 
+							" and itemcode ='" + column + "' " +
+							" and recoverytime is null ";
+					
+					// 区分开关量的 bitIndex
+					if (StringManagerUtils.isNotNull(bitIndex)) {
+						recoverSql += " and bitindex = " + bitIndex;
+					}
+					commonDataService.getBaseDao().updateOrDeleteBySql(recoverSql);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}else{
 				String alarmStartTime =alarmInfo.getAlarmStartTime();
@@ -1802,14 +1849,36 @@ public class DriverAPIController extends BaseController{
 			}
 			
 			if(acquisitionItemInfo.getAlarmLevel()==0){
-				if(deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)){
-					deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
-				}
+				// 1. 尝试从内存中移除（兼容系统运行期间正常恢复的场景）
+				DeviceAlarmInfo.AlarmInfo removedAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
+				
+				// 2. 清理定时器残留
 				if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
 					if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
 						deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
 					}
 					deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
+				}
+				
+				// 3. 更新数据库恢复时间
+				// ★ 核心优化：不管是内存有（正常恢复），还是内存没有（服务刚重启后第一次采集即为0），都要尝试去闭环数据库
+				try {
+					String column = removedAlarmInfo != null ? removedAlarmInfo.getColumn() : acquisitionItemInfo.getColumn();
+					String bitIndex = removedAlarmInfo != null ? removedAlarmInfo.getBitIndex() : acquisitionItemInfo.getBitIndex();
+					
+					String recoverSql = "update tbl_alarminfo_hist set recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss') " +
+							" where deviceid = " + deviceInfo.getId() + 
+							" and itemcode ='" + column + "' " +
+							" and recoverytime is null ";
+					
+					// 区分开关量的 bitIndex
+					if (StringManagerUtils.isNotNull(bitIndex)) {
+						recoverSql += " and bitindex = " + bitIndex;
+					}
+					
+					commonDataService.getBaseDao().updateOrDeleteBySql(recoverSql);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}else{
 				String alarmStartTime =alarmInfo.getAlarmStartTime();

@@ -3,10 +3,10 @@ Ext.define("AP.view.historyQuery.HistoryDataComparativeAnalysisWindow", {
     alias: 'widget.historyDataComparativeAnalysisWindow',
     layout: 'fit',
     id:'HistoryDataComparativeAnalysisWindow_Id',
-    title: loginUserLanguageResource.comparativeAnalysis,
+    title: loginUserLanguageResource.historyQuery+'/'+loginUserLanguageResource.comparativeAnalysis,
     iframe: true,
-    width: '95%',
-    height: '60%',
+    width: '70%',
+    height: '70%',
     shadow: 'sides',
 //    closeAction: 'destroy',
 //    resizable: true,
@@ -89,8 +89,8 @@ Ext.define("AP.view.historyQuery.HistoryDataComparativeAnalysisWindow", {
                 labelWidth: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage),
                 width: getLabelWidth(loginUserLanguageResource.timeTo,loginUserLanguage)+95,
                 format: 'Y-m-d',
-//                value: new Date(),
-                value: Ext.Date.add(new Date(), Ext.Date.DAY, 1),
+                value: new Date(),
+//                value: Ext.Date.add(new Date(), Ext.Date.DAY, 1),
                 editable:false,
                 id: 'HistoryDataComparativeAnalysisDataEndDate_Id',
                 listeners: {
@@ -106,7 +106,7 @@ Ext.define("AP.view.historyQuery.HistoryDataComparativeAnalysisWindow", {
                 width: getLabelWidth(loginUserLanguageResource.hour,loginUserLanguage)+45,
                 minValue: 0,
                 maxValue: 23,
-                value:'0',
+                value:'23',
                 msgTarget: 'none',
                 regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
                 listeners: {
@@ -127,7 +127,7 @@ Ext.define("AP.view.historyQuery.HistoryDataComparativeAnalysisWindow", {
                 width: getLabelWidth(loginUserLanguageResource.minute,loginUserLanguage)+45,
                 minValue: 0,
                 maxValue: 59,
-                value:'0',
+                value:'59',
                 msgTarget: 'none',
                 regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
                 listeners: {
@@ -179,7 +179,7 @@ Ext.define("AP.view.historyQuery.HistoryDataComparativeAnalysisWindow", {
         	layout: 'border',
         	items: [{
         		region: 'west',
-            	width:'35%',
+            	width:'45%',
             	header:false,
             	layout: 'border',
             	split: true,
@@ -205,15 +205,13 @@ Ext.define("AP.view.historyQuery.HistoryDataComparativeAnalysisWindow", {
         		header:false,
         		layout: 'border',
         		id: 'HistoryDataComparativeAnalysisPanel_Id',
+        		autoScroll: true,
         		items:[{
-        			region: 'west',
-                    width: '66%',
+        			region: 'center',
                     title: loginUserLanguageResource.curve,
                     id: 'HistoryDataComparativeAnalysisCurvePanel_Id',
                     layout: 'fit',
                     minHeight: otherCardMinHeight,   // 图表最小可视高度
-                    split: true,
-                    collapsible: true,
                     autoScroll: false,                // 禁止内部滚动
                     border: false,
                 	html: '<div id="HistoryDataComparativeAnalysisCurveDiv_Id" style="width:100%;height:100%;"></div>',
@@ -224,13 +222,17 @@ Ext.define("AP.view.historyQuery.HistoryDataComparativeAnalysisWindow", {
                         	}
                         }
                     }
-        		},{
-        			region: 'center',
-                    layout: 'fit',
-                    border:false,
-                    title: loginUserLanguageResource.data,
-                    id: 'HistoryDataComparativeAnalysisDataPanel_Id'
-        		}]
+        		}
+//        		,{
+//        			region: 'center',
+//                    width: '30%',
+//                    layout: 'fit',
+//                    border:false,
+//                    hidden:true,
+//                    title: loginUserLanguageResource.data,
+//                    id: 'HistoryDataComparativeAnalysisDataPanel_Id'
+//        		}
+        		]
         	}],
             listeners: {
                 // 最大化时，确保窗口处于展开状态，并刷新表格
@@ -645,35 +647,35 @@ function initComparativeAnalysisCurveChartFn(series, divId, title, subtitle, xti
 	            enabled: true,
 	            fallbackToExportServer: false,
 	            filename: title,
+	            menuItemDefinitions: {
+	                chartConfig: {
+        				text: loginUserLanguageResource.diagramSet,
+        				onclick: function() {
+        					var window = Ext.create("AP.view.historyQuery.HistoryCurveSetWindow", {
+                                title: loginUserLanguageResource.historyDiagramSet
+                            });
+                            window.show();
+        				}
+        			}
+	            },
+	            buttons: {
+	    	    	contextButton: {
+	    	    		menuItems: [
+	    	    			'viewFullscreen',
+	    	    			'printChart',
+	    	    			'separator',
+	    	    			'downloadPNG',
+	    	    			'downloadJPEG',
+	    	    			'downloadSVG',
+	    	    			'separator',
+	    	    			'downloadXLS',
+	    	    			'separator',
+	    	    			'chartConfig'
+	    	    			]
+	    	    		}
+	    	    },
 	            sourceWidth: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetWidth:null,
-	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null,
-	            		menuItemDefinitions: {
-	    	                chartConfig: {
-	            				text: loginUserLanguageResource.diagramSet,
-	            				onclick: function() {
-	            					var window = Ext.create("AP.view.historyQuery.HistoryCurveSetWindow", {
-	                                    title: loginUserLanguageResource.historyDiagramSet
-	                                });
-	                                window.show();
-	            				}
-	            			}
-	    	            },
-	    	            buttons: {
-	    	    	    	contextButton: {
-	    	    	    		menuItems: [
-	    	    	    			'viewFullscreen',
-	    	    	    			'printChart',
-	    	    	    			'separator',
-	    	    	    			'downloadPNG',
-	    	    	    			'downloadJPEG',
-	    	    	    			'downloadSVG',
-	    	    	    			'separator',
-	    	    	    			'downloadXLS',
-	    	    	    			'separator',
-	    	    	    			'chartConfig'
-	    	    	    			]
-	    	    	    		}
-	    	    	    }
+	            sourceHeight: $("#"+divId)[0]!=undefined?$("#"+divId)[0].offsetHeight:null
 	        },
 	        plotOptions: {
 	            spline: {

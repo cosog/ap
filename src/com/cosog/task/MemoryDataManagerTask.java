@@ -3129,6 +3129,19 @@ public class MemoryDataManagerTask {
 		return c;
 	}
 	
+	public static CalItem getCalItemByCode(String code,List<CalItem> list){
+		CalItem c=null;
+		if(list!=null){
+			for(int i=0;i<list.size();i++){
+				if(code.equalsIgnoreCase(list.get(i).getCode())){
+					c=list.get(i);
+					break;
+				}
+			}
+		}
+		return c;
+	}
+	
 	public static CalItem getCalItemByNameAndUnit(String name,String unit,String language){
 		CalItem c=null;
 		List<CalItem> list= getAcqCalculateItem(language);
@@ -3859,7 +3872,7 @@ public class MemoryDataManagerTask {
 			
 			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("iDegreeBalance"),"IDegreeBalance","%",2,1,languageResourceMap.get("iDegreeBalance"))));
 			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("wattDegreeBalance"),"WattDegreeBalance","%",2,1,languageResourceMap.get("wattDegreeBalance"))));
-			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("deltaRadius"),"DeltaRadius","m",2,1,languageResourceMap.get("deltaRadius"))));
+			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem(languageResourceMap.get("deltaRadius"),"DeltaRadius","cm",2,1,languageResourceMap.get("deltaRadius"))));
 			
 //			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem("日用电量","TodayKWattH","kW·h",2,1,"日用电量,累计用电量计算所得")));
 //			jedis.zadd(key.getBytes(),index++, SerializeObjectUnils.serialize(new CalItem("累计用电量","TotalKWattH","kW·h",2,1,"累计用电量,当日最新采集数据")));

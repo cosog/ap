@@ -2787,7 +2787,7 @@ public class DriverAPIController extends BaseController{
 		            + "\"triggerAlarm\":" + (acquisitionItemInfoList.get(j).getTriggerAlarm()) + ","
 		            + "\"alertId\":" + (acquisitionItemInfoList.get(j).getAlertId() != null ? acquisitionItemInfoList.get(j).getAlertId() : "null") + ","
 		            + "\"alarmType\":"+(acquisitionItemInfoList.get(j).getAlarmType())+","
-		            + "\"alarmInfo\":\""+(acquisitionItemInfoList.get(j).getAlarmInfo())+"\","
+		            + "\"alarminfo\":\""+(acquisitionItemInfoList.get(j).getAlarmInfo())+"\","
 		            + "\"alarmLevel\":"+(acquisitionItemInfoList.get(j).getAlarmLevel())+"},");
 		}
 		

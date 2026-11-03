@@ -1143,7 +1143,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            item.put("column",     column);
 	            item.put("columnName", columnName);
 	            item.put("value",      value);
-	            item.put("alarmInfo", row[8] == null ? "" : row[8].toString());
+	            item.put("alarminfo", row[8] == null ? "" : row[8].toString());
 	            item.put("alarmType", StringManagerUtils.stringToInteger(row[9] + "")); 
 	            item.put("alarmLevel", StringManagerUtils.stringToInteger(row[10] + "")); 
 	            item.put("acqTime",    row[11] == null ? "" : row[11].toString());

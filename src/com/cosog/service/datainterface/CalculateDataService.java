@@ -278,6 +278,108 @@ public class CalculateDataService<T> extends BaseService<T> {
 	                    }
 	                    // 不继承时：新插入的行本身就是未确认状态，无需 update；只把 alertId 回填到内存
 	                    memAlarmInfo.setAlertId(info.getAlertId());
+		                 
+		                 // ★ 消警继承（与 ack 继承并列）
+		                 int inheritSuppressStatus = 0;
+		                 String inheritSuppressReason = null;
+		                 String inheritSuppressUser = null;
+		                 String inheritSuppressTime = null;
+		                 String inheritSuppressIp = null;
+		                 String inheritSuppressEndTime = null;
+	
+		                 // 内存优先
+		                 if (memAlarmInfo.getSuppressStatus() == 2
+		                     && StringManagerUtils.isNotNull(memAlarmInfo.getSuppressEndTime())
+		                     && memAlarmInfo.getSuppressEndTime().compareTo(acqTime) > 0) {
+		                     inheritSuppressStatus = 2;
+		                     inheritSuppressReason = memAlarmInfo.getSuppressReason();
+		                     inheritSuppressUser = memAlarmInfo.getSuppressUser();
+		                     inheritSuppressTime = memAlarmInfo.getSuppressTime();
+		                     inheritSuppressIp = memAlarmInfo.getSuppressIp();
+		                     inheritSuppressEndTime = memAlarmInfo.getSuppressEndTime();
+		                 } else {
+		                     // 历史表最近一条（id < 新 alertId，order by id desc）
+		                     String prevSuppressSql = "select * from ( "
+		                         + "  select nvl(t.suppress_status,0) as suppress_status, "
+		                         + "         t.suppress_reason, t.suppress_user, "
+		                         + "         to_char(t.suppress_time,'yyyy-mm-dd hh24:mi:ss') as suppress_time, "
+		                         + "         t.suppress_ip, "
+		                         + "         to_char(t.suppress_end_time,'yyyy-mm-dd hh24:mi:ss') as suppress_end_time, "
+		                         + "         t.recoverytime, t.id "
+		                         + "  from tbl_alarminfo_hist t "
+		                         + "  where t.deviceid = " + deviceId
+		                         + "    and t.itemcode = '" + info.getColumn().replace("'", "''") + "'"
+		                         + "    and t.alarmlevel = " + info.getAlarmLevel()
+		                         + "    and t.alarmtype = " + info.getAlarmType();
+		                     if (info.getAlarmType() == 2 || info.getAlarmType() == 5) {
+		                         String ai = info.getAlarmInfo() == null ? "" : info.getAlarmInfo();
+		                         if (StringManagerUtils.isNotNull(ai)) {
+		                             prevSuppressSql += " and t.alarminfo = '" + ai.replace("'", "''") + "'";
+		                         } else {
+		                             prevSuppressSql += " and (t.alarminfo is null or t.alarminfo = '')";
+		                         }
+		                     } else {
+		                         String rv = info.getRawValue();
+		                         if (StringManagerUtils.isNotNull(rv)) {
+		                             prevSuppressSql += " and t.alarmvalue = " 
+		                                 + (StringManagerUtils.isNum(rv) ? rv : "'" + rv.replace("'", "''") + "'");
+		                         } else {
+		                             prevSuppressSql += " and t.alarmvalue is null";
+		                         }
+		                     }
+		                     if (StringManagerUtils.isNotNull(info.getBitIndex())) {
+		                         prevSuppressSql += " and t.bitindex = " + info.getBitIndex();
+		                     } else {
+		                         prevSuppressSql += " and t.bitindex is null";
+		                     }
+		                     prevSuppressSql += "    and t.id < " + info.getAlertId();
+		                     prevSuppressSql += "  order by t.id desc ";
+		                     prevSuppressSql += ") where rownum = 1";
+	
+		                     List<?> prevSuppressList = getBaseDao().findCallSql(prevSuppressSql);
+		                     if (prevSuppressList != null && !prevSuppressList.isEmpty()) {
+		                         Object[] row = (Object[]) prevSuppressList.get(0);
+		                         int prevStatus = StringManagerUtils.stringToInteger(row[0] + "");
+		                         String prevEndTime = row[5] == null ? null : row[5].toString();
+		                         boolean prevRecovered = row[6] != null;
+		                         if (prevStatus == 2 && !prevRecovered 
+		                             && StringManagerUtils.isNotNull(prevEndTime)
+		                             && prevEndTime.compareTo(acqTime) > 0) {
+		                             inheritSuppressStatus = 2;
+		                             inheritSuppressReason = row[1] == null ? null : row[1].toString();
+		                             inheritSuppressUser = row[2] == null ? null : row[2].toString();
+		                             inheritSuppressTime = row[3] == null ? null : row[3].toString();
+		                             inheritSuppressIp = row[4] == null ? null : row[4].toString();
+		                             inheritSuppressEndTime = prevEndTime;
+		                         }
+		                     }
+		                 }
+	
+		                 //继承成功 → update 本次新插入的 hist 行
+		                 if (inheritSuppressStatus == 2) {
+		                     String safeReason = inheritSuppressReason == null ? "" : inheritSuppressReason.replace("'", "''");
+		                     String safeUser = inheritSuppressUser == null ? "" : inheritSuppressUser.replace("'", "''");
+		                     String safeIp = inheritSuppressIp == null ? "" : inheritSuppressIp.replace("'", "''");
+		                     String updateHistSuppress = "update tbl_alarminfo_hist t set "
+		                         + " t.suppress_status = 2, "
+		                         + " t.suppress_reason = '" + safeReason + "', "
+		                         + " t.suppress_user = '" + safeUser + "', "
+		                         + " t.suppress_time = to_date('" + inheritSuppressTime + "','yyyy-mm-dd hh24:mi:ss'), "
+		                         + " t.suppress_ip = '" + safeIp + "', "
+		                         + " t.suppress_end_time = to_date('" + inheritSuppressEndTime + "','yyyy-mm-dd hh24:mi:ss') "
+		                         + " where t.id = " + info.getAlertId();
+		                     getBaseDao().updateOrDeleteBySql(updateHistSuppress);
+	
+		                     // 同步内存
+		                     memAlarmInfo.setSuppressStatus(2);
+		                     memAlarmInfo.setSuppressReason(inheritSuppressReason);
+		                     memAlarmInfo.setSuppressUser(inheritSuppressUser);
+		                     memAlarmInfo.setSuppressTime(inheritSuppressTime);
+		                     memAlarmInfo.setSuppressIp(inheritSuppressIp);
+		                     memAlarmInfo.setSuppressEndTime(inheritSuppressEndTime);
+		                 }
+	                    
+	                    
 	                }
 	            }
 	        }

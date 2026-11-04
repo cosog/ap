@@ -867,6 +867,17 @@ function handleBusinessMessage(data) {
                 if (window.console) console.error('remote ack error', e);
             }
         }
+    } else if (data.functionCode.toUpperCase() == "ALARMSUPPRESSED") {
+        if (typeof alarmAlert !== 'undefined' && alarmAlert) {
+            try {
+                AP.alert.AlarmManager.onRemoteSuppress(
+                    data.alertIds, data.suppressReason, data.suppressUser,
+                    data.suppressIp, data.suppressTime, data.suppressEndTime
+                );
+            } catch (e) {
+                if (window.console) console.error('remote suppress error', e);
+            }
+        }
     } else if (data.functionCode.toUpperCase() == "DatabaseDataCleaning".toUpperCase()) {
     	
     }

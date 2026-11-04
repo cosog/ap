@@ -448,6 +448,140 @@ public class AlarmQueryController extends BaseController{
 	    pw.close();
 	    return null;
 	}
+	
+	/**
+	 * 人工消警
+	 * Body：{"alertIds":[1001,1002],"reason":"设备拆除","durationHours":24.5}
+	 * 返回：{"success":true,"data":{"suppressUser":"admin","suppressTime":"...","suppressIp":"...","suppressEndTime":"..."}}
+	 */
+	@RequestMapping("/suppressAlarm")
+	public String suppressAlarm() throws Exception {
+	    String json;
+	    try {
+	        StringBuilder sb = new StringBuilder();
+	        String line;
+	        BufferedReader reader = request.getReader();
+	        while ((line = reader.readLine()) != null) sb.append(line);
+	        String body = sb.toString();
+	        log.info("suppressAlarm body=" + body);
+
+	        List<Number> alertIds = new ArrayList<Number>();
+	        String reason = "";
+	        double durationHours = 0;
+	        try {
+	            @SuppressWarnings("unchecked")
+	            Map<String, Object> req = gson.fromJson(body, Map.class);
+	            if (req != null && req.get("alertIds") != null) {
+	                alertIds = (List<Number>) req.get("alertIds");
+	            }
+	            if (req != null && req.get("reason") != null) {
+	                reason = req.get("reason").toString();
+	            }
+	            if (req != null && req.get("durationHours") != null) {
+	                durationHours = Double.parseDouble(req.get("durationHours").toString());
+	            }
+	        } catch (Exception e) {
+	            log.warn("suppressAlarm parse body failed", e);
+	        }
+
+	        if (alertIds.isEmpty() || durationHours <= 0 || !StringManagerUtils.isNotNull(reason)) {
+	            Map<String, Object> resp = new HashMap<String, Object>();
+	            resp.put("success", false);
+	            resp.put("message", "参数不合法");
+	            json = gson.toJson(resp);
+	        } else {
+	            HttpSession session = request.getSession();
+	            User user = (User) session.getAttribute("userLogin");
+	            String suppressUser = user != null ? user.getUserId() + "" : "";
+	            String suppressIp = user != null ? user.getLoginIp() : "";
+
+	            Map<String, Object> result = alarmQueryService.suppressAlarm(
+	                alertIds, reason, durationHours, suppressUser, suppressIp);
+
+	            // WS 广播 alarmSuppressed
+	            List<Long> successIds = (List<Long>) result.get("successIds");
+	            List<Integer> deviceIds = (List<Integer>) result.get("deviceIds");
+	            if (successIds != null && !successIds.isEmpty() && deviceIds != null && !deviceIds.isEmpty()) {
+	                String suppressTime = (String) result.get("suppressTime");
+	                String suppressEndTime = (String) result.get("suppressEndTime");
+
+	                StringBuffer webSocketSendData = new StringBuffer();
+	                webSocketSendData.append("{\"functionCode\":\"alarmSuppressed\",");
+	                webSocketSendData.append("\"alertIds\":[");
+	                for (int i = 0; i < successIds.size(); i++) {
+	                    if (i > 0) webSocketSendData.append(",");
+	                    webSocketSendData.append(successIds.get(i));
+	                }
+	                webSocketSendData.append("],");
+	                webSocketSendData.append("\"deviceIds\":[");
+	                for (int i = 0; i < deviceIds.size(); i++) {
+	                    if (i > 0) webSocketSendData.append(",");
+	                    webSocketSendData.append(deviceIds.get(i));
+	                }
+	                webSocketSendData.append("],");
+	                webSocketSendData.append("\"suppressReason\":\"" + (reason==null?"":reason.replace("\"","\\\"")) + "\",");
+	                webSocketSendData.append("\"suppressUser\":\"" + suppressUser + "\",");
+	                webSocketSendData.append("\"suppressIp\":\"" + suppressIp + "\",");
+	                webSocketSendData.append("\"suppressTime\":\"" + suppressTime + "\",");
+	                webSocketSendData.append("\"suppressEndTime\":\"" + suppressEndTime + "\"");
+	                webSocketSendData.append("}");
+
+	                String wsJson = webSocketSendData.toString();
+	                for (String websocketClientUserId : WebSocketByJavax.clients.keySet()) {
+	                    try {
+	                        String wsUserNo = "";
+	                        String[] clientInfo = websocketClientUserId.split("_");
+	                        if (clientInfo != null && clientInfo.length == 3) {
+	                            wsUserNo = clientInfo[1];
+	                        }
+	                        UserInfo userInfo = MemoryDataManagerTask.getUserInfoByNo(wsUserNo);
+	                        if (userInfo == null) continue;
+	                        boolean hasPermission = false;
+	                        for (Integer did : deviceIds) {
+	                            DeviceInfo deviceInfo = MemoryDataManagerTask.getDeviceInfo(did + "");
+	                            if (deviceInfo == null) continue;
+	                            if (StringManagerUtils.existOrNot(userInfo.getOrgChildrenNode(), deviceInfo.getOrgId())
+	                                && StringManagerUtils.existOrNot(userInfo.getDeviceTypeChildrenNode(), deviceInfo.getDeviceType())) {
+	                                hasPermission = true;
+	                                break;
+	                            }
+	                        }
+	                        if (!hasPermission) continue;
+	                        infoHandler().sendMessageToUserId(websocketClientUserId, wsJson);
+	                    } catch (Exception e) {
+	                        e.printStackTrace();
+	                    }
+	                }
+	            }
+
+	            Map<String, Object> data = new HashMap<String, Object>();
+	            data.put("suppressUser", suppressUser);
+	            data.put("suppressIp", suppressIp);
+	            data.put("suppressTime", result.get("suppressTime"));
+	            data.put("suppressEndTime", result.get("suppressEndTime"));
+
+	            Map<String, Object> resp = new HashMap<String, Object>();
+	            resp.put("success", true);
+	            resp.put("message", "");
+	            resp.put("data", data);
+	            json = gson.toJson(resp);
+	        }
+	    } catch (Exception e) {
+	        log.error("suppressAlarm error", e);
+	        Map<String, Object> resp = new HashMap<String, Object>();
+	        resp.put("success", false);
+	        resp.put("message", "系统异常");
+	        json = gson.toJson(resp);
+	    }
+
+	    response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+	    response.setHeader("Cache-Control", "no-cache");
+	    PrintWriter pw = response.getWriter();
+	    pw.print(json);
+	    pw.flush();
+	    pw.close();
+	    return null;
+	}
 
     /**
      * 待确认报警列表

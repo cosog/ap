@@ -283,6 +283,13 @@ public class DeviceAlarmInfo {
 		public String ackUser; // ★ 新增：确认人
 		public String ackIp; // ★ 新增：确认IP
         public String ackTime; // ★ 新增：确认时间
+        
+        private int suppressStatus = 0;
+        private String suppressReason;
+        private String suppressUser;
+        private String suppressTime;
+        private String suppressIp;
+        private String suppressEndTime;
 		
 		public String getAlarmTime() {
 			return alarmTime;
@@ -439,6 +446,42 @@ public class DeviceAlarmInfo {
 		}
 		public void setAckIp(String ackIp) {
 			this.ackIp = ackIp;
+		}
+		public int getSuppressStatus() {
+			return suppressStatus;
+		}
+		public void setSuppressStatus(int suppressStatus) {
+			this.suppressStatus = suppressStatus;
+		}
+		public String getSuppressReason() {
+			return suppressReason;
+		}
+		public void setSuppressReason(String suppressReason) {
+			this.suppressReason = suppressReason;
+		}
+		public String getSuppressUser() {
+			return suppressUser;
+		}
+		public void setSuppressUser(String suppressUser) {
+			this.suppressUser = suppressUser;
+		}
+		public String getSuppressTime() {
+			return suppressTime;
+		}
+		public void setSuppressTime(String suppressTime) {
+			this.suppressTime = suppressTime;
+		}
+		public String getSuppressIp() {
+			return suppressIp;
+		}
+		public void setSuppressIp(String suppressIp) {
+			this.suppressIp = suppressIp;
+		}
+		public String getSuppressEndTime() {
+			return suppressEndTime;
+		}
+		public void setSuppressEndTime(String suppressEndTime) {
+			this.suppressEndTime = suppressEndTime;
 		}
 		
 	}

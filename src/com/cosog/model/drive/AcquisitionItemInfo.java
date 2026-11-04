@@ -32,6 +32,9 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 	public boolean triggerAlarm;
 	private Integer alertId; 
 	
+	private int suppressStatus = 0;
+	private String suppressEndTime;
+	
 	public int type;
 	public int displayItemId;
 	public AcquisitionItemInfo() {
@@ -308,6 +311,22 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 
 	public void setAlertId(Integer alertId) {
 		this.alertId = alertId;
+	}
+
+	public int getSuppressStatus() {
+		return suppressStatus;
+	}
+
+	public void setSuppressStatus(int suppressStatus) {
+		this.suppressStatus = suppressStatus;
+	}
+
+	public String getSuppressEndTime() {
+		return suppressEndTime;
+	}
+
+	public void setSuppressEndTime(String suppressEndTime) {
+		this.suppressEndTime = suppressEndTime;
 	}
 	
 }

@@ -324,6 +324,14 @@ Ext.define('AP.view.alert.AlarmWindow', {
         return active === this.treePending;
     },
 
+    // ★ 切到「待确认」Tab（新报警 / 升级迁回时强制用户看到）
+    focusPendingTab: function () {
+        if (!this.tabPanel) return;
+        if (this.tabPanel.getActiveTab() !== this.treePending) {
+            this.tabPanel.setActiveItem(this.treePending);
+        }
+    },
+
     findLeafByKey: function (key) {
         var root = this.storePending.getRootNode();
         var n = this.findByKey(root, key);
@@ -380,9 +388,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
         if (root.firstChild === deviceNode) return;   // 已是最前
         try {
             root.insertBefore(deviceNode, root.firstChild);
-        } catch (e) {
-            // 兜底：某些 Ext 版本 insertBefore 对 root 子节点要求同 store，忽略异常不阻断
-        }
+        } catch (e) {}
     },
 
     moveLeafToTop: function (deviceNode, leafNode) {
@@ -390,9 +396,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
         if (deviceNode.firstChild === leafNode) return;   // 已是第一个
         try {
             deviceNode.insertBefore(leafNode, deviceNode.firstChild);
-        } catch (e) {
-            // 同上，容错
-        }
+        } catch (e) {}
     },
 
     // ============================================================

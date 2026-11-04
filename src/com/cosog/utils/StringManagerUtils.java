@@ -332,6 +332,18 @@ public class StringManagerUtils {
         Date result = StringManagerUtils.stringToDate(strdate);
         return result;
     }
+    
+    public static String dateToString(Date date,String formatStr) {
+    	String r="";
+    	try{
+    		DateFormat format = new SimpleDateFormat(formatStr);
+        	r = format.format(date);
+    	}catch(Exception e){
+    		r="";
+    	}
+    	
+    	return r;
+    }
 
     public static Date addDate(Date date, int addDayCount) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");

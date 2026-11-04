@@ -45,7 +45,6 @@ Ext.define('AP.alert.AlarmManager', {
                 alarmType: 3
             };
             var key = this.getAlarmKey(commAlarm);
-
             if (data.commAlarmLevel === undefined) return;
             if (data.commAlarmLevel > 0) {
                 this.upsert({
@@ -64,9 +63,9 @@ Ext.define('AP.alert.AlarmManager', {
             } else {
                 var toRemoveKeys = [];
                 for (var k in this.alarms) {
-                    if (this.alarms.hasOwnProperty(k) &&
-                        this.alarms[k].deviceId == data.deviceId &&
-                        this.alarms[k].column === 'commStatusName') {
+                    if (this.alarms.hasOwnProperty(k)
+                        && this.alarms[k].deviceId == data.deviceId
+                        && this.alarms[k].column === 'commStatusName') {
                         toRemoveKeys.push(k);
                     }
                 }
@@ -83,7 +82,6 @@ Ext.define('AP.alert.AlarmManager', {
         var map = {};
         var push = function (item) {
             if (!item.column || !item.triggerAlarm || !item.alarmLevel || item.alarmLevel <= 0) return;
-
             var key = AP.alert.AlarmManager.getAlarmKey({
                 deviceId: deviceId,
                 column: item.column,
@@ -91,10 +89,8 @@ Ext.define('AP.alert.AlarmManager', {
                 alarmType: item.alarmType,
                 alarminfo: item.alarminfo
             });
-
             if (map[key]) return;
             map[key] = true;
-
             result.push({
                 key: key,
                 alertId: item.alertId || null,
@@ -107,13 +103,13 @@ Ext.define('AP.alert.AlarmManager', {
                 alarmLevel: item.alarmLevel,
                 acqTime: acqTime,
                 alarmType: item.alarmType || 0,
-                alarminfo: item.alarminfo || ''
+                alarminfo: item.alarminfo || '',
+                suppressStatus: item.suppressStatus || 0,
+                suppressEndTime: item.suppressEndTime || ''
             });
         };
-
         var all = data.allItemInfo || [];
         for (var i = 0; i < all.length; i++) push(all[i]);
-
         if (data.commAlarmLevel > 0) {
             push({ column: 'commStatusName', columnName: '通信状态', value: data.commStatusName, alarmLevel: data.commAlarmLevel, alarmType: 3 });
         }
@@ -123,7 +119,6 @@ Ext.define('AP.alert.AlarmManager', {
         if (data.resultAlarmLevel > 0) {
             push({ column: 'resultName', columnName: '工况', value: data.resultName, alarmLevel: data.resultAlarmLevel, alarmType: 4 });
         }
-
         return result;
     },
 
@@ -138,25 +133,33 @@ Ext.define('AP.alert.AlarmManager', {
             old.alertId = alarm.alertId || old.alertId;
             old.alarmLevel = alarm.alarmLevel;
             old.ackStatus = 1;
+            // suppress 以推送为准（到期后服务端推 0，此处覆盖回 0）
+            old.suppressStatus = alarm.suppressStatus || 0;
+            old.suppressEndTime = alarm.suppressEndTime || old.suppressEndTime;
             this.updateNode(old);
             return;
         }
 
-        // ② 已确认后再次触发，且升级 → 迁回待确认（标记 needReack，统一在 else 处理）
+        // ② 已确认后再次触发，且升级 → 迁回待确认（保留 suppress 状态不变）
         var needReack = !!(this.ackKeys[alarm.key] && old && alarm.alarmLevel < old.alarmLevel);
         if (needReack) {
             delete this.ackKeys[alarm.key];
         }
 
         if (!old) {
-            // 新建
             alarm.ackStatus = (alarm.ackStatus == 1) ? 1 : 0;
+            alarm.suppressStatus = alarm.suppressStatus || 0;
+            alarm.suppressEndTime = alarm.suppressEndTime || '';
             if (alarm.ackStatus === 1) this.ackKeys[alarm.key] = true;
             this.alarms[alarm.key] = alarm;
             this.addNode(alarm);
-            // ★ 新报警切到待确认 Tab
-            this.ensureWindowExpanded(true);
-            AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
+            // 如果新报警是消警状态，不响铃不展开
+            if (alarm.suppressStatus == 2) {
+                this.updateNode(alarm);
+            } else {
+                this.ensureWindowExpanded(true);
+                AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
+            }
         } else {
             var levelUp = alarm.alarmLevel < old.alarmLevel;
             var wasAckedByAlertId = (old.alertId && !alarm.alertId);
@@ -176,10 +179,14 @@ Ext.define('AP.alert.AlarmManager', {
                 old.ackStatus = this.ackKeys[alarm.key] ? 1 : (old.ackStatus == 1 ? 1 : 0);
             }
 
+            // suppress：推送为准
+            old.suppressStatus = alarm.suppressStatus || 0;
+            old.suppressEndTime = alarm.suppressEndTime || '';
+
             this.updateNode(old);
 
-            if (levelUp) {
-                // ★ 升级切到待确认 Tab（含 needReack 场景）
+            // 升级时：仅当不是消警状态才展开+响铃
+            if (levelUp && old.suppressStatus != 2) {
                 this.ensureWindowExpanded(true);
                 AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
             }
@@ -189,17 +196,14 @@ Ext.define('AP.alert.AlarmManager', {
     checkRecover: function (data) {
         var deviceId = data.deviceId;
         var toRemoveKeys = [];
-
         var currentLevelMap = {};
         var all = data.allItemInfo || [];
-
         for (var i = 0; i < all.length; i++) {
             var item = all[i];
             if (item.column) {
                 currentLevelMap[item.column] = item.alarmLevel || 0;
             }
         }
-
         if (currentLevelMap['commStatusName'] === undefined && data.commAlarmLevel !== undefined) {
             currentLevelMap['commStatusName'] = data.commAlarmLevel;
         }
@@ -209,20 +213,16 @@ Ext.define('AP.alert.AlarmManager', {
         if (currentLevelMap['resultName'] === undefined && data.resultAlarmLevel !== undefined) {
             currentLevelMap['resultName'] = data.resultAlarmLevel;
         }
-
         for (var key in this.alarms) {
             if (!this.alarms.hasOwnProperty(key)) continue;
             var alarm = this.alarms[key];
             if (alarm.deviceId != deviceId) continue;
-
             var col = alarm.column;
             var level = currentLevelMap[col];
-
             if (level === 0) {
                 toRemoveKeys.push(key);
             }
         }
-
         for (var j = 0; j < toRemoveKeys.length; j++) {
             this.recover(toRemoveKeys[j]);
         }
@@ -239,10 +239,6 @@ Ext.define('AP.alert.AlarmManager', {
         if (!this.win) this.win = Ext.create('AP.view.alert.AlarmWindow');
         return this.win;
     },
-    /**
-     * 展开窗口 + 闪烁
-     * @param {Boolean} focusPending 是否切到「待确认」Tab（新报警/升级/首次加载有未确认时传 true）
-     */
     ensureWindowExpanded: function (focusPending) {
         var win = this.ensureWindow();
         if (!win.isVisible()) win.show();
@@ -297,7 +293,6 @@ Ext.define('AP.alert.AlarmManager', {
         }
 
         this.maskWindow();
-
         Ext.Ajax.request({
             url: context + '/alarmQueryController/batchAck',
             method: 'POST',
@@ -310,9 +305,7 @@ Ext.define('AP.alert.AlarmManager', {
                     var data = r.data || {};
                     Ext.Array.each(data.successIds || [], function (id) { okIds[id] = true; });
                     Ext.Array.each(data.alreadyAckedIds || [], function (id) { okIds[id] = true; });
-
                     finish(true, okIds);
-
                     if (data.failedIds && data.failedIds.length > 0) {
                         Ext.toast({ html: data.failedIds.length + ' 条确认失败', title: '提示', width: 300, align: 't' });
                     }
@@ -349,7 +342,6 @@ Ext.define('AP.alert.AlarmManager', {
         var self = this;
         var ackSet = {};
         Ext.Array.each(alertIds, function (id) { ackSet[id] = true; });
-
         Ext.Object.each(this.alarms, function (key, alarm) {
             if (alarm.alertId && ackSet[alarm.alertId]) {
                 self.ackKeys[key] = true;
@@ -360,10 +352,56 @@ Ext.define('AP.alert.AlarmManager', {
                 if (self.win) self.win.syncAlarmNode(alarm);
             }
         });
+        if (this.win) this.win.updateToolbar();
+        this._refreshSoundAfterAck();
+    },
 
-        if (this.win) {
-            this.win.updateToolbar();
-        }
+    // ★ 人工消警请求
+    suppressAlarm: function (alertIds, reason, durationHours, callback) {
+        var self = this;
+        if (!alertIds || alertIds.length === 0) { if (callback) callback(false); return; }
+        this.maskWindow();
+        Ext.Ajax.request({
+            url: context + '/alarmQueryController/suppressAlarm',
+            method: 'POST',
+            jsonData: { alertIds: alertIds, reason: reason, durationHours: durationHours },
+            success: function (resp) {
+                self.unmaskWindow();
+                var r;
+                try { r = Ext.JSON.decode(resp.responseText); } catch (e) { r = { success: false }; }
+                if (r.success) {
+                    callback(true, r.data || {});
+                } else {
+                    Ext.Msg.alert(loginUserLanguageResource.tip, r.message || '消警失败');
+                    callback(false);
+                }
+            },
+            failure: function () {
+                self.unmaskWindow();
+                Ext.Msg.alert(loginUserLanguageResource.error, loginUserLanguageResource.ajaxError);
+                callback(false);
+            }
+        });
+    },
+
+    // ★ 远程消警广播处理
+    onRemoteSuppress: function (alertIds, suppressReason, suppressUser, suppressIp, suppressTime, suppressEndTime) {
+        if (!alertIds || alertIds.length === 0) return;
+        var self = this;
+        var idSet = {};
+        Ext.Array.each(alertIds, function (id) { idSet[id] = true; });
+        Ext.Object.each(this.alarms, function (key, alarm) {
+            if (alarm.alertId && idSet[alarm.alertId]) {
+                alarm.suppressStatus = 2;
+                alarm.suppressReason = suppressReason || '';
+                alarm.suppressUser = suppressUser || '';
+                alarm.suppressIp = suppressIp || '';
+                alarm.suppressTime = suppressTime || '';
+                alarm.suppressEndTime = suppressEndTime || '';
+                if (self.win) self.win.syncAlarmNode(alarm);
+            }
+        });
+        if (this.win) this.win.updateToolbar();
         this._refreshSoundAfterAck();
     },
 
@@ -380,7 +418,6 @@ Ext.define('AP.alert.AlarmManager', {
     loadPendingAlarms: function () {
         var self = this;
         if (typeof alarmAlert !== 'undefined' && !alarmAlert) return;
-
         var orgIdCmp = Ext.getCmp('leftOrg_Id');
         var orgId = orgIdCmp ? orgIdCmp.getValue() : '';
         var deviceType = '';
@@ -400,16 +437,16 @@ Ext.define('AP.alert.AlarmManager', {
                 if (!r || !r.success || !r.data || r.data.length === 0) return;
 
                 var hasNewUnack = false;
-
                 Ext.Array.each(r.data, function (item) {
                     var key = self.getAlarmKey(item);
-
-                    if (item.ackStatus == 1) {
+                    var isSuppressed = (item.suppressStatus == 2);
+                    if (isSuppressed) {
+                        // 消警项：不加入 ackKeys，不展开
+                    } else if (item.ackStatus == 1) {
                         self.ackKeys[key] = true;
                     } else {
                         hasNewUnack = true;
                     }
-
                     self.upsertSilent({
                         key: key,
                         alertId: item.alertId,
@@ -423,25 +460,27 @@ Ext.define('AP.alert.AlarmManager', {
                         acqTime: item.acqTime,
                         ackStatus: item.ackStatus,
                         alarmType: item.alarmType,
-                        alarminfo: item.alarminfo
+                        alarminfo: item.alarminfo,
+                        suppressStatus: item.suppressStatus || 0,
+                        suppressReason: item.suppressReason || '',
+                        suppressUser: item.suppressUser || '',
+                        suppressIp: item.suppressIp || '',
+                        suppressTime: item.suppressTime || '',
+                        suppressEndTime: item.suppressEndTime || ''
                     });
                 });
 
                 if (self.win && self.win.getTotalLeafCount() > 0) {
                     if (hasNewUnack) {
-                        // ★ 首次加载有未确认，切到待确认 Tab
                         self.ensureWindowExpanded(true);
-
                         if (!AP.alert.AlarmSoundManager.unlocked) {
                             var tip = self.win.down('#muteTip');
                             if (tip) tip.show();
                         }
-
                         var maxLevel = self._getHighestUnackLevel();
-                        if (maxLevel) {
-                            AP.alert.AlarmSoundManager.play(maxLevel);
-                        }
+                        if (maxLevel) AP.alert.AlarmSoundManager.play(maxLevel);
                     } else {
+                        // 没有待确认 → 折叠
                         var win = self.ensureWindow();
                         if (!win.isVisible()) win.show();
                         if (!win.collapsed) win.collapse();
@@ -455,6 +494,7 @@ Ext.define('AP.alert.AlarmManager', {
     upsertSilent: function (alarm) {
         if (!this.alarms[alarm.key]) {
             alarm.ackStatus = (alarm.ackStatus == 1) ? 1 : 0;
+            alarm.suppressStatus = (alarm.suppressStatus == 2) ? 2 : 0;
             this.alarms[alarm.key] = alarm;
             this.addNode(alarm);
         } else {
@@ -463,6 +503,13 @@ Ext.define('AP.alert.AlarmManager', {
                 old.ackStatus = 1;
                 this.ackKeys[alarm.key] = true;
             }
+            // suppress 以 server 为准
+            old.suppressStatus = alarm.suppressStatus || 0;
+            old.suppressReason = alarm.suppressReason || '';
+            old.suppressUser = alarm.suppressUser || '';
+            old.suppressIp = alarm.suppressIp || '';
+            old.suppressTime = alarm.suppressTime || '';
+            old.suppressEndTime = alarm.suppressEndTime || '';
             old.value = alarm.value;
             old.acqTime = alarm.acqTime;
             old.alarminfo = alarm.alarminfo || '';
@@ -474,6 +521,7 @@ Ext.define('AP.alert.AlarmManager', {
     _getHighestUnackLevel: function () {
         var min = null;
         Ext.Object.each(this.alarms, function (k, a) {
+            if (a.suppressStatus == 2) return;   // ★ 跳过消警
             if (a.ackStatus == 1) return;
             if (min === null || a.alarmLevel < min) min = a.alarmLevel;
         });
@@ -482,9 +530,9 @@ Ext.define('AP.alert.AlarmManager', {
 
     _refreshSoundAfterAck: function () {
         var self = this;
-
         var unackKeys = [];
         Ext.Object.each(this.alarms, function (k, a) {
+            if (a.suppressStatus == 2) return;   // ★ 跳过消警
             if (a.ackStatus != 1) unackKeys.push(k);
         });
 
@@ -492,14 +540,12 @@ Ext.define('AP.alert.AlarmManager', {
             AP.alert.AlarmSoundManager.stop();
             if (this.win) {
                 this.win.stopBlink();
-
+                // 待确认空了 → 切到待消警（如果有） → 折叠
                 var ackCount = this.win.countLeaf(this.win.storeAcked);
                 if (ackCount > 0 && this.win.tabPanel) {
                     this.win.tabPanel.setActiveItem(this.win.treeAcked);
                 }
-
                 this.win.collapse();
-
                 var tip = this.win.down('#muteTip');
                 if (tip) tip.hide();
             }
@@ -513,9 +559,7 @@ Ext.define('AP.alert.AlarmManager', {
         });
 
         var playing = AP.alert.AlarmSoundManager.currentLevel;
-        if (playing === targetLevel) {
-            return;
-        }
+        if (playing === targetLevel) return;
         AP.alert.AlarmSoundManager.stop();
         AP.alert.AlarmSoundManager.play(targetLevel);
     },
@@ -524,16 +568,11 @@ Ext.define('AP.alert.AlarmManager', {
         this.alarms = {};
         this.ackKeys = {};
         this._localAckWarned = false;
-
         if (AP.alert && AP.alert.AlarmSoundManager) {
             AP.alert.AlarmSoundManager.stop();
         }
-
         if (this.win) {
-            try {
-                this.win.stopBlink();
-                this.win.close();
-            } catch (e) {}
+            try { this.win.stopBlink(); this.win.close(); } catch (e) {}
             this.win = null;
         }
         console.log('【报警权限】失去权限，已清理所有报警弹窗和声音');

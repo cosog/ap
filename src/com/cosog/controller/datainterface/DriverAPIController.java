@@ -427,6 +427,21 @@ public class DriverAPIController extends BaseController{
 										e.printStackTrace();
 									}
 								}else{
+									//人工消警到期判断
+									if (alarmInfo.getSuppressStatus() == 2) {
+										if (StringManagerUtils.isNotNull(alarmInfo.getSuppressEndTime())
+										        && alarmInfo.getSuppressEndTime().compareTo(acqTime) <= 0) {
+										        // ★ 到期：只清内存，不动 hist（保留消警历史供追溯）
+										        //   下次正常触发时会 insert 新的 hist 行，旧行的 suppress_* 永久保留
+										        alarmInfo.setSuppressStatus(0);
+										        alarmInfo.setSuppressReason(null);
+										        alarmInfo.setSuppressUser(null);
+										        alarmInfo.setSuppressTime(null);
+										        alarmInfo.setSuppressIp(null);
+										        alarmInfo.setSuppressEndTime(null);
+										    }
+									}
+									
 									String alarmStartTime =alarmInfo.getAlarmStartTime();
 									long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
 									if(delay==0  //没有设置延时
@@ -910,6 +925,21 @@ public class DriverAPIController extends BaseController{
 									}
 								
 								}else{
+									//人工消警到期判断
+									if (alarmInfo.getSuppressStatus() == 2) {
+										if (StringManagerUtils.isNotNull(alarmInfo.getSuppressEndTime())
+										        && alarmInfo.getSuppressEndTime().compareTo(acqTime) <= 0) {
+										        // ★ 到期：只清内存，不动 hist（保留消警历史供追溯）
+										        //   下次正常触发时会 insert 新的 hist 行，旧行的 suppress_* 永久保留
+										        alarmInfo.setSuppressStatus(0);
+										        alarmInfo.setSuppressReason(null);
+										        alarmInfo.setSuppressUser(null);
+										        alarmInfo.setSuppressTime(null);
+										        alarmInfo.setSuppressIp(null);
+										        alarmInfo.setSuppressEndTime(null);
+										    }
+									}
+									
 									String alarmStartTime =alarmInfo.getAlarmStartTime();
 									long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
 									if(delay==0  //没有设置延时
@@ -1622,6 +1652,24 @@ public class DriverAPIController extends BaseController{
 					e.printStackTrace();
 				}
 			}else{
+				// ★ 人工消警到期判断
+				if (alarmInfo.getSuppressStatus() == 2) {
+					if (StringManagerUtils.isNotNull(alarmInfo.getSuppressEndTime())
+					        && alarmInfo.getSuppressEndTime().compareTo(acqTime) <= 0) {
+					        // ★ 到期：只清内存，不动 hist（保留消警历史供追溯）
+					        //   下次正常触发时会 insert 新的 hist 行，旧行的 suppress_* 永久保留
+					        alarmInfo.setSuppressStatus(0);
+					        alarmInfo.setSuppressReason(null);
+					        alarmInfo.setSuppressUser(null);
+					        alarmInfo.setSuppressTime(null);
+					        alarmInfo.setSuppressIp(null);
+					        alarmInfo.setSuppressEndTime(null);
+					    }
+				}
+				
+				
+				
+				
 				String alarmStartTime =alarmInfo.getAlarmStartTime();
 				int retriggerTime=StringManagerUtils.stringToInteger(acquisitionItemInfo.getRetriggerTime());
 				long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
@@ -1675,6 +1723,9 @@ public class DriverAPIController extends BaseController{
 	            }
 				
 				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
+				
+				acquisitionItemInfo.setSuppressStatus(alarmInfo.getSuppressStatus());
+				acquisitionItemInfo.setSuppressEndTime(alarmInfo.getSuppressEndTime());
 				
 				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
 					if(!existAlarm && !existAlarmTimer){
@@ -1881,6 +1932,21 @@ public class DriverAPIController extends BaseController{
 					e.printStackTrace();
 				}
 			}else{
+				// 人工消警到期判断
+				if (alarmInfo.getSuppressStatus() == 2) {
+					if (StringManagerUtils.isNotNull(alarmInfo.getSuppressEndTime())
+					        && alarmInfo.getSuppressEndTime().compareTo(acqTime) <= 0) {
+					        // ★ 到期：只清内存，不动 hist（保留消警历史供追溯）
+					        //   下次正常触发时会 insert 新的 hist 行，旧行的 suppress_* 永久保留
+					        alarmInfo.setSuppressStatus(0);
+					        alarmInfo.setSuppressReason(null);
+					        alarmInfo.setSuppressUser(null);
+					        alarmInfo.setSuppressTime(null);
+					        alarmInfo.setSuppressIp(null);
+					        alarmInfo.setSuppressEndTime(null);
+					    }
+				}
+				
 				String alarmStartTime =alarmInfo.getAlarmStartTime();
 				int retriggerTime=StringManagerUtils.stringToInteger(acquisitionItemInfo.getRetriggerTime());
 				long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
@@ -1933,6 +1999,9 @@ public class DriverAPIController extends BaseController{
 				}
 				
 				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
+				
+				acquisitionItemInfo.setSuppressStatus(alarmInfo.getSuppressStatus());
+				acquisitionItemInfo.setSuppressEndTime(alarmInfo.getSuppressEndTime());
 				
 				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
 					if(!existAlarm && !existAlarmTimer){
@@ -2788,6 +2857,8 @@ public class DriverAPIController extends BaseController{
 		            + "\"alertId\":" + (acquisitionItemInfoList.get(j).getAlertId() != null ? acquisitionItemInfoList.get(j).getAlertId() : "null") + ","
 		            + "\"alarmType\":"+(acquisitionItemInfoList.get(j).getAlarmType())+","
 		            + "\"alarminfo\":\""+(acquisitionItemInfoList.get(j).getAlarmInfo())+"\","
+		            + "\"suppressStatus\":" + (acquisitionItemInfoList.get(j).getSuppressStatus()) + ","
+		            + "\"suppressEndTime\":\"" + (acquisitionItemInfoList.get(j).getSuppressEndTime() != null ? acquisitionItemInfoList.get(j).getSuppressEndTime() : "") + "\","
 		            + "\"alarmLevel\":"+(acquisitionItemInfoList.get(j).getAlarmLevel())+"},");
 		}
 		

@@ -28,3 +28,11 @@
 #AlarmWindow_Id .x-window-header {
     cursor: pointer;
 }
+
+.alarm-row-suppressed {
+    background: #f0fdfa;
+    color: #0e7490;
+}
+.alarm-row-suppressed td {
+    color: #0e7490;
+}

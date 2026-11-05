@@ -1,3 +1,7 @@
+// 全局变量：控制主界面是否显示"人工消警"标签页
+// false: 永久隐藏不显示（即使有数据）； true: 保留当前逻辑（有数据才显示）
+var showSuppressedTab = false; 
+
 Ext.define('AP.view.alert.AlarmWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.alarmWindow',
@@ -35,7 +39,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 fields: [
                     'text', 'alarmKey', 'alarmLevel', 'deviceId', 'deviceName',
                     'orgId', 'column', 'columnName', 'value', 'alarminfo', 'acqTime',
-                    'alertId', 'status',
+                    'alertId', 'status', 'suppressStatus',
                     'suppressReason', 'suppressUser', 'suppressTime', 'suppressIp', 'suppressEndTime'
                 ]
             });
@@ -45,11 +49,9 @@ Ext.define('AP.view.alert.AlarmWindow', {
         this.storeAcked = makeStore();        // status = 'ACK'
         this.storeSuppressed = makeStore();   // status = 'SUPPRESSED'
 
-        // 兼容旧引用
         this.store = this.storePending;
-        this.tree = null;
 
-        // 待确认树：确认操作
+        // 待确认树
         this.treePending = this.buildTree(this.storePending, {
             title: '待确认',
             checkable: true,
@@ -94,7 +96,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
             }]
         });
 
-        // 待消警树：人工消警操作
+        // 待消警树
         this.treeAcked = this.buildTree(this.storeAcked, {
             title: '待消警',
             checkable: true,
@@ -126,10 +128,16 @@ Ext.define('AP.view.alert.AlarmWindow', {
                     }
                     self.openSuppressDialog(keys);
                 }
+            }, {
+                text: '查看人工消警记录',
+                itemId: 'viewSuppressedBtn',
+                handler: function () {
+                    self.openSuppressedListWindow();
+                }
             }]
         });
 
-        // 人工消警树：只读
+        // 人工消警树
         this.treeSuppressed = this.buildTree(this.storeSuppressed, {
             title: '人工消警',
             checkable: false,
@@ -140,7 +148,6 @@ Ext.define('AP.view.alert.AlarmWindow', {
             }]
         });
 
-        // 兼容旧引用
         this.tree = this.treePending;
 
         this.tabPanel = Ext.create('Ext.tab.Panel', {
@@ -153,6 +160,11 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 }
             }
         });
+
+        // ★ 如果全局变量为 false，则永久隐藏该 tab
+        if (!showSuppressedTab) {
+            this.treeSuppressed.tab.hide();
+        }
 
         this.items = [this.tabPanel];
         this.callParent(arguments);
@@ -219,9 +231,6 @@ Ext.define('AP.view.alert.AlarmWindow', {
         });
     },
 
-    // ============================================================
-    // 构建一个 TreePanel
-    // ============================================================
     buildTree: function (store, opts) {
         var self = this;
 
@@ -255,12 +264,34 @@ Ext.define('AP.view.alert.AlarmWindow', {
             text: '发生时间', dataIndex: 'acqTime', flex: 2, minWidth: 140,
             renderer: function (v, meta, rec) { return rec.isLeaf() ? v : ''; }
         }, {
-            text: '状态', dataIndex: 'status', flex: 1, minWidth: 80, align: 'center',
+            text: '状态', dataIndex: 'status', flex: 2, minWidth: 120, align: 'center',
             renderer: function (v, meta, rec) {
                 if (!rec.isLeaf()) return '';
-                if (v === 'SUPPRESSED') return '<span style="color:#0e7490;">已消警</span>';
-                if (v === 'ACK') return '<span style="color:#888;">已确认</span>';
-                return '<span style="color:#dc2828;">待确认</span>';
+                
+                var suppStatus = rec.get('suppressStatus');
+                // 对于“待确认”状态，如果 suppStatus=1，也显示待确认
+                var ackText = (suppStatus === 1) ? '待确认' : ((v === 'ACK' || v === 'SUPPRESSED') ? '已确认' : '待确认');
+                
+                var suppText = '待消警';
+                if (suppStatus == 2) {
+                    suppText = '人工消警';
+                } else if (suppStatus == 1) {
+                    suppText = '自动消警';
+                }
+
+                var ackColor = (ackText === '待确认') ? '#dc2828' : '#888';
+                var suppColor = '#1677ff';
+                if (suppText === '人工消警') suppColor = '#0e7490';
+                if (suppText === '自动消警') suppColor = '#52c41a';
+
+                return '<span style="color:' + ackColor + ';">' + ackText + '</span> ' +
+                       '<span style="color:' + suppColor + ';">' + suppText + '</span>';
+            }
+        }, {
+            text: '消警到期时间', dataIndex: 'suppressEndTime', flex: 2, minWidth: 140,hidden:true,
+            renderer: function (v, meta, rec) {
+                if (!rec.isLeaf()) return '';
+                return v || '';
             }
         }];
 
@@ -303,7 +334,8 @@ Ext.define('AP.view.alert.AlarmWindow', {
             viewConfig: {
                 getRowClass: function (rec) {
                     if (!rec.isLeaf()) return 'alarm-row-device';
-                    if (rec.get('status') === 'SUPPRESSED') return 'alarm-row-suppressed';
+                    var suppStatus = rec.get('suppressStatus');
+                    if (suppStatus == 2 || suppStatus == 1) return 'alarm-row-suppressed';
                     if (rec.get('status') === 'ACK') return 'alarm-row-ack';
                     return 'alarm-row-unack';
                 }
@@ -329,9 +361,6 @@ Ext.define('AP.view.alert.AlarmWindow', {
         });
     },
 
-    // ============================================================
-    // store 路由 / 查找
-    // ============================================================
     getStoreByStatus: function (status) {
         if (status === 'SUPPRESSED') return this.storeSuppressed;
         if (status === 'ACK') return this.storeAcked;
@@ -411,12 +440,21 @@ Ext.define('AP.view.alert.AlarmWindow', {
         try { deviceNode.insertBefore(leafNode, deviceNode.firstChild); } catch (e) {}
     },
 
-    // ============================================================
-    // 视图同步核心入口
-    // ============================================================
     syncAlarmNode: function (alarm) {
         if (!alarm || !alarm.key) return;
-        var targetStatus = (alarm.suppressStatus == 2) ? 'SUPPRESSED' : (alarm.ackStatus == 1 ? 'ACK' : 'NEW');
+        
+        // ★ 如果自动消警（suppressStatus == 1），也放入 SUPPRESSED 树中展示
+        // 但根据你的业务需求，待确认的自动消警应该保留在“待确认”列表。
+        // 所以，如果 ackStatus 未确认，我们仍将其放在 NEW 树中。
+        var targetStatus = 'NEW';
+        if (alarm.ackStatus !== 1) {
+            targetStatus = 'NEW';
+        } else if (alarm.suppressStatus == 2 || alarm.suppressStatus == 1) {
+            targetStatus = 'SUPPRESSED';
+        } else {
+            targetStatus = 'ACK';
+        }
+
         var existing = this.findLeafByKey(alarm.key);
 
         if (!existing) {
@@ -424,7 +462,6 @@ Ext.define('AP.view.alert.AlarmWindow', {
             return;
         }
         if (existing.get('status') !== targetStatus) {
-            // 迁移
             this.insertLeaf(alarm, targetStatus);
             this.removeLeafNode(existing);
             this.updateToolbar();
@@ -453,6 +490,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
             acqTime: alarm.acqTime,
             alertId: alarm.alertId,
             status: status,
+            suppressStatus: alarm.suppressStatus || 0,
             checked: false,
             suppressReason: alarm.suppressReason || '',
             suppressUser: alarm.suppressUser || '',
@@ -474,6 +512,17 @@ Ext.define('AP.view.alert.AlarmWindow', {
         node.set('alarminfo', alarm.alarminfo || '');
         node.set('alarmLevel', alarm.alarmLevel);
         node.set('acqTime', alarm.acqTime);
+        
+        var targetStatus = 'NEW';
+        if (alarm.ackStatus !== 1) {
+            targetStatus = 'NEW';
+        } else if (alarm.suppressStatus == 2 || alarm.suppressStatus == 1) {
+            targetStatus = 'SUPPRESSED';
+        } else {
+            targetStatus = 'ACK';
+        }
+        node.set('status', targetStatus);
+        node.set('suppressStatus', alarm.suppressStatus || 0);
         node.set('suppressReason', alarm.suppressReason || '');
         node.set('suppressUser', alarm.suppressUser || '');
         node.set('suppressTime', alarm.suppressTime || '');
@@ -516,19 +565,19 @@ Ext.define('AP.view.alert.AlarmWindow', {
             if (ackCount > 0 && this.tabPanel) {
                 this.tabPanel.setActiveItem(this.treeAcked);
             }
-            this.collapse();
-            this.stopBlink();
-            AP.alert.AlarmSoundManager.stop();
-            var tip = this.down('#muteTip');
-            if (tip) tip.hide();
+            // ★ 只有待确认和待消警都为0时才收缩
+            if (ackCount === 0) {
+                this.collapse();
+                this.stopBlink();
+                AP.alert.AlarmSoundManager.stop();
+                var tip = this.down('#muteTip');
+                if (tip) tip.hide();
+            }
         } else {
             AP.alert.AlarmManager._refreshSoundAfterAck();
         }
     },
 
-    // ============================================================
-    // 确认 / 消警
-    // ============================================================
     getCheckedPendingKeys: function () {
         var keys = [];
         Ext.Array.each(this.treePending.getChecked(), function (node) {
@@ -572,7 +621,16 @@ Ext.define('AP.view.alert.AlarmWindow', {
             if (!ok) return;
             Ext.Array.each(keys, function (key) {
                 var a = AP.alert.AlarmManager.alarms[key];
-                if (a) self.syncAlarmNode(a);
+                if (a) {
+                    // ★ 如果是自动消警状态（suppressStatus == 1），点击确认后直接从界面彻底移除
+                    if (a.suppressStatus == 1) {
+                        delete AP.alert.AlarmManager.alarms[key];
+                        delete AP.alert.AlarmManager.ackKeys[key];
+                        self.removeAlarmNode(key);
+                    } else {
+                        self.syncAlarmNode(a);
+                    }
+                }
             });
             self.updateToolbar();
             AP.alert.AlarmManager._refreshSoundAfterAck();
@@ -582,59 +640,79 @@ Ext.define('AP.view.alert.AlarmWindow', {
     openSuppressDialog: function (keys) {
         if (!keys || keys.length === 0) return;
         var self = this;
+        
+        var labelWidth = getLabelWidth('消警原因', loginUserLanguage);
+        if (labelWidth < getLabelWidth('持续时长(h)*', loginUserLanguage)) {
+            labelWidth = getLabelWidth('持续时长(h)*', loginUserLanguage);
+        }
+        
         var dlg = Ext.create('Ext.window.Window', {
             title: '人工消警（' + keys.length + ' 条）',
             modal: true,
-            width: 420,
+            width: 450,
             layout: 'fit',
+            bodyStyle: 'padding:5px;background-color:#D9E5F3;',
             items: [{
                 xtype: 'form',
+                baseCls: 'x-plain',
                 bodyPadding: 12,
                 items: [{
                     xtype: 'textarea',
-                    fieldLabel: '消警原因',
+                    fieldLabel: '消警原因<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     name: 'reason',
                     allowBlank: false,
                     height: 80,
                     maxLength: 500,
+                    anchor: '95%',
                     emptyText: '必填，最多 500 字'
                 }, {
                     xtype: 'numberfield',
-                    fieldLabel: '持续时长（小时）',
+                    fieldLabel: '持续时长(h)<font color=red>*</font>',
+                    labelWidth: labelWidth,
                     name: 'durationHours',
                     allowBlank: false,
                     minValue: 0.1,
                     maxValue: 8760,
                     decimalPrecision: 1,
                     value: 24,
+                    anchor: '95%',
                     emptyText: '浮点数，如 1.5'
                 }]
             }],
             buttons: [{
                 text: '取消',
+                iconCls: 'cancel',
                 handler: function () { dlg.close(); }
             }, {
                 text: '确定',
+                iconCls: 'save',
                 handler: function () {
                     var form = dlg.down('form').getForm();
                     if (!form.isValid()) return;
+                    
                     var v = form.getValues();
                     var alertIds = [];
                     Ext.Array.each(keys, function (key) {
                         var a = AP.alert.AlarmManager.alarms[key];
-                        if (a && a.alertId) alertIds.push(a.alertId);
+                        var aid = a ? a.alertId : null;
+                        if (!aid) {
+                            var leafNode = self.findLeafByKey(key);
+                            if (leafNode) aid = leafNode.get('alertId');
+                        }
+                        if (aid) alertIds.push(aid);
                     });
+                    
                     if (alertIds.length === 0) {
-                        Ext.Msg.alert(loginUserLanguageResource.tip, '没有可消警的报警（未同步服务端）');
+                        Ext.Msg.alert('提示', '没有可消警的报警（未同步服务端）');
                         return;
                     }
                     AP.alert.AlarmManager.suppressAlarm(alertIds, v.reason, parseFloat(v.durationHours), function (ok, data) {
                         if (!ok) return;
                         Ext.Array.each(keys, function (key) {
                             var a = AP.alert.AlarmManager.alarms[key];
-                            if (a && alertIds.indexOf(a.alertId) >= 0 || (a && !a.alertId)) {
-                                // 已消警的本地更新
-                                if (a) {
+                            if (a) {
+                                if (alertIds.indexOf(a.alertId) >= 0 || !a.alertId) {
                                     a.suppressStatus = 2;
                                     a.suppressReason = v.reason;
                                     a.suppressUser = data.suppressUser;
@@ -654,6 +732,232 @@ Ext.define('AP.view.alert.AlarmWindow', {
         });
         dlg.show();
     },
+    
+    openSuppressedListWindow: function () {
+        var self = this;
+        var store = this.storeSuppressed; 
+        
+        if (this.countLeaf(store) === 0) {
+            Ext.Msg.alert('提示', '当前没有已消警记录');
+            return;
+        }
+
+        var columns = [
+            { xtype: 'treecolumn', text: '设备 / 报警内容', dataIndex: 'text', flex: 3, minWidth: 200 },
+            { text: '级别', dataIndex: 'alarmLevel', flex: 1, minWidth: 60,
+                renderer: function (v, meta, rec) {
+                    if (!rec.isLeaf()) return '';
+                    var s = AP.alert.AlarmManager.levelStyle[v];
+                    return s ? '<span style="color:' + s.color + ';">' + s.text + '</span>' : '';
+                }
+            },
+            { text: '状态', dataIndex: 'status', flex: 1.5, minWidth: 110, align: 'center',
+                renderer: function (v, meta, rec) {
+                    if (!rec.isLeaf()) return '';
+                    var suppStatus = rec.get('suppressStatus');
+                    var ackText = '<span style="color:#888;">已确认</span>';
+                    var suppText = '';
+                    
+                    if (suppStatus == 2) {
+                        suppText = '<span style="color:#0e7490;">人工消警</span>';
+                    } else if (suppStatus == 1) {
+                        suppText = '<span style="color:#52c41a;">自动消警</span>';
+                    } else {
+                        suppText = '<span style="color:#1677ff;">待消警</span>';
+                    }
+                    return ackText + ' ' + suppText;
+                }
+            },
+            { text: '消警原因', dataIndex: 'suppressReason', flex: 2, minWidth: 120, renderer: function(v, meta, rec){ return rec.isLeaf() ? v : ''; } },
+            { text: '消警人', dataIndex: 'suppressUser', flex: 1, minWidth: 80, renderer: function(v, meta, rec){ return rec.isLeaf() ? v : ''; } },
+            { text: '消警时间', dataIndex: 'suppressTime', flex: 2, minWidth: 140, renderer: function(v, meta, rec){ return rec.isLeaf() ? v : ''; } },
+            { text: '到期时间', dataIndex: 'suppressEndTime', flex: 2, minWidth: 140, renderer: function(v, meta, rec){ return rec.isLeaf() ? v : ''; } },
+            { text: '操作', width: 120, align: 'center',
+                renderer: function (v, meta, rec) {
+                    if (!rec.isLeaf()) return '';
+                    return '<a href="javascript:void(0)" class="cancel-suppress">取消消警</a> | ' +
+                           '<a href="javascript:void(0)" class="edit-suppress">修改</a>';
+                }
+            }
+        ];
+
+        var win = Ext.create('Ext.window.Window', {
+            title: '人工消警记录 (' + this.countLeaf(store) + ')',
+            width: 1000,
+            height: 500,
+            modal: true,
+            layout: 'fit',
+            items: [{
+                xtype: 'treepanel',
+                store: store,
+                rootVisible: false,
+                useArrows: true,
+                border: false,
+                columnLines: false,
+                columns: columns,
+                viewConfig: {
+                    getRowClass: function (rec) {
+                        if (!rec.isLeaf()) return 'alarm-row-device';
+                        return 'alarm-row-suppressed';
+                    }
+                },
+                listeners: {
+                    cellclick: function (view, td, cellIndex, record, tr, rowIndex, e) {
+                        if (!record.isLeaf()) return;
+                        
+                        var cancelTarget = e.getTarget('a.cancel-suppress');
+                        if (cancelTarget) {
+                            self.cancelSuppress(record, win);
+                            return;
+                        }
+                        
+                        var editTarget = e.getTarget('a.edit-suppress');
+                        if (editTarget) {
+                            self.editSuppress(record, win);
+                            return;
+                        }
+                    }
+                }
+            }]
+        });
+        
+        win.show();
+    },
+
+    cancelSuppress: function (record, parentWin) {
+        var self = this;
+        Ext.Msg.confirm('确认', '确定要取消该项的人工消警吗？', function (btn) {
+            if (btn === 'yes') {
+                var alertId = record.get('alertId');
+                if (!alertId) {
+                    Ext.Msg.alert('提示', '找不到该条报警的ID，无法取消');
+                    return;
+                }
+                
+                Ext.Ajax.request({
+                    url: context + '/alarmQueryController/cancelSuppress',
+                    method: 'POST',
+                    jsonData: { alertIds: [alertId] },
+                    success: function (resp) {
+                        var r;
+                        try { r = Ext.JSON.decode(resp.responseText); } catch (e) { r = { success: false }; }
+                        if (r.success) {
+                            Ext.Msg.alert('提示', '取消消警成功');
+                            
+                            var key = record.get('alarmKey');
+                            var alarm = AP.alert.AlarmManager.alarms[key];
+                            if (alarm) {
+                                alarm.suppressStatus = 0;
+                                alarm.suppressReason = '';
+                                alarm.suppressUser = '';
+                                alarm.suppressIp = '';
+                                alarm.suppressTime = '';
+                                alarm.suppressEndTime = '';
+                                self.syncAlarmNode(alarm);
+                            }
+                            
+                            self.updateToolbar();
+                            if (parentWin) {
+                                parentWin.setTitle('人工消警记录 (' + self.countLeaf(self.storeSuppressed) + ')');
+                            }
+                        } else {
+                            Ext.Msg.alert('提示', r.message || '取消失败');
+                        }
+                    },
+                    failure: function () {
+                        Ext.Msg.alert('错误', '网络请求失败');
+                    }
+                });
+            }
+        });
+    },
+
+    editSuppress: function (record, parentWin) {
+        var self = this;
+        var alertId = record.get('alertId');
+        if (!alertId) {
+            Ext.Msg.alert('提示', '找不到该条报警的ID，无法修改');
+            return;
+        }
+        
+        var labelWidth = getLabelWidth('消警原因', loginUserLanguage);
+        if (labelWidth < getLabelWidth('持续时长(h)*', loginUserLanguage)) {
+            labelWidth = getLabelWidth('持续时长(h)*', loginUserLanguage);
+        }
+        
+        var dlg = Ext.create('Ext.window.Window', {
+            title: '修改人工消警',
+            modal: true,
+            width: 450,
+            layout: 'fit',
+            bodyStyle: 'padding:5px;background-color:#D9E5F3;',
+            items: [{
+                xtype: 'form',
+                baseCls: 'x-plain',
+                bodyPadding: 12,
+                items: [{
+                    xtype: 'textarea',
+                    fieldLabel: '消警原因<font color=red>*</font>',
+                    labelWidth: labelWidth,
+                    name: 'reason',
+                    allowBlank: false,
+                    height: 80,
+                    maxLength: 500,
+                    anchor: '95%',
+                    value: record.get('suppressReason') || ''
+                }, {
+                    xtype: 'numberfield',
+                    fieldLabel: '持续时长(h)<font color=red>*</font>',
+                    labelWidth: labelWidth,
+                    name: 'durationHours',
+                    allowBlank: false,
+                    minValue: 0.1,
+                    maxValue: 8760,
+                    decimalPrecision: 1,
+                    value: 24, 
+                    anchor: '95%',
+                    emptyText: '浮点数，如 1.5'
+                }]
+            }],
+            buttons: [{
+                text: '取消',
+                iconCls: 'cancel',
+                handler: function () { dlg.close(); }
+            }, {
+                text: '确定',
+                iconCls: 'save',
+                handler: function () {
+                    var form = dlg.down('form').getForm();
+                    if (!form.isValid()) return;
+                    var v = form.getValues();
+                    
+                    AP.alert.AlarmManager.suppressAlarm([alertId], v.reason, parseFloat(v.durationHours), function (ok, data) {
+                        if (!ok) return;
+                        
+                        record.set('suppressReason', v.reason);
+                        record.set('suppressEndTime', data.suppressEndTime);
+                        record.set('suppressTime', data.suppressTime);
+                        record.set('suppressUser', data.suppressUser);
+                        record.commit();
+                        
+                        var key = record.get('alarmKey');
+                        var alarm = AP.alert.AlarmManager.alarms[key];
+                        if (alarm) {
+                            alarm.suppressReason = v.reason;
+                            alarm.suppressEndTime = data.suppressEndTime;
+                            alarm.suppressTime = data.suppressTime;
+                            alarm.suppressUser = data.suppressUser;
+                        }
+                        
+                        Ext.Msg.alert('提示', "<font color=blue>修改成功</font>");
+                        dlg.close();
+                        self.updateToolbar();
+                    });
+                }
+            }]
+        });
+        dlg.show();
+    },
 
     markRemoteAck: function (ackSet) {
         var self = this;
@@ -667,9 +971,6 @@ Ext.define('AP.view.alert.AlarmWindow', {
         AP.alert.AlarmManager._refreshSoundAfterAck();
     },
 
-    // ============================================================
-    // 统计
-    // ============================================================
     countLeaf: function (store) {
         var n = 0;
         store.getRootNode().eachChild(function (d) {
@@ -690,9 +991,6 @@ Ext.define('AP.view.alert.AlarmWindow', {
         return this.getUnackCount() > 0;
     },
 
-    // ============================================================
-    // 工具条 / 标题 / 闪烁
-    // ============================================================
     updateToolbar: function () {
         var unack = this.getUnackCount();
         var acking = this.countLeaf(this.storeAcked);
@@ -719,17 +1017,26 @@ Ext.define('AP.view.alert.AlarmWindow', {
 
         if (this.treePending) this.treePending.setTitle('待确认 (' + unack + ')');
         if (this.treeAcked) this.treeAcked.setTitle('待消警 (' + acking + ')');
+        
         if (this.treeSuppressed) {
             this.treeSuppressed.setTitle('人工消警 (' + suppressed + ')');
             var tab = this.treeSuppressed.tab;
             if (tab) {
-                if (suppressed > 0) tab.show();
-                else if (this.tabPanel.getActiveTab() === this.treeSuppressed) {
-                    // 如果正在人工消警 Tab 且清空了，切回待消警或待确认
-                    this.tabPanel.setActiveItem(unack > 0 ? this.treePending : this.treeAcked);
+                // ★ 如果全局变量控制为不显示，则永久隐藏
+                if (!showSuppressedTab) {
+                    if (this.tabPanel.getActiveTab() === this.treeSuppressed) {
+                        this.tabPanel.setActiveItem(unack > 0 ? this.treePending : this.treeAcked);
+                    }
                     tab.hide();
                 } else {
-                    tab.hide();
+                    // 保留原有逻辑
+                    if (suppressed > 0) tab.show();
+                    else if (this.tabPanel.getActiveTab() === this.treeSuppressed) {
+                        this.tabPanel.setActiveItem(unack > 0 ? this.treePending : this.treeAcked);
+                        tab.hide();
+                    } else {
+                        tab.hide();
+                    }
                 }
             }
         }
@@ -762,7 +1069,10 @@ Ext.define('AP.view.alert.AlarmWindow', {
 
     updateTitle: function () {
         var unack = this.getUnackCount();
-        var total = this.getTotalLeafCount();
+        var acking = this.countLeaf(this.storeAcked);
+        // ★ 只统计 待确认 + 待消警
+        var total = unack + acking; 
+        
         var text = '报警';
         if (total > 0) {
             text = '报警 (' + unack + '/' + total + ')';

@@ -252,14 +252,55 @@ function detectZoom(){
     return ratio;
 };
 
+//function parseWebSocketMessages(raw) {
+//    var list = [], str = raw, idx;
+//    if (!str) return list;
+//    while ((idx = str.indexOf('}{')) >= 0) {
+//        list.push(str.substring(0, idx + 1));
+//        str = str.substring(idx + 1);
+//    }
+//    if (str && str.length > 1) list.push(str);
+//    return list;
+//}
+
 function parseWebSocketMessages(raw) {
-    var list = [], str = raw, idx;
-    if (!str) return list;
-    while ((idx = str.indexOf('}{')) >= 0) {
-        list.push(str.substring(0, idx + 1));
-        str = str.substring(idx + 1);
+    var list = [];
+    if (!raw) return list;
+    var depth = 0;
+    var inString = false;
+    var escape = false;
+    var start = -1;
+    for (var i = 0; i < raw.length; i++) {
+        var ch = raw.charAt(i);
+        if (inString) {
+            if (escape) {
+                escape = false;
+            } else if (ch === '\\') {
+                escape = true;
+            } else if (ch === '"') {
+                inString = false;
+            }
+            continue;
+        }
+        if (ch === '"') {
+            inString = true;
+            continue;
+        }
+        if (ch === '{') {
+            if (depth === 0) start = i;
+            depth++;
+        } else if (ch === '}') {
+            depth--;
+            if (depth === 0 && start >= 0) {
+                list.push(raw.substring(start, i + 1));
+                start = -1;
+            }
+        }
     }
-    if (str && str.length > 1) list.push(str);
+    // 兜底：若一条都没切出来（如单条消息本身不是 { 开头），保持原逻辑原样返回
+    if (list.length === 0 && raw.length > 1) {
+        list.push(raw);
+    }
     return list;
 }
 
@@ -876,6 +917,32 @@ function handleBusinessMessage(data) {
                 );
             } catch (e) {
                 if (window.console) console.error('remote suppress error', e);
+            }
+        }
+    } else if (data.functionCode.toUpperCase() == "ALARMCANCELSUPPRESSED") {
+        // 处理取消消警
+        if (typeof alarmAlert !== 'undefined' && alarmAlert) {
+            var alertIds = data.alertIds || [];
+            var idSet = {};
+            Ext.Array.each(alertIds, function(id){ idSet[id] = true; });
+            
+            Ext.Object.each(AP.alert.AlarmManager.alarms, function(key, alarm) {
+                if (alarm.alertId && idSet[alarm.alertId]) {
+                    alarm.suppressStatus = 0;
+                    alarm.suppressReason = '';
+                    alarm.suppressUser = '';
+                    alarm.suppressIp = '';
+                    alarm.suppressTime = '';
+                    alarm.suppressEndTime = '';
+                    
+                    if (AP.alert.AlarmManager.win) {
+                        AP.alert.AlarmManager.win.syncAlarmNode(alarm);
+                    }
+                }
+            });
+            if (AP.alert.AlarmManager.win) {
+                AP.alert.AlarmManager.win.updateToolbar();
+                AP.alert.AlarmManager._refreshSoundAfterAck();
             }
         }
     } else if (data.functionCode.toUpperCase() == "DatabaseDataCleaning".toUpperCase()) {

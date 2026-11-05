@@ -32,6 +32,7 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 	public boolean triggerAlarm;
 	private Integer alertId; 
 	
+	private Integer ackStatus = 0;
 	private int suppressStatus = 0;
 	private String suppressEndTime;
 	
@@ -327,6 +328,14 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 
 	public void setSuppressEndTime(String suppressEndTime) {
 		this.suppressEndTime = suppressEndTime;
+	}
+
+	public Integer getAckStatus() {
+		return ackStatus;
+	}
+
+	public void setAckStatus(Integer ackStatus) {
+		this.ackStatus = ackStatus;
 	}
 	
 }

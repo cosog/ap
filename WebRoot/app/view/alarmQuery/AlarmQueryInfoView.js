@@ -323,7 +323,8 @@ function exportAlarmOverviewDataExcel() {
     openExcelWindow(url + '?flag=true' + param);
 };
 
-function exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceName,startDate,endDate,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr) {
+function exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceName,startDate,endDate,
+		alarmType,alarmLevel,confirmationStatus,suppressStatus,isSendMessage,fileName,title,columnStr) {
 	var timestamp=new Date().getTime();
 	var key='exportAlarmData'+deviceType+'_'+timestamp;
 	
@@ -373,6 +374,8 @@ function exportAlarmDataExcel(orgId,deviceType,dictDeviceType,deviceId,deviceNam
     + "&endDate=" + endDate
     + "&alarmType=" + alarmType
     + "&alarmLevel=" + alarmLevel
+    + "&confirmationStatus=" + confirmationStatus
+    + "&suppressStatus=" + suppressStatus
     + "&isSendMessage=" + isSendMessage
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
@@ -1520,9 +1523,9 @@ function updateAlarmQueryTabpanelContent(){
 				&& projectTabConfig.AlarmQuery.NumericValueAlarm==false
 				&& projectTabConfig.AlarmQuery.EnumValueAlarm==false
 				&& projectTabConfig.AlarmQuery.SwitchingValueAlarm==false){
-			Ext.getCmp('AlarmQuerySecondTabPanel').getDockedItems('toolbar[dock="top"]')[0].setVisible(false);
+//			Ext.getCmp('AlarmQuerySecondTabPanel').getDockedItems('toolbar[dock="top"]')[0].setVisible(false);
 		}else{
-			Ext.getCmp('AlarmQuerySecondTabPanel').getDockedItems('toolbar[dock="top"]')[0].setVisible(true);
+//			Ext.getCmp('AlarmQuerySecondTabPanel').getDockedItems('toolbar[dock="top"]')[0].setVisible(true);
 		}
 		
 		if(projectTabConfig.AlarmQuery.FESDiagramResultAlarm==false){

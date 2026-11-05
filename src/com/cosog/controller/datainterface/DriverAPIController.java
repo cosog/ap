@@ -1638,10 +1638,12 @@ public class DriverAPIController extends BaseController{
 					String column = removedAlarmInfo != null ? removedAlarmInfo.getColumn() : acquisitionItemInfo.getColumn();
 					String bitIndex = removedAlarmInfo != null ? removedAlarmInfo.getBitIndex() : acquisitionItemInfo.getBitIndex();
 					
-					String recoverSql = "update tbl_alarminfo_hist set recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss') " +
-							" where deviceid = " + deviceInfo.getId() + 
-							" and itemcode ='" + column + "' " +
-							" and recoverytime is null ";
+					String recoverSql = "update tbl_alarminfo_hist t set "
+						    + " t.recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss'), "
+						    + " t.suppress_status = CASE WHEN nvl(t.suppress_status, 0) = 2 THEN 2 ELSE 1 END " // 只要恢复，未人工消警的就置为自动消警 1
+						    + " where t.deviceid = " + deviceInfo.getId() 
+						    + " and t.itemcode ='" + column.replace("'", "''") + "' "
+						    + " and t.recoverytime is null ";
 					
 					// 区分开关量的 bitIndex
 					if (StringManagerUtils.isNotNull(bitIndex)) {
@@ -1722,10 +1724,16 @@ public class DriverAPIController extends BaseController{
 	                acquisitionItemInfo.setAlertId(alarmInfo.getAlertId());
 	            }
 				
-				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
-				
+				if (StringManagerUtils.isNotNull(alarmInfo.getAckUser())
+			            && StringManagerUtils.isNotNull(alarmInfo.getAckTime())) {
+			        acquisitionItemInfo.setAckStatus(1);
+			    } else {
+			        acquisitionItemInfo.setAckStatus(0);
+			    }
 				acquisitionItemInfo.setSuppressStatus(alarmInfo.getSuppressStatus());
 				acquisitionItemInfo.setSuppressEndTime(alarmInfo.getSuppressEndTime());
+				
+				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
 				
 				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
 					if(!existAlarm && !existAlarmTimer){
@@ -1917,10 +1925,12 @@ public class DriverAPIController extends BaseController{
 					String column = removedAlarmInfo != null ? removedAlarmInfo.getColumn() : acquisitionItemInfo.getColumn();
 					String bitIndex = removedAlarmInfo != null ? removedAlarmInfo.getBitIndex() : acquisitionItemInfo.getBitIndex();
 					
-					String recoverSql = "update tbl_alarminfo_hist set recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss') " +
-							" where deviceid = " + deviceInfo.getId() + 
-							" and itemcode ='" + column + "' " +
-							" and recoverytime is null ";
+					String recoverSql = "update tbl_alarminfo_hist t set "
+						    + " t.recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss'), "
+						    + " t.suppress_status = CASE WHEN nvl(t.suppress_status, 0) = 2 THEN 2 ELSE 1 END " // 只要恢复，未人工消警的就置为自动消警 1
+						    + " where t.deviceid = " + deviceInfo.getId() 
+						    + " and t.itemcode ='" + column.replace("'", "''") + "' "
+						    + " and t.recoverytime is null ";
 					
 					// 区分开关量的 bitIndex
 					if (StringManagerUtils.isNotNull(bitIndex)) {
@@ -1998,10 +2008,16 @@ public class DriverAPIController extends BaseController{
 				    acquisitionItemInfo.setAlertId(alarmInfo.getAlertId());
 				}
 				
-				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
-				
+				if (StringManagerUtils.isNotNull(alarmInfo.getAckUser())
+			            && StringManagerUtils.isNotNull(alarmInfo.getAckTime())) {
+			        acquisitionItemInfo.setAckStatus(1);
+			    } else {
+			        acquisitionItemInfo.setAckStatus(0);
+			    }
 				acquisitionItemInfo.setSuppressStatus(alarmInfo.getSuppressStatus());
 				acquisitionItemInfo.setSuppressEndTime(alarmInfo.getSuppressEndTime());
+				
+				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
 				
 				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
 					if(!existAlarm && !existAlarmTimer){
@@ -2857,6 +2873,7 @@ public class DriverAPIController extends BaseController{
 		            + "\"alertId\":" + (acquisitionItemInfoList.get(j).getAlertId() != null ? acquisitionItemInfoList.get(j).getAlertId() : "null") + ","
 		            + "\"alarmType\":"+(acquisitionItemInfoList.get(j).getAlarmType())+","
 		            + "\"alarminfo\":\""+(acquisitionItemInfoList.get(j).getAlarmInfo())+"\","
+		            + "\"ackStatus\":" + (acquisitionItemInfoList.get(j).getAckStatus() != null ? acquisitionItemInfoList.get(j).getAckStatus() : "null") + "," 
 		            + "\"suppressStatus\":" + (acquisitionItemInfoList.get(j).getSuppressStatus()) + ","
 		            + "\"suppressEndTime\":\"" + (acquisitionItemInfoList.get(j).getSuppressEndTime() != null ? acquisitionItemInfoList.get(j).getSuppressEndTime() : "") + "\","
 		            + "\"alarmLevel\":"+(acquisitionItemInfoList.get(j).getAlarmLevel())+"},");

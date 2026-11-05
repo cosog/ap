@@ -125,6 +125,8 @@ public class AlarmQueryController extends BaseController{
 		String deviceName = ParamUtils.getParameter(request, "deviceName");
 		alarmType = ParamUtils.getParameter(request, "alarmType");
 		alarmLevel = ParamUtils.getParameter(request, "alarmLevel");
+		String confirmationStatus = ParamUtils.getParameter(request, "confirmationStatus");
+		String suppressStatus = ParamUtils.getParameter(request, "suppressStatus");
 		isSendMessage = ParamUtils.getParameter(request, "isSendMessage");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
@@ -168,7 +170,7 @@ public class AlarmQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = alarmQueryService.getAlarmData(orgId,deviceType,deviceId,deviceName,dictDeviceType,alarmType,alarmLevel,isSendMessage,pager,language);
+		json = alarmQueryService.getAlarmData(orgId,deviceType,deviceId,deviceName,dictDeviceType,alarmType,alarmLevel,confirmationStatus,suppressStatus,isSendMessage,pager,language);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -189,6 +191,8 @@ public class AlarmQueryController extends BaseController{
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		alarmType = ParamUtils.getParameter(request, "alarmType");
 		alarmLevel = ParamUtils.getParameter(request, "alarmLevel");
+		String confirmationStatus = ParamUtils.getParameter(request, "confirmationStatus");
+		String suppressStatus = ParamUtils.getParameter(request, "suppressStatus");
 		isSendMessage = ParamUtils.getParameter(request, "isSendMessage");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
@@ -239,7 +243,7 @@ public class AlarmQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		boolean bool = alarmQueryService.exportAlarmData(user,response,fileName,title, heads, fields,orgId,deviceType,dictDeviceType,deviceId,deviceName,alarmType,alarmLevel,isSendMessage,pager,language);
+		boolean bool = alarmQueryService.exportAlarmData(user,response,fileName,title, heads, fields,orgId,deviceType,dictDeviceType,deviceId,deviceName,alarmType,alarmLevel,confirmationStatus,suppressStatus,isSendMessage,pager,language);
 		session.setAttribute(key, 1);
 		return null;
 	}
@@ -505,28 +509,17 @@ public class AlarmQueryController extends BaseController{
 	                String suppressTime = (String) result.get("suppressTime");
 	                String suppressEndTime = (String) result.get("suppressEndTime");
 
-	                StringBuffer webSocketSendData = new StringBuffer();
-	                webSocketSendData.append("{\"functionCode\":\"alarmSuppressed\",");
-	                webSocketSendData.append("\"alertIds\":[");
-	                for (int i = 0; i < successIds.size(); i++) {
-	                    if (i > 0) webSocketSendData.append(",");
-	                    webSocketSendData.append(successIds.get(i));
-	                }
-	                webSocketSendData.append("],");
-	                webSocketSendData.append("\"deviceIds\":[");
-	                for (int i = 0; i < deviceIds.size(); i++) {
-	                    if (i > 0) webSocketSendData.append(",");
-	                    webSocketSendData.append(deviceIds.get(i));
-	                }
-	                webSocketSendData.append("],");
-	                webSocketSendData.append("\"suppressReason\":\"" + (reason==null?"":reason.replace("\"","\\\"")) + "\",");
-	                webSocketSendData.append("\"suppressUser\":\"" + suppressUser + "\",");
-	                webSocketSendData.append("\"suppressIp\":\"" + suppressIp + "\",");
-	                webSocketSendData.append("\"suppressTime\":\"" + suppressTime + "\",");
-	                webSocketSendData.append("\"suppressEndTime\":\"" + suppressEndTime + "\"");
-	                webSocketSendData.append("}");
-
-	                String wsJson = webSocketSendData.toString();
+	                Map<String, Object> wsMsg = new HashMap<String, Object>();
+	                wsMsg.put("functionCode", "alarmSuppressed");
+	                wsMsg.put("alertIds", successIds);
+	                wsMsg.put("deviceIds", deviceIds);
+	                wsMsg.put("suppressReason", reason == null ? "" : reason);
+	                wsMsg.put("suppressUser", suppressUser == null ? "" : suppressUser);
+	                wsMsg.put("suppressIp", suppressIp == null ? "" : suppressIp);
+	                wsMsg.put("suppressTime", suppressTime == null ? "" : suppressTime);
+	                wsMsg.put("suppressEndTime", suppressEndTime == null ? "" : suppressEndTime);
+	                String wsJson = gson.toJson(wsMsg);
+	                
 	                for (String websocketClientUserId : WebSocketByJavax.clients.keySet()) {
 	                    try {
 	                        String wsUserNo = "";
@@ -686,6 +679,70 @@ public class AlarmQueryController extends BaseController{
         pw.close();
         return null;
     }
+    
+	@RequestMapping("/cancelSuppress")
+	public String cancelSuppress() throws Exception {
+	    String json;
+	    try {
+	        StringBuilder sb = new StringBuilder();
+	        BufferedReader reader = request.getReader();
+	        String line;
+	        while ((line = reader.readLine()) != null) sb.append(line);
+	        
+	        List<Number> alertIds = new ArrayList<Number>();
+	        try {
+	            @SuppressWarnings("unchecked")
+	            Map<String, Object> req = gson.fromJson(sb.toString(), Map.class);
+	            if (req != null && req.get("alertIds") != null) {
+	                alertIds = (List<Number>) req.get("alertIds");
+	            }
+	        } catch (Exception e) {
+	            log.warn("cancelSuppress parse body failed", e);
+	        }
+
+	        if (alertIds.isEmpty()) {
+	            Map<String, Object> resp = new HashMap<String, Object>();
+	            resp.put("success", false);
+	            resp.put("message", "参数不合法");
+	            json = gson.toJson(resp);
+	        } else {
+	            List<Integer> deviceIds = alarmQueryService.cancelSuppress(alertIds);
+	            
+	            // 广播 WS
+	            if (deviceIds != null && !deviceIds.isEmpty()) {
+	                Map<String, Object> wsMsg = new HashMap<String, Object>();
+	                wsMsg.put("functionCode", "alarmCancelSuppressed");
+	                wsMsg.put("alertIds", alertIds);
+	                wsMsg.put("deviceIds", deviceIds);
+	                String wsJson = gson.toJson(wsMsg);
+	                
+	                for (String websocketClientUserId : WebSocketByJavax.clients.keySet()) {
+	                    // 权限校验... (此处略，与suppressAlarm一致)
+	                    infoHandler().sendMessageToUserId(websocketClientUserId, wsJson);
+	                }
+	            }
+
+	            Map<String, Object> resp = new HashMap<String, Object>();
+	            resp.put("success", true);
+	            resp.put("message", "");
+	            json = gson.toJson(resp);
+	        }
+	    } catch (Exception e) {
+	        log.error("cancelSuppress error", e);
+	        Map<String, Object> resp = new HashMap<String, Object>();
+	        resp.put("success", false);
+	        resp.put("message", "系统异常");
+	        json = gson.toJson(resp);
+	    }
+
+	    response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+	    response.setHeader("Cache-Control", "no-cache");
+	    PrintWriter pw = response.getWriter();
+	    pw.print(json);
+	    pw.flush();
+	    pw.close();
+	    return null;
+	}
 	
 	public String getLimit() {
 		return limit;

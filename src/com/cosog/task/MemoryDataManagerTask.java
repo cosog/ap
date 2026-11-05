@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -62,6 +63,8 @@ import com.cosog.model.calculate.SRPDeviceTodayData;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
+import com.cosog.utils.DeviceAlarmInfo;
+import com.cosog.utils.DeviceAlarmInfoMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.RedisUtil;
 import com.cosog.utils.ReportTemplateColumnUtils;
@@ -136,6 +139,9 @@ public class MemoryDataManagerTask {
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备当天功图数据完成");
 		loadTodayRPMData(null,0);
 		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载设备当天转速数据完成");
+		
+		 MemoryDataManagerTask.loadPendingAlarmsToMemory();
+		 System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+"加载报警内存状态完成");
 	}
 	
 	public static String getMemoryUsage(String key){
@@ -7334,5 +7340,123 @@ public class MemoryDataManagerTask {
 			dataWriteBackConfig=(DataWriteBackConfig) map.get("dataWriteBackConfig");
 		}
 		return dataWriteBackConfig;
+	}
+	
+	/**
+	 * 启动时加载未恢复的报警状态（与 getPendingAlarms 逻辑完全一致）至内存
+	 */
+	public static void loadPendingAlarmsToMemory(){
+	    Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+	    if (deviceAlarmInfoMap == null) return;
+	    
+	    StringBuilder sql = new StringBuilder();
+	    sql.append("select * from ( ")
+	       .append("  select a.*, rownum rn2 from ( ")
+	       .append("    select t.id, t.deviceid, d.devicename, d.orgid, d.devicetype, ")
+	       .append("           t.itemcode, t.itemname, ")
+	       .append("           to_char(t.alarmvalue) as alarmvalue, ")
+	       .append("           t.alarminfo, ")
+	       .append("           t.alarmtype, ")
+	       .append("           t.alarmlevel, ")
+	       .append("           to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as acqtime, ")
+	       .append("           nvl(t.ack_status, 0) as ack_status, ")
+	       .append("           nvl(t.suppress_status, 0) as suppress_status, ")
+	       .append("           t.suppress_reason, ")
+	       .append("           t.suppress_user, ")
+	       .append("           to_char(t.suppress_time,'yyyy-mm-dd hh24:mi:ss') as suppress_time, ")
+	       .append("           t.suppress_ip, ")
+	       .append("           to_char(t.suppress_end_time,'yyyy-mm-dd hh24:mi:ss') as suppress_end_time, ")
+	       .append("           t.ack_user, t.ack_ip, ")
+	       .append("           to_char(t.ack_time,'yyyy-mm-dd hh24:mi:ss') as ack_time, ")
+	       .append("           t.bitindex ")
+	       .append("      from tbl_alarminfo_hist t, tbl_device d ")
+	       .append("     where t.deviceid = d.id ")
+	       .append("       and t.recoverytime is null ")
+	       .append("       and t.id = ( ")
+	       .append("           select max(t2.id) ")
+	       .append("           from tbl_alarminfo_hist t2 ")
+	       .append("           where t2.deviceid = t.deviceid ")
+	       .append("             and t2.itemcode = t.itemcode ")
+	       .append("             and nvl(t2.bitindex,-1) = nvl(t.bitindex,-1) ")
+	       .append("             and t2.recoverytime is null ")
+	       .append("       ) ")
+	       .append("       and t.alarmlevel > 0 ")
+	       .append("  ) a ")
+	       .append(") where rn2 = 1");
+
+	    List<Object[]> list = OracleJdbcUtis.query(sql.toString());
+	    int count = 0;
+	    
+	    for(Object[] obj : list){
+	        try {
+	            int alertId = StringManagerUtils.stringToInteger(obj[0]+"");
+	            int deviceId = StringManagerUtils.stringToInteger(obj[1]+"");
+	            String deviceName = obj[2] == null ? "" : obj[2].toString();
+	            int deviceType = StringManagerUtils.stringToInteger(obj[4]+"");
+	            String itemCode = obj[5] == null ? "" : obj[5].toString();
+	            String alarmValue = obj[7] == null ? "" : obj[7].toString();
+	            String alarmInfoStr = obj[8] == null ? "" : obj[8].toString();
+	            int alarmType = StringManagerUtils.stringToInteger(obj[9]+"");
+	            int alarmLevel = StringManagerUtils.stringToInteger(obj[10]+"");
+	            int ackStatus = StringManagerUtils.stringToInteger(obj[12]+"");
+	            int suppressStatus = StringManagerUtils.stringToInteger(obj[13]+"");
+	            String suppressEndTime = obj[18] == null ? "" : obj[18].toString();
+	            String ackUser = obj[19] == null ? "" : obj[19].toString();
+	            String ackIp = obj[20] == null ? "" : obj[20].toString();
+	            String ackTime = obj[21] == null ? "" : obj[21].toString();
+	            int bitIndex = StringManagerUtils.stringToInteger(obj[22]+"");
+
+	            String alarmKey = deviceId + "_" + itemCode;
+	            if (bitIndex >= 0) {
+	                alarmKey += "_" + bitIndex;
+	            }
+
+	            DeviceAlarmInfo deviceAlarmInfo = deviceAlarmInfoMap.get(deviceId);
+	            if (deviceAlarmInfo == null) {
+	                deviceAlarmInfo = new DeviceAlarmInfo();
+	                deviceAlarmInfo.setDeviceId(deviceId);
+	                deviceAlarmInfo.setDeviceName(deviceName);
+	                deviceAlarmInfo.setDeviceType(deviceType);
+	                deviceAlarmInfo.setAlarmInfoMap(new HashMap<String, DeviceAlarmInfo.AlarmInfo>());
+	                deviceAlarmInfo.setAlarmInfoTimerMap(new HashMap<String, ScheduledExecutorService>());
+	            }
+
+	            DeviceAlarmInfo.AlarmInfo ai = new DeviceAlarmInfo.AlarmInfo();
+	            ai.setColumn(itemCode);
+	            ai.setBitIndex(bitIndex >= 0 ? bitIndex+"" : "");
+	            ai.setAlarmType(alarmType);
+	            ai.setAlarmInfo(alarmInfoStr);
+	            ai.setValue(alarmValue);
+	            ai.setRawValue(alarmValue);
+	            ai.setAlarmLevel(alarmLevel);
+	            ai.setAlertId(alertId);
+	            ai.setTriggerAlarm(true); 
+
+	            if (ackStatus == 1) {
+	                ai.setAckUser(ackUser);
+	                ai.setAckIp(ackIp);
+	                ai.setAckTime(ackTime);
+	            }
+
+	            if (suppressStatus == 2 && StringManagerUtils.isNotNull(suppressEndTime)) {
+	                String currentTime = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+	                if (suppressEndTime.compareTo(currentTime) > 0) {
+	                    ai.setSuppressStatus(2);
+	                    ai.setSuppressReason(obj[14] == null ? "" : obj[14].toString());
+	                    ai.setSuppressUser(obj[15] == null ? "" : obj[15].toString());
+	                    ai.setSuppressTime(obj[16] == null ? "" : obj[16].toString());
+	                    ai.setSuppressIp(obj[17] == null ? "" : obj[17].toString());
+	                    ai.setSuppressEndTime(suppressEndTime);
+	                }
+	            }
+
+	            deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, ai);
+	            deviceAlarmInfoMap.put(deviceId, deviceAlarmInfo);
+	            count++;
+	        } catch (Exception e) {
+	            System.out.println("加载报警内存状态失败: " + e.getMessage());
+	        }
+	    }
+	    System.out.println("成功加载 " + count + " 条未恢复报警状态至内存。");
 	}
 }

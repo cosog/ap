@@ -45,6 +45,7 @@ Ext.define('AP.alert.AlarmManager', {
                 alarmType: 3
             };
             var key = this.getAlarmKey(commAlarm);
+
             if (data.commAlarmLevel === undefined) return;
             if (data.commAlarmLevel > 0) {
                 this.upsert({
@@ -58,14 +59,16 @@ Ext.define('AP.alert.AlarmManager', {
                     value: data.commStatusName,
                     alarmLevel: data.commAlarmLevel,
                     acqTime: data.acqTime,
-                    alarmType: 3
+                    alarmType: 3,
+                    suppressStatus: 0,
+                    suppressEndTime: ''
                 });
             } else {
                 var toRemoveKeys = [];
                 for (var k in this.alarms) {
-                    if (this.alarms.hasOwnProperty(k)
-                        && this.alarms[k].deviceId == data.deviceId
-                        && this.alarms[k].column === 'commStatusName') {
+                    if (this.alarms.hasOwnProperty(k) &&
+                        this.alarms[k].deviceId == data.deviceId &&
+                        this.alarms[k].column === 'commStatusName') {
                         toRemoveKeys.push(k);
                     }
                 }
@@ -82,6 +85,7 @@ Ext.define('AP.alert.AlarmManager', {
         var map = {};
         var push = function (item) {
             if (!item.column || !item.triggerAlarm || !item.alarmLevel || item.alarmLevel <= 0) return;
+
             var key = AP.alert.AlarmManager.getAlarmKey({
                 deviceId: deviceId,
                 column: item.column,
@@ -89,8 +93,10 @@ Ext.define('AP.alert.AlarmManager', {
                 alarmType: item.alarmType,
                 alarminfo: item.alarminfo
             });
+
             if (map[key]) return;
             map[key] = true;
+
             result.push({
                 key: key,
                 alertId: item.alertId || null,
@@ -108,8 +114,10 @@ Ext.define('AP.alert.AlarmManager', {
                 suppressEndTime: item.suppressEndTime || ''
             });
         };
+
         var all = data.allItemInfo || [];
         for (var i = 0; i < all.length; i++) push(all[i]);
+
         if (data.commAlarmLevel > 0) {
             push({ column: 'commStatusName', columnName: '通信状态', value: data.commStatusName, alarmLevel: data.commAlarmLevel, alarmType: 3 });
         }
@@ -119,13 +127,49 @@ Ext.define('AP.alert.AlarmManager', {
         if (data.resultAlarmLevel > 0) {
             push({ column: 'resultName', columnName: '工况', value: data.resultName, alarmLevel: data.resultAlarmLevel, alarmType: 4 });
         }
+
         return result;
+    },
+
+    _applySuppressStatus: function (old, alarm) {
+        var pushSupp = alarm.suppressStatus || 0;
+        var pushEndTime = alarm.suppressEndTime || '';
+        
+        if (pushSupp === 2) {
+            old.suppressStatus = 2;
+            old.suppressEndTime = pushEndTime;
+            old.suppressReason = alarm.suppressReason || old.suppressReason || '';
+            old.suppressUser = alarm.suppressUser || old.suppressUser || '';
+            old.suppressIp = alarm.suppressIp || old.suppressIp || '';
+            old.suppressTime = alarm.suppressTime || old.suppressTime || '';
+            return;
+        }
+
+        if (old.suppressStatus === 2) {
+            if (old.suppressEndTime) {
+                var now = new Date().getTime();
+                var localEnd = new Date(old.suppressEndTime.replace(/-/g, '/')).getTime();
+                if (now >= localEnd) {
+                    old.suppressStatus = 0;
+                    old.suppressEndTime = '';
+                }
+            } else {
+                old.suppressStatus = 0;
+            }
+        } else {
+            old.suppressStatus = 0;
+        }
     },
 
     upsert: function (alarm) {
         var old = this.alarms[alarm.key];
 
-        // ① 已确认后再次触发，且不升级（同级或降级）→ 保留已确认
+        // ★ 1. 如果已标记为自动消警，且尚未被用户手动确认，直接忽略后续任何更新
+        if (old && old.suppressStatus === 1 && old.ackStatus !== 1) {
+            return;
+        }
+
+        // ② 已确认后再次触发，且不升级（同级或降级）→ 保留已确认
         if (this.ackKeys[alarm.key] && old && alarm.alarmLevel >= old.alarmLevel) {
             old.value = alarm.value;
             old.alarminfo = alarm.alarminfo || '';
@@ -133,14 +177,12 @@ Ext.define('AP.alert.AlarmManager', {
             old.alertId = alarm.alertId || old.alertId;
             old.alarmLevel = alarm.alarmLevel;
             old.ackStatus = 1;
-            // suppress 以推送为准（到期后服务端推 0，此处覆盖回 0）
-            old.suppressStatus = alarm.suppressStatus || 0;
-            old.suppressEndTime = alarm.suppressEndTime || old.suppressEndTime;
+            this._applySuppressStatus(old, alarm);
             this.updateNode(old);
             return;
         }
 
-        // ② 已确认后再次触发，且升级 → 迁回待确认（保留 suppress 状态不变）
+        // ③ 已确认后再次触发，且升级 → 迁回待确认
         var needReack = !!(this.ackKeys[alarm.key] && old && alarm.alarmLevel < old.alarmLevel);
         if (needReack) {
             delete this.ackKeys[alarm.key];
@@ -153,16 +195,16 @@ Ext.define('AP.alert.AlarmManager', {
             if (alarm.ackStatus === 1) this.ackKeys[alarm.key] = true;
             this.alarms[alarm.key] = alarm;
             this.addNode(alarm);
-            // 如果新报警是消警状态，不响铃不展开
-            if (alarm.suppressStatus == 2) {
-                this.updateNode(alarm);
-            } else {
+
+            if (alarm.suppressStatus != 2 && alarm.suppressStatus != 1) {
                 this.ensureWindowExpanded(true);
                 AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
             }
         } else {
             var levelUp = alarm.alarmLevel < old.alarmLevel;
+            var pushedAckStatus = (alarm.ackStatus === 1) ? 1 : (alarm.ackStatus === 0 ? 0 : null);
             var wasAckedByAlertId = (old.alertId && !alarm.alertId);
+            var ackedByPush = (pushedAckStatus === 1);
 
             old.value = alarm.value;
             old.alarminfo = alarm.alarminfo || '';
@@ -172,21 +214,17 @@ Ext.define('AP.alert.AlarmManager', {
 
             if (needReack) {
                 old.ackStatus = 0;
-            } else if (wasAckedByAlertId && old.ackStatus !== 1) {
+            } else if ((ackedByPush || wasAckedByAlertId) && old.ackStatus !== 1) {
                 old.ackStatus = 1;
                 this.ackKeys[alarm.key] = true;
             } else {
                 old.ackStatus = this.ackKeys[alarm.key] ? 1 : (old.ackStatus == 1 ? 1 : 0);
             }
 
-            // suppress：推送为准
-            old.suppressStatus = alarm.suppressStatus || 0;
-            old.suppressEndTime = alarm.suppressEndTime || '';
-
+            this._applySuppressStatus(old, alarm);
             this.updateNode(old);
 
-            // 升级时：仅当不是消警状态才展开+响铃
-            if (levelUp && old.suppressStatus != 2) {
+            if (levelUp && old.suppressStatus != 2 && old.suppressStatus != 1) {
                 this.ensureWindowExpanded(true);
                 AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
             }
@@ -213,6 +251,7 @@ Ext.define('AP.alert.AlarmManager', {
         if (currentLevelMap['resultName'] === undefined && data.resultAlarmLevel !== undefined) {
             currentLevelMap['resultName'] = data.resultAlarmLevel;
         }
+        
         for (var key in this.alarms) {
             if (!this.alarms.hasOwnProperty(key)) continue;
             var alarm = this.alarms[key];
@@ -220,12 +259,21 @@ Ext.define('AP.alert.AlarmManager', {
             var col = alarm.column;
             var level = currentLevelMap[col];
             if (level === 0) {
-                toRemoveKeys.push(key);
+                if (alarm.ackStatus !== 1 && alarm.suppressStatus !== 1) {
+                    // ★ 未确认且未标记自动消警，则标记为自动消警
+                    alarm.suppressStatus = 1;
+                    this.updateNode(alarm);
+                } else if (alarm.ackStatus === 1 && alarm.suppressStatus !== 2 && alarm.suppressStatus !== 1) {
+                    // 已确认但未人工消警，正常物理恢复，删除节点
+                    toRemoveKeys.push(key);
+                }
             }
         }
         for (var j = 0; j < toRemoveKeys.length; j++) {
             this.recover(toRemoveKeys[j]);
         }
+        // 刷新声音，因为如果有自动消警了，应该停止对应音效
+        this._refreshSoundAfterAck();
     },
 
     recover: function (key) {
@@ -270,7 +318,6 @@ Ext.define('AP.alert.AlarmManager', {
                     if (!okIds || okIds[x.alertId]) {
                         self.ackKeys[x.key] = true;
                         if (self.alarms[x.key]) {
-                            self.alarms[x.key].alertId = null;
                             self.alarms[x.key].ackStatus = 1;
                         }
                     }
@@ -305,7 +352,9 @@ Ext.define('AP.alert.AlarmManager', {
                     var data = r.data || {};
                     Ext.Array.each(data.successIds || [], function (id) { okIds[id] = true; });
                     Ext.Array.each(data.alreadyAckedIds || [], function (id) { okIds[id] = true; });
+
                     finish(true, okIds);
+
                     if (data.failedIds && data.failedIds.length > 0) {
                         Ext.toast({ html: data.failedIds.length + ' 条确认失败', title: '提示', width: 300, align: 't' });
                     }
@@ -342,6 +391,7 @@ Ext.define('AP.alert.AlarmManager', {
         var self = this;
         var ackSet = {};
         Ext.Array.each(alertIds, function (id) { ackSet[id] = true; });
+
         Ext.Object.each(this.alarms, function (key, alarm) {
             if (alarm.alertId && ackSet[alarm.alertId]) {
                 self.ackKeys[key] = true;
@@ -352,11 +402,13 @@ Ext.define('AP.alert.AlarmManager', {
                 if (self.win) self.win.syncAlarmNode(alarm);
             }
         });
-        if (this.win) this.win.updateToolbar();
+
+        if (this.win) {
+            this.win.updateToolbar();
+        }
         this._refreshSoundAfterAck();
     },
 
-    // ★ 人工消警请求
     suppressAlarm: function (alertIds, reason, durationHours, callback) {
         var self = this;
         if (!alertIds || alertIds.length === 0) { if (callback) callback(false); return; }
@@ -384,12 +436,12 @@ Ext.define('AP.alert.AlarmManager', {
         });
     },
 
-    // ★ 远程消警广播处理
     onRemoteSuppress: function (alertIds, suppressReason, suppressUser, suppressIp, suppressTime, suppressEndTime) {
         if (!alertIds || alertIds.length === 0) return;
         var self = this;
         var idSet = {};
         Ext.Array.each(alertIds, function (id) { idSet[id] = true; });
+
         Ext.Object.each(this.alarms, function (key, alarm) {
             if (alarm.alertId && idSet[alarm.alertId]) {
                 alarm.suppressStatus = 2;
@@ -401,6 +453,7 @@ Ext.define('AP.alert.AlarmManager', {
                 if (self.win) self.win.syncAlarmNode(alarm);
             }
         });
+
         if (this.win) this.win.updateToolbar();
         this._refreshSoundAfterAck();
     },
@@ -439,34 +492,23 @@ Ext.define('AP.alert.AlarmManager', {
                 var hasNewUnack = false;
                 Ext.Array.each(r.data, function (item) {
                     var key = self.getAlarmKey(item);
-                    var isSuppressed = (item.suppressStatus == 2);
+                    var isSuppressed = (item.suppressStatus == 2 || item.suppressStatus == 1);
                     if (isSuppressed) {
-                        // 消警项：不加入 ackKeys，不展开
+                        // 消警状态不加入 ackKeys，不触发展开和响铃
                     } else if (item.ackStatus == 1) {
                         self.ackKeys[key] = true;
                     } else {
                         hasNewUnack = true;
                     }
+                    
                     self.upsertSilent({
-                        key: key,
-                        alertId: item.alertId,
-                        deviceId: item.deviceId,
-                        deviceName: item.deviceName,
-                        orgId: item.orgId,
-                        column: item.column,
-                        columnName: item.columnName,
-                        value: item.value,
-                        alarmLevel: item.alarmLevel,
-                        acqTime: item.acqTime,
-                        ackStatus: item.ackStatus,
-                        alarmType: item.alarmType,
-                        alarminfo: item.alarminfo,
-                        suppressStatus: item.suppressStatus || 0,
-                        suppressReason: item.suppressReason || '',
-                        suppressUser: item.suppressUser || '',
-                        suppressIp: item.suppressIp || '',
-                        suppressTime: item.suppressTime || '',
-                        suppressEndTime: item.suppressEndTime || ''
+                        key: key, alertId: item.alertId, deviceId: item.deviceId, deviceName: item.deviceName,
+                        orgId: item.orgId, column: item.column, columnName: item.columnName,
+                        value: item.value, alarmLevel: item.alarmLevel, acqTime: item.acqTime,
+                        ackStatus: item.ackStatus, alarmType: item.alarmType, alarminfo: item.alarminfo,
+                        suppressStatus: item.suppressStatus || 0, suppressReason: item.suppressReason || '',
+                        suppressUser: item.suppressUser || '', suppressIp: item.suppressIp || '',
+                        suppressTime: item.suppressTime || '', suppressEndTime: item.suppressEndTime || ''
                     });
                 });
 
@@ -480,7 +522,6 @@ Ext.define('AP.alert.AlarmManager', {
                         var maxLevel = self._getHighestUnackLevel();
                         if (maxLevel) AP.alert.AlarmSoundManager.play(maxLevel);
                     } else {
-                        // 没有待确认 → 折叠
                         var win = self.ensureWindow();
                         if (!win.isVisible()) win.show();
                         if (!win.collapsed) win.collapse();
@@ -494,7 +535,7 @@ Ext.define('AP.alert.AlarmManager', {
     upsertSilent: function (alarm) {
         if (!this.alarms[alarm.key]) {
             alarm.ackStatus = (alarm.ackStatus == 1) ? 1 : 0;
-            alarm.suppressStatus = (alarm.suppressStatus == 2) ? 2 : 0;
+            alarm.suppressStatus = (alarm.suppressStatus == 2 || alarm.suppressStatus == 1) ? alarm.suppressStatus : 0;
             this.alarms[alarm.key] = alarm;
             this.addNode(alarm);
         } else {
@@ -503,13 +544,7 @@ Ext.define('AP.alert.AlarmManager', {
                 old.ackStatus = 1;
                 this.ackKeys[alarm.key] = true;
             }
-            // suppress 以 server 为准
-            old.suppressStatus = alarm.suppressStatus || 0;
-            old.suppressReason = alarm.suppressReason || '';
-            old.suppressUser = alarm.suppressUser || '';
-            old.suppressIp = alarm.suppressIp || '';
-            old.suppressTime = alarm.suppressTime || '';
-            old.suppressEndTime = alarm.suppressEndTime || '';
+            this._applySuppressStatus(old, alarm);
             old.value = alarm.value;
             old.acqTime = alarm.acqTime;
             old.alarminfo = alarm.alarminfo || '';
@@ -521,7 +556,7 @@ Ext.define('AP.alert.AlarmManager', {
     _getHighestUnackLevel: function () {
         var min = null;
         Ext.Object.each(this.alarms, function (k, a) {
-            if (a.suppressStatus == 2) return;   // ★ 跳过消警
+            if (a.suppressStatus == 2 || a.suppressStatus == 1) return;   // 跳过消警
             if (a.ackStatus == 1) return;
             if (min === null || a.alarmLevel < min) min = a.alarmLevel;
         });
@@ -532,7 +567,7 @@ Ext.define('AP.alert.AlarmManager', {
         var self = this;
         var unackKeys = [];
         Ext.Object.each(this.alarms, function (k, a) {
-            if (a.suppressStatus == 2) return;   // ★ 跳过消警
+            if (a.suppressStatus == 2 || a.suppressStatus == 1) return;   // 跳过人工和自动消警
             if (a.ackStatus != 1) unackKeys.push(k);
         });
 
@@ -540,12 +575,13 @@ Ext.define('AP.alert.AlarmManager', {
             AP.alert.AlarmSoundManager.stop();
             if (this.win) {
                 this.win.stopBlink();
-                // 待确认空了 → 切到待消警（如果有） → 折叠
                 var ackCount = this.win.countLeaf(this.win.storeAcked);
                 if (ackCount > 0 && this.win.tabPanel) {
                     this.win.tabPanel.setActiveItem(this.win.treeAcked);
+                } else {
+                    // ★ 只有待确认和待消警都为 0 时，才自动折叠
+                    this.win.collapse();
                 }
-                this.win.collapse();
                 var tip = this.win.down('#muteTip');
                 if (tip) tip.hide();
             }

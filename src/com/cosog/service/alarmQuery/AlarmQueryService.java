@@ -201,7 +201,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		return result_json.toString();
 	}
 	
-	public String getAlarmData(String orgId,String deviceType,String deviceId,String deviceName,String dictDeviceType,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language) throws IOException, SQLException{
+	public String getAlarmData(String orgId,String deviceType,String deviceId,String deviceName,String dictDeviceType,String alarmType,
+			String alarmLevel,String confirmationStatus,String suppressStatus,String isSendMessage,Page pager,String language) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		String ddicCode="alarmQuery_CommStatusAlarm";
 		if(StringManagerUtils.stringToInteger(alarmType)==0){
@@ -231,6 +232,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				+ " decode(t.ack_status,1,t.ack_user,''),"
 				+ " decode(t.ack_status,1,t.ack_ip,''),"
 				+ " decode(t.ack_status,1,to_char(t.ack_time,'yyyy-mm-dd hh24:mi:ss'),'') as ackTime,"
+				+ " t.suppress_status,decode(t.suppress_status,1,'"+languageResourceMap.get("autoSuppress")+"',2,'"+languageResourceMap.get("manualSuppress")+"','"+languageResourceMap.get("pendingSuppress")+"') as suppressStatusName,"
+				+ " t.suppress_reason,t.suppress_user,t.suppress_ip,to_char(t.suppress_time,'yyyy-mm-dd hh24:mi:ss') as suppress_time,to_char(t.suppress_end_time,'yyyy-mm-dd hh24:mi:ss') as suppress_end_time,"
 				+ " t.orgid "
 				+ " from "+tableName+" t where t.orgid in ("+orgId+") "
 				+ " and t.alarmtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
@@ -247,6 +250,23 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		if(StringManagerUtils.isNotNull(alarmLevel)){
 			sql+=" and t.alarmLevel="+alarmLevel;
 		}
+		
+		if(StringManagerUtils.isNotNull(suppressStatus)){
+			if("1".equalsIgnoreCase(suppressStatus) || "2".equalsIgnoreCase(suppressStatus)){
+				sql+=" and t.suppress_status="+suppressStatus;
+			}else{
+				sql+=" and t.suppress_status not in (1,2)";
+			}
+		}
+		if(StringManagerUtils.isNotNull(confirmationStatus)){
+			if("1".equalsIgnoreCase(confirmationStatus)){
+				sql+=" and t.ack_status="+confirmationStatus;
+			}else{
+				sql+=" and t.ack_status <> 1";
+			}
+		}
+		
+		
 		if(StringManagerUtils.isNotNull(isSendMessage)){
 			sql+=" and t.isSendMessage="+isSendMessage;
 		}
@@ -343,7 +363,15 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			result_json.append("\"ackIP\":\""+obj[21]+"\",");
 			result_json.append("\"ackTime\":\""+obj[22]+"\",");
 			
-			result_json.append("\"orgId\":\""+obj[23]+"\"},");
+			result_json.append("\"suppressStatus\":\""+obj[23]+"\",");
+			result_json.append("\"suppressStatusName\":\""+obj[24]+"\",");
+			result_json.append("\"suppressReason\":\""+obj[25]+"\",");
+			result_json.append("\"suppressUser\":\""+obj[26]+"\",");
+			result_json.append("\"suppressIP\":\""+obj[27]+"\",");
+			result_json.append("\"suppressTime\":\""+obj[28]+"\",");
+			result_json.append("\"suppressEndTime\":\""+obj[29]+"\",");
+			
+			result_json.append("\"orgId\":\""+obj[30]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -355,7 +383,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	public boolean exportAlarmData(User user,HttpServletResponse response,String fileName,String title,String head,String field,
 			String orgId,
 			String deviceType,String dictDeviceType,
-			String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager,String language){
+			String deviceId,String deviceName,String alarmType,
+			String alarmLevel,String confirmationStatus,String suppressStatus,String isSendMessage,Page pager,String language){
 		try{
 			
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
@@ -386,6 +415,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 					+ " decode(t.ack_status,1,t.ack_user,''),"
 					+ " decode(t.ack_status,1,t.ack_ip,''),"
 					+ " decode(t.ack_status,1,to_char(t.ack_time,'yyyy-mm-dd hh24:mi:ss'),'') as ackTime,"
+					+ " t.suppress_status,decode(t.suppress_status,1,'"+languageResourceMap.get("autoSuppress")+"',2,'"+languageResourceMap.get("manualSuppress")+"','"+languageResourceMap.get("pendingSuppress")+"') as suppressStatusName,"
+					+ " t.suppress_reason,t.suppress_user,t.suppress_ip,to_char(t.suppress_time,'yyyy-mm-dd hh24:mi:ss') as suppress_time,to_char(t.suppress_end_time,'yyyy-mm-dd hh24:mi:ss') as suppress_end_time,"
 					+ " t.orgid "
 					+ " from "+tableName+" t where t.orgid in ("+orgId+") "
 					+ " and t.alarmtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
@@ -403,6 +434,20 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 			}
 			if(StringManagerUtils.isNotNull(alarmLevel)){
 				sql+=" and t.alarmLevel="+alarmLevel;
+			}
+			if(StringManagerUtils.isNotNull(suppressStatus)){
+				if("1".equalsIgnoreCase(suppressStatus) || "2".equalsIgnoreCase(suppressStatus)){
+					sql+=" and t.suppress_status="+suppressStatus;
+				}else{
+					sql+=" and t.suppress_status not in (1,2)";
+				}
+			}
+			if(StringManagerUtils.isNotNull(confirmationStatus)){
+				if("1".equalsIgnoreCase(confirmationStatus)){
+					sql+=" and t.ack_status="+confirmationStatus;
+				}else{
+					sql+=" and t.ack_status <> 1";
+				}
 			}
 			if(StringManagerUtils.isNotNull(isSendMessage)){
 				sql+=" and t.isSendMessage="+isSendMessage;
@@ -499,7 +544,15 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 				result_json.append("\"ackIP\":\""+obj[21]+"\",");
 				result_json.append("\"ackTime\":\""+obj[22]+"\",");
 				
-				result_json.append("\"orgId\":\""+obj[23]+"\"}");
+				result_json.append("\"suppressStatus\":\""+obj[23]+"\",");
+				result_json.append("\"suppressStatusName\":\""+obj[24]+"\",");
+				result_json.append("\"suppressReason\":\""+obj[25]+"\",");
+				result_json.append("\"suppressUser\":\""+obj[26]+"\",");
+				result_json.append("\"suppressIP\":\""+obj[27]+"\",");
+				result_json.append("\"suppressTime\":\""+obj[28]+"\",");
+				result_json.append("\"suppressEndTime\":\""+obj[29]+"\",");
+				
+				result_json.append("\"orgId\":\""+obj[30]+"\"}");
 				
 				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {
@@ -999,12 +1052,20 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 
 	    // ★ 因为内存 Map 的 Key 是 deviceId_column_bitIndex，当存在上线/离线时，可能会有多个 AlarmInfo 对象
 	    // 我们需要遍历，找到业务上匹配的那一条
+	    String expectedBaseKey = deviceId + "_" + column;
 	    for (Map.Entry<String, DeviceAlarmInfo.AlarmInfo> entry : dai.getAlarmInfoMap().entrySet()) {
 	        String key = entry.getKey();
 	        DeviceAlarmInfo.AlarmInfo ai = entry.getValue();
 	        
 	        // 1. 匹配基础项 (deviceId 和 column)
-	        if (!key.startsWith(deviceId + "_" + column)) continue;
+	        // 精确匹配：key 必须等于 expectedBaseKey 或 expectedBaseKey + "_" + bitIndex
+	        boolean keyMatch;
+	        if (StringManagerUtils.isNotNull(bitIndex)) {
+	            keyMatch = key.equals(expectedBaseKey + "_" + bitIndex);
+	        } else {
+	            keyMatch = key.equals(expectedBaseKey);
+	        }
+	        if (!keyMatch) continue;
 	        
 	        // 2. 匹配 bitIndex
 	        String currentBitIndex = ai.getBitIndex();
@@ -1039,7 +1100,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 
 	        // 如果匹配成功，进行内存状态更新
 	        if (isMatch) {
-	            ai.setAlertId(null); 
+//	            ai.setAlertId(null); 
 	            ai.setTriggerAlarm(false);
 	            ai.setAckUser(ackUser);
 	            ai.setAckIp(ackIp);
@@ -1162,10 +1223,18 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	    DeviceAlarmInfo dai = deviceAlarmInfoMap.get(deviceId);
 	    if (dai == null || dai.getAlarmInfoMap() == null) return;
 
+	    String expectedBaseKey = deviceId + "_" + column;
 	    for (Map.Entry<String, DeviceAlarmInfo.AlarmInfo> entry : dai.getAlarmInfoMap().entrySet()) {
 	        String key = entry.getKey();
 	        DeviceAlarmInfo.AlarmInfo ai = entry.getValue();
-	        if (!key.startsWith(deviceId + "_" + column)) continue;
+
+	        boolean keyMatch;
+	        if (StringManagerUtils.isNotNull(bitIndex)) {
+	            keyMatch = key.equals(expectedBaseKey + "_" + bitIndex);
+	        } else {
+	            keyMatch = key.equals(expectedBaseKey);
+	        }
+	        if (!keyMatch) continue;
 
 	        String currentBitIndex = ai.getBitIndex();
 	        if (StringManagerUtils.isNotNull(bitIndex)) {
@@ -1238,7 +1307,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	       .append("           ) as rn ")
 	       .append("      from tbl_alarminfo_hist t, tbl_device d ")
 	       .append("     where t.deviceid = d.id ")
-	       .append("       and t.recoverytime is null ")
+	       .append("       and (t.recoverytime is null or (t.recoverytime is not null and nvl(t.ack_status, 0) = 0)) ")
 	       // 强制过滤，只保留该测点最新的一条未恢复记录
 	       .append("       and t.id = ( ")
 	       .append("           select max(t2.id) ")
@@ -1246,7 +1315,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	       .append("           where t2.deviceid = t.deviceid ")
 	       .append("             and t2.itemcode = t.itemcode ")
 	       .append("             and nvl(t2.bitindex,-1) = nvl(t.bitindex,-1) ")
-	       .append("             and t2.recoverytime is null ")
+	       .append("             and (t2.recoverytime is null or (t2.recoverytime is not null and nvl(t2.ack_status, 0) = 0)) ")
 	       .append("       ) ")
 	       .append("       and t.alarmlevel >= 0 "); 
 
@@ -1320,5 +1389,79 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	        }
 	    }
 	    return result;
+	}
+	
+	/**
+	 * 取消人工消警
+	 */
+	public List<Integer> cancelSuppress(List<Number> alertIds) {
+	    Set<Integer> deviceIdSet = new HashSet<Integer>();
+	    
+	    for (Number n : alertIds) {
+	        if (n == null) continue;
+	        long id = n.longValue();
+	        try {
+	            // 查出设备ID和itemcode，用于更新latest
+	            String querySql = "select t.deviceid, t.itemcode from tbl_alarminfo_hist t where t.id = " + id;
+	            List<?> ql = findCallSql(querySql);
+	            if (ql == null || ql.isEmpty()) continue;
+	            
+	            // ★ 兼容单列/多列返回
+	            Object rowObj = ql.get(0);
+	            int deviceId = 0;
+	            String itemCode = "";
+	            if (rowObj instanceof Object[]) {
+	                Object[] row = (Object[]) rowObj;
+	                deviceId = StringManagerUtils.stringToInteger(row[0] + "");
+	                itemCode = row[1] == null ? "" : row[1].toString();
+	            } else {
+	                // 兜底：如果是单列，直接转
+	                deviceId = StringManagerUtils.stringToInteger(rowObj + "");
+	            }
+	            
+	            if (deviceId <= 0) continue;
+	            
+	            // 更新 hist
+	            String updateHist = "update tbl_alarminfo_hist t set "
+	                + " t.suppress_status = 0, t.suppress_reason = null, t.suppress_user = null, "
+	                + " t.suppress_time = null, t.suppress_ip = null, t.suppress_end_time = null "
+	                + " where t.id = " + id;
+	            getBaseDao().updateOrDeleteBySql(updateHist);
+	            
+	            // 更新 latest (每设备每类型一条，取最新一条未恢复的)
+	            if (StringManagerUtils.isNotNull(itemCode)) {
+	                String updateLatest = "update tbl_alarminfo_latest t set "
+	                    + " t.suppress_status = 0, t.suppress_reason = null, t.suppress_user = null, "
+	                    + " t.suppress_time = null, t.suppress_ip = null, t.suppress_end_time = null "
+	                    + " where t.deviceid = " + deviceId 
+	                    + " and t.itemcode = '" + itemCode.replace("'", "''") + "' ";
+	                getBaseDao().updateOrDeleteBySql(updateLatest);
+	            }
+	            
+	            // 同步内存
+	            Map<Integer, DeviceAlarmInfo> map = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+	            if (map != null) {
+	                DeviceAlarmInfo dai = map.get(deviceId);
+	                if (dai != null && dai.getAlarmInfoMap() != null) {
+	                    for (DeviceAlarmInfo.AlarmInfo ai : dai.getAlarmInfoMap().values()) {
+	                        if (ai.getAlertId() != null && ai.getAlertId() == id) {
+	                            ai.setSuppressStatus(0);
+	                            ai.setSuppressReason(null);
+	                            ai.setSuppressUser(null);
+	                            ai.setSuppressTime(null);
+	                            ai.setSuppressIp(null);
+	                            ai.setSuppressEndTime(null);
+	                            break;
+	                        }
+	                    }
+	                }
+	            }
+	            
+	            deviceIdSet.add(deviceId);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return new ArrayList<Integer>(deviceIdSet);
 	}
 }

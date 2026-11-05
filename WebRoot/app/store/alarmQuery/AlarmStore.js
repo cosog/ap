@@ -93,6 +93,8 @@ Ext.define('AP.store.alarmQuery.AlarmStore', {
         	}
         	
         	var alarmLevel=Ext.getCmp('AlarmLevelComb_Id').getValue();
+        	var confirmationStatus=Ext.getCmp('AlarmConfirmationStatusComb_Id').getValue();
+        	var suppressStatus=Ext.getCmp('AlarmSuppressStatusComb_Id').getValue();
         	var isSendMessage=Ext.getCmp('AlarmIsSendMessageComb_Id').getValue();
         	var startDate=Ext.getCmp('AlarmQueryStartDate_Id').rawValue;
         	var startTime_Hour=Ext.getCmp('AlarmQueryStartTime_Hour_Id').getValue();
@@ -111,6 +113,8 @@ Ext.define('AP.store.alarmQuery.AlarmStore', {
                     deviceId:deviceId,
                     deviceName:deviceName,
                     alarmLevel:alarmLevel,
+                    confirmationStatus:confirmationStatus,
+                    suppressStatus:suppressStatus,
                     isSendMessage:isSendMessage,
                     startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
                     endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),

@@ -10601,7 +10601,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getComparativeAnalysisCurveData(String deviceIds,String deviceNames,
-			String itemName,String itemColumn,String itemUnit,String dataSource,
+			String itemName,String sort,
 			String startDate,String endDate,
 			User user) {
 		String language=user!=null?user.getLanguageName():"";
@@ -10621,13 +10621,16 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Map<String,String> deviceNameMap=new HashMap<>();
 		Map<String,Integer> deviceCalculateMap=new HashMap<>();
 		Map<String,String> deviceProtocolMap=new HashMap<>();
+		Map<String,Integer> deviceReportUnitMap=new HashMap<>();
 		
-		String deviceQuerySql="select t.id,t.devicename,t2.calculatetype,t5.code "
+		String deviceQuerySql="select t.id,t.devicename,t2.calculatetype,t5.code as protocolCode,t7.id as reportUnitId"
 				+ " from tbl_device t "
 				+ " left outer join tbl_tabmanager_device t2 on t.calculatetype=t2.id "
 				+ " left outer join tbl_protocolinstance t3 on t3.code=t.instancecode"
 				+ " left outer join tbl_acq_unit_conf t4 on t3.unitid=t4.id"
 				+ " left outer join tbl_protocol t5 on t5.code=t4.protocol"
+				+ " left outer join tbl_protocolreportinstance t6 on t6.code=t.reportinstancecode"
+				+ " left outer join tbl_report_unit_conf t7 on t7.id=t6.unitid"
 				+ " where t.id in ("+deviceIds+") "
 				+ " order by t.sortnum";
 		List<?> deviceQueryList = this.findCallSql(deviceQuerySql);
@@ -10637,13 +10640,12 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			deviceNameMap.put(obj[0]+"", obj[1]+"");
 			deviceCalculateMap.put(obj[0]+"", obj[2]==null?0:StringManagerUtils.stringToInteger(obj[2]+""));
 			deviceProtocolMap.put(obj[0]+"", obj[3]!=null?(obj[3]+""):"");
+			deviceReportUnitMap.put(obj[0]+"", obj[4]==null?0:StringManagerUtils.stringToInteger(obj[4]+""));
 		}
 		int curveCount=deviceIdList.size();
 		
 		result_json.append("{"
 				+ "\"itemName\":\""+itemName+"\","
-				+ "\"itemColumn\":\""+itemColumn+"\","
-				+ "\"itemUnit\":\""+itemUnit+"\","
 				+ "\"startDate\":\""+startDate+"\","
 				+ "\"endDate\":\""+endDate+"\","
 				+ "\"curveCount\":"+curveCount+","
@@ -10657,272 +10659,286 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			calDateBuff.append("[");
 			dataBuff.append("[");
 			
-			if("0".equalsIgnoreCase(dataSource)||"5".equalsIgnoreCase(dataSource)){
-				String sql="select to_char(t.calDate,'yyyy-mm-dd'),t.caldata"
-						+ " from "+tableName +" t";
-				sql+=" where t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')"
-						+ " and t.deviceid="+deviceId;
-				sql+=" order by t.calDate";
-				List<?> list = this.findCallSql(sql);
+			String itemQuerySql="select t.itemcode,t.datatype,t.prec,t.totaltype,t.datasource from TBL_REPORT_ITEMS2UNIT_CONF t where t.unitid="+deviceReportUnitMap.get(deviceId)+" and t.reporttype=0 and t.sort="+sort;
+			List<?> itemQueryList = this.findCallSql(itemQuerySql);
+			if(itemQueryList.size()>0){
+				Object[] itemObj = (Object[]) itemQueryList.get(0);
+				String itemColumn=itemObj[0]+"";
+				String dataSource=itemObj[4]+"";
+				int totalType=(itemObj[3]!=null?StringManagerUtils.stringToInteger(itemObj[3]+""):4);
 				
-				for(int j=0;j<list.size();j++){
-					Object[] obj=(Object[]) list.get(j);
-					String acqCalData=StringManagerUtils.CLOBObjectToString(obj[1]);
-					reflectType = new TypeToken<List<KeyValue>>() {}.getType();
-					List<KeyValue> acqDataList=null;
-					try{
-						reflectType = new TypeToken<List<KeyValue>>() {}.getType();
-						acqDataList=gson.fromJson(acqCalData, reflectType);
-					}catch(Exception e){
-						acqDataList=new ArrayList<>();
-					}
-					
-					
-					String value="null";
-					int totalType=3;
-					if(acqDataList!=null){
-						for(KeyValue keyValue:acqDataList){
-							if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
-								value=keyValue.getValue();
-								break;
-							}
-						}
-					}
-					
-					if(StringManagerUtils.isNotNull(value)){
-						String[] totalValueArr=value.split(";");
-						value="null";
-						if(totalType==1 && totalValueArr.length>=1){
-							value=totalValueArr[0];
-						}else if(totalType==2 && totalValueArr.length>=2){
-							value=totalValueArr[1];
-						}else if(totalType==3 && totalValueArr.length>=3){
-							value=totalValueArr[2];
-						}else if(totalType==4 && totalValueArr.length>=4){
-							value=totalValueArr[3];
-						}else if(totalType==5 && totalValueArr.length>=5){
-							value=totalValueArr[4];
-						}else if(totalType==6 && totalValueArr.length>=6){
-							value=totalValueArr[5];
-						}
-					}
-					
-					calDateBuff.append("\""+obj[0]+"\",");
-					dataBuff.append(value+",");
-				}
-			}else if("1".equalsIgnoreCase(dataSource)){
-				int calculateType=deviceCalculateMap.get(deviceId);
-				List<CalItem> calItemList=null;
-				
-				if(calculateType==1){
-					calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
-					calItemList=MemoryDataManagerTask.getSRPTotalCalculateItem(language);
-				}else if(calculateType==2){
-					calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
-					calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
-				}else{
-					calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
-				}
-				
-				String sql="";
-				if(StringManagerUtils.generalCalColumnFiter(itemColumn) || calculateType==0){
-					CalItem calItem=MemoryDataManagerTask.getCalItemByCode(itemColumn, calItemList);
-					String columns="null";
-					if(calItem!=null){
-						columns="t."+itemColumn;
-					}
-					sql="select to_char(t.calDate,'yyyy-mm-dd'),"+columns
+				if("0".equalsIgnoreCase(dataSource)||"5".equalsIgnoreCase(dataSource)){
+					String sql="select to_char(t.calDate,'yyyy-mm-dd'),t.caldata"
 							+ " from "+tableName +" t";
 					sql+=" where t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')"
 							+ " and t.deviceid="+deviceId;
 					sql+=" order by t.calDate";
-				}else if(calculateType>0){
-					CalItem calItem=MemoryDataManagerTask.getCalItemByCode(itemColumn, calItemList);
-					String columns="null";
-					if(calculateType==1 && StringManagerUtils.rodCalColumnFiter(itemColumn)){
-						columns="t.rodstring";
-					}else{
-						if(calItem!=null){
-//							if("SurfaceSystemEfficiency".equalsIgnoreCase(itemColumn) || "WellDownSystemEfficiency".equalsIgnoreCase(itemColumn)||"SystemEfficiency".equalsIgnoreCase(itemColumn)
-//									|| "PumpEff1".equalsIgnoreCase(itemColumn) || "PumpEff2".equalsIgnoreCase(itemColumn) || "PumpEff3".equalsIgnoreCase(itemColumn) || "PumpEff4".equalsIgnoreCase(itemColumn) || "PumpEff".equalsIgnoreCase(itemColumn)){
-//								columns="t."+itemColumn+"*100 as "+itemColumn;
-//							}else{
-//								columns="t."+itemColumn;
-//							}
-							columns="t."+itemColumn;
-						}
-					}
+					List<?> list = this.findCallSql(sql);
 					
-					sql="select to_char(t.calDate,'yyyy-mm-dd'),"+itemColumn
-							+ " from "+calTotalTableName +" t";
-					sql+=" where t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')"
-							+ " and t.deviceid="+deviceId;
-					sql+=" order by t.calDate";
-				}
-				
-				String finalSql=sql;
-				List<?> list = this.findCallSql(finalSql);
-				
-				for(int j=0;j<list.size();j++){
-					Object[] obj=(Object[]) list.get(j);
-					String value="";
-					if(!StringManagerUtils.rodCalColumnFiter(itemColumn)){
-						value=obj[1]==null?"null":(obj[1]+"");
-					}else{
-						String rodstring=obj[1]==null?"":(obj[1]+"");
-						if(StringManagerUtils.isNotNull(rodstring)){
-							String rodDataArr[]=rodstring.split(";");
-							if(rodDataArr.length>1){
-								if("RodFMax1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[0];
-						        	}
-								}else if("RodFMin1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[1];
-						        	}
-								}else if("RodMaxStress1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[2];
-						        	}
-								}else if("RodMinStress1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[3];
-						        	}
-								}else if("RodAllowableStress1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[4];
-						        	}
-								}else if("MaxRodStressRatio1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
-						        	}
-								}else if("RodStressRangeRatio1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
-						        	}
-								}else if("RodFMax2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[0];
-						        	}
-								}else if("RodFMin2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[1];
-						        	}
-								}else if("RodMaxStress2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[2];
-						        	}
-								}else if("RodMinStress2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[3];
-						        	}
-								}else if("RodAllowableStress2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[4];
-						        	}
-								}else if("MaxRodStressRatio2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
-						        	}
-								}else if("RodStressRangeRatio2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
-						        	}
-								}else if("RodFMax3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[0];
-						        	}
-								}else if("RodFMin3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[1];
-						        	}
-								}else if("RodMaxStress3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[2];
-						        	}
-								}else if("RodMinStress3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[3];
-						        	}
-								}else if("RodAllowableStress3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[4];
-						        	}
-								}else if("MaxRodStressRatio3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
-						        	}
-								}else if("RodStressRangeRatio3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
-						        	}
-								}else if("RodFMax4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[0];
-						        	}
-								}else if("RodFMin4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[1];
-						        	}
-								}else if("RodMaxStress4".equalsIgnoreCase(itemColumn) && rodDataArr.length>41){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[2];
-						        	}
-								}else if("RodMinStress4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[3];
-						        	}
-								}else if("RodAllowableStress4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[4];
-						        	}
-								}else if("MaxRodStressRatio4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
-						        	}
-								}else if("RodStressRangeRatio4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
-						        	}
+					for(int j=0;j<list.size();j++){
+						Object[] obj=(Object[]) list.get(j);
+						String acqCalData=StringManagerUtils.CLOBObjectToString(obj[1]);
+						reflectType = new TypeToken<List<KeyValue>>() {}.getType();
+						List<KeyValue> acqDataList=null;
+						try{
+							reflectType = new TypeToken<List<KeyValue>>() {}.getType();
+							acqDataList=gson.fromJson(acqCalData, reflectType);
+						}catch(Exception e){
+							acqDataList=new ArrayList<>();
+						}
+						
+						
+						String value="null";
+						if(acqDataList!=null){
+							for(KeyValue keyValue:acqDataList){
+								if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
+									value=keyValue.getValue();
+									break;
 								}
-				        	}
+							}
 						}
+						
+						if(StringManagerUtils.isNotNull(value)){
+							String[] totalValueArr=value.split(";");
+							value="null";
+							if(totalType==1 && totalValueArr.length>=1){
+								value=totalValueArr[0];
+							}else if(totalType==2 && totalValueArr.length>=2){
+								value=totalValueArr[1];
+							}else if(totalType==3 && totalValueArr.length>=3){
+								value=totalValueArr[2];
+							}else if(totalType==4 && totalValueArr.length>=4){
+								value=totalValueArr[3];
+							}else if(totalType==5 && totalValueArr.length>=5){
+								value=totalValueArr[4];
+							}else if(totalType==6 && totalValueArr.length>=6){
+								value=totalValueArr[5];
+							}
+						}
+						
+						calDateBuff.append("\""+obj[0]+"\",");
+						dataBuff.append(value+",");
 					}
-					 
+				}else if("1".equalsIgnoreCase(dataSource)){
+					int calculateType=deviceCalculateMap.get(deviceId);
+					List<CalItem> calItemList=null;
 					
-					calDateBuff.append("\""+obj[0]+"\",");
-					dataBuff.append(value+",");
+					if(calculateType==1){
+						calTotalTableName="VIW_SRPDAILYCALCULATIONDATA";
+						calItemList=MemoryDataManagerTask.getSRPTotalCalculateItem(language);
+					}else if(calculateType==2){
+						calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
+						calItemList=MemoryDataManagerTask.getPCPTotalCalculateItem(language);
+					}else{
+						calItemList=MemoryDataManagerTask.getAcqTotalCalculateItem(language);
+					}
+					
+					String sql="";
+					if(StringManagerUtils.generalCalColumnFiter(itemColumn) || calculateType==0){
+						CalItem calItem=MemoryDataManagerTask.getCalItemByCode(itemColumn, calItemList);
+						String columns="null";
+						if(calItem!=null){
+							if("RunStatusName".equalsIgnoreCase(itemColumn)){
+								columns="t.runStatus";
+							}else if("CommStatusName".equalsIgnoreCase(itemColumn)){
+								columns="t.commStatus";
+							}else{
+								columns="t."+itemColumn;
+							}
+						}
+						sql="select to_char(t.calDate,'yyyy-mm-dd'),"+columns
+								+ " from "+tableName +" t";
+						sql+=" where t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')"
+								+ " and t.deviceid="+deviceId;
+						sql+=" order by t.calDate";
+					}else if(calculateType>0){
+						CalItem calItem=MemoryDataManagerTask.getCalItemByCode(itemColumn, calItemList);
+						String columns="null";
+						if(calculateType==1 && StringManagerUtils.rodCalColumnFiter(itemColumn)){
+							columns="t.rodstring";
+						}else{
+							if(calItem!=null){
+								if("resultName".equalsIgnoreCase(itemColumn) || "optimizationSuggestion".equalsIgnoreCase(itemColumn)){
+									columns="t.resultCode";
+								}else{
+									columns="t."+itemColumn;
+								}
+							}
+						}
+						
+						sql="select to_char(t.calDate,'yyyy-mm-dd'),"+itemColumn
+								+ " from "+calTotalTableName +" t";
+						sql+=" where t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')"
+								+ " and t.deviceid="+deviceId;
+						sql+=" order by t.calDate";
+					}
+					
+					String finalSql=sql;
+					List<?> list = this.findCallSql(finalSql);
+					
+					for(int j=0;j<list.size();j++){
+						Object[] obj=(Object[]) list.get(j);
+						String value="";
+						if(!StringManagerUtils.rodCalColumnFiter(itemColumn)){
+							value=obj[1]==null?"null":(obj[1]+"");
+						}else{
+							String rodstring=obj[1]==null?"":(obj[1]+"");
+							if(StringManagerUtils.isNotNull(rodstring)){
+								String rodDataArr[]=rodstring.split(";");
+								if(rodDataArr.length>1){
+									if("RodFMax1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
+										String everyRodData[]=rodDataArr[1].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[0];
+							        	}
+									}else if("RodFMin1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
+										String everyRodData[]=rodDataArr[1].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[1];
+							        	}
+									}else if("RodMaxStress1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
+										String everyRodData[]=rodDataArr[1].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[2];
+							        	}
+									}else if("RodMinStress1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
+										String everyRodData[]=rodDataArr[1].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[3];
+							        	}
+									}else if("RodAllowableStress1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
+										String everyRodData[]=rodDataArr[1].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[4];
+							        	}
+									}else if("MaxRodStressRatio1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
+										String everyRodData[]=rodDataArr[1].split(",");
+										if(everyRodData.length>=7){
+											value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
+							        	}
+									}else if("RodStressRangeRatio1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
+										String everyRodData[]=rodDataArr[1].split(",");
+										if(everyRodData.length>=7){
+											value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
+							        	}
+									}else if("RodFMax2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
+										String everyRodData[]=rodDataArr[2].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[0];
+							        	}
+									}else if("RodFMin2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
+										String everyRodData[]=rodDataArr[2].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[1];
+							        	}
+									}else if("RodMaxStress2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
+										String everyRodData[]=rodDataArr[2].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[2];
+							        	}
+									}else if("RodMinStress2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
+										String everyRodData[]=rodDataArr[2].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[3];
+							        	}
+									}else if("RodAllowableStress2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
+										String everyRodData[]=rodDataArr[2].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[4];
+							        	}
+									}else if("MaxRodStressRatio2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
+										String everyRodData[]=rodDataArr[2].split(",");
+										if(everyRodData.length>=7){
+											value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
+							        	}
+									}else if("RodStressRangeRatio2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
+										String everyRodData[]=rodDataArr[2].split(",");
+										if(everyRodData.length>=7){
+											value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
+							        	}
+									}else if("RodFMax3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
+										String everyRodData[]=rodDataArr[3].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[0];
+							        	}
+									}else if("RodFMin3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
+										String everyRodData[]=rodDataArr[3].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[1];
+							        	}
+									}else if("RodMaxStress3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
+										String everyRodData[]=rodDataArr[3].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[2];
+							        	}
+									}else if("RodMinStress3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
+										String everyRodData[]=rodDataArr[3].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[3];
+							        	}
+									}else if("RodAllowableStress3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
+										String everyRodData[]=rodDataArr[3].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[4];
+							        	}
+									}else if("MaxRodStressRatio3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
+										String everyRodData[]=rodDataArr[3].split(",");
+										if(everyRodData.length>=7){
+											value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
+							        	}
+									}else if("RodStressRangeRatio3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
+										String everyRodData[]=rodDataArr[3].split(",");
+										if(everyRodData.length>=7){
+											value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
+							        	}
+									}else if("RodFMax4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
+										String everyRodData[]=rodDataArr[4].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[0];
+							        	}
+									}else if("RodFMin4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
+										String everyRodData[]=rodDataArr[4].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[1];
+							        	}
+									}else if("RodMaxStress4".equalsIgnoreCase(itemColumn) && rodDataArr.length>41){
+										String everyRodData[]=rodDataArr[4].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[2];
+							        	}
+									}else if("RodMinStress4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
+										String everyRodData[]=rodDataArr[4].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[3];
+							        	}
+									}else if("RodAllowableStress4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
+										String everyRodData[]=rodDataArr[4].split(",");
+										if(everyRodData.length>=7){
+											value=everyRodData[4];
+							        	}
+									}else if("MaxRodStressRatio4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
+										String everyRodData[]=rodDataArr[4].split(",");
+										if(everyRodData.length>=7){
+											value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
+							        	}
+									}else if("RodStressRangeRatio4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
+										String everyRodData[]=rodDataArr[4].split(",");
+										if(everyRodData.length>=7){
+											value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
+							        	}
+									}
+					        	}
+							}
+						}
+						 
+						
+						calDateBuff.append("\""+obj[0]+"\",");
+						dataBuff.append(value+",");
+					}
 				}
 			}
+			
+			
 			if (calDateBuff.toString().endsWith(",")) {
 				calDateBuff.deleteCharAt(calDateBuff.length() - 1);
 			}

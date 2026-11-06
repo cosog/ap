@@ -22,6 +22,7 @@ Ext.define("AP.view.reportOut.DailyDataComparativeAnalysisWindow", {
     modal: true,
     border: false,
     draggable: true, // 是否可拖曳
+    constrain: true,   //限制拖拽不超出父界面
     initComponent: function () {
         var me = this;
         Ext.apply(me, {
@@ -361,10 +362,8 @@ function getDailyComparativeAnalysisCurveData(){
 			selectDeviceName.push(record.data.deviceName);
 	    });
 		
-		var itemName=selectionItemRecord[0].data.itemName;
-		var itemColumn=selectionItemRecord[0].data.itemColumn;
-		var itemUnit=selectionItemRecord[0].data.itemUnit;
-		var dataSource=selectionItemRecord[0].data.dataSource;
+		var itemName=selectionItemRecord[0].data.headerName;
+		var sort=selectionItemRecord[0].data.sort;
 		
 		var startDate=Ext.getCmp('DailyDataComparativeAnalysisDataStartDate_Id')!=undefined?Ext.getCmp('DailyDataComparativeAnalysisDataStartDate_Id').rawValue:"";
 	    var endDate=Ext.getCmp('DailyDataComparativeAnalysisDataEndDate_Id')!=undefined?Ext.getCmp('DailyDataComparativeAnalysisDataEndDate_Id').rawValue:"";
@@ -389,7 +388,7 @@ function getDailyComparativeAnalysisCurveData(){
 			    var yAxis= [];
 			    var singleAxis={
 		        		title: {
-		                    text: itemName+(isNotVal(itemUnit)?("("+itemUnit+")"):"")
+		                    text: itemName
 		                },
 		                lineWidth: 1,
 			        	tickWidth: 1,      // 刻度线宽度
@@ -405,8 +404,8 @@ function getDailyComparativeAnalysisCurveData(){
 			        var allNegative=true;//全部是负值
 			        
 			        var singleSeries={};
-			        singleSeries.name=result.list[i].deviceName+"."+itemName+(isNotVal(itemUnit)?("("+itemUnit+")"):"");
-			        singleSeries.code=itemColumn;
+			        singleSeries.name=result.list[i].deviceName+"."+itemName;
+			        singleSeries.sort=sort;
 			        singleSeries.type='spline';
 			        singleSeries.marker={enabled: false};
 			        singleSeries.yAxis=0;
@@ -441,9 +440,7 @@ function getDailyComparativeAnalysisCurveData(){
 				deviceNames:selectDeviceName.join(","),
 				deviceIds:selectDeviceId.join(","),
 				itemName:itemName,
-				itemColumn:itemColumn,
-				itemUnit:itemUnit,
-				dataSource:dataSource,
+				sort:sort,
 				startDate:startDate,
 	            endDate:endDate
 	        }

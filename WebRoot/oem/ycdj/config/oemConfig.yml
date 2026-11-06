@@ -1,6 +1,7 @@
 oem:                    #oem配置 名称、简介、背景、图标、样式等
    languageResourcePath: "oem/ycdj/locale"                 #语言资源文件所在目录
    sceneImagePath: "/oem/ycdj/sceneImage"                  #场景模型目录
+   alarmSound: "/oem/ycdj/alarmSound"                  #报警声音目录
    favicon: "./oem/ycdj/images/logo/favicon.ico"               #网页图标
    logo: "./oem/ycdj/images/logo/logo.png"                     #软件图标
    loginBackgroundImage: "./oem/ycdj/images/login/login.jpg"   #登录界面背景图片

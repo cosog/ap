@@ -207,6 +207,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 						||urlString.equals("initProductionDataDictionary")
 						||urlString.equals("getUIKitAccessToken")
 						||path.contains("mobileController")
+						||path.contains("dailyReportImport")
 						){
 					chain.doFilter(request, response);
 				}else if (null == user) {

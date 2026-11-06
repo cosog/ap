@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -5165,4 +5166,173 @@ public class BaseDao extends HibernateDaoSupport {
 		return r;
 	}
 	
+	/**
+	 * 批量保存日报数据：插入 + 更新，同一事务，原子提交
+	 *
+	 * 参数顺序（Object[] 每行）：
+	 *   [0] deviceId(String)
+	 *   [1] dateOnly(String, "yyyy-MM-dd")
+	 *   [2] runTime(Double)
+	 *   [3] commStatus(Number/Integer)
+	 *   [4] runStatus(Number/Integer)
+	 *   [5] runTimeEfficiency(Double)
+	 *   [6] runRange(String, 写入 CLOB)
+	 *   [7] remark(String)
+	 *   [8] calDataJson(String, 写入 CLOB)
+	 *
+	 * @return int[]{inserted, updated}
+	 */
+	public int[] batchSaveDailyCal(List<Object[]> toInsert, List<Object[]> toUpdate) {
+	    final int batchSize = 200;
+
+	    boolean hasInsert = (toInsert != null && !toInsert.isEmpty());
+	    boolean hasUpdate = (toUpdate != null && !toUpdate.isEmpty());
+
+	    // 无数据直接返回，不开连接
+	    if (!hasInsert && !hasUpdate) {
+	        return new int[]{0, 0};
+	    }
+
+	    Connection conn = null;
+	    PreparedStatement psInsert = null;
+	    PreparedStatement psUpdate = null;
+
+	    try {
+	        conn = SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+	        conn.setAutoCommit(false);
+
+	        // ---------- 插入 ----------
+	        if (hasInsert) {
+	            String insertSql = "INSERT INTO TBL_DAILYCALCULATIONDATA "
+	                    + "(deviceid, caldate, runtime, commstatus, runstatus, runtimeefficiency, runrange, remark, caldata) "
+	                    + "VALUES (?, to_date(?,'yyyy-mm-dd'), ?, ?, ?, ?, ?, ?, ?)";
+	            psInsert = conn.prepareStatement(insertSql);
+
+	            int cnt = 0;
+	            for (Object[] r : toInsert) {
+	                int i = 1;
+	                psInsert.setLong(i++, Long.parseLong(r[0] + ""));       // deviceid
+	                psInsert.setString(i++, (String) r[1]);                 // caldate
+	                setDouble(psInsert, i++, toDoubleObj(r[2]));            // runtime
+	                psInsert.setInt(i++, toIntObj(r[3]));                   // commstatus
+	                psInsert.setInt(i++, toIntObj(r[4]));                   // runstatus
+	                setDouble(psInsert, i++, toDoubleObj(r[5]));            // runtimeefficiency
+	                setClob(psInsert, i++, (String) r[6]);                  // runrange  (CLOB)
+	                psInsert.setString(i++, (String) r[7]);                 // remark
+	                setClob(psInsert, i++, (String) r[8]);                  // caldata   (CLOB)
+
+	                psInsert.addBatch();
+
+	                if (++cnt % batchSize == 0) {
+	                    psInsert.executeBatch();
+	                    psInsert.clearBatch();
+	                }
+	            }
+	            if (cnt % batchSize != 0) {
+	                psInsert.executeBatch();
+	            }
+	        }
+
+	        // ---------- 更新 ----------
+	        if (hasUpdate) {
+	            String updateSql = "UPDATE TBL_DAILYCALCULATIONDATA SET "
+	                    + " runtime = ?, commstatus = ?, runstatus = ?, runtimeefficiency = ?, "
+	                    + " runrange = ?, remark = ?, caldata = ? "
+	                    + " WHERE deviceid = ? AND caldate = to_date(?,'yyyy-mm-dd')";
+	            psUpdate = conn.prepareStatement(updateSql);
+
+	            int cnt = 0;
+	            for (Object[] r : toUpdate) {
+	                int i = 1;
+	                setDouble(psUpdate, i++, toDoubleObj(r[2]));            // runtime
+	                psUpdate.setInt(i++, toIntObj(r[3]));                   // commstatus
+	                psUpdate.setInt(i++, toIntObj(r[4]));                   // runstatus
+	                setDouble(psUpdate, i++, toDoubleObj(r[5]));            // runtimeefficiency
+	                setClob(psUpdate, i++, (String) r[6]);                  // runrange  (CLOB)
+	                psUpdate.setString(i++, (String) r[7]);                 // remark
+	                setClob(psUpdate, i++, (String) r[8]);                  // caldata   (CLOB)
+	                psUpdate.setLong(i++, Long.parseLong(r[0] + ""));       // deviceid
+	                psUpdate.setString(i++, (String) r[1]);                 // caldate
+
+	                psUpdate.addBatch();
+
+	                if (++cnt % batchSize == 0) {
+	                    psUpdate.executeBatch();
+	                    psUpdate.clearBatch();
+	                }
+	            }
+	            if (cnt % batchSize != 0) {
+	                psUpdate.executeBatch();
+	            }
+	        }
+
+	        conn.commit();  // 全部成功才提交
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        if (conn != null) {
+	            try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+	        }
+	        throw new RuntimeException("批量保存日报数据失败:" + e.getMessage(), e);
+	    } finally {
+	        if (psInsert != null) {
+	            try { psInsert.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        }
+	        if (psUpdate != null) {
+	            try { psUpdate.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        }
+	        if (conn != null) {
+	            try { conn.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+	            try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        }
+	    }
+
+	    // 未抛异常 = 全成功，直接按 size 统计（Oracle executeBatch 返回值不可靠）
+	    int inserted = hasInsert ? toInsert.size() : 0;
+	    int updated  = hasUpdate ? toUpdate.size() : 0;
+	    return new int[]{inserted, updated};
+	}
+
+	// ===================== 工具方法 =====================
+
+	/** null / 非数字 安全转 Double */
+	private static Double toDoubleObj(Object o) {
+	    if (o == null) return null;
+	    if (o instanceof Number) return ((Number) o).doubleValue();
+	    try {
+	        String s = o.toString().trim();
+	        return s.isEmpty() ? null : Double.parseDouble(s);
+	    } catch (NumberFormatException e) {
+	        return null;
+	    }
+	}
+
+	/** null / 非数字 安全转 Integer */
+	private static int toIntObj(Object o) {
+	    if (o == null) return 0;
+	    if (o instanceof Number) return ((Number) o).intValue();
+	    try {
+	        String s = o.toString().trim();
+	        return s.isEmpty() ? 0 : Integer.parseInt(s);
+	    } catch (NumberFormatException e) {
+	        return 0;
+	    }
+	}
+
+	/** Double → setDouble / setNull(NUMERIC) */
+	private static void setDouble(PreparedStatement ps, int idx, Double v) throws SQLException {
+	    if (v == null) {
+	        ps.setNull(idx, Types.NUMERIC);
+	    } else {
+	        ps.setDouble(idx, v);
+	    }
+	}
+
+	/** String → setCharacterStream / setNull(CLOB) */
+	private static void setClob(PreparedStatement ps, int idx, String v) throws SQLException {
+	    if (v == null) {
+	        ps.setNull(idx, Types.CLOB);
+	    } else {
+	        ps.setCharacterStream(idx, new StringReader(v));
+	    }
+	}
 }

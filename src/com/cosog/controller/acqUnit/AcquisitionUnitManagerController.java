@@ -1794,6 +1794,31 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getComparativeAnalysisItemList")
+	public String getComparativeAnalysisItemList() throws Exception {
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String reportType = ParamUtils.getParameter(request, "reportType");
+		String templateCode = ParamUtils.getParameter(request, "templateCode");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		String classes = ParamUtils.getParameter(request, "classes");
+		String unitClasses = ParamUtils.getParameter(request, "unitClasses");
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = "";
+		json = acquisitionUnitItemManagerService.getComparativeAnalysisItemList(calculateType,reportType,templateCode,unitClasses,language);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getClasses2ReportUnitTotalCalItemsConfigData")
 	public String getClasses2ReportUnitTotalCalItemsConfigData() throws Exception {
 		String calculateType = ParamUtils.getParameter(request, "calculateType");

@@ -5,7 +5,8 @@ Ext.define('AP.store.reportOut.ComparativeAnalysisFieldListStore', {
     autoLoad: true,
     proxy: {
         type: 'ajax',
-        url: context + '/reportDataMamagerController/getComparativeAnalysisItemList',
+//        url: context + '/reportDataMamagerController/getComparativeAnalysisItemList',
+        url: context + '/acquisitionUnitManagerController/getComparativeAnalysisItemList',
         actionMethods: {
             read: 'POST'
         },
@@ -53,27 +54,7 @@ Ext.define('AP.store.reportOut.ComparativeAnalysisFieldListStore', {
                         flex: 2,
                         sortable: false,
                         locked: false,
-                        dataIndex: 'itemName',
-                        renderer: function (value) {
-                        	if(isNotVal(value)){
-    			        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
-			        		}
-                        }
-                    }, {
-                        header: loginUserLanguageResource.unit,
-                        align: 'center',
-                        dataIndex: 'itemUnit',
-                        width: 80,
-                        renderer: function (value) {
-                        	if(isNotVal(value)){
-    			        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
-			        		}
-                        }
-                    }, {
-                        header: loginUserLanguageResource.columnDataSource,
-                        align: 'center',
-                        dataIndex: 'dataSourceName',
-                        flex: 1,
+                        dataIndex: 'headerName',
                         renderer: function (value) {
                         	if(isNotVal(value)){
     			        		return Ext.String.format('<span data-qtip="{0}">{0}</span>', Ext.String.htmlEncode(value));
@@ -91,8 +72,11 @@ Ext.define('AP.store.reportOut.ComparativeAnalysisFieldListStore', {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceType=getDeviceTypeFromTabId("AcquisitionDataReportRootTabPanel");
             var new_params = {
-                    orgId: orgId,
-                    deviceType:deviceType,
+            		calculateType: 0,
+                    reportType: 0,
+                    unitId: 0,
+                    templateCode: 'singleWellRangeReport_dachengCBM',
+                    classes: 1,
                     unitClasses:2
                 };
             Ext.apply(store.proxy.extraParams, new_params);

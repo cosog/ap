@@ -46,7 +46,8 @@ public class ExcelUtils {
     private static final char LEAN_LINE = '/';
     private static final int BYTES_DEFAULT_LENGTH = 10240;
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getNumberInstance();
- 
+    private static final int MAX_EMPTY_ROW = 100; // 连续空行阈值
+    private static final Pattern TRAILING_ZERO = Pattern.compile(".*\\.0*");
  
     public static <T> List<T> readFile(File file, Class<T> clazz) throws Exception {
         JSONArray array = readFile(file);
@@ -291,60 +292,51 @@ public class ExcelUtils {
         in.close();
         return book;
     }
- 
+
     private static JSONArray readSheet(Sheet sheet) {
-        // 首行下标
         int rowStart = sheet.getFirstRowNum();
-        // 尾行下标
         int rowEnd = sheet.getLastRowNum();
-        // 获取表头行
         Row headRow = sheet.getRow(rowStart);
-        if (headRow == null) {
-            return new JSONArray();
-        }
+        if (headRow == null) return new JSONArray();
+
         int cellStart = headRow.getFirstCellNum();
         int cellEnd = headRow.getLastCellNum();
         Map<Integer, String> keyMap = new HashMap<>();
         for (int j = cellStart; j < cellEnd; j++) {
-            // 获取表头数据
             String val = getCellValue(headRow.getCell(j));
-            if (val != null && val.trim().length() != 0) {
-                keyMap.put(j, val);
-            }
+            if (val != null && val.trim().length() != 0) keyMap.put(j, val);
         }
-        // 如果表头没有数据则不进行解析
-        if (keyMap.isEmpty()) {
-            return (JSONArray) Collections.emptyList();
-        }
-        // 获取每行JSON对象的值
+        if (keyMap.isEmpty()) return new JSONArray();
+
         JSONArray array = new JSONArray();
-        // 如果首行与尾行相同，表明只有一行，返回表头数据
         if (rowStart == rowEnd) {
             JSONObject obj = new JSONObject();
-            // 添加行号
             obj.put(ROW_NUM, 1);
-            for (int i : keyMap.keySet()) {
-                obj.put(keyMap.get(i), "");
-            }
+            for (int i : keyMap.keySet()) obj.put(keyMap.get(i), "");
             array.add(obj);
             return array;
         }
+
+        int emptyRowCount = 0;
         for (int i = rowStart + 1; i <= rowEnd; i++) {
             Row eachRow = sheet.getRow(i);
+            if (eachRow == null) {
+                if (++emptyRowCount >= MAX_EMPTY_ROW) break;
+                continue;
+            }
             JSONObject obj = new JSONObject();
-            // 添加行号
             obj.put(ROW_NUM, i + 1);
             StringBuilder sb = new StringBuilder();
             for (int k = cellStart; k < cellEnd; k++) {
-                if (eachRow != null) {
-                    String val = getCellValue(eachRow.getCell(k));
-                    // 所有数据添加到里面，用于判断该行是否为空
-                    sb.append(val);
-                    obj.put(keyMap.get(k), val);
-                }
+                String val = getCellValue(eachRow.getCell(k));
+                sb.append(val);
+                obj.put(keyMap.get(k), val);
             }
             if (sb.length() > 0) {
+                emptyRowCount = 0;
                 array.add(obj);
+            } else if (++emptyRowCount >= MAX_EMPTY_ROW) {
+                break;
             }
         }
         return array;
@@ -365,9 +357,17 @@ public class ExcelUtils {
         }
         // 数字类型
         if (cell.getCellTypeEnum() == CellType.NUMERIC) {
+        	// 先判断是否为日期格式单元格
+            if (DateUtil.isCellDateFormatted(cell)) {
+                Date date = cell.getDateCellValue();
+                // 按你的业务需要选格式
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                return sdf.format(date);
+            }
+            
             String s = cell.getNumericCellValue() + "";
             // 去掉尾巴上的小数点0
-            if (Pattern.matches(".*\\.0*", s)) {
+            if (TRAILING_ZERO.matcher(s).matches()) {
                 return s.split("\\.")[0];
             } else {
                 return s;

@@ -1968,4 +1968,10 @@ public class CalculateDataService<T> extends BaseService<T> {
 			}
 		}
 	}
+	/**
+	 * 批量保存日报数据（插入 + 更新，同一事务）
+	 */
+	public int[] batchSaveDailyCal(List<Object[]> toInsert, List<Object[]> toUpdate) {
+	    return getBaseDao().batchSaveDailyCal(toInsert, toUpdate);
+	}
 }

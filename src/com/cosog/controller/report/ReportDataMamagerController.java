@@ -1920,9 +1920,7 @@ public class ReportDataMamagerController extends BaseController {
 		String deviceNames = ParamUtils.getParameter(request, "deviceNames");
 		String deviceIds = ParamUtils.getParameter(request, "deviceIds");
 		String itemName = ParamUtils.getParameter(request, "itemName");
-		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
-		String itemUnit = ParamUtils.getParameter(request, "itemUnit");
-		String dataSource = ParamUtils.getParameter(request, "dataSource");
+		String sort = ParamUtils.getParameter(request, "sort");
 		
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
@@ -1948,7 +1946,7 @@ public class ReportDataMamagerController extends BaseController {
 			}
 			
 			this.pager = new Page("pagerForm", request);
-			json = reportDataManagerService.getComparativeAnalysisCurveData(deviceIds,deviceNames,itemName,itemColumn,itemUnit,dataSource,startDate,endDate,user);
+			json = reportDataManagerService.getComparativeAnalysisCurveData(deviceIds,deviceNames,itemName,sort,startDate,endDate,user);
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

@@ -16,6 +16,7 @@ var deviceInterlockProtectionHandsontableHelper = null;
 var deviceDiagramFilteringHandsontableHelper = null;
 
 var deviceSceneModelInfoHandsontableHelper=null;
+var deviceCBMParametersInfoHandsontableHelper=null;
 
 var deviceCalculateDataTabPanelItems=[{
 	title:loginUserLanguageResource.wellboreData,
@@ -494,6 +495,26 @@ var deviceAdditionalInformationTabPanelItems=[{
         			newHeight=newHeight-header.lastBox.height-2;
         		}
         		deviceSceneModelInfoHandsontableHelper.hot.updateSettings({
+        			width:newWidth,
+        			height:newHeight
+        		});
+            }
+        }
+    }
+},{
+	title:loginUserLanguageResource.CBMParameters,
+	id:'DeviceCBMParametersInfoPanel_Id',
+	html: '<div class="DeviceCBMParametersInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceCBMParametersInfoTableDiv_id"></div></div>',
+    listeners: {
+        resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
+        	if (deviceCBMParametersInfoHandsontableHelper != null && deviceCBMParametersInfoHandsontableHelper.hot != null && deviceCBMParametersInfoHandsontableHelper.hot != undefined) {
+        		var newWidth=width;
+        		var newHeight=height-23-1;//减去工具条高度
+        		var header=thisPanel.getHeader();
+        		if(header){
+        			newHeight=newHeight-header.lastBox.height-2;
+        		}
+        		deviceCBMParametersInfoHandsontableHelper.hot.updateSettings({
         			width:newWidth,
         			height:newHeight
         		});
@@ -1073,6 +1094,8 @@ function CreateDeviceAdditionalInformationTable(deviceId,deviceName,applicationS
 		CreateAndLoadDeviceDiagramFilteringTable(deviceId,deviceName,applicationScenarios,isNew);
 	}else if(activeId=='DeviceSceneModelInfoPanel_Id'){
 		CreateAndLoadDeviceSceneModelInfoTable(deviceId,deviceName,calculateType,isNew);
+	}else if(activeId=='DeviceCBMParametersInfoPanel_Id'){
+		CreateAndLoadCBMParametersTable(deviceId,deviceName,calculateType,isNew);
 	}
 }
 
@@ -1143,6 +1166,8 @@ function getDeviceAdditionalInformationType(){
 		type=9;
 	}else if(activeId=='DeviceSceneModelInfoPanel_Id'){
 		type=10;
+	}else if(activeId=='DeviceCBMParametersInfoPanel_Id'){
+		type=11;
 	}
 	return type;
 }
@@ -2770,7 +2795,40 @@ var DeviceInfoHandsontableHelper = {
                     }
                     
             		deviceAdditionalInformationData.data=selectedModelId;
-            	}
+            	}else if(additionalInformationType==11){
+                    var CBMParameters={};
+                    if(deviceCBMParametersInfoHandsontableHelper!=null && deviceCBMParametersInfoHandsontableHelper.hot!=undefined){
+                		var tableData=deviceCBMParametersInfoHandsontableHelper.hot.getData();
+                		CBMParameters.Block=tableData[0][2];
+                		CBMParameters.WellCategory=tableData[1][2];
+                		CBMParameters.WellType=tableData[2][2];
+                		CBMParameters.ProductionInterval=tableData[3][2];
+                		CBMParameters.CompletedInterval=tableData[4][2];
+                		CBMParameters.DewateringMethod=tableData[5][2];
+                		
+                		
+                		if(isNumber(parseFloat(tableData[6][2]))){
+                			CBMParameters.Screen=parseFloat(tableData[6][2]);
+                		}
+                		
+                		if(isNumber(parseFloat(tableData[7][2]))){
+                			CBMParameters.PumpBoreDiameter=parseFloat(tableData[7][2]);
+                		}
+                		if(isNumber(parseFloat(tableData[8][2]))){
+                			CBMParameters.PumpSettingDepth=parseFloat(tableData[8][2]);
+                		}
+                		if(isNumber(parseFloat(tableData[9][2]))){
+                			CBMParameters.PressureGaugeDepth=parseFloat(tableData[9][2]);
+                		}
+                		if(isNumber(parseFloat(tableData[10][2]))){
+                			CBMParameters.CoalSeamRoofDepth=parseFloat(tableData[10][2]);
+                		}
+                		if(isNumber(parseFloat(tableData[11][2]))){
+                			CBMParameters.CoalSeamFloorDepth=parseFloat(tableData[11][2]);
+                		}
+                	}
+                    deviceAdditionalInformationData.data=JSON.stringify(CBMParameters);
+        		}
             	
             	Ext.Ajax.request({
                     method: 'POST',
@@ -4308,7 +4366,7 @@ function deviceProductionDataDownlink(){
 		if(deviceCalculateDataType==1){
             manualInterventionResultName=loginUserLanguageResource.noIntervention;
             if(productionHandsontableHelper!=null && productionHandsontableHelper.hot!=undefined){
-            	var productionHandsontableData=productionHandsontableHelper.hot.getData();
+tableDatanHandsontableData=productionHandsontableHelper.hot.getData();
         		deviceProductionData.FluidPVT={};
         		if(applicationScenarios==1 && isNumber(parseFloat(productionHandsontableData[0][2]))){
         			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
@@ -7683,6 +7741,191 @@ var DeviceInterlockProtectionHandsontableHelper = {
 	    }
 	};
 
+function CreateAndLoadCBMParametersTable(deviceId,deviceName,applicationScenarios,isNew){
+	if(deviceCBMParametersInfoHandsontableHelper!=null){
+		if(deviceCBMParametersInfoHandsontableHelper.hot!=undefined){
+			deviceCBMParametersInfoHandsontableHelper.hot.destroy();
+		}
+		deviceCBMParametersInfoHandsontableHelper=null;
+	}
+
+	if(Ext.getCmp("DeviceCBMParametersInfoPanel_Id")!=undefined){
+		Ext.getCmp("DeviceCBMParametersInfoPanel_Id").el.mask(loginUserLanguageResource.loadingData).show();
+	}
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/wellInformationManagerController/getDeviceCBMParametersInfo',
+		success:function(response) {
+			if(Ext.getCmp("DeviceCBMParametersInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceCBMParametersInfoPanel_Id").getEl().unmask();
+	    	}
+			var result =  Ext.JSON.decode(response.responseText);
+			
+			if(deviceCBMParametersInfoHandsontableHelper==null || deviceCBMParametersInfoHandsontableHelper.hot==undefined){
+				deviceCBMParametersInfoHandsontableHelper = DeviceCBMParametersInfoHandsontableHelper.createNew("DeviceCBMParametersInfoTableDiv_id");
+				
+				var colHeaders="['"+loginUserLanguageResource.idx+"','"+loginUserLanguageResource.variable+"','"+loginUserLanguageResource.value+"','']";
+				var columns="[{data:'id'}," 
+					+"{data:'itemName'}," 
+					+"{data:'itemValue'}," 
+					+"{data:'itemCode'}" 
+					+"]";
+				deviceCBMParametersInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				deviceCBMParametersInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					deviceCBMParametersInfoHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					deviceCBMParametersInfoHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					deviceCBMParametersInfoHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+				}else{
+					deviceCBMParametersInfoHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+        	deviceCBMParametersInfoHandsontableHelper.hot.render();
+		},
+		failure:function(){
+			if(Ext.getCmp("DeviceCBMParametersInfoPanel_Id")!=undefined){
+				Ext.getCmp("DeviceCBMParametersInfoPanel_Id").getEl().unmask();
+	    	}
+			Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
+		},
+		params: {
+			deviceId:deviceId
+        }
+	});
+
+};
+
+var DeviceCBMParametersInfoHandsontableHelper = {
+	    createNew: function (divid) {
+	        var deviceCBMParametersInfoHandsontableHelper = {};
+	        deviceCBMParametersInfoHandsontableHelper.hot = '';
+	        deviceCBMParametersInfoHandsontableHelper.divid = divid;
+	        deviceCBMParametersInfoHandsontableHelper.colHeaders = [];
+	        deviceCBMParametersInfoHandsontableHelper.columns = [];
+	        
+	        deviceCBMParametersInfoHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        deviceCBMParametersInfoHandsontableHelper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	            td.style.whiteSpace='nowrap'; //文本不换行
+            	td.style.overflow='hidden';//超出部分隐藏
+            	td.style.textOverflow='ellipsis';//使用省略号表示溢出的文本
+	        }
+
+	        deviceCBMParametersInfoHandsontableHelper.createTable = function (data) {
+	            $('#' + deviceCBMParametersInfoHandsontableHelper.divid).empty();
+	            var hotElement = document.querySelector('#' + deviceCBMParametersInfoHandsontableHelper.divid);
+	            deviceCBMParametersInfoHandsontableHelper.hot = new Handsontable(hotElement, {
+	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	        		theme: 'ht-theme-classic',
+	            	data: data,
+	            	colWidths: [50,100,100],
+	                hiddenColumns: {
+	                    columns: [0,3],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                hiddenRows: {
+	                    rows: [],
+	                    indicators: false,
+	                    copyPasteEnabled: false
+	                },
+	                columns: deviceCBMParametersInfoHandsontableHelper.columns,
+	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: false, //显示行头
+	                colHeaders: deviceCBMParametersInfoHandsontableHelper.colHeaders, //显示列头
+	                columnSorting: true, //允许排序
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                contextMenu: {
+	                    items: {
+	                        "copy": {
+	                            name: loginUserLanguageResource.contextMenu_copy
+	                        },
+	                        "cut": {
+	                            name: loginUserLanguageResource.contextMenu_cut
+	                        }
+	                    }
+	                }, 
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    var DeviceManagerModuleEditFlag=parseInt(Ext.getCmp("DeviceManagerModuleEditFlag").getValue());
+	                    
+	                    if(DeviceManagerModuleEditFlag==1){
+	                    	if (visualColIndex !=2) {
+								cellProperties.editor = false;
+								cellProperties.renderer = deviceCBMParametersInfoHandsontableHelper.addCellStyle;
+			                }
+	                    }else{
+	                    	cellProperties.editor = false;
+	                    	if (visualColIndex !=2) {
+	                    		cellProperties.renderer = deviceCBMParametersInfoHandsontableHelper.addCellStyle;
+	                    	}
+	                    }
+	                    return cellProperties;
+	                },
+	                afterOnCellMouseOver: function(event, coords, TD){
+	                	if(coords.col>=0 && coords.row>=0 && deviceCBMParametersInfoHandsontableHelper!=null&&deviceCBMParametersInfoHandsontableHelper.hot!=''&&deviceCBMParametersInfoHandsontableHelper.hot!=undefined && deviceCBMParametersInfoHandsontableHelper.hot.getDataAtCell!=undefined){
+	                		var rawValue=deviceCBMParametersInfoHandsontableHelper.hot.getDataAtCell(coords.row,coords.col);
+	                		if(isNotVal(rawValue)){
+                				var showValue=rawValue;
+            					var rowChar=90;
+            					var maxWidth=rowChar*10;
+            					if(rawValue.length>rowChar){
+            						showValue='';
+            						let arr = [];
+            						let index = 0;
+            						while(index<rawValue.length){
+            							arr.push(rawValue.slice(index,index +=rowChar));
+            						}
+            						for(var i=0;i<arr.length;i++){
+            							showValue+=arr[i];
+            							if(i<arr.length-1){
+            								showValue+='<br>';
+            							}
+            						}
+            					}
+                				if(!isNotVal(TD.tip)){
+                					var height=28;
+                					TD.tip = Ext.create('Ext.tip.ToolTip', {
+		                			    target: event.target,
+		                			    maxWidth:maxWidth,
+		                			    html: showValue,
+		                			    listeners: {
+		                			    	hide: function (thisTip, eOpts) {
+		                                	},
+		                                	close: function (thisTip, eOpts) {
+		                                	}
+		                                }
+		                			});
+                				}else{
+                					TD.tip.setHtml(showValue);
+                				}
+                			}
+	                	}
+	                }
+	            });
+	        }
+	        return deviceCBMParametersInfoHandsontableHelper;
+	    }
+	};
+
+
 function deviceIntelligentFrequencyConversionDataDownlink(){
 	var deviceInfoHandsontableData=deviceInfoHandsontableHelper.hot.getData();
 	if(deviceInfoHandsontableData.length>0){
@@ -8020,6 +8263,7 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 	var showInterlockProtection=false;
 	var showDiagramFiltering=false;
 	var showSceneModel=false;
+	var showCBMParameters=false;
 	
 	if(deviceTabInstanceConfig!=undefined && deviceTabInstanceConfig.PrimaryDevice!=undefined){
 		showAdditionalInformation=deviceTabInstanceConfig.PrimaryDevice.AdditionalInformation!=undefined?deviceTabInstanceConfig.PrimaryDevice.AdditionalInformation:false;
@@ -8034,6 +8278,7 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 		showDiagramFiltering=deviceTabInstanceConfig.PrimaryDevice.DiagramFiltering!=undefined?deviceTabInstanceConfig.PrimaryDevice.DiagramFiltering:false;
 		
 		showSceneModel=deviceTabInstanceConfig.PrimaryDevice.SceneModel!=undefined?deviceTabInstanceConfig.PrimaryDevice.SceneModel:false;
+		showCBMParameters=deviceTabInstanceConfig.PrimaryDevice.CBMParameters!=undefined?deviceTabInstanceConfig.PrimaryDevice.CBMParameters:false;
 	}
 	
 	if(calculateType==0){
@@ -8045,7 +8290,7 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 		showDiagramFiltering=false;
 	}
 	
-	if( !(showAdditionalInformation||showAuxiliaryDevice||showVideoConfig||showCalculateDataConfig||showFSDiagramConstruction||showSystemParameterConfig||showSceneModel) ){
+	if( !(showAdditionalInformation||showAuxiliaryDevice||showVideoConfig||showCalculateDataConfig||showFSDiagramConstruction||showSystemParameterConfig||showSceneModel||showCBMParameters) ){
 		showAdditionalInformationTabPanel=false;
 	}
 	
@@ -8123,6 +8368,13 @@ function updateDeviceAdditionalInformationTabPaneContent(deviceTabInstanceInfo){
 			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceSceneModelInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[9]);
 		}else if(!showSceneModel && DeviceSceneModelInfoPanel!=undefined){
 			tabPanel.remove("DeviceSceneModelInfoPanel_Id");
+		}
+		
+		var DeviceCBMParametersInfoPanel = tabPanel.getComponent("DeviceCBMParametersInfoPanel_Id");
+		if(showCBMParameters && DeviceCBMParametersInfoPanel==undefined){
+			tabPanel.insert(getDeviceAdditionalInformationTabIndex("DeviceCBMParametersInfoPanel_Id","DeviceAdditionalInformationTabpanel_Id",deviceAdditionalInformationTabPanelItems),deviceAdditionalInformationTabPanelItems[10]);
+		}else if(!showCBMParameters && DeviceCBMParametersInfoPanel!=undefined){
+			tabPanel.remove("DeviceCBMParametersInfoPanel_Id");
 		}
 	}else{
 		tabPanel.hide();

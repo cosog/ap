@@ -1477,6 +1477,7 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 		                		instanceConfig.PrimaryDevice.DiagramFiltering=Ext.getCmp('calculationModel_showPrimaryDeviceDiagramFiltering_Id').getValue();
 		                		
 		                		instanceConfig.PrimaryDevice.SceneModel=Ext.getCmp('calculationModel_showSceneModel_Id').getValue();
+		                		instanceConfig.PrimaryDevice.CBMParameters=Ext.getCmp('calculationModel_showPrimaryDeviceCBMParameters_Id').getValue();
 		                		Ext.Ajax.request({
 		                			method:'POST',
 		                			url:context + '/operationMaintenanceController/saveDeviceTabManagerInstance',
@@ -1717,6 +1718,12 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
 	                                        	    fieldLabel: loginUserLanguageResource.interlockProtection,
 	                                        	    name: 'calculationModel.showPrimaryDeviceInterlockProtection',
 	                                        	    id: 'calculationModel_showPrimaryDeviceInterlockProtection_Id',
+	                                        	    checked: false
+	    				                        },{
+	    				                        	xtype: 'checkboxfield',
+	                                        	    fieldLabel: loginUserLanguageResource.CBMParameters,
+	                                        	    name: 'calculationModel.showPrimaryDeviceCBMParameters',
+	                                        	    id: 'calculationModel_showPrimaryDeviceCBMParameters_Id',
 	                                        	    checked: false
 	    				                        }]
 	        				                }, {
@@ -4236,6 +4243,7 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 	Ext.getCmp("calculationModel_showPrimaryDeviceDiagramFiltering_Id").setValue(false);
 	
 	Ext.getCmp("calculationModel_showSceneModel_Id").setValue(false);
+	Ext.getCmp("calculationModel_showPrimaryDeviceCBMParameters_Id").setValue(false);
 	
 	if(instanceConfig!=undefined){
 		if(instanceConfig.DeviceRealTimeMonitoring!=undefined){
@@ -4270,6 +4278,7 @@ function initDeviceTabManagerInstanceConfig(instanceConfig){
 			Ext.getCmp("calculationModel_showPrimaryDeviceDiagramFiltering_Id").setValue(instanceConfig.PrimaryDevice.DiagramFiltering!=undefined?instanceConfig.PrimaryDevice.DiagramFiltering:false);
 			
 			Ext.getCmp("calculationModel_showSceneModel_Id").setValue(instanceConfig.PrimaryDevice.SceneModel!=undefined?instanceConfig.PrimaryDevice.SceneModel:false);
+			Ext.getCmp("calculationModel_showPrimaryDeviceCBMParameters_Id").setValue(instanceConfig.PrimaryDevice.CBMParameters!=undefined?instanceConfig.PrimaryDevice.CBMParameters:false);
 		}
 	}
 }

@@ -1085,6 +1085,29 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDeviceCBMParametersInfo")
+	public String getDeviceCBMParametersInfo() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String deviceCalculateDataType=ParamUtils.getParameter(request, "deviceCalculateDataType");
+		this.pager = new Page("pagerForm", request);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String language="";
+		if(user!=null){
+			language=user.getLanguageName();
+		}
+		String json = this.wellInformationManagerService.getDeviceCBMParametersInfo(deviceId,language);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/judgeAuxiliaryDeviceExistOrNot")
 	public String judgeAuxiliaryDeviceExistOrNot() throws IOException {
 		orgId=ParamUtils.getParameter(request, "orgId");
@@ -2022,6 +2045,8 @@ public class WellInformationManagerController extends BaseController {
 				this.wellInformationManagerService.saveDiagramFilteringData(deviceId,additionalInformationSaveData.getData());
 			}else if(additionalInformationSaveData.getType()==10){
 				this.wellInformationManagerService.saveSceneModelInfo(deviceId,additionalInformationSaveData.getData());
+			}else if(additionalInformationSaveData.getType()==11){
+				this.wellInformationManagerService.saveCBMParametersInfo(deviceId,additionalInformationSaveData.getData());
 			}
 		}
 		

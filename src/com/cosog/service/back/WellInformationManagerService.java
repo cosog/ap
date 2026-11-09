@@ -53,6 +53,7 @@ import com.cosog.model.WorkType;
 import com.cosog.model.ExportDataDictionary.DataDictionaryItem;
 import com.cosog.model.ExportPrimaryDeviceData;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
+import com.cosog.model.calculate.CBMParameters;
 import com.cosog.model.calculate.DeviceInfo;
 import com.cosog.model.calculate.DiagramFilteringData;
 import com.cosog.model.calculate.FSDiagramConstructionRequestData;
@@ -1299,6 +1300,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public void saveDiagramFilteringData(int deviceId,String data) throws Exception {
 		String sql = "update tbl_device t set t.diagramfiltering='"+data+"' where t.id="+deviceId;
+		this.getBaseDao().updateOrDeleteBySql(sql);
+	}
+	
+	public void saveCBMParametersInfo(int deviceId,String data) throws Exception {
+		String sql = "update tbl_device t set t.cbmparameters='"+data+"' where t.id="+deviceId;
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
@@ -4565,6 +4571,96 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json.append("]}");
 		json=result_json.toString().replaceAll("null", "");
 		return json;
+	}
+	
+	public String getDeviceCBMParametersInfo(String deviceId,String language) {
+		StringBuffer result_json = new StringBuffer();
+		Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(language);
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		try{
+			String columns = "["
+					+ "{ \"header\":\""+languageResourceMap.get("idx")+"\",\"dataIndex\":\"id\",\"width\":50 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("variable")+"\",\"dataIndex\":\"itemName\",\"width\":120 ,\"children\":[] },"
+					+ "{ \"header\":\""+languageResourceMap.get("value")+"\",\"dataIndex\":\"itemValue\",\"width\":120 ,\"children\":[] }"
+					+ "]";
+			String deviceTableName="tbl_device";
+			String sql = "select t.cbmparameters,t.applicationscenarios "
+					+ " from "+deviceTableName+" t "
+					+ " where t.id="+deviceId;
+			
+			List<?> list = this.findCallSql(sql);
+			result_json.append("{\"success\":true,\"totalCount\":12,\"columns\":"+columns+",\"totalRoot\":[");//
+			String applicationScenarios="";
+			if(list.size()>0){
+				Object[] obj = (Object[]) list.get(0);
+				String data=obj[0]+"";
+				applicationScenarios=obj[1]+"";
+				
+				type = new TypeToken<CBMParameters>() {}.getType();
+				CBMParameters cbmParameters=gson.fromJson(data, type);
+				if(cbmParameters!=null){
+					int index=1;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("block")+"\",\"itemCode\":\"Block\",\"itemValue\":\""+cbmParameters.getBlock()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("wellCategory")+"\",\"itemCode\":\"WellCategory\",\"itemValue\":\""+cbmParameters.getWellCategory()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("wellType")+"\",\"itemCode\":\"WellType\",\"itemValue\":\""+cbmParameters.getWellType()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("productionInterval")+"\",\"itemCode\":\"ProductionInterval\",\"itemValue\":\""+cbmParameters.getProductionInterval()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("productionWellSections")+"\",\"itemCode\":\"CompletedInterval\",\"itemValue\":\""+cbmParameters.getCompletedInterval()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("dewateringMethod")+"\",\"itemCode\":\"DewateringMethod\",\"itemValue\":\""+cbmParameters.getDewateringMethod()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("screen")+"(m)\",\"itemCode\":\"Screen\",\"itemValue\":\""+cbmParameters.getScreen()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter")+" (mm)\",\"itemCode\":\"PumpBoreDiameter\",\"itemValue\":\""+cbmParameters.getPumpBoreDiameter()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemCode\":\"PumpSettingDepth\",\"itemValue\":\""+cbmParameters.getPumpSettingDepth()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("pressureGaugeDepth")+"(m)\",\"itemCode\":\"PressureGaugeDepth\",\"itemValue\":\""+cbmParameters.getPressureGaugeDepth()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("coalSeamRoofDepth")+"(m)\",\"itemCode\":\"CoalSeamRoofDepth\",\"itemValue\":\""+cbmParameters.getCoalSeamRoofDepth()+"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("coalSeamFloorDepth")+"(m)\",\"itemCode\":\"CoalSeamFloorDepth\",\"itemValue\":\""+cbmParameters.getCoalSeamFloorDepth()+"\"}");
+				}else{
+					int index=1;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("block")+"\",\"itemCode\":\"Block\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("wellCategory")+"\",\"itemCode\":\"WellCategory\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("wellType")+"\",\"itemCode\":\"WellType\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("productionInterval")+"\",\"itemCode\":\"ProductionInterval\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("productionWellSections")+"\",\"itemCode\":\"CompletedInterval\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("dewateringMethod")+"\",\"itemCode\":\"DewateringMethod\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("screen")+"(m)\",\"itemCode\":\"Screen\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("pumpBoreDiameter")+" (mm)\",\"itemCode\":\"PumpBoreDiameter\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("pumpSettingDepth")+"(m)\",\"itemCode\":\"PumpSettingDepth\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("pressureGaugeDepth")+"(m)\",\"itemCode\":\"PressureGaugeDepth\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("coalSeamRoofDepth")+"(m)\",\"itemCode\":\"CoalSeamRoofDepth\",\"itemValue\":\"\"},");
+					index++;
+					result_json.append("{\"id\":"+index+",\"itemName\":\""+languageResourceMap.get("coalSeamFloorDepth")+"(m)\",\"itemCode\":\"CoalSeamFloorDepth\",\"itemValue\":\"\"}");
+				}
+			
+			}
+			result_json.append("]");
+			result_json.append(",\"applicationScenarios\":\""+applicationScenarios+"\"");
+			result_json.append("}");
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			
+		}
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getDeviceAdditionalInfo(String deviceId,String deviceType,String language) {

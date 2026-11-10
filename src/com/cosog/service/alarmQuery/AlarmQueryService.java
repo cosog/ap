@@ -1282,7 +1282,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	       .append("  select a.*, rownum rn2 from ( ")
 	       .append("    select t.id, t.deviceid, d.devicename, d.orgid, d.devicetype, ")
 	       .append("           t.itemcode, t.itemname, ")
-	       .append("           to_char(t.alarmvalue) as alarmvalue, ")
+//	       .append("           to_char(t.alarmvalue) as alarmvalue, ")
+	       .append("           to_char(t.alarmvalue, 'FM9999999990.999') as alarmvalue, ")
 	       .append("           t.alarminfo, ")
 	       .append("           t.alarmtype, ")
 	       .append("           t.alarmlevel, ")
@@ -1339,6 +1340,14 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            String column = row[5] == null ? "" : row[5].toString();       // itemcode
 	            String columnName = row[6] == null ? "" : row[6].toString();   // itemname
 	            String value = row[7] == null ? "" : row[7].toString();        // alarmvalue
+	            if (value.startsWith(".")) {
+	                value = "0" + value;
+	            } else if (value.startsWith("-.")) {
+	                value = "-0" + value.substring(1);
+	            }
+	            if (value.endsWith(".")) {
+	                value = value.substring(0, value.length() - 1);
+	            }
 	            // row[8] = alarminfo
 	            // row[9] = alarmtype
 	            // row[10] = alarmlevel

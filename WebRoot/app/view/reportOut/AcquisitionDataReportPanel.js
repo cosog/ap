@@ -980,8 +980,8 @@ var SingleWellAcquisitionDataReportHelper = {
 	                        if (rdata.success) {
 	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 	                        	singleWellAcquisitionDataReportHelper.clearContainer();
-	                        	CreateSingleWellReportTable();
-	                        	CreateSingleWellReportCurve();
+	                        	CreateSingleWellAcquisitionDataReportTable();
+	                        	CreateSingleWellAcquisitionDataReportCurve();
 	                        } else {
 	                        	singleWellAcquisitionDataReportHelper.clearContainer();
 	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
@@ -1205,7 +1205,8 @@ function CreateSingleWellAcquisitionDataReportCurve(){
 			startDate: startDate,
 			endDate: endDate,
 			reportType: 0,
-            deviceType:deviceType
+            deviceType:deviceType,
+            unitClasses:2
         }
 	});
 };
@@ -1772,7 +1773,7 @@ var ProductionAcquisitionDataReportHelper = {
 	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, loginUserLanguageResource.savedSuccessfully);
 	                        	productionAcquisitionDataReportHelper.clearContainer();
 	                        	CreateProductionAcquisitionDataReportTable();
-	                        	CreateSingleWellAcquisitionDataReportCurve();
+	                        	CreateProductionAcquisitionDataReportCurve();
 	                        } else {
 	                        	productionAcquisitionDataReportHelper.clearContainer();
 	                        	Ext.MessageBox.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.saveFailed+"</font>");
@@ -1997,7 +1998,8 @@ function CreateProductionAcquisitionDataReportCurve(){
 			startDate: startDate,
 			endDate: endDate,
 			reportType: 1,
-            deviceType: deviceType
+            deviceType: deviceType,
+            unitClasses:2
         }
 	});
 };

@@ -5,6 +5,7 @@ Ext.define('AP.alert.AlarmManager', {
     ackKeys: {},
     win: null,
     _localAckWarned: false,
+    isMuted: false,
 
     levelStyle: {
         100: { text: '一级', color: '#dc2828' },
@@ -198,7 +199,9 @@ Ext.define('AP.alert.AlarmManager', {
 
             if (alarm.suppressStatus != 2 && alarm.suppressStatus != 1) {
                 this.ensureWindowExpanded(true);
-                AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
+                if (!this.isMuted) {
+                    AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
+                }
             }
         } else {
             var levelUp = alarm.alarmLevel < old.alarmLevel;
@@ -226,7 +229,9 @@ Ext.define('AP.alert.AlarmManager', {
 
             if (levelUp && old.suppressStatus != 2 && old.suppressStatus != 1) {
                 this.ensureWindowExpanded(true);
-                AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
+                if (!this.isMuted) {
+                    AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
+                }
             }
         }
     },
@@ -520,7 +525,7 @@ Ext.define('AP.alert.AlarmManager', {
                             if (tip) tip.show();
                         }
                         var maxLevel = self._getHighestUnackLevel();
-                        if (maxLevel) AP.alert.AlarmSoundManager.play(maxLevel);
+                        if (maxLevel && !self.isMuted) AP.alert.AlarmSoundManager.play(maxLevel);
                     } else {
                         var win = self.ensureWindow();
                         if (!win.isVisible()) win.show();
@@ -585,6 +590,11 @@ Ext.define('AP.alert.AlarmManager', {
                 var tip = this.win.down('#muteTip');
                 if (tip) tip.hide();
             }
+            return;
+        }
+        
+     // 如果处于静音状态，直接返回，不播放声音
+        if (this.isMuted) {
             return;
         }
 

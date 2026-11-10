@@ -683,8 +683,8 @@ public class CalculateDataController extends BaseController{
 	                        String tubingPressCol = loadProtocolMappingColumnByTitleMap.get("油压") != null ? loadProtocolMappingColumnByTitleMap.get("油压").getMappingColumn() : "";
 	                        String intakePressCol = loadProtocolMappingColumnByTitleMap.get("泵入口压力") != null ? loadProtocolMappingColumnByTitleMap.get("泵入口压力").getMappingColumn() : "";
 	                        String submergenceCol = loadProtocolMappingColumnByTitleMap.get("沉没度") != null ? loadProtocolMappingColumnByTitleMap.get("沉没度").getMappingColumn() : "";
-	                        String totlGasCol = loadProtocolMappingColumnByTitleMap.get("工况累积流量") != null ? loadProtocolMappingColumnByTitleMap.get("工况累积流量").getMappingColumn() : "";
-	                        String totalWaterCol = loadProtocolMappingColumnByTitleMap.get("水流量计工况累积流量") != null ? loadProtocolMappingColumnByTitleMap.get("水流量计工况累积流量").getMappingColumn() : "";
+	                        String totlGasCol = loadProtocolMappingColumnByTitleMap.get("标况累积气量") != null ? loadProtocolMappingColumnByTitleMap.get("标况累积气量").getMappingColumn() : "";
+	                        String totalWaterCol = loadProtocolMappingColumnByTitleMap.get("标况累积水量") != null ? loadProtocolMappingColumnByTitleMap.get("标况累积水量").getMappingColumn() : "";
 
 	                        List<KeyValue> calDataList = new ArrayList<>();
 	                        if (StringManagerUtils.isNotNull(rpmCol)) {

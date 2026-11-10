@@ -4312,7 +4312,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	
 	public String getSingleWellRangeReportCurveData(Page pager, String orgId,String deviceType,String reportType,
 			String deviceId,String deviceName,String calculateType,
-			String startDate,String endDate,User user)throws Exception {
+			String startDate,String endDate,String unitClasses,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
@@ -4369,8 +4369,17 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}else if(reportUnitCalculateType==2){
 			calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 		}
+		ReportTemplate.Template template=null;
+		if("2".equalsIgnoreCase(unitClasses)){
+			template=MemoryDataManagerTask.getSingelWellAcquisitionDataTemplate();
+		}else if("1".equalsIgnoreCase(unitClasses)){
+			template=MemoryDataManagerTask.getHydrologicalWellTemplate();
+		}else{
+			template=MemoryDataManagerTask.getSingleWellRangeReportTemplateByCode(reportTemplateCode);
+		}
 		
-		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype,t.prec,t.totalType,t.dataSource "
+		
+		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype,t.prec,t.totalType,t.dataSource,t.sort "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_protocolreportinstance t2,"+deviceTableName+" t3 "
 				+ " where t.unitid=t2.unitid and t2.code=t3.reportinstancecode"
 				+ " and t3.id="+deviceId
@@ -4387,6 +4396,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Map<Integer,String> curveConfMap=new TreeMap<>();
 		Map<Integer,Integer> totalTypeMap=new TreeMap<>();
 		Map<Integer,Integer> precMap=new TreeMap<>();
+		Map<Integer,Integer> itemSortMap=new TreeMap<>();
 		Map<Integer,List<String>> curveDataMap=new TreeMap<>();
 		
 		List<String> acqItemColumnList=new ArrayList<String>();
@@ -4406,6 +4416,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int prec=StringManagerUtils.isNumber(reportCurveItemObj[4]+"")?StringManagerUtils.stringToInteger(reportCurveItemObj[4]+""):-1;
 			int totalType=StringManagerUtils.stringToInteger(reportCurveItemObj[5]+"");
 			int dataSource=StringManagerUtils.stringToInteger(reportCurveItemObj[6]+"");
+			
+			int itemSort=StringManagerUtils.stringToInteger(reportCurveItemObj[7]+"");
 			
 			reflectType=new TypeToken<CurveConf>() {}.getType();
 			CurveConf curveConfObj=gson.fromJson(reportCurveConfStr,reflectType);
@@ -4440,6 +4452,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							}
 							
 							itemNameMap.put(sort, acqItemName);
+							itemSortMap.put(sort, itemSort);
 							itemCodeSortMap.put(col, sort);
 							itemCodeMap.put(sort, col);
 							totalTypeMap.put(sort, totalType);
@@ -4459,6 +4472,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						prec=3;
 					}
 					itemNameMap.put(sort, itemName);
+					itemSortMap.put(sort, itemSort);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
 					calItemColumnList.add(itemCode);
@@ -4470,6 +4484,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						prec=3;
 					}
 					itemNameMap.put(sort, itemName);
+					itemSortMap.put(sort, itemSort);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
 					calItemColumnList.add(itemCode);
@@ -4483,7 +4498,24 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		
 		itemsBuff.append("[");
 		for (Integer key : itemNameMap.keySet()) {
-            itemsBuff.append("\""+itemNameMap.get(key)+"\",");
+			String itemName=itemNameMap.get(key);
+			int itemSort=itemSortMap.get(key);
+			
+			if(template!=null && template.getHeader()!=null && template.getHeader().size()>=0 ){
+				List<String> titleList=null;
+				if("en".equalsIgnoreCase(user.getLanguageName())){
+					titleList=template.getHeader().get(template.getHeader().size()-1).getTitle_en();
+				}else if("ru".equalsIgnoreCase(user.getLanguageName())){
+					titleList=template.getHeader().get(template.getHeader().size()-1).getTitle_ru();
+				}else{
+					titleList=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN();
+				}
+				
+				if(titleList!=null && titleList.size()>=itemSort){
+					itemName=titleList.get(itemSort-1);
+				}
+			}
+            itemsBuff.append("\""+itemName+"\",");
         }
 		if (itemsBuff.toString().endsWith(",")) {
 			itemsBuff.deleteCharAt(itemsBuff.length() - 1);
@@ -10203,6 +10235,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 	public String getProductionAcquisitionDataDailyReportCurveData(Page pager, String orgId,String selectedOrgName,String deviceType,
 			String reportType,
 			String startDate,String endDate,
+			String unitClasses,
 			int userNo,String language)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
@@ -10240,7 +10273,10 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			calTotalTableName="VIW_PCPDAILYCALCULATIONDATA";
 		}
 		
-		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype,t.curvestattype,t.totalType,t.dataSource,t.prec "
+		ReportTemplate.Template template=MemoryDataManagerTask.getProductionAcquisitionDataTemplate();
+		
+		
+		String reportCurveItemSql="select t.itemname,t.itemcode,t.reportcurveconf,t.datatype,t.curvestattype,t.totalType,t.dataSource,t.prec,t.sort "
 				+ " from TBL_REPORT_ITEMS2UNIT_CONF t,tbl_report_unit_conf t2 "
 				+ " where t.unitid=t2.id and t2.id=( select max(unit.id) from tbl_report_unit_conf unit where unit.classes=2 ) "
 				+ " and t.sort>=0"
@@ -10257,6 +10293,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		Map<Integer,Integer> totalTypeMap=new TreeMap<>();
 		Map<Integer,Integer> curveStatTypeMap=new TreeMap<>();
 		Map<Integer,Integer> precMap=new TreeMap<>();
+		Map<Integer,Integer> itemSortMap=new TreeMap<>();
+		Map<Integer,String> itemCurvesSatTypeMap=new TreeMap<>();
 		Map<Integer,List<String>> curveDataMap=new TreeMap<>();
 		
 		Map<String,Map<Integer,List<Float>>> dailyData=new LinkedHashMap<>();
@@ -10280,11 +10318,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			int totalType=StringManagerUtils.stringToInteger(reportCurveItemObj[5]+"");
 			int dataSource=StringManagerUtils.stringToInteger(reportCurveItemObj[6]+"");
 			int prec=StringManagerUtils.isNumber(reportCurveItemObj[7]+"")?StringManagerUtils.stringToInteger(reportCurveItemObj[7]+""):-1; 
+			int itemSort=StringManagerUtils.stringToInteger(reportCurveItemObj[8]+"");
 			reflectType=new TypeToken<CurveConf>() {}.getType();
 			CurveConf curveConfObj=gson.fromJson(reportCurveConfStr,reflectType);
 			
 			if(dataType==2 && curveConfObj!=null){
 				int sort=curveConfObj.getSort();
+				
 				String statTypeName="";
 				if(curveStatType==1){
 					statTypeName=languageResourceMap.get("curveStatType_sum");
@@ -10311,6 +10351,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						prec=3;
 					}
 					itemNameMap.put(sort, itemName);
+					itemSortMap.put(sort, itemSort);
+					itemCurvesSatTypeMap.put(sort, statTypeName);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
 					totalTypeMap.put(sort, totalType);
@@ -10330,6 +10372,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 					}
 					
 					itemNameMap.put(sort, itemName);
+					itemSortMap.put(sort, itemSort);
+					itemCurvesSatTypeMap.put(sort, statTypeName);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
 					curveStatTypeMap.put(sort, curveStatType);
@@ -10342,6 +10386,8 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 						prec=3;
 					}
 					itemNameMap.put(sort, itemName);
+					itemSortMap.put(sort, itemSort);
+					itemCurvesSatTypeMap.put(sort, statTypeName);
 					itemCodeSortMap.put(itemCode, sort);
 					itemCodeMap.put(sort, itemCode);
 					calItemColumnList.add(itemCode);
@@ -10354,7 +10400,29 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		itemsBuff.append("[");
 		for (Integer key : itemNameMap.keySet()) {
-            itemsBuff.append("\""+itemNameMap.get(key)+"\",");
+            String itemName=itemNameMap.get(key);
+			int itemSort=itemSortMap.get(key);
+			String itemCurvesSatType=itemCurvesSatTypeMap.get(key);
+			
+			if(template!=null && template.getHeader()!=null && template.getHeader().size()>=0 ){
+				List<String> titleList=null;
+				if("en".equalsIgnoreCase(language)){
+					titleList=template.getHeader().get(template.getHeader().size()-1).getTitle_en();
+				}else if("ru".equalsIgnoreCase(language)){
+					titleList=template.getHeader().get(template.getHeader().size()-1).getTitle_ru();
+				}else{
+					titleList=template.getHeader().get(template.getHeader().size()-1).getTitle_zh_CN();
+				}
+				
+				if(titleList!=null && titleList.size()>=itemSort){
+					itemName=titleList.get(itemSort-1);
+					
+					if(StringManagerUtils.isNotNull(itemCurvesSatType)){
+						itemName+=("zh_CN".equalsIgnoreCase(language)?"":" ")+itemCurvesSatType;
+					}
+				}
+			}
+            itemsBuff.append("\""+itemName+"\",");
         }
 		if (itemsBuff.toString().endsWith(",")) {
 			itemsBuff.deleteCharAt(itemsBuff.length() - 1);

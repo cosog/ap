@@ -1472,7 +1472,7 @@ public class MemoryDataManagerTask {
 						}else{
 							sql+=" and t.devicename in("+wells+")";
 							auxiliaryDeviceSql+=" and t.devicename in("+wells+")";
-							dailyTotalSql+=" and t.devicename in("+wells+")";
+							dailyTotalSql+=" and t2.devicename in("+wells+")";
 							diagramFilteringSql+=" and t.devicename in("+wells+")";
 						}
 					}

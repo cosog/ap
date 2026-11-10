@@ -69,6 +69,22 @@ Ext.define('AP.view.alert.AlarmWindow', {
                     }
                 }
             }, {
+                // 静音复选框
+                xtype: 'checkboxfield',
+                itemId: 'muteCheckbox',
+                boxLabel: '静音',
+                checked: AP.alert.AlarmManager.isMuted,
+                listeners: {
+                    change: function (cb, newValue) {
+                        AP.alert.AlarmManager.isMuted = newValue;
+                        if (newValue) {
+                            AP.alert.AlarmSoundManager.stop();
+                        } else {
+                            AP.alert.AlarmManager._refreshSoundAfterAck();
+                        }
+                    }
+                }
+            }, {
                 xtype: 'tbtext', itemId: 'pendingSelText', text: '已选：0'
             }, '->', {
                 text: '确认选中',

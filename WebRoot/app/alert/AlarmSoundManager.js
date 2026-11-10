@@ -39,7 +39,10 @@ Ext.define('AP.alert.AlarmSoundManager', {
             if (self.pendingLevel !== null) {
                 var lv = self.pendingLevel;
                 self.pendingLevel = null;
-                self.play(lv);
+                // 如果当前处于静音状态，不解锁播放
+                if (!(AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.isMuted)) {
+                    self.play(lv);
+                }
             }
         };
 
@@ -107,6 +110,11 @@ Ext.define('AP.alert.AlarmSoundManager', {
 
     play: function (level) {
         if (!level || level <= 0) return;
+        
+        //如果 AlarmManager 处于静音状态，不播放
+        if (AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.isMuted) {
+            return;
+        }
 
         if (!this._loaded) {
             this.loadConfig();

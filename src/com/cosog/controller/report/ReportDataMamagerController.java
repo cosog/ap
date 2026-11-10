@@ -690,6 +690,7 @@ public class ReportDataMamagerController extends BaseController {
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
 		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		String unitClasses = ParamUtils.getParameter(request, "unitClasses");
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String tableName="tbl_dailycalculationdata";
@@ -715,7 +716,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getSingleWellRangeReportCurveData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,user);
+			json = reportDataManagerService.getSingleWellRangeReportCurveData(pager, orgId,deviceType,reportType, deviceId, deviceName,calculateType, startDate,endDate,unitClasses,user);
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -1859,6 +1860,7 @@ public class ReportDataMamagerController extends BaseController {
 		String endDate= ParamUtils.getParameter(request, "endDate");
 		String reportType = ParamUtils.getParameter(request, "reportType");
 		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String unitClasses = ParamUtils.getParameter(request, "unitClasses");
 		
 		String tableName="tbl_dailycalculationdata";
 		
@@ -1887,7 +1889,7 @@ public class ReportDataMamagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		if(user!=null){
-			json = reportDataManagerService.getProductionAcquisitionDataDailyReportCurveData(pager, orgId,selectedOrgName,deviceType,reportType, startDate,endDate,user.getUserNo(),language);
+			json = reportDataManagerService.getProductionAcquisitionDataDailyReportCurveData(pager, orgId,selectedOrgName,deviceType,reportType, startDate,endDate,unitClasses,user.getUserNo(),language);
 		}
 		
 		response.setContentType("application/json;charset=utf-8");

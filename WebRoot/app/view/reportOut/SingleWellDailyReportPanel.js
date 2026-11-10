@@ -1567,7 +1567,8 @@ function CreateSingleWellRangeReportCurve(){
 			startDate: startDate,
 			endDate: endDate,
 			reportType: 0,
-            deviceType:deviceType
+            deviceType:deviceType,
+            unitClasses:0
         }
 	});
 };

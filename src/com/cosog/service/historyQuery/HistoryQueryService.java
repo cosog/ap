@@ -54,6 +54,8 @@ import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.DataModelMap;
+import com.cosog.utils.DeviceAlarmInfo;
+import com.cosog.utils.DeviceAlarmInfoMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.PageHandler;
@@ -1434,14 +1436,33 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				//报警信息
 				alarmInfo.append("[");
-				type = new TypeToken<List<KeyValue>>() {}.getType();
+				
+				type = new TypeToken<List<KeyValue>>() {}.getType(); 
 				List<KeyValue> alarmInfoList=gson.fromJson(deviceAlarmInfo, type);
 				if(alarmInfoList!=null){
-					for(KeyValue keyValue:alarmInfoList){
-						alarmInfo.append("{\"item\":\""+keyValue.getKey()+"\","
-								+" \"alarmLevel\":"+keyValue.getValue()+"},");
-					}
+				    Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+				    DeviceAlarmInfo dai = deviceAlarmInfoMap != null ? deviceAlarmInfoMap.get(Integer.parseInt(deviceId)) : null;
+
+				    for(KeyValue keyValue:alarmInfoList){
+				        boolean triggerAlarm = true;
+				        if (dai != null && dai.getAlarmInfoMap() != null) {
+				            for (DeviceAlarmInfo.AlarmInfo ai : dai.getAlarmInfoMap().values()) {
+				                // 匹配 key (可能带 bitIndex)
+				                if (keyValue.getKey().equalsIgnoreCase(ai.getColumn()) || 
+				                    keyValue.getKey().equalsIgnoreCase(ai.getColumn() + "_" + ai.getBitIndex())) {
+				                    triggerAlarm = ai.getTriggerAlarm();
+				                    break;
+				                }
+				            }
+				        }
+				        alarmInfo.append("{\"item\":\""+keyValue.getKey()+"\","
+				                +" \"alarmLevel\":"+keyValue.getValue()+","
+				                +" \"triggerAlarm\":"+triggerAlarm+"},");
+				    }
 				}
+				
+				
+				
 				
 				if(alarmInfo.toString().endsWith(",")){
 					alarmInfo.deleteCharAt(alarmInfo.length() - 1);
@@ -8068,6 +8089,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 										+ "\"historyColor\":\""+historyColor+"\","
 										+ "\"historyBgColor\":\""+historyBgColor+"\","
 										+ "\"type\":\""+dataType+"\","
+										+ "\"suppressStatus\":0,"
+										+ "\"triggerAlarm\":true,"
 										+ "\"alarmLevel\":"+alarmLevel+"},");
 							}
 							if(result_json.toString().endsWith(",")){

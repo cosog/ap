@@ -39,7 +39,8 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 fields: [
                     'text', 'alarmKey', 'alarmLevel', 'deviceId', 'deviceName',
                     'orgId', 'column', 'columnName', 'value', 'alarminfo', 'acqTime',
-                    'alertId', 'status', 'suppressStatus',
+                    'alertId', 'status', 'triggerAlarm', 
+                    'suppressStatus',
                     'suppressReason', 'suppressUser', 'suppressTime', 'suppressIp', 'suppressEndTime'
                 ]
             });
@@ -285,7 +286,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 if (!rec.isLeaf()) return '';
                 
                 var suppStatus = rec.get('suppressStatus');
-                // 对于“待确认”状态，如果 suppStatus=1，也显示待确认
+                var triggerAlarm = rec.get('triggerAlarm');
                 var ackText = (suppStatus === 1) ? '待确认' : ((v === 'ACK' || v === 'SUPPRESSED') ? '已确认' : '待确认');
                 
                 var suppText = '待消警';
@@ -300,8 +301,13 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 if (suppText === '人工消警') suppColor = '#0e7490';
                 if (suppText === '自动消警') suppColor = '#52c41a';
 
+                // ★ 持续中标记：重触发时间窗口内，triggerAlarm=false
+                var persistTag = (triggerAlarm === false)
+                    ? '<span style="color:#f09614;font-size:11px;"> （持续中）</span>'
+                    : '';
+
                 return '<span style="color:' + ackColor + ';">' + ackText + '</span> ' +
-                       '<span style="color:' + suppColor + ';">' + suppText + '</span>';
+                       '<span style="color:' + suppColor + ';">' + suppText + '</span>' + persistTag;
             }
         }, {
             text: '消警到期时间', dataIndex: 'suppressEndTime', flex: 2, minWidth: 140,hidden:true,
@@ -506,6 +512,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
             acqTime: alarm.acqTime,
             alertId: alarm.alertId,
             status: status,
+            triggerAlarm: alarm.triggerAlarm !== false,
             suppressStatus: alarm.suppressStatus || 0,
             checked: false,
             suppressReason: alarm.suppressReason || '',
@@ -538,6 +545,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
             targetStatus = 'ACK';
         }
         node.set('status', targetStatus);
+        node.set('triggerAlarm', alarm.triggerAlarm !== false);
         node.set('suppressStatus', alarm.suppressStatus || 0);
         node.set('suppressReason', alarm.suppressReason || '');
         node.set('suppressUser', alarm.suppressUser || '');

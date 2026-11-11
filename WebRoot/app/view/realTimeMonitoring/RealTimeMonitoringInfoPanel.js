@@ -1304,35 +1304,59 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
         				}
                 	}
 	            	
-	            	if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel>=0){
-                		var row2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
-        				var col2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col*2+1;
-        				if(row==row2 && col==col2 ){
-        					if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel>0){
-        						td.style.fontWeight = 'bold';
-        					}
-   			             	if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel==0){
-   			             		if(AlarmShowStyle.Data.Normal.Opacity!=0){
-   			             			td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.Normal.BackgroundColor,AlarmShowStyle.Data.Normal.Opacity);
-   			             		}
-   			             		td.style.color='#'+AlarmShowStyle.Data.Normal.Color;
-   			             	}else if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel==100){
-        						if(AlarmShowStyle.Data.FirstLevel.Opacity!=0){
-        							td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.FirstLevel.BackgroundColor,AlarmShowStyle.Data.FirstLevel.Opacity);
-        						}
-        						td.style.color='#'+AlarmShowStyle.Data.FirstLevel.Color;
-        					}else if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel==200){
-        						if(AlarmShowStyle.Data.SecondLevel.Opacity!=0){
-        							td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.SecondLevel.BackgroundColor,AlarmShowStyle.Data.SecondLevel.Opacity);
-        						}
-        						td.style.color='#'+AlarmShowStyle.Data.SecondLevel.Color;
-        					}else if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel==300){
-        						if(AlarmShowStyle.Data.ThirdLevel.Opacity!=0){
-        							td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.ThirdLevel.BackgroundColor,AlarmShowStyle.Data.ThirdLevel.Opacity);
-        						}
-        						td.style.color='#'+AlarmShowStyle.Data.ThirdLevel.Color;
-        					}
-        				}
+                	if(deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel>=0){
+                	    var row2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].row;
+                	    var col2=deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].col*2+1;
+                	    if(row==row2 && col==col2 ){
+                	        var cellAlarmLevel = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].alarmLevel;
+                	        var cellTriggerAlarm = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].triggerAlarm;
+                	        var cellSuppressStatus = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].suppressStatus;
+                	        var cellPendingDelay = deviceRealTimeMonitoringDataHandsontableHelper.CellInfo[i].pendingDelay;   // ★ 新增
+
+                	        var isPersisting = false;   // 重触发时间窗口：报警持续中
+                	        if (cellSuppressStatus == 2) {
+                	            cellAlarmLevel = 0;                       // 人工消警：按正常色
+                	        } else if (cellPendingDelay === true) {
+                	            cellAlarmLevel = 0;                       // ★ 持续检测中（delay）：完全不高亮
+                	        } else if (cellTriggerAlarm === false && cellAlarmLevel > 0) {
+                	            isPersisting = true;                      // ★ 重触发窗口内：弱化显示
+                	        }
+
+                	        if (isPersisting) {
+                	        	// 弱化样式：淡背景 + 虚线边框 + 斜体
+                	            var persistBg = color16ToRgba('#' + AlarmShowStyle.Data.FirstLevel.BackgroundColor, 0.15);
+                	            td.style.backgroundColor = persistBg;
+                	            td.style.color = '#' + AlarmShowStyle.Data.Normal.Color; // ★ 改为正常字体色（防白字白底）
+                	            td.style.border = '1px dashed #ccc';
+                	            td.style.fontStyle = 'italic';
+                	            td.style.fontWeight = 'normal';
+                	        } else {
+                	            if(cellAlarmLevel>0){
+                	                td.style.fontWeight = 'bold';
+                	            }
+                	            if(cellAlarmLevel==0){
+                	                if(AlarmShowStyle.Data.Normal.Opacity!=0){
+                	                    td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.Normal.BackgroundColor,AlarmShowStyle.Data.Normal.Opacity);
+                	                }
+                	                td.style.color='#'+AlarmShowStyle.Data.Normal.Color;
+                	            }else if(cellAlarmLevel==100){
+                	                if(AlarmShowStyle.Data.FirstLevel.Opacity!=0){
+                	                    td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.FirstLevel.BackgroundColor,AlarmShowStyle.Data.FirstLevel.Opacity);
+                	                }
+                	                td.style.color='#'+AlarmShowStyle.Data.FirstLevel.Color;
+                	            }else if(cellAlarmLevel==200){
+                	                if(AlarmShowStyle.Data.SecondLevel.Opacity!=0){
+                	                    td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.SecondLevel.BackgroundColor,AlarmShowStyle.Data.SecondLevel.Opacity);
+                	                }
+                	                td.style.color='#'+AlarmShowStyle.Data.SecondLevel.Color;
+                	            }else if(cellAlarmLevel==300){
+                	                if(AlarmShowStyle.Data.ThirdLevel.Opacity!=0){
+                	                    td.style.backgroundColor=color16ToRgba('#'+AlarmShowStyle.Data.ThirdLevel.BackgroundColor,AlarmShowStyle.Data.ThirdLevel.Opacity);
+                	                }
+                	                td.style.color='#'+AlarmShowStyle.Data.ThirdLevel.Color;
+                	            }
+                	        }
+                	    }
                 	}
     			}
 	        }

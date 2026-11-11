@@ -1049,6 +1049,10 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	    if (deviceAlarmInfoMap == null) return;
 	    DeviceAlarmInfo dai = deviceAlarmInfoMap.get(deviceId);
 	    if (dai == null || dai.getAlarmInfoMap() == null) return;
+	    
+	    if ("-1".equals(bitIndex)) {
+	        bitIndex = "";
+	    }
 
 	    // ★ 因为内存 Map 的 Key 是 deviceId_column_bitIndex，当存在上线/离线时，可能会有多个 AlarmInfo 对象
 	    // 我们需要遍历，找到业务上匹配的那一条
@@ -1101,7 +1105,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	        // 如果匹配成功，进行内存状态更新
 	        if (isMatch) {
 //	            ai.setAlertId(null); 
-	            ai.setTriggerAlarm(false);
+//	            ai.setTriggerAlarm(false);
 	            ai.setAckUser(ackUser);
 	            ai.setAckIp(ackIp);
 	            ai.setAckTime(ackTime);
@@ -1222,7 +1226,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	    if (deviceAlarmInfoMap == null) return;
 	    DeviceAlarmInfo dai = deviceAlarmInfoMap.get(deviceId);
 	    if (dai == null || dai.getAlarmInfoMap() == null) return;
-
+	    if ("-1".equals(bitIndex)) {
+	        bitIndex = "";
+	    }
 	    String expectedBaseKey = deviceId + "_" + column;
 	    for (Map.Entry<String, DeviceAlarmInfo.AlarmInfo> entry : dai.getAlarmInfoMap().entrySet()) {
 	        String key = entry.getKey();
@@ -1296,7 +1302,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	       .append("           to_char(t.suppress_time,'yyyy-mm-dd hh24:mi:ss') as suppress_time, ")
 	       .append("           t.suppress_ip, ")
 	       .append("           to_char(t.suppress_end_time,'yyyy-mm-dd hh24:mi:ss') as suppress_end_time, ")
-	       
+	       .append("           nvl(t.bitindex, -1) as bitindex, ") 
 	       
 	       .append("           row_number() over ( ")
 	       .append("               partition by t.deviceid, t.itemcode, nvl(t.bitindex,-1), ")
@@ -1336,6 +1342,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	        for (Object o : list) {
 	            Object[] row = (Object[]) o;
 	            
+	            int deviceId=StringManagerUtils.stringToInteger(row[1]+"");
+	            int alarmType=StringManagerUtils.stringToInteger(row[9]+"");
+	            
 	            // ★ 注意：因为上面 select 加了两列(alarminfo, alarmtype)，下面取值的下标整体后移了 2 位！
 	            String column = row[5] == null ? "" : row[5].toString();       // itemcode
 	            String columnName = row[6] == null ? "" : row[6].toString();   // itemname
@@ -1355,6 +1364,8 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            // row[12] = ack_status
 	            
 	            int ackStatus = StringManagerUtils.stringToInteger(row[12] + ""); // ★ 索引变为 12
+	            String bitIndexStr = row[19] == null ? "" : row[19].toString();
+	            if ("-1".equals(bitIndexStr)) bitIndexStr = "";
 	            
 	            // 多语言及枚举值翻译（维持原有逻辑）
 	            if ("resultCode".equalsIgnoreCase(column) || "resultName".equalsIgnoreCase(column)) {
@@ -1374,7 +1385,47 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            }
 	            
 	            Map<String, Object> item = new HashMap<String, Object>();
-	            item.put("alertId",    StringManagerUtils.stringToLong(row[0] + ""));
+	            
+	         // ★ 新增内存状态匹配
+	            boolean triggerAlarm = true;
+	            Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+	            if (deviceAlarmInfoMap != null) {
+	                DeviceAlarmInfo dai = deviceAlarmInfoMap.get(deviceId);
+	                if (dai != null && dai.getAlarmInfoMap() != null) {
+	                    for (DeviceAlarmInfo.AlarmInfo ai : dai.getAlarmInfoMap().values()) {
+	                        // 匹配 bitIndex
+	                        String currentBitIndex = ai.getBitIndex();
+	                        if (StringManagerUtils.isNotNull(bitIndexStr)) {
+	                            if (!bitIndexStr.equals(currentBitIndex)) continue;
+	                        } else {
+	                            if (StringManagerUtils.isNotNull(currentBitIndex)) continue;
+	                        }
+	                        
+	                        // 匹配类型和值
+	                        boolean isMatch = false;
+	                        if (alarmType == 2 || alarmType == 5) {
+	                            String curInfo = ai.getAlarmInfo() == null ? "" : ai.getAlarmInfo();
+	                            String targetInfo = row[8] == null ? "" : row[8].toString();
+	                            if (curInfo.equalsIgnoreCase(targetInfo)) isMatch = true;
+	                        } else {
+	                            String curVal = ai.getRawValue() == null ? "" : ai.getRawValue();
+	                            String targetVal = value == null ? "" : value;
+	                            if (curVal.equalsIgnoreCase(targetVal) || (ai.getValue() != null && ai.getValue().equalsIgnoreCase(targetVal))) {
+	                                isMatch = true;
+	                            }
+	                        }
+	                        
+	                        if (isMatch) {
+	                            triggerAlarm = ai.getTriggerAlarm();
+	                            break;
+	                        }
+	                    }
+	                }
+	            }
+	            
+	            
+	            item.put("triggerAlarm", triggerAlarm);
+	            item.put("alertId",    deviceId);
 	            item.put("deviceId",   StringManagerUtils.stringToInteger(row[1] + ""));
 	            item.put("deviceName", row[2] == null ? "" : row[2].toString());
 	            item.put("orgId",      StringManagerUtils.stringToInteger(row[3] + ""));
@@ -1383,7 +1434,7 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            item.put("columnName", columnName);
 	            item.put("value",      value);
 	            item.put("alarminfo", row[8] == null ? "" : row[8].toString());
-	            item.put("alarmType", StringManagerUtils.stringToInteger(row[9] + "")); 
+	            item.put("alarmType", alarmType); 
 	            item.put("alarmLevel", StringManagerUtils.stringToInteger(row[10] + "")); 
 	            item.put("acqTime",    row[11] == null ? "" : row[11].toString());
 	            item.put("ackStatus",  ackStatus);

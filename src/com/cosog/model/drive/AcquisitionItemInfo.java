@@ -26,6 +26,7 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 	public String alarmInfo;
 	public int alarmType;
 	public String alarmDelay;
+	private boolean pendingDelay = false;  // 持续检测中（delay 未结束）
 	public String retriggerTime;
 	public int isSendMessage;
 	public int isSendMail;
@@ -336,6 +337,14 @@ public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Seri
 
 	public void setAckStatus(Integer ackStatus) {
 		this.ackStatus = ackStatus;
+	}
+
+	public boolean getPendingDelay() {
+		return pendingDelay;
+	}
+
+	public void setPendingDelay(boolean pendingDelay) {
+		this.pendingDelay = pendingDelay;
 	}
 	
 }

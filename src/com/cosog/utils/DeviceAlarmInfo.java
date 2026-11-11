@@ -40,87 +40,39 @@ public class DeviceAlarmInfo {
 	
 	public Map<String,ScheduledExecutorService> alarmInfoTimerMap;
 	
-	public void addTimer(String alarmKey,int delay,AlarmInfo alarmInfo,String acqTime){
-		ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-		executorService.schedule(new Thread(new Runnable() {
-            @Override
-            public void run() {
-            	String alarmTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-            	
-            	alarmInfo.setTriggerAlarm(true);
-            	alarmInfo.setAlarmStartTime(acqTime);
-            	
-//            	String loginLanguage=Config.getInstance().configFile.getAp().getOthers().getLoginLanguage();
-//            	String deviceTypeName="";
-//            	if("zh_CN".equalsIgnoreCase(loginLanguage)){
-//					deviceTypeName=deviceTypeName_zh_CN;
-//				}else if("en".equalsIgnoreCase(loginLanguage)){
-//					deviceTypeName=deviceTypeName_en;
-//				}else if("ru".equalsIgnoreCase(loginLanguage)){
-//					deviceTypeName=deviceTypeName_ru;
-//				}
-//            	
-//            	boolean isSendSMS=alarmInfo.getIsSendMail()==1;
-//        		boolean isSendMail=alarmInfo.getIsSendMessage()==1;
-//        		StringBuffer SMSContent = new StringBuffer();
-//        		StringBuffer EMailContent = new StringBuffer();
-//        		SMSContent.append(deviceTypeName+deviceName+"于"+alarmInfo.getAlarmTime()+"发生报警:");
-//				String alarmLevelName="";
-//				if(alarmInfo.getAlarmLevel()==100){
-//					alarmLevelName="一级报警";
-//				}else if(alarmInfo.getAlarmLevel()==200){
-//					alarmLevelName="二级报警";
-//				}else if(alarmInfo.getAlarmLevel()==300){
-//					alarmLevelName="三级报警";
-//				}
-//				SaveDelayAlarmData(deviceId,deviceType+"",acqTime,alarmTime,alarmInfo);
-//				if(alarmInfo.getIsSendMessage()==1){//如果该报警项发送短信
-//					if(alarmInfo.getAlarmType()==3){//开关量报警
-//						SMSContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-//					}else if(alarmInfo.getAlarmType()==2){//枚举量报警
-//						SMSContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-//					}else if(alarmInfo.getAlarmType()==1){//数值量报警
-//						SMSContent.append(alarmInfo.getTitle()+alarmInfo.getAlarmInfo()
-//								+",报警值"+alarmInfo.getValue()
-//								+",限值"+alarmInfo.getAlarmLimit()
-//								+",回差"+alarmInfo.getHystersis()
-//								+",报警级别:"+alarmLevelName
-//								+";");
-//					}else{
-//						SMSContent.append(alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-//					}
-//				}
-//				if(alarmInfo.getIsSendMail()==1){//如果该报警项发送邮件
-//					if(alarmInfo.getAlarmType()==3){//开关量报警
-//						EMailContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-//					}else if(alarmInfo.getAlarmType()==2){//枚举量报警
-//						EMailContent.append(alarmInfo.getTitle()+":"+alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-//					}else if(alarmInfo.getAlarmType()==1){//数值量报警
-//						EMailContent.append(alarmInfo.getTitle()+alarmInfo.getAlarmInfo()
-//								+",报警值"+alarmInfo.getValue()
-//								+",限值"+alarmInfo.getAlarmLimit()
-//								+",回差"+alarmInfo.getHystersis()
-//								+",报警级别:"+alarmLevelName
-//								+";");
-//					}else{
-//						EMailContent.append(alarmInfo.getAlarmInfo()+",报警级别:"+alarmLevelName);
-//					}
-//				}
-//				if(isSendSMS || isSendMail){
-//					try {
-//						sendAlarmSMS(deviceName,deviceType+"",deviceTypeName,isSendSMS,isSendMail,SMSContent.toString(),EMailContent.toString());
-//					} catch (SQLException e) {
-//						e.printStackTrace();
-//					}
-//				}
-				//执行完后退出并删除定时器
-            	if(!executorService.isShutdown()){
-            	   executorService.shutdown();
-            	}
-            	alarmInfoTimerMap.remove(alarmKey);
-            }
-        }), delay,TimeUnit.SECONDS);
-		alarmInfoTimerMap.put(alarmKey,executorService);
+	public void addTimer(String alarmKey, int delay, AlarmInfo alarmInfo, String acqTime){
+	    ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+	    executorService.schedule(new Thread(new Runnable() {
+	        @Override
+	        public void run() {
+	        	// ★ 定时器只负责"计时到期"这个信号（清理 timerMap），
+	            //    不再修改 alarmInfo 的 triggerAlarm / alarmStartTime。
+	            //
+	            // 原因：
+	            //   1) 定时器线程没有入库、没有 WebSocket 推送，改状态不会产生任何业务效果；
+	            //   2) 旧代码把 alarmStartTime 设为 addTimer 传入的 acqTime（延时开始时刻），
+	            //      会让下一次采集 timeDiff≈delay，被 retriggerTime 误判为"持续中"，
+	            //      反而把 triggerAlarm 覆盖成 false。
+	            //
+	            // 真正的报警触发由延时结束后的第一次采集完成：
+	            //   DataAlarmProcessing / CalculateDataAlarmProcessing 中通过
+	            //   wasPendingDelay 判断"延时刚结束"，强制 triggerAlarm=true，
+	            //   再由 DataProcessing 完成入库 + WebSocket 推送 + 前端弹窗响铃。
+	            //
+	            // 参数说明：alarmInfo、acqTime 保留以兼容调用方签名，但不再使用。
+	        	try {
+	                if(!executorService.isShutdown()){
+	                    executorService.shutdown();
+	                }
+	                if(alarmInfoTimerMap!=null){
+	                    alarmInfoTimerMap.remove(alarmKey);
+	                }
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }), delay, TimeUnit.SECONDS);
+	    alarmInfoTimerMap.put(alarmKey, executorService);
 	}
 	
 	public void sendAlarmSMS(String deviceName,String deviceType,String deviceTypeName,boolean isSendSMS,boolean isSendMail,String SMSContent,String EMailContent) throws SQLException{
@@ -290,6 +242,8 @@ public class DeviceAlarmInfo {
         private String suppressTime;
         private String suppressIp;
         private String suppressEndTime;
+        
+        private boolean pendingDelay = false;
 		
 		public String getAlarmTime() {
 			return alarmTime;
@@ -482,6 +436,12 @@ public class DeviceAlarmInfo {
 		}
 		public void setSuppressEndTime(String suppressEndTime) {
 			this.suppressEndTime = suppressEndTime;
+		}
+		public boolean getPendingDelay() {
+			return pendingDelay;
+		}
+		public void setPendingDelay(boolean pendingDelay) {
+			this.pendingDelay = pendingDelay;
 		}
 		
 	}

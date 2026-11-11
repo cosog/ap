@@ -61,8 +61,11 @@ Ext.define('AP.alert.AlarmManager', {
                     alarmLevel: data.commAlarmLevel,
                     acqTime: data.acqTime,
                     alarmType: 3,
+                    suppressStatus: data.suppressStatus || 0, 
                     suppressStatus: 0,
-                    suppressEndTime: ''
+                    suppressEndTime: '',
+                    triggerAlarm: data.triggerAlarm !== false,
+                    pendingDelay: data.pendingDelay === true
                 });
             } else {
                 var toRemoveKeys = [];
@@ -85,7 +88,7 @@ Ext.define('AP.alert.AlarmManager', {
         var deviceId = data.deviceId, deviceName = data.deviceName, orgId = data.orgId, acqTime = data.acqTime;
         var map = {};
         var push = function (item) {
-            if (!item.column || !item.triggerAlarm || !item.alarmLevel || item.alarmLevel <= 0) return;
+            if (!item.column || !item.alarmLevel || item.alarmLevel <= 0) return;
 
             var key = AP.alert.AlarmManager.getAlarmKey({
                 deviceId: deviceId,
@@ -112,7 +115,9 @@ Ext.define('AP.alert.AlarmManager', {
                 alarmType: item.alarmType || 0,
                 alarminfo: item.alarminfo || '',
                 suppressStatus: item.suppressStatus || 0,
-                suppressEndTime: item.suppressEndTime || ''
+                suppressEndTime: item.suppressEndTime || '',
+                triggerAlarm: item.triggerAlarm !== false,
+                pendingDelay: item.pendingDelay === true
             });
         };
 
@@ -163,27 +168,26 @@ Ext.define('AP.alert.AlarmManager', {
     },
 
     upsert: function (alarm) {
-        var old = this.alarms[alarm.key];
-
-        // ★ 1. 如果已标记为自动消警，且尚未被用户手动确认，直接忽略后续任何更新
-        if (old && old.suppressStatus === 1 && old.ackStatus !== 1) {
+        // ★ delay 期间（尚未达到持续检测时间）：完全忽略，不弹窗、不响铃
+        if (alarm.pendingDelay) {
             return;
         }
 
-        // ② 已确认后再次触发，且不升级（同级或降级）→ 保留已确认
+        var old = this.alarms[alarm.key];
+
         if (this.ackKeys[alarm.key] && old && alarm.alarmLevel >= old.alarmLevel) {
             old.value = alarm.value;
             old.alarminfo = alarm.alarminfo || '';
             old.acqTime = alarm.acqTime;
             old.alertId = alarm.alertId || old.alertId;
             old.alarmLevel = alarm.alarmLevel;
+            old.triggerAlarm = alarm.triggerAlarm;              // ★ 同步
             old.ackStatus = 1;
             this._applySuppressStatus(old, alarm);
             this.updateNode(old);
             return;
         }
 
-        // ③ 已确认后再次触发，且升级 → 迁回待确认
         var needReack = !!(this.ackKeys[alarm.key] && old && alarm.alarmLevel < old.alarmLevel);
         if (needReack) {
             delete this.ackKeys[alarm.key];
@@ -197,7 +201,8 @@ Ext.define('AP.alert.AlarmManager', {
             this.alarms[alarm.key] = alarm;
             this.addNode(alarm);
 
-            if (alarm.suppressStatus != 2 && alarm.suppressStatus != 1) {
+            // ★ 只有真正触发才弹窗 + 响铃
+            if (alarm.triggerAlarm && alarm.suppressStatus != 2 && alarm.suppressStatus != 1) {
                 this.ensureWindowExpanded(true);
                 if (!this.isMuted) {
                     AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
@@ -205,6 +210,14 @@ Ext.define('AP.alert.AlarmManager', {
             }
         } else {
             var levelUp = alarm.alarmLevel < old.alarmLevel;
+            var isAutoRecovered = (old.suppressStatus === 1 && old.ackStatus !== 1);
+            if (isAutoRecovered) {
+                old.suppressStatus = 0;
+                old.suppressEndTime = '';
+            }
+
+            var prevTrigger = old.triggerAlarm;                  // ★ 记录旧值
+
             var pushedAckStatus = (alarm.ackStatus === 1) ? 1 : (alarm.ackStatus === 0 ? 0 : null);
             var wasAckedByAlertId = (old.alertId && !alarm.alertId);
             var ackedByPush = (pushedAckStatus === 1);
@@ -214,6 +227,7 @@ Ext.define('AP.alert.AlarmManager', {
             old.acqTime = alarm.acqTime;
             old.alarmLevel = alarm.alarmLevel;
             old.alertId = alarm.alertId || old.alertId;
+            old.triggerAlarm = alarm.triggerAlarm;              // ★ 同步
 
             if (needReack) {
                 old.ackStatus = 0;
@@ -227,7 +241,9 @@ Ext.define('AP.alert.AlarmManager', {
             this._applySuppressStatus(old, alarm);
             this.updateNode(old);
 
-            if (levelUp && old.suppressStatus != 2 && old.suppressStatus != 1) {
+            // ★ 触发条件：升级 / 自动消警复活 / 从 false 变为 true（跨重触发点）
+            var shouldAlert = (levelUp || isAutoRecovered || (prevTrigger === false && alarm.triggerAlarm === true));
+            if (shouldAlert && alarm.triggerAlarm && old.suppressStatus != 2 && old.suppressStatus != 1) {
                 this.ensureWindowExpanded(true);
                 if (!this.isMuted) {
                     AP.alert.AlarmSoundManager.play(alarm.alarmLevel);
@@ -513,7 +529,9 @@ Ext.define('AP.alert.AlarmManager', {
                         ackStatus: item.ackStatus, alarmType: item.alarmType, alarminfo: item.alarminfo,
                         suppressStatus: item.suppressStatus || 0, suppressReason: item.suppressReason || '',
                         suppressUser: item.suppressUser || '', suppressIp: item.suppressIp || '',
-                        suppressTime: item.suppressTime || '', suppressEndTime: item.suppressEndTime || ''
+                        suppressTime: item.suppressTime || '', suppressEndTime: item.suppressEndTime || '',
+                        triggerAlarm: item.triggerAlarm !== false,
+                        pendingDelay: false
                     });
                 });
 
@@ -561,8 +579,9 @@ Ext.define('AP.alert.AlarmManager', {
     _getHighestUnackLevel: function () {
         var min = null;
         Ext.Object.each(this.alarms, function (k, a) {
-            if (a.suppressStatus == 2 || a.suppressStatus == 1) return;   // 跳过消警
+            if (a.suppressStatus == 2 || a.suppressStatus == 1) return;
             if (a.ackStatus == 1) return;
+            if (!a.triggerAlarm) return;      // ★ 只统计活跃报警
             if (min === null || a.alarmLevel < min) min = a.alarmLevel;
         });
         return min;
@@ -572,8 +591,8 @@ Ext.define('AP.alert.AlarmManager', {
         var self = this;
         var unackKeys = [];
         Ext.Object.each(this.alarms, function (k, a) {
-            if (a.suppressStatus == 2 || a.suppressStatus == 1) return;   // 跳过人工和自动消警
-            if (a.ackStatus != 1) unackKeys.push(k);
+            if (a.suppressStatus == 2 || a.suppressStatus == 1) return;
+            if (a.ackStatus != 1 && a.triggerAlarm) unackKeys.push(k);
         });
 
         if (unackKeys.length === 0) {
@@ -584,7 +603,6 @@ Ext.define('AP.alert.AlarmManager', {
                 if (ackCount > 0 && this.win.tabPanel) {
                     this.win.tabPanel.setActiveItem(this.win.treeAcked);
                 } else {
-                    // ★ 只有待确认和待消警都为 0 时，才自动折叠
                     this.win.collapse();
                 }
                 var tip = this.win.down('#muteTip');
@@ -593,7 +611,6 @@ Ext.define('AP.alert.AlarmManager', {
             return;
         }
         
-     // 如果处于静音状态，直接返回，不播放声音
         if (this.isMuted) {
             return;
         }

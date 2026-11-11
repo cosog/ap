@@ -419,12 +419,15 @@ function handleBusinessMessage(data) {
                         if (record.data.id == data.deviceId) {
                         	var alarmInfo=[];
                             for (var j = 0; j < data.allItemInfo.length; j++) {
-                            	if(data.allItemInfo[j].alarmLevel>0){
-                                	alarmInfo.push({
-                                        item: data.allItemInfo[j].column,
-                                        alarmLevel: data.allItemInfo[j].alarmLevel
+                            	var item = data.allItemInfo[j];
+                                if(item.suppressStatus != 2 && item.alarmLevel > 0 && !item.pendingDelay){
+                                    alarmInfo.push({
+                                        item: item.column,
+                                        alarmLevel: item.alarmLevel,
+                                        triggerAlarm: item.triggerAlarm !== false  // ★ 带上 triggerAlarm 标识
                                     });
                                 }
+                                
                                 for (let item in record.data) {
                                     if (item.toUpperCase() == data.allItemInfo[j].column.toUpperCase()) {
                                         record.set(item, data.allItemInfo[j].value);
@@ -633,12 +636,13 @@ function handleBusinessMessage(data) {
                             if(alarmInfo==undefined || alarmInfo.length==undefined){
                             	alarmInfo=[];
                             }
+                            var isRealCommAlarm = (data.commAlarmLevel > 0 && !data.pendingDelay && data.suppressStatus != 2);
                             
                             var existCommAlarm=false;
                             for(var j=0;j<alarmInfo.length;j++){
                             	if(alarmInfo[j].item.toUpperCase()=="commStatusName".toUpperCase()   ){
                             		existCommAlarm=true;
-                            		if(data.commAlarmLevel>0){
+                            		if(isRealCommAlarm){
                             			alarmInfo[j].alarmLevel=data.commAlarmLevel;
                             		}else{
                             			alarmInfo.splice(j, 1);
@@ -646,11 +650,13 @@ function handleBusinessMessage(data) {
                             		break;
                             	}
                             }
-                            if( (!existCommAlarm) && data.commAlarmLevel>0){
-                            	alarmInfo.push({
-                            		item: 'commStatusName',
-                            		alarmLevel: data.commAlarmLevel
-                            	});
+                            
+                            if (!existCommAlarm && isRealCommAlarm) {
+                                alarmInfo.push({
+                                    item: 'commStatusName',
+                                    alarmLevel: data.commAlarmLevel,
+                                    triggerAlarm: data.triggerAlarm !== false
+                                });
                             }
                             
                             record.set("commStatusName", data.commStatusName);

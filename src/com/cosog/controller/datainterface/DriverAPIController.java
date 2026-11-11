@@ -352,6 +352,8 @@ public class DriverAPIController extends BaseController{
 							alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 							int commAlarmLevel=0;
 							boolean triggerAlarm=false;
+							int suppressStatus=0;
+							boolean pendingDelay=false;
 							if(alarmInstanceOwnItem!=null){
 								String column="commStatusName";
 								Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap=DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
@@ -443,20 +445,29 @@ public class DriverAPIController extends BaseController{
 									}
 									
 									String alarmStartTime =alarmInfo.getAlarmStartTime();
-									long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
+									long timeDiff = 0;
+									if (StringManagerUtils.isNotNull(alarmStartTime)) {
+									    timeDiff = StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
+									} else {
+									    // ★ 关键修复：首次触发时，必定为 true，防止因为时间差为 0 被误判为持续中
+									    timeDiff = Long.MAX_VALUE;
+									}
 									if(delay==0  //没有设置延时
 											|| (delay>0 &&  deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)) //设置了延时且已存在报警项       
 											){
 										if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>=retriggerTime*1000) ){
 											alarmInfo.setTriggerAlarm(true);
+											alarmInfo.setPendingDelay(false); 
 										}else{
 											alarmInfo.setTriggerAlarm(false);
+											alarmInfo.setPendingDelay(false); 
 										}
 									}
 									
-									
-									if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0 && deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
-										alarmInfo.setTriggerAlarm(false);
+									if(delay>0 && (!existAlarm || deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey))){
+									    alarmInfo.setTriggerAlarm(false);
+									    pendingDelay = true;
+									    alarmInfo.setPendingDelay(true);
 									}
 									
 									if(alarmInfo.getTriggerAlarm()){
@@ -502,7 +513,7 @@ public class DriverAPIController extends BaseController{
 								}else {
 									deviceAlarmInfoMap.put(deviceInfo.getId(), deviceAlarmInfo);
 								}
-								
+								suppressStatus=alarmInfo.getSuppressStatus();
 								if(alarmInfo.getTriggerAlarm()){
 									triggerAlarm=true;
 									String commAlarmSql="";
@@ -720,6 +731,7 @@ public class DriverAPIController extends BaseController{
 									}
 									Map<String,String> languageResourceMap=MemoryDataManagerTask.getLanguageResource(loginUserLanguage);
 									
+									
 									webSocketSendData = new StringBuffer();
 									webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
 									webSocketSendData.append("\"deviceName\":\""+deviceName+"\",");
@@ -732,6 +744,9 @@ public class DriverAPIController extends BaseController{
 									webSocketSendData.append("\"commTime\":\""+commTime+"\",");
 									webSocketSendData.append("\"commTimeEfficiency\":\""+efficiencyStr+"\",");
 									webSocketSendData.append("\"commRange\":\""+commRange+"\",");
+									webSocketSendData.append("\"suppressStatus\":"+suppressStatus+",");
+									webSocketSendData.append("\"triggerAlarm\":"+triggerAlarm+",");
+									webSocketSendData.append("\"pendingDelay\":"+pendingDelay+","); 
 									webSocketSendData.append("\"commAlarmLevel\":"+(commAlarmLevel));
 									webSocketSendData.append("}");
 									
@@ -850,6 +865,8 @@ public class DriverAPIController extends BaseController{
 							alarmInstanceOwnItem=MemoryDataManagerTask.getAlarmInstanceOwnItemByCode(deviceInfo.getAlarmInstanceCode());
 							int commAlarmLevel=0;
 							boolean triggerAlarm=false;
+							int suppressStatus=0;
+							boolean pendingDelay=false; 
 							if(alarmInstanceOwnItem!=null){
 								String column="commStatusName";
 								Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap=DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
@@ -941,20 +958,30 @@ public class DriverAPIController extends BaseController{
 									}
 									
 									String alarmStartTime =alarmInfo.getAlarmStartTime();
-									long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
+									long timeDiff = 0;
+									if (StringManagerUtils.isNotNull(alarmStartTime)) {
+									    timeDiff = StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
+									} else {
+									    // ★ 关键修复：首次触发时，必定为 true，防止因为时间差为 0 被误判为持续中
+									    timeDiff = Long.MAX_VALUE;
+									}
 									if(delay==0  //没有设置延时
 											|| (delay>0 &&  deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)) //设置了延时且已存在报警项       
 											){
 										if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>=retriggerTime*1000) ){
 											alarmInfo.setTriggerAlarm(true);
+											alarmInfo.setPendingDelay(false);
 										}else{
 											alarmInfo.setTriggerAlarm(false);
+											alarmInfo.setPendingDelay(false);
 										}
 									}
 									
 									
-									if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0 && deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
-										alarmInfo.setTriggerAlarm(false);
+									if(delay>0 && (!existAlarm || deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey))){
+									    alarmInfo.setTriggerAlarm(false);
+									    pendingDelay = true;
+									    alarmInfo.setPendingDelay(true);
 									}
 									
 									if(alarmInfo.getTriggerAlarm()){
@@ -1001,6 +1028,7 @@ public class DriverAPIController extends BaseController{
 									deviceAlarmInfoMap.put(deviceInfo.getId(), deviceAlarmInfo);
 								}
 								
+								suppressStatus=alarmInfo.getSuppressStatus(); 
 								if(alarmInfo.getTriggerAlarm()){
 									triggerAlarm=true;
 									String commAlarmSql="";
@@ -1234,6 +1262,9 @@ public class DriverAPIController extends BaseController{
 									webSocketSendData.append("\"commTime\":\""+commTime+"\",");
 									webSocketSendData.append("\"commTimeEfficiency\":\""+efficiencyStr+"\",");
 									webSocketSendData.append("\"commRange\":\""+commRange+"\",");
+									webSocketSendData.append("\"suppressStatus\":"+suppressStatus+","); 
+									webSocketSendData.append("\"triggerAlarm\":"+triggerAlarm+",");
+									webSocketSendData.append("\"pendingDelay\":"+pendingDelay+",");
 									webSocketSendData.append("\"commAlarmLevel\":"+(commAlarmLevel));
 									webSocketSendData.append("}");
 									
@@ -1445,602 +1476,696 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	public List<AcquisitionItemInfo> DataAlarmProcessing(List<ProtocolItemResolutionData> protocolItemResolutionDataList,
-			AlarmInstanceOwnItem alarmInstanceOwnItem,List<AcquisitionItemInfo> acquisitionItemInfoList,
-			DeviceInfo deviceInfo,String acqTime){
-		Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap=DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
-		DeviceAlarmInfo deviceAlarmInfo=null;
-		if(deviceAlarmInfoMap!=null){
-			deviceAlarmInfo=deviceAlarmInfoMap.get(deviceInfo.getId());
-		}
-		if(deviceAlarmInfo==null){
-			deviceAlarmInfo=new DeviceAlarmInfo();
-			deviceAlarmInfo.setDeviceId(deviceInfo.getId());
-			deviceAlarmInfo.setDeviceName(deviceInfo.getDeviceName());
-			deviceAlarmInfo.setDeviceType(deviceInfo.getDeviceType());
-			deviceAlarmInfo.setDeviceTypeName_zh_CN(deviceInfo.getDeviceTypeName_zh_CN());
-			deviceAlarmInfo.setDeviceTypeName_en(deviceInfo.getDeviceTypeName_en());
-			deviceAlarmInfo.setDeviceTypeName_ru(deviceInfo.getDeviceTypeName_ru());
-		}
-		
-		if(deviceAlarmInfo.getAlarmInfoMap()==null){
-			deviceAlarmInfo.setAlarmInfoMap(new HashMap<String,AlarmInfo>());
-		}
-		if(deviceAlarmInfo.getAlarmInfoTimerMap()==null){
-			deviceAlarmInfo.setAlarmInfoTimerMap(new HashMap<String,ScheduledExecutorService>());
-		}
-		
-		for(int i=0;i<protocolItemResolutionDataList.size();i++){
-			int alarmLevel=0;
-			
-			AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
-			acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(protocolItemResolutionDataList.get(i).getAddr()));
-			acquisitionItemInfo.setColumn(protocolItemResolutionDataList.get(i).getColumn());
-			acquisitionItemInfo.setTitle(protocolItemResolutionDataList.get(i).getColumnName());
-			acquisitionItemInfo.setRawTitle(protocolItemResolutionDataList.get(i).getRawColumnName());
-			acquisitionItemInfo.setValue(protocolItemResolutionDataList.get(i).getValue());
-			acquisitionItemInfo.setRawValue(protocolItemResolutionDataList.get(i).getRawValue());
-			acquisitionItemInfo.setDataType(protocolItemResolutionDataList.get(i).getColumnDataType());
-			acquisitionItemInfo.setResolutionMode(protocolItemResolutionDataList.get(i).getResolutionMode());
-			acquisitionItemInfo.setBitIndex(protocolItemResolutionDataList.get(i).getBitIndex());
-			acquisitionItemInfo.setAlarmLevel(alarmLevel);
-			acquisitionItemInfo.setUnit(protocolItemResolutionDataList.get(i).getUnit());
-			acquisitionItemInfo.setSort(protocolItemResolutionDataList.get(i).getSort());
-			acquisitionItemInfo.setType(protocolItemResolutionDataList.get(i).getType());
-			acquisitionItemInfo.setDisplayItemId(protocolItemResolutionDataList.get(i).getDisplayItemId());
-			
-			String alarmKey=deviceInfo.getId()+"_"+acquisitionItemInfo.getColumn();
-			if(StringManagerUtils.isNotNull(acquisitionItemInfo.getBitIndex())){
-				alarmKey+="_"+acquisitionItemInfo.getBitIndex();
-			}
-			
-			boolean existAlarm=deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey);
-			boolean existAlarmTimer=deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey);
-			DeviceAlarmInfo.AlarmInfo alarmInfo=null;
-			if(existAlarm){
-				alarmInfo=deviceAlarmInfo.getAlarmInfoMap().get(alarmKey);
-			}else{
-				alarmInfo=new DeviceAlarmInfo.AlarmInfo();
-			}
-			
-			for(int l=0;alarmInstanceOwnItem!=null&&l<alarmInstanceOwnItem.getItemList().size();l++){
-				int alarmSign=alarmInstanceOwnItem.getItemList().get(l).getAlarmSign();
-				if(alarmSign==1){
-					if(acquisitionItemInfo.getType()==0 || 
-							(acquisitionItemInfo.getType()==5 && ("0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) || "1".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) ) ) 
-						){
-						if(acquisitionItemInfo.getResolutionMode().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(l).getType()+"")
-								&& (acquisitionItemInfo.getColumn()).equals(alarmInstanceOwnItem.getItemList().get(l).getItemCode())
-								){
-							int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
-							if(alarmType==2 && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
-								float hystersis=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getHystersis())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getHystersis()):0;
-								float upperLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()):0;
-								float lowerLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()):0;
-								
-								if(existAlarm){//如果已存在报警
-									upperLimit=upperLimit-hystersis;
-									lowerLimit=lowerLimit+hystersis;
-								}
-								
-								if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()) && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
-									alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-									acquisitionItemInfo.setAlarmLevel(alarmLevel);
-									acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
-									acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit());
-									acquisitionItemInfo.setAlarmInfo("高报");
-									acquisitionItemInfo.setAlarmType(alarmType);
-									acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-									acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
-									acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-									acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-								}else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
-									alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-									acquisitionItemInfo.setAlarmLevel(alarmLevel);
-									acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
-									acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit());
-									acquisitionItemInfo.setAlarmInfo("低报");
-									acquisitionItemInfo.setAlarmType(alarmType);
-									acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-									acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
-									acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-									acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-								}
-								break;
-							}else if(alarmType==0  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//开关量报警
-								if(StringManagerUtils.isNotNull(acquisitionItemInfo.getBitIndex())){
-									if(acquisitionItemInfo.getBitIndex().equals(alarmInstanceOwnItem.getItemList().get(l).getBitIndex()+"") && StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
-										alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-										acquisitionItemInfo.setAlarmLevel(alarmLevel);
-										acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
-										acquisitionItemInfo.setAlarmType(alarmType);
-										acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-										acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
-										acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-										acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-									}
-								}
-							}else if(alarmType==1  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//枚举量报警
-								if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
-									alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-									acquisitionItemInfo.setAlarmLevel(alarmLevel);
-									acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
-									acquisitionItemInfo.setAlarmType(alarmType);
-									acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-									acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
-									acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-									acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-								}
-							}
-						}
-						
-					}else if(acquisitionItemInfo.getType()==5 && 
-							("".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) || "7".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) || "2".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) ) 
-							){
-						int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
-						if(alarmType==7 
-								&&acquisitionItemInfo.getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(l).getItemCode()) 
-								&& StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
-							float hystersis=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getHystersis())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getHystersis()):0;
-							float upperLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()):0;
-							float lowerLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()):0;
-							
-							if(existAlarm){//如果已存在报警
-								upperLimit=upperLimit-hystersis;
-								lowerLimit=lowerLimit+hystersis;
-							}
-							
-							if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
-								alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-								acquisitionItemInfo.setAlarmLevel(alarmLevel);
-								acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
-								acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit());
-								acquisitionItemInfo.setAlarmInfo("高报");
-								acquisitionItemInfo.setAlarmType(alarmType);
-								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
-								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-							}else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
-								alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
-								acquisitionItemInfo.setAlarmLevel(alarmLevel);
-								acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
-								acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit());
-								acquisitionItemInfo.setAlarmInfo("低报");
-								acquisitionItemInfo.setAlarmType(alarmType);
-								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
-								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
-								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
-								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
-							}
-							break;
-						}
-					}
-				}
-			}
-			
-			if(acquisitionItemInfo.getAlarmLevel()==0){
-				// 1. 尝试从内存中移除（兼容系统运行期间正常恢复的场景）
-				DeviceAlarmInfo.AlarmInfo removedAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
-				
-				// 2. 清理定时器残留
-				if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
-					if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
-						deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
-					}
-					deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
-				}
-				
-				// 3. 更新数据库恢复时间
-				// ★ 核心优化：不管是内存有（正常恢复），还是内存没有（服务刚重启后第一次采集即为0），都要尝试去闭环数据库
-				try {
-					// 使用当前的采集信息拼装 SQL，或者借用 removedAlarmInfo 的字段（如果有的话）
-					// 为了保证无论哪种情况都能精准定位，优先取内存中的，如果没有则用当前的
-					String column = removedAlarmInfo != null ? removedAlarmInfo.getColumn() : acquisitionItemInfo.getColumn();
-					String bitIndex = removedAlarmInfo != null ? removedAlarmInfo.getBitIndex() : acquisitionItemInfo.getBitIndex();
-					
-					String recoverSql = "update tbl_alarminfo_hist t set "
-						    + " t.recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss'), "
-						    + " t.suppress_status = CASE WHEN nvl(t.suppress_status, 0) = 2 THEN 2 ELSE 1 END " // 只要恢复，未人工消警的就置为自动消警 1
-						    + " where t.deviceid = " + deviceInfo.getId() 
-						    + " and t.itemcode ='" + column.replace("'", "''") + "' "
-						    + " and t.recoverytime is null ";
-					
-					// 区分开关量的 bitIndex
-					if (StringManagerUtils.isNotNull(bitIndex)) {
-						recoverSql += " and bitindex = " + bitIndex;
-					}
-					commonDataService.getBaseDao().updateOrDeleteBySql(recoverSql);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}else{
-				// ★ 人工消警到期判断
-				if (alarmInfo.getSuppressStatus() == 2) {
-					if (StringManagerUtils.isNotNull(alarmInfo.getSuppressEndTime())
-					        && alarmInfo.getSuppressEndTime().compareTo(acqTime) <= 0) {
-					        // ★ 到期：只清内存，不动 hist（保留消警历史供追溯）
-					        //   下次正常触发时会 insert 新的 hist 行，旧行的 suppress_* 永久保留
-					        alarmInfo.setSuppressStatus(0);
-					        alarmInfo.setSuppressReason(null);
-					        alarmInfo.setSuppressUser(null);
-					        alarmInfo.setSuppressTime(null);
-					        alarmInfo.setSuppressIp(null);
-					        alarmInfo.setSuppressEndTime(null);
-					    }
-				}
-				
-				
-				
-				
-				String alarmStartTime =alarmInfo.getAlarmStartTime();
-				int retriggerTime=StringManagerUtils.stringToInteger(acquisitionItemInfo.getRetriggerTime());
-				long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-				
-				if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay())==0  //没有设置延时
-						|| (StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay())>0 &&  deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)) //设置了延时且已存在报警项       
-						){
-					if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>=retriggerTime*1000) ){
-						alarmInfo.setTriggerAlarm(true);
-						acquisitionItemInfo.setTriggerAlarm(true);
-					}else{
-						alarmInfo.setTriggerAlarm(false);
-						acquisitionItemInfo.setTriggerAlarm(false);
-					}
-				}
-				
-				
-				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0 && deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
-					alarmInfo.setTriggerAlarm(false);
-					acquisitionItemInfo.setTriggerAlarm(false);
-				}
-				
-				if(alarmInfo.getTriggerAlarm()){
-					alarmInfo.setAlarmStartTime(acqTime);
-				}
-				
-				
-				alarmInfo.setAlarmTime(acqTime);
-				alarmInfo.setAddr(acquisitionItemInfo.getAddr());
-				alarmInfo.setColumn(acquisitionItemInfo.getColumn());
-				alarmInfo.setTitle(acquisitionItemInfo.getTitle());
-				alarmInfo.setRawTitle(acquisitionItemInfo.getRawTitle());
-				alarmInfo.setValue(acquisitionItemInfo.getValue());
-				alarmInfo.setRawValue(acquisitionItemInfo.getRawValue());
-				alarmInfo.setDataType(acquisitionItemInfo.getDataType());
-				alarmInfo.setUnit(acquisitionItemInfo.getUnit());
-				alarmInfo.setAlarmLevel(acquisitionItemInfo.getAlarmLevel());
-				alarmInfo.setResolutionMode(acquisitionItemInfo.getResolutionMode());
-				alarmInfo.setBitIndex(acquisitionItemInfo.getBitIndex());
-				alarmInfo.setAlarmLimit(acquisitionItemInfo.getAlarmLimit());
-				alarmInfo.setHystersis(acquisitionItemInfo.getHystersis());
-				alarmInfo.setAlarmInfo(acquisitionItemInfo.getAlarmInfo());
-				alarmInfo.setAlarmType(acquisitionItemInfo.getAlarmType());
-				alarmInfo.setDelay(acquisitionItemInfo.getAlarmDelay());
-				alarmInfo.setRetriggerTime(acquisitionItemInfo.getRetriggerTime());
-				alarmInfo.setIsSendMessage(acquisitionItemInfo.getIsSendMessage());
-				alarmInfo.setIsSendMail(acquisitionItemInfo.getIsSendMail());
-				
-				if (alarmInfo.getAlertId() != null) {
+	        AlarmInstanceOwnItem alarmInstanceOwnItem,List<AcquisitionItemInfo> acquisitionItemInfoList,
+	        DeviceInfo deviceInfo,String acqTime){
+	    Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap=DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+	    DeviceAlarmInfo deviceAlarmInfo=null;
+	    if(deviceAlarmInfoMap!=null){
+	        deviceAlarmInfo=deviceAlarmInfoMap.get(deviceInfo.getId());
+	    }
+	    if(deviceAlarmInfo==null){
+	        deviceAlarmInfo=new DeviceAlarmInfo();
+	        deviceAlarmInfo.setDeviceId(deviceInfo.getId());
+	        deviceAlarmInfo.setDeviceName(deviceInfo.getDeviceName());
+	        deviceAlarmInfo.setDeviceType(deviceInfo.getDeviceType());
+	        deviceAlarmInfo.setDeviceTypeName_zh_CN(deviceInfo.getDeviceTypeName_zh_CN());
+	        deviceAlarmInfo.setDeviceTypeName_en(deviceInfo.getDeviceTypeName_en());
+	        deviceAlarmInfo.setDeviceTypeName_ru(deviceInfo.getDeviceTypeName_ru());
+	    }
+	    
+	    if(deviceAlarmInfo.getAlarmInfoMap()==null){
+	        deviceAlarmInfo.setAlarmInfoMap(new HashMap<String,AlarmInfo>());
+	    }
+	    if(deviceAlarmInfo.getAlarmInfoTimerMap()==null){
+	        deviceAlarmInfo.setAlarmInfoTimerMap(new HashMap<String,ScheduledExecutorService>());
+	    }
+	    
+	    for(int i=0;i<protocolItemResolutionDataList.size();i++){
+	        int alarmLevel=0;
+	        
+	        AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
+	        acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(protocolItemResolutionDataList.get(i).getAddr()));
+	        acquisitionItemInfo.setColumn(protocolItemResolutionDataList.get(i).getColumn());
+	        acquisitionItemInfo.setTitle(protocolItemResolutionDataList.get(i).getColumnName());
+	        acquisitionItemInfo.setRawTitle(protocolItemResolutionDataList.get(i).getRawColumnName());
+	        acquisitionItemInfo.setValue(protocolItemResolutionDataList.get(i).getValue());
+	        acquisitionItemInfo.setRawValue(protocolItemResolutionDataList.get(i).getRawValue());
+	        acquisitionItemInfo.setDataType(protocolItemResolutionDataList.get(i).getColumnDataType());
+	        acquisitionItemInfo.setResolutionMode(protocolItemResolutionDataList.get(i).getResolutionMode());
+	        acquisitionItemInfo.setBitIndex(protocolItemResolutionDataList.get(i).getBitIndex());
+	        acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	        acquisitionItemInfo.setUnit(protocolItemResolutionDataList.get(i).getUnit());
+	        acquisitionItemInfo.setSort(protocolItemResolutionDataList.get(i).getSort());
+	        acquisitionItemInfo.setType(protocolItemResolutionDataList.get(i).getType());
+	        acquisitionItemInfo.setDisplayItemId(protocolItemResolutionDataList.get(i).getDisplayItemId());
+	        
+	        String alarmKey=deviceInfo.getId()+"_"+acquisitionItemInfo.getColumn();
+	        if (StringManagerUtils.isNotNull(acquisitionItemInfo.getBitIndex()) && !"-1".equals(acquisitionItemInfo.getBitIndex()) && !"null".equalsIgnoreCase(acquisitionItemInfo.getBitIndex())) {
+	            alarmKey += "_" + acquisitionItemInfo.getBitIndex();
+	        }
+	        
+	        boolean existAlarm=deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey);
+	        boolean existAlarmTimer=deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey);
+	        DeviceAlarmInfo.AlarmInfo alarmInfo=null;
+	        if(existAlarm){
+	            alarmInfo=deviceAlarmInfo.getAlarmInfoMap().get(alarmKey);
+	        }else{
+	            alarmInfo=new DeviceAlarmInfo.AlarmInfo();
+	        }
+	        
+	        // ★★★ 关键修改：记录上一次采集时的"延时检测中"状态 ★★★
+	        //   - existAlarm=true  → 读取内存中上一轮采集结束时设置的 pendingDelay
+	        //   - existAlarm=false → 新建对象，默认 false
+	        //   用于在"延时刚结束"时强制触发第一次报警，跳过 retriggerTime 判断。
+	        boolean wasPendingDelay = alarmInfo.getPendingDelay();
+	        
+	        for(int l=0;alarmInstanceOwnItem!=null&&l<alarmInstanceOwnItem.getItemList().size();l++){
+	            int alarmSign=alarmInstanceOwnItem.getItemList().get(l).getAlarmSign();
+	            if(alarmSign==1){
+	                if(acquisitionItemInfo.getType()==0 || 
+	                        (acquisitionItemInfo.getType()==5 && ("0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) || "1".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) ) ) 
+	                    ){
+	                    if(acquisitionItemInfo.getResolutionMode().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(l).getType()+"")
+	                            && (acquisitionItemInfo.getColumn()).equals(alarmInstanceOwnItem.getItemList().get(l).getItemCode())
+	                            ){
+	                        int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
+	                        if(alarmType==2 && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
+	                            float hystersis=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getHystersis())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getHystersis()):0;
+	                            float upperLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()):0;
+	                            float lowerLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()):0;
+	                            
+	                            if(existAlarm){//如果已存在报警
+	                                upperLimit=upperLimit-hystersis;
+	                                lowerLimit=lowerLimit+hystersis;
+	                            }
+	                            
+	                            if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()) && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
+	                                alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+	                                acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	                                acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
+	                                acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit());
+	                                acquisitionItemInfo.setAlarmInfo("高报");
+	                                acquisitionItemInfo.setAlarmType(alarmType);
+	                                acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+	                                acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
+	                                acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+	                                acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+	                            }else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
+	                                alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+	                                acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	                                acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
+	                                acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit());
+	                                acquisitionItemInfo.setAlarmInfo("低报");
+	                                acquisitionItemInfo.setAlarmType(alarmType);
+	                                acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+	                                acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
+	                                acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+	                                acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+	                            }
+	                            break;
+	                        }else if(alarmType==0  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//开关量报警
+	                            if(StringManagerUtils.isNotNull(acquisitionItemInfo.getBitIndex())){
+	                                if(acquisitionItemInfo.getBitIndex().equals(alarmInstanceOwnItem.getItemList().get(l).getBitIndex()+"") && StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
+	                                    alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+	                                    acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	                                    acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
+	                                    acquisitionItemInfo.setAlarmType(alarmType);
+	                                    acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+	                                    acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
+	                                    acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+	                                    acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+	                                }
+	                            }
+	                        }else if(alarmType==1  && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue()) ){//枚举量报警
+	                            if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getRawValue())==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(l).getValue()+"")){
+	                                alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+	                                acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	                                acquisitionItemInfo.setAlarmInfo(acquisitionItemInfo.getValue());
+	                                acquisitionItemInfo.setAlarmType(alarmType);
+	                                acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+	                                acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
+	                                acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+	                                acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+	                            }
+	                        }
+	                    }
+	                    
+	                }else if(acquisitionItemInfo.getType()==5 && 
+	                        ("".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) || "7".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) || "2".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()) ) 
+	                        ){
+	                    int alarmType=alarmInstanceOwnItem.getItemList().get(l).getType();
+	                    if(alarmType==7 
+	                            &&acquisitionItemInfo.getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(l).getItemCode()) 
+	                            && StringManagerUtils.isNotNull(acquisitionItemInfo.getRawValue())){//数据量报警
+	                        float hystersis=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getHystersis())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getHystersis()):0;
+	                        float upperLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()):0;
+	                        float lowerLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()):0;
+	                        
+	                        if(existAlarm){//如果已存在报警
+	                            upperLimit=upperLimit-hystersis;
+	                            lowerLimit=lowerLimit+hystersis;
+	                        }
+	                        
+	                        if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
+	                            alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+	                            acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	                            acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
+	                            acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getUpperLimit());
+	                            acquisitionItemInfo.setAlarmInfo("高报");
+	                            acquisitionItemInfo.setAlarmType(alarmType);
+	                            acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+	                            acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
+	                            acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+	                            acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+	                        }else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit()+"") && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
+	                            alarmLevel=alarmInstanceOwnItem.getItemList().get(l).getAlarmLevel();
+	                            acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	                            acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(l).getHystersis());
+	                            acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(l).getLowerLimit());
+	                            acquisitionItemInfo.setAlarmInfo("低报");
+	                            acquisitionItemInfo.setAlarmType(alarmType);
+	                            acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(l).getDelay());
+	                            acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(l).getRetriggerTime());
+	                            acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(l).getIsSendMessage());
+	                            acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(l).getIsSendMail());
+	                        }
+	                        break;
+	                    }
+	                }
+	            }
+	        }
+	        
+	        if(acquisitionItemInfo.getAlarmLevel()==0){
+	            acquisitionItemInfo.setPendingDelay(false);   // 恢复项不参与 delay
+	            // 1. 尝试从内存中移除（兼容系统运行期间正常恢复的场景）
+	            DeviceAlarmInfo.AlarmInfo removedAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
+	            
+	            // 2. 清理定时器残留
+	            if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
+	                if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
+	                    deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
+	                }
+	                deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
+	            }
+	            
+	            // 3. 更新数据库恢复时间
+	            try {
+	                String column = removedAlarmInfo != null ? removedAlarmInfo.getColumn() : acquisitionItemInfo.getColumn();
+	                String bitIndex = removedAlarmInfo != null ? removedAlarmInfo.getBitIndex() : acquisitionItemInfo.getBitIndex();
+	                
+	                String recoverSql = "update tbl_alarminfo_hist t set "
+	                        + " t.recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss'), "
+	                        + " t.suppress_status = CASE WHEN nvl(t.suppress_status, 0) = 2 THEN 2 ELSE 1 END "
+	                        + " where t.deviceid = " + deviceInfo.getId() 
+	                        + " and t.itemcode ='" + column.replace("'", "''") + "' "
+	                        + " and t.recoverytime is null ";
+	                
+	                if (StringManagerUtils.isNotNull(bitIndex)) {
+	                    recoverSql += " and bitindex = " + bitIndex;
+	                }
+	                commonDataService.getBaseDao().updateOrDeleteBySql(recoverSql);
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	        }else{
+	            // 人工消警到期判断
+	            if (alarmInfo.getSuppressStatus() == 2) {
+	                if (StringManagerUtils.isNotNull(alarmInfo.getSuppressEndTime())
+	                        && alarmInfo.getSuppressEndTime().compareTo(acqTime) <= 0) {
+	                    alarmInfo.setSuppressStatus(0);
+	                    alarmInfo.setSuppressReason(null);
+	                    alarmInfo.setSuppressUser(null);
+	                    alarmInfo.setSuppressTime(null);
+	                    alarmInfo.setSuppressIp(null);
+	                    alarmInfo.setSuppressEndTime(null);
+	                }
+	            }
+	            
+	            // ★ 严格判定报警状态
+	            boolean triggerAlarm = false;
+	            boolean pendingDelay = false;
+	            int alarmDelay = StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay());
+	            int retriggerTime = StringManagerUtils.stringToInteger(acquisitionItemInfo.getRetriggerTime());
+
+	            // 判断是否还在延时中
+	            boolean isDelayChecking = false;
+	            if (alarmDelay > 0) {
+	                if (!existAlarm) {
+	                    isDelayChecking = true;
+	                } else if (existAlarmTimer) {
+	                    isDelayChecking = true;
+	                }
+	            }
+
+	            // ★ 双重保险：如果时间已经超过延时时间，强制判定延时结束
+	            if (isDelayChecking && StringManagerUtils.isNotNull(alarmInfo.getAlarmTime())) {
+	                long delayDiff = StringManagerUtils.getTimeDifference(alarmInfo.getAlarmTime(), acqTime, "yyyy-MM-dd HH:mm:ss");
+	                if (delayDiff >= alarmDelay * 1000) {
+	                    isDelayChecking = false;
+	                    // 时间到了但定时器没清理，强行杀掉
+	                    if (existAlarmTimer) {
+	                        if (!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()) {
+	                            deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
+	                        }
+	                        deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
+	                    }
+	                }
+	            }
+
+	            if (isDelayChecking) {
+	                // 1. 仍在"延时持续检测"中
+	                pendingDelay = true;
+	                triggerAlarm = false;
+	                // ★ 核心修复：在延时中，强制清空起始时间，防止它被提前赋值导致误判！
+	                alarmInfo.setAlarmStartTime(null);
+	            } else {
+	                // 2. 延时结束
+	                pendingDelay = false;
+	                
+	                // ★★★ 关键修改：上一次采集仍在延时中、本次采集延时已结束 ★★★
+	                //    说明这是"延时到达后的第一条采集数据"，必须强制触发报警，
+	                //    跳过 retriggerTime 判断，避免被误判为"持续中"。
+	                //    alarmStartTime 会在后面 if (triggerAlarm) 统一设置为 acqTime。
+	                if (wasPendingDelay) {
+	                    triggerAlarm = true;
+	                } else {
+	                    // 原有的重触发间隔判断
+	                    String alarmStartTime = alarmInfo.getAlarmStartTime();
+	                    long timeDiff = 0;
+	                    if (StringManagerUtils.isNotNull(alarmStartTime)) {
+	                        timeDiff = StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
+	                    } else {
+	                        timeDiff = Long.MAX_VALUE; // 首次触发，必定为无穷大
+	                    }
+	                    
+	                    if (retriggerTime > 0 && timeDiff < retriggerTime * 1000) {
+	                        triggerAlarm = false; // 在重触发间隔内，静默处理（持续中）
+	                    } else {
+	                        triggerAlarm = true;  // 真正触发报警（首次触发，或者间隔已满）
+	                    }
+	                }
+	            }
+
+	            // 赋值状态
+	            alarmInfo.setTriggerAlarm(triggerAlarm);
+	            acquisitionItemInfo.setTriggerAlarm(triggerAlarm);
+	            alarmInfo.setPendingDelay(pendingDelay);
+	            acquisitionItemInfo.setPendingDelay(pendingDelay);
+
+	            // ★ 只有真正触发时，才记录/更新计时起点
+	            if (triggerAlarm) {
+	                alarmInfo.setAlarmStartTime(acqTime);
+	            }
+	            
+	            // ---- 下面保留原有的属性赋值（不要动）----
+	            alarmInfo.setAlarmTime(acqTime);
+	            alarmInfo.setAddr(acquisitionItemInfo.getAddr());
+	            alarmInfo.setColumn(acquisitionItemInfo.getColumn());
+	            alarmInfo.setTitle(acquisitionItemInfo.getTitle());
+	            alarmInfo.setRawTitle(acquisitionItemInfo.getRawTitle());
+	            alarmInfo.setValue(acquisitionItemInfo.getValue());
+	            alarmInfo.setRawValue(acquisitionItemInfo.getRawValue());
+	            alarmInfo.setDataType(acquisitionItemInfo.getDataType());
+	            alarmInfo.setUnit(acquisitionItemInfo.getUnit());
+	            alarmInfo.setAlarmLevel(acquisitionItemInfo.getAlarmLevel());
+	            alarmInfo.setResolutionMode(acquisitionItemInfo.getResolutionMode());
+	            alarmInfo.setBitIndex(acquisitionItemInfo.getBitIndex());
+	            alarmInfo.setAlarmLimit(acquisitionItemInfo.getAlarmLimit());
+	            alarmInfo.setHystersis(acquisitionItemInfo.getHystersis());
+	            alarmInfo.setAlarmInfo(acquisitionItemInfo.getAlarmInfo());
+	            alarmInfo.setAlarmType(acquisitionItemInfo.getAlarmType());
+	            alarmInfo.setDelay(acquisitionItemInfo.getAlarmDelay());
+	            alarmInfo.setRetriggerTime(acquisitionItemInfo.getRetriggerTime());
+	            alarmInfo.setIsSendMessage(acquisitionItemInfo.getIsSendMessage());
+	            alarmInfo.setIsSendMail(acquisitionItemInfo.getIsSendMail());
+	            
+	            if (alarmInfo.getAlertId() != null) {
 	                acquisitionItemInfo.setAlertId(alarmInfo.getAlertId());
 	            }
-				
-				if (StringManagerUtils.isNotNull(alarmInfo.getAckUser())
-			            && StringManagerUtils.isNotNull(alarmInfo.getAckTime())) {
-			        acquisitionItemInfo.setAckStatus(1);
-			    } else {
-			        acquisitionItemInfo.setAckStatus(0);
-			    }
-				acquisitionItemInfo.setSuppressStatus(alarmInfo.getSuppressStatus());
-				acquisitionItemInfo.setSuppressEndTime(alarmInfo.getSuppressEndTime());
-				
-				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
-				
-				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
-					if(!existAlarm && !existAlarmTimer){
-						deviceAlarmInfo.addTimer(alarmKey, StringManagerUtils.stringToInteger(alarmInfo.getDelay()),alarmInfo,acqTime);
-					}
-				}else{
-					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
-						if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
-							deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
-						}
-						deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
-					}
-				}
-			}
-			acquisitionItemInfoList.add(acquisitionItemInfo);
-		}
-		
-		if(deviceAlarmInfo.getAlarmInfoMap()==null || deviceAlarmInfo.getAlarmInfoMap().size()==0){
-			deviceAlarmInfoMap.remove(deviceInfo.getId());
-		}else {
-			deviceAlarmInfoMap.put(deviceInfo.getId(), deviceAlarmInfo);
-		}
-		return acquisitionItemInfoList;
+	            
+	            if (StringManagerUtils.isNotNull(alarmInfo.getAckUser())
+	                    && StringManagerUtils.isNotNull(alarmInfo.getAckTime())) {
+	                acquisitionItemInfo.setAckStatus(1);
+	            } else {
+	                acquisitionItemInfo.setAckStatus(0);
+	            }
+	            acquisitionItemInfo.setSuppressStatus(alarmInfo.getSuppressStatus());
+	            acquisitionItemInfo.setSuppressEndTime(alarmInfo.getSuppressEndTime());
+	            
+	            deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
+	            
+	            // ★ 定时器注册与清理逻辑
+	            if (alarmDelay > 0) {
+	                if (!existAlarm && !existAlarmTimer && pendingDelay) {
+	                    deviceAlarmInfo.addTimer(alarmKey, alarmDelay, alarmInfo, acqTime);
+	                }
+	            } else {
+	                if (deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)) {
+	                    if (!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()) {
+	                        deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
+	                    }
+	                    deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
+	                }
+	            }
+	        }
+	        acquisitionItemInfoList.add(acquisitionItemInfo);
+	    }
+	    
+	    if(deviceAlarmInfo.getAlarmInfoMap()==null || deviceAlarmInfo.getAlarmInfoMap().size()==0){
+	        deviceAlarmInfoMap.remove(deviceInfo.getId());
+	    }else {
+	        deviceAlarmInfoMap.put(deviceInfo.getId(), deviceAlarmInfo);
+	    }
+	    return acquisitionItemInfoList;
 	}
 	
 	public List<AcquisitionItemInfo> CalculateDataAlarmProcessing(List<ProtocolItemResolutionData> calItemResolutionDataList,AlarmInstanceOwnItem alarmInstanceOwnItem,
-			List<AcquisitionItemInfo> acquisitionItemInfoList,SRPCalculateResponseData srpCalculateResponseData,DeviceInfo deviceInfo,String acqTime){
-		
-		Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap=DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
-		DeviceAlarmInfo deviceAlarmInfo=null;
-		if(deviceAlarmInfoMap!=null){
-			deviceAlarmInfo=deviceAlarmInfoMap.get(deviceInfo.getId());
-		}
-		if(deviceAlarmInfo==null){
-			deviceAlarmInfo=new DeviceAlarmInfo();
-			deviceAlarmInfo.setDeviceId(deviceInfo.getId());
-			deviceAlarmInfo.setDeviceName(deviceInfo.getDeviceName());
-			deviceAlarmInfo.setDeviceType(deviceInfo.getDeviceType());
-			deviceAlarmInfo.setDeviceTypeName_zh_CN(deviceInfo.getDeviceTypeName_zh_CN());
-			deviceAlarmInfo.setDeviceTypeName_en(deviceInfo.getDeviceTypeName_en());
-			deviceAlarmInfo.setDeviceTypeName_ru(deviceInfo.getDeviceTypeName_ru());
-		}
-		
-		if(deviceAlarmInfo.getAlarmInfoMap()==null){
-			deviceAlarmInfo.setAlarmInfoMap(new HashMap<String,AlarmInfo>());
-		}
-		if(deviceAlarmInfo.getAlarmInfoTimerMap()==null){
-			deviceAlarmInfo.setAlarmInfoTimerMap(new HashMap<String,ScheduledExecutorService>());
-		}
-		
-		WorkType workType=null;
-		if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
-			workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
-		}
-		for(int i=0;i<calItemResolutionDataList.size();i++){
-			int alarmLevel=0;
-			AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
-			acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(calItemResolutionDataList.get(i).getAddr()));
-			acquisitionItemInfo.setColumn(calItemResolutionDataList.get(i).getColumn());
-			acquisitionItemInfo.setTitle(calItemResolutionDataList.get(i).getColumnName());
-			acquisitionItemInfo.setRawTitle(calItemResolutionDataList.get(i).getRawColumnName());
-			
-			acquisitionItemInfo.setValue(calItemResolutionDataList.get(i).getValue());
-			acquisitionItemInfo.setRawValue(calItemResolutionDataList.get(i).getRawValue());
-			
-			
-			acquisitionItemInfo.setDataType(calItemResolutionDataList.get(i).getColumnDataType());
-			acquisitionItemInfo.setResolutionMode(calItemResolutionDataList.get(i).getResolutionMode());
-			acquisitionItemInfo.setBitIndex(calItemResolutionDataList.get(i).getBitIndex());
-			acquisitionItemInfo.setAlarmLevel(alarmLevel);
-			acquisitionItemInfo.setUnit(calItemResolutionDataList.get(i).getUnit());
-			acquisitionItemInfo.setSort(calItemResolutionDataList.get(i).getSort());
-			acquisitionItemInfo.setType(calItemResolutionDataList.get(i).getType());
-			acquisitionItemInfo.setDisplayItemId(calItemResolutionDataList.get(i).getDisplayItemId());
-			
-			String alarmKey=deviceInfo.getId()+"_"+acquisitionItemInfo.getColumn();
-			boolean existAlarm=deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey);
-			boolean existAlarmTimer=deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey);
-			DeviceAlarmInfo.AlarmInfo alarmInfo=null;
-			if(existAlarm){
-				alarmInfo=deviceAlarmInfo.getAlarmInfoMap().get(alarmKey);
-			}else{
-				alarmInfo=new DeviceAlarmInfo.AlarmInfo();
-			}
-			
-			if("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
-				if(workType!=null){
-					acquisitionItemInfo.setValue(workType.getResultName());
-				}
-			}else if("optimizationSuggestion".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
-				if(workType!=null){
-					acquisitionItemInfo.setValue(workType.getOptimizationSuggestion());
-					acquisitionItemInfo.setRawValue(workType.getOptimizationSuggestion());
-				}
-			}
-			
-			for(int k=0;alarmInstanceOwnItem!=null && k<alarmInstanceOwnItem.getItemList().size();k++){
-				int alarmSign=alarmInstanceOwnItem.getItemList().get(k).getAlarmSign();
-				if(alarmSign==1){
-					int delay=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getDelay())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getDelay()):0;
-					int retriggerTime=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime()):0;
-					
-					if(("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
-							&&alarmInstanceOwnItem.getItemList().get(k).getType()==4
-							&&workType!=null&&workType.getResultCode()==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
-						alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
-						if(alarmLevel>0){
-							acquisitionItemInfo.setAlarmLevel(alarmLevel);
-							acquisitionItemInfo.setAlarmInfo(workType.getResultName());
-							acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-							acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
-						}
-						break;
-					}else if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
-							&& alarmInstanceOwnItem.getItemList().get(k).getType()==6
-							&& alarmInstanceOwnItem.getItemList().get(k).getValue()==StringManagerUtils.stringToInteger(calItemResolutionDataList.get(i).getRawValue())
-							){
-						alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
-						if(alarmLevel>0){
-							acquisitionItemInfo.setAlarmLevel(alarmLevel);
-							acquisitionItemInfo.setAlarmInfo(calItemResolutionDataList.get(i).getValue());
-							acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-							acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-							acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-							acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-							acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
-						}
-						break;
-					}else if(alarmInstanceOwnItem.getItemList().get(k).getType()==5&&calItemResolutionDataList.get(i).getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
-						float hystersis=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getHystersis())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(k).getHystersis()):0;
-						float upperLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()):0;
-						float lowerLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()):0;
-						if(existAlarm){//如果已存在报警
-							upperLimit=upperLimit-hystersis;
-							lowerLimit=lowerLimit+hystersis;
-						}
-						
-						if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()) 
-								&& StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
-							alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
-							if(alarmLevel>0){
-								acquisitionItemInfo.setAlarmLevel(alarmLevel);
-								acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(k).getHystersis());
-								acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit());
-								acquisitionItemInfo.setAlarmInfo("高报");
-								acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
-							}
-						}else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()) && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
-							alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmSign()>0?alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel():0;
-							if(alarmLevel>0){
-								acquisitionItemInfo.setAlarmLevel(alarmLevel);
-								acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(k).getHystersis());
-								acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit());
-								acquisitionItemInfo.setAlarmInfo("低报");
-								acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
-								acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
-								acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
-								acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
-								acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
-							}
-						}
-						break;
-					}
-				}
-			}
-			
-			if(acquisitionItemInfo.getAlarmLevel()==0){
-				// 1. 尝试从内存中移除（兼容系统运行期间正常恢复的场景）
-				DeviceAlarmInfo.AlarmInfo removedAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
-				
-				// 2. 清理定时器残留
-				if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
-					if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
-						deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
-					}
-					deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
-				}
-				
-				// 3. 更新数据库恢复时间
-				// ★ 核心优化：不管是内存有（正常恢复），还是内存没有（服务刚重启后第一次采集即为0），都要尝试去闭环数据库
-				try {
-					String column = removedAlarmInfo != null ? removedAlarmInfo.getColumn() : acquisitionItemInfo.getColumn();
-					String bitIndex = removedAlarmInfo != null ? removedAlarmInfo.getBitIndex() : acquisitionItemInfo.getBitIndex();
-					
-					String recoverSql = "update tbl_alarminfo_hist t set "
-						    + " t.recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss'), "
-						    + " t.suppress_status = CASE WHEN nvl(t.suppress_status, 0) = 2 THEN 2 ELSE 1 END " // 只要恢复，未人工消警的就置为自动消警 1
-						    + " where t.deviceid = " + deviceInfo.getId() 
-						    + " and t.itemcode ='" + column.replace("'", "''") + "' "
-						    + " and t.recoverytime is null ";
-					
-					// 区分开关量的 bitIndex
-					if (StringManagerUtils.isNotNull(bitIndex)) {
-						recoverSql += " and bitindex = " + bitIndex;
-					}
-					
-					commonDataService.getBaseDao().updateOrDeleteBySql(recoverSql);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}else{
-				// 人工消警到期判断
-				if (alarmInfo.getSuppressStatus() == 2) {
-					if (StringManagerUtils.isNotNull(alarmInfo.getSuppressEndTime())
-					        && alarmInfo.getSuppressEndTime().compareTo(acqTime) <= 0) {
-					        // ★ 到期：只清内存，不动 hist（保留消警历史供追溯）
-					        //   下次正常触发时会 insert 新的 hist 行，旧行的 suppress_* 永久保留
-					        alarmInfo.setSuppressStatus(0);
-					        alarmInfo.setSuppressReason(null);
-					        alarmInfo.setSuppressUser(null);
-					        alarmInfo.setSuppressTime(null);
-					        alarmInfo.setSuppressIp(null);
-					        alarmInfo.setSuppressEndTime(null);
-					    }
-				}
-				
-				String alarmStartTime =alarmInfo.getAlarmStartTime();
-				int retriggerTime=StringManagerUtils.stringToInteger(acquisitionItemInfo.getRetriggerTime());
-				long timeDiff=StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
-				
-				if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay())==0  //没有设置延时
-						|| (StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay())>0 &&  deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey)) //设置了延时且已存在报警项       
-						){
-					if(retriggerTime<=0 || (retriggerTime>0 && timeDiff>=retriggerTime*1000) ){
-						alarmInfo.setTriggerAlarm(true);
-						acquisitionItemInfo.setTriggerAlarm(true);
-					}else{
-						alarmInfo.setTriggerAlarm(false);
-						acquisitionItemInfo.setTriggerAlarm(false);
-					}
-				}
-				
-				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0 && deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
-					alarmInfo.setTriggerAlarm(false);
-					acquisitionItemInfo.setTriggerAlarm(false);
-				}
-				
-				if(alarmInfo.getTriggerAlarm()){
-					alarmInfo.setAlarmStartTime(acqTime);
-				}
-				
-				
-				alarmInfo.setAlarmTime(acqTime);
-				alarmInfo.setAddr(acquisitionItemInfo.getAddr());
-				alarmInfo.setColumn(acquisitionItemInfo.getColumn());
-				alarmInfo.setTitle(acquisitionItemInfo.getTitle());
-				alarmInfo.setRawTitle(acquisitionItemInfo.getRawTitle());
-				alarmInfo.setValue(acquisitionItemInfo.getValue());
-				alarmInfo.setRawValue(acquisitionItemInfo.getRawValue());
-				alarmInfo.setDataType(acquisitionItemInfo.getDataType());
-				alarmInfo.setUnit(acquisitionItemInfo.getUnit());
-				alarmInfo.setAlarmLevel(acquisitionItemInfo.getAlarmLevel());
-				alarmInfo.setResolutionMode(acquisitionItemInfo.getResolutionMode());
-				alarmInfo.setBitIndex(acquisitionItemInfo.getBitIndex());
-				alarmInfo.setAlarmLimit(acquisitionItemInfo.getAlarmLimit());
-				alarmInfo.setHystersis(acquisitionItemInfo.getHystersis());
-				alarmInfo.setAlarmInfo(acquisitionItemInfo.getAlarmInfo());
-				alarmInfo.setAlarmType(acquisitionItemInfo.getAlarmType());
-				alarmInfo.setDelay(acquisitionItemInfo.getAlarmDelay());
-				alarmInfo.setRetriggerTime(acquisitionItemInfo.getRetriggerTime());
-				alarmInfo.setIsSendMessage(acquisitionItemInfo.getIsSendMessage());
-				alarmInfo.setIsSendMail(acquisitionItemInfo.getIsSendMail());
-				
-				if (alarmInfo.getAlertId() != null) {
-				    acquisitionItemInfo.setAlertId(alarmInfo.getAlertId());
-				}
-				
-				if (StringManagerUtils.isNotNull(alarmInfo.getAckUser())
-			            && StringManagerUtils.isNotNull(alarmInfo.getAckTime())) {
-			        acquisitionItemInfo.setAckStatus(1);
-			    } else {
-			        acquisitionItemInfo.setAckStatus(0);
-			    }
-				acquisitionItemInfo.setSuppressStatus(alarmInfo.getSuppressStatus());
-				acquisitionItemInfo.setSuppressEndTime(alarmInfo.getSuppressEndTime());
-				
-				deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
-				
-				if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
-					if(!existAlarm && !existAlarmTimer){
-						deviceAlarmInfo.addTimer(alarmKey, StringManagerUtils.stringToInteger(alarmInfo.getDelay()),alarmInfo,acqTime);
-					}
-				}else{
-					if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
-						if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
-							deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
-						}
-						deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
-					}
-				}
-			}
-			
-			acquisitionItemInfoList.add(acquisitionItemInfo);
-		}
-		if(deviceAlarmInfo.getAlarmInfoMap()==null || deviceAlarmInfo.getAlarmInfoMap().size()==0){
-			deviceAlarmInfoMap.remove(deviceInfo.getId());
-		}else {
-			deviceAlarmInfoMap.put(deviceInfo.getId(), deviceAlarmInfo);
-		}
-		return acquisitionItemInfoList;
+	        List<AcquisitionItemInfo> acquisitionItemInfoList,SRPCalculateResponseData srpCalculateResponseData,DeviceInfo deviceInfo,String acqTime){
+	    
+	    Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap=DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+	    DeviceAlarmInfo deviceAlarmInfo=null;
+	    if(deviceAlarmInfoMap!=null){
+	        deviceAlarmInfo=deviceAlarmInfoMap.get(deviceInfo.getId());
+	    }
+	    if(deviceAlarmInfo==null){
+	        deviceAlarmInfo=new DeviceAlarmInfo();
+	        deviceAlarmInfo.setDeviceId(deviceInfo.getId());
+	        deviceAlarmInfo.setDeviceName(deviceInfo.getDeviceName());
+	        deviceAlarmInfo.setDeviceType(deviceInfo.getDeviceType());
+	        deviceAlarmInfo.setDeviceTypeName_zh_CN(deviceInfo.getDeviceTypeName_zh_CN());
+	        deviceAlarmInfo.setDeviceTypeName_en(deviceInfo.getDeviceTypeName_en());
+	        deviceAlarmInfo.setDeviceTypeName_ru(deviceInfo.getDeviceTypeName_ru());
+	    }
+	    
+	    if(deviceAlarmInfo.getAlarmInfoMap()==null){
+	        deviceAlarmInfo.setAlarmInfoMap(new HashMap<String,AlarmInfo>());
+	    }
+	    if(deviceAlarmInfo.getAlarmInfoTimerMap()==null){
+	        deviceAlarmInfo.setAlarmInfoTimerMap(new HashMap<String,ScheduledExecutorService>());
+	    }
+	    
+	    WorkType workType=null;
+	    if(srpCalculateResponseData!=null&&srpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
+	        workType=MemoryDataManagerTask.getWorkTypeByCode(srpCalculateResponseData.getCalculationStatus().getResultCode()+"",Config.getInstance().configFile.getAp().getOthers().getLoginLanguage());
+	    }
+	    for(int i=0;i<calItemResolutionDataList.size();i++){
+	        int alarmLevel=0;
+	        AcquisitionItemInfo acquisitionItemInfo=new AcquisitionItemInfo();
+	        acquisitionItemInfo.setAddr(StringManagerUtils.stringToInteger(calItemResolutionDataList.get(i).getAddr()));
+	        acquisitionItemInfo.setColumn(calItemResolutionDataList.get(i).getColumn());
+	        acquisitionItemInfo.setTitle(calItemResolutionDataList.get(i).getColumnName());
+	        acquisitionItemInfo.setRawTitle(calItemResolutionDataList.get(i).getRawColumnName());
+	        
+	        acquisitionItemInfo.setValue(calItemResolutionDataList.get(i).getValue());
+	        acquisitionItemInfo.setRawValue(calItemResolutionDataList.get(i).getRawValue());
+	        
+	        
+	        acquisitionItemInfo.setDataType(calItemResolutionDataList.get(i).getColumnDataType());
+	        acquisitionItemInfo.setResolutionMode(calItemResolutionDataList.get(i).getResolutionMode());
+	        acquisitionItemInfo.setBitIndex(calItemResolutionDataList.get(i).getBitIndex());
+	        acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	        acquisitionItemInfo.setUnit(calItemResolutionDataList.get(i).getUnit());
+	        acquisitionItemInfo.setSort(calItemResolutionDataList.get(i).getSort());
+	        acquisitionItemInfo.setType(calItemResolutionDataList.get(i).getType());
+	        acquisitionItemInfo.setDisplayItemId(calItemResolutionDataList.get(i).getDisplayItemId());
+	        
+	        String alarmKey=deviceInfo.getId()+"_"+acquisitionItemInfo.getColumn();
+	        boolean existAlarm=deviceAlarmInfo.getAlarmInfoMap().containsKey(alarmKey);
+	        boolean existAlarmTimer=deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey);
+	        DeviceAlarmInfo.AlarmInfo alarmInfo=null;
+	        if(existAlarm){
+	            alarmInfo=deviceAlarmInfo.getAlarmInfoMap().get(alarmKey);
+	        }else{
+	            alarmInfo=new DeviceAlarmInfo.AlarmInfo();
+	        }
+	        
+	        // ★★★ 关键修改：记录上一次采集时的"延时检测中"状态 ★★★
+	        //   用于在"延时刚结束"时强制触发第一次报警，跳过 retriggerTime 判断。
+	        boolean wasPendingDelay = alarmInfo.getPendingDelay();
+	        
+	        if("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
+	            if(workType!=null){
+	                acquisitionItemInfo.setValue(workType.getResultName());
+	            }
+	        }else if("optimizationSuggestion".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())){
+	            if(workType!=null){
+	                acquisitionItemInfo.setValue(workType.getOptimizationSuggestion());
+	                acquisitionItemInfo.setRawValue(workType.getOptimizationSuggestion());
+	            }
+	        }
+	        
+	        for(int k=0;alarmInstanceOwnItem!=null && k<alarmInstanceOwnItem.getItemList().size();k++){
+	            int alarmSign=alarmInstanceOwnItem.getItemList().get(k).getAlarmSign();
+	            if(alarmSign==1){
+	                int delay=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getDelay())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getDelay()):0;
+	                int retriggerTime=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime())?StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime()):0;
+	                
+	                if(("resultCode".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"resultName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
+	                        &&alarmInstanceOwnItem.getItemList().get(k).getType()==4
+	                        &&workType!=null&&workType.getResultCode()==StringManagerUtils.stringToInteger(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
+	                    alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
+	                    if(alarmLevel>0){
+	                        acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	                        acquisitionItemInfo.setAlarmInfo(workType.getResultName());
+	                        acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
+	                        acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+	                        acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+	                        acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+	                        acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
+	                    }
+	                    break;
+	                }else if(("runStatus".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn())||"runStatusName".equalsIgnoreCase(calItemResolutionDataList.get(i).getColumn()))
+	                        && alarmInstanceOwnItem.getItemList().get(k).getType()==6
+	                        && alarmInstanceOwnItem.getItemList().get(k).getValue()==StringManagerUtils.stringToInteger(calItemResolutionDataList.get(i).getRawValue())
+	                        ){
+	                    alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
+	                    if(alarmLevel>0){
+	                        acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	                        acquisitionItemInfo.setAlarmInfo(calItemResolutionDataList.get(i).getValue());
+	                        acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
+	                        acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+	                        acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+	                        acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+	                        acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
+	                    }
+	                    break;
+	                }else if(alarmInstanceOwnItem.getItemList().get(k).getType()==5&&calItemResolutionDataList.get(i).getColumn().equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
+	                    float hystersis=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getHystersis())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(k).getHystersis()):0;
+	                    float upperLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()):0;
+	                    float lowerLimit=StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit())?StringManagerUtils.stringToFloat(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()):0;
+	                    if(existAlarm){//如果已存在报警
+	                        upperLimit=upperLimit-hystersis;
+	                        lowerLimit=lowerLimit+hystersis;
+	                    }
+	                    
+	                    if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()) 
+	                            && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())>upperLimit){
+	                        alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel();
+	                        if(alarmLevel>0){
+	                            acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	                            acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(k).getHystersis());
+	                            acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getUpperLimit());
+	                            acquisitionItemInfo.setAlarmInfo("高报");
+	                            acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
+	                            acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+	                            acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+	                            acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+	                            acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
+	                        }
+	                    }else if(StringManagerUtils.isNotNull(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()) && StringManagerUtils.stringToFloat(acquisitionItemInfo.getRawValue())<lowerLimit){
+	                        alarmLevel=alarmInstanceOwnItem.getItemList().get(k).getAlarmSign()>0?alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel():0;
+	                        if(alarmLevel>0){
+	                            acquisitionItemInfo.setAlarmLevel(alarmLevel);
+	                            acquisitionItemInfo.setHystersis(alarmInstanceOwnItem.getItemList().get(k).getHystersis());
+	                            acquisitionItemInfo.setAlarmLimit(alarmInstanceOwnItem.getItemList().get(k).getLowerLimit());
+	                            acquisitionItemInfo.setAlarmInfo("低报");
+	                            acquisitionItemInfo.setAlarmType(alarmInstanceOwnItem.getItemList().get(k).getType());
+	                            acquisitionItemInfo.setAlarmDelay(alarmInstanceOwnItem.getItemList().get(k).getDelay());
+	                            acquisitionItemInfo.setIsSendMessage(alarmInstanceOwnItem.getItemList().get(k).getIsSendMessage());
+	                            acquisitionItemInfo.setIsSendMail(alarmInstanceOwnItem.getItemList().get(k).getIsSendMail());
+	                            acquisitionItemInfo.setRetriggerTime(alarmInstanceOwnItem.getItemList().get(k).getRetriggerTime());
+	                        }
+	                    }
+	                    break;
+	                }
+	            }
+	        }
+	        
+	        if(acquisitionItemInfo.getAlarmLevel()==0){
+	            acquisitionItemInfo.setPendingDelay(false);   // 恢复项不参与 delay
+	            // 尝试从内存中移除（兼容系统运行期间正常恢复的场景）
+	            DeviceAlarmInfo.AlarmInfo removedAlarmInfo = deviceAlarmInfo.getAlarmInfoMap().remove(alarmKey);
+	            
+	            // 清理定时器残留
+	            if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
+	                if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
+	                    deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
+	                }
+	                deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
+	            }
+	            
+	            // 通信状态项走这里 → 额外清理 _0 / _2（AcqOnlineData 用的 key）
+	            if ("commStatusName".equalsIgnoreCase(acquisitionItemInfo.getColumn())) {
+	                String[] commKeys = new String[]{
+	                    deviceInfo.getId() + "_commStatusName_0",
+	                    deviceInfo.getId() + "_commStatusName_2"
+	                };
+	                for (String ck : commKeys) {
+	                    if (deviceAlarmInfo.getAlarmInfoMap().containsKey(ck)) {
+	                        deviceAlarmInfo.getAlarmInfoMap().remove(ck);
+	                    }
+	                    if (deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(ck)) {
+	                        java.util.concurrent.ScheduledExecutorService _t = deviceAlarmInfo.getAlarmInfoTimerMap().get(ck);
+	                        if (_t != null && !_t.isShutdown()) _t.shutdownNow();
+	                        deviceAlarmInfo.getAlarmInfoTimerMap().remove(ck);
+	                    }
+	                }
+	            }
+	            
+	            // 更新数据库恢复时间
+	            try {
+	                String column = removedAlarmInfo != null ? removedAlarmInfo.getColumn() : acquisitionItemInfo.getColumn();
+	                String bitIndex = removedAlarmInfo != null ? removedAlarmInfo.getBitIndex() : acquisitionItemInfo.getBitIndex();
+	                
+	                String recoverSql = "update tbl_alarminfo_hist t set "
+	                        + " t.recoverytime = to_date('" + acqTime + "','yyyy-mm-dd hh24:mi:ss'), "
+	                        + " t.suppress_status = CASE WHEN nvl(t.suppress_status, 0) = 2 THEN 2 ELSE 1 END "
+	                        + " where t.deviceid = " + deviceInfo.getId() 
+	                        + " and t.itemcode ='" + column.replace("'", "''") + "' "
+	                        + " and t.recoverytime is null ";
+	                
+	                if (StringManagerUtils.isNotNull(bitIndex)) {
+	                    recoverSql += " and bitindex = " + bitIndex;
+	                }
+	                
+	                commonDataService.getBaseDao().updateOrDeleteBySql(recoverSql);
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	        }else{
+	            // 人工消警到期判断
+	            if (alarmInfo.getSuppressStatus() == 2) {
+	                if (StringManagerUtils.isNotNull(alarmInfo.getSuppressEndTime())
+	                        && alarmInfo.getSuppressEndTime().compareTo(acqTime) <= 0) {
+	                    alarmInfo.setSuppressStatus(0);
+	                    alarmInfo.setSuppressReason(null);
+	                    alarmInfo.setSuppressUser(null);
+	                    alarmInfo.setSuppressTime(null);
+	                    alarmInfo.setSuppressIp(null);
+	                    alarmInfo.setSuppressEndTime(null);
+	                }
+	            }
+	            
+	            // ★ 统一判定报警的 3 个状态
+	            boolean triggerAlarm = false;
+	            boolean pendingDelay = false;
+
+	            if(StringManagerUtils.stringToInteger(acquisitionItemInfo.getAlarmDelay()) > 0 
+	                    && (!existAlarm || deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey))){
+	                // 1. 仍在"延时持续检测"中（比如 60s 内）
+	                pendingDelay = true;
+	                triggerAlarm = false;
+	            } else {
+	                // 2. 延时结束
+	                pendingDelay = false;
+	                
+	                // ★★★ 关键修改：上一次采集仍在延时中、本次采集延时已结束 ★★★
+	                //    说明这是"延时到达后的第一条采集数据"，必须强制触发报警，
+	                //    跳过 retriggerTime 判断，避免被误判为"持续中"。
+	                //    alarmStartTime 会在后面 if (triggerAlarm) 统一设置为 acqTime。
+	                if (wasPendingDelay) {
+	                    triggerAlarm = true;
+	                } else {
+	                    // 原有的重触发间隔判断
+	                    String alarmStartTime = alarmInfo.getAlarmStartTime();
+	                    long timeDiff = 0;
+	                    if (StringManagerUtils.isNotNull(alarmStartTime)) {
+	                        timeDiff = StringManagerUtils.getTimeDifference(alarmStartTime, acqTime, "yyyy-MM-dd HH:mm:ss");
+	                    } else {
+	                        timeDiff = Long.MAX_VALUE; // 首次触发，时间差设为无穷大
+	                    }
+	                    int retriggerTime = StringManagerUtils.stringToInteger(acquisitionItemInfo.getRetriggerTime());
+	                    
+	                    if (retriggerTime > 0 && timeDiff < retriggerTime * 1000) {
+	                        // 在重触发间隔内（比如 300s 内），静默处理（持续中）
+	                        triggerAlarm = false; 
+	                    } else {
+	                        // 真正触发报警（首次触发，或者间隔已满）
+	                        triggerAlarm = true;  
+	                    }
+	                }
+	            }
+
+	            // 赋值到内存对象
+	            alarmInfo.setTriggerAlarm(triggerAlarm);
+	            acquisitionItemInfo.setTriggerAlarm(triggerAlarm);
+	            alarmInfo.setPendingDelay(pendingDelay);
+	            acquisitionItemInfo.setPendingDelay(pendingDelay);
+
+	            // ★ 核心修复：只有真正触发（triggerAlarm=true）时，才更新计时起点
+	            if (triggerAlarm) {
+	                alarmInfo.setAlarmStartTime(acqTime);
+	            }
+	            
+	            // ---- 下面保留原有的属性赋值（不要动）----
+	            alarmInfo.setAlarmTime(acqTime);
+	            alarmInfo.setAddr(acquisitionItemInfo.getAddr());
+	            alarmInfo.setColumn(acquisitionItemInfo.getColumn());
+	            alarmInfo.setTitle(acquisitionItemInfo.getTitle());
+	            alarmInfo.setRawTitle(acquisitionItemInfo.getRawTitle());
+	            alarmInfo.setValue(acquisitionItemInfo.getValue());
+	            alarmInfo.setRawValue(acquisitionItemInfo.getRawValue());
+	            alarmInfo.setDataType(acquisitionItemInfo.getDataType());
+	            alarmInfo.setUnit(acquisitionItemInfo.getUnit());
+	            alarmInfo.setAlarmLevel(acquisitionItemInfo.getAlarmLevel());
+	            alarmInfo.setResolutionMode(acquisitionItemInfo.getResolutionMode());
+	            alarmInfo.setBitIndex(acquisitionItemInfo.getBitIndex());
+	            alarmInfo.setAlarmLimit(acquisitionItemInfo.getAlarmLimit());
+	            alarmInfo.setHystersis(acquisitionItemInfo.getHystersis());
+	            alarmInfo.setAlarmInfo(acquisitionItemInfo.getAlarmInfo());
+	            alarmInfo.setAlarmType(acquisitionItemInfo.getAlarmType());
+	            alarmInfo.setDelay(acquisitionItemInfo.getAlarmDelay());
+	            alarmInfo.setRetriggerTime(acquisitionItemInfo.getRetriggerTime());
+	            alarmInfo.setIsSendMessage(acquisitionItemInfo.getIsSendMessage());
+	            alarmInfo.setIsSendMail(acquisitionItemInfo.getIsSendMail());
+	            
+	            if (alarmInfo.getAlertId() != null) {
+	                acquisitionItemInfo.setAlertId(alarmInfo.getAlertId());
+	            }
+	            
+	            if (StringManagerUtils.isNotNull(alarmInfo.getAckUser())
+	                    && StringManagerUtils.isNotNull(alarmInfo.getAckTime())) {
+	                acquisitionItemInfo.setAckStatus(1);
+	            } else {
+	                acquisitionItemInfo.setAckStatus(0);
+	            }
+	            acquisitionItemInfo.setSuppressStatus(alarmInfo.getSuppressStatus());
+	            acquisitionItemInfo.setSuppressEndTime(alarmInfo.getSuppressEndTime());
+	            
+	            deviceAlarmInfo.getAlarmInfoMap().put(alarmKey, alarmInfo);
+	            
+	            if(StringManagerUtils.stringToInteger(alarmInfo.getDelay())>0){
+	                if(!existAlarm && !existAlarmTimer){
+	                    deviceAlarmInfo.addTimer(alarmKey, StringManagerUtils.stringToInteger(alarmInfo.getDelay()),alarmInfo,acqTime);
+	                }
+	            }else{
+	                if(deviceAlarmInfo.getAlarmInfoTimerMap().containsKey(alarmKey)){
+	                    if(!deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).isShutdown()){
+	                        deviceAlarmInfo.getAlarmInfoTimerMap().get(alarmKey).shutdownNow();
+	                    }
+	                    deviceAlarmInfo.getAlarmInfoTimerMap().remove(alarmKey);
+	                }
+	            }
+	        }
+	        
+	        acquisitionItemInfoList.add(acquisitionItemInfo);
+	    }
+	    if(deviceAlarmInfo.getAlarmInfoMap()==null || deviceAlarmInfo.getAlarmInfoMap().size()==0){
+	        deviceAlarmInfoMap.remove(deviceInfo.getId());
+	    }else {
+	        deviceAlarmInfoMap.put(deviceInfo.getId(), deviceAlarmInfo);
+	    }
+	    return acquisitionItemInfoList;
 	}
 	
 	public List<AcquisitionItemInfo> InputDataAlarmProcessing(List<ProtocolItemResolutionData> inputItemItemResolutionDataList,
@@ -2839,44 +2964,50 @@ public class DriverAPIController extends BaseController{
 		
 		
 		for(int j=0;j<acquisitionItemInfoList.size();j++){
-			String column=acquisitionItemInfoList.get(j).getColumn();
+			 AcquisitionItemInfo info = acquisitionItemInfoList.get(j);
+			 // 计算是否是真实报警
+			 boolean isSuppressed = (info.getSuppressStatus() == 2);
+			 boolean pushTriggerAlarm = info.getTriggerAlarm(); 
+			 int realAlarmLevel = info.getAlarmLevel();
+			String column=info.getColumn();
 			if(
-					(acquisitionItemInfoList.get(j).getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfoList.get(j).getResolutionMode()))
-					|| (acquisitionItemInfoList.get(j).getType()==5 && "0".equalsIgnoreCase(acquisitionItemInfoList.get(j).getResolutionMode()))
+					(info.getType()==0 && "0".equalsIgnoreCase(info.getResolutionMode()))
+					|| (info.getType()==5 && "0".equalsIgnoreCase(info.getResolutionMode()))
 					){
-				column+="_"+acquisitionItemInfoList.get(j).getBitIndex();
+				column+="_"+info.getBitIndex();
 			}
-			String value=acquisitionItemInfoList.get(j).getValue();
+			String value=info.getValue();
 			if(column.equalsIgnoreCase("RunStatusName") || column.equalsIgnoreCase("RunStatus")){
-				if(StringManagerUtils.stringToInteger(acquisitionItemInfoList.get(j).getRawValue())==1){
+				if(StringManagerUtils.stringToInteger(info.getRawValue())==1){
 					value=LanguageResourceMap.get("run");
-				}else if(StringManagerUtils.isNotNull(acquisitionItemInfoList.get(j).getRawValue()) && StringManagerUtils.stringToInteger(acquisitionItemInfoList.get(j).getRawValue())==0){
+				}else if(StringManagerUtils.isNotNull(info.getRawValue()) && StringManagerUtils.stringToInteger(info.getRawValue())==0){
 					value=LanguageResourceMap.get("stop");
 				}else{
 					value=LanguageResourceMap.get("emptyMsg");
 				}
 			}else if(column.equalsIgnoreCase("ResultName") || column.equalsIgnoreCase("ResultCode")){
-				workType=MemoryDataManagerTask.getWorkTypeByCode(acquisitionItemInfoList.get(j).getRawValue(),loginUserLanguage);
+				workType=MemoryDataManagerTask.getWorkTypeByCode(info.getRawValue(),loginUserLanguage);
 				if(workType!=null){
 					value=workType.getResultName();
 				}
 			}
 			
 			//将 triggerAlarm 和 alertId 带给前端
-		    allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\","
+			allItemInfo_json.append("{\"columnName\":\""+info.getTitle()+"\","
 		            + "\"column\":\""+column+"\","
 		            + "\"value\":\""+value+"\","
-		            + "\"rawValue\":\""+acquisitionItemInfoList.get(j).getRawValue()+"\","
-		            + "\"columnDataType\":\""+acquisitionItemInfoList.get(j).getDataType()+"\","
-		            + "\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\","
-		            + "\"triggerAlarm\":" + (acquisitionItemInfoList.get(j).getTriggerAlarm()) + ","
-		            + "\"alertId\":" + (acquisitionItemInfoList.get(j).getAlertId() != null ? acquisitionItemInfoList.get(j).getAlertId() : "null") + ","
-		            + "\"alarmType\":"+(acquisitionItemInfoList.get(j).getAlarmType())+","
-		            + "\"alarminfo\":\""+(acquisitionItemInfoList.get(j).getAlarmInfo())+"\","
-		            + "\"ackStatus\":" + (acquisitionItemInfoList.get(j).getAckStatus() != null ? acquisitionItemInfoList.get(j).getAckStatus() : "null") + "," 
-		            + "\"suppressStatus\":" + (acquisitionItemInfoList.get(j).getSuppressStatus()) + ","
-		            + "\"suppressEndTime\":\"" + (acquisitionItemInfoList.get(j).getSuppressEndTime() != null ? acquisitionItemInfoList.get(j).getSuppressEndTime() : "") + "\","
-		            + "\"alarmLevel\":"+(acquisitionItemInfoList.get(j).getAlarmLevel())+"},");
+		            + "\"rawValue\":\""+info.getRawValue()+"\","
+		            + "\"columnDataType\":\""+info.getDataType()+"\","
+		            + "\"resolutionMode\":\""+info.getResolutionMode()+"\","
+		            + "\"triggerAlarm\":" + pushTriggerAlarm + ","
+		            + "\"pendingDelay\":" + info.getPendingDelay() + "," 
+		            + "\"alertId\":" + (info.getAlertId() != null ? info.getAlertId() : "null") + ","
+		            + "\"alarmType\":"+(info.getAlarmType())+","
+		            + "\"alarminfo\":\""+(info.getAlarmInfo())+"\","
+		            + "\"ackStatus\":" + (info.getAckStatus() != null ? info.getAckStatus() : "null") + ","
+		            + "\"suppressStatus\":" + info.getSuppressStatus() + ","
+		            + "\"suppressEndTime\":\"" + (info.getSuppressEndTime() != null ? info.getSuppressEndTime() : "") + "\","
+		            + "\"alarmLevel\":"+realAlarmLevel+"},");
 		}
 		
 		
@@ -3028,6 +3159,9 @@ public class DriverAPIController extends BaseController{
 				String bitIndex="";
 				String unit="";
 				int alarmLevel=0;
+				boolean triggerAlarm = false;
+				int suppressStatus=0;
+				boolean pendingDelay=false;
 				
 				String realtimeColor="";
 				String realtimeBgColor="";
@@ -3038,26 +3172,23 @@ public class DriverAPIController extends BaseController{
 				if(index<finalAcquisitionItemInfoList.size() 
 						&& StringManagerUtils.isNotNull(finalAcquisitionItemInfoList.get(index).getTitle())
 						){
-					columnName=finalAcquisitionItemInfoList.get(index).getTitle();
-					rawColumnName=finalAcquisitionItemInfoList.get(index).getRawTitle();
-					value=finalAcquisitionItemInfoList.get(index).getValue();
-					rawValue=finalAcquisitionItemInfoList.get(index).getRawValue();
-					column=finalAcquisitionItemInfoList.get(index).getColumn();
-					columnDataType=finalAcquisitionItemInfoList.get(index).getDataType();
-					resolutionMode=finalAcquisitionItemInfoList.get(index).getResolutionMode()+"";
-					alarmLevel=finalAcquisitionItemInfoList.get(index).getAlarmLevel();
-					unit=finalAcquisitionItemInfoList.get(index).getUnit();
-					bitIndex=finalAcquisitionItemInfoList.get(index).getBitIndex();
-					type=finalAcquisitionItemInfoList.get(index).getType();
-					if(
-							(finalAcquisitionItemInfoList.get(index).getType()==0 && "0".equalsIgnoreCase(resolutionMode))
-							|| (finalAcquisitionItemInfoList.get(index).getType()==5 && "0".equalsIgnoreCase(resolutionMode))
-							){
-						column+="_"+bitIndex;
-					}
+					AcquisitionItemInfo info = finalAcquisitionItemInfoList.get(index);
+					columnName=info.getTitle();
+					rawColumnName=info.getRawTitle();
+					value=info.getValue();
+					rawValue=info.getRawValue();
+					column=info.getColumn();
+					columnDataType=info.getDataType();
+					resolutionMode=info.getResolutionMode()+"";
+					alarmLevel=info.getAlarmLevel();
+					unit=info.getUnit();
+					bitIndex=info.getBitIndex();
+					type=info.getType();
+					triggerAlarm = info.getTriggerAlarm();
+					suppressStatus=info.getSuppressStatus();
+					pendingDelay=info.getPendingDelay();
 					
-					
-					if(finalAcquisitionItemInfoList.get(index).getType()==1){
+					if(info.getType()==1){
 						CalItem calItem=MemoryDataManagerTask.getCalItemByCode(column, loginUserLanguage);
 						if(calItem!=null){
 							columnName=calItem.getName();
@@ -3077,7 +3208,7 @@ public class DriverAPIController extends BaseController{
 								value=workType.getResultName();
 							}
 						}
-					}else if(finalAcquisitionItemInfoList.get(index).getType()==3){
+					}else if(info.getType()==3){
 						CalItem calItem=MemoryDataManagerTask.getInputItemByCode(column, loginUserLanguage);
 						if(calItem!=null){
 							columnName=calItem.getName();
@@ -3086,8 +3217,8 @@ public class DriverAPIController extends BaseController{
 					}
 					for(DisplayInstanceOwnItem.DisplayItem displayItem:displayInstanceOwnItem.getItemList()){
 						if("0".equalsIgnoreCase(resolutionMode) 
-								&& displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())  
-								&& displayItem.getBitIndex()==StringManagerUtils.stringToInteger(finalAcquisitionItemInfoList.get(index).getBitIndex())
+								&& displayItem.getItemCode().equalsIgnoreCase(info.getColumn())  
+								&& displayItem.getBitIndex()==StringManagerUtils.stringToInteger(info.getBitIndex())
 								){//开关量
 							realtimeColor=displayItem.getRealtimeColor()!=null?displayItem.getRealtimeColor():"";
 							realtimeBgColor=displayItem.getRealtimeBgColor()!=null?displayItem.getRealtimeBgColor():"";
@@ -3098,7 +3229,7 @@ public class DriverAPIController extends BaseController{
 								columnName=rawColumnName+"/"+columnName;
 							}
 							break;
-						}else if(displayItem.getItemCode().equalsIgnoreCase(finalAcquisitionItemInfoList.get(index).getColumn())){
+						}else if(displayItem.getItemCode().equalsIgnoreCase(info.getColumn())){
 							realtimeColor=displayItem.getRealtimeColor()!=null?displayItem.getRealtimeColor():"";
 							realtimeBgColor=displayItem.getRealtimeBgColor()!=null?displayItem.getRealtimeBgColor():"";
 							historyColor=displayItem.getHistoryColor()!=null?displayItem.getHistoryColor():"";
@@ -3128,6 +3259,9 @@ public class DriverAPIController extends BaseController{
 						+ "\"historyColor\":\""+historyColor+"\","
 						+ "\"historyBgColor\":\""+historyBgColor+"\","
 						+ "\"type\":\""+type+"\","
+						+ "\"triggerAlarm\":" + triggerAlarm + ","
+						+ "\"suppressStatus\":" + suppressStatus + ","
+						+ "\"pendingDelay\":" + pendingDelay + ","
 						+ "\"alarmLevel\":"+alarmLevel+"},");
 			}
 			if(webSocketSendData.toString().endsWith(",")){
@@ -3569,57 +3703,79 @@ public class DriverAPIController extends BaseController{
 					//排序
 					Collections.sort(protocolItemResolutionDataList);
 					//报警判断
-					int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
-					if(alarmInstanceOwnItem!=null){
-						for(int i=0;i<alarmInstanceOwnItem.itemList.size();i++){
-							if(alarmInstanceOwnItem.getItemList().get(i).getType()==3 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase("online")){
-								commAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
-							}else if(workType!=null&&alarmInstanceOwnItem.getItemList().get(i).getType()==4 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
-								resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
-							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase(runStatus==1?"run":(runStatus==0?"stop":languageResourceMap.get("emptyMsg")))){
-								runAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
-							}
-						}
-					}
+//					int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
+//					if(alarmInstanceOwnItem!=null){
+//						for(int i=0;i<alarmInstanceOwnItem.itemList.size();i++){
+//							if(alarmInstanceOwnItem.getItemList().get(i).getType()==3 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase("online")){
+//								commAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
+//							}else if(workType!=null&&alarmInstanceOwnItem.getItemList().get(i).getType()==4 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase(workType.getResultCode()+"")){
+//								resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
+//							}else if(alarmInstanceOwnItem.getItemList().get(i).getType()==6 && alarmInstanceOwnItem.getItemList().get(i).getItemCode().equalsIgnoreCase(runStatus==1?"run":(runStatus==0?"stop":languageResourceMap.get("emptyMsg")))){
+//								runAlarmLevel=alarmInstanceOwnItem.getItemList().get(i).getAlarmLevel();
+//							}
+//						}
+//					}
 					
 					acquisitionItemInfoList=DataAlarmProcessing(protocolItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
 					acquisitionItemInfoList=CalculateDataAlarmProcessing(calItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,srpCalculateReturnData.getSrpCalculateResponseData(),deviceInfo,acqTime);
 					acquisitionItemInfoList=InputDataAlarmProcessing(inputItemItemResolutionDataList,alarmInstanceOwnItem,acquisitionItemInfoList,deviceInfo,acqTime);
 					
-					
-					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
-						if(acquisitionItemInfo.getAlarmLevel()>0 ){
-							if(acquisitionItemInfo.getAlarmLevel()==100){
-								firstLevelCount_r++;
-							}else if(acquisitionItemInfo.getAlarmLevel()==200){
-								secondLevelCount_r++;
-							}else if(acquisitionItemInfo.getAlarmLevel()==300){
-								thirdLevel_r++;
-							}
-							
-							String column=acquisitionItemInfo.getColumn();
-							if( (acquisitionItemInfo.getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()))
-									|| (acquisitionItemInfo.getType()==5 && "0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()))){
-								column+="_"+acquisitionItemInfo.getBitIndex();
-							}
-							realtimeDataAlarmList.add(new KeyValue(column,acquisitionItemInfo.getAlarmLevel()+""));
-							
-							
-							if(acquisitionItemInfo.getTriggerAlarm()){
-								alarm=true;
-								if(acquisitionItemInfo.getAlarmLevel()==100){
-									firstLevelCount++;
-								}else if(acquisitionItemInfo.getAlarmLevel()==200){
-									secondLevelCount++;
-								}else if(acquisitionItemInfo.getAlarmLevel()==300){
-									thirdLevel++;
-								}
-								acqDataAlarmList.add(new KeyValue(column,acquisitionItemInfo.getAlarmLevel()+""));
-							}
-							
-						}
+					int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
+					// 从经过 DataAlarmProcessing 处理后的数据中获取，确保只有真正触发才推送级别
+					for(AcquisitionItemInfo info : acquisitionItemInfoList) {
+					    if (!info.getTriggerAlarm()) continue;
+					    if ("commStatusName".equalsIgnoreCase(info.getColumn())) {
+					        commAlarmLevel = info.getAlarmLevel();
+					    } else if ("runStatusName".equalsIgnoreCase(info.getColumn())) {
+					        runAlarmLevel = info.getAlarmLevel();
+					    } else if ("resultName".equalsIgnoreCase(info.getColumn()) || "resultCode".equalsIgnoreCase(info.getColumn())) {
+					        resultAlarmLevel = info.getAlarmLevel();
+					    }
 					}
 					
+					
+					for(AcquisitionItemInfo acquisitionItemInfo: acquisitionItemInfoList){
+					    boolean isSuppressed = (acquisitionItemInfo.getSuppressStatus() == 2);
+					    boolean isPendingDelay = acquisitionItemInfo.getPendingDelay(); // ★ 新增：获取持续检测状态
+
+					    // ★ 修改：增加 !isPendingDelay 判断，只有真正处于报警或持续中状态，才写入实时表和统计
+					    if(acquisitionItemInfo.getAlarmLevel() > 0 && !isSuppressed && !isPendingDelay){
+					        if (acquisitionItemInfo.getTriggerAlarm()) {
+					            alarm = true; // 只有真正触发才保存历史入库
+					        }
+					        
+					        // 统一累加报警数量
+					        if(acquisitionItemInfo.getAlarmLevel()==100){
+					            firstLevelCount_r++;
+					            if (acquisitionItemInfo.getTriggerAlarm()) {
+					            	firstLevelCount++;
+						        }
+					        }else if(acquisitionItemInfo.getAlarmLevel()==200){
+					            secondLevelCount_r++;
+					            if (acquisitionItemInfo.getTriggerAlarm()) {
+					            	secondLevelCount++;
+						        }
+					        }else if(acquisitionItemInfo.getAlarmLevel()==300){
+					            thirdLevel_r++;
+					            if (acquisitionItemInfo.getTriggerAlarm()) {
+					            	thirdLevel++;
+						        }
+					        }
+					        
+					        String column=acquisitionItemInfo.getColumn();
+					        if( (acquisitionItemInfo.getType()==0 && "0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()))
+					                || (acquisitionItemInfo.getType()==5 && "0".equalsIgnoreCase(acquisitionItemInfo.getResolutionMode()))){
+					            column+="_"+acquisitionItemInfo.getBitIndex();
+					        }
+					        
+					        // 写入实时表的 alarminfo 字段
+					        realtimeDataAlarmList.add(new KeyValue(column,acquisitionItemInfo.getAlarmLevel()+""));
+					        
+					        if (acquisitionItemInfo.getTriggerAlarm()) {
+					            acqDataAlarmList.add(new KeyValue(column,acquisitionItemInfo.getAlarmLevel()+""));
+					        }
+					    }
+					}
 					
 					//添加新采集数据至内存
 					Map<String,String> everyDataMap =new LinkedHashMap<>();
@@ -3924,6 +4080,7 @@ public class DriverAPIController extends BaseController{
 										protocol,
 										checkSign);
 //								StringManagerUtils.printLog(webSocketSendDataStr,0);
+//								System.out.println(webSocketSendDataStr);
 								infoHandler().sendMessageToUserId(websocketClientUserId, webSocketSendDataStr);
 							}
 						}

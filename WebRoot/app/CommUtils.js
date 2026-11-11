@@ -1960,8 +1960,16 @@ color16ToRgba = function(sColor,Opacity){
 		                    opacity = alarmShowStyle.Data.ThirdLevel.Opacity;
 		                }
 		                if(alarmLevel>0){
-		 			 		var rgba=color16ToRgba(backgroundColor,opacity);
-			 			 	o.style='background-color:'+rgba+';color:'+color+';';
+		                	//判断是否为持续中
+	                        if (alarmInfo[i].triggerAlarm === false) {
+	                            opacity = 0.15; // 弱化透明度
+	                            color = '#' + alarmShowStyle.Data.Normal.Color; // 字体用正常色
+	                            var rgba = color16ToRgba(backgroundColor, opacity);
+	                            o.style = 'background-color:' + rgba + ';color:' + color + ';border:1px dashed #ccc;font-style:italic;';
+	                        } else {
+	                            var rgba = color16ToRgba(backgroundColor, opacity);
+	                            o.style = 'background-color:' + rgba + ';color:' + color + ';';
+	                        }
 		 			 	}
 		            	break;
 		            }

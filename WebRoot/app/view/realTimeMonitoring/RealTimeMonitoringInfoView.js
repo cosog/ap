@@ -529,6 +529,10 @@ adviceRealtimeDeviceOverviewDeviceNameColor = function (val, o, p, e) {
     if (isNotVal(alarmShowStyle) && alarmShowStyle != {}) {
         if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
             for (var i = 0; i < alarmInfo.length; i++) {
+            	//跳过持续检测中的项，不参与颜色计算
+                if (alarmInfo[i].pendingDelay === true || alarmInfo[i].pendingDelay === 'true') {
+                    continue;
+                }
                 if (alarmInfo[i].alarmLevel == 100) {
                     alarmCount_Level1++;
                 } else if (alarmInfo[i].alarmLevel == 200) {
@@ -626,8 +630,16 @@ adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
     // 2. 统计报警数量
     var alarmInfo = p.data.alarmInfo || [];
     var c1 = 0, c2 = 0, c3 = 0, hasAlarm = false;
+    var persistingCount = 0; // ★ 统计持续中总数
+
     for (var i = 0; i < alarmInfo.length; i++) {
+    	//跳过持续检测中的项
+        if (alarmInfo[i].pendingDelay === true || alarmInfo[i].pendingDelay === 'true') {
+            continue; 
+        }
         var lv = alarmInfo[i].alarmLevel;
+        if (alarmInfo[i].triggerAlarm === false) persistingCount++; // 累加持续中
+        
         if (lv == 100) { c1++; hasAlarm = true; }
         else if (lv == 200) { c2++; hasAlarm = true; }
         else if (lv == 300) { c3++; hasAlarm = true; }
@@ -664,7 +676,7 @@ adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
     var tipHtml = encodedName;
     if (hasAlarm && alarmShowStyle) {
         var parts = [];
-        // 一级
+        // 一级 (保持原有逻辑，统计总数)
         if (c1 > 0) {
             var bg1 = '#' + (alarmShowStyle.Data.FirstLevel.Color || 'dc2828');
             var tx1 = '#' + (alarmShowStyle.Data.FirstLevel.ColorText || 'ffffff');
@@ -674,7 +686,7 @@ adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
                 '</span>'
             );
         }
-        // 二级
+        // 二级 (保持原有逻辑，统计总数)
         if (c2 > 0) {
             var bg2 = '#' + (alarmShowStyle.Data.SecondLevel.Color || 'f09614');
             var tx2 = '#' + (alarmShowStyle.Data.SecondLevel.ColorText || 'ffffff');
@@ -684,7 +696,7 @@ adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
                 '</span>'
             );
         }
-        // 三级
+        // 三级 (保持原有逻辑，统计总数)
         if (c3 > 0) {
             var bg3 = '#' + (alarmShowStyle.Data.ThirdLevel.Color || 'fae600');
             var tx3 = '#' + (alarmShowStyle.Data.ThirdLevel.ColorText || '333333');
@@ -694,6 +706,20 @@ adviceDeviceOverviewDeviceNameShowInfo = function (val, o, p, e) {
                 '</span>'
             );
         }
+
+        // ★ 追加持续中标签（弱化样式）
+        if (persistingCount > 0) {
+            // 背景色采用与表格中一致的弱化半透明背景色
+            var pBg = color16ToRgba('#' + (alarmShowStyle.Data.FirstLevel.BackgroundColor || 'dc2828'), 0.15);
+            var pTx = '#' + (alarmShowStyle.Data.Normal.Color || '333333');
+            
+            parts.push(
+                '<span style=\'display:inline-block;background:' + pBg + ';color:' + pTx + ';border:1px dashed #ccc;font-style:italic;padding:0 8px;border-radius:12px;font-size:11px;font-weight:bold;line-height:18px;margin-right:4px;white-space:nowrap;\'>' +
+                '持续中:' + persistingCount +
+                '</span>'
+            );
+        }
+        
         if (parts.length > 0) {
             tipHtml = encodedName + ' ' + parts.join(' ');
         }

@@ -169,9 +169,9 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         Ext.apply(me, {
             id: 'RealTimeMonitoringSceneModelPanel_Id',
             tbar: [{
-            	xtype: 'label',
-            	html: loginUserLanguageResource.viewCurveOrTableDataByAnnotation,
-            	style: {
+                xtype: 'label',
+                html: loginUserLanguageResource.viewCurveOrTableDataByAnnotation,
+                style: {
                     marginLeft: '10px',
                     fontSize: '11px',
                     fontFamily: 'tahoma,arial,verdana,sans-serif',
@@ -408,10 +408,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
 
     // ========================================================
     // 加载场景配置
-    //
     //   ★ 竞态防护：用 _loadSceneSeq 过滤过期响应
-    //     快速切换设备时，旧请求的响应到达后会被丢弃，
-    //     不会再覆盖新设备的配置
     // ========================================================
     loadSceneConfigByDevice: function(deviceId) {
         var me = this;
@@ -463,7 +460,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                 }
             },
             failure: function() {
-                // ★ 忽略过期响应
                 if (seq !== me._loadSceneSeq) return;
                 if (me._destroyed) return;
                 me.renderSceneConfig({ imageUrl: '', shapes: [] });
@@ -557,12 +553,12 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
     // ========================================================
     // 用 config 渲染
     //
-    //   ★ 关键修复1：开头清空所有绑定相关 Map，
-    //     避免跨设备切换 / 重复渲染时脏数据残留
+    //   ★ 关键修复1：开头清空所有绑定相关 Map
     //   ★ 关键修复2：binding.deviceId 统一转为 String
-    //   ★ 关键修复3：整体 try/catch 兜底，任何环节异常
-    //     都能保证 5 个 Map 至少处于"可用空状态"，
-    //     不至于让后续推送和标签渲染彻底失效
+    //   ★ 关键修复3：整体 try/catch 兜底
+    //   ★ 关键修复4（本次新增）：
+    //       binding 增加 triggerAlarm / suppressStatus / pendingDelay 三个状态字段
+    //       — 保证首次加载就能正确识别"持续中 / 持续检测 / 人工消警"状态
     // ========================================================
     renderSceneConfig: function(cfg) {
         var me = this;
@@ -602,6 +598,25 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                     // ★ 统一将 deviceId 转为字符串
                     var devKey = String(s.deviceId);
 
+                    // ★ 归一化 triggerAlarm：后端可能返回 boolean / 'true'/'false' / 1/0 / 缺省
+                    //   【修复】如果后端明确返回 false，则认为是持续中；否则(缺省或true)默认为正常触发报警
+                    var trig = true;
+                    if (s.triggerAlarm !== undefined && s.triggerAlarm !== null && s.triggerAlarm !== '') {
+                        trig = (s.triggerAlarm === true || s.triggerAlarm === 'true'
+                             || s.triggerAlarm === 1    || s.triggerAlarm === '1');
+                    }
+
+                    // ★ 归一化 suppressStatus：0 正常 / 1 自动消警 / 2 人工消警
+                    var supp = 0;
+                    if (s.suppressStatus !== undefined && s.suppressStatus !== null
+                            && s.suppressStatus !== '') {
+                        supp = parseInt(s.suppressStatus, 10);
+                        if (isNaN(supp)) supp = 0;
+                    }
+
+                    // ★ 归一化 pendingDelay：持续检测中（未达 delay 时长）
+                    var pending = (s.pendingDelay === true || s.pendingDelay === 'true');
+
                     me.bindingMap.set(s.uuid, {
                         deviceId:     devKey,
                         deviceName:   s.deviceName,
@@ -612,6 +627,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                         currentValue: s.currentValue,
                         alarmLevel:   (s.alarmLevel != null) ? s.alarmLevel : 0,
                         commStatus:   (s.commStatus != null) ? s.commStatus : 0,
+
+                        // ★ 本次新增：报警触发态 / 消警态 / 持续检测态
+                        triggerAlarm:   trig,
+                        suppressStatus: supp,
+                        pendingDelay:   pending,
 
                         itemType:       s.itemType,
                         resolutionMode: s.resolutionMode,
@@ -698,8 +718,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
             }, 100, me);
 
         } catch (e) {
-            // ★ 兜底：任何异常都要保证 5 个 Map 处于"可用空状态"，
-            //    否则后续标签渲染和 WebSocket 推送会彻底失效
             console.error('[RealtimeSceneModelPanel] renderSceneConfig 异常:', e);
 
             if (!me.bindingMap)        me.bindingMap = new Map();
@@ -708,7 +726,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
             if (!me.userColorMap)      me.userColorMap = new Map();
             if (!me.userLineWidthMap)  me.userLineWidthMap = new Map();
 
-            // 尝试清空一次，至少保持 UI 干净
             try { me._clearAllBindingMaps(); } catch (e2) {}
         }
     },
@@ -761,7 +778,8 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
     },
 
     buildFillColor: function(hexColor, alphaPercent) {
-        var hex = hexColor.replace('#', '');
+        if (!hexColor) hexColor = '#0000FF';
+        var hex = String(hexColor).replace('#', '');
         if (hex.length !== 6) return 'rgba(0,0,255,0.25)';
         var r = parseInt(hex.slice(0, 2), 16);
         var g = parseInt(hex.slice(2, 4), 16);
@@ -772,9 +790,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
 
     // ========================================================
     // origin 计算
-    //
-    //   ★ 加固：增加长度检查 + isFinite 校验，
-    //     防止 canvas-select 内部字段异常导致 origin 变成 NaN
     // ========================================================
     updateOriginIfNeeded: function(force) {
         if (this._destroyed) return false;
@@ -782,7 +797,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         var cs = this.cs;
         var scale = cs.scale || 1;
 
-        // ★ 长度检查：防止字段非数组时访问 [0]/[1] 得 undefined
         if (!cs.mouse || !cs.position
             || !cs.mouse.length || cs.mouse.length < 2
             || !cs.position.length || cs.position.length < 2) {
@@ -792,7 +806,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         var mx = cs.mouse[0], my = cs.mouse[1];
         var px = cs.position[0], py = cs.position[1];
 
-        // ★ isFinite 校验：任一值不是有限数 → 跳过本次计算
         if (!isFinite(mx) || !isFinite(my)
             || !isFinite(px) || !isFinite(py)
             || !isFinite(scale) || scale <= 0) {
@@ -802,7 +815,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         var newX = mx - px * scale;
         var newY = my - py * scale;
 
-        // ★ 计算结果也要有限
         if (!isFinite(newX) || !isFinite(newY)) return false;
 
         var co = this.cachedOrigin;
@@ -832,6 +844,13 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
 
     // ========================================================
     // 渲染标签
+    //
+    //   ★ 本次改动：
+    //     判定"持续中"（非人工消警、非持续检测中、triggerAlarm=false 且 alarmLevel>0），
+    //     一旦命中 → 标签整体使用粉色弱化样式（与实时数据表/概览表保持一致）：
+    //         · 背景：FirstLevel.BackgroundColor + 15% 透明
+    //         · 字色：Normal.Color
+    //         · 虚线边框 + 斜体
     // ========================================================
     renderLabels: function() {
         var me = this;
@@ -859,6 +878,12 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
             var up = style.up !== false;
             var translateY = up ? '-100%' : '0';
 
+            // 默认样式：完全遵循配置
+            var bgColor    = me.buildFillColor(style.bgColor, style.bgOpacity);
+            var boxShadow  = (style.bgOpacity == 0) ? 'none' : '0 2px 6px rgba(0,0,0,0.18)';
+            var textColor  = style.textColor;
+            var extraStyle = '';
+
             var el = existing[shape.uuid];
             if (!el) {
                 el = document.createElement('div');
@@ -881,56 +906,20 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
 
                 layer.appendChild(el);
             }
-            
-            // 计算背景色和阴影
-            var bgColor = me.buildFillColor(style.bgColor, style.bgOpacity);
-            var boxShadow = (style.bgOpacity == 0) ? 'none' : '0 2px 6px rgba(0,0,0,0.18)';
-            
+
             var labelText = me.buildLabelText(binding, style);
             el.innerHTML = labelText;
-            
+
             var isHidden = style.hide || (labelText === '');
 
-            // ★ 核心修改：处理设备通信状态改变字色
-//            var textColor = style.textColor;
-//            var commStatus = binding.commStatus != null ? parseInt(binding.commStatus, 10) : 0;
-//            
-//            if (commStatus === 2) {
-//                // 状态 2：上线中
-//                if (me.alarmShowStyle && me.alarmShowStyle.Comm && me.alarmShowStyle.Comm.goOnline && me.alarmShowStyle.Comm.goOnline.Color) {
-//                    var c = (me.alarmShowStyle.Comm.goOnline.Color + '').trim();
-//                    if (/^#?[0-9a-fA-F]{6}$/.test(c)) {
-//                        textColor = (c.charAt(0) === '#') ? c : ('#' + c);
-//                    }
-//                }
-//            } else if (commStatus === 0 || (commStatus !== 1 && commStatus !== 2)) {
-//                // 状态 0 或 非1非2：离线
-//                if (me.alarmShowStyle && me.alarmShowStyle.Comm && me.alarmShowStyle.Comm.offline && me.alarmShowStyle.Comm.offline.Color) {
-//                    var c = (me.alarmShowStyle.Comm.offline.Color + '').trim();
-//                    if (/^#?[0-9a-fA-F]{6}$/.test(c)) {
-//                        textColor = (c.charAt(0) === '#') ? c : ('#' + c);
-//                    }
-//                }
-//            }
-//
-//            el.style.cssText = 'position:absolute;padding:4px 10px;border-radius:4px;white-space:nowrap;' +
-//                'font-weight:600;transform:translate(-50%,' + translateY + ');box-shadow:' + boxShadow + ';' +
-//                'pointer-events:auto;cursor:pointer;' +
-//                'left:' + cx + 'px;top:' + cy + 'px;' +
-//                'background:' + bgColor + ';' +
-//                'color:' + textColor + ';font-size:' + style.font + ';' + // ★ 使用动态 textColor
-//                'display:' + (isHidden ? 'none' : 'block') + ';';
-            
-            
-            // 使用配置的原始文字颜色，不关联通信状态
-            var textColor = style.textColor;
-
+            // 使用配置的原始文字颜色 / 持续中的弱化颜色
             el.style.cssText = 'position:absolute;padding:4px 10px;border-radius:4px;white-space:nowrap;' +
                 'font-weight:600;transform:translate(-50%,' + translateY + ');box-shadow:' + boxShadow + ';' +
                 'pointer-events:auto;cursor:pointer;' +
                 'left:' + cx + 'px;top:' + cy + 'px;' +
                 'background:' + bgColor + ';' +
                 'color:' + textColor + ';font-size:' + style.font + ';' +
+                extraStyle +
                 'display:' + (isHidden ? 'none' : 'block') + ';';
 
             visible[shape.uuid] = true;
@@ -1026,6 +1015,11 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
 
     // ========================================================
     // 构建标签文本
+    //
+    //   ★ 本次改动：
+    //     1) 人工消警 / 持续检测中 → alarmLevel 按 0 处理（显示正常字色）
+    //     2) 持续中（triggerAlarm=false 且 alarmLevel>0）→ 保留级别，但不染字色
+    //        由 renderLabels 统一给整块标签加粉色弱化样式
     // ========================================================
     buildLabelText: function(b, labelStyle) {
         if (!b || !b.deviceId || !b.fieldName) return loginUserLanguageResource.unbound;
@@ -1033,7 +1027,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         var me = this;
         var fldName = b.fieldLabel || b.fieldName;
         var devName = b.deviceName || b.deviceId;
-        
+
         var hideDev = !labelStyle || labelStyle.hideDeviceName !== false;
         var hideFld = labelStyle && labelStyle.hideFieldName === true;
 
@@ -1046,31 +1040,35 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         } else if (hideDev && !hideFld) {
             prefix = fldName;
         } else {
-            // 都隐藏，prefix 为空
             prefix = '';
         }
 
         var val = b.currentValue;
-        
-        // 如果都隐藏且没值，直接返回空（让 renderLabels 去隐藏 DOM）
+
         if (prefix === '' && (val == null || val === '' || val === '--')) {
             return '';
         }
-
-        // 如果没有值，只显示前缀（如果前缀也为空，上面已经拦截了）
         if (val == null || val === '' || val === '--') {
             return Ext.String.htmlEncode(prefix);
         }
 
-        var unit = b.unit;
-        var unitStr = (unit != null && unit !== '') ? ('(' + unit + ')') : '';
-        var prefixHtml = prefix ? (Ext.String.htmlEncode(prefix) + '：') : '';
-        
-        var valHtml = Ext.String.htmlEncode(val + unitStr);
+        // ★ 状态判定
+        var alarmLevel     = parseInt(b.alarmLevel, 10) || 0;
+        var suppressStatus = parseInt(b.suppressStatus, 10) || 0;
+        var isPending      = (b.pendingDelay === true);
+        var triggerAlarm   = (b.triggerAlarm !== false);
 
-        var alarmLevel = parseInt(b.alarmLevel, 10) || 0;
+        var isPersisting = false;
+        if (suppressStatus === 2 || isPending) {
+            // 人工消警 / 持续检测中：视为正常，不染报警色
+            alarmLevel = 0;
+        } else if (!triggerAlarm && alarmLevel > 0) {
+            // ★ 持续中
+            isPersisting = true;
+        }
+
+        // ★ 报警级别色
         var valColor = null;
-
         if (alarmLevel > 0 && me.alarmShowStyle && me.alarmShowStyle.Data) {
             var cfg = null;
             if (alarmLevel === 100)      cfg = me.alarmShowStyle.Data.FirstLevel;
@@ -1079,12 +1077,23 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
 
             if (cfg && cfg.Color) {
                 var c = (cfg.Color + '').trim();
-                // ★ 只接受 #RRGGBB 或 RRGGBB 两种合法格式，其他一律忽略
                 if (/^#?[0-9a-fA-F]{6}$/.test(c)) {
                     valColor = (c.charAt(0) === '#') ? c : ('#' + c);
                 }
             }
         }
+
+        var unit = b.unit;
+        var unitStr = (unit != null && unit !== '') ? ('(' + unit + ')') : '';
+        
+        // ★ 关键修改：直接把“持续中”拼接到值的文本里，和值保持同一个样式
+        var displayStr = val + unitStr;
+        if (isPersisting) {
+            displayStr += ' (持续中)'; 
+        }
+        
+        var valHtml = Ext.String.htmlEncode(displayStr);
+        var prefixHtml = prefix ? (Ext.String.htmlEncode(prefix) + '：') : '';
 
         if (valColor) {
             return prefixHtml + '<span style="color:' + valColor + ';font-weight:bold;">' + valHtml + '</span>';
@@ -1127,7 +1136,12 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
     },
 
     // ========================================================
-    // WebSocket 推送：同步值 + 报警等级
+    // WebSocket 推送：同步值 + 报警等级 + 状态字段
+    //
+    //   ★ 本次改动：
+    //     - 不再把 alarmLevel 在 triggerAlarm=false 时清零
+    //     - 单独记录 triggerAlarm / suppressStatus / pendingDelay
+    //     - 最终是否弱化显示，由 renderLabels 判定
     // ========================================================
     updateRealtimeValuesFromPush: function(pushDeviceId, itemList) {
         var me = this;
@@ -1173,15 +1187,41 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                 changed = true;
             }
 
-            // ---- 报警等级 ----
+            // ---- 报警等级：保留原始值，是否弱化交由 renderLabels 判断 ----
             if (item.alarmLevel !== undefined && item.alarmLevel !== null) {
                 var newLevelStr = String(item.alarmLevel);
                 var oldLevelStr = (binding.alarmLevel !== undefined && binding.alarmLevel !== null)
-                                ? String(binding.alarmLevel)
-                                : '0';
-
+                                    ? String(binding.alarmLevel) : '0';
                 if (oldLevelStr !== newLevelStr) {
                     binding.alarmLevel = newLevelStr;
+                    changed = true;
+                }
+            }
+
+            // ---- triggerAlarm ----
+            if (item.triggerAlarm !== undefined && item.triggerAlarm !== null) {
+                var newTrigger = !!item.triggerAlarm;
+                if (binding.triggerAlarm !== newTrigger) {
+                    binding.triggerAlarm = newTrigger;
+                    changed = true;
+                }
+            }
+
+            // ---- suppressStatus ----
+            if (item.suppressStatus !== undefined && item.suppressStatus !== null) {
+                var newSuppress = parseInt(item.suppressStatus, 10);
+                if (isNaN(newSuppress)) newSuppress = 0;
+                if (binding.suppressStatus !== newSuppress) {
+                    binding.suppressStatus = newSuppress;
+                    changed = true;
+                }
+            }
+
+            // ---- pendingDelay ----
+            if (item.pendingDelay !== undefined) {
+                var newPending = (item.pendingDelay === true);
+                if (binding.pendingDelay !== newPending) {
+                    binding.pendingDelay = newPending;
                     changed = true;
                 }
             }
@@ -1201,6 +1241,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         me.scheduleRenderLabels();
     },
 
+    // 批量更新：保持原样，但同步状态字段（兼容外部调用时的情形）
     updateRealtimeValues: function(list) {
         var me = this;
         if (me._destroyed) return;
@@ -1218,10 +1259,22 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
                 binding.alarmLevel = item.alarmLevel;
                 changed = true;
             }
+            if (item.triggerAlarm !== undefined && item.triggerAlarm !== null) {
+                binding.triggerAlarm = !!item.triggerAlarm;
+                changed = true;
+            }
+            if (item.suppressStatus !== undefined && item.suppressStatus !== null) {
+                var ss = parseInt(item.suppressStatus, 10);
+                if (!isNaN(ss)) { binding.suppressStatus = ss; changed = true; }
+            }
+            if (item.pendingDelay !== undefined) {
+                binding.pendingDelay = (item.pendingDelay === true);
+                changed = true;
+            }
         });
         if (changed) me.scheduleRenderLabels();
     },
-    
+
     // ========================================================
     // WebSocket 推送：同步设备通信状态
     // ========================================================
@@ -1231,14 +1284,12 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         if (pushDeviceId == null || commStatus == null) return;
         if (!me.deviceIndexMap || me.deviceIndexMap.size === 0) return;
 
-        // 判断该设备是否在当前场景中
         var uuidSet = me.deviceIndexMap.get(String(pushDeviceId));
         if (!uuidSet || uuidSet.size === 0) return;
 
         var changed = false;
         var newStatus = parseInt(commStatus, 10);
-        
-        // 遍历该设备绑定的所有标注，更新 commStatus
+
         uuidSet.forEach(function(uuid) {
             var binding = me.bindingMap.get(uuid);
             if (binding) {
@@ -1255,7 +1306,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
 
     // ========================================================
     // 销毁
-    //   ★ 显式清空所有绑定相关 Map + 清空 labelLayer + 停止 rAF
     // ========================================================
     beforeDestroy: function() {
         // ★ 置销毁标志，阻止异步回调再操作已销毁的组件

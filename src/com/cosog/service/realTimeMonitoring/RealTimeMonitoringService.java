@@ -65,6 +65,8 @@ import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.DataModelMap;
+import com.cosog.utils.DeviceAlarmInfo;
+import com.cosog.utils.DeviceAlarmInfoMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.ProtocolItemResolutionData;
@@ -1722,32 +1724,33 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				
 				//报警信息
 				alarmInfo.append("[");
-				type = new TypeToken<List<KeyValue>>() {}.getType();
+				
+				type = new TypeToken<List<KeyValue>>() {}.getType(); 
 				List<KeyValue> alarmInfoList=gson.fromJson(deviceAlarmInfo, type);
 				if(alarmInfoList!=null){
-					for(KeyValue keyValue:alarmInfoList){
-						alarmInfo.append("{\"item\":\""+keyValue.getKey()+"\","
-								+" \"alarmLevel\":"+keyValue.getValue()+"},");
-					}
+				    Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+				    DeviceAlarmInfo dai = deviceAlarmInfoMap != null ? deviceAlarmInfoMap.get(Integer.parseInt(deviceId)) : null;
+
+				    for(KeyValue keyValue:alarmInfoList){
+				        boolean triggerAlarm = true;
+				        boolean pendingDelay = false; 
+				        if (dai != null && dai.getAlarmInfoMap() != null) {
+				            for (DeviceAlarmInfo.AlarmInfo ai : dai.getAlarmInfoMap().values()) {
+				                // 匹配 key (可能带 bitIndex)
+				                if (keyValue.getKey().equalsIgnoreCase(ai.getColumn()) || 
+				                    keyValue.getKey().equalsIgnoreCase(ai.getColumn() + "_" + ai.getBitIndex())) {
+				                    triggerAlarm = ai.getTriggerAlarm();
+				                    pendingDelay = ai.getPendingDelay();
+				                    break;
+				                }
+				            }
+				        }
+				        alarmInfo.append("{\"item\":\""+keyValue.getKey()+"\","
+				                +" \"alarmLevel\":"+keyValue.getValue()+","
+				                +" \"triggerAlarm\":"+triggerAlarm+","
+				                +" \"pendingDelay\":"+pendingDelay+"},");
+				    }
 				}
-				
-//				for(int j=0;j<protocolItemResolutionDataList.size();j++){
-//					String rawValue=protocolItemResolutionDataList.get(j).getRawValue();
-//					String value=protocolItemResolutionDataList.get(j).getValue();
-//					String column=protocolItemResolutionDataList.get(j).getColumn();
-//					result_json.append("\""+column+"\":\""+value+"\",");
-//					//报警判断
-//					if(alarmInstanceOwnItem!=null && alarmDataMap.size()>0){
-//						String key=(deviceId+"_"
-//								+protocolItemResolutionDataList.get(j).getColumn()+"_"
-//								+acqTime+"_"
-//								+protocolItemResolutionDataList.get(j).getResolutionMode()).toUpperCase();
-//						if(alarmDataMap.containsKey(key) && alarmDataMap.get(key)>0){
-//							alarmInfo.append("{\"item\":\""+protocolItemResolutionDataList.get(j).getColumn()+"\","
-//									+" \"alarmLevel\":"+alarmDataMap.get(key)+"},");
-//						}
-//					}
-//				}
 				
 				if(alarmInfo.toString().endsWith(",")){
 					alarmInfo.deleteCharAt(alarmInfo.length() - 1);
@@ -4273,8 +4276,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 								String historyBgColor="";
 								
 								int dataType=0;
-								
 								int alarmLevel=0;
+								boolean triggerAlarm = true;
+								int suppressStatus = 0;  
+								boolean pendingDelay = false; 
 								if(index<finalProtocolItemResolutionDataList.size()
 										&&StringManagerUtils.isNotNull(finalProtocolItemResolutionDataList.get(index).getColumnName())
 										){
@@ -4332,6 +4337,34 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 											}
 										}
 									}
+									
+									if (alarmLevel > 0) {
+										Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+										if (deviceAlarmInfoMap != null) {
+											DeviceAlarmInfo dai = deviceAlarmInfoMap.get(deviceInfo.getId());
+											if (dai != null && dai.getAlarmInfoMap() != null) {
+												String compareCol = finalProtocolItemResolutionDataList.get(index).getColumn();
+												String compareBit = finalProtocolItemResolutionDataList.get(index).getBitIndex();
+												if ("-1".equals(compareBit)) {
+													compareBit = "";
+												}
+												for (DeviceAlarmInfo.AlarmInfo ai : dai.getAlarmInfoMap().values()) {
+													String memCol = ai.getColumn();
+													String memBit = ai.getBitIndex();
+													if ("-1".equals(memBit)) memBit = "";
+													if (memBit == null) memBit = "";
+													
+													// 兼容带 bitIndex 的 key 匹配
+													if (memCol.equalsIgnoreCase(compareCol) && memBit.equals(compareBit)) {
+														triggerAlarm = ai.getTriggerAlarm();
+														suppressStatus = ai.getSuppressStatus();
+														pendingDelay = ai.getPendingDelay();
+														break;
+													}
+												}
+											}
+										}
+									}
 								}
 								
 								if(StringManagerUtils.isNotNull(columnName) && StringManagerUtils.isNotNull(unit.replaceAll(" ", ""))){
@@ -4354,6 +4387,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 										+ "\"historyColor\":\""+historyColor+"\","
 										+ "\"historyBgColor\":\""+historyBgColor+"\","
 										+ "\"type\":\""+dataType+"\","
+										+ "\"suppressStatus\":"+suppressStatus+","
+										+ "\"triggerAlarm\":"+triggerAlarm+","
+										+ "\"pendingDelay\":"+pendingDelay+"," 
 										+ "\"alarmLevel\":"+alarmLevel+"},");
 							}
 							if(result_json.toString().endsWith(",")){
@@ -7707,6 +7743,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        Map<String, String> resModeLookup     = new HashMap<String, String>();
 	        Map<String, String> bitIndexLookup    = new HashMap<String, String>();
 	        Map<String, String> colDataTypeLookup = new HashMap<String, String>();
+	        
+	        Map<String, String> triggerAlarmLookup   = new HashMap<String, String>();
+	        Map<String, String> suppressStatusLookup = new HashMap<String, String>();
+	        Map<String, String> pendingDelayLookup   = new HashMap<String, String>();
 
 	        for (String devId : involvedDevices) {
 	            String allItemJson = "[]";
@@ -7766,6 +7806,15 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	                    alarmStr = alarmEl.getAsString();
 	                }
 	                alarmLevelLookup.put(key, alarmStr);
+	                
+	                JsonElement taEl = item.get("triggerAlarm");
+	                if (taEl != null && !taEl.isJsonNull())   triggerAlarmLookup.put(key, taEl.getAsString());
+
+	                JsonElement ssEl = item.get("suppressStatus");
+	                if (ssEl != null && !ssEl.isJsonNull())   suppressStatusLookup.put(key, ssEl.getAsString());
+
+	                JsonElement pdEl = item.get("pendingDelay");
+	                if (pdEl != null && !pdEl.isJsonNull())   pendingDelayLookup.put(key, pdEl.getAsString());
 
 	                // ---- ★ 附加元信息（供前台双击查看历史数据 / 历史曲线用） ----
 	                JsonElement tEl = item.get("type");
@@ -7809,6 +7858,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	            // 报警等级
 	            s.addProperty("alarmLevel",
 	                alarmLevelLookup.containsKey(key) ? alarmLevelLookup.get(key) : "0");
+	            s.addProperty("triggerAlarm",
+	                    triggerAlarmLookup.containsKey(key) ? triggerAlarmLookup.get(key) : "true");
+	            s.addProperty("suppressStatus",
+	                    suppressStatusLookup.containsKey(key) ? suppressStatusLookup.get(key) : "0");
+	            if (pendingDelayLookup.containsKey(key)) {
+	                s.addProperty("pendingDelay", pendingDelayLookup.get(key));
+	            }
 
 	            // ★ 双击查看历史数据 / 历史曲线所需的附加元信息
 	            s.addProperty("itemType",
@@ -8699,6 +8755,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 							finalProtocolItemResolutionDataList.add(protocolItemResolutionDataList.get(j));
 						}
 						
+						Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
+						DeviceAlarmInfo dai = deviceAlarmInfoMap != null ? deviceAlarmInfoMap.get(deviceId) : null;
+						
 						for(int k=0;k<finalProtocolItemResolutionDataList.size();k++){
 							String columnName="";
 							String value="";
@@ -8774,6 +8833,32 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									}
 								}
 							}
+							// 匹配内存报警项，判断是否持续中（重触发间隔内）
+							boolean triggerAlarm = true;
+							int suppressStatus = 0;
+							boolean pendingDelay = false;
+							if(alarmLevel>0){
+								String compareCol = column;
+								String compareBit = bitIndex;
+								if ("-1".equals(compareBit)) {
+									compareBit = "";
+								}
+								if (dai != null && dai.getAlarmInfoMap() != null) {
+								    for (DeviceAlarmInfo.AlarmInfo ai : dai.getAlarmInfoMap().values()) {
+								    	String memCol = ai.getColumn();
+								        String memBit = ai.getBitIndex();
+								        if ("-1".equals(memBit)) memBit = "";
+								        if (memBit == null) memBit = "";
+								        if (memCol.equalsIgnoreCase(compareCol) && memBit.equals(compareBit)) {
+								            triggerAlarm = ai.getTriggerAlarm();
+								            suppressStatus = ai.getSuppressStatus();
+								            pendingDelay = ai.getPendingDelay();
+								            break;
+								        }
+								    }
+								}
+							}
+							
 						
 							
 							info_json.append("{\"columnName\":\""+columnName+"\","
@@ -8787,6 +8872,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 									+ "\"historyColor\":\""+historyColor+"\","
 									+ "\"historyBgColor\":\""+historyBgColor+"\","
 									+ "\"type\":\""+dataType+"\","
+									+ "\"triggerAlarm\":" + triggerAlarm + ","
+									+ "\"suppressStatus\":" + suppressStatus + ","
+									+ "\"pendingDelay\":" + pendingDelay + "," 
 									+ "\"alarmLevel\":"+alarmLevel+"},");
 						}
 					}

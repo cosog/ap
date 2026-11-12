@@ -111,15 +111,28 @@ Ext.define('AP.alert.AlarmSoundManager', {
     play: function (level) {
         if (!level || level <= 0) return;
         
-        //如果 AlarmManager 处于静音状态，不播放
+        // 1. 如果 AlarmManager 处于静音状态，不播放
         if (AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.isMuted) {
             return;
+        }
+
+        // ★ 核心防御：在发声前，向 AlarmManager 强制询问“当前真的还有未确认的报警吗？”
+        if (AP.alert && AP.alert.AlarmManager) {
+            var currentHighestLevel = AP.alert.AlarmManager._getHighestUnackLevel();
+            if (!currentHighestLevel) {
+                return; // 如果没有未确认的报警，直接拦截，绝不发声！
+            }
+            // 如果前端状态有变，强制使用当前真实的最高级别
+            level = currentHighestLevel;
         }
 
         if (!this._loaded) {
             this.loadConfig();
             var self = this;
-            Ext.defer(function () { self.play(level); }, 500);
+            // 延迟重试：500ms 后再次调用 play，此时会重新走上面的“核心防御”校验
+            Ext.defer(function () { 
+                self.play(level); 
+            }, 500);
             return;
         }
 
@@ -136,11 +149,9 @@ Ext.define('AP.alert.AlarmSoundManager', {
         var token = ++this._playToken;
         var url = this.baseUrl + encodeURIComponent(cfg.fileName) + '&_t=' + new Date().getTime();
 
-        // 如果解锁成功，优先走底层（体验最好，支持无限循环）
         if (this.unlocked && this.audioCtx && this.audioCtx.state === 'running') {
             this._playWithWebAudio(url, level, token);
         } else {
-            // 兜底方案：如果底层被拦截，尝试用传统 Audio 元素（少数浏览器对 Audio 标签宽容）
             this._playWithHtmlAudio(url, level, token);
         }
     },

@@ -1,7 +1,7 @@
 Ext.define('AP.store.reportOut.ComparativeAnalysisDeviceListStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.dailyDataComparativeAnalysisDeviceListStore',
-    fields: ['id','deviceName'],
+    fields: ['deviceId', 'deviceName', 'protocolCode', 'calculateType'],
     autoLoad: true,
     proxy: {
         type: 'ajax',
@@ -32,7 +32,7 @@ Ext.define('AP.store.reportOut.ComparativeAnalysisDeviceListStore', {
                     	selType: 'checkboxmodel',
                     	mode: 'MULTI',//"SINGLE" / "SIMPLE" / "MULTI" 
                     	checkOnly: false,
-                    	allowDeselect: false
+                    	allowDeselect: true
                     },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>"

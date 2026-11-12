@@ -40,6 +40,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
                     'text', 'alarmKey', 'alarmLevel', 'deviceId', 'deviceName',
                     'orgId', 'column', 'columnName', 'value', 'alarminfo', 'acqTime',
                     'alertId', 'status', 'triggerAlarm', 
+                    'pendingDelay',
                     'suppressStatus',
                     'suppressReason', 'suppressUser', 'suppressTime', 'suppressIp', 'suppressEndTime'
                 ]
@@ -281,12 +282,14 @@ Ext.define('AP.view.alert.AlarmWindow', {
             text: '发生时间', dataIndex: 'acqTime', flex: 2, minWidth: 140,
             renderer: function (v, meta, rec) { return rec.isLeaf() ? v : ''; }
         }, {
-            text: '状态', dataIndex: 'status', flex: 2, minWidth: 120, align: 'center',
+            // ★ 状态列渲染器：区分"持续检测中"和"持续中"
+            text: '状态', dataIndex: 'status', flex: 2, minWidth: 160, align: 'center',
             renderer: function (v, meta, rec) {
                 if (!rec.isLeaf()) return '';
                 
                 var suppStatus = rec.get('suppressStatus');
                 var triggerAlarm = rec.get('triggerAlarm');
+                var pendingDelay = rec.get('pendingDelay');
                 var ackText = (suppStatus === 1) ? '待确认' : ((v === 'ACK' || v === 'SUPPRESSED') ? '已确认' : '待确认');
                 
                 var suppText = '待消警';
@@ -301,16 +304,19 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 if (suppText === '人工消警') suppColor = '#0e7490';
                 if (suppText === '自动消警') suppColor = '#52c41a';
 
-                // ★ 持续中标记：重触发时间窗口内，triggerAlarm=false
-                var persistTag = (triggerAlarm === false)
-                    ? '<span style="color:#f09614;font-size:11px;"> （持续中）</span>'
-                    : '';
+                // ★ 状态标记：区分"持续检测中"（pendingDelay）和"持续中"（triggerAlarm=false）
+                var persistTag = '';
+                if (pendingDelay === true) {
+                    persistTag = '<span style="color:#8c8c8c;font-size:11px;font-style:italic;"> (持续检测中)</span>';
+                } else if (triggerAlarm === false && rec.get('alarmLevel') > 0) {
+                    persistTag = '<span style="color:#f09614;font-size:11px;"> (触发间隔中)</span>';
+                }
 
                 return '<span style="color:' + ackColor + ';">' + ackText + '</span> ' +
                        '<span style="color:' + suppColor + ';">' + suppText + '</span>' + persistTag;
             }
         }, {
-            text: '消警到期时间', dataIndex: 'suppressEndTime', flex: 2, minWidth: 140,hidden:true,
+            text: '消警到期时间', dataIndex: 'suppressEndTime', flex: 2, minWidth: 140, hidden: true,
             renderer: function (v, meta, rec) {
                 if (!rec.isLeaf()) return '';
                 return v || '';
@@ -358,6 +364,8 @@ Ext.define('AP.view.alert.AlarmWindow', {
                     if (!rec.isLeaf()) return 'alarm-row-device';
                     var suppStatus = rec.get('suppressStatus');
                     if (suppStatus == 2 || suppStatus == 1) return 'alarm-row-suppressed';
+                    // ★ 新增：持续检测中，灰色斜体弱化
+                    if (rec.get('pendingDelay') === true) return 'alarm-row-pending-delay';
                     if (rec.get('status') === 'ACK') return 'alarm-row-ack';
                     return 'alarm-row-unack';
                 }
@@ -513,6 +521,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
             alertId: alarm.alertId,
             status: status,
             triggerAlarm: alarm.triggerAlarm !== false,
+            pendingDelay: alarm.pendingDelay === true,   // ★ 新增
             suppressStatus: alarm.suppressStatus || 0,
             checked: false,
             suppressReason: alarm.suppressReason || '',
@@ -546,6 +555,7 @@ Ext.define('AP.view.alert.AlarmWindow', {
         }
         node.set('status', targetStatus);
         node.set('triggerAlarm', alarm.triggerAlarm !== false);
+        node.set('pendingDelay', alarm.pendingDelay === true);   // ★ 新增
         node.set('suppressStatus', alarm.suppressStatus || 0);
         node.set('suppressReason', alarm.suppressReason || '');
         node.set('suppressUser', alarm.suppressUser || '');
@@ -751,6 +761,37 @@ Ext.define('AP.view.alert.AlarmWindow', {
                         self.updateToolbar();
                         AP.alert.AlarmManager._refreshSoundAfterAck();
                     });
+                    
+                    AP.alert.AlarmManager.suppressAlarm(alertIds, v.reason, parseFloat(v.durationHours), function (ok, data) {
+                        if (!ok) return;
+                        var affectedAlarms = []; // ★ 收集受影响的报警
+                        Ext.Array.each(keys, function (key) {
+                            var a = AP.alert.AlarmManager.alarms[key];
+                            if (a) {
+                                if (alertIds.indexOf(a.alertId) >= 0 || !a.alertId) {
+                                    a.suppressStatus = 2;
+                                    a.suppressReason = v.reason;
+                                    a.suppressUser = data.suppressUser;
+                                    a.suppressTime = data.suppressTime;
+                                    a.suppressIp = data.suppressIp;
+                                    a.suppressEndTime = data.suppressEndTime;
+                                    self.syncAlarmNode(a);
+
+                                    affectedAlarms.push({
+                                        deviceId: a.deviceId,
+                                        column: a.column,
+                                        bitIndex: a.bitIndex
+                                    });
+                                }
+                            }
+                        });
+                        dlg.close();
+                        self.updateToolbar();
+                        AP.alert.AlarmManager._refreshSoundAfterAck();
+                        
+                        // ★ 同步更新概览表和场景模型
+                        AP.alert.AlarmManager.applySuppressToUI(affectedAlarms);
+                    });
                 }
             }]
         });
@@ -799,8 +840,9 @@ Ext.define('AP.view.alert.AlarmWindow', {
             { text: '操作', width: 120, align: 'center',
                 renderer: function (v, meta, rec) {
                     if (!rec.isLeaf()) return '';
-                    return '<a href="javascript:void(0)" class="cancel-suppress">取消消警</a> | ' +
-                           '<a href="javascript:void(0)" class="edit-suppress">修改</a>';
+                    // 链接之间用 margin-left 隔开，不使用竖线
+                    return '<a href="javascript:void(0)" class="cancel-suppress">取消消警</a>' +
+                           '<a href="javascript:void(0)" class="edit-suppress" style="margin-left:12px;">修改</a>';
                 }
             }
         ];
@@ -817,12 +859,13 @@ Ext.define('AP.view.alert.AlarmWindow', {
                 rootVisible: false,
                 useArrows: true,
                 border: false,
-                columnLines: false,
+                columnLines: false, //关闭表格网格竖线，与其他表格保持一致
                 columns: columns,
                 viewConfig: {
                     getRowClass: function (rec) {
+                        // 保持父节点样式，叶子节点用默认白底黑字
                         if (!rec.isLeaf()) return 'alarm-row-device';
-                        return 'alarm-row-suppressed';
+                        return ''; 
                     }
                 },
                 listeners: {
@@ -1011,8 +1054,25 @@ Ext.define('AP.view.alert.AlarmWindow', {
         return this.countLeaf(this.storePending);
     },
 
+//    hasUnacknowledged: function () {
+//        return this.getUnackCount() > 0;
+//    },
+    
     hasUnacknowledged: function () {
-        return this.getUnackCount() > 0;
+        // ★ 只有非 pendingDelay 的未确认报警才触发标题闪烁
+        //   pendingDelay=true 的报警（系统重启后重新进入延时检测）虽然未确认，
+        //   但当前未真正报警，与概览表/场景模型"不高亮"保持一致，不触发闪烁。
+        var has = false;
+        this.storePending.getRootNode().eachChild(function (d) {
+            d.eachChild(function (leaf) {
+                if (leaf.isLeaf()
+                        && leaf.get('status') === 'NEW'
+                        && leaf.get('pendingDelay') !== true) {
+                    has = true;
+                }
+            });
+        });
+        return has;
     },
 
     updateToolbar: function () {
@@ -1092,21 +1152,34 @@ Ext.define('AP.view.alert.AlarmWindow', {
     },
 
     updateTitle: function () {
-        var unack = this.getUnackCount();
+        var unack = this.getUnackCount();          // 包含 pendingDelay=true，用于数量显示
         var acking = this.countLeaf(this.storeAcked);
-        // ★ 只统计 待确认 + 待消警
-        var total = unack + acking; 
-        
+        var total = unack + acking;                 // 只统计 待确认 + 待消警
+
+        // ★ 真实未确认数（排除 pendingDelay=true），用于颜色和闪烁判断
+        var realUnack = 0;
+        this.storePending.getRootNode().eachChild(function (d) {
+            d.eachChild(function (leaf) {
+                if (leaf.isLeaf()
+                        && leaf.get('status') === 'NEW'
+                        && leaf.get('pendingDelay') !== true) {
+                    realUnack++;
+                }
+            });
+        });
+
         var text = '报警';
         if (total > 0) {
             text = '报警 (' + unack + '/' + total + ')';
         }
         var html;
-        if (unack > 0 && this.blinkOn) {
+        if (realUnack > 0 && this.blinkOn) {
             html = '<span style="color:#dc2828;">● ' + text + '</span>';
-        } else if (unack > 0) {
+        } else if (realUnack > 0) {
             html = '<span style="color:#dc2828;">○ ' + text + '</span>';
         } else {
+            // ★ 全部是 pendingDelay=true 或全部已确认：普通色，不闪烁
+            //   与概览表/场景模型"不高亮"保持一致
             html = text;
         }
         if (html === this._lastTitleHtml) return;

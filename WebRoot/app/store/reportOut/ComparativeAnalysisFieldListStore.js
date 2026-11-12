@@ -1,7 +1,7 @@
 Ext.define('AP.store.reportOut.ComparativeAnalysisFieldListStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.dailyDataomparativeAnalysisFieldListStore',
-    fields: ['id','itemName'],
+    fields: ['id', 'itemName', 'headerName', 'sort'],
     autoLoad: true,
     proxy: {
         type: 'ajax',
@@ -31,9 +31,9 @@ Ext.define('AP.store.reportOut.ComparativeAnalysisFieldListStore', {
                     forceFit: false,
                     selModel:{
                     	selType: 'checkboxmodel',
-                    	mode: 'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+                    	mode: 'MULTI',//"SINGLE" / "SIMPLE" / "MULTI" 
                     	checkOnly: false,
-                    	allowDeselect: false
+                    	allowDeselect: true
                     },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>"

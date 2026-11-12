@@ -5,8 +5,8 @@ Ext.define("AP.view.reportOut.DailyDataComparativeAnalysisWindow", {
     id:'DailyDataComparativeAnalysisWindow_Id',
     title: loginUserLanguageResource.productionReport+'/'+loginUserLanguageResource.comparativeAnalysis,
     iframe: true,
-    width: '70%',
-    height: '70%',
+    width: '80%',
+    height: '80%',
     shadow: 'sides',
 //    closeAction: 'destroy',
 //    resizable: true,
@@ -350,105 +350,297 @@ Ext.define("AP.view.reportOut.DailyDataComparativeAnalysisWindow", {
     }
 });
 
-function getDailyComparativeAnalysisCurveData(){
-	var selectionDeviceRecord = Ext.getCmp("DailyComparativeAnalysisDeviceListGridPanel_Id").getSelectionModel().getSelection();
-	var selectionItemRecord = Ext.getCmp("DailyComparativeAnalysisItemListGridPanel_Id").getSelectionModel().getSelection();
-	if(selectionDeviceRecord.length>0 && selectionItemRecord.length>0){
-		var selectDeviceId=[];
-		var selectDeviceName=[];
-		
-		selectionDeviceRecord.forEach(function(record) {
-			selectDeviceId.push(record.data.deviceId);
-			selectDeviceName.push(record.data.deviceName);
-	    });
-		
-		var itemName=selectionItemRecord[0].data.headerName;
-		var sort=selectionItemRecord[0].data.sort;
-		
-		var startDate=Ext.getCmp('DailyDataComparativeAnalysisDataStartDate_Id')!=undefined?Ext.getCmp('DailyDataComparativeAnalysisDataStartDate_Id').rawValue:"";
-	    var endDate=Ext.getCmp('DailyDataComparativeAnalysisDataEndDate_Id')!=undefined?Ext.getCmp('DailyDataComparativeAnalysisDataEndDate_Id').rawValue:"";
-	    
-		
-		var panelId='DailyDataComparativeAnalysisPanel_Id';
-		Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
-		Ext.Ajax.request({
-			method:'POST',
-			url:context + '/reportDataMamagerController/getComparativeAnalysisCurveData',
-			success:function(response) {
-				if(isNotVal(Ext.getCmp(panelId))){
-					Ext.getCmp(panelId).getEl().unmask();
-				}
-				
-				var result =  Ext.JSON.decode(response.responseText);
-				var timeFormat='%m-%d';
-				
-			    var title = itemName+ (loginUserLanguage.toUpperCase()=='ZH_CN'?"":" ") + loginUserLanguageResourceFirstLower.curve;
-			    var xTitle=loginUserLanguageResource.date;
-			    var series = [];
-			    var yAxis= [];
-			    var singleAxis={
-		        		title: {
-		                    text: itemName
-		                },
-		                lineWidth: 1,
-			        	tickWidth: 1,      // 刻度线宽度
-		                tickLength: 5,     // 刻度线长度（可选）
-		                opposite:false
-		          };
-			    yAxis.push(singleAxis);
-			    
-			    for (var i = 0; i < result.list.length; i++) {
-			    	var maxValue=null;
-			        var minValue=null;
-			        var allPositive=true;//全部是非负数
-			        var allNegative=true;//全部是负值
-			        
-			        var singleSeries={};
-			        singleSeries.name=result.list[i].deviceName+"."+itemName;
-			        singleSeries.sort=sort;
-			        singleSeries.type='spline';
-			        singleSeries.marker={enabled: false};
-			        singleSeries.yAxis=0;
-			        singleSeries.data=[];
-			        
-			        for (var j = 0; j < result.list[i].calDate.length; j++) {
-			        	var pointData=[];
-			        	pointData.push(Date.parse(result.list[i].calDate[j].replace(/-/g, '/')));
-			        	pointData.push(result.list[i].data[j]);
-			        	
-			        	if(parseFloat(result.list[i].data[j])<0){
-			            	allPositive=false;
-			            }else if(parseFloat(result.list[i].data[j])>=0){
-			            	allNegative=false;
-			            }
-			        	
-			        	singleSeries.data.push(pointData);
-			        }
-			        series.push(singleSeries);
-			    }
-			    
-			   
-			    initDailyComparativeAnalysisCurveChartFn(series, 'DailyDataComparativeAnalysisCurveDiv_Id', title, '', '', yAxis,true,timeFormat);
-			},
-			failure:function(){
-				if(isNotVal(Ext.getCmp(panelId))){
-					Ext.getCmp(panelId).getEl().unmask();
-				}
-				Ext.MessageBox.alert(loginUserLanguageResource.error,loginUserLanguageResource.ajaxError);
-			},
-			params: {
-				deviceNames:selectDeviceName.join(","),
-				deviceIds:selectDeviceId.join(","),
-				itemName:itemName,
-				sort:sort,
-				startDate:startDate,
-	            endDate:endDate
-	        }
-		});
-	}else{
-		Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
-	}
-	
+function getDailyComparativeAnalysisCurveData() {
+    var selectionDeviceRecord = Ext.getCmp("DailyComparativeAnalysisDeviceListGridPanel_Id")
+        .getSelectionModel().getSelection();
+    var selectionItemRecord = Ext.getCmp("DailyComparativeAnalysisItemListGridPanel_Id")
+        .getSelectionModel().getSelection();
+
+    if (selectionDeviceRecord.length > 0 && selectionItemRecord.length > 0) {
+        var selectDeviceId = [];
+        var selectDeviceName = [];
+
+        selectionDeviceRecord.forEach(function (record) {
+            selectDeviceId.push(record.data.deviceId);
+            selectDeviceName.push(record.data.deviceName);
+        });
+
+        var items = [];
+        var seenSort = {};
+        selectionItemRecord.forEach(function (record) {
+            var sort = record.data.sort;
+            if (sort !== undefined && sort !== null && sort !== '' && !seenSort[sort]) {
+                seenSort[sort] = true;
+                items.push({
+                    itemName: record.data.headerName,
+                    sort: sort
+                });
+            }
+        });
+        if (items.length === 0) {
+            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+            return;
+        }
+
+        var startDate = Ext.getCmp('DailyDataComparativeAnalysisDataStartDate_Id') != undefined
+            ? Ext.getCmp('DailyDataComparativeAnalysisDataStartDate_Id').rawValue : "";
+        var endDate = Ext.getCmp('DailyDataComparativeAnalysisDataEndDate_Id') != undefined
+            ? Ext.getCmp('DailyDataComparativeAnalysisDataEndDate_Id').rawValue : "";
+
+        var panelId = 'DailyDataComparativeAnalysisPanel_Id';
+        Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
+
+        Ext.Ajax.request({
+            method: 'POST',
+            url: context + '/reportDataMamagerController/getComparativeAnalysisCurveData',
+            success: function (response) {
+                if (isNotVal(Ext.getCmp(panelId))) {
+                    Ext.getCmp(panelId).getEl().unmask();
+                }
+                var result = Ext.JSON.decode(response.responseText);
+                var timeFormat = '%m-%d';
+
+                // 字段色相池 + 设备明度/线型策略
+                // 基础色相池（互斥度高的色相：蓝/红/绿/橙/紫/青/玫红/黄绿/靛蓝/棕黄）
+                var BASE_HUES = [210, 0, 120, 45, 280, 190, 330, 90, 250, 20];
+                // 线型池：同色相下设备数超过明度档位时使用
+                var DASH_STYLES = ['Solid', 'Dash', 'Dot', 'DashDot', 'ShortDash', 'ShortDot'];
+                // 每色相最多用几档明度，超过后走线型
+                var MAX_LIGHTNESS_LEVELS = 4;
+                var L_MIN = 35, L_MAX = 72;
+
+                // 按字段建 yAxis，同时记录字段的基色（用于轴颜色呼应）
+                var fieldList = result.items || [];
+                var sortAxisMap = {};
+                var sortBaseColorMap = {};
+                var yAxis = [];
+                for (var i = 0; i < fieldList.length; i++) {
+                    var sort = fieldList[i].sort;
+                    var hue = BASE_HUES[i % BASE_HUES.length];
+                    sortAxisMap[sort] = i;
+                    sortBaseColorMap[sort] = 'hsl(' + hue + ',70%,50%)';
+                    yAxis.push({
+                        title: {
+                            text: fieldList[i].itemName,
+                            style: { color: sortBaseColorMap[sort] }   // ★ 轴标题跟随字段色相
+                        },
+                        labels: {
+                            style: { color: sortBaseColorMap[sort] }   // ★ 轴刻度跟随字段色相
+                        },
+                        lineWidth: 1,
+                        tickWidth: 1,
+                        tickLength: 5,
+                        opposite: i % 2 === 1
+                    });
+                }
+
+                // 统计每个字段下的设备数
+                var sortDeviceCount = {};
+                for (var i = 0; i < result.list.length; i++) {
+                    var s = result.list[i].sort;
+                    sortDeviceCount[s] = (sortDeviceCount[s] || 0) + 1;
+                }
+
+                // 按“设备 × 字段”建 series
+                var series = [];
+                var sortDeviceIndex = {};
+                for (var i = 0; i < result.list.length; i++) {
+                    var row = result.list[i];
+                    if (sortDeviceIndex[row.sort] === undefined) {
+                        sortDeviceIndex[row.sort] = 0;
+                    }
+                    var devIdx = sortDeviceIndex[row.sort]++;
+                    var devCount = sortDeviceCount[row.sort] || 1;
+
+                    // 字段色相
+                    var hue = BASE_HUES[(sortAxisMap[row.sort] || 0) % BASE_HUES.length];
+
+                    // 明度：在 L_MIN ~ L_MAX 之间按设备序号均匀分布
+                    var levelCount = Math.min(devCount, MAX_LIGHTNESS_LEVELS);
+                    var levelIdx = devIdx % levelCount;
+                    var lightness = (levelCount <= 1)
+                        ? 50
+                        : (L_MIN + (L_MAX - L_MIN) * (levelIdx / (levelCount - 1)));
+
+                    // 线型：设备数超过明度档位后，循环切换线型
+                    var dashStyle = 'Solid';
+                    if (devCount > MAX_LIGHTNESS_LEVELS) {
+                        dashStyle = DASH_STYLES[
+                            Math.floor(devIdx / MAX_LIGHTNESS_LEVELS) % DASH_STYLES.length
+                        ];
+                    }
+
+                    var color = 'hsl(' + hue + ',70%,' + Math.round(lightness) + '%)';
+
+                    var singleSeries = {
+                        name: row.deviceName + '.' + row.itemName,
+                        color: color,              // ★ 字段色相 + 设备明度
+                        dashStyle: dashStyle,      // ★ 设备数多时区分
+                        sort: row.sort,
+                        type: 'spline',
+                        marker: { enabled: false },
+                        yAxis: sortAxisMap[row.sort] || 0,
+                        data: []
+                    };
+                    for (var j = 0; j < row.calDate.length; j++) {
+                        singleSeries.data.push([
+                            Date.parse(row.calDate[j].replace(/-/g, '/')),
+                            row.data[j]
+                        ]);
+                    }
+                    series.push(singleSeries);
+                }
+
+                var titleNames = [];
+                for (var i = 0; i < fieldList.length; i++) {
+                    titleNames.push(fieldList[i].itemName);
+                }
+                var title = titleNames.join(" / ") +
+                    (loginUserLanguage.toUpperCase() == 'ZH_CN' ? "" : " ") +
+                    loginUserLanguageResourceFirstLower.curve;
+
+                initDailyComparativeAnalysisCurveChartFn(
+                    series,
+                    'DailyDataComparativeAnalysisCurveDiv_Id',
+                    title, '', '', yAxis, true, timeFormat
+                );
+            },
+            failure: function () {
+                if (isNotVal(Ext.getCmp(panelId))) {
+                    Ext.getCmp(panelId).getEl().unmask();
+                }
+                Ext.MessageBox.alert(loginUserLanguageResource.error, loginUserLanguageResource.ajaxError);
+            },
+            params: {
+                deviceNames: selectDeviceName.join(","),
+                deviceIds: selectDeviceId.join(","),
+                items: Ext.JSON.encode(items),
+                startDate: startDate,
+                endDate: endDate
+            }
+        });
+    } else {
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+    }
+}
+
+function getDailyComparativeAnalysisCurveData2() {
+    var selectionDeviceRecord = Ext.getCmp("DailyComparativeAnalysisDeviceListGridPanel_Id")
+        .getSelectionModel().getSelection();
+    var selectionItemRecord = Ext.getCmp("DailyComparativeAnalysisItemListGridPanel_Id")
+        .getSelectionModel().getSelection();
+
+    if (selectionDeviceRecord.length > 0 && selectionItemRecord.length > 0) {
+        var selectDeviceId = [];
+        var selectDeviceName = [];
+
+        selectionDeviceRecord.forEach(function (record) {
+            selectDeviceId.push(record.data.deviceId);
+            selectDeviceName.push(record.data.deviceName);
+        });
+
+        var items = [];
+        var seenSort = {};
+        selectionItemRecord.forEach(function (record) {
+            var sort = record.data.sort;
+            if (sort !== undefined && sort !== null && sort !== '' && !seenSort[sort]) {
+                seenSort[sort] = true;
+                items.push({
+                    itemName: record.data.headerName,
+                    sort: sort
+                });
+            }
+        });
+        if (items.length === 0) {
+            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+            return;
+        }
+
+        var startDate = Ext.getCmp('DailyDataComparativeAnalysisDataStartDate_Id') != undefined
+            ? Ext.getCmp('DailyDataComparativeAnalysisDataStartDate_Id').rawValue : "";
+        var endDate = Ext.getCmp('DailyDataComparativeAnalysisDataEndDate_Id') != undefined
+            ? Ext.getCmp('DailyDataComparativeAnalysisDataEndDate_Id').rawValue : "";
+
+        var panelId = 'DailyDataComparativeAnalysisPanel_Id';
+        Ext.getCmp(panelId).el.mask(loginUserLanguageResource.loadingData).show();
+
+        Ext.Ajax.request({
+            method: 'POST',
+            url: context + '/reportDataMamagerController/getComparativeAnalysisCurveData',
+            success: function (response) {
+                if (isNotVal(Ext.getCmp(panelId))) {
+                    Ext.getCmp(panelId).getEl().unmask();
+                }
+                var result = Ext.JSON.decode(response.responseText);
+                var timeFormat = '%m-%d';
+
+                //按字段建 yAxis，同字段共用一个 yAxis
+                var fieldList = result.items || [];
+                var sortAxisMap = {};
+                var yAxis = [];
+                for (var i = 0; i < fieldList.length; i++) {
+                    sortAxisMap[fieldList[i].sort] = i;
+                    yAxis.push({
+                        title: { text: fieldList[i].itemName },
+                        lineWidth: 1,
+                        tickWidth: 1,
+                        tickLength: 5,
+                        opposite: i % 2 === 1
+                    });
+                }
+
+                //按“设备 × 字段”建 series，yAxis 用 sortAxisMap[row.sort]
+                var series = [];
+                for (var i = 0; i < result.list.length; i++) {
+                    var row = result.list[i];
+                    var singleSeries = {
+                        name: row.deviceName + "." + row.itemName,
+                        sort: row.sort,
+                        type: 'spline',
+                        marker: { enabled: false },
+                        yAxis: sortAxisMap[row.sort] || 0,
+                        data: []
+                    };
+                    for (var j = 0; j < row.calDate.length; j++) {
+                        singleSeries.data.push([
+                            Date.parse(row.calDate[j].replace(/-/g, '/')),
+                            row.data[j]
+                        ]);
+                    }
+                    series.push(singleSeries);
+                }
+
+                var titleNames = [];
+                for (var i = 0; i < fieldList.length; i++) {
+                    titleNames.push(fieldList[i].itemName);
+                }
+                var title = titleNames.join(" / ") +
+                    (loginUserLanguage.toUpperCase() == 'ZH_CN' ? "" : " ") +
+                    loginUserLanguageResourceFirstLower.curve;
+
+                initDailyComparativeAnalysisCurveChartFn(
+                    series,
+                    'DailyDataComparativeAnalysisCurveDiv_Id',
+                    title, '', '', yAxis, true, timeFormat
+                );
+            },
+            failure: function () {
+                if (isNotVal(Ext.getCmp(panelId))) {
+                    Ext.getCmp(panelId).getEl().unmask();
+                }
+                Ext.MessageBox.alert(loginUserLanguageResource.error, loginUserLanguageResource.ajaxError);
+            },
+            params: {
+                deviceNames: selectDeviceName.join(","),
+                deviceIds: selectDeviceId.join(","),
+                items: Ext.JSON.encode(items),
+                startDate: startDate,
+                endDate: endDate
+            }
+        });
+    } else {
+        Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.checkOne);
+    }
 }
 
 function initDailyComparativeAnalysisCurveChartFn(series, divId, title, subtitle, xtitle, yAxis,legend,timeFormat) {

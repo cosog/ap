@@ -1021,7 +1021,15 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
     //     2) 持续中（triggerAlarm=false 且 alarmLevel>0）→ 保留级别，但不染字色
     //        由 renderLabels 统一给整块标签加粉色弱化样式
     // ========================================================
-    buildLabelText: function(b, labelStyle) {
+    // ========================================================
+    // 构建标签文本
+    //
+    //   ★ 本次改动：
+    //     1) 人工消警 / 持续检测中 → alarmLevel 按 0 处理（显示正常字色）
+    //     2) 触发间隔中（triggerAlarm=false 且 alarmLevel>0）→ alarmLevel 也置为 0，
+    //        保留 (触发间隔中) 的文本提示，但不染报警色。
+    // ========================================================
+    buildLabelText: function (b, labelStyle) {
         if (!b || !b.deviceId || !b.fieldName) return loginUserLanguageResource.unbound;
 
         var me = this;
@@ -1063,8 +1071,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
             // 人工消警 / 持续检测中：视为正常，不染报警色
             alarmLevel = 0;
         } else if (!triggerAlarm && alarmLevel > 0) {
-            // ★ 持续中
+            // ★ 触发间隔中：保留原有 alarmLevel 用于后面拼接文本，
+            //   但是为了让字色显示为正常色，这里将染色用的 alarmLevel 置为 0。
             isPersisting = true;
+            alarmLevel = 0; // 关键修改：不染报警色
         }
 
         // ★ 报警级别色
@@ -1086,10 +1096,10 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringSceneModelPanel", {
         var unit = b.unit;
         var unitStr = (unit != null && unit !== '') ? ('(' + unit + ')') : '';
         
-        // ★ 关键修改：直接把“持续中”拼接到值的文本里，和值保持同一个样式
+        // ★ 关键修改：直接把“触发间隔中”拼接到值的文本里，和值保持同一个样式
         var displayStr = val + unitStr;
         if (isPersisting) {
-            displayStr += ' (持续中)'; 
+            displayStr += ' (触发间隔中)'; 
         }
         
         var valHtml = Ext.String.htmlEncode(displayStr);

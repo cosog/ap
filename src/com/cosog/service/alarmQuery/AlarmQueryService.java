@@ -1283,27 +1283,23 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	    StringBuilder sql = new StringBuilder();
 	    Map<String,String> languageResourceMap = MemoryDataManagerTask.getLanguageResource(language);
 	    
-	    // 拉取所有未恢复的报警（包括已确认的）
 	    sql.append("select * from ( ")
 	       .append("  select a.*, rownum rn2 from ( ")
 	       .append("    select t.id, t.deviceid, d.devicename, d.orgid, d.devicetype, ")
 	       .append("           t.itemcode, t.itemname, ")
-//	       .append("           to_char(t.alarmvalue) as alarmvalue, ")
 	       .append("           to_char(t.alarmvalue, 'FM9999999990.999') as alarmvalue, ")
 	       .append("           t.alarminfo, ")
 	       .append("           t.alarmtype, ")
 	       .append("           t.alarmlevel, ")
 	       .append("           to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as acqtime, ")
 	       .append("           nvl(t.ack_status, 0) as ack_status, ")
-	       
 	       .append("           nvl(t.suppress_status, 0) as suppress_status, ")
 	       .append("           t.suppress_reason, ")
 	       .append("           t.suppress_user, ")
 	       .append("           to_char(t.suppress_time,'yyyy-mm-dd hh24:mi:ss') as suppress_time, ")
 	       .append("           t.suppress_ip, ")
 	       .append("           to_char(t.suppress_end_time,'yyyy-mm-dd hh24:mi:ss') as suppress_end_time, ")
-	       .append("           nvl(t.bitindex, -1) as bitindex, ") 
-	       
+	       .append("           nvl(t.bitindex, -1) as bitindex, ")
 	       .append("           row_number() over ( ")
 	       .append("               partition by t.deviceid, t.itemcode, nvl(t.bitindex,-1), ")
 	       .append("               CASE ")
@@ -1315,7 +1311,6 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	       .append("      from tbl_alarminfo_hist t, tbl_device d ")
 	       .append("     where t.deviceid = d.id ")
 	       .append("       and (t.recoverytime is null or (t.recoverytime is not null and nvl(t.ack_status, 0) = 0)) ")
-	       // 强制过滤，只保留该测点最新的一条未恢复记录
 	       .append("       and t.id = ( ")
 	       .append("           select max(t2.id) ")
 	       .append("           from tbl_alarminfo_hist t2 ")
@@ -1345,10 +1340,9 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            int deviceId=StringManagerUtils.stringToInteger(row[1]+"");
 	            int alarmType=StringManagerUtils.stringToInteger(row[9]+"");
 	            
-	            // ★ 注意：因为上面 select 加了两列(alarminfo, alarmtype)，下面取值的下标整体后移了 2 位！
-	            String column = row[5] == null ? "" : row[5].toString();       // itemcode
-	            String columnName = row[6] == null ? "" : row[6].toString();   // itemname
-	            String value = row[7] == null ? "" : row[7].toString();        // alarmvalue
+	            String column = row[5] == null ? "" : row[5].toString();
+	            String columnName = row[6] == null ? "" : row[6].toString();
+	            String value = row[7] == null ? "" : row[7].toString();
 	            if (value.startsWith(".")) {
 	                value = "0" + value;
 	            } else if (value.startsWith("-.")) {
@@ -1357,17 +1351,11 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            if (value.endsWith(".")) {
 	                value = value.substring(0, value.length() - 1);
 	            }
-	            // row[8] = alarminfo
-	            // row[9] = alarmtype
-	            // row[10] = alarmlevel
-	            // row[11] = acqtime
-	            // row[12] = ack_status
 	            
-	            int ackStatus = StringManagerUtils.stringToInteger(row[12] + ""); // ★ 索引变为 12
+	            int ackStatus = StringManagerUtils.stringToInteger(row[12] + "");
 	            String bitIndexStr = row[19] == null ? "" : row[19].toString();
 	            if ("-1".equals(bitIndexStr)) bitIndexStr = "";
 	            
-	            // 多语言及枚举值翻译（维持原有逻辑）
 	            if ("resultCode".equalsIgnoreCase(column) || "resultName".equalsIgnoreCase(column)) {
 	                WorkType workType = MemoryDataManagerTask.getWorkTypeByCode(value, language);
 	                if (workType != null) value = workType.getResultName();
@@ -1386,14 +1374,14 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	            
 	            Map<String, Object> item = new HashMap<String, Object>();
 	            
-	         // ★ 新增内存状态匹配
+	            // ★ 新增内存状态匹配
 	            boolean triggerAlarm = true;
+	            boolean pendingDelay = false;   // ★ 新增
 	            Map<Integer, DeviceAlarmInfo> deviceAlarmInfoMap = DeviceAlarmInfoMap.getDeviceAlarmInfoMap();
 	            if (deviceAlarmInfoMap != null) {
 	                DeviceAlarmInfo dai = deviceAlarmInfoMap.get(deviceId);
 	                if (dai != null && dai.getAlarmInfoMap() != null) {
 	                    for (DeviceAlarmInfo.AlarmInfo ai : dai.getAlarmInfoMap().values()) {
-	                        // 匹配 bitIndex
 	                        String currentBitIndex = ai.getBitIndex();
 	                        if (StringManagerUtils.isNotNull(bitIndexStr)) {
 	                            if (!bitIndexStr.equals(currentBitIndex)) continue;
@@ -1401,7 +1389,6 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	                            if (StringManagerUtils.isNotNull(currentBitIndex)) continue;
 	                        }
 	                        
-	                        // 匹配类型和值
 	                        boolean isMatch = false;
 	                        if (alarmType == 2 || alarmType == 5) {
 	                            String curInfo = ai.getAlarmInfo() == null ? "" : ai.getAlarmInfo();
@@ -1417,16 +1404,17 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	                        
 	                        if (isMatch) {
 	                            triggerAlarm = ai.getTriggerAlarm();
+	                            pendingDelay = ai.getPendingDelay();
 	                            break;
 	                        }
 	                    }
 	                }
 	            }
 	            
-	            
 	            item.put("triggerAlarm", triggerAlarm);
-	            item.put("alertId",    deviceId);
-	            item.put("deviceId",   StringManagerUtils.stringToInteger(row[1] + ""));
+	            item.put("pendingDelay", pendingDelay);
+	            item.put("alertId",    StringManagerUtils.stringToInteger(row[0] + ""));
+	            item.put("deviceId",   deviceId);
 	            item.put("deviceName", row[2] == null ? "" : row[2].toString());
 	            item.put("orgId",      StringManagerUtils.stringToInteger(row[3] + ""));
 	            item.put("deviceType", StringManagerUtils.stringToInteger(row[4] + ""));

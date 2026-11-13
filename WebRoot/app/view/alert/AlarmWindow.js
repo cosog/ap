@@ -479,8 +479,13 @@ Ext.define('AP.view.alert.AlarmWindow', {
         var targetStatus = 'NEW';
         if (alarm.ackStatus !== 1) {
             targetStatus = 'NEW';
-        } else if (alarm.suppressStatus == 2 || alarm.suppressStatus == 1) {
+        } else if (alarm.suppressStatus == 2) { 
+            // ★ 核心修改：只有人工消警(2)才进人工消警窗口
             targetStatus = 'SUPPRESSED';
+        } else if (alarm.suppressStatus == 1) {
+            // ★ 核心修改：已确认且是自动消警(1)，直接从界面上彻底抹掉
+            this.removeAlarmNode(alarm.key); 
+            return;
         } else {
             targetStatus = 'ACK';
         }
@@ -548,11 +553,17 @@ Ext.define('AP.view.alert.AlarmWindow', {
         var targetStatus = 'NEW';
         if (alarm.ackStatus !== 1) {
             targetStatus = 'NEW';
-        } else if (alarm.suppressStatus == 2 || alarm.suppressStatus == 1) {
+        } else if (alarm.suppressStatus == 2) { 
+            // ★ 核心修改：只有人工消警(2)才进人工消警窗口
             targetStatus = 'SUPPRESSED';
+        } else if (alarm.suppressStatus == 1) {
+            // ★ 核心修改：已确认且是自动消警(1)，直接从界面上彻底抹掉
+            this.removeAlarmNode(alarm.key); 
+            return;
         } else {
             targetStatus = 'ACK';
         }
+        
         node.set('status', targetStatus);
         node.set('triggerAlarm', alarm.triggerAlarm !== false);
         node.set('pendingDelay', alarm.pendingDelay === true);   // ★ 新增

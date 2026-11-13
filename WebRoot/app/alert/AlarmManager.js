@@ -61,9 +61,8 @@ Ext.define('AP.alert.AlarmManager', {
                     alarmLevel: data.commAlarmLevel,
                     acqTime: data.acqTime,
                     alarmType: 3,
-                    suppressStatus: data.suppressStatus || 0, 
-                    suppressStatus: 0,
-                    suppressEndTime: '',
+                    suppressStatus: data.suppressStatus || 0,
+                    suppressEndTime: data.suppressEndTime || '',
                     triggerAlarm: data.triggerAlarm !== false,
                     pendingDelay: data.pendingDelay === true
                 });
@@ -124,15 +123,15 @@ Ext.define('AP.alert.AlarmManager', {
         var all = data.allItemInfo || [];
         for (var i = 0; i < all.length; i++) push(all[i]);
 
-        if (data.commAlarmLevel > 0) {
-            push({ column: 'commStatusName', columnName: '通信状态', value: data.commStatusName, alarmLevel: data.commAlarmLevel, alarmType: 3 });
-        }
-        if (data.runAlarmLevel > 0) {
-            push({ column: 'runStatusName', columnName: '运行状态', value: data.runStatusName, alarmLevel: data.runAlarmLevel, alarmType: 6 });
-        }
-        if (data.resultAlarmLevel > 0) {
-            push({ column: 'resultName', columnName: '工况', value: data.resultName, alarmLevel: data.resultAlarmLevel, alarmType: 4 });
-        }
+//        if (data.commAlarmLevel > 0 && data.commStatusName !== undefined) {
+//            push({ column: 'commStatusName', columnName: '通信状态', value: data.commStatusName, alarmLevel: data.commAlarmLevel, alarmType: 3 });
+//        }
+//        if (data.runAlarmLevel > 0 && data.runStatusName !== undefined) {
+//            push({ column: 'runStatusName', columnName: '运行状态', value: data.runStatusName, alarmLevel: data.runAlarmLevel, alarmType: 6 });
+//        }
+//        if (data.resultAlarmLevel > 0 && data.resultName !== undefined) {
+//            push({ column: 'resultName', columnName: '工况', value: data.resultName, alarmLevel: data.resultAlarmLevel, alarmType: 4 });
+//        }
 
         return result;
     },
@@ -304,14 +303,24 @@ Ext.define('AP.alert.AlarmManager', {
             var col = alarm.column;
             var level = currentLevelMap[col];
             if (level === 0) {
+//                if (alarm.ackStatus !== 1 && alarm.suppressStatus !== 1) {
+//                    // ★ 未确认且未标记自动消警，则标记为自动消警
+//                    alarm.suppressStatus = 1;
+//                    this.updateNode(alarm);
+//                } else if (alarm.ackStatus === 1 && alarm.suppressStatus !== 2 && alarm.suppressStatus !== 1) {
+//                    // 已确认但未人工消警，正常物理恢复，删除节点
+//                    toRemoveKeys.push(key);
+//                }
+                
                 if (alarm.ackStatus !== 1 && alarm.suppressStatus !== 1) {
-                    // ★ 未确认且未标记自动消警，则标记为自动消警
+                    // 未确认时，标记为自动消警，留在待确认列表提示用户
                     alarm.suppressStatus = 1;
                     this.updateNode(alarm);
-                } else if (alarm.ackStatus === 1 && alarm.suppressStatus !== 2 && alarm.suppressStatus !== 1) {
-                    // 已确认但未人工消警，正常物理恢复，删除节点
+                } else if (alarm.ackStatus === 1) {
+                    // ★ 核心修改：只要已经确认了，不管之前是不是自动消警，直接推入删除队列！
                     toRemoveKeys.push(key);
                 }
+                
             }
         }
         for (var j = 0; j < toRemoveKeys.length; j++) {

@@ -1,7 +1,7 @@
 Ext.define('AP.store.historyQuery.ComparativeAnalysisDeviceListStore', {
     extend: 'Ext.data.Store',
     alias: 'widget.comparativeAnalysisDeviceListStore',
-    fields: ['id','deviceName'],
+    fields: ['deviceId', 'deviceName'],
     autoLoad: true,
     proxy: {
         type: 'ajax',
@@ -32,7 +32,7 @@ Ext.define('AP.store.historyQuery.ComparativeAnalysisDeviceListStore', {
                     	selType: 'checkboxmodel',
                     	mode: 'MULTI',//"SINGLE" / "SIMPLE" / "MULTI" 
                     	checkOnly: false,
-                    	allowDeselect: false
+                    	allowDeselect: true
                     },
                     viewConfig: {
                     	emptyText: "<div class='con_div_' id='div_dataactiveid'>" + Ext.String.htmlEncode("<" + loginUserLanguageResource.emptyMsg + ">") + "</div>"

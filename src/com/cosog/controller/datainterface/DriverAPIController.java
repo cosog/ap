@@ -1533,6 +1533,51 @@ public class DriverAPIController extends BaseController{
 	            alarmInfo=new DeviceAlarmInfo.AlarmInfo();
 	        }
 	        
+	        // 拦截异常脏数据
+	        String checkValue = acquisitionItemInfo.getRawValue();
+	        
+	        // 判定是否为数值类型的测点（数据量/枚举量），如果是，才做数字格式校验
+	        boolean isNumericMode = ("1".equals(acquisitionItemInfo.getResolutionMode()) 
+	                                || "2".equals(acquisitionItemInfo.getResolutionMode()) 
+	                                || "7".equals(acquisitionItemInfo.getResolutionMode()));
+	                                
+	        // 判定是否为无效/脏数据（空数据也算）
+	        boolean isInvalidData = false;
+	        if (!StringManagerUtils.isNotNull(checkValue)) {
+	            isInvalidData = true; // 空值/Null，拦截，不判定为恢复
+	        } else if (isNumericMode && !StringManagerUtils.isNum(checkValue)) {
+	            isInvalidData = true; // 数值模式下包含逗号或非法字符，拦截
+	        }
+	        
+	        if (isInvalidData) {
+	            // 取上一次的报警状态（完整继承，防止前端闪烁）
+	            if (alarmInfo != null && alarmInfo.getAlarmLevel() > 0) {
+		            StringManagerUtils.printLog("【无效/脏数据拦截】测点:" + acquisitionItemInfo.getTitle() + ", 异常值:" + checkValue + "，保持上一次报警状态",0);
+	                acquisitionItemInfo.setAlarmLevel(alarmInfo.getAlarmLevel());
+	                acquisitionItemInfo.setAlarmType(alarmInfo.getAlarmType());
+	                acquisitionItemInfo.setAlarmInfo(alarmInfo.getAlarmInfo());
+	                acquisitionItemInfo.setSuppressStatus(alarmInfo.getSuppressStatus()); // 继承消警状态
+	                acquisitionItemInfo.setSuppressEndTime(alarmInfo.getSuppressEndTime());
+	                acquisitionItemInfo.setAlertId(alarmInfo.getAlertId());               // 继承报警ID
+	                acquisitionItemInfo.setTriggerAlarm(alarmInfo.getTriggerAlarm());
+		            acquisitionItemInfo.setPendingDelay(alarmInfo.getPendingDelay());
+	                
+	                // 继承确认状态
+	                if (StringManagerUtils.isNotNull(alarmInfo.getAckUser()) 
+	                        && StringManagerUtils.isNotNull(alarmInfo.getAckTime())) {
+	                    acquisitionItemInfo.setAckStatus(1);
+	                } else {
+	                    acquisitionItemInfo.setAckStatus(0);
+	                }
+	            } else {
+	                acquisitionItemInfo.setAlarmLevel(0);
+	            }
+	            
+	            // 阻止进入后续的报警恢复/触发逻辑，直接加入列表并 continue
+	            acquisitionItemInfoList.add(acquisitionItemInfo);
+	            continue; 
+	        }
+	        
 	        // ★★★ 关键修改：记录上一次采集时的"延时检测中"状态 ★★★
 	        //   - existAlarm=true  → 读取内存中上一轮采集结束时设置的 pendingDelay
 	        //   - existAlarm=false → 新建对象，默认 false
@@ -4080,7 +4125,7 @@ public class DriverAPIController extends BaseController{
 										protocol,
 										checkSign);
 //								StringManagerUtils.printLog(webSocketSendDataStr,0);
-//								System.out.println(webSocketSendDataStr);
+								System.out.println(webSocketSendDataStr);
 								infoHandler().sendMessageToUserId(websocketClientUserId, webSocketSendDataStr);
 							}
 						}

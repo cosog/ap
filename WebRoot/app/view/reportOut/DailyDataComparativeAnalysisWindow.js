@@ -1,3 +1,273 @@
+//全局配置（刷新浏览器才丢失）
+var dailyDataComparativeAnalysisCurveConfig = {
+    // key = sort（字段）
+    axis: {
+        // "3": { axisSort: 1, yAxisOpposite: false, axisColor: "ff0000" }
+    },
+    // key = sort + "_" + deviceId
+    series: {
+        // "3_481": { lineWidth: 3, color: "ff0000", dashStyle: "Solid" }
+    }
+};
+
+//保存上一次查询结果，供配置变更时重绘
+var dailyDataComparativeAnalysisLastResult = null;
+
+//HEX → HSL，用于"父节点配了颜色、子节点没配"时按父色生成明度
+function dailyDataComparativeAnalysisHexToHsl(hex) {
+    if (!hex) return { h: 210, s: 70 };
+    hex = hex.replace('#', '');
+    if (hex.length === 3) {
+        hex = hex.split('').map(function (c) { return c + c; }).join('');
+    }
+    var r = parseInt(hex.substr(0, 2), 16) / 255;
+    var g = parseInt(hex.substr(2, 2), 16) / 255;
+    var b = parseInt(hex.substr(4, 2), 16) / 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+    if (max === min) {
+        h = s = 0;
+    } else {
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+            case g: h = ((b - r) / d + 2) / 6; break;
+            case b: h = ((r - g) / d + 4) / 6; break;
+        }
+    }
+    return { h: Math.round(h * 360), s: Math.round(s * 100) };
+}
+
+//根据背景色决定单元格文字用黑还是白
+function dailyDataComparativeAnalysisContrastColor(hex) {
+    if (!hex) return '#000000';
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(function (c) { return c + c; }).join('');
+    var r = parseInt(hex.substr(0, 2), 16);
+    var g = parseInt(hex.substr(2, 2), 16);
+    var b = parseInt(hex.substr(4, 2), 16);
+    var brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 128 ? '#000000' : '#ffffff';
+}
+
+//画图（应用配置）
+function renderDailyComparativeAnalysisCurve(result) {
+    if (!result) return;
+    var fieldList = result.items || [];
+    var timeFormat = '%m-%d';
+    var BASE_HUES = [210, 0, 120, 45, 280, 190, 330, 90, 250, 20];
+    var DASH_STYLES = ['Solid', 'Dash', 'Dot', 'DashDot', 'ShortDash', 'ShortDot'];
+    var MAX_LIGHTNESS_LEVELS = 4;
+    var L_MIN = 35, L_MAX = 72;
+
+    // 记录每个字段最原始的排序位置，防止更改轴顺序时颜色跟着乱变
+    var sortOrigIndexMap = {};
+    for (var i = 0; i < fieldList.length; i++) {
+        sortOrigIndexMap[fieldList[i].sort] = i;
+    }
+
+    //解析所有轴的配置
+    var axisOrder = [];
+    for (var i = 0; i < fieldList.length; i++) {
+        var sort = fieldList[i].sort;
+        var cfg = dailyDataComparativeAnalysisCurveConfig.axis[sort] || {};
+        
+        //如果未手动配置序号，默认取当前下标+1（与配置窗口显示保持绝对一致）
+        var pos = (cfg.axisSort !== undefined && cfg.axisSort !== '' && cfg.axisSort !== null)
+            ? parseInt(cfg.axisSort) : (i + 1); 
+            
+        var opposite;
+        if (cfg.yAxisOpposite !== undefined && cfg.yAxisOpposite !== null) {
+            opposite = (cfg.yAxisOpposite === true || cfg.yAxisOpposite === 'true');
+        } else {
+            opposite = i % 2 === 1; // 默认交替
+        }
+        
+        axisOrder.push({
+            sort: sort,
+            pos: pos,
+            origIndex: i,
+            itemName: fieldList[i].itemName,
+            opposite: opposite,
+            cfg: cfg
+        });
+    }
+
+    //分离左右轴，各自按序号升序排列
+    var leftAxes = [];
+    var rightAxes = [];
+    for (var i = 0; i < axisOrder.length; i++) {
+        if (axisOrder[i].opposite) {
+            rightAxes.push(axisOrder[i]);
+        } else {
+            leftAxes.push(axisOrder[i]);
+        }
+    }
+
+    leftAxes.sort(function(a, b) {
+        if (a.pos !== b.pos) return a.pos - b.pos; 
+        return a.origIndex - b.origIndex;
+    });
+    rightAxes.sort(function(a, b) {
+        if (a.pos !== b.pos) return a.pos - b.pos; 
+        return a.origIndex - b.origIndex;
+    });
+
+    //构建 Y 轴配置
+    var yAxis = [];
+    var sortAxisMap = {};
+
+    // 左侧轴：倒序 push
+    // 因为左侧轴索引越大越靠左（外侧），为了让序号小的在最左，必须把序号大的先 push 进数组（去内侧）
+    for (var i = leftAxes.length - 1; i >= 0; i--) {
+        var f = leftAxes[i];
+        var baseColor = f.cfg.axisColor
+            ? '#' + f.cfg.axisColor
+            : 'hsl(' + BASE_HUES[f.origIndex % BASE_HUES.length] + ',70%,50%)';
+            
+        sortAxisMap[f.sort] = yAxis.length;
+        
+        yAxis.push({
+            title: { text: f.itemName, style: { color: baseColor } },
+            labels: { style: { color: baseColor } },
+            lineWidth: 1, tickWidth: 1, tickLength: 5,
+            opposite: false
+        });
+    }
+
+    // 右侧轴：正序 push
+    // 因为右侧轴索引越小越靠内，为了让序号小的靠内，必须把序号小的先 push 进数组
+    for (var i = 0; i < rightAxes.length; i++) {
+        var f = rightAxes[i];
+        var baseColor = f.cfg.axisColor
+            ? '#' + f.cfg.axisColor
+            : 'hsl(' + BASE_HUES[f.origIndex % BASE_HUES.length] + ',70%,50%)';
+            
+        sortAxisMap[f.sort] = yAxis.length;
+        
+        yAxis.push({
+            title: { text: f.itemName, style: { color: baseColor } },
+            labels: { style: { color: baseColor } },
+            lineWidth: 1, tickWidth: 1, tickLength: 5,
+            opposite: true
+        });
+    }
+
+    // 同字段设备数统计 
+    var fieldDeviceCount = {};
+    for (var i = 0; i < result.list.length; i++) {
+        var s = result.list[i].sort;
+        fieldDeviceCount[s] = (fieldDeviceCount[s] || 0) + 1;
+    }
+
+    //series 组装
+    var series = [];
+    var fieldDeviceIndex = {};
+
+    function buildSeriesForAxis(axisInfo) {
+        var sort = axisInfo.sort;
+        var axisIdx = sortAxisMap[sort];
+
+        for (var i = 0; i < result.list.length; i++) {
+            var row = result.list[i];
+            if (row.sort !== sort) continue;
+
+            if (fieldDeviceIndex[row.sort] === undefined) fieldDeviceIndex[row.sort] = 0;
+            var devIdx = fieldDeviceIndex[row.sort]++;
+            var devCount = fieldDeviceCount[row.sort] || 1;
+            
+            var seriesKey = row.sort + '_' + row.deviceId;
+            var sCfg = dailyDataComparativeAnalysisCurveConfig.series[seriesKey] || {};
+
+            // 颜色
+            var color;
+            if (sCfg.color) {
+                color = '#' + sCfg.color;
+            } else {
+                var aCfg = dailyDataComparativeAnalysisCurveConfig.axis[row.sort] || {};
+                var hue, sat;
+                if (aCfg.axisColor) {
+                    var hsl = dailyDataComparativeAnalysisHexToHsl(aCfg.axisColor);
+                    hue = hsl.h; sat = hsl.s;
+                } else {
+                    hue = BASE_HUES[sortOrigIndexMap[row.sort] % BASE_HUES.length];
+                    sat = 70;
+                }
+                var levelCount = Math.min(devCount, MAX_LIGHTNESS_LEVELS);
+                var levelIdx = devIdx % levelCount;
+                var lightness = (levelCount <= 1) ? 50 : (L_MIN + (L_MAX - L_MIN) * (levelIdx / (levelCount - 1)));
+                color = 'hsl(' + hue + ',' + sat + '%,' + Math.round(lightness) + '%)';
+            }
+
+            // 线宽
+            var lineWidth = 2;
+            if (sCfg.lineWidth !== undefined && sCfg.lineWidth !== '' && sCfg.lineWidth !== null) {
+                lineWidth = parseFloat(sCfg.lineWidth);
+            }
+
+            // 线型
+            var dashStyle;
+            if (sCfg.dashStyle) {
+                dashStyle = sCfg.dashStyle;
+            } else if (devCount > MAX_LIGHTNESS_LEVELS) {
+                dashStyle = DASH_STYLES[Math.floor(devIdx / MAX_LIGHTNESS_LEVELS) % DASH_STYLES.length];
+            } else {
+                dashStyle = 'Solid';
+            }
+
+            var singleSeries = {
+                name: row.deviceName + '.' + row.itemName,
+                color: color,
+                dashStyle: dashStyle,
+                sort: row.sort,
+                deviceId: row.deviceId,
+                type: 'spline',
+                marker: { enabled: false },
+                yAxis: axisIdx,
+                lineWidth: lineWidth,
+                data: []
+            };
+
+            for (var j = 0; j < row.calDate.length; j++) {
+                var ts = Date.parse(row.calDate[j].replace(/-/g, '/'));
+                var v = parseFloat(row.data[j]);
+                singleSeries.data.push([ts, isNaN(v) ? null : v]);
+            }
+            series.push(singleSeries);
+        }
+    }
+
+    //合并所有轴，强制按全局配置序号升序排列
+    var allAxesSorted = leftAxes.concat(rightAxes);
+    allAxesSorted.sort(function(a, b) {
+        if (a.pos !== b.pos) return a.pos - b.pos;
+        return a.origIndex - b.origIndex;
+    });
+
+    for (var i = 0; i < allAxesSorted.length; i++) {
+        buildSeriesForAxis(allAxesSorted[i]);
+    }
+    var title = '对比曲线';
+
+    initDailyComparativeAnalysisCurveChartFn(
+        series, 'DailyDataComparativeAnalysisCurveDiv_Id', title, '', '', yAxis, true, timeFormat
+    );
+
+    // 绑定双击事件（只绑一次）
+    var container = document.getElementById('DailyDataComparativeAnalysisCurveDiv_Id');
+    if (container && !container._dblclickBound) {
+        container._dblclickBound = true;
+        container.addEventListener('dblclick', function () {
+            if (!dailyDataComparativeAnalysisLastResult) return;
+            var exist = Ext.getCmp('DailyDataComparativeAnalysisCurveConfigWindow_Id');
+            if (exist) exist.close();
+            var win = Ext.create('AP.view.reportOut.DailyDataComparativeAnalysisCurveConfigWindow');
+            win.show();
+        });
+    }
+}
+
 Ext.define("AP.view.reportOut.DailyDataComparativeAnalysisWindow", {
     extend: 'Ext.window.Window',
     alias: 'widget.dailyDataComparativeAnalysisWindow',
@@ -64,6 +334,9 @@ Ext.define("AP.view.reportOut.DailyDataComparativeAnalysisWindow", {
                 iconCls: 'search',
                 handler: function () {
                 	getDailyComparativeAnalysisCurveData();
+                	Ext.getCmp('DailyDataComparativeAnalysisCurvePanel_Id').setTitle(loginUserLanguageResource.curve + 
+             	           '<span style="font-size: 12px; font-weight: normal; color: #888; margin-left: 10px; font-style: italic;">' +
+            	           '(双击图形配置曲线样式)');
                 }
             }],
         	layout: 'border',
@@ -98,7 +371,7 @@ Ext.define("AP.view.reportOut.DailyDataComparativeAnalysisWindow", {
         		autoScroll: true,
         		items:[{
         			region: 'center',
-                    title: loginUserLanguageResource.curve,
+        			title: loginUserLanguageResource.curve,
                     id: 'DailyDataComparativeAnalysisCurvePanel_Id',
                     layout: 'fit',
                     minHeight: otherCardMinHeight,   // 图表最小可视高度
@@ -394,116 +667,14 @@ function getDailyComparativeAnalysisCurveData() {
             method: 'POST',
             url: context + '/reportDataMamagerController/getComparativeAnalysisCurveData',
             success: function (response) {
-                if (isNotVal(Ext.getCmp(panelId))) {
+            	if (isNotVal(Ext.getCmp(panelId))) {
                     Ext.getCmp(panelId).getEl().unmask();
                 }
                 var result = Ext.JSON.decode(response.responseText);
-                var timeFormat = '%m-%d';
 
-                // 字段色相池 + 设备明度/线型策略
-                // 基础色相池（互斥度高的色相：蓝/红/绿/橙/紫/青/玫红/黄绿/靛蓝/棕黄）
-                var BASE_HUES = [210, 0, 120, 45, 280, 190, 330, 90, 250, 20];
-                // 线型池：同色相下设备数超过明度档位时使用
-                var DASH_STYLES = ['Solid', 'Dash', 'Dot', 'DashDot', 'ShortDash', 'ShortDot'];
-                // 每色相最多用几档明度，超过后走线型
-                var MAX_LIGHTNESS_LEVELS = 4;
-                var L_MIN = 35, L_MAX = 72;
-
-                // 按字段建 yAxis，同时记录字段的基色（用于轴颜色呼应）
-                var fieldList = result.items || [];
-                var sortAxisMap = {};
-                var sortBaseColorMap = {};
-                var yAxis = [];
-                for (var i = 0; i < fieldList.length; i++) {
-                    var sort = fieldList[i].sort;
-                    var hue = BASE_HUES[i % BASE_HUES.length];
-                    sortAxisMap[sort] = i;
-                    sortBaseColorMap[sort] = 'hsl(' + hue + ',70%,50%)';
-                    yAxis.push({
-                        title: {
-                            text: fieldList[i].itemName,
-                            style: { color: sortBaseColorMap[sort] }   // ★ 轴标题跟随字段色相
-                        },
-                        labels: {
-                            style: { color: sortBaseColorMap[sort] }   // ★ 轴刻度跟随字段色相
-                        },
-                        lineWidth: 1,
-                        tickWidth: 1,
-                        tickLength: 5,
-                        opposite: i % 2 === 1
-                    });
-                }
-
-                // 统计每个字段下的设备数
-                var sortDeviceCount = {};
-                for (var i = 0; i < result.list.length; i++) {
-                    var s = result.list[i].sort;
-                    sortDeviceCount[s] = (sortDeviceCount[s] || 0) + 1;
-                }
-
-                // 按“设备 × 字段”建 series
-                var series = [];
-                var sortDeviceIndex = {};
-                for (var i = 0; i < result.list.length; i++) {
-                    var row = result.list[i];
-                    if (sortDeviceIndex[row.sort] === undefined) {
-                        sortDeviceIndex[row.sort] = 0;
-                    }
-                    var devIdx = sortDeviceIndex[row.sort]++;
-                    var devCount = sortDeviceCount[row.sort] || 1;
-
-                    // 字段色相
-                    var hue = BASE_HUES[(sortAxisMap[row.sort] || 0) % BASE_HUES.length];
-
-                    // 明度：在 L_MIN ~ L_MAX 之间按设备序号均匀分布
-                    var levelCount = Math.min(devCount, MAX_LIGHTNESS_LEVELS);
-                    var levelIdx = devIdx % levelCount;
-                    var lightness = (levelCount <= 1)
-                        ? 50
-                        : (L_MIN + (L_MAX - L_MIN) * (levelIdx / (levelCount - 1)));
-
-                    // 线型：设备数超过明度档位后，循环切换线型
-                    var dashStyle = 'Solid';
-                    if (devCount > MAX_LIGHTNESS_LEVELS) {
-                        dashStyle = DASH_STYLES[
-                            Math.floor(devIdx / MAX_LIGHTNESS_LEVELS) % DASH_STYLES.length
-                        ];
-                    }
-
-                    var color = 'hsl(' + hue + ',70%,' + Math.round(lightness) + '%)';
-
-                    var singleSeries = {
-                        name: row.deviceName + '.' + row.itemName,
-                        color: color,              // ★ 字段色相 + 设备明度
-                        dashStyle: dashStyle,      // ★ 设备数多时区分
-                        sort: row.sort,
-                        type: 'spline',
-                        marker: { enabled: false },
-                        yAxis: sortAxisMap[row.sort] || 0,
-                        data: []
-                    };
-                    for (var j = 0; j < row.calDate.length; j++) {
-                        singleSeries.data.push([
-                            Date.parse(row.calDate[j].replace(/-/g, '/')),
-                            row.data[j]
-                        ]);
-                    }
-                    series.push(singleSeries);
-                }
-
-                var titleNames = [];
-                for (var i = 0; i < fieldList.length; i++) {
-                    titleNames.push(fieldList[i].itemName);
-                }
-                var title = titleNames.join(" / ") +
-                    (loginUserLanguage.toUpperCase() == 'ZH_CN' ? "" : " ") +
-                    loginUserLanguageResourceFirstLower.curve;
-
-                initDailyComparativeAnalysisCurveChartFn(
-                    series,
-                    'DailyDataComparativeAnalysisCurveDiv_Id',
-                    title, '', '', yAxis, true, timeFormat
-                );
+                //保存 result 并交给统一画图函数（配置可重绘）
+                dailyDataComparativeAnalysisLastResult = result;
+                renderDailyComparativeAnalysisCurve(result);
             },
             failure: function () {
                 if (isNotVal(Ext.getCmp(panelId))) {
@@ -650,6 +821,10 @@ function initDailyComparativeAnalysisCurveChartFn(series, divId, title, subtitle
 //	            useUTC: false
 //	        }
 //	    });
+		
+		if ($("#"+divId).highcharts() != undefined) {
+            $("#"+divId).highcharts().destroy();
+        }
 
 	    var mychart = new Highcharts.Chart({
 	        chart: {
@@ -738,9 +913,7 @@ function initDailyComparativeAnalysisCurveChartFn(series, divId, title, subtitle
 	    	    			'downloadJPEG',
 	    	    			'downloadSVG',
 	    	    			'separator',
-	    	    			'downloadXLS',
-	    	    			'separator',
-	    	    			'chartConfig'
+	    	    			'downloadXLS'
 	    	    			]
 	    	    		}
 	    	    },

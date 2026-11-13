@@ -12556,369 +12556,351 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString();
 	}
 	
-	public String getComparativeAnalysisCurveData(String deviceIds,String deviceNames,
-			String itemName,String itemColumn,String itemUnit,String dataSource,
-			String startDate,String endDate,
-			User user) {
-		String language=user!=null?user.getLanguageName():"";
-		StringBuffer result_json = new StringBuffer();
-		int vacuateRecord=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateRecord();
-		int vacuateThreshold=Config.getInstance().configFile.getAp().getDataVacuate().getVacuateThreshold();
-		
-		int databaseMaintenanceCycle= Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
-		
-		UserInfo userInfo=MemoryDataManagerTask.getUserInfoByNo(user.getUserNo()+"");
-		GraphicSetData graphicSetData =null;
-		String tableName="tbl_acqdata_hist";
-		String deviceTableName="tbl_device";
-		String vacuateTableName="tbl_acqdata_vacuate";
-		
-		Gson gson = new Gson();
-		java.lang.reflect.Type reflectType=null;
-		
-		Map<String,DataMapping> loadProtocolMappingColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
-		Map<String,DataMapping> protocolExtendedFieldColumnByTitleMap=MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
-		
-		
-		List<String> deviceIdList=new ArrayList<>();
-		Map<String,String> deviceNameMap=new HashMap<>();
-		Map<String,Integer> deviceCalculateMap=new HashMap<>();
-		Map<String,String> deviceProtocolMap=new HashMap<>();
-		
-		String deviceQuerySql="select t.id,t.devicename,t2.calculatetype,t5.code "
-				+ " from tbl_device t "
-				+ " left outer join tbl_tabmanager_device t2 on t.calculatetype=t2.id "
-				+ " left outer join tbl_protocolinstance t3 on t3.code=t.instancecode"
-				+ " left outer join tbl_acq_unit_conf t4 on t3.unitid=t4.id"
-				+ " left outer join tbl_protocol t5 on t5.code=t4.protocol"
-				+ " where t.id in ("+deviceIds+") "
-				+ " order by t.sortnum";
-		List<?> deviceQueryList = this.findCallSql(deviceQuerySql);
-		for (Object o : deviceQueryList) {
-			Object[] obj = (Object[]) o;
-			deviceIdList.add(obj[0]+"");
-			deviceNameMap.put(obj[0]+"", obj[1]+"");
-			deviceCalculateMap.put(obj[0]+"", obj[2]==null?0:StringManagerUtils.stringToInteger(obj[2]+""));
-			deviceProtocolMap.put(obj[0]+"", obj[3]!=null?(obj[3]+""):"");
-		}
-		int curveCount=deviceIdList.size();
-		
-		result_json.append("{"
-				+ "\"itemName\":\""+itemName+"\","
-				+ "\"itemColumn\":\""+itemColumn+"\","
-				+ "\"itemUnit\":\""+itemUnit+"\","
-				+ "\"startDate\":\""+startDate+"\","
-				+ "\"endDate\":\""+endDate+"\","
-				+ "\"curveCount\":"+curveCount+","
-				+ "\"list\":[");
-		for(int i=0;i<curveCount;i++){
-			String deviceId=deviceIdList.get(i);
-			boolean orerRetentionTime=false;
-			
-			StringBuffer acqTimeBuff = new StringBuffer();
-			StringBuffer dataBuff = new StringBuffer();
-			acqTimeBuff.append("[");
-			dataBuff.append("[");
-			
-			if(databaseMaintenanceCycle>0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getEnabled()){
-				int retentionTime=  Config.getInstance().configFile.getAp().getDatabaseMaintenance().getTableConfig().getAcqdata_hist().getRetentionTime();
-				String rangeSql="select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')-to_date('"+(endDate.split(" ")[0])+"','yyyy-mm-dd') from TBL_ACQDATA_LATEST t where t.deviceid="+deviceId+"";
-				int diffDays=0;
-				List<?> list = this.findCallSql(rangeSql);
-				if(list.size()>0 && list.get(0)!=null){
-					diffDays=StringManagerUtils.stringToInteger(list.get(0).toString());
-					if(diffDays>retentionTime){//查询区间在历史数据保留周期之外
-						tableName=vacuateTableName;
-						orerRetentionTime=true;
-					}
-				}
-			}
-			
-			int totalCount=0;
-			int vacuateCount=0;
-			int vacuateTotalCount=0;
-			
-			String queryIdSql="select t.id "
-					+ " from "+tableName+" t "
-					+ " where t.commStatus=1 and t.deviceId="+deviceId
-					+ " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')"
-					+ " order by t.id";
-			totalCount=this.getTotalCountRows(queryIdSql);
-			if(totalCount>vacuateThreshold){
-				queryIdSql=queryIdSql.replaceAll(tableName, vacuateTableName);
-				vacuateTotalCount=this.getTotalCountRows(queryIdSql);
-				queryIdSql="select id from  (select v.*, rownum as rn from ("+queryIdSql+") v ) v2 where mod(rn*"+vacuateRecord+","+vacuateTotalCount+")<"+vacuateRecord+"";
-			}else{
-				queryIdSql="select id from  (select v.*, rownum as rn from ("+queryIdSql+") v ) v2 where mod(rn*"+vacuateRecord+","+totalCount+")<"+vacuateRecord+"";
-			}
-			if("0".equalsIgnoreCase(dataSource)||"5".equalsIgnoreCase(dataSource)){
-				String sql="select to_char(h1.acqtime,'yyyy-mm-dd hh24:mi:ss'),h1.acqdata"
-						+ " from "+tableName +" h1";
-				sql+=" where h1.id in ("+queryIdSql+")";
-				sql+=" order by h1.id";
-				if(totalCount>vacuateThreshold){
-					sql=sql.replaceAll(tableName, vacuateTableName);
-				}
-				
-				String finalSql=sql;
-				List<?> list = this.findCallSql(finalSql);
-				vacuateCount=list.size();
-				
-				for(int j=0;j<list.size();j++){
-					Object[] obj=(Object[]) list.get(j);
-					String acqData=StringManagerUtils.CLOBObjectToString(obj[1]);
-					reflectType = new TypeToken<List<KeyValue>>() {}.getType();
-					List<KeyValue> acqDataList=gson.fromJson(acqData, reflectType);
-					String value="null";
-					if(acqDataList!=null){
-						for(KeyValue keyValue:acqDataList){
-							if(itemColumn.equalsIgnoreCase(keyValue.getKey())){
-								value=keyValue.getValue();
-								break;
-							}
-						}
-					}
-					
-					acqTimeBuff.append("\""+obj[0]+"\",");
-					dataBuff.append(value+",");
-				}
-			}else if("1".equalsIgnoreCase(dataSource)){
-				int calculateType=deviceCalculateMap.get(deviceId);
-				List<CalItem> calItemList=null;
-				List<CalItem> rodCalItemList=null;
-				List<CalItem> inputItemList=null;
-				
-				String calAndInputDataTable="";
-				String vacuateCalAndInputDataTable="";
-				
-				if(calculateType==1){
-					calAndInputDataTable="tbl_srpacqdata_hist";
-					vacuateCalAndInputDataTable="tbl_srpacqdata_vacuate";
-					calItemList=MemoryDataManagerTask.getSRPCalculateItem(language);
-					rodCalItemList=MemoryDataManagerTask.getSRPCalculateItemRodData(language);
-					inputItemList=MemoryDataManagerTask.getSRPInputItem(language);
-				}else if(calculateType==2){
-					calAndInputDataTable="tbl_pcpacqdata_hist";
-					vacuateCalAndInputDataTable="tbl_pcpacqdata_vacuate";
-					calItemList=MemoryDataManagerTask.getPCPCalculateItem(language);
-					inputItemList=MemoryDataManagerTask.getPCPInputItem(language);
-				}else{
-					calItemList=MemoryDataManagerTask.getAcqCalculateItem(language);
-					inputItemList=new ArrayList<>();
-				}
-				
-				String sql="";
-				if(StringManagerUtils.generalCalColumnFiter(itemColumn) || calculateType==0){
-					sql="select to_char(h1.acqtime,'yyyy-mm-dd hh24:mi:ss'),h1."+itemColumn
-							+ " from "+tableName +" h1";
-					sql+=" where h1.id in ("+queryIdSql+")";
-					sql+=" order by h1.id";
-				}else if(calculateType>0){
-					CalItem calItem=MemoryDataManagerTask.getCalItemByCode(itemColumn, calItemList);
-					String columns="null";
-					if(calculateType==1 && StringManagerUtils.rodCalColumnFiter(itemColumn)){
-						columns="h2.rodstring";
-					}else{
-						if(calItem!=null){
-							if("SurfaceSystemEfficiency".equalsIgnoreCase(itemColumn) || "WellDownSystemEfficiency".equalsIgnoreCase(itemColumn)||"SystemEfficiency".equalsIgnoreCase(itemColumn)
-									|| "PumpEff1".equalsIgnoreCase(itemColumn) || "PumpEff2".equalsIgnoreCase(itemColumn) || "PumpEff3".equalsIgnoreCase(itemColumn) || "PumpEff4".equalsIgnoreCase(itemColumn) || "PumpEff".equalsIgnoreCase(itemColumn)){
-								columns="h2."+itemColumn+"*100 as "+itemColumn;
-							}else{
-								columns="h2."+itemColumn;
-							}
-						}
-					}
-					
-					sql="select to_char(h1.acqtime,'yyyy-mm-dd hh24:mi:ss'),"+columns
-							+ " from "+tableName +" h1,"+calAndInputDataTable+" h2 "
-							+ " where h1.deviceid=h2.deviceid and h1.acqtime=h2.acqtime";
-					sql+=" and h1.id in ("+queryIdSql+")";
-					sql+=" order by h1.id";
-				}
-				
-				if(totalCount>vacuateThreshold){
-					sql=sql.replaceAll(tableName, vacuateTableName).replaceAll(calAndInputDataTable, vacuateCalAndInputDataTable);
-				}
-				
-				String finalSql=sql;
-				List<?> list = this.findCallSql(finalSql);
-				vacuateCount=list.size();
-				
-				for(int j=0;j<list.size();j++){
-					Object[] obj=(Object[]) list.get(j);
-					String value="";
-					if(!StringManagerUtils.rodCalColumnFiter(itemColumn)){
-						value=obj[1]==null?"null":(obj[1]+"");
-					}else{
-						String rodstring=obj[1]==null?"":(obj[1]+"");
-						if(StringManagerUtils.isNotNull(rodstring)){
-							String rodDataArr[]=rodstring.split(";");
-							if(rodDataArr.length>1){
-								if("RodFMax1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[0];
-						        	}
-								}else if("RodFMin1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[1];
-						        	}
-								}else if("RodMaxStress1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[2];
-						        	}
-								}else if("RodMinStress1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[3];
-						        	}
-								}else if("RodAllowableStress1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[4];
-						        	}
-								}else if("MaxRodStressRatio1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
-						        	}
-								}else if("RodStressRangeRatio1".equalsIgnoreCase(itemColumn) && rodDataArr.length>1){
-									String everyRodData[]=rodDataArr[1].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
-						        	}
-								}else if("RodFMax2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[0];
-						        	}
-								}else if("RodFMin2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[1];
-						        	}
-								}else if("RodMaxStress2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[2];
-						        	}
-								}else if("RodMinStress2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[3];
-						        	}
-								}else if("RodAllowableStress2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[4];
-						        	}
-								}else if("MaxRodStressRatio2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
-						        	}
-								}else if("RodStressRangeRatio2".equalsIgnoreCase(itemColumn) && rodDataArr.length>2){
-									String everyRodData[]=rodDataArr[2].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
-						        	}
-								}else if("RodFMax3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[0];
-						        	}
-								}else if("RodFMin3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[1];
-						        	}
-								}else if("RodMaxStress3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[2];
-						        	}
-								}else if("RodMinStress3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[3];
-						        	}
-								}else if("RodAllowableStress3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[4];
-						        	}
-								}else if("MaxRodStressRatio3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
-						        	}
-								}else if("RodStressRangeRatio3".equalsIgnoreCase(itemColumn) && rodDataArr.length>3){
-									String everyRodData[]=rodDataArr[3].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
-						        	}
-								}else if("RodFMax4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[0];
-						        	}
-								}else if("RodFMin4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[1];
-						        	}
-								}else if("RodMaxStress4".equalsIgnoreCase(itemColumn) && rodDataArr.length>41){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[2];
-						        	}
-								}else if("RodMinStress4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[3];
-						        	}
-								}else if("RodAllowableStress4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=everyRodData[4];
-						        	}
-								}else if("MaxRodStressRatio4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[5]), 100)+"";
-						        	}
-								}else if("RodStressRangeRatio4".equalsIgnoreCase(itemColumn) && rodDataArr.length>4){
-									String everyRodData[]=rodDataArr[4].split(",");
-									if(everyRodData.length>=7){
-										value=StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(everyRodData[6]), 100)+"";
-						        	}
-								}
-				        	}
-						}
-					}
-					 
-					
-					acqTimeBuff.append("\""+obj[0]+"\",");
-					dataBuff.append(value+",");
-				}
-			}
-			if (acqTimeBuff.toString().endsWith(",")) {
-				acqTimeBuff.deleteCharAt(acqTimeBuff.length() - 1);
-			}
-			if (dataBuff.toString().endsWith(",")) {
-				dataBuff.deleteCharAt(dataBuff.length() - 1);
-			}
-			acqTimeBuff.append("]");
-			dataBuff.append("]");
-			result_json.append("{\"deviceId\":"+deviceId+",\"deviceName\":\""+deviceNameMap.get(deviceId)+"\",\"acqTime\":"+acqTimeBuff+",\"data\":"+dataBuff+"},");
-		}
-		
-		if (result_json.toString().endsWith(",")) {
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		return result_json.toString();
+	// ★ 改动：新增多字段方法，原单字段方法删除
+	public String getComparativeAnalysisCurveData(String deviceIds, String deviceNames,
+	        String itemsJson, String startDate, String endDate, User user) {
+
+	    String language = user != null ? user.getLanguageName() : "";
+	    int vacuateRecord = Config.getInstance().configFile.getAp().getDataVacuate().getVacuateRecord();
+	    int vacuateThreshold = Config.getInstance().configFile.getAp().getDataVacuate().getVacuateThreshold();
+	    int databaseMaintenanceCycle = Config.getInstance().configFile.getAp().getDatabaseMaintenance().getCycle();
+
+	    Gson gson = new Gson();
+	    java.lang.reflect.Type reflectType = null;
+	    Map<String, DataMapping> loadProtocolMappingColumnByTitleMap =
+	            MemoryDataManagerTask.getProtocolMappingColumnByTitle(0);
+	    Map<String, DataMapping> protocolExtendedFieldColumnByTitleMap =
+	            MemoryDataManagerTask.getProtocolMappingColumnByTitle(1);
+
+	    // ---------- 1. 解析 items ----------
+	    java.lang.reflect.Type itemListType = new TypeToken<List<Map<String, Object>>>() {}.getType();
+	    List<Map<String, Object>> itemsList = null;
+	    try { itemsList = gson.fromJson(itemsJson, itemListType); }
+	    catch (Exception e) { e.printStackTrace(); }
+	    if (itemsList == null) itemsList = new ArrayList<>();
+
+	    // ---------- 2. 设备信息 ----------
+	    List<String> deviceIdList = new ArrayList<>();
+	    Map<String, String> deviceNameMap = new HashMap<>();
+	    Map<String, Integer> deviceCalculateMap = new HashMap<>();
+	    String deviceQuerySql = "select t.id,t.devicename,t2.calculatetype "
+	            + " from tbl_device t "
+	            + " left outer join tbl_tabmanager_device t2 on t.calculatetype=t2.id "
+	            + " where t.id in (" + deviceIds + ") order by t.sortnum";
+	    List<?> deviceQueryList = this.findCallSql(deviceQuerySql);
+	    for (Object o : deviceQueryList) {
+	        Object[] obj = (Object[]) o;
+	        deviceIdList.add(obj[0] + "");
+	        deviceNameMap.put(obj[0] + "", obj[1] + "");
+	        deviceCalculateMap.put(obj[0] + "", obj[2] == null ? 0 : StringManagerUtils.stringToInteger(obj[2] + ""));
+	    }
+
+	    // 结果按字段 key 分组：Map<itemColumn|dataSource, List<该字段在各设备下的行>>
+	    Map<String, List<Map<String, Object>>> resultByItem = new LinkedHashMap<>();
+	    for (Map<String, Object> item : itemsList) {
+	        resultByItem.put(item.get("itemColumn") + "|" + item.get("dataSource"), new ArrayList<>());
+	    }
+
+	    // ---------- 3. 设备 × 一次 SQL ----------
+	    for (String deviceId : deviceIdList) {
+	        int calculateType = deviceCalculateMap.get(deviceId);
+	        String deviceName = deviceNameMap.get(deviceId);
+
+	        // 3.1 字段按类别分组
+	        List<Map<String, Object>> acqFields = new ArrayList<>();   // dataSource=0/5
+	        List<Map<String, Object>> h1Fields = new ArrayList<>();    // dataSource=1 且 (calculateType==0 或 generalCalColumn)
+	        List<Map<String, Object>> h3Fields = new ArrayList<>();    // dataSource=1 且 calculateType>0 且非杆非通用
+	        List<Map<String, Object>> rodFields = new ArrayList<>();   // dataSource=1 且 calculateType==1 且 rodCalColumn
+
+	        for (Map<String, Object> item : itemsList) {
+	            String itemColumn = item.get("itemColumn") + "";
+	            String dataSource = item.get("dataSource") + "";
+	            if ("0".equalsIgnoreCase(dataSource) || "5".equalsIgnoreCase(dataSource)) {
+	                acqFields.add(item);
+	            } else if ("1".equalsIgnoreCase(dataSource)) {
+	                if (calculateType == 0 || StringManagerUtils.generalCalColumnFiter(itemColumn)) {
+	                    h1Fields.add(item);
+	                } else if (calculateType == 1 && StringManagerUtils.rodCalColumnFiter(itemColumn)) {
+	                    rodFields.add(item);
+	                } else {
+	                    h3Fields.add(item);
+	                }
+	            }
+	        }
+
+	        // 3.2 计算表名
+	        String calAndInputDataTable = "";
+	        String vacuateCalAndInputDataTable = "";
+	        if (calculateType == 1) {
+	            calAndInputDataTable = "tbl_srpacqdata_hist";
+	            vacuateCalAndInputDataTable = "tbl_srpacqdata_vacuate";
+	        } else if (calculateType == 2) {
+	            calAndInputDataTable = "tbl_pcpacqdata_hist";
+	            vacuateCalAndInputDataTable = "tbl_pcpacqdata_vacuate";
+	        }
+
+	        // 3.3 保留周期判断（按设备独立）
+	        String tableName = "tbl_acqdata_hist";
+	        String vacuateTableName = "tbl_acqdata_vacuate";
+	        String queryTableName = tableName;
+	        String queryCalTableName = calAndInputDataTable;
+	        if (databaseMaintenanceCycle > 0 && Config.getInstance().configFile.getAp().getDatabaseMaintenance()
+	                .getTableConfig().getAcqdata_hist().getEnabled()) {
+	            int retentionTime = Config.getInstance().configFile.getAp().getDatabaseMaintenance()
+	                    .getTableConfig().getAcqdata_hist().getRetentionTime();
+	            String rangeSql = "select to_date(to_char(t.acqtime,'yyyy-mm-dd'),'yyyy-mm-dd')"
+	                    + "-to_date('" + (endDate.split(" ")[0]) + "','yyyy-mm-dd') "
+	                    + " from TBL_ACQDATA_LATEST t where t.deviceid=" + deviceId + "";
+	            List<?> list = this.findCallSql(rangeSql);
+	            if (list.size() > 0 && list.get(0) != null) {
+	                int diffDays = StringManagerUtils.stringToInteger(list.get(0).toString());
+	                if (diffDays > retentionTime) {
+	                    queryTableName = vacuateTableName;
+	                    if (StringManagerUtils.isNotNull(queryCalTableName)) {
+	                        queryCalTableName = vacuateCalAndInputDataTable;
+	                    }
+	                }
+	            }
+	        }
+
+	        // 3.4 统计 + 抽稀（按设备独立）
+	        String baseIdSql = "select t.id from " + queryTableName + " t "
+	                + " where t.commStatus=1 and t.deviceId=" + deviceId
+	                + " and t.acqtime between to_date('" + startDate + "','yyyy-mm-dd hh24:mi:ss') "
+	                + " and to_date('" + endDate + "','yyyy-mm-dd hh24:mi:ss')"
+	                + " order by t.id";
+	        int totalCount = this.getTotalCountRows(baseIdSql);
+
+	        String queryIdSql = null;
+	        if (totalCount > vacuateThreshold) {
+	            // 切换到抽稀表
+	            String vacuateIdSql = baseIdSql.replaceAll(tableName, vacuateTableName);
+	            int vacuateTotalCount = this.getTotalCountRows(vacuateIdSql);
+	            if (vacuateTotalCount > 0) {
+	                queryTableName = vacuateTableName;
+	                if (StringManagerUtils.isNotNull(queryCalTableName)) {
+	                    queryCalTableName = vacuateCalAndInputDataTable;
+	                }
+	                queryIdSql = "select id from (select v.*, rownum as rn from (" + vacuateIdSql + ") v ) v2 "
+	                        + " where mod(rn*" + vacuateRecord + "," + vacuateTotalCount + ")<" + vacuateRecord + "";
+	            }
+	        } else if (totalCount > 0) {
+	            queryIdSql = "select id from (select v.*, rownum as rn from (" + baseIdSql + ") v ) v2 "
+	                    + " where mod(rn*" + vacuateRecord + "," + totalCount + ")<" + vacuateRecord + "";
+	        }
+
+	        // 3.5 无数据时仍为该设备所有字段补空结果（保证前端曲线占位）
+	        if (!StringManagerUtils.isNotNull(queryIdSql)) {
+	            for (Map<String, Object> item : itemsList) {
+	                Map<String, Object> rowResult = new HashMap<>();
+	                rowResult.put("deviceId", deviceId);
+	                rowResult.put("deviceName", deviceName);
+	                rowResult.put("itemName", item.get("itemName") + "");
+	                rowResult.put("itemColumn", item.get("itemColumn") + "");
+	                rowResult.put("itemUnit", item.get("itemUnit") != null ? item.get("itemUnit") + "" : "");
+	                rowResult.put("dataSource", item.get("dataSource") + "");
+	                rowResult.put("acqTime", new ArrayList<String>());
+	                rowResult.put("data", new ArrayList<String>());
+	                resultByItem.get(item.get("itemColumn") + "|" + item.get("dataSource")).add(rowResult);
+	            }
+	            continue;
+	        }
+
+	        // 3.6 拼 SQL（一次查出所有字段）
+	        boolean hasAcq = !acqFields.isEmpty();
+	        boolean hasH1 = !h1Fields.isEmpty();
+	        boolean hasH3 = !h3Fields.isEmpty();
+	        boolean hasRod = !rodFields.isEmpty();
+	        boolean needJoinCal = (hasH3 || hasRod) && StringManagerUtils.isNotNull(queryCalTableName);
+
+	        StringBuffer sqlBuff = new StringBuffer();
+	        sqlBuff.append("select to_char(h1.acqtime,'yyyy-mm-dd hh24:mi:ss')");
+	        if (hasAcq) sqlBuff.append(",h1.acqdata");
+	        for (Map<String, Object> item : h1Fields) {
+	            sqlBuff.append(",h1." + item.get("itemColumn"));
+	        }
+	        for (Map<String, Object> item : h3Fields) {
+	            String col = item.get("itemColumn") + "";
+	            if ("SurfaceSystemEfficiency".equalsIgnoreCase(col) || "WellDownSystemEfficiency".equalsIgnoreCase(col)
+	                    || "SystemEfficiency".equalsIgnoreCase(col)
+	                    || "PumpEff1".equalsIgnoreCase(col) || "PumpEff2".equalsIgnoreCase(col)
+	                    || "PumpEff3".equalsIgnoreCase(col) || "PumpEff4".equalsIgnoreCase(col)
+	                    || "PumpEff".equalsIgnoreCase(col)) {
+	                sqlBuff.append(",h3." + col + "*100 as " + col);
+	            } else {
+	                sqlBuff.append(",h3." + col);
+	            }
+	        }
+	        if (hasRod) sqlBuff.append(",h3.rodstring");
+
+	        sqlBuff.append(" from " + queryTableName + " h1");
+	        if (needJoinCal) {
+	            sqlBuff.append("," + queryCalTableName + " h3 where h1.deviceid=h3.deviceid and h1.acqtime=h3.acqtime");
+	        } else {
+	            sqlBuff.append(" where 1=1");
+	        }
+	        sqlBuff.append(" and h1.id in (" + queryIdSql + ")");
+	        sqlBuff.append(" order by h1.id");
+
+	        List<?> dataList = this.findCallSql(sqlBuff.toString());
+
+	        // 3.7 列索引映射
+	        int idx = 1;
+	        int acqDataIdx = hasAcq ? idx++ : -1;
+	        Map<String, Integer> h1FieldIdxMap = new LinkedHashMap<>();
+	        for (Map<String, Object> item : h1Fields) {
+	            h1FieldIdxMap.put(item.get("itemColumn") + "|" + item.get("dataSource"), idx++);
+	        }
+	        Map<String, Integer> h3FieldIdxMap = new LinkedHashMap<>();
+	        for (Map<String, Object> item : h3Fields) {
+	            h3FieldIdxMap.put(item.get("itemColumn") + "|" + item.get("dataSource"), idx++);
+	        }
+	        int rodIdx = hasRod ? idx++ : -1;
+
+	        // 3.8 逐行解析
+	        List<String> acqTimeList = new ArrayList<>();
+	        Map<String, List<String>> fieldValueMap = new LinkedHashMap<>();
+	        for (Map<String, Object> item : itemsList) {
+	            fieldValueMap.put(item.get("itemColumn") + "|" + item.get("dataSource"), new ArrayList<>());
+	        }
+
+	        for (Object rowObj : dataList) {
+	            Object[] row = (Object[]) rowObj;
+	            acqTimeList.add(row[0] + "");
+
+	            // 解析 acqdata（一次 CLOB 只读一次）
+	            List<KeyValue> acqDataList = null;
+	            if (hasAcq && acqDataIdx >= 0) {
+	                String acqData = StringManagerUtils.CLOBObjectToString(row[acqDataIdx]);
+	                reflectType = new TypeToken<List<KeyValue>>() {}.getType();
+	                try { acqDataList = gson.fromJson(acqData, reflectType); }
+	                catch (Exception e) { acqDataList = new ArrayList<>(); }
+	                if (acqDataList == null) acqDataList = new ArrayList<>();
+	            }
+	            for (Map<String, Object> item : acqFields) {
+	                String key = item.get("itemColumn") + "|" + item.get("dataSource");
+	                String value = "null";
+	                if (acqDataList != null) {
+	                    for (KeyValue kv : acqDataList) {
+	                        if (item.get("itemColumn").toString().equalsIgnoreCase(kv.getKey())) {
+	                            value = kv.getValue();
+	                            break;
+	                        }
+	                    }
+	                }
+	                fieldValueMap.get(key).add(value);
+	            }
+
+	            // h1 字段
+	            for (Map<String, Object> item : h1Fields) {
+	                String key = item.get("itemColumn") + "|" + item.get("dataSource");
+	                Integer i = h1FieldIdxMap.get(key);
+	                String value = (i == null || row[i] == null) ? "null" : (row[i] + "");
+	                fieldValueMap.get(key).add(value);
+	            }
+
+	            // h3 字段
+	            for (Map<String, Object> item : h3Fields) {
+	                String key = item.get("itemColumn") + "|" + item.get("dataSource");
+	                Integer i = h3FieldIdxMap.get(key);
+	                String value = (i == null || row[i] == null) ? "null" : (row[i] + "");
+	                fieldValueMap.get(key).add(value);
+	            }
+
+	            // rod 字段（共用同一列 rodstring）
+	            if (hasRod && rodIdx >= 0) {
+	                String rodstring = row[rodIdx] == null ? "" : (row[rodIdx] + "");
+	                String[] rodDataArr = StringManagerUtils.isNotNull(rodstring) ? rodstring.split(";") : null;
+	                for (Map<String, Object> item : rodFields) {
+	                    String key = item.get("itemColumn") + "|" + item.get("dataSource");
+	                    String value = parseRodValue(item.get("itemColumn") + "", rodDataArr);
+	                    fieldValueMap.get(key).add(value);
+	                }
+	            }
+	        }
+
+	        // 3.9 生成该设备所有字段的结果（acqTime 共享，按需复制）
+	        for (Map<String, Object> item : itemsList) {
+	            String key = item.get("itemColumn") + "|" + item.get("dataSource");
+	            Map<String, Object> rowResult = new HashMap<>();
+	            rowResult.put("deviceId", deviceId);
+	            rowResult.put("deviceName", deviceName);
+	            rowResult.put("itemName", item.get("itemName") + "");
+	            rowResult.put("itemColumn", item.get("itemColumn") + "");
+	            rowResult.put("itemUnit", item.get("itemUnit") != null ? item.get("itemUnit") + "" : "");
+	            rowResult.put("dataSource", item.get("dataSource") + "");
+	            rowResult.put("acqTime", new ArrayList<>(acqTimeList));
+	            List<String> vals = fieldValueMap.get(key);
+	            rowResult.put("data", vals != null ? vals : new ArrayList<String>());
+	            resultByItem.get(key).add(rowResult);
+	        }
+	    }
+
+	    // ---------- 4. 输出：字段外层，设备内层 ----------
+	    StringBuffer result_json = new StringBuffer();
+	    result_json.append("{");
+	    result_json.append("\"startDate\":\"" + startDate + "\",");
+	    result_json.append("\"endDate\":\"" + endDate + "\",");
+	    result_json.append("\"items\":[");
+	    for (int i = 0; i < itemsList.size(); i++) {
+	        if (i > 0) result_json.append(",");
+	        Map<String, Object> item = itemsList.get(i);
+	        result_json.append("{");
+	        result_json.append("\"itemName\":\"" + item.get("itemName") + "\",");
+	        result_json.append("\"itemColumn\":\"" + item.get("itemColumn") + "\",");
+	        result_json.append("\"itemUnit\":\"" + (item.get("itemUnit") != null ? item.get("itemUnit") : "") + "\",");
+	        result_json.append("\"dataSource\":\"" + item.get("dataSource") + "\"");
+	        result_json.append("}");
+	    }
+	    result_json.append("],\"list\":[");
+
+	    boolean first = true;
+	    for (Map<String, Object> item : itemsList) {
+	        String key = item.get("itemColumn") + "|" + item.get("dataSource");
+	        List<Map<String, Object>> rows = resultByItem.get(key);
+	        if (rows == null) continue;
+	        for (Map<String, Object> r : rows) {
+	            if (!first) result_json.append(",");
+	            first = false;
+	            result_json.append("{");
+	            result_json.append("\"deviceId\":" + r.get("deviceId") + ",");
+	            result_json.append("\"deviceName\":\"" + r.get("deviceName") + "\",");
+	            result_json.append("\"itemName\":\"" + r.get("itemName") + "\",");
+	            result_json.append("\"itemColumn\":\"" + r.get("itemColumn") + "\",");
+	            result_json.append("\"itemUnit\":\"" + r.get("itemUnit") + "\",");
+	            result_json.append("\"dataSource\":\"" + r.get("dataSource") + "\",");
+	            result_json.append("\"acqTime\":" + gson.toJson(r.get("acqTime")) + ",");
+	            result_json.append("\"data\":" + gson.toJson(r.get("data")));
+	            result_json.append("}");
+	        }
+	    }
+	    result_json.append("]}");
+	    return result_json.toString();
+	}
+
+	/**
+	 * 解析杆柱数据列。原单字段方法里是 28 个 if-else，这里用正则归并。
+	 * 规则：rodDataArr[level] 对应第 level 层杆柱（从 1 开始），按列名前缀映射到具体索引。
+	 */
+	private String parseRodValue(String col, String[] rodDataArr) {
+	    if (rodDataArr == null || rodDataArr.length < 2) return "";
+	    java.util.regex.Matcher m = java.util.regex.Pattern
+	            .compile("^(RodFMax|RodFMin|RodMaxStress|RodMinStress|RodAllowableStress|MaxRodStressRatio|RodStressRangeRatio)(\\d+)$")
+	            .matcher(col);
+	    if (!m.matches()) return "";
+	    String prefix = m.group(1);
+	    int level;
+	    try { level = Integer.parseInt(m.group(2)); } catch (Exception e) { return ""; }
+	    if (level < 1 || level >= rodDataArr.length) return "";
+	    String[] e = rodDataArr[level].split(",");
+	    if (e.length < 7) return "";
+	    if ("RodFMax".equals(prefix)) return e[0];
+	    if ("RodFMin".equals(prefix)) return e[1];
+	    if ("RodMaxStress".equals(prefix)) return e[2];
+	    if ("RodMinStress".equals(prefix)) return e[3];
+	    if ("RodAllowableStress".equals(prefix)) return e[4];
+	    if ("MaxRodStressRatio".equals(prefix)) return StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(e[5]), 100) + "";
+	    if ("RodStressRangeRatio".equals(prefix)) return StringManagerUtils.multiplyDecimal(StringManagerUtils.stringToFloat(e[6]), 100) + "";
+	    return "";
 	}
 }

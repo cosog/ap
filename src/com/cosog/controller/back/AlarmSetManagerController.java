@@ -202,9 +202,18 @@ public class AlarmSetManagerController extends BaseController {
 	private String getAlarmSoundPhysicalDir() {
 	    String base = Config.getInstance().configFile.getAp().getOem().getAlarmSound();
 	    if (!StringManagerUtils.isNotNull(base)) return null;
+	    
+	    // 去除前后空格
+	    base = base.trim();
+	    
+	    // 1. 先判断是否为真实的系统绝对路径（比如配置了 C:/audio 或 /var/audio，且该目录真实存在）
 	    File f = new File(base);
-	    if (f.isAbsolute()) return base;
-	    // 相对路径 → 走 ServletContext
+	    if (f.isAbsolute() && f.exists()) {
+	        return base;
+	    }
+	    
+	    // 2. 如果不是真实的系统绝对路径，说明是相对于项目根目录的 web 路径（如 /oem/...）
+	    // 在 Linux 下，"/oem" 会被 isAbsolute() 误判为系统根目录，必须用 getRealPath 转换！
 	    String real = request.getSession().getServletContext().getRealPath(base);
 	    return real;
 	}

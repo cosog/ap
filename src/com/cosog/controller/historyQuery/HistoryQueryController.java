@@ -1135,10 +1135,7 @@ public class HistoryQueryController extends BaseController  {
 		User user = (User) session.getAttribute("userLogin");
 		String deviceNames = ParamUtils.getParameter(request, "deviceNames");
 		String deviceIds = ParamUtils.getParameter(request, "deviceIds");
-		String itemName = ParamUtils.getParameter(request, "itemName");
-		String itemColumn = ParamUtils.getParameter(request, "itemColumn");
-		String itemUnit = ParamUtils.getParameter(request, "itemUnit");
-		String dataSource = ParamUtils.getParameter(request, "dataSource");
+		String items = ParamUtils.getParameter(request, "items");
 		
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
@@ -1162,7 +1159,7 @@ public class HistoryQueryController extends BaseController  {
 			
 			
 			this.pager = new Page("pagerForm", request);
-			json = historyQueryService.getComparativeAnalysisCurveData(deviceIds,deviceNames,itemName,itemColumn,itemUnit,dataSource,startDate,endDate,user);
+			json = historyQueryService.getComparativeAnalysisCurveData(deviceIds, deviceNames, items, startDate, endDate, user);
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

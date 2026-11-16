@@ -194,7 +194,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     var BatchAddAuxiliaryDeviceOverlayDataHandsontableHelper = {
         createNew: function (divid) {
             var helper = {};
-            helper.hot = '';
+            helper.hot = null;
             helper.divid = divid;
             helper.colHeaders = [];
             helper.columns = [];

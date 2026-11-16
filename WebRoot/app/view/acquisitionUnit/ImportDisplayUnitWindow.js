@@ -130,7 +130,9 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
                         html:'<div class="importDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(importDisplayUnitAcqItemsHandsontableHelper!=null && importDisplayUnitAcqItemsHandsontableHelper.hot!=undefined){
+                            	if(importDisplayUnitAcqItemsHandsontableHelper!=null 
+                            			&& importDisplayUnitAcqItemsHandsontableHelper.hot!=undefined
+                            			&& typeof importDisplayUnitAcqItemsHandsontableHelper.hot.updateSettings === 'function'){
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
@@ -155,7 +157,9 @@ Ext.define("AP.view.acquisitionUnit.ImportDisplayUnitWindow", {
                         html:'<div class="importDisplayUnitCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importDisplayUnitCtrlItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(importDisplayUnitCtrlItemsHandsontableHelper!=null && importDisplayUnitCtrlItemsHandsontableHelper.hot!=undefined){
+                            	if(importDisplayUnitCtrlItemsHandsontableHelper!=null 
+                            			&& importDisplayUnitCtrlItemsHandsontableHelper.hot!=undefined
+                            			&& typeof importDisplayUnitCtrlItemsHandsontableHelper.hot.updateSettings === 'function'){
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();

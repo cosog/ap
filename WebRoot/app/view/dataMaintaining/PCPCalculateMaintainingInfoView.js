@@ -681,7 +681,9 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
     				html:'<div class=PCPCalculateMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="PCPCalculateMaintainingDiv_id"></div></div>',
     				listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(pcpRPMCalculateMaintainingHandsontableHelper!=null && pcpRPMCalculateMaintainingHandsontableHelper.hot!=undefined){
+                        	if(pcpRPMCalculateMaintainingHandsontableHelper!=null 
+                        			&& pcpRPMCalculateMaintainingHandsontableHelper.hot!=undefined
+                        			&& typeof pcpRPMCalculateMaintainingHandsontableHelper.hot.updateSettings === 'function'){
 //                        		pcpRPMCalculateMaintainingHandsontableHelper.hot.refreshDimensions();
                         		var newWidth=width;
                         		var newHeight=height;
@@ -849,7 +851,7 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
 var PCPRPMCalculateMaintainingHandsontableHelper = {
 	    createNew: function (divid) {
 	        var pcpRPMCalculateMaintainingHandsontableHelper = {};
-	        pcpRPMCalculateMaintainingHandsontableHelper.hot = '';
+	        pcpRPMCalculateMaintainingHandsontableHelper.hot = null;
 	        pcpRPMCalculateMaintainingHandsontableHelper.divid = divid;
 	        pcpRPMCalculateMaintainingHandsontableHelper.validresult=true;//数据校验
 	        pcpRPMCalculateMaintainingHandsontableHelper.colHeaders=[];

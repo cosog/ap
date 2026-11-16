@@ -8,9 +8,9 @@ Ext.define('AP.alert.AlarmManager', {
     isMuted: false,
 
     levelStyle: {
-        100: { text: '一级', color: '#dc2828' },
-        200: { text: '二级', color: '#f09614' },
-        300: { text: '三级', color: '#fae600' }
+        100: { text: loginUserLanguageResource.level1, color: '#dc2828' },
+        200: { text: loginUserLanguageResource.level2, color: '#f09614' },
+        300: { text: loginUserLanguageResource.level3, color: '#fae600' }
     },
 
     getAlarmKey: function (alarm) {
@@ -56,7 +56,7 @@ Ext.define('AP.alert.AlarmManager', {
                     deviceName: data.deviceName,
                     orgId: data.orgId,
                     column: 'commStatusName',
-                    columnName: '通信状态',
+                    columnName: loginUserLanguageResource.commStatus,
                     value: data.commStatusName,
                     alarmLevel: data.commAlarmLevel,
                     acqTime: data.acqTime,
@@ -122,16 +122,6 @@ Ext.define('AP.alert.AlarmManager', {
 
         var all = data.allItemInfo || [];
         for (var i = 0; i < all.length; i++) push(all[i]);
-
-//        if (data.commAlarmLevel > 0 && data.commStatusName !== undefined) {
-//            push({ column: 'commStatusName', columnName: '通信状态', value: data.commStatusName, alarmLevel: data.commAlarmLevel, alarmType: 3 });
-//        }
-//        if (data.runAlarmLevel > 0 && data.runStatusName !== undefined) {
-//            push({ column: 'runStatusName', columnName: '运行状态', value: data.runStatusName, alarmLevel: data.runAlarmLevel, alarmType: 6 });
-//        }
-//        if (data.resultAlarmLevel > 0 && data.resultName !== undefined) {
-//            push({ column: 'resultName', columnName: '工况', value: data.resultName, alarmLevel: data.resultAlarmLevel, alarmType: 4 });
-//        }
 
         return result;
     },
@@ -387,7 +377,7 @@ Ext.define('AP.alert.AlarmManager', {
         if (withId.length === 0) {
             if (!this._localAckWarned) {
                 this._localAckWarned = true;
-                Ext.toast({ html: '当前报警未同步到服务端，本次仅本地确认', title: '提示', width: 300, align: 't' });
+                Ext.toast({ html: loginUserLanguageResource.localAckOnly, title: loginUserLanguageResource.tip, width: 300, align: 't' });
             }
             finish(true, null);
             return;
@@ -410,10 +400,10 @@ Ext.define('AP.alert.AlarmManager', {
                     finish(true, okIds);
 
                     if (data.failedIds && data.failedIds.length > 0) {
-                        Ext.toast({ html: data.failedIds.length + ' 条确认失败', title: '提示', width: 300, align: 't' });
+                        Ext.toast({ html: data.failedIds.length + ' '+loginUserLanguageResource.ackFailedCount, title: loginUserLanguageResource.tip, width: 300, align: 't' });
                     }
                 } else {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, r.message || '确认失败');
+                    Ext.Msg.alert(loginUserLanguageResource.tip, r.message || loginUserLanguageResource.ackFailed);
                     finish(false);
                 }
             },
@@ -426,7 +416,7 @@ Ext.define('AP.alert.AlarmManager', {
 
     maskWindow: function () {
         if (this.win) {
-            var maskMsg = '正在确认报警...';
+            var maskMsg = loginUserLanguageResource.acknowledgingAlarm;
             if (typeof loginUserLanguageResource !== 'undefined' && loginUserLanguageResource.loadingData) {
                 maskMsg = loginUserLanguageResource.loadingData;
             }
@@ -478,7 +468,7 @@ Ext.define('AP.alert.AlarmManager', {
                 if (r.success) {
                     callback(true, r.data || {});
                 } else {
-                    Ext.Msg.alert(loginUserLanguageResource.tip, r.message || '消警失败');
+                    Ext.Msg.alert(loginUserLanguageResource.tip, r.message || loginUserLanguageResource.suppressFailed);
                     callback(false);
                 }
             },
@@ -688,6 +678,6 @@ Ext.define('AP.alert.AlarmManager', {
             try { this.win.stopBlink(); this.win.close(); } catch (e) {}
             this.win = null;
         }
-        console.log('【报警权限】失去权限，已清理所有报警弹窗和声音');
+        console.log('Alarm permission lost. All alarm popups and sounds cleared.');
     }
 });

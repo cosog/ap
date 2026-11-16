@@ -106,7 +106,10 @@ Ext.define("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
             	html: '<div id="ReportUnitContentConfigColInfoDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
             		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(reportUnitContentConfigColInfoHandsontableHelper!=null&&reportUnitContentConfigColInfoHandsontableHelper.hot!=null&&reportUnitContentConfigColInfoHandsontableHelper.hot!=undefined){
+                    	if(reportUnitContentConfigColInfoHandsontableHelper!=null
+                    			&& reportUnitContentConfigColInfoHandsontableHelper.hot!=null
+                    			&& reportUnitContentConfigColInfoHandsontableHelper.hot!=undefined
+                    			&& typeof reportUnitContentConfigColInfoHandsontableHelper.hot.updateSettings === 'function'){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();
@@ -128,7 +131,10 @@ Ext.define("AP.view.acquisitionUnit.ReportUnitContentConfigWindow", {
             	html: '<div id="ReportUnitContentConfigDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
             		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(reportUnitContentConfigHandsontableHelper!=null&&reportUnitContentConfigHandsontableHelper.hot!=null&&reportUnitContentConfigHandsontableHelper.hot!=undefined){
+                    	if(reportUnitContentConfigHandsontableHelper!=null
+                    			&& reportUnitContentConfigHandsontableHelper.hot!=null
+                    			&& reportUnitContentConfigHandsontableHelper.hot!=undefined
+                    			&& typeof reportUnitContentConfigHandsontableHelper.hot.updateSettings === 'function'){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();

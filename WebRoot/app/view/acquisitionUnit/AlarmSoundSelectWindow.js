@@ -1,7 +1,7 @@
 Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.alarmSoundSelectWindow',
-    title: '选择报警声音',
+    title: loginUserLanguageResource.alarmSoundSelectTitle,
     width: 820,
     height: 580,
     modal: true,
@@ -58,7 +58,7 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
                 { 
                     xtype: 'textfield', 
                     itemId: 'searchField', 
-                    emptyText: '搜索文件名...', 
+                    emptyText: loginUserLanguageResource.searchFileName+'...', 
                     width: 220,
                     listeners: { 
                         change: function(f, v) { me.filterAudios(v); } 
@@ -67,18 +67,18 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
                 '->',
                 { 
                     xtype: 'button', 
-                    text: '📤 上传新音频', 
+                    text: '📤 '+loginUserLanguageResource.uploadNewAudio, 
                     handler: function() { me.doUpload(); } 
                 },
                 { 
                     xtype: 'button', 
-                    text: '刷新', 
+                    text: loginUserLanguageResource.refresh, 
                     iconCls: 'note-refresh',
                     handler: function() { me.loadData(true); } 
                 },
                 {
                     xtype: 'button',
-                    text: '删除',
+                    text: loginUserLanguageResource.deleteData,
                     iconCls: 'delete',
                     itemId: 'btnDelete',
                     disabled: true, // 默认禁用
@@ -91,7 +91,7 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
                 itemSelector: 'div.scene-audio-item',
                 overItemCls: 'scene-audio-item-over',
                 selectedItemCls: 'scene-audio-item-selected',
-                emptyText: '<div style="padding:40px;color:#aaa;text-align:center;">暂无音频文件</div>',
+                emptyText: '<div style="padding:40px;color:#aaa;text-align:center;">'+loginUserLanguageResource.noAudioFiles+'</div>',
                 store: me.store,
                 tpl: [
                     '<tpl for=".">',
@@ -123,32 +123,32 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
         // ★ 扩展底部按钮：播放、暂停、停止、取消、确定
         me.buttons = [
             { 
-                text: '▶ 播放', 
+                text: '▶ '+loginUserLanguageResource.playAudio, 
                 iconCls: 'play',
                 handler: function() { me.playPreview(); }
             },
             { 
-                text: '⏸ 暂停', 
+                text: '⏸ '+loginUserLanguageResource.pauseAudio, 
                 handler: function() { me.pausePreview(); }
             },
             { 
-                text: '⏹ 停止', 
+                text: '⏹ '+loginUserLanguageResource.stopAudio, 
                 handler: function() { me.stopPreview(); }
             },
             '->',
             { 
-                text: '取消', 
+                text: ''+loginUserLanguageResource.cancel, 
                 iconCls: 'cancel', 
                 handler: function() { me.close(); } 
             },
             { 
-                text: '确定', 
+                text: loginUserLanguageResource.confirm, 
                 iconCls: 'save', 
                 handler: function() {
                     var view = me.down('[itemId=audioView]');
                     var sel = view.getSelection();
                     if (sel.length === 0) {
-                        Ext.Msg.confirm('确认', '未选择任何音频，是否清空该级别的报警声音？', function(btn) {
+                        Ext.Msg.confirm(loginUserLanguageResource.confirm, loginUserLanguageResource.clearAudioConfirm, function(btn) {
                             if (btn === 'yes') {
                                 me.doSelect('');
                             }
@@ -253,17 +253,17 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
         
         if (!fileName) {
             btnDelete.setDisabled(true);
-            btnDelete.setTooltip('请先选择音频');
+            btnDelete.setTooltip(loginUserLanguageResource.selectAudioFirstTip);
             return;
         }
         
         // 如果选中的文件在正在配置的三个级别中，则不可删除
         if (me.configFiles.indexOf(fileName) > -1) {
             btnDelete.setDisabled(true);
-            btnDelete.setTooltip('当前音频正在被报警级别使用，无法删除');
+            btnDelete.setTooltip(loginUserLanguageResource.audioInUseCannotDelete);
         } else {
             btnDelete.setDisabled(false);
-            btnDelete.setTooltip('删除选中的音频');
+            btnDelete.setTooltip(loginUserLanguageResource.deleteSelectedAudio);
         }
     },
 
@@ -292,7 +292,7 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
         var view = me.down('[itemId=audioView]');
         var sel = view.getSelection();
         if (sel.length === 0) {
-            Ext.Msg.alert('提示', '请先选择一个音频');
+            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.selectOneAudioFirst);
             return;
         }
         
@@ -312,7 +312,7 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
         // 否则切换新音源
         me._previewAudio.src = url;
         me._previewAudio.play().catch(function() {
-            Ext.Msg.alert('提示', '音频播放失败，请检查文件格式或网络');
+            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.audioPlayFailed);
         });
     },
 
@@ -340,7 +340,7 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
         
         var fileName = sel[0].get('fileName');
         
-        Ext.Msg.confirm('确认', '确定要永久删除音频文件 <b>' + fileName + '</b> 吗？', function(btn) {
+        Ext.Msg.confirm(loginUserLanguageResource.confirm, loginUserLanguageResource.confirmDeleteAudio+' <b>' + fileName + '</b> ?', function(btn) {
             if (btn === 'yes') {
                 Ext.Ajax.request({
                     url: context + '/alarmSetManagerController/deleteAlarmSoundPool',
@@ -349,7 +349,6 @@ Ext.define('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
                     success: function(response) {
                         var r = Ext.decode(response.responseText);
                         if (r.success) {
-//                            Ext.toast({ html: '删除成功', title: '提示', width: 200, align: 't' });
                             Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.deleteSuccessfully);
                             me.stopPreview(); // 如果正在播，先停掉
                             me.currentFile = ''; // 清空当前选中

@@ -132,7 +132,10 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
         		html: '<div id="HistoryCurveSetTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
         		listeners: {
         			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(deviceHistoryCurveSetHandsontableHelper!=null&&deviceHistoryCurveSetHandsontableHelper.hot!=null&&deviceHistoryCurveSetHandsontableHelper.hot!=undefined){
+                    	if(deviceHistoryCurveSetHandsontableHelper!=null
+                    			&& deviceHistoryCurveSetHandsontableHelper.hot!=null
+                    			&& deviceHistoryCurveSetHandsontableHelper.hot!=undefined
+                    			&& typeof deviceHistoryCurveSetHandsontableHelper.hot.updateSettings === 'function'){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();
@@ -158,7 +161,10 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
         		html: '<div id="HistoryCurveDataFilterSetTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
         		listeners: {
         			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(deviceHistoryCurveDataFilterSetHandsontableHelper!=null&&deviceHistoryCurveDataFilterSetHandsontableHelper.hot!=null&&deviceHistoryCurveDataFilterSetHandsontableHelper.hot!=undefined){
+                    	if(deviceHistoryCurveDataFilterSetHandsontableHelper!=null
+                    			&& deviceHistoryCurveDataFilterSetHandsontableHelper.hot!=null
+                    			&& deviceHistoryCurveDataFilterSetHandsontableHelper.hot!=undefined
+                    			&& typeof deviceHistoryCurveDataFilterSetHandsontableHelper.hot.updateSettings === 'function'){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();

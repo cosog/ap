@@ -250,7 +250,10 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 html: '<div class="SMSDeviceContainer" style="width:100%;height:100%;"><div class="con" id="SMSDeviceTableDiv_id"></div></div>',
                 listeners: {
                 	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        if (smsDeviceInfoHandsontableHelper != null && smsDeviceInfoHandsontableHelper.hot != null && smsDeviceInfoHandsontableHelper.hot != undefined) {
+                        if (smsDeviceInfoHandsontableHelper != null 
+                        		&& smsDeviceInfoHandsontableHelper.hot != null 
+                        		&& smsDeviceInfoHandsontableHelper.hot != undefined
+                        		&& typeof smsDeviceInfoHandsontableHelper.hot.updateSettings === 'function') {
                         	var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();
@@ -382,7 +385,7 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
 var SMSDeviceInfoHandsontableHelper = {
     createNew: function (divid) {
         var smsDeviceInfoHandsontableHelper = {};
-        smsDeviceInfoHandsontableHelper.hot = '';
+        smsDeviceInfoHandsontableHelper.hot = null;
         smsDeviceInfoHandsontableHelper.divid = divid;
         smsDeviceInfoHandsontableHelper.validresult = true; //数据校验
         smsDeviceInfoHandsontableHelper.colHeaders = [];

@@ -338,7 +338,9 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         html:'<div class="SingleWellDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="SingleWellDailyReportDiv_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        		if(singleWellDailyReportHelper!=null && singleWellDailyReportHelper.hot!=undefined){
+                        		if(singleWellDailyReportHelper!=null 
+                        				&& singleWellDailyReportHelper.hot!=undefined
+                        				&& typeof singleWellDailyReportHelper.hot.updateSettings === 'function'){
                         			var newWidth=width;
                             		var newHeight=height-22-1;//减去工具条高度
                             		var header=thisPanel.getHeader();
@@ -410,7 +412,9 @@ Ext.define("AP.view.reportOut.SingleWellDailyReportPanel", {
                         html:'<div class="SingleWellRangeReportContainer" style="width:100%;height:100%;"><div class="con" id="SingleWellRangeReportDiv_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        		if(singleWellRangeReportHelper!=null && singleWellRangeReportHelper.hot!=undefined){
+                        		if(singleWellRangeReportHelper!=null 
+                        				&& singleWellRangeReportHelper.hot!=undefined
+                        				&& typeof singleWellRangeReportHelper.hot.updateSettings === 'function'){
                         			var newWidth=width;
                         			var newHeight=height-22-1;//减去工具条高度
                             		var header=thisPanel.getHeader();
@@ -544,7 +548,7 @@ var SingleWellRangeReportHelper = {
 	        singleWellRangeReportHelper.get_data = {};
 	        singleWellRangeReportHelper.data=[];
 	        singleWellRangeReportHelper.sourceData=[];
-	        singleWellRangeReportHelper.hot = '';
+	        singleWellRangeReportHelper.hot = null;
 	        singleWellRangeReportHelper.container = document.getElementById(divId);
 	        singleWellRangeReportHelper.columnCount=0;
 	        singleWellRangeReportHelper.editData={};
@@ -985,7 +989,7 @@ var SingleWellDailyReportHelper = {
 	        singleWellDailyReportHelper.get_data = {};
 	        singleWellDailyReportHelper.data=[];
 	        singleWellDailyReportHelper.sourceData=[];
-	        singleWellDailyReportHelper.hot = '';
+	        singleWellDailyReportHelper.hot = null;
 	        singleWellDailyReportHelper.container = document.getElementById(divId);
 	        singleWellDailyReportHelper.columnCount=0;
 	        singleWellDailyReportHelper.editData={};

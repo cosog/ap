@@ -17,7 +17,7 @@ Ext.define('AP.view.historyQuery.HistoryDataComparativeAnalysisCurveConfigWindow
     id: 'HistoryDataComparativeAnalysisCurveConfigWindow_Id',
     title: loginUserLanguageResource.curveProperty + 
     '<span style="font-size: 12px; font-weight: normal; color: #888; margin-left: 10px; font-style: italic;">' +
-    '(双击节点配置Y轴或曲线)',
+    '('+loginUserLanguageResource.doubleClickNodeToConfigYAxisOrCurve+')',
     width: 400,
     height: '70%',
     modal: true,
@@ -157,11 +157,11 @@ Ext.define('AP.view.historyQuery.HistoryDataComparativeAnalysisCurveConfigWindow
             },
             columns: [{
                 xtype: 'treecolumn',
-                text: loginUserLanguageResource.name || '名称',
+                text: loginUserLanguageResource.name,
                 dataIndex: 'name',
                 flex: 2
             }, {
-                text: loginUserLanguageResource.config || '配置',
+                text: loginUserLanguageResource.config,
                 dataIndex: 'configStr',
                 flex: 1,
                 renderer: function (value, metaData, record) {
@@ -178,7 +178,7 @@ Ext.define('AP.view.historyQuery.HistoryDataComparativeAnalysisCurveConfigWindow
                     return value || '';
                 }
             }, {
-                text: loginUserLanguageResource.allConfig || '全部配置信息',
+                text: loginUserLanguageResource.allConfig,
                 dataIndex: 'fullConfigStr',
                 flex: 2,
                 hidden: true
@@ -231,7 +231,7 @@ Ext.define('AP.view.historyQuery.HistoryDataComparativeAnalysisCurveConfigWindow
                         value: (record.get('oppositeValue') === true || record.get('oppositeValue') === 'true')
                     }, {
                         id: 'HistoryDataComparativeAnalysisAxisColor_Id', xtype: 'colorfield',
-                        fieldLabel: 'Y轴颜色', allowBlank: true, editable: false, anchor: '100%', value: record.get('axisColorValue') || '',
+                        fieldLabel: loginUserLanguageResource.yAxisColor, allowBlank: true, editable: false, anchor: '100%', value: record.get('axisColorValue') || '',
                         listeners: {
                             afterrender: function (field) { var val = field.getValue(); if (val) field.inputEl.applyStyles({ background: '#' + val }); },
                             collapse: function (field) { field.setValue(field.value); field.inputEl.applyStyles({ background: '#' + field.value }); }
@@ -253,7 +253,7 @@ Ext.define('AP.view.historyQuery.HistoryDataComparativeAnalysisCurveConfigWindow
                         win.close(); me.refreshTree(); me.repaintChart();
                     }
                 }, {
-                    xtype: 'button', text: loginUserLanguageResource.clear || '清除', hidden:true,
+                    xtype: 'button', text: loginUserLanguageResource.clear, hidden:true,
                     handler: function () {
                         delete historyDataComparativeAnalysisCurveConfig.axis[record.get('fieldKey')];
                         win.close(); me.refreshTree(); me.repaintChart();
@@ -297,7 +297,7 @@ Ext.define('AP.view.historyQuery.HistoryDataComparativeAnalysisCurveConfigWindow
                             ]
                         }),
                         displayField: 'text', valueField: 'value', queryMode: 'local',
-                        emptyText: loginUserLanguageResource.default || '默认', value: record.get('dashStyleValue') || ''
+                        emptyText: loginUserLanguageResource.default, value: record.get('dashStyleValue') || ''
                     }]
                 }],
                 buttons: [{
@@ -315,7 +315,7 @@ Ext.define('AP.view.historyQuery.HistoryDataComparativeAnalysisCurveConfigWindow
                         win.close(); me.refreshTree(); me.repaintChart();
                     }
                 }, {
-                    xtype: 'button', text: loginUserLanguageResource.clear || '清除', hidden:true,
+                    xtype: 'button', text: loginUserLanguageResource.clear, hidden:true,
                     handler: function () {
                         delete historyDataComparativeAnalysisCurveConfig.series[record.get('seriesKey')];
                         win.close(); me.refreshTree(); me.repaintChart();
@@ -339,7 +339,7 @@ Ext.define('AP.view.historyQuery.HistoryDataComparativeAnalysisCurveConfigWindow
         Ext.apply(me, {
             items: [treePanel],
             buttons: [{
-                xtype: 'button', text: loginUserLanguageResource.close || '关闭', iconCls: 'cancel',
+                xtype: 'button', text: loginUserLanguageResource.close, iconCls: 'cancel',
                 handler: function () { me.close(); }
             }]
         });

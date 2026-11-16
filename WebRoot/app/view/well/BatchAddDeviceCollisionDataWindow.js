@@ -170,7 +170,10 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
             	html: '<div id="BatchAddDeviceCollisionDataTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
             		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(batchAddDeviceCollisionDataHandsontableHelper!=null&&batchAddDeviceCollisionDataHandsontableHelper.hot!=null&&batchAddDeviceCollisionDataHandsontableHelper.hot!=undefined){
+                    	if(batchAddDeviceCollisionDataHandsontableHelper!=null
+                    			&& batchAddDeviceCollisionDataHandsontableHelper.hot!=null
+                    			&& batchAddDeviceCollisionDataHandsontableHelper.hot!=undefined
+                    			&& typeof batchAddDeviceCollisionDataHandsontableHelper.hot.updateSettings === 'function'){
 //                    		batchAddDeviceCollisionDataHandsontableHelper.hot.refreshDimensions();
                     		var newWidth=width;
                     		var newHeight=height;
@@ -193,7 +196,10 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
             	html: '<div id="BatchAddDeviceOverlayDataTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
             		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(batchAddDeviceOverlayDataHandsontableHelper!=null&&batchAddDeviceOverlayDataHandsontableHelper.hot!=null&&batchAddDeviceOverlayDataHandsontableHelper.hot!=undefined){
+                    	if(batchAddDeviceOverlayDataHandsontableHelper!=null
+                    			&& batchAddDeviceOverlayDataHandsontableHelper.hot!=null
+                    			&& batchAddDeviceOverlayDataHandsontableHelper.hot!=undefined
+                    			&& typeof batchAddDeviceOverlayDataHandsontableHelper.hot.updateSettings === 'function'){
 //                    		batchAddDeviceOverlayDataHandsontableHelper.hot.refreshDimensions();
                     		var newWidth=width;
                     		var newHeight=height;
@@ -393,7 +399,7 @@ function CreateAndLoadBatchAddDeviceCollisionDataTable(result) {
 var BatchAddDeviceCollisionDataHandsontableHelper = {
     createNew: function (divid) {
         var batchAddDeviceCollisionDataHandsontableHelper = {};
-        batchAddDeviceCollisionDataHandsontableHelper.hot = '';
+        batchAddDeviceCollisionDataHandsontableHelper.hot = null;
         batchAddDeviceCollisionDataHandsontableHelper.divid = divid;
         batchAddDeviceCollisionDataHandsontableHelper.validresult = true; //数据校验
         batchAddDeviceCollisionDataHandsontableHelper.colHeaders = [];
@@ -781,7 +787,7 @@ function CreateAndLoadBatchAddDeviceOverlayDataTable(result) {
 var BatchAddDeviceOverlayDataHandsontableHelper = {
     createNew: function (divid) {
         var batchAddDeviceOverlayDataHandsontableHelper = {};
-        batchAddDeviceOverlayDataHandsontableHelper.hot = '';
+        batchAddDeviceOverlayDataHandsontableHelper.hot = null;
         batchAddDeviceOverlayDataHandsontableHelper.divid = divid;
         batchAddDeviceOverlayDataHandsontableHelper.validresult = true; //数据校验
         batchAddDeviceOverlayDataHandsontableHelper.colHeaders = [];

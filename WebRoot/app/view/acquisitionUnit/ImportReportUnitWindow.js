@@ -154,7 +154,10 @@ Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
                                 html: '<div class="importReportUnitSingleWellDailyReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importReportUnitSingleWellDailyReportTemplateTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (importReportUnitSingleWellDailyReportTemplateHandsontableHelper != null && importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot != null && importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot != undefined) {
+                                    	if (importReportUnitSingleWellDailyReportTemplateHandsontableHelper != null 
+                                    			&& importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot != null 
+                                    			&& importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot != undefined
+                                    			&& typeof importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot.updateSettings === 'function') {
                                     		var newWidth=width;
                                     		var newHeight=height;
                                     		var header=thisPanel.getHeader();
@@ -181,7 +184,10 @@ Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
                                 html: '<div class="importReportUnitSingleWellDailyReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (importReportUnitSingleWellDailyReportContentHandsontableHelper != null && importReportUnitSingleWellDailyReportContentHandsontableHelper.hot != null && importReportUnitSingleWellDailyReportContentHandsontableHelper.hot != undefined) {
+                                    	if (importReportUnitSingleWellDailyReportContentHandsontableHelper != null 
+                                    			&& importReportUnitSingleWellDailyReportContentHandsontableHelper.hot != null 
+                                    			&& importReportUnitSingleWellDailyReportContentHandsontableHelper.hot != undefined
+                                    			&& typeof importReportUnitSingleWellDailyReportContentHandsontableHelper.hot.updateSettings === 'function' ) {
                                     		var newWidth=width;
                                     		var newHeight=height;
                                     		var header=thisPanel.getHeader();
@@ -215,7 +221,10 @@ Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
                                 html: '<div class="importReportUnitSingleWellRangeReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importReportUnitSingleWellRangeReportTemplateTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (importReportUnitSingleWellRangeReportTemplateHandsontableHelper != null && importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot != null && importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot != undefined) {
+                                    	if (importReportUnitSingleWellRangeReportTemplateHandsontableHelper != null 
+                                    			&& importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot != null 
+                                    			&& importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot != undefined
+                                    			&& typeof importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot.updateSettings === 'function' ) {
                                     		var newWidth=width;
                                     		var newHeight=height;
                                     		var header=thisPanel.getHeader();
@@ -242,7 +251,10 @@ Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
                                 html: '<div class="importReportUnitSingleWellRangeReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (importReportUnitSingleWellRangeReportContentHandsontableHelper != null && importReportUnitSingleWellRangeReportContentHandsontableHelper.hot != null && importReportUnitSingleWellRangeReportContentHandsontableHelper.hot != undefined) {
+                                    	if (importReportUnitSingleWellRangeReportContentHandsontableHelper != null 
+                                    			&& importReportUnitSingleWellRangeReportContentHandsontableHelper.hot != null 
+                                    			&& importReportUnitSingleWellRangeReportContentHandsontableHelper.hot != undefined
+                                    			&& typeof importReportUnitSingleWellRangeReportContentHandsontableHelper.hot.updateSettings === 'function' ) {
                                     		var newWidth=width;
                                     		var newHeight=height;
                                     		var header=thisPanel.getHeader();
@@ -318,7 +330,10 @@ Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
                                 html: '<div class="importReportUnitProductionTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importReportUnitProductionTemplateTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (importReportUnitProductionTemplateHandsontableHelper != null && importReportUnitProductionTemplateHandsontableHelper.hot != null && importReportUnitProductionTemplateHandsontableHelper.hot != undefined) {
+                                    	if (importReportUnitProductionTemplateHandsontableHelper != null 
+                                    			&& importReportUnitProductionTemplateHandsontableHelper.hot != null 
+                                    			&& importReportUnitProductionTemplateHandsontableHelper.hot != undefined
+                                    			&& typeof importReportUnitProductionTemplateHandsontableHelper.hot.updateSettings === 'function') {
                                     		var newWidth=width;
                                     		var newHeight=height;
                                     		var header=thisPanel.getHeader();
@@ -345,7 +360,10 @@ Ext.define("AP.view.acquisitionUnit.ImportReportUnitWindow", {
                                 html: '<div class="importReportUnitProductionReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importReportUnitProductionReportContentConfigTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if (importReportUnitProductionReportContentHandsontableHelper != null && importReportUnitProductionReportContentHandsontableHelper.hot != null && importReportUnitProductionReportContentHandsontableHelper.hot != undefined) {
+                                    	if (importReportUnitProductionReportContentHandsontableHelper != null 
+                                    			&& importReportUnitProductionReportContentHandsontableHelper.hot != null 
+                                    			&& importReportUnitProductionReportContentHandsontableHelper.hot != undefined
+                                    			&& typeof importReportUnitProductionReportContentHandsontableHelper.hot.updateSettings === 'function' ) {
                                     		var newWidth=width;
                                     		var newHeight=height;
                                     		var header=thisPanel.getHeader();
@@ -879,7 +897,7 @@ var ImportReportUnitSingleWellDailyReportTemplateHandsontableHelper = {
 	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.templateData=templateData;
 	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.get_data = {};
 	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.data=[];
-	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot = '';
+	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.hot = null;
 	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
 	        importReportUnitSingleWellDailyReportTemplateHandsontableHelper.colWidths=[];
@@ -1314,7 +1332,7 @@ var ImportReportUnitSingleWellRangeReportTemplateHandsontableHelper = {
 	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.templateData=templateData;
 	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.get_data = {};
 	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.data=[];
-	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot = '';
+	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.hot = null;
 	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
 	        importReportUnitSingleWellRangeReportTemplateHandsontableHelper.colWidths=[];
@@ -1745,7 +1763,7 @@ var ImportReportUnitProductionTemplateHandsontableHelper = {
 	        importReportUnitProductionTemplateHandsontableHelper.templateData=templateData;
 	        importReportUnitProductionTemplateHandsontableHelper.get_data = {};
 	        importReportUnitProductionTemplateHandsontableHelper.data=[];
-	        importReportUnitProductionTemplateHandsontableHelper.hot = '';
+	        importReportUnitProductionTemplateHandsontableHelper.hot = null;
 	        importReportUnitProductionTemplateHandsontableHelper.container = document.getElementById(divid);
 	        
 	        importReportUnitProductionTemplateHandsontableHelper.colWidths=[];

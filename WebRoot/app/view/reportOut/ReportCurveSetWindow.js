@@ -256,7 +256,10 @@ Ext.define("AP.view.reportOut.ReportCurveSetWindow", {
         		html: '<div id="ReportCurveSetTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
         		listeners: {
         			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(deviceReportCurveSetHandsontableHelper!=null&&deviceReportCurveSetHandsontableHelper.hot!=null&&deviceReportCurveSetHandsontableHelper.hot!=undefined){
+                    	if(deviceReportCurveSetHandsontableHelper!=null
+                    			&& deviceReportCurveSetHandsontableHelper.hot!=null
+                    			&& deviceReportCurveSetHandsontableHelper.hot!=undefined
+                    			&& typeof deviceReportCurveSetHandsontableHelper.hot.updateSettings === 'function'){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();

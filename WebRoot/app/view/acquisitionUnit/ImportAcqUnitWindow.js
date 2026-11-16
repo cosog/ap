@@ -122,7 +122,9 @@ Ext.define("AP.view.acquisitionUnit.ImportAcqUnitWindow", {
             	html:'<div class="importedAcqUnitItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importedAcqUnitItemInfoTableDiv_Id"></div></div>',
                 listeners: {
                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(importAcqUnitContentHandsontableHelper!=null && importAcqUnitContentHandsontableHelper.hot!=undefined){
+                    	if(importAcqUnitContentHandsontableHelper!=null 
+                    			&& importAcqUnitContentHandsontableHelper.hot!=undefined
+                    			&& typeof importAcqUnitContentHandsontableHelper.hot.updateSettings === 'function'){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();

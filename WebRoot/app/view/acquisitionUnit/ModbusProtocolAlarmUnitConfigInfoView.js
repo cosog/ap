@@ -14,7 +14,9 @@ var alarmUnitConfigRightTabPanelItems=[{
 	html:'<div class="ModbusProtocolAlarmUnitPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitPropertiesTableInfoDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if(protocolConfigAlarmUnitPropertiesHandsontableHelper!=null && protocolConfigAlarmUnitPropertiesHandsontableHelper.hot!=undefined){
+        	if(protocolConfigAlarmUnitPropertiesHandsontableHelper!=null 
+        			&& protocolConfigAlarmUnitPropertiesHandsontableHelper.hot!=undefined
+        			&& typeof protocolConfigAlarmUnitPropertiesHandsontableHelper.hot.updateSettings === 'function'){
         		var newWidth=width;
         		var newHeight=height;
         		var header=thisPanel.getHeader();
@@ -82,7 +84,9 @@ var alarmUnitConfigRightTabPanelItems=[{
         html:'<div class="ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id"></div></div>',
         listeners: {
             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-            	if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper!=null && protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot!=undefined){
+            	if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper!=null 
+            			&& protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot!=undefined
+            			&& typeof protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.updateSettings === 'function'){
 //            		protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot.refreshDimensions();
             		var newWidth=width;
             		var newHeight=height-22-1;//减去tbar
@@ -142,7 +146,9 @@ var alarmUnitConfigRightTabPanelItems=[{
         html:'<div class="ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoDiv_id"></div></div>',
         listeners: {
             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-            	if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper!=null && protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined){
+            	if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper!=null 
+            			&& protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined
+            			&& typeof protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.updateSettings === 'function'){
 //            		protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.refreshDimensions();
             		var newWidth=width;
             		var newHeight=height-22-1;//减去tbar
@@ -201,7 +207,9 @@ var alarmUnitConfigRightTabPanelItems=[{
         html:'<div class="ModbusProtocolAlarmUnitRunStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitRunStatusItemsConfigTableInfoDiv_id"></div></div>',
         listeners: {
             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-            	if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper!=null && protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined){
+            	if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper!=null 
+            			&& protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined
+            			&& typeof protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.updateSettings === 'function'){
 //            		protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.refreshDimensions();
             		var newWidth=width;
             		var newHeight=height-22-1;//减去tbar
@@ -268,7 +276,9 @@ var alarmUnitConfigRightTabPanelItems=[{
             html:'<div class="ModbusProtocolAlarmUnitItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitItemsConfigTableInfoDiv_id"></div></div>',
             listeners: {
                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                	if(protocolAlarmUnitConfigNumItemsHandsontableHelper!=null && protocolAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined){
+                	if(protocolAlarmUnitConfigNumItemsHandsontableHelper!=null 
+                			&& protocolAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined
+                			&& typeof protocolAlarmUnitConfigNumItemsHandsontableHelper.hot.updateSettings === 'function'){
                 		var newWidth=width;
                 		var newHeight=height-22-1;//减去tbar
                 		var header=thisPanel.getHeader();
@@ -342,7 +352,9 @@ var alarmUnitConfigRightTabPanelItems=[{
             html:'<div class="ModbusProtocolAlarmUnitEnumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitEnumItemsConfigTableInfoDiv_id"></div></div>',
             listeners: {
                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                	if(protocolAlarmUnitConfigEnumItemsHandsontableHelper!=null && protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined){
+                	if(protocolAlarmUnitConfigEnumItemsHandsontableHelper!=null 
+                			&& protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined
+                			&& typeof protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.updateSettings === 'function'){
 //                		protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot.refreshDimensions();
                 		var newWidth=width;
                 		var newHeight=height-22-1;//减去tbar
@@ -417,7 +429,9 @@ var alarmUnitConfigRightTabPanelItems=[{
             html:'<div class="ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoDiv_id"></div></div>',
             listeners: {
                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                	if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null && protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
+                	if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper!=null 
+                			&& protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined
+                			&& typeof protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.updateSettings === 'function'){
 //                		protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot.refreshDimensions();
                 		var newHeight=height-22-1;//减去tbar
                 		var newWidth=width;
@@ -1107,7 +1121,7 @@ function CreateProtocolAlarmUnitConfigPropertiesInfoTable(data){
 var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 		createNew: function (divid) {
 	        var protocolConfigAlarmUnitPropertiesHandsontableHelper = {};
-	        protocolConfigAlarmUnitPropertiesHandsontableHelper.hot = '';
+	        protocolConfigAlarmUnitPropertiesHandsontableHelper.hot = null;
 	        protocolConfigAlarmUnitPropertiesHandsontableHelper.classes =null;
 	        protocolConfigAlarmUnitPropertiesHandsontableHelper.divid = divid;
 	        protocolConfigAlarmUnitPropertiesHandsontableHelper.validresult=true;//数据校验

@@ -135,7 +135,10 @@ Ext.define("AP.view.well.VideoKeyInfoWindow", {
         	html: '<div id="VideoKeyDiv_Id" style="width:100%;height:100%;"></div>',
             listeners: {
                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                	if(videoKeyDataHandsontableHelper!=null&&videoKeyDataHandsontableHelper.hot!=null&&videoKeyDataHandsontableHelper.hot!=undefined){
+                	if(videoKeyDataHandsontableHelper!=null
+                			&& videoKeyDataHandsontableHelper.hot!=null
+                			&& videoKeyDataHandsontableHelper.hot!=undefined
+                			&& typeof videoKeyDataHandsontableHelper.hot.updateSettings === 'function'){
                 		var newWidth=width;
                 		var newHeight=height;
                 		var header=thisPanel.getHeader();

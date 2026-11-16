@@ -111,12 +111,12 @@ Ext.define("AP.view.reportOut.AcquisitionDataReportPanel", {
     	                id: 'SingleWellAcquisitionDataReportStartDate_Id',
     	                listeners: {
     	                	select: function (combo, record, index) {
-    	                        try {
-    	                        	CreateSingleWellAcquisitionDataReportTable();
-    	                        	CreateSingleWellAcquisitionDataReportCurve();
-    	                        } catch (ex) {
-    	                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
-    	                        }
+//    	                        try {
+//    	                        	CreateSingleWellAcquisitionDataReportTable();
+//    	                        	CreateSingleWellAcquisitionDataReportCurve();
+//    	                        } catch (ex) {
+//    	                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+//    	                        }
     	                    }
     	                }
     	            },{
@@ -132,12 +132,12 @@ Ext.define("AP.view.reportOut.AcquisitionDataReportPanel", {
     	                value: new Date(),
     	                listeners: {
     	                	select: function (combo, record, index) {
-    	                        try {
-    	                        	CreateSingleWellAcquisitionDataReportTable();
-    	                        	CreateSingleWellAcquisitionDataReportCurve();
-    	                        } catch (ex) {
-    	                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
-    	                        }
+//    	                        try {
+//    	                        	CreateSingleWellAcquisitionDataReportTable();
+//    	                        	CreateSingleWellAcquisitionDataReportCurve();
+//    	                        } catch (ex) {
+//    	                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+//    	                        }
     	                    }
     	                }
     	            },'-',{
@@ -238,7 +238,9 @@ Ext.define("AP.view.reportOut.AcquisitionDataReportPanel", {
                             html:'<div class="SingleWellAcquisitionDataReportContainer" style="width:100%;height:100%;"><div class="con" id="SingleWellAcquisitionDataReportDiv_id"></div></div>',
                             listeners: {
                             	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            		if(singleWellAcquisitionDataReportHelper!=null && singleWellAcquisitionDataReportHelper.hot!=undefined){
+                            		if(singleWellAcquisitionDataReportHelper!=null 
+                            				&& singleWellAcquisitionDataReportHelper.hot!=undefined
+                            				&& typeof singleWellAcquisitionDataReportHelper.hot.updateSettings === 'function'){
                             			var newWidth=width;
                             			var newHeight=height-22-1;//减去工具条高度
                                 		var header=thisPanel.getHeader();
@@ -282,14 +284,14 @@ Ext.define("AP.view.reportOut.AcquisitionDataReportPanel", {
 //    	                value: new Date(),
     	                listeners: {
     	                	select: function (combo, record, index) {
-    	                        try {
-    	                        	Ext.getCmp("ProductionAcquisitionDataReportDate_Id").setValue("");
-    	                        	Ext.getCmp("ProductionAcquisitionDataReportDate_Id").setRawValue("");
-    	                        	CreateProductionAcquisitionDataReportTable();
-    	                        	CreateProductionAcquisitionDataReportCurve();
-    	                        } catch (ex) {
-    	                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
-    	                        }
+//    	                        try {
+//    	                        	Ext.getCmp("ProductionAcquisitionDataReportDate_Id").setValue("");
+//    	                        	Ext.getCmp("ProductionAcquisitionDataReportDate_Id").setRawValue("");
+//    	                        	CreateProductionAcquisitionDataReportTable();
+//    	                        	CreateProductionAcquisitionDataReportCurve();
+//    	                        } catch (ex) {
+//    	                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+//    	                        }
     	                    }
     	                }
     	            },{
@@ -305,14 +307,14 @@ Ext.define("AP.view.reportOut.AcquisitionDataReportPanel", {
     	                value: new Date(),
     	                listeners: {
     	                	select: function (combo, record, index) {
-    	                        try {
-    	                        	Ext.getCmp("ProductionAcquisitionDataReportDate_Id").setValue("");
-    	                        	Ext.getCmp("ProductionAcquisitionDataReportDate_Id").setRawValue("");
-    	                        	CreateProductionAcquisitionDataReportTable();
-    	                        	CreateProductionAcquisitionDataReportCurve();
-    	                        } catch (ex) {
-    	                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
-    	                        }
+//    	                        try {
+//    	                        	Ext.getCmp("ProductionAcquisitionDataReportDate_Id").setValue("");
+//    	                        	Ext.getCmp("ProductionAcquisitionDataReportDate_Id").setRawValue("");
+//    	                        	CreateProductionAcquisitionDataReportTable();
+//    	                        	CreateProductionAcquisitionDataReportCurve();
+//    	                        } catch (ex) {
+//    	                            Ext.Msg.alert(loginUserLanguageResource.tip, loginUserLanguageResource.dataQueryFailure);
+//    	                        }
     	                    }
     	                }
     	            },'-',{
@@ -525,7 +527,10 @@ Ext.define("AP.view.reportOut.AcquisitionDataReportPanel", {
                         html:'<div class="ProductionAcquisitionDataReportContainer" style="width:100%;height:100%;"><div class="con" id="ProductionAcquisitionDataReportDiv_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        		if(productionAcquisitionDataReportHelper!=null && productionAcquisitionDataReportHelper.hot!=undefined){
+                        		if(productionAcquisitionDataReportHelper!=null 
+                        				&& productionAcquisitionDataReportHelper.hot!=undefined
+                        				&& typeof productionAcquisitionDataReportHelper.hot.updateSettings === 'function'
+                        					){
 //                        			productionAcquisitionDataReportHelper.hot.refreshDimensions();
                         			var newWidth=width;
                             		var newHeight=height-22-1;//减去工具条高度
@@ -657,7 +662,7 @@ var SingleWellAcquisitionDataReportHelper = {
 	        singleWellAcquisitionDataReportHelper.get_data = {};
 	        singleWellAcquisitionDataReportHelper.data=[];
 	        singleWellAcquisitionDataReportHelper.sourceData=[];
-	        singleWellAcquisitionDataReportHelper.hot = '';
+	        singleWellAcquisitionDataReportHelper.hot = null;
 	        singleWellAcquisitionDataReportHelper.container = document.getElementById(divId);
 	        singleWellAcquisitionDataReportHelper.columnCount=0;
 	        singleWellAcquisitionDataReportHelper.editData={};
@@ -1446,7 +1451,7 @@ var ProductionAcquisitionDataReportHelper = {
 	        productionAcquisitionDataReportHelper.get_data = {};
 	        productionAcquisitionDataReportHelper.data=[];
 	        productionAcquisitionDataReportHelper.sourceData=[];
-	        productionAcquisitionDataReportHelper.hot = '';
+	        productionAcquisitionDataReportHelper.hot = null;
 	        productionAcquisitionDataReportHelper.container = document.getElementById(divId);
 	        productionAcquisitionDataReportHelper.columnCount=0;
 	        productionAcquisitionDataReportHelper.editData={};

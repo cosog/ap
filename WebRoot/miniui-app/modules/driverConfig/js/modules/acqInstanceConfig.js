@@ -448,7 +448,7 @@ function refreshAcqInstanceList() {
 var ProtocolConfigInstancePropertiesHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.classes = null;
      helper.divid = divid;
      helper.validresult = true;

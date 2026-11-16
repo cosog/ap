@@ -45,7 +45,9 @@ Ext.define("AP.view.realTimeMonitoring.ItemRealtimeDataWindow", {
                 html: '<div id="ItemRealtimeDataDiv_Id" style="width:100%;height:100%;"></div>',
                 listeners: {
                     resize: function (thisPanel, adjWidth, adjHeight, options) {
-                        if (itemRealtimeDataHandsontableHelper && itemRealtimeDataHandsontableHelper.hot) {
+                        if (itemRealtimeDataHandsontableHelper !=null
+                        		&& itemRealtimeDataHandsontableHelper.hot!=null
+                        		&& typeof itemRealtimeDataHandsontableHelper.hot.updateSettings === 'function') {
                             var newWidth = adjWidth;
                             var newHeight = adjHeight;
                             var header = thisPanel.getHeader();

@@ -1,7 +1,7 @@
 var ProtocolPropertiesHandsontableHelper = {
             createNew: function(divid) {
                 var protocolPropertiesHandsontableHelper = {};
-                protocolPropertiesHandsontableHelper.hot = '';
+                protocolPropertiesHandsontableHelper.hot = null;
                 protocolPropertiesHandsontableHelper.classes = null;
                 protocolPropertiesHandsontableHelper.divid = divid;
                 protocolPropertiesHandsontableHelper.validresult = true; //数据校验
@@ -1119,7 +1119,7 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
   var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
      createNew: function (divid) {
          var helper = {};
-         helper.hot = '';
+         helper.hot = null;
          helper.classes = null;
          helper.type = null;
          helper.divid = divid;
@@ -1238,7 +1238,7 @@ var ProtocolItemsMeaningConfigHandsontableHelper = {
   var ProtocolAcqUnitConfigItemsHandsontableHelper = {
      createNew: function (divid) {
          var helper = {};
-         helper.hot = '';
+         helper.hot = null;
          helper.divid = divid;
          helper.validresult = true;
          helper.colHeaders = [];

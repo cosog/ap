@@ -2190,7 +2190,7 @@ function getDeviceTabInstanceInfo(name) {
 var DeviceInfoHandsontableHelper = {
     createNew: function (divid) {
         var helper = {};
-        helper.hot = '';
+        helper.hot = null;
         helper.divid = divid;
         helper.validresult = true;
         helper.colHeaders = [];
@@ -2788,7 +2788,7 @@ function CreateAndLoadDeviceAdditionalInfoTable(deviceId, deviceName, isNew) {
 var DeviceAdditionalInfoHandsontableHelper = {
 		createNew: function (divid) {
 		     var helper = {};
-		     helper.hot = '';
+		     helper.hot = null;
 		     helper.divid = divid;
 		     helper.colHeaders = [];
 		     helper.columns = [];
@@ -2917,7 +2917,7 @@ function CreateAndLoadDeviceAuxiliaryDeviceInfoTable(deviceId, deviceName, calcu
 var DeviceAuxiliaryDeviceInfoHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.divid = divid;
      helper.validresult = true;
      helper.colHeaders = [];
@@ -3128,7 +3128,7 @@ function CreateAndLoadProductionDataTable(deviceId, deviceName, applicationScena
 var ProductionHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.divid = divid;
      helper.colHeaders = [];
      helper.columns = [];
@@ -3388,7 +3388,7 @@ function CreateAndLoadPumpingInfoTable(deviceId, deviceName, applicationScenario
 var PumpingInfoHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.divid = divid;
      helper.colHeaders = [];
      helper.columns = [];
@@ -3709,7 +3709,7 @@ function CreatePumpingUnitDetailedInformationTable() {
 var DevicePumpingUnitDetailedInformationHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.divid = divid;
      helper.colHeaders = [];
      helper.columns = [];
@@ -3867,7 +3867,7 @@ function CreateAndLoadDevicePumpingUnitPTFTable() {
 var DevicePumpingUnitPRTFHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.divid = divid;
      helper.colHeaders = [];
      helper.columns = [];
@@ -4018,7 +4018,7 @@ function CreateAndLoadVideoInfoTable(deviceId, deviceName, isNew) {
 var VideoInfoHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.divid = divid;
      helper.colHeaders = [];
      helper.columns = [];
@@ -4175,7 +4175,7 @@ function CreateAndLoadFSDiagramConstructionDataTable(deviceId, deviceName, appli
 var FSDiagramConstructionHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.divid = divid;
      helper.colHeaders = [];
      helper.columns = [];
@@ -4363,7 +4363,7 @@ function CreateAndLoadDeviceSystemParameterTable(deviceId, deviceName, applicati
 var DeviceSystemParameterHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.divid = divid;
      helper.colHeaders = [];
      helper.columns = [];
@@ -4534,7 +4534,7 @@ function CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId, device
 var DeviceIntelligentFrequencyConversionHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.divid = divid;
      helper.colHeaders = [];
      helper.columns = [];
@@ -4739,7 +4739,7 @@ function CreateAndLoadDeviceInterlockProtectionTable(deviceId, deviceName, appli
 var DeviceInterlockProtectionHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.divid = divid;
      helper.colHeaders = [];
      helper.columns = [];
@@ -4929,7 +4929,7 @@ function CreateAndLoadDeviceDiagramFilteringTable(deviceId, deviceName, applicat
 var DeviceDiagramFilteringHandsontableHelper = {
     createNew: function (divid) {
         var helper = {};
-        helper.hot = '';
+        helper.hot = null;
         helper.divid = divid;
         helper.colHeaders = [];
         helper.columns = [];
@@ -5606,7 +5606,7 @@ function CreateAndLoadDeviceSceneModelInfoTable(deviceId, deviceName, calculateT
 var DeviceSceneModelInfoHandsontableHelper = {
 	    createNew: function (divid) {
 	        var helper = {};
-	        helper.hot = '';
+	        helper.hot = null;
 	        helper.divid = divid;
 	        helper.validresult = true;
 	        helper.colHeaders = [];

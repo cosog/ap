@@ -130,7 +130,9 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
                 	html:'<div class="importedProtocolItemInfoTableContainer" style="width:100%;height:100%;"><div class="con" id="importedProtocolItemInfoTableDiv_Id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(importProtocolContentHandsontableHelper!=null && importProtocolContentHandsontableHelper.hot!=undefined){
+                        	if(importProtocolContentHandsontableHelper!=null 
+                        			&& importProtocolContentHandsontableHelper.hot!=undefined
+                        			&& typeof importProtocolContentHandsontableHelper.hot.updateSettings === 'function'){
                         		var newWidth=width;
                         		var newHeight=height;
                         		var header=thisPanel.getHeader();
@@ -151,7 +153,9 @@ Ext.define("AP.view.acquisitionUnit.ImportProtocolWindow", {
                 	html:'<div class="importedProtocolExtendedFieldInfoTableContainer" style="width:100%;height:100%;"><div class="con" id="importedProtocolExtendedFieldInfoTableDiv_Id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(importProtocolExtendedFieldHandsontableHelper!=null && importProtocolExtendedFieldHandsontableHelper.hot!=undefined){
+                        	if(importProtocolExtendedFieldHandsontableHelper!=null 
+                        			&& importProtocolExtendedFieldHandsontableHelper.hot!=undefined
+                        			&& typeof importProtocolExtendedFieldHandsontableHelper.hot.updateSettings === 'function'){
                         		var newWidth=width;
                         		var newHeight=height;
                         		var header=thisPanel.getHeader();

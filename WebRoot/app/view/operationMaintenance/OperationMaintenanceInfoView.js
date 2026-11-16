@@ -2109,7 +2109,10 @@ Ext.define("AP.view.operationMaintenance.OperationMaintenanceInfoView", {
         		    html: '<div class="OperationMaintenanceLowerComputerProgramUpgradeContainer" style="width:100%;height:100%;"><div class="con" id="OperationMaintenanceLowerComputerProgramUpgradeDiv_Id"></div></div>',
         	        listeners: {
         	            resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	            	if (lowerComputerProgramUpgradeHandsontableHelper != null && lowerComputerProgramUpgradeHandsontableHelper.hot != null && lowerComputerProgramUpgradeHandsontableHelper.hot != undefined) {
+        	            	if (lowerComputerProgramUpgradeHandsontableHelper != null 
+        	            			&& lowerComputerProgramUpgradeHandsontableHelper.hot != null 
+        	            			&& lowerComputerProgramUpgradeHandsontableHelper.hot != undefined
+        	            			&& typeof lowerComputerProgramUpgradeHandsontableHelper.hot.updateSettings === 'function') {
         	            		var newWidth=width;
         	            		var newHeight=height-23-1;//减去工具条高度
         	            		var header=thisPanel.getHeader();
@@ -4832,7 +4835,7 @@ function loadLowerComputerProgramUpgradeDeviceList(){
 var LowerComputerProgramUpgradeHandsontableHelper = {
 	    createNew: function (divid) {
 	        var lowerComputerProgramUpgradeHandsontableHelper = {};
-	        lowerComputerProgramUpgradeHandsontableHelper.hot = '';
+	        lowerComputerProgramUpgradeHandsontableHelper.hot = null;
 	        lowerComputerProgramUpgradeHandsontableHelper.divid = divid;
 	        lowerComputerProgramUpgradeHandsontableHelper.colHeaders = [];
 	        lowerComputerProgramUpgradeHandsontableHelper.columns = [];

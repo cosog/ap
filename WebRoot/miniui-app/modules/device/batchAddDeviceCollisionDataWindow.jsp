@@ -371,7 +371,7 @@ String context = path;
     var BatchAddDeviceCollisionDataHandsontableHelper = {
         createNew: function (divid) {
             var helper = {};
-            helper.hot = ''; helper.divid = divid; helper.colHeaders = []; helper.columns = [];
+            helper.hot = null; helper.divid = divid; helper.colHeaders = []; helper.columns = [];
             helper.pumpingModelInfo = {};
             helper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
                 Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -464,7 +464,7 @@ String context = path;
     var BatchAddDeviceOverlayDataHandsontableHelper = {
         createNew: function (divid) {
             var helper = {};
-            helper.hot = ''; helper.divid = divid; helper.colHeaders = []; helper.columns = [];
+            helper.hot = null; helper.divid = divid; helper.colHeaders = []; helper.columns = [];
             helper.pumpingModelInfo = {};
             helper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
                 Handsontable.renderers.TextRenderer.apply(this, arguments);

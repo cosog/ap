@@ -76,7 +76,10 @@ var deviceCalculateDataTabPanelItems=[{
 	html: '<div class="AdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="AdditionalInfoTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (productionHandsontableHelper != null && productionHandsontableHelper.hot != null && productionHandsontableHelper.hot != undefined) {
+        	if (productionHandsontableHelper != null 
+        			&& productionHandsontableHelper.hot != null 
+        			&& productionHandsontableHelper.hot != undefined
+        			&& typeof productionHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height-23-1;//减去工具条高度
         		var header=thisPanel.getHeader();
@@ -123,7 +126,10 @@ var deviceCalculateDataTabPanelItems=[{
 			html: '<div class="PumpingInfoContainer" style="width:100%;height:100%;"><div class="con" id="PumpingInfoTableDiv_id"></div></div>',
             listeners: {
                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                	if (pumpingInfoHandsontableHelper != null && pumpingInfoHandsontableHelper.hot != null && pumpingInfoHandsontableHelper.hot != undefined) {
+                	if (pumpingInfoHandsontableHelper != null 
+                			&& pumpingInfoHandsontableHelper.hot != null 
+                			&& pumpingInfoHandsontableHelper.hot != undefined
+                			&& typeof pumpingInfoHandsontableHelper.hot.updateSettings === 'function') {
                 		var newWidth=width;
                 		var newHeight=height;
                 		var header=thisPanel.getHeader();
@@ -147,7 +153,10 @@ var deviceCalculateDataTabPanelItems=[{
         	html: '<div class="DevicePumpingUnitDetailedInformationContainer" style="width:100%;height:100%;"><div class="con" id="DevicePumpingUnitDetailedInformationTableDiv_id"></div></div>',
         	listeners: {
                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                	if (devicePumpingUnitDetailedInformationHandsontableHelper != null && devicePumpingUnitDetailedInformationHandsontableHelper.hot != null && devicePumpingUnitDetailedInformationHandsontableHelper.hot != undefined) {
+                	if (devicePumpingUnitDetailedInformationHandsontableHelper != null 
+                			&& devicePumpingUnitDetailedInformationHandsontableHelper.hot != null 
+                			&& devicePumpingUnitDetailedInformationHandsontableHelper.hot != undefined
+                			&& typeof devicePumpingUnitDetailedInformationHandsontableHelper.hot.updateSettings === 'function') {
                 		var newWidth=width;
                 		var newHeight=height;
                 		var header=thisPanel.getHeader();
@@ -173,7 +182,10 @@ var deviceCalculateDataTabPanelItems=[{
     	html: '<div class="DevicePumpingUnitPRTFContainer" style="width:100%;height:100%;"><div class="con" id="DevicePumpingUnitPRTFTableDiv_id"></div></div>',
     	listeners: {
             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-            	if (devicePumpingUnitPRTFHandsontableHelper != null && devicePumpingUnitPRTFHandsontableHelper.hot != null && devicePumpingUnitPRTFHandsontableHelper.hot != undefined) {
+            	if (devicePumpingUnitPRTFHandsontableHelper != null 
+            			&& devicePumpingUnitPRTFHandsontableHelper.hot != null 
+            			&& devicePumpingUnitPRTFHandsontableHelper.hot != undefined
+            			&& typeof devicePumpingUnitPRTFHandsontableHelper.hot.updateSettings === 'function') {
             		var newWidth=width;
             		var newHeight=height;
             		var header=thisPanel.getHeader();
@@ -198,7 +210,10 @@ var deviceAdditionalInformationTabPanelItems=[{
 	html: '<div class="DeviceAdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceAdditionalInfoTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (deviceAdditionalInfoHandsontableHelper != null && deviceAdditionalInfoHandsontableHelper.hot != null && deviceAdditionalInfoHandsontableHelper.hot != undefined) {
+        	if (deviceAdditionalInfoHandsontableHelper != null 
+        			&& deviceAdditionalInfoHandsontableHelper.hot != null 
+        			&& deviceAdditionalInfoHandsontableHelper.hot != undefined
+        			&& typeof deviceAdditionalInfoHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height;
         		var header=thisPanel.getHeader();
@@ -219,7 +234,10 @@ var deviceAdditionalInformationTabPanelItems=[{
 	html: '<div class="DeviceAuxiliaryDeviceContainer" style="width:100%;height:100%;"><div class="con" id="DeviceAuxiliaryDeviceTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (deviceAuxiliaryDeviceInfoHandsontableHelper != null && deviceAuxiliaryDeviceInfoHandsontableHelper.hot != null && deviceAuxiliaryDeviceInfoHandsontableHelper.hot != undefined) {
+        	if (deviceAuxiliaryDeviceInfoHandsontableHelper != null 
+        			&& deviceAuxiliaryDeviceInfoHandsontableHelper.hot != null 
+        			&& deviceAuxiliaryDeviceInfoHandsontableHelper.hot != undefined
+        			&& typeof deviceAuxiliaryDeviceInfoHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height;
         		var header=thisPanel.getHeader();
@@ -250,7 +268,10 @@ var deviceAdditionalInformationTabPanelItems=[{
 	html: '<div class="VideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="VideoInfoTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (videoInfoHandsontableHelper != null && videoInfoHandsontableHelper.hot != null && videoInfoHandsontableHelper.hot != undefined) {
+        	if (videoInfoHandsontableHelper != null 
+        			&& videoInfoHandsontableHelper.hot != null 
+        			&& videoInfoHandsontableHelper.hot != undefined
+        			&& typeof videoInfoHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height-22-1;//减去工具条高度
         		var header=thisPanel.getHeader();
@@ -332,7 +353,10 @@ var deviceAdditionalInformationTabPanelItems=[{
 	html: '<div class="DeviceFSDiagramConstructionInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceFSDiagramConstructionInfoTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (fsDiagramConstructionHandsontableHelper != null && fsDiagramConstructionHandsontableHelper.hot != null && fsDiagramConstructionHandsontableHelper.hot != undefined) {
+        	if (fsDiagramConstructionHandsontableHelper != null 
+        			&& fsDiagramConstructionHandsontableHelper.hot != null 
+        			&& fsDiagramConstructionHandsontableHelper.hot != undefined
+        			&& typeof fsDiagramConstructionHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height-23-1;
         		var header=thisPanel.getHeader();
@@ -370,7 +394,10 @@ var deviceAdditionalInformationTabPanelItems=[{
 	html: '<div class="DeviceSystemParameterConfigurationInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceSystemParameterConfigurationInfoTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (deviceSystemParameterHandsontableHelper != null && deviceSystemParameterHandsontableHelper.hot != null && deviceSystemParameterHandsontableHelper.hot != undefined) {
+        	if (deviceSystemParameterHandsontableHelper != null 
+        			&& deviceSystemParameterHandsontableHelper.hot != null
+        			&& deviceSystemParameterHandsontableHelper.hot != undefined
+        			&& typeof deviceSystemParameterHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height-23-1;
         		var header=thisPanel.getHeader();
@@ -409,7 +436,10 @@ var deviceAdditionalInformationTabPanelItems=[{
 	html: '<div class="DeviceIntelligentFrequencyConversionConfigurationInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceIntelligentFrequencyConversionInfoTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (deviceIntelligentFrequencyConversionHandsontableHelper != null && deviceIntelligentFrequencyConversionHandsontableHelper.hot != null && deviceIntelligentFrequencyConversionHandsontableHelper.hot != undefined) {
+        	if (deviceIntelligentFrequencyConversionHandsontableHelper != null 
+        			&& deviceIntelligentFrequencyConversionHandsontableHelper.hot != null 
+        			&& deviceIntelligentFrequencyConversionHandsontableHelper.hot != undefined
+        			&& typeof deviceIntelligentFrequencyConversionHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height-23-1;
         		var header=thisPanel.getHeader();
@@ -447,7 +477,10 @@ var deviceAdditionalInformationTabPanelItems=[{
 	html: '<div class="DeviceInterlockProtectionConfigurationInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceInterlockProtectionInfoTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (deviceInterlockProtectionHandsontableHelper != null && deviceInterlockProtectionHandsontableHelper.hot != null && deviceInterlockProtectionHandsontableHelper.hot != undefined) {
+        	if (deviceInterlockProtectionHandsontableHelper != null 
+        			&& deviceInterlockProtectionHandsontableHelper.hot != null 
+        			&& deviceInterlockProtectionHandsontableHelper.hot != undefined
+        			&& typeof deviceInterlockProtectionHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height-23-1;
         		var header=thisPanel.getHeader();
@@ -467,7 +500,10 @@ var deviceAdditionalInformationTabPanelItems=[{
 	html: '<div class="DeviceDiagramFilteringInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceDiagramFilteringInfoTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (deviceDiagramFilteringHandsontableHelper != null && deviceDiagramFilteringHandsontableHelper.hot != null && deviceDiagramFilteringHandsontableHelper.hot != undefined) {
+        	if (deviceDiagramFilteringHandsontableHelper != null 
+        			&& deviceDiagramFilteringHandsontableHelper.hot != null 
+        			&& deviceDiagramFilteringHandsontableHelper.hot != undefined
+        			&& typeof deviceDiagramFilteringHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height-23-1;
         		var header=thisPanel.getHeader();
@@ -487,7 +523,10 @@ var deviceAdditionalInformationTabPanelItems=[{
 	html: '<div class="DeviceSceneModelContainer" style="width:100%;height:100%;"><div class="con" id="DeviceSceneModelTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (deviceSceneModelInfoHandsontableHelper != null && deviceSceneModelInfoHandsontableHelper.hot != null && deviceSceneModelInfoHandsontableHelper.hot != undefined) {
+        	if (deviceSceneModelInfoHandsontableHelper != null 
+        			&& deviceSceneModelInfoHandsontableHelper.hot != null 
+        			&& deviceSceneModelInfoHandsontableHelper.hot != undefined
+        			&& typeof deviceSceneModelInfoHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height;
         		var header=thisPanel.getHeader();
@@ -507,7 +546,10 @@ var deviceAdditionalInformationTabPanelItems=[{
 	html: '<div class="DeviceCBMParametersInfoContainer" style="width:100%;height:100%;"><div class="con" id="DeviceCBMParametersInfoTableDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if (deviceCBMParametersInfoHandsontableHelper != null && deviceCBMParametersInfoHandsontableHelper.hot != null && deviceCBMParametersInfoHandsontableHelper.hot != undefined) {
+        	if (deviceCBMParametersInfoHandsontableHelper != null 
+        			&& deviceCBMParametersInfoHandsontableHelper.hot != null 
+        			&& deviceCBMParametersInfoHandsontableHelper.hot != undefined
+        			&& typeof deviceCBMParametersInfoHandsontableHelper.hot.updateSettings === 'function') {
         		var newWidth=width;
         		var newHeight=height-23-1;//减去工具条高度
         		var header=thisPanel.getHeader();
@@ -944,7 +986,10 @@ Ext.define('AP.view.well.DeviceInfoPanel', {
             	html: '<div class="DeviceContainer" style="width:100%;height:100%;"><div class="con" id="DeviceTableDiv_id" style="width:100%;height:100%;"></div></div>',
                 listeners: {
                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if (deviceInfoHandsontableHelper != null && deviceInfoHandsontableHelper.hot != null && deviceInfoHandsontableHelper.hot != undefined) {
+                    	if (deviceInfoHandsontableHelper != null 
+                    			&& deviceInfoHandsontableHelper.hot != null 
+                    			&& deviceInfoHandsontableHelper.hot != undefined
+                    			&& typeof deviceInfoHandsontableHelper.hot.updateSettings === 'function') {
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();
@@ -1443,7 +1488,7 @@ function CreateAndLoadDeviceInfoTable(isNew) {
 var DeviceInfoHandsontableHelper = {
     createNew: function (divid) {
         var deviceInfoHandsontableHelper = {};
-        deviceInfoHandsontableHelper.hot = '';
+        deviceInfoHandsontableHelper.hot = null;
         deviceInfoHandsontableHelper.divid = divid;
         deviceInfoHandsontableHelper.validresult = true; //数据校验
         deviceInfoHandsontableHelper.colHeaders = [];
@@ -3054,7 +3099,7 @@ function CreateAndLoadProductionDataTable(deviceId,deviceName,applicationScenari
 var ProductionHandsontableHelper = {
 	    createNew: function (divid) {
 	        var productionHandsontableHelper = {};
-	        productionHandsontableHelper.hot = '';
+	        productionHandsontableHelper.hot = null;
 	        productionHandsontableHelper.divid = divid;
 	        productionHandsontableHelper.colHeaders = [];
 	        productionHandsontableHelper.columns = [];
@@ -3359,7 +3404,7 @@ function CreateAndLoadPumpingInfoTable(deviceId,deviceName,applicationScenarios,
 var PumpingInfoHandsontableHelper = {
 	    createNew: function (divid) {
 	        var pumpingInfoHandsontableHelper = {};
-	        pumpingInfoHandsontableHelper.hot = '';
+	        pumpingInfoHandsontableHelper.hot = null;
 	        pumpingInfoHandsontableHelper.divid = divid;
 	        pumpingInfoHandsontableHelper.colHeaders = [];
 	        pumpingInfoHandsontableHelper.columns = [];
@@ -3797,7 +3842,7 @@ function CreateAndLoadVideoInfoTable(deviceId,deviceName,isNew){
 var VideoInfoHandsontableHelper = {
 	    createNew: function (divid) {
 	        var videoInfoHandsontableHelper = {};
-	        videoInfoHandsontableHelper.hot = '';
+	        videoInfoHandsontableHelper.hot = null;
 	        videoInfoHandsontableHelper.divid = divid;
 	        videoInfoHandsontableHelper.colHeaders = [];
 	        videoInfoHandsontableHelper.columns = [];
@@ -4002,7 +4047,7 @@ function CreateAndLoadDeviceAdditionalInfoTable(deviceId,deviceName,isNew){
 var DeviceAdditionalInfoHandsontableHelper = {
 	    createNew: function (divid) {
 	        var deviceAdditionalInfoHandsontableHelper = {};
-	        deviceAdditionalInfoHandsontableHelper.hot = '';
+	        deviceAdditionalInfoHandsontableHelper.hot = null;
 	        deviceAdditionalInfoHandsontableHelper.divid = divid;
 	        deviceAdditionalInfoHandsontableHelper.colHeaders = [];
 	        deviceAdditionalInfoHandsontableHelper.columns = [];
@@ -5913,7 +5958,7 @@ function CreateAndLoadFSDiagramConstructionDataTable(deviceId,deviceName,applica
 var FSDiagramConstructionHandsontableHelper = {
 	    createNew: function (divid) {
 	        var fsDiagramConstructionHandsontableHelper = {};
-	        fsDiagramConstructionHandsontableHelper.hot = '';
+	        fsDiagramConstructionHandsontableHelper.hot = null;
 	        fsDiagramConstructionHandsontableHelper.divid = divid;
 	        fsDiagramConstructionHandsontableHelper.colHeaders = [];
 	        fsDiagramConstructionHandsontableHelper.columns = [];
@@ -6146,7 +6191,7 @@ function CreateAndLoadDeviceDiagramFilteringTable(deviceId,deviceName,applicatio
 var DeviceDiagramFilteringHandsontableHelper = {
 	    createNew: function (divid) {
 	        var deviceDiagramFilteringHandsontableHelper = {};
-	        deviceDiagramFilteringHandsontableHelper.hot = '';
+	        deviceDiagramFilteringHandsontableHelper.hot = null;
 	        deviceDiagramFilteringHandsontableHelper.divid = divid;
 	        deviceDiagramFilteringHandsontableHelper.colHeaders = [];
 	        deviceDiagramFilteringHandsontableHelper.columns = [];
@@ -6523,7 +6568,7 @@ function CreateAndLoadDeviceSystemParameterTable(deviceId,deviceName,application
 var DeviceSystemParameterHandsontableHelper = {
 	    createNew: function (divid) {
 	        var deviceSystemParameterHandsontableHelper = {};
-	        deviceSystemParameterHandsontableHelper.hot = '';
+	        deviceSystemParameterHandsontableHelper.hot = null;
 	        deviceSystemParameterHandsontableHelper.divid = divid;
 	        deviceSystemParameterHandsontableHelper.colHeaders = [];
 	        deviceSystemParameterHandsontableHelper.columns = [];
@@ -6940,7 +6985,7 @@ function CreatePumpingUnitDetailedInformationTable(){
 var DevicePumpingUnitDetailedInformationHandsontableHelper = {
 	    createNew: function (divid) {
 	        var devicePumpingUnitDetailedInformationHandsontableHelper = {};
-	        devicePumpingUnitDetailedInformationHandsontableHelper.hot = '';
+	        devicePumpingUnitDetailedInformationHandsontableHelper.hot = null;
 	        devicePumpingUnitDetailedInformationHandsontableHelper.divid = divid;
 	        devicePumpingUnitDetailedInformationHandsontableHelper.colHeaders = [];
 	        devicePumpingUnitDetailedInformationHandsontableHelper.columns = [];
@@ -7099,7 +7144,7 @@ function CreateAndLoadDeviceIntelligentFrequencyConversionTable(deviceId,deviceN
 var DeviceIntelligentFrequencyConversionHandsontableHelper = {
 	    createNew: function (divid) {
 	        var deviceIntelligentFrequencyConversionHandsontableHelper = {};
-	        deviceIntelligentFrequencyConversionHandsontableHelper.hot = '';
+	        deviceIntelligentFrequencyConversionHandsontableHelper.hot = null;
 	        deviceIntelligentFrequencyConversionHandsontableHelper.divid = divid;
 	        deviceIntelligentFrequencyConversionHandsontableHelper.colHeaders = [];
 	        deviceIntelligentFrequencyConversionHandsontableHelper.columns = [];
@@ -7545,7 +7590,7 @@ function CreateAndLoadDeviceInterlockProtectionTable(deviceId,deviceName,applica
 var DeviceInterlockProtectionHandsontableHelper = {
 	    createNew: function (divid) {
 	        var deviceInterlockProtectionHandsontableHelper = {};
-	        deviceInterlockProtectionHandsontableHelper.hot = '';
+	        deviceInterlockProtectionHandsontableHelper.hot = null;
 	        deviceInterlockProtectionHandsontableHelper.divid = divid;
 	        deviceInterlockProtectionHandsontableHelper.colHeaders = [];
 	        deviceInterlockProtectionHandsontableHelper.columns = [];
@@ -7802,7 +7847,7 @@ function CreateAndLoadCBMParametersTable(deviceId,deviceName,applicationScenario
 var DeviceCBMParametersInfoHandsontableHelper = {
 	    createNew: function (divid) {
 	        var deviceCBMParametersInfoHandsontableHelper = {};
-	        deviceCBMParametersInfoHandsontableHelper.hot = '';
+	        deviceCBMParametersInfoHandsontableHelper.hot = null;
 	        deviceCBMParametersInfoHandsontableHelper.divid = divid;
 	        deviceCBMParametersInfoHandsontableHelper.colHeaders = [];
 	        deviceCBMParametersInfoHandsontableHelper.columns = [];

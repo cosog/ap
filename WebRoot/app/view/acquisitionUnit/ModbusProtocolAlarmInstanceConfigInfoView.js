@@ -131,7 +131,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceConfigInfoView', 
                         html:'<div class="ProtocolAlarmInstancePropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolAlarmInstancePropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolAlarmInstancePropertiesHandsontableHelper!=null && protocolAlarmInstancePropertiesHandsontableHelper.hot!=undefined){
+                            	if(protocolAlarmInstancePropertiesHandsontableHelper!=null 
+                            			&& protocolAlarmInstancePropertiesHandsontableHelper.hot!=undefined
+                            			&& typeof protocolAlarmInstancePropertiesHandsontableHelper.hot.updateSettings === 'function'){
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
@@ -235,7 +237,7 @@ function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 		createNew: function (divid) {
 	        var protocolAlarmInstancePropertiesHandsontableHelper = {};
-	        protocolAlarmInstancePropertiesHandsontableHelper.hot = '';
+	        protocolAlarmInstancePropertiesHandsontableHelper.hot = null;
 	        protocolAlarmInstancePropertiesHandsontableHelper.classes =null;
 	        protocolAlarmInstancePropertiesHandsontableHelper.divid = divid;
 	        protocolAlarmInstancePropertiesHandsontableHelper.validresult=true;//数据校验

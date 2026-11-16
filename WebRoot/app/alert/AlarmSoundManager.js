@@ -66,9 +66,9 @@ Ext.define('AP.alert.AlarmSoundManager', {
                 if (this.audioCtx.state === 'suspended') {
                     this.audioCtx.resume().then(() => {
                         this.unlocked = true;
-                        console.log('【报警声音】AudioContext 恢复成功，已解锁！');
+                        console.log('[Alarm Sound] AudioContext resumed successfully, unlocked!');
                     }).catch(e => {
-                        console.warn('【报警声音】AudioContext 启动失败，等待用户点击');
+                    	console.warn('[Alarm Sound] AudioContext failed to start, waiting for user interaction.');
                     });
                 } else {
                     this.unlocked = true;
@@ -178,7 +178,7 @@ Ext.define('AP.alert.AlarmSoundManager', {
                 if (self._playToken !== token) return; // ★ 解码完成时 token 已过期，丢弃
                 self._doPlayBuffer(buffer, level, token);
             }, function (err) {
-                console.error('【报警声音】解码失败', err);
+            	console.error('[Alarm Sound] Audio decoding failed', err);
                 if (self._playToken !== token) return;
                 // 解码失败退回传统播放
                 self._playWithHtmlAudio(url, level, token);
@@ -197,14 +197,14 @@ Ext.define('AP.alert.AlarmSoundManager', {
             this.sourceNode.loop = true; // 开启无限循环
             this.sourceNode.connect(this.audioCtx.destination);
             this.sourceNode.start(0);
-            console.log('【报警声音】Web Audio API 开始循环播放级别:', level);
+            console.log('[Alarm Sound] Web Audio API started loop playback, level:', level);
 
             if (AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.win) {
                 var tip = AP.alert.AlarmManager.win.down('#muteTip');
                 if (tip) tip.hide();
             }
         } catch (e) {
-            console.error('【报警声音】底层播放失败', e);
+        	console.error('[Alarm Sound] Underlying playback failed', e);
         }
     },
 
@@ -225,14 +225,14 @@ Ext.define('AP.alert.AlarmSoundManager', {
                 return;
             }
             self.unlocked = true;
-            console.log('【报警声音】传统 Audio 播放成功级别:', level);
+            console.log('[Alarm Sound] HTML Audio playback successful, level:', level);
             if (AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.win) {
                 var tip = AP.alert.AlarmManager.win.down('#muteTip');
                 if (tip) tip.hide();
             }
         }).catch(function (err) {
             if (self._playToken !== token) return;
-            console.warn('【报警声音】播放彻底被拦截，等待用户点击。');
+            console.warn('[Alarm Sound] Playback completely blocked, waiting for user click.');
             self.pendingLevel = level;
             if (AP.alert && AP.alert.AlarmManager && AP.alert.AlarmManager.win) {
                 var tip = AP.alert.AlarmManager.win.down('#muteTip');
@@ -262,7 +262,7 @@ Ext.define('AP.alert.AlarmSoundManager', {
         }
 
         this.currentLevel = null;
-        console.log('【报警声音】已停止播放');
+        console.log('[Alarm Sound] Playback stopped.');
     },
 
     refresh: function () {

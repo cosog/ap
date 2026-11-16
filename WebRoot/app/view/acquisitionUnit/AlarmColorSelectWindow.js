@@ -712,9 +712,9 @@ function getAlarmLevelSetColor() {
             var f2 = AlarmShowStyle.Data.SecondLevel ? AlarmShowStyle.Data.SecondLevel.SoundFile : '';
             var f3 = AlarmShowStyle.Data.ThirdLevel ? AlarmShowStyle.Data.ThirdLevel.SoundFile : '';
             
-            Ext.getCmp('soundLevel1_id').setValue(f1 || '未配置');
-            Ext.getCmp('soundLevel2_id').setValue(f2 || '未配置');
-            Ext.getCmp('soundLevel3_id').setValue(f3 || '未配置');
+            Ext.getCmp('soundLevel1_id').setValue(f1 || loginUserLanguageResource.notConfigured);
+            Ext.getCmp('soundLevel2_id').setValue(f2 || loginUserLanguageResource.notConfigured);
+            Ext.getCmp('soundLevel3_id').setValue(f3 || loginUserLanguageResource.notConfigured);
         },
         failure: function () {
             Ext.Msg.alert(loginUserLanguageResource.tip,
@@ -800,12 +800,12 @@ function saveAlarmColor() {
                             AP.alert.AlarmSoundManager.refresh();
                         }
                     } else {
-                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>颜色已保存，但声音配置保存失败</font>");
+                        Ext.Msg.alert(loginUserLanguageResource.tip, "<font color=red>"+loginUserLanguageResource.colorSavedSoundFailed+"</font>");
                     }
                 });
             } else {
                 Ext.Msg.alert(loginUserLanguageResource.tip,
-                    "<font color=red>" + loginUserLanguageResource.updatefail + "</font>");
+                    "<font color=red>" + loginUserLanguageResource.updateFailed + "</font>");
             }
         },
         failure: function () {
@@ -818,9 +818,9 @@ function saveAlarmColor() {
 /* ★ 辅助方法：统一保存声音 */
 function saveAlarmSoundConfig(callback) {
     var soundData = {
-        "100": Ext.getCmp('soundLevel1_id').getValue() === '未配置' ? '' : Ext.getCmp('soundLevel1_id').getValue(),
-        "200": Ext.getCmp('soundLevel2_id').getValue() === '未配置' ? '' : Ext.getCmp('soundLevel2_id').getValue(),
-        "300": Ext.getCmp('soundLevel3_id').getValue() === '未配置' ? '' : Ext.getCmp('soundLevel3_id').getValue()
+        "100": Ext.getCmp('soundLevel1_id').getValue() === loginUserLanguageResource.notConfigured ? '' : Ext.getCmp('soundLevel1_id').getValue(),
+        "200": Ext.getCmp('soundLevel2_id').getValue() === loginUserLanguageResource.notConfigured ? '' : Ext.getCmp('soundLevel2_id').getValue(),
+        "300": Ext.getCmp('soundLevel3_id').getValue() === loginUserLanguageResource.notConfigured ? '' : Ext.getCmp('soundLevel3_id').getValue()
     };
     
     Ext.Ajax.request({
@@ -842,12 +842,12 @@ function saveAlarmSoundConfig(callback) {
 /* ★ 辅助方法：打开弹窗选择声音 */
 function chooseAlarmSound(fieldId) {
     var currentVal = Ext.getCmp(fieldId).getValue();
-    if (currentVal === '未配置') currentVal = ''; // 处理默认文案
+    if (currentVal === loginUserLanguageResource.notConfigured) currentVal = ''; // 处理默认文案
     
     Ext.create('AP.view.acquisitionUnit.AlarmSoundSelectWindow', {
         currentFile: currentVal,
         onConfirm: function (fileName) {
-            Ext.getCmp(fieldId).setValue(fileName || '未配置');
+            Ext.getCmp(fieldId).setValue(fileName || loginUserLanguageResource.notConfigured);
         }
     }).show();
 }

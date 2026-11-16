@@ -9,7 +9,9 @@ var acqUnitConfigRightTabPanelItems=[{
     html:'<div class="ModbusProtocolAcqGroupPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAcqGroupPropertiesTableInfoDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if(protocolConfigAcqUnitPropertiesHandsontableHelper!=null && protocolConfigAcqUnitPropertiesHandsontableHelper.hot!=undefined){
+        	if(protocolConfigAcqUnitPropertiesHandsontableHelper!=null 
+        			&& protocolConfigAcqUnitPropertiesHandsontableHelper.hot!=undefined
+        			&& typeof protocolConfigAcqUnitPropertiesHandsontableHelper.hot.updateSettings === 'function'){
         		var newWidth=width;
         		var newHeight=height;
         		var header=thisPanel.getHeader();
@@ -69,7 +71,9 @@ var acqUnitConfigRightTabPanelItems=[{
     html:'<div class="ModbusProtocolAcqGroupItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAcqGroupItemsConfigTableInfoDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if(protocolAcqUnitConfigItemsHandsontableHelper!=null && protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined){
+        	if(protocolAcqUnitConfigItemsHandsontableHelper!=null 
+        			&& protocolAcqUnitConfigItemsHandsontableHelper.hot!=undefined
+        			&& typeof protocolAcqUnitConfigItemsHandsontableHelper.hot.updateSettings === 'function'){
 //        		protocolAcqUnitConfigItemsHandsontableHelper.hot.refreshDimensions();
         		var newWidth=width;
         		var newHeight=height-22-1;//减去tbar
@@ -645,7 +649,7 @@ function CreateProtocolAcqUnitConfigPropertiesInfoTable(data){
 var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
 		createNew: function (divid) {
 	        var protocolConfigAcqUnitPropertiesHandsontableHelper = {};
-	        protocolConfigAcqUnitPropertiesHandsontableHelper.hot = '';
+	        protocolConfigAcqUnitPropertiesHandsontableHelper.hot = null;
 	        protocolConfigAcqUnitPropertiesHandsontableHelper.classes =null;
 	        protocolConfigAcqUnitPropertiesHandsontableHelper.type =null;
 	        protocolConfigAcqUnitPropertiesHandsontableHelper.divid = divid;

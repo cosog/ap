@@ -129,7 +129,7 @@ function CreateAndLoadBatchAddAuxiliaryDeviceTable(isNew) {
 var BatchAddAuxiliaryDeviceHandsontableHelper = {
     createNew: function (divid) {
         var batchAddAuxiliaryDeviceHandsontableHelper = {};
-        batchAddAuxiliaryDeviceHandsontableHelper.hot = '';
+        batchAddAuxiliaryDeviceHandsontableHelper.hot = null;
         batchAddAuxiliaryDeviceHandsontableHelper.divid = divid;
         batchAddAuxiliaryDeviceHandsontableHelper.validresult = true; //数据校验
         batchAddAuxiliaryDeviceHandsontableHelper.colHeaders = [];

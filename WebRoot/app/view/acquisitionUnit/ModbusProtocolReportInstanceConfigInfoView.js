@@ -112,7 +112,10 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportInstanceConfigInfoView',
                     html:'<div class="ModbusProtocolReportInstancePropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportInstancePropertiesTableInfoDiv_id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if (protocolReportInstancePropertiesHandsontableHelper != null && protocolReportInstancePropertiesHandsontableHelper.hot != null && protocolReportInstancePropertiesHandsontableHelper.hot != undefined) {
+                        	if (protocolReportInstancePropertiesHandsontableHelper != null 
+                        			&& protocolReportInstancePropertiesHandsontableHelper.hot != null 
+                        			&& protocolReportInstancePropertiesHandsontableHelper.hot != undefined
+                        			&& typeof protocolReportInstancePropertiesHandsontableHelper.hot.updateSettings === 'function') {
                         		var newWidth=width;
                         		var newHeight=height;
                         		var header=thisPanel.getHeader();
@@ -294,7 +297,7 @@ function CreateProtocolReportInstancePropertiesInfoTable(data){
 var ProtocolReportInstancePropertiesHandsontableHelper = {
 		createNew: function (divid) {
 	        var protocolReportInstancePropertiesHandsontableHelper = {};
-	        protocolReportInstancePropertiesHandsontableHelper.hot = '';
+	        protocolReportInstancePropertiesHandsontableHelper.hot = null;
 	        protocolReportInstancePropertiesHandsontableHelper.classes =null;
 	        protocolReportInstancePropertiesHandsontableHelper.divid = divid;
 	        protocolReportInstancePropertiesHandsontableHelper.validresult=true;//数据校验

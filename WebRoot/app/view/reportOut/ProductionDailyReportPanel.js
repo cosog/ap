@@ -391,7 +391,9 @@ Ext.define("AP.view.reportOut.ProductionDailyReportPanel", {
                         html:'<div class="ProductionDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="ProductionDailyReportDiv_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        		if(productionDailyReportHelper!=null && productionDailyReportHelper.hot!=undefined){
+                        		if(productionDailyReportHelper!=null 
+                        				&& productionDailyReportHelper.hot!=undefined
+                        				&& typeof productionDailyReportHelper.hot.updateSettings === 'function'){
 //                        			productionDailyReportHelper.hot.refreshDimensions();
                         			var newWidth=width;
                             		var newHeight=height-22-1;//减去工具条高度
@@ -532,7 +534,7 @@ var ProductionDailyReportHelper = {
 	        productionDailyReportHelper.get_data = {};
 	        productionDailyReportHelper.data=[];
 	        productionDailyReportHelper.sourceData=[];
-	        productionDailyReportHelper.hot = '';
+	        productionDailyReportHelper.hot = null;
 	        productionDailyReportHelper.container = document.getElementById(divId);
 	        productionDailyReportHelper.columnCount=0;
 	        productionDailyReportHelper.editData={};

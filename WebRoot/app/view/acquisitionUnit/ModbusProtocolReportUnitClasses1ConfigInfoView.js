@@ -18,7 +18,10 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses1ConfigInfoVi
                     html: '<div class="ReportUnitClasses1TemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitClasses1TemplateTableInfoDiv_id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            if (hydrologicalWellDailyReportTemplateHandsontableHelper != null && hydrologicalWellDailyReportTemplateHandsontableHelper.hot != null && hydrologicalWellDailyReportTemplateHandsontableHelper.hot != undefined) {
+                            if (hydrologicalWellDailyReportTemplateHandsontableHelper != null 
+                            		&& hydrologicalWellDailyReportTemplateHandsontableHelper.hot != null 
+                            		&& hydrologicalWellDailyReportTemplateHandsontableHelper.hot != undefined
+                            		&& typeof hydrologicalWellDailyReportTemplateHandsontableHelper.hot.updateSettings === 'function') {
                                 var newWidth = width;
                                 var newHeight = height;
                                 var header = thisPanel.getHeader();
@@ -45,7 +48,10 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses1ConfigInfoVi
                     html: '<div class="ReportUnitClasses1ContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitClasses1ContentConfigTableInfoDiv_id"></div></div>',
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            if (hydrologicalWellDailyReportContentHandsontableHelper != null && hydrologicalWellDailyReportContentHandsontableHelper.hot != null && hydrologicalWellDailyReportContentHandsontableHelper.hot != undefined) {
+                            if (hydrologicalWellDailyReportContentHandsontableHelper != null 
+                            		&& hydrologicalWellDailyReportContentHandsontableHelper.hot != null 
+                            		&& hydrologicalWellDailyReportContentHandsontableHelper.hot != undefined
+                            		&& typeof hydrologicalWellDailyReportContentHandsontableHelper.hot.updateSettings === 'function') {
                                 var newWidth = width;
                                 var newHeight = height;
                                 var header = thisPanel.getHeader();

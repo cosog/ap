@@ -17,7 +17,7 @@ Ext.define('AP.view.reportOut.DailyDataComparativeAnalysisCurveConfigWindow', {
     id: 'DailyDataComparativeAnalysisCurveConfigWindow_Id',
     title: loginUserLanguageResource.curveProperty + 
      '<span style="font-size: 12px; font-weight: normal; color: #888; margin-left: 10px; font-style: italic;">' +
-     '(双击节点配置Y轴或曲线)',
+     '('+loginUserLanguageResource.doubleClickNodeToConfigYAxisOrCurve+')',
     width: 400,
     height: '70%',
     modal: true,
@@ -151,11 +151,11 @@ Ext.define('AP.view.reportOut.DailyDataComparativeAnalysisCurveConfigWindow', {
             },
             columns: [{
                 xtype: 'treecolumn',
-                text: loginUserLanguageResource.name || '名称',
+                text: loginUserLanguageResource.name,
                 dataIndex: 'name',
                 flex: 2
             }, {
-                text: loginUserLanguageResource.config || '配置',
+                text: loginUserLanguageResource.config,
                 dataIndex: 'configStr',
                 flex: 1,
                 renderer: function (value, metaData, record) {
@@ -172,7 +172,7 @@ Ext.define('AP.view.reportOut.DailyDataComparativeAnalysisCurveConfigWindow', {
                     return value || '';
                 }
             }, {
-                text: loginUserLanguageResource.allConfig || '全部配置信息',
+                text: loginUserLanguageResource.allConfig,
                 dataIndex: 'fullConfigStr',
                 flex: 2,
                 hidden: true
@@ -250,7 +250,7 @@ Ext.define('AP.view.reportOut.DailyDataComparativeAnalysisCurveConfigWindow', {
                     }, {
                         id: 'DailyDataComparativeAnalysisAxisColor_Id',
                         xtype: 'colorfield',
-                        fieldLabel: 'Y轴颜色',
+                        fieldLabel: loginUserLanguageResource.yAxisColor,
                         allowBlank: true,
                         editable: false,
                         anchor: '100%',
@@ -292,7 +292,7 @@ Ext.define('AP.view.reportOut.DailyDataComparativeAnalysisCurveConfigWindow', {
                     }
                 }, {
                     xtype: 'button',
-                    text: loginUserLanguageResource.clear || '清除',
+                    text: loginUserLanguageResource.clear,
                     hidden:true,
                     handler: function () {
                         delete dailyDataComparativeAnalysisCurveConfig.axis[record.get('sort')];
@@ -384,7 +384,7 @@ Ext.define('AP.view.reportOut.DailyDataComparativeAnalysisCurveConfigWindow', {
                         displayField: 'text',
                         valueField: 'value',
                         queryMode: 'local',
-                        emptyText: loginUserLanguageResource.default || '默认',
+                        emptyText: loginUserLanguageResource.default,
                         value: record.get('dashStyleValue') || ''
                     }]
                 }],
@@ -410,7 +410,7 @@ Ext.define('AP.view.reportOut.DailyDataComparativeAnalysisCurveConfigWindow', {
                     }
                 }, {
                     xtype: 'button',
-                    text: loginUserLanguageResource.clear || '清除',
+                    text: loginUserLanguageResource.clear,
                     hidden:true,
                     handler: function () {
                         delete dailyDataComparativeAnalysisCurveConfig.series[record.get('seriesKey')];
@@ -440,7 +440,7 @@ Ext.define('AP.view.reportOut.DailyDataComparativeAnalysisCurveConfigWindow', {
             items: [treePanel],
             buttons: [{
                 xtype: 'button',
-                text: loginUserLanguageResource.close || '关闭',
+                text: loginUserLanguageResource.close,
                 iconCls: 'cancel',
                 handler: function () { me.close(); }
             }]

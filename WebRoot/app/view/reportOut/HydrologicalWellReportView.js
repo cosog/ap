@@ -260,7 +260,9 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                         html:'<div class="HydrologicalWellReport1Container" style="width:100%;height:100%;"><div class="con" id="HydrologicalWellReport1Div_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        		if(hydrologicalWellReportHelper!=null && hydrologicalWellReportHelper.hot!=undefined){
+                        		if(hydrologicalWellReportHelper!=null 
+                        				&& hydrologicalWellReportHelper.hot!=undefined
+                        				&& typeof hydrologicalWellReportHelper.hot.updateSettings === 'function'){
                         			var newWidth=width;
                             		var newHeight=height-22-1;//减去工具条高度
                             		var header=thisPanel.getHeader();
@@ -399,7 +401,9 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                         html:'<div class="HydrologicalWellReport2Container" style="width:100%;height:100%;"><div class="con" id="HydrologicalWellReport2Div_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        		if(hydrologicalWellReportHelper!=null && hydrologicalWellReportHelper.hot!=undefined){
+                        		if(hydrologicalWellReportHelper!=null 
+                        				&& hydrologicalWellReportHelper.hot!=undefined
+                        				&& typeof hydrologicalWellReportHelper.hot.updateSettings === 'function'){
                         			var newWidth=width;
                             		var newHeight=height-22-1;//减去工具条高度
                             		var header=thisPanel.getHeader();
@@ -465,7 +469,9 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                         html:'<div class="HydrologicalWellReport3Container" style="width:100%;height:100%;"><div class="con" id="HydrologicalWellReport3Div_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        		if(hydrologicalWellReportHelper!=null && hydrologicalWellReportHelper.hot!=undefined){
+                        		if(hydrologicalWellReportHelper!=null 
+                        				&& hydrologicalWellReportHelper.hot!=undefined
+                        				&& typeof hydrologicalWellReportHelper.hot.updateSettings === 'function'){
                         			var newWidth=width;
                             		var newHeight=height-22-1;//减去工具条高度
                             		var header=thisPanel.getHeader();
@@ -531,7 +537,9 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                         html:'<div class="HydrologicalWellReport4Container" style="width:100%;height:100%;"><div class="con" id="HydrologicalWellReport4Div_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        		if(hydrologicalWellReportHelper!=null && hydrologicalWellReportHelper.hot!=undefined){
+                        		if(hydrologicalWellReportHelper!=null 
+                        				&& hydrologicalWellReportHelper.hot!=undefined
+                        				&& typeof hydrologicalWellReportHelper.hot.updateSettings === 'function'){
                         			var newWidth=width;
                             		var newHeight=height-22-1;//减去工具条高度
                             		var header=thisPanel.getHeader();
@@ -597,7 +605,9 @@ Ext.define("AP.view.reportOut.HydrologicalWellReportView", {
                         html:'<div class="HydrologicalWellReport5Container" style="width:100%;height:100%;"><div class="con" id="HydrologicalWellReport5Div_id"></div></div>',
                         listeners: {
                         	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        		if(hydrologicalWellReportHelper!=null && hydrologicalWellReportHelper.hot!=undefined){
+                        		if(hydrologicalWellReportHelper!=null 
+                        				&& hydrologicalWellReportHelper.hot!=undefined
+                        				&& typeof hydrologicalWellReportHelper.hot.updateSettings === 'function'){
                         			var newWidth=width;
                             		var newHeight=height-22-1;//减去工具条高度
                             		var header=thisPanel.getHeader();
@@ -842,7 +852,7 @@ var HydrologicalWellReportHelper = {
 	        hydrologicalWellReportHelper.get_data = {};
 	        hydrologicalWellReportHelper.data=[];
 	        hydrologicalWellReportHelper.sourceData=[];
-	        hydrologicalWellReportHelper.hot = '';
+	        hydrologicalWellReportHelper.hot = null;
 	        hydrologicalWellReportHelper.container = document.getElementById(divId);
 	        hydrologicalWellReportHelper.columnCount=0;
 	        hydrologicalWellReportHelper.editData={};

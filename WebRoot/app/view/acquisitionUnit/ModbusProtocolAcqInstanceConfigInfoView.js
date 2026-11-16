@@ -132,7 +132,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                         html:'<div class="ProtocolConfigInstancePropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolConfigInstancePropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolConfigInstancePropertiesHandsontableHelper!=null && protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined){
+                            	if(protocolConfigInstancePropertiesHandsontableHelper!=null 
+                            			&& protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined
+                            			&& typeof protocolConfigInstancePropertiesHandsontableHelper.hot.updateSettings === 'function'){
                             		var newWidth=width;
                             		var newHeight=height;
                             		var header=thisPanel.getHeader();
@@ -327,7 +329,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 var ProtocolConfigInstancePropertiesHandsontableHelper = {
 		createNew: function (divid) {
 	        var protocolConfigInstancePropertiesHandsontableHelper = {};
-	        protocolConfigInstancePropertiesHandsontableHelper.hot = '';
+	        protocolConfigInstancePropertiesHandsontableHelper.hot = null;
 	        protocolConfigInstancePropertiesHandsontableHelper.classes =null;
 	        protocolConfigInstancePropertiesHandsontableHelper.divid = divid;
 	        protocolConfigInstancePropertiesHandsontableHelper.validresult=true;//数据校验

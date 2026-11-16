@@ -112,7 +112,10 @@ Ext.define("AP.view.acquisitionUnit.DatabaseColumnMappingWindow", {
                 	html: '<div id="DatabaseColumnMappingTableDiv_Id" style="width:100%;height:100%;"></div>',
                 	listeners: {
                 		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(databaseColumnMappingHandsontableHelper!=null&&databaseColumnMappingHandsontableHelper.hot!=null&&databaseColumnMappingHandsontableHelper.hot!=undefined){
+                        	if(databaseColumnMappingHandsontableHelper!=null
+                        			&& databaseColumnMappingHandsontableHelper.hot!=null
+                        			&& databaseColumnMappingHandsontableHelper.hot!=undefined
+                        			&& typeof databaseColumnMappingHandsontableHelper.hot.updateSettings === 'function'){
                         		var newWidth=width;
                         		var newHeight=height-22-1;
                         		var header=thisPanel.getHeader();

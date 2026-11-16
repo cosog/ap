@@ -76,7 +76,10 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
             	html: '<div id="HistoryQueryDataDetailsDiv_Id" style="width:100%;height:100%;"></div>',
                 listeners: {
                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(deviceHistoryQueryDataHandsontableHelper!=null&&deviceHistoryQueryDataHandsontableHelper.hot!=null&&deviceHistoryQueryDataHandsontableHelper.hot!=undefined){
+                    	if(deviceHistoryQueryDataHandsontableHelper!=null
+                    			&& deviceHistoryQueryDataHandsontableHelper.hot!=null
+                    			&& deviceHistoryQueryDataHandsontableHelper.hot!=undefined
+                    			&& typeof deviceHistoryQueryDataHandsontableHelper.hot.updateSettings === 'function'){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();

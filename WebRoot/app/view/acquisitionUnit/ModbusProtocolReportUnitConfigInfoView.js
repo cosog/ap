@@ -151,7 +151,10 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolReportUnitConfigInfoView', {
                         html: '<div class="ModbusProtocolReportUnitPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitPropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                if (reportUnitPropertiesHandsontableHelper != null && reportUnitPropertiesHandsontableHelper.hot != null && reportUnitPropertiesHandsontableHelper.hot != undefined) {
+                                if (reportUnitPropertiesHandsontableHelper != null 
+                                		&& reportUnitPropertiesHandsontableHelper.hot != null 
+                                		&& reportUnitPropertiesHandsontableHelper.hot != undefined
+                                		&& typeof reportUnitPropertiesHandsontableHelper.hot.updateSettings === 'function') {
                                     var newWidth = width;
                                     var newHeight = height;
                                     var header = thisPanel.getHeader();
@@ -291,7 +294,7 @@ var SingleWellRangeReportTemplateHandsontableHelper = {
         singleWellRangeReportTemplateHandsontableHelper.templateData = templateData;
         singleWellRangeReportTemplateHandsontableHelper.get_data = {};
         singleWellRangeReportTemplateHandsontableHelper.data = [];
-        singleWellRangeReportTemplateHandsontableHelper.hot = '';
+        singleWellRangeReportTemplateHandsontableHelper.hot = null;
         singleWellRangeReportTemplateHandsontableHelper.container = document.getElementById(divid);
 
         singleWellRangeReportTemplateHandsontableHelper.colWidths=[];
@@ -555,7 +558,7 @@ var SingleWellDailyReportTemplateHandsontableHelper = {
         singleWellDailyReportTemplateHandsontableHelper.templateData = templateData;
         singleWellDailyReportTemplateHandsontableHelper.get_data = {};
         singleWellDailyReportTemplateHandsontableHelper.data = [];
-        singleWellDailyReportTemplateHandsontableHelper.hot = '';
+        singleWellDailyReportTemplateHandsontableHelper.hot = null;
         singleWellDailyReportTemplateHandsontableHelper.container = document.getElementById(divid);
 
         singleWellDailyReportTemplateHandsontableHelper.colWidths=[];
@@ -1404,7 +1407,7 @@ function CreateProtocolReportUnitPropertiesInfoTable(data) {
 var ReportUnitPropertiesHandsontableHelper = {
     createNew: function (divid) {
         var reportUnitPropertiesHandsontableHelper = {};
-        reportUnitPropertiesHandsontableHelper.hot = '';
+        reportUnitPropertiesHandsontableHelper.hot = null;
         reportUnitPropertiesHandsontableHelper.classes = null;
         reportUnitPropertiesHandsontableHelper.divid = divid;
         reportUnitPropertiesHandsontableHelper.validresult = true; //数据校验
@@ -1599,7 +1602,7 @@ var ProductionReportTemplateHandsontableHelper = {
         productionReportTemplateHandsontableHelper.templateData = templateData;
         productionReportTemplateHandsontableHelper.get_data = {};
         productionReportTemplateHandsontableHelper.data = [];
-        productionReportTemplateHandsontableHelper.hot = '';
+        productionReportTemplateHandsontableHelper.hot = null;
         productionReportTemplateHandsontableHelper.container = document.getElementById(divid);
 
         productionReportTemplateHandsontableHelper.colWidths=[];
@@ -2664,7 +2667,7 @@ var HydrologicalWellDailyReportTemplateHandsontableHelper = {
         hydrologicalWellDailyReportTemplateHandsontableHelper.templateData = templateData;
         hydrologicalWellDailyReportTemplateHandsontableHelper.get_data = {};
         hydrologicalWellDailyReportTemplateHandsontableHelper.data = [];
-        hydrologicalWellDailyReportTemplateHandsontableHelper.hot = '';
+        hydrologicalWellDailyReportTemplateHandsontableHelper.hot = null;
         hydrologicalWellDailyReportTemplateHandsontableHelper.container = document.getElementById(divid);
 
         hydrologicalWellDailyReportTemplateHandsontableHelper.colWidths=[];
@@ -3195,7 +3198,7 @@ var SingleWellRangeClasses2ReportTemplateHandsontableHelper = {
         singleWellRangeClasses2ReportTemplateHandsontableHelper.templateData = templateData;
         singleWellRangeClasses2ReportTemplateHandsontableHelper.get_data = {};
         singleWellRangeClasses2ReportTemplateHandsontableHelper.data = [];
-        singleWellRangeClasses2ReportTemplateHandsontableHelper.hot = '';
+        singleWellRangeClasses2ReportTemplateHandsontableHelper.hot = null;
         singleWellRangeClasses2ReportTemplateHandsontableHelper.container = document.getElementById(divid);
         
         singleWellRangeClasses2ReportTemplateHandsontableHelper.hiddenColumns=templateData.hiddenColumns;
@@ -3513,7 +3516,7 @@ var ProductionReportTemplateClasses2HandsontableHelper = {
         productionReportTemplateClasses2HandsontableHelper.templateData = templateData;
         productionReportTemplateClasses2HandsontableHelper.get_data = {};
         productionReportTemplateClasses2HandsontableHelper.data = [];
-        productionReportTemplateClasses2HandsontableHelper.hot = '';
+        productionReportTemplateClasses2HandsontableHelper.hot = null;
         productionReportTemplateClasses2HandsontableHelper.container = document.getElementById(divid);
         
         productionReportTemplateClasses2HandsontableHelper.hiddenColumns=templateData.hiddenColumns;

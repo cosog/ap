@@ -291,7 +291,7 @@ String context = path;
         createNew: function (divid) {
             var helper = {};
             helper.divid = divid;
-            helper.hot = '';
+            helper.hot = null;
             helper.colHeaders = [];
             helper.columns = [];
             helper.hiddenRows = [];

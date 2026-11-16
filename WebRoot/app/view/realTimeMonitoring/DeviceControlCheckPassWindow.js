@@ -109,7 +109,10 @@ Ext.define("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
         		html: '<div id="DeviceControlValueTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
         		listeners: {
         			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(deviceControlValueHandsontableHelper!=null&&deviceControlValueHandsontableHelper.hot!=null&&deviceControlValueHandsontableHelper.hot!=undefined){
+                    	if(deviceControlValueHandsontableHelper!=null
+                    			&& deviceControlValueHandsontableHelper.hot!=null
+                    			&& deviceControlValueHandsontableHelper.hot!=undefined
+                    			&& typeof deviceControlValueHandsontableHelper.hot.updateSettings === 'function'){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();

@@ -6,7 +6,9 @@ var displayUnitConfigRightTabPanelItems=[{
 	html:'<div class="ModbusProtocolDisplayUnitPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitPropertiesTableInfoDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        	if(protocolDisplayUnitPropertiesHandsontableHelper!=null && protocolDisplayUnitPropertiesHandsontableHelper.hot!=undefined){
+        	if(protocolDisplayUnitPropertiesHandsontableHelper!=null 
+        			&& protocolDisplayUnitPropertiesHandsontableHelper.hot!=undefined
+        			&& typeof protocolDisplayUnitPropertiesHandsontableHelper.hot.updateSettings === 'function'){
         		var newWidth=width;
         		var newHeight=height;
         		var header=thisPanel.getHeader();
@@ -66,7 +68,9 @@ var displayUnitConfigRightTabPanelItems=[{
         html:'<div class="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id"></div></div>',
         listeners: {
             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-            	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null && protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined){
+            	if(protocolDisplayUnitAcqItemsConfigHandsontableHelper!=null 
+            			&& protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot!=undefined
+            			&& typeof protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.updateSettings === 'function'){
             		var newWidth=width;
             		var newHeight=height-22-1;//减去tbar
             		var header=thisPanel.getHeader();
@@ -124,7 +128,9 @@ var displayUnitConfigRightTabPanelItems=[{
         html:'<div class="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoDiv_id"></div></div>',
         listeners: {
             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-            	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null && protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined){
+            	if(protocolDisplayUnitCtrlItemsConfigHandsontableHelper!=null 
+            			&& protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot!=undefined
+            			&& typeof protocolDisplayUnitCtrlItemsConfigHandsontableHelper.hot.updateSettings === 'function'){
             		var newWidth=width;
             		var newHeight=height-22-1;//减去tbar
             		var header=thisPanel.getHeader();
@@ -1118,7 +1124,7 @@ function CreateProtocolDisplayUnitConfigPropertiesInfoTable(data){
 var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 		createNew: function (divid) {
 	        var protocolDisplayUnitPropertiesHandsontableHelper = {};
-	        protocolDisplayUnitPropertiesHandsontableHelper.hot = '';
+	        protocolDisplayUnitPropertiesHandsontableHelper.hot = null;
 	        protocolDisplayUnitPropertiesHandsontableHelper.classes =null;
 	        protocolDisplayUnitPropertiesHandsontableHelper.divid = divid;
 	        protocolDisplayUnitPropertiesHandsontableHelper.validresult=true;//数据校验

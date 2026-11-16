@@ -170,7 +170,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                         html:'<div class="ModbusProtocolAddrMappingPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAddrMappingPropertiesTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                            	if(protocolPropertiesHandsontableHelper!=null && protocolPropertiesHandsontableHelper.hot!=undefined){
+                            	if(protocolPropertiesHandsontableHelper!=null 
+                            			&& protocolPropertiesHandsontableHelper.hot!=undefined
+                            			&& typeof protocolPropertiesHandsontableHelper.hot.updateSettings === 'function'){
 //                            		protocolPropertiesHandsontableHelper.hot.refreshDimensions();
                             		var newWidth=width;
                             		var newHeight=height;
@@ -200,7 +202,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                             html:'<div class="ModbusProtocolAddrMappingItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if(protocolItemsConfigHandsontableHelper!=null && protocolItemsConfigHandsontableHelper.hot!=undefined){
+                                	if(protocolItemsConfigHandsontableHelper!=null 
+                                			&& protocolItemsConfigHandsontableHelper.hot!=undefined
+                                			&& typeof protocolItemsConfigHandsontableHelper.hot.updateSettings === 'function'){
 //                                		protocolItemsConfigHandsontableHelper.hot.refreshDimensions();
                                 		var newWidth=width;
                                 		var newHeight=height;
@@ -232,7 +236,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                                 html:'<div class="ModbusProtocolAddrMappingItemsMeaningTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAddrMappingItemsMeaningTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if(protocolItemsMeaningConfigHandsontableHelper!=null && protocolItemsMeaningConfigHandsontableHelper.hot!=undefined){
+                                    	if(protocolItemsMeaningConfigHandsontableHelper!=null 
+                                    			&& protocolItemsMeaningConfigHandsontableHelper.hot!=undefined
+                                    			&& typeof protocolItemsMeaningConfigHandsontableHelper.hot.updateSettings === 'function'){
 //                                    		protocolItemsMeaningConfigHandsontableHelper.hot.refreshDimensions();
                                     		var newWidth=width;
                                     		var newHeight=height;
@@ -261,7 +267,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                                 html:'<div class="ProtocolSwitchingValueBitStatusTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolSwitchingValueBitStatusTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if(protocolSwitchingValueBitStatusConfigHandsontableHelper!=null && protocolSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+                                    	if(protocolSwitchingValueBitStatusConfigHandsontableHelper!=null 
+                                    			&& protocolSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined
+                                    			&& typeof protocolSwitchingValueBitStatusConfigHandsontableHelper.hot.updateSettings === 'function'){
                                     		var newWidth=width;
                                     		var newHeight=height;
                                     		var header=thisPanel.getHeader();
@@ -293,7 +301,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                             html:'<div class="ProtocolExtendedFieldTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolExtendedFieldTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                	if(protocolExtendedFieldConfigHandsontableHelper!=null && protocolExtendedFieldConfigHandsontableHelper.hot!=undefined){
+                                	if(protocolExtendedFieldConfigHandsontableHelper!=null 
+                                			&& protocolExtendedFieldConfigHandsontableHelper.hot!=undefined
+                                			&& typeof protocolExtendedFieldConfigHandsontableHelper.hot.updateSettings === 'function'){
                                 		var newWidth=width;
                                 		var newHeight=height;
                                 		var header=thisPanel.getHeader();
@@ -320,7 +330,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                             	html:'<div class="ProtocolExtendedFieldHighLowByteTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolExtendedFieldHighLowByteTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                    	if(protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null && protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot!=undefined){
+                                    	if(protocolExtendedFieldHighLowByteConfigHandsontableHelper!=null 
+                                    			&& protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot!=undefined
+                                    			&& typeof protocolExtendedFieldHighLowByteConfigHandsontableHelper.hot.updateSettings === 'function'){
                                     		var newWidth=width;
                                     		var newHeight=height;
                                     		var header=thisPanel.getHeader();
@@ -351,7 +363,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                                     html:'<div class="ProtocolExtendedFieldConfigHighLowByteItemsMeaningTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolExtendedFieldConfigHighLowByteItemsMeaningTableInfoDiv_id"></div></div>',
                                     listeners: {
                                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                        	if(protocolExtendedFieldMeaningConfigHandsontableHelper!=null && protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=undefined){
+                                        	if(protocolExtendedFieldMeaningConfigHandsontableHelper!=null 
+                                        			&& protocolExtendedFieldMeaningConfigHandsontableHelper.hot!=undefined
+                                        			&& typeof protocolExtendedFieldMeaningConfigHandsontableHelper.hot.updateSettings === 'function'){
                                         		var newWidth=width;
                                         		var newHeight=height;
                                         		var header=thisPanel.getHeader();
@@ -379,7 +393,9 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                                     html:'<div class="ProtocolExtendedFieldSwitchingValueBitStatusConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolExtendedFieldSwitchingValueBitStatusConfigTableInfoDiv_id"></div></div>',
                                     listeners: {
                                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                        	if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper!=null && protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined){
+                                        	if(protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper!=null 
+                                        			&& protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot!=undefined
+                                        			&& typeof protocolExtendedFieldSwitchingValueBitStatusConfigHandsontableHelper.hot.updateSettings === 'function'){
                                         		var newWidth=width;
                                         		var newHeight=height;
                                         		var header=thisPanel.getHeader();
@@ -1245,7 +1261,7 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 var ProtocolPropertiesHandsontableHelper = {
 		createNew: function (divid) {
 	        var protocolPropertiesHandsontableHelper = {};
-	        protocolPropertiesHandsontableHelper.hot = '';
+	        protocolPropertiesHandsontableHelper.hot = null;
 	        protocolPropertiesHandsontableHelper.classes =null;
 	        protocolPropertiesHandsontableHelper.divid = divid;
 	        protocolPropertiesHandsontableHelper.validresult=true;//数据校验

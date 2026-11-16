@@ -20,7 +20,9 @@ var importAlarmUnitConfigRightTabPanelItems=[{
         html: '<div class="importAlarmUnitNumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitNumItemsConfigTableInfoDiv_id"></div></div>',
         listeners: {
             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-             	if(importAlarmUnitConfigNumItemsHandsontableHelper!=null && importAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined){
+             	if(importAlarmUnitConfigNumItemsHandsontableHelper!=null 
+             			&& importAlarmUnitConfigNumItemsHandsontableHelper.hot!=undefined
+             			&& typeof importAlarmUnitConfigNumItemsHandsontableHelper.hot.updateSettings === 'function'){
              		var newWidth=width;
             		var newHeight=height;
             		var header=thisPanel.getHeader();
@@ -48,7 +50,9 @@ var importAlarmUnitConfigRightTabPanelItems=[{
         html: '<div class="importAlarmUnitSwitchItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitSwitchItemsConfigTableInfoDiv_id"></div></div>',
         listeners: {
             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-             	if(importAlarmUnitConfigSwitchItemsHandsontableHelper!=null && importAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined){
+             	if(importAlarmUnitConfigSwitchItemsHandsontableHelper!=null 
+             			&& importAlarmUnitConfigSwitchItemsHandsontableHelper.hot!=undefined
+             			&& typeof importAlarmUnitConfigSwitchItemsHandsontableHelper.hot.updateSettings === 'function'){
              		var newWidth=width;
             		var newHeight=height;
             		var header=thisPanel.getHeader();
@@ -76,7 +80,9 @@ var importAlarmUnitConfigRightTabPanelItems=[{
         html: '<div class="importAlarmUnitEnumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitEnumItemsConfigTableInfoDiv_id"></div></div>',
         listeners: {
             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-             	if(importAlarmUnitConfigEnumItemsHandsontableHelper!=null && importAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined){
+             	if(importAlarmUnitConfigEnumItemsHandsontableHelper!=null 
+             			&& importAlarmUnitConfigEnumItemsHandsontableHelper.hot!=undefined
+             			&& typeof importAlarmUnitConfigEnumItemsHandsontableHelper.hot.updateSettings === 'function'){
              		var newWidth=width;
             		var newHeight=height;
             		var header=thisPanel.getHeader();
@@ -98,7 +104,9 @@ var importAlarmUnitConfigRightTabPanelItems=[{
     html: '<div class="importAlarmUnitFESDiagramConditionsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-         	if(importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper!=null && importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined){
+         	if(importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper!=null 
+         			&& importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot!=undefined
+         			&& typeof importAlarmUnitConfigFESDiagramResultItemsHandsontableHelper.hot.updateSettings === 'function'){
          		var newWidth=width;
         		var newHeight=height;
         		var header=thisPanel.getHeader();
@@ -119,7 +127,9 @@ var importAlarmUnitConfigRightTabPanelItems=[{
     html: '<div class="importAlarmUnitRunStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitRunStatusItemsConfigTableInfoDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-         	if(importAlarmUnitConfigRunStatusItemsHandsontableHelper!=null && importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined){
+         	if(importAlarmUnitConfigRunStatusItemsHandsontableHelper!=null 
+         			&& importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot!=undefined
+         			&& typeof importAlarmUnitConfigRunStatusItemsHandsontableHelper.hot.updateSettings === 'function'){
          		var newWidth=width;
         		var newHeight=height;
         		var header=thisPanel.getHeader();
@@ -140,7 +150,9 @@ var importAlarmUnitConfigRightTabPanelItems=[{
     html: '<div class="importAlarmUnitCommStatusItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="importAlarmUnitCommStatusItemsConfigTableInfoDiv_id"></div></div>',
     listeners: {
         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-         	if(importAlarmUnitConfigCommStatusItemsHandsontableHelper!=null && importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined){
+         	if(importAlarmUnitConfigCommStatusItemsHandsontableHelper!=null 
+         			&& importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot!=undefined
+         			&& typeof importAlarmUnitConfigCommStatusItemsHandsontableHelper.hot.updateSettings === 'function'){
          		var newWidth=width;
         		var newHeight=height;
         		var header=thisPanel.getHeader();

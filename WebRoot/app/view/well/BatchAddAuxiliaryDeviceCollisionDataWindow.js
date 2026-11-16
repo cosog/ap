@@ -143,7 +143,7 @@ function CreateAndLoadBatchAddAuxiliaryDeviceOverlayDataTable(result) {
 var BatchAddAuxiliaryDeviceOverlayDataHandsontableHelper = {
     createNew: function (divid) {
         var batchAddAuxiliaryDeviceOverlayDataHandsontableHelper = {};
-        batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.hot = '';
+        batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.hot = null;
         batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.divid = divid;
         batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.validresult = true; //数据校验
         batchAddAuxiliaryDeviceOverlayDataHandsontableHelper.colHeaders = [];

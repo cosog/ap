@@ -200,7 +200,7 @@ function renderHistoryComparativeAnalysisCurve(result) {
     // 绘制图表
     var xTitle = loginUserLanguageResource.acqTime;
     initComparativeAnalysisCurveChartFn(
-        series, 'HistoryDataComparativeAnalysisCurveDiv_Id', '对比曲线', '', xTitle, yAxis, true, timeFormat
+        series, 'HistoryDataComparativeAnalysisCurveDiv_Id', loginUserLanguageResource.comparativeCurve, '', xTitle, yAxis, true, timeFormat
     );
 
     // 绑定双击事件
@@ -298,7 +298,7 @@ Ext.define("AP.view.historyQuery.HistoryDataComparativeAnalysisWindow", {
                 	getComparativeAnalysisCurveData(); 
                 	Ext.getCmp('HistoryDataComparativeAnalysisCurvePanel_Id').setTitle(loginUserLanguageResource.curve + 
               	           '<span style="font-size: 12px; font-weight: normal; color: #888; margin-left: 10px; font-style: italic;">' +
-             	           '(双击图形配置曲线样式)');
+             	           '('+loginUserLanguageResource.doubleClickToConfigCurveStyle+')');
                 }
             }],
         	layout: 'border',

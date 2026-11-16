@@ -371,8 +371,9 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
     				html:'<div class=AcquisitionDataMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionDataMaintainingDiv_id"></div></div>',
     				listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(realtimeAcquisitionDataMaintainingHandsontableHelper!=null && realtimeAcquisitionDataMaintainingHandsontableHelper.hot!=undefined
-                        			 && realtimeAcquisitionDataMaintainingHandsontableHelper.hot.updateSettings!=undefined){
+                        	if(realtimeAcquisitionDataMaintainingHandsontableHelper!=null 
+                        			&& realtimeAcquisitionDataMaintainingHandsontableHelper.hot!=undefined
+                        			&& typeof realtimeAcquisitionDataMaintainingHandsontableHelper.hot.updateSettings === 'function'){
                         		var newWidth=width;
                         		var newHeight=height;
                         		var newHeight=height-22-1;//减去tbar
@@ -428,7 +429,9 @@ Ext.define("AP.view.dataMaintaining.AcquisitionDataMaintainingInfoView", {
     				html:'<div class=HistoryAcquisitionDataMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="HistoryAcquisitionDataMaintainingDiv_id"></div></div>',
     				listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(historyAcquisitionDataMaintainingHandsontableHelper!=null && historyAcquisitionDataMaintainingHandsontableHelper.hot!=undefined){
+                        	if(historyAcquisitionDataMaintainingHandsontableHelper!=null 
+                        			&& historyAcquisitionDataMaintainingHandsontableHelper.hot!=undefined
+                        			&& typeof historyAcquisitionDataMaintainingHandsontableHelper.hot.updateSettings === 'function'){
                         		var newWidth=width;
                         		var newHeight=height;
                         		var newHeight=height-22-1;//减去tbar
@@ -551,7 +554,7 @@ function CreateAndLoadRealtimeAcquisitionDataMaintainingTable(isNew,result,divid
 var RealtimeAcquisitionDataMaintainingHandsontableHelper = {
 	    createNew: function (divid) {
 	        var realtimeAcquisitionDataMaintainingHandsontableHelper = {};
-	        realtimeAcquisitionDataMaintainingHandsontableHelper.hot = '';
+	        realtimeAcquisitionDataMaintainingHandsontableHelper.hot = null;
 	        realtimeAcquisitionDataMaintainingHandsontableHelper.divid = divid;
 	        realtimeAcquisitionDataMaintainingHandsontableHelper.validresult=true;//数据校验
 	        realtimeAcquisitionDataMaintainingHandsontableHelper.colHeaders=[];
@@ -779,7 +782,7 @@ function CreateAndLoadHistoryAcquisitionDataMaintainingTable(isNew,result,divid)
 var HistoryAcquisitionDataMaintainingHandsontableHelper = {
 	    createNew: function (divid) {
 	        var historyAcquisitionDataMaintainingHandsontableHelper = {};
-	        historyAcquisitionDataMaintainingHandsontableHelper.hot = '';
+	        historyAcquisitionDataMaintainingHandsontableHelper.hot = null;
 	        historyAcquisitionDataMaintainingHandsontableHelper.divid = divid;
 	        historyAcquisitionDataMaintainingHandsontableHelper.validresult=true;//数据校验
 	        historyAcquisitionDataMaintainingHandsontableHelper.colHeaders=[];

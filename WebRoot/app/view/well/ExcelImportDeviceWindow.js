@@ -76,7 +76,10 @@ Ext.define("AP.view.well.ExcelImportDeviceWindow", {
             	html: '<div id="excelImportedDeviceTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
             		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(importDeviceHandsontableHelper!=null&&importDeviceHandsontableHelper.hot!=null&&importDeviceHandsontableHelper.hot!=undefined){
+                    	if(importDeviceHandsontableHelper!=null
+                    			&& importDeviceHandsontableHelper.hot!=null
+                    			&& importDeviceHandsontableHelper.hot!=undefined
+                    			&& typeof importDeviceHandsontableHelper.hot.updateSettings === 'function'){
 //                    		importDeviceHandsontableHelper.hot.refreshDimensions();
                     		var newWidth=width;
                     		var newHeight=height;
@@ -209,7 +212,7 @@ function submitImportedDeviceFile() {
 var ImportDeviceHandsontableHelper = {
     createNew: function (divid) {
         var importDeviceHandsontableHelper = {};
-        importDeviceHandsontableHelper.hot = '';
+        importDeviceHandsontableHelper.hot = null;
         importDeviceHandsontableHelper.divid = divid;
         importDeviceHandsontableHelper.validresult = true; //数据校验
         importDeviceHandsontableHelper.colHeaders = [];

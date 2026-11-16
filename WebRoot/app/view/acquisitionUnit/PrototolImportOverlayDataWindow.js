@@ -136,7 +136,10 @@ Ext.define("AP.view.acquisitionUnit.PrototolImportOverlayDataWindow", {
         		html: '<div id="ProtocolImportErrorTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
         		listeners: {
         			resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-        				if(protocolImportErrorHandsontableHelper!=null&&protocolImportErrorHandsontableHelper.hot!=null&&protocolImportErrorHandsontableHelper.hot!=undefined){
+        				if(protocolImportErrorHandsontableHelper!=null
+        						&& protocolImportErrorHandsontableHelper.hot!=null
+        						&& protocolImportErrorHandsontableHelper.hot!=undefined
+        						&& typeof protocolImportErrorHandsontableHelper.hot.updateSettings === 'function'){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();

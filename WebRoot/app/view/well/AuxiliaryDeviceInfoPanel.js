@@ -173,7 +173,10 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
         		html: '<div class="AuxiliaryDeviceContainer" style="width:100%;height:100%;"><div class="con" id="AuxiliaryDeviceTableDiv_id"></div></div>',
                 listeners: {
                 	resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if (auxiliaryDeviceInfoHandsontableHelper != null && auxiliaryDeviceInfoHandsontableHelper.hot != null && auxiliaryDeviceInfoHandsontableHelper.hot != undefined) {
+                    	if (auxiliaryDeviceInfoHandsontableHelper != null 
+                    			&& auxiliaryDeviceInfoHandsontableHelper.hot != null 
+                    			&& auxiliaryDeviceInfoHandsontableHelper.hot != undefined
+                    			&& typeof auxiliaryDeviceInfoHandsontableHelper.hot.updateSettings === 'function') {
                         	var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();
@@ -232,7 +235,10 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     }],
                     listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if (auxiliaryDeviceDetailsHandsontableHelper != null && auxiliaryDeviceDetailsHandsontableHelper.hot != null && auxiliaryDeviceDetailsHandsontableHelper.hot != undefined) {
+                        	if (auxiliaryDeviceDetailsHandsontableHelper != null 
+                        			&& auxiliaryDeviceDetailsHandsontableHelper.hot != null 
+                        			&& auxiliaryDeviceDetailsHandsontableHelper.hot != undefined
+                        			&& typeof auxiliaryDeviceDetailsHandsontableHelper.hot.updateSettings === 'function') {
                         		var newWidth=width;
                         		var newHeight=height-22-1;
                         		var header=thisPanel.getHeader();
@@ -303,7 +309,10 @@ Ext.define('AP.view.well.AuxiliaryDeviceInfoPanel', {
                     }],
                 	listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if (pumpingUnitPRTFHandsontableHelper != null && pumpingUnitPRTFHandsontableHelper.hot != null && pumpingUnitPRTFHandsontableHelper.hot != undefined) {
+                        	if (pumpingUnitPRTFHandsontableHelper != null 
+                        			&& pumpingUnitPRTFHandsontableHelper.hot != null 
+                        			&& pumpingUnitPRTFHandsontableHelper.hot != undefined
+                        			&& typeof pumpingUnitPRTFHandsontableHelper.hot.updateSettings === 'function') {
                         		var newWidth=width;
                         		var newHeight=height-22-1;
                         		var header=thisPanel.getHeader();
@@ -396,7 +405,7 @@ function CreateAndLoadAuxiliaryDeviceInfoTable(isNew) {
 var AuxiliaryDeviceInfoHandsontableHelper = {
     createNew: function (divid) {
         var auxiliaryDeviceInfoHandsontableHelper = {};
-        auxiliaryDeviceInfoHandsontableHelper.hot = '';
+        auxiliaryDeviceInfoHandsontableHelper.hot = null;
         auxiliaryDeviceInfoHandsontableHelper.divid = divid;
         auxiliaryDeviceInfoHandsontableHelper.validresult = true; //数据校验
         auxiliaryDeviceInfoHandsontableHelper.colHeaders = [];
@@ -874,7 +883,7 @@ function CreateAuxiliaryDeviceDetailsTable(deviceId,name){
 var AuxiliaryDeviceDetailsHandsontableHelper = {
 	    createNew: function (divid) {
 	        var auxiliaryDeviceDetailsHandsontableHelper = {};
-	        auxiliaryDeviceDetailsHandsontableHelper.hot = '';
+	        auxiliaryDeviceDetailsHandsontableHelper.hot = null;
 	        auxiliaryDeviceDetailsHandsontableHelper.divid = divid;
 	        auxiliaryDeviceDetailsHandsontableHelper.colHeaders = [];
 	        auxiliaryDeviceDetailsHandsontableHelper.columns = [];

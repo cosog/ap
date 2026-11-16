@@ -87,7 +87,10 @@ Ext.define("AP.view.well.BatchAddPumpingModelCollisionDataWindow", {
             	html: '<div id="BatchAddPumpingModelOverlayDataTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
             		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(batchAddPumpingModelOverlayDataHandsontableHelper!=null&&batchAddPumpingModelOverlayDataHandsontableHelper.hot!=null&&batchAddPumpingModelOverlayDataHandsontableHelper.hot!=undefined){
+                    	if(batchAddPumpingModelOverlayDataHandsontableHelper!=null
+                    			&& batchAddPumpingModelOverlayDataHandsontableHelper.hot!=null
+                    			&& batchAddPumpingModelOverlayDataHandsontableHelper.hot!=undefined
+                    			&& typeof batchAddPumpingModelOverlayDataHandsontableHelper.hot.updateSettings === 'function'){
 //                    		batchAddPumpingModelOverlayDataHandsontableHelper.hot.refreshDimensions();
                     		var newWidth=width;
                     		var newHeight=height;
@@ -153,7 +156,7 @@ function CreateAndLoadBatchAddPumpingModelOverlayDataTable(result) {
 var BatchAddPumpingModelOverlayDataHandsontableHelper = {
     createNew: function (divid) {
         var batchAddPumpingModelOverlayDataHandsontableHelper = {};
-        batchAddPumpingModelOverlayDataHandsontableHelper.hot = '';
+        batchAddPumpingModelOverlayDataHandsontableHelper.hot = null;
         batchAddPumpingModelOverlayDataHandsontableHelper.divid = divid;
         batchAddPumpingModelOverlayDataHandsontableHelper.validresult = true; //数据校验
         batchAddPumpingModelOverlayDataHandsontableHelper.colHeaders = [];

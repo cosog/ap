@@ -248,7 +248,7 @@ function renderDailyComparativeAnalysisCurve(result) {
     for (var i = 0; i < allAxesSorted.length; i++) {
         buildSeriesForAxis(allAxesSorted[i]);
     }
-    var title = '对比曲线';
+    var title = loginUserLanguageResource.comparativeCurve;
 
     initDailyComparativeAnalysisCurveChartFn(
         series, 'DailyDataComparativeAnalysisCurveDiv_Id', title, '', '', yAxis, true, timeFormat
@@ -336,7 +336,7 @@ Ext.define("AP.view.reportOut.DailyDataComparativeAnalysisWindow", {
                 	getDailyComparativeAnalysisCurveData();
                 	Ext.getCmp('DailyDataComparativeAnalysisCurvePanel_Id').setTitle(loginUserLanguageResource.curve + 
              	           '<span style="font-size: 12px; font-weight: normal; color: #888; margin-left: 10px; font-style: italic;">' +
-            	           '(双击图形配置曲线样式)');
+            	           '('+loginUserLanguageResource.doubleClickToConfigCurveStyle+')');
                 }
             }],
         	layout: 'border',

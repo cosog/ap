@@ -52,7 +52,10 @@ Ext.define("AP.view.well.BatchAddDeviceWindow", {
             	html: '<div id="BatchAddDeviceTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
             		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(batchAddDeviceHandsontableHelper!=null&&batchAddDeviceHandsontableHelper.hot!=null&&batchAddDeviceHandsontableHelper.hot!=undefined){
+                    	if(batchAddDeviceHandsontableHelper!=null
+                    			&& batchAddDeviceHandsontableHelper.hot!=null
+                    			&& batchAddDeviceHandsontableHelper.hot!=undefined
+                    			&& typeof batchAddDeviceHandsontableHelper.hot.updateSettings === 'function'){
                     		var newWidth=width;
                     		var newHeight=height;
                     		var header=thisPanel.getHeader();
@@ -272,7 +275,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
 var BatchAddDeviceHandsontableHelper = {
     createNew: function (divid) {
         var batchAddDeviceHandsontableHelper = {};
-        batchAddDeviceHandsontableHelper.hot = '';
+        batchAddDeviceHandsontableHelper.hot = null;
         batchAddDeviceHandsontableHelper.divid = divid;
         batchAddDeviceHandsontableHelper.validresult = true; //数据校验
         batchAddDeviceHandsontableHelper.colHeaders = [];

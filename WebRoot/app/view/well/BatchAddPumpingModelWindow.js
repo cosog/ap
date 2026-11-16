@@ -51,7 +51,10 @@ Ext.define("AP.view.well.BatchAddPumpingModelWindow", {
             	html: '<div id="BatchAddPumpingModelTableDiv_Id" style="width:100%;height:100%;"></div>',
             	listeners: {
             		resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                    	if(batchAddPumpingModelHandsontableHelper!=null&&batchAddPumpingModelHandsontableHelper.hot!=null&&batchAddPumpingModelHandsontableHelper.hot!=undefined){
+                    	if(batchAddPumpingModelHandsontableHelper!=null
+                    			&& batchAddPumpingModelHandsontableHelper.hot!=null
+                    			&& batchAddPumpingModelHandsontableHelper.hot!=undefined
+                    			&& typeof batchAddPumpingModelHandsontableHelper.hot.updateSettings === 'function'){
 //                    		batchAddPumpingModelHandsontableHelper.hot.refreshDimensions();
                     		var newWidth=width;
                     		var newHeight=height;
@@ -139,7 +142,7 @@ function CreateAndLoadBatchAddPumpingModelTable(isNew) {
 var BatchAddPumpingModelHandsontableHelper = {
     createNew: function (divid) {
         var batchAddPumpingModelHandsontableHelper = {};
-        batchAddPumpingModelHandsontableHelper.hot = '';
+        batchAddPumpingModelHandsontableHelper.hot = null;
         batchAddPumpingModelHandsontableHelper.divid = divid;
         batchAddPumpingModelHandsontableHelper.validresult = true; //数据校验
         batchAddPumpingModelHandsontableHelper.colHeaders = [];

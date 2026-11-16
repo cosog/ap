@@ -487,7 +487,9 @@ var realtimeCurveAndTableTabPanelItems=[{
     	html:'<div class="RealTimeMonitoringInfoDataTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="RealTimeMonitoringInfoDataTableInfoDiv_id"></div></div>',
     	listeners: {
             resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-            	if(deviceRealTimeMonitoringDataHandsontableHelper!=null && deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
+            	if(deviceRealTimeMonitoringDataHandsontableHelper!=null 
+            			&& deviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined
+            			&& typeof deviceRealTimeMonitoringDataHandsontableHelper.hot.updateSettings === 'function'){
 //            		deviceRealTimeMonitoringDataHandsontableHelper.hot.refreshDimensions();
             		var newWidth=width;
             		var newHeight=height;

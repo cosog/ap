@@ -808,7 +808,9 @@ Ext.define("AP.view.dataMaintaining.SRPCalculateMaintainingInfoView", {
     				html:'<div class=SRPCalculateMaintainingContainer" style="width:100%;height:100%;"><div class="con" id="SRPCalculateMaintainingDiv_id"></div></div>',
     				listeners: {
                         resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                        	if(srpFESDiagramCalculateMaintainingHandsontableHelper!=null && srpFESDiagramCalculateMaintainingHandsontableHelper.hot!=undefined){
+                        	if(srpFESDiagramCalculateMaintainingHandsontableHelper!=null 
+                        			&& srpFESDiagramCalculateMaintainingHandsontableHelper.hot!=undefined
+                        			&& typeof srpFESDiagramCalculateMaintainingHandsontableHelper.hot.updateSettings === 'function'){
 //                        		srpFESDiagramCalculateMaintainingHandsontableHelper.hot.refreshDimensions();
                         		var newWidth=width;
                         		var newHeight=height;
@@ -1013,7 +1015,7 @@ function CreateAndLoadSRPCalculateMaintainingTable(isNew,result,divid){
 var SRPFESDiagramCalculateMaintainingHandsontableHelper = {
 	    createNew: function (divid) {
 	        var srpFESDiagramCalculateMaintainingHandsontableHelper = {};
-	        srpFESDiagramCalculateMaintainingHandsontableHelper.hot = '';
+	        srpFESDiagramCalculateMaintainingHandsontableHelper.hot = null;
 	        srpFESDiagramCalculateMaintainingHandsontableHelper.divid = divid;
 	        srpFESDiagramCalculateMaintainingHandsontableHelper.validresult=true;//数据校验
 	        srpFESDiagramCalculateMaintainingHandsontableHelper.colHeaders=[];

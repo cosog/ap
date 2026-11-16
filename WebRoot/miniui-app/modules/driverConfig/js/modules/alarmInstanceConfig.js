@@ -338,7 +338,7 @@ function loadAlarmInstanceProperties(node) {
 var ProtocolAlarmInstancePropertiesHandsontableHelper = {
  createNew: function (divid) {
      var helper = {};
-     helper.hot = '';
+     helper.hot = null;
      helper.classes = null;
      helper.divid = divid;
      helper.validresult = true;

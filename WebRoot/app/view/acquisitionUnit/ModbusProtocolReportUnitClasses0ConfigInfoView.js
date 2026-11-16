@@ -50,7 +50,10 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses0ConfigInfoVi
                                 html: '<div class="ReportUnitSingleWellDailyReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellDailyReportTemplateTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                        if (singleWellDailyReportTemplateHandsontableHelper != null && singleWellDailyReportTemplateHandsontableHelper.hot != null && singleWellDailyReportTemplateHandsontableHelper.hot != undefined) {
+                                        if (singleWellDailyReportTemplateHandsontableHelper != null 
+                                        		&& singleWellDailyReportTemplateHandsontableHelper.hot != null 
+                                        		&& singleWellDailyReportTemplateHandsontableHelper.hot != undefined
+                                        		&& typeof singleWellDailyReportTemplateHandsontableHelper.hot.updateSettings === 'function') {
                                             var newWidth = width;
                                             var newHeight = height;
                                             var header = thisPanel.getHeader();
@@ -77,7 +80,10 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses0ConfigInfoVi
                                 html: '<div class="ReportUnitSingleWellDailyReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellDailyReportContentConfigTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                        if (singleWellDailyReportTemplateContentHandsontableHelper != null && singleWellDailyReportTemplateContentHandsontableHelper.hot != null && singleWellDailyReportTemplateContentHandsontableHelper.hot != undefined) {
+                                        if (singleWellDailyReportTemplateContentHandsontableHelper != null 
+                                        		&& singleWellDailyReportTemplateContentHandsontableHelper.hot != null 
+                                        		&& singleWellDailyReportTemplateContentHandsontableHelper.hot != undefined
+                                        		&& typeof singleWellDailyReportTemplateContentHandsontableHelper.hot.updateSettings === 'function') {
                                             var newWidth = width;
                                             var newHeight = height;
                                             var header = thisPanel.getHeader();
@@ -121,7 +127,10 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses0ConfigInfoVi
                                 html: '<div class="ReportUnitSingleWellRangeReportTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellRangeReportTemplateTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                        if (singleWellRangeReportTemplateHandsontableHelper != null && singleWellRangeReportTemplateHandsontableHelper.hot != null && singleWellRangeReportTemplateHandsontableHelper.hot != undefined) {
+                                        if (singleWellRangeReportTemplateHandsontableHelper != null 
+                                        		&& singleWellRangeReportTemplateHandsontableHelper.hot != null 
+                                        		&& singleWellRangeReportTemplateHandsontableHelper.hot != undefined
+                                        		&& typeof singleWellRangeReportTemplateHandsontableHelper.hot.updateSettings === 'function') {
                                             var newWidth = width;
                                             var newHeight = height;
                                             var header = thisPanel.getHeader();
@@ -148,7 +157,10 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses0ConfigInfoVi
                                 html: '<div class="ReportUnitSingleWellRangeReportContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ReportUnitSingleWellRangeReportContentConfigTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                        if (singleWellRangeReportTemplateContentHandsontableHelper != null && singleWellRangeReportTemplateContentHandsontableHelper.hot != null && singleWellRangeReportTemplateContentHandsontableHelper.hot != undefined) {
+                                        if (singleWellRangeReportTemplateContentHandsontableHelper != null 
+                                        		&& singleWellRangeReportTemplateContentHandsontableHelper.hot != null 
+                                        		&& singleWellRangeReportTemplateContentHandsontableHelper.hot != undefined
+                                        		&& typeof singleWellRangeReportTemplateContentHandsontableHelper.hot.updateSettings === 'function') {
                                             var newWidth = width;
                                             var newHeight = height;
                                             var header = thisPanel.getHeader();
@@ -243,7 +255,10 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses0ConfigInfoVi
                                 html: '<div class="ModbusProtocolReportUnitProductionTemplateTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolReportUnitProductionTemplateTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                        if (productionReportTemplateHandsontableHelper != null && productionReportTemplateHandsontableHelper.hot != null && productionReportTemplateHandsontableHelper.hot != undefined) {
+                                        if (productionReportTemplateHandsontableHelper != null 
+                                        		&& productionReportTemplateHandsontableHelper.hot != null 
+                                        		&& productionReportTemplateHandsontableHelper.hot != undefined
+                                        		&& typeof productionReportTemplateHandsontableHelper.hot.updateSettings === 'function') {
                                             var newWidth = width;
                                             var newHeight = height;
                                             var header = thisPanel.getHeader();
@@ -270,7 +285,10 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolReportUnitClasses0ConfigInfoVi
                                 html: '<div class="ModbusProtocolProductionReportUnitContentConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolProductionReportUnitContentConfigTableInfoDiv_id"></div></div>',
                                 listeners: {
                                     resize: function (thisPanel, width, height, oldWidth, oldHeight, eOpts) {
-                                        if (productionReportTemplateContentHandsontableHelper != null && productionReportTemplateContentHandsontableHelper.hot != null && productionReportTemplateContentHandsontableHelper.hot != undefined) {
+                                        if (productionReportTemplateContentHandsontableHelper != null 
+                                        		&& productionReportTemplateContentHandsontableHelper.hot != null 
+                                        		&& productionReportTemplateContentHandsontableHelper.hot != undefined
+                                        		&& typeof productionReportTemplateContentHandsontableHelper.hot.updateSettings === 'function') {
                                             var newWidth = width;
                                             var newHeight = height;
                                             var header = thisPanel.getHeader();

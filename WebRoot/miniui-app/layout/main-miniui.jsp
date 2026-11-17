@@ -40,6 +40,7 @@ int loginUserRoleVideoKeyEdit = userLogin != null ? userLogin.getRoleVideoKeyEdi
 int loginUserLanguageKeyEdit = userLogin != null ? userLogin.getRoleLanguageEdit() : 0;
 String loginUserLanguage = userLogin != null ? userLogin.getLanguageName() + "" : "zh_CN";
 int loginUserLanguageValue = userLogin != null ? userLogin.getLanguage() : 0;
+int loginUserRoleAlarmAlert = userLogin != null ? userLogin.getRoleAlarmAlert() : 0;
 
 String loginUserLanguageListJson = gson.toJson(userLogin != null && userLogin.getLanguageList() != null ? userLogin.getLanguageList() : new ArrayList<>());
 String loginUserLanguageResource = userLogin != null ? userLogin.getLanguageResource() : "{}";
@@ -87,6 +88,8 @@ request.setAttribute("browserLang", browserLang);
         var loginUserRoleLevel = <%=loginUserRoleLevel%>;
         var loginUserLanguage = '<%=loginUserLanguage%>';
         var loginUserLanguageValue = <%=loginUserLanguageValue%>;
+        var loginUserRoleAlarmAlert = <%=loginUserRoleAlarmAlert%>;
+        var alarmAlert=loginUserRoleAlarmAlert==1;
         var loginUserLanguageList = JSON.parse('<%=loginUserLanguageListJson%>');
         var loginUserLanguageResource = JSON.parse('<%= loginUserLanguageResource.replace("'", "\\'") %>');
         var loginUserLanguageResourceFirstLower = JSON.parse('<%= loginUserLanguageResourceFirstLower.replace("'", "\\'") %>');
@@ -261,6 +264,14 @@ request.setAttribute("browserLang", browserLang);
         .west-section:first-child {
             border-bottom: 1px solid #e8e8e8;
         }
+        /* 报警行样式 */
+		.alarm-row-device { background: #f4f6f8; font-weight: bold; }
+		.alarm-row-unack { background: #fff4f4; }
+		.alarm-row-ack { color: #888; background: #fafafa; }
+		.alarm-row-suppressed { background: #f0fdfa; color: #0e7490; }
+		.alarm-row-pending-delay { background: #f5f5f5; color: #8c8c8c; font-style: italic; }
+		.op-link { color: #1677ff; text-decoration: none; cursor: pointer; margin-right: 8px; }
+		.op-link:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -369,11 +380,18 @@ request.setAttribute("browserLang", browserLang);
     <input id="selectedDeviceType_global" class="mini-hidden" value="0" />
     <input id="AlarmShowStyle_Id" class="mini-hidden" />
     <input id="tabNums_Id" class="mini-hidden" />
+    
+    <!-- ★ 引入独立的报警弹窗 DOM 片段 -->
+    <jsp:include page="../modules/alarmAlert/AlarmWindow.jsp" flush="true" />
+
+    <!-- ★ 引入报警核心逻辑 JS -->
+    <script src="<%=path%>/miniui-app/modules/alarmAlert/js/AlarmManager.js"></script>
 
     <!-- ================================================================ -->
     <!-- 主 JavaScript（与 DOM 相关的初始化，保留在底部）               -->
     <!-- ================================================================ -->
     <script>
+    
     // ================================================================
     // 顶部栏初始化、事件绑定、WebSocket 等（依赖 DOM 元素）
     // 这些函数现在可以使用上面定义的全局变量（如 loginUserLanguageResource）
@@ -819,6 +837,42 @@ request.setAttribute("browserLang", browserLang);
 
             var funcCode = data.functionCode ? data.functionCode.toUpperCase() : '';
             
+         // ================================================================
+            // 1. 全局报警逻辑拦截 (独立于业务模块)
+            // ================================================================
+            if (typeof alarmAlert !== 'undefined') {
+                if (funcCode === 'ROLE_ALARM_ALERT_CHANGED') {
+                    var hasAlertRight = (data.alarmAlert == 1);
+                    window.alarmAlert = hasAlertRight;
+                    
+                    if (!hasAlertRight) {
+                        if (window.AlarmManager) AlarmManager.clearAllForPermissionLoss();
+                        mini.alert('您的角色报警提醒权限已被管理员关闭');
+                    } else {
+                        if (window.AlarmManager) {
+                            AlarmSoundManager.initUnlock();
+                            AlarmSoundManager.loadConfig();
+                            AlarmManager.loadPendingAlarms();
+                        }
+                        mini.alert('您的角色报警提醒权限已被管理员开启');
+                    }
+                    return; 
+                }
+
+                if (alarmAlert) {
+                    if (funcCode === 'DEVICEREALTIMEMONITORINGDATA' || 
+                        funcCode === 'DEVICEREALTIMEMONITORINGSTATUSDATA') {
+                        AlarmManager.handle(data);
+                    } else if (funcCode === 'ALARMACKED') {
+                        AlarmManager.onRemoteAck(data.alertIds, data.ackUser, data.ackIp, data.ackTime);
+                    } else if (funcCode === 'ALARMSUPPRESSED') {
+                        AlarmManager.onRemoteSuppress(data.alertIds, data.suppressReason, data.suppressUser, data.suppressIp, data.suppressTime, data.suppressEndTime);
+                    } else if (funcCode === 'ALARMCANCELSUPPRESSED') {
+                        AlarmManager.onRemoteCancelSuppress(data.alertIds);
+                    }
+                }
+            }
+            
             // 实时监控
             if (activeId === 'DeviceRealTimeMonitoring') {
                 if (funcCode === "DEVICEREALTIMEMONITORINGDATA" ||
@@ -958,6 +1012,15 @@ request.setAttribute("browserLang", browserLang);
         
         refreshOrgTree();
         refreshMenuTree();
+        
+     	// 初始化报警管理器
+        if (typeof alarmAlert !== 'undefined' && alarmAlert) {
+            AlarmSoundManager.initUnlock();
+            AlarmSoundManager.loadConfig();
+            setTimeout(function() {
+                AlarmManager.init(); 
+            }, 1000);
+        }
         
         $(window).resize(function() {
             $('.highcharts-container').each(function() {

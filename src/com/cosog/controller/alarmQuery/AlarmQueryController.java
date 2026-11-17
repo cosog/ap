@@ -594,8 +594,8 @@ public class AlarmQueryController extends BaseController{
 	        HttpSession session = request.getSession();
 	        User user = (User) session.getAttribute("userLogin");
 	        String userNo = user != null ? user.getUserNo() + "" : "";
-	        String orgIds = (user != null && !StringManagerUtils.isNotNull(orgIdParam))
-	                      ? user.getUserOrgIds() : orgIdParam;
+	        String orgIds = (user != null && !StringManagerUtils.isNotNull(orgIdParam))? user.getUserOrgIds() : orgIdParam;
+	        deviceTypeParam=user != null ? user.getDeviceTypeIds() : "";
 
 	        log.info("getPendingAlarms userNo=" + userNo + ", orgIds=" + orgIds);
 

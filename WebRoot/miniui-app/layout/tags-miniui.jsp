@@ -10,7 +10,6 @@ if(browserLang == null) browserLang = "zh_CN";
 <!--  MiniUI 样式                                                    -->
 <!--  使用 metro-blue（扁平现代风格）                                -->
 <!-- ============================================================== -->
-
 <!-- metro-blue 主题 -->
 <link rel="stylesheet" href="<%=path%>/scripts/miniui/themes/default/miniui.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>
 <link rel="stylesheet" href="<%=path%>/scripts/miniui/font-awesome/css/font-awesome.min.css?timestamp=<%=otherStaticResourceTimestamp%>" type="text/css"/>

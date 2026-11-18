@@ -4125,7 +4125,7 @@ public class DriverAPIController extends BaseController{
 										protocol,
 										checkSign);
 //								StringManagerUtils.printLog(webSocketSendDataStr,0);
-								System.out.println(webSocketSendDataStr);
+//								System.out.println(webSocketSendDataStr);
 								infoHandler().sendMessageToUserId(websocketClientUserId, webSocketSendDataStr);
 							}
 						}

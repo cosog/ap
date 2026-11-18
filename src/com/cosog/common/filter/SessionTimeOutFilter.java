@@ -66,7 +66,25 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 	    if (token == null || token.isEmpty()) {
 	        token = request.getHeader("X-Access-Token");
 	    }
-
+	    
+	 // 如果参数和 Header 都没有，且是外部资源请求，从 Referer 中提取
+//	    if (token == null || token.isEmpty()) {
+//	        String referer = request.getHeader("Referer");
+//	        if (referer != null && referer.contains("token=")) {
+//	            try {
+//	                // 截取 token
+//	                String tokenStr = referer.substring(referer.indexOf("token=") + 6);
+//	                // 如果后面还有其他参数，截断
+//	                if (tokenStr.contains("&")) {
+//	                    tokenStr = tokenStr.substring(0, tokenStr.indexOf("&"));
+//	                }
+//	                token = tokenStr;
+//	            } catch (Exception e) {
+//	                log.warn("从 Referer 提取 token 失败", e);
+//	            }
+//	        }
+//	    }
+	    
 	    if (token != null && !token.isEmpty()) {
 	        Map<String, ExternalLoginController.TokenInfo> tokenCache = ExternalLoginController.getTokenCache();
 	        ExternalLoginController.TokenInfo tokenInfo = tokenCache.get(token);
@@ -206,6 +224,9 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 						||urlString.equals("pubSubModelCommCalculation")
 						||urlString.equals("initProductionDataDictionary")
 						||urlString.equals("getUIKitAccessToken")
+						||urlString.equals("playAlarmSound") 
+						||urlString.equals("uploadAlarmSound")
+						||path.contains("sceneModelController")
 						||path.contains("mobileController")
 						||path.contains("dailyReportImport")
 						){

@@ -455,6 +455,25 @@ var AlarmManager = {
         }
         this.win.setTitle(html);
     },
+    
+ // 控制“确认选中”按钮
+    updateAckButtonStatus: function() {
+        var pendingChecked = this.getCheckedPendingKeys().length;
+        var btnAck = mini.get("btnAckSelected"); // 直接用 mini.get 获取控件
+        if (btnAck) {
+            // 选中的大于0就启用(true)，否则禁用(false)
+            btnAck.setEnabled(pendingChecked > 0); 
+        }
+    },
+
+    // 控制“人工消警选中”按钮
+    updateSuppressButtonStatus: function() {
+        var ackChecked = this.getCheckedAckedKeys().length;
+        var btnSuppress = mini.get("btnSuppressSelected");
+        if (btnSuppress) {
+            btnSuppress.setEnabled(ackChecked > 0);
+        }
+    },
 
     getCheckedPendingKeys: function () {
         var tree = mini.get('pendingGrid');
@@ -465,9 +484,10 @@ var AlarmManager = {
     },
     
     getCheckedAckedKeys: function () {
-        var rows = mini.get("ackGrid").getSelecteds();
+        var tree = mini.get('ackGrid');
+        var checkedNodes = tree.getCheckedNodes();
         var keys = [];
-        for (var i = 0; i < rows.length; i++) { if (rows[i].alarmKey) keys.push(rows[i].alarmKey); }
+        for (var i = 0; i < checkedNodes.length; i++) { if (checkedNodes[i].alarmKey) keys.push(checkedNodes[i].alarmKey); }
         return keys;
     },
 
@@ -1021,6 +1041,22 @@ function onCheckChanged(e) {
     if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + AlarmManager.getCheckedPendingKeys().length;
     el = document.getElementById("ackedSelText");
     if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + AlarmManager.getCheckedAckedKeys().length;
+}
+
+//待确认 Grid 勾选事件
+function onPendingCheckChanged(e) {
+    var el = document.getElementById("pendingSelText");
+    if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + AlarmManager.getCheckedPendingKeys().length;
+    
+    AlarmManager.updateAckButtonStatus();
+}
+
+// 待消警 Grid 勾选事件
+function onAckCheckChanged(e) {
+    var el = document.getElementById("ackedSelText");
+    if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + AlarmManager.getCheckedAckedKeys().length;
+    
+    AlarmManager.updateSuppressButtonStatus();
 }
 
 function onMuteChange(e) {

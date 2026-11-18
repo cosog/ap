@@ -13,11 +13,11 @@ String path = request.getContextPath();
                     <input id="muteCheckbox" class="mini-checkbox" text="静音" onvaluechanged="onMuteChange" />
                     <span id="pendingSelText" style="margin-left:10px;font-size:12px;">已选：0</span>
                     <div style="float:right;">
-                        <a class="mini-button mini-button-primary" onclick="doAckSelected()" plain="true">确认选中</a>
+                        <a class="mini-button mini-button-primary" id="btnAckSelected" onclick="doAckSelected()" plain="true" enabled="false">确认选中</a>
                         <a class="mini-button" onclick="doAckAll()" plain="true">全部确认</a>
                     </div>
                 </div>
-                <div class="mini-treegrid" id="pendingGrid" style="width:100%;height:100%;" rowStyleRenderer="rowStyle" showTreeIcon="true" resultAsTree="true" treeColumn="text" allowAlternating="true" oncheckchanged="onCheckChanged" showHGridLines="false" showVGridLines="false" showCheckbox="true" ondrawnode=onTreeDrawnode>
+                <div class="mini-treegrid" id="pendingGrid" style="width:100%;height:100%;" rowStyleRenderer="rowStyle" showTreeIcon="true" resultAsTree="true" treeColumn="text" allowAlternating="true" oncheckchanged="onPendingCheckChanged" showHGridLines="false" showVGridLines="false" showCheckbox="true" ondrawnode=onTreeDrawnode>
                     <div property="columns">
                         <div field="text" name="text" width="200" headerAlign="center" align="left" renderer="textRenderer" treeColumn="true">设备报警内容</div>
                         <div field="alarmLevel" name="alarmLevel" width="60" headerAlign="center" align="center" renderer="levelRenderer">级别</div>
@@ -38,12 +38,12 @@ String path = request.getContextPath();
                     <span id="ackedSelText" style="font-size:12px;">已选：0</span>
                     <span id="ackedCountText" style="margin-left:10px;font-size:12px;">已确认：0</span>
                     <div style="float:right;">
-                        <a class="mini-button mini-button-primary" onclick="doSuppressSelected()" plain="true">人工消警选中</a>
+                        <a class="mini-button mini-button-primary" id="btnSuppressSelected" onclick="doSuppressSelected()" plain="true" enabled="false">人工消警选中</a>
                         <a class="mini-button" onclick="doSuppressAll()" plain="true">全部人工消警</a>
                         <a class="mini-button" onclick="openSuppressedList()" plain="true">查看人工消警记录</a>
                     </div>
                 </div>
-                <div class="mini-treegrid" id="ackGrid" style="width:100%;height:100%;" rowStyleRenderer="rowStyle" showTreeIcon="true" resultAsTree="true" treeColumn="text" allowAlternating="true" oncheckchanged="onCheckChanged" showHGridLines="false" showVGridLines="false" showCheckbox="true" ondrawnode=onTreeDrawnode>>
+                <div class="mini-treegrid" id="ackGrid" style="width:100%;height:100%;" rowStyleRenderer="rowStyle" showTreeIcon="true" resultAsTree="true" treeColumn="text" allowAlternating="true" onnodecheck="onAckCheckChanged" showHGridLines="false" showVGridLines="false" showCheckbox="true" ondrawnode=onTreeDrawnode>>
                     <div property="columns">
                         <div field="text" name="text" width="200" headerAlign="center" align="left" renderer="textRenderer" treeColumn="true">设备报警内容</div>
                         <div field="alarmLevel" name="alarmLevel" width="60" headerAlign="center" align="center" renderer="levelRenderer">级别</div>
@@ -83,7 +83,7 @@ String path = request.getContextPath();
 <div id="suppressDialog" class="mini-window" title="人工消警" style="width:450px;height:230px;display:none;" modal="true">
     <div class="mini-panel" showHeader="false" showToolbar="true" style="width:100%;height:100%;" borderStyle="border:0;">
         <div property="toolbar" style="padding:2px 5px;text-align:right;">
-            <a class="mini-button mini-button-primary" onclick="confirmSuppress() plain=" true"">确定</a>
+            <a class="mini-button mini-button-primary" onclick="confirmSuppress()" plain="true">确定</a>
             <a class="mini-button" onclick="closeSuppressDialog()" plain="true">取消</a>
         </div>
         <div style="padding:15px;">

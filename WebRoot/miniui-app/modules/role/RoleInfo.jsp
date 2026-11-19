@@ -262,6 +262,7 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     var currentReportEdit  = null;
     var currentVideoKeyEdit= null;
     var currentLanguageEdit= null;
+    var currentAlarmAlert= null;
 
     // ================================================================
     // 国际化
@@ -372,6 +373,7 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         currentReportEdit  = result.currentReportEdit;
         currentVideoKeyEdit= result.currentVideoKeyEdit;
         currentLanguageEdit= result.currentLanguageEdit;
+        currentAlarmAlert= result.currentAlarmAlert;
 
         if (!grid._columnsCreated) {
             createRoleGridColumns(grid, result);
@@ -520,6 +522,12 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             _loginUserLanguageResource.roleVideoKeyEdit,
             90
         ));
+        
+        columns.push(checkColumn(
+                'roleAlarmAlertName',
+                _loginUserLanguageResource.alarmPopup,
+                90
+            ));
 
         var lang = (loginUserLanguage || '').toUpperCase();
         var remarkField = 'remark_zh_CN';
@@ -560,10 +568,13 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         	if (String(record.roleId) === String(currentId)) {
                 if (f === 'rolelevel'
                     || f === 'showlevel'
-                    || f === 'rolevideokeyeditname') {
+                    || f === 'rolevideokeyeditname'
+                    || f === 'roleAlarmAlertName') {
                     e.cancel = true;
                 }
             }else if(f === 'roleVideoKeyEditName'.toLowerCase() && currentVideoKeyEdit == 0){
+            	e.cancel = true;
+            }else if(f === 'roleAlarmAlertName'.toLowerCase() && currentAlarmAlert == 0){
             	e.cancel = true;
             }
         } else {
@@ -1058,6 +1069,7 @@ if (otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                  currentUserRoleShowLevel:    currentShowLevel,
                  currentUserRoleVideoKeyEdit: currentVideoKeyEdit,
                  loginUserLanguage:           loginUserLanguage,
+                 currentUserRoleAlarmAlert:   currentAlarmAlert,
                  loginUserRoleModules:        _loginUserRoleModules
              });
 
@@ -1167,6 +1179,7 @@ function updateRoleInfo() {
      role.showLevel        = rec.showLevel;
      role.roleVideoKeyEdit = isTrueVal(rec.roleVideoKeyEditName) ? 1 : 0;
      role.roleLanguageEdit = isTrueVal(rec.roleLanguageEditName) ? 1 : 0;
+     role.alarmAlert = isTrueVal(rec.roleAlarmAlertName) ? 1 : 0;
 
      modifiedRole.push(role);
  }

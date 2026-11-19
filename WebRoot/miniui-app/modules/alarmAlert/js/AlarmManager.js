@@ -1,16 +1,19 @@
 /**
- * 报警业务及声音管理
+ * 报警业务及声音管理 —— 双窗口分离 + 收缩/展开按钮接管 + showAtEl 定位
+ * 本文件为完整版本，可直接替换原文件。
  */
 var AlarmManager = {
     alarms: {},
     ackKeys: {},
     isMuted: false,
     win: null,
+    miniBar: null,
     suppListWin: null,
     blinkTask: null,
     blinkOn: false,
     _localAckWarned: false,
-    showSuppressedTab: false, // false 表示默认隐藏人工消警的 Tab
+    showSuppressedTab: false,
+    _anchor: null,
 
     levelStyle: {
         100: { text: _loginUserLanguageResource.level1, color: '#dc2828' },
@@ -18,30 +21,325 @@ var AlarmManager = {
         300: { text: _loginUserLanguageResource.level3, color: '#fae600' }
     },
 
-    init: function() {
+    // ==========================================
+    // 初始化
+    // ==========================================
+    init: function () {
         this.win = mini.get("AlarmWindow");
+        this.miniBar = mini.get("AlarmMiniBar");
         this.suppListWin = mini.get("suppressedListWindow");
-        if (!this.win) return;
-        
-//        var headerEl = this.win.getHeaderEl();
-//        headerEl.addEventListener('click', function() {
-//            if (AlarmManager.win.getHeight() > 100) {
-//                AlarmManager.win.setHeight(40); // 缩成小条
-//                AlarmManager.win.setWidth(300); // 变窄
-//            } else {
-//                AlarmManager.win.setHeight(540); // 展开
-//                AlarmManager.win.setWidth(900);
-//                AlarmManager.alignToBottomRight(900, 540);
-//            }
-//        });
+        if (!this.win || !this.miniBar) return;
+
+        var self = this;
+
+        // 固定锚点（右下角），大小窗口共用
+        this._anchor = document.getElementById("_alarm_anchor_");
+        if (!this._anchor) {
+            this._anchor = document.createElement("div");
+            this._anchor.id = "_alarm_anchor_";
+            this._anchor.style.cssText =
+                "position:fixed;right:5px;bottom:40px;width:1px;height:1px;overflow:hidden;";
+            document.body.appendChild(this._anchor);
+        }
+
+        // ===== 接管两个窗口标题栏上的 collapse 按钮 =====
+        this._bindCollapseButton(this.win, function () {
+            self.collapseWindow();
+        });
+        this._bindCollapseButton(this.miniBar, function () {
+            self.ensureWindowExpanded(true);
+        });
+
+        // 页面缩放时重新定位
+        window.addEventListener('resize', function () {
+            if (self.miniBar.getVisible()) self.alignMiniBarToBottomRight();
+            else if (self.win.getVisible()) self.alignToBottomRight();
+        });
+
         this.loadPendingAlarms();
-        
-        // 提前加载声音配置
-        if (!AlarmSoundManager._loaded) {
-            AlarmSoundManager.loadConfig();
+        if (!AlarmSoundManager._loaded) AlarmSoundManager.loadConfig();
+    },
+
+    /**
+     * 接管 MiniUI 标题栏上的收缩/展开按钮点击。
+     * 克隆节点以剥离 MiniUI 自带 collapse 监听，再绑定我们的切换逻辑。
+     */
+    _bindCollapseButton: function (winObj, handler) {
+        var headerEl = winObj.getHeaderEl();
+        if (!headerEl) return;
+
+        var selectors = [
+            '.mini-window-collapse',
+            '.mini-tools-collapse',
+            '.mini-toolbar-collapse',
+            '[class*="collapse"]'
+        ];
+        var btn = null;
+        for (var i = 0; i < selectors.length; i++) {
+            btn = headerEl.querySelector(selectors[i]);
+            if (btn) break;
+        }
+        if (!btn) return;
+
+        var newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+
+        newBtn.style.cursor = 'pointer';
+        newBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            handler();
+        }, true);
+    },
+
+    // ==========================================
+    // 双窗口切换（核心）
+    // ==========================================
+    collapseWindow: function () {
+        if (!this.win || !this.miniBar) return;
+
+        if (this.win.getVisible()) this.win.hide();
+        AlarmSoundManager.stop();
+
+        this.updateTitle();
+
+        var hasData = false;
+        for (var k in this.alarms) { hasData = true; break; }
+
+        if (hasData) {
+            if (!this.miniBar.getVisible()) {
+                this.miniBar.showAtEl(this._anchor, { xAlign: 'right', yAlign: 'bottom' });
+                this.miniBar.collapse();
+            }
+        } else {
+            this.miniBar.hide();
         }
     },
 
+    ensureWindowExpanded: function (focusPending) {
+        if (!this.win || !this.miniBar) return;
+
+        if (this.miniBar.getVisible()) this.miniBar.hide();
+
+        if (!this.win.getVisible()) {
+            this.win.showAtEl(this._anchor, { xAlign: 'right', yAlign: 'bottom' });
+        }
+
+        if (focusPending !== false) {
+            var tabs = mini.get("alarmTabs");
+            if (tabs) {
+                var active = tabs.getActiveTab();
+                if (!active || active.name !== 'pending') tabs.activeTab("pending");
+            }
+        }
+
+        this.startBlink();
+    },
+
+    alignToBottomRight: function () {
+        var docW = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        var docH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        this.win.setX(Math.max(0, docW - 900 - 20));
+        this.win.setY(Math.max(0, docH - 540 - 40));
+    },
+
+    alignMiniBarToBottomRight: function () {
+        var docW = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        var docH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        this.miniBar.setX(Math.max(0, docW - 260 - 20));
+        this.miniBar.setY(Math.max(0, docH - 36 - 40));
+    },
+
+    // ==========================================
+    // 业务刷新与显隐判断
+    // ==========================================
+    updateUI: function () {
+        if (!this.win || !this.miniBar) return;
+
+        var pendingMap = {}, ackMap = {}, suppMap = {};
+
+        for (var key in this.alarms) {
+            var a = this.alarms[key];
+            var target = null;
+            if (a.ackStatus !== 1)            target = pendingMap;
+            else if (a.suppressStatus == 2)   target = suppMap;
+            else if (a.suppressStatus == 1)   continue;
+            else                              target = ackMap;
+
+            if (!target[a.deviceId]) {
+                target[a.deviceId] = {
+                    id: a.deviceId, text: a.deviceName || a.deviceId,
+                    deviceId: a.deviceId, expanded: true, children: []
+                };
+            }
+
+            var displayText = a.columnName + '：' + a.value;
+            if ((a.alarmType == 2 || a.alarmType == 5) && a.alarminfo) {
+                displayText = a.columnName + '（' + a.alarminfo + '）：' + a.value;
+            }
+
+            target[a.deviceId].children.push({
+                id: key, alarmKey: key, text: displayText,
+                alarmLevel: a.alarmLevel, deviceId: a.deviceId, deviceName: a.deviceName,
+                column: a.column, columnName: a.columnName, value: a.value,
+                alarminfo: a.alarminfo, acqTime: a.acqTime, alertId: a.alertId,
+                status: a.ackStatus === 1 ? (a.suppressStatus === 2 ? 'SUPPRESSED' : 'ACK') : 'NEW',
+                triggerAlarm: a.triggerAlarm, pendingDelay: a.pendingDelay,
+                suppressStatus: a.suppressStatus, suppressReason: a.suppressReason,
+                suppressUser: a.suppressUser, suppressTime: a.suppressTime,
+                suppressEndTime: a.suppressEndTime
+            });
+        }
+
+        var pendingData = [], ackData = [], suppData = [];
+        for (var k1 in pendingMap) pendingData.push(pendingMap[k1]);
+        for (var k2 in ackMap)     ackData.push(ackMap[k2]);
+        for (var k3 in suppMap)    suppData.push(suppMap[k3]);
+
+        // ★ 先更新数据（大窗口是否可见都更新）
+        mini.get("pendingGrid").setData(pendingData);
+        mini.get("ackGrid").setData(ackData);
+        mini.get("suppressedGrid").setData(suppData);
+
+        if (this.suppListWin && this.suppListWin.getVisible()) this.openSuppressedList(true);
+
+        this.updateToolbar(pendingData, ackData, suppData);
+
+        var pendingCount = this._getTotalLeafCount(pendingData);
+        var ackCount     = this._getTotalLeafCount(ackData);
+        var total        = pendingCount + ackCount;
+
+        if (total === 0) {
+            if (this.win.getVisible()) this.win.hide();
+            if (this.miniBar.getVisible()) this.miniBar.hide();
+            this.stopBlink();
+            AlarmSoundManager.stop();
+            return;
+        }
+
+        if (pendingCount > 0) {
+            this.ensureWindowExpanded(true);
+        } else {
+            this.collapseWindow();
+        }
+    },
+
+    _getTotalLeafCount: function (dataArray) {
+        var c = 0;
+        dataArray.forEach(function (d) { c += d.children.length; });
+        return c;
+    },
+
+    updateToolbar: function (pendingData, ackData, suppData) {
+        if (!this.win) this.win = mini.get("AlarmWindow");
+        if (!this.win) return;
+        var countLeaves = function (data) {
+            var c = 0;
+            data.forEach(function (d) { if (d.children) c += d.children.length; });
+            return c;
+        };
+
+        var unackCount  = countLeaves(pendingData);
+        var ackingCount = countLeaves(ackData);
+        var suppCount   = countLeaves(suppData);
+
+        var el;
+        el = document.getElementById("pendingSelText");
+        if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + this.getCheckedPendingKeys().length;
+
+        el = document.getElementById("ackedSelText");
+        if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + this.getCheckedAckedKeys().length;
+
+        el = document.getElementById("ackedCountText");
+        if (el) el.innerHTML = loginUserLanguageResource.confirmed + "：" + ackingCount;
+
+        el = document.getElementById("suppressedCountText");
+        if (el) el.innerHTML = loginUserLanguageResource.suppressed + "：" + suppCount;
+
+        var tabs = mini.get("alarmTabs");
+        if (tabs) {
+            tabs.updateTab(tabs.getTab("pending"),    { title: loginUserLanguageResource.unconfirmed + " (" + unackCount + ")" });
+            tabs.updateTab(tabs.getTab("acked"),      { title: loginUserLanguageResource.pendingSuppress + " (" + ackingCount + ")" });
+            tabs.updateTab(tabs.getTab("suppressed"), { title: loginUserLanguageResource.manualSuppress + " (" + suppCount + ")" });
+
+            var suppTabEl = tabs.getTabEl("suppressed");
+            if (suppTabEl) {
+                if (!this.showSuppressedTab) {
+                    if (tabs.getActiveTab() && tabs.getActiveTab().name === "suppressed") {
+                        tabs.activeTab(unackCount > 0 ? "pending" : "acked");
+                    }
+                    suppTabEl.style.display = 'none';
+                } else {
+                    if (suppCount > 0) {
+                        suppTabEl.style.display = '';
+                    } else if (tabs.getActiveTab() && tabs.getActiveTab().name === "suppressed") {
+                        tabs.activeTab(unackCount > 0 ? "pending" : "acked");
+                        suppTabEl.style.display = 'none';
+                    } else {
+                        suppTabEl.style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        this.updateTitle();
+    },
+
+    startBlink: function () {
+        var self = this;
+        if (this.blinkTask) return;
+        this.blinkOn = false;
+        this.blinkTask = setInterval(function () {
+            var realUnack = 0;
+            for (var k in self.alarms) {
+                if (self.alarms[k].ackStatus !== 1
+                    && self.alarms[k].pendingDelay !== true
+                    && self.alarms[k].suppressStatus !== 1) realUnack++;
+            }
+            if (realUnack === 0) { self.stopBlink(); return; }
+            self.blinkOn = !self.blinkOn;
+            self.updateTitle();
+        }, 800);
+    },
+
+    stopBlink: function () {
+        if (this.blinkTask) { clearInterval(this.blinkTask); this.blinkTask = null; }
+        this.blinkOn = false;
+        this.updateTitle();
+    },
+
+    updateTitle: function () {
+        if (!this.win || !this.miniBar) return;
+
+        var unack = 0, acking = 0;
+        for (var k in this.alarms) {
+            if (this.alarms[k].ackStatus !== 1) unack++;
+            else if (this.alarms[k].suppressStatus == 0) acking++;
+        }
+        var total = unack + acking;
+
+        var realUnack = 0;
+        for (var k2 in this.alarms) {
+            if (this.alarms[k2].ackStatus !== 1
+                && this.alarms[k2].pendingDelay !== true
+                && this.alarms[k2].suppressStatus !== 1) realUnack++;
+        }
+
+        var text = _loginUserLanguageResource.alarmTitle;
+        if (total > 0) text = _loginUserLanguageResource.alarmTitle + ' (' + unack + '/' + total + ')';
+
+        var html;
+        if (realUnack > 0 && this.blinkOn)      html = '<span style="color:#dc2828;">● ' + text + '</span>';
+        else if (realUnack > 0)                 html = '<span style="color:#dc2828;">○ ' + text + '</span>';
+        else                                    html = text;
+
+        this.win.setTitle(html);
+        this.miniBar.setTitle(html);
+    },
+
+    // ==========================================
+    // 业务逻辑
+    // ==========================================
     getAlarmKey: function (alarm) {
         var type = parseInt(alarm.alarmType);
         if (!isNaN(type) && (type == 2 || type == 5)) {
@@ -53,8 +351,8 @@ var AlarmManager = {
     },
 
     handle: function (data) {
-    	if (!this.win) this.win = mini.get("AlarmWindow");
-        if (!this.win) return; 
+        if (!this.win) this.win = mini.get("AlarmWindow");
+        if (!this.win) return;
         if (typeof alarmAlert !== 'undefined' && !alarmAlert) return;
         if (!data || !data.functionCode) return;
         var fc = data.functionCode.toUpperCase();
@@ -95,7 +393,7 @@ var AlarmManager = {
         var deviceId = data.deviceId, deviceName = data.deviceName, orgId = data.orgId, acqTime = data.acqTime;
         var map = {};
         var self = this;
-        
+
         var push = function (item) {
             if (!item.column || !item.alarmLevel || item.alarmLevel <= 0) return;
             var key = self.getAlarmKey({
@@ -107,7 +405,7 @@ var AlarmManager = {
 
             result.push({
                 key: key, alertId: item.alertId || null, deviceId: deviceId, deviceName: deviceName, orgId: orgId,
-                column: item.column, columnName: item.columnName || item.column, value: item.value, 
+                column: item.column, columnName: item.columnName || item.column, value: item.value,
                 alarmLevel: item.alarmLevel, acqTime: acqTime, alarmType: item.alarmType || 0, alarminfo: item.alarminfo || '',
                 suppressStatus: item.suppressStatus || 0, suppressEndTime: item.suppressEndTime || '',
                 triggerAlarm: item.triggerAlarm !== false, pendingDelay: item.pendingDelay === true
@@ -122,7 +420,7 @@ var AlarmManager = {
     _applySuppressStatus: function (old, alarm) {
         var pushSupp = alarm.suppressStatus || 0;
         var pushEndTime = alarm.suppressEndTime || '';
-        
+
         if (pushSupp === 2) {
             old.suppressStatus = 2;
             old.suppressEndTime = pushEndTime;
@@ -186,7 +484,7 @@ var AlarmManager = {
             this.updateUI();
 
             if (alarm.triggerAlarm && alarm.suppressStatus != 2 && alarm.suppressStatus != 1) {
-                this.ensureWindowExpanded();
+                this.ensureWindowExpanded(true);
                 if (!this.isMuted) AlarmSoundManager.play(alarm.alarmLevel);
             }
         } else {
@@ -217,7 +515,7 @@ var AlarmManager = {
 
             var shouldAlert = (levelUp || isAutoRecovered || (prevTrigger === false && alarm.triggerAlarm === true));
             if (shouldAlert && alarm.triggerAlarm && old.suppressStatus != 2 && old.suppressStatus != 1) {
-                this.ensureWindowExpanded();
+                this.ensureWindowExpanded(true);
                 if (!this.isMuted) AlarmSoundManager.play(alarm.alarmLevel);
             }
         }
@@ -232,12 +530,12 @@ var AlarmManager = {
             if (all[i].column) currentLevelMap[all[i].column] = all[i].alarmLevel || 0;
         }
         if (currentLevelMap['commStatusName'] === undefined && data.commAlarmLevel !== undefined) currentLevelMap['commStatusName'] = data.commAlarmLevel;
-        
+
         for (var key in this.alarms) {
             if (!this.alarms.hasOwnProperty(key)) continue;
             var alarm = this.alarms[key];
             if (alarm.deviceId != deviceId) continue;
-            
+
             if (currentLevelMap[alarm.column] === 0) {
                 if (alarm.ackStatus !== 1 && alarm.suppressStatus !== 1) {
                     alarm.suppressStatus = 1;
@@ -256,235 +554,31 @@ var AlarmManager = {
         delete this.ackKeys[key];
         this.updateUI();
     },
-    
-//    ensureWindowExpanded: function () {
-//        if (!this.win) this.win = mini.get("AlarmWindow");
-//        
-//        // 如果窗口还没显示，则显示并定位
-//        if (!this.win.getVisible()) {
-//            // 使用 showAtPos 直接定位到右下角
-//            // right, bottom 对应窗口的右下角对齐屏幕的右下角
-//            this.win.showAtPos("right", "bottom");
-//        }
-//        this.startBlink();
-//    },
-    
-    ensureWindowExpanded: function () {
-        if (!this.win) this.win = mini.get("AlarmWindow");
-        
-        if (!this.win.getVisible()) {
-            // 1. 动态创建一个隐藏的锚点元素（放在屏幕右下角）
-            var anchor = document.getElementById("_alarm_anchor_");
-            if (!anchor) {
-                anchor = document.createElement("div");
-                anchor.id = "_alarm_anchor_";
-                anchor.style.cssText = "position:fixed; right:5px; bottom:40px; width:1px; height:1px; overflow:hidden;";
-                document.body.appendChild(anchor);
-            }
-            
-            // 2. 让窗口显示在锚点处 (向右上方弹出)
-            this.win.showAtEl(anchor, {
-                xAlign: 'right',   // 窗口的右边对齐锚点的右边
-                yAlign: 'bottom'   // 窗口的底部对齐锚点的底部
-            });
-        }
-        this.startBlink();
-    },
 
-    updateUI: function () {
-    	if (!this.win) this.win = mini.get("AlarmWindow"); 
-    	if (!this.win) return;
-        
-        var pendingMap = {}, ackMap = {}, suppMap = {};
-        
-        for (var key in this.alarms) {
-            var a = this.alarms[key];
-            var target = null;
-            if (a.ackStatus !== 1) {
-                target = pendingMap;
-            } else if (a.suppressStatus == 2) {
-                target = suppMap;
-            } else if (a.suppressStatus == 1) {
-                continue; // 已确认且自动消警 -> 直接抹掉
-            } else {
-                target = ackMap;
-            }
-
-            if (!target[a.deviceId]) {
-                target[a.deviceId] = { id: a.deviceId, text: a.deviceName || a.deviceId, deviceId: a.deviceId, expanded: true, children: [] };
-            }
-
-            var displayText = a.columnName + '：' + a.value;
-            if ((a.alarmType == 2 || a.alarmType == 5) && a.alarminfo) {
-                displayText = a.columnName + '（' + a.alarminfo + '）：' + a.value;
-            }
-
-            target[a.deviceId].children.push({
-                id: key, alarmKey: key, text: displayText, alarmLevel: a.alarmLevel,
-                deviceId: a.deviceId, deviceName: a.deviceName, column: a.column, columnName: a.columnName,
-                value: a.value, alarminfo: a.alarminfo, acqTime: a.acqTime, alertId: a.alertId,
-                status: a.ackStatus === 1 ? (a.suppressStatus === 2 ? 'SUPPRESSED' : 'ACK') : 'NEW',
-                triggerAlarm: a.triggerAlarm, pendingDelay: a.pendingDelay,
-                suppressStatus: a.suppressStatus, suppressReason: a.suppressReason,
-                suppressUser: a.suppressUser, suppressTime: a.suppressTime, suppressEndTime: a.suppressEndTime
-            });
-        }
-
-        var pendingData = [], ackData = [], suppData = [];
-        for (var k in pendingMap) pendingData.push(pendingMap[k]);
-        for (var k in ackMap) ackData.push(ackMap[k]);
-        for (var k in suppMap) suppData.push(suppMap[k]);
-
-        mini.get("pendingGrid").setData(pendingData);
-        mini.get("ackGrid").setData(ackData);
-        mini.get("suppressedGrid").setData(suppData);
-        
-        if (this.suppListWin && this.suppListWin.getVisible()) {
-            this.openSuppressedList(true); 
-        }
-
-        this.updateToolbar(pendingData, ackData, suppData);
-        
-        if (pendingData.length > 0 || ackData.length > 0) {
-            this.ensureWindowExpanded();
-        } else {
-            if (this.win.getVisible()) this.win.hide();
-        }
-    },
-
-    updateToolbar: function(pendingData, ackData, suppData) {
-    	if (!this.win) this.win = mini.get("AlarmWindow"); 
-    	if (!this.win) return;
-        var countLeaves = function(data) {
-            var c = 0;
-            data.forEach(function(d) { if (d.children) c += d.children.length; });
-            return c;
-        };
-        
-        var unackCount = countLeaves(pendingData);
-        var ackingCount = countLeaves(ackData);
-        var suppCount = countLeaves(suppData);
-        
-        var el;
-        el = document.getElementById("pendingSelText");
-        if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + this.getCheckedPendingKeys().length;
-
-        el = document.getElementById("ackedSelText");
-        if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + this.getCheckedAckedKeys().length;
-
-        el = document.getElementById("ackedCountText");
-        if (el) el.innerHTML = loginUserLanguageResource.confirmed + "：" + ackingCount;
-
-        el = document.getElementById("suppressedCountText");
-        if (el) el.innerHTML = loginUserLanguageResource.suppressed + "：" + suppCount;
-
-        var tabs = mini.get("alarmTabs");
-        tabs.updateTab(tabs.getTab("pending"), { title: loginUserLanguageResource.unconfirmed + " (" + unackCount + ")" });
-        tabs.updateTab(tabs.getTab("acked"), { title: loginUserLanguageResource.pendingSuppress + " (" + ackingCount + ")" });
-        tabs.updateTab(tabs.getTab("suppressed"), { title: loginUserLanguageResource.manualSuppress + " (" + suppCount + ")" });
-
-        // 隐藏/显示 第三个 Tab
-        var suppTabEl = tabs.getTabEl("suppressed");
-        if (suppTabEl) {
-            if (!this.showSuppressedTab) {
-                if (tabs.getActiveTab() && tabs.getActiveTab().name === "suppressed") {
-                    tabs.activeTab(unackCount > 0 ? "pending" : "acked");
-                }
-                suppTabEl.style.display = 'none';
-            } else {
-                if (suppCount > 0) {
-                    suppTabEl.style.display = '';
-                } else if (tabs.getActiveTab() && tabs.getActiveTab().name === "suppressed") {
-                    tabs.activeTab(unackCount > 0 ? "pending" : "acked");
-                    suppTabEl.style.display = 'none';
-                } else {
-                    suppTabEl.style.display = 'none';
-                }
-            }
-        }
-
-        this.updateTitle();
-    },
-
-    startBlink: function () {
-        var self = this;
-        if (this.blinkTask) return;
-        this.blinkOn = false;
-        this.blinkTask = setInterval(function () {
-            var realUnack = 0;
-            for (var k in self.alarms) {
-                if (self.alarms[k].ackStatus !== 1 && self.alarms[k].pendingDelay !== true) realUnack++;
-            }
-            if (realUnack === 0) { self.stopBlink(); return; }
-            self.blinkOn = !self.blinkOn;
-            self.updateTitle();
-        }, 800);
-    },
-
-    stopBlink: function () {
-        if (this.blinkTask) { clearInterval(this.blinkTask); this.blinkTask = null; }
-        this.blinkOn = false;
-        this.updateTitle();
-    },
-
-    updateTitle: function () {
-    	if (!this.win) this.win = mini.get("AlarmWindow");
-        if (!this.win) return; 
-        var unack = 0, acking = 0;
-        for (var k in this.alarms) {
-            if (this.alarms[k].ackStatus !== 1) unack++;
-            else if (this.alarms[k].suppressStatus == 0) acking++;
-        }
-        var total = unack + acking;
-        
-        var realUnack = 0;
-        for (var k in this.alarms) {
-            if (this.alarms[k].ackStatus !== 1 && this.alarms[k].pendingDelay !== true) realUnack++;
-        }
-
-        var text = _loginUserLanguageResource.alarmTitle;
-        if (total > 0) text = _loginUserLanguageResource.alarmTitle + ' (' + unack + '/' + total + ')';
-        
-        var html;
-        if (realUnack > 0 && this.blinkOn) {
-            html = '<span style="color:#dc2828;">● ' + text + '</span>';
-        } else if (realUnack > 0) {
-            html = '<span style="color:#dc2828;">○ ' + text + '</span>';
-        } else {
-            html = text;
-        }
-        this.win.setTitle(html);
-    },
-    
- // 控制“确认选中”按钮
-    updateAckButtonStatus: function() {
+    updateAckButtonStatus: function () {
         var pendingChecked = this.getCheckedPendingKeys().length;
-        var btnAck = mini.get("btnAckSelected"); // 直接用 mini.get 获取控件
-        if (btnAck) {
-            // 选中的大于0就启用(true)，否则禁用(false)
-            btnAck.setEnabled(pendingChecked > 0); 
-        }
+        var btnAck = mini.get("btnAckSelected");
+        if (btnAck) btnAck.setEnabled(pendingChecked > 0);
     },
 
-    // 控制“人工消警选中”按钮
-    updateSuppressButtonStatus: function() {
+    updateSuppressButtonStatus: function () {
         var ackChecked = this.getCheckedAckedKeys().length;
         var btnSuppress = mini.get("btnSuppressSelected");
-        if (btnSuppress) {
-            btnSuppress.setEnabled(ackChecked > 0);
-        }
+        if (btnSuppress) btnSuppress.setEnabled(ackChecked > 0);
     },
 
     getCheckedPendingKeys: function () {
         var tree = mini.get('pendingGrid');
+        if (!tree) return [];
         var checkedNodes = tree.getCheckedNodes();
         var keys = [];
         for (var i = 0; i < checkedNodes.length; i++) { if (checkedNodes[i].alarmKey) keys.push(checkedNodes[i].alarmKey); }
         return keys;
     },
-    
+
     getCheckedAckedKeys: function () {
         var tree = mini.get('ackGrid');
+        if (!tree) return [];
         var checkedNodes = tree.getCheckedNodes();
         var keys = [];
         for (var i = 0; i < checkedNodes.length; i++) { if (checkedNodes[i].alarmKey) keys.push(checkedNodes[i].alarmKey); }
@@ -616,10 +710,10 @@ var AlarmManager = {
     loadPendingAlarms: function () {
         var self = this;
         if (typeof alarmAlert !== 'undefined' && !alarmAlert) return;
-        
+
         var orgIdCmp = mini.get('leftOrg_Id');
         var orgId = orgIdCmp ? orgIdCmp.getValue() : '';
-        
+
         var deviceType = '';
         if (typeof getDeviceTypeFromTabId === 'function') {
             deviceType = getDeviceTypeFromTabId("RealTimeMonitoringTabPanel");
@@ -631,41 +725,44 @@ var AlarmManager = {
             data: { orgId: orgId, deviceType: deviceType, limit: 200 },
             success: function (resp) {
                 var r = typeof resp === 'string' ? JSON.parse(resp) : resp;
-                if (!r || !r.success || !r.data || r.data.length === 0) return;
+                if (!r || !r.success) {
+                    self.updateUI();
+                    return;
+                }
+                if (r.data && r.data.length > 0) {
+                    r.data.forEach(function (item) {
+                        var key = self.getAlarmKey(item);
+                        var isSuppressed = (item.suppressStatus == 2 || item.suppressStatus == 1);
+                        var isPendingDelay = (item.pendingDelay === true);
 
-                r.data.forEach(function (item) {
-                    var key = self.getAlarmKey(item);
-                    var isSuppressed = (item.suppressStatus == 2 || item.suppressStatus == 1);
-                    var isPendingDelay = (item.pendingDelay === true);
+                        if (isSuppressed) {
+                            // ignore
+                        } else if (isPendingDelay) {
+                            if (item.ackStatus == 1) self.ackKeys[key] = true;
+                        } else if (item.ackStatus == 1) {
+                            self.ackKeys[key] = true;
+                        }
 
-                    if (isSuppressed) {
-                        // ignore
-                    } else if (isPendingDelay) {
-                        if (item.ackStatus == 1) self.ackKeys[key] = true;
-                    } else if (item.ackStatus == 1) {
-                        self.ackKeys[key] = true;
-                    }
-
-                    if (!self.alarms[key]) {
-                        self.alarms[key] = {
-                            key: key, alertId: item.alertId, deviceId: item.deviceId, deviceName: item.deviceName,
-                            orgId: item.orgId, column: item.column, columnName: item.columnName,
-                            value: item.value, alarmLevel: item.alarmLevel, acqTime: item.acqTime,
-                            ackStatus: item.ackStatus == 1 ? 1 : 0, alarmType: item.alarmType, alarminfo: item.alarminfo,
-                            suppressStatus: item.suppressStatus || 0, suppressReason: item.suppressReason || '',
-                            suppressUser: item.suppressUser || '', suppressTime: item.suppressTime || '',
-                            suppressEndTime: item.suppressEndTime || '',
-                            triggerAlarm: item.triggerAlarm !== false, pendingDelay: isPendingDelay
-                        };
-                    }
-                });
+                        if (!self.alarms[key]) {
+                            self.alarms[key] = {
+                                key: key, alertId: item.alertId, deviceId: item.deviceId, deviceName: item.deviceName,
+                                orgId: item.orgId, column: item.column, columnName: item.columnName,
+                                value: item.value, alarmLevel: item.alarmLevel, acqTime: item.acqTime,
+                                ackStatus: item.ackStatus == 1 ? 1 : 0, alarmType: item.alarmType, alarminfo: item.alarminfo,
+                                suppressStatus: item.suppressStatus || 0, suppressReason: item.suppressReason || '',
+                                suppressUser: item.suppressUser || '', suppressTime: item.suppressTime || '',
+                                suppressEndTime: item.suppressEndTime || '',
+                                triggerAlarm: item.triggerAlarm !== false, pendingDelay: isPendingDelay
+                            };
+                        }
+                    });
+                }
                 self.updateUI();
-                // 数据加载完毕后，检查并播放声音
                 self._refreshSoundAfterAck();
             }
         });
     },
-    
+
     openSuppressedList: function(isRefresh) {
         if (!isRefresh && this.alarms && Object.keys(this.alarms).length === 0) return;
 
@@ -686,25 +783,25 @@ var AlarmManager = {
                 });
             }
         }
-        
+
         var suppData = [];
         for (var k in suppMap) suppData.push(suppMap[k]);
-        
+
         if (suppData.length === 0) {
-            if (!isRefresh) mini.alert(_loginUserLanguageResource.noSuppressedRecords || "暂无人工消警记录");
+            if (!isRefresh) mini.alert(_loginUserLanguageResource.noSuppressedRecords);
             if (this.suppListWin && this.suppListWin.getVisible()) this.suppListWin.hide();
             return;
         }
-        
+
         var grid = mini.get("suppressedListGrid");
         grid.setData(suppData);
-        this.suppListWin.setTitle((_loginUserLanguageResource.manualSuppressRecords || "人工消警记录") + " (" + suppData.length + ")");
+        this.suppListWin.setTitle(_loginUserLanguageResource.manualSuppressRecords + " (" + suppData.length + ")");
         if (!isRefresh) this.suppListWin.show();
     },
 
     onRemoteAck: function (alertIds, ackUser, ackIp, ackTime) {
-    	if (!this.win) this.win = mini.get("AlarmWindow");
-        if (!this.win) return; 
+        if (!this.win) this.win = mini.get("AlarmWindow");
+        if (!this.win) return;
         if (!alertIds || alertIds.length === 0) return;
         var idSet = {}; alertIds.forEach(function(id){ idSet[id] = true; });
         for (var key in this.alarms) {
@@ -719,8 +816,8 @@ var AlarmManager = {
     },
 
     onRemoteSuppress: function (alertIds, suppressReason, suppressUser, suppressIp, suppressTime, suppressEndTime) {
-    	if (!this.win) this.win = mini.get("AlarmWindow");
-        if (!this.win) return; 
+        if (!this.win) this.win = mini.get("AlarmWindow");
+        if (!this.win) return;
         if (!alertIds || alertIds.length === 0) return;
         var idSet = {}; alertIds.forEach(function(id){ idSet[id] = true; });
         for (var key in this.alarms) {
@@ -736,8 +833,8 @@ var AlarmManager = {
     },
 
     onRemoteCancelSuppress: function (alertIds) {
-    	if (!this.win) this.win = mini.get("AlarmWindow");
-        if (!this.win) return; 
+        if (!this.win) this.win = mini.get("AlarmWindow");
+        if (!this.win) return;
         if (!alertIds || alertIds.length === 0) return;
         var idSet = {}; alertIds.forEach(function(id){ idSet[id] = true; });
         for (var key in this.alarms) {
@@ -756,14 +853,8 @@ var AlarmManager = {
         this.alarms = {}; this.ackKeys = {}; this._localAckWarned = false;
         if (window.AlarmSoundManager) AlarmSoundManager.stop();
         if (this.win) { this.stopBlink(); this.win.hide(); }
+        if (this.miniBar) this.miniBar.hide();
         if (this.suppListWin) this.suppListWin.hide();
-    },
-
-    alignToBottomRight: function (w, h) {
-        var docW = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        var docH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-        this.win.setX(Math.max(0, docW - w - 20));
-        this.win.setY(Math.max(0, docH - h - 40));
     }
 };
 
@@ -779,7 +870,7 @@ var AlarmSoundManager = {
             if (self.unlocked) return;
             self.unlocked = true;
             if (self.audioCtx && self.audioCtx.state === 'suspended') self.audioCtx.resume().catch(function(){});
-            
+
             document.removeEventListener('click', unlock, true);
             document.removeEventListener('pointerdown', unlock, true);
             document.removeEventListener('keydown', unlock, true);
@@ -796,7 +887,7 @@ var AlarmSoundManager = {
         document.addEventListener('click', unlock, true);
         document.addEventListener('pointerdown', unlock, true);
         document.addEventListener('keydown', unlock, true);
-        
+
         try {
             var Ctx = window.AudioContext || window.webkitAudioContext;
             if (Ctx) this.audioCtx = new Ctx();
@@ -822,6 +913,9 @@ var AlarmSoundManager = {
                 if (r.Data.SecondLevel && r.Data.SecondLevel.SoundFile) self.config[200] = { fileName: r.Data.SecondLevel.SoundFile };
                 if (r.Data.ThirdLevel && r.Data.ThirdLevel.SoundFile) self.config[300] = { fileName: r.Data.ThirdLevel.SoundFile };
                 self._loaded = true;
+            },
+            error: function () {
+                console.warn("获取报警声音配置失败，已使用静默处理");
             }
         });
     },
@@ -934,21 +1028,15 @@ var AlarmSoundManager = {
 };
 
 function checkColumnRenderer(e) {
-    if (e.record.children && e.record.children.length > 0) return ""; // 如果是父节点，不返回勾选框
+    if (e.record.children && e.record.children.length > 0) return "";
     return e.column.editor ? true : undefined;
 }
 
 function onTreeDrawnode(e){
-//	if (e.node.classes != 1) e.showCheckBox = false;
-	if(!e.isLeaf){
-		e.showCheckBox = false;
-	}
-	
+    if(!e.isLeaf){
+        e.showCheckBox = false;
+    }
 }
-
-// ==========================================
-// 页面辅助操作与渲染函数
-// ==========================================
 
 function textRenderer(e) {
     if (!e.isLeaf) return e.value;
@@ -971,12 +1059,12 @@ function statusRenderer(e) {
     var triggerAlarm = e.record.triggerAlarm;
     var pendingDelay = e.record.pendingDelay;
     var status = e.record.status;
-    
+
     var ackText = (suppStatus === 1) ? _loginUserLanguageResource.unconfirmed : ((status === 'ACK' || status === 'SUPPRESSED') ? _loginUserLanguageResource.confirmed : _loginUserLanguageResource.unconfirmed);
     var suppText = _loginUserLanguageResource.pendingSuppress;
     if (suppStatus == 2) suppText = _loginUserLanguageResource.manualSuppress;
     else if (suppStatus == 1) suppText = _loginUserLanguageResource.autoSuppress;
-    
+
     var ackColor = (ackText === _loginUserLanguageResource.unconfirmed) ? '#dc2828' : '#888';
     var suppColor = '#1677ff';
     if (suppText === _loginUserLanguageResource.manualSuppress) suppColor = '#0e7490';
@@ -1021,20 +1109,11 @@ function rowStyle(e) {
     return "background:#fff4f4;";
 }
 
-//$(document).ready(function(){
-//    setTimeout(function(){
-//        mini.get("pendingGrid").setRowStyle(rowStyle);
-//        mini.get("ackGrid").setRowStyle(rowStyle);
-//        mini.get("suppressedGrid").setRowStyle(rowStyle);
-//        mini.get("suppressedListGrid").setRowStyle(rowStyle);
-//    }, 100);
-//});
-
 function onTabChanged(e) {
-	if (!AlarmManager.win) return;
+    if (!AlarmManager.win) return;
     var pg = mini.get("pendingGrid"), ag = mini.get("ackGrid"), sg = mini.get("suppressedGrid");
     if (!pg || !ag || !sg) return;
-	AlarmManager.updateToolbar(mini.get("pendingGrid").getData(), mini.get("ackGrid").getData(), mini.get("suppressedGrid").getData()); 
+    AlarmManager.updateToolbar(pg.getData(), ag.getData(), sg.getData());
 }
 function onCheckChanged(e) {
     var el = document.getElementById("pendingSelText");
@@ -1043,19 +1122,17 @@ function onCheckChanged(e) {
     if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + AlarmManager.getCheckedAckedKeys().length;
 }
 
-//待确认 Grid 勾选事件
 function onPendingCheckChanged(e) {
     var el = document.getElementById("pendingSelText");
     if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + AlarmManager.getCheckedPendingKeys().length;
-    
+
     AlarmManager.updateAckButtonStatus();
 }
 
-// 待消警 Grid 勾选事件
 function onAckCheckChanged(e) {
     var el = document.getElementById("ackedSelText");
     if (el) el.innerHTML = loginUserLanguageResource.selected + "：" + AlarmManager.getCheckedAckedKeys().length;
-    
+
     AlarmManager.updateSuppressButtonStatus();
 }
 
@@ -1087,7 +1164,6 @@ function doAckAll() {
     doAck(keys);
 }
 
-// 消警对话框
 var currentSuppressKeys = [];
 var currentEditKey = null;
 function openSuppressDialog(keys) {
@@ -1134,7 +1210,7 @@ function confirmSuppress() {
             if (a && a.alertId) alertIds.push(a.alertId);
         });
         if (alertIds.length === 0) { mini.alert(_loginUserLanguageResource.noSuppressibleAlarm); return; }
-        
+
         $.ajax({
             url: context + '/alarmQueryController/suppressAlarm',
             type: 'POST', contentType: 'application/json',
@@ -1177,7 +1253,7 @@ function cancelSuppress(key) {
         if (action !== "ok") return;
         var a = AlarmManager.alarms[key];
         if (!a || !a.alertId) { mini.alert(_loginUserLanguageResource.alarmIdNotFoundCancel); return; }
-        
+
         $.ajax({
             url: context + '/alarmQueryController/cancelSuppress',
             type: 'POST', contentType: 'application/json',
@@ -1200,10 +1276,10 @@ function cancelSuppress(key) {
 function editSuppress(key) {
     var a = AlarmManager.alarms[key];
     if (!a || !a.alertId) { mini.alert(_loginUserLanguageResource.alarmIdNotFoundEdit); return; }
-    
+
     currentSuppressKeys = [];
     currentEditKey = key;
-    
+
     mini.get("suppressReason").setValue(a.suppressReason || "");
     mini.get("suppressDuration").setValue(24);
     mini.get("suppressDialog").setTitle(_loginUserLanguageResource.editManualSuppress);

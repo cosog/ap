@@ -86,6 +86,11 @@ String context = path;
                             <td><input id="roleVideoKeyEdit" class="mini-combobox"
                                        valueField="id" textField="text" allowInput="false" value="0" /></td>
                         </tr>
+                        <tr>
+                            <td class="label"><span style="color:red;">*</span><span id="lblRoleAlarmAlert"></span>：</td>
+                            <td><input id="roleAlarmAlert" class="mini-combobox"
+                                       valueField="id" textField="text" allowInput="false" value="0" /></td>
+                        </tr>
                         <tr id="rowRemarkZhCN">
                             <td class="label"><span id="lblRemarkZhCN"></span>：</td>
                             <td><input id="remark_zh_CN" class="mini-textarea" /></td>
@@ -206,6 +211,7 @@ String context = path;
     var currentUserRoleLevel       = 1;
     var currentUserRoleShowLevel   = 1;
     var currentUserRoleVideoKeyEdit= 0;
+    var currentUserRoleAlarmAlert= 0;
     var loginUserLanguage          = 'zh_CN';
     var _loginUserRoleModules      = [];   // 当前用户拥有的模块权限
 
@@ -223,6 +229,7 @@ String context = path;
         document.getElementById('lblRoleLevel').textContent    = R.roleLevel;
         document.getElementById('lblShowLevel').textContent    = R.dataShowLevel;
         document.getElementById('lblRoleVideoKeyEdit').textContent = R.roleVideoKeyEdit;
+        document.getElementById('lblRoleAlarmAlert').textContent = R.alarmPopup;
         document.getElementById('lblRemarkZhCN').textContent  = R.roleRemark;
         document.getElementById('lblRemarkEn').textContent    = R.roleRemark;
         document.getElementById('lblRemarkRu').textContent    = R.roleRemark;
@@ -249,6 +256,15 @@ String context = path;
             ]);
             vke.setValue(0);
         }
+        
+        var roleAlarmAlertComb = mini.get('roleAlarmAlert');
+        if (roleAlarmAlertComb) {
+        	roleAlarmAlertComb.setData([
+                { id: 0, text: R.no },
+                { id: 1, text: R.yes }
+            ]);
+        	roleAlarmAlertComb.setValue(0);
+        }
 
         // 空数据提示
         var moduleTree = mini.get('moduleTree');
@@ -268,6 +284,7 @@ String context = path;
         currentUserRoleLevel        = data.currentUserRoleLevel || 1;
         currentUserRoleShowLevel    = data.currentUserRoleShowLevel || 1;
         currentUserRoleVideoKeyEdit = data.currentUserRoleVideoKeyEdit || 0;
+        currentUserRoleAlarmAlert =   data.currentUserRoleAlarmAlert || 0;
         loginUserLanguage           = data.loginUserLanguage || 'zh_CN';
         _loginUserRoleModules       = data.loginUserRoleModules || [];
 
@@ -295,6 +312,15 @@ String context = path;
         // 视频密匙权限：无权限时置为"否"并禁用
         if (currentUserRoleVideoKeyEdit == 0) {
             var vke = mini.get('roleVideoKeyEdit');
+            if (vke) {
+                vke.setValue(0);
+                vke.setEnabled(false);
+            }
+        }
+        
+     	// 报警弹窗权限：无权限时置为"否"并禁用
+        if (currentUserRoleAlarmAlert == 0) {
+            var vke = mini.get('roleAlarmAlert');
             if (vke) {
                 vke.setValue(0);
                 vke.setEnabled(false);
@@ -586,6 +612,7 @@ String context = path;
                 'role.roleLevel':      mini.get('roleLevel').getValue()      || 1,
                 'role.showLevel':      mini.get('showLevel').getValue()      || 1,
                 'role.roleVideoKeyEdit': mini.get('roleVideoKeyEdit').getValue() || 0,
+                'role.alarmAlert':     mini.get('roleAlarmAlert').getValue() || 0,
                 'role.remark_zh_CN':   mini.get('remark_zh_CN').getValue()   || '',
                 'role.remark_en':      mini.get('remark_en').getValue()      || '',
                 'role.remark_ru':      mini.get('remark_ru').getValue()      || '',

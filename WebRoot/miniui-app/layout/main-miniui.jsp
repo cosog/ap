@@ -385,7 +385,7 @@ request.setAttribute("browserLang", browserLang);
     <jsp:include page="../modules/alarmAlert/AlarmWindow.jsp" flush="true" />
 
     <!-- ★ 引入报警核心逻辑 JS -->
-    <script src="<%=path%>/miniui-app/modules/alarmAlert/js/AlarmManager.js"></script>
+    <script src="<%=path%>/miniui-app/modules/alarmAlert/js/AlarmManager.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
 
     <!-- ================================================================ -->
     <!-- 主 JavaScript（与 DOM 相关的初始化，保留在底部）               -->

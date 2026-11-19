@@ -17,7 +17,7 @@ String path = request.getContextPath();
                         <a class="mini-button" onclick="doAckAll()" plain="true">全部确认</a>
                     </div>
                 </div>
-                <div class="mini-treegrid" id="pendingGrid" style="width:100%;height:100%;" rowStyleRenderer="rowStyle" showTreeIcon="true" resultAsTree="true" treeColumn="text" allowAlternating="true" oncheckchanged="onPendingCheckChanged" showHGridLines="false" showVGridLines="false" showCheckbox="true" ondrawnode=onTreeDrawnode>
+                <div class="mini-treegrid" id="pendingGrid" style="width:100%;height:100%;" rowStyleRenderer="rowStyle" showTreeIcon="true" resultAsTree="true" treeColumn="text" allowAlternating="true" onnodecheck="onPendingCheckChanged" showHGridLines="false" showVGridLines="false" showCheckbox="true" ondrawnode=onTreeDrawnode>
                     <div property="columns">
                         <div field="text" name="text" width="200" headerAlign="center" align="left" renderer="textRenderer" treeColumn="true">设备报警内容</div>
                         <div field="alarmLevel" name="alarmLevel" width="60" headerAlign="center" align="center" renderer="levelRenderer">级别</div>
@@ -43,7 +43,7 @@ String path = request.getContextPath();
                         <a class="mini-button" onclick="openSuppressedList()" plain="true">查看人工消警记录</a>
                     </div>
                 </div>
-                <div class="mini-treegrid" id="ackGrid" style="width:100%;height:100%;" rowStyleRenderer="rowStyle" showTreeIcon="true" resultAsTree="true" treeColumn="text" allowAlternating="true" onnodecheck="onAckCheckChanged" showHGridLines="false" showVGridLines="false" showCheckbox="true" ondrawnode=onTreeDrawnode>>
+                <div class="mini-treegrid" id="ackGrid" style="width:100%;height:100%;" rowStyleRenderer="rowStyle" showTreeIcon="true" resultAsTree="true" treeColumn="text" allowAlternating="true" onnodecheck="onAckCheckChanged" showHGridLines="false" showVGridLines="false" showCheckbox="true" ondrawnode=onTreeDrawnode>
                     <div property="columns">
                         <div field="text" name="text" width="200" headerAlign="center" align="left" renderer="textRenderer" treeColumn="true">设备报警内容</div>
                         <div field="alarmLevel" name="alarmLevel" width="60" headerAlign="center" align="center" renderer="levelRenderer">级别</div>
@@ -79,7 +79,7 @@ String path = request.getContextPath();
     </div>
 </div>
 
-<!-- 人工消警录入弹窗 (通用，修改时也复用) -->
+<!-- 人工消警录入弹窗 -->
 <div id="suppressDialog" class="mini-window" title="人工消警" style="width:450px;height:230px;display:none;" modal="true">
     <div class="mini-panel" showHeader="false" showToolbar="true" style="width:100%;height:100%;" borderStyle="border:0;">
         <div property="toolbar" style="padding:2px 5px;text-align:right;">
@@ -101,7 +101,7 @@ String path = request.getContextPath();
     </div>
 </div>
 
-<!-- ★ 独立的人工消警记录查看弹窗 -->
+<!-- 独立的人工消警记录查看弹窗 -->
 <div id="suppressedListWindow" class="mini-window" title="人工消警记录" style="width:900px;height:500px;display:none;" modal="true">
     <div class="mini-panel" showHeader="false" showToolbar="true" style="width:100%;height:100%;" borderStyle="border:0;">
         <div class="mini-treegrid" id="suppressedListGrid" style="width:100%;height:100%;" rowStyleRenderer="rowStyle" showTreeIcon="true" resultAsTree="true" allowAlternating="true" showHGridLines="false" showVGridLines="false">
@@ -116,4 +116,11 @@ String path = request.getContextPath();
             </div>
         </div>
     </div>
+</div>
+
+<!-- ★ 收缩状态下的小条窗口（加入 showModal="false" 和强制隐藏 body 的属性） -->
+<div id="AlarmMiniBar" class="mini-window mini-window-titlebar-only" title="报警" style="width:260px;height:36px;display:none;" 
+     showShadow="true" allowDrag="true" showCloseButton="false" showMaxButton="false" showMinButton="false" showCollapseButton="true"
+     showModal="false"
+     headerStyle="cursor:pointer;padding-top:2px;">
 </div>

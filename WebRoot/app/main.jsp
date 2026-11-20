@@ -496,7 +496,7 @@
                     if (window.AP && AP.alert && AP.alert.AlarmSoundManager && !AP.alert.AlarmSoundManager.unlocked) {
                         
                         
-                        Ext.Msg.alert(loginUserLanguageResource.tip, '<b style="color:#dc2828;">⚠️ 提示</b><br/>请点击屏幕任意位置，以激活报警声音。');
+                        Ext.Msg.alert(loginUserLanguageResource.tip, '<b style="color:#dc2828;">⚠️ '+loginUserLanguageResource.tip+'</b><br/>'+loginUserLanguageResource.activateSoundTip);
                         
                         var unlockEvt = function() {
                             document.removeEventListener('click', unlockEvt, true);

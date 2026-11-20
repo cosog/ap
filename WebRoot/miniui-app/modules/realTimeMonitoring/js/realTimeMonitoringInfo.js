@@ -771,26 +771,58 @@ function onDeviceGridDrawCell(e) {
     var Run  = (alarmShowStyle.Run)  || {};
     var alarmInfo = record.alarmInfo || [];
     var fieldUpper = field.toUpperCase();
-
+    
     if (fieldUpper === 'DEVICENAME') {
         var badges = '';
         var counts = { 100: 0, 200: 0, 300: 0 };
+        var hasValidAlarm = false;
+        var persistingCount = 0; // 统计触发间隔中的总数
+
         for (var i = 0; i < alarmInfo.length; i++) {
+            // 1. 跳过持续检测中的项（完全不计入红点，也不计入各项报警和间隔报警）
+            if (alarmInfo[i].pendingDelay === true || alarmInfo[i].pendingDelay === 'true') {
+                continue;
+            }
+            
             var level = alarmInfo[i].alarmLevel;
+            
+            // 2. 统计触发间隔中的数量
+            if (alarmInfo[i].triggerAlarm === false) {
+                persistingCount++;
+            }
+
+            // 3. 统计各级有效报警数量
             if (level === 100 || level === 200 || level === 300) {
                 counts[level] = (counts[level] || 0) + 1;
+                hasValidAlarm = true;
             }
         }
+
         var firstColor  = (Data.FirstLevel  && Data.FirstLevel.Color)  || 'dc2828';
         var secondColor = (Data.SecondLevel && Data.SecondLevel.Color) || 'f09614';
         var thirdColor  = (Data.ThirdLevel  && Data.ThirdLevel.Color)  || 'fae600';
+        
+        // 渲染原有徽章
         if (counts[100] > 0) badges += createAlarmBadge(counts[100], firstColor);
         if (counts[200] > 0) badges += createAlarmBadge(counts[200], secondColor);
         if (counts[300] > 0) badges += createAlarmBadge(counts[300], thirdColor);
 
         var deviceName = value || '';
-        var alarmData = JSON.stringify(counts);
-        e.cellHtml = '<span class="device-name-cell" data-alarm=\'' + alarmData + '\' data-name="' + deviceName + '" style="white-space:nowrap;">' + badges + deviceName + '</span>';
+        var encodedName = mini.htmlEncode(deviceName);
+        
+        // 把 persistingCount 也存入 data-alarm 中，供悬浮方法读取
+        var alarmData = JSON.stringify({
+            counts: counts,
+            persistingCount: persistingCount,
+            hasValidAlarm: hasValidAlarm
+        });
+
+        e.cellHtml = '<span class="device-name-cell" ' +
+                     'data-alarm=\'' + alarmData + '\' ' +
+                     'data-name="' + encodedName + '" ' +
+                     'style="white-space:nowrap;">' + 
+                     badges + encodedName + 
+                     '</span>';
         return;
     }
 
@@ -825,17 +857,27 @@ function onDeviceGridDrawCell(e) {
     if (fieldUpper !== 'ID' && fieldUpper !== 'DEVICENAME' &&
         fieldUpper !== 'COMMSTATUSNAME' && fieldUpper !== 'RUNSTATUSNAME') {
         var alarmLevel = 0;
+        var triggerAlarm = false;
         for (var j = 0; j < alarmInfo.length; j++) {
             var item = alarmInfo[j].item;
             if (item && item.toUpperCase() === fieldUpper) {
                 alarmLevel = alarmInfo[j].alarmLevel || 0;
+                triggerAlarm = (alarmInfo[j].triggerAlarm !== false);
                 break;
             }
         }
         if (alarmLevel > 0) {
-            var style = getAlarmStyleByLevel(alarmLevel, alarmShowStyle);
-            if (style && style.bg) {
-                e.cellStyle = 'background-color:' + style.bg + ';color:' + style.color + ';';
+        	//判断是否为持续中
+            if (triggerAlarm === false) {
+            	var style = getAlarmDimStyleByLevel(alarmLevel, alarmShowStyle);
+                if (style && style.bg) {
+                    e.cellStyle = 'background-color:' + style.bg + ';color:' + style.color + ';';
+                }
+            } else {
+            	var style = getAlarmStyleByLevel(alarmLevel, alarmShowStyle);
+                if (style && style.bg) {
+                    e.cellStyle = 'background-color:' + style.bg + ';color:' + style.color + ';';
+                }
             }
         }
     }
@@ -847,13 +889,18 @@ function onDeviceGridDrawCell(e) {
 function handleDeviceNameCellMouseEnter(cellElement, event) {
     var alarmData = cellElement.getAttribute('data-alarm');
     if (!alarmData) return;
-    var counts;
-    try { counts = JSON.parse(alarmData); } catch (e) { return; }
+    var data;
+    try { data = JSON.parse(alarmData); } catch (e) { return; }
+
+    // ★ 解析新的数据结构
+    var counts = data.counts;
+    var persistingCount = data.persistingCount;
+    var hasValidAlarm = data.hasValidAlarm;
+
+    // ★ 如果没有有效的报警（包括只有持续检测的），直接不显示提示框
+    if (!hasValidAlarm) return;
 
     var deviceName = cellElement.getAttribute('data-name') || '';
-    var hasAlarm = (counts[100] + counts[200] + counts[300]) > 0;
-    if (!hasAlarm) return;
-
     var alarmShowStyle = getAlarmShowStyle() || {};
     var Data = alarmShowStyle.Data || {};
 
@@ -879,7 +926,13 @@ function handleDeviceNameCellMouseEnter(cellElement, event) {
             '#' + (Data.ThirdLevel && Data.ThirdLevel.ColorText || '333333')));
     }
 
+    // ★ 横向拼接：设备名 + 报警标签 + 触发间隔提示
     var tipHtml = deviceName + ' ' + parts.join(' ');
+    
+    // 追加触发间隔的信息
+    if (persistingCount > 0) {
+        tipHtml += ' <span style="font-size:11px; color:#8c8c8c; font-style:italic;">(其中 ' + persistingCount + ' 条处于触发间隔中)</span>';
+    }
 
     var x = event.clientX + 12;
     var y = event.clientY + 12;
@@ -894,7 +947,7 @@ function handleDeviceNameCellMouseEnter(cellElement, event) {
     tipDiv.style.cssText =
         'position:fixed;background:#fff;border:1px solid #ccc;padding:6px 10px;' +
         'border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:99999;' +
-        'max-width:400px;font-size:12px;font-family:"Microsoft YaHei",Arial,sans-serif;' +
+        'max-width:500px;font-size:12px;font-family:"Microsoft YaHei",Arial,sans-serif;' +
         'pointer-events:none;';
     tipDiv.innerHTML = tipHtml;
     tipDiv.style.left = x + 'px';
@@ -1550,7 +1603,10 @@ function initRealtimeSceneCanvas(cfg, deviceId) {
                 currentValue: s.currentValue != null ? s.currentValue : '--',
                 unit: s.unit || '',
                 commStatus: s.commStatus != null ? s.commStatus : 0,
-                alarmLevel: s.alarmLevel || 0,
+                alarmLevel:     s.alarmLevel != null     ? parseInt(s.alarmLevel, 10) || 0     : 0,
+                suppressStatus: s.suppressStatus != null ? parseInt(s.suppressStatus, 10) || 0 : 0,
+                pendingDelay:   (s.pendingDelay === true || s.pendingDelay === 'true'),
+                triggerAlarm:   (s.triggerAlarm !== false),
                 itemType: s.itemType,
                 resolutionMode: s.resolutionMode,
                 bitIndex: s.bitIndex,
@@ -1798,7 +1854,22 @@ function buildRealtimeLabelText(b, style) {
     var prefixHtml = prefix ? (encodeHTML(prefix) + '：') : '';
     var valHtml = encodeHTML(val + unitStr);
 
-    var alarmLevel = parseInt(b.alarmLevel, 10) || 0;
+ // ★ 同步：消警状态 / 持续检测 / 触发间隔决定是否染报警色
+    var alarmLevel     = parseInt(b.alarmLevel, 10) || 0;
+    var suppressStatus = parseInt(b.suppressStatus, 10) || 0;
+    var isPending      = (b.pendingDelay === true || b.pendingDelay === 'true');
+    var triggerAlarm   = (b.triggerAlarm !== false);
+
+    var isPersisting = false;
+    if (suppressStatus === 2 || isPending) {
+        // 人工消警 / 持续检测中：视为正常，不染报警色
+        alarmLevel = 0;
+    } else if (!triggerAlarm && alarmLevel > 0) {
+        // 触发间隔中：染色级别置 0
+        isPersisting = true;
+        alarmLevel = 0;
+    }
+    
     var valColor = null;
 
     if (alarmLevel > 0 && _rmSceneAlarmShowStyle && _rmSceneAlarmShowStyle.Data) {
@@ -2393,13 +2464,35 @@ function applyCellStyle(e) {
                 if (isNotVal(info.realtimeColor))   e.cellStyle += 'color:#' + info.realtimeColor + ';';
                 if (isNotVal(info.realtimeBgColor)) e.cellStyle += 'background-color:#' + info.realtimeBgColor + ';';
             } else if (isValueColumn) {
-                var alarmLevel = info.alarmLevel;
-                if (alarmLevel > 0) e.cellStyle += 'font-weight:bold;';
-                var styleCfg = getAlarmStyleByLevel(alarmLevel, alarmShowStyle);
-                if (styleCfg) {
-                    if (styleCfg.bg)    e.cellStyle += 'background-color:' + styleCfg.bg + ';';
-                    if (styleCfg.color) e.cellStyle += 'color:' + styleCfg.color + ';';
-                }
+                var cellAlarmLevel = info.alarmLevel;
+                var cellTriggerAlarm = info.triggerAlarm;
+    	        var cellSuppressStatus = info.suppressStatus;
+    	        var cellPendingDelay = info.pendingDelay;
+    	        var isPersisting = false;   // 重触发时间窗口：报警持续中
+    	        if (cellSuppressStatus == 2) {
+    	        	cellAlarmLevel = 0;                       // 人工消警：按正常色
+    	        } else if (cellPendingDelay === true) {
+    	        	cellAlarmLevel = 0;                       // ★ 持续检测中（delay）：完全不高亮
+    	        } else if (cellTriggerAlarm === false && cellAlarmLevel > 0) {
+    	            isPersisting = true;                      // ★ 重触发窗口内：弱化显示
+    	        }
+    	        if (isPersisting) {
+    	        	// 弱化样式：淡背景 + 虚线边框 + 斜体
+    	        	var styleCfg = getAlarmDimStyleByLevel(cellAlarmLevel, alarmShowStyle);
+                    if (styleCfg) {
+                        if (styleCfg.bg)    e.cellStyle += 'background-color:' + styleCfg.bg + ';';
+                        if (styleCfg.color) e.cellStyle += 'color:' + styleCfg.color + ';';
+                    }
+    	        }else{
+    	        	if (cellAlarmLevel > 0) e.cellStyle += 'font-weight:bold;';
+                    var styleCfg = getAlarmStyleByLevel(cellAlarmLevel, alarmShowStyle);
+                    if (styleCfg) {
+                        if (styleCfg.bg)    e.cellStyle += 'background-color:' + styleCfg.bg + ';';
+                        if (styleCfg.color) e.cellStyle += 'color:' + styleCfg.color + ';';
+                    }
+    	        }
+                
+                
             }
             break;
         }
@@ -2943,13 +3036,13 @@ function handleRealTimeData(data) {
                 if (data.allItemInfo) {
                     for (var j = 0; j < data.allItemInfo.length; j++) {
                         var it = data.allItemInfo[j];
-                        if (it.alarmLevel > 0) {
+                        if (it.suppressStatus != 2 && it.alarmLevel > 0 && !it.pendingDelay) {
                             var actualColumnKey = null;
                             for (var key in foundRow) {
                                 if (key.toUpperCase() === it.column.toUpperCase()) { actualColumnKey = key; break; }
                             }
                             if (actualColumnKey === null) actualColumnKey = it.column;
-                            alarmInfo.push({ item: actualColumnKey, alarmLevel: it.alarmLevel });
+                            alarmInfo.push({ item: actualColumnKey, alarmLevel: it.alarmLevel,triggerAlarm: it.triggerAlarm !== false });
                         }
                     }
                 }
@@ -3104,7 +3197,10 @@ function handleRealTimeData(data) {
                                 var item = valueMap[binding.fieldName.toUpperCase()];
                                 if (!item) return;
                                 binding.currentValue = item.value;
-                                binding.alarmLevel = item.alarmLevel || 0;
+                                binding.alarmLevel     = item.alarmLevel != null     ? parseInt(item.alarmLevel, 10) || 0     : 0;
+                                binding.suppressStatus = item.suppressStatus != null ? parseInt(item.suppressStatus, 10) || 0 : 0;
+                                binding.pendingDelay   = (item.pendingDelay === true || item.pendingDelay === 'true');
+                                binding.triggerAlarm   = (item.triggerAlarm !== false);
                             });
 
                             renderRealtimeSceneLabels();

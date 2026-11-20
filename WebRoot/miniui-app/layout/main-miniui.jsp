@@ -1013,13 +1013,73 @@ request.setAttribute("browserLang", browserLang);
         refreshOrgTree();
         refreshMenuTree();
         
-     	// 初始化报警管理器
+     // 初始化报警管理器
         if (typeof alarmAlert !== 'undefined' && alarmAlert) {
             AlarmSoundManager.initUnlock();
             AlarmSoundManager.loadConfig();
             setTimeout(function() {
                 AlarmManager.init(); 
             }, 1000);
+
+            // ★ 核心：无论是不是首次登录、无论怎么刷新，只要页面加载，立刻唤醒 AudioContext
+            setTimeout(function() {
+                try {
+                    var Ctx = window.AudioContext || window.webkitAudioContext;
+                    if (Ctx && !window._globalAudioCtx) {
+                        window._globalAudioCtx = new Ctx();
+                        if (window._globalAudioCtx.state === 'suspended') {
+                            window._globalAudioCtx.resume();
+                        }
+                    }
+                } catch(e) {}
+            }, 500);
+
+            // 延迟 1.5 秒，如果 AlarmSoundManager 还是没解锁，弹提示让用户点（解决浏览器拦截自动播放的问题）
+            setTimeout(function() {
+                if (typeof AlarmSoundManager !== 'undefined' && !AlarmSoundManager.unlocked) {
+                    
+                    // 使用 MiniUI 的弹窗替代 Ext.Msg.alert
+                    mini.alert(
+                        '<b style="color:#dc2828;">⚠️ ' + loginUserLanguageResource.tip + '</b><br/>' + 
+                        (loginUserLanguageResource.activateSoundTip || '请点击屏幕任意位置，以激活报警声音。'),
+                        loginUserLanguageResource.tip,
+                        function() {
+                            // 用户点击确定后，主动解锁
+                            if (typeof AlarmSoundManager !== 'undefined') {
+                                AlarmSoundManager.unlocked = true;
+                                if (AlarmSoundManager.pendingLevel !== null) {
+                                    var lv = AlarmSoundManager.pendingLevel;
+                                    AlarmSoundManager.pendingLevel = null;
+                                    if (!AlarmManager.isMuted) AlarmSoundManager.play(lv);
+                                }
+                            }
+                            if (window._globalAudioCtx && window._globalAudioCtx.state === 'suspended') {
+                                window._globalAudioCtx.resume().catch(function(){});
+                            }
+                        }
+                    );
+                    
+                    // 同时监听全局点击事件，只要用户点了页面任何地方，也解除静音限制
+                    var unlockEvt = function() {
+                        document.removeEventListener('click', unlockEvt, true);
+                        document.removeEventListener('pointerdown', unlockEvt, true);
+                        if (typeof AlarmSoundManager !== 'undefined' && !AlarmSoundManager.unlocked) {
+                            AlarmSoundManager.unlocked = true;
+                            // 如果有挂起的报警声音，尝试恢复
+                            if (AlarmSoundManager.pendingLevel !== null) {
+                                var lv = AlarmSoundManager.pendingLevel;
+                                AlarmSoundManager.pendingLevel = null;
+                                if (!AlarmManager.isMuted) AlarmSoundManager.play(lv);
+                            }
+                        }
+                        if (window._globalAudioCtx && window._globalAudioCtx.state === 'suspended') {
+                            window._globalAudioCtx.resume().catch(function(){});
+                        }
+                    };
+                    document.addEventListener('click', unlockEvt, true);
+                    document.addEventListener('pointerdown', unlockEvt, true);
+                }
+            }, 1500);
         }
         
         $(window).resize(function() {

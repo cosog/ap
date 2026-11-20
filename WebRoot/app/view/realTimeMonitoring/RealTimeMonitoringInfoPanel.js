@@ -1326,7 +1326,15 @@ var DeviceRealTimeMonitoringDataHandsontableHelper = {
 
                 	        if (isPersisting) {
                 	        	// 弱化样式：淡背景 + 虚线边框 + 斜体
-                	            var persistBg = color16ToRgba('#' + AlarmShowStyle.Data.FirstLevel.BackgroundColor, 0.15);
+                	        	var backgroundColor='000000';
+                	        	if(cellAlarmLevel==100){
+                	        		backgroundColor=AlarmShowStyle.Data.FirstLevel.BackgroundColor;
+                	        	}else if(cellAlarmLevel==200){
+                	        		backgroundColor=AlarmShowStyle.Data.SecondLevel.BackgroundColor;
+                	        	}else if(cellAlarmLevel==300){
+                	        		backgroundColor=AlarmShowStyle.Data.ThirdLevel.BackgroundColor;
+                	        	}
+                	            var persistBg = color16ToRgba('#' + backgroundColor, 0.15);
                 	            td.style.backgroundColor = persistBg;
                 	            td.style.color = '#' + AlarmShowStyle.Data.Normal.Color; // ★ 改为正常字体色（防白字白底）
                 	            td.style.border = '1px dashed #ccc';

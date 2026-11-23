@@ -267,11 +267,17 @@ String moduleId = request.getParameter("moduleId");
                             <input id="detailStartDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
                             <span style="margin-left:8px;font-size:12px;color:#333;" id="detailTimeToLabel">至：</span>
                             <input id="detailEndDate" class="mini-datepicker" style="width:150px;" format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm" showTime="true" showOkButton="true" showTodayButton="true" showClearButton="false" allowInput="false" />
+                        </div>
+                        <div class="mini-toolbar" style="border:0;border-bottom:1px solid #e8e8e8;padding:4px 8px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;flex-shrink:0;background:#fafafa;">
                             <span style="font-size:12px;color:#333;margin-left:8px;" id="detailAlarmLevelLabel">报警级别：</span>
                             <input id="detailAlarmLevel" class="mini-combobox" style="width:100px;" emptyText="-- 全部 --" valueField="id" textField="text" />
+                            <span style="font-size:12px;color:#333;margin-left:8px;" id="detailAlarmConfirmationStatusLabel">确认状态：</span>
+                            <input id="detailAlarmConfirmationStatus" class="mini-combobox" style="width:100px;" emptyText="-- 全部 --" valueField="id" textField="text" />
+                            <span style="font-size:12px;color:#333;margin-left:8px;" id="detailAlarmSuppressStatusLabel">消警状态：</span>
+                            <input id="detailAlarmSuppressStatus" class="mini-combobox" style="width:100px;" emptyText="-- 全部 --" valueField="id" textField="text" />
+                            <span style="flex:1;"></span>
                             <button id="detailQueryBtn" class="mini-button" plain="true" iconCls="search" onclick="refreshDetailData()">查询</button>
                             <button id="detailExportBtn" class="mini-button" plain="true" iconCls="export" onclick="exportAlarmDetail()">导出</button>
-                            <span style="flex:1;"></span>
                             <span id="detailTotalCountLabel">总记录数：</span><span id="detailTotalCountSpan">0</span>
                         </div>
                         <div class="mini-fit">
@@ -713,6 +719,10 @@ String moduleId = request.getParameter("moduleId");
             if(endDate){ endDate.setValue(''); }
             var alarmLevelCombo = mini.get('detailAlarmLevel');
             if(alarmLevelCombo){ alarmLevelCombo.setValue(''); }
+            var confirmationStatusCombo = mini.get('detailAlarmConfirmationStatus');
+            if(confirmationStatusCombo){ confirmationStatusCombo.setValue(''); }
+            var suppressStatusCombo = mini.get('detailAlarmSuppressStatus');
+            if(suppressStatusCombo){ suppressStatusCombo.setValue(''); }
             refreshDetailData();
         }
 
@@ -755,6 +765,10 @@ String moduleId = request.getParameter("moduleId");
         if(endDate){ endDate.setValue(''); }
         var alarmLevelCombo = mini.get('detailAlarmLevel');
         if(alarmLevelCombo){ alarmLevelCombo.setValue(''); }
+        var confirmationStatusCombo = mini.get('detailAlarmConfirmationStatus');
+        if(confirmationStatusCombo){ confirmationStatusCombo.setValue(''); }
+        var suppressStatusCombo = mini.get('detailAlarmSuppressStatus');
+        if(suppressStatusCombo){ suppressStatusCombo.setValue(''); }
 
         var selected = e.selected;
         if (selected) {
@@ -1663,9 +1677,13 @@ String moduleId = request.getParameter("moduleId");
         var startDate = mini.get('detailStartDate');
         var endDate = mini.get('detailEndDate');
         var alarmLevelCombo = mini.get('detailAlarmLevel');
+        var confirmationStatusCombo = mini.get('detailAlarmConfirmationStatus');
+        var suppressStatusCombo = mini.get('detailAlarmSuppressStatus');
         params.startDate = startDate ? startDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
         params.endDate = endDate ? endDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '';
         params.alarmLevel = alarmLevelCombo ? alarmLevelCombo.getValue() : '';
+        params.confirmationStatus = confirmationStatusCombo ? confirmationStatusCombo.getValue() : '';
+        params.suppressStatus = suppressStatusCombo ? suppressStatusCombo.getValue() : '';
         params.isSendMessage = '';
         e.params = params;
     }
@@ -1708,7 +1726,12 @@ String moduleId = request.getParameter("moduleId");
                 column.width = 50;
                 column.header = _loginUserLanguageResource.idx;
                 delete column.field;
-            } else if (col.dataIndex === 'acqTime' || col.dataIndex === 'alarmTime') {
+            } else if (col.dataIndex === 'acqTime' 
+            		|| col.dataIndex === 'alarmTime'  
+            		|| col.dataIndex === 'recoveryTime' 
+            		|| col.dataIndex === 'ackTime' 
+            		|| col.dataIndex === 'suppressTime'
+            		|| col.dataIndex === 'suppressEndTime') {
                 column.dateFormat = 'yyyy-MM-dd HH:mm:ss';
                 column.width = 150;
             }
@@ -1801,6 +1824,8 @@ String moduleId = request.getParameter("moduleId");
         var startDate = mini.get('detailStartDate');
         var endDate = mini.get('detailEndDate');
         var alarmLevelCombo = mini.get('detailAlarmLevel');
+        var confirmationStatusCombo = mini.get('detailAlarmConfirmationStatus');
+        var suppressStatusCombo = mini.get('detailAlarmSuppressStatus');
         var alarmType = getAlarmTypeFromTabName(activeTab.name);
         var fileName = currentDeviceName + '-' + activeTab.title;
         var title = fileName;
@@ -1845,6 +1870,8 @@ String moduleId = request.getParameter("moduleId");
             '&endDate=' + encodeURIComponent(endDate ? endDate.getFormValue('yyyy-MM-dd HH:mm:ss') : '') +
             '&alarmType=' + alarmType +
             '&alarmLevel=' + (alarmLevelCombo ? alarmLevelCombo.getValue() : '') +
+            '&confirmationStatus=' + (confirmationStatusCombo ? confirmationStatusCombo.getValue() : '') +
+            '&suppressStatus=' + (suppressStatusCombo ? suppressStatusCombo.getValue() : '') +
             '&isSendMessage=' +
             '&fileName=' + encodeURIComponent(encodeURIComponent(fileName)) +
             '&title=' + encodeURIComponent(encodeURIComponent(title)) +
@@ -1902,10 +1929,14 @@ String moduleId = request.getParameter("moduleId");
         document.getElementById('detailRangeLabel').textContent = _loginUserLanguageResource.range + '：';
         document.getElementById('detailTimeToLabel').textContent = _loginUserLanguageResource.timeTo + '：';
         document.getElementById('detailAlarmLevelLabel').textContent = _loginUserLanguageResource.alarmLevel + '：';
+        document.getElementById('detailAlarmConfirmationStatusLabel').textContent = _loginUserLanguageResource.confirmationStatus + '：';
+        document.getElementById('detailAlarmSuppressStatusLabel').textContent = _loginUserLanguageResource.suppressStatus + '：';
 
         mini.get('detailQueryBtn').setText(_loginUserLanguageResource.search);
         mini.get('detailExportBtn').setText(_loginUserLanguageResource.exportData);
         mini.get('detailAlarmLevel').setEmptyText('--' + _loginUserLanguageResource.all + '--');
+        mini.get('detailAlarmConfirmationStatus').setEmptyText('--' + _loginUserLanguageResource.all + '--');
+        mini.get('detailAlarmSuppressStatus').setEmptyText('--' + _loginUserLanguageResource.all + '--');
 
         document.getElementById('detailTotalCountLabel').textContent = _loginUserLanguageResource.totalCount + '：';
 
@@ -1918,6 +1949,28 @@ String moduleId = request.getParameter("moduleId");
                 { id: 300, text: _loginUserLanguageResource.alarmLevel3 }
             ]);
             alarmLevelCombo.setValue('');
+        }
+        
+        var confirmationStatusCombo = mini.get('detailAlarmConfirmationStatus');
+        if (confirmationStatusCombo) {
+        	confirmationStatusCombo.setData([
+                { id: '', text: _loginUserLanguageResource.all },
+                { id: 0, text: _loginUserLanguageResource.unconfirmed },
+                { id: 1, text: _loginUserLanguageResource.confirmed }
+            ]);
+        	confirmationStatusCombo.setValue('');
+        }
+        
+        
+        var suppressStatusCombo = mini.get('detailAlarmSuppressStatus');
+        if (suppressStatusCombo) {
+        	suppressStatusCombo.setData([
+                { id: '', text: _loginUserLanguageResource.all },
+                { id: 0, text: _loginUserLanguageResource.pendingSuppress },
+                { id: 1, text: _loginUserLanguageResource.autoSuppress },
+                { id: 2, text: _loginUserLanguageResource.manualSuppress }
+            ]);
+        	suppressStatusCombo.setValue('');
         }
     }
 

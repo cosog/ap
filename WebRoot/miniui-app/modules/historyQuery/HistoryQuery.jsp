@@ -222,10 +222,13 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                    dataField="list" totalField="totals"
                                                    valueField="boxkey" textField="boxval"
                                                    onvaluechanged="onDeviceComboChange" />
-                                            <span class="spacer"></span>
                                             <button id="exportHistoryQueryDeviceListBtn" class="mini-button"
                                                     plain="true" iconCls="export"
                                                     onclick="exportDeviceList()"></button>
+                                            <span class="spacer"></span>
+                                            <button id="comparativeAnalysisBtn" class="mini-button"
+                                                    plain="true" iconCls="wellboreTrajectory" visible="false"
+                                                    onclick="showHistoryDataComparativeAnalysis()"></button>
 
                                             <!-- 隐藏域 -->
                                             <input id="HistoryQueryInfoDeviceListSelectRow_Id" type="hidden" value="-1" />

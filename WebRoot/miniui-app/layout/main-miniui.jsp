@@ -102,6 +102,7 @@ request.setAttribute("browserLang", browserLang);
         var defaultPageSize = configFile.ap.others.pageSize || 50;
         var productionUnit = configFile.ap.others.productionUnit;
         var showHelp = configFile.ap.others.showHelp !== false;
+        var showComparativeAnalysis = configFile.ap.others.showComparativeAnalysis===true;
         var exportAdInitData = configFile.ap.others.exportAdInitData;
         
         var helpDocumentUrl='<%=helpDocumentUrl%>';
@@ -128,6 +129,8 @@ request.setAttribute("browserLang", browserLang);
         // 新增：第一个叶子节点的ID（在 onMenuTreeLoad 中动态获取）
         var FIRST_LEAF_MODULE_ID = null;
         var orgIframeSelectedRecord = null;
+        
+        window.showComparativeAnalysis=showComparativeAnalysis;
     </script>
 
     <!-- ===== 第二步：动态引入 MiniUI 资源（包含 miniui-commutils.js） ===== -->

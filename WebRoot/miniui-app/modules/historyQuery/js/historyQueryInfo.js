@@ -159,6 +159,15 @@ function initHistoryQueryI18n() {
 
     var exportBtn = mini.get('exportHistoryQueryDeviceListBtn');
     if (exportBtn) exportBtn.setText(R.exportData);
+    var comparativeAnalysisBtn = mini.get('comparativeAnalysisBtn');
+    if (comparativeAnalysisBtn) {
+    	comparativeAnalysisBtn.setText(R.comparativeAnalysis);
+    	if(window.parent && window.parent.showComparativeAnalysis){
+    		comparativeAnalysisBtn.setVisible(true);
+    	}else{
+    		comparativeAnalysisBtn.setVisible(false);
+    	}
+    }
 
     var deviceCombo = mini.get('deviceCombo');
     if (deviceCombo) deviceCombo.setEmptyText('--' + R.all + '--');
@@ -2540,6 +2549,10 @@ function exportDeviceList() {
     var maskEl = document.querySelector('.device-grid-wrapper') || document.body;
     exportDataMask(key, maskEl, _loginUserLanguageResource.loadingData);
     openExcelWindow(url + '?flag=true' + param);
+}
+
+function showHistoryDataComparativeAnalysis() {
+	alert(window.parent.showComparativeAnalysis);
 }
 
 function exportData() {

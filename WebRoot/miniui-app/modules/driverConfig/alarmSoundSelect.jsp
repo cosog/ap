@@ -13,7 +13,7 @@ String context = path;
         html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#fff; font-family:"Microsoft YaHei", Arial, sans-serif; }
         .main-container { width:100%; height:100%; display:flex; flex-direction:column; }
 
-        /* 工具栏 */
+        /* 顶部工具栏 */
         .toolbar-row {
             padding:4px 8px;
             border-bottom:1px solid #e8e8e8;
@@ -34,7 +34,6 @@ String context = path;
             gap:10px;
             overflow-y:auto;
             box-sizing:border-box;
-            background:#fff;
         }
 
         .scene-audio-item {
@@ -86,7 +85,7 @@ String context = path;
             font-weight:bold;
         }
 
-        /* 底部按钮 */
+        /* 底部 */
         .footer {
             padding:8px 10px;
             border-top:1px solid #e8e8e8;
@@ -96,6 +95,7 @@ String context = path;
             justify-content:space-between;
             align-items:center;
         }
+        .footer-left { display:flex; gap:5px; }
         .footer-right { display:flex; gap:5px; }
     </style>
 </head>
@@ -112,23 +112,23 @@ String context = path;
             <button id="btnDelete" class="mini-button" iconCls="delete" plain="true"
                     onclick="onDeleteClick()" enabled="false"></button>
             <button id="btnRefresh" class="mini-button" iconCls="note-refresh" plain="true"
-                    onclick="loadData()"></button>
+                    onclick="loadAudios()"></button>
         </div>
     </div>
 
-    <!-- 音频画廊 -->
+    <!-- 画廊 -->
     <div id="audioGallery" class="audio-gallery"></div>
 
-    <!-- 底部按钮 -->
+    <!-- 底部 -->
     <div class="footer">
-        <div>
-            <button id="btnPlay" class="mini-button" plain="true" onclick="onPlayPreview()"></button>
+        <div class="footer-left">
+            <button id="btnPlay"  class="mini-button" plain="true" onclick="onPlayPreview()"></button>
             <button id="btnPause" class="mini-button" plain="true" onclick="onPausePreview()"></button>
-            <button id="btnStop" class="mini-button" plain="true" onclick="onStopPreview()"></button>
+            <button id="btnStop"  class="mini-button" plain="true" onclick="onStopPreview()"></button>
         </div>
         <div class="footer-right">
-            <button id="btnConfirm" class="mini-button" iconCls="save" onclick="onConfirm()"></button>
-            <button id="btnCancel" class="mini-button" iconCls="cancel" onclick="onCancel()"></button>
+            <button id="btnConfirm" class="mini-button" plain="true" iconCls="save" onclick="onConfirm()"></button>
+            <button id="btnCancel"  class="mini-button" plain="true" iconCls="cancel" onclick="onCancel()"></button>
         </div>
     </div>
 </div>
@@ -139,8 +139,7 @@ String context = path;
     var context = '<%=context%>';
 
     var currentFile = '';        // 当前选中
-    var initialFile = '';        // 打开时传入的当前配置
-    var configFiles = [];        // 三个级别已配置的声音（不可删除）
+    var configFiles = [];        // 三个级别已配置的音频（不可删除）
     var allAudios = [];
     var currentFilteredAudios = [];
     var _previewAudio = null;
@@ -148,7 +147,7 @@ String context = path;
     $(document).ready(function () {
         mini.parse();
         initI18n();
-        loadData();
+        loadAudios();
     });
 
     // ================================================================
@@ -158,58 +157,35 @@ String context = path;
         var R = _loginUserLanguageResource;
         document.title = R.alarmSoundSelectTitle;
 
-        var searchField = mini.get('searchField');
-        if (searchField) searchField.setEmptyText(R.searchFileName + '...');
+        mini.get('searchField').setEmptyText(R.searchFileName + '...');
+        mini.get('btnUpload').setText('📤 ' + R.uploadNewAudio);
+        mini.get('btnDelete').setText(R.deleteData);
+        mini.get('btnDelete').setTooltip(R.selectAudioFirstTip);
+        mini.get('btnRefresh').setText(R.refresh);
 
-        var btnUpload = mini.get('btnUpload');
-        if (btnUpload) btnUpload.setText('📤 ' + R.uploadNewAudio);
+        mini.get('btnPlay').setText('▶ ' + R.playAudio);
+        mini.get('btnPause').setText('⏸ ' + R.pauseAudio);
+        mini.get('btnStop').setText('⏹ ' + R.stopAudio);
 
-        var btnDelete = mini.get('btnDelete');
-        if (btnDelete) {
-            btnDelete.setText(R.deleteData);
-            btnDelete.setTooltip(R.selectAudioFirstTip);
-        }
-
-        var btnRefresh = mini.get('btnRefresh');
-        if (btnRefresh) btnRefresh.setText(R.refresh);
-
-        var btnPlay = mini.get('btnPlay');
-        if (btnPlay) btnPlay.setText('▶ ' + R.playAudio);
-
-        var btnPause = mini.get('btnPause');
-        if (btnPause) btnPause.setText('⏸ ' + R.pauseAudio);
-
-        var btnStop = mini.get('btnStop');
-        if (btnStop) btnStop.setText('⏹ ' + R.stopAudio);
-
-        var btnConfirm = mini.get('btnConfirm');
-        if (btnConfirm) btnConfirm.setText(R.confirm);
-
-        var btnCancel = mini.get('btnCancel');
-        if (btnCancel) btnCancel.setText(R.cancel);
+        mini.get('btnConfirm').setText(R.confirm);
+        mini.get('btnCancel').setText(R.cancel);
     }
 
     // ================================================================
-    // 父页面传参 / 取结果
+    // 父页面传参
     // ================================================================
     function setData(data) {
         data = data || {};
         currentFile = data.currentFile || '';
-        initialFile = currentFile;
-
         if (allAudios.length > 0) {
             filterAudios(mini.get('searchField').getValue() || '');
         }
     }
 
-    function getSelectedFile() {
-        return currentFile;
-    }
-
     // ================================================================
     // 加载：先取已配置声音 -> 再取音频池
     // ================================================================
-    function loadData() {
+    function loadAudios() {
         $.ajax({
             url: context + '/alarmSetManagerController/getAlarmLevelColor',
             type: 'POST',
@@ -221,15 +197,13 @@ String context = path;
                     if (r.Data.SecondLevel && r.Data.SecondLevel.SoundFile) configFiles.push(r.Data.SecondLevel.SoundFile);
                     if (r.Data.ThirdLevel && r.Data.ThirdLevel.SoundFile) configFiles.push(r.Data.ThirdLevel.SoundFile);
                 }
-                _loadAudioList();
+                _loadAudioPool();
             },
-            error: function () {
-                _loadAudioList();
-            }
+            error: function () { _loadAudioPool(); }
         });
     }
 
-    function _loadAudioList() {
+    function _loadAudioPool() {
         $.ajax({
             url: context + '/alarmSetManagerController/getAlarmSoundPool',
             type: 'POST',
@@ -294,9 +268,7 @@ String context = path;
         var items = container.querySelectorAll('.scene-audio-item');
         for (var j = 0; j < items.length; j++) {
             items[j].onclick = function () {
-                for (var k = 0; k < items.length; k++) {
-                    items[k].classList.remove('selected');
-                }
+                for (var k = 0; k < items.length; k++) items[k].classList.remove('selected');
                 this.classList.add('selected');
                 currentFile = this.getAttribute('data-file');
                 onSelectionChanged();
@@ -307,7 +279,6 @@ String context = path;
             };
         }
 
-        // 滚动到选中项
         var selectedEl = container.querySelector('.scene-audio-item.selected');
         if (selectedEl) {
             (function (el) {
@@ -315,6 +286,9 @@ String context = path;
                     el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
                 }, 100);
             })(selectedEl);
+        } else if (items.length > 0 && !currentFile) {
+            // 没有历史选中时，默认选中第一个
+            items[0].click();
         }
         onSelectionChanged();
     }
@@ -332,8 +306,6 @@ String context = path;
             btnDelete.setTooltip(R.selectAudioFirstTip);
             return;
         }
-
-        // 三个级别已配置的文件不可删除
         if (configFiles.indexOf(currentFile) > -1) {
             btnDelete.setEnabled(false);
             btnDelete.setTooltip(R.audioInUseCannotDelete);
@@ -344,12 +316,10 @@ String context = path;
     }
 
     // ================================================================
-    // 试听
+    // 试听：播放 / 暂停 / 停止
     // ================================================================
     function ensureAudio() {
-        if (!_previewAudio) {
-            _previewAudio = new Audio();
-        }
+        if (!_previewAudio) _previewAudio = new Audio();
         return _previewAudio;
     }
 
@@ -359,32 +329,26 @@ String context = path;
             mini.alert(R.selectOneAudioFirst, R.tip);
             return;
         }
-
         var audio = ensureAudio();
         var url = context + '/alarmSetManagerController/playAlarmSound?fileName='
             + encodeURIComponent(currentFile) + '&_t=' + new Date().getTime();
 
-        // 同一首且处于暂停状态，直接续播
+        // 同一首暂停中 → 续播
         if (audio.src && audio.src.indexOf(encodeURIComponent(currentFile)) > -1 && audio.paused) {
             try { audio.play(); } catch (e) { mini.alert(R.audioPlayFailed, R.tip); }
             return;
         }
-
         audio.src = url;
         try {
             var p = audio.play();
-            if (p && p.catch) {
-                p.catch(function () { mini.alert(R.audioPlayFailed, R.tip); });
-            }
+            if (p && p.catch) p.catch(function () { mini.alert(R.audioPlayFailed, R.tip); });
         } catch (e) {
             mini.alert(R.audioPlayFailed, R.tip);
         }
     }
 
     function onPausePreview() {
-        if (_previewAudio && !_previewAudio.paused) {
-            _previewAudio.pause();
-        }
+        if (_previewAudio && !_previewAudio.paused) _previewAudio.pause();
     }
 
     function onStopPreview() {
@@ -404,7 +368,6 @@ String context = path;
             mini.alert(R.audioInUseCannotDelete, R.tip);
             return;
         }
-
         var fileName = currentFile;
         var confirmInfo = R.confirmDeleteAudio + ' [<font color="red">' + fileName + '</font>]?';
 
@@ -422,7 +385,7 @@ String context = path;
                         mini.alert(R.deleteSuccessfully, R.tip);
                         onStopPreview();
                         currentFile = '';
-                        loadData();
+                        loadAudios();
                     } else {
                         mini.alert(R.deleteFailed, R.tip);
                     }
@@ -449,7 +412,6 @@ String context = path;
 
         var formData = new FormData();
         formData.append('file', file);
-
         mini.mask({ el: document.body, html: R.uploading + '...' });
 
         $.ajax({
@@ -463,9 +425,8 @@ String context = path;
                 input.value = '';
                 if (res && res.success) {
                     mini.alert(R.uploadSuccess, R.tip);
-                    // 自动选中刚上传的文件
-                    currentFile = res.fileName || file.name;
-                    loadData();
+                    currentFile = res.fileName || file.name;   // 自动选中刚上传的文件
+                    loadAudios();
                 } else {
                     mini.alert(R.uploadFail, R.tip);
                 }
@@ -479,16 +440,13 @@ String context = path;
     }
 
     // ================================================================
-    // 确认 / 取消
+    // 确定 / 取消（与 selectSceneImage.jsp 一致，走 onConfirmCallback）
     // ================================================================
     function onConfirm() {
         var R = _loginUserLanguageResource;
-
         if (!currentFile) {
             mini.confirm(R.clearAudioConfirm, R.confirm, function (action) {
-                if (action === 'ok') {
-                    doSelect('');
-                }
+                if (action === 'ok') doSelect('');
             });
             return;
         }
@@ -497,9 +455,7 @@ String context = path;
 
     function doSelect(fileName) {
         onStopPreview();
-        if (window.onConfirmCallback) {
-            window.onConfirmCallback(fileName);
-        }
+        if (window.onConfirmCallback) window.onConfirmCallback(fileName);
         window.CloseOwnerWindow('ok');
     }
 
@@ -508,7 +464,6 @@ String context = path;
         window.CloseOwnerWindow('cancel');
     }
 
-    // 页面卸载时清理音频
     window.onbeforeunload = function () {
         onStopPreview();
         _previewAudio = null;

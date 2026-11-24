@@ -2551,8 +2551,28 @@ function exportDeviceList() {
     openExcelWindow(url + '?flag=true' + param);
 }
 
-function showHistoryDataComparativeAnalysis() {
+function showHistoryDataComparativeAnalysis2() {
 	alert(window.parent.showComparativeAnalysis);
+}
+
+function showHistoryDataComparativeAnalysis() {
+    var params = {};
+    var leftOrgId = window.parent && window.parent.mini? window.parent.mini.get('leftOrg_Id') : null;
+    params.orgId = leftOrgId ? leftOrgId.getValue() : '';
+    params.deviceType = _hqCurrentLevel2 ? _hqCurrentLevel2.deviceTypeId : '0';
+    
+    mini.open({
+        title: _loginUserLanguageResource.historyQuery + '/' + _loginUserLanguageResource.comparativeAnalysis,
+        url: context + '/miniui-app/modules/historyQuery/historyDataComparativeAnalysis.jsp',
+        width: '80%',
+        height: '80%',
+        modal: true,
+        allowResize: true,
+        onload: function () {
+            var iframe = this.getIFrameEl();
+            iframe.contentWindow.setData(params);
+        }
+    });
 }
 
 function exportData() {

@@ -9,7 +9,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>报警颜色配置</title>
+    <title></title>
     <jsp:include page="../../layout/tags-miniui.jsp" flush="true" />
     <link rel="stylesheet" href="<%=path%>/scripts/miniui/third-party/spectrum/spectrum.css?timestamp=<%=otherStaticResourceTimestamp%>" />
     <script src="<%=path%>/scripts/miniui/third-party/spectrum/spectrum.js?timestamp=<%=otherStaticResourceTimestamp%>"></script>
@@ -64,8 +64,24 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         .color-row .picker {
             flex:1;
         }
+
+        /* ★ 声音行专用：textbox + 设置按钮 */
+        .color-row .sound-picker {
+            flex:1;
+            display:flex;
+            align-items:center;
+            gap:5px;
+            min-width:0;
+        }
+        .color-row .sound-picker .mini-textbox {
+            flex:1;
+            min-width:0;
+        }
+        .color-row .sound-picker .mini-button {
+            flex-shrink:0;
+        }
+
         .sp-replacer { border-width:1px; }
-        /**.sp-dd { display:none; }*/
         .sp-container { z-index:10002 !important; }
     </style>
 </head>
@@ -73,12 +89,12 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
 <div class="main-container">
     <!-- 工具栏 -->
     <div class="mini-toolbar">
-        <button id="btnSave" class="mini-button"  plain="true" iconCls="save" onclick="onSave()"></button>
+        <button id="btnSave" class="mini-button" plain="true" iconCls="save" onclick="onSave()"></button>
     </div>
 
-    <!-- 颜色配置主体 -->
+    <!-- 三列主体 -->
     <div class="color-body">
-        <!-- 左列：背景色（支持透明度） -->
+        <!-- 第一列：背景色 -->
         <div class="color-column">
             <div class="column-header" id="bgHeader"></div>
 
@@ -124,7 +140,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             </div>
         </div>
 
-        <!-- 右列：前景色（不支持透明度） -->
+        <!-- 第二列：前景色 -->
         <div class="color-column">
             <div class="column-header" id="fgHeader"></div>
 
@@ -169,32 +185,56 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                 <div class="picker"><input type="text" id="thirdLevelColor_id" /></div>
             </div>
         </div>
+
+        <!-- ★ 第三列：报警声音 -->
+        <div class="color-column">
+            <div class="column-header" id="soundHeader"></div>
+
+            <div class="color-row">
+                <span class="label" id="lblSoundLevel1"></span>
+                <div class="sound-picker">
+                    <input id="soundLevel1_id" class="mini-textbox" allowInput="false" />
+                    <button id="btnSetSound1" class="mini-button" plain="true"
+                            onclick="chooseAlarmSound('soundLevel1_id')"></button>
+                </div>
+            </div>
+            <div class="color-row">
+                <span class="label" id="lblSoundLevel2"></span>
+                <div class="sound-picker">
+                    <input id="soundLevel2_id" class="mini-textbox" allowInput="false" />
+                    <button id="btnSetSound2" class="mini-button" plain="true"
+                            onclick="chooseAlarmSound('soundLevel2_id')"></button>
+                </div>
+            </div>
+            <div class="color-row">
+                <span class="label" id="lblSoundLevel3"></span>
+                <div class="sound-picker">
+                    <input id="soundLevel3_id" class="mini-textbox" allowInput="false" />
+                    <button id="btnSetSound3" class="mini-button" plain="true"
+                            onclick="chooseAlarmSound('soundLevel3_id')"></button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
     var context = '<%=context%>';
 
-    // 保存当前 20 个颜色值（hex + opacity）
     var _colorData = {};
 
-    // 背景色 ID 集合（支持透明度）
     var _bgIds = [
         'goOnlineBackgroundColor_id', 'onlineBackgroundColor_id', 'offlineBackgroundColor_id',
         'runBackgroundColor_id', 'stopBackgroundColor_id', 'noRunStatusDataBackgroundColor_id',
         'normalBackgroundColor_id', 'firstLevelBackgroundColor_id', 'secondLevelBackgroundColor_id',
         'thirdLevelBackgroundColor_id'
     ];
-    // 前景色 ID 集合（不支持透明度）
     var _fgIds = [
         'goOnlineColor_id', 'onlineColor_id', 'offlineColor_id',
         'runColor_id', 'stopColor_id', 'noRunStatusDataColor_id',
         'normalColor_id', 'firstLevelColor_id', 'secondLevelColor_id', 'thirdLevelColor_id'
     ];
 
-    // ================================================================
-    // 初始化
-    // ================================================================
     $(document).ready(function() {
         mini.parse();
         initI18n();
@@ -202,51 +242,51 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         loadAlarmColor();
     });
 
-    // ---- 国际化 ----
+    // ================================================================
+    // 国际化
+    // ================================================================
     function initI18n() {
-        document.title = _loginUserLanguageResource.alarmAlertSettings;
+        var R = _loginUserLanguageResource;
+        document.title = R.alarmAlertSettings;
+
         var btnSave = mini.get('btnSave');
-        if (btnSave) btnSave.setText(_loginUserLanguageResource.save);
+        if (btnSave) btnSave.setText(R.save);
 
         document.getElementById('bgHeader').innerHTML =
-            '<font color="red">' + _loginUserLanguageResource.backgroundColor + '</font>';
+            '<font color="red">' + R.backgroundColor + '</font>';
         document.getElementById('fgHeader').innerHTML =
-            '<font color="red">' + _loginUserLanguageResource.foregroundColor + '</font>';
+            '<font color="red">' + R.foregroundColor + '</font>';
+        document.getElementById('soundHeader').innerHTML =
+            '<font color="red">' + R.alarmSound + '</font>';
 
         var labelMap = {
-            goOnlineBg: _loginUserLanguageResource.goOnline,
-            onlineBg: _loginUserLanguageResource.online,
-            offlineBg: _loginUserLanguageResource.offline,
-            runBg: _loginUserLanguageResource.run,
-            stopBg: _loginUserLanguageResource.stop,
-            noDataBg: _loginUserLanguageResource.runStatusNoData,
-            normalBg: _loginUserLanguageResource.normal,
-            firstLevelBg: _loginUserLanguageResource.alarmLevel1,
-            secondLevelBg: _loginUserLanguageResource.alarmLevel2,
-            thirdLevelBg: _loginUserLanguageResource.alarmLevel3,
-            goOnlineFg: _loginUserLanguageResource.goOnline,
-            onlineFg: _loginUserLanguageResource.online,
-            offlineFg: _loginUserLanguageResource.offline,
-            runFg: _loginUserLanguageResource.run,
-            stopFg: _loginUserLanguageResource.stop,
-            noDataFg: _loginUserLanguageResource.runStatusNoData,
-            normalFg: _loginUserLanguageResource.normal,
-            firstLevelFg: _loginUserLanguageResource.alarmLevel1,
-            secondLevelFg: _loginUserLanguageResource.alarmLevel2,
-            thirdLevelFg: _loginUserLanguageResource.alarmLevel3
+            goOnlineBg: R.goOnline, onlineBg: R.online, offlineBg: R.offline,
+            runBg: R.run, stopBg: R.stop, noDataBg: R.runStatusNoData,
+            normalBg: R.normal,
+            firstLevelBg: R.alarmLevel1, secondLevelBg: R.alarmLevel2, thirdLevelBg: R.alarmLevel3,
+            goOnlineFg: R.goOnline, onlineFg: R.online, offlineFg: R.offline,
+            runFg: R.run, stopFg: R.stop, noDataFg: R.runStatusNoData,
+            normalFg: R.normal,
+            firstLevelFg: R.alarmLevel1, secondLevelFg: R.alarmLevel2, thirdLevelFg: R.alarmLevel3
         };
-        var labels = document.querySelectorAll('.color-row .label');
+        var labels = document.querySelectorAll('.color-row .label[data-key]');
         for (var i = 0; i < labels.length; i++) {
             var key = labels[i].getAttribute('data-key');
-            if (key && labelMap[key]) {
-                labels[i].innerText = labelMap[key] + '：';
-            }
+            if (key && labelMap[key]) labels[i].innerText = labelMap[key] + '：';
         }
+
+        // 声音三个级别 label & 设置按钮
+        document.getElementById('lblSoundLevel1').innerText = R.alarmLevel1 + '：';
+        document.getElementById('lblSoundLevel2').innerText = R.alarmLevel2 + '：';
+        document.getElementById('lblSoundLevel3').innerText = R.alarmLevel3 + '：';
+        mini.get('btnSetSound1').setText(R.set);
+        mini.get('btnSetSound2').setText(R.set);
+        mini.get('btnSetSound3').setText(R.set);
     }
 
-    // ---- 初始化 Spectrum ----
-    // 背景色：showAlpha: true
-    // 前景色：showAlpha: false
+    // ================================================================
+    // Spectrum 初始化
+    // ================================================================
     function initSpectrum() {
         var palette = [
             ['#000','#444','#666','#999','#ccc','#eee','#f3f3f3','#fff'],
@@ -259,22 +299,16 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             ['#600','#783f04','#7f6000','#274e13','#0c343d','#073763','#20124d','#4c1130']
         ];
 
-        // 背景色：支持透明度
         for (var i = 0; i < _bgIds.length; i++) {
-            (function(id) {
+            (function (id) {
                 $('#' + id).spectrum({
-                    color: '#ffffff',
-                    showAlpha: true,          // ★ 显示透明度
-                    showInput: true,
-                    showInitial: true,
-                    showPalette: true,
-                    showButtons: false,
-                    clickoutFiresChange: true,
+                    color: '#ffffff', showAlpha: true, showInput: true, showInitial: true,
+                    showPalette: true, showButtons: false, clickoutFiresChange: true,
                     preferredFormat: 'hex',
                     cancelText: _loginUserLanguageResource.cancel,
                     chooseText: _loginUserLanguageResource.confirm,
                     palette: palette,
-                    change: function(color) {
+                    change: function (color) {
                         var hex = color ? color.toHexString().replace('#', '') : 'ffffff';
                         var alpha = color ? color.getAlpha() : 1;
                         _colorData[id] = { hex: hex, opacity: alpha };
@@ -282,25 +316,18 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                 });
             })(_bgIds[i]);
         }
-
-        // 前景色：不支持透明度
         for (var j = 0; j < _fgIds.length; j++) {
-            (function(id) {
+            (function (id) {
                 $('#' + id).spectrum({
-                    color: '#ffffff',
-                    showAlpha: false,         // ★ 不显示透明度
-                    showInput: true,
-                    showInitial: true,
-                    showPalette: true,
-                    showButtons: false,
-                    clickoutFiresChange: true,
+                    color: '#ffffff', showAlpha: false, showInput: true, showInitial: true,
+                    showPalette: true, showButtons: false, clickoutFiresChange: true,
                     preferredFormat: 'hex',
                     cancelText: _loginUserLanguageResource.cancel,
                     chooseText: _loginUserLanguageResource.confirm,
                     palette: palette,
-                    change: function(color) {
+                    change: function (color) {
                         var hex = color ? color.toHexString().replace('#', '') : 'ffffff';
-                        _colorData[id] = { hex: hex, opacity: 1 };  // 前景色固定 opacity=1
+                        _colorData[id] = { hex: hex, opacity: 1 };
                     }
                 });
             })(_fgIds[j]);
@@ -308,19 +335,20 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     }
 
     // ================================================================
-    // 加载颜色数据
+    // 加载颜色 + 声音
     // ================================================================
     function loadAlarmColor() {
-        var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.loadingData });
+        var R = _loginUserLanguageResource;
+        var mask = mini.mask({ el: document.body, html: R.loadingData });
         $.ajax({
             url: context + '/alarmSetManagerController/getAlarmLevelColor',
             type: 'POST',
             dataType: 'json',
-            success: function(data) {
+            success: function (data) {
                 mini.unmask(document.body);
                 if (!data) return;
 
-                // ---- 背景色（含透明度） ----
+                // ---- 背景色 ----
                 setBgColor('goOnlineBackgroundColor_id',
                     data.Comm && data.Comm.goOnline && data.Comm.goOnline.BackgroundColor,
                     data.Comm && data.Comm.goOnline && data.Comm.goOnline.Opacity);
@@ -330,7 +358,6 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                 setBgColor('offlineBackgroundColor_id',
                     data.Comm && data.Comm.offline && data.Comm.offline.BackgroundColor,
                     data.Comm && data.Comm.offline && data.Comm.offline.Opacity);
-
                 setBgColor('runBackgroundColor_id',
                     data.Run && data.Run.run && data.Run.run.BackgroundColor,
                     data.Run && data.Run.run && data.Run.run.Opacity);
@@ -340,7 +367,6 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                 setBgColor('noRunStatusDataBackgroundColor_id',
                     data.Run && data.Run.noData && data.Run.noData.BackgroundColor,
                     data.Run && data.Run.noData && data.Run.noData.Opacity);
-
                 setBgColor('normalBackgroundColor_id',
                     data.Data && data.Data.Normal && data.Data.Normal.BackgroundColor,
                     data.Data && data.Data.Normal && data.Data.Normal.Opacity);
@@ -354,21 +380,19 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     data.Data && data.Data.ThirdLevel && data.Data.ThirdLevel.BackgroundColor,
                     data.Data && data.Data.ThirdLevel && data.Data.ThirdLevel.Opacity);
 
-                // ---- 前景色（无透明度） ----
+                // ---- 前景色 ----
                 setFgColor('goOnlineColor_id',
                     data.Comm && data.Comm.goOnline && data.Comm.goOnline.Color);
                 setFgColor('onlineColor_id',
                     data.Comm && data.Comm.online && data.Comm.online.Color);
                 setFgColor('offlineColor_id',
                     data.Comm && data.Comm.offline && data.Comm.offline.Color);
-
                 setFgColor('runColor_id',
                     data.Run && data.Run.run && data.Run.run.Color);
                 setFgColor('stopColor_id',
                     data.Run && data.Run.stop && data.Run.stop.Color);
                 setFgColor('noRunStatusDataColor_id',
                     data.Run && data.Run.noData && data.Run.noData.Color);
-
                 setFgColor('normalColor_id',
                     data.Data && data.Data.Normal && data.Data.Normal.Color);
                 setFgColor('firstLevelColor_id',
@@ -377,15 +401,22 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     data.Data && data.Data.SecondLevel && data.Data.SecondLevel.Color);
                 setFgColor('thirdLevelColor_id',
                     data.Data && data.Data.ThirdLevel && data.Data.ThirdLevel.Color);
+
+                // ---- 声音文件 ----
+                var f1 = data.Data && data.Data.FirstLevel ? data.Data.FirstLevel.SoundFile : '';
+                var f2 = data.Data && data.Data.SecondLevel ? data.Data.SecondLevel.SoundFile : '';
+                var f3 = data.Data && data.Data.ThirdLevel ? data.Data.ThirdLevel.SoundFile : '';
+                mini.get('soundLevel1_id').setValue(f1 || R.notConfigured);
+                mini.get('soundLevel2_id').setValue(f2 || R.notConfigured);
+                mini.get('soundLevel3_id').setValue(f3 || R.notConfigured);
             },
-            error: function() {
+            error: function () {
                 mini.unmask(document.body);
-                mini.alert(_loginUserLanguageResource.requestFailed);
+                mini.alert(R.requestFailed);
             }
         });
     }
 
-    // 设置背景色（含透明度）
     function setBgColor(id, hex, opacity) {
         if (!hex) hex = 'ffffff';
         if (opacity == null) opacity = 1;
@@ -394,19 +425,15 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
         $('#' + id).spectrum('set', rgba);
     }
 
-    // 设置前景色（无透明度）
     function setFgColor(id, hex) {
         if (!hex) hex = 'ffffff';
         _colorData[id] = { hex: hex, opacity: 1 };
         $('#' + id).spectrum('set', '#' + hex);
     }
 
-    // hex -> "r, g, b"
     function hexToRgb(hex) {
         hex = hex.replace('#', '');
-        if (hex.length === 3) {
-            hex = hex.split('').map(function(c) { return c + c; }).join('');
-        }
+        if (hex.length === 3) hex = hex.split('').map(function (c) { return c + c; }).join('');
         var r = parseInt(hex.substring(0, 2), 16);
         var g = parseInt(hex.substring(2, 4), 16);
         var b = parseInt(hex.substring(4, 6), 16);
@@ -414,112 +441,113 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
     }
 
     // ================================================================
-    // 保存
+    // ★ 打开声音选择弹窗（风格与 selectSceneImage.jsp 一致，走 onConfirmCallback）
     // ================================================================
-    function onSave() {
-        // 收集颜色值（背景色带透明度，前景色不带）
-        function pickBg(id) {
-            return _colorData[id] || { hex: 'ffffff', opacity: 1 };
-        }
-        function pickFg(id) {
-            return _colorData[id] || { hex: 'ffffff', opacity: 1 };
-        }
+    function chooseAlarmSound(fieldId) {
+        var R = _loginUserLanguageResource;
+        var field = mini.get(fieldId);
+        var currentVal = field.getValue();
+        if (currentVal === R.notConfigured) currentVal = '';
 
-        var AlarmShowStyle = {
-            Data: {
-                Normal: {
-                    Value: 0,
-                    BackgroundColor: pickBg('normalBackgroundColor_id').hex,
-                    Color: pickFg('normalColor_id').hex,
-                    Opacity: pickBg('normalBackgroundColor_id').opacity
-                },
-                FirstLevel: {
-                    Value: 100,
-                    BackgroundColor: pickBg('firstLevelBackgroundColor_id').hex,
-                    Color: pickFg('firstLevelColor_id').hex,
-                    Opacity: pickBg('firstLevelBackgroundColor_id').opacity
-                },
-                SecondLevel: {
-                    Value: 200,
-                    BackgroundColor: pickBg('secondLevelBackgroundColor_id').hex,
-                    Color: pickFg('secondLevelColor_id').hex,
-                    Opacity: pickBg('secondLevelBackgroundColor_id').opacity
-                },
-                ThirdLevel: {
-                    Value: 300,
-                    BackgroundColor: pickBg('thirdLevelBackgroundColor_id').hex,
-                    Color: pickFg('thirdLevelColor_id').hex,
-                    Opacity: pickBg('thirdLevelBackgroundColor_id').opacity
-                }
-            },
-            Comm: {
-                goOnline: {
-                    Value: 2,
-                    BackgroundColor: pickBg('goOnlineBackgroundColor_id').hex,
-                    Color: pickFg('goOnlineColor_id').hex,
-                    Opacity: pickBg('goOnlineBackgroundColor_id').opacity
-                },
-                online: {
-                    Value: 1,
-                    BackgroundColor: pickBg('onlineBackgroundColor_id').hex,
-                    Color: pickFg('onlineColor_id').hex,
-                    Opacity: pickBg('onlineBackgroundColor_id').opacity
-                },
-                offline: {
-                    Value: 0,
-                    BackgroundColor: pickBg('offlineBackgroundColor_id').hex,
-                    Color: pickFg('offlineColor_id').hex,
-                    Opacity: pickBg('offlineBackgroundColor_id').opacity
-                }
-            },
-            Run: {
-                run: {
-                    Value: 1,
-                    BackgroundColor: pickBg('runBackgroundColor_id').hex,
-                    Color: pickFg('runColor_id').hex,
-                    Opacity: pickBg('runBackgroundColor_id').opacity
-                },
-                stop: {
-                    Value: 0,
-                    BackgroundColor: pickBg('stopBackgroundColor_id').hex,
-                    Color: pickFg('stopColor_id').hex,
-                    Opacity: pickBg('stopBackgroundColor_id').opacity
-                },
-                noData: {
-                    Value: 2,
-                    BackgroundColor: pickBg('noRunStatusDataBackgroundColor_id').hex,
-                    Color: pickFg('noRunStatusDataColor_id').hex,
-                    Opacity: pickBg('noRunStatusDataBackgroundColor_id').opacity
-                }
-            }
-        };
-
-        var mask = mini.mask({ el: document.body, html: _loginUserLanguageResource.updateWait });
-        $.ajax({
-            url: context + '/alarmSetManagerController/setAlarmColor',
-            type: 'POST',
-            data: { data: JSON.stringify(AlarmShowStyle) },
-            dataType: 'json',
-            success: function(response) {
-                mini.unmask(document.body);
-                if (response && response.msg) {
-                    mini.alert('<font color="blue">' + _loginUserLanguageResource.updateSuccessfully + '</font>', function() {
-                        //CloseWindow('ok');
-                    });
-                } else {
-                    mini.alert('<font color="red">' + _loginUserLanguageResource.updatefail)+'</font>';
-                }
-            },
-            error: function() {
-                mini.unmask(document.body);
-                mini.alert('【<font color="red">' + _loginUserLanguageResource.exceptionThrow + '</font>】：' + _loginUserLanguageResource.contactAdmin);
+        mini.open({
+            url: context + '/miniui-app/modules/driverConfig/alarmSoundSelect.jsp',
+            title: R.alarmSoundSelectTitle,
+            width: 820,
+            height: 580,
+            allowResize: true,
+            onload: function () {
+                var iframe = this.getIFrameEl();
+                iframe.contentWindow.onConfirmCallback = function (fileName) {
+                    field.setValue(fileName || R.notConfigured);
+                };
+                iframe.contentWindow.setData({ currentFile: currentVal });
             }
         });
     }
 
     // ================================================================
-    // 取消
+    // ★ 保存：先颜色，成功后声音，都成功才算完成
     // ================================================================
+    function onSave() {
+        var R = _loginUserLanguageResource;
+
+        function pickBg(id) { return _colorData[id] || { hex: 'ffffff', opacity: 1 }; }
+        function pickFg(id) { return _colorData[id] || { hex: 'ffffff', opacity: 1 }; }
+
+        var AlarmShowStyle = {
+            Data: {
+                Normal:      { Value: 0,   BackgroundColor: pickBg('normalBackgroundColor_id').hex,      Color: pickFg('normalColor_id').hex,      Opacity: pickBg('normalBackgroundColor_id').opacity },
+                FirstLevel:  { Value: 100, BackgroundColor: pickBg('firstLevelBackgroundColor_id').hex,  Color: pickFg('firstLevelColor_id').hex,  Opacity: pickBg('firstLevelBackgroundColor_id').opacity },
+                SecondLevel: { Value: 200, BackgroundColor: pickBg('secondLevelBackgroundColor_id').hex, Color: pickFg('secondLevelColor_id').hex, Opacity: pickBg('secondLevelBackgroundColor_id').opacity },
+                ThirdLevel:  { Value: 300, BackgroundColor: pickBg('thirdLevelBackgroundColor_id').hex,  Color: pickFg('thirdLevelColor_id').hex,  Opacity: pickBg('thirdLevelBackgroundColor_id').opacity }
+            },
+            Comm: {
+                goOnline: { Value: 2, BackgroundColor: pickBg('goOnlineBackgroundColor_id').hex, Color: pickFg('goOnlineColor_id').hex, Opacity: pickBg('goOnlineBackgroundColor_id').opacity },
+                online:   { Value: 1, BackgroundColor: pickBg('onlineBackgroundColor_id').hex,   Color: pickFg('onlineColor_id').hex,   Opacity: pickBg('onlineBackgroundColor_id').opacity },
+                offline:  { Value: 0, BackgroundColor: pickBg('offlineBackgroundColor_id').hex,  Color: pickFg('offlineColor_id').hex,  Opacity: pickBg('offlineBackgroundColor_id').opacity }
+            },
+            Run: {
+                run:    { Value: 1, BackgroundColor: pickBg('runBackgroundColor_id').hex,               Color: pickFg('runColor_id').hex,               Opacity: pickBg('runBackgroundColor_id').opacity },
+                stop:   { Value: 0, BackgroundColor: pickBg('stopBackgroundColor_id').hex,              Color: pickFg('stopColor_id').hex,              Opacity: pickBg('stopBackgroundColor_id').opacity },
+                noData: { Value: 2, BackgroundColor: pickBg('noRunStatusDataBackgroundColor_id').hex,   Color: pickFg('noRunStatusDataColor_id').hex,   Opacity: pickBg('noRunStatusDataBackgroundColor_id').opacity }
+            }
+        };
+
+        var mask = mini.mask({ el: document.body, html: R.updateWait });
+        $.ajax({
+            url: context + '/alarmSetManagerController/setAlarmColor',
+            type: 'POST',
+            data: { data: JSON.stringify(AlarmShowStyle) },
+            dataType: 'json',
+            success: function (response) {
+                if (response && response.msg) {
+                    // 颜色保存成功 → 保存声音
+                    saveAlarmSoundConfig(function (success) {
+                        mini.unmask(document.body);
+                        if (success) {
+                            mini.alert('<font color="blue">' + R.updateSuccessfully + '</font>', R.tip, function () {
+                                if (window.CloseOwnerWindow) CloseWindow('ok');
+                            });
+                        } else {
+                            mini.alert('<font color="red">' + R.colorSavedSoundFailed + '</font>', R.tip);
+                        }
+                    });
+                } else {
+                    mini.unmask(document.body);
+                    mini.alert('<font color="red">' + R.updateFailed + '</font>', R.tip);
+                }
+            },
+            error: function () {
+                mini.unmask(document.body);
+                mini.alert('【<font color="red">' + R.exceptionThrow + '</font>】：' + R.contactAdmin, R.tip);
+            }
+        });
+    }
+
+    // 保存声音（"未配置"还原为空字符串）
+    function saveAlarmSoundConfig(callback) {
+        var R = _loginUserLanguageResource;
+        var val1 = mini.get('soundLevel1_id').getValue();
+        var val2 = mini.get('soundLevel2_id').getValue();
+        var val3 = mini.get('soundLevel3_id').getValue();
+        if (val1 === R.notConfigured) val1 = '';
+        if (val2 === R.notConfigured) val2 = '';
+        if (val3 === R.notConfigured) val3 = '';
+
+        var soundData = { "100": val1, "200": val2, "300": val3 };
+
+        $.ajax({
+            url: context + '/alarmSetManagerController/setAlarmSound',
+            type: 'POST',
+            data: { data: JSON.stringify(soundData) },
+            dataType: 'json',
+            success: function (response) {
+                callback(response && response.success);
+            },
+            error: function () { callback(false); }
+        });
+    }
+
     function onCancel() {
         CloseWindow('cancel');
     }

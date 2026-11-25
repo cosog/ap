@@ -1074,9 +1074,9 @@ function buildAndRenderCurve(result, divId, timeFormat, titleKey, graphicSetKey)
     var tickInterval = Math.floor(data.length / 10) + 1;
     if (tickInterval < 100) tickInterval = 100;
 
-    var firstLower = (typeof loginUserLanguageResourceFirstLower !== 'undefined'
-                     && loginUserLanguageResourceFirstLower[titleKey])
-                     ? loginUserLanguageResourceFirstLower[titleKey] : '';
+    var firstLower = (typeof _loginUserLanguageResourceFirstLower !== 'undefined'
+                     && _loginUserLanguageResourceFirstLower[titleKey])
+                     ? _loginUserLanguageResourceFirstLower[titleKey] : '';
 
     var title = (result.deviceName || '')
         + (loginUserLanguage && loginUserLanguage.toUpperCase() === 'ZH_CN' ? '' : ' ')

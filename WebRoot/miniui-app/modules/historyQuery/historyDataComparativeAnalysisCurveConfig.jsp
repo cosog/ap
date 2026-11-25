@@ -173,7 +173,7 @@ String path = request.getContextPath();
                     }),
                     lineWidthValue: (sCfg.lineWidth !== undefined && sCfg.lineWidth !== '') ? sCfg.lineWidth : 2,
                     seriesColorValue: seriesColor,
-                    dashStyleValue: sCfg.dashStyle || ''
+                    dashStyleValue: sCfg.dashStyle || 'Solid'
                 });
                 devIdx++;
             }
@@ -285,7 +285,7 @@ String path = request.getContextPath();
         _axisWin = new mini.Window();
         _axisWin.set({
             title: lang.curveProperty,
-            width: 420, height: 300,
+            width: 420, 
             modal: true, allowResize: false, showModal: true,
             bodyStyle: 'padding:0;'
         });
@@ -378,7 +378,7 @@ String path = request.getContextPath();
         _seriesWin = new mini.Window();
         _seriesWin.set({
             title: lang.curveProperty,
-            width: 420, height: 300,
+            width: 420, 
             modal: true, allowResize: false, showModal: true,
             bodyStyle: 'padding:0;'
         });

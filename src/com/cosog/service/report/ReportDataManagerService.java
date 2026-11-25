@@ -4658,6 +4658,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 							if(StringManagerUtils.isNum(addValue) && prec>=0){
 								addValue=StringManagerUtils.dataFormat(addValue, prec);;
 							}
+							if(!StringManagerUtils.isNotNull(addValue)){
+								addValue="null";
+							}
+						}else{
+							addValue="null";
 						}
 						
 						if(!curveDataMap.containsKey(itemCodeSortMap.get(itemColumn))){
@@ -4697,7 +4702,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		
 		result_json.append("]}");
-		return result_json.toString().replaceAll("null", "");
+		return result_json.toString();
 	}
 	
 	public String getSingleWellDailyReportCurveData(Page pager, String orgId,String deviceType,String reportType,

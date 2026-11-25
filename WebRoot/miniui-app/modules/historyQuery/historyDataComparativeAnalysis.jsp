@@ -20,6 +20,11 @@
         .mini-splitter-border { border: 0 !important; }
         .mini-splitter-pane { padding: 0 !important; }
         .mini-splitter-handler { background: transparent !important; border-left: 1px solid #e8e8e8 !important; }
+        .tab-toolbar-row1 {
+            display: flex; align-items: center; flex-wrap: wrap;
+            gap: 4px; padding: 4px 10px;
+            background: #fafafa; border-bottom: 1px solid #e8e8e8;
+        }
         
         /* 工具条统一背景与边距 */
         .mini-panel-toolbar { background: #fafafa !important; border-bottom: 1px solid #e8e8e8 !important; padding: 4px 8px !important; }
@@ -30,7 +35,7 @@
         <div property="toolbar">
             <table style="width:100%;border-collapse:collapse;">
                 <tr>
-                    <td style="padding:0;vertical-align:middle;white-space:nowrap;">
+                    <td class="tab-toolbar-row1">
                         <span id="lblRange"></span>
                         <input id="startDate" class="mini-datepicker" format="yyyy-MM-dd" style="width:130px;" />
                         <span id="lblHour"></span>
